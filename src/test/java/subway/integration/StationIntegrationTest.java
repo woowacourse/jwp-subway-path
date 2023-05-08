@@ -129,7 +129,7 @@ public class StationIntegrationTest extends IntegrationTest {
         Long stationId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
-                .get("/stations/{stationId}" + stationId)
+                .get("/stations/{stationId}", stationId)
                 .then().log().all()
                 .extract();
 
