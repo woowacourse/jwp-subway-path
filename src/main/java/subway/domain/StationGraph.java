@@ -38,4 +38,8 @@ public class StationGraph {
         destinationAdjacency.add(sourceEdge);
         adjacencyStations.put(destination, destinationAdjacency);
     }
+
+    public void removeStation(Station station) {
+        adjacencyStations.values().forEach(s -> s.remove(station));
+    }
 }

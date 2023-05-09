@@ -40,4 +40,14 @@ class StationGraphTest {
         stationGraph.addStation(JAMSIL_STATION, JAMSIL_SAENAE_STATION, 3.0);
         return stationGraph;
     }
+
+    @Test
+    @DisplayName("역을 삭제한다.")
+    void removeStation() {
+        StationGraph stationGraph = addInitialStations();
+        stationGraph.removeStation(JAMSIL_STATION);
+
+        Assertions.assertThat(stationGraph.findAllStations()).contains(JAMSIL_SAENAE_STATION);
+    }
 }
+
