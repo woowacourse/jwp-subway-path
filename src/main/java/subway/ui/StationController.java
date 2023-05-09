@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.ui.dto.StationRequest;
+import subway.ui.dto.StationResponse;
 
 import java.net.URI;
 import java.sql.SQLException;

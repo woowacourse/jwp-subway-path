@@ -2,8 +2,8 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.LineResponse;
 import subway.entity.LineEntity;
 
 import java.util.List;
@@ -17,9 +17,10 @@ public class LineService {
         this.lineDao = lineDao;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        LineEntity persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    public Long saveLine(LineRequest request) {
+        Long id = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
+        return id;
+        // TODO: LineResponse 처리하기
     }
 
     public List<LineResponse> findLineResponses() {

@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.LineResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -30,8 +30,8 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+        Long id = lineService.saveLine(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
     @GetMapping
