@@ -34,3 +34,40 @@
 - [ ] 노선에서 역을 제거할 경우 정상 동작을 위해 역을 재배치 되어야한다.
 - [ ] 노선에서 역이 제거될 경우 역과 역 사이의 거리도 재배정되어야한다.
 - [ ] 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거되어야한다.
+
+## API 명세
+
+### 역 등록
+
+#### Request
+
+```http request
+POST /sections HTTP/1.1
+{
+    lineId: 1,
+    stations:  [
+      {"id": 1},
+      {"id": 2}
+    ]
+}
+```
+
+#### Response
+
+```http request
+HTTP/1.1 201
+```
+
+### 역 제거
+
+#### Request
+
+```http request
+DELETE /sections/{lineId}/{stationId} HTTP/1.1
+```
+
+#### Response
+
+```http request
+HTTP/1.1 204
+```
