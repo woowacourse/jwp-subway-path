@@ -25,6 +25,7 @@ public class SectionIntegrationTest extends IntegrationTest {
                 Map.of("id", 1L),
                 Map.of("id", 2L)
         ));
+        params.put("distance", 10);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()

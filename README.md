@@ -48,7 +48,8 @@ POST /sections HTTP/1.1
     stations:  [
       {"id": 1},
       {"id": 2}
-    ]
+    ],
+    "distance": 10
 }
 ```
 
