@@ -36,3 +36,38 @@
 - [ ] 노선도 (Route Map)
   - [ ] 노선도는 노선들을 가지고 있다
     - [ ] 노선의 이름과 색깔은 각각 고유한 값이어야 한다
+
+2. 테이블 구조
+
+```sql
+CREATE TABLE IF NOT EXISTS line
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    color VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS station
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS distance
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    distance INT NOT NULL,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS line_station_distance
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    line_id BIGINT NOT NULL,
+    station_id BIGINT NOT NULL,
+    distance_id BIGINT NOT NULL,
+    PRIMARY KEY(id)
+);
+```

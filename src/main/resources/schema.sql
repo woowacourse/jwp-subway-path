@@ -1,14 +1,30 @@
-create table if not exists STATION
+CREATE TABLE IF NOT EXISTS line
 (
-    id bigint auto_increment not null,
-    name varchar(255) not null unique,
-    primary key(id)
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    color VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY(id)
 );
 
-create table if not exists LINE
+CREATE TABLE IF NOT EXISTS station
 (
-    id bigint auto_increment not null,
-    name varchar(255) not null unique,
-    color varchar(20) not null,
-    primary key(id)
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS distance
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    distance INT NOT NULL,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS line_station_distance
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    line_id BIGINT NOT NULL,
+    station_id BIGINT NOT NULL,
+    distance_id BIGINT NOT NULL,
+    PRIMARY KEY(id)
 );
