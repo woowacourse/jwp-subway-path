@@ -271,6 +271,7 @@ erDiagram
         BIGINT line_id
         BIGINT origin_id
         BIGINT destination_id
+        INT distance
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
