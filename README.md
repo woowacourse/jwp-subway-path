@@ -159,7 +159,7 @@ POST /lines/{id}/sections
 response
 ```http request
 201 Created
-Location: /sections/{id}
+Location: /lines/{id}
 ```
 
 **노선 역 제거**
@@ -174,23 +174,6 @@ response
 204 No Content
 ```
 
-**구간 정보 조회**
-
-request
-```http request
-GET /sections/{id}
-```
-
-response
-```http request
-200 OK
-{
-    "sectionId": 1,
-    "upwardStation": "잠실역",
-    "downwardStation": "잠실새내역",
-    "distance": 10
-}
-```
 
 
 
