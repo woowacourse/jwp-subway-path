@@ -29,4 +29,9 @@ public class LineDao {
     public Long save(LineEntity lineEntity) {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(lineEntity)).longValue();
     }
+
+    public LineEntity findByName(final String name) {
+        final String sql = "SELECT * FROM line WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
+    }
 }
