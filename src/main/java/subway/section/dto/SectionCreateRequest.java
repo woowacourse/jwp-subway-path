@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class SectionRequest {
+public class SectionCreateRequest {
 
     private Long lineId;
     private Long defaultId;
