@@ -23,14 +23,9 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
+        return lineDao.findAll().stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineDao.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
