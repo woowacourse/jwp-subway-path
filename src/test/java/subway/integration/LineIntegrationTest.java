@@ -26,8 +26,8 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        lineRequest1 = new LineRequest("2호선", "bg-red-600", 10, "잠실", "잠실새내");
+        lineRequest2 = new LineRequest("7호선", "bg-olive-600", 4, "철산", "광명사거리");
     }
 
     @DisplayName("지하철 노선을 생성한다.")
