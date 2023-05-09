@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.DistanceNotValidException;
 
@@ -14,7 +15,7 @@ import subway.exception.DistanceNotValidException;
 @SuppressWarnings("NonAsciiCharacters")
 class DistanceTest {
 
-    @ParameterizedTest(name = "양수가 아닌 값을 입력받는 경우 예외가 발생한다. 입력값: {0}")
+    @ParameterizedTest(name = "양수가 아닌 값을 입력받는 경우 예외가 발생한다. 입력: {0}")
     @ValueSource(ints = {0, -1})
     void 양수가_아닌_값을_입력받는_경우_예외가_발생한다(final int value) {
         // expect
@@ -33,5 +34,15 @@ class DistanceTest {
 
         // then
         assertThat(distance.getValue()).isEqualTo(1);
+    }
+
+    @ParameterizedTest(name = "3보다 크거나 같은지 확인한다. 입력: {0}, 결과: {1}")
+    @CsvSource({"2, false", "3, true", "4, true"})
+    void 자신의_거리보다_크거나_같은지_확인한다(final int value, final boolean result) {
+        // given
+        final Distance distance = new Distance(3);
+
+        // expect
+        assertThat(distance.moreThanOrEqual(new Distance(value))).isEqualTo(result);
     }
 }

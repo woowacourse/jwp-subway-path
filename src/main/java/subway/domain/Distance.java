@@ -19,7 +19,12 @@ public class Distance {
         }
     }
 
+    public boolean moreThanOrEqual(final Distance distance) {
+        return value <= distance.value;
+    }
+
     public int getValue() {
         return value;
     }
+
 }
