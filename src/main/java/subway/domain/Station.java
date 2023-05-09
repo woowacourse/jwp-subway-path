@@ -6,6 +6,8 @@ public class Station {
     private Long id;
     private String name;
 
+    public static final Station emptyStation = new Station("");
+
     public Station() {
     }
 
@@ -31,7 +33,7 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        return name.equals(station.name);
     }
 
     @Override

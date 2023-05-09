@@ -32,12 +32,17 @@
 # 👨‍🍳 기능 목록
 
 - [ ]  노선 추가
+    - [x] 처음엔 구간 1개가 등록되어야 한다.
+    - [x] 구간의 두 역은 같은 이름이면 예외처리
+    - [x] 구간의 두 역 중 하나라도 emptyStation이면 예외처리
 
    ```jsx
    POST /lines
    RequestBody = {
        name:"1호선",
        color:"주황색",
+       upStation:"강남역",
+       downStation:"역삼역",
    }
    ```
 
@@ -45,12 +50,16 @@
    추가된 노선의 아이디 반환
    ```
 
+
 - [ ]  노선에 역 등록
     - [ ]  A-B-C가 있을 때 A의 앞, C의 뒤, A와 B 사이에도 추가할 수 있다.
     - [ ]  노선은 역 간 거리 정보를 포함한다.
-    - [ ]  처음엔 2개가 등록되어야 한다.
     - [ ]  한 역이 두 개 이상의 노선에 포함될 수 있다.
     - [ ]  역 사이에 새로운 역을 등록할 경우 기존 역 사이 길이보다 크거나 같으면 등록할 수 없다.
+    - [ ] 입력되는 상행역과 하행역이 존재하지 않을 경우 예외처리
+    - [ ] 임력되는 상행역과 하행역 사이에 다른 역이 존재할 경우 예외처리
+    - [ ] 동일한 이름의 역이 노선에 이미 존재할 경우 예외처리
+    - [ ] 구간의 두 역이 모두 empty Station이면 예외처리
     - [x]  거리는 양의 정수이다.
 
    ```jsx
@@ -163,3 +172,25 @@ ex) "docs: 기능 목록 추가"
 - [우아한 테크코스 Java 코딩 컨벤션](https://github.com/woowacourse/woowacourse-docs/tree/main/styleguide/java)을
   준수합니다.
 - IntelliJ의 Formatter를 적용합니다.
+
+
+
+repository => domain의 저장소
+
+    - 도메인 : 비즈니스 로직을 수행
+    - 한 개 이상의 dao를 호출
+    Station findBy~~()
+    void save(Station station)
+    dao로부터 받은 엔티티 객체를 도메인 객체로 변환시키는 것은 repository의 역할
+
+dao => entity
+
+    - 엔티티 : DB의 데이터 하나에 대응되는 객체(테이블의 컬럼과 1:1로 매핑된다)
+    StationEntity findBy~~()
+    - DB에 직접 접근을 해서 데이터를 받아오거나 업데이트하는 역할
+    dao 1개는 DB table 1개에 매핑된다
+
+
+
+
+

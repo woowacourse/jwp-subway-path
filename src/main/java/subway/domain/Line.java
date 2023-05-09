@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Line {
@@ -7,18 +9,32 @@ public class Line {
     private String name;
     private String color;
 
+    private List<Section> sections;
+
+
     public Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, Section section) {
+        validateSection(section);
         this.name = name;
         this.color = color;
+        this.sections = new ArrayList<>();
+        sections.add(section);
+    }
+
+    private void validateSection(Section section) {
+
+        if (section.isIncludeEmptyStation()) {
+            throw new IllegalArgumentException("상행역 혹은 하행역을 입력하지 않았습니다.");
+        }
     }
 
     public Line(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.sections = new ArrayList<>();
     }
 
     public Long getId() {
