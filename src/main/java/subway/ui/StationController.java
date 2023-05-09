@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/stations")
+@RequestMapping("/lines/stations")
 public class StationController {
     private final StationService stationService;
 
@@ -22,7 +22,7 @@ public class StationController {
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest stationRequest) {
         final StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+        return ResponseEntity.created(URI.create("/lines/stations/" + station.getId())).body(station);
     }
 
     @GetMapping
