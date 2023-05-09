@@ -42,7 +42,7 @@ class StationControllerTest {
     class CreateStation {
 
         @Test
-        @DisplayName("새로운 역을 추가한다")
+        @DisplayName("유효한 역 정보라면 새로운 역을 추가한다")
         void createStation() throws Exception {
             final StationCreateRequest request = new StationCreateRequest("잠실역");
 
