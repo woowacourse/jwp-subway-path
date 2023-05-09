@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +17,7 @@ class LinesTest {
         // given
         final Line 신분당선 = new Line("신분당선", "bg-red-600");
         final Line 구신분당선 = new Line("구신분당선", "bg-red-600");
-        final Lines lines = new Lines(List.of(신분당선, 구신분당선));
+        final Lines lines = new Lines(Arrays.asList(신분당선, 구신분당선));
 
         // expect
         final Line 중복된_신분당선 = new Line("신분당선", "bg-red-500");
