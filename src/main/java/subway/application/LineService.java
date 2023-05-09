@@ -13,17 +13,17 @@ import java.util.stream.Collectors;
 public class LineService {
     private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(final LineDao lineDao) {
         this.lineDao = lineDao;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+    public LineResponse saveLine(final LineRequest request) {
+        final Line persistLine = lineDao.insert(new Line(request.getName()));
         return LineResponse.of(persistLine);
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
+        final List<Line> persistLines = findLines();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
@@ -33,20 +33,20 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+    public LineResponse findLineResponseById(final Long id) {
+        final Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    public Line findLineById(Long id) {
+    public Line findLineById(final Long id) {
         return lineDao.findById(id);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
+        lineDao.update(new Line(id, lineUpdateRequest.getName()));
     }
 
-    public void deleteLineById(Long id) {
+    public void deleteLineById(final Long id) {
         lineDao.deleteById(id);
     }
 
