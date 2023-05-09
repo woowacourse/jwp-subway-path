@@ -6,11 +6,10 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willThrow;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static subway.integration.common.LocationAsserter.location_헤더를_검증한다;
+import static org.springframework.http.HttpStatus.OK;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -26,14 +25,15 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import subway.application.LineService;
+import subway.domain.Direction;
 import subway.exception.NotFoundStationException;
-import subway.presentation.request.LineCreateRequest;
+import subway.presentation.request.AddStationToLineRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
-@DisplayName("LineController 통합테스트")
+@DisplayName("LineStationController 통합테스트")
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class LineControllerIntegrationTest {
+public class LineStationControllerIntegrationTest {
 
     @LocalServerPort
     private int port;
@@ -47,22 +47,80 @@ public class LineControllerIntegrationTest {
     }
 
     @Nested
-    class 노선을_생성할_떄 {
+    class 노선에_역을_추가할_떄 {
+
+        private final AddStationToLineRequest request = new AddStationToLineRequest(
+                "2호선",
+                "말랑역",
+                Direction.UP,
+                "오리역",
+                5);
 
         @Test
-        void 존재하지_않은_역으로_생성하면_예외() {
+        void 기준역에_대해_요청한_방향으로_추가된다() {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10);
             final String body = toJson(request);
-            given(lineService.create(any()))
-                    .willThrow(new NotFoundStationException());
 
             // when
             final ExtractableResponse<Response> response = given().log().all()
                     .contentType(JSON)
                     .body(body)
                     .when()
-                    .post("/lines")
+                    .post("/lines/stations")
+                    .then()
+                    .log().all()
+                    .extract();
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(OK.value());
+        }
+
+        @Test
+        void 중간_삽입시_기존_역간_거리가_재조정_된다() {
+            // given
+
+            // when
+            //???? 조회기능 만들어서 위 테스트랑 합쳐도 될듯
+
+            // then
+        }
+
+        @Test
+        void 중간_삽입시_추가할려는_역간_거리가_기존_역간_길이와_같거나_크다면_예외() {
+            // given
+            willThrow(new IllegalArgumentException("추가하려는 역간 거리가 기존 역간 길이보다 같거나 큽니다."))
+                    .given(lineService)
+                    .addStation(any());
+            final String body = toJson(request);
+
+            // when
+            final ExtractableResponse<Response> response = given().log().all()
+                    .contentType(JSON)
+                    .body(body)
+                    .when()
+                    .post("/lines/stations")
+                    .then()
+                    .log().all()
+                    .extract();
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        }
+
+        @Test
+        void 역이_존재하지_않으면_예외() {
+            // given
+            willThrow(new NotFoundStationException())
+                    .given(lineService)
+                    .addStation(any());
+            final String body = toJson(request);
+
+            // when
+            final ExtractableResponse<Response> response = given().log().all()
+                    .contentType(JSON)
+                    .body(body)
+                    .when()
+                    .post("/lines/stations")
                     .then()
                     .log().all()
                     .extract();
@@ -72,41 +130,25 @@ public class LineControllerIntegrationTest {
         }
 
         @Test
-        void 두_종착역이_존재하는_경우_생성된다() {
+        void 역간의_거리가_0이하이면_예외() {
             // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10);
+            final AddStationToLineRequest request = new AddStationToLineRequest(
+                    "2호선",
+                    "말랑역",
+                    Direction.UP,
+                    "오리역",
+                    0);
+            willThrow(new IllegalArgumentException("역간 거리는 0보다 커야 합니다."))
+                    .given(lineService)
+                    .addStation(any());
             final String body = toJson(request);
-            given(lineService.create(any())).willReturn(1L);
 
             // when
             final ExtractableResponse<Response> response = given().log().all()
                     .contentType(JSON)
                     .body(body)
                     .when()
-                    .post("/lines")
-                    .then()
-                    .log().all()
-                    .extract();
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(CREATED.value());
-            location_헤더를_검증한다(response, 1L);
-        }
-
-        @Test
-        void 역_사이의_거리가_양수가_아니면_오류이다() {
-            // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 0);
-            final String body = toJson(request);
-            given(lineService.create(any()))
-                    .willThrow(new IllegalArgumentException("역사이의 거리는 양수여야 합니다."));
-
-            // when
-            final ExtractableResponse<Response> response = given().log().all()
-                    .contentType(JSON)
-                    .body(body)
-                    .when()
-                    .post("/lines")
+                    .post("/lines/stations")
                     .then()
                     .log().all()
                     .extract();
