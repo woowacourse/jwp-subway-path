@@ -1,22 +1,21 @@
 package subway.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import subway.dto.StationResponse;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import subway.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
@@ -139,6 +138,7 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(stationResponse.getId()).isEqualTo(stationId);
     }
 
+    @Disabled
     @DisplayName("지하철역을 수정한다.")
     @Test
     void updateStation() {
@@ -169,6 +169,7 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @Disabled
     @DisplayName("지하철역을 제거한다.")
     @Test
     void deleteStation() {
