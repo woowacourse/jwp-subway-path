@@ -5,12 +5,12 @@ public class StationDistance {
 
     private final int distance;
 
-    public StationDistance(int distance) {
+    public StationDistance(final int distance) {
         validate(distance);
         this.distance = distance;
     }
 
-    private void validate(int distance) {
+    private void validate(final int distance) {
         if (distance < MINIMUM_DISTANCE) {
             throw new IllegalArgumentException();
         }
