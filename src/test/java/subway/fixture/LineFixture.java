@@ -8,7 +8,7 @@ public class LineFixture {
 
     public static class 이호선 {
 
-        public static final Line LINE = new Line("2호선", "GREEN");
+        public static final Line LINE = new Line(1L, "2호선", "GREEN");
         public static final LineRequest REQUEST = new LineRequest("2호선", "GREEN");
     }
 
