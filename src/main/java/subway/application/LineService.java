@@ -1,13 +1,13 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import subway.exception.DuplicatedNameException;
 
 @Service
 public class LineService {
@@ -18,7 +18,11 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        String name = request.getName();
+        if (lineDao.existsByName(name)) {
+            throw new DuplicatedNameException(name);
+        }
+        Line persistLine = lineDao.insert(new Line(name));
         return LineResponse.of(persistLine);
     }
 
