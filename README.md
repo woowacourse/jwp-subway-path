@@ -24,8 +24,8 @@
   - 노선에 포함된 역을 순서대로 보여주도록 응답한다.
 - [ ] 노선 목록 조회 API 수정
   - 노선에 포함된 역을 순서대로 보여주도록 응답한다.
-- [ ] 테이블 설계
-  - [ ] station
-  - [ ] line
-  - [ ] line_station(line과 station의 연결정보)
-  - [ ] edge(station과 station의 연결정보)
+- [x] 테이블 설계
+  - [x] station
+  - [x] line
+  - [x] line_station(line과 station의 연결정보)
+  - [x] edge(station과 station의 연결정보)
