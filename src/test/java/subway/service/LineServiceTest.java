@@ -3,9 +3,8 @@ package subway.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import subway.application.LineService;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -36,7 +35,7 @@ class LineServiceTest {
     void save_success() {
         // given
         final LineDto lineDto = new LineDto("디투당선", "bg-gogi-600");
-        final SectionCreateDto sectionCreateDto = new SectionCreateDto(1L, 10, "디", "투");
+        final SectionCreateDto sectionCreateDto = new SectionCreateDto(10, "디", "투");
 
         // when
         given(lineDao.insert(any())).willReturn(1L); // TODO : lineDao insert 반환 값 int

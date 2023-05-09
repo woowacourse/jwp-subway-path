@@ -11,7 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.ui.dto.LineRequest;
+import subway.service.dto.LineDto;
+import subway.service.dto.SectionCreateDto;
+import subway.ui.dto.LineInitialRequest;
 import subway.ui.dto.LineResponse;
 
 import java.net.URI;
@@ -28,9 +30,12 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        Long id = lineService.saveLine(lineRequest);
+    @PostMapping("/initial")
+    public ResponseEntity<Void> createLine(@RequestBody LineInitialRequest request) {
+        final LineDto lineDto = new LineDto(request.getName(), request.getColor());
+        SectionCreateDto sectionCreateDto = new SectionCreateDto(
+                request.getDistance(), request.getFirstStationName(), request.getSecondStationName());
+        final long id = lineService.save(lineDto, sectionCreateDto);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
@@ -45,7 +50,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineInitialRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
