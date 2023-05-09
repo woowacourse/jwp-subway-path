@@ -1,10 +1,10 @@
 package subway.domain;
 
-public class Edge {
+public class Distance {
 
     private final int distance;
 
-    public Edge(int distance) {
+    public Distance(int distance) {
         validate(distance);
         this.distance = distance;
     }
