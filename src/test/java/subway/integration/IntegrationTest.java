@@ -31,7 +31,6 @@ public class IntegrationTest {
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
-
     }
 
     @Test
