@@ -21,6 +21,10 @@ public class Section {
         this.distance = distance;
     }
 
+    public Section(final Long id, final Section section) {
+        this(id, section.lineId, section.upStationId, section.downStationId, section.distance);
+    }
+
     private void validate(final int distance) {
         if (distance > 0) {
             return;
