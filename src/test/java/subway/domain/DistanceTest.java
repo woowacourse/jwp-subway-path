@@ -13,16 +13,16 @@ class DistanceTest {
 
     @ParameterizedTest
     @ValueSource(ints = {-1, 0})
-    @DisplayName("value가 음수라면 예외발생")
-    void test_negative_value_exception(int value){
+    @DisplayName("생성자를 호출할 때 value가 음수라면 예외발생")
+    void constructor_fail_negative_value(int value){
         //when, then
         assertThatThrownBy(()-> new Distance(value))
                 .isInstanceOf(IllegalArgumentException.class).hasMessage("거리는 양의 정수여야 합니다");
     }
 
     @Test
-    @DisplayName("value가 양의 정수라면 정상적으로 생성")
-    void test_negative_value_exception(){
+    @DisplayName("생성자를 호출할 때 value가 양의 정수라면 정상적으로 생성")
+    void constructor_success_positive_value(){
         //when, then
         assertThatCode(()-> new Distance(1)).doesNotThrowAnyException();
     }
