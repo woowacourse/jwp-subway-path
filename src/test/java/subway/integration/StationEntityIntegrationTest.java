@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
-public class StationIntegrationTest extends IntegrationTest {
+public class StationEntityIntegrationTest extends IntegrationTest {
     @DisplayName("지하철역을 생성한다.")
     @Test
     void createStation() {
