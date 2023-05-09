@@ -2,19 +2,22 @@ package subway.domain.station;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.regex.Pattern;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
+import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.InvalidStationNameException;
 
 class NameTest {
 
-    @Test
-    @DisplayName("역 이름이 11글자 이상일 경우 예외를 던진다.")
-    void validate_with_invalid_length() {
-        assertThatThrownBy(() -> new Name("열한글자가넘는역이름입니다역"))
+    @ParameterizedTest
+    @DisplayName("역 이름이 2글자이하, 11글자 이상일 경우 예외를 던진다.")
+    @ValueSource(strings = {"역", "열한글자가넘는역이름입니다역"})
+    void validate_with_invalid_length(final String input) {
+        assertThatThrownBy(() -> new Name(input))
                 .isInstanceOf(InvalidStationNameException.class)
-                .hasMessage("역 이름은 1글자에서 11글자까지 가능합니다.");
+                .hasMessage("역 이름은 2글자에서 11글자까지 가능합니다.");
     }
 
     @Test
@@ -25,37 +28,22 @@ class NameTest {
                 .hasMessage("역 이름은 '역'으로 끝나야 합니다.");
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("역 이름이 한글, 숫자로 구성되지 않을 경우 예외를 던진다.")
-    void validate_with_invalid_name_element() {
-        assertThatThrownBy(() -> new Name("NewYork역"))
+    @ValueSource(strings = {"NewYork역", "!!역"})
+    void validate_with_invalid_name_element(final String input) {
+        assertThatThrownBy(() -> new Name(input))
                 .isInstanceOf(InvalidStationNameException.class)
                 .hasMessage("역 이름은 한글, 숫자만 가능합니다.");
     }
-}
 
-class Name {
+    @ParameterizedTest
+    @DisplayName("이름이 빈 칸이거나 null 일 때 예외를 던진다.")
+    @NullAndEmptySource
+    void validate_with_blank_name(final String input) {
+        assertThatThrownBy(() -> new Name(input))
+                .isInstanceOf(InvalidStationNameException.class)
+                .hasMessage("역 이름은 공백일 수 없습니다.");
 
-    private static final int MAXIMUM_LENGTH = 11;
-    private static final String SUFFIX = "역";
-    private static final Pattern PATTERN = Pattern.compile("^[가-힣0-9]+$");
-
-    private final String value;
-
-    public Name(final String value) {
-        validate(value);
-        this.value = value;
-    }
-
-    private void validate(final String value) {
-        if (value.isBlank() || value.length() > MAXIMUM_LENGTH) {
-            throw new InvalidStationNameException("역 이름은 1글자에서 11글자까지 가능합니다.");
-        }
-        if (!value.endsWith(SUFFIX)) {
-            throw new InvalidStationNameException("역 이름은 '역'으로 끝나야 합니다.");
-        }
-        if (!PATTERN.matcher(value).matches()) {
-            throw new InvalidStationNameException("역 이름은 한글, 숫자만 가능합니다.");
-        }
     }
 }
