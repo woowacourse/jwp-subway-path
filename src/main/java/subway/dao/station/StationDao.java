@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.dao.station;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -28,6 +28,11 @@ public class StationDao {
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
+    }
+
+    public boolean isExistStationByName(final String stationName) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE name = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationName));
     }
 
     public Station insert(Station station) {

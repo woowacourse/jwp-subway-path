@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.dao.line;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -24,6 +24,11 @@ public class LineDao {
                     rs.getString("color")
             );
 
+    public boolean isExistLineByName(final String lineName) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM line WHERE name = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, lineName));
+    }
+
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
@@ -44,6 +49,11 @@ public class LineDao {
     public List<Line> findAll() {
         String sql = "select line_id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public Line findByName(final String name) {
+        String sql = "select line_id, name, color from LINE WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
     public Line findById(Long id) {
