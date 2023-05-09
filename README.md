@@ -3,7 +3,7 @@
 ## API
 
 ### 1. 노선 역 등록 API
-- [ ] POST '/stations' uri 맵핑
+- [x] POST '/stations' uri 맵핑
   - Request
     - 상행 역 이름
     - 하행 역 이름
