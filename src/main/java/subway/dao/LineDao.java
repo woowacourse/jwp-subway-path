@@ -30,13 +30,12 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public LineEntity insert(final LineEntity line) {
+    public Long insert(final LineEntity line) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", line.getName());
         params.put("color", line.getColor());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineEntity(lineId, line.getName(), line.getColor());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
     public List<LineEntity> findAll() {
