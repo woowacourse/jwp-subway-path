@@ -62,3 +62,175 @@
 | GET    | /stations      | 전체 역 조회     |
 | GET    | /stations/{id} | 특정 역 조회     |
 | DELETE | /stations/{id} | 특정 역 삭제     |
+
+## Line API 요청 / 응답 예시
+### POST : 노선 추가
+#### Request
+```http request
+POST /lines HTTP/1.1
+Host: localhost:8080
+
+{
+    "name" : "1호선"
+}
+```
+
+#### Response
+``` http request
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: /lines/1
+```
+### GET : 노선 목록 조회
+#### Request
+```http request
+GET /lines HTTP/1.1
+Host: localhost:8080
+```
+
+#### Response
+``` http request
+HTTP/1.1 200
+Content-Type: application/json
+
+[
+    {
+        "name" : "2호선"
+        "stations" : [
+            {
+                "name" : "잠실역"
+            }
+        ]
+    },
+    {
+        "name" : "8호선"
+        "stations" : [
+            {
+                "name" : "잠실역"
+            },
+            {
+                "name" : "석촌역"
+            }
+        ]
+    }
+]
+```
+
+### GET : 노선 조회
+#### Request
+```http request
+GET /lines/{id} HTTP/1.1
+Host: localhost:8080
+```
+
+#### Response
+``` http request
+HTTP/1.1 200
+Content-Type: application/json
+
+{
+    "name" : "2호선"
+    "stations" : [
+        {
+            "name" : "잠실역"
+        }
+    ]
+}
+```
+
+---
+
+## Station API 요청 / 응답 예시
+
+### POST : 역 추가
+#### Request
+```http request
+POST /stations HTTP/1.1
+Host: localhost:8080
+
+{
+    "startStation" : "잠실역",
+    "endStation" : "잠실새내역",
+    "distance" : 10,
+    "line" : 1
+}
+```
+
+#### Response
+``` http request
+HTTP/1.1 201 Created
+Content-Type: application/json
+Location: /stations/1
+```
+
+### GET : 역 목록 조회
+#### Request
+```http request
+GET /stations HTTP/1.1
+Host: localhost:8080
+```
+
+#### Response
+``` http request
+HTTP/1.1 200
+Content-Type: application/json
+
+[
+    {
+        "name" : "잠실역"
+        "lines" : [
+            {
+                "name" : "2호선"
+            },
+            {
+                "name" : "8호선"
+            }
+        ]
+    },
+    {
+        "name" : "잠실새내역"
+        "lines" : [
+            {
+                "name" : "2호선"
+            }
+        ]
+    }
+]
+```
+
+### GET : 특정 역 조회
+#### Request
+```http request
+GET /stations/{id} HTTP/1.1
+Host: localhost:8080
+```
+
+#### Response
+``` http request
+HTTP/1.1 200
+Content-Type: application/json
+
+{
+    "name" : "잠실역"
+    "lines" : [
+        {
+            "name" : "2호선"
+        },
+        {
+            "name" : "8호선"
+        }
+    ]
+}
+```
+
+### DELETE : 특정 역 삭제
+#### Request
+```http request
+DELETE /stations/{id} HTTP/1.1
+Host: localhost:8080
+```
+
+#### Response
+``` http request
+HTTP/1.1 204 No Content
+```
