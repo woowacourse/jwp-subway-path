@@ -1,11 +1,11 @@
 package subway.service.dto;
 
-public class LineCreateDto {
+public class LineDto {
 
     private final String name;
     private final String color;
 
-    public LineCreateDto(final String name, final String color) {
+    public LineDto(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
@@ -17,4 +17,5 @@ public class LineCreateDto {
     public String getColor() {
         return color;
     }
+
 }
