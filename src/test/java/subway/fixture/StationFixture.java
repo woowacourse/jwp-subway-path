@@ -2,6 +2,7 @@ package subway.fixture;
 
 import subway.dto.request.StationRequest;
 
+@SuppressWarnings("NonAsciiCharacters")
 public class StationFixture {
 
     public static class 역삼역 {

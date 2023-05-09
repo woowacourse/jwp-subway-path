@@ -2,6 +2,7 @@ package subway.fixture;
 
 import subway.dto.request.LineRequest;
 
+@SuppressWarnings("NonAsciiCharacters")
 public class LineFixture {
 
     public static class 이호선 {
