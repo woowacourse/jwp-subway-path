@@ -1,5 +1,7 @@
 package subway.dao;
 
+import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,9 +10,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 
-import javax.sql.DataSource;
-import java.util.List;
-
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
@@ -18,7 +17,6 @@ public class StationDao {
 
     private RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
-                    rs.getLong("id"),
                     rs.getString("name")
             );
 
@@ -33,7 +31,7 @@ public class StationDao {
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        return new Station(station.getName());
     }
 
     public List<Station> findAll() {
@@ -48,7 +46,7 @@ public class StationDao {
 
     public void update(Station newStation) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        jdbcTemplate.update(sql, new Object[]{newStation.getName()});
     }
 
     public void deleteById(Long id) {

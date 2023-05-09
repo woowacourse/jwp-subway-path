@@ -1,25 +1,21 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.exception.GlobalException;
 
 public class Station {
-    private Long id;
-    private String name;
+    private static final int NAME_MAX_LENGTH = 10;
+    private final String name;
 
-    public Station() {
-    }
-
-    public Station(Long id, String name) {
-        this.id = id;
+    public Station(final String name) {
+        validate(name);
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
+    private void validate(final String name) {
+        if (name.isBlank() || name.length() > NAME_MAX_LENGTH) {
+            throw new GlobalException("역 이름은 1글자 이상, 10글자 이하여야 합니다.");
+        }
     }
 
     public String getName() {
@@ -27,15 +23,19 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        return Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(name);
     }
 }
