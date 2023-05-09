@@ -1,27 +1,27 @@
-create table if not exists STATION
+CREATE TABLE IF NOT EXISTS STATION
 (
-    name varchar(255) not null,
-
-    primary key (name)
+    ID   BIGINT       NOT NULL AUTO_INCREMENT,
+    NAME VARCHAR(255) NOT NULL,
+    PRIMARY KEY (NAME)
 );
 
-create table if not exists LINE_NODE
+CREATE TABLE IF NOT EXISTS LINE_NODE
 (
-    id              BIGINT        not null AUTO_INCREMENT,
-    before_node     BIGINT,
-    station         varchar(255)  not null,
-    next_node       BIGINT,
-    before_distance INT default 0 not null,
-    next_distance   INT default 0 not null,
-    primary key (id),
-    foreign key (before_node) references LINE_NODE (id),
-    foreign key (next_node) references LINE_NODE (id),
-    foreign key (station) references STATION (name)
+    ID              BIGINT        NOT NULL AUTO_INCREMENT,
+    BEFORE_NODE     BIGINT,
+    STATION         VARCHAR(255)  NOT NULL,
+    NEXT_NODE       BIGINT,
+    BEFORE_DISTANCE INT DEFAULT 0 NOT NULL,
+    NEXT_DISTANCE   INT DEFAULT 0 NOT NULL,
+    PRIMARY KEY (ID),
+    FOREIGN KEY (BEFORE_NODE) REFERENCES LINE_NODE (ID),
+    FOREIGN KEY (NEXT_NODE) REFERENCES LINE_NODE (ID),
+    FOREIGN KEY (STATION) REFERENCES STATION (NAME)
 );
 
-create table if not exists LINE
+CREATE TABLE IF NOT EXISTS LINE
 (
-    id   bigint auto_increment not null,
-    name varchar(255)          not null unique,
-    primary key (id)
+    ID   BIGINT AUTO_INCREMENT NOT NULL,
+    NAME VARCHAR(255)          NOT NULL UNIQUE,
+    PRIMARY KEY (ID)
 );
