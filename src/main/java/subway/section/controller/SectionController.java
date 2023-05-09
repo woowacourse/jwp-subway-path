@@ -20,7 +20,7 @@ public class SectionController {
 
     @PostMapping
     public ResponseEntity<SectionResponse> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
-        final SectionResponse sectionResponse = new SectionResponse(Arrays.asList(new Section(1L), new Section(2L)));
+        final SectionResponse sectionResponse = new SectionResponse(Arrays.asList(new Section(1L, 10), new Section(2L, 10)));
         return ResponseEntity.created(URI.create("/sections/1")).body(sectionResponse);
     }
 
