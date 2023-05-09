@@ -1,6 +1,9 @@
 package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
 
@@ -10,22 +13,19 @@ import javax.sql.DataSource;
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
+                .withTableName("section")
+                .usingGeneratedKeyColumns("id");
     }
 
-    public void insert(final SectionEntity sectionEntity) {
-        final String sql =
-                "INSERT INTO section(line_id, distance, previous_station_id, next_station_id) VALUES(?, ?, ?, ?)";
-
-        jdbcTemplate.update(
-                sql,
-                sectionEntity.getLineId(),
-                sectionEntity.getDistance(),
-                sectionEntity.getPreviousStationId(),
-                sectionEntity.getNextStationId()
-        );
+    // TODO: 없는 호선이나 역을 입력한 경우 예외 처리 해야함
+    public Long insert(final SectionEntity sectionEntity) {
+        final SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
+        return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
 }
