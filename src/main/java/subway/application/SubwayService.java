@@ -9,4 +9,8 @@ public class SubwayService {
     public void enrollStation(Integer lineId, StationEnrollRequest request) {
 
     }
+
+    public void deleteStation(Integer lineId, Integer stationId) {
+
+    }
 }

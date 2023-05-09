@@ -1,6 +1,8 @@
 package subway.ui;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,5 +28,12 @@ public class SubwayController {
                                               @RequestBody StationEnrollRequest request) {
         subwayService.enrollStation(lineId, request);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
+    }
+
+    @DeleteMapping("/{lineId}/{stationId}")
+    public ResponseEntity<Void> enrollStation(@PathVariable Integer lineId, @PathVariable Integer stationId) {
+        subwayService.deleteStation(lineId, stationId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT)
+                .header("Location", "/line/" + lineId).build();
     }
 }
