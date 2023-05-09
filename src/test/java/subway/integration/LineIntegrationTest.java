@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.line.dto.LineRequest;
-import subway.line.dto.LineResponse;
 import subway.line.dto.LineSearchResponse;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -93,28 +92,18 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
-        // given
-        final ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
         // when
-        final Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId)
+                .when().get("/lines/1")
                 .then().log().all()
                 .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final LineResponse resultResponse = response.as(LineResponse.class);
-        assertThat(resultResponse.getId()).isEqualTo(lineId);
+        final LineSearchResponse lineSearchResponse = response.as(LineSearchResponse.class);
+        assertThat(lineSearchResponse.getName()).isEqualTo("분당선");
     }
 
     @DisplayName("지하철 노선을 수정한다.")
