@@ -144,9 +144,9 @@ public class LineIntegrationTest extends IntegrationTest {
         // then
         List<StationResponse> stationResponses = response.jsonPath().getList(".", StationResponse.class);
         StationResponse 잠실역 = StationResponse.of(new Station("잠실역"));
-        StationResponse 강남역 = StationResponse.of(new Station("강남역"));
+        StationResponse 선릉역 = StationResponse.of(new Station("선릉역"));
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(stationResponses).usingRecursiveComparison().isEqualTo(List.of(잠실역, 강남역));
+        assertThat(stationResponses).usingRecursiveComparison().isEqualTo(List.of(잠실역, 선릉역));
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -234,7 +234,7 @@ public class LineIntegrationTest extends IntegrationTest {
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
-                .get("/sections?lineId=" + 2)
+                .get("/lines/{id}", 2)
                 .then().log().all()
                 .extract();
 
@@ -244,8 +244,8 @@ public class LineIntegrationTest extends IntegrationTest {
 //                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
 //                .collect(Collectors.toList());
         List<StationResponse> resultStationIds = new ArrayList<>(response.jsonPath().getList(".", StationResponse.class));
-        StationResponse 강남역 = StationResponse.of(new Station("강남역"));
+        StationResponse 선릉역 = StationResponse.of(new Station("선릉역"));
         StationResponse 잠실역 = StationResponse.of(new Station("잠실역"));
-        assertThat(resultStationIds).usingRecursiveComparison().isEqualTo(List.of(강남역, 잠실역));
+        assertThat(resultStationIds).usingRecursiveComparison().isEqualTo(List.of(잠실역, 선릉역));
     }
 }
