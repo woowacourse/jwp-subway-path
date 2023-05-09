@@ -1,12 +1,12 @@
 package subway.dto;
 
-public class InitialStationsAddRequest {
+public class InitialSectionAddRequest {
     private final Long lineId;
     private final Long firstStationId;
     private final Long secondStationId;
     private final Integer distance;
 
-    public InitialStationsAddRequest(Long lineId, Long firstStationId, Long secondStationId, Integer distance) {
+    public InitialSectionAddRequest(Long lineId, Long firstStationId, Long secondStationId, Integer distance) {
         this.lineId = lineId;
         this.firstStationId = firstStationId;
         this.secondStationId = secondStationId;

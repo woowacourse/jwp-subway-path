@@ -21,7 +21,7 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.dto.InitialStationsAddRequest;
+import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionResponse;
 import subway.exception.DomainException;
 
@@ -48,7 +48,7 @@ class SectionServiceTest {
         when(lineDao.findById(1L)).thenReturn(line);
         when(sectionDao.insert(new Section(station1, station2, line, new Distance(2)))).thenReturn(1L);
 
-        SectionResponse result = sectionService.addSection(new InitialStationsAddRequest(1L, 1L, 2L, 2));
+        SectionResponse result = sectionService.addSection(new InitialSectionAddRequest(1L, 1L, 2L, 2));
 
         Assertions.assertAll(
             () -> assertThat(result.getId()).isEqualTo(1L),
@@ -69,7 +69,7 @@ class SectionServiceTest {
             new Section(station2, station1, line, new Distance(2)));
         when(sectionDao.findAllSectionByLineId(1L)).thenReturn(sections);
 
-        assertThatThrownBy(() -> sectionService.addSection(new InitialStationsAddRequest(1L, 1L, 2L, 2))).isInstanceOf(
+        assertThatThrownBy(() -> sectionService.addSection(new InitialSectionAddRequest(1L, 1L, 2L, 2))).isInstanceOf(
             DomainException.class);
     }
 }

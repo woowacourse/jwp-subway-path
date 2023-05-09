@@ -3,24 +3,39 @@ package subway.domain;
 import java.util.Objects;
 
 public class Section {
+    private final Long id;
     private final Station src;
     private final Station tar;
     private final Line line;
     private final Distance distance;
 
-    public Section(Station src, Station tar, Line line, Distance distance) {
+    public Section(Long id, Station src, Station tar, Line line, Distance distance) {
+        this.id = id;
         this.src = src;
         this.tar = tar;
         this.line = line;
         this.distance = distance;
     }
 
-    public boolean isSrc(Station station) {
-        return src.equals(station);
+    public boolean isSrc(Long sourceStationId) {
+        return src.getId().equals(sourceStationId);
     }
 
-    public boolean isTar(Station station) {
-        return tar.equals(station);
+    public boolean isTar(Long targetStationId) {
+        return tar.getId().equals(targetStationId);
+    }
+
+    public boolean containsTheseStations(Long sourceStationId, Long targetStationId) {
+        return (isSrc(sourceStationId) && isTar(targetStationId))
+            || (isSrc(targetStationId) && isTar(sourceStationId));
+    }
+
+    public boolean hasShorterOrSameDistanceThan(Integer distance) {
+        return this.distance.value() <= distance;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Station getSrc() {
@@ -54,4 +69,5 @@ public class Section {
     public int hashCode() {
         return Objects.hash(src, tar, line, distance);
     }
+
 }

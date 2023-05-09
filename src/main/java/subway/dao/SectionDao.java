@@ -12,4 +12,16 @@ public class SectionDao {
     public List<Section> findAllSectionByLineId(Long lineId) {
         return List.of();
     }
+
+    public Long findfirstStation() {
+    }
+
+    public Long findlastStation() {
+    }
+
+    public Section findById(Long sectionId) {
+    }
+
+    public void deleteById(Long id) {
+    }
 }
