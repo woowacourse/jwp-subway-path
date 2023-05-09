@@ -39,8 +39,8 @@ public class LineIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -56,8 +56,8 @@ public class LineIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all()
+                .extract();
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -65,8 +65,8 @@ public class LineIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
