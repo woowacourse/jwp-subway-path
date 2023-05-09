@@ -32,4 +32,8 @@ final class Name {
             throw new InvalidStationNameException("역 이름은 한글, 숫자만 가능합니다.");
         }
     }
+
+    public String getValue() {
+        return value;
+    }
 }

@@ -1,6 +1,7 @@
 package subway.domain.station;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,12 @@ import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.InvalidStationNameException;
 
 class NameTest {
+
+    @Test
+    @DisplayName("역 이름을 정상적으로 생성한다.")
+    void name() {
+        assertDoesNotThrow(() -> new Name("을지로3가역"));
+    }
 
     @ParameterizedTest
     @DisplayName("역 이름이 2글자이하, 11글자 이상일 경우 예외를 던진다.")
