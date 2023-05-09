@@ -1,9 +1,11 @@
 package subway.section.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.line.dao.LineDao;
 import subway.line.domain.Line;
+import subway.section.domain.Direction;
 import subway.section.domain.Section;
 import subway.station.dao.StationDao;
 import subway.station.domain.Station;
@@ -83,10 +86,32 @@ class SectionDaoTest {
             @Test
             void findByLineId() {
                 final List<Section> sections = sectionDao.findByLineId(lineId);
-                org.junit.jupiter.api.Assertions.assertAll(
+                assertAll(
                         () -> assertThat(sections.get(0).getId()).isEqualTo(sectionId1),
                         () -> assertThat(sections.get(1).getId()).isEqualTo(sectionId2)
                 );
+            }
+
+            @DisplayName("특정 역에서 특정 방향에 인접한 역을 검색한다.")
+            @Nested
+            class ContextFindNeighborStation {
+
+                @DisplayName("특정 방향에 인접한 역이 존재하면 그 역을 반환한다.")
+                @Test
+                void findNeighborStation() {
+                    final Optional<Section> section = sectionDao.findNeighborStation(lineId, stationId1, Direction.DOWN);
+                    assertAll(
+                            () -> assertThat(section).isPresent(),
+                            () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
+                    );
+                }
+
+                @DisplayName("특정 방향에 인접한 역이 존재하지 않으면 Optional.empty 를 반환한다.")
+                @Test
+                void findNeighborStationFail() {
+                    final Optional<Section> section = sectionDao.findNeighborStation(lineId, stationId1, Direction.UP);
+                    assertThat(section).isEmpty();
+                }
             }
         }
     }

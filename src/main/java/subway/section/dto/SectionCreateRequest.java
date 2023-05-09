@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 public class SectionCreateRequest {
 
     private Long lineId;
-    private Long defaultId;
-    private Long updateId;
+    private Long baseId;
+    private Long addedId;
     private Boolean direction;
     private Integer distance;
 }

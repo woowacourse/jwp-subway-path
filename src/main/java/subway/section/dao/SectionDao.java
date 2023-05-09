@@ -5,11 +5,14 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.section.domain.Direction;
 import subway.section.domain.Section;
 
 @Repository
@@ -48,5 +51,19 @@ public class SectionDao {
     public List<Section> findByLineId(final Long lineId) {
         final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
+
+
+    public Optional<Section> findNeighborStation(final Long lineId, final Long baseId, final Direction direction) {
+        try {
+            if (direction == Direction.UP) {
+                final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and down_station_id = ?";
+                return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, baseId));
+            }
+            final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and up_station_id = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, baseId));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }
