@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class MyLine {
 
@@ -17,6 +18,14 @@ public class MyLine {
         List<MyEdge> edges = new ArrayList<>();
         edges.add(new MyEdge(from, to, distance));
         return new MyLine(name, edges);
+    }
+
+    public List<MyStation> getStations() {
+        List<MyStation> result = edges.stream()
+                .map(MyEdge::getFrom)
+                .collect(Collectors.toList());
+        result.add(edges.get(edges.size() - 1).getTo());
+        return result;
     }
 
     public String getName() {
@@ -37,4 +46,6 @@ public class MyLine {
          */
         edges.add(new MyEdge(from, to, distance));
     }
+
+
 }

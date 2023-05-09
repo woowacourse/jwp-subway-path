@@ -1,8 +1,9 @@
 # jwp-subway-path
 
 ## API 설계
-- [ ] 노선에 역 등록 API 신규 구현 (post - "/lines/{lineId}/stations")
-- [ ] 노선에 역 제거 API 신규 구현 (delete - "/lines/{lineId}/stations/{stationId}")
+- [ ] 최초 노선 등록 API (post - "/lines") `addInitialLine(Line line, Station s1, Station s2, int dist)` <- 역1, 역2, 거리, 노선이름
+- [ ] 노선에 역 등록 API 신규 구현 (post - "/lines/{lineId}/stations") <- 역1, 역2, 거리
+- [ ] 노선에 역 제거 API 신규 구현 (delete - "/lines/{lineId}/stations/{stationId}") <- 역
 - [ ] 노선의 모든 역 조회 API (get - "/lines/{lineId}")
 - [ ] 모든 노선 조회 API (get - "/lines")
 
