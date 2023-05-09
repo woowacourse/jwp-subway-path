@@ -2,13 +2,16 @@ package subway.domain.station;
 
 public class Station {
     private final StationName stationName;
-    private final StationDistance previousStationDistance;
-    private final StationDistance nextStationDistance;
 
-    public Station(final StationName stationName, final StationDistance previousStationDistance,
-                   final StationDistance nextStationDistance) {
+    public Station(final String stationName) {
+        this(new StationName(stationName));
+    }
+
+    public Station(final StationName stationName) {
         this.stationName = stationName;
-        this.previousStationDistance = previousStationDistance;
-        this.nextStationDistance = nextStationDistance;
+    }
+
+    public StationName getStationName() {
+        return stationName;
     }
 }
