@@ -31,6 +31,8 @@
         ```
     - 응답 {Status Code: `NO_CONTENT`}
 
+![img.png](잠실인근노선.png)
+
 - 도메인
     - 노선
         - 역을 등록한다
