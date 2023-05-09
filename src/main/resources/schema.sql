@@ -12,3 +12,13 @@ create table if not exists LINE
     color varchar(20) not null,
     primary key(id)
 );
+
+create table if not exists SECTION
+(
+    id bigint auto_increment not null,
+    line_id bigint not null,
+    up varchar(255) not null,
+    down varchar(255) not null,
+    distance bigint not null,
+    primary key(id)
+);
