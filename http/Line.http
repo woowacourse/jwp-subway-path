@@ -1,0 +1,21 @@
+
+
+###
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "2호선",
+  "color": "green"
+}
+
+#########################
+
+###
+DELETE http://localhost:8080/lines/{id}
+
+###
+GET http://localhost:8080/lines/
+
+###
+GET http://localhost:8080/lines/{{id}}
