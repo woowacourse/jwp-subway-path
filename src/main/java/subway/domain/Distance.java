@@ -19,7 +19,7 @@ public class Distance {
         return distance;
     }
 
-    public Integer getDistance() {
+    public Integer value() {
         return distance;
     }
 
