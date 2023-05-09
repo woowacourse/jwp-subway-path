@@ -2,6 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.application.dto.AddStationToLineCommand;
+import subway.application.dto.DeleteStationFromLineCommand;
 import subway.application.dto.LineCreateCommand;
 
 @Service
@@ -13,6 +14,10 @@ public class LineService {
     }
 
     public void addStation(final AddStationToLineCommand command) {
+
+    }
+
+    public void deleteStation(final DeleteStationFromLineCommand command) {
 
     }
 }

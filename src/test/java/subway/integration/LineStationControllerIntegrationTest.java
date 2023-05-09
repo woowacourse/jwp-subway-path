@@ -28,6 +28,7 @@ import subway.application.LineService;
 import subway.domain.Direction;
 import subway.exception.NotFoundStationException;
 import subway.presentation.request.AddStationToLineRequest;
+import subway.presentation.request.DeleteStationFromLineRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -80,7 +81,7 @@ public class LineStationControllerIntegrationTest {
             // given
 
             // when
-            //???? 조회기능 만들어서 위 테스트랑 합쳐도 될듯
+            // TODO 조회기능 만들어서 위 테스트랑 합쳐도 될듯
 
             // then
         }
@@ -155,6 +156,74 @@ public class LineStationControllerIntegrationTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        }
+    }
+
+
+    @Nested
+    class 노선에서_역을_제거할_때 {
+
+        private final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("2호선", "선릉역");
+
+
+        @Test
+        void 노선을_재배치한다() {
+            // given
+            final String body = toJson(request);
+
+            // when
+            final ExtractableResponse<Response> response = given().log().all()
+                    .contentType(JSON)
+                    .body(body)
+                    .when()
+                    .delete("/lines/stations")
+                    .then()
+                    .log().all()
+                    .extract();
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(OK.value());
+            // TODO 조회기능 만들어서 확인
+        }
+
+        @Test
+        void 역과_역_사이의_거리가_재배정된다() {
+            // given
+            final String body = toJson(request);
+
+            // when
+            final ExtractableResponse<Response> response = given().log().all()
+                    .contentType(JSON)
+                    .body(body)
+                    .when()
+                    .delete("/lines/stations")
+                    .then()
+                    .log().all()
+                    .extract();
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(OK.value());
+            // TODO 조회기능 만들어서 확인
+        }
+
+        @Test
+        void 노선에_등록된_역이_2개_인_경우_하나의_역을_제거할_때_두_역이_모두_제거된다() {
+            // given
+            final String body = toJson(request);
+
+            // when
+            final ExtractableResponse<Response> response = given().log().all()
+                    .contentType(JSON)
+                    .body(body)
+                    .when()
+                    .delete("/lines/stations")
+                    .then()
+                    .log().all()
+                    .extract();
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(OK.value());
+            // TODO 조회기능 만들어서 확인
         }
     }
 }
