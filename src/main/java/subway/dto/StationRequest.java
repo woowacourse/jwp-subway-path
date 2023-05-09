@@ -1,13 +1,14 @@
 package subway.dto;
 
 public class StationRequest {
-    private String name;
+    private final String name;
 
-    public StationRequest() {
+    public StationRequest(final String name) {
+        this.name = name;
     }
 
-    public StationRequest(String name) {
-        this.name = name;
+    private StationRequest() {
+        this(null);
     }
 
     public String getName() {
