@@ -244,3 +244,34 @@ NONE
 ### Response
 
 NONE
+
+# DB 테이블 구조
+
+```mermaid
+erDiagram
+    line ||--|{ section : line_id
+    line {
+        BIGINT id
+        VARCHAR(50) name
+        VARCHAR(50) color
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+    station ||--|{ section : origin_id
+    station ||--|{ section : destination_id
+    station {
+        BIGINT id
+        VARCHAR(50) name
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+
+    section {
+        BIGINT id
+        BIGINT line_id
+        BIGINT origin_id
+        BIGINT destination_id
+        TIMESTAMP created_at
+        TIMESTAMP updated_at
+    }
+```
