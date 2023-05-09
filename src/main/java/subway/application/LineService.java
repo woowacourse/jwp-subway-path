@@ -5,6 +5,7 @@ import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationIdRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,4 +51,10 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
+    public void registerStations(List<StationIdRequest> stationIdRequests) {
+    }
+
+    public void deleteStations(List<StationIdRequest> stationIdRequests) {
+
+    }
 }

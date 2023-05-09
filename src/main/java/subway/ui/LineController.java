@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationIdRequest;
+import subway.dto.StationRequest;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -45,6 +47,19 @@ public class LineController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/station")
+    public ResponseEntity<Void> registerStations(@PathVariable Long id, @RequestBody List<StationIdRequest> stationIdRequests) {
+        lineService.registerStations(stationIdRequests);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{id}/station")
+    public ResponseEntity<Void> deleteStations(@PathVariable Long id,
+            @RequestBody List<StationIdRequest> stationIdRequests) {
+        lineService.deleteStations(stationIdRequests);
         return ResponseEntity.noContent().build();
     }
 
