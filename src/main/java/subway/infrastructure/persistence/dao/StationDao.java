@@ -7,10 +7,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import subway.infrastructure.persistence.entity.StationEntity;
 
-@Component
+@Repository
 public class StationDao {
 
     private static final RowMapper<StationEntity> stationRowMapper = (rs, rowNum) -> new StationEntity(

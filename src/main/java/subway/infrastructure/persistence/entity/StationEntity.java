@@ -1,5 +1,7 @@
 package subway.infrastructure.persistence.entity;
 
+import subway.domain.Station;
+
 public class StationEntity {
 
     private final Long id;
@@ -12,6 +14,14 @@ public class StationEntity {
     public StationEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public static StationEntity from(final Station station) {
+        return new StationEntity(station.getId(), station.getName());
+    }
+
+    public Station toDomain() {
+        return new Station(id, name);
     }
 
     public Long getId() {
