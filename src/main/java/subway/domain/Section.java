@@ -19,4 +19,16 @@ public class Section {
     private boolean hasStationOf(Station station) {
         return left.equals(station) || right.equals(station);
     }
+
+    public boolean sameSectionWith(Section section) {
+        return hasStationOf(section.left) && hasStationOf(section.right);
+    }
+
+    public boolean isDistanceBiggerThan(Section target) {
+        return distance.isBiggerThan(target.distance);
+    }
+
+    public boolean includeSection(Section target) {
+        return target.right.equals(right) || target.left.equals(left);
+    }
 }

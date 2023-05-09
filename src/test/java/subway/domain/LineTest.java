@@ -1,11 +1,11 @@
 package subway.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
 class LineTest {
 
@@ -18,9 +18,8 @@ class LineTest {
 
     @Test
     @DisplayName("노선에 역이 존재할 때, 입력된 두 역의 정보가 존재하지 않는다면 예외를 던진다")
-    void addStation_exception_nonExists() {
+    void addSection_exception_nonExists() {
         //given
-
         line.addSection(new Section(
                 new Station("푸우"),
                 new Station("테오"),
@@ -39,10 +38,83 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("")
-    void Test() {
+    @DisplayName("이미 존재하는 노선이라면 예외를 던진다")
+    void addSection_exception_alreadyExist() {
         //given
-        //when
-        //then
+        line.addSection(new Section(
+                new Station("푸우"),
+                new Station("테오"),
+                new Distance(3)
+        ));
+
+        Section section = new Section(
+                new Station("푸우"),
+                new Station("테오"),
+                new Distance(1)
+        );
+
+        //when, then
+        assertThatThrownBy(() -> line.addSection(section))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    @DisplayName("새로운 노선의 거리가 기존 노선의 거리를 넘는다면 예외를 던진다")
+    void addSection_exception_overLength() {
+        //given
+        line.addSection(new Section(
+                new Station("푸우"),
+                new Station("테오"),
+                new Distance(1)
+        ));
+        Section overLengthSection = new Section(
+                new Station("푸우"),
+                new Station("시카"),
+                new Distance(100)
+        );
+
+        //when, then
+        assertThatThrownBy(() -> line.addSection(overLengthSection))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    @DisplayName("새로운 노선의 거리가 기존 노선의 거리를 넘지 않는다면 정상 작동한다")
+    void addSection_insideSection() {
+        //given
+        line.addSection(new Section(
+                new Station("푸우"),
+                new Station("테오"),
+                new Distance(100)
+        ));
+        Section newSection = new Section(
+                new Station("푸우"),
+                new Station("시카"),
+                new Distance(1)
+        );
+
+        //when, then
+        assertThatCode(() -> line.addSection(newSection))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("종착역에 대해서는 거리에 관계없이 항상 노선을 추가할 수 있다")
+    void addSection_endPoint() {
+        //given
+        line.addSection(new Section(
+                new Station("푸우"),
+                new Station("테오"),
+                new Distance(100)
+        ));
+        Section overLengthSection = new Section(
+                new Station("테오"),
+                new Station("시카"),
+                new Distance(1000)
+        );
+
+        //when, then
+        assertThatCode(() -> line.addSection(overLengthSection))
+                .doesNotThrowAnyException();
     }
 }
