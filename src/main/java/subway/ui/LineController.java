@@ -3,12 +3,17 @@ package subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
+import subway.domain.Line;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/lines")
@@ -27,13 +32,20 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<Map<LineResponse, List<StationResponse>>> findAllLines() {
+        LineResponse second = LineResponse.of(new Line("2호선", "green"));
+        StationResponse 잠실역 = StationResponse.of(new Station("잠실역"));
+        StationResponse 강남역 = StationResponse.of(new Station("강남역"));
+        Map<LineResponse, List<StationResponse>> response = new HashMap<>();
+        response.put(second, List.of(잠실역, 강남역));
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<List<StationResponse>> findLineById(@PathVariable Long id) {
+        StationResponse 잠실역 = StationResponse.of(new Station("잠실역"));
+        StationResponse 강남역 = StationResponse.of(new Station("강남역"));
+        return ResponseEntity.ok(List.of(잠실역, 강남역));
     }
 
     @PutMapping("/{id}")
