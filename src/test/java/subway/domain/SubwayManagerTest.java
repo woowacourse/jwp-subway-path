@@ -1,7 +1,9 @@
 package subway.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.ArrayList;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,14 +14,30 @@ class SubwayManagerTest {
 
     @BeforeEach
     void setUp() {
-        MyLines myLines = new MyLines(
-                List.of(
-                        MyLine.createLine("1호선", new MyStation("잠실"), new MyStation("잠실나루"), 3),
-                        MyLine.createLine("2호선", new MyStation("abc"), new MyStation("def"), 5)
-                )
+        List<MyLine> lines = List.of(
+                MyLine.createLine("1호선", new MyStation("잠실"), new MyStation("잠실나루"), 3),
+                MyLine.createLine("2호선", new MyStation("abc"), new MyStation("def"), 5)
         );
 
+        MyLines myLines = new MyLines(new ArrayList<>(lines));
+
         subwayManager = new SubwayManager(myLines);
+    }
+
+    @DisplayName("새로운 노선을 추가한다")
+    @Test
+    void createNewLine() {
+        // given
+        subwayManager.createNewLine("3호선", "안국", "경복궁", 3);
+
+        // when
+        List<MyStation> allStation = subwayManager.findAllStation("3호선");
+
+        // then
+        assertThat(allStation).containsExactly(
+                new MyStation("안국"),
+                new MyStation("경복궁")
+        );
     }
 
     @Test
@@ -32,7 +50,7 @@ class SubwayManagerTest {
         List<MyStation> allStation = subwayManager.findAllStation("1호선");
 
         // then
-        Assertions.assertThat(allStation).containsExactly(
+        assertThat(allStation).containsExactly(
                 new MyStation("잠실"),
                 new MyStation("잠실나루"),
                 new MyStation("잠실새내")

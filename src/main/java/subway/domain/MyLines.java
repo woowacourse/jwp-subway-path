@@ -10,6 +10,12 @@ public class MyLines {
         this.lines = lines;
     }
 
+    public void addNewLine(String lineName, MyStation station1, MyStation station2, int distance) {
+        // TODO : lineName이 이미 존재하는지 검증 (중복 검증)
+        MyLine line = MyLine.createLine(lineName, station1, station2, distance);
+        lines.add(line);
+    }
+
     public void addStationToLine(String lineName, MyStation station1, MyStation station2, int distance) {
         MyLine myLine = lines.stream()
                 .filter(line -> line.getName().equals(lineName))
