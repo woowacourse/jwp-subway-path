@@ -1,33 +1,35 @@
 package subway.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
+import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import subway.dto.LineUpdateRequest;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
+class LineIntegrationTest extends IntegrationTest {
+    private LineCreateRequest lineCreateRequest1;
+    private LineCreateRequest lineCreateRequest2;
+    private LineUpdateRequest lineUpdateRequest;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        lineCreateRequest1 = new LineCreateRequest("신분당선", "bg-red-600");
+        lineCreateRequest2 = new LineCreateRequest("구신분당선", "bg-red-600");
+        lineUpdateRequest = new LineUpdateRequest("구신분당선", "bg-red-600");
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -37,7 +39,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineCreateRequest1)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -54,7 +56,7 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineCreateRequest1)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -63,7 +65,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineCreateRequest1)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -79,7 +81,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> createResponse1 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineCreateRequest1)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -87,7 +89,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> createResponse2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
+                .body(lineCreateRequest2)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -118,7 +120,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineCreateRequest1)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -145,7 +147,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineCreateRequest1)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -155,7 +157,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
+                .body(lineUpdateRequest)
                 .when().put("/lines/{lineId}", lineId)
                 .then().log().all()
                 .extract();
@@ -171,7 +173,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineCreateRequest1)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
