@@ -12,6 +12,10 @@ public class LineEntity {
     private final String name;
     private final String color;
 
+    public LineEntity(final String name, final String color) {
+        this(null, name, color);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

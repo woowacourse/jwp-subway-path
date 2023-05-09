@@ -11,15 +11,19 @@ public class StationEntity {
     private final Long id;
     private final String name;
 
+    public StationEntity(final String name) {
+        this(null, name);
+    }
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StationEntity stationEntity = (StationEntity) o;
+        final StationEntity stationEntity = (StationEntity) o;
         return id.equals(stationEntity.id) && name.equals(stationEntity.name);
     }
 

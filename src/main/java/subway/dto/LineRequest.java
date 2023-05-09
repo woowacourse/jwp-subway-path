@@ -1,16 +1,17 @@
 package subway.dto;
 
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LineRequest {
+
     private String name;
     private String color;
-
-    public LineRequest() {
-    }
-
-    public LineRequest(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
 
     public String getName() {
         return name;
@@ -19,5 +20,4 @@ public class LineRequest {
     public String getColor() {
         return color;
     }
-
 }

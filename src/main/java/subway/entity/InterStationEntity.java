@@ -12,4 +12,8 @@ public class InterStationEntity {
     private final Long startStationId;
     private final Long endStationId;
     private final long distance;
+
+    public InterStationEntity(Long lineId, Long startStationId, Long endStationId, long distance) {
+        this(null, lineId, startStationId, endStationId, distance);
+    }
 }

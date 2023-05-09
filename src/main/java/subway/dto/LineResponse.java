@@ -1,34 +1,18 @@
 package subway.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import subway.entity.LineEntity;
 
+@Getter
+@AllArgsConstructor
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
 
-    private LineResponse() {
-    }
+    private final Long id;
+    private final String name;
+    private final String color;
 
-    public LineResponse(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-    }
-
-    public static LineResponse of(LineEntity lineEntity) {
+    public static LineResponse of(final LineEntity lineEntity) {
         return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
     }
 }
