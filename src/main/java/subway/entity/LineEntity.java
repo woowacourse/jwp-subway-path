@@ -3,6 +3,7 @@ package subway.entity;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import subway.domain.Line;
 
 @Getter
 @RequiredArgsConstructor
@@ -16,15 +17,19 @@ public class LineEntity {
         this(null, name, color);
     }
 
+    public static LineEntity from(final Line line) {
+        return new LineEntity(line.getName(), line.getColor());
+    }
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LineEntity lineEntity = (LineEntity) o;
+        final LineEntity lineEntity = (LineEntity) o;
         return Objects.equals(id, lineEntity.id) && Objects.equals(name, lineEntity.name)
             && Objects.equals(color, lineEntity.color);
     }
