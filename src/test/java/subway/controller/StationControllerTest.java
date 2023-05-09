@@ -3,10 +3,12 @@ package subway.controller;
 import static org.hamcrest.Matchers.containsString;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,6 +22,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.dto.StationCreateRequest;
+import subway.controller.dto.StationResponse;
 import subway.service.StationService;
 
 @WebMvcTest(StationController.class)
@@ -67,4 +70,30 @@ class StationControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("역 정보 조회 시 ")
+    class FindStation {
+
+        @Test
+        @DisplayName("유효한 ID라면 역 정보를 조회한다.")
+        void findStation() throws Exception {
+            final StationResponse response = new StationResponse(1L, "잠실역");
+
+            given(stationService.findStationById(1L)).willReturn(response);
+
+            mockMvc.perform(get("/stations/{id}", 1L))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1L))
+                    .andExpect(jsonPath("$.name").value("잠실역"));
+        }
+
+        @Test
+        @DisplayName("ID가 유효하지 않다면 400 상태를 반환한다.")
+        void findStationWithInvalidID() throws Exception {
+            mockMvc.perform(get("/stations/{id}", "poi"))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest());
+        }
+    }
 }
