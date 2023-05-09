@@ -1,16 +1,16 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import subway.dto.request.LineRequest;
+import subway.dto.response.LineResponse;
 
 @Service
 public class LineService {
+
     private final LineDao lineDao;
 
     public LineService(LineDao lineDao) {

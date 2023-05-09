@@ -1,6 +1,6 @@
 package subway.fixture;
 
-import subway.dto.LineRequest;
+import subway.dto.request.LineRequest;
 
 public class LineFixture {
 

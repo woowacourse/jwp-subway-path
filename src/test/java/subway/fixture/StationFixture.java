@@ -1,6 +1,6 @@
 package subway.fixture;
 
-import subway.dto.StationRequest;
+import subway.dto.request.StationRequest;
 
 public class StationFixture {
 

@@ -10,11 +10,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import subway.domain.Direction;
-import subway.dto.CreateSectionRequest;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.CreateSectionRequest;
+import subway.dto.request.LineRequest;
+import subway.dto.request.StationRequest;
+import subway.dto.response.LineResponse;
+import subway.dto.response.StationResponse;
 import subway.fixture.LineFixture.이호선;
 import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.역삼역;
@@ -108,7 +108,7 @@ public class AcceptanceTest {
 
         // 노선을 조회한다.
         LineResponse resultResponse = getLine(lineResponse.getId());
-        
+
         assertThat(resultResponse.getStations()).isEmpty();
     }
 

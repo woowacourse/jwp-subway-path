@@ -1,6 +1,7 @@
-package subway.dto;
+package subway.dto.request;
 
 public class LineRequest {
+
     private String name;
     private String color;
 
