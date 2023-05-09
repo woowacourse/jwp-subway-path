@@ -71,3 +71,21 @@ CREATE TABLE IF NOT EXISTS line_station_distance
     PRIMARY KEY(id)
 );
 ```
+
+3. API 문서
+- 역 (`/stations`)
+  - 역 등록 `POST / 201 Location/stations/{id}`
+  - 역 단일 조회 `GET /{id} 200`
+  - 역 전체 조회 `GET / 200`
+  - 역 수정 `PATCH /{id} 200`
+  - 역 삭제 `DELETE / 204`
+- 노선 (`/lines`)
+  - 노선 등록 `POST / 201 Location/stations/{id}`
+  - 노선 단일 조회 `GET /{id} 200`
+  - 노선 전체 조회 `GET / 200`
+  - 노선 수정 `PATCH /{id} 200`
+  - 노선 삭제 `DELETE / 204`
+- 노선 - 역 등록 (`/lines/{lineId}/stations`)
+  - 역 상행/하행 등록 `POST / 201 /lines/{lindId}`
+  - 역 중간 등록 `POST / 201 /lines/{lineId}`
+  - 역 삭제 `DELETE /{stationId} 204`
