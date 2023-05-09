@@ -1,14 +1,16 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Line {
+
     private Long id;
     private String name;
     private String color;
 
-    public Line() {
-    }
+    private List<Section> sections = new ArrayList<>();
 
     public Line(String name, String color) {
         this.name = name;
@@ -20,6 +22,21 @@ public class Line {
         this.name = name;
         this.color = color;
     }
+
+    public void addSection(Section section) {
+        if (!sections.isEmpty()) {
+            validateConnectivity(section);
+        }
+        sections.add(section);
+    }
+
+    private void validateConnectivity(Section section) {
+        sections.stream()
+                .filter(sec -> sec.hasSameStationWith(section))
+                .findAny()
+                .orElseThrow(()-> new IllegalStateException("노선과 연결되지 않는 역입니다."));
+    }
+
 
     public Long getId() {
         return id;
