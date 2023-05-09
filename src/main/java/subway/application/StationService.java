@@ -2,7 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.Station3;
 import subway.dto.StationCreateRequest;
 import subway.dto.StationResponse;
 
@@ -28,7 +28,7 @@ public class StationService {
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<Station3> stations = stationDao.findAll();
 
         return stations.stream()
                 .map(StationResponse::of)
