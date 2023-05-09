@@ -42,4 +42,16 @@ public class StationGraph {
     public void removeStation(Station station) {
         adjacencyStations.values().forEach(s -> s.remove(station));
     }
+
+    public boolean isSameLine(Line line) {
+        return this.line.equals(line);
+    }
+
+    @Override
+    public String toString() {
+        return "StationGraph{" +
+                "line=" + line +
+                ", adjacencyStations=" + adjacencyStations +
+                '}';
+    }
 }
