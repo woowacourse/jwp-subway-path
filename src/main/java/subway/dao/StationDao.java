@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.StationEntity;
+import subway.exception.StationNotFoundException;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -22,9 +23,8 @@ public class StationDao {
                     rs.getString("name")
             );
 
-
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = jdbcTemplate;
+    public StationDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
@@ -44,6 +44,18 @@ public class StationDao {
     public StationEntity findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Long findIdByName(final String name) {
+        String sql = "SELECT id FROM station WHERE name = ?";
+
+        List<Long> result = jdbcTemplate.query(sql, (resultSet, rowNumber) -> resultSet.getLong("id"), name);
+
+        if (result.isEmpty()) {
+            throw new StationNotFoundException("존재하지 않는 역 이름입니다.");
+        }
+
+        return result.get(0);
     }
 
     public void update(StationEntity newStationEntity) {
