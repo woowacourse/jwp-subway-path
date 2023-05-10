@@ -1,15 +1,19 @@
 package subway.controller;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -20,6 +24,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.dto.LineCreateRequest;
+import subway.controller.dto.LineStationsResponse;
+import subway.controller.dto.StationResponse;
 import subway.service.LineService;
 
 @WebMvcTest(LineController.class)
@@ -77,6 +83,43 @@ class LineControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().string("노선 색깔은 공백일 수 없습니다."));
+        }
+    }
+
+    @Nested
+    @DisplayName("노선 조회 시 ")
+    class FindLine {
+
+        @Test
+        @DisplayName("존재하는 노선이라면 노선 정보를 조회한다.")
+        void findLine() throws Exception {
+            final List<StationResponse> stations = List.of(
+                    new StationResponse(1L, "잠실역"),
+                    new StationResponse(2L, "잠실새내역")
+            );
+            final LineStationsResponse response = new LineStationsResponse(1L, "2호선", "초록색", stations);
+
+            given(lineService.findLineById(1L)).willReturn(response);
+
+            mockMvc.perform(get("/lines/{id}", 1L))
+                    .andDo(print())
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(1))
+                    .andExpect(jsonPath("$.name").value("2호선"))
+                    .andExpect(jsonPath("$.color").value("초록색"))
+                    .andExpect(jsonPath("$.stations", hasSize(2)))
+                    .andExpect(jsonPath("$.stations[0].id").value(1))
+                    .andExpect(jsonPath("$.stations[0].name").value("잠실역"))
+                    .andExpect(jsonPath("$.stations[1].id").value("2"))
+                    .andExpect(jsonPath("$.stations[1].name").value("잠실새내역"));
+        }
+
+        @Test
+        @DisplayName("ID로 변환할 수 없는 타입이라면 400 상태를 반환한다.")
+        void findLineWithInvalidIDType() throws Exception {
+            mockMvc.perform(get("/lines/{id}", "l"))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest());
         }
     }
 }
