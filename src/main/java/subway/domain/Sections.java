@@ -74,4 +74,8 @@ public class Sections {
             .filter(section -> section.includeStation(stationId))
             .collect(Collectors.toList());
     }
+
+    public boolean hasStation(Long stationId) {
+        return sections.stream().anyMatch(section -> section.includeStation(stationId));
+    }
 }

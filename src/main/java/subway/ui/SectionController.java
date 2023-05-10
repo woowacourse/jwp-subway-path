@@ -35,10 +35,10 @@ public class SectionController {
 
     @PostMapping
     public ResponseEntity<List<SectionAddResponse>> addSection(@RequestBody SectionAddRequest sectionAddRequest) {
-        List<SectionAddResponse> sectionAddRespons = sectionService.addSection(sectionAddRequest);
+        List<SectionAddResponse> sectionAddResponse = sectionService.addSection(sectionAddRequest);
         return ResponseEntity.created(
-                URI.create("/sections/" + sectionAddRespons.get(0).getId() + "," + sectionAddRespons.get(1).getId()))
-            .body(sectionAddRespons);
+                URI.create("/sections/" + sectionAddResponse.get(0).getId() + "," + sectionAddResponse.get(1).getId()))
+            .body(sectionAddResponse);
     }
 
     @DeleteMapping

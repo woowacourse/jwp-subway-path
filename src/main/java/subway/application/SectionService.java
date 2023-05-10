@@ -52,6 +52,10 @@ public class SectionService {
 
         Sections sections = new Sections(sectionDao.findAllSectionByLineId(lineId));
 
+        if (sections.hasStation(stationId)) {
+            throw new DomainException(ExceptionType.STATION_ALREADY_EXIST);
+        }
+
         if (sections.hasNoSection()) {
             throw new DomainException(ExceptionType.LINE_HAS_NO_SECTION);
         }
@@ -110,6 +114,10 @@ public class SectionService {
         Sections sections = new Sections(sectionDao.findAllSectionByLineId(lineId));
 
         List<Section> sectionsIncludeStation = sections.findSectionsIncludeStation(stationId);
+
+        if (sectionsIncludeStation.isEmpty()) {
+            throw new DomainException(ExceptionType.STATION_NO_EXIST_IN_LINE);
+        }
 
         for (Section section : sectionsIncludeStation) {
             sectionDao.deleteById(section.getId());

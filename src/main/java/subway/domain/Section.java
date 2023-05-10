@@ -2,6 +2,9 @@ package subway.domain;
 
 import java.util.Objects;
 
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
+
 public class Section {
     private final Long id;
     private final Long sourceStationId;
@@ -14,7 +17,14 @@ public class Section {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
         this.lineId = lineId;
-        this.distance = distance;
+        this.distance = validate(distance);
+    }
+
+    private Integer validate(Integer distance) {
+        if (distance < 1) {
+            throw new DomainException(ExceptionType.INVALID_DISTANCE);
+        }
+        return distance;
     }
 
     public boolean isSourceStation(Long sourceStationId) {
@@ -42,7 +52,7 @@ public class Section {
         return id;
     }
 
-    public Long getLine() {
+    public Long getLineId() {
         return lineId;
     }
 
