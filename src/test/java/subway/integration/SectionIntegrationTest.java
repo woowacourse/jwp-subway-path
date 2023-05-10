@@ -45,7 +45,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .delete("/sections?stationId=" + 1)
+                .delete("/sections?lineId=" + 1 + "&stationId=" + 1)
                 .then().log().all()
                 .extract();
 
