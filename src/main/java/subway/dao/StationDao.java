@@ -10,6 +10,7 @@ import subway.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -54,5 +55,10 @@ public class StationDao {
     public void deleteById(final Long id) {
         final String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public Optional<Station> findByName(final String name) {
+        final String sql = "select id, name from STATION where name = ?";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
     }
 }

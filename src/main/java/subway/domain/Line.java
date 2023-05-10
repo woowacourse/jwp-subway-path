@@ -1,7 +1,6 @@
 package subway.domain;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public class Line {
@@ -31,8 +30,8 @@ public class Line {
         return name.getValue();
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public Sections getSections() {
+        return sections;
     }
 
     public Line addSection(final Section newSection) {

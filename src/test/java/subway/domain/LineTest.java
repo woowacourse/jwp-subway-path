@@ -28,7 +28,7 @@ class LineTest {
                 .addSection(section2)
                 .addSection(newSection);
 
-        final List<Section> sections = newLine.getSections();
+        final List<Section> sections = newLine.getSections().getSections();
         assertAll(
                 () -> assertThat(sections)
                         .extracting(Section::getBeforeStation)
@@ -60,7 +60,7 @@ class LineTest {
 
 
             final Line removedLine = newLine.removeStation(STATION_A);
-            final List<Section> sections = removedLine.getSections();
+            final List<Section> sections = removedLine.getSections().getSections();
             assertAll(
                     () -> assertThat(sections)
                             .extracting(Section::getBeforeStation)
@@ -88,7 +88,7 @@ class LineTest {
 
 
             final Line removedLine = newLine.removeStation(STATION_C);
-            final List<Section> sections = removedLine.getSections();
+            final List<Section> sections = removedLine.getSections().getSections();
 
             assertAll(
                     () -> assertThat(sections)
@@ -117,7 +117,7 @@ class LineTest {
 
 
             final Line removedLine = newLine.removeStation(STATION_B);
-            final List<Section> sections = removedLine.getSections();
+            final List<Section> sections = removedLine.getSections().getSections();
 
             assertAll(
                     () -> assertThat(sections)
@@ -143,7 +143,7 @@ class LineTest {
             final Line newLine = line.addSection(section1);
 
             final Line removedLine = newLine.removeStation(STATION_B);
-            final List<Section> sections = removedLine.getSections();
+            final List<Section> sections = removedLine.getSections().getSections();
 
             assertThat(sections.isEmpty()).isTrue();
         }

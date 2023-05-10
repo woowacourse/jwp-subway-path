@@ -2,20 +2,24 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.domain.LineName;
-import subway.dto.LineNodeRequests;
+import subway.domain.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.SectionRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+
+    private final StationService stationService;
+    private final SectionService sectionService;
     private final LineDao lineDao;
 
-    public LineService(final LineDao lineDao) {
+    public LineService(final StationService stationService, final SectionService sectionService, final LineDao lineDao) {
+        this.stationService = stationService;
+        this.sectionService = sectionService;
         this.lineDao = lineDao;
     }
 
@@ -40,8 +44,19 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public void registerLine(final LineNodeRequests requests) {
+    public void registerStation(final SectionRequest request) {
+        final Line line = lineDao.findLineByName(request.getLineName())
+                .orElseThrow(() -> new IllegalArgumentException("노선을 찾을 수 없습니다."));
+        final Station beforeStation = stationService.findStationByName(request.getBeforeStationName());
+        final Station nextStation = stationService.findStationByName(request.getNextStationName());
+        final Section section = new Section(beforeStation, nextStation, new Distance(request.getDistance()));
+        final Line addedLine = line.addSection(section);
 
+        final Sections deleteSections = line.getSections().getDifferenceOfSet(addedLine.getSections());
+        final Sections insertSections = addedLine.getSections().getDifferenceOfSet(line.getSections());
+
+        sectionService.delteSections(deleteSections);
+        sectionService.insertSections(line.getId(), insertSections);
     }
 
     public Line findLineById(final Long id) {
