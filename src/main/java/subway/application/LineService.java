@@ -1,7 +1,5 @@
 package subway.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.LineSectionDao;
@@ -9,29 +7,37 @@ import subway.dao.LineStationDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.line.Line;
+import subway.domain.section.Distance;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.RegisterLastStationRequest;
 import subway.dto.RegisterStationsRequest;
 import subway.entity.LineSectionEntity;
 import subway.entity.LineStationEntity;
 import subway.entity.SectionEntity;
+import subway.repository.LineRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
 
     private final LineDao lineDao;
+    private final LineRepository lineRepository;
     private final StationDao stationDao;
     private final LineStationDao lineStationDao;
     private final SectionDao sectionDao;
     private final LineSectionDao lineSectionDao;
 
-    public LineService(LineDao lineDao, final StationDao stationDao, final LineStationDao lineStationDao, final SectionDao sectionDao,
-        final LineSectionDao lineSectionDao) {
+    public LineService(LineDao lineDao, LineRepository lineRepository, final StationDao stationDao, final LineStationDao lineStationDao, final SectionDao sectionDao,
+                       final LineSectionDao lineSectionDao) {
         this.lineDao = lineDao;
+        this.lineRepository = lineRepository;
         this.stationDao = stationDao;
         this.lineStationDao = lineStationDao;
         this.sectionDao = sectionDao;
@@ -46,8 +52,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-            .map(LineResponse::of)
-            .collect(Collectors.toList());
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -88,11 +94,40 @@ public class LineService {
         SectionEntity sectionEntity = sectionDao.insert(new SectionEntity(leftStation.getId(), rightStation.getId(), registerStationsRequest.getDistance()));
         lineSectionDao.insert(new LineSectionEntity(line.getId(), sectionEntity.getId()));
         Line newLine = new Line(
-            line.getId(),
-            line.getName(),
-            line.getColor(),
-            new Stations(List.of(leftStation, rightStation)),
-            new Sections(List.of(new Section(sectionEntity.getId(), leftStation, rightStation, registerStationsRequest.getDistance()))));
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                new Stations(List.of(leftStation, rightStation)),
+                new Sections(List.of(new Section(sectionEntity.getId(), leftStation, rightStation, registerStationsRequest.getDistance()))));
         lineDao.update(newLine);
+    }
+
+    public void registerLastStation(String name, RegisterLastStationRequest registerLastStationRequest) {
+        Line line = lineRepository.findByName(name);
+        Station baseStation = calculateAndValidateBaseStation(line.getUpBoundStation(), line.getDownBoundStation(), registerLastStationRequest.getBaseStation());
+        Station inputStation = stationDao.findByName(registerLastStationRequest.getNewStationName()).orElseThrow(RuntimeException::new);
+        Long sectionId = insertLeftOrRightLastStation(baseStation, inputStation, line, new Distance(registerLastStationRequest.getDistance()));
+        lineSectionDao.insert(new LineSectionEntity(line.getId(), sectionId));
+    }
+
+    private Long insertLeftOrRightLastStation(Station baseStation, Station newStation, Line line, Distance distance) {
+        if (baseStation.getName().equals(line.getUpBoundStation().getName())) {
+            return sectionDao.insert(new SectionEntity(newStation.getId(), baseStation.getId(), distance.getDistance())).getId();
+        }
+        if (baseStation.getName().equals(line.getDownBoundStation().getName())) {
+            return sectionDao.insert(new SectionEntity(baseStation.getId(), newStation.getId(), distance.getDistance())).getId();
+        }
+        throw new IllegalStateException("기준점이 종점이 아닙니다.");
+    }
+
+    private Station calculateAndValidateBaseStation(Station upBoundStation, Station downBoundStation, String baseStationName) {
+        if (upBoundStation.getName().equals(baseStationName)) {
+            return upBoundStation;
+        }
+        if (downBoundStation.getName().equals(baseStationName)) {
+            return downBoundStation;
+        }
+
+        throw new IllegalArgumentException("기준점이 종점이 아닙니다.");
     }
 }

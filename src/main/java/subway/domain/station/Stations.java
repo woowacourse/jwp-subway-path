@@ -45,6 +45,10 @@ public class Stations {
         return stations.isEmpty();
     }
 
+    public List<Station> getStations() {
+        return stations;
+    }
+
     public Station getFirstStation() {
         return stations.get(0);
     }

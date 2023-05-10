@@ -9,6 +9,8 @@ import subway.dto.LineResponse;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+
+import subway.dto.RegisterLastStationRequest;
 import subway.dto.RegisterStationsRequest;
 
 @RestController
@@ -30,6 +32,12 @@ public class LineController {
     @PostMapping("/{name}/stations")
     public ResponseEntity<Void> registerStations(@PathVariable String name, @RequestBody RegisterStationsRequest registerStationsRequest) {
         lineService.registerInitStations(name, registerStationsRequest);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{name}/last-station")
+    public ResponseEntity<Void> registerLastStation(@PathVariable String name, @RequestBody RegisterLastStationRequest registerLastStationRequest) {
+        lineService.registerLastStation(name, registerLastStationRequest);
         return ResponseEntity.noContent().build();
     }
 

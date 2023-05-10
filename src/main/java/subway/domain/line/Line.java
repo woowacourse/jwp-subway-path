@@ -1,10 +1,15 @@
 package subway.domain.line;
 
-import java.util.List;
-import java.util.Objects;
+import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 public class Line {
     private Long id;
@@ -29,8 +34,32 @@ public class Line {
         this.sections = sections;
     }
 
+    public Line(final Long id, final String name, final String color, final Stations stations, final Sections sections, final Long upBoundStationId) {
+        this(id, name, color, sortStation(stations, sections, upBoundStationId), sections);
+    }
+
+    private static Stations sortStation(final Stations randomStations, final Sections sections, final Long upBoundStationId) {
+        Map<Long, Station> indexedStations = new HashMap<>();
+        randomStations.getStations().forEach(station -> indexedStations.put(station.getId(), station));
+
+        Map<Long, Section> indexedSections = new HashMap<>();
+        sections.getSections().forEach(section -> indexedSections.put(section.getLeftStation().getId(), section));
+
+        List<Station> stations = new ArrayList<>();
+        Long nowStationId = upBoundStationId;
+        while (indexedSections.size() != 0) {
+            stations.add(indexedStations.get(nowStationId));
+            Long beforeStationId = nowStationId;
+            nowStationId = indexedSections.get(nowStationId).getRightStation().getId();
+            indexedSections.remove(beforeStationId);
+        }
+        stations.add(indexedStations.get(nowStationId));
+
+        return new Stations(stations);
+    }
+
     private void validate(final Stations stations, final Sections sections) {
-        if((stations.isEmpty() && sections.isEmpty()) || stations.isCorrectSectionsSize(sections)) {
+        if ((stations.isEmpty() && sections.isEmpty()) || stations.isCorrectSectionsSize(sections)) {
             return;
         }
         throw new IllegalArgumentException("역의 수에 따른 간선의 수가 올바르지 않습니다.");
