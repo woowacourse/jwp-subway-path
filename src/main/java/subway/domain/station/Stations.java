@@ -44,4 +44,12 @@ public class Stations {
     public boolean isEmpty() {
         return stations.isEmpty();
     }
+
+    public Station getFirstStation() {
+        return stations.get(0);
+    }
+
+    public Station getLastStation() {
+        return stations.get(size());
+    }
 }

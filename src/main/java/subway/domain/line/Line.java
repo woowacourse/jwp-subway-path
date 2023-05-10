@@ -2,6 +2,7 @@ package subway.domain.line;
 
 import java.util.Objects;
 import subway.domain.section.Sections;
+import subway.domain.station.Station;
 import subway.domain.station.Stations;
 
 public class Line {
@@ -48,6 +49,14 @@ public class Line {
 
     public Stations getStations() {
         return stations;
+    }
+
+    public Station getUpBoundStation() {
+        return stations.getFirstStation();
+    }
+
+    public Station getDownBoundStation() {
+        return stations.getLastStation();
     }
 
     public Sections getSections() {

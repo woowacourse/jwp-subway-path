@@ -68,8 +68,8 @@ public class LineDao {
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        String sql = "update LINE set  upbound_station_id= ?, downbound_station_id = ? where id = ?";
+        jdbcTemplate.update(sql, new Object[]{newLine.getUpBoundStation().getId(), newLine.getDownBoundStation().getId(), newLine.getId()});
     }
 
     public void deleteById(Long id) {

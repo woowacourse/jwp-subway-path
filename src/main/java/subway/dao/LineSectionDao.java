@@ -5,8 +5,10 @@ import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
 import subway.entity.LineSection;
 
+@Repository
 public class LineSectionDao {
 
     private final JdbcTemplate jdbcTemplate;

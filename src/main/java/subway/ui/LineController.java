@@ -9,6 +9,7 @@ import subway.dto.LineResponse;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import subway.dto.RegisterStationsRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -24,6 +25,12 @@ public class LineController {
     public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    }
+
+    @PostMapping("/{name}/stations")
+    public ResponseEntity<Void> registerStations(@PathVariable String name, @RequestBody RegisterStationsRequest registerStationsRequest) {
+        lineService.registerInitStations(name, registerStationsRequest);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping
