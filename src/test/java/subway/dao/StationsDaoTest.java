@@ -215,4 +215,18 @@ class StationsDaoTest {
                 .as("둘만 남은 노선에서 하나를 지우면, 나머지 하나도 함께 지워져 0개가 됩니다.")
                 .isEqualTo(0);
     }
+
+    @Test
+    @DisplayName("특정 노선에 등록된 역을 상행부터 순서대로 조회합니다.")
+    void findAllOrderByUp() {
+        stationsDao.initialize(Stations.builder()
+                .line(line)
+                .startingStation(stationS)
+                .before(stationJ)
+                .distance(5).build());
+        stationsService.insert(line.getId(), stationO.getName(), stationS.getName(), 6, true);
+
+        assertThat(stationsDao.findAllOrderByUp(line))
+                .containsExactly(stationO, stationS, stationJ);
+    }
 }

@@ -10,8 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationsSavingRequest;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -115,27 +117,52 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
+        String requestUri = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
                 .then().log().all().
-                extract();
+                extract()
+                .header("location");
+
+        RestAssured.given().log().all()
+                .body(Map.of("name", "개룡역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all();
+
+        RestAssured.given().log().all()
+                .body(Map.of("name", "거여역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all();
+
+        StationsSavingRequest stationsSavingRequest
+                = new StationsSavingRequest("개룡역", "거여역", 5, false);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationsSavingRequest)
+                .when().post(requestUri + "/stations")
+                .then().log().all();
 
         // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId)
+                .when().get(requestUri)
                 .then().log().all()
                 .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        Long lineId = Long.parseLong(requestUri.split("/")[2]);
         LineResponse resultResponse = response.as(LineResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineId);
+        assertThat(resultResponse.getStations()).hasSize(2);
     }
 
     @DisplayName("지하철 노선을 수정한다.")

@@ -10,6 +10,7 @@ import subway.domain.Station;
 import subway.domain.Stations;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -72,10 +73,10 @@ public class StationsDao {
                 .distance(stations.getDistance()).build();
     }
 
-    private long insertAndReturnId(Long id, Long previousStationId, Long nextStationId, int distance) {
+    private long insertAndReturnId(Long lineId, Long previousStationId, Long nextStationId, int distance) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource
-                .addValue(LINE_ID, id)
+                .addValue(LINE_ID, lineId)
                 .addValue(CURRENT_STATION_ID, previousStationId)
                 .addValue(NEXT_STATION_ID, nextStationId)
                 .addValue(DISTANCE, distance);
@@ -176,5 +177,19 @@ public class StationsDao {
     private void clearStations(Line line) {
         String sql = "delete from SUBWAY_MAP where line_id = ?";
         jdbcTemplate.update(sql, line.getId());
+    }
+
+    public List<Station> findAllOrderByUp(Line line) {
+        String sql = "SELECT s.name as name, s.id as id " +
+                "FROM SUBWAY_MAP t1 " +
+                "JOIN SUBWAY_MAP t2 ON t1.next_station_id = t2.current_station_id " +
+                "RIGHT OUTER JOIN STATION s ON t1.current_station_id = s.id " +
+                "ORDER BY t1.current_station_id DESC, t2.current_station_id DESC;";
+        return jdbcTemplate.query(sql,
+                (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")));
+    }
+
+    public boolean isHighestStationOfLine(Station station, Line line) {
+        return hasStation(station, line) && findByNextStation(station, line).isEmpty();
     }
 }
