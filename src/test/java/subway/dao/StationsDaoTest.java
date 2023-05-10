@@ -10,17 +10,17 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.domain.SubwayMap;
+import subway.domain.Stations;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
-@Import({SubwayMapDao.class, LineDao.class, StationDao.class})
-class SubwayMapDaoTest {
+@Import({StationsDao.class, LineDao.class, StationDao.class})
+class StationsDaoTest {
     @Autowired
-    private SubwayMapDao subwayMapDao;
+    private StationsDao stationsDao;
 
     @Autowired
     private LineDao lineDao;
@@ -45,19 +45,19 @@ class SubwayMapDaoTest {
     @DisplayName("노선에 역이 하나도 등록되지 않은 상황에서 최초 등록시 두 역이 동시 등록됩니다.")
     void initialize() {
         // given
-        assertThat(subwayMapDao.countStations(line))
+        assertThat(stationsDao.countStations(line))
                 .as("처음에는 아무 역도 들어있지 않습니다.")
                 .isEqualTo(0);
 
         // when
-        subwayMapDao.initialize(SubwayMap.builder()
+        stationsDao.initialize(Stations.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
                 .distance(5).build());
 
         // then
-        assertThat(subwayMapDao.countStations(line))
+        assertThat(stationsDao.countStations(line))
                 .as("두 개의 역이 동시에 등록되어 있습니다.")
                 .isEqualTo(2);
     }
@@ -66,14 +66,14 @@ class SubwayMapDaoTest {
     @DisplayName("노선에 역이 등록될 때 거리 정보도 함께 포함됩니다. 그래서 이웃한 역의 거리정보를 조회할 수 있습니다.")
     void distanceSaving() {
         // given
-        subwayMapDao.initialize(SubwayMap.builder()
+        stationsDao.initialize(Stations.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
                 .distance(5).build());
 
         // when & then
-        assertThat(subwayMapDao.findDistanceBetween(stationS, stationJ, line))
+        assertThat(stationsDao.findDistanceBetween(stationS, stationJ, line))
                 .isEqualTo(5);
     }
 
@@ -81,14 +81,14 @@ class SubwayMapDaoTest {
     @DisplayName("거리를 조회할 두 역을 거꾸로 제공해도 거리를 계산할 수 있습니다.")
     void distanceSavingReverse() {
         // given
-        subwayMapDao.initialize(SubwayMap.builder()
+        stationsDao.initialize(Stations.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
                 .distance(5).build());
 
         // when & then
-        assertThat(subwayMapDao.findDistanceBetween(stationJ, stationS, line))
+        assertThat(stationsDao.findDistanceBetween(stationJ, stationS, line))
                 .isEqualTo(5);
     }
 
@@ -96,7 +96,7 @@ class SubwayMapDaoTest {
     @DisplayName("거리 정보는 양의 정수로 제한합니다.")
     void distanceFormat() {
         // when && then
-        assertThatThrownBy(() -> subwayMapDao.insert(SubwayMap.builder()
+        assertThatThrownBy(() -> stationsDao.insert(Stations.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
@@ -113,12 +113,12 @@ class SubwayMapDaoTest {
         // given
         List<Station> stations = List.of(stationS, stationJ, stationO);
 
-        subwayMapDao.initialize(SubwayMap.builder()
+        stationsDao.initialize(Stations.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
                 .distance(6).build());
-        subwayMapDao.insert(SubwayMap.builder()
+        stationsDao.insert(Stations.builder()
                 .line(line)
                 .startingStation(stationO)
                 .after(stationJ)
@@ -126,7 +126,7 @@ class SubwayMapDaoTest {
 
         // when & then
         Station stationY = stationDao.insert(new Station("양평"));
-        assertThatCode(() -> subwayMapDao.insert(SubwayMap.builder()
+        assertThatCode(() -> stationsDao.insert(Stations.builder()
                 .line(line)
                 .startingStation(stationY)
                 .after(stations.get(index))
@@ -139,14 +139,14 @@ class SubwayMapDaoTest {
     void multipleSubwayMap() {
         // given
         Line line2 = lineDao.insert(new Line("2호선", "yellow"));
-        subwayMapDao.initialize(SubwayMap.builder()
+        stationsDao.initialize(Stations.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
                 .distance(6).build());
 
         // when
-        assertThatCode(() -> subwayMapDao.initialize(SubwayMap.builder()
+        assertThatCode(() -> stationsDao.initialize(Stations.builder()
                 .line(line2)
                 .startingStation(stationS)
                 .after(stationO)

@@ -1,22 +1,22 @@
 package subway.domain;
 
-public class SubwayMap {
+public class Stations {
     private final Long id;
     private final Line line;
-    private final Station from;
-    private final Station to;
+    private final Station previousStation;
+    private final Station nextStation;
     private final int distance;
 
-    public SubwayMap(Long id, Line line, Station from, Station to, int distance) {
+    public Stations(Long id, Line line, Station previousStation, Station nextStation, int distance) {
         this.id = id;
         this.line = line;
-        this.from = from;
-        this.to = to;
+        this.previousStation = previousStation;
+        this.nextStation = nextStation;
         this.distance = distance;
     }
 
-    public static StationMapBuilder builder() {
-        return new StationMapBuilder();
+    public static StationsBuilder builder() {
+        return new StationsBuilder();
     }
 
     public Long getId() {
@@ -28,11 +28,11 @@ public class SubwayMap {
     }
 
     public Station getPreviousStation() {
-        return from;
+        return previousStation;
     }
 
     public Station getNextStation() {
-        return to;
+        return nextStation;
     }
 
     public int getDistance() {

@@ -7,13 +7,13 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.domain.SubwayMap;
+import subway.domain.Stations;
 
 import javax.sql.DataSource;
 import java.util.Optional;
 
 @Repository
-public class SubwayMapDao {
+public class StationsDao {
     public static final String LINE_ID = "line_id";
     public static final String CURRENT_STATION_ID = "current_station_id";
     public static final String NEXT_STATION_ID = "next_station_id";
@@ -22,7 +22,7 @@ public class SubwayMapDao {
     private final SimpleJdbcInsert simpleJdbcInsert;
     private final JdbcTemplate jdbcTemplate;
 
-    public SubwayMapDao(DataSource dataSource) {
+    public StationsDao(DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("SUBWAY_MAP")
                 .usingGeneratedKeyColumns("ID");
@@ -34,59 +34,59 @@ public class SubwayMapDao {
         return jdbcTemplate.queryForObject(sql, Integer.class, line.getId());
     }
 
-    public void initialize(SubwayMap subwayMap) {
-        if (countStations(subwayMap.getLine()) != 0) {
+    public void initialize(Stations stations) {
+        if (countStations(stations.getLine()) != 0) {
             throw new IllegalArgumentException("이미 초기 설정이 완료된 노선입니다.");
         }
 
         insertAndReturnId(
-                subwayMap.getLine().getId(),
-                subwayMap.getPreviousStation().getId(),
-                subwayMap.getNextStation().getId(),
-                subwayMap.getDistance()
+                stations.getLine().getId(),
+                stations.getPreviousStation().getId(),
+                stations.getNextStation().getId(),
+                stations.getDistance()
         );
 
         insertAndReturnId(
-                subwayMap.getLine().getId(),
-                subwayMap.getNextStation().getId(),
+                stations.getLine().getId(),
+                stations.getNextStation().getId(),
                 null,
                 0
         );
     }
 
-    public SubwayMap insert(SubwayMap subwayMap) {
+    public Stations insert(Stations stations) {
         long id = insertAndReturnId(
-                subwayMap.getLine().getId(),
-                subwayMap.getPreviousStation().getId(),
-                subwayMap.getNextStation().getId(),
-                subwayMap.getDistance()
+                stations.getLine().getId(),
+                stations.getPreviousStation().getId(),
+                stations.getNextStation().getId(),
+                stations.getDistance()
         );
 
-        return SubwayMap.builder()
+        return Stations.builder()
                 .id(id)
-                .line(subwayMap.getLine())
-                .startingStation(subwayMap.getPreviousStation())
-                .before(subwayMap.getNextStation())
-                .distance(subwayMap.getDistance()).build();
+                .line(stations.getLine())
+                .startingStation(stations.getPreviousStation())
+                .before(stations.getNextStation())
+                .distance(stations.getDistance()).build();
     }
 
-    private long insertAndReturnId(Long id, Long startingStationId, Long destinationStationId, int distance) {
+    private long insertAndReturnId(Long id, Long previousStationId, Long nextStationId, int distance) {
         MapSqlParameterSource parameterSource = new MapSqlParameterSource();
         parameterSource
                 .addValue(LINE_ID, id)
-                .addValue(CURRENT_STATION_ID, startingStationId)
-                .addValue(NEXT_STATION_ID, destinationStationId)
+                .addValue(CURRENT_STATION_ID, previousStationId)
+                .addValue(NEXT_STATION_ID, nextStationId)
                 .addValue(DISTANCE, distance);
         return simpleJdbcInsert
                 .executeAndReturnKey(parameterSource)
                 .longValue();
     }
 
-    public void update(SubwayMap subwayMap) {
+    public void update(Stations stations) {
         jdbcTemplate.update("update SUBWAY_MAP set next_station_id = ?, distance = ? where id = ?",
-                subwayMap.getNextStation().getId(),
-                subwayMap.getDistance(),
-                subwayMap.getId());
+                stations.getNextStation().getId(),
+                stations.getDistance(),
+                stations.getId());
     }
 
     public boolean hasStation(Station station, Line line) {
@@ -96,13 +96,13 @@ public class SubwayMapDao {
 
     public int findDistanceBetween(Station stationA, Station stationB, Line line) {
         // 두 역이 current, next 나란히 있는 경우
-        Optional<SubwayMap> subwayMapOptional = findByPreviousStation(stationA, line);
+        Optional<Stations> subwayMapOptional = findByPreviousStation(stationA, line);
         if (subwayMapOptional.isPresent() && subwayMapOptional.get().getNextStation().equals(stationB)) {
             return subwayMapOptional.get().getDistance();
         }
 
         // 두 역이 next, current 이렇게 나란히 있는 경우
-        Optional<SubwayMap> subwayMapOptional1 = findByNextStation(stationA, line);
+        Optional<Stations> subwayMapOptional1 = findByNextStation(stationA, line);
         if (subwayMapOptional1.isPresent() && subwayMapOptional1.get().getPreviousStation().equals(stationB)) {
             return subwayMapOptional1.get().getDistance();
         }
@@ -111,14 +111,14 @@ public class SubwayMapDao {
         // TODO: 아직까지 이웃하지 않은 역의 거리를 조회하지는 않는다고 가정합니다.
     }
 
-    public Optional<SubwayMap> findByPreviousStation(Station previousStation, Line line) {
+    public Optional<Stations> findByPreviousStation(Station previousStation, Line line) {
         String sql = "select * from SUBWAY_MAP MAP " +
                 "inner join STATION S " +
                 "on MAP.next_station_id = S.id " +
                 "where MAP.current_station_id = ? and MAP.line_id = ?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, previousStation.getId(), line.getId());
         if (rowSet.next()) {
-            return Optional.of(SubwayMap.builder()
+            return Optional.of(Stations.builder()
                     .id(rowSet.getLong(ID))
                     .line(line)
                     .startingStation(previousStation)
@@ -128,14 +128,14 @@ public class SubwayMapDao {
         return Optional.empty();
     }
 
-    public Optional<SubwayMap> findByNextStation(Station nextStation, Line line) {
+    public Optional<Stations> findByNextStation(Station nextStation, Line line) {
         String sql = "select * from SUBWAY_MAP MAP " +
                 "inner join STATION S " +
                 "on MAP.current_station_id = S.id " +
                 "where MAP.next_station_id = ? and MAP.line_id = ?";
         SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, nextStation.getId(), line.getId());
         if (rowSet.next()) {
-            return Optional.of(SubwayMap.builder()
+            return Optional.of(Stations.builder()
                     .id(rowSet.getLong(ID))
                     .line(line)
                     .startingStation(new Station(rowSet.getLong(CURRENT_STATION_ID), rowSet.getString("name")))

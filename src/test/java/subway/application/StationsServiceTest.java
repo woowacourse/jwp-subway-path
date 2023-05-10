@@ -8,22 +8,22 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.dao.SubwayMapDao;
+import subway.dao.StationsDao;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.domain.SubwayMap;
+import subway.domain.Stations;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
-@Import({SubwayMapService.class, SubwayMapDao.class, LineDao.class, StationDao.class})
-class SubwayMapServiceTest {
+@Import({StationsService.class, StationsDao.class, LineDao.class, StationDao.class})
+class StationsServiceTest {
     @Autowired
-    private SubwayMapService subwayMapService;
+    private StationsService stationsService;
 
     @Autowired
-    private SubwayMapDao subwayMapDao;
+    private StationsDao stationsDao;
 
     @Autowired
     private LineDao lineDao;
@@ -42,7 +42,7 @@ class SubwayMapServiceTest {
         stationS = stationDao.insert(new Station("송탄"));
         stationJ = stationDao.insert(new Station("진위"));
         stationO = stationDao.insert(new Station("오산"));
-        subwayMapDao.initialize(SubwayMap.builder()
+        stationsDao.initialize(Stations.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
@@ -56,22 +56,22 @@ class SubwayMapServiceTest {
         // B-C가 3km, B-D거리가 2km라면 B-D거리는 2km로 등록되어야 하고 D-C 거리는 1km로 등록되어야 합니다.
 
         // given
-        assertThat(subwayMapDao.findDistanceBetween(stationS, stationJ, line))
+        assertThat(stationsDao.findDistanceBetween(stationS, stationJ, line))
                 .as("처음 송탄과 진위 사이의 거리는 6km.")
                 .isEqualTo(6);
 
         // when
-        subwayMapService.insert(SubwayMap.builder()
+        stationsService.insert(Stations.builder()
                 .line(line)
                 .startingStation(stationO)
                 .before(stationJ)
                 .distance(2).build());
 
         // then
-        assertThat(subwayMapDao.findDistanceBetween(stationS, stationO, line))
+        assertThat(stationsDao.findDistanceBetween(stationS, stationO, line))
                 .as("송탄과 오산 사이의 거리는 4km.")
                 .isEqualTo(4);
-        assertThat(subwayMapDao.findDistanceBetween(stationO, stationJ, line))
+        assertThat(stationsDao.findDistanceBetween(stationO, stationJ, line))
                 .as("오산과 진위 사이의 거리는 2km.")
                 .isEqualTo(2);
     }
@@ -83,22 +83,22 @@ class SubwayMapServiceTest {
         // B-C가 3km, B-D거리가 2km라면 B-D거리는 2km로 등록되어야 하고 D-C 거리는 1km로 등록되어야 합니다.
 
         // given
-        assertThat(subwayMapDao.findDistanceBetween(stationS, stationJ, line))
+        assertThat(stationsDao.findDistanceBetween(stationS, stationJ, line))
                 .as("처음 송탄과 진위 사이의 거리는 6km.")
                 .isEqualTo(6);
 
         // when
-        subwayMapService.insert(SubwayMap.builder()
+        stationsService.insert(Stations.builder()
                 .line(line)
                 .startingStation(stationO)
                 .after(stationS)
                 .distance(2).build());
 
         // then
-        assertThat(subwayMapDao.findDistanceBetween(stationS, stationO, line))
+        assertThat(stationsDao.findDistanceBetween(stationS, stationO, line))
                 .as("송탄과 오산 사이의 거리는 4km.")
                 .isEqualTo(2);
-        assertThat(subwayMapDao.findDistanceBetween(stationO, stationJ, line))
+        assertThat(stationsDao.findDistanceBetween(stationO, stationJ, line))
                 .as("오산과 진위 사이의 거리는 2km.")
                 .isEqualTo(4);
     }
@@ -110,7 +110,7 @@ class SubwayMapServiceTest {
         // B-C역의 거리가 3km인 경우 B-D 거리는 3km보다 적어야 합니다.
         // B-C가 3km인데 B-D거리가 3km면 D-C거리는 0km가 되어야 하는데 거리는 양의 정수여야 하기 때문에 이 경우 등록이 불가능 해야합니다.
         // when
-        assertThatThrownBy(() -> subwayMapService.insert(SubwayMap.builder()
+        assertThatThrownBy(() -> stationsService.insert(Stations.builder()
                 .line(line)
                 .startingStation(stationO)
                 .before(stationJ)
