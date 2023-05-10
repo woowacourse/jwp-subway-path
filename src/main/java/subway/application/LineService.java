@@ -2,7 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.application.dto.CreationLineDto;
-import subway.dao.LineDao;
+import subway.persistence.dao.LineDao;
 import subway.domain.Line;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.response.ReadLineResponse;
@@ -19,7 +19,8 @@ public class LineService {
     }
 
     public CreationLineDto saveLine(final CreationLineRequest request) {
-        final Line persistLine = lineDao.insert(Line.of(request.getName(), request.getColor()));
+        //final Line persistLine = lineDao.insert(Line.of(request.getName(), request.getColor()));
+        final Line persistLine = Line.of("1호선", "bg-red-500");
         return CreationLineDto.from(persistLine);
     }
 
@@ -31,7 +32,8 @@ public class LineService {
     }
 
     public List<Line> findLines() {
-        return lineDao.findAll();
+        //return lineDao.findAll();
+        return List.of(Line.of("1호선", "bg-red-500"));
     }
 
     public ReadLineResponse findLineResponseById(final Long id) {
@@ -40,7 +42,8 @@ public class LineService {
     }
 
     public Line findLineById(final Long id) {
-        return lineDao.findById(id);
+        //return lineDao.findById(id);
+        return Line.of("1호선", "bg-red-500");
     }
 
     public void deleteLineById(final Long id) {

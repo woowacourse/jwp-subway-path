@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -7,17 +7,19 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
+import subway.persistence.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
-            Station.of(
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            StationEntity.of(
                     rs.getLong("id"),
                     rs.getString("name")
             );
@@ -30,24 +32,27 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(final Station station) {
-        final SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+    public StationEntity insert(final StationEntity stationEntity) {
+        final SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
         final Long id = insertAction.executeAndReturnKey(params).longValue();
-        return Station.of(id, station.getName());
+        return new StationEntity(id, stationEntity.getName());
     }
 
-    public List<Station> findAll() {
-        final String sql = "select * from STATION";
+    public List<StationEntity> findAll() {
+        final String sql = "SELECT id, name FROM station";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(final Long id) {
-        final String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<StationEntity> findById(final Long id) {
+        final String sql = "SELECT id, name FROM station WHERE id = ?";
+
+        return jdbcTemplate.query(sql, rowMapper, id)
+                .stream()
+                .findAny();
     }
 
-    public void deleteById(final Long id) {
-        final String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+    public int deleteById(final Long id) {
+        final String sql = "DELETE FROM station WHERE id = ?";
+        return jdbcTemplate.update(sql, id);
     }
 }
