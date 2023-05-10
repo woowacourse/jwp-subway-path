@@ -34,6 +34,100 @@ public class Line {
         Station station = new Station(stationName);
         Station neighborhoodStation = new Station(neighborhoodStationName);
 
+        validateAlreadyExist(station);
+
+        if (isUpwardTerminus(neighborhoodStation)) {
+            addUpwardTerminus(station, neighborhoodStation, distance);
+            return;
+        }
+
+        if (isDownwardTerminus(neighborhoodStation)) {
+            addDownwardTerminus(station, neighborhoodStation, distance);
+            return;
+        }
+
+        if (direction.equals(Direction.UPWARD)) {
+            addStationUpward(station, neighborhoodStation, distance);
+            return;
+        }
+
+        if (direction.equals(Direction.DOWNWARD)) {
+            addStationDownward(station, neighborhoodStation, distance);
+            return;
+        }
+    }
+
+    private boolean isUpwardTerminus(Station neighborhoodStation) {
+        Section upwardEndSection = sections.get(0);
+        return upwardEndSection.getUpwardStation().equals(neighborhoodStation);
+    }
+
+    private boolean isDownwardTerminus(Station neighborhoodStation) {
+        Section downwardEndSection = sections.get(sections.size() - 1);
+        return downwardEndSection.getDownwardStation().equals(neighborhoodStation);
+    }
+
+    private void addUpwardTerminus(Station station, Station neighborhoodStation, int distance) {
+        Section sectionToModify = getSectionUpwardSameWith(neighborhoodStation);
+        Section sectionToSave = new Section(station, sectionToModify.getUpwardStation(), distance);
+        sections.add(0, sectionToSave);
+    }
+
+    private void addDownwardTerminus(Station station, Station neighborhoodStation, int distance) {
+        Section sectionToModify = getSectionDownwardSameWith(neighborhoodStation);
+        Section sectionToSave = new Section(sectionToModify.getDownwardStation(), station, distance);
+        sections.add(sections.size() - 1, sectionToSave);
+    }
+
+    private void addStationUpward(Station station, Station neighborhoodStation, int distance) {
+        Section sectionToModify = getSectionDownwardSameWith(neighborhoodStation);
+
+        Section downwardSectionToSave = new Section(station, neighborhoodStation, distance);
+
+        Station otherNeighborhoodStation = sectionToModify.getUpwardStation();
+        int upwardDistance = sectionToModify.calculateRemainingDistance(distance);
+        Section upwardSectionToSave = new Section(otherNeighborhoodStation, station, upwardDistance);
+
+        int sectionIndex = sections.indexOf(sectionToModify);
+        sections.add(sectionIndex + 1, downwardSectionToSave);
+        sections.add(sectionIndex + 1, upwardSectionToSave);
+        sections.remove(sectionToModify);
+    }
+
+    private void addStationDownward(Station station, Station neighborhoodStation, int distance) {
+        Section sectionToModify = getSectionUpwardSameWith(neighborhoodStation);
+
+        Section upwardSectionToSave = new Section(neighborhoodStation, station, distance);
+
+        Station otherNeighborhoodStation = sectionToModify.getDownwardStation();
+        int downwardDistance = sectionToModify.calculateRemainingDistance(distance);
+        Section downwardSectionToSave = new Section(station, otherNeighborhoodStation, downwardDistance);
+
+        int sectionIndex = sections.indexOf(sectionToModify);
+        sections.add(sectionIndex + 1, downwardSectionToSave);
+        sections.add(sectionIndex + 1, upwardSectionToSave);
+        sections.remove(sectionToModify);
+    }
+
+    private Section getSectionDownwardSameWith(Station neighborhoodStation) {
+        return sections.stream()
+                .filter(section -> section.isDownwardStation(neighborhoodStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다."
+                                + "존재하지 않는 이웃 역 : %s", neighborhoodStation.getName())));
+    }
+
+    private Section getSectionUpwardSameWith(Station neighborhoodStation) {
+        return sections.stream()
+                .filter(section -> section.isUpwardStation(neighborhoodStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(
+                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다."
+                                + "존재하지 않는 이웃 역 : %s", neighborhoodStation.getName())));
+    }
+
+    private void validateAlreadyExist(Station station) {
         if (isStationExist(station)) {
             throw new IllegalArgumentException(String.format(
                     "이미 노선에 존재하는 역은 추가할 수 없습니다." + System.lineSeparator() +
@@ -57,6 +151,10 @@ public class Line {
 
     public String getName() {
         return name;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     @Override

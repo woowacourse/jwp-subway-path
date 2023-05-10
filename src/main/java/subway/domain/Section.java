@@ -30,4 +30,12 @@ public class Section {
     public boolean isDownwardStation(Station station) {
         return this.downwardStation.equals(station);
     }
+
+    public Station getUpwardStation() {
+        return upwardStation;
+    }
+
+    public Station getDownwardStation() {
+        return downwardStation;
+    }
 }
