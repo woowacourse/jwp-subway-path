@@ -24,7 +24,7 @@ public class SectionService {
             final Boolean direction,
             final Integer distance
     ) {
-        final Optional<Section> section = sectionDao.findNeighborStation(lineId, baseId, Direction.from(direction));
+        final Optional<Section> section = sectionDao.findNeighborSection(lineId, baseId, Direction.from(direction));
 
         if (section.isEmpty()) {
             return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
@@ -65,5 +65,39 @@ public class SectionService {
         final Section downSection = new Section(lineId, addedId, existSection.getDownStationId(), existSection.getDistance() - distance);
         final Section downSavedSection = sectionDao.insert(downSection);
         return List.of(upSavedSection, downSavedSection);
+    }
+
+    public void deleteSection(final Long lineId, final Long stationId) {
+        final Optional<Section> upSection = sectionDao.findNeighborUpSection(lineId, stationId);
+        final Optional<Section> downSection = sectionDao.findNeighborDownSection(lineId, stationId);
+
+        if (upSection.isEmpty() && downSection.isEmpty()) {
+            throw new IllegalArgumentException("등록되어있지 않은 역은 지울 수 없습니다.");
+        }
+
+        if (upSection.isEmpty()) {
+            sectionDao.deleteById(downSection.get().getId());
+            return;
+        }
+
+        if (downSection.isEmpty()) {
+            sectionDao.deleteById(upSection.get().getId());
+            return;
+        }
+
+        final Section existUpSection = upSection.get();
+        final Section existDownSection = downSection.get();
+
+        sectionDao.deleteById(existUpSection.getId());
+        sectionDao.deleteById(existDownSection.getId());
+
+        final Section section = new Section(
+                lineId,
+                existUpSection.getUpStationId(),
+                existDownSection.getDownStationId(),
+                existUpSection.getDistance() + existDownSection.getDistance()
+        );
+
+        sectionDao.insert(section);
     }
 }

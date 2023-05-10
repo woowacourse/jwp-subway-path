@@ -22,15 +22,15 @@ import subway.station.dao.StationDao;
 import subway.station.domain.Station;
 
 @JdbcTest
-class SectionDaoTest {
+class RdsSectionDaoTest {
 
-    private SectionDao sectionDao;
+    private RdsSectionDao rdsSectionDao;
     private LineDao lineDao;
     private StationDao stationDao;
 
     @Autowired
     void setUp(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
-        sectionDao = new SectionDao(jdbcTemplate, dataSource);
+        rdsSectionDao = new RdsSectionDao(jdbcTemplate, dataSource);
         lineDao = new LineDao(jdbcTemplate, dataSource);
         stationDao = new StationDao(jdbcTemplate, dataSource);
     }
@@ -60,7 +60,7 @@ class SectionDaoTest {
         @DisplayName("구간을 저장한다.")
         @Test
         void insert() {
-            final Section section = sectionDao.insert(new Section(null, lineId, stationId1, stationId2, 1));
+            final Section section = rdsSectionDao.insert(new Section(null, lineId, stationId1, stationId2, 1));
             System.out.println("asdfasdfasfd");
             System.out.println(section.getId());
             assertThat(section.getId()).isPositive();
@@ -75,8 +75,8 @@ class SectionDaoTest {
 
             @BeforeEach
             void setUp() {
-                final Section section1 = sectionDao.insert(new Section(null, lineId, stationId1, stationId2, 1));
-                final Section section2 = sectionDao.insert(new Section(null, lineId, stationId2, stationId3, 1));
+                final Section section1 = rdsSectionDao.insert(new Section(null, lineId, stationId1, stationId2, 1));
+                final Section section2 = rdsSectionDao.insert(new Section(null, lineId, stationId2, stationId3, 1));
 
                 sectionId1 = section1.getId();
                 sectionId2 = section2.getId();
@@ -85,7 +85,7 @@ class SectionDaoTest {
             @DisplayName("lineId로 구간들을 검색한다.")
             @Test
             void findByLineId() {
-                final List<Section> sections = sectionDao.findByLineId(lineId);
+                final List<Section> sections = rdsSectionDao.findByLineId(lineId);
                 assertAll(
                         () -> assertThat(sections.get(0).getId()).isEqualTo(sectionId1),
                         () -> assertThat(sections.get(1).getId()).isEqualTo(sectionId2)
@@ -95,7 +95,7 @@ class SectionDaoTest {
             @DisplayName("id로 구간을 검색한다.")
             @Test
             void findById() {
-                final Optional<Section> result = sectionDao.findById(sectionId1);
+                final Optional<Section> result = rdsSectionDao.findById(sectionId1);
                 assertAll(
                         () -> assertThat(result).isPresent(),
                         () -> assertThat(result.get().getId()).isEqualTo(sectionId1)
@@ -105,8 +105,8 @@ class SectionDaoTest {
             @DisplayName("id로 구간을 삭제한다.")
             @Test
             void deleteById() {
-                sectionDao.deleteById(sectionId1);
-                final Optional<Section> result = sectionDao.findById(sectionId1);
+                rdsSectionDao.deleteById(sectionId1);
+                final Optional<Section> result = rdsSectionDao.findById(sectionId1);
                 assertThat(result).isEmpty();
             }
 
@@ -117,7 +117,7 @@ class SectionDaoTest {
                 @DisplayName("아랫 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborStationDown() {
-                    final Optional<Section> section = sectionDao.findNeighborSection(lineId, stationId1, Direction.DOWN);
+                    final Optional<Section> section = rdsSectionDao.findNeighborSection(lineId, stationId1, Direction.DOWN);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -127,7 +127,7 @@ class SectionDaoTest {
                 @DisplayName("특정 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborDownStation() {
-                    final Optional<Section> section = sectionDao.findNeighborDownSection(lineId, stationId1);
+                    final Optional<Section> section = rdsSectionDao.findNeighborDownSection(lineId, stationId1);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -137,7 +137,7 @@ class SectionDaoTest {
                 @DisplayName("윗 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborStationUp() {
-                    final Optional<Section> section = sectionDao.findNeighborSection(lineId, stationId2, Direction.UP);
+                    final Optional<Section> section = rdsSectionDao.findNeighborSection(lineId, stationId2, Direction.UP);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -147,7 +147,7 @@ class SectionDaoTest {
                 @DisplayName("특정 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborUpStation() {
-                    final Optional<Section> section = sectionDao.findNeighborUpSection(lineId, stationId2);
+                    final Optional<Section> section = rdsSectionDao.findNeighborUpSection(lineId, stationId2);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -157,7 +157,7 @@ class SectionDaoTest {
                 @DisplayName("특정 방향에 인접한 역이 존재하지 않으면 Optional.empty 를 반환한다.")
                 @Test
                 void findNeighborStationFail() {
-                    final Optional<Section> section = sectionDao.findNeighborSection(lineId, stationId1, Direction.UP);
+                    final Optional<Section> section = rdsSectionDao.findNeighborSection(lineId, stationId1, Direction.UP);
                     assertThat(section).isEmpty();
                 }
             }

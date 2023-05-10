@@ -31,7 +31,7 @@ class SectionServiceTest {
     @DisplayName("인접한 역이 없을 때 기준역 위에 역을 추가한 경우 만든 구간 하나가 반환된다.")
     @Test
     void createSectionToUpWhenNoNeighbor() {
-        given(sectionDao.findNeighborStation(anyLong(), anyLong(), any())).willReturn(Optional.empty());
+        given(sectionDao.findNeighborSection(anyLong(), anyLong(), any())).willReturn(Optional.empty());
         given(sectionDao.insert(any(Section.class))).willAnswer(invocation -> {
             final Section inputSection = invocation.getArgument(0);
             return inputSection;
@@ -43,7 +43,7 @@ class SectionServiceTest {
     @DisplayName("인접한 역이 없을 때 기준역 아래에 역을 추가한 경우 만든 구간 하나가 반환된다.")
     @Test
     void createSectionToDownWhenNoNeighbor() {
-        given(sectionDao.findNeighborStation(anyLong(), anyLong(), any())).willReturn(Optional.empty());
+        given(sectionDao.findNeighborSection(anyLong(), anyLong(), any())).willReturn(Optional.empty());
         given(sectionDao.insert(any(Section.class))).willAnswer(invocation -> {
             final Section inputSection = invocation.getArgument(0);
             return inputSection;
@@ -56,7 +56,7 @@ class SectionServiceTest {
     @ParameterizedTest
     @ValueSource(ints = {5, 6, 7})
     void throwExceptionWhenExistDistanceIsLowerThanAddedDistance(final int distance) {
-        given(sectionDao.findNeighborStation(anyLong(), anyLong(), any())).willReturn(Optional.of(new Section(1L, 2L, 3L, 5)));
+        given(sectionDao.findNeighborSection(anyLong(), anyLong(), any())).willReturn(Optional.of(new Section(1L, 2L, 3L, 5)));
 
         assertThatThrownBy(() -> sectionService.createSection(1L, 2L, 3L, true, distance))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -66,7 +66,7 @@ class SectionServiceTest {
     @DisplayName("인접한 역이 없을 때 기준역 위에 역을 추가한 경우 만든 구간 두 개가 반환된다.")
     @Test
     void divideSectionByAddedStationWhenUp() {
-        given(sectionDao.findNeighborStation(anyLong(), anyLong(), any())).willReturn(Optional.of(new Section(1L, 2L, 3L, 5)));
+        given(sectionDao.findNeighborSection(anyLong(), anyLong(), any())).willReturn(Optional.of(new Section(1L, 2L, 3L, 5)));
         given(sectionDao.insert(any(Section.class))).willAnswer(invocation -> {
             final Section inputSection = invocation.getArgument(0);
             return inputSection;
@@ -82,7 +82,7 @@ class SectionServiceTest {
     @DisplayName("인접한 역이 없을 때 기준역 아래에 역을 추가한 경우 만든 구간 두 개가 반환된다.")
     @Test
     void divideSectionByAddedStationWhenDown() {
-        given(sectionDao.findNeighborStation(anyLong(), anyLong(), any())).willReturn(Optional.of(new Section(1L, 2L, 3L, 5)));
+        given(sectionDao.findNeighborSection(anyLong(), anyLong(), any())).willReturn(Optional.of(new Section(1L, 2L, 3L, 5)));
         given(sectionDao.insert(any(Section.class))).willAnswer(invocation -> {
             final Section inputSection = invocation.getArgument(0);
             return inputSection;
