@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 class LineTest {
 
-    @DisplayName("추가하려는 역이 이미 존재하는 경우 노선에 역을 추가할 수 없다.")
+    @DisplayName("추가하려는 역이 이미 존재하는 경우 예외가 발생한다.")
     @Test
     void shouldThrowExceptionWhenInputStationAlreadyExist() {
         Line line = Line.of("2호선", "잠실역", "몽촌토성역", 5);
@@ -20,7 +20,7 @@ class LineTest {
                         "추가하려는 역 : 잠실역");
     }
 
-    @DisplayName("이웃역이 이미 존재하는 경우 역을 추가할 수 없다.")
+    @DisplayName("이웃역이 이미 존재하는 경우 예외가 발생한다.")
     @Test
     void shouldThrowExceptionWhenInputNeighborhoodStationAlreadyExist() {
         Line line = Line.of("2호선", "잠실역", "몽촌토성역", 5);
@@ -30,6 +30,18 @@ class LineTest {
                 .hasMessage("추가하려는 역의 이웃 역이 존재하지 않습니다." + System.lineSeparator() +
                         "추가하려는 노선 : 2호선" + System.lineSeparator() +
                         "존재하지 않는 이웃 역 : 신도림역");
+    }
+
+    @DisplayName("저장하려는 위치의 구간 거리보다 입력한 거리가 더 큰 경우 예외가 발생한다.")
+    @Test
+    void shouldThrowExceptionWhenDistanceToSaveIsSameOrOverExistingDistance() {
+        Line line = Line.of("2호선", "잠실역", "몽촌토성역", 5);
+
+        assertThatThrownBy(() -> line.addStation("강남역", "몽촌토성역", Direction.UPWARD, 5))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("저장하려는 위치의 구간 거리보다, 입력한 거리가 더 크거나 같습니다." + System.lineSeparator() +
+                        "입력한 거리 : 5" + System.lineSeparator() +
+                        "저장하려는 위치의 구간 거리 : 5");
     }
 
     @DisplayName("이웃 역 기준 상행 방향에 역을 추가한다.")

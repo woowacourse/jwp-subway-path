@@ -36,12 +36,12 @@ public class Line {
 
         validateAlreadyExist(station);
 
-        if (isUpwardTerminus(neighborhoodStation)) {
+        if (isUpwardTerminus(neighborhoodStation) && direction.equals(Direction.UPWARD)) {
             addUpwardTerminus(station, neighborhoodStation, distance);
             return;
         }
 
-        if (isDownwardTerminus(neighborhoodStation)) {
+        if (isDownwardTerminus(neighborhoodStation) && direction.equals(Direction.DOWNWARD)) {
             addDownwardTerminus(station, neighborhoodStation, distance);
             return;
         }
@@ -81,9 +81,9 @@ public class Line {
 
     private void addStationUpward(Station station, Station neighborhoodStation, int distance) {
         Section sectionToModify = getSectionDownwardSameWith(neighborhoodStation);
+        validateDistance(distance, sectionToModify.getDistance());
 
         Section downwardSectionToSave = new Section(station, neighborhoodStation, distance);
-
         Station otherNeighborhoodStation = sectionToModify.getUpwardStation();
         int upwardDistance = sectionToModify.calculateRemainingDistance(distance);
         Section upwardSectionToSave = new Section(otherNeighborhoodStation, station, upwardDistance);
@@ -96,9 +96,9 @@ public class Line {
 
     private void addStationDownward(Station station, Station neighborhoodStation, int distance) {
         Section sectionToModify = getSectionUpwardSameWith(neighborhoodStation);
+        validateDistance(distance, sectionToModify.getDistance());
 
         Section upwardSectionToSave = new Section(neighborhoodStation, station, distance);
-
         Station otherNeighborhoodStation = sectionToModify.getDownwardStation();
         int downwardDistance = sectionToModify.calculateRemainingDistance(distance);
         Section downwardSectionToSave = new Section(station, otherNeighborhoodStation, downwardDistance);
@@ -135,6 +135,15 @@ public class Line {
                     "이미 노선에 존재하는 역은 추가할 수 없습니다." + System.lineSeparator() +
                             "추가하려는 노선 : %s" + System.lineSeparator() +
                             "추가하려는 역 : %s", name, station.getName()));
+        }
+    }
+
+    private void validateDistance(int distanceToSave, int existingDistance) {
+        if (distanceToSave >= existingDistance) {
+            throw new IllegalArgumentException(
+                    String.format("저장하려는 위치의 구간 거리보다, 입력한 거리가 더 크거나 같습니다." + System.lineSeparator() +
+                            "입력한 거리 : %d" + System.lineSeparator() +
+                            "저장하려는 위치의 구간 거리 : %d", distanceToSave, existingDistance));
         }
     }
 

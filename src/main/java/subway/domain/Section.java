@@ -38,4 +38,8 @@ public class Section {
     public Station getDownwardStation() {
         return downwardStation;
     }
+
+    public int getDistance() {
+        return distance;
+    }
 }
