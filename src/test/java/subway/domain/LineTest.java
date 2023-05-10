@@ -2,9 +2,11 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalStateException;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,11 +15,17 @@ public class LineTest {
     private static final Station STATION_JAMSIL = new Station("잠실");
     private static final Station STATION_JAMSIL_SAENAE = new Station("잠실새내");
 
+    private Line line;
+
+    @BeforeEach
+    void setUp() {
+        this.line = new Line("1호선", "blue");
+    }
+
     @DisplayName("한 번에 두 역을 등록했을 때 그 호선에 두 개의 역만 존재한다")
     @Test
     void insertTwoStationsAndStoreTwoStations() {
-        Line line = new Line("1호선", "blue");
-        line.insertBoth(STATION_JAMSIL_NARU, 10, STATION_JAMSIL_SAENAE);
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
         List<Station> stations = line.getStations();
 
         assertThat(stations).hasSize(2);
@@ -26,9 +34,7 @@ public class LineTest {
     @DisplayName("한 번에 두 역을 등록했을 때 두 역 사이의 거리를 저장한다")
     @Test
     void insertTwoStationsAndStoreDistanceBetweenTwoStations() {
-        Line line = new Line("1호선", "blue");
-
-        line.insertBoth(STATION_JAMSIL_NARU, 10, STATION_JAMSIL_SAENAE);
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
         int distance = line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE);
 
         assertThat(distance).isEqualTo(10);
@@ -37,32 +43,79 @@ public class LineTest {
     @DisplayName("빈 라인에만 한 번에 두 역을 등록할 수 있다")
     @Test
     void insertTwoStationsFail() {
-        Line line = new Line("1호선", "blue");
-        line.insertBoth(STATION_JAMSIL_NARU, 10, STATION_JAMSIL_SAENAE);
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
 
         assertThatIllegalStateException()
-                .isThrownBy(() -> line.insertBoth(STATION_JAMSIL_NARU, 10, STATION_JAMSIL_SAENAE));
+                .isThrownBy(() -> line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10));
     }
 
-    @DisplayName("역의 상행에 역을 등록한다")
+    @DisplayName("라인의 상행 종점에 역을 등록한다")
+    @Test
+    void insertStationTop() {
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+
+        line.insertUpper(STATION_JAMSIL, STATION_JAMSIL_NARU, 5);
+
+        assertSoftly(softly -> {
+            softly.assertThat(line.getStations()).first().isEqualTo(STATION_JAMSIL);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(5);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(15);
+        });
+    }
+
+    @DisplayName("라인의 상행에 역을 등록한다")
     @Test
     void insertStationUpper() {
-        Line line = new Line("1호선", "blue");
-        line.insertBoth(STATION_JAMSIL_NARU, 10, STATION_JAMSIL_SAENAE);
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
 
-        line.insertUpper(STATION_JAMSIL, 6, STATION_JAMSIL_SAENAE);
+        line.insertUpper(STATION_JAMSIL, STATION_JAMSIL_SAENAE, 6);
+
+        assertSoftly(softly -> {
+            softly.assertThat(line.getStations()).contains(STATION_JAMSIL);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(4);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(6);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE)).isEqualTo(10);
+        });
+    }
+
+    @DisplayName("라인의 하행 종점에 역을 등록한다")
+    @Test
+    void insertStationBottom() {
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+
+        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_SAENAE, 5);
+
+        assertSoftly(softly -> {
+            softly.assertThat(line.getStations()).last().isEqualTo(STATION_JAMSIL);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(5);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(15);
+        });
+    }
+
+    @DisplayName("라인의 하행에 역을 등록한다")
+    @Test
+    void insertStationLower() {
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+
+        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_NARU, 6);
+
+        assertSoftly(softly -> {
+            softly.assertThat(line.getStations()).contains(STATION_JAMSIL);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(6);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(4);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE)).isEqualTo(10);
+        });
     }
 
     @DisplayName("두 역 사이의 거리를 알 수 있다")
     @Test
     void getDistanceBetweenTwoStations() {
-        Line line = new Line("1호선", "blue");
-
         line.insertBoth(
                 STATION_JAMSIL_NARU,
-                10,
-                STATION_JAMSIL_SAENAE);
-        line.insertUpper(STATION_JAMSIL, 6, STATION_JAMSIL_NARU);
+                STATION_JAMSIL_SAENAE,
+                10);
+
+        line.insertUpper(STATION_JAMSIL, STATION_JAMSIL_SAENAE, 6);
 
         assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL)).isEqualTo(4);
     }

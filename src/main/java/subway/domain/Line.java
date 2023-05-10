@@ -26,6 +26,97 @@ public class Line {
         this.stations = new LinkedList<>();
     }
 
+    public void insertBoth(Station top, Station bottom, int distance) {
+        validateEmptyStations();
+
+        stations.add(top);
+        stations.add(bottom);
+
+        insertDistanceBetween(top, bottom, distance);
+    }
+
+    private void validateEmptyStations() {
+        if (!stations.isEmpty()) {
+            throw new IllegalStateException("빈 노선에만 한 번에 두 역을 추가할 수 있습니다");
+        }
+    }
+
+    public void insertUpper(Station station, Station base, int distance) {
+
+        stations.add(stations.indexOf(base), station);
+        insertDistanceBetween(station, base, distance);
+
+        if (isTop(station)) {
+            return;
+        }
+
+        int previousDistance = getDistanceBetween(getUpperOf(station), base);
+        int upperDistance = Math.abs(previousDistance - distance);
+        insertDistanceBetween(station, getUpperOf(station), upperDistance);
+
+        deleteDistanceBetween(getUpperOf(station), base);
+    }
+
+    public void insertLower(Station station, Station base, int distance) {
+        stations.add(stations.indexOf(base) + 1, station);
+        insertDistanceBetween(station, base, distance);
+
+        if (isBottom(station)) {
+            return;
+        }
+
+        int previousDistance = getDistanceBetween(getLowerOf(station), base);
+        int lowerDistance = Math.abs(previousDistance - distance);
+        insertDistanceBetween(station, getLowerOf(station), lowerDistance);
+        deleteDistanceBetween(getLowerOf(station), base);
+    }
+
+    public int getDistanceBetween(Station from, Station to) {
+        if (distances.get(Map.entry(from, to)) != null) {
+            return distances.get(Map.entry(from, to));
+        }
+
+        int distance = 0;
+        int startInclusive = Math.min(stations.indexOf(from), stations.indexOf(to));
+        int endInclusive = Math.max(stations.indexOf(from), stations.indexOf(to));
+
+        for (int i = startInclusive; i < endInclusive; i++) {
+            Station station = stations.get(i);
+            Station other = stations.get(i + 1);
+            distance += distances.get(Map.entry(station, other));
+        }
+
+        return distance;
+    }
+
+    private void insertDistanceBetween(Station station, Station other, int distance) {
+        distances.put(Map.entry(station, other), distance);
+        distances.put(Map.entry(other, station), distance);
+    }
+
+    private void deleteDistanceBetween(Station station, Station other) {
+        distances.remove(Map.entry(station, other));
+        distances.remove(Map.entry(other, station));
+    }
+
+    private boolean isTop(Station station) {
+        return stations.getFirst().equals(station);
+    }
+
+    private boolean isBottom(Station station) {
+        return stations.getLast().equals(station);
+    }
+
+    private Station getUpperOf(Station station) {
+        int index = stations.indexOf(station);
+        return stations.get(index - 1);
+    }
+
+    private Station getLowerOf(Station station) {
+        int index = stations.indexOf(station);
+        return stations.get(index + 1);
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,53 +146,5 @@ public class Line {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color);
-    }
-
-    public void insertBoth(Station top, int distance, Station bottom) {
-        validateEmptyStations();
-
-        stations.add(top);
-        stations.add(bottom);
-
-        insertDistanceBetween(top, distance, bottom);
-    }
-
-    private void insertDistanceBetween(Station station, int distance, Station other) {
-        distances.put(Map.entry(station, other), distance);
-        distances.put(Map.entry(other, station), distance);
-    }
-
-    private void validateEmptyStations() {
-        if (!stations.isEmpty()) {
-            throw new IllegalStateException("빈 노선에만 한 번에 두 역을 추가할 수 있습니다");
-        }
-    }
-
-    public int getDistanceBetween(Station from, Station to) {
-        int distance = 0;
-        List<Station> subStations = stations.subList(stations.indexOf(from), stations.indexOf(to) + 1);
-        for (int i = 0; i + 1 < subStations.size(); i++) {
-            Station station = subStations.get(i);
-            Station other = subStations.get(i + 1);
-            distance += distances.get(Map.entry(station, other));
-        }
-        return distance;
-    }
-
-    public void insertUpper(Station upper, int distance, Station lower) {
-        int lowerIndex = stations.indexOf(lower);
-
-        if (stations.indexOf(lower) == 0) {
-            stations.add(stations.indexOf(lower), upper);
-            insertDistanceBetween(upper, distance, lower);
-            return;
-        }
-
-        // getDistanceBetween();
-
-        distances.remove(Map.entry(lower, stations.get(lowerIndex - 1)));
-        distances.remove(Map.entry(stations.get(lowerIndex - 1), lower));
-
-        stations.add(stations.indexOf(lower), upper);
     }
 }
