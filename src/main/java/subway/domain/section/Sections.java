@@ -26,7 +26,7 @@ public class Sections {
             final Station additionStation,
             final StationDistance stationDistance
     ) {
-        final Section firstSection = peekUniqueSectionByFromStation(firstStation);
+        final Section firstSection = peekByFirstStationUnique(firstStation);
         final Section attachedSection = firstSection.attachFront(additionStation, stationDistance);
 
         sections.add(attachedSection);
@@ -37,24 +37,24 @@ public class Sections {
             final Station additionStation,
             final StationDistance stationDistance
     ) {
-        final Section firstSection = peekUniqueSectionByToStation(lastStation);
-        final Section attachedSection = firstSection.attachBehind(additionStation, stationDistance);
+        final Section lastSection = peekBySecondStationUnique(lastStation);
+        final Section attachedSection = lastSection.attachBehind(additionStation, stationDistance);
 
         sections.add(attachedSection);
     }
 
-    public Section peekUniqueSectionByFromStation(final Station from) { //FIXME 접근제어자
+    public Section peekByFirstStationUnique(final Station firstStation) { //FIXME 접근제어자
         final LinkedList<Section> findSections = sections.stream()
-                .filter(section -> section.matchFromStation(from))
+                .filter(section -> section.matchFirstStation(firstStation))
                 .collect(Collectors.toCollection(LinkedList::new));
 
         validateUniqueSection(findSections);
         return findSections.peekFirst();
     }
 
-    public Section peekUniqueSectionByToStation(final Station to) { //FIXME 접근제어자
+    public Section peekBySecondStationUnique(final Station secondStation) { //FIXME 접근제어자
         final LinkedList<Section> findSections = sections.stream()
-                .filter(section -> section.matchToStation(to))
+                .filter(section -> section.matchSecondStation(secondStation))
                 .collect(Collectors.toCollection(LinkedList::new));
 
         validateUniqueSection(findSections);

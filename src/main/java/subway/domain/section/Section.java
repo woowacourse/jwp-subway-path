@@ -5,38 +5,38 @@ import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
 
 public class Section {
-    private final Station from;
-    private final Station to;
+    private final Station firstStation;
+    private final Station secondStation;
     private final StationDistance distance;
 
-    public Section(final Station from, final Station to, final StationDistance distance) {
-        this.from = from;
-        this.to = to;
+    public Section(final Station firstStation, final Station secondStation, final StationDistance distance) {
+        this.firstStation = firstStation;
+        this.secondStation = secondStation;
         this.distance = distance;
     }
 
-    public boolean matchFromStation(final Station from) {
-        return this.from.equals(from);
+    public boolean matchFirstStation(final Station firstStation) {
+        return this.firstStation.equals(firstStation);
     }
 
-    public boolean matchToStation(final Station to) {
-        return this.to.equals(to);
+    public boolean matchSecondStation(final Station secondStation) {
+        return this.secondStation.equals(secondStation);
     }
 
-    public Section attachFront(final Station station, final StationDistance stationDistance) {
-        return new Section(station, from, stationDistance);
+    public Section attachFront(final Station additionStation, final StationDistance stationDistance) {
+        return new Section(additionStation, firstStation, stationDistance);
     }
 
     public Section attachBehind(final Station additionStation, final StationDistance stationDistance) {
-        return new Section(to, additionStation, stationDistance);
+        return new Section(secondStation, additionStation, stationDistance);
     }
 
-    public Station getFrom() {
-        return from;
+    public Station getFirstStation() {
+        return firstStation;
     }
 
-    public Station getTo() {
-        return to;
+    public Station getSecondStation() {
+        return secondStation;
     }
 
     public StationDistance getDistance() {
@@ -52,12 +52,13 @@ public class Section {
             return false;
         }
         final Section section = (Section) o;
-        return Objects.equals(getFrom(), section.getFrom()) && Objects.equals(getTo(), section.getTo())
+        return Objects.equals(getFirstStation(), section.getFirstStation()) && Objects.equals(getSecondStation(),
+                section.getSecondStation())
                 && Objects.equals(getDistance(), section.getDistance());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getFrom(), getTo(), getDistance());
+        return Objects.hash(getFirstStation(), getSecondStation(), getDistance());
     }
 }

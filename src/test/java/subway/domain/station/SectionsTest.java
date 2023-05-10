@@ -54,7 +54,7 @@ class SectionsTest {
 
         //then
         assertThat(sections.getSections()).hasSize(2);
-        assertThat(sections.peekUniqueSectionByFromStation(newStation).getDistance())
+        assertThat(sections.peekByFirstStationUnique(newStation).getDistance())
                 .isEqualTo(new StationDistance(3));
     }
 
@@ -67,7 +67,7 @@ class SectionsTest {
         sections.addInitialStations(initSection);
 
         //when
-        final Section peekSection = sections.peekUniqueSectionByFromStation(startStation);
+        final Section peekSection = sections.peekByFirstStationUnique(startStation);
 
         //then
         assertThat(peekSection).isEqualTo(initSection);
@@ -82,7 +82,7 @@ class SectionsTest {
         sections.addInitialStations(initSection);
 
         //when
-        final Section peekSection = sections.peekUniqueSectionByToStation(endStation);
+        final Section peekSection = sections.peekBySecondStationUnique(endStation);
 
         //then
         assertThat(peekSection).isEqualTo(initSection);
@@ -103,7 +103,7 @@ class SectionsTest {
 
         //then
         assertThat(sections.getSections()).hasSize(2);
-        assertThat(sections.peekUniqueSectionByFromStation(endStation).getDistance())
+        assertThat(sections.peekByFirstStationUnique(endStation).getDistance())
                 .isEqualTo(new StationDistance(3));
     }
 }
