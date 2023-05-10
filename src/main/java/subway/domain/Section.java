@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.Objects;
+
 public class Section {
 
     private final Station left;
@@ -20,7 +22,34 @@ public class Section {
         return right;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.getValue();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Section section = (Section) o;
+        return Objects.equals(left, section.left) && Objects.equals(right, section.right)
+                && Objects.equals(distance, section.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(left, right, distance);
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "left=" + left +
+                ", right=" + right +
+                ", distance=" + distance +
+                '}';
     }
 }

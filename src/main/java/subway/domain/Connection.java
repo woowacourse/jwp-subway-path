@@ -20,6 +20,10 @@ public class Connection {
         return right;
     }
 
+    public boolean isDisConnected() {
+        return !(left && right);
+    }
+
     @Override
     public String toString() {
         return "Connection{" +
