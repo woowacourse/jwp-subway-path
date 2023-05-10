@@ -7,6 +7,8 @@ import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
 
 public class Sections {
+    private static final int END_POINT_STATION_FLAG = 1;
+    private static final int BETWEEN_STATION_FLAG = 2;
     private final List<Section> sections;
 
     public Sections() {
@@ -73,6 +75,12 @@ public class Sections {
         return findSections.peekFirst();
     }
 
+    private void validateUniqueSection(final List<Section> collect) {
+        if (collect.size() != 1) {
+            throw new IllegalStateException();
+        }
+    }
+
     public void removeFirstStation(final Station station) {
         validateEndPointStation(station);
         final Section firstSection = peekByFirstStationUnique(station);
@@ -85,20 +93,33 @@ public class Sections {
         sections.remove(lastSection);
     }
 
-    private void validateEndPointStation(final Station station) {
-        final int count = (int) sections.stream()
-                .filter(section -> section.contains(station))
-                .count();
+    public void removeStation(final Station station) {
+        validateBetweenStation(station);
+        final Section frontSection = peekBySecondStationUnique(station);
+        final Section behindSection = peekByFirstStationUnique(station);
 
-        if (count != 1) {
+        final Section mergedSection = frontSection.merge(behindSection);
+
+        sections.removeAll(List.of(frontSection, behindSection));
+        sections.add(mergedSection);
+    }
+
+    private void validateEndPointStation(final Station station) {
+        if (countStationInSection(station) != END_POINT_STATION_FLAG) {
             throw new IllegalArgumentException();
         }
     }
 
-    private void validateUniqueSection(final List<Section> collect) {
-        if (collect.size() != 1) {
-            throw new IllegalStateException();
+    private void validateBetweenStation(final Station station) {
+        if (countStationInSection(station) != BETWEEN_STATION_FLAG) {
+            throw new IllegalArgumentException();
         }
+    }
+
+    private int countStationInSection(final Station station) {
+        return (int) sections.stream()
+                .filter(section -> section.contains(station))
+                .count();
     }
 
     public List<Section> getSections() {

@@ -164,4 +164,26 @@ class SectionsTest {
         //then
         assertThat(sections.getSections()).hasSize(0);
     }
+
+    @Test
+    void 노선내_역과_역사이의_역_제거_테스트() {
+        //given
+        final Sections sections = new Sections();
+        final Station endStation = new Station("end");
+        final Section sectionA = new Section(
+                new Station("from"), endStation, new StationDistance(5)
+        );
+        sections.addInitialStations(sectionA);
+        sections.attachAtLastStation(endStation, new Station("toB"), new StationDistance(3));
+
+        //when
+        sections.removeStation(endStation);
+
+        //then
+        assertThat(sections.getSections()).hasSize(1);
+        final Section section = sections.getSections().get(0);
+        assertThat(section.getFirstStation()).isEqualTo(new Station("from"));
+        assertThat(section.getSecondStation()).isEqualTo(new Station("toB"));
+        assertThat(section.getDistance()).isEqualTo(new StationDistance(8));
+    }
 }
