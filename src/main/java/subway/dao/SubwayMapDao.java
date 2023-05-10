@@ -63,19 +63,11 @@ public class SubwayMapDao {
         );
 
         return SubwayMap.builder()
-                .id(id )
+                .id(id)
                 .line(subwayMap.getLine())
                 .startingStation(subwayMap.getPreviousStation())
                 .before(subwayMap.getNextStation())
-                .distance(subwayMap.getDistance())
-                .build();
-    }
-
-    public void update(SubwayMap subwayMap) {
-        jdbcTemplate.update("update SUBWAY_MAP set next_station_id = ?, distance = ? where id = ?",
-                subwayMap.getNextStation().getId(),
-                subwayMap.getDistance(),
-                subwayMap.getId());
+                .distance(subwayMap.getDistance()).build();
     }
 
     private long insertAndReturnId(Long id, Long startingStationId, Long destinationStationId, int distance) {
@@ -90,38 +82,33 @@ public class SubwayMapDao {
                 .longValue();
     }
 
-    public boolean existsStation(Station station, Line line) {
+    public void update(SubwayMap subwayMap) {
+        jdbcTemplate.update("update SUBWAY_MAP set next_station_id = ?, distance = ? where id = ?",
+                subwayMap.getNextStation().getId(),
+                subwayMap.getDistance(),
+                subwayMap.getId());
+    }
+
+    public boolean hasStation(Station station, Line line) {
         String sql = "select exists(select 1 from SUBWAY_MAP where current_station_id = ? and line_id = ?)";
         return jdbcTemplate.queryForObject(sql, Boolean.class, station.getId(), line.getId());
     }
 
     public int findDistanceBetween(Station stationA, Station stationB, Line line) {
         // 두 역이 current, next 나란히 있는 경우
-        String sql = "select * from SUBWAY_MAP where current_station_id = ? and line_id = ?";
-        SqlRowSet rowSet = jdbcTemplate.queryForRowSet(sql, stationA.getId(), line.getId());
-        if (rowSet.next()) {
-            long nextStationId = rowSet.getLong(NEXT_STATION_ID);
-            if (nextStationId == stationB.getId()) {
-                return rowSet.getInt(DISTANCE);
-            }
+        Optional<SubwayMap> subwayMapOptional = findByPreviousStation(stationA, line);
+        if (subwayMapOptional.isPresent() && subwayMapOptional.get().getNextStation().equals(stationB)) {
+            return subwayMapOptional.get().getDistance();
         }
 
         // 두 역이 next, current 이렇게 나란히 있는 경우
-        SqlRowSet reversedRowSet = jdbcTemplate.queryForRowSet(sql, stationB.getId(), line.getId());
-        if (reversedRowSet.next()) {
-            long reversedNextStationId = reversedRowSet.getLong(NEXT_STATION_ID);
-            if (reversedNextStationId == stationA.getId()) {
-                return reversedRowSet.getInt(DISTANCE);
-            }
+        Optional<SubwayMap> subwayMapOptional1 = findByNextStation(stationA, line);
+        if (subwayMapOptional1.isPresent() && subwayMapOptional1.get().getPreviousStation().equals(stationB)) {
+            return subwayMapOptional1.get().getDistance();
         }
 
         throw new IllegalArgumentException("주어진 두 역이 이웃한 역이 아닙니다.");
         // TODO: 아직까지 이웃하지 않은 역의 거리를 조회하지는 않는다고 가정합니다.
-    }
-
-    public long findStationIdByNextStation(Station nextStation) {
-        String sql = "select current_station_id from SUBWAY_MAP where next_station_id = ?";
-        return jdbcTemplate.queryForObject(sql, Long.class, nextStation.getId());
     }
 
     public Optional<SubwayMap> findByPreviousStation(Station previousStation, Line line) {
@@ -136,8 +123,7 @@ public class SubwayMapDao {
                     .line(line)
                     .startingStation(previousStation)
                     .before(new Station(rowSet.getLong(NEXT_STATION_ID), rowSet.getString("name")))
-                    .distance(rowSet.getInt(DISTANCE))
-                    .build());
+                    .distance(rowSet.getInt(DISTANCE)).build());
         }
         return Optional.empty();
     }
@@ -154,8 +140,7 @@ public class SubwayMapDao {
                     .line(line)
                     .startingStation(new Station(rowSet.getLong(CURRENT_STATION_ID), rowSet.getString("name")))
                     .before(nextStation)
-                    .distance(rowSet.getInt(DISTANCE))
-                    .build());
+                    .distance(rowSet.getInt(DISTANCE)).build());
         }
         return Optional.empty();
     }

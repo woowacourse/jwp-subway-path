@@ -1,7 +1,6 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
 import subway.dao.SubwayMapDao;
 import subway.domain.SubwayMap;
 
@@ -10,16 +9,14 @@ import java.util.Optional;
 @Service
 public class SubwayMapService {
     private final SubwayMapDao subwayMapDao;
-    private final StationDao stationDao;
 
-    public SubwayMapService(SubwayMapDao subwayMapDao, StationDao stationDao) {
+    public SubwayMapService(SubwayMapDao subwayMapDao) {
         this.subwayMapDao = subwayMapDao;
-        this.stationDao = stationDao;
     }
 
     public long insert(SubwayMap subwayMap) {
         // 1. 등록할 역이 연결할 역에 상행방향으로 달려있는 경우
-        if (!subwayMapDao.existsStation(subwayMap.getPreviousStation(), subwayMap.getLine())) {
+        if (!subwayMapDao.hasStation(subwayMap.getPreviousStation(), subwayMap.getLine())) {
             return insertUpSubwayMap(subwayMap);
         }
 
