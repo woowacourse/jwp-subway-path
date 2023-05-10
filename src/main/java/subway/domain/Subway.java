@@ -44,6 +44,14 @@ public class Subway {
         }
     }
 
+    public boolean hasLeftSection(final Station station) {
+        return !stations.incomingEdgesOf(station).isEmpty();
+    }
+
+    public boolean hasRightSection(final Station station) {
+        return !stations.outgoingEdgesOf(station).isEmpty();
+    }
+
     public Section findLeftSection(final Station station) {
         Set<DefaultWeightedEdge> edge = stations.incomingEdgesOf(station);
         validate(edge);
