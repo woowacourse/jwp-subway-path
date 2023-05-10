@@ -4,6 +4,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -88,6 +89,22 @@ class StationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(responseJson))
+                .andDo(print());
+    }
+
+    @Test
+    void id와_saveRequest를_받아_해당_역을_수정() throws Exception {
+        // given
+        final Long id = 1L;
+        final StationSaveRequest station = new StationSaveRequest("잠실역");
+        final String requestJson = objectMapper.writeValueAsString(station);
+        stationService.saveStation(station);
+
+        // when, then
+        mockMvc.perform(put("/stations/"+id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(requestJson))
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 }
