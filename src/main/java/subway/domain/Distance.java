@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.Objects;
 import subway.exception.DistanceNotValidException;
 
 public class Distance {
@@ -23,8 +24,35 @@ public class Distance {
         return value <= distance.value;
     }
 
+    public Distance subtract(final Distance distance) {
+        return new Distance(value - distance.value);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Distance distance = (Distance) o;
+        return value == distance.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "Distance{" +
+                "value=" + value +
+                '}';
+    }
+
     public int getValue() {
         return value;
     }
-
 }

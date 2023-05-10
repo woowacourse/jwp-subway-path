@@ -45,4 +45,16 @@ class DistanceTest {
         // expect
         assertThat(distance.moreThanOrEqual(new Distance(value))).isEqualTo(result);
     }
+
+    @Test
+    void 입력받은_거리를_뺀_값을_반환한다() {
+        // given
+        final Distance distance = new Distance(5);
+
+        // when
+        final Distance result = distance.subtract(new Distance(2));
+
+        // then
+        assertThat(result).isEqualTo(new Distance(3));
+    }
 }

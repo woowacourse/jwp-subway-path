@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -59,5 +60,17 @@ class SectionTest {
 
         // expect
         assertThat(section.isEnd(new Station(name))).isEqualTo(result);
+    }
+
+    @Test
+    void 현재_거리에서_입력받은_거리를_뺀_값을_반환한다() {
+        // given
+        final Section section = new Section("A", "B", 5);
+
+        // when
+        final Distance result = section.subtract(new Distance(2));
+
+        // then
+        assertThat(result).isEqualTo(new Distance(3));
     }
 }

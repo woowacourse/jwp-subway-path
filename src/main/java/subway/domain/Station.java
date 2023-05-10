@@ -27,6 +27,13 @@ public class Station {
         return Objects.hash(name);
     }
 
+    @Override
+    public String toString() {
+        return "Station{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
     public String getName() {
         return name;
     }
