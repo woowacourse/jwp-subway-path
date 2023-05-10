@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.domain.station.Station;
 import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
@@ -30,10 +31,10 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public StationEntity insert(StationEntity stationEntity) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
+    public StationEntity insert(Station station) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new StationEntity(id, stationEntity.getName());
+        return new StationEntity(id, station.getStationName().getName());
     }
 
     public List<StationEntity> findAll() {
@@ -46,9 +47,9 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(StationEntity newStationEntity) {
+    public void update(Long id, Station station) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStationEntity.getName(), newStationEntity.getId()});
+        jdbcTemplate.update(sql, new Object[]{station.getStationName().getName(), id});
     }
 
     public void deleteById(Long id) {

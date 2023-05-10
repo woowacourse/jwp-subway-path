@@ -20,13 +20,13 @@ public class SectionController {
 
     @PostMapping
     public ResponseEntity<SectionResponse> createSection(@RequestBody final SectionRequest sectionRequest) {
-        Long sectionId = sectionService.saveSection(sectionRequest);
+        Long sectionId = sectionService.save(sectionRequest);
         return ResponseEntity.created(URI.create("/sections/" + sectionId)).body(new SectionResponse(sectionId));
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteSection(@RequestParam final Long lineId, @RequestParam final Long stationId) {
-        sectionService.deleteSectionByStationId(lineId, stationId);
+        sectionService.deleteByLineIdAndStationId(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 }

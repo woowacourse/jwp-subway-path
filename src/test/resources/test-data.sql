@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS SECTION;
+DROP TABLE IF EXISTS STATION;
+DROP TABLE IF EXISTS LINE;
+
 create table if not exists STATION
 (
     id bigint auto_increment not null,
@@ -31,16 +35,3 @@ INSERT INTO LINE(name, color) VALUES ('2호선', 'green');
 
 INSERT INTO STATION(name) VALUES ('서울역');
 INSERT INTO STATION(name) VALUES ('천안역');
-
-INSERT INTO STATION(name) VALUES ('잠실역');
-INSERT INTO STATION(name) VALUES ('선릉역');
-INSERT INTO STATION(name) VALUES ('강남역');
-
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, null, 1, 3);
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, 1, 2, 4);
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, 2, null, 4);
-
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, null, 3, 3);
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, 3, 4, 4);
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, 4, 5, 4);
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, 5, null, 4);

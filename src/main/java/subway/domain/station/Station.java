@@ -7,4 +7,8 @@ public class Station {
     public Station(final StationName stationName) {
         this.stationName = stationName;
     }
+
+    public StationName getStationName() {
+        return stationName;
+    }
 }

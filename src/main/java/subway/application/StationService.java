@@ -2,6 +2,8 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
+import subway.domain.station.Station;
+import subway.domain.station.StationName;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.entity.StationEntity;
@@ -17,16 +19,16 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        StationEntity stationEntity = stationDao.insert(new StationEntity(stationRequest.getName()));
+    public StationResponse save(StationRequest stationRequest) {
+        StationEntity stationEntity = stationDao.insert(new Station(new StationName(stationRequest.getName())));
         return StationResponse.of(stationEntity);
     }
 
-    public StationResponse findStationResponseById(Long id) {
+    public StationResponse findById(Long id) {
         return StationResponse.of(stationDao.findById(id));
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponse> findAll() {
         List<StationEntity> stationEntities = stationDao.findAll();
 
         return stationEntities.stream()
@@ -34,11 +36,11 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new StationEntity(id, stationRequest.getName()));
+    public void update(Long id, StationRequest stationRequest) {
+        stationDao.update(id, new Station(new StationName(stationRequest.getName())));
     }
 
-    public void deleteStationById(Long id) {
+    public void deleteById(Long id) {
         stationDao.deleteById(id);
     }
 }

@@ -9,4 +9,12 @@ public class Line {
         this.lineName = lineName;
         this.lineColor = lineColor;
     }
+
+    public LineName getLineName() {
+        return lineName;
+    }
+
+    public LineColor getLineColor() {
+        return lineColor;
+    }
 }

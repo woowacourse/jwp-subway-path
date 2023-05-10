@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.domain.line.Line;
 import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
@@ -30,14 +31,13 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public LineEntity insert(LineEntity lineEntity) {
+    public LineEntity insert(Line line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", lineEntity.getId());
-        params.put("name", lineEntity.getName());
-        params.put("color", lineEntity.getColor());
+        params.put("name", line.getLineName().getName());
+        params.put("color", line.getLineColor().getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
+        return new LineEntity(lineId, line.getLineName().getName(), line.getLineColor().getColor());
     }
 
     public List<LineEntity> findAll() {
@@ -50,9 +50,9 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(LineEntity newLineEntity) {
+    public void update(Long id, Line line) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLineEntity.getName(), newLineEntity.getColor(), newLineEntity.getId()});
+        jdbcTemplate.update(sql, new Object[]{line.getLineName().getName(), line.getLineColor().getColor(), id});
     }
 
     public void deleteById(Long id) {

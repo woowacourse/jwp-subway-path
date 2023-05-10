@@ -33,7 +33,7 @@ class SectionServiceTest {
         given(sectionDao.insert(any())).willReturn(1L);
 
         // when
-        Long sectionId = sectionService.saveSection(new SectionRequest(2L, 1L, 1L, 3));
+        Long sectionId = sectionService.save(new SectionRequest(2L, 1L, 1L, 3));
 
         // then
         assertThat(sectionId).isEqualTo(1L);

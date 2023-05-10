@@ -7,4 +7,8 @@ public class LineColor {
     public LineColor(final String color) {
         this.color = color;
     }
+
+    public String getColor() {
+        return color;
+    }
 }

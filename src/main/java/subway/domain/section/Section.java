@@ -1,40 +1,32 @@
 package subway.domain.section;
 
-import subway.entity.StationEntity;
-
 public class Section {
 
-    private final Long id;
     private final Long lineId;
-    private final StationEntity upStationEntity;
-    private final StationEntity downStationEntity;
-    private final int distance;
+    private final Long upStationId;
+    private final Long downStationId;
+    private final Distance distance;
 
-    public Section(final Long id, final Long lineId, final StationEntity upStationEntity, final StationEntity downStationEntity, final int distance) {
-        this.id = id;
+    public Section(final Long lineId, final Long upStationId, final Long downStationId, final Distance distance) {
         this.lineId = lineId;
-        this.upStationEntity = upStationEntity;
-        this.downStationEntity = downStationEntity;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
         this.distance = distance;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public Long getLineId() {
         return lineId;
     }
 
-    public StationEntity getUpStation() {
-        return upStationEntity;
+    public Long getUpStationId() {
+        return upStationId;
     }
 
-    public StationEntity getDownStation() {
-        return downStationEntity;
+    public Long getDownStationId() {
+        return downStationId;
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 }
