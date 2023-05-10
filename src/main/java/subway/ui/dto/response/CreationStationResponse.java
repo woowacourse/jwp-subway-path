@@ -1,7 +1,8 @@
-package subway.dto;
+package subway.ui.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import subway.application.dto.CreationStationDto;
 
 public class CreationStationResponse {
 

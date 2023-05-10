@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.dto.CreationLineDto;
-import subway.dto.ReadLineResponse;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.response.CreationLineResponse;
+import subway.ui.dto.response.ReadLineResponse;
 
 import java.net.URI;
 import java.util.List;

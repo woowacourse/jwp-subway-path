@@ -4,9 +4,8 @@ import org.springframework.stereotype.Service;
 import subway.application.dto.CreationLineDto;
 import subway.dao.LineDao;
 import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.ReadLineResponse;
 import subway.ui.dto.request.CreationLineRequest;
+import subway.ui.dto.response.ReadLineResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -42,10 +41,6 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {

@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.application.dto;
 
 import subway.domain.Station;
 

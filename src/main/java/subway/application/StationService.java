@@ -1,11 +1,10 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.application.dto.CreationStationDto;
 import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.dto.CreationStationDto;
-import subway.dto.ReadStationResponse;
-import subway.dto.StationRequest;
+import subway.ui.dto.response.ReadStationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,10 +32,6 @@ public class StationService {
         return stations.stream()
                 .map(ReadStationResponse::of)
                 .collect(Collectors.toList());
-    }
-
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {

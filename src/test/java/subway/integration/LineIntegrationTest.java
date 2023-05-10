@@ -9,8 +9,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.ReadLineResponse;
 import subway.ui.dto.request.CreationLineRequest;
+import subway.ui.dto.response.ReadLineResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
