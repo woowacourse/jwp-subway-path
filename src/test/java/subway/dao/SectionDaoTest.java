@@ -52,4 +52,13 @@ class SectionDaoTest {
 
         assertThat(sectionDao.findAll()).isEmpty();
     }
+
+    @DisplayName("구간을 조회할 수 있다.")
+    @Test
+    void findById() {
+        sectionDao.insert(FIXTURE_LINE_1, SECTION_START);
+
+        assertThat(sectionDao.findById(1L))
+                .isEqualTo(SECTION_START);
+    }
 }
