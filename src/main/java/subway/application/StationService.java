@@ -48,14 +48,21 @@ public class StationService {
         }
         final StationRequest request = stationRequests.get(0);
         if (type == CreateType.UP) {
-            // 기존의 상행 종점의 값을 바꿔주어야 함
 
             final Long upEndpointId = line.getUpEndpointId();
             final Station upEndpoint = stationDao.findById(upEndpointId);
-
             validateRequestUpEndpoint(request, upEndpoint.getName());
 
             final Station station = stationDao.insert(new Station(request.getName()));
+
+            final Section downSection = new Section(request.getNextDistance(), station.getId(), upEndpointId, Direction.DOWN);
+            sectionDao.insertSection(downSection, line.getId());
+            final Section upSection = new Section(request.getNextDistance(), upEndpointId, station.getId(), Direction.UP);
+            sectionDao.insertSection(upSection, line.getId());
+
+            //DB의 endpoint
+            lineService.updateEndpoint(line.getId(), Direction.UP, station.getId());
+
             return List.of(StationResponse.of(station));
         }
         if (type == CreateType.DOWN) {

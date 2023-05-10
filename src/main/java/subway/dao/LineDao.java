@@ -64,4 +64,15 @@ public class LineDao {
     public void deleteById(final Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
+
+    public void updateUpEndpoint(final Long lineId, final Long stationId) {
+        final String sql = "update LINE set up_endpoint_id = ? where id = ?";
+        jdbcTemplate.update(sql, stationId, lineId);
+
+    }
+
+    public void updateDownEndpoint(final Long lineId, final Long stationId) {
+        final String sql = "update LINE set down_endpoint_id = ? where id = ?";
+        jdbcTemplate.update(sql, stationId, lineId);
+    }
 }

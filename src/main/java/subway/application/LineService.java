@@ -2,6 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
+import subway.domain.Direction;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
@@ -54,4 +55,11 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
+    public void updateEndpoint(final Long lineId, final Direction direction, final Long stationId) {
+        if (direction.equals(Direction.UP)) {
+            lineDao.updateUpEndpoint(lineId, stationId);
+            return;
+        }
+        lineDao.updateDownEndpoint(lineId, stationId);
+    }
 }
