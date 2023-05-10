@@ -50,6 +50,6 @@ public class Stations {
     }
 
     public Station getLastStation() {
-        return stations.get(size());
+        return stations.get(size()-1);
     }
 }

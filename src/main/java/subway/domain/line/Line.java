@@ -1,5 +1,6 @@
 package subway.domain.line;
 
+import java.util.List;
 import java.util.Objects;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
@@ -16,7 +17,7 @@ public class Line {
     }
 
     public Line(final String name, final String color) {
-        this(null, name, color, null, null);
+        this(null, name, color, new Stations(List.of()), new Sections(List.of()));
     }
 
     public Line(final Long id, final String name, final String color, final Stations stations, final Sections sections) {
