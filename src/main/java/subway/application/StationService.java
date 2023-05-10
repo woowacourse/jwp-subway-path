@@ -3,6 +3,7 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
 import subway.domain.Station;
+import subway.dto.CreationStationDto;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
@@ -17,9 +18,9 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public CreationStationDto saveStation(final String stationName) {
+        Station station = stationDao.insert(new Station(stationName));
+        return CreationStationDto.from(station);
     }
 
     public StationResponse findStationResponseById(Long id) {
