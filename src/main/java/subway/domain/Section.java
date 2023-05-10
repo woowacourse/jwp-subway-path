@@ -46,12 +46,44 @@ public class Section {
         newSection.to.stations.updateStationOnAdd(newSection.stations);
     }
 
-    public void updateNextSection(final Section section) {
-        to = section;
-    }
-
     public boolean isLinked(final Section other) {
         return other.stations.isLinked(this.stations);
+    }
+
+    public void delete(final Station deletedStation) {
+        final Section current = find(deletedStation);
+
+        if (current == null) {
+            throw new IllegalArgumentException("해당 Section에는 삭제할 역이 존재하지 않습니다.");
+        }
+
+        final Section deletedSection = current.to;
+
+        current.stations.updateStationOnDelete(deletedSection.stations);
+
+        updateSectionOnDelete(current, deletedSection);
+    }
+
+    private void updateSectionOnDelete(final Section current, final Section deletedSection) {
+        current.to = deletedSection.to;
+        deletedSection.to = null;
+    }
+
+    private Section find(final Station station) {
+        Section current = this;
+
+        while (current != null) {
+            if (current.stations.getNext().isSame(station)) {
+                return current;
+            }
+            current = current.to;
+        }
+
+        return null;
+    }
+
+    public void updateNextSection(final Section section) {
+        to = section;
     }
 
     public Stations getStations() {

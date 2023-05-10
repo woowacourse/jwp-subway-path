@@ -21,8 +21,13 @@ public class Stations {
     }
 
     public void updateStationOnAdd(final Stations newStations) {
-        current.updateStationNameOnAdd(newStations.next);
+        current.updateStationName(newStations.next);
         distance = distance - newStations.distance;
+    }
+
+    public void updateStationOnDelete(final Stations deleteStations) {
+        next.updateStationName(deleteStations.next);
+        distance = distance + deleteStations.distance;
     }
 
     public int getDistance() {
@@ -31,9 +36,5 @@ public class Stations {
 
     public Station getNext() {
         return next;
-    }
-
-    public void setDistance(final int distance) {
-        this.distance = distance;
     }
 }

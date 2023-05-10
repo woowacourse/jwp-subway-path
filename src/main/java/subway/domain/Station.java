@@ -9,7 +9,7 @@ public class Station {
         this.name = name;
     }
 
-    public void updateStationNameOnAdd(final Station station) {
+    public void updateStationName(final Station station) {
         name = station.name;
     }
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SectionTest {
@@ -141,5 +142,43 @@ class SectionTest {
 
         //when & then
         assertTrue(end.isLinked(start));
+    }
+
+    /**
+     * 기존 : A-B-C-D-E
+     * 삭제 : C
+     * 결과 : A-B-D-E
+     */
+    @Test
+    @DisplayName("delete() : 중간 섹션을 삭제할 수 있다.")
+    void test_delete() throws Exception {
+        //given
+        final Stations stations1 = new Stations(new Station("A"), new Station("B"), 5);
+        final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
+        final Stations stations3 = new Stations(new Station("C"), new Station("D"), 3);
+        final Stations stations4 = new Stations(new Station("D"), new Station("E"), 3);
+
+        Section 시작_섹션 = new Section(stations1);
+        final Section section2 = new Section(stations2);
+        시작_섹션.addNext(section2);
+
+        final Section section3 = new Section(stations3);
+        시작_섹션.addNext(section3);
+
+        final Section section4 = new Section(stations4);
+        시작_섹션.addNext(section4);
+
+        final Station 삭제할_역 = new Station("C");
+
+        //when
+        시작_섹션.delete(삭제할_역);
+
+        //then
+        assertAll(
+                () -> assertEquals(section2.getTo(), section4),
+                () -> assertNull(section3.getTo()),
+                () -> assertTrue(section2.getStations().getNext().isSame(section3.getStations().getNext())),
+                () -> assertEquals(7, section2.getStations().getDistance())
+        );
     }
 }
