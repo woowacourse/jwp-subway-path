@@ -106,6 +106,10 @@ public class Line {
                 .findAny();
     }
 
+    public RouteMap routeMap() {
+        return new RouteMap(sections);
+    }
+
     public Long getId() {
         return id;
     }

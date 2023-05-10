@@ -62,6 +62,14 @@ public class Section {
         return new Section(left, target.right, distance.add(target.distance));
     }
 
+    public Station getLeft() {
+        return left;
+    }
+
+    public Station getRight() {
+        return right;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
