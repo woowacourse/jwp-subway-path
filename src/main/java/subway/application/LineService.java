@@ -1,9 +1,11 @@
 package subway.application;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
+import subway.dao.entity.LineEntity;
 import subway.domain.Line;
 import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
@@ -18,32 +20,23 @@ public class LineService {
     }
 
     public long saveLine(LineCreateRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return persistLine.getId();
+        return lineDao.insert(new Line(request.getName(), request.getColor()));
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineDao.findAll();
+        List<LineEntity> lines = lineDao.findAll();
+        return lines.stream()
+                .map(LineResponse::from)
+                .collect(toList());
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        LineEntity lineEntity = lineDao.findById(id);
+        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
     public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineDao.update(id, new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {

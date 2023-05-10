@@ -1,15 +1,15 @@
 package subway.dao;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.LineEntity;
-import subway.domain.Station;
+import subway.domain.Line;
 
 @Repository
 public class LineDao {
@@ -26,15 +26,13 @@ public class LineDao {
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("Line")
+                .withTableName("LINE")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public long insert(LineEntity lineEntity) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", lineEntity.getName());
-        params.put("color", lineEntity.getColor());
-        return insertAction.executeAndReturnKey(params).longValue();
+    public long insert(Line line) {
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(line);
+        return insertAction.executeAndReturnKey(sqlParameterSource).longValue();
     }
 
     public List<LineEntity> findAll() {
@@ -47,18 +45,12 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(LineEntity lineEntity) {
+    public void update(Long id, Line line) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
     }
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from LINE where id = ?", id);
-    }
-
-    public void updateStartStationById(Long id, Station station) {
-        String sql = "UPDATE LINE SET start_station_name = ? WHERE id = ?";
-        jdbcTemplate.update(sql, station.getName(), id);
-
     }
 }

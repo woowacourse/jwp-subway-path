@@ -1,20 +1,14 @@
-package subway.dto;
+package subway.dao.entity;
 
-import subway.dao.entity.LineEntity;
-
-public class LineResponse {
+public class LineEntity {
     private Long id;
     private String name;
     private String color;
 
-    public LineResponse(Long id, String name, String color) {
+    public LineEntity(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
-    }
-
-    public static LineResponse from(LineEntity lineEntity) {
-        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
     public Long getId() {
