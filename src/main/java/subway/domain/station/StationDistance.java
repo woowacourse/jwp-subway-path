@@ -18,6 +18,10 @@ public class StationDistance {
         }
     }
 
+    public StationDistance subtract(final StationDistance other) {
+        return new StationDistance(this.distance - other.distance);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

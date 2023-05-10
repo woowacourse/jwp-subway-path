@@ -43,6 +43,18 @@ public class Sections {
         sections.add(attachedSection);
     }
 
+    public void insertBehindStation(
+            final Station firstStation,
+            final Station additionStation,
+            final StationDistance stationDistance
+    ) {
+        final Section section = peekByFirstStationUnique(firstStation);
+        final List<Section> sections = section.attachBetween(additionStation, stationDistance);
+
+        this.sections.remove(section);
+        this.sections.addAll(sections);
+    }
+
     public Section peekByFirstStationUnique(final Station firstStation) { //FIXME 접근제어자
         final LinkedList<Section> findSections = sections.stream()
                 .filter(section -> section.matchFirstStation(firstStation))

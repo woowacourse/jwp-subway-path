@@ -12,29 +12,33 @@ class SectionsTest {
 
     @Test
     void 최초_역_등록_테스트() {
+        //given
         final Sections sections = new Sections();
         final Section section = new Section(
                 new Station("from"),
                 new Station("to"),
                 new StationDistance(5)
         );
-
+        //when
         sections.addInitialStations(section);
 
+        //then
         assertThat(sections.getSections()).hasSize(1);
     }
 
     @Test
     void 역이_존재_하는_경우_최초_역_등록을_할_수_없다() {
+        //given
         final Sections sections = new Sections();
         final Section section = new Section(
                 new Station("from"),
                 new Station("to"),
                 new StationDistance(5)
         );
-
+        //when
         sections.addInitialStations(section);
 
+        //then
         assertThatThrownBy(() -> sections.addInitialStations(section))
                 .isInstanceOf(IllegalStateException.class);
     }
@@ -56,6 +60,47 @@ class SectionsTest {
         assertThat(sections.getSections()).hasSize(2);
         assertThat(sections.peekByFirstStationUnique(newStation).getDistance())
                 .isEqualTo(new StationDistance(3));
+    }
+
+
+    @Test
+    void 노선_뒤에_역_추가_테스트() {
+        //given
+        final Sections sections = new Sections();
+        final Station endStation = new Station("end");
+        final Section section = new Section(new Station("from"), endStation, new StationDistance(5));
+
+        sections.addInitialStations(section);
+        final Station newStation = new Station("newStation");
+
+        //when
+        sections.addLastStation(endStation, newStation, new StationDistance(3));
+
+        //then
+        assertThat(sections.getSections()).hasSize(2);
+        assertThat(sections.peekByFirstStationUnique(endStation).getDistance())
+                .isEqualTo(new StationDistance(3));
+    }
+
+    @Test
+    void 노선_역과_역_사이에_역_추가_테스트() {
+        //given
+        final Sections sections = new Sections();
+        final Station startStation = new Station("start");
+        final Section section = new Section(startStation, new Station("to"), new StationDistance(5));
+
+        sections.addInitialStations(section);
+        final Station newStation = new Station("newStation");
+
+        //when
+        sections.insertBehindStation(startStation, newStation, new StationDistance(3));
+
+        //then
+        assertThat(sections.getSections()).hasSize(2);
+        assertThat(sections.peekByFirstStationUnique(startStation).getDistance())
+                .isEqualTo(new StationDistance(3));
+        assertThat(sections.peekByFirstStationUnique(newStation).getDistance())
+                .isEqualTo(new StationDistance(2));
     }
 
     @Test
@@ -88,22 +133,4 @@ class SectionsTest {
         assertThat(peekSection).isEqualTo(initSection);
     }
 
-    @Test
-    void 노선_뒤에_역_추가_테스트() {
-        //given
-        final Sections sections = new Sections();
-        final Station endStation = new Station("end");
-        final Section section = new Section(new Station("from"), endStation, new StationDistance(5));
-
-        sections.addInitialStations(section);
-        final Station newStation = new Station("newStation");
-
-        //when
-        sections.addLastStation(endStation, newStation, new StationDistance(3));
-
-        //then
-        assertThat(sections.getSections()).hasSize(2);
-        assertThat(sections.peekByFirstStationUnique(endStation).getDistance())
-                .isEqualTo(new StationDistance(3));
-    }
 }

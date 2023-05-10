@@ -1,5 +1,6 @@
 package subway.domain.section;
 
+import java.util.List;
 import java.util.Objects;
 import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
@@ -29,6 +30,12 @@ public class Section {
 
     public Section attachBehind(final Station additionStation, final StationDistance stationDistance) {
         return new Section(secondStation, additionStation, stationDistance);
+    }
+
+    public List<Section> attachBetween(final Station additionStation, final StationDistance stationDistance) {
+        final Section firstSection = new Section(firstStation, additionStation, stationDistance);
+        final Section secondSection = new Section(additionStation, secondStation, distance.subtract(stationDistance));
+        return List.of(firstSection, secondSection);
     }
 
     public Station getFirstStation() {
