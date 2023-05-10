@@ -48,7 +48,7 @@ class SectionTest {
     @Test
     void Station을_중간에_추가해서_새로운_Section들을_반환한다() {
         Section section = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
-        Station newStation = new Station("건대입구");
+        Station newStation = Station.from("건대입구");
 
         Section expectedFirstSection = new Section(JAMSIL_STATION, newStation, 2);
         Section expectedSecondSection = new Section(newStation, JAMSIL_NARU_STATION, 3);
@@ -61,7 +61,7 @@ class SectionTest {
     @Test
     void 기존_section_거리_이상의_거리를_넣을_수_없다() {
         Section section = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
-        Station newStation = new Station("건대입구");
+        Station newStation = Station.from("건대입구");
 
         assertThatThrownBy(() -> section.insertInTheMiddle(newStation, 5))
                 .isInstanceOf(InvalidDistanceException.class);

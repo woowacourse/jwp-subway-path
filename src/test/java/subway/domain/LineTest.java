@@ -5,16 +5,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.DuplicateStationInLineException;
 import subway.exception.NameLengthException;
+import subway.exception.SectionNotFoundException;
 import subway.exception.StationNotFoundException;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
 import static subway.utils.SectionFixture.JAMSIL_TO_JAMSILNARU;
-import static subway.utils.StationFixture.JAMSIL_STATION;
-import static subway.utils.StationFixture.SULLEUNG_STATION;
+import static subway.utils.StationFixture.*;
 
 class LineTest {
 
@@ -53,5 +54,17 @@ class LineTest {
     void 삭제하려는_Station이_없는_경우_예외를_던진다() {
         assertThatThrownBy(() -> LINE_NUMBER_TWO.deleteStation(Station.from("메리")))
                 .isInstanceOf(StationNotFoundException.class);
+    }
+
+    @Test
+    void Station을_추가할_때_Upstream과_Downstream이_Section으로_등록되지_않은_경우_예외를_던진다() {
+        Station newStation = Station.from("에밀");
+
+        assertSoftly(softly -> {
+            softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, SULLEUNG_STATION, JAMSIL_NARU_STATION, 3))
+                    .isInstanceOf(SectionNotFoundException.class);
+            softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, JAMSIL_STATION, Station.getEndpoint(), 3))
+                    .isInstanceOf(SectionNotFoundException.class);
+        });
     }
 }
