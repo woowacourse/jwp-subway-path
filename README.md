@@ -140,3 +140,12 @@ Content-Type: application/json
 ```
 
 # 기능 목록
+
+### Line
+
+### Section
+- [x] 상행역, 하행역과 거리를 갖는다.
+- [x] 남은 거리를 계산한다.
+
+### Station
+- [x] 역의 이름을 갖는다.

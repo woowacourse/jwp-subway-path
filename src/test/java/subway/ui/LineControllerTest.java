@@ -34,7 +34,7 @@ public class LineControllerTest {
     @MockBean
     private LineService lineService;
 
-    @DisplayName("노선과 두 개의 역을 추가한다")
+    @DisplayName("노선과 두 개의 역을 추가한다.")
     @Test
         // given(memberService.findAll()).willReturn(List.of(FIRST_MEMBER.RESPONSE));
     void shouldCreateLineWhenRequest() throws Exception {
