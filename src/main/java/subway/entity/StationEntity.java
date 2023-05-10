@@ -1,7 +1,6 @@
 package subway.entity;
 
 import java.util.Objects;
-import subway.domain.station.Station;
 
 public class StationEntity {
 
@@ -15,10 +14,6 @@ public class StationEntity {
     public StationEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
-    }
-
-    public static StationEntity from(final Station station) {
-        return new StationEntity(station.getId(), station.getName());
     }
 
     public Long getId() {

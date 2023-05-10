@@ -6,6 +6,7 @@ import subway.controller.dto.StationResponse;
 import subway.dao.StationDao;
 import subway.domain.station.Station;
 import subway.entity.StationEntity;
+import subway.exception.InvalidStationException;
 
 @Service
 public class StationService {
@@ -18,10 +19,13 @@ public class StationService {
 
     public Long createStation(final StationCreateRequest request) {
         final Station station = new Station(request.getName());
-        return stationDao.save(StationEntity.from(station)).getId();
+        return stationDao.save(new StationEntity(station.getId(), station.getName())).getId();
     }
 
     public StationResponse findStationById(final Long stationId) {
-        return null;
+        final StationEntity stationEntity = stationDao.findById(stationId)
+                .orElseThrow(() -> new InvalidStationException("존재하지 않는 역입니다."));
+        final Station station = new Station(stationEntity.getId(), stationEntity.getName());
+        return StationResponse.from(station);
     }
 }

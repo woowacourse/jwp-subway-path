@@ -2,9 +2,11 @@ package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -13,8 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.StationCreateRequest;
+import subway.controller.dto.StationResponse;
 import subway.dao.StationDao;
 import subway.entity.StationEntity;
+import subway.exception.InvalidStationException;
 import subway.exception.InvalidStationNameException;
 
 @ExtendWith(MockitoExtension.class)
@@ -49,6 +53,35 @@ class StationServiceTest {
 
             assertThatThrownBy(() -> stationService.createStation(request))
                     .isInstanceOf(InvalidStationNameException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("역을 조회 시 ")
+    class FindStationById {
+
+        @Test
+        @DisplayName("존재하는 역일시 역 정보를 반환한다.")
+        void findStationById() {
+            final StationEntity entity = new StationEntity(1L, "잠실역");
+            given(stationDao.findById(1L)).willReturn(Optional.of(entity));
+
+            final StationResponse station = stationService.findStationById(1L);
+
+            assertAll(
+                    () -> assertThat(station.getId()).isEqualTo(1L),
+                    () -> assertThat(station.getName()).isEqualTo("잠실역")
+            );
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 역일시 예외를 던진다.")
+        void findStationByInvalidId() {
+            given(stationDao.findById(1L)).willReturn(Optional.empty());
+
+            assertThatThrownBy(() -> stationService.findStationById(1L))
+                    .isInstanceOf(InvalidStationException.class)
+                    .hasMessage("존재하지 않는 역입니다.");
         }
     }
 }
