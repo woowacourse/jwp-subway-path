@@ -2,7 +2,9 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
+import subway.dao.SectionDao;
 import subway.domain.Line;
+import subway.domain.Section;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -12,14 +14,21 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
     private final LineDao lineDao;
+    private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(LineDao lineDao, SectionDao sectionDao) {
         this.lineDao = lineDao;
+        this.sectionDao = sectionDao;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    public Long saveLine(LineRequest request) {
+        final Line line = new Line(request.getName(), request.getColor());
+        final Long lineId = lineDao.insert(line);
+
+        final Section section = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), lineId);
+        sectionDao.insert(section);
+
+        return lineId;
     }
 
     public List<LineResponse> findLineResponses() {
@@ -40,10 +49,6 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {

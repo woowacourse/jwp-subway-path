@@ -2,19 +2,19 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     private RowMapper<Line> rowMapper = (rs, rowNum) ->
             new Line(
@@ -25,19 +25,14 @@ public class LineDao {
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+    public Long insert(Line line) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(line);
+        return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
     public List<Line> findAll() {
