@@ -3,13 +3,13 @@ package subway.dto;
 public class StationAddToLineRequest {
     private final String station;
     private final String adjacentStation;
-    private final String add_direction;
+    private final String addDirection;
     private final Integer distance;
 
-    public StationAddToLineRequest(String station, String adjacentStation, String add_direction, Integer distance) {
+    public StationAddToLineRequest(String station, String adjacentStation, String addDirection, Integer distance) {
         this.station = station;
         this.adjacentStation = adjacentStation;
-        this.add_direction = add_direction;
+        this.addDirection = addDirection;
         this.distance = distance;
     }
 
@@ -21,8 +21,8 @@ public class StationAddToLineRequest {
         return adjacentStation;
     }
 
-    public String getAdd_direction() {
-        return add_direction;
+    public String getAddDirection() {
+        return addDirection;
     }
 
     public Integer getDistance() {

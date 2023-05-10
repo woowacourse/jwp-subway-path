@@ -11,9 +11,30 @@ public class SectionTest {
     void shouldReturnRemainingDistanceWhenInputDistance() {
         Station upwardStation = new Station("잠실역");
         Station downwardStation = new Station("몽촌토성역");
-
         Section section = new Section(upwardStation, downwardStation, 5);
+
         int remainingDistance = section.calculateRemainingDistance(3);
         assertThat(remainingDistance).isEqualTo(2);
+    }
+
+    @DisplayName("이미 구간에 포함된 역이면 true를 반환한다.")
+    @Test
+    void shouldReturnTrueWhenAlreadyHasStation() {
+        Station upwardStation = new Station("잠실역");
+        Station downwardStation = new Station("몽촌토성역");
+        Section section = new Section(upwardStation, downwardStation, 5);
+
+        assertThat(section.hasStation(upwardStation)).isTrue();
+    }
+
+    @DisplayName("구간에 포함되지 않은 역이면 false를 반환한다.")
+    @Test
+    void shouldReturnFalseWhenDoesNotHaveStation() {
+        Station upwardStation = new Station("잠실역");
+        Station downwardStation = new Station("몽촌토성역");
+        Section section = new Section(upwardStation, downwardStation, 5);
+
+        Station station = new Station("강남역");
+        assertThat(section.hasStation(station)).isFalse();
     }
 }

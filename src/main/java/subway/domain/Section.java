@@ -15,4 +15,11 @@ public class Section {
     public int calculateRemainingDistance(int distanceToSubtract) {
         return this.distance - distanceToSubtract;
     }
+
+    public boolean hasStation(Station station) {
+        if (upwardStation.equals(station) || downwardStation.equals(station)) {
+            return true;
+        }
+        return false;
+    }
 }
