@@ -14,8 +14,8 @@ import subway.application.StationService;
 import subway.dto.CreationStationDto;
 import subway.dto.CreationStationRequest;
 import subway.dto.CreationStationResponse;
+import subway.dto.ReadStationResponse;
 import subway.dto.StationRequest;
-import subway.dto.StationResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -38,12 +38,12 @@ public class StationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StationResponse>> showStations() {
+    public ResponseEntity<List<ReadStationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
+    public ResponseEntity<ReadStationResponse> showStation(@PathVariable Long id) {
         return ResponseEntity.ok().body(stationService.findStationResponseById(id));
     }
 

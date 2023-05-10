@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.CreationStationDto;
+import subway.dto.ReadStationResponse;
 import subway.dto.StationRequest;
-import subway.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,15 +23,15 @@ public class StationService {
         return CreationStationDto.from(station);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public ReadStationResponse findStationResponseById(Long id) {
+        return ReadStationResponse.of(stationDao.findById(id));
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<ReadStationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
+                .map(ReadStationResponse::of)
                 .collect(Collectors.toList());
     }
 

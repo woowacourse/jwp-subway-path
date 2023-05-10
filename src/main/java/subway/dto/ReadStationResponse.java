@@ -2,17 +2,17 @@ package subway.dto;
 
 import subway.domain.Station;
 
-public class StationResponse {
+public class ReadStationResponse {
     private Long id;
     private String name;
 
-    public StationResponse(Long id, String name) {
+    public ReadStationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getName());
+    public static ReadStationResponse of(Station station) {
+        return new ReadStationResponse(station.getId(), station.getName());
     }
 
     public Long getId() {
