@@ -96,4 +96,33 @@ class StationDaoTest {
         // then
         assertThat(result).isEqualTo(savedStation);
     }
+
+    @Test
+    void 노선id를_입력받아_역을_전체_삭제한다() {
+        // given
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        stationDao.insert(new StationEntity("A", line.getId()));
+
+        // when
+        stationDao.deleteByLineId(line.getId());
+
+        // then
+        assertThat(stationDao.findAll()).hasSize(0);
+    }
+
+    @Test
+    void 역을_모두_추가한다() {
+        // given
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        final List<StationEntity> stations = List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId())
+        );
+
+        // when
+        stationDao.insertAll(stations);
+
+        // then
+        assertThat(stationDao.findAll()).hasSize(2);
+    }
 }

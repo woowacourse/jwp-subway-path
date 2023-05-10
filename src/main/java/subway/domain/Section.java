@@ -46,7 +46,7 @@ public class Section {
     public Distance add(final Distance distance) {
         return this.distance.add(distance);
     }
-    
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -78,11 +78,23 @@ public class Section {
         return start;
     }
 
+    public String getStartName() {
+        return start.getName();
+    }
+
     public Station getEnd() {
         return end;
     }
 
+    public String getEndName() {
+        return end.getName();
+    }
+
     public Distance getDistance() {
         return distance;
+    }
+
+    public Integer getDistanceValue() {
+        return distance.getValue();
     }
 }

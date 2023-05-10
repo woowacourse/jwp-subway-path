@@ -85,4 +85,40 @@ class SectionTest {
         // then
         assertThat(result).isEqualTo(new Distance(7));
     }
+
+    @Test
+    void 시작역_이름을_반환한다() {
+        // given
+        final Section section = new Section("A", "B", 5);
+
+        // when
+        final String result = section.getStartName();
+
+        // then
+        assertThat(result).isEqualTo("A");
+    }
+
+    @Test
+    void 도착역_이름을_반환한다() {
+        // given
+        final Section section = new Section("A", "B", 5);
+
+        // when
+        final String result = section.getEndName();
+
+        // then
+        assertThat(result).isEqualTo("B");
+    }
+
+    @Test
+    void 거리값을_반환한다() {
+        // given
+        final Section section = new Section("A", "B", 5);
+
+        // when
+        final Integer result = section.getDistanceValue();
+
+        // then
+        assertThat(result).isEqualTo(5);
+    }
 }

@@ -3,6 +3,7 @@ package subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -92,5 +93,18 @@ class LineDaoTest {
 
         // then
         assertThat(findLine).isEqualTo(insertLine);
+    }
+
+    @Test
+    void 노선을_이름으로_조회한다() {
+        // given
+        final LineEntity line = new LineEntity("1호선", "RED");
+        lineDao.insert(line);
+
+        // when
+        final Optional<LineEntity> findLine = lineDao.findByName("1호선");
+
+        // then
+        assertThat(findLine).isPresent();
     }
 }
