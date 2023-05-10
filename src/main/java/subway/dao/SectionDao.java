@@ -47,4 +47,15 @@ public class SectionDao {
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
+
+    public int updateSectionTypeByLineIdAndSourceStationId(final Long lineId, final Long sourceStationId,
+                                                           final String sectionType) {
+        final String sql = "UPDATE section SET section_type = ? WHERE line_id = ? and source_station_id = ?";
+        return jdbcTemplate.update(sql, sectionType, lineId, sourceStationId);
+    }
+
+    public int deleteByLineIdAndSourceStationId(final Long lineId, final Long sourceStationId) {
+        final String sql = "DELETE FROM section WHERE line_id = ? and source_station_id = ?";
+        return jdbcTemplate.update(sql, lineId, sourceStationId);
+    }
 }
