@@ -19,4 +19,8 @@ public class Distance {
             throw new InvalidDistanceException("역 사이의 거리는 0이상, 15이하여야합니다.");
         }
     }
+
+    public int getValue() {
+        return value;
+    }
 }
