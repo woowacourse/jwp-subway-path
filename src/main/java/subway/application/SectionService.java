@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
@@ -26,6 +27,14 @@ public class SectionService {
     }
 
     public Long insertSection(SectionRequest request) {
+        if (lineDao.findById(request.getLineId()).isEmpty()) {
+            final List<Line> all = lineDao.findAll();
+            for(Line line : all) {
+                System.out.println("라인 출력해봄: "+ line.getId());
+            }
+            throw new IllegalArgumentException("존재 하지 않는 노선에는 구간을 추가 할 수 없습니다.");
+        }
+
         if (request.getUpStationId() == request.getDownStationId()) {
             throw new IllegalArgumentException("같은 역을 구간으로 등록할 수 없습니다.");
         }
@@ -51,18 +60,22 @@ public class SectionService {
 
         // TODO 리펙토링
         int count = 0;
-        for (Long stationId : stationIds) {
+
+        for (Long stationId : stationIds) { //존재하는 역들을 돌면서 입력받은 상행역, 하행역이하나만 있는지 확인
             if (stationId == upStationId || stationId == downStationId) {
                 count++;
+                //stationId -> c 즉 기존에 있는애
+                // c, e 중에 c가 아닌 e가 새롭게 추가하는애
+                //e가 뒤에있냐 앞에있냐
             }
         }
         if (count != 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException("역이 존재하지 않으면 추가할 수 없습니다.");
         }
 
         // 양 끝인 경우 확인
         // TODO 빌더 패턴으로 변경해보기
-        if (isUpStationPoint(sortedSections, upStationId) || isDownStationPoint(sortedSections, downStationId)) {
+        if (isDownEndPoint(sortedSections, upStationId) || isUpEndPoint(sortedSections, downStationId)) {
             final Section section = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), request.getLineId());
             return sectionDao.insert(section);
         }
@@ -86,37 +99,39 @@ public class SectionService {
             sectionDao.update(updateSection);
 
             final Section newSection = new Section(targetDistance - distance, downStationId, targetSection.getDownStationId(), targetSection.getLineId());
-            sectionDao.insert(newSection);
+            return sectionDao.insert(newSection);
         }
 
         // 하행역 기준
-        if (isDownStationPoint(sortedSections, downStationId)) {
-            final Section targetSection = sortedSections.stream()
-                    .filter(section -> section.getDownStationId() == downStationId)
-                    .findAny()
-                    .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
+        final Section targetSection = sortedSections.stream()
+                .filter(section -> section.getDownStationId() == downStationId)
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
 
-            final int targetDistance = targetSection.getDistance();
-            final Integer distance = request.getDistance();
+        final int targetDistance = targetSection.getDistance();
+        final Integer distance = request.getDistance();
 
-            if (targetDistance <= distance) {
-                throw new IllegalArgumentException("거리는 기존 구간 거리보다 클 수 없습니다.");
-            }
-
-            final Section updateSection = new Section(distance, upStationId, downStationId, targetSection.getLineId());
-            sectionDao.update(updateSection);
-
-            final Section newSection = new Section(targetDistance - distance, targetSection.getUpStationId(), upStationId, targetSection.getLineId());
-            sectionDao.insert(newSection);
+        if (targetDistance <= distance) {
+            throw new IllegalArgumentException("거리는 기존 구간 거리보다 클 수 없습니다.");
         }
-        return null;
-    }
 
-    private static boolean isDownStationPoint(List<Section> sortedSections, Long downStationId) {
-        return downStationId == sortedSections.get(0).getUpStationId();
+        final Section updateSection = new Section(distance, upStationId, downStationId, targetSection.getLineId());
+        sectionDao.update(updateSection);
+
+        final Section newSection = new Section(targetDistance - distance, targetSection.getUpStationId(), upStationId, targetSection.getLineId());
+        return sectionDao.insert(newSection);
     }
 
     private static boolean isUpStationPoint(List<Section> sortedSections, Long upStationId) {
+        return sortedSections.stream()
+                .anyMatch(section -> section.getUpStationId() == upStationId);
+    }
+
+    private static boolean isUpEndPoint(List<Section> sortedSections, Long downStationId) {
+        return downStationId == sortedSections.get(0).getUpStationId();
+    }
+
+    private static boolean isDownEndPoint(List<Section> sortedSections, Long upStationId) {
         return upStationId == sortedSections.get(sortedSections.size() - 1).getDownStationId();
     }
 
@@ -130,12 +145,12 @@ public class SectionService {
             return;
         }
 
-        if (isUpStationPoint(sortedSections, request.getStationId())) {
+        if (isDownEndPoint(sortedSections, request.getStationId())) {
             sectionDao.delete(sortedSections.get(0).getId());
             return;
         }
 
-        if (isDownStationPoint(sortedSections, request.getStationId())) {
+        if (isUpEndPoint(sortedSections, request.getStationId())) {
             sectionDao.delete(sortedSections.get(sortedSections.size() - 1).getId());
             return;
         }

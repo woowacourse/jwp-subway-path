@@ -9,6 +9,7 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,7 +49,8 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 노선을 찾을 수 없습니다."));
     }
 
     public void deleteLineById(Long id) {
