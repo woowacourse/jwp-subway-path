@@ -72,4 +72,21 @@ class SectionDaoTest {
         assertThat(result.get(0).getPreviousStationId()).isEqualTo(1L);
     }
 
+    @Test
+    @DisplayName("구간 삭제 성공")
+    @Sql("/section_test_data.sql")
+    void delete_success() {
+        // given
+        final String selectSql = "SELECT id FROM section";
+        List<Long> resultBeforeRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
+        final SectionEntity sectionEntity = new SectionEntity.Builder().id(1L).build();
+
+        // when
+        sectionDao.delete(sectionEntity);
+
+        // then
+        List<Long> resultAfterRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
+        assertThat(resultAfterRemove.size()).isEqualTo(resultBeforeRemove.size() - 1);
+    }
+
 }
