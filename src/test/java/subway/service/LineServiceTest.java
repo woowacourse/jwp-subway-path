@@ -25,6 +25,7 @@ import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.exception.InvalidDistanceException;
 import subway.exception.InvalidLineNameException;
+import subway.exception.InvalidSectionException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -192,6 +193,43 @@ class LineServiceTest {
             //then
             assertThatThrownBy(() -> lineService.createSection(1L, request))
                     .isInstanceOf(InvalidDistanceException.class);
+        }
+    }
+
+    @Nested
+    @DisplayName("노선에서 역 삭제시 ")
+    class DeleteStation {
+
+        @Test
+        @DisplayName("유효한 정보라면 역을 삭제한다.")
+        void deleteStation() {
+            final List<Section> sections = List.of(
+                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
+                    new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
+            );
+            final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+            given(lineRepository.findById(1L)).willReturn(line);
+            given(stationRepository.findById(1L)).willReturn(new Station(1L, "잠실역"));
+            willDoNothing().given(lineRepository).update(any(Line.class));
+
+            lineService.deleteStation(1L, 1L);
+
+            assertThat(line.getSections()).isEmpty();
+        }
+
+        @Test
+        @DisplayName("유효하지 않은 정보라면 예외를 던진다.")
+        void deleteStationWithInvalidStationId() {
+            final List<Section> sections = List.of(
+                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
+                    new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
+            );
+            final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+            given(lineRepository.findById(1L)).willReturn(line);
+            given(stationRepository.findById(3L)).willReturn(new Station(3L, "종합운동장역"));
+
+            assertThatThrownBy(() -> lineService.deleteStation(1L, 3L))
+                    .isInstanceOf(InvalidSectionException.class);
         }
     }
 }

@@ -14,6 +14,7 @@ import subway.exception.InvalidSectionException;
 public class Line {
 
     private static final int ADDITIONAL_INDEX = -1;
+
     private final Long id;
     private final Name name;
     private final Color color;
@@ -140,7 +141,7 @@ public class Line {
 
     public void deleteStation(final Station upward) {
         final int position = sections.findPosition(upward);
-        if (position == -1) {
+        if (position == Sections.NOT_EXIST_INDEX) {
             throw new InvalidSectionException("노선에 해당 역이 존재하지 않습니다.");
         }
 
