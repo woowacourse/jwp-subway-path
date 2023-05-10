@@ -24,4 +24,8 @@ public class LineService {
     public void createSection(final SectionCreateRequest request) {
 
     }
+
+    public void deleteStation(final Long lineId, final Long stationId) {
+
+    }
 }

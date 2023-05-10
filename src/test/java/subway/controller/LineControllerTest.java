@@ -5,6 +5,7 @@ import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -218,6 +219,39 @@ class LineControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest())
                     .andExpect(content().string("역 간의 거리는 0보다 커야합니다."));
+        }
+    }
+
+    @Nested
+    @DisplayName("노선에서 역 삭제 요청 시")
+    class DeleteStation {
+
+        @Test
+        @DisplayName("유효한 요청이라면 역을 삭제한다.")
+        void deleteStation() throws Exception {
+            willDoNothing().given(lineService).deleteStation(any(Long.class), any(Long.class));
+
+            mockMvc.perform(delete("/lines/{lineId}", 1L)
+                    .queryParam("stationId", String.valueOf(1L)))
+                    .andDo(print())
+                    .andExpect(status().isNoContent());
+        }
+
+        @Test
+        @DisplayName("역 아이디가 존재하지 않으면 400 상태를 반환한다.")
+        void deleteStationWithoutStationId() throws Exception {
+            mockMvc.perform(delete("/lines/{lineId}", 1L))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("역 아이디로 변환할 수 없는 타입이면 400 상태를 반환한다.")
+        void deleteStationWithInvalidStationIDType() throws Exception {
+            mockMvc.perform(delete("/lines/{lineId}", 1L)
+                            .queryParam("stationId", "s"))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest());
         }
     }
 }
