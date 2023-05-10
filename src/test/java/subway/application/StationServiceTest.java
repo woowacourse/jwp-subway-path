@@ -1,25 +1,23 @@
 package subway.application;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.StationDao;
 import subway.dto.StationResponse;
 import subway.dto.StationSaveRequest;
 import subway.entity.Station;
-import subway.fixture.StationFixture;
-import subway.fixture.StationFixture.GangnamStation;
-import subway.fixture.StationFixture.JamsilStation;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -88,5 +86,17 @@ class StationServiceTest {
 
         // then
         verify(stationDao, times(1)).updateById(id, request.toEntity());
+    }
+
+    @Test
+    void id를_받아_역을_삭제한다() {
+        // given
+        final Long id = 1L;
+
+        // when
+        stationService.deleteStationById(id);
+
+        // then
+        verify(stationDao, times(1)).deleteById(id);
     }
 }
