@@ -142,4 +142,8 @@ public class Line {
                 new Section(previousSection.getUpward(), targetSection.getDownward(),
                         targetSection.getDistance() + previousSection.getDistance()));
     }
+
+    public List<Section> getSections() {
+        return sections.getValue();
+    }
 }

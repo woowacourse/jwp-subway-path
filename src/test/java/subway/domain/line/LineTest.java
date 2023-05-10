@@ -2,6 +2,7 @@ package subway.domain.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +50,10 @@ class LineTest {
 
             //then
             final List<Station> result = line.show();
-            assertThat(result).containsExactly(upward, downward);
+            assertAll(
+                    () -> assertThat(result).containsExactly(upward, downward),
+                    () -> assertThat(line.getSections()).extracting(Section::getDistance).containsExactly(10, 0)
+            );
         }
 
         @Test
@@ -63,7 +67,11 @@ class LineTest {
 
             //then
             final List<Station> result = line.show();
-            assertThat(result).containsExactly(upward, additionStation, downward);
+
+            assertAll(
+                    () -> assertThat(result).containsExactly(upward, additionStation, downward),
+                    () -> assertThat(line.getSections()).extracting(Section::getDistance).containsExactly(5, 5, 0)
+            );
         }
 
         @Test
@@ -77,7 +85,10 @@ class LineTest {
 
             //then
             final List<Station> result = line.show();
-            assertThat(result).containsExactly(upward, additionStation, downward);
+            assertAll(
+                    () -> assertThat(result).containsExactly(upward, additionStation, downward),
+                    () -> assertThat(line.getSections()).extracting(Section::getDistance).containsExactly(5, 5, 0)
+            );
         }
 
         @Test
@@ -91,7 +102,10 @@ class LineTest {
 
             //then
             final List<Station> result = line.show();
-            assertThat(result).containsExactly(additionStation, upward, downward);
+            assertAll(
+                    () -> assertThat(result).containsExactly(additionStation, upward, downward),
+                    () -> assertThat(line.getSections()).extracting(Section::getDistance).containsExactly(5, 10, 0)
+            );
         }
 
         @Test
@@ -105,7 +119,10 @@ class LineTest {
 
             //then
             final List<Station> result = line.show();
-            assertThat(result).containsExactly(upward, downward, additionStation);
+            assertAll(
+                    () -> assertThat(result).containsExactly(upward, downward, additionStation),
+                    () -> assertThat(line.getSections()).extracting(Section::getDistance).containsExactly(10, 5, 0)
+            );
         }
 
         @Test
@@ -175,7 +192,10 @@ class LineTest {
 
             //then
             final List<Station> result = line.show();
-            assertThat(result).containsExactly(additionStation, downward);
+            assertAll(
+                    () -> assertThat(result).containsExactly(additionStation, downward),
+                    () -> assertThat(line.getSections()).extracting(Section::getDistance).containsExactly(7, 0)
+            );
         }
 
         @Test
@@ -190,7 +210,10 @@ class LineTest {
 
             //then
             final List<Station> result = line.show();
-            assertThat(result).containsExactly(upward, downward);
+            assertAll(
+                    () -> assertThat(result).containsExactly(upward, downward),
+                    () -> assertThat(line.getSections()).extracting(Section::getDistance).containsExactly(10, 0)
+            );
         }
 
         @Test

@@ -60,4 +60,8 @@ public class Sections {
     public void clear() {
         sections.clear();
     }
+
+    public List<Section> getValue() {
+        return sections;
+    }
 }
