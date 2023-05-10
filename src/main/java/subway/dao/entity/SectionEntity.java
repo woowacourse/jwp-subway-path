@@ -37,4 +37,16 @@ public class SectionEntity {
     public int getDistance() {
         return distance;
     }
+
+    public void setStartStationName(String startStationName) {
+        this.startStationName = startStationName;
+    }
+
+    public void setEndStationName(String endStationName) {
+        this.endStationName = endStationName;
+    }
+
+    public void setDistance(int distance) {
+        this.distance = distance;
+    }
 }

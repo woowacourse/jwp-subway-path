@@ -65,7 +65,7 @@ class SectionDaoTest {
         long sectionId = sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
 
         // when
-        sectionDao.update(sectionId, new Section(new Station("samsung"), new Station("busan"), 1));
+        sectionDao.update(new SectionEntity(sectionId, lineId, "samsung", "busan", 1));
 
         List<SectionEntity> sections = sectionDao.findAllByLineId(lineId);
 
@@ -75,29 +75,14 @@ class SectionDaoTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"jamsil:true", "samsung:false"}, delimiter = ':')
-    @DisplayName("주어진 역이 구간의 상행역에 있는지 확인한다.")
+    @CsvSource(value = {"jamsil:true", "busan:false", "samsung:true"}, delimiter = ':')
+    @DisplayName("주어진 역이 구간에 있는지 확인한다.")
     void existsByStartStationNameAndLineId(String stationName, boolean exists) {
         // given
         sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
 
         // when
-        boolean expect = sectionDao.existsByStartStationNameAndLineId(stationName, lineId);
-
-        // then
-        assertThat(expect)
-                .isEqualTo(exists);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"jamsil:false", "samsung:true"}, delimiter = ':')
-    @DisplayName("주어진 역이 구간의 하행역에 있는지 확인한다.")
-    void existsByEndStationNameAndLineId(String stationName, boolean exists) {
-        // given
-        sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
-
-        // when
-        boolean expect = sectionDao.existsByEndStationNameAndLineId(stationName, lineId);
+        boolean expect = sectionDao.isStationInLine(stationName, lineId);
 
         // then
         assertThat(expect)

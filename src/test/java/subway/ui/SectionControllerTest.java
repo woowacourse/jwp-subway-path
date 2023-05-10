@@ -37,7 +37,7 @@ class SectionControllerTest {
         // given
         Long lineId = 1L;
         SectionCreateRequest request = new SectionCreateRequest("잠실역", "잠실나루역", 10);
-        willDoNothing().given(sectionService).saveSection(anyLong(), any(SectionCreateRequest.class));
+        willDoNothing().given(sectionService).saveSection(any(SectionCreateRequest.class), anyLong());
 
         // expect
         mockMvc.perform(post("/sections/{lineId}", lineId)

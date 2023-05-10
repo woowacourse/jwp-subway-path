@@ -28,5 +28,8 @@ create table SECTION
 );
 
 INSERT INTO STATION (name) VALUES ('잠실역');
-INSERT INTO LINE (name, color, start_station_name) VALUES ('2호선', 'green', '잠실역');
-
+INSERT INTO STATION (name) VALUES ('삼성역');
+INSERT INTO STATION (name) VALUES ('포항역');
+INSERT INTO STATION (name) VALUES ('대구역');
+INSERT INTO STATION (name) VALUES ('강남역');
+INSERT INTO LINE (name, color) VALUES ('2호선', 'green');
