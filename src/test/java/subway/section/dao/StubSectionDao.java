@@ -8,6 +8,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import subway.section.domain.Direction;
+import subway.section.domain.Section;
 import subway.section.entity.SectionEntity;
 
 public class StubSectionDao implements SectionDao {
@@ -43,6 +44,11 @@ public class StubSectionDao implements SectionDao {
                 .stream()
                 .filter(it -> it.getLineId().equals(lineId))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Section> findSectionsByLineId(final Long lineId) {
+        return null;
     }
 
     @Override
