@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Line {
     private Long id;
@@ -33,9 +34,40 @@ public class Line {
         sections.addAll(saveSections);
     }
 
-    public void addSection(Section section) {
-        validateDuplicatedName(section);
-        sections.add(section);
+    public void addSection(Section newSection) {
+        validateDuplicatedName(newSection);
+
+        Optional<Section> downSection = findBySource(newSection);
+        Optional<Section> upSection = findByTarget(newSection);
+        if (downSection.isPresent()) {
+            Section section = downSection.get();
+            sections.remove(section);
+            sections.add(new Section(section.getSource(), newSection.getTarget(), newSection.getDistance()));
+            sections.add(new Section(newSection.getTarget(), section.getTarget(),
+                    section.getDistance() - newSection.getDistance()));
+            return;
+        }
+        if (upSection.isPresent()) {
+            Section section = upSection.get();
+            sections.remove(section);
+            sections.add(new Section(section.getSource(), newSection.getSource(),
+                    section.getDistance() - newSection.getDistance()));
+            sections.add(new Section(newSection.getSource(), section.getTarget(), newSection.getDistance()));
+            return;
+        }
+        sections.add(newSection);
+    }
+
+    private Optional<Section> findByTarget(Section newSection) {
+        return sections.stream()
+                .filter(section -> section.getTarget().isSameName(newSection.getTarget()))
+                .findAny();
+    }
+
+    private Optional<Section> findBySource(Section newSection) {
+        return sections.stream()
+                .filter(section -> section.getSource().isSameName(newSection.getSource()))
+                .findAny();
     }
 
     private void validateDuplicatedName(Section section) {
