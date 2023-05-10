@@ -16,7 +16,7 @@ create table if not exists SECTIONS
     id bigint auto_increment not null,
     up_station_id bigint not null,
     down_station_id bigint not null,
-    distance int not null unique,
+    distance int not null,
     line_id bigint not null,
     primary key(id),
     FOREIGN KEY (up_station_id) REFERENCES STATION(id),

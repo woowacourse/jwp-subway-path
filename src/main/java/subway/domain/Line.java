@@ -4,10 +4,16 @@ import java.util.List;
 
 public class Line {
 
+    private final Long id;
     private final String name;
     private final Sections sections;
 
     public Line(final String name, final Sections sections) {
+        this(null, name, sections);
+    }
+
+    public Line(final Long id, final String name, final Sections sections) {
+        this.id = id;
         this.name = name;
         this.sections = sections;
     }
@@ -18,6 +24,10 @@ public class Line {
 
     public void removeStation(final Station station) {
         sections.removeStation(station);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

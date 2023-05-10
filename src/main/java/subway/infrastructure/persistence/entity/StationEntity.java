@@ -21,7 +21,11 @@ public class StationEntity {
     }
 
     public Station toDomain() {
-        return new Station(name);
+        return new Station(id, name);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

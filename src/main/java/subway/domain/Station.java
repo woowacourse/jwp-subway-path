@@ -4,14 +4,16 @@ import java.util.Objects;
 
 public class Station {
 
+    private final Long id;
     private final String name;
 
     public Station(final String name) {
-        this.name = name;
+        this(null, name);
     }
 
-    public String getName() {
-        return name;
+    public Station(final Long id, final String name) {
+        this.id = id;
+        this.name = name;
     }
 
     @Override
@@ -23,11 +25,19 @@ public class Station {
             return false;
         }
         final Station station = (Station) o;
-        return Objects.equals(getName(), station.getName());
+        return Objects.equals(id, station.id) && Objects.equals(getName(), station.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName());
+        return Objects.hash(id, getName());
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }
