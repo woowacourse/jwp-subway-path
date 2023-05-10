@@ -1,25 +1,27 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.dao.StationDao;
+import subway.dto.StationResponse;
+import subway.dto.StationSaveRequest;
+import subway.entity.Station;
 
+@Transactional(readOnly = true)
 @Service
 public class StationService {
+
     private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    @Transactional
+    public Long saveStation(StationSaveRequest request) {
+        return stationDao.insert(request.toEntity());
     }
 
     public StationResponse findStationResponseById(Long id) {
@@ -34,8 +36,8 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+    public void updateStation(Long id, StationSaveRequest stationSaveRequest) {
+//        stationDao.update(Station.of(id, stationSaveRequest.getFrom()));
     }
 
     public void deleteStationById(Long id) {

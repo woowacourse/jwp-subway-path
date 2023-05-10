@@ -1,29 +1,20 @@
 package subway.dto;
 
+import subway.entity.Station;
+
 public class StationSaveRequest {
 
-    private String from;
-    private String to;
-    private int distance;
+    private String name;
 
     public StationSaveRequest() {
     }
 
-    public StationSaveRequest(final String from, final String to, final int distance) {
-        this.from = from;
-        this.to = to;
-        this.distance = distance;
+    public StationSaveRequest(final String name) {
+        this.name = name;
     }
 
-    public String getFrom() {
-        return from;
+    public Station toEntity() {
+        return Station.of(name);
     }
 
-    public String getTo() {
-        return to;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
 }
