@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.controller.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 @Getter
-public class StationRequest {
+public class AddStationRequest {
 
-    private String name;
+    private String lineName;
+    private String frontStationName;
+    private String backStationName;
 }

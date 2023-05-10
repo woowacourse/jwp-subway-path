@@ -1,16 +1,19 @@
-package subway.dto;
+package subway.controller.dto;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import subway.entity.LineEntity;
 
 @Getter
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
 public class LineResponse {
 
-    private final Long id;
-    private final String name;
-    private final String color;
+    private Long id;
+    private String name;
+    private String color;
 
     public static LineResponse of(final LineEntity lineEntity) {
         return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
