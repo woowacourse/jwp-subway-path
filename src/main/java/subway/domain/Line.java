@@ -37,4 +37,8 @@ public class Line {
     public List<Section> sections() {
         return sections.sections();
     }
+
+    public boolean isEmpty() {
+        return sections().isEmpty();
+    }
 }

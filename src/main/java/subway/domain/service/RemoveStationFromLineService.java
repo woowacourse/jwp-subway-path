@@ -10,7 +10,7 @@ public class RemoveStationFromLineService {
 
     public void remove(final LineRepository lineRepository, final Line line, final Station station) {
         line.removeStation(station);
-        if (line.sections().isEmpty()) {
+        if (line.isEmpty()) {
             lineRepository.delete(line);
             return;
         }
