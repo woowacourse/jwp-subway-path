@@ -1,41 +1,49 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
+import subway.dao.station.StationDao;
 import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.domain.entity.StationEntity;
+import subway.dto.station.StationRequest;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
+
     private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(final StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public void isExistStation(final String station) {
+        boolean existStation = stationDao.isExistStationByName(station);
+
+        if (!existStation) {
+            throw new IllegalArgumentException("역 없음");
+        }
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public Long saveStation(final StationRequest stationRequest) {
+        StationEntity stationEntity = stationDao.insert(new Station(stationRequest.getName()));
+        return stationEntity.getStationId();
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+    public StationEntity findStationEntityById(Long id) {
+        return stationDao.findById(id);
+    }
 
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public StationEntity findStationByName(final String name) {
+        return stationDao.findByName(name);
+    }
+
+    public List<StationEntity> findAllStationResponses() {
+        return stationDao.findAll();
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+//        stationDao.update(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {

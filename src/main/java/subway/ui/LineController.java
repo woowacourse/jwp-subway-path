@@ -3,8 +3,8 @@ package subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.domain.entity.LineEntity;
+import subway.dto.line.LineRequest;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -21,19 +21,19 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    public ResponseEntity<Long> createLine(@RequestBody LineRequest lineRequest) {
+        Long id = lineService.saveLine(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + id)).body(id);
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
+    public ResponseEntity<List<LineEntity>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<LineEntity> findLineById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.findLineById(id));
     }
 
     @PutMapping("/{id}")
