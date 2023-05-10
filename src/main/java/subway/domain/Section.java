@@ -3,9 +3,11 @@ package subway.domain;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import subway.exception.InvalidDistanceException;
+import subway.exception.SectionMergeException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @ToString
 @EqualsAndHashCode
@@ -47,5 +49,29 @@ public class Section {
 
     public boolean contains(Station station) {
         return upstream.equals(station) || downstream.equals(station);
+    }
+
+    public Section merge(Section sectionToMerge) {
+        Optional<Station> optionalStation = getLinkingStation(sectionToMerge);
+        Station linkingStation = optionalStation.orElseThrow(() -> new SectionMergeException("연결할 수 없는 구간입니다."));
+        final int mergedSectionDistance = distance + sectionToMerge.distance;
+        if (downstream.equals(linkingStation)) {
+            return new Section(upstream, sectionToMerge.downstream, mergedSectionDistance);
+        }
+        return new Section(downstream, sectionToMerge.upstream, mergedSectionDistance);
+    }
+
+    private Optional<Station> getLinkingStation(Section otherSection) {
+        if (downstream.equals(otherSection.upstream)) {
+            return Optional.of(downstream);
+        }
+        if (upstream.equals(otherSection.downstream)) {
+            return Optional.of(upstream);
+        }
+        return Optional.empty();
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }

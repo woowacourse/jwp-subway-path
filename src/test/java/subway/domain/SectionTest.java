@@ -4,10 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.InvalidDistanceException;
+import subway.exception.SectionMergeException;
 
 import static org.assertj.core.api.Assertions.*;
-import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
-import static subway.utils.StationFixture.JAMSIL_STATION;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.utils.StationFixture.*;
 
 class SectionTest {
 
@@ -65,5 +66,33 @@ class SectionTest {
 
         assertThatThrownBy(() -> section.insertInTheMiddle(newStation, 5))
                 .isInstanceOf(InvalidDistanceException.class);
+    }
+
+    @Test
+    void Section병합시_하나의_Downstream과_다른_하나의_Upstream이_같지_않은_경우_예외를_던진다() {
+        Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
+        Section section2 = new Section(JAMSIL_NARU_STATION, JAMSIL_STATION, 5);
+
+        assertSoftly(softly -> {
+            softly.assertThatThrownBy(() -> section1.merge(section2))
+                    .isInstanceOf(SectionMergeException.class);
+            softly.assertThatThrownBy(() -> section2.merge(section1))
+                    .isInstanceOf(SectionMergeException.class);
+        });
+    }
+
+    @Test
+    void Section을_병합할_수_있다() {
+        Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
+        Section section2 = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
+
+        Section mergedSection1 = section1.merge(section2);
+        Section mergedSection2 = section2.merge(section1);
+
+        assertSoftly(softly -> {
+            softly.assertThat(mergedSection1.getDistance()).isEqualTo(10);
+            softly.assertThat(mergedSection2.getDistance()).isEqualTo(10);
+        });
+
     }
 }
