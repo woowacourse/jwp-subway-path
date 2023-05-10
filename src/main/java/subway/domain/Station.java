@@ -7,17 +7,40 @@ import java.util.Objects;
 public class Station {
     private final Long id;
     private final String name;
+    private final Map<Line, Path> ups;
+    private final Map<Line, Path> downs;
 
-    private final Map<Line, Path> ups = new HashMap<>();
-    private final Map<Line, Path> downs = new HashMap<>();
-
-    public Station(final Long id, final String name) {
+    public Station(final Long id, final String name, final Map<Line, Path> ups, final Map<Line, Path> downs) {
         this.id = id;
         this.name = name;
+        this.ups = ups;
+        this.downs = downs;
     }
 
-    public Station(String name) {
-        this(null, name);
+    public Station(final String name) {
+        this(null, name, new HashMap<>(), new HashMap<>());
+    }
+
+    public Station(final Long id, final String name) {
+        this(id, name, new HashMap<>(), new HashMap<>());
+    }
+
+    public Station(final Station station) {
+        this(station.id, station.name, new HashMap<>(station.ups), new HashMap<>(station.downs));
+    }
+
+    public Station addDownStation(final Line line, final Path path) {
+        final Station station = new Station(this);
+        station.downs.put(line, path);
+
+        return station;
+    }
+
+    public Station addUpStation(final Line line, final Path path) {
+        final Station station = new Station(this);
+        station.ups.put(line, path);
+
+        return station;
     }
 
     public Long getId() {
