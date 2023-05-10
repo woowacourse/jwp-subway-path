@@ -26,15 +26,12 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public List<LineResponse> findLineResponses() {
-        final List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
+    public List<LineSearchResponse> findLineResponses() {
+        final List<Line> lines = lineDao.findAll();
+        return lines.stream()
+                .map(Line::getId)
+                .map(this::findLineResponseById)
                 .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineDao.findAll();
     }
 
     public LineSearchResponse findLineResponseById(final Long id) {
@@ -45,10 +42,6 @@ public class LineService {
         return new LineSearchResponse(line.getId(), line.getName(), line.getColor(), stations);
     }
 
-    public Line findLineById(final Long id) {
-        return lineDao.findById(id);
-    }
-
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
@@ -56,5 +49,4 @@ public class LineService {
     public void deleteLineById(final Long id) {
         lineDao.deleteById(id);
     }
-
 }
