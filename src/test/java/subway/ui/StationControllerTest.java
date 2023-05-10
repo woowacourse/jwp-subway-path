@@ -1,7 +1,9 @@
 package subway.ui;
 
-import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -85,7 +87,7 @@ class StationControllerTest {
         final String responseJson = objectMapper.writeValueAsString(station);
 
         // when, then
-        mockMvc.perform(get("/stations/"+id)
+        mockMvc.perform(get("/stations/" + id)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().json(responseJson))
@@ -93,7 +95,7 @@ class StationControllerTest {
     }
 
     @Test
-    void id와_saveRequest를_받아_해당_역을_수정() throws Exception {
+    void id와_saveRequest를_받아_해당_역을_수정한다() throws Exception {
         // given
         final Long id = 1L;
         final StationSaveRequest station = new StationSaveRequest("잠실역");
@@ -101,10 +103,28 @@ class StationControllerTest {
         stationService.saveStation(station);
 
         // when, then
-        mockMvc.perform(put("/stations/"+id)
+        mockMvc.perform(put("/stations/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(requestJson))
                 .andExpect(status().isOk())
                 .andDo(print());
+
+        verify(stationService, times(1)).updateStation(id, station);
+    }
+
+    @Test
+    void id를_받아_해당_역을_삭제한다() throws Exception {
+        // given
+        final Long id = 1L;
+        final StationSaveRequest station = new StationSaveRequest("잠실역");
+        stationService.saveStation(station);
+
+        // when, then
+        mockMvc.perform(delete("/stations/" + id)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+
+        verify(stationService, times(1)).deleteStationById(id);
     }
 }
