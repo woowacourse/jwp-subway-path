@@ -25,7 +25,6 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import subway.application.LineService;
-import subway.domain.Direction;
 import subway.exception.NotFoundStationException;
 import subway.presentation.request.AddStationToLineRequest;
 import subway.presentation.request.DeleteStationFromLineRequest;
@@ -53,7 +52,6 @@ public class LineStationControllerIntegrationTest {
         private final AddStationToLineRequest request = new AddStationToLineRequest(
                 "2호선",
                 "말랑역",
-                Direction.UP,
                 "오리역",
                 5);
 
@@ -136,7 +134,6 @@ public class LineStationControllerIntegrationTest {
             final AddStationToLineRequest request = new AddStationToLineRequest(
                     "2호선",
                     "말랑역",
-                    Direction.UP,
                     "오리역",
                     0);
             willThrow(new IllegalArgumentException("역간 거리는 0보다 커야 합니다."))
