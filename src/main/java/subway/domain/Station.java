@@ -9,12 +9,12 @@ public class Station {
     public Station() {
     }
 
-    public Station(Long id, String name) {
+    public Station(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
+    public Station(final String name) {
         this.name = name;
     }
 
@@ -27,15 +27,19 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Station station = (Station) o;
+
+        if (id == null && station.id == null) {
+            return name.equals(station.name);
+        }
+        return id.equals(station.id) && name.equals(station.name);
     }
 }
