@@ -1,19 +1,27 @@
 package subway.dao;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
 import subway.domain.Section;
-import subway.dto.SectionRequest;
 
 @Repository
 public class SectionDAO {
+    
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
+    
+    private final RowMapper<Section> rowMapper = ((rs, rowNum) -> {
+        long id = rs.getLong("id");
+        long lineId = rs.getLong("line_id");
+        long upStationId = rs.getLong("up_station_id");
+        long downStationId = rs.getLong("down_station_id");
+        int distance = rs.getInt("distance");
+        return new Section(id, lineId, upStationId, downStationId, distance);
+    });
     
     public SectionDAO(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -22,9 +30,20 @@ public class SectionDAO {
                 .usingGeneratedKeyColumns("id");
     }
     
-    public Section insert(Section section) {
-        BeanPropertySqlParameterSource source = new BeanPropertySqlParameterSource(section);
-        Long sectionId = insertAction.executeAndReturnKey(source).longValue();
-        return new Section(sectionId, section.getLineId(), section.getUp(), section.getDown(), section.getDistance());
+    public Section insert(final Section section) {
+        final BeanPropertySqlParameterSource source = new BeanPropertySqlParameterSource(section);
+        final long sectionId = this.insertAction.executeAndReturnKey(source).longValue();
+        return new Section(sectionId, section.getLineId(), section.getUpStationId(), section.getDownStationId(),
+                section.getDistance());
+    }
+    
+    public List<Section> findSectionsBy(final long baseStationId, final long lineId) {
+        final String sql = "select * from section where (up_station_id = ? or down_station_id = ?) and line_id = ?";
+        return this.jdbcTemplate.query(sql, this.rowMapper, baseStationId, baseStationId, lineId);
+    }
+    
+    public int countSectionInLine(final long lineId) {
+        final String sql = "select count(id) from section where line_id = ?";
+        return this.jdbcTemplate.queryForObject(sql, Integer.class, lineId);
     }
 }

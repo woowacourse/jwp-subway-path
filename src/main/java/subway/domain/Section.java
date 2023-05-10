@@ -6,33 +6,35 @@ public class Section {
     
     long id;
     long lineId;
-    String up;
-    String down;
+    long upStationId;
+    long downStationId;
     int distance;
     
-    public static Section from(SectionRequest sectionRequest) {
-        if (sectionRequest.isDirection()) {
-            return new Section(sectionRequest.getLineId(), sectionRequest.getBaseStation(),
-                    sectionRequest.getNewStation(), sectionRequest.getDistance());
-        }
-        
-        return new Section(sectionRequest.getLineId(), sectionRequest.getNewStation(), sectionRequest.getBaseStation(),
-                sectionRequest.getDistance());
-    }
-    
-    private Section(final long lineId, final String up, final String down, final int distance) {
+    private Section(final long lineId, final long upStationId, final long downStationId, final int distance) {
         this.lineId = lineId;
-        this.up = up;
-        this.down = down;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
         this.distance = distance;
     }
     
-    public Section(final long id, final long lineId, final String up, final String down, final int distance) {
+    public Section(final long id, final long lineId, final long upStationId, final long downStationId,
+            final int distance) {
         this.id = id;
         this.lineId = lineId;
-        this.up = up;
-        this.down = down;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
         this.distance = distance;
+    }
+    
+    public static Section from(final SectionRequest sectionRequest) {
+        if (sectionRequest.isDirection()) {
+            return new Section(sectionRequest.getLineId(), sectionRequest.getBaseStationId(),
+                    sectionRequest.getNewStationId(), sectionRequest.getDistance());
+        }
+        
+        return new Section(sectionRequest.getLineId(), sectionRequest.getNewStationId(),
+                sectionRequest.getBaseStationId(),
+                sectionRequest.getDistance());
     }
     
     public long getId() {
@@ -43,12 +45,12 @@ public class Section {
         return this.lineId;
     }
     
-    public String getUp() {
-        return this.up;
+    public long getUpStationId() {
+        return this.upStationId;
     }
     
-    public String getDown() {
-        return this.down;
+    public long getDownStationId() {
+        return this.downStationId;
     }
     
     public int getDistance() {

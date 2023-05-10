@@ -3,22 +3,25 @@ package subway.dto;
 import subway.domain.Section;
 
 public class SectionResponse {
+    
     long id;
     long lineId;
-    String up;
-    String down;
+    long upStationId;
+    long downStationId;
     int distance;
     
-    public SectionResponse(final long id, final long lineId, final String up, final String down, final int distance) {
+    public SectionResponse(final long id, final long lineId, final long upStationId, final long downStationId,
+            final int distance) {
         this.id = id;
         this.lineId = lineId;
-        this.up = up;
-        this.down = down;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
         this.distance = distance;
     }
     
-    public static SectionResponse of(Section section){
-        return new SectionResponse(section.getId(),section.getLineId(),section.getUp(),section.getDown(),section.getDistance());
+    public static SectionResponse of(final Section section) {
+        return new SectionResponse(section.getId(), section.getLineId(), section.getUpStationId(),
+                section.getDownStationId(), section.getDistance());
     }
     
     public long getId() {
@@ -29,12 +32,12 @@ public class SectionResponse {
         return this.lineId;
     }
     
-    public String getUp() {
-        return this.up;
+    public long getUpStationId() {
+        return this.upStationId;
     }
     
-    public String getDown() {
-        return this.down;
+    public long getDownStationId() {
+        return this.downStationId;
     }
     
     public int getDistance() {

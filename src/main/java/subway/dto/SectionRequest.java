@@ -1,17 +1,18 @@
 package subway.dto;
 
 public class SectionRequest {
+    
     long lineId;
-    String newStation;
-    String baseStation;
+    long newStationId;
+    long baseStationId;
     boolean direction;
     int distance;
     
-    public SectionRequest(final long lineId, final String newStation, final String baseStation, final boolean direction,
+    public SectionRequest(final long lineId, final long newStationId, final long baseStationId, final boolean direction,
             final int distance) {
         this.lineId = lineId;
-        this.newStation = newStation;
-        this.baseStation = baseStation;
+        this.newStationId = newStationId;
+        this.baseStationId = baseStationId;
         this.direction = direction;
         this.distance = distance;
     }
@@ -20,12 +21,12 @@ public class SectionRequest {
         return this.lineId;
     }
     
-    public String getNewStation() {
-        return this.newStation;
+    public long getNewStationId() {
+        return this.newStationId;
     }
     
-    public String getBaseStation() {
-        return this.baseStation;
+    public long getBaseStationId() {
+        return this.baseStationId;
     }
     
     public boolean isDirection() {
