@@ -5,17 +5,33 @@ import java.util.Objects;
 public class StationEntity {
     private Long id;
     private String name;
-
-    public StationEntity() {
+    private Long lineId;
+    
+    public StationEntity(String name, Long lineId) {
+        this(null, name, lineId);
     }
 
-    public StationEntity(Long id, String name) {
+    public StationEntity(final Long id, final String name, final Long lineId) {
         this.id = id;
         this.name = name;
+        this.lineId = lineId;
     }
 
-    public StationEntity(String name) {
-        this.name = name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        StationEntity station = (StationEntity) o;
+        return id.equals(station.id) && name.equals(station.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     public Long getId() {
@@ -26,16 +42,7 @@ public class StationEntity {
         return name;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        StationEntity station = (StationEntity) o;
-        return id.equals(station.id) && name.equals(station.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+    public Long getLineId() {
+        return lineId;
     }
 }
