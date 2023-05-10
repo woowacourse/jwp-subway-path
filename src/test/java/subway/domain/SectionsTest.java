@@ -245,7 +245,7 @@ class SectionsTest {
         }
     }
 
-    private static void 포함된_구간들을_검증한다(final Sections sections, final String... sectionStrings) {
+    private void 포함된_구간들을_검증한다(final Sections sections, final String... sectionStrings) {
         assertThat(sections.getSections())
                 .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
                 .containsExactly(sectionStrings);

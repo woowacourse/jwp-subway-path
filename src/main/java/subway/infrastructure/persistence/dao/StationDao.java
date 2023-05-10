@@ -2,6 +2,7 @@ package subway.infrastructure.persistence.dao;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -47,7 +48,7 @@ public class StationDao {
         }
     }
 
-    public List<StationEntity> findAllByIds(final List<Long> ids) {
+    public List<StationEntity> findAllByIds(final Set<Long> ids) {
         MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("ids", ids);
 

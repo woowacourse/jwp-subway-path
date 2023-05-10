@@ -1,26 +1,30 @@
 package subway.infrastructure.persistence.entity;
 
-import java.util.ArrayList;
 import java.util.List;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
 
 public class LineEntity {
 
     private Long id;
     private String name;
-    private List<SectionEntity> sectionEntities = new ArrayList<>();
 
     public LineEntity(final String name) {
-        this(null, name, new ArrayList<>());
+        this(null, name);
     }
 
     public LineEntity(final Long id, final String name) {
-        this(id, name, new ArrayList<>());
-    }
-
-    public LineEntity(final Long id, final String name, final List<SectionEntity> sectionEntities) {
         this.id = id;
         this.name = name;
-        this.sectionEntities = sectionEntities;
+    }
+
+    public static LineEntity from(final Line line) {
+        return new LineEntity(line.getName());
+    }
+
+    public Line toDomain(final List<Section> sections) {
+        return new Line(id, name, new Sections(sections));
     }
 
     public Long getId() {
@@ -29,9 +33,5 @@ public class LineEntity {
 
     public String getName() {
         return name;
-    }
-
-    public List<SectionEntity> getSectionEntities() {
-        return sectionEntities;
     }
 }

@@ -1,5 +1,7 @@
 package subway.infrastructure.persistence.entity;
 
+import subway.domain.Section;
+
 public class SectionEntity {
 
     private Long id;
@@ -22,6 +24,14 @@ public class SectionEntity {
         this.downStationId = downStationId;
         this.distance = distance;
         this.lineId = lineId;
+    }
+
+    public static SectionEntity of(final Section section, final Long lineId) {
+        return new SectionEntity(
+                section.getUp().getId(),
+                section.getDown().getId(),
+                section.getDistance(),
+                lineId);
     }
 
     public Long getId() {

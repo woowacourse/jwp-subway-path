@@ -3,6 +3,7 @@ package subway.infrastructure.persistence.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -54,7 +55,7 @@ class StationDaoTest {
         final Long 역3 = stationDao.save(new StationEntity("역3"));
 
         // when
-        final List<StationEntity> allByIds = stationDao.findAllByIds(List.of(역1, 역2, 역3));
+        final List<StationEntity> allByIds = stationDao.findAllByIds(Set.of(역1, 역2, 역3));
 
         // then
         assertThat(allByIds)
