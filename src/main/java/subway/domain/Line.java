@@ -4,8 +4,13 @@ import static subway.domain.Direction.LEFT;
 import static subway.domain.Direction.RIGHT;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import subway.exception.InvalidSectionException;
 import subway.exception.StationNotFoundException;
 
@@ -145,6 +150,31 @@ public class Line {
             return;
         }
         sections.remove(sectionAtEnd.get());
+    }
+
+    public List<Station> findAllStation() {
+        final Map<Station, Station> stationToStation = sections.stream()
+                .collect(Collectors.toMap(Section::getStart, Section::getEnd));
+
+        final Optional<Station> firstStation = findFirstStation(stationToStation);
+        return firstStation.map(station -> orderStations(stationToStation, station))
+                .orElse(Collections.emptyList());
+    }
+
+    private Optional<Station> findFirstStation(final Map<Station, Station> stationToStation) {
+        final Set<Station> stations = new HashSet<>(stationToStation.keySet());
+        stations.removeAll(stationToStation.values());
+        return stations.stream().findFirst();
+    }
+
+    private List<Station> orderStations(final Map<Station, Station> stationToStation, Station station) {
+        final List<Station> result = new ArrayList<>(List.of(station));
+        while (stationToStation.containsKey(station)) {
+            final Station next = stationToStation.get(station);
+            result.add(next);
+            station = next;
+        }
+        return result;
     }
 
     @Override

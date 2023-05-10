@@ -256,5 +256,40 @@ class LineTest {
         // then
         assertThat(line.getSections()).isEmpty();
     }
+
+    @Test
+    void 노선에_포함된_역을_순서대로_보여줘야_한다() {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("B", "C", 3),
+                new Section("A", "B", 2),
+                new Section("D", "E", 5),
+                new Section("C", "D", 4)
+        ));
+
+        // when
+        List<Station> stations = line.findAllStation();
+
+        // then
+        assertThat(stations).containsExactly(
+                new Station("A"),
+                new Station("B"),
+                new Station("C"),
+                new Station("D"),
+                new Station("E")
+        );
+    }
+
+    @Test
+    void 노선에_비어있는_경우_빈_리스트를_반환한다() {
+        // given
+        final Line line = new Line("2호선", "RED", Collections.emptyList());
+
+        // when
+        List<Station> stations = line.findAllStation();
+
+        // then
+        assertThat(stations).isEmpty();
+    }
 }
 
