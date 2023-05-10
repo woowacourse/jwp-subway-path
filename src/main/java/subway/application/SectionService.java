@@ -135,7 +135,7 @@ public class SectionService {
         return upStationId == sortedSections.get(sortedSections.size() - 1).getDownStationId();
     }
 
-    public void deleteStation(SectionDeleteRequest request) {
+    public void deleteStation(Long stationId, SectionDeleteRequest request) {
         final List<Section> sections = sectionDao.findAllByLineId(request.getLineId());
         final List<Section> sortedSections = sortSections(sections);
         // 구간이 1개이면
@@ -145,18 +145,18 @@ public class SectionService {
             return;
         }
 
-        if (isDownEndPoint(sortedSections, request.getStationId())) {
+        if (isDownEndPoint(sortedSections, stationId)) {
             sectionDao.delete(sortedSections.get(0).getId());
             return;
         }
 
-        if (isUpEndPoint(sortedSections, request.getStationId())) {
+        if (isUpEndPoint(sortedSections, stationId)) {
             sectionDao.delete(sortedSections.get(sortedSections.size() - 1).getId());
             return;
         }
 
         final List<Section> includeSections = sortedSections.stream()
-                .filter(section -> section.getUpStationId() == request.getStationId() || section.getDownStationId() == request.getStationId())
+                .filter(section -> section.getUpStationId() == stationId || section.getDownStationId() == stationId)
                 .collect(Collectors.toList());
         final int newDistance = includeSections.stream()
                 .mapToInt(section -> section.getDistance())

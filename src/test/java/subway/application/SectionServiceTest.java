@@ -142,7 +142,7 @@ class SectionServiceTest {
         sectionDao.insert(new Section(10, 1L, 2L, lineId));
 
         //when
-        sectionService.deleteStation(new SectionDeleteRequest(lineId, 1L));
+        sectionService.deleteStation(1L, new SectionDeleteRequest(lineId));
 
         //then
         assertAll(
@@ -154,7 +154,7 @@ class SectionServiceTest {
     @Test
     void 구간이_두개_이상이고_종점이면_해당구간만_삭제한다() {
         //when
-        sectionService.deleteStation(new SectionDeleteRequest(1L, 1L));
+        sectionService.deleteStation(1L, new SectionDeleteRequest(1L));
 
         //then
         assertThat(sectionDao.findAllByLineId(1L)).hasSize(1);
@@ -163,7 +163,7 @@ class SectionServiceTest {
     @Test
     void 구간이_두개_이상이고_중간이면_겹치는구간_삭제와_이어주기를_한다() {
         //when
-        sectionService.deleteStation(new SectionDeleteRequest(1L, 2L));
+        sectionService.deleteStation(2L, new SectionDeleteRequest(1L));
 
         //then
         final List<Section> sections = sectionDao.findAllByLineId(1L);
