@@ -1,6 +1,8 @@
 package subway.application;
 
 
+import static subway.exception.line.LineExceptionType.NOT_FOUND_LINE;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -8,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.LineQueryResponse;
 import subway.domain.Line;
 import subway.domain.LineRepository;
-import subway.exception.NotFoundLineException;
+import subway.exception.line.LineException;
 
 @Service
 @Transactional(readOnly = true)
@@ -22,7 +24,7 @@ public class LineQueryService {
 
     public LineQueryResponse findById(final Long id) {
         final Line line = lineRepository.findById(id)
-                .orElseThrow(() -> new NotFoundLineException(id));
+                .orElseThrow(() -> new LineException(NOT_FOUND_LINE));
         return LineQueryResponse.from(line);
     }
 

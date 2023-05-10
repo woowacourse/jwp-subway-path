@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static subway.exception.station.StationExceptionType.DUPLICATE_STATION_NAME;
 
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,9 @@ import org.junit.jupiter.api.Test;
 import subway.application.dto.StationCreateCommand;
 import subway.domain.Station;
 import subway.domain.StationRepository;
-import subway.exception.DuplicateStationException;
+import subway.exception.BaseExceptionType;
+import subway.exception.station.StationException;
+import subway.exception.station.StationExceptionType;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -44,8 +47,9 @@ class StationServiceTest {
                 .willReturn(Optional.of(new Station("잠실역")));
 
         // when & then
-        assertThrows(DuplicateStationException.class, () ->
+        final BaseExceptionType exceptionType = assertThrows(StationException.class, () ->
                 stationService.create(new StationCreateCommand("잠실역"))
-        );
+        ).exceptionType();
+        assertThat(exceptionType).isEqualTo(DUPLICATE_STATION_NAME);
     }
 }

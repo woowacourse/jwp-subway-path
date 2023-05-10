@@ -1,11 +1,13 @@
 package subway.application;
 
 
+import static subway.exception.station.StationExceptionType.DUPLICATE_STATION_NAME;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.StationCreateCommand;
 import subway.domain.StationRepository;
-import subway.exception.DuplicateStationException;
+import subway.exception.station.StationException;
 
 @Service
 @Transactional
@@ -19,7 +21,7 @@ public class StationService {
 
     public Long create(final StationCreateCommand command) {
         if (stationRepository.findByName(command.getName()).isPresent()) {
-            throw new DuplicateStationException(command.getName());
+            throw new StationException(DUPLICATE_STATION_NAME);
         }
         return stationRepository.save(command.toDomain());
     }

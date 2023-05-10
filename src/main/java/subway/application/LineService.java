@@ -1,5 +1,9 @@
 package subway.application;
 
+import static subway.exception.line.LineExceptionType.DUPLICATE_LINE_NAME;
+import static subway.exception.line.LineExceptionType.NOT_FOUND_LINE;
+import static subway.exception.station.StationExceptionType.NOT_FOUND_STATION;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.AddStationToLineCommand;
@@ -12,9 +16,8 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
 import subway.domain.service.RemoveStationFromLineService;
-import subway.exception.DuplicateLineException;
-import subway.exception.NotFoundLineException;
-import subway.exception.NotFoundStationException;
+import subway.exception.line.LineException;
+import subway.exception.station.StationException;
 
 @Service
 @Transactional
@@ -34,7 +37,7 @@ public class LineService {
 
     public Long create(final LineCreateCommand command) {
         if (lineRepository.findByName(command.getLineName()).isPresent()) {
-            throw new DuplicateLineException(command.getLineName());
+            throw new LineException(DUPLICATE_LINE_NAME);
         }
         final Station up = findStationByName(command.getUpTerminalName());
         final Station down = findStationByName(command.getDownTerminalName());
@@ -44,7 +47,7 @@ public class LineService {
 
     private Station findStationByName(final String name) {
         return stationRepository.findByName(name)
-                .orElseThrow(() -> new NotFoundStationException(name));
+                .orElseThrow(() -> new StationException(NOT_FOUND_STATION));
     }
 
     public void addStation(final AddStationToLineCommand command) {
@@ -64,6 +67,6 @@ public class LineService {
 
     private Line findLineByName(final String name) {
         return lineRepository.findByName(name)
-                .orElseThrow(() -> new NotFoundLineException(name));
+                .orElseThrow(() -> new LineException(NOT_FOUND_LINE));
     }
 }
