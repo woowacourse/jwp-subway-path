@@ -19,6 +19,13 @@ public enum Direction {
                 .orElseThrow(() -> new IllegalArgumentException("방향의 이름이 올바르지 않습니다."));
     }
 
+    public Direction getOpposite() {
+        if (this.equals(UP)) {
+            return DOWN;
+        }
+        return UP;
+    }
+
     public String getValue() {
         return value;
     }
