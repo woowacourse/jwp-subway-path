@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class Sections {
 
@@ -90,5 +91,24 @@ public class Sections {
         );
         newSections.add(index, newSection);
         return new Sections(newSections);
+    }
+
+    public Sections getDifferenceOfSet(final Sections otherSections) {
+        final List<Section> result = new ArrayList<>(sections);
+        result.removeAll(otherSections.getSections());
+        return new Sections(result);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Sections sections1 = (Sections) o;
+        return Objects.equals(sections, sections1.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sections);
     }
 }
