@@ -41,6 +41,7 @@ public class Line {
     }
 
     public void addStation(Station station) {
+        validateStation(station);
         Station upStation;
         Station downStation;
 
@@ -64,7 +65,6 @@ public class Line {
             //TODO: hasStation으로 if문
             // 상행: 강남, 하행: newStation일 경우
             if (hasStation(station.getName())) {
-                System.out.println("upStation: " + upStation.getDistance());
                 Distance newDistance = upStation.minusDistance(station);
                 Station newStation = new Station(downStation.getName(), upStation.getNext(), newDistance);
 
@@ -79,6 +79,16 @@ public class Line {
                 foundStation.setNext(newStation2);
                 foundStation.setDistance(newDistance2);
             }
+        }
+    }
+
+    private void validateStation(Station station) {
+        validateExistStations(station);
+    }
+
+    private void validateExistStations(Station station) {
+        if (hasStation(station.getName()) && hasStation(station.getNext().getName())) {
+            throw new IllegalArgumentException("이미 존재하는 역입니다.");
         }
     }
 

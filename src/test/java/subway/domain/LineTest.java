@@ -266,5 +266,21 @@ class LineTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("거리는 양의 정수여야 합니다");
         }
+
+        @Test
+        @DisplayName("상행역과 하행역 모두 노선에 존재할 경우 예외 발생")
+        void exist_downStation_fail() {
+            //given
+            String newStationName = "역삼역";
+            Station newStation = new Station(newStationName);
+            Distance distance = new Distance(6);
+            Station station = new Station("강남역", newStation, distance);
+
+            //when, then
+            assertThatThrownBy(() -> line.addStation(station))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("이미 존재하는 역입니다.");
+        }
+
     }
 }
