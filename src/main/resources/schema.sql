@@ -13,18 +13,19 @@ CREATE TABLE IF NOT EXISTS station
     PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS distance
-(
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    distance INT NOT NULL,
-    PRIMARY KEY(id)
-);
-
-CREATE TABLE IF NOT EXISTS line_station_distance
+CREATE TABLE IF NOT EXISTS line_station
 (
     id BIGINT AUTO_INCREMENT NOT NULL,
     line_id BIGINT NOT NULL,
     station_id BIGINT NOT NULL,
-    distance_id BIGINT NOT NULL,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS section
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    line_id BIGINT NOT NULL,
+    up_station_id BIGINT NOT NULL,
+    down_station_id BIGINT NOT NULL,
     PRIMARY KEY(id)
 );

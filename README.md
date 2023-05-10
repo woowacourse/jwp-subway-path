@@ -7,8 +7,8 @@
   - [ ] 이름은 한글과 숫자만 가능하고, 길이는 2글자 ~ 9글자이다
 - [ ] 거리 (Distance)
   - [ ] 거리는 1 이상이어야 한다
-- [ ] 역 정보 (Station Info)
-  - [ ] 역과 거리를 가지고 있다
+- [ ] 인접경로 (AdjustPath)
+  - [ ] 인접경로는 연결된 역과 거리를 가지고 있다
 - [ ] 노선 (Line)
   - [ ] 노선 관리
     - [ ] 노선을 등록할 수 있다
@@ -55,19 +55,20 @@ CREATE TABLE IF NOT EXISTS station
     PRIMARY KEY(id)
 );
 
-CREATE TABLE IF NOT EXISTS distance
-(
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    distance INT NOT NULL,
-    PRIMARY KEY(id)
-);
-
-CREATE TABLE IF NOT EXISTS line_station_distance
+CREATE TABLE IF NOT EXISTS line_station
 (
     id BIGINT AUTO_INCREMENT NOT NULL,
     line_id BIGINT NOT NULL,
     station_id BIGINT NOT NULL,
-    distance_id BIGINT NOT NULL,
+    PRIMARY KEY(id)
+);
+
+CREATE TABLE IF NOT EXISTS section
+(
+    id BIGINT AUTO_INCREMENT NOT NULL,
+    line_id BIGINT NOT NULL,
+    up_station_id BIGINT NOT NULL,
+    down_station_id BIGINT NOT NULL,
     PRIMARY KEY(id)
 );
 ```
@@ -86,6 +87,7 @@ CREATE TABLE IF NOT EXISTS line_station_distance
   - 노선 수정 `PATCH /{id} 200`
   - 노선 삭제 `DELETE / 204`
 - 노선 - 역 등록 (`/lines/{lineId}/stations`)
-  - 역 상행/하행 등록 `POST / 201 /lines/{lindId}`
-  - 역 중간 등록 `POST / 201 /lines/{lineId}`
+  - 처음 역 등록 `POST /regist/new/{upStationId}/{downStationId} 201 /`
+  - 역 상행/하행 등록 `POST /regist/end/{originStationId}/{newStationId} 201 /`
+  - 역 중간 등록 `POST /regist/middle/{upStationId}/{downStationId}/{newStationId} 201 /`
   - 역 삭제 `DELETE /{stationId} 204`
