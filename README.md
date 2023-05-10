@@ -67,8 +67,8 @@
 - [ ] 노선 (Line)
     - [ ] 이름과 색을 갖는다. (name, color)
 
-- [ ] 역 (Station)
-    - [ ] 이름을 갖는다. (name)
+- [x] 역 (Station)
+    - [x] 이름을 갖는다. (name)
 
 - [ ] 구간 (Section)
     - [ ] 구간을 연결하는 두 역을 갖는다. (stationNodes)
