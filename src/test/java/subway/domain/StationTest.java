@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,7 +42,6 @@ class StationTest {
     @Test
     @DisplayName("isDownEndStation()를 호출했을 때 다음역이 emptyStation이라면 true를 반환한다.")
     void isIncludeEmptyStation_true() {
-
         //given
         String name = "상행역";
         Station next = Station.emptyStation;
@@ -57,4 +57,32 @@ class StationTest {
 
     //TODO: isIncludeEmptyStation() false검증
 
+    @Test
+    @DisplayName("isSameName()를 호출했을 때 Station이 특정 이름을 가지고 있다면 true를 반환한다.")
+    void isSameName_true() {
+        //given
+        String name = "강남역";
+        Station station = new Station(name);
+
+        //when
+        boolean actual = station.isSameName(name);
+
+        //then
+        Assertions.assertThat(actual).isTrue();
+    }
+
+    @Test
+    @DisplayName("isSameName()를 호출했을 때 Station이 특정 이름을 가지고 있지 않다면 false를 반환한다.")
+    void isSameName_false() {
+        //given
+        String name = "강남역";
+        String differentName = "역삼역";
+        Station station = new Station(name);
+
+        //when
+        boolean actual = station.isSameName(differentName);
+
+        //then
+        Assertions.assertThat(actual).isFalse();
+    }
 }

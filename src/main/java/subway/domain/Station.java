@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.Objects;
 
+//TODO: getDistance() 제거 도전
 public class Station {
 
     public static final Station emptyStation = new Station("");
@@ -38,16 +39,17 @@ public class Station {
     }
 
     public boolean isDownEndStation() {
-        if (next.equals(Station.emptyStation)) {
-            return true;
-        }
-        return false;
+        return next.equals(Station.emptyStation);
     }
 
     private void validateSameStations(String name, Station next) {
         if (next.name.equals(name)) {
             throw new IllegalArgumentException("상행역과 하행역은 같은 이름을 가질 수 없습니다.");
         }
+    }
+
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
     }
 
     public Long getId() {
@@ -60,6 +62,22 @@ public class Station {
 
     public Station getNext() {
         return next;
+    }
+
+    public void setNext(Station next) {
+        this.next = next;
+    }
+
+    public Distance getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Distance distance) {
+        this.distance = distance;
+    }
+
+    public Distance minusDistance(Station station) {
+        return distance.minus(station.distance);
     }
 
     @Override
