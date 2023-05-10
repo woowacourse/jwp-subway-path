@@ -5,6 +5,7 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.StationEdge;
 import subway.dto.LineRequest;
+import subway.exception.DuplicatedLineNameException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -28,6 +29,10 @@ public class LineService {
                 .orElseThrow(StationNotFoundException::new);
         final StationEdge stationEdge = new StationEdge(upStation, downStation, lineRequest.getDistance());
         final Line line = Line.of(lineRequest.getName(), lineRequest.getColor(), stationEdge);
+
+        lineRepository.findByName(line.getName()).ifPresent( lineWithSameName -> {
+            throw new DuplicatedLineNameException(line.getName());
+        });
         return lineRepository.create(line);
     }
 }

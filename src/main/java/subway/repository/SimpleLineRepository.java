@@ -2,6 +2,7 @@ package subway.repository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 
@@ -15,6 +16,11 @@ public class SimpleLineRepository implements LineRepository {
     public SimpleLineRepository() {
         this.idIndex = 1L;
         this.lines = new ArrayList<>();
+    }
+
+    @Override
+    public Optional<Line> findByName(String name) {
+        return lines.stream().filter(line -> line.getName().equals(name)).findFirst();
     }
 
     @Override

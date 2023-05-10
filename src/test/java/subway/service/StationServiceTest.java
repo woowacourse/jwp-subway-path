@@ -39,7 +39,7 @@ class StationServiceTest {
     void createStationWithDuplicatedName() {
         //given
         final String name = "잠실";
-
+        stationService.create(name);
         //when
         //then
         assertThatThrownBy(() -> stationService.create(name))
