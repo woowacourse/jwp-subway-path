@@ -28,4 +28,7 @@ public class SectionDao {
         return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
+    public SectionEntity findByLineIdAndPreviousStationId(final Long lineId, final Long previousStationId) {
+        return null;
+    } // TODO : 테스트 작성하기
 }
