@@ -1,6 +1,9 @@
 package subway.controller.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 
 public class LineResponse {
 
@@ -15,6 +18,16 @@ public class LineResponse {
         this.name = name;
         this.color = color;
         this.stations = stations;
+    }
+
+    public static LineResponse from(final Line line) {
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), generateStations(line.show()));
+    }
+
+    private static List<StationResponse> generateStations(final List<Station> stations) {
+        return stations.stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public Long getId() {

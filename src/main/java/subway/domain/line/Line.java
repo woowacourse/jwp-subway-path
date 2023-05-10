@@ -2,9 +2,12 @@ package subway.domain.line;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
 import subway.exception.InvalidDistanceException;
 import subway.exception.InvalidSectionException;
 
@@ -29,6 +32,21 @@ public class Line {
         this.name = new Name(name);
         this.color = new Color(color);
         this.sections = new Sections(sections);
+    }
+
+    public static Line of(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor(),
+                generateSections(sectionEntities)
+        );
+    }
+
+    private static List<Section> generateSections(final List<SectionEntity> sectionEntities) {
+        return sectionEntities.stream()
+                .map(Section::from)
+                .collect(Collectors.toList());
     }
 
     public void addSection(final Station upward, final Station downward, final int distance) {

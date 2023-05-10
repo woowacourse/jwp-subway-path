@@ -5,27 +5,26 @@ import subway.controller.dto.LineCreateRequest;
 import subway.controller.dto.LineResponse;
 import subway.controller.dto.LinesResponse;
 import subway.controller.dto.SectionCreateRequest;
-import subway.dao.LineDao;
 import subway.domain.line.Line;
-import subway.entity.LineEntity;
+import subway.repository.LineRepository;
 
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
 
-    public LineService(final LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public Long createLine(final LineCreateRequest request) {
         final Line line = new Line(request.getName(), request.getColor());
-        final LineEntity entity = new LineEntity(line.getId(), line.getName(), line.getColor());
-        return lineDao.save(entity).getId();
+        return lineRepository.save(line).getId();
     }
 
     public LineResponse findLineById(final Long lineId) {
-        return null;
+        final Line line = lineRepository.findById(lineId);
+        return LineResponse.from(line);
     }
 
     public LinesResponse findLines() {
