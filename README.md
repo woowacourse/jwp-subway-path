@@ -64,8 +64,8 @@
 
 ---
 
-- [ ] 노선 (Line)
-    - [ ] 이름과 색을 갖는다. (name, color)
+- [x] 노선 (Line)
+    - [x] 이름과 색을 갖는다. (name, color)
 
 - [x] 역 (Station)
     - [x] 이름을 갖는다. (name)
