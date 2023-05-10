@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.util.List;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -38,5 +39,10 @@ public class LineDao {
     public LineEntity findById(final Long id) {
         final String sql = "SELECT * FROM line WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public List<LineEntity> findAll() {
+        final String sql = "SELECT * FROM line";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 }

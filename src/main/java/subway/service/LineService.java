@@ -91,4 +91,12 @@ public class LineService {
                 .map(stationEntity -> new StationResponse(stationEntity.getName()))
                 .collect(Collectors.toList());
     }
+
+    public List<LineResponse> findAll() {
+        List<LineEntity> lineEntities = lineDao.findAll();
+
+        return lineEntities.stream()
+                .map(lineEntity -> findById(lineEntity.getId()))
+                .collect(Collectors.toList());
+    }
 }

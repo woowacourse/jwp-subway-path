@@ -1,6 +1,7 @@
 package subway.controller;
 
 import java.net.URI;
+import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,5 +31,10 @@ public class LineController {
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findById(id));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findAll());
     }
 }
