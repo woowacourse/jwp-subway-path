@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.domain.LineName;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -19,7 +20,7 @@ public class LineDao {
     private final RowMapper<Line> rowMapper = (rs, rowNum) ->
             new Line(
                     rs.getLong("id"),
-                    rs.getString("name")
+                    new LineName(rs.getString("name"))
             );
 
     public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
@@ -29,13 +30,12 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(final Line line) {
+    public Line insert(final LineName lineName) {
         final Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
+        params.put("name", lineName.getValue());
 
         final Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName());
+        return new Line(lineId, lineName);
     }
 
     public List<Line> findAll() {
@@ -48,9 +48,9 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(final Line newLine) {
+    public void updateName(final Long id, final LineName lineName) {
         final String sql = "update LINE set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getId()});
+        jdbcTemplate.update(sql, lineName, id);
     }
 
     public void deleteById(final Long id) {

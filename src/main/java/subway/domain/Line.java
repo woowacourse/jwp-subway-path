@@ -1,18 +1,22 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class Line {
-    private Long id;
-    private final String name;
+    private final Long id;
+    private final LineName name;
+    private final Sections sections;
 
-    public Line(final Long id, final String name) {
+    public Line(final Long id, final LineName name, final Sections sections) {
         this.id = id;
         this.name = name;
+        this.sections = sections;
     }
 
-    public Line(final String name) {
-        this.name = name;
+    public Line(final Long id, final LineName name) {
+        this(id, name, new Sections(new ArrayList<>()));
     }
 
     public Long getId() {
@@ -20,7 +24,23 @@ public class Line {
     }
 
     public String getName() {
-        return name;
+        return name.getValue();
+    }
+
+    public List<Section> getSections() {
+        return sections.getSections();
+    }
+
+    public void addSection(final Section newSection) {
+        if (sections.isHeadStation(newSection.getNextStation())) {
+            sections.addHead(newSection);
+            return;
+        }
+        if (sections.isTailStation(newSection.getBeforeStation())) {
+            sections.addTail(newSection);
+            return;
+        }
+        sections.addCentral(newSection);
     }
 
     @Override
