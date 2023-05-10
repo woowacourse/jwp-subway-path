@@ -1,42 +1,30 @@
 package subway.domain;
 
-import java.util.Objects;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Line {
-    private Long id;
     private String name;
+    private LinkedList<Section> sections;
 
-    public Line() {
-    }
-
-    public Line(String name) {
+    public Line(String name, List<Section> sections) {
         this.name = name;
+        this.sections = new LinkedList<>(sections);
     }
 
-    public Line(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
+    public Line(Line otherLine) {
+        this(otherLine.getName(), otherLine.getSections());
     }
 
     public String getName() {
         return name;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name);
+    public List<Section> getSections() {
+        return new LinkedList<>(sections);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+    public List<Section> addStation(Station newStation, Station upstream, Station downstream) {
+        return null;
     }
 }
