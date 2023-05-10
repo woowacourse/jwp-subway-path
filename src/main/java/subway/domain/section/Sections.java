@@ -28,6 +28,7 @@ public class Sections {
             final Station additionStation,
             final StationDistance stationDistance
     ) {
+        validateDuplication(additionStation);
         final Section firstSection = peekByFirstStationUnique(firstStation);
         final Section attachedSection = firstSection.createFrontSection(additionStation, stationDistance);
 
@@ -39,6 +40,7 @@ public class Sections {
             final Station additionStation,
             final StationDistance stationDistance
     ) {
+        validateDuplication(additionStation);
         final Section lastSection = peekBySecondStationUnique(lastStation);
         final Section attachedSection = lastSection.createBehindSection(additionStation, stationDistance);
 
@@ -50,6 +52,7 @@ public class Sections {
             final Station additionStation,
             final StationDistance stationDistance
     ) {
+        validateDuplication(additionStation);
         final Section section = peekByFirstStationUnique(firstStation);
         final List<Section> sections = section.separateByFirstStation(additionStation, stationDistance);
 
@@ -77,6 +80,15 @@ public class Sections {
 
     private void validateUniqueSection(final List<Section> collect) {
         if (collect.size() != 1) {
+            throw new IllegalStateException();
+        }
+    }
+
+    private void validateDuplication(final Station station) {
+        final boolean isExistStation = sections.stream()
+                .anyMatch(section -> section.contains(station));
+
+        if (isExistStation) {
             throw new IllegalStateException();
         }
     }
