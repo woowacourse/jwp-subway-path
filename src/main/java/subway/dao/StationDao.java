@@ -35,9 +35,9 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, stationName);
     }
 
-    public void update(String prevStationName, String newStationName) {
+    public void update(String prevStationName, Station station) {
         String sql = "update STATION set name = ? where name = ?";
-        jdbcTemplate.update(sql, prevStationName, newStationName);
+        jdbcTemplate.update(sql, prevStationName, station.getName());
     }
 
     public void deleteByName(String stationName) {

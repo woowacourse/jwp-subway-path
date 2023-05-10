@@ -6,17 +6,16 @@ public class Section {
     private int distance;
 
     public Section(Station startStation, Station endStation, int distance) {
+        validateDistance(distance);
         this.startStation = startStation;
         this.endStation = endStation;
         this.distance = distance;
     }
 
-    public boolean hasStation(Station station) {
-        return startStation.equals(station) || endStation.equals(station);
-    }
-
-    public boolean hasStartStation(Station station) {
-        return startStation.equals(station);
+    private void validateDistance(int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("구간의 길이는 1 이상 이어야 합니다.");
+        }
     }
 
     public boolean hasEndStation(Station station) {

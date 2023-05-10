@@ -82,7 +82,7 @@ class SectionDaoTest {
         sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
 
         // when
-        boolean expect = sectionDao.isStationInLine(stationName, lineId);
+        boolean expect = sectionDao.isStationInLine(lineId, stationName);
 
         // then
         assertThat(expect)

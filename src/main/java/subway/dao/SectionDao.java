@@ -54,7 +54,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public boolean isStationInLine(String stationName, Long lineId) {
+    public boolean isStationInLine(Long lineId, String stationName) {
         String sql = "SELECT COUNT(*) FROM SECTION WHERE start_station_name = ? OR end_station_name = ? AND line_id = ? LIMIT 1";
         return jdbcTemplate.queryForObject(sql, Long.class, stationName, stationName, lineId) > 0;
     }

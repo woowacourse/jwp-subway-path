@@ -12,7 +12,6 @@ create table LINE
     id                 bigint auto_increment not null,
     name               varchar(255)          not null unique,
     color              varchar(20)           not null,
-    start_station_name varchar(255),
     primary key (id)
 );
 
@@ -26,3 +25,11 @@ create table SECTION
     primary key (id),
     foreign key (line_id) REFERENCES LINE (id)
 );
+
+INSERT INTO STATION (name) VALUES ('잠실역');
+INSERT INTO STATION (name) VALUES ('용산역');
+INSERT INTO STATION (name) VALUES ('부산역');
+INSERT INTO STATION (name) VALUES ('대구역');
+INSERT INTO STATION (name) VALUES ('포항역');
+INSERT INTO STATION (name) VALUES ('삼성역');
+INSERT INTO LINE (name, color) VALUES ('2호선', 'green');

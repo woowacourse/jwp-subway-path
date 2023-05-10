@@ -23,11 +23,12 @@ public class SectionService {
         this.lineDao = lineDao;
     }
 
-    public void saveSection(SectionCreateRequest sectionCreateRequest, Long lineId) {
+    public void saveSection(Long lineId, SectionCreateRequest sectionCreateRequest) {
         String startStationName = sectionCreateRequest.getStartStation();
         String endStationName = sectionCreateRequest.getEndStation();
         validateStation(startStationName, endStationName);
-        addSection(new Section(new Station(startStationName), new Station(endStationName), sectionCreateRequest.getDistance()), lineId);
+        addSection(lineId, new Section(new Station(startStationName), new Station(endStationName),
+                sectionCreateRequest.getDistance()));
     }
 
     private void validateStation(String startStationName, String endStationName) {
@@ -36,13 +37,9 @@ public class SectionService {
         }
     }
 
-    private void addSection(Section section, Long lineId) {
+    private void addSection(Long lineId, Section section) {
         int distance = section.getDistance();
-        if (distance <= 0) {
-            throw new IllegalArgumentException();
-        }
-        boolean isLineEmpty = sectionDao.isEmptyByLineId(lineId);
-        if (isLineEmpty) {
+        if (sectionDao.isEmptyByLineId(lineId)) {
             sectionDao.insert(lineId, section);
             lineDao.updateStartStationById(lineId, section.getStartStation());
             return;
@@ -50,8 +47,8 @@ public class SectionService {
         Station startStation = section.getStartStation();
         Station endStation = section.getEndStation();
 
-        boolean hasStartStation = sectionDao.isStationInLine(startStation.getName(), lineId);
-        boolean hasEndStation = sectionDao.isStationInLine(endStation.getName(), lineId);
+        boolean hasStartStation = sectionDao.isStationInLine(lineId, startStation.getName());
+        boolean hasEndStation = sectionDao.isStationInLine(lineId, endStation.getName());
         if ((hasStartStation && hasEndStation) || (!hasStartStation && !hasEndStation)) {
             throw new IllegalArgumentException();
         }
@@ -64,7 +61,8 @@ public class SectionService {
                     throw new IllegalArgumentException();
                 }
                 String tempEndStationName = sectionEntity.getEndStationName();
-                sectionDao.insert(lineId, new Section(endStation, new Station(tempEndStationName), sectionEntity.getDistance() - distance));
+                sectionDao.insert(lineId, new Section(endStation, new Station(tempEndStationName),
+                        sectionEntity.getDistance() - distance));
                 sectionEntity.setEndStationName(endStation.getName());
                 sectionEntity.setDistance(distance);
                 sectionDao.update(sectionEntity);
@@ -81,7 +79,8 @@ public class SectionService {
                     throw new IllegalArgumentException();
                 }
                 String tempStartStationName = sectionEntity.getStartStationName();
-                sectionDao.insert(lineId, new Section(new Station(tempStartStationName), startStation, sectionEntity.getDistance() - distance));
+                sectionDao.insert(lineId, new Section(new Station(tempStartStationName), startStation,
+                        sectionEntity.getDistance() - distance));
                 sectionEntity.setStartStationName(startStation.getName());
                 sectionEntity.setDistance(distance);
                 sectionDao.update(sectionEntity);
