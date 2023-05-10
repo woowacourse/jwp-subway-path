@@ -54,7 +54,7 @@ class SectionsTest {
 
         //then
         assertThat(sections.getSections()).hasSize(2);
-        assertThat(sections.peekByFromStation(newStation).getDistance())
+        assertThat(sections.peekUniqueSectionByFromStation(newStation).getDistance())
                 .isEqualTo(new StationDistance(3));
     }
 }
