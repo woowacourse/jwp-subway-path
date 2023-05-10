@@ -9,6 +9,7 @@ import static org.springframework.http.HttpStatus.OK;
 import static subway.integration.common.LocationAsserter.location_헤더를_검증한다;
 import static subway.integration.line.LineSteps.노선_생성_요청;
 import static subway.integration.line.LineSteps.노선_생성하고_아이디_반환;
+import static subway.integration.line.LineSteps.노선_전체_조회_결과;
 import static subway.integration.line.LineSteps.노선_전체_조회_요청;
 import static subway.integration.line.LineSteps.노선_조회_요청;
 import static subway.integration.line.LineSteps.노선에_포함된_N번째_구간을_검증한다;
@@ -28,7 +29,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.jdbc.Sql;
 import subway.application.dto.LineQueryResponse;
 import subway.presentation.request.LineCreateRequest;
@@ -126,10 +126,7 @@ public class LineControllerIntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(OK.value());
-        final List<LineQueryResponse> result = response.as(
-                new ParameterizedTypeReference<List<LineQueryResponse>>() {
-                }.getType()
-        );
+        final List<LineQueryResponse> result = 노선_전체_조회_결과(response);
 
         final LineQueryResponse 일호선_응답 = result.get(0);
         단일_노선의_이름을_검증한다(일호선_응답, "1호선");

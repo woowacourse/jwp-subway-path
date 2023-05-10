@@ -8,6 +8,7 @@ import static subway.integration.common.JsonMapper.toJson;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import org.springframework.core.ParameterizedTypeReference;
 import subway.application.dto.LineQueryResponse;
 import subway.application.dto.LineQueryResponse.SectionQueryResponse;
 import subway.presentation.request.LineCreateRequest;
@@ -104,5 +105,12 @@ public class LineSteps {
         assertThat(responses.get(index).getUpStationName()).isEqualTo(upStationName);
         assertThat(responses.get(index).getDownStationName()).isEqualTo(downStationName);
         assertThat(responses.get(index).getDistance()).isEqualTo(distance);
+    }
+
+    public static List<LineQueryResponse> 노선_전체_조회_결과(final ExtractableResponse<Response> response) {
+        return response.as(
+                new ParameterizedTypeReference<List<LineQueryResponse>>() {
+                }.getType()
+        );
     }
 }
