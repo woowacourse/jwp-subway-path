@@ -16,8 +16,8 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
+            Station.of(
                     rs.getLong("id"),
                     rs.getString("name")
             );
@@ -32,8 +32,8 @@ public class StationDao {
 
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        long id = insertAction.executeAndReturnKey(params).longValue();
+        return Station.of(id, station.getName());
     }
 
     public List<Station> findAll() {

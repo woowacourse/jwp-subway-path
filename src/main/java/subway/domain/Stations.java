@@ -7,8 +7,12 @@ public class Stations {
 
     private final List<Station> stations;
 
-    public Stations(List<Station> stations) {
+    private Stations(List<Station> stations) {
         this.stations = new ArrayList<>(stations);
+    }
+
+    public static Stations from(List<Station> stations) {
+        return new Stations(stations);
     }
 
     public void addStation(Station station) {

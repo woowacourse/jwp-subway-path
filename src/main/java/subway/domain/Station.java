@@ -6,13 +6,17 @@ public class Station {
     private final Long id;
     private final String name;
 
-    public Station(Long id, String name) {
+    private Station(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
     public static Station from(String name) {
         return new Station(null, name);
+    }
+
+    public static Station of(long id, String name) {
+        return new Station(id, name);
     }
 
     public boolean isSameName(Station other) {

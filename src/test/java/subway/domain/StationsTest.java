@@ -19,24 +19,24 @@ class StationsTest {
     @DisplayName("여러 역에 대한 정보를 갖는다.")
     void stationsCreateTest() {
         // given
-        Station station1 = new Station(1L, "잠실");
-        Station station2 = new Station(2L, "선릉");
+        Station station1 = Station.of(1L, "잠실");
+        Station station2 = Station.of(2L, "선릉");
 
         List<Station> stations = new ArrayList<>(List.of(station1, station2));
 
         // then
-        assertDoesNotThrow(() -> new Stations(stations));
+        assertDoesNotThrow(() -> Stations.from(stations));
     }
 
     @Test
     @DisplayName("새로운 역을 추가할 수 있다.")
     void stationsAddTest() {
         // given
-        Station station1 = new Station(1L, "잠실");
-        Station station2 = new Station(2L, "선릉");
-        Station station3 = new Station(3L, "잠실새내");
+        Station station1 = Station.of(1L, "잠실");
+        Station station2 = Station.of(2L, "선릉");
+        Station station3 = Station.of(3L, "잠실새내");
 
-        Stations stations = new Stations(new ArrayList<>(List.of(station1, station2)));
+        Stations stations = Stations.from(new ArrayList<>(List.of(station1, station2)));
 
         // then
         assertDoesNotThrow(() -> stations.addStation(station3));
@@ -47,11 +47,11 @@ class StationsTest {
     @DisplayName("중복되는 역이 입력되면 예외처리한다.")
     void addDuplicationStationExceptionTest() {
         // given
-        Station station1 = new Station(1L, "잠실");
-        Station station2 = new Station(2L, "선릉");
-        Station station3 = new Station(null, "잠실");
+        Station station1 = Station.of(1L, "잠실");
+        Station station2 = Station.of(2L, "선릉");
+        Station station3 = Station.from("잠실");
 
-        Stations stations = new Stations(new ArrayList<>(List.of(station1, station2)));
+        Stations stations = Stations.from(new ArrayList<>(List.of(station1, station2)));
 
         // then
         assertThatThrownBy(() -> stations.addStation(station3))
@@ -64,10 +64,10 @@ class StationsTest {
     @DisplayName("입력된 역이 존재하는 역인지 확인할 수 있다.")
     void containsTest(String stationName, boolean expected) {
         // given
-        Station station1 = new Station(1L, "잠실");
-        Station station2 = new Station(2L, "선릉");
+        Station station1 = Station.of(1L, "잠실");
+        Station station2 = Station.of(2L, "선릉");
 
-        Stations stations = new Stations(new ArrayList<>(List.of(station1, station2)));
+        Stations stations = Stations.from(new ArrayList<>(List.of(station1, station2)));
 
         // when
         boolean result = stations.contains(Station.from(stationName));
@@ -80,11 +80,11 @@ class StationsTest {
     @DisplayName("역을 삭제할 수 있다.")
     void removeTest() {
         // given
-        Station station1 = new Station(1L, "잠실");
-        Station station2 = new Station(2L, "선릉");
-        Station station3 = new Station(null, "잠실");
+        Station station1 = Station.of(1L, "잠실");
+        Station station2 = Station.of(2L, "선릉");
+        Station station3 = Station.from("잠실");
 
-        Stations stations = new Stations(new ArrayList<>(List.of(station1, station2)));
+        Stations stations = Stations.from(new ArrayList<>(List.of(station1, station2)));
 
         //when
         stations.remove(station3);
@@ -97,11 +97,11 @@ class StationsTest {
     @DisplayName("존재하지 않는 역을 삭제하려고 하면 예외처리한다.")
     void removeInvalidStationExceptionTest() {
         // given
-        Station station1 = new Station(1L, "잠실");
-        Station station2 = new Station(2L, "선릉");
-        Station station3 = new Station(null, "잠실나루");
+        Station station1 = Station.of(1L, "잠실");
+        Station station2 = Station.of(2L, "선릉");
+        Station station3 = Station.from("잠실나루");
 
-        Stations stations = new Stations(new ArrayList<>(List.of(station1, station2)));
+        Stations stations = Stations.from(new ArrayList<>(List.of(station1, station2)));
 
         //then
         assertThatThrownBy(() -> stations.remove(station3))
@@ -113,11 +113,11 @@ class StationsTest {
     @DisplayName("등록된 역을 조회할 수 있다.")
     void findTest() {
         // given
-        Station station1 = new Station(1L, "잠실");
-        Station station2 = new Station(2L, "선릉");
-        Station station3 = new Station(null, "잠실");
+        Station station1 = Station.of(1L, "잠실");
+        Station station2 = Station.of(2L, "선릉");
+        Station station3 = Station.from("잠실");
 
-        Stations stations = new Stations(new ArrayList<>(List.of(station1, station2)));
+        Stations stations = Stations.from(new ArrayList<>(List.of(station1, station2)));
 
         //when
         Station result = stations.find(station3);
@@ -130,13 +130,11 @@ class StationsTest {
     @DisplayName("존재하지 않는 역을 조회하면 예외처리 한다.")
     void findInvalidStationExceptionTest() {
         // given
-        Station station1 = new Station(1L, "잠실");
-        Station station2 = new Station(2L, "선릉");
-        Station station3 = new Station(null, "잠실나루");
+        Station station1 = Station.of(1L, "잠실");
+        Station station2 = Station.of(2L, "선릉");
+        Station station3 = Station.from("잠실나루");
 
-        Stations stations = new Stations(new ArrayList<>(List.of(station1, station2)));
-
-
+        Stations stations = Stations.from(new ArrayList<>(List.of(station1, station2)));
 
         //then
         assertThatThrownBy(() -> stations.find(station3))

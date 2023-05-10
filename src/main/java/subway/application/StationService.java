@@ -35,7 +35,7 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        stationDao.update(Station.of(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {

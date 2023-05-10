@@ -14,10 +14,10 @@ class StationTest {
     @DisplayName("역 이름이 동일한지 아닌지 확인할 수 있다.")
     void isSameNameTest(String name, boolean expected) {
         // given
-        Station station = new Station(1L, "잠실");
+        Station station = Station.of(1L, "잠실");
 
         // when
-        boolean result = station.isSameName(new Station(null, name));
+        boolean result = station.isSameName(Station.from(name));
 
         // then
         assertThat(result).isEqualTo(expected);

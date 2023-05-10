@@ -14,14 +14,14 @@ class DistanceTest {
     @Test
     @DisplayName("거리 정보를 갖는다.")
     void distanceTest() {
-        assertDoesNotThrow(() -> new Distance(3));
+        assertDoesNotThrow(() -> Distance.from(3));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {-1, 0})
     @DisplayName("거리 정보가 양수가 아닐 경우 예외처리한다.")
     void invalidDistanceExceptionTest(int distance) {
-        assertThatThrownBy(() -> new Distance(distance))
+        assertThatThrownBy(() -> Distance.from(distance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 거리는 양의 정수여야 합니다.");
     }
