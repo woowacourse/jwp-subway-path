@@ -6,6 +6,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Section;
+import subway.domain.SectionStation;
+import subway.domain.Station;
 import subway.dto.SectionRequest;
 
 import java.util.HashMap;
@@ -28,6 +30,15 @@ public class SectionDao {
                     rs.getInt("distance")
             );
 
+    private RowMapper<SectionStation> sectionStationRowMapperrowMapper = (rs, rowNum) ->
+            new SectionStation(
+                    rs.getLong("id"),
+                    rs.getLong("line_id"),
+                    new Station(rs.getObject("up_station_id", Long.class), rs.getString("up_station_name")),
+                    new Station(rs.getObject("down_station_id", Long.class), rs.getString("down_station_name")),
+                    rs.getInt("distance")
+            );
+
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
@@ -44,7 +55,8 @@ public class SectionDao {
         return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
-    public Optional<Long> findById(final Long id) {
+    // TEST 용
+    public Optional<Long> findIdById(final Long id) {
         String sql = "SELECT * FROM section WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Long.class, id));
@@ -63,13 +75,23 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId, stationId, stationId);
     }
 
-    public Optional<Long> findByLineId(final Long lineId) {
+    public Optional<Long> findIdByLineId(final Long lineId) {
         String sql = "SELECT * FROM section WHERE line_id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Long.class, lineId));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
+    }
+
+    public List<SectionStation> findByLineId(final Long lineId) {
+        String sql = "SELECT section.*, s1.name as up_station_name, s2.name as down_station_name FROM section " +
+                "LEFT OUTER JOIN station s1 ON section.up_station_id=s1.id " +
+                "LEFT OUTER JOIN station s2 ON section.down_station_id=s2.id " +
+                "WHERE line_id = ?";
+//        String sql = "SELECT * FROM section WHERE line_id = ?";
+
+        return jdbcTemplate.query(sql, sectionStationRowMapperrowMapper, lineId);
     }
 }
 

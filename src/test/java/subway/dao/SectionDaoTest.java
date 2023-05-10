@@ -46,6 +46,6 @@ class SectionDaoTest {
         sectionDao.deleteByStationId(lineId, stationId);
 
         // then
-        assertThat(sectionDao.findById(sectionId).isEmpty()).isTrue();
+        assertThat(sectionDao.findIdById(sectionId).isEmpty()).isTrue();
     }
 }

@@ -29,7 +29,7 @@ public class SectionService {
         Long downStationId = null;
 
         if (sections.size() == 1) { // 종점인 경우
-            if (sectionDao.findByLineId(lineId).isEmpty()) { // 노선에 해당 구간만 있는 경우
+            if (sectionDao.findIdByLineId(lineId).isEmpty()) { // 노선에 해당 구간만 있는 경우
                 return ;
             }
             Section section = sections.get(0);

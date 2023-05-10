@@ -7,10 +7,10 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LineStationResponse;
 import subway.dto.StationResponse;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,10 +42,9 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<List<StationResponse>> findLineById(@PathVariable Long id) {
-        StationResponse 잠실역 = StationResponse.of(new Station("잠실역"));
-        StationResponse 선릉역 = StationResponse.of(new Station("선릉역"));
-        return ResponseEntity.ok(List.of(잠실역, 선릉역));
+    public ResponseEntity<LineStationResponse> findLineById(@PathVariable Long id) {
+        LineStationResponse lineStationResponse = lineService.findLineById(id);
+        return ResponseEntity.ok(lineStationResponse);
     }
 
     @PutMapping("/{id}")
@@ -60,8 +59,9 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Void> handleSQLException(Exception exception) {
+        exception.printStackTrace();
         return ResponseEntity.badRequest().build();
     }
 }
