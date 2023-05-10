@@ -8,6 +8,10 @@ public class SectionEntity {
     private int distance;
     private Long lineId;
 
+    public SectionEntity(final Long upStationId, final Long downStationId, final int distance, final Long lineId) {
+        this(null, upStationId, downStationId, distance, lineId);
+    }
+
     public SectionEntity(final Long id,
                          final Long upStationId,
                          final Long downStationId,
