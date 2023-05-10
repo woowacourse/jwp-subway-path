@@ -15,7 +15,7 @@ public class LineDao {
     private final SimpleJdbcInsert insertAction;
 
     private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+            Line.of(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
@@ -47,7 +47,7 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(Long id, Line newLine) {
+    public void updateById(Long id, Line newLine) {
         String sql = "update LINES set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), id});
     }

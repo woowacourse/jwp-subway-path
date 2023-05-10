@@ -34,7 +34,7 @@ class LineDaoTest {
     @Test
     void 호선을_생성한다() {
         // given
-        Line line = new Line("2호선", "초록");
+        Line line = Line.of("2호선", "초록");
 
         // when
         final Long id = lineDao.insert(line);
@@ -46,9 +46,9 @@ class LineDaoTest {
     @Test
     void 모든_호선을_조회한다() {
         // given
-        Line line1 = new Line("1호선", "파랑");
-        Line line2 = new Line("2호선", "초록");
-        Line line3 = new Line("3호선", "노랑");
+        Line line1 = Line.of("1호선", "파랑");
+        Line line2 = Line.of("2호선", "초록");
+        Line line3 = Line.of("3호선", "노랑");
         lineDao.insert(line1);
         lineDao.insert(line2);
         lineDao.insert(line3);
@@ -68,7 +68,7 @@ class LineDaoTest {
     @Test
     void 호선을_ID로_조회한다() {
         // given
-        Line line = new Line("2호선", "초록");
+        Line line = Line.of("2호선", "초록");
         final Long id = lineDao.insert(line);
 
         // when
@@ -84,11 +84,11 @@ class LineDaoTest {
     @Test
     void 호선을_수정한다() {
         // given
-        Line line = new Line("2호선", "초록");
+        Line line = Line.of("2호선", "초록");
         final Long id = lineDao.insert(line);
 
         // when
-        lineDao.update(id, new Line("2호선", "검정"));
+        lineDao.updateById(id, Line.of("2호선", "검정"));
         final Line result = lineDao.findById(id);
 
         // then
@@ -101,7 +101,7 @@ class LineDaoTest {
     @Test
     void 호선을_삭제한다() {
         // given
-        Line line = new Line("2호선", "초록");
+        Line line = Line.of("2호선", "초록");
         final Long id = lineDao.insert(line);
         lineDao.deleteById(id);
 
