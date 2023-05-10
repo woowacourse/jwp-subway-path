@@ -4,7 +4,7 @@
 
 ### Domain
 
-- [ ] Lines
+- [x] Lines
     - 전체 호선 관리
 - [x] Line (1호선, 2호선, ...)
     - LineInfo
