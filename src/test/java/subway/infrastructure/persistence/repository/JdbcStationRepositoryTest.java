@@ -17,32 +17,32 @@ import subway.domain.StationRepository;
 @RepositoryTest
 class JdbcStationRepositoryTest {
 
+    private final Station station = new Station("정의역");
+
     @Autowired
     private StationRepository stationRepository;
-
-    private final Station station = new Station("정의역");
 
     @Test
     void 역을_저장한다() {
         // when
-        final Long id = stationRepository.save(station);
+        stationRepository.save(station);
 
         // then
-        assertThat(id).isNotNull();
+        assertThat(stationRepository.findByName("정의역")).isPresent();
     }
 
     @Test
     void 역을_조회한다() {
         // given
-        final Long id = stationRepository.save(station);
+        stationRepository.save(station);
 
         // when & then
-        assertThat(stationRepository.findById(id)).isPresent();
+        assertThat(stationRepository.findByName("정의역")).isPresent();
     }
 
     @Test
     void 역이_없는_경우() {
         // when & then
-        assertThat(stationRepository.findById(1L)).isEmpty();
+        assertThat(stationRepository.findByName("정의역")).isEmpty();
     }
 }

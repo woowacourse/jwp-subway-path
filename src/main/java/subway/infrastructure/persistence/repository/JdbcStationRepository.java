@@ -17,13 +17,13 @@ public class JdbcStationRepository implements StationRepository {
     }
 
     @Override
-    public Long save(final Station station) {
-        return stationDao.save(StationEntity.from(station));
+    public void save(final Station station) {
+        stationDao.save(StationEntity.from(station));
     }
 
     @Override
-    public Optional<Station> findById(final Long id) {
-        return stationDao.findById(id)
+    public Optional<Station> findByName(final String name) {
+        return stationDao.findByName(name)
                 .map(StationEntity::toDomain);
     }
 }

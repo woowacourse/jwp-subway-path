@@ -14,7 +14,6 @@ import subway.infrastructure.persistence.entity.StationEntity;
 public class StationDao {
 
     private static final RowMapper<StationEntity> stationRowMapper = (rs, rowNum) -> new StationEntity(
-            rs.getLong("id"),
             rs.getString("name")
     );
 
@@ -28,16 +27,15 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long save(final StationEntity stationEntity) {
+    public void save(final StationEntity stationEntity) {
         final SqlParameterSource source = new BeanPropertySqlParameterSource(stationEntity);
-        return simpleJdbcInsert.executeAndReturnKey(source)
-                .longValue();
+        simpleJdbcInsert.execute(source);
     }
 
-    public Optional<StationEntity> findById(final Long id) {
+    public Optional<StationEntity> findByName(final String name) {
         try {
-            final String sql = "select * from station where station.id = ?";
-            return Optional.ofNullable(template.queryForObject(sql, stationRowMapper, id));
+            final String sql = "select * from station where station.name = ?";
+            return Optional.ofNullable(template.queryForObject(sql, stationRowMapper, name));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

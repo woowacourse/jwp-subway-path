@@ -18,4 +18,16 @@ public class Section {
             throw new IllegalArgumentException("역간 거리는 양수여야 합니다.");
         }
     }
+
+    public Station getUp() {
+        return up;
+    }
+
+    public Station getDown() {
+        return down;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
 }

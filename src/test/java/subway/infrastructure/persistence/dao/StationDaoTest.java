@@ -16,32 +16,32 @@ import subway.infrastructure.persistence.entity.StationEntity;
 @RepositoryTest
 class StationDaoTest {
 
+    private final StationEntity stationEntity = new StationEntity("미역");
+
     @Autowired
     private StationDao stationDao;
-
-    private final StationEntity stationEntity = new StationEntity("미역");
 
     @Test
     void 역을_저장한다() {
         // when
-        final Long id = stationDao.save(stationEntity);
+        stationDao.save(stationEntity);
 
         // then
-        assertThat(id).isNotNull();
+        assertThat(stationDao.findByName("미역")).isPresent();
     }
 
     @Test
     void 역을_조회한다() {
         // given
-        final Long id = stationDao.save(stationEntity);
+        stationDao.save(stationEntity);
 
         // when & then
-        assertThat(stationDao.findById(id)).isPresent();
+        assertThat(stationDao.findByName("미역")).isPresent();
     }
 
     @Test
     void 역이_없는_경우() {
         // when & then
-        assertThat(stationDao.findById(1L)).isEmpty();
+        assertThat(stationDao.findByName("미역")).isEmpty();
     }
 }
