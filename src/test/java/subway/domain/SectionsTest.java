@@ -1,5 +1,6 @@
 package subway.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -167,4 +168,96 @@ class SectionsTest {
                 .isInstanceOf(GlobalException.class);
     }
 
+    @DisplayName("존재하지 않는 역을 삭제할 수 없다.")
+    @Test
+    void removeStationFailTestByNotExistStation() {
+        Station 잠실 = new Station("잠실");
+        Station 잠실새내 = new Station("잠실새내");
+        Station 잠실나루 = new Station("잠실나루");
+        Section section = new Section(잠실, 잠실새내, new Distance(5));
+
+        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+
+        assertThatThrownBy(() -> sections.remove(잠실나루))
+                .isInstanceOf(GlobalException.class);
+    }
+
+    @DisplayName("역이 단 두 개일때 삭제시, 모든 구간이 삭제된다.")
+    @Test
+    void removeStationSuccessTestByOnlyTwoStation() {
+        Station 잠실 = new Station("잠실");
+        Station 잠실새내 = new Station("잠실새내");
+        Section section = new Section(잠실, 잠실새내, new Distance(5));
+
+        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+
+        assertDoesNotThrow(() -> sections.remove(잠실));
+        assertThat(sections.getSections()).hasSize(0);
+    }
+
+    @DisplayName("상행 종점역을 삭제할 수 있다.")
+    @Test
+    void removeSuccessTestByUpStation() {
+        Station 잠실 = new Station("잠실");
+        Station 잠실새내 = new Station("잠실새내");
+        Station 잠실나루 = new Station("잠실나루");
+        Section section1 = new Section(잠실, 잠실새내, new Distance(5));
+        Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
+
+        Sections sections = new Sections(List.of(section1, section2), 잠실, 잠실새내);
+
+        assertDoesNotThrow(() -> sections.remove(잠실));
+        assertThat(sections.getSections()).hasSize(1);
+        assertThat(sections.getUpStation()).isEqualTo(잠실새내);
+    }
+
+    @DisplayName("하행 종점역을 삭제할 수 있다.")
+    @Test
+    void removeSuccessTestByDownStation() {
+        Station 잠실 = new Station("잠실");
+        Station 잠실새내 = new Station("잠실새내");
+        Station 잠실나루 = new Station("잠실나루");
+        Section section1 = new Section(잠실, 잠실새내, new Distance(5));
+        Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
+
+        Sections sections = new Sections(List.of(section1, section2), 잠실, 잠실새내);
+
+        assertDoesNotThrow(() -> sections.remove(잠실나루));
+        assertThat(sections.getSections()).hasSize(1);
+        assertThat(sections.getDownStation()).isEqualTo(잠실새내);
+    }
+
+    @DisplayName("종점이 아닌 역을 삭제할 수 있다.")
+    @Test
+    void removeSuccessTestByNotTerminal1() {
+        Station 잠실 = new Station("잠실");
+        Station 잠실새내 = new Station("잠실새내");
+        Station 잠실나루 = new Station("잠실나루");
+        Section section1 = new Section(잠실, 잠실새내, new Distance(5));
+        Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
+
+        Sections sections = new Sections(List.of(section1, section2), 잠실, 잠실나루);
+
+        assertDoesNotThrow(() -> sections.remove(잠실새내));
+        assertThat(sections.getSections()).hasSize(1);
+        assertThat(sections.getUpStation()).isEqualTo(잠실);
+        assertThat(sections.getDownStation()).isEqualTo(잠실나루);
+    }
+
+    @DisplayName("종점이 아닌 역을 삭제할 수 있다.")
+    @Test
+    void removeSuccessTestByNotTerminal2() {
+        Station 잠실 = new Station("잠실");
+        Station 잠실새내 = new Station("잠실새내");
+        Station 잠실나루 = new Station("잠실나루");
+        Section section1 = new Section(잠실, 잠실새내, new Distance(5));
+        Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
+
+        Sections sections = new Sections(List.of(section2, section1), 잠실, 잠실나루);
+
+        assertDoesNotThrow(() -> sections.remove(잠실새내));
+        assertThat(sections.getSections()).hasSize(1);
+        assertThat(sections.getUpStation()).isEqualTo(잠실);
+        assertThat(sections.getDownStation()).isEqualTo(잠실나루);
+    }
 }

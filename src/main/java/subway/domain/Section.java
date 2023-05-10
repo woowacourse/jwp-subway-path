@@ -75,4 +75,8 @@ public class Section {
     public boolean isGreaterThanOtherDistance(final Section otherSection) {
         return this.distance.isBiggerThanOtherDistance(otherSection.distance);
     }
+
+    public boolean hasStation(Station otherStation) {
+        return isSameStartStation(otherStation) || isSameEndStation(otherStation);
+    }
 }
