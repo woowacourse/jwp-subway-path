@@ -43,6 +43,10 @@ public class Section {
         return this.distance.subtract(distance);
     }
 
+    public Distance add(final Distance distance) {
+        return this.distance.add(distance);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

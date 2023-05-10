@@ -14,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.InvalidSectionException;
+import subway.exception.StationNotFoundException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -176,4 +177,84 @@ class LineTest {
         // expect
         assertThat(line.isSameName(name)).isEqualTo(result);
     }
+
+    @Test
+    void 제거하려는_역이_없는_경우_예외를_던진다() {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("A", "B", 5),
+                new Section("B", "C", 5)
+        ));
+
+        // expect
+        assertThatThrownBy(() -> line.remove(new Station("D")))
+                .isInstanceOf(StationNotFoundException.class)
+                .hasMessage("역을 찾을 수 없습니다.");
+    }
+
+    @Test
+    void 중간에_있는_역을_제거한다() {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("A", "B", 5),
+                new Section("B", "C", 5)
+        ));
+
+        // when
+        line.remove(new Station("B"));
+
+        // then
+        assertThat(line.getSections()).containsAll(List.of(
+                new Section("A", "C", 10)
+        ));
+    }
+
+    @Test
+    void 상행_종점역을_제거한다() {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("A", "B", 5),
+                new Section("B", "C", 5)
+        ));
+
+        // when
+        line.remove(new Station("A"));
+
+        // then
+        assertThat(line.getSections()).containsAll(List.of(
+                new Section("B", "C", 5)
+        ));
+    }
+
+    @Test
+    void 하행_종점역을_제거한다() {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("A", "B", 5),
+                new Section("B", "C", 5)
+        ));
+
+        // when
+        line.remove(new Station("C"));
+
+        // then
+        assertThat(line.getSections()).containsAll(List.of(
+                new Section("A", "B", 5)
+        ));
+    }
+
+    @Test
+    void 남아있는_역이_두개인_경우_두_역_모두_제거한다() {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("A", "B", 5)
+        ));
+
+        // when
+        line.remove(new Station("A"));
+
+        // then
+        assertThat(line.getSections()).isEmpty();
+    }
 }
+

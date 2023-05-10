@@ -57,4 +57,16 @@ class DistanceTest {
         // then
         assertThat(result).isEqualTo(new Distance(3));
     }
+
+    @Test
+    void 입력받은_거리를_더한_값을_반환한다() {
+        // given
+        final Distance distance = new Distance(5);
+
+        // when
+        final Distance result = distance.add(new Distance(2));
+
+        // then
+        assertThat(result).isEqualTo(new Distance(7));
+    }
 }

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import subway.exception.InvalidSectionException;
+import subway.exception.StationNotFoundException;
 
 public class Line {
 
@@ -120,6 +121,30 @@ public class Line {
 
     public boolean isSameName(final String lineName) {
         return name.equals(lineName);
+    }
+
+    public void remove(final Station station) {
+        if (!contains(station)) {
+            throw new StationNotFoundException();
+        }
+
+        final Optional<Section> sectionAtStart = findSectionAtStart(station);
+        final Optional<Section> sectionAtEnd = findSectionAtEnd(station);
+
+        if (sectionAtStart.isPresent() && sectionAtEnd.isPresent()) {
+            final Section left = sectionAtEnd.get();
+            final Section right = sectionAtStart.get();
+            sections.add(new Section(left.getStart(), right.getEnd(), left.add(right.getDistance())));
+            sections.remove(left);
+            sections.remove(right);
+            return;
+        }
+
+        if (sectionAtStart.isPresent()) {
+            sections.remove(sectionAtStart.get());
+            return;
+        }
+        sections.remove(sectionAtEnd.get());
     }
 
     @Override

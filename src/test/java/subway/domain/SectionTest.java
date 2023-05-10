@@ -73,4 +73,16 @@ class SectionTest {
         // then
         assertThat(result).isEqualTo(new Distance(3));
     }
+
+    @Test
+    void 현재_거리에서_입력받은_거리를_더한_값을_반환한다() {
+        // given
+        final Section section = new Section("A", "B", 5);
+
+        // when
+        final Distance result = section.add(new Distance(2));
+
+        // then
+        assertThat(result).isEqualTo(new Distance(7));
+    }
 }
