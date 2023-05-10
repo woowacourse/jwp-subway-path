@@ -23,4 +23,8 @@ public class Distance {
     public Distance minusValue(final Distance distance) {
         return new Distance(this.value - distance.value);
     }
+
+    public Distance plusValue(final Distance distance) {
+        return new Distance(this.value + distance.value);
+    }
 }

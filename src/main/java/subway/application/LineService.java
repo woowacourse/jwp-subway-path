@@ -3,6 +3,8 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.domain.Line;
+import subway.domain.LineName;
+import subway.dto.LineNodeRequests;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -18,7 +20,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new Line(request.getName()));
+        final Line persistLine = lineDao.insert(new LineName(request.getName()));
         return LineResponse.of(persistLine);
     }
 
@@ -38,12 +40,16 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    public void registerLine(final LineNodeRequests requests) {
+
+    }
+
     public Line findLineById(final Long id) {
         return lineDao.findById(id);
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName()));
+        lineDao.updateName(id, new LineName(lineUpdateRequest.getName()));
     }
 
     public void deleteLineById(final Long id) {

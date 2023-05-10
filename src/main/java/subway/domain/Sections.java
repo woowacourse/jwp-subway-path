@@ -46,4 +46,34 @@ public class Sections {
                 )
         );
     }
+
+    public void removeHead() {
+        sections.remove(0);
+    }
+
+    public void removeTail() {
+        sections.remove(sections.size() - 1);
+    }
+
+    public void removeCentral(final Station station) {
+        final Section beforeSection = sections.stream()
+                .filter(section -> section.getNextStation().equals(station))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+
+        final Section nextSection = sections.stream()
+                .filter(section -> section.getBeforeStation().equals(station))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+
+        final int index = sections.indexOf(beforeSection);
+        sections.remove(beforeSection);
+        sections.remove(nextSection);
+        final Section newSection = new Section(
+                beforeSection.getBeforeStation(),
+                nextSection.getNextStation(),
+                beforeSection.getDistance().plusValue(nextSection.getDistance())
+        );
+        sections.add(index, newSection);
+    }
 }

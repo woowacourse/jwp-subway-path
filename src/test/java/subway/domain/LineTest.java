@@ -1,6 +1,7 @@
 package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -42,5 +43,94 @@ class LineTest {
                         .extracting(Distance::getValue)
                         .containsExactly(7, 3, 7)
         );
+    }
+
+    @Nested
+    @DisplayName("Line에 Station을 제거한다.")
+    class removeStation {
+
+        @DisplayName("상행 종점을 제거하는 경우")
+        @Test
+        void removeHeadStation() {
+            final Line line = new Line(1L, new LineName("2호선"));
+            final Section section1 = new Section(STATION_A, STATION_B, new Distance(7));
+            final Section section2 = new Section(STATION_B, STATION_C, new Distance(10));
+            line.addSection(section1);
+            line.addSection(section2);
+
+            line.removeStation(STATION_A);
+            final List<Section> sections = line.getSections();
+
+            assertAll(
+                    () -> assertThat(sections)
+                            .extracting(Section::getBeforeStation)
+                            .extracting(Station::getName)
+                            .containsExactly("b"),
+                    () -> assertThat(sections)
+                            .extracting(Section::getNextStation)
+                            .extracting(Station::getName)
+                            .containsExactly("c"),
+                    () -> assertThat(sections)
+                            .extracting(Section::getDistance)
+                            .extracting(Distance::getValue)
+                            .containsExactly(10)
+            );
+        }
+
+        @DisplayName("하행 종점을 제거하는 경우")
+        @Test
+        void removeTailStation() {
+            final Line line = new Line(1L, new LineName("2호선"));
+            final Section section1 = new Section(STATION_A, STATION_B, new Distance(7));
+            final Section section2 = new Section(STATION_B, STATION_C, new Distance(10));
+            line.addSection(section1);
+            line.addSection(section2);
+
+            line.removeStation(STATION_C);
+            final List<Section> sections = line.getSections();
+
+            assertAll(
+                    () -> assertThat(sections)
+                            .extracting(Section::getBeforeStation)
+                            .extracting(Station::getName)
+                            .containsExactly("a"),
+                    () -> assertThat(sections)
+                            .extracting(Section::getNextStation)
+                            .extracting(Station::getName)
+                            .containsExactly("b"),
+                    () -> assertThat(sections)
+                            .extracting(Section::getDistance)
+                            .extracting(Distance::getValue)
+                            .containsExactly(7)
+            );
+        }
+
+        @DisplayName("중간 역을 제거하는 경우")
+        @Test
+        void removeCentralStation() {
+            final Line line = new Line(1L, new LineName("2호선"));
+            final Section section1 = new Section(STATION_A, STATION_B, new Distance(7));
+            final Section section2 = new Section(STATION_B, STATION_C, new Distance(10));
+            line.addSection(section1);
+            line.addSection(section2);
+
+            line.removeStation(STATION_B);
+            final List<Section> sections = line.getSections();
+
+            assertAll(
+                    () -> assertThat(sections)
+                            .extracting(Section::getBeforeStation)
+                            .extracting(Station::getName)
+                            .containsExactly("a"),
+                    () -> assertThat(sections)
+                            .extracting(Section::getNextStation)
+                            .extracting(Station::getName)
+                            .containsExactly("c"),
+                    () -> assertThat(sections)
+                            .extracting(Section::getDistance)
+                            .extracting(Distance::getValue)
+                            .containsExactly(17)
+            );
+        }
     }
 }

@@ -43,6 +43,18 @@ public class Line {
         sections.addCentral(newSection);
     }
 
+    public void removeStation(final Station station) {
+        if (sections.isHeadStation(station)) {
+            sections.removeHead();
+            return;
+        }
+        if (sections.isTailStation(station)) {
+            sections.removeTail();
+            return;
+        }
+        sections.removeCentral(station);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
