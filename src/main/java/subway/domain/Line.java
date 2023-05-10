@@ -57,14 +57,14 @@ public class Line {
         }
     }
 
-    private boolean isUpwardTerminus(Station neighborhoodStation) {
+    private boolean isUpwardTerminus(Station station) {
         Section upwardEndSection = sections.get(0);
-        return upwardEndSection.getUpwardStation().equals(neighborhoodStation);
+        return upwardEndSection.getUpwardStation().equals(station);
     }
 
-    private boolean isDownwardTerminus(Station neighborhoodStation) {
+    private boolean isDownwardTerminus(Station station) {
         Section downwardEndSection = sections.get(sections.size() - 1);
-        return downwardEndSection.getDownwardStation().equals(neighborhoodStation);
+        return downwardEndSection.getDownwardStation().equals(station);
     }
 
     private void addUpwardTerminus(Station station, Station neighborhoodStation, int distance) {
@@ -76,7 +76,7 @@ public class Line {
     private void addDownwardTerminus(Station station, Station neighborhoodStation, int distance) {
         Section sectionToModify = getSectionDownwardSameWith(neighborhoodStation);
         Section sectionToSave = new Section(sectionToModify.getDownwardStation(), station, distance);
-        sections.add(sections.size() - 1, sectionToSave);
+        sections.add(sectionToSave);
     }
 
     private void addStationUpward(Station station, Station neighborhoodStation, int distance) {
@@ -160,6 +160,29 @@ public class Line {
         Station stationToDelete = new Station(stationName);
         validateNotExist(stationToDelete);
         validateOnlyTwoStations();
+
+        if (isUpwardTerminus(stationToDelete)) {
+            sections.remove(0);
+            return;
+        }
+
+        if (isDownwardTerminus(stationToDelete)) {
+            sections.remove(sections.size() - 1);
+            return;
+        }
+
+        Section downwardSection = getSectionDownwardSameWith(stationToDelete);
+        Section upwardSection = getSectionUpwardSameWith(stationToDelete);
+
+        Station upwardStation = downwardSection.getUpwardStation();
+        Station downwardStation = upwardSection.getDownwardStation();
+        int newDistance = upwardSection.getDistance() + downwardSection.getDistance();
+        Section newSection = new Section(upwardStation, downwardStation, newDistance);
+
+        int index = sections.indexOf(downwardSection);
+        sections.add(index, newSection);
+        sections.remove(downwardSection);
+        sections.remove(upwardSection);
     }
 
     private void validateNotExist(Station stationToDelete) {
