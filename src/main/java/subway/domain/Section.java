@@ -44,4 +44,8 @@ public class Section {
 
         return split;
     }
+
+    public boolean contains(Station station) {
+        return upstream.equals(station) || downstream.equals(station);
+    }
 }

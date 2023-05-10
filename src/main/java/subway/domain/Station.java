@@ -10,13 +10,26 @@ public class Station {
 
     public static final int MINIMUM_NAME_LENGTH = 2;
     public static final int MAXIMUM_NAME_LENGTH = 15;
+    private static final String ENDPOINT_NAME = "";
+    private static final Station ENDPOINT = Station.from("종점");
 
     private String name;
 
-    public Station(String name) {
+    private Station(String name) {
         String stripped = name.strip();
         validateNameLength(stripped);
         this.name = stripped;
+    }
+
+    public static Station from(String stationName) {
+        if (Objects.equals(stationName, ENDPOINT_NAME)) {
+            return ENDPOINT;
+        }
+        return new Station(stationName);
+    }
+
+    public static Station getEndpoint() {
+        return ENDPOINT;
     }
 
     private void validateNameLength(String name) {

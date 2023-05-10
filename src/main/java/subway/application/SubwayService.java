@@ -21,7 +21,7 @@ public class SubwayService {
     }
 
     public long addStation(AddStationRequest addStationRequest) {
-        Station stationToAdd = new Station(addStationRequest.getAddStationName());
+        Station stationToAdd = Station.from(addStationRequest.getAddStationName());
 
         Stations stations = subwayRepository.getStations();
         if (!stations.contains(stationToAdd)) {
@@ -29,9 +29,14 @@ public class SubwayService {
         }
 
         Line line = subwayRepository.getLineByName(addStationRequest.getLineName());
-        Station upstream = new Station(addStationRequest.getUpstreamName());
-        Station downstream = new Station(addStationRequest.getDownstreamName());
-        line.addStation(stationToAdd, upstream, downstream);
+        /**
+         * Station.from(name)
+         * ""
+         *
+         */
+        Station upstream = Station.from(addStationRequest.getUpstreamName());
+        Station downstream = Station.from(addStationRequest.getDownstreamName());
+        line.addStation(stationToAdd, upstream, downstream, addStationRequest.getDistanceToUpstream());
         subwayRepository.updateLine(line);
 
         return subwayRepository.findStationIdByName()

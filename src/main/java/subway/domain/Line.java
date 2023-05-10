@@ -1,5 +1,6 @@
 package subway.domain;
 
+import subway.exception.DuplicateStationInLineException;
 import subway.exception.NameLengthException;
 
 import java.util.LinkedList;
@@ -38,7 +39,19 @@ public class Line {
         return new LinkedList<>(sections);
     }
 
-    public List<Section> addStation(Station newStation, Station upstream, Station downstream) {
+    public List<Section> addStation(Station newStation, Station upstream, Station downstream, int distanceToUpstream) {
+        validateDuplicateStations(newStation);
         return null;
+    }
+
+    private void validateDuplicateStations(Station newStation) {
+        if (isDuplicate(newStation)) {
+            throw new DuplicateStationInLineException("노선에 이미 존재하는 역입니다.");
+        }
+    }
+
+    private boolean isDuplicate(Station newStation) {
+        return sections.stream()
+                .anyMatch(section -> section.contains(newStation));
     }
 }
