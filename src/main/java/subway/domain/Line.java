@@ -1,7 +1,6 @@
 package subway.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,10 +10,6 @@ public class Line {
     private List<Section> sections;
 
     public Line() {
-    }
-
-    public Line(Long id, String name) {
-        this(id, name, Collections.emptyList());
     }
 
     public Line(String name, List<Section> sections) {
@@ -36,6 +31,22 @@ public class Line {
 
     public void addSections(List<Section> saveSections) {
         sections.addAll(saveSections);
+    }
+
+    public void addSection(Section section) {
+        validateDuplicatedName(section);
+        sections.add(section);
+    }
+
+    private void validateDuplicatedName(Section section) {
+        if (isDuplicatedName(section.getSource()) && isDuplicatedName(section.getTarget())) {
+            throw new IllegalArgumentException("두 역이 이미 모두 존재합니다.");
+        }
+    }
+
+    private boolean isDuplicatedName(Station source) {
+        return sections.stream()
+                .anyMatch(it -> it.isAnySame(source));
     }
 
     public Long getId() {

@@ -1,5 +1,7 @@
 package subway.repository.dao;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,8 @@ public class LineDao {
     private RowMapper<Line> rowMapper = (rs, rowNum) ->
             new Line(
                     rs.getLong("id"),
-                    rs.getString("name")
+                    rs.getString("name"),
+                    new ArrayList<>()
             );
 
     public LineDao(JdbcTemplate jdbcTemplate) {
@@ -32,7 +35,7 @@ public class LineDao {
         params.put("name", line.getName());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName());
+        return new Line(lineId, line.getName(), Collections.emptyList());
     }
 
     public List<Line> findAll() {
