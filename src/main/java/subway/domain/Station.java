@@ -26,6 +26,10 @@ public class Station {
         }
     }
 
+    public boolean isSameName(Station other) {
+        return this.name.equals(other.getName());
+    }
+
     public Long getId() {
         return id;
     }

@@ -28,9 +28,13 @@ public class Section {
     }
 
     private void validateTarget(Station source, Station target) {
-        if (source.getName().equals(target.getName())) {
+        if (source.isSameName(target)) {
             throw new IllegalArgumentException("출발지와 도착지는 같을 수 없습니다");
         }
+    }
+
+    public boolean isAnySame(Station station) {
+        return source.isSameName(station) || target.isSameName(station);
     }
 
     public Station getSource() {
