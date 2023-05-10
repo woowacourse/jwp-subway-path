@@ -38,4 +38,23 @@ class SectionsTest {
         assertThatThrownBy(() -> sections.addInitialStations(section))
                 .isInstanceOf(IllegalStateException.class);
     }
+
+    @Test
+    void 노선_앞에_역_추가_테스트() {
+        //given
+        final Sections sections = new Sections();
+        final Station startStation = new Station("start");
+        final Section section = new Section(startStation, new Station("to"), new StationDistance(5));
+
+        sections.addInitialStations(section);
+        final Station newStation = new Station("newStation");
+
+        //when
+        sections.addFirstStation(startStation, newStation, new StationDistance(3));
+
+        //then
+        assertThat(sections.getSections()).hasSize(2);
+        assertThat(sections.peekByFromStation(newStation).getDistance())
+                .isEqualTo(new StationDistance(3));
+    }
 }

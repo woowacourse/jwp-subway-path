@@ -13,4 +13,24 @@ public class Section {
         this.to = to;
         this.distance = distance;
     }
+
+    public boolean matchFromStation(final Station from) {
+        return this.from.equals(from);
+    }
+
+    public Section attachFront(final Station station, final StationDistance stationDistance) {
+        return new Section(station, from, stationDistance);
+    }
+
+    public Station getFrom() {
+        return from;
+    }
+
+    public Station getTo() {
+        return to;
+    }
+
+    public StationDistance getDistance() {
+        return distance;
+    }
 }
