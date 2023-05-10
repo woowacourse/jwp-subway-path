@@ -146,4 +146,35 @@ public class StationsDao {
         }
         return Optional.empty();
     }
+
+    public void deleteStation(Station station, Line line) {
+        Optional<Stations> stationsToDeleteOptional = findByPreviousStation(station, line);
+        Optional<Stations> stationsLeftOptional = findByNextStation(station, line);
+
+        if (stationsToDeleteOptional.isPresent() && stationsLeftOptional.isPresent()) {
+            Stations stationsToDelete = stationsToDeleteOptional.get();
+            Stations stationsLeft = stationsLeftOptional.get();
+
+            update(Stations.builder()
+                    .id(stationsLeft.getId())
+                    .startingStation(stationsLeft.getPreviousStation())
+                    .before(stationsToDelete.getNextStation())
+                    .distance(stationsToDelete.getDistance() + stationsLeft.getDistance())
+                    .build());
+        }
+
+        String sql = "delete from SUBWAY_MAP where current_station_id = ? and line_id = ?";
+
+        if (countStations(line) == 2) {
+            clearStations(line);
+            return;
+        }
+
+        jdbcTemplate.update(sql, station.getId(), line.getId());
+    }
+
+    private void clearStations(Line line) {
+        String sql = "delete from SUBWAY_MAP where line_id = ?";
+        jdbcTemplate.update(sql, line.getId());
+    }
 }

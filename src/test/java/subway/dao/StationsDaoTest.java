@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import subway.application.StationsService;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.Stations;
@@ -17,8 +18,11 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.*;
 
 @JdbcTest
-@Import({StationsDao.class, LineDao.class, StationDao.class})
+@Import({StationsDao.class, LineDao.class, StationDao.class, StationsService.class})
 class StationsDaoTest {
+    @Autowired
+    private StationsService stationsService;
+
     @Autowired
     private StationsDao stationsDao;
 
@@ -158,18 +162,57 @@ class StationsDaoTest {
     @Test
     @DisplayName("노선에서 역을 제거할 경우 정상 동작을 위해 재배치됩니다.")
     void delete() {
+        // given
+        stationsService.insert(line.getId(), stationS.getName(), stationJ.getName(), 6, true);
+        stationsService.insert(line.getId(), stationO.getName(), stationJ.getName(), 3, true);
+        assertThat(stationsDao.findByPreviousStation(stationS, line)
+                .get().getNextStation())
+                .as("원래 노선에 등록된 역은 3개고, 송탄역 다음은 오산역입니다.")
+                .isEqualTo(stationO);
 
+        // when
+        stationsDao.deleteStation(stationO, line);
+
+        // then
+        assertThat(stationsDao.findByPreviousStation(stationS, line).get().getNextStation())
+                .as("이제 남은 역은 2개이고, 송탄역 다음은 진위역입니다.")
+                .isEqualTo(stationJ);
     }
 
     @Test
     @DisplayName("노선에서 역이 제거될 경우 역과 역 사이의 거리가 재배정됩니다.")
     void deleteDistance() {
+        // given
+        stationsService.insert(line.getId(), stationS.getName(), stationJ.getName(), 6, true);
+        stationsService.insert(line.getId(), stationO.getName(), stationJ.getName(), 3, true);
+        assertThatThrownBy(() -> stationsDao.findDistanceBetween(stationS, stationJ, line))
+                .as("송탄역과 진위역은 이웃하지 않아 조회가 불가능합니다.")
+                .isInstanceOf(IllegalArgumentException.class);
 
+        // when
+        stationsDao.deleteStation(stationO, line);
+
+        // then
+        assertThat(stationsDao.findDistanceBetween(stationS, stationJ, line))
+                .as("이제 송탄역과 진위역이 이어져있고, 송탄-오산, 오산-진위 길이를 합한 6km의 길이를 가집니다.")
+                .isEqualTo(6);
     }
 
     @Test
     @DisplayName("노선에 등록된 역이 2개인 경우 하나의 역을 제거할 때 두 역이 모두 제거됩니다.")
     void deleteAll() {
+        // given
+        stationsService.insert(line.getId(), stationS.getName(), stationJ.getName(), 6, true);
+        assertThat(stationsDao.countStations(line))
+                .as("2개의 역만 등록되어 있습니다.")
+                .isEqualTo(2);
 
+        // when
+        stationsDao.deleteStation(stationO, line);
+
+        // then
+        assertThat(stationsDao.countStations(line))
+                .as("둘만 남은 노선에서 하나를 지우면, 나머지 하나도 함께 지워져 0개가 됩니다.")
+                .isEqualTo(0);
     }
 }

@@ -46,7 +46,7 @@ public class StationsService {
                 .build());
     }
 
-    public long insert(Stations stations) {
+    private long insert(Stations stations) {
         // 1. 등록할 역이 연결할 역에 상행방향으로 달려있는 경우
         Optional<Stations> nextStations = stationsDao.findByNextStation(stations.getNextStation(), stations.getLine());
         if (nextStations.isPresent()) {
