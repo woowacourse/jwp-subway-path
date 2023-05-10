@@ -47,7 +47,7 @@ public class LineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<LineSearchResponse> findLineById(@PathVariable final Long id) {
-        return ResponseEntity.ok(new LineSearchResponse(1L, "분당선", "노란색", List.of(new Station("잠실"))));
+        return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
     @PutMapping("/{id}")

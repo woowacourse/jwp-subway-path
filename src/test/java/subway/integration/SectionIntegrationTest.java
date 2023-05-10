@@ -24,7 +24,7 @@ import subway.section.entity.SectionEntity;
 import subway.station.dao.StationDao;
 import subway.station.domain.Station;
 
-public class SectionEntityIntegrationTest extends IntegrationTest {
+public class SectionIntegrationTest extends IntegrationTest {
 
     private SectionCreateRequest sectionCreateRequest;
     @Autowired
