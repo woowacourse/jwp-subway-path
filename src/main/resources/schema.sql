@@ -29,7 +29,7 @@ create table if not exists SECTION
     id bigint auto_increment not null,
     left_station_id bigint not null,
     right_station_id bigint not null,
-    weight int not null,
+    distance int not null,
     primary key(id)
 );
 
