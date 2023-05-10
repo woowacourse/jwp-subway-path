@@ -8,28 +8,28 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
 import subway.section.domain.Direction;
-import subway.section.domain.Section;
+import subway.section.entity.SectionEntity;
 
 public class StubSectionDao implements SectionDao {
 
-    private final Map<Long, Section> sectionMap = new HashMap<>();
+    private final Map<Long, SectionEntity> sectionMap = new HashMap<>();
     private final AtomicLong maxId = new AtomicLong();
 
     @Override
-    public Section insert(final Section section) {
+    public SectionEntity insert(final SectionEntity sectionEntity) {
         final long currentId = maxId.incrementAndGet();
-        final Section saved = new Section(currentId, section);
+        final SectionEntity saved = new SectionEntity(currentId, sectionEntity);
         sectionMap.put(currentId, saved);
         return saved;
     }
 
     @Override
-    public Optional<Section> findById(final Long id) {
-        final Section section = sectionMap.get(id);
-        if (section == null) {
+    public Optional<SectionEntity> findById(final Long id) {
+        final SectionEntity sectionEntity = sectionMap.get(id);
+        if (sectionEntity == null) {
             return Optional.empty();
         }
-        return Optional.of(section);
+        return Optional.of(sectionEntity);
     }
 
     @Override
@@ -38,7 +38,7 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
-    public List<Section> findByLineId(final Long lineId) {
+    public List<SectionEntity> findByLineId(final Long lineId) {
         return sectionMap.values()
                 .stream()
                 .filter(it -> it.getLineId().equals(lineId))
@@ -46,7 +46,7 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<Section> findNeighborSection(final Long lineId, final Long baseId, final Direction direction) {
+    public Optional<SectionEntity> findNeighborSection(final Long lineId, final Long baseId, final Direction direction) {
         if (direction == Direction.UP) {
             return findNeighborUpSection(lineId, baseId);
         }
@@ -54,7 +54,7 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<Section> findNeighborUpSection(final Long lineId, final Long stationId) {
+    public Optional<SectionEntity> findNeighborUpSection(final Long lineId, final Long stationId) {
         return sectionMap.values()
                 .stream()
                 .filter(it -> it.getLineId().equals(lineId) && it.getDownStationId().equals(stationId))
@@ -62,7 +62,7 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<Section> findNeighborDownSection(final Long lineId, final Long stationId) {
+    public Optional<SectionEntity> findNeighborDownSection(final Long lineId, final Long stationId) {
         return sectionMap.values()
                 .stream()
                 .filter(it -> it.getLineId().equals(lineId) && it.getUpStationId().equals(stationId))

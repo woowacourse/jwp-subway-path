@@ -17,14 +17,14 @@ import org.springframework.http.MediaType;
 import subway.line.dao.LineDao;
 import subway.line.domain.Line;
 import subway.section.dao.SectionDao;
-import subway.section.domain.Section;
 import subway.section.dto.SectionCreateRequest;
 import subway.section.dto.SectionDeleteRequest;
 import subway.section.dto.SectionResponse;
+import subway.section.entity.SectionEntity;
 import subway.station.dao.StationDao;
 import subway.station.domain.Station;
 
-public class SectionIntegrationTest extends IntegrationTest {
+public class SectionEntityIntegrationTest extends IntegrationTest {
 
     private SectionCreateRequest sectionCreateRequest;
     @Autowired
@@ -52,7 +52,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         lineId = line.getId();
 
 
-        sectionDao.insert(new Section(lineId, stationId1, stationId2, 4));
+        sectionDao.insert(new SectionEntity(lineId, stationId1, stationId2, 4));
 
         sectionCreateRequest = new SectionCreateRequest(lineId, stationId1, stationId2, true, 3);
     }

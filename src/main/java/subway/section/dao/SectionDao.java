@@ -4,21 +4,21 @@ import java.util.List;
 import java.util.Optional;
 
 import subway.section.domain.Direction;
-import subway.section.domain.Section;
+import subway.section.entity.SectionEntity;
 
 public interface SectionDao {
 
-    Section insert(final Section section);
+    SectionEntity insert(final SectionEntity sectionEntity);
 
-    Optional<Section> findById(final Long id);
+    Optional<SectionEntity> findById(final Long id);
 
     void deleteById(final Long id);
 
-    List<Section> findByLineId(final Long lineId);
+    List<SectionEntity> findByLineId(final Long lineId);
 
-    Optional<Section> findNeighborSection(final Long lineId, final Long baseId, final Direction direction);
+    Optional<SectionEntity> findNeighborSection(final Long lineId, final Long baseId, final Direction direction);
 
-    Optional<Section> findNeighborUpSection(final Long lineId, final Long stationId);
+    Optional<SectionEntity> findNeighborUpSection(final Long lineId, final Long stationId);
 
-    Optional<Section> findNeighborDownSection(final Long lineId, final Long stationId);
+    Optional<SectionEntity> findNeighborDownSection(final Long lineId, final Long stationId);
 }

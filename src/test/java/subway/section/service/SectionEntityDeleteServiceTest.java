@@ -10,9 +10,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.section.dao.StubSectionDao;
-import subway.section.domain.Section;
+import subway.section.entity.SectionEntity;
 
-public class SectionDeleteServiceTest {
+public class SectionEntityDeleteServiceTest {
 
     private StubSectionDao stubSectionDao;
     private SectionService sectionService;
@@ -34,35 +34,35 @@ public class SectionDeleteServiceTest {
     @DisplayName("아랫쪽 구간만 존재하면 그 구간을 지운다.")
     @Test
     void deleteSectionWhenNoUpSection() {
-        final Section saved = stubSectionDao.insert(new Section(1L, 2L, 3L, 4));
+        final SectionEntity saved = stubSectionDao.insert(new SectionEntity(1L, 2L, 3L, 4));
         final Long sectionId = saved.getId();
         sectionService.deleteSection(1L, 2L);
-        final Optional<Section> result = stubSectionDao.findById(sectionId);
+        final Optional<SectionEntity> result = stubSectionDao.findById(sectionId);
         Assertions.assertThat(result).isEmpty();
     }
 
     @DisplayName("윗쪽 구간만 존재하면 그 구간을 지운다.")
     @Test
     void deleteSectionWhenNoDownSection() {
-        final Section saved = stubSectionDao.insert(new Section(1L, 2L, 3L, 4));
+        final SectionEntity saved = stubSectionDao.insert(new SectionEntity(1L, 2L, 3L, 4));
         final Long sectionId = saved.getId();
         sectionService.deleteSection(1L, 3L);
-        final Optional<Section> result = stubSectionDao.findById(sectionId);
+        final Optional<SectionEntity> result = stubSectionDao.findById(sectionId);
         Assertions.assertThat(result).isEmpty();
     }
 
     @DisplayName("윗 아래 모두 구간이 존재하면 두 구간을 합친다.")
     @Test
     void deleteSection() {
-        final Section saved1 = stubSectionDao.insert(new Section(1L, 2L, 3L, 4));
-        final Section saved2 = stubSectionDao.insert(new Section(1L, 3L, 4L, 5));
+        final SectionEntity saved1 = stubSectionDao.insert(new SectionEntity(1L, 2L, 3L, 4));
+        final SectionEntity saved2 = stubSectionDao.insert(new SectionEntity(1L, 3L, 4L, 5));
 
 
         sectionService.deleteSection(1L, 3L);
 
-        final Optional<Section> result1 = stubSectionDao.findById(saved1.getId());
-        final Optional<Section> result2 = stubSectionDao.findById(saved2.getId());
-        final Optional<Section> section = stubSectionDao.findNeighborUpSection(1L, 4L);
+        final Optional<SectionEntity> result1 = stubSectionDao.findById(saved1.getId());
+        final Optional<SectionEntity> result2 = stubSectionDao.findById(saved2.getId());
+        final Optional<SectionEntity> section = stubSectionDao.findNeighborUpSection(1L, 4L);
         org.junit.jupiter.api.Assertions.assertAll(
                 () -> assertThat(result1).isEmpty(),
                 () -> assertThat(result2).isEmpty(),

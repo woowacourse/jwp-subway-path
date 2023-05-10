@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.section.dao.SectionDao;
 import subway.section.domain.Direction;
-import subway.section.domain.Section;
+import subway.section.entity.SectionEntity;
 
 @AllArgsConstructor
 @Service
@@ -17,59 +17,59 @@ public class SectionService {
     private SectionDao sectionDao;
 
     @Transactional
-    public List<Section> createSection(
+    public List<SectionEntity> createSection(
             final Long lineId,
             final Long baseId,
             final Long addedId,
             final Boolean direction,
             final Integer distance
     ) {
-        final Optional<Section> section = sectionDao.findNeighborSection(lineId, baseId, Direction.from(direction));
+        final Optional<SectionEntity> section = sectionDao.findNeighborSection(lineId, baseId, Direction.from(direction));
 
         if (section.isEmpty()) {
             return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
         }
 
-        final Section existSection = section.get();
+        final SectionEntity existSectionEntity = section.get();
 
-        if (existSection.getDistance() <= distance) {
+        if (existSectionEntity.getDistance() <= distance) {
             throw new IllegalArgumentException("새롭게 등록하는 구간의 거리는 기존에 존재하는 구간의 거리보다 작아야합니다.");
         }
 
-        return divideSectionByAddedStation(lineId, addedId, direction, distance, existSection);
+        return divideSectionByAddedStation(lineId, addedId, direction, distance, existSectionEntity);
     }
 
-    private List<Section> createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
+    private List<SectionEntity> createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
         if (Direction.from(direction) == Direction.UP) {
-            final Section newSection = new Section(lineId, addedId, baseId, distance);
-            final Section savedSection = sectionDao.insert(newSection);
-            return List.of(savedSection);
+            final SectionEntity newSectionEntity = new SectionEntity(lineId, addedId, baseId, distance);
+            final SectionEntity savedSectionEntity = sectionDao.insert(newSectionEntity);
+            return List.of(savedSectionEntity);
         }
-        final Section newSection = new Section(lineId, baseId, addedId, distance);
-        final Section savedSection = sectionDao.insert(newSection);
-        return List.of(savedSection);
+        final SectionEntity newSectionEntity = new SectionEntity(lineId, baseId, addedId, distance);
+        final SectionEntity savedSectionEntity = sectionDao.insert(newSectionEntity);
+        return List.of(savedSectionEntity);
     }
 
-    private List<Section> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final Section existSection) {
-        sectionDao.deleteById(existSection.getId());
+    private List<SectionEntity> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSectionEntity) {
+        sectionDao.deleteById(existSectionEntity.getId());
 
         if (Direction.from(direction) == Direction.UP) {
-            final Section upSection = new Section(lineId, existSection.getUpStationId(), addedId, existSection.getDistance() - distance);
-            final Section upSavedSection = sectionDao.insert(upSection);
-            final Section downSection = new Section(lineId, addedId, existSection.getDownStationId(), distance);
-            final Section downSavedSection = sectionDao.insert(downSection);
-            return List.of(upSavedSection, downSavedSection);
+            final SectionEntity upSectionEntity = new SectionEntity(lineId, existSectionEntity.getUpStationId(), addedId, existSectionEntity.getDistance() - distance);
+            final SectionEntity upSavedSectionEntity = sectionDao.insert(upSectionEntity);
+            final SectionEntity downSectionEntity = new SectionEntity(lineId, addedId, existSectionEntity.getDownStationId(), distance);
+            final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
+            return List.of(upSavedSectionEntity, downSavedSectionEntity);
         }
-        final Section upSection = new Section(lineId, existSection.getUpStationId(), addedId, distance);
-        final Section upSavedSection = sectionDao.insert(upSection);
-        final Section downSection = new Section(lineId, addedId, existSection.getDownStationId(), existSection.getDistance() - distance);
-        final Section downSavedSection = sectionDao.insert(downSection);
-        return List.of(upSavedSection, downSavedSection);
+        final SectionEntity upSectionEntity = new SectionEntity(lineId, existSectionEntity.getUpStationId(), addedId, distance);
+        final SectionEntity upSavedSectionEntity = sectionDao.insert(upSectionEntity);
+        final SectionEntity downSectionEntity = new SectionEntity(lineId, addedId, existSectionEntity.getDownStationId(), existSectionEntity.getDistance() - distance);
+        final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
+        return List.of(upSavedSectionEntity, downSavedSectionEntity);
     }
 
     public void deleteSection(final Long lineId, final Long stationId) {
-        final Optional<Section> upSection = sectionDao.findNeighborUpSection(lineId, stationId);
-        final Optional<Section> downSection = sectionDao.findNeighborDownSection(lineId, stationId);
+        final Optional<SectionEntity> upSection = sectionDao.findNeighborUpSection(lineId, stationId);
+        final Optional<SectionEntity> downSection = sectionDao.findNeighborDownSection(lineId, stationId);
 
         if (upSection.isEmpty() && downSection.isEmpty()) {
             throw new IllegalArgumentException("등록되어있지 않은 역은 지울 수 없습니다.");
@@ -85,19 +85,19 @@ public class SectionService {
             return;
         }
 
-        final Section existUpSection = upSection.get();
-        final Section existDownSection = downSection.get();
+        final SectionEntity existUpSectionEntity = upSection.get();
+        final SectionEntity existDownSectionEntity = downSection.get();
 
-        sectionDao.deleteById(existUpSection.getId());
-        sectionDao.deleteById(existDownSection.getId());
+        sectionDao.deleteById(existUpSectionEntity.getId());
+        sectionDao.deleteById(existDownSectionEntity.getId());
 
-        final Section section = new Section(
+        final SectionEntity sectionEntity = new SectionEntity(
                 lineId,
-                existUpSection.getUpStationId(),
-                existDownSection.getDownStationId(),
-                existUpSection.getDistance() + existDownSection.getDistance()
+                existUpSectionEntity.getUpStationId(),
+                existDownSectionEntity.getDownStationId(),
+                existUpSectionEntity.getDistance() + existDownSectionEntity.getDistance()
         );
 
-        sectionDao.insert(section);
+        sectionDao.insert(sectionEntity);
     }
 }

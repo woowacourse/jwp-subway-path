@@ -1,4 +1,4 @@
-package subway.section.domain;
+package subway.section.entity;
 
 
 import lombok.EqualsAndHashCode;
@@ -8,7 +8,7 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @Getter
-public class Section {
+public class SectionEntity {
 
     private final Long id;
     private final Long lineId;
@@ -16,7 +16,7 @@ public class Section {
     private final Long downStationId;
     private final int distance;
 
-    public Section(final Long id, final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+    public SectionEntity(final Long id, final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
         validate(distance);
         this.id = id;
         this.lineId = lineId;
@@ -25,11 +25,11 @@ public class Section {
         this.distance = distance;
     }
 
-    public Section(final Long id, final Section section) {
-        this(id, section.lineId, section.upStationId, section.downStationId, section.distance);
+    public SectionEntity(final Long id, final SectionEntity sectionEntity) {
+        this(id, sectionEntity.lineId, sectionEntity.upStationId, sectionEntity.downStationId, sectionEntity.distance);
     }
 
-    public Section(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+    public SectionEntity(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
         this(null, lineId, upStationId, downStationId, distance);
     }
 
