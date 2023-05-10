@@ -38,4 +38,30 @@ class SectionTest {
 
     }
 
+    @Test
+    @DisplayName("validateBothEmptyStation()를 호출했을 때 양 역이 둘 다 비어있다면 예외를 발생시킨다.")
+    void validateBothEmptyStation_fail(){
+        //given
+        Station upStation = Station.emptyStation;
+        Station downStation = Station.emptyStation;
+        Distance distance = new Distance(10);
+
+        //when, then
+        assertThatThrownBy(()->new Section(upStation, downStation, distance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("상행역과 하행역이 모두 비어있을 수 없습니다");
+    }
+
+    @Test
+    @DisplayName("생성자를 호출할 때, 올바른 값을 입력하면 구간이 정상적으로 생성된다")
+    void constructor_success(){
+        //given
+        Station upStation = new Station("상행역");
+        Station downStation = new Station("하행역");
+        Distance distance = new Distance(10);
+
+        //when, then
+        assertThatCode(()->new Section(upStation, downStation, distance))
+                .doesNotThrowAnyException();
+    }
 }

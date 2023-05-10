@@ -6,10 +6,22 @@ public class Section {
     private final Distance distance;
 
     public Section(Station upStation, Station downStation, Distance distance) {
-        validateSameStations(upStation, downStation);
+        validate(upStation, downStation);
+
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    private void validate(Station upStation, Station downStation) {
+        validateBothEmptyStation(upStation, downStation);
+        validateSameStations(upStation, downStation);
+    }
+
+    private void validateBothEmptyStation(Station upStation, Station downStation) {
+        if (upStation.equals(Station.emptyStation) && downStation.equals(Station.emptyStation)) {
+            throw new IllegalArgumentException("상행역과 하행역이 모두 비어있을 수 없습니다");
+        }
     }
 
     private void validateSameStations(Station upStation, Station downStation) {
