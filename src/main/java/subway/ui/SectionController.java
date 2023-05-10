@@ -1,6 +1,7 @@
 package subway.ui;
 
-import java.net.URI;
+import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,10 +20,10 @@ public class SectionController {
     }
     
     @PostMapping("/section")
-    public ResponseEntity<SectionResponse> addSection(@RequestBody final SectionRequest sectionRequest) {
+    public ResponseEntity<List<SectionResponse>> addSection(@RequestBody final SectionRequest sectionRequest) {
         this.sectionService.validate(sectionRequest);
         
-        final SectionResponse sectionResponse = this.sectionService.saveSection(sectionRequest);
-        return ResponseEntity.created(URI.create("/sections/" + sectionResponse.getId())).body(sectionResponse);
+        final java.util.List<SectionResponse> sectionResponses = this.sectionService.saveSection(sectionRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).body(sectionResponses);
     }
 }

@@ -10,7 +10,7 @@ public class Section {
     long downStationId;
     int distance;
     
-    private Section(final long lineId, final long upStationId, final long downStationId, final int distance) {
+    public Section(final long lineId, final long upStationId, final long downStationId, final int distance) {
         this.lineId = lineId;
         this.upStationId = upStationId;
         this.downStationId = downStationId;

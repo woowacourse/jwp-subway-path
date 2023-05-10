@@ -46,4 +46,9 @@ public class SectionDAO {
         final String sql = "select count(id) from section where line_id = ?";
         return this.jdbcTemplate.queryForObject(sql, Integer.class, lineId);
     }
+    
+    public void deleteById(final long id) {
+        final String sql = "delete from section where id = ?";
+        this.jdbcTemplate.update(sql, id);
+    }
 }
