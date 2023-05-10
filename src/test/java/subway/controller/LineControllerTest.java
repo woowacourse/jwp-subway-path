@@ -4,6 +4,7 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -27,6 +28,7 @@ import subway.controller.dto.LineCreateRequest;
 import subway.controller.dto.LineResponse;
 import subway.controller.dto.LineStationsResponse;
 import subway.controller.dto.LinesResponse;
+import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.StationResponse;
 import subway.service.LineService;
 
@@ -145,5 +147,77 @@ class LineControllerTest {
                 .andExpect(jsonPath("$.lines[1].id").value(2))
                 .andExpect(jsonPath("$.lines[1].name").value("4호선"))
                 .andExpect(jsonPath("$.lines[1].color").value("하늘색"));
+    }
+
+    @Nested
+    @DisplayName("노선에 역을 등록할 시 ")
+    class CreateSection {
+
+        @Test
+        @DisplayName("유효한 정보가 입력되면 노선에 역을 등록한다.")
+        void createSection() throws Exception {
+            final SectionCreateRequest request = new SectionCreateRequest(1L, 2L, 10);
+
+            willDoNothing().given(lineService).createSection(any(SectionCreateRequest.class));
+
+            mockMvc.perform(post("/lines/{id}/sections", 1L)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(objectMapper.writeValueAsString(request)))
+                    .andDo(print())
+                    .andExpect(status().isCreated())
+                    .andExpect(header().string(HttpHeaders.LOCATION, containsString("/lines/1")));
+        }
+
+        @Test
+        @DisplayName("상행 역 ID가 입력되지 않으면 400 상태를 반환한다.")
+        void createSectionWithoutUpwardStationId() throws Exception {
+            final SectionCreateRequest request = new SectionCreateRequest(null, 2L, 10);
+
+            mockMvc.perform(post("/lines/{id}/sections", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("상행 역 ID는 존재해야 합니다."));
+        }
+
+        @Test
+        @DisplayName("하행 역 ID가 입력되지 않으면 400 상태를 반환한다.")
+        void createSectionWithoutDownwardStationId() throws Exception {
+            final SectionCreateRequest request = new SectionCreateRequest(1L, null, 10);
+
+            mockMvc.perform(post("/lines/{id}/sections", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("하행 역 ID는 존재해야 합니다."));
+        }
+
+        @Test
+        @DisplayName("역 간의 거리가 입력되지 않으면 400 상태를 반환한다.")
+        void createSectionWithoutDistance() throws Exception {
+            final SectionCreateRequest request = new SectionCreateRequest(1L, 2L, null);
+
+            mockMvc.perform(post("/lines/{id}/sections", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("역 간의 거리는 존재해야 합니다."));
+        }
+
+        @Test
+        @DisplayName("역 간의 거리가 0이하이면 400 상태를 반환한다.")
+        void createSectionWithNegativeDistance() throws Exception {
+            final SectionCreateRequest request = new SectionCreateRequest(1L, 2L, -1);
+
+            mockMvc.perform(post("/lines/{id}/sections", 1L)
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
+                    .andDo(print())
+                    .andExpect(status().isBadRequest())
+                    .andExpect(content().string("역 간의 거리는 0보다 커야합니다."));
+        }
     }
 }
