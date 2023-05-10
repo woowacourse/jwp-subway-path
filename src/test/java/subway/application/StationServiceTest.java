@@ -3,6 +3,7 @@ package subway.application;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -16,6 +17,9 @@ import subway.dao.StationDao;
 import subway.dto.StationResponse;
 import subway.dto.StationSaveRequest;
 import subway.entity.Station;
+import subway.fixture.StationFixture;
+import subway.fixture.StationFixture.GangnamStation;
+import subway.fixture.StationFixture.JamsilStation;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -52,5 +56,24 @@ class StationServiceTest {
         assertThat(result)
                 .usingRecursiveComparison()
                 .isEqualTo(StationResponse.of(response));
+    }
+
+    @Test
+    void 전체_역을_조회한다() {
+        // given
+        final Station 잠실역 = Station.of(1L, "잠실역");
+        final Station 강남역 = Station.of(2L, "강남역");
+        doReturn(List.of(잠실역, 강남역)).when(stationDao).findAll();
+
+        // when
+        final List<StationResponse> allStationResponses = stationService.findAllStationResponses();
+
+        // then
+        assertThat(allStationResponses)
+                .usingRecursiveComparison()
+                .isEqualTo(List.of(
+                        StationResponse.of(잠실역),
+                        StationResponse.of(강남역)
+                ));
     }
 }
