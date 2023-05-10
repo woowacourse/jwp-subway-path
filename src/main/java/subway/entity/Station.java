@@ -1,21 +1,23 @@
-package subway.domain;
+package subway.entity;
 
 import java.util.Objects;
 
 public class Station {
+
     private Long id;
     private String name;
 
-    public Station() {
-    }
-
-    public Station(Long id, String name) {
+    private Station(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
+    public static Station of(final String name) {
+        return new Station(null, name);
+    }
+
+    public static Station of(final Long id, final String name) {
+        return new Station(id, name);
     }
 
     public Long getId() {
@@ -28,8 +30,12 @@ public class Station {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Station station = (Station) o;
         return id.equals(station.id) && name.equals(station.name);
     }
