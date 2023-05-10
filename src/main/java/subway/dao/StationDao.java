@@ -46,10 +46,10 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Long findIdByName(final String name) {
-        String sql = "SELECT id FROM station WHERE name = ?";
+    public StationEntity findByName(final String name) {
+        String sql = "SELECT * FROM station WHERE name = ?";
 
-        List<Long> result = jdbcTemplate.query(sql, (resultSet, rowNumber) -> resultSet.getLong("id"), name);
+        List<StationEntity> result = jdbcTemplate.query(sql, rowMapper, name);
 
         if (result.isEmpty()) {
             throw new StationNotFoundException("존재하지 않는 역 이름입니다.");

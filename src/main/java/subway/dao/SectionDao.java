@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
+import subway.entity.SectionEntity.Builder;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -16,7 +17,7 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
-    private final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rn) -> new SectionEntity.Builder()
+    private final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rn) -> new Builder()
             .id(rs.getLong("id"))
             .lineId(rs.getLong("line_id"))
             .previousStationId(rs.getLong("previous_station_id"))
@@ -31,9 +32,17 @@ public class SectionDao {
     }
 
     // TODO: 없는 호선이나 역을 입력한 경우 예외 처리 해야함
-    public Long insert(final SectionEntity sectionEntity) {
+    public SectionEntity insert(final SectionEntity sectionEntity) {
         final SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
-        return simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+
+        return new SectionEntity.Builder()
+                .id(id)
+                .lineId(sectionEntity.getLineId())
+                .previousStationId(sectionEntity.getPreviousStationId())
+                .nextStationId(sectionEntity.getNextStationId())
+                .distance(sectionEntity.getDistance())
+                .build();
     }
 
     public List<SectionEntity> findByLineIdAndPreviousStationId(final Long lineId, final Long previousStationId) {

@@ -45,7 +45,7 @@ class SectionDaoTest {
                 .distance(10)
                 .lineId(1L)
                 .previousStationId(1L)
-                .nextStationId(2L)
+                .nextStationId(5L)
                 .build();
 
         // when
@@ -53,9 +53,11 @@ class SectionDaoTest {
 
         // then
         String sql = "SELECT * FROM section WHERE previous_station_id = ? AND next_station_id = ?";
-        List<SectionEntity> response = jdbcTemplate.query(sql, sectionEntityRowMapper, 1, 2);
+        List<SectionEntity> response = jdbcTemplate.query(sql, sectionEntityRowMapper, 1, 5);
         assertThat(response).hasSize(1)
-                .anyMatch(entity -> entity.getId() == 1L)
+                .anyMatch(entity -> entity.getLineId() == 1L)
+                .anyMatch(entity -> entity.getPreviousStationId() == 1L)
+                .anyMatch(entity -> entity.getNextStationId() == 5L)
                 .anyMatch(entity -> entity.getDistance() == 10);
     }
 

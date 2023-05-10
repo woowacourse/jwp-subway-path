@@ -9,6 +9,7 @@ import subway.entity.SectionEntity;
 import subway.application.converter.LineConverter;
 import subway.application.dto.LineDto;
 import subway.application.dto.SectionCreateDto;
+import subway.entity.StationEntity;
 import subway.ui.dto.request.LineRequest;
 import subway.ui.dto.response.LineResponse;
 import subway.entity.LineEntity;
@@ -32,13 +33,13 @@ public class LineService {
     @Transactional
     public long save(final LineDto lineDto, final SectionCreateDto sectionCreateDto) {
         final Long lineId = lineDao.insert(LineConverter.toEntity(lineDto));
-        final Long previousStationId = stationDao.findIdByName(sectionCreateDto.getPreviousStationName());
-        final Long nextStationId = stationDao.findIdByName(sectionCreateDto.getNextStationName());
+        final StationEntity previousStation = stationDao.findByName(sectionCreateDto.getPreviousStationName());
+        final StationEntity nextStation = stationDao.findByName(sectionCreateDto.getNextStationName());
         sectionDao.insert(new SectionEntity.Builder()
                 .lineId(lineId)
                 .distance(sectionCreateDto.getDistance())
-                .previousStationId(previousStationId)
-                .nextStationId(nextStationId)
+                .previousStationId(previousStation.getId())
+                .nextStationId(nextStation.getId())
                 .build());
         return lineId;
     }

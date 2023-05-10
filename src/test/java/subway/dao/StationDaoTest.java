@@ -39,7 +39,7 @@ class StationDaoTest {
         final String name = "잠실";
 
         // when
-        final Long id = stationDao.findIdByName(name);
+        final Long id = stationDao.findByName(name);
 
         // then
         assertThat(id).isEqualTo(1L);
@@ -53,7 +53,7 @@ class StationDaoTest {
         final String name = "포비";
 
         // expected
-        assertThatThrownBy(() -> stationDao.findIdByName(name))
+        assertThatThrownBy(() -> stationDao.findByName(name))
                 .isInstanceOf(StationNotFoundException.class);
     }
 

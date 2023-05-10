@@ -43,9 +43,9 @@ class LineServiceTest {
 
         // when
         given(lineDao.insert(any())).willReturn(1L); // TODO : lineDao insert 반환 값 int
-        given(stationDao.findIdByName("디")).willReturn(1L);
-        given(stationDao.findIdByName("투")).willReturn(2L);
-        given(sectionDao.insert(any())).willReturn(1L); // TODO : sectionDao insert 반환 값 int
+        given(stationDao.findByName("디")).willReturn(1L);
+        given(stationDao.findByName("투")).willReturn(2L);
+        given(sectionDao.insert(any())).willReturn(any()); // TODO : sectionDao insert 반환 값 int
 
         // then
         assertThat(lineService.save(lineDto, sectionCreateDto)).isEqualTo(1L);
