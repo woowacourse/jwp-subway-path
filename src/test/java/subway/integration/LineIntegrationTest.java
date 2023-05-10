@@ -8,8 +8,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.entity.LineEntity;
+import subway.entity.StationEntity;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
@@ -106,9 +106,9 @@ public class LineIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        LineResponse second = LineResponse.of(new Line("2호선", "green"));
-        StationResponse 잠실역 = StationResponse.of(new Station("잠실역"));
-        StationResponse 강남역 = StationResponse.of(new Station("강남역"));
+        LineResponse second = LineResponse.of(new LineEntity("2호선", "green"));
+        StationResponse 잠실역 = StationResponse.of(new StationEntity("잠실역"));
+        StationResponse 강남역 = StationResponse.of(new StationEntity("강남역"));
         Map<LineResponse, List<StationResponse>> expectedResponse = new HashMap<>();
         expectedResponse.put(second, List.of(잠실역, 강남역));
 
@@ -143,8 +143,8 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         List<StationResponse> stationResponses = response.jsonPath().getList(".", StationResponse.class);
-        StationResponse 잠실역 = StationResponse.of(new Station("잠실역"));
-        StationResponse 선릉역 = StationResponse.of(new Station("선릉역"));
+        StationResponse 잠실역 = StationResponse.of(new StationEntity("잠실역"));
+        StationResponse 선릉역 = StationResponse.of(new StationEntity("선릉역"));
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(stationResponses).usingRecursiveComparison().isEqualTo(List.of(잠실역, 선릉역));
     }
@@ -244,8 +244,8 @@ public class LineIntegrationTest extends IntegrationTest {
 //                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
 //                .collect(Collectors.toList());
         List<StationResponse> resultStationIds = new ArrayList<>(response.jsonPath().getList(".", StationResponse.class));
-        StationResponse 선릉역 = StationResponse.of(new Station("선릉역"));
-        StationResponse 잠실역 = StationResponse.of(new Station("잠실역"));
+        StationResponse 선릉역 = StationResponse.of(new StationEntity("선릉역"));
+        StationResponse 잠실역 = StationResponse.of(new StationEntity("잠실역"));
         assertThat(resultStationIds).usingRecursiveComparison().isEqualTo(List.of(잠실역, 선릉역));
     }
 }

@@ -3,12 +3,12 @@ package subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
-import subway.domain.Line;
-import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
 import subway.dto.StationResponse;
+import subway.entity.LineEntity;
+import subway.entity.StationEntity;
 
 import java.net.URI;
 import java.util.HashMap;
@@ -33,9 +33,9 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<Map<LineResponse, List<StationResponse>>> findAllLines() {
-        LineResponse second = LineResponse.of(new Line("2호선", "green"));
-        StationResponse 잠실역 = StationResponse.of(new Station("잠실역"));
-        StationResponse 선릉역 = StationResponse.of(new Station("선릉역"));
+        LineResponse second = LineResponse.of(new LineEntity("2호선", "green"));
+        StationResponse 잠실역 = StationResponse.of(new StationEntity("잠실역"));
+        StationResponse 선릉역 = StationResponse.of(new StationEntity("선릉역"));
         Map<LineResponse, List<StationResponse>> response = new HashMap<>();
         response.put(second, List.of(잠실역, 선릉역));
         return ResponseEntity.ok().body(response);

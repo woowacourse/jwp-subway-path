@@ -5,10 +5,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
-import subway.domain.SectionStation;
-import subway.domain.Station;
+import subway.domain.section.Section;
 import subway.dto.SectionRequest;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 
 import java.util.HashMap;
 import java.util.List;
@@ -21,8 +21,8 @@ public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<Section> rowMapper = (rs, rowNum) ->
-            new Section(
+    private RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+            new SectionEntity(
                     rs.getLong("id"),
                     rs.getLong("line_id"),
                     rs.getLong("up_station_id"),
@@ -30,12 +30,12 @@ public class SectionDao {
                     rs.getInt("distance")
             );
 
-    private RowMapper<SectionStation> sectionStationRowMapperrowMapper = (rs, rowNum) ->
-            new SectionStation(
+    private RowMapper<Section> sectionStationRowMapperrowMapper = (rs, rowNum) ->
+            new Section(
                     rs.getLong("id"),
                     rs.getLong("line_id"),
-                    new Station(rs.getObject("up_station_id", Long.class), rs.getString("up_station_name")),
-                    new Station(rs.getObject("down_station_id", Long.class), rs.getString("down_station_name")),
+                    new StationEntity(rs.getObject("up_station_id", Long.class), rs.getString("up_station_name")),
+                    new StationEntity(rs.getObject("down_station_id", Long.class), rs.getString("down_station_name")),
                     rs.getInt("distance")
             );
 
@@ -70,7 +70,7 @@ public class SectionDao {
         jdbcTemplate.update(sql, lineId, stationId, stationId);
     }
 
-    public List<Section> findByLineIdAndStationId(final Long lineId, final Long stationId) {
+    public List<SectionEntity> findByLineIdAndStationId(final Long lineId, final Long stationId) {
         String sql = "SELECT * FROM section WHERE line_id = ? AND (up_station_id = ? OR down_station_id = ?)";
         return jdbcTemplate.query(sql, rowMapper, lineId, stationId, stationId);
     }
@@ -84,7 +84,7 @@ public class SectionDao {
         }
     }
 
-    public List<SectionStation> findByLineId(final Long lineId) {
+    public List<Section> findByLineId(final Long lineId) {
         String sql = "SELECT section.*, s1.name as up_station_name, s2.name as down_station_name FROM section " +
                 "LEFT OUTER JOIN station s1 ON section.up_station_id=s1.id " +
                 "LEFT OUTER JOIN station s2 ON section.down_station_id=s2.id " +
