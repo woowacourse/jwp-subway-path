@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.controller.dto.LineCreateRequest;
-import subway.controller.dto.LineStationsResponse;
+import subway.controller.dto.LineResponse;
 import subway.controller.dto.LinesResponse;
 import subway.controller.dto.SectionCreateRequest;
 import subway.service.LineService;
@@ -34,8 +34,8 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineStationsResponse> findLine(@PathVariable(name = "id") Long lineId) {
-        final LineStationsResponse response = lineService.findLineById(lineId);
+    public ResponseEntity<LineResponse> findLine(@PathVariable(name = "id") Long lineId) {
+        final LineResponse response = lineService.findLineById(lineId);
         return ResponseEntity.ok(response);
     }
 

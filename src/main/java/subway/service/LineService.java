@@ -2,7 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.controller.dto.LineCreateRequest;
-import subway.controller.dto.LineStationsResponse;
+import subway.controller.dto.LineResponse;
 import subway.controller.dto.LinesResponse;
 import subway.controller.dto.SectionCreateRequest;
 import subway.dao.LineDao;
@@ -24,7 +24,7 @@ public class LineService {
         return lineDao.save(entity).getId();
     }
 
-    public LineStationsResponse findLineById(final Long lineId) {
+    public LineResponse findLineById(final Long lineId) {
         return null;
     }
 

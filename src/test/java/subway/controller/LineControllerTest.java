@@ -27,7 +27,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.dto.LineCreateRequest;
 import subway.controller.dto.LineResponse;
-import subway.controller.dto.LineStationsResponse;
 import subway.controller.dto.LinesResponse;
 import subway.controller.dto.SectionCreateRequest;
 import subway.controller.dto.StationResponse;
@@ -102,7 +101,7 @@ class LineControllerTest {
                     new StationResponse(1L, "잠실역"),
                     new StationResponse(2L, "잠실새내역")
             );
-            final LineStationsResponse response = new LineStationsResponse(1L, "2호선", "초록색", stations);
+            final LineResponse response = new LineResponse(1L, "2호선", "초록색", stations);
 
             given(lineService.findLineById(1L)).willReturn(response);
 
@@ -131,9 +130,20 @@ class LineControllerTest {
     @Test
     @DisplayName("노선 목록을 조회한다.")
     void findLines() throws Exception {
+
+        final List<StationResponse> stationsOfLineTwo = List.of(
+                new StationResponse(1L, "잠실역"),
+                new StationResponse(2L, "잠실새내역")
+        );
+
+        final List<StationResponse> stationsOfLineFour = List.of(
+                new StationResponse(3L, "이수역"),
+                new StationResponse(4L, "서울역")
+        );
+
         final List<LineResponse> lines = List.of(
-                new LineResponse(1L, "2호선", "초록색"),
-                new LineResponse(2L, "4호선", "하늘색"));
+                new LineResponse(1L, "2호선", "초록색", stationsOfLineTwo),
+                new LineResponse(2L, "4호선", "하늘색", stationsOfLineFour));
         final LinesResponse response = new LinesResponse(lines);
 
         given(lineService.findLines()).willReturn(response);
@@ -145,9 +155,19 @@ class LineControllerTest {
                 .andExpect(jsonPath("$.lines[0].id").value(1))
                 .andExpect(jsonPath("$.lines[0].name").value("2호선"))
                 .andExpect(jsonPath("$.lines[0].color").value("초록색"))
+                .andExpect(jsonPath("$.lines[0].stations", hasSize(2)))
+                .andExpect(jsonPath("$.lines[0].stations[0].id").value(1))
+                .andExpect(jsonPath("$.lines[0].stations[0].name").value("잠실역"))
+                .andExpect(jsonPath("$.lines[0].stations[1].id").value(2))
+                .andExpect(jsonPath("$.lines[0].stations[1].name").value("잠실새내역"))
                 .andExpect(jsonPath("$.lines[1].id").value(2))
                 .andExpect(jsonPath("$.lines[1].name").value("4호선"))
-                .andExpect(jsonPath("$.lines[1].color").value("하늘색"));
+                .andExpect(jsonPath("$.lines[1].color").value("하늘색"))
+                .andExpect(jsonPath("$.lines[1].stations", hasSize(2)))
+                .andExpect(jsonPath("$.lines[1].stations[0].id").value(3))
+                .andExpect(jsonPath("$.lines[1].stations[0].name").value("이수역"))
+                .andExpect(jsonPath("$.lines[1].stations[1].id").value(4))
+                .andExpect(jsonPath("$.lines[1].stations[1].name").value("서울역"));
     }
 
     @Nested
@@ -162,8 +182,8 @@ class LineControllerTest {
             willDoNothing().given(lineService).createSection(any(SectionCreateRequest.class));
 
             mockMvc.perform(post("/lines/{id}/sections", 1L)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(objectMapper.writeValueAsString(request)))
+                            .contentType(MediaType.APPLICATION_JSON)
+                            .content(objectMapper.writeValueAsString(request)))
                     .andDo(print())
                     .andExpect(status().isCreated())
                     .andExpect(header().string(HttpHeaders.LOCATION, containsString("/lines/1")));
@@ -232,7 +252,7 @@ class LineControllerTest {
             willDoNothing().given(lineService).deleteStation(any(Long.class), any(Long.class));
 
             mockMvc.perform(delete("/lines/{lineId}", 1L)
-                    .queryParam("stationId", String.valueOf(1L)))
+                            .queryParam("stationId", String.valueOf(1L)))
                     .andDo(print())
                     .andExpect(status().isNoContent());
         }
