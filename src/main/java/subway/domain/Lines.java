@@ -16,12 +16,13 @@ public class Lines {
         return line;
     }
 
-    public void addStationToLine(String lineName, Station station1, Station station2, int distance) {
-        Line newLine = lines.stream()
+    public Line addStationToLine(String lineName, Station upStation, Station downStation, int distance) {
+        Line findLine = lines.stream()
                 .filter(line -> line.getName().equals(lineName))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 호선이 없습니다."));
-        newLine.addEdge(station1, station2, distance);
+        findLine.addEdge(upStation, downStation, distance);
+        return findLine;
     }
 
     public List<Station> findAllStation(String lineName) {

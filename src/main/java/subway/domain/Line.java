@@ -7,8 +7,11 @@ import java.util.stream.Collectors;
 public class Line {
 
     private Long id;
-    private final String name;
+    private String name;
     private List<Edge> edges;
+
+    public Line() {
+    }
 
     private Line(String name, List<Edge> edges) {
         this.name = name;
@@ -65,6 +68,18 @@ public class Line {
 
     public void deleteEdge(Station station) {
 
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setEdges(List<Edge> edges) {
+        this.edges = edges;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override

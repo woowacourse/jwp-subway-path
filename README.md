@@ -6,7 +6,13 @@
   {
     "stationName" : "잠실"
   }
-- ```
+```
+```JSON
+  {
+  "stationId" : 1,
+  "stationName" : "잠실"
+  }
+```
 
 - [x] 최초 노선 등록 API (post - "/lines") `addInitialLine(Line line, Station s1, Station s2, int dist)`
 ```JSON
@@ -15,7 +21,7 @@
     "upStationId" : 1,
     "downStationId" : 2,
     "distance" : 10
-  }
+   }
 ```
 ````JSON
 {
@@ -23,7 +29,7 @@
     "lineName" : "2호선"
 }
 ````
-- [ ] 노선에 역 등록 API 신규 구현 (post - "/lines/{lineId}/stations")
+- [x] 노선에 역 등록 API 신규 구현 (post - "/lines/{lineId}/stations")
 ```JSON
   {
     "upStationId" : 3,
@@ -33,6 +39,9 @@
 ```
 ```JSON
   {
+  "lineId" : 1,
+  "lineName" : "2호선",
+  "stations" : [1, 2, 3]
   }
 ```
 

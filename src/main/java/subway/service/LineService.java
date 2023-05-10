@@ -1,6 +1,7 @@
 package subway.service;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.EdgeDao;
@@ -10,6 +11,7 @@ import subway.domain.Edge;
 import subway.domain.Line;
 import subway.domain.Lines;
 import subway.domain.Station;
+import subway.dto.AddStationToLineRequest;
 import subway.dto.LineCreateRequest;
 
 @Service
@@ -44,10 +46,18 @@ public class LineService {
         return createdLine;
     }
 
-    public void addStationToExistLine(String lineName, String stationName1, String stationName2, int distance) {
-        Station station1 = new Station(stationName1);
-        Station station2 = new Station(stationName2);
-        lines.addStationToLine(lineName, station1, station2, distance);
+    public Line addStationToExistLine(Long lineId, AddStationToLineRequest addStationToLineRequest) {
+        Station upStation = stationDao.findById(addStationToLineRequest.getUpStationId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+        Station downStation = stationDao.findById(addStationToLineRequest.getDownStationId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+        Line line = lineDao.findById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+
+        Line updatedLine = lines.addStationToLine(line.getName(), upStation, downStation, addStationToLineRequest.getDistance());
+        // TODO : edge 테이블 업데이트 .. 다 덮어씌워야할까? 수정된 부분만?
+
+        return updatedLine;
     }
 
     public List<Station> findAllStation(String lineName) {
