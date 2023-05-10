@@ -1,5 +1,6 @@
 package subway.dto;
 
+import java.util.Objects;
 import subway.entity.Line;
 
 public class LineRequest {
@@ -27,4 +28,20 @@ public class LineRequest {
         return Line.of(name, color);
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final LineRequest that = (LineRequest) o;
+        return Objects.equals(name, that.name) && Objects.equals(color, that.color);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, color);
+    }
 }
