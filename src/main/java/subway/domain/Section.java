@@ -15,12 +15,9 @@ public class Section {
         Section current = this;
 
         while (current != null) {
-
-            if (current.stations.getNext().getName()
-                                .equals(newSection.getStations().getCurrent().getName())) {
+            if (current.stations.isLinked(newSection.stations)) {
                 return current;
             }
-
             current = current.to;
         }
 
@@ -30,39 +27,23 @@ public class Section {
     public void addNext(final Section newSection) {
         Section current = find(newSection);
 
-        while (current != null && current.stations.getNext().getName()
-                                                  .equals(newSection.getStations().getCurrent().getName())) {
-
-            if (current.to == null) {
-                //끝에 넣는거
-                addLast(newSection);
-                return;
-            } else {
-                newSection.to = current.to;
-                current.to = newSection;
-
-                System.out.println(current.getStations().getNext());
-                System.out.println(newSection.to.getStations().getCurrent());
-
-                final Section last = new Section(newSection.to.stations);
-
-                newSection.to = last;
-                last.getStations().getCurrent().setName(
-                        newSection.getStations().getNext().getName()
-                );
-            }
-            current = current.to;
+        if (current.to == null) {
+            current.to = newSection;
+            return;
         }
+
+        if (current.to.stations.isDistanceShorterThan(newSection.stations)) {
+            throw new IllegalArgumentException("새로운 구간이 길이가 기존 구간의 길이보다 깁니다.");
+        }
+
+        addIntermediate(newSection, current);
     }
 
-    public void addLast(final Section newSection) {
-        Section current = this;
-
-        while (current.to != null) {
-            current = current.to;
-        }
-
+    private void addIntermediate(final Section newSection, final Section current) {
+        newSection.to = current.to;
         current.to = newSection;
+
+        newSection.to.stations.updateStationOnAdd(newSection.stations);
     }
 
     public Stations getStations() {
@@ -71,14 +52,5 @@ public class Section {
 
     public Section getTo() {
         return to;
-    }
-
-    @Override
-    public String toString() {
-        return "Section{" +
-                "id=" + id +
-                ", stations=" + stations +
-                ", to=" + to +
-                '}';
     }
 }

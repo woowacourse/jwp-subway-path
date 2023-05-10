@@ -1,7 +1,5 @@
 package subway.domain;
 
-import java.util.Objects;
-
 public class Stations {
 
     private Station current;
@@ -14,24 +12,28 @@ public class Stations {
         this.distance = distance;
     }
 
-    public Station getCurrent() {
-        return current;
+    public boolean isLinked(final Stations other) {
+        return next.isSame(other.current);
     }
 
-    public Station getNext() {
-        return next;
+    public boolean isDistanceShorterThan(final Stations other) {
+        return distance <= other.distance;
+    }
+
+    public void updateStationOnAdd(final Stations newStations) {
+        current.updateStationNameOnAdd(newStations.next);
+        distance = distance - newStations.distance;
     }
 
     public int getDistance() {
         return distance;
     }
 
-    @Override
-    public String toString() {
-        return "Stations{" +
-                "current=" + current +
-                ", next=" + next +
-                ", distance=" + distance +
-                '}';
+    public Station getNext() {
+        return next;
+    }
+
+    public void setDistance(final int distance) {
+        this.distance = distance;
     }
 }

@@ -1,7 +1,5 @@
 package subway.domain;
 
-import java.util.Objects;
-
 public class Station {
 
     private Long id;
@@ -11,19 +9,11 @@ public class Station {
         this.name = name;
     }
 
-    @Override
-    public String toString() {
-        return "Station{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+    public void updateStationNameOnAdd(final Station station) {
+        name = station.name;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(final String name) {
-        this.name = name;
+    public boolean isSame(final Station other) {
+        return name.equals(other.name);
     }
 }
