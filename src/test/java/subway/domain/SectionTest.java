@@ -140,7 +140,7 @@ class SectionTest {
             final String message = assertThrows(IllegalArgumentException.class, () ->
                     section1.minus(section2)
             ).getMessage();
-            assertThat(message).isEqualTo("두 구간이 연관관계가 없어 뺄 수 없습니다.");
+            assertThat(message).isEqualTo("두 구간은 뺄 수 없는 관계입니다.");
         }
     }
 }
