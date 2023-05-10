@@ -17,7 +17,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import subway.application.LineService;
-import subway.dto.StationIdRequest;
+import subway.dto.StationDeleteRequest;
+import subway.dto.StationRegisterRequest;
+import subway.dto.StationsRegisterRequest;
 import subway.ui.LineController;
 
 @WebMvcTest(LineController.class)
@@ -34,19 +36,48 @@ public class LineControllerTest {
 
     @DisplayName("노선에 역을 등록한다")
     @Test
-    void registerStations() throws Exception {
+    void registerStation() throws Exception {
+        String body = objectMapper.writeValueAsString(
+            new StationRegisterRequest(
+                    "UPPER",
+                    2L,
+                    1L,
+                    10
+            )
+        );
+
         this.mockMvc.perform(post("/lines/1/station")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(new StationIdRequest(1L), new StationIdRequest(2L)))))
+                        .content(body))
+                .andExpect(status().isOk());
+    }
+
+    @DisplayName("노선에 역을 두 개 등록한다")
+    @Test
+    void registerStations() throws Exception {
+        String body = objectMapper.writeValueAsString(
+                new StationsRegisterRequest(
+                        2L,
+                        1L,
+                        10
+                )
+        );
+
+        this.mockMvc.perform(post("/lines/1/stations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
                 .andExpect(status().isOk());
     }
 
     @DisplayName("노선에 역을 제거한다")
     @Test
     void deleteStations() throws Exception {
+        String body = objectMapper.writeValueAsString(
+                new StationDeleteRequest(1L));
+
         this.mockMvc.perform(delete("/lines/1/station")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(List.of(new StationIdRequest(1L), new StationIdRequest(2L)))))
+                        .content(body))
                 .andExpect(status().isNoContent());
     }
 }

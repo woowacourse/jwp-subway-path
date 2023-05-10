@@ -1,21 +1,32 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationIdRequest;
-
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.springframework.stereotype.Service;
+
+import subway.dao.LineDao;
+import subway.dao.SectionDao;
+import subway.dto.SectionDto;
+import subway.dao.StationDao;
+import subway.domain.Line;
+import subway.domain.Station;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
+import subway.dto.StationDeleteRequest;
+import subway.dto.StationRegisterRequest;
+import subway.dto.StationsRegisterRequest;
 
 @Service
 public class LineService {
     private final LineDao lineDao;
+    private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
         this.lineDao = lineDao;
+        this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -51,10 +62,53 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public void registerStations(List<StationIdRequest> stationIdRequests) {
+    public void registerStations(Long id, StationsRegisterRequest request) {
+        Line line = findLineById(id);
+        Station top = stationDao.findById(request.getTopId());
+        Station bottom = stationDao.findById(request.getBottomId());
+
+        line.insertBoth(top, bottom, request.getDistance());
+
+        sectionDao.insertAll(toSectionDtos(line));
     }
 
-    public void deleteStations(List<StationIdRequest> stationIdRequests) {
+    public void registerStation(Long id, StationRegisterRequest request) {
+        Line line = findLineById(id);
+        Station station = stationDao.findById(request.getStationId());
+        Station base = stationDao.findById(request.getBaseId());
+        String where = request.getWhere();
 
+        if (where.equals("UPPER")) {
+            line.insertUpper(station, base, request.getDistance());
+        }
+
+        if (where.equals("LOWER")) {
+            line.insertLower(station, base, request.getDistance());
+        }
+
+        sectionDao.deleteAllByLineId(line.getId());
+        sectionDao.insertAll(toSectionDtos(line));
+    }
+
+    private List<SectionDto> toSectionDtos(Line line) {
+        return line.getAdjacentStations().stream()
+                .map(entry -> toSectionDto(
+                        line,
+                        entry.getKey(),
+                        entry.getValue()))
+                .collect(Collectors.toList());
+    }
+
+    private SectionDto toSectionDto(Line line, Station station, Station nextStation) {
+        return new SectionDto(line.getId(), station.getId(), nextStation.getId(), line.getDistanceBetween(station, nextStation));
+    }
+
+    public void deleteStation(Long lineId, StationDeleteRequest request) {
+        Line line = lineDao.findById(lineId);
+        Station station = stationDao.findById(request.getStationId());
+        line.delete(station);
+
+        sectionDao.deleteAllByLineId(line.getId());
+        sectionDao.insertAll(toSectionDtos(line));
     }
 }

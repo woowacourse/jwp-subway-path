@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 public class Line {
     private Long id;
@@ -163,6 +164,10 @@ public class Line {
 
     public List<Station> getStations() {
         return Collections.unmodifiableList(stations);
+    }
+
+    public Set<Map.Entry<Station, Station>> getAdjacentStations() {
+        return distances.keySet();
     }
 
     @Override
