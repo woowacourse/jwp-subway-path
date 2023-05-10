@@ -22,9 +22,16 @@ public class Line {
     }
 
     public Line(Long id, String name, List<Section> sections) {
+        validateName(name);
         this.id = id;
         this.name = name;
         this.sections = new ArrayList<>(sections);
+    }
+
+    private void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("아름에는 빈 문자가 들어올 수 없습니다.");
+        }
     }
 
     public void addSections(List<Section> saveSections) {
