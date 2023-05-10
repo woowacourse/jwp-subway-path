@@ -11,15 +11,26 @@ public class Section {
         this(null, source, target, new Distance(distance));
     }
 
+    public Section(String source, String target, int distance) {
+        this(new Station(source), new Station(target), distance);
+    }
+
     public Section(Long id, Station source, Station target, int distance) {
         this(null, source, target, new Distance(distance));
     }
 
     public Section(Long id, Station source, Station target, Distance distance) {
+        validateTarget(source, target);
         this.id = id;
         this.source = source;
         this.target = target;
         this.distance = distance;
+    }
+
+    private void validateTarget(Station source, Station target) {
+        if (source.getName().equals(target.getName())) {
+            throw new IllegalArgumentException("출발지와 도착지는 같을 수 없습니다");
+        }
     }
 
     public Station getSource() {
