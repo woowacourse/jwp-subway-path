@@ -11,6 +11,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.domain.service.RemoveStationFromLineService;
 import subway.exception.DuplicateLineException;
 import subway.exception.NotFoundLineException;
 import subway.exception.NotFoundStationException;
@@ -21,11 +22,14 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final RemoveStationFromLineService removeStationFromLineService;
 
     public LineService(final LineRepository lineRepository,
-                       final StationRepository stationRepository) {
+                       final StationRepository stationRepository,
+                       final RemoveStationFromLineService removeStationFromLineService) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.removeStationFromLineService = removeStationFromLineService;
     }
 
     public Long create(final LineCreateCommand command) {
@@ -55,12 +59,7 @@ public class LineService {
     public void removeStation(final DeleteStationFromLineCommand command) {
         final Line line = findLineByName(command.getLineName());
         final Station station = findStationByName(command.getDeleteStationName());
-        line.removeStation(station);
-        if (line.getSections().isEmpty()) {
-            lineRepository.delete(line);
-            return;
-        }
-        lineRepository.update(line);
+        removeStationFromLineService.remove(lineRepository, line, station);
     }
 
     private Line findLineByName(final String name) {

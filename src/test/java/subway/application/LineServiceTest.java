@@ -24,6 +24,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.domain.service.RemoveStationFromLineService;
 
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -33,7 +34,8 @@ class LineServiceTest {
 
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final StationRepository stationRepository = mock(StationRepository.class);
-    private final LineService lineService = new LineService(lineRepository, stationRepository);
+    private final RemoveStationFromLineService removeStationFromLineService = new RemoveStationFromLineService();
+    private final LineService lineService = new LineService(lineRepository, stationRepository, removeStationFromLineService);
 
     @Test
     void 노선을_생성한다() {
