@@ -16,6 +16,9 @@ public class SubwayGraph {
     }
 
     public void createNewLine(Station upLineStation, Station downLineStation, int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("역 사이 거리는 양의 정수로 입력해 주세요.");
+        }
         graph.addVertex(upLineStation);
         graph.addVertex(downLineStation);
         graph.setEdgeWeight(graph.addEdge(upLineStation, downLineStation), distance);
@@ -44,7 +47,21 @@ public class SubwayGraph {
     }
 
     public void addStation(Station upLineStation, Station downLineStation, int distance) {
-        // TODO: upLineStation, downLineStation 둘 다 없으면 예외 처리
+        if (upLineStation.equals(downLineStation)) {
+            throw new IllegalArgumentException("서로 다른 역을 입력해 주세요.");
+        }
+
+        if (!graph.containsVertex(upLineStation) && !graph.containsVertex(downLineStation)) {
+            throw new IllegalArgumentException("모두 새로운 역입니다. 새로운 역과 기존 역을 입력해 주세요.");
+        }
+
+        if (graph.containsVertex(upLineStation) && graph.containsVertex(downLineStation)) {
+            throw new IllegalArgumentException("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
+        }
+
+        if (distance <= 0) {
+            throw new IllegalArgumentException("역 사이 거리는 양의 정수로 입력해 주세요.");
+        }
 
         // 기존 역: upLineStation, 새로운 역: downLineStation
         if (graph.containsVertex(upLineStation)) {

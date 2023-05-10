@@ -3,7 +3,9 @@ package subway.fixture;
 import subway.domain.Station;
 
 public class StationFixture {
-    public static Station JAMSIL_STATION = new Station("잠실역");
-    public static Station JAMSIL_SAENAE_STATION = new Station("잠실새내역");
-    public static Station SPORTS_COMPLEX_STATION = new Station("종합운동장역");
+
+    public static final Station EXPRESS_BUS_TERMINAL_STATION = new Station("고속터미널");
+    public static final Station SAPYEONG_STATION = new Station("사평역");
+    public static final Station SINNONHYEON_STATION = new Station("신논현역");
+    public static final Station NEW_STATION = new Station("새 역");
 }
