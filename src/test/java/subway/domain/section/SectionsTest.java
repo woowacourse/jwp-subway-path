@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
 
 class SectionsTest {
 

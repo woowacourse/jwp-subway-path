@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -8,6 +8,8 @@ import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.Line;
+import subway.domain.line.Lines;
 
 class LinesTest {
 

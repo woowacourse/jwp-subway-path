@@ -1,8 +1,9 @@
-package subway.domain;
+package subway.domain.section;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import subway.domain.station.Station;
 
 public class Sections {
 
