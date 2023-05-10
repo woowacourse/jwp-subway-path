@@ -2,17 +2,20 @@ package subway.domain;
 
 public class StationEdge {
 
-    private final Station destination;
+    private final Station station;
     private final int distance;
 
     public StationEdge(final Station station, final int distance) {
-        this.destination = station;
+        this.station = station;
         this.distance = distance;
     }
 
+    public boolean isSameStation(Station station) {
+        return this.station.equals(station);
+    }
 
-    public Station getDestination() {
-        return destination;
+    public Station getStation() {
+        return station;
     }
 
     public int getDistance() {
@@ -22,7 +25,7 @@ public class StationEdge {
     @Override
     public String toString() {
         return "StationEdge{" +
-                "destination=" + destination +
+                "destination=" + station +
                 ", distance=" + distance +
                 '}';
     }
