@@ -13,4 +13,8 @@ public class Sections {
     public List<Section> getSections() {
         return sections;
     }
+
+    public int size() {
+        return sections.size();
+    }
 }

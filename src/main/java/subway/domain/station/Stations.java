@@ -1,6 +1,7 @@
 package subway.domain.station;
 
 import java.util.List;
+import subway.domain.section.Sections;
 import subway.domain.station.Station;
 
 public class Stations {
@@ -18,5 +19,13 @@ public class Stations {
         if (stations.size() == INVALID_STATION_COUNT) {
             throw new IllegalArgumentException("노선의 역은 1개만 존재할 수 없습니다.");
         }
+    }
+
+    public int size() {
+        return stations.size();
+    }
+
+    public boolean isCorrectSectionsSize(final Sections sections) {
+        return stations.size() - 1 == sections.size();
     }
 }
