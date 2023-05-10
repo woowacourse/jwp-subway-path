@@ -3,11 +3,12 @@ package subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
+import subway.application.SubwayMapService;
 import subway.domain.entity.LineEntity;
+import subway.domain.entity.StationEntity;
 import subway.dto.line.LineRequest;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -15,9 +16,11 @@ import java.util.List;
 public class LineController {
 
     private final LineService lineService;
+    private final SubwayMapService subwayMapService;
 
-    public LineController(LineService lineService) {
+    public LineController(LineService lineService, final SubwayMapService subwayMapService) {
         this.lineService = lineService;
+        this.subwayMapService = subwayMapService;
     }
 
     @PostMapping
@@ -28,28 +31,23 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineEntity>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+        return ResponseEntity.ok(lineService.findAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LineEntity> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineById(id));
+    @GetMapping("/{lineNumber}")
+    public ResponseEntity<List<StationEntity>> findLineById(@PathVariable final Long lineNumber) {
+        return ResponseEntity.ok().body(subwayMapService.showLineMap(lineNumber));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable final Long id, @RequestBody final LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(@PathVariable final Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

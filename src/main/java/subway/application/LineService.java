@@ -20,11 +20,11 @@ public class LineService {
         return lineDao.findByName(lineName);
     }
 
-    public Long saveLine(LineRequest request) {
-        return lineDao.insert(new LineEntity(null, request.getName(), request.getColor()));
+    public Long saveLine(final LineRequest request) {
+        return lineDao.insert(new LineEntity(null, request.getLineNumber(), request.getName(), request.getColor()));
     }
 
-    public List<LineEntity> findLineResponses() {
+    public List<LineEntity> findAll() {
         return lineDao.findAll();
     }
 
@@ -38,5 +38,9 @@ public class LineService {
 
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
+    }
+
+    public LineEntity findByLineNumber(final Long lineNumber) {
+        return lineDao.findByLineNumber(lineNumber);
     }
 }

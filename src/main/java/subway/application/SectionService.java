@@ -34,6 +34,7 @@ public class SectionService {
 
         StationEntity stationAEntity = stationService.findStationByName(request.getUpStation());
         StationEntity stationBEntity = stationService.findStationByName(request.getDownStation());
+
         Station stationA = new Station(stationAEntity.getName());
         Station stationB = new Station(stationBEntity.getName());
         Section requestSection = new Section(stationA, stationB, request.getDistance());
@@ -74,7 +75,6 @@ public class SectionService {
                 StationEntity foundSectionDownStationEntity = stationService.findStationByName(foundSection.getDownStation().getName());
                 foundSection.validateDistance(requestSection.getDistance());
 
-                // TODO : 기존 Section 삭제 해주고 반갈죽한 섹션 넣어주기
                 sections.removeSection(foundSection);
                 sections.addSection(requestSection);
                 Section newSection = new Section(requestSection.getDownStation(), foundSection.getDownStation(), foundSection.getDistance() - requestSection.getDistance());
@@ -93,7 +93,6 @@ public class SectionService {
         }
 
 
-        // 이미 B만 존재하는 경우 TODO : 문제있을 수 있음..
         if (!isExistA && isExistB) {
             boolean isExistAsUpStation = sections.isExistAsUpStation(requestSection.getDownStation());
 
@@ -110,7 +109,6 @@ public class SectionService {
                 StationEntity foundSectionDownStationEntity = stationService.findStationByName(foundSection.getDownStation().getName());
                 foundSection.validateDistance(requestSection.getDistance());
 
-                // TODO : 기존 Section 삭제 해주고 반갈죽한 섹션 넣어주기
                 sections.removeSection(foundSection);
                 sections.addSection(requestSection);
                 Section newSection = new Section(foundSection.getUpStation(), requestSection.getUpStation(), foundSection.getDistance() - requestSection.getDistance());
@@ -121,5 +119,11 @@ public class SectionService {
                 sectionDao.insert(new SectionEntity(null, lineEntity.getLineId(), foundSectionUpStationEntity.getStationId(), requestSectionEntity.getUpStationId(), foundSection.getDistance() - requestSection.getDistance()));
             }
         }
+    }
+
+    @Transactional(readOnly = true)
+    public List<SectionEntity> findSectionsByLineNumber(final Long lineNumber) {
+        LineEntity lineEntity = lineService.findByLineNumber(lineNumber);
+        return sectionDao.findSectionsByLineId(lineEntity.getLineId());
     }
 }
