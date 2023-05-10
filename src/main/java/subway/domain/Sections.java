@@ -19,8 +19,8 @@ public class Sections {
 
     private void validateSectionIsLinked(final List<Section> sections) {
         for (int i = 0; i < sections.size() - 1; i++) {
-            final Station down = sections.get(i).getDown();
-            final Station nextUp = sections.get(i + 1).getUp();
+            final Station down = sections.get(i).down();
+            final Station nextUp = sections.get(i + 1).up();
             if (!down.equals(nextUp)) {
                 throw new IllegalArgumentException("각 구간의 연결 상태가 올바르지 않습니다.");
             }
@@ -36,9 +36,9 @@ public class Sections {
     }
 
     private void validateAlreadyExistStation(final Section addedSection) {
-        final List<Station> stations = getStations();
-        if (stations.contains(addedSection.getUp())
-                && stations.contains(addedSection.getDown())) {
+        final List<Station> stations = stations();
+        if (stations.contains(addedSection.up())
+                && stations.contains(addedSection.down())) {
             throw new IllegalArgumentException("추가하려는 두 역이 이미 포함되어 있습니다.");
         }
     }
@@ -104,7 +104,7 @@ public class Sections {
             return;
         }
         for (int i = 0; i < sections.size(); i++) {
-            if (sections.get(i).getDown().equals(removedStation)) {
+            if (sections.get(i).down().equals(removedStation)) {
                 final Section up = sections.remove(i);
                 final Section down = sections.remove(i);
                 sections.add(i, up.plus(down));
@@ -114,8 +114,8 @@ public class Sections {
     }
 
     private boolean removedTerminal(final Station removedStation) {
-        final Station upTerminal = firstSection().getUp();
-        final Station downTerminal = lastSection().getDown();
+        final Station upTerminal = firstSection().up();
+        final Station downTerminal = lastSection().down();
         if (upTerminal.equals(removedStation)) {
             sections.remove(firstSection());
             return true;
@@ -128,23 +128,23 @@ public class Sections {
     }
 
     private void validateStationIsExist(final Station removedStation) {
-        final List<Station> stations = getStations();
+        final List<Station> stations = stations();
         if (!stations.contains(removedStation)) {
             throw new IllegalArgumentException("없는 역은 제거할 수 없습니다.");
         }
     }
 
-    public List<Station> getStations() {
+    public List<Station> stations() {
         final List<Station> stations = new ArrayList<>();
-        stations.add(sections.get(0).getUp());
+        stations.add(sections.get(0).up());
         final List<Station> collect = sections.stream()
-                .map(Section::getDown)
+                .map(Section::down)
                 .collect(Collectors.toList());
         stations.addAll(collect);
         return stations;
     }
 
-    public List<Section> getSections() {
+    public List<Section> sections() {
         return sections;
     }
 }

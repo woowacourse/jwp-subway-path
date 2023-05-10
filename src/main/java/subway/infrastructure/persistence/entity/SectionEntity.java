@@ -28,29 +28,29 @@ public class SectionEntity {
 
     public static SectionEntity of(final Section section, final Long lineId) {
         return new SectionEntity(
-                section.getUp().getId(),
-                section.getDown().getId(),
-                section.getDistance(),
+                section.up().id(),
+                section.down().id(),
+                section.distance(),
                 lineId);
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public Long getUpStationId() {
+    public Long upStationId() {
         return upStationId;
     }
 
-    public Long getDownStationId() {
+    public Long downStationId() {
         return downStationId;
     }
 
-    public int getDistance() {
+    public int distance() {
         return distance;
     }
 
-    public Long getLineId() {
+    public Long lineId() {
         return lineId;
     }
 }

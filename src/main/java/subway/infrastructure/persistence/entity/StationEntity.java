@@ -17,18 +17,18 @@ public class StationEntity {
     }
 
     public static StationEntity from(final Station station) {
-        return new StationEntity(station.getName());
+        return new StationEntity(station.name());
     }
 
     public Station toDomain() {
         return new Station(id, name);
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 }

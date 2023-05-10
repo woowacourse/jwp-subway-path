@@ -83,7 +83,7 @@ class LineServiceTest {
 
         // then
         verify(lineRepository, times(1)).update(line);
-        assertThat(line.getSections()).hasSize(2);
+        assertThat(line.sections()).hasSize(2);
     }
 
     @Test
@@ -103,8 +103,8 @@ class LineServiceTest {
 
         // then
         verify(lineRepository, times(1)).update(line);
-        assertThat(line.getSections()).hasSize(1);
-        포함된_구간들을_검증한다(line.getSections(), "역1-[20km]-역3");
+        assertThat(line.sections()).hasSize(1);
+        포함된_구간들을_검증한다(line.sections(), "역1-[20km]-역3");
     }
 
     @Test
@@ -123,7 +123,7 @@ class LineServiceTest {
         // then
         verify(lineRepository, times(0)).update(line);
         verify(lineRepository, times(1)).delete(line);
-        assertThat(line.getSections()).hasSize(0);
+        assertThat(line.sections()).hasSize(0);
     }
 
     private void 역을_저장한다(final String name) {

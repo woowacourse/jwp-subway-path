@@ -20,7 +20,7 @@ public class StationService {
     }
 
     public Long create(final StationCreateCommand command) {
-        if (stationRepository.findByName(command.getName()).isPresent()) {
+        if (stationRepository.findByName(command.name()).isPresent()) {
             throw new StationException(DUPLICATE_STATION_NAME);
         }
         return stationRepository.save(command.toDomain());

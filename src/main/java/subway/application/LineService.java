@@ -36,13 +36,13 @@ public class LineService {
     }
 
     public Long create(final LineCreateCommand command) {
-        if (lineRepository.findByName(command.getLineName()).isPresent()) {
+        if (lineRepository.findByName(command.lineName()).isPresent()) {
             throw new LineException(DUPLICATE_LINE_NAME);
         }
-        final Station up = findStationByName(command.getUpTerminalName());
-        final Station down = findStationByName(command.getDownTerminalName());
-        final Sections sections = new Sections(new Section(up, down, command.getDistance()));
-        return lineRepository.save(new Line(command.getLineName(), sections));
+        final Station up = findStationByName(command.upTerminalName());
+        final Station down = findStationByName(command.downTerminalName());
+        final Sections sections = new Sections(new Section(up, down, command.distance()));
+        return lineRepository.save(new Line(command.lineName(), sections));
     }
 
     private Station findStationByName(final String name) {
@@ -51,17 +51,17 @@ public class LineService {
     }
 
     public void addStation(final AddStationToLineCommand command) {
-        final Line line = findLineByName(command.getLineName());
-        final Station up = findStationByName(command.getUpStationName());
-        final Station down = findStationByName(command.getDownStationName());
-        final Section section = new Section(up, down, command.getDistance());
+        final Line line = findLineByName(command.lineName());
+        final Station up = findStationByName(command.upStationName());
+        final Station down = findStationByName(command.downStationName());
+        final Section section = new Section(up, down, command.distance());
         line.addSection(section);
         lineRepository.update(line);
     }
 
     public void removeStation(final DeleteStationFromLineCommand command) {
-        final Line line = findLineByName(command.getLineName());
-        final Station station = findStationByName(command.getDeleteStationName());
+        final Line line = findLineByName(command.lineName());
+        final Station station = findStationByName(command.deleteStationName());
         removeStationFromLineService.remove(lineRepository, line, station);
     }
 

@@ -43,9 +43,9 @@ class SectionTest {
 
             // then
             assertAll(
-                    () -> assertThat(remain.getUp().getName()).isEqualTo("잠실역"),
-                    () -> assertThat(remain.getDown().getName()).isEqualTo("잠실나루역"),
-                    () -> assertThat(remain.getDistance()).isEqualTo(2)
+                    () -> assertThat(remain.up().name()).isEqualTo("잠실역"),
+                    () -> assertThat(remain.down().name()).isEqualTo("잠실나루역"),
+                    () -> assertThat(remain.distance()).isEqualTo(2)
             );
         }
 
@@ -89,9 +89,9 @@ class SectionTest {
             // when
             final Section addedSection = up.plus(down);
             // then
-            assertThat(addedSection.getDistance()).isEqualTo(12);
-            assertThat(addedSection.getUp().getName()).isEqualTo("잠실역");
-            assertThat(addedSection.getDown().getName()).isEqualTo("슈퍼말랑역");
+            assertThat(addedSection.distance()).isEqualTo(12);
+            assertThat(addedSection.up().name()).isEqualTo("잠실역");
+            assertThat(addedSection.down().name()).isEqualTo("슈퍼말랑역");
         }
 
         @Test

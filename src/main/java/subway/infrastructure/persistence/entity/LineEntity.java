@@ -20,18 +20,18 @@ public class LineEntity {
     }
 
     public static LineEntity from(final Line line) {
-        return new LineEntity(line.getId(), line.getName());
+        return new LineEntity(line.id(), line.name());
     }
 
     public Line toDomain(final List<Section> sections) {
         return new Line(id, name, new Sections(sections));
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 }

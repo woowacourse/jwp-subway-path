@@ -69,7 +69,7 @@ class LineDaoTest {
         final Long id = lineDao.save(lineEntity);
 
         // when
-        lineDao.delete(new LineEntity(id, lineEntity.getName()));
+        lineDao.delete(new LineEntity(id, lineEntity.name()));
 
         // then
         assertThat(lineDao.findByName("1호선")).isEmpty();

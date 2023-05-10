@@ -62,7 +62,7 @@ class JdbcLineRepositoryTest {
         // then
         final List<Line> lines = lineRepository.findAll();
         assertThat(lines).hasSize(1);
-        assertThat(lines.get(0).getSections()).hasSize(4);
+        assertThat(lines.get(0).sections()).hasSize(4);
     }
 
     @Test
@@ -84,7 +84,7 @@ class JdbcLineRepositoryTest {
         lineRepository.update(line);
 
         // then
-        final List<Section> updated = lineRepository.findByName("1호선").get().getSections();
+        final List<Section> updated = lineRepository.findByName("1호선").get().sections();
         포함된_구간들을_검증한다(updated,
                 "역1-[1km]-역2",
                 "역2-[5km]-역4",
@@ -105,7 +105,7 @@ class JdbcLineRepositoryTest {
         final Long id = lineRepository.save(new Line("1호선", sections));
 
         // when
-        final List<Section> find = lineRepository.findById(id).get().getSections();
+        final List<Section> find = lineRepository.findById(id).get().sections();
 
         // then
         포함된_구간들을_검증한다(find,
@@ -128,7 +128,7 @@ class JdbcLineRepositoryTest {
         lineRepository.save(new Line("1호선", sections));
 
         // when
-        final List<Section> find = lineRepository.findByName("1호선").get().getSections();
+        final List<Section> find = lineRepository.findByName("1호선").get().sections();
 
         // then
         포함된_구간들을_검증한다(find,
@@ -159,11 +159,11 @@ class JdbcLineRepositoryTest {
 
         // then
         assertThat(lines).hasSize(2);
-        포함된_구간들을_검증한다(lines.get(0).getSections(),
+        포함된_구간들을_검증한다(lines.get(0).sections(),
                 "역1-[1km]-역2",
                 "역2-[2km]-역3"
         );
-        포함된_구간들을_검증한다(lines.get(1).getSections(),
+        포함된_구간들을_검증한다(lines.get(1).sections(),
                 "역3-[3km]-역4",
                 "역4-[4km]-역5"
         );

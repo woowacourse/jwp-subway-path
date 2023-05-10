@@ -14,7 +14,7 @@ public class StationCreateCommand {
         return new Station(name);
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 }

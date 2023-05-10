@@ -48,7 +48,7 @@ public class LineDao {
     }
 
     public void delete(final LineEntity entity) {
-        template.update("delete from line where line.id = ?", entity.getId());
+        template.update("delete from line where line.id = ?", entity.id());
     }
 
     public Optional<LineEntity> findById(final Long id) {

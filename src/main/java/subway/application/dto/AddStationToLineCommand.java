@@ -17,19 +17,19 @@ public class AddStationToLineCommand {
         this.distance = distance;
     }
 
-    public String getLineName() {
+    public String lineName() {
         return lineName;
     }
 
-    public String getUpStationName() {
+    public String upStationName() {
         return upStationName;
     }
 
-    public String getDownStationName() {
+    public String downStationName() {
         return downStationName;
     }
 
-    public int getDistance() {
+    public int distance() {
         return distance;
     }
 }

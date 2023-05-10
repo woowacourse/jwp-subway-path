@@ -15,19 +15,19 @@ public class LineCreateCommand {
         this.distance = distance;
     }
 
-    public String getLineName() {
+    public String lineName() {
         return lineName;
     }
 
-    public String getUpTerminalName() {
+    public String upTerminalName() {
         return upTerminalName;
     }
 
-    public String getDownTerminalName() {
+    public String downTerminalName() {
         return downTerminalName;
     }
 
-    public int getDistance() {
+    public int distance() {
         return distance;
     }
 }

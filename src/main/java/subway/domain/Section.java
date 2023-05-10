@@ -53,15 +53,15 @@ public class Section {
         return this.up.equals(section.up) || this.down.equals(section.down);
     }
 
-    public Station getUp() {
+    public Station up() {
         return up;
     }
 
-    public Station getDown() {
+    public Station down() {
         return down;
     }
 
-    public int getDistance() {
+    public int distance() {
         return distance;
     }
 }

@@ -59,7 +59,7 @@ class StationDaoTest {
 
         // then
         assertThat(allByIds)
-                .extracting(StationEntity::getName)
+                .extracting(StationEntity::name)
                 .containsExactly("역1", "역2", "역3");
     }
 }

@@ -69,7 +69,7 @@ class SectionsTest {
             sections.addSection(middle2);
 
             // then
-            포함된_구간들을_검증한다(sections.getSections(),
+            포함된_구간들을_검증한다(sections.sections(),
                     "출발역-[1km]-경유역 1",
                     "경유역 1-[5km]-경유역 2",
                     "경유역 2-[4km]-종착역"
@@ -91,7 +91,7 @@ class SectionsTest {
             sections.addSection(top);
 
             // then
-            포함된_구간들을_검증한다(sections.getSections(),
+            포함된_구간들을_검증한다(sections.sections(),
                     "출발역-[1km]-낙성대역",
                     "낙성대역-[7km]-잠실역",
                     "잠실역-[10km]-종착역"
@@ -113,7 +113,7 @@ class SectionsTest {
             sections.addSection(down);
 
             // then
-            포함된_구간들을_검증한다(sections.getSections(),
+            포함된_구간들을_검증한다(sections.sections(),
                     "출발역-[10km]-잠실역",
                     "잠실역-[7km]-건대역",
                     "건대역-[1km]-종착역"
@@ -189,7 +189,7 @@ class SectionsTest {
             sections.removeStation(new Station("잠실역"));
 
             // then
-            포함된_구간들을_검증한다(sections.getSections(),
+            포함된_구간들을_검증한다(sections.sections(),
                     "출발역-[15km]-잠실나루역",
                     "잠실나루역-[7km]-종착역"
             );
@@ -208,7 +208,7 @@ class SectionsTest {
             sections.removeStation(new Station("출발역"));
 
             // then
-            포함된_구간들을_검증한다(sections.getSections(),
+            포함된_구간들을_검증한다(sections.sections(),
                     "잠실역-[5km]-잠실나루역",
                     "잠실나루역-[7km]-종착역"
             );
@@ -227,7 +227,7 @@ class SectionsTest {
             sections.removeStation(new Station("종착역"));
 
             // then
-            포함된_구간들을_검증한다(sections.getSections(),
+            포함된_구간들을_검증한다(sections.sections(),
                     "출발역-[10km]-잠실역",
                     "잠실역-[5km]-잠실나루역"
             );
@@ -254,7 +254,7 @@ class SectionsTest {
             sections.removeStation(new Station("출발역"));
 
             // then
-            assertThat(sections.getSections()).isEmpty();
+            assertThat(sections.sections()).isEmpty();
         }
     }
 }

@@ -26,15 +26,15 @@ public class Line {
         sections.removeStation(station);
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
+    public List<Section> sections() {
+        return sections.sections();
     }
 }

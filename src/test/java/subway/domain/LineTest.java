@@ -228,11 +228,11 @@ class LineTest {
             line.removeStation(new Station("출발역"));
 
             // then
-            assertThat(line.getSections()).isEmpty();
+            assertThat(line.sections()).isEmpty();
         }
     }
 
     private void 포함된_노선들을_검증한다(final Line line, final String... sectionStrings) {
-        포함된_구간들을_검증한다(line.getSections(), sectionStrings);
+        포함된_구간들을_검증한다(line.sections(), sectionStrings);
     }
 }

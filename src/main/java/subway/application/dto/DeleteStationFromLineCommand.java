@@ -10,11 +10,11 @@ public class DeleteStationFromLineCommand {
         this.deleteStationName = deleteStationName;
     }
 
-    public String getLineName() {
+    public String lineName() {
         return lineName;
     }
 
-    public String getDeleteStationName() {
+    public String deleteStationName() {
         return deleteStationName;
     }
 }

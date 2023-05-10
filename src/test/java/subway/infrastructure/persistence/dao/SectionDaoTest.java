@@ -103,7 +103,7 @@ class SectionDaoTest {
 
         // then
         assertThat(allByLineName)
-                .extracting(SectionEntity::getDistance)
+                .extracting(SectionEntity::distance)
                 .containsExactly(1, 2, 3, 4);
     }
 }

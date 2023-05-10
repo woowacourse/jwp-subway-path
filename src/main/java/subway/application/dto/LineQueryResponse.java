@@ -15,20 +15,20 @@ public class LineQueryResponse {
         this.stationQueryResponseList = stationQueryResponseList;
     }
 
+    public static LineQueryResponse from(final Line line) {
+        final List<SectionQueryResponse> sectionQueryResponses = line.sections()
+                .stream()
+                .map(SectionQueryResponse::from)
+                .collect(Collectors.toList());
+        return new LineQueryResponse(line.name(), sectionQueryResponses);
+    }
+
     public String getLineName() {
         return lineName;
     }
 
     public List<SectionQueryResponse> getStationQueryResponseList() {
         return stationQueryResponseList;
-    }
-
-    public static LineQueryResponse from(final Line line) {
-        final List<SectionQueryResponse> sectionQueryResponses = line.getSections()
-                .stream()
-                .map(SectionQueryResponse::from)
-                .collect(Collectors.toList());
-        return new LineQueryResponse(line.getName(), sectionQueryResponses);
     }
 
     public static class SectionQueryResponse {
@@ -45,9 +45,9 @@ public class LineQueryResponse {
 
         public static SectionQueryResponse from(final Section section) {
             return new SectionQueryResponse(
-                    section.getUp().getName(),
-                    section.getDown().getName(),
-                    section.getDistance());
+                    section.up().name(),
+                    section.down().name(),
+                    section.distance());
         }
 
         public String getUpStationName() {

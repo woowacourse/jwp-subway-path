@@ -25,19 +25,19 @@ public class Station {
             return false;
         }
         final Station station = (Station) o;
-        return Objects.equals(id, station.id) && Objects.equals(getName(), station.getName());
+        return Objects.equals(id, station.id) && Objects.equals(name(), station.name());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, getName());
+        return Objects.hash(id, name());
     }
 
-    public Long getId() {
+    public Long id() {
         return id;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 }
