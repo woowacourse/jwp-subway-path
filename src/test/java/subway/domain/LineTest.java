@@ -107,6 +107,58 @@ public class LineTest {
         });
     }
 
+    @DisplayName("상행 종점을 제거한다")
+    @Test
+    void deleteTop() {
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_NARU, 6);
+
+        line.delete(STATION_JAMSIL_NARU);
+
+        assertSoftly(softly -> {
+            softly.assertThat(line.getStations()).doesNotContain(STATION_JAMSIL_NARU);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(4);
+        });
+    }
+
+    @DisplayName("하행 종점을 제거한다")
+    @Test
+    void deleteBottom() {
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_NARU, 6);
+
+        line.delete(STATION_JAMSIL_SAENAE);
+
+        assertSoftly(softly -> {
+            softly.assertThat(line.getStations()).doesNotContain(STATION_JAMSIL_SAENAE);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(6);
+        });
+    }
+
+    @DisplayName("중간에 있는 역을 제거한다")
+    @Test
+    void deleteStationInBetween() {
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+        line.insertLower(STATION_JAMSIL, STATION_JAMSIL_NARU, 6);
+
+        line.delete(STATION_JAMSIL);
+
+        assertSoftly(softly -> {
+            softly.assertThat(line.getStations()).doesNotContain(STATION_JAMSIL);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE)).isEqualTo(10);
+        });
+    }
+
+    @DisplayName("역이 두 개 뿐인 경우 모두 제거한다")
+    @Test
+    void deleteStationWhenTwoStationsLeft() {
+        line.insertBoth(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, 10);
+
+        line.delete(STATION_JAMSIL_SAENAE);
+
+        assertThat(line.getStations()).isEmpty();
+    }
+
     @DisplayName("두 역 사이의 거리를 알 수 있다")
     @Test
     void getDistanceBetweenTwoStations() {

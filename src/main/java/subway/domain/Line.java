@@ -71,6 +71,38 @@ public class Line {
         deleteDistanceBetween(getLowerOf(station), base);
     }
 
+    public void delete(Station station) {
+
+        if (!stations.contains(station)) {
+            throw new IllegalArgumentException("등록되지 않은 역입니다.");
+        }
+
+        if (stations.size() == 2) {
+            stations.clear();
+            distances.clear();
+            return;
+        }
+
+        if (isTop(station)) {
+            deleteDistanceBetween(station, getLowerOf(station));
+            stations.remove(station);
+            return;
+        }
+
+        if (isBottom(station)) {
+            deleteDistanceBetween(station, getUpperOf(station));
+            stations.remove(station);
+            return;
+        }
+
+        int upperDistance = getDistanceBetween(station, getUpperOf(station));
+        int lowerDistance = getDistanceBetween(station, getLowerOf(station));
+        deleteDistanceBetween(station, getUpperOf(station));
+        deleteDistanceBetween(station, getLowerOf(station));
+        insertDistanceBetween(getUpperOf(station), getLowerOf(station), upperDistance + lowerDistance);
+        stations.remove(station);
+    }
+
     public int getDistanceBetween(Station from, Station to) {
         if (distances.get(Map.entry(from, to)) != null) {
             return distances.get(Map.entry(from, to));
