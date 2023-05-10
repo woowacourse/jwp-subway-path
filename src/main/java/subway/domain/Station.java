@@ -7,7 +7,7 @@ public class Station {
     public static final Station emptyStation = new Station("");
     private Long id;
     private String name;
-    private Station next;
+    private Station next = emptyStation;
     private Distance distance;
 
     public Station() {
