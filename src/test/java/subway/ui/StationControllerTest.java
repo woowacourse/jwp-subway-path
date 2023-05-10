@@ -73,4 +73,21 @@ class StationControllerTest {
                 .andExpect(content().json(responseJson))
                 .andDo(print());
     }
+
+    @Test
+    void id를_받아_해당_역을_조회한다() throws Exception {
+        // given
+        final Long id = 1L;
+        final StationResponse station = new StationResponse(id, "잠실역");
+
+        when(stationService.findStationResponseById(id)).thenReturn(station);
+        final String responseJson = objectMapper.writeValueAsString(station);
+
+        // when, then
+        mockMvc.perform(get("/stations/"+id)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(content().json(responseJson))
+                .andDo(print());
+    }
 }
