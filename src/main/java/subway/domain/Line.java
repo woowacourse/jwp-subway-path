@@ -57,16 +57,35 @@ public class Line {
     }
 
     private int getTargetStationEdge(Long adjacentStationId, LineDirection direction) {
-        StationEdge stationEdge = stationEdges.stream()
-                .filter(edge -> edge.getDownStationId().equals(adjacentStationId))
-                .findFirst()
-                .orElseThrow(StationNotFoundException::new);
+        StationEdge stationEdge = getStationEdge(adjacentStationId);
 
         int order = stationEdges.indexOf(stationEdge);
         if (direction == LineDirection.UP) {
             return order;
         }
         return order + 1;
+    }
+
+    public StationEdge deleteStation(long stationId) {
+        StationEdge stationEdge = getStationEdge(stationId);
+
+        int edgeIndex = stationEdges.indexOf(stationEdge);
+        stationEdges.remove(stationEdge);
+        if (edgeIndex == stationEdges.size()) {
+            return null;
+        }
+
+        StationEdge downStationEdge = stationEdges.get(edgeIndex);
+        StationEdge combinedStationEdge = new StationEdge(downStationEdge.getDownStationId(),
+                stationEdge.getDistance() + downStationEdge.getDistance());
+        stationEdges.set(edgeIndex, combinedStationEdge);
+        return combinedStationEdge;
+    }
+
+    private StationEdge getStationEdge(long stationId) {
+        return stationEdges.stream()
+                .filter(edge -> edge.getDownStationId().equals(stationId))
+                .findFirst().orElseThrow(StationNotFoundException::new);
     }
 
     public Long getId() {

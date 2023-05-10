@@ -36,7 +36,8 @@ class LineTest {
 
     @ParameterizedTest(name = "노선에 역을 등록한다.")
     @MethodSource("provideInsertedStation")
-    void insertStation(Long adjacentStationId, LineDirection direction, int expectedInsertEdgeDistance, int expectedUpdatedEdgeDistance) {
+    void insertStation(Long adjacentStationId, LineDirection direction, int expectedInsertEdgeDistance,
+                       int expectedUpdatedEdgeDistance) {
         //given
         Long stationId = 1L;
         Long stationId2 = 2L;
@@ -82,6 +83,29 @@ class LineTest {
         assertSoftly(softly -> {
             softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(2);
             softly.assertThat(changedEdges.getUpdatedEdge()).isNull();
+        });
+    }
+
+    @Test
+    @DisplayName("노선에서 역을 제거한다.")
+    void deleteStation() {
+        //given
+        Long stationId = 1L;
+        Long stationId2 = 2L;
+        int distance = 5;
+        String name = "2호선";
+        String color = "초록색";
+        final Line line = Line.of(name, color,
+                List.of(new StationEdge(stationId, 0), new StationEdge(stationId2, distance)));
+        line.insertStation(3L, stationId, 2, LineDirection.DOWN);
+
+        //when
+        StationEdge changedStationEdge = line.deleteStation(3L);
+
+        //then
+        assertSoftly(softly -> {
+            softly.assertThat(changedStationEdge.getDownStationId()).isEqualTo(stationId2);
+            softly.assertThat(changedStationEdge.getDistance()).isEqualTo(distance);
         });
     }
 }

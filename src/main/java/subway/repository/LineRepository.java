@@ -11,4 +11,6 @@ public interface LineRepository {
     Long create(Line line);
 
     void updateWithSavedEdge(Line line, StationEdge stationEdge);
+
+    void deleteStation(Line line, Long stationId);
 }

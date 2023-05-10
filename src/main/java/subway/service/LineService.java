@@ -38,7 +38,7 @@ public class LineService {
 
         final Line line = Line.of(lineRequest.getName(), lineRequest.getColor(), List.of(upEndEdge, downEndEdge));
 
-        lineRepository.findByName(line.getName()).ifPresent( lineWithSameName -> {
+        lineRepository.findByName(line.getName()).ifPresent(lineWithSameName -> {
             throw new DuplicatedLineNameException(line.getName());
         });
 
@@ -52,8 +52,7 @@ public class LineService {
         Long adjacentStationId = stationInsertRequest.getAdjacentStationId();
         findStationById(adjacentStationId);
 
-        Line line = lineRepository.findById(stationInsertRequest.getLineId())
-                .orElseThrow(LineNotFoundException::new);
+        Line line = findLineById(stationInsertRequest.getLineId());
 
         // TODO: 이미 존재하는 역인지 검증.
 
@@ -67,8 +66,20 @@ public class LineService {
                 .ifPresent(updatedEdge -> lineRepository.updateWithSavedEdge(line, updatedEdge));
     }
 
+    private Line findLineById(Long id) {
+        return lineRepository.findById(id)
+                .orElseThrow(LineNotFoundException::new);
+    }
+
     private Station findStationById(Long stationId) {
         return stationRepository.findById(stationId)
                 .orElseThrow(StationNotFoundException::new);
+    }
+
+    public void deleteStation(Long lineId, Long stationId) {
+        Line line = findLineById(lineId);
+        Optional.ofNullable(line.deleteStation(stationId))
+                .ifPresent(stationEdge -> lineRepository.updateWithSavedEdge(line, stationEdge));
+        lineRepository.deleteStation(line, stationId);
     }
 }

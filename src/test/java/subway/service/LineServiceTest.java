@@ -2,6 +2,7 @@ package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -94,5 +95,29 @@ class LineServiceTest {
                 .filter(stationEdge -> stationEdge.getDownStationId().equals(lineRequest.getDownStationId()))
                 .findFirst().get();
         assertThat(updatedStationEdge.getDistance()).isEqualTo(6);
+    }
+
+    @Test
+    @DisplayName("노선에서 역을 제거한다.")
+    void deleteStation() {
+        //given up - 강남 - down
+        LineRequest lineRequest = createLineRequest();
+        Long lineId = lineService.create(lineRequest);
+        Long stationId = stationRepository.create(new Station("강남"));
+        StationInsertRequest stationInsertRequest = new StationInsertRequest(stationId, lineId,
+                lineRequest.getUpStationId(), "DOWN",
+                1);
+        lineService.insertStation(stationInsertRequest);
+
+        //when
+        lineService.deleteStation(lineId, stationId);
+
+        //then
+        Line line = lineRepository.findById(lineId).get();
+        StationEdge downEndStationEdge = line.getStationEdges().get(1);
+        assertSoftly(softly -> {
+            softly.assertThat(downEndStationEdge.getDownStationId()).isEqualTo(lineRequest.getDownStationId());
+            softly.assertThat(downEndStationEdge.getDistance()).isEqualTo(lineRequest.getDistance());
+        });
     }
 }
