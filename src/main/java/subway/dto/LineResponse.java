@@ -4,22 +4,19 @@ import subway.domain.Line;
 
 public class LineResponse {
     private Long id;
-    private String name;
 
-    public LineResponse(Long id, String name) {
+    public LineResponse(Long id) {
         this.id = id;
-        this.name = name;
+    }
+
+    public LineResponse() {
     }
 
     public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName());
+        return new LineResponse(line.getId());
     }
 
     public Long getId() {
         return id;
-    }
-
-    public String getName() {
-        return name;
     }
 }
