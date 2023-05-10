@@ -69,7 +69,7 @@ public class Section {
         deletedSection.to = null;
     }
 
-    private Section find(final Station station) {
+    public Section find(final Station station) {
         Section current = this;
 
         while (current != null) {
@@ -80,6 +80,14 @@ public class Section {
         }
 
         return null;
+    }
+
+    public boolean isSameCurrentWith(final Station station) {
+        return stations.isSameCurrent(station);
+    }
+
+    public void disconnectNextSection() {
+        updateNextSection(null);
     }
 
     public void updateNextSection(final Section section) {

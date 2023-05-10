@@ -33,7 +33,30 @@ public class Line {
         starter.addNext(newSection);
     }
 
+    public void delete(final Station deletedStation) {
+        final Section head = starter.find(deletedStation);
+
+        if (head == null) {
+            if (starter.isSameCurrentWith(deletedStation)) {
+                exchangeStarter();
+                return;
+            }
+            throw new IllegalArgumentException("삭제할 역이 없습니다.");
+        }
+
+        starter.delete(deletedStation);
+    }
+
+    private void exchangeStarter() {
+        starter.disconnectNextSection();
+        starter = starter.getTo();
+    }
+
     public Section getStarter() {
         return starter;
+    }
+
+    public String getName() {
+        return name;
     }
 }

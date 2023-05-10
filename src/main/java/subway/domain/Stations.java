@@ -16,6 +16,10 @@ public class Stations {
         return next.isSame(other.current);
     }
 
+    public boolean isSameCurrent(final Station other) {
+        return current.isSame(other);
+    }
+
     public boolean isDistanceShorterThan(final Stations other) {
         return distance <= other.distance;
     }
@@ -32,6 +36,10 @@ public class Stations {
 
     public int getDistance() {
         return distance;
+    }
+
+    public Station getCurrent() {
+        return current;
     }
 
     public Station getNext() {

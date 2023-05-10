@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LineTest {
 
@@ -122,5 +124,72 @@ class LineTest {
         //when & then
         assertThatThrownBy(() -> line.add(새로운_섹션))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    /**
+     * 기존 : A -> B -> C -> D
+     * 삭제 : B
+     * 결론 : A -> C -> D
+     */
+    @Test
+    @DisplayName("delete() : Line 중간에 있는 Section을 삭제할 수 있다.")
+    void test_delete() throws Exception {
+        //given
+        final Stations stations1 = new Stations(new Station("A"), new Station("B"), 5);
+        final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
+        final Stations stations3 = new Stations(new Station("C"), new Station("D"), 3);
+
+        Section starter = new Section(stations1);
+        final Line line = new Line("2호선", starter);
+
+        final Section section2 = new Section(stations2);
+        line.add(section2);
+
+        final Section section3 = new Section(stations3);
+        line.add(section3);
+
+        //when
+        line.delete(new Station("B"));
+
+        //then
+        assertAll(
+                () -> assertEquals(starter.getTo(), section3),
+                () -> assertNull(section2.getTo()),
+                () -> assertEquals(9, starter.getStations().getDistance()),
+                () -> assertTrue(starter.getStations().getNext()
+                                        .isSame(section2.getStations().getNext()))
+        );
+    }
+
+    /**
+     * 기존 : A -> B -> C -> D
+     * 삭제 : A
+     * 결론 : B -> C -> D
+     */
+    @Test
+    @DisplayName("delete() : Line의 starter를 삭제할 수 있다.")
+    void test_delete_starter() throws Exception {
+        //given
+        final Stations stations1 = new Stations(new Station("A"), new Station("B"), 5);
+        final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
+        final Stations stations3 = new Stations(new Station("C"), new Station("D"), 3);
+
+        Section starter = new Section(stations1);
+        final Line line = new Line("2호선", starter);
+
+        final Section section2 = new Section(stations2);
+        line.add(section2);
+
+        final Section section3 = new Section(stations3);
+        line.add(section3);
+
+        //when
+        line.delete(new Station("A"));
+
+        //then
+        assertAll(
+                () -> assertEquals(section2.getTo(), section3),
+                () -> assertNull(starter.getTo())
+        );
     }
 }
