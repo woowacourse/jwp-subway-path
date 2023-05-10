@@ -1,6 +1,7 @@
 package subway.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import subway.domain.LineDirection;
 import subway.domain.Station;
 import subway.domain.StationEdge;
 import subway.domain.dto.InsertionResult;
+import subway.exception.LineNotFoundException;
 
 class SimpleLineRepositoryTest {
 
@@ -113,4 +115,16 @@ class SimpleLineRepositoryTest {
         return createdLine;
     }
 
+    @Test
+    @DisplayName("노선정보를 제거한다.")
+    void delete() {
+        //given
+        Line line = createLineWithTwoStation();
+
+        //when
+        lineRepository.deleteById(line.getId());
+
+        //then
+        assertThat(lineRepository.findById(line.getId())).isEmpty();
+    }
 }

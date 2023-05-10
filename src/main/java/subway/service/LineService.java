@@ -54,8 +54,6 @@ public class LineService {
 
         Line line = findLineById(stationInsertRequest.getLineId());
 
-        // TODO: 이미 존재하는 역인지 검증.
-
         InsertionResult insertionResult = line.insertStation(stationId, adjacentStationId,
                 stationInsertRequest.getDistance(), LineDirection.valueOf(stationInsertRequest.getDirection()));
         StationEdge insertedEdge = insertionResult.getInsertedEdge();
@@ -78,6 +76,10 @@ public class LineService {
 
     public void deleteStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
+        if (line.size() == 2 && line.contains(stationId)) {
+            lineRepository.deleteById(line.getId());
+            return;
+        }
         Optional.ofNullable(line.deleteStation(stationId))
                 .ifPresent(stationEdge -> lineRepository.updateWithSavedEdge(line, stationEdge));
         lineRepository.deleteStation(line, stationId);

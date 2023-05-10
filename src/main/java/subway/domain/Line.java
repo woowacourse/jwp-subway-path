@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import subway.domain.dto.InsertionResult;
+import subway.exception.StationAlreadyExistsException;
 import subway.exception.StationNotFoundException;
 
 public class Line {
@@ -40,6 +41,9 @@ public class Line {
             int distance,
             LineDirection direction
     ) {
+        if (contains(insertStationId)) {
+            throw new StationAlreadyExistsException();
+        }
         final int targetIndex = getTargetStationEdge(adjacentStationId, direction);
         if (targetIndex == stationEdges.size()) { // 하행 종점 추가일 경우
             StationEdge insertedStationEdge = new StationEdge(insertStationId, distance);
@@ -67,6 +71,9 @@ public class Line {
     }
 
     public StationEdge deleteStation(long stationId) {
+        if (!contains(stationId)) {
+            throw new StationNotFoundException();
+        }
         StationEdge stationEdge = getStationEdge(stationId);
 
         int edgeIndex = stationEdges.indexOf(stationEdge);
@@ -82,10 +89,19 @@ public class Line {
         return combinedStationEdge;
     }
 
+    public int size() {
+        return stationEdges.size();
+    }
+
     private StationEdge getStationEdge(long stationId) {
         return stationEdges.stream()
                 .filter(edge -> edge.getDownStationId().equals(stationId))
                 .findFirst().orElseThrow(StationNotFoundException::new);
+    }
+
+    public boolean contains(Long stationId) {
+        return stationEdges.stream()
+                .anyMatch(stationEdge -> stationEdge.getDownStationId().equals(stationId));
     }
 
     public Long getId() {

@@ -120,4 +120,19 @@ class LineServiceTest {
             softly.assertThat(downEndStationEdge.getDistance()).isEqualTo(lineRequest.getDistance());
         });
     }
+
+    @Test
+    @DisplayName("역이 2개인 노선에서 역을 제거한다.")
+    void deleteStationWithTwoStation() {
+        //given
+        LineRequest lineRequest = createLineRequest();
+        Long lineId = lineService.create(lineRequest);
+
+
+        //when
+        lineService.deleteStation(lineId, lineRequest.getDownStationId());
+
+        //then
+        assertThat(lineRepository.findById(lineId)).isEmpty();
+    }
 }

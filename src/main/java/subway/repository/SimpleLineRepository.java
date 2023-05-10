@@ -54,4 +54,14 @@ public class SimpleLineRepository implements LineRepository {
         lines.remove(originalLine);
         lines.add(line);
     }
+
+    @Override
+    public void deleteById(Long id) {
+        Line originalLine = lines.stream().filter(l -> l.getId().equals(id))
+                .findFirst()
+                .get();
+
+
+        lines.remove(originalLine);
+    }
 }
