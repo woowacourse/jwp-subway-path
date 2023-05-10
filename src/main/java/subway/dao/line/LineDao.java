@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
 import subway.domain.entity.LineEntity;
 
 import javax.sql.DataSource;
@@ -48,27 +47,17 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select line_id, line_number, name, color from LINE";
+        String sql = "SELECT line_id, line_number, name, color FROM line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public LineEntity findByName(final String name) {
-        String sql = "select line_id, line_number, name, color from LINE WHERE name = ?";
+        String sql = "SELECT line_id, line_number, name, color FROM line WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public LineEntity findById(final Long id) {
-        String sql = "select line_id, line_number, name, color from LINE WHERE line_id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public void update(final Line newLine) {
-//        String sql = "update LINE set name = ?, color = ? where line_id = ?";
-//        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(),});
-    }
-
     public void deleteById(final Long id) {
-        jdbcTemplate.update("delete from Line where line_id = ?", id);
+        jdbcTemplate.update("DELETE FROM line WHERE line_id = ?", id);
     }
 
     public LineEntity findByLineNumber(final Long lineNumber) {

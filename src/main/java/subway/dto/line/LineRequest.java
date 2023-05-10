@@ -26,5 +26,4 @@ public class LineRequest {
     public String getColor() {
         return color;
     }
-
 }

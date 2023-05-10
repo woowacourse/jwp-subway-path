@@ -12,7 +12,7 @@ public class LineService {
 
     private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(final LineDao lineDao) {
         this.lineDao = lineDao;
     }
 
@@ -28,15 +28,7 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineEntity findLineById(final Long id) {
-        return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-//        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(Long id) {
+    public void deleteLineById(final Long id) {
         lineDao.deleteById(id);
     }
 

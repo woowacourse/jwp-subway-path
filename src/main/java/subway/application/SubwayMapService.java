@@ -8,6 +8,7 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.entity.SectionEntity;
 import subway.domain.entity.StationEntity;
+import subway.dto.station.LineMapResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ public class SubwayMapService {
     }
 
     @Transactional(readOnly = true)
-    public List<StationEntity> showLineMap(final Long lineNumber) {
+    public LineMapResponse showLineMap(final Long lineNumber) {
         Sections sections = getSections(lineNumber);
         LineMap lineMap = new LineMap(sections);
 
@@ -39,10 +40,11 @@ public class SubwayMapService {
 
         List<Station> orderedStations = lineMap.getOrderedStations(upStationEndPoint);
 
-        return orderedStations.stream()
+        List<StationEntity> collect = orderedStations.stream()
                 .map(station -> stationService.findStationByName(station.getName()))
                 .collect(Collectors.toList());
 
+        return LineMapResponse.from(collect);
     }
 
     private Sections getSections(final Long lineNumber) {

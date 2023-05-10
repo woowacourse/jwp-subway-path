@@ -12,7 +12,11 @@ public class LineMapResponse {
         this.stations = stations;
     }
 
-    public static LineMapResponse toDto(final List<StationEntity> stations) {
+    public static LineMapResponse from(final List<StationEntity> stations) {
         return new LineMapResponse(stations);
+    }
+
+    public List<StationEntity> getStations() {
+        return stations;
     }
 }

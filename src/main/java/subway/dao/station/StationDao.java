@@ -14,17 +14,18 @@ import java.util.List;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("station_id"),
                     rs.getString("name")
             );
 
 
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
@@ -36,33 +37,28 @@ public class StationDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationName));
     }
 
-    public StationEntity insert(Station station) {
+    public StationEntity insert(final Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();
         return new StationEntity(id, station.getName());
     }
 
     public List<StationEntity> findAll() {
-        String sql = "SELECT * FROM station";
+        String sql = "SELECT station_id, name FROM station";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findById(Long id) {
-        String sql = "SELECT * FROM station WHERE station_id = ?";
+    public StationEntity findById(final Long id) {
+        String sql = "SELECT station_id, name FROM station WHERE station_id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public StationEntity findByName(final String name) {
-        String sql = "SELECT * FROM station WHERE name = ?";
+        String sql = "SELECT station_id, name FROM station WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public void update(Station newStation) {
-//        String sql = "UPDATE station SET name = ? WHERE id = ?";
-//        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
-    }
-
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         String sql = "DELETE FROM station WHERE station_id = ?";
         jdbcTemplate.update(sql, id);
     }

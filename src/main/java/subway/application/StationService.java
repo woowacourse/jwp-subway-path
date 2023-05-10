@@ -17,20 +17,12 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public void isExistStation(final String station) {
-        boolean existStation = stationDao.isExistStationByName(station);
-
-        if (!existStation) {
-            throw new IllegalArgumentException("역 없음");
-        }
-    }
-
     public Long saveStation(final StationRequest stationRequest) {
         StationEntity stationEntity = stationDao.insert(new Station(stationRequest.getName()));
         return stationEntity.getStationId();
     }
 
-    public StationEntity findStationEntityById(Long id) {
+    public StationEntity findStationEntityById(final Long id) {
         return stationDao.findById(id);
     }
 
@@ -42,11 +34,7 @@ public class StationService {
         return stationDao.findAll();
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-//        stationDao.update(id, stationRequest.getName()));
-    }
-
-    public void deleteStationById(Long id) {
+    public void deleteStationById(final Long id) {
         stationDao.deleteById(id);
     }
 }

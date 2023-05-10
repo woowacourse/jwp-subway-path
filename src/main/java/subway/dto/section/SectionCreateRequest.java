@@ -8,7 +8,6 @@ public class SectionCreateRequest {
     private Long distance;
 
     private SectionCreateRequest() {
-
     }
 
     public SectionCreateRequest(final String lineName, final String upStation, final String downStation, final Long distance) {
