@@ -156,6 +156,22 @@ public class Line {
         return false;
     }
 
+    public void deleteStation(String stationName) {
+        Station stationToDelete = new Station(stationName);
+        validateNotExist(stationToDelete);
+    }
+
+    private void validateNotExist(Station stationToDelete) {
+        for (Section section : sections) {
+            if (section.hasStation(stationToDelete)) {
+                return;
+            }
+        }
+        throw new IllegalArgumentException(
+                String.format("삭제하려는 역이 노선에 존재하지 않습니다." + System.lineSeparator() +
+                        "삭제하려는 역 : %s", stationToDelete.getName()));
+    }
+
     public Long getId() {
         return id;
     }

@@ -10,7 +10,7 @@ class LineTest {
 
     @DisplayName("추가하려는 역이 이미 존재하는 경우 예외가 발생한다.")
     @Test
-    void shouldThrowExceptionWhenInputStationAlreadyExist() {
+    void shouldThrowExceptionWhenInputStationToAddAlreadyExist() {
         Line line = Line.of("2호선", "잠실역", "몽촌토성역", 5);
 
         assertThatThrownBy(() -> line.addStation("잠실역", "몽촌토성역", Direction.UPWARD, 3))
@@ -78,5 +78,18 @@ class LineTest {
         line.addStation("까치산역", "몽촌토성역", Direction.DOWNWARD, 2);
 
         assertThat(line.getSections()).hasSize(2);
+    }
+
+    @DisplayName("삭제하려는 역이 노선에 존재하지 않는 경우 예외가 발생한다.")
+    @Test
+    void shouldThrowExceptionWhenInputStationToDeleteAlreadyExist() {
+        Line line = Line.of("2호선", "잠실역", "몽촌토성역", 5);
+        line.addStation("까치산역", "몽촌토성역", Direction.DOWNWARD, 2);
+        // 현재 노선 상태 : (상행) 잠실역 - 몽촌토성역 - 까치산역 (하행)
+
+        assertThatThrownBy(() -> line.deleteStation("신도림역"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("삭제하려는 역이 노선에 존재하지 않습니다." + System.lineSeparator() +
+                        "삭제하려는 역 : 신도림역");
     }
 }
