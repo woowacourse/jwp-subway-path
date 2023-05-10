@@ -37,12 +37,6 @@ public class Station {
         this.distance = distance;
     }
 
-    //    private void validateEmptyStation() {
-//        if (this.equals(Station.emptyStation)) {
-//            throw new IllegalArgumentException("");
-//        }
-//    }
-
     public boolean isDownEndStation() {
         if (next.equals(Station.emptyStation)) {
             return true;
@@ -62,6 +56,10 @@ public class Station {
 
     public String getName() {
         return name;
+    }
+
+    public Station getNext() {
+        return next;
     }
 
     @Override

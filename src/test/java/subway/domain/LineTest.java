@@ -1,10 +1,14 @@
 package subway.domain;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class LineTest {
 
@@ -37,36 +41,66 @@ class LineTest {
                 .hasMessage("노선을 생성할 때 최소 2개 이상의 역이 존재해야 합니다.");
     }
 
-//    @Nested
-//    @DisplayName("addSection()을 호출할 때")
-//    class addSection {
-//        private Line line;
-//
-//        @BeforeEach
-//        void init() {
-//            Station upStation = new Station("강남역");
-//            Station downStation = new Station("역삼역");
-//            Distance distance = new Distance(10);
-//            Section section = new Section(upStation, downStation, distance);
-//            line = new Line("2호선", "초록색", section);
-//        }
-//
+    @Test
+    @DisplayName("findStation를 호출하면 노선에 존재하는 역을 찾아 반환한다")
+    void findStations(){
+        //given
+
+
+        //when
+
+        //then
+    }
+
+    @Nested
+    @DisplayName("addStation()을 호출할 때")
+    class addSection {
+        private Line line;
+        private Station UpEndstation;
+
+        @BeforeEach
+        void init() {
+            String name = "강남역";
+            Station nextStation = new Station("역삼역");
+            Distance distance = new Distance(10);
+            Station UpEndstation = new Station(name, nextStation, distance);
+
+            line = new Line("2호선", "초록색", UpEndstation);
+        }
+
 //        @Test
 //        @DisplayName("상행 종점에 구간을 추가할 수 있다")
 //        void upStation_success() {
 //            //given
-//            Station upStation = new Station("삼성역");
-//            Station downStation = new Station("강남역");
+//            String newStationName ="삼성역";
 //            Distance distance = new Distance(10);
-//            Section newSection = new Section(upStation, downStation, distance);
+//            Station newStation = new Station(newStationName, UpEndstation, distance);
 //
 //            //when
-//            line.addSection(newSection);
-//            int expectedSize=line.getSections().size();
+//            line.addStation(newStation);
+//            int expectedSize=line.findStations().size();
 //
 //            //then
 //            assertThat(expectedSize).isEqualTo(2);
-//            assertThat(line.getSections().get(0)).isEqualTo(newSection);
+//            assertThat(line.findStations().get(0)).isEqualTo(newStation);
 //        }
-//    }
+    }
+
+    @Test
+    @DisplayName("getStations()를 통해 모든 Station들을 가져올 수 있다")
+    void getStations_success(){
+        //given
+        String name = "강남역";
+        Station nextStation = new Station("역삼역");
+        Distance distance = new Distance(10);
+        Station UpEndstation = new Station(name, nextStation, distance);
+
+        Line line = new Line("2호선", "초록색", UpEndstation);
+
+        //when
+        int actual = line.getStations().size();
+
+        //then
+        Assertions.assertThat(actual).isEqualTo(2);
+    }
 }

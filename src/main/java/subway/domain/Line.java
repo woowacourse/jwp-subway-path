@@ -1,14 +1,14 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 public class Line {
     private Long id;
     private String name;
     private String color;
-
- //   private List<Section> sections;
-
     private Station headStation;
 
 
@@ -54,6 +54,21 @@ public class Line {
 //
 //        //sections.add(index, section);
 //    }
+    //TODO: 이름으로 역 하나 조회 - 2
+    //TODO: List<Station>으로 담아서 보내주기 - 1
+
+    public List<Station> getStations(){
+        List<Station> stations = new LinkedList<>();
+        Station station = headStation;
+
+        do{
+            stations.add(station);
+            station = station.getNext();
+
+        }while(!(station == null) && !station.equals(Station.emptyStation));
+
+        return stations;
+    }
 
     public Long getId() {
         return id;
