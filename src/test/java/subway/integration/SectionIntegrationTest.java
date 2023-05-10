@@ -16,6 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.line.dao.LineDao;
 import subway.line.domain.Line;
+import subway.section.dao.SectionDao;
+import subway.section.domain.Section;
 import subway.section.dto.SectionCreateRequest;
 import subway.section.dto.SectionDeleteRequest;
 import subway.section.dto.SectionResponse;
@@ -29,6 +31,8 @@ public class SectionIntegrationTest extends IntegrationTest {
     private StationDao stationDao;
     @Autowired
     private LineDao lineDao;
+    @Autowired
+    private SectionDao sectionDao;
 
     private Long lineId;
     private Long stationId1;
@@ -46,6 +50,10 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         final Line line = lineDao.insert(new Line("2호선", "초록색"));
         lineId = line.getId();
+
+
+        sectionDao.insert(new Section(lineId, stationId1, stationId2, 4));
+
         sectionCreateRequest = new SectionCreateRequest(lineId, stationId1, stationId2, true, 3);
     }
 
@@ -77,7 +85,7 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void deleteSection() {
         // given
-        final SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest(1L, 2L);
+        final SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest(lineId, stationId1);
 
         // when
         final ExtractableResponse<Response> response = RestAssured
