@@ -1,6 +1,7 @@
 package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -8,12 +9,19 @@ import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
 
 import javax.sql.DataSource;
+import java.util.List;
 
 @Repository
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
+    private final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rn) -> new SectionEntity.Builder()
+            .id(rs.getLong("id"))
+            .lineId(rs.getLong("line_id"))
+            .previousStationId(rs.getLong("previous_station_id"))
+            .nextStationId(rs.getLong("next_station_id"))
+            .distance(rs.getInt("distance")).build();
 
     public SectionDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -28,7 +36,9 @@ public class SectionDao {
         return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
-    public SectionEntity findByLineIdAndPreviousStationId(final Long lineId, final Long previousStationId) {
-        return null;
-    } // TODO : 테스트 작성하기
+    public List<SectionEntity> findByLineIdAndPreviousStationId(final Long lineId, final Long previousStationId) {
+        final String sql = "SELECT * FROM section WHERE line_id = ? AND previous_station_id = ?";
+
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, previousStationId);
+    }
 }
