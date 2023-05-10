@@ -4,20 +4,20 @@
 
 ### Domain
 
-- Lines
+- [ ] Lines
     - 전체 호선 관리
-- Line (1호선, 2호선, ...)
+- [ ] Line (1호선, 2호선, ...)
     - LineInfo
     - 상행 종점
     - 하행 종점
         - 새로 등록되는 노선에 따라, 종점이 변경될 수 있다.
     - Sections(호선에 존재하는 역들의 구간 정보)
-- LineInfo
+- [x] LineInfo
     - 호선 이름
         - 호선 이름은 중복될 수 없다.
         - 호선 이름은 1글자 이상, 10글자 이하여야 한다.
     - 호선 색상
-- Sections
+- [ ] Sections
     - Section이 중복될 수 없다.
         - StartStation과 EndStation이 같은 두 개의 Section을 가질 수 없다.
         - 역이 등록될 경우 거리 정보를 고려해야 한다.
@@ -28,16 +28,16 @@
                 - A역 (3km) B역이 된다.
                 - A역 - C역 Section과 C역 - B역 Section이 삭제 된다.
             - 역이 두 개일 때, 삭제할 경우 두 역이 모두 제거된다.
-- Section
+- [x] Section
     - StartStation
     - EndStation
         - 시작 역과 도착 역이 동일할 수 없다.
         - 두 개의 역을 반드시 등록해야 한다.
     - Distance
-- Station 역
+- [x] Station 역
     - 이름
         - 역 이름은 1글자 이상, 10글자 이하여야 한다.
-- Distance 역간거리
+- [x] Distance 역간거리
     - 거리
         - 양의 정수만 가능하다.
         - 두 역 사이의 거리는 10Km 이하여야 한다.
