@@ -123,4 +123,77 @@ class LineTest {
         assertThatCode(() -> line.addSection(overLengthSection))
                 .doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("아무 역이 존재하지 않을 때 삭제하려고 하면 예외를 던진다")
+    void deleteSection_exception_whenEmpty() {
+        //given
+        Station station = new Station("테오");
+
+        //when, then
+        assertThatThrownBy(() -> line.deleteStation(station))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    @DisplayName("해당 역이 존재하지 않을 때 삭제하려고 하면 예외를 던진다")
+    void deleteSection_exception_whenNotExists() {
+        //given
+        Section section = new Section(
+                new Station("테오"),
+                new Station("시카"),
+                new Distance(1000)
+        );
+        line.addSection(section);
+
+        Station station = new Station("푸우");
+
+        //when, then
+        assertThatThrownBy(() -> line.deleteStation(station))
+                .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    @DisplayName("노선 중간에 있는 역을 삭제할 수 있다")
+    void deleteSection_middle() {
+        //given
+        line.addSection(new Section(
+                new Station("테오"),
+                new Station("시카"),
+                new Distance(1000)
+        ));
+        line.addSection(new Section(
+                new Station("시카"),
+                new Station("제이온"),
+                new Distance(1000)
+        ));
+
+        Station station = new Station("시카");
+
+        //when, then
+        assertThatCode(() -> line.deleteStation(station))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("종착역을 삭제할 수 있다")
+    void deleteSection_endPoint() {
+        //given
+        line.addSection(new Section(
+                new Station("테오"),
+                new Station("시카"),
+                new Distance(1000)
+        ));
+        line.addSection(new Section(
+                new Station("시카"),
+                new Station("제이온"),
+                new Distance(1000)
+        ));
+
+        Station station = new Station("테오");
+
+        //when, then
+        assertThatCode(() -> line.deleteStation(station))
+                .doesNotThrowAnyException();
+    }
 }

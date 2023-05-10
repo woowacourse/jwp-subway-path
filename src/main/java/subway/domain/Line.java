@@ -32,7 +32,6 @@ public class Line {
         }
         validate(section);
         add(section);
-
     }
 
     private void validate(Section section) {
@@ -77,6 +76,28 @@ public class Line {
                 .ifPresent((ignored) -> {
                     throw new IllegalStateException(" 신규로 등록된 역이 기존 노선의 거리 범위를 벗어날 수 없습니다.");
                 });
+    }
+
+    public void deleteStation(Station station) {
+        Optional<Section> leftSection = findSectionOf(section -> section.hasRightStation(station));
+        Optional<Section> rightSection = findSectionOf(section -> section.hasLeftStation(station));
+
+        if (leftSection.isEmpty() && rightSection.isEmpty()) {
+            throw new IllegalStateException("존재하지 않는 역에 대해 삭제할 수 없습니다.");
+        }
+
+        if (leftSection.isPresent() && rightSection.isPresent()) {
+            Section newSection = leftSection.get().merge(rightSection.get());
+            sections.add(newSection);
+        }
+        deleteOldSections(station);
+    }
+
+    private void deleteOldSections(Station station) {
+        findSectionOf(section -> section.hasRightStation(station))
+                .ifPresent(section -> sections.remove(section));
+        findSectionOf(section -> section.hasLeftStation(station))
+                .ifPresent(section -> sections.remove(section));
     }
 
     private Optional<Section> findSectionOf(Predicate<Section> predicate) {

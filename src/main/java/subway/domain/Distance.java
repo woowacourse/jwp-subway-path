@@ -19,6 +19,10 @@ public class Distance {
         return distance > targetDistance.distance;
     }
 
+    public Distance add(Distance targetDistance) {
+        return new Distance(distance + targetDistance.distance);
+    }
+
     public Distance sub(Distance targetDistance) {
         return new Distance(distance - targetDistance.distance);
     }

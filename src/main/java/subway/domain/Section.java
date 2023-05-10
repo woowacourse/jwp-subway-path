@@ -46,6 +46,22 @@ public class Section {
         return new Section(targetSection.right, right, distance.sub(targetSection.distance));
     }
 
+    public boolean hasLeftStation(Station target) {
+        return left.equals(target);
+    }
+
+    public boolean hasRightStation(Station target) {
+        return right.equals(target);
+    }
+
+    public Section merge(Section target) {
+        if (!right.equals(target.left)) {
+            throw new IllegalStateException("두 섹션은 접합부가 달라 연결될 수 없습니다.");
+        }
+
+        return new Section(left, target.right, distance.add(target.distance));
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
