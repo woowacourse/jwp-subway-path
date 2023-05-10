@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,9 +24,9 @@ public class LineDao {
                     rs.getLong("down_endpoint_id")
             );
 
-    public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
@@ -48,18 +47,18 @@ public class LineDao {
     }
 
     public Line findById(final Long id) {
-        final String sql = "select id, name, color from LINE WHERE id = ?";
+        final String sql = "select * from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public Line findByName(final String name) {
-        final String sql = "select id, name, color from LINE WHERE name = ?";
+        final String sql = "select * from LINE WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public void update(final Line newLine) {
+    public void update(final Long id, final Line newLine) {
         final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), id);
     }
 
     public void deleteById(final Long id) {
