@@ -8,6 +8,7 @@ Content-Type: application/json
     {
       "name": "잠실역",
       "type": "init",
+      "line": "2호선",
       "up_endpoint": true,
       "down_endpoint": false,
       "previous_station": null,
@@ -18,6 +19,7 @@ Content-Type: application/json
     {
       "name": "잠실나루역",
       "type": "init",
+      "line": "2호선",
       "up_endpoint": false,
       "down_endpoint": true,
       "previous_station": "잠실역",
@@ -37,6 +39,7 @@ Content-Type: application/json
     {
       "name": "잠실역",
       "type": "up",
+      "line": "2호선",
       "up_endpoint": true,
       "down_endpoint": false,
       "previous_station": null,
@@ -56,6 +59,7 @@ Content-Type: application/json
     {
       "name": "잠실역",
       "type": "mid",
+      "line": "2호선",
       "up_endpoint": false,
       "down_endpoint": false,
       "previous_station": "잠실새내역",
@@ -75,6 +79,7 @@ Content-Type: application/json
     {
       "name": "잠실역",
       "type": "down",
+      "line": "2호선",
       "up_endpoint": false,
       "down_endpoint": true,
       "previous_station": "잠실새내역",
