@@ -22,6 +22,38 @@ public class Section {
         }
     }
 
+    public boolean isSameStartStation(Section otherSection) {
+        return this.isSameStartStation(otherSection.startStation);
+    }
+
+    public boolean isSameStartStation(Station otherStation) {
+        return this.startStation.equals(otherStation);
+    }
+
+    public boolean isSameEndStation(Section otherSection) {
+        return this.isSameEndStation(otherSection.endStation);
+    }
+
+    public boolean isSameEndStation(Station otherStation) {
+        return this.endStation.equals(otherStation);
+    }
+
+    public Distance subtractDistance(final Section otherSection) {
+        return this.distance.subtract(otherSection.distance);
+    }
+
+    public Station getStartStation() {
+        return startStation;
+    }
+
+    public Station getEndStation() {
+        return endStation;
+    }
+
+    public Distance getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -38,5 +70,9 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(startStation, endStation);
+    }
+
+    public boolean isGreaterThanOtherDistance(final Section otherSection) {
+        return this.distance.isBiggerThanOtherDistance(otherSection.distance);
     }
 }

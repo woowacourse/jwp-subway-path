@@ -22,4 +22,12 @@ public class Distance {
     public int getDistance() {
         return distance;
     }
+
+    public boolean isBiggerThanOtherDistance(final Distance otherDistance) {
+        return this.distance > otherDistance.distance;
+    }
+
+    public Distance subtract(final Distance otherDistance) {
+        return new Distance(this.distance - otherDistance.distance);
+    }
 }
