@@ -5,6 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.DuplicateStationInLineException;
 import subway.exception.NameLengthException;
+import subway.exception.StationNotFoundException;
 
 import java.util.List;
 
@@ -46,5 +47,11 @@ class LineTest {
     void 추가하려는_Station이_이미_존재하는_경우_예외를_던진다() {
         assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(JAMSIL_STATION, Station.getEndpoint(), SULLEUNG_STATION, 2))
                 .isInstanceOf(DuplicateStationInLineException.class);
+    }
+
+    @Test
+    void 삭제하려는_Station이_없는_경우_예외를_던진다() {
+        assertThatThrownBy(() -> LINE_NUMBER_TWO.deleteStation(Station.from("메리")))
+                .isInstanceOf(StationNotFoundException.class);
     }
 }

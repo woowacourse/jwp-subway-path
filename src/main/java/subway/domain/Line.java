@@ -50,7 +50,17 @@ public class Line {
         }
     }
 
-    private boolean isDuplicate(Station newStation) {
+    public void deleteStation(Station stationToDelete) {
+        validateStationExist(stationToDelete);
+    }
+
+    private void validateStationExist(Station stationToDelete) {
+        if (!hasStation(stationToDelete)) {
+            throw new StationNotFoundException("노선에 존재하지 않는 역입니다.");
+        }
+    }
+
+    private boolean hasStation(Station newStation) {
         return sections.stream()
                 .anyMatch(section -> section.contains(newStation));
     }
