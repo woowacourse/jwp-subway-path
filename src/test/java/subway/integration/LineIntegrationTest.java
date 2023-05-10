@@ -116,7 +116,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .body(lineRequest2)
                 .when().post("/lines")
                 .then().log().all()
-                        .extract();
+                .extract();
 
         // when
         ExtractableResponse<Response> response = RestAssured
