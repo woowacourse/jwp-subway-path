@@ -1,8 +1,11 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.Section;
+import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
 import java.util.ArrayList;
@@ -12,11 +15,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Service
+@Transactional
 public class SectionService {
     private final SectionDao sectionDao;
+    private final LineDao lineDao;
 
-    public SectionService(SectionDao sectionDao) {
+    public SectionService(SectionDao sectionDao, LineDao lineDao) {
         this.sectionDao = sectionDao;
+        this.lineDao = lineDao;
     }
 
     public Long insertSection(SectionRequest request) {
@@ -112,6 +118,39 @@ public class SectionService {
 
     private static boolean isUpStationPoint(List<Section> sortedSections, Long upStationId) {
         return upStationId == sortedSections.get(sortedSections.size() - 1).getDownStationId();
+    }
+
+    public void deleteStation(SectionDeleteRequest request) {
+        final List<Section> sections = sectionDao.findAllByLineId(request.getLineId());
+        final List<Section> sortedSections = sortSections(sections);
+        // 구간이 1개이면
+        if (sortedSections.size() == 1) {
+            sectionDao.delete(sortedSections.get(0).getId());
+            lineDao.deleteById(request.getLineId());
+            return;
+        }
+
+        if (isUpStationPoint(sortedSections, request.getStationId())) {
+            sectionDao.delete(sortedSections.get(0).getId());
+            return;
+        }
+
+        if (isDownStationPoint(sortedSections, request.getStationId())) {
+            sectionDao.delete(sortedSections.get(sortedSections.size() - 1).getId());
+            return;
+        }
+
+        final List<Section> includeSections = sortedSections.stream()
+                .filter(section -> section.getUpStationId() == request.getStationId() || section.getDownStationId() == request.getStationId())
+                .collect(Collectors.toList());
+        final int newDistance = includeSections.stream()
+                .mapToInt(section -> section.getDistance())
+                .sum();
+        sectionDao.insert(new Section(newDistance, includeSections.get(0).getUpStationId(), includeSections.get(1).getDownStationId(), request.getLineId()));
+
+        for (Section section : includeSections) {
+            sectionDao.delete(section.getId());
+        }
     }
 
     private List<Section> sortSections(List<Section> sections) {

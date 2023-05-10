@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dto.SectionRequest;
 
@@ -26,7 +27,8 @@ class SectionServiceTest {
     @BeforeEach
     void init() {
         final SectionDao sectionDao = new SectionDao(jdbcTemplate, dataSource);
-        sectionService = new SectionService(sectionDao);
+        final LineDao lineDao = new LineDao(jdbcTemplate, dataSource);
+        sectionService = new SectionService(sectionDao, lineDao);
     }
     @Test
     void 같은_역_두_개를_등록할_수_없다() {
