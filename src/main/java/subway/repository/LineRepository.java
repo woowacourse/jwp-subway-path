@@ -1,5 +1,6 @@
 package subway.repository;
 
+import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
@@ -30,5 +31,9 @@ public class LineRepository {
                 .orElseThrow(() -> new InvalidLineException("존재하지 않는 노선 번호 입니다."));
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
         return Line.of(lineEntity, sectionEntities);
+    }
+
+    public List<Line> findAll() {
+        return Collections.emptyList();
     }
 }

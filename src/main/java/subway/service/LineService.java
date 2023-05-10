@@ -1,5 +1,7 @@
 package subway.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.controller.dto.LineCreateRequest;
 import subway.controller.dto.LineResponse;
@@ -28,7 +30,14 @@ public class LineService {
     }
 
     public LinesResponse findLines() {
-        return null;
+        final List<Line> lines = lineRepository.findAll();
+        return new LinesResponse(generateLineResponses(lines));
+    }
+
+    private List<LineResponse> generateLineResponses(final List<Line> lines) {
+        return lines.stream()
+                .map(LineResponse::from)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public void createSection(final SectionCreateRequest request) {
