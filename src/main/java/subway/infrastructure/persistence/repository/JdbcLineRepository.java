@@ -51,6 +51,12 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     @Override
+    public void delete(final Line line) {
+        sectionDao.deleteAllByLineName(line.name());
+        lineDao.delete(LineEntity.from(line));
+    }
+
+    @Override
     public Optional<Line> findById(final Long id) {
         return lineDao.findById(id)
                 .map(it -> it.toDomain(getSections(it.name())));
@@ -98,11 +104,5 @@ public class JdbcLineRepository implements LineRepository {
                 .stream()
                 .map(it -> it.toDomain(getSections(it.name())))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public void delete(final Line line) {
-        sectionDao.deleteAllByLineName(line.name());
-        lineDao.delete(LineEntity.from(line));
     }
 }

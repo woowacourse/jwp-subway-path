@@ -2,7 +2,6 @@ package subway.exception.station;
 
 import subway.exception.BaseException;
 import subway.exception.BaseExceptionType;
-import subway.exception.line.LineExceptionType;
 
 public class StationException extends BaseException {
 

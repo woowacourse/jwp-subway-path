@@ -4,11 +4,11 @@ import subway.domain.Section;
 
 public class SectionEntity {
 
-    private Long id;
-    private Long upStationId;
-    private Long downStationId;
-    private int distance;
-    private Long lineId;
+    private final Long id;
+    private final Long upStationId;
+    private final Long downStationId;
+    private final int distance;
+    private final Long lineId;
 
     public SectionEntity(final Long upStationId, final Long downStationId, final int distance, final Long lineId) {
         this(null, upStationId, downStationId, distance, lineId);

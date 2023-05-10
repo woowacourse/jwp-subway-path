@@ -21,7 +21,9 @@ public class LineCreateRequest {
     private LineCreateRequest() {
     }
 
-    public LineCreateRequest(final String lineName, final String upTerminalName, final String downTerminalName,
+    public LineCreateRequest(final String lineName,
+                             final String upTerminalName,
+                             final String downTerminalName,
                              final Integer distance) {
         this.lineName = lineName;
         this.upTerminalName = upTerminalName;

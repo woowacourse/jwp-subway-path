@@ -1,6 +1,5 @@
 package subway.integration;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
@@ -48,6 +47,50 @@ public class LineControllerIntegrationTest {
         RestAssured.port = port;
     }
 
+    @Test
+    void 단일_노선을_조회한다() {
+        // given
+        역_생성_요청("잠실역");
+        역_생성_요청("사당역");
+        final Long 생성된_노선_아이디 =
+                노선_생성하고_아이디_반환("1호선", "잠실역", "사당역", 5);
+
+        // when
+        final ExtractableResponse<Response> response = 노선_조회_요청(생성된_노선_아이디);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(OK.value());
+        단일_노선의_이름을_검증한다(response, "1호선");
+        노선에_포함된_N번째_구간을_검증한다(response, 0, "잠실역", "사당역", 5);
+    }
+
+    @Test
+    void 모든_노선을_조회한다() {
+        // given
+        역_생성_요청("잠실역");
+        역_생성_요청("사당역");
+        노선_생성_요청("1호선", "잠실역", "사당역", 5);
+
+        역_생성_요청("건대역");
+        역_생성_요청("홍대역");
+        노선_생성_요청("2호선", "건대역", "홍대역", 10);
+
+        // when
+        final ExtractableResponse<Response> response = 노선_전체_조회_요청();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(OK.value());
+        final List<LineQueryResponse> result = 노선_전체_조회_결과(response);
+
+        final LineQueryResponse 일호선_응답 = result.get(0);
+        단일_노선의_이름을_검증한다(일호선_응답, "1호선");
+        노선에_포함된_N번째_구간을_검증한다(일호선_응답, 0, "잠실역", "사당역", 5);
+
+        final LineQueryResponse 이호선_응답 = result.get(1);
+        단일_노선의_이름을_검증한다(이호선_응답, "2호선");
+        노선에_포함된_N번째_구간을_검증한다(이호선_응답, 0, "건대역", "홍대역", 10);
+    }
+
     @Nested
     class 노선을_생성할_떄 {
 
@@ -91,49 +134,5 @@ public class LineControllerIntegrationTest {
             // then
             assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
         }
-    }
-
-    @Test
-    void 단일_노선을_조회한다() {
-        // given
-        역_생성_요청("잠실역");
-        역_생성_요청("사당역");
-        final Long 생성된_노선_아이디 =
-                노선_생성하고_아이디_반환("1호선", "잠실역", "사당역", 5);
-
-        // when
-        final ExtractableResponse<Response> response = 노선_조회_요청(생성된_노선_아이디);
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(OK.value());
-        단일_노선의_이름을_검증한다(response, "1호선");
-        노선에_포함된_N번째_구간을_검증한다(response, 0, "잠실역", "사당역", 5);
-    }
-
-    @Test
-    void 모든_노선을_조회한다() {
-        // given
-        역_생성_요청("잠실역");
-        역_생성_요청("사당역");
-        노선_생성_요청("1호선", "잠실역", "사당역", 5);
-
-        역_생성_요청("건대역");
-        역_생성_요청("홍대역");
-        노선_생성_요청("2호선", "건대역", "홍대역", 10);
-
-        // when
-        final ExtractableResponse<Response> response = 노선_전체_조회_요청();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(OK.value());
-        final List<LineQueryResponse> result = 노선_전체_조회_결과(response);
-
-        final LineQueryResponse 일호선_응답 = result.get(0);
-        단일_노선의_이름을_검증한다(일호선_응답, "1호선");
-        노선에_포함된_N번째_구간을_검증한다(일호선_응답, 0, "잠실역", "사당역", 5);
-
-        final LineQueryResponse 이호선_응답 = result.get(1);
-        단일_노선의_이름을_검증한다(이호선_응답, "2호선");
-        노선에_포함된_N번째_구간을_검증한다(이호선_응답, 0, "건대역", "홍대역", 10);
     }
 }

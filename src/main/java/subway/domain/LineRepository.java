@@ -9,11 +9,11 @@ public interface LineRepository {
 
     void update(final Line line);
 
+    void delete(final Line line);
+
     Optional<Line> findById(final Long id);
 
     Optional<Line> findByName(final String name);
 
     List<Line> findAll();
-
-    void delete(final Line line);
 }

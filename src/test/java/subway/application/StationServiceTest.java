@@ -17,7 +17,6 @@ import subway.domain.Station;
 import subway.domain.StationRepository;
 import subway.exception.BaseExceptionType;
 import subway.exception.station.StationException;
-import subway.exception.station.StationExceptionType;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)

@@ -1,6 +1,5 @@
 package subway.application;
 
-
 import static subway.exception.station.StationExceptionType.DUPLICATE_STATION_NAME;
 
 import org.springframework.stereotype.Service;

@@ -34,19 +34,6 @@ public class LineDao {
         return simpleJdbcInsert.executeAndReturnKey(source).longValue();
     }
 
-    public Optional<LineEntity> findByName(final String name) {
-        try {
-            final String sql = "select * from line where line.name = ?";
-            return Optional.ofNullable(template.queryForObject(sql, lineRowMapper, name));
-        } catch (EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    public List<LineEntity> findAll() {
-        return template.query("select * from line", lineRowMapper);
-    }
-
     public void delete(final LineEntity entity) {
         template.update("delete from line where line.id = ?", entity.id());
     }
@@ -58,5 +45,18 @@ public class LineDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public Optional<LineEntity> findByName(final String name) {
+        try {
+            final String sql = "select * from line where line.name = ?";
+            return Optional.ofNullable(template.queryForObject(sql, lineRowMapper, name));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public List<LineEntity> findAll() {
+        return template.query("select * from line", lineRowMapper);
     }
 }

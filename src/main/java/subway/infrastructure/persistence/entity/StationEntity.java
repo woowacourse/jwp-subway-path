@@ -17,7 +17,7 @@ public class StationEntity {
     }
 
     public static StationEntity from(final Station station) {
-        return new StationEntity(station.name());
+        return new StationEntity(station.id(), station.name());
     }
 
     public Station toDomain() {

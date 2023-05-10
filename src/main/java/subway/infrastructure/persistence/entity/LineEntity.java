@@ -7,8 +7,8 @@ import subway.domain.Sections;
 
 public class LineEntity {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public LineEntity(final String name) {
         this(null, name);

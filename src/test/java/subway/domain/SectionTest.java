@@ -30,54 +30,6 @@ class SectionTest {
     }
 
     @Nested
-    class 구간_사이의_차이를_구할_떄 {
-
-        @Test
-        void 큰_구간에서_작은_구간을_뺀_나머지를_구할_수_있다() {
-            // given
-            final Section section1 = createSection("잠실역", "마산역", 10);
-            final Section section2 = createSection("잠실나루역", "마산역", 8);
-
-            // when
-            final Section remain = section1.minus(section2);
-
-            // then
-            assertAll(
-                    () -> assertThat(remain.up().name()).isEqualTo("잠실역"),
-                    () -> assertThat(remain.down().name()).isEqualTo("잠실나루역"),
-                    () -> assertThat(remain.distance()).isEqualTo(2)
-            );
-        }
-
-        @Test
-        void 빼려는_구간의_크기가_더_크거나_동일하다면_예외() {
-            // given
-            final Section section1 = createSection("잠실역", "마산역", 10);
-            final Section section2 = createSection("잠실나루역", "마산역", 10);
-
-            // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
-                    section1.minus(section2)
-            ).getMessage();
-            assertThat(message).isEqualTo("현재 구간이 더 작아 차이를 구할 수 없습니다.");
-        }
-
-        @Test
-        void 겹치는_역이_없어_뺼_수_없다면_예외() {
-            // given
-            final Section section1 = createSection("잠실역", "마산역", 10);
-            final Section section2 = createSection("없는역", "없는역2", 1);
-
-            // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
-                    section1.minus(section2)
-            ).getMessage();
-            assertThat(message).isEqualTo("두 구간이 연관관계가 없어 뺄 수 없습니다.");
-        }
-    }
-
-
-    @Nested
     class 두_구간의_합을_구할_때 {
 
         @Test
@@ -143,5 +95,52 @@ class SectionTest {
                 () -> assertThat(section1.hasSameUpOrDownStation(section3)).isTrue(),
                 () -> assertThat(section3.hasSameUpOrDownStation(section2)).isFalse()
         );
+    }
+
+    @Nested
+    class 구간_사이의_차이를_구할_떄 {
+
+        @Test
+        void 큰_구간에서_작은_구간을_뺀_나머지를_구할_수_있다() {
+            // given
+            final Section section1 = createSection("잠실역", "마산역", 10);
+            final Section section2 = createSection("잠실나루역", "마산역", 8);
+
+            // when
+            final Section remain = section1.minus(section2);
+
+            // then
+            assertAll(
+                    () -> assertThat(remain.up().name()).isEqualTo("잠실역"),
+                    () -> assertThat(remain.down().name()).isEqualTo("잠실나루역"),
+                    () -> assertThat(remain.distance()).isEqualTo(2)
+            );
+        }
+
+        @Test
+        void 빼려는_구간의_크기가_더_크거나_동일하다면_예외() {
+            // given
+            final Section section1 = createSection("잠실역", "마산역", 10);
+            final Section section2 = createSection("잠실나루역", "마산역", 10);
+
+            // when & then
+            final String message = assertThrows(IllegalArgumentException.class, () ->
+                    section1.minus(section2)
+            ).getMessage();
+            assertThat(message).isEqualTo("현재 구간이 더 작아 차이를 구할 수 없습니다.");
+        }
+
+        @Test
+        void 겹치는_역이_없어_뺼_수_없다면_예외() {
+            // given
+            final Section section1 = createSection("잠실역", "마산역", 10);
+            final Section section2 = createSection("없는역", "없는역2", 1);
+
+            // when & then
+            final String message = assertThrows(IllegalArgumentException.class, () ->
+                    section1.minus(section2)
+            ).getMessage();
+            assertThat(message).isEqualTo("두 구간이 연관관계가 없어 뺄 수 없습니다.");
+        }
     }
 }

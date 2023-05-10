@@ -1,6 +1,5 @@
 package subway.integration.station;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.integration.common.LocationAsserter.location_헤더를_검증한다;
 import static subway.integration.station.StationSteps.역_생성_요청;

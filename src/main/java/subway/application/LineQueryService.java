@@ -1,6 +1,5 @@
 package subway.application;
 
-
 import static subway.exception.line.LineExceptionType.NOT_FOUND_LINE;
 
 import java.util.List;

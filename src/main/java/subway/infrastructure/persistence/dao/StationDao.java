@@ -49,9 +49,8 @@ public class StationDao {
     }
 
     public List<StationEntity> findAllByIds(final Set<Long> ids) {
-        MapSqlParameterSource parameters = new MapSqlParameterSource();
+        final MapSqlParameterSource parameters = new MapSqlParameterSource();
         parameters.addValue("ids", ids);
-
         return namedParameterJdbcTemplate.query("SELECT * FROM station WHERE id IN (:ids)",
                 parameters,
                 stationRowMapper);

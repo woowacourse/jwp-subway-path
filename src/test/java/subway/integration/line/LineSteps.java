@@ -64,7 +64,6 @@ public class LineSteps {
                 .extract();
     }
 
-
     public static ExtractableResponse<Response> 노선_전체_조회_요청() {
         return given().log().all()
                 .when()

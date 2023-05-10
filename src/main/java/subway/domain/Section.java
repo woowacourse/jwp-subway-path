@@ -19,6 +19,13 @@ public class Section {
         }
     }
 
+    public Section plus(final Section section) {
+        if (!isUpThan(section)) {
+            throw new IllegalArgumentException("연속되지 않은 두 구간을 더할 수 없습니다.");
+        }
+        return new Section(this.up, section.down, distance + section.distance);
+    }
+
     public Section minus(final Section addedSection) {
         final int dist = this.distance - addedSection.distance;
         if (dist <= 0) {
@@ -31,14 +38,6 @@ public class Section {
             return new Section(this.up, addedSection.up, dist);
         }
         throw new IllegalArgumentException("두 구간이 연관관계가 없어 뺄 수 없습니다.");
-    }
-
-    public Section plus(final Section section) {
-        if (!isUpThan(section)) {
-            throw new IllegalArgumentException("연속되지 않은 두 구간을 더할 수 없습니다.");
-        }
-
-        return new Section(this.up, section.down, distance + section.distance);
     }
 
     public boolean isDownThan(final Section section) {

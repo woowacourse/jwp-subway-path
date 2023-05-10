@@ -12,8 +12,10 @@ public class AddStationToLineRequest {
     private AddStationToLineRequest() {
     }
 
-    public AddStationToLineRequest(final String lineName, final String upStationName,
-                                   final String downStationName, final Integer distance) {
+    public AddStationToLineRequest(final String lineName,
+                                   final String upStationName,
+                                   final String downStationName,
+                                   final Integer distance) {
         this.lineName = lineName;
         this.upStationName = upStationName;
         this.downStationName = downStationName;
