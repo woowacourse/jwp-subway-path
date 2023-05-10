@@ -13,27 +13,32 @@ public class Sections {
     }
 
     public Section getIncludeSection(Section section) {
-        return sections.stream()
+        Section includeSection = sections.stream()
                 .filter(section1 -> section1.hasIntersection(section))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("구간의 중간에 등록될 수 있는 구간이 아닙니다."));
+
+        if (includeSection.isDistanceSmallOrSame(section)) {
+            throw new IllegalArgumentException("중간에 등록될 수 없는 길이의 구간입니다. 너무 큽니다.");
+        }
+        return includeSection;
     }
 
-    public boolean isDownEnd(Section section) {
+    public boolean isDownEndAppend(Section section) {
         Section downEndSection = getDownEndSection();
 
         return downEndSection.isNextContinuable(section);
     }
 
     public Section getDownEndSection() {
-        return sections.stream().filter(section1 -> section1.getNextSectionId() == null)
+        return sections.stream().filter(section1 -> section1.getNextSectionId() == 0)
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("하행 종점이 존재하지 않습니다"));
     }
 
-    public boolean isUpEnd(final Section section) {
+    public boolean isUpEndAppend(final Section section) {
         Section upEndSection = getUpEndSection();
 
-        return section.isNextContinuable(upEndSection);
+        return upEndSection.isPreviousContinuable(section);
     }
 
     public Section getUpEndSection() {

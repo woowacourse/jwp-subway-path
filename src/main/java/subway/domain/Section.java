@@ -13,6 +13,7 @@ public class Section {
 
     public Section(final Long id, final Station upStation, final Station downStation, final int distance,
                    final Long nextSectionId) {
+        // TODO: 2023/05/10 distance 1이상 검증
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -88,5 +89,9 @@ public class Section {
 
     public Station getDownStation() {
         return downStation;
+    }
+
+    public boolean isDistanceSmallOrSame(final Section section) {
+        return this.distance <= section.distance;
     }
 }
