@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
-import subway.ui.dto.LineInitialRequest;
+import subway.ui.dto.request.LineRequest;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -33,7 +33,7 @@ class LineControllerTest {
     @DisplayName("초기 노선 생성 성공 - POST /lines/initial")
     void create_initial_success() throws Exception {
         // given
-        final LineInitialRequest requestDto = new LineInitialRequest("매튜당선", "bg-chicken-600", 10, "매", "튜");
+        final LineRequest requestDto = new LineRequest("매튜당선", "bg-chicken-600", 10, "매", "튜");
         final String requestBody = objectMapper.writeValueAsString(requestDto);
         given(lineService.save(any(), any()))
                 .willReturn(1L);

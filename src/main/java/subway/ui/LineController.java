@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.service.dto.LineDto;
-import subway.service.dto.SectionCreateDto;
-import subway.ui.dto.LineInitialRequest;
-import subway.ui.dto.LineResponse;
+import subway.application.dto.LineDto;
+import subway.application.dto.SectionCreateDto;
+import subway.ui.dto.request.LineRequest;
+import subway.ui.dto.response.LineResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -31,7 +31,7 @@ public class LineController {
     }
 
     @PostMapping("/initial")
-    public ResponseEntity<Void> createLine(@RequestBody LineInitialRequest request) {
+    public ResponseEntity<Void> createLine(@RequestBody LineRequest request) {
         final LineDto lineDto = new LineDto(request.getName(), request.getColor());
         SectionCreateDto sectionCreateDto = new SectionCreateDto(
                 request.getDistance(), request.getFirstStationName(), request.getSecondStationName());
@@ -50,7 +50,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineInitialRequest lineUpdateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }

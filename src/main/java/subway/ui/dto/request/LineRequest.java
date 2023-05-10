@@ -1,6 +1,6 @@
-package subway.ui.dto;
+package subway.ui.dto.request;
 
-public class LineInitialRequest {
+public class LineRequest {
 
     private final String name;
     private final String color;
@@ -8,8 +8,8 @@ public class LineInitialRequest {
     private final String firstStationName;
     private final String secondStationName;
 
-    public LineInitialRequest(final String name, final String color, final Integer distance,
-                              final String firstStationName, final String secondStationName) {
+    public LineRequest(final String name, final String color, final Integer distance,
+                       final String firstStationName, final String secondStationName) {
         this.name = name;
         this.color = color;
         this.distance = distance;

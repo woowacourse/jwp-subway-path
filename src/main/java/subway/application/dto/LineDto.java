@@ -1,4 +1,4 @@
-package subway.service.dto;
+package subway.application.dto;
 
 public class LineDto {
 

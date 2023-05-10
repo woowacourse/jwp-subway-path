@@ -2,8 +2,8 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.ui.dto.StationRequest;
-import subway.ui.dto.StationResponse;
+import subway.ui.dto.request.StationRequest;
+import subway.ui.dto.response.StationResponse;
 import subway.entity.StationEntity;
 
 import java.util.List;

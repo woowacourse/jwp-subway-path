@@ -1,7 +1,7 @@
-package subway.service.converter;
+package subway.application.converter;
 
+import subway.application.dto.LineDto;
 import subway.entity.LineEntity;
-import subway.service.dto.LineDto;
 
 public class LineConverter {
 
