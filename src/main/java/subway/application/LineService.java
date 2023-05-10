@@ -6,11 +6,11 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.entity.SectionEntity;
-import subway.service.converter.LineConverter;
-import subway.service.dto.LineDto;
-import subway.service.dto.SectionCreateDto;
-import subway.ui.dto.LineInitialRequest;
-import subway.ui.dto.LineResponse;
+import subway.application.converter.LineConverter;
+import subway.application.dto.LineDto;
+import subway.application.dto.SectionCreateDto;
+import subway.ui.dto.request.LineRequest;
+import subway.ui.dto.response.LineResponse;
 import subway.entity.LineEntity;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public class LineService {
         return lineId;
     }
 
-    public Long saveLine(LineInitialRequest request) {
+    public Long saveLine(LineRequest request) {
         Long id = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
         return id;
         // TODO: LineResponse 처리하기
@@ -69,7 +69,7 @@ public class LineService {
         return lineDao.findById(id);
     }
 
-    public void updateLine(Long id, LineInitialRequest lineUpdateRequest) {
+    public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new LineEntity(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
