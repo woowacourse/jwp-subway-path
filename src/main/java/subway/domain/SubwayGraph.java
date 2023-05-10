@@ -3,6 +3,8 @@ package subway.domain;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 public class SubwayGraph {
@@ -17,6 +19,28 @@ public class SubwayGraph {
         graph.addVertex(upLineStation);
         graph.addVertex(downLineStation);
         graph.setEdgeWeight(graph.addEdge(upLineStation, downLineStation), distance);
+    }
+
+    public Station findUpEndStation() {
+        return graph.vertexSet().stream()
+                .filter(vertex -> this.graph.incomingEdgesOf(vertex).isEmpty())
+                .findFirst()
+                .orElse(null);
+    }
+
+    public List<Station> findAllStationsInOrder() {
+        List<Station> allStationsInOrder = new ArrayList<>();
+        Station startStation = findUpEndStation();
+        while (startStation != null) {
+            allStationsInOrder.add(startStation);
+            Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(startStation);
+            if (outgoingEdges.isEmpty()) {
+                startStation = null;
+            } else {
+                startStation = graph.getEdgeTarget(outgoingEdges.iterator().next());
+            }
+        }
+        return allStationsInOrder;
     }
 
     public void addStation(Station upLineStation, Station downLineStation, int distance) {
