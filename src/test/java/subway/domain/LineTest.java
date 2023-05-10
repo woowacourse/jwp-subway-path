@@ -13,11 +13,23 @@ class LineTest {
     void shouldThrowExceptionWhenInputStationAlreadyExist() {
         Line line = Line.of("2호선", "잠실역", "몽촌토성역", 5);
 
-        assertThatThrownBy(() -> line.addStation("잠실역", "몽촌토성역", Direction.UPWARD, 5))
+        assertThatThrownBy(() -> line.addStation("잠실역", "몽촌토성역", Direction.UPWARD, 3))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 노선에 존재하는 역은 추가할 수 없습니다." + System.lineSeparator() +
                         "추가하려는 노선 : 2호선" + System.lineSeparator() +
                         "추가하려는 역 : 잠실역");
+    }
+
+    @DisplayName("이웃역이 이미 존재하는 경우 역을 추가할 수 없다.")
+    @Test
+    void shouldThrowExceptionWhenInputNeighborhoodStationAlreadyExist() {
+        Line line = Line.of("2호선", "잠실역", "몽촌토성역", 5);
+
+        assertThatThrownBy(() -> line.addStation("까치산역", "신도림역", Direction.UPWARD, 3))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("추가하려는 역의 이웃 역이 존재하지 않습니다." + System.lineSeparator() +
+                        "추가하려는 노선 : 2호선" + System.lineSeparator() +
+                        "존재하지 않는 이웃 역 : 신도림역");
     }
 
     @DisplayName("이웃 역 기준 상행 방향에 역을 추가한다.")

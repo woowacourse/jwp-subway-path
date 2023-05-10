@@ -114,8 +114,9 @@ public class Line {
                 .filter(section -> section.isDownwardStation(neighborhoodStation))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
-                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다."
-                                + "존재하지 않는 이웃 역 : %s", neighborhoodStation.getName())));
+                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다." + System.lineSeparator() +
+                                "추가하려는 노선 : %s" + System.lineSeparator() +
+                                "존재하지 않는 이웃 역 : %s", name, neighborhoodStation.getName())));
     }
 
     private Section getSectionUpwardSameWith(Station neighborhoodStation) {
@@ -123,8 +124,9 @@ public class Line {
                 .filter(section -> section.isUpwardStation(neighborhoodStation))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
-                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다."
-                                + "존재하지 않는 이웃 역 : %s", neighborhoodStation.getName())));
+                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다." + System.lineSeparator() +
+                                "추가하려는 노선 : %s" + System.lineSeparator() +
+                                "존재하지 않는 이웃 역 : %s", name, neighborhoodStation.getName())));
     }
 
     private void validateAlreadyExist(Station station) {
