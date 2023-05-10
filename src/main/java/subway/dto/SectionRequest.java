@@ -1,28 +1,20 @@
 package subway.dto;
 
-import java.util.List;
-
 public class SectionRequest {
 
     private final Long lineId;
-    private final List<SectionStation> stations;
-    private final Integer distance;
+    private final SectionStations sectionStations;
 
-    public SectionRequest(final Long lineId, final List<SectionStation> stations, final Integer distance) {
+    public SectionRequest(final Long lineId, final SectionStations sectionStations) {
         this.lineId = lineId;
-        this.stations = stations;
-        this.distance = distance;
+        this.sectionStations = sectionStations;
     }
 
     public Long getLineId() {
         return lineId;
     }
 
-    public List<SectionStation> getStations() {
-        return stations;
-    }
-
-    public Integer getDistance() {
-        return distance;
+    public SectionStations getSectionStations() {
+        return sectionStations;
     }
 }

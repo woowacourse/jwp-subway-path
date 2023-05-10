@@ -5,13 +5,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import subway.dto.SectionRequest;
+import subway.dto.SectionStations;
 
 public class SectionIntegrationTest extends IntegrationTest {
 
@@ -19,17 +18,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void addStations() {
         // given
-        Map<String, Object> params = new HashMap<>();
-        params.put("lineId", 1L);
-        params.put("stations", List.of(
-                Map.of("id", 1L),
-                Map.of("id", 2L)
-        ));
-        params.put("distance", 10);
+        SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 2L, 10));
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(params)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/sections")

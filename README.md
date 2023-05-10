@@ -17,9 +17,10 @@
 
 ##### 노선 등록 정보
 
-- [ ] 등록되는 역
-- [ ] 역의 위치
-- [ ] 거리
+- [x] 구간
+    - [x] 좌측 역
+    - [x] 우측 역
+    - [x] 거리
 
 ##### 노선 등록 조건
 
@@ -44,12 +45,12 @@
 ```http request
 POST /sections HTTP/1.1
 {
-    lineId: 1,
-    stations:  [
-      {"id": 1},
-      {"id": 2}
-    ],
-    "distance": 10
+    "lineId": 1,
+    "section":  {
+        "leftStationId": 1,
+        "rightStationId": 2,
+        "distance": 2
+    }
 }
 ```
 
