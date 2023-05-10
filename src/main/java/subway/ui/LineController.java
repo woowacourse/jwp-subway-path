@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LineStationsResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -26,14 +27,14 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
-    }
+    // @GetMapping
+    // public ResponseEntity<List<LineStationsResponse>> findAllLines() {
+    //     return ResponseEntity.ok(lineService.findLineStationsResponses());
+    // }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<LineStationsResponse> findLineById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.findLineStationsResponseById(id));
     }
 
     @PutMapping("/{id}")

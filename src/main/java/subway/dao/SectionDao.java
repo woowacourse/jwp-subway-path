@@ -43,6 +43,12 @@ public class SectionDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
+    public List<Section> findAllSection() {
+        String sql = "select * from SECTION";
+
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
     public List<Section> findAllSectionByLineId(Long lineId) {
         String sql = "select * from SECTION where line_id = ?";
 

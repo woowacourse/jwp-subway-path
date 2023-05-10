@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -77,5 +78,14 @@ public class Sections {
 
     public boolean hasStation(Long stationId) {
         return sections.stream().anyMatch(section -> section.includeStation(stationId));
+    }
+
+    public List<Long> findOrderedStationIds() {
+        List<Long> stationIds = new ArrayList<>();
+        for (Section section : sections) {
+            stationIds.add(section.getSourceStationId());
+        }
+        stationIds.add(sections.get(sections.size() - 1).getTargetStationId());
+        return stationIds;
     }
 }
