@@ -36,4 +36,8 @@ public class LineRepository {
     public List<Line> findAll() {
         return Collections.emptyList();
     }
+
+    public void update(final Line line) {
+
+    }
 }

@@ -50,7 +50,7 @@ public class LineController {
             @PathVariable(name = "id") Long lineId,
             @Valid @RequestBody SectionCreateRequest request
             ) {
-        lineService.createSection(request);
+        lineService.createSection(lineId, request);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 

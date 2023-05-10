@@ -5,7 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -17,11 +19,14 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.LineCreateRequest;
 import subway.controller.dto.LineResponse;
 import subway.controller.dto.LinesResponse;
+import subway.controller.dto.SectionCreateRequest;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
+import subway.exception.InvalidDistanceException;
 import subway.exception.InvalidLineNameException;
 import subway.repository.LineRepository;
+import subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
@@ -31,6 +36,9 @@ class LineServiceTest {
 
     @Mock
     private LineRepository lineRepository;
+
+    @Mock
+    private StationRepository stationRepository;
 
     @Nested
     @DisplayName("노선 추가시 ")
@@ -138,5 +146,52 @@ class LineServiceTest {
                 () -> assertThat(response.getLines().get(1).getStations().get(1).getId()).isEqualTo(4L),
                 () -> assertThat(response.getLines().get(1).getStations().get(1).getName()).isEqualTo("서울역")
         );
+    }
+
+    @Nested
+    @DisplayName("노선에 역 등록 시")
+    class CreateSection {
+
+        @Test
+        @DisplayName("유효한 정보라면 노선에 역을 등록한다.")
+        void createSection() {
+            //given
+            final SectionCreateRequest request = new SectionCreateRequest(1L, 3L, 2);
+            final List<Section> sections = List.of(
+                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
+                    new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
+            );
+            final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+            given(lineRepository.findById(1L)).willReturn(line);
+            given(stationRepository.findById(1L)).willReturn(new Station(1L, "잠실역"));
+            given(stationRepository.findById(3L)).willReturn(new Station(3L, "종합운동장역"));
+            willDoNothing().given(lineRepository).update(any(Line.class));
+
+            //when
+            lineService.createSection(1L, request);
+
+            //then
+            assertThat(line.getSections()).hasSize(3);
+        }
+
+        @Test
+        @DisplayName("유효하지 않은 정보라면 예외를 던진다.")
+        void createSectionWithInvalidDistance() {
+            //given
+            final SectionCreateRequest request = new SectionCreateRequest(1L, 3L, 10);
+            final List<Section> sections = List.of(
+                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
+                    new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
+            );
+            final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+            given(lineRepository.findById(1L)).willReturn(line);
+            given(stationRepository.findById(1L)).willReturn(new Station(1L, "잠실역"));
+            given(stationRepository.findById(3L)).willReturn(new Station(3L, "종합운동장역"));
+
+            //when
+            //then
+            assertThatThrownBy(() -> lineService.createSection(1L, request))
+                    .isInstanceOf(InvalidDistanceException.class);
+        }
     }
 }

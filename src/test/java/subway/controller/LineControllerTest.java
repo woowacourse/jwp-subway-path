@@ -179,7 +179,7 @@ class LineControllerTest {
         void createSection() throws Exception {
             final SectionCreateRequest request = new SectionCreateRequest(1L, 2L, 10);
 
-            willDoNothing().given(lineService).createSection(any(SectionCreateRequest.class));
+            willDoNothing().given(lineService).createSection(1L, any(SectionCreateRequest.class));
 
             mockMvc.perform(post("/lines/{id}/sections", 1L)
                             .contentType(MediaType.APPLICATION_JSON)
