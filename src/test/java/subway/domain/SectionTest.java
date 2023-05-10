@@ -8,8 +8,8 @@ import static org.assertj.core.api.Assertions.*;
 class SectionTest {
 
     @Test
-    @DisplayName("isIncludeEmptyStation()를 호출했을 때 양 역 중 하나 이상이 emptyStation이라면 false를 반환한다.")
-    void isIncludeEmptyStation_false(){
+    @DisplayName("isIncludeEmptyStation()를 호출했을 때 양 역 중 하나 이상이 emptyStation이라면 true를 반환한다.")
+    void isIncludeEmptyStation_true(){
         //given
         Station upStation = new Station("상행역");
         Station downStation = Station.emptyStation;
@@ -22,6 +22,8 @@ class SectionTest {
         // then
         assertThat(actual).isTrue();
     }
+
+    //TODO: isIncludeEmptyStation() false검증 
 
     @Test
     @DisplayName("validateSameStations()를 호출했을 때 양 역의 이름이 같다면 예외를 발생시킨다.")
