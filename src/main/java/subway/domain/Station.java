@@ -1,21 +1,23 @@
 package subway.domain;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class Station {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
-    public Station() {
-    }
+    private final Map<Line, Path> ups = new HashMap<>();
+    private final Map<Line, Path> downs = new HashMap<>();
 
-    public Station(Long id, String name) {
+    public Station(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
     public Station(String name) {
-        this.name = name;
+        this(null, name);
     }
 
     public Long getId() {

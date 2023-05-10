@@ -19,16 +19,16 @@
 
 ## API 명세
 
-- [ ] Line(노선)
-    - [ ] 노선 전체 조회
+- [x] Line(노선)
+    - [x] 노선 전체 조회
         - GET /lines
         - Response: Status 200, {{id, 노선이름, 색}, ...}
-    - [ ] 노선 추가
+    - [x] 노선 추가
         - POST /lines
-        - Request: {id, 노선이름, 색}
+        - Request: {노선이름, 색}
         - Response: Status 201, Location: /lines/{id}
-    - [ ] 노선 개별 조회
-        - GET /lines/{id}
+    - [x] 해당 노선 역 전체 조회
+        - GET /lines/{id}/stations
         - Response: Status 200, {{id, 이름}, ...}
 - [ ] Station(역)
     - [ ] 노선에 역 등록
