@@ -3,9 +3,9 @@ package subway.domain;
 import subway.dao.entity.SectionEntity;
 
 public class Section {
-    private Station startStation;
-    private Station endStation;
-    private int distance;
+    private final Station startStation;
+    private final Station endStation;
+    private final int distance;
 
     public Section(Station startStation, Station endStation, int distance) {
         validateDistance(distance);
