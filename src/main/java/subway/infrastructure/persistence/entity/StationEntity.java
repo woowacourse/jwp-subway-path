@@ -4,9 +4,15 @@ import subway.domain.Station;
 
 public class StationEntity {
 
+    private final Long id;
     private final String name;
 
     public StationEntity(final String name) {
+        this(null, name);
+    }
+
+    public StationEntity(final Long id, final String name) {
+        this.id = id;
         this.name = name;
     }
 

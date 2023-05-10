@@ -14,6 +14,7 @@ import subway.infrastructure.persistence.entity.StationEntity;
 public class StationDao {
 
     private static final RowMapper<StationEntity> stationRowMapper = (rs, rowNum) -> new StationEntity(
+            rs.getLong("id"),
             rs.getString("name")
     );
 
