@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Direction;
@@ -18,12 +17,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
-@ContextConfiguration(classes = SectionDao.class)
 @Sql("classpath:schema.sql")
 class SectionDaoTest {
 
-    @Autowired
-    private SectionDao sectionDao;
+    private final SectionDao sectionDao;
 
     private SectionDaoTest(@Autowired final JdbcTemplate jdbcTemplate) {
         this.sectionDao = new SectionDao(jdbcTemplate);
