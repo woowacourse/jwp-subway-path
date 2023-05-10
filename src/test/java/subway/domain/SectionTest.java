@@ -76,6 +76,49 @@ class SectionTest {
         }
     }
 
+
+    @Nested
+    class 두_구간의_합을_구할_때 {
+
+        @Test
+        void 합쳐진_구간의_길이는_두_구간의_길이의_합과_동일하다() {
+            // given
+            final Section up = createSection("잠실역", "마산역", 10);
+            final Section down = createSection("마산역", "슈퍼말랑역", 2);
+
+            // when
+            final Section addedSection = up.plus(down);
+            // then
+            assertThat(addedSection.getDistance()).isEqualTo(12);
+            assertThat(addedSection.getUp().getName()).isEqualTo("잠실역");
+            assertThat(addedSection.getDown().getName()).isEqualTo("슈퍼말랑역");
+        }
+
+        @Test
+        void 연속되지_않은_두_구간을_더할시_예외() {
+            // given
+            final Section up = createSection("잠실역", "마산역", 10);
+            final Section down = createSection("마산역", "슈퍼말랑역", 2);
+
+            // when & then
+            final String message = assertThrows(IllegalArgumentException.class, () ->
+                    down.plus(up)
+            ).getMessage();
+            assertThat(message).isEqualTo("연속되지 않은 두 구간을 더할 수 없습니다.");
+        }
+    }
+
+    @Test
+    void 상대적으로_상행_구간인지_알_수_있다() {
+        // given
+        final Section up = createSection("잠실역", "마산역", 10);
+        final Section down = createSection("마산역", "슈퍼말랑역", 2);
+
+        // when & then
+        assertThat(up.isUpThan(down)).isTrue();
+        assertThat(down.isUpThan(up)).isFalse();
+    }
+
     @Test
     void 상대적으로_하행_구간인지_알_수_있다() {
         // given

@@ -39,13 +39,13 @@ public class Sections {
         final List<Station> stations = getStations();
         if (stations.contains(addedSection.getUp())
                 && stations.contains(addedSection.getDown())) {
-            throw new IllegalArgumentException("이미 둘 다 포함");
+            throw new IllegalArgumentException("추가하려는 두 역이 이미 포함되어 있습니다.");
         }
     }
 
     private boolean isAddedTerminal(final Section addedSection) {
-        final Section first = sections.get(0);
-        final Section last = sections.get(sections.size() - 1);
+        final Section first = firstSection();
+        final Section last = lastSection();
         if (first.isDownThan(addedSection)) {
             sections.add(0, addedSection);
             return true;
@@ -55,6 +55,14 @@ public class Sections {
             return true;
         }
         return false;
+    }
+
+    private Section lastSection() {
+        return sections.get(sections.size() - 1);
+    }
+
+    private Section firstSection() {
+        return sections.get(0);
     }
 
     private void addNonTerminal(final Section addedSection) {
@@ -84,6 +92,42 @@ public class Sections {
             return remain;
         }
         return addedSection;
+    }
+
+    public void removeStation(final Station removedStation) {
+        validateStationIsExist(removedStation);
+        if (removedTerminal(removedStation)) {
+            return;
+        }
+        for (int i = 0; i < sections.size(); i++) {
+            if (sections.get(i).getDown().equals(removedStation)) {
+                final Section up = sections.remove(i);
+                final Section down = sections.remove(i);
+                sections.add(i, up.plus(down));
+                return;
+            }
+        }
+    }
+
+    private boolean removedTerminal(final Station removedStation) {
+        final Station upTerminal = firstSection().getUp();
+        final Station downTerminal = lastSection().getDown();
+        if (upTerminal.equals(removedStation)) {
+            sections.remove(firstSection());
+            return true;
+        }
+        if (downTerminal.equals(removedStation)) {
+            sections.remove(lastSection());
+            return true;
+        }
+        return false;
+    }
+
+    private void validateStationIsExist(final Station removedStation) {
+        final List<Station> stations = getStations();
+        if (!stations.contains(removedStation)) {
+            throw new IllegalArgumentException("없는 역은 제거할 수 없습니다.");
+        }
     }
 
     public List<Station> getStations() {

@@ -68,13 +68,11 @@ class SectionsTest {
             sections.addSection(middle2);
 
             // then
-            assertThat(sections.getSections())
-                    .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
-                    .containsExactly(
-                            "출발역-[1km]-경유역 1",
-                            "경유역 1-[5km]-경유역 2",
-                            "경유역 2-[4km]-종착역"
-                    );
+            포함된_구간들을_검증한다(sections,
+                    "출발역-[1km]-경유역 1",
+                    "경유역 1-[5km]-경유역 2",
+                    "경유역 2-[4km]-종착역"
+            );
         }
 
         @Test
@@ -92,13 +90,11 @@ class SectionsTest {
             sections.addSection(top);
 
             // then
-            assertThat(sections.getSections())
-                    .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
-                    .containsExactly(
-                            "출발역-[1km]-낙성대역",
-                            "낙성대역-[7km]-잠실역",
-                            "잠실역-[10km]-종착역"
-                    );
+            포함된_구간들을_검증한다(sections,
+                    "출발역-[1km]-낙성대역",
+                    "낙성대역-[7km]-잠실역",
+                    "잠실역-[10km]-종착역"
+            );
         }
 
         @Test
@@ -116,13 +112,11 @@ class SectionsTest {
             sections.addSection(down);
 
             // then
-            assertThat(sections.getSections())
-                    .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
-                    .containsExactly(
-                            "출발역-[10km]-잠실역",
-                            "잠실역-[7km]-건대역",
-                            "건대역-[1km]-종착역"
-                    );
+            포함된_구간들을_검증한다(sections,
+                    "출발역-[10km]-잠실역",
+                    "잠실역-[7km]-건대역",
+                    "건대역-[1km]-종착역"
+            );
         }
 
         @Test
@@ -139,7 +133,7 @@ class SectionsTest {
                     sections.addSection(
                             createSection("출발역", "종착역", 1)
                     )).getMessage();
-            assertThat(message).isEqualTo("이미 둘 다 포함");
+            assertThat(message).isEqualTo("추가하려는 두 역이 이미 포함되어 있습니다.");
         }
 
         @Test
@@ -176,5 +170,84 @@ class SectionsTest {
                     )).getMessage();
             assertThat(message).isEqualTo("현재 구간이 더 작아 차이를 구할 수 없습니다.");
         }
+    }
+
+    @Nested
+    class 구간들에서_역_제거시 {
+
+        @Test
+        void 역을_제거하고_구간들을_재조정한다() {
+            // given
+            final Sections sections = new Sections(List.of(
+                    createSection("출발역", "잠실역", 10),
+                    createSection("잠실역", "잠실나루역", 5),
+                    createSection("잠실나루역", "종착역", 7)
+            ));
+
+            // when
+            sections.removeStation(new Station("잠실역"));
+
+            // then
+            포함된_구간들을_검증한다(sections,
+                    "출발역-[15km]-잠실나루역",
+                    "잠실나루역-[7km]-종착역"
+            );
+        }
+
+        @Test
+        void 상행_종점_제거_가능() {
+            // given
+            final Sections sections = new Sections(List.of(
+                    createSection("출발역", "잠실역", 10),
+                    createSection("잠실역", "잠실나루역", 5),
+                    createSection("잠실나루역", "종착역", 7)
+            ));
+
+            // when
+            sections.removeStation(new Station("출발역"));
+
+            // then
+            포함된_구간들을_검증한다(sections,
+                    "잠실역-[5km]-잠실나루역",
+                    "잠실나루역-[7km]-종착역"
+            );
+        }
+
+        @Test
+        void 하행_종점_제거_가능() {
+            // given
+            final Sections sections = new Sections(List.of(
+                    createSection("출발역", "잠실역", 10),
+                    createSection("잠실역", "잠실나루역", 5),
+                    createSection("잠실나루역", "종착역", 7)
+            ));
+
+            // when
+            sections.removeStation(new Station("종착역"));
+
+            // then
+            포함된_구간들을_검증한다(sections,
+                    "출발역-[10km]-잠실역",
+                    "잠실역-[5km]-잠실나루역"
+            );
+        }
+
+        @Test
+        void 없는_역은_제거할_수_없다() {
+            // given
+            final Sections sections = new Sections(createSection("출발역", "종착역", 10));
+
+            // when & then
+            final String message = assertThrows(IllegalArgumentException.class, () ->
+                    sections.removeStation(new Station("없는역"))
+            ).getMessage();
+            assertThat(message).isEqualTo("없는 역은 제거할 수 없습니다.");
+        }
+    }
+
+    private static void 포함된_구간들을_검증한다(final Sections sections, final String... sectionStrings) {
+        assertThat(sections.getSections())
+                .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
+                .containsExactly(sectionStrings);
     }
 }

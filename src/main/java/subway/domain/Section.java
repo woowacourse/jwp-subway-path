@@ -33,12 +33,24 @@ public class Section {
         throw new IllegalArgumentException("두 구간이 연관관계가 없어 뺄 수 없습니다.");
     }
 
+    public Section plus(final Section section) {
+        if (!isUpThan(section)) {
+            throw new IllegalArgumentException("연속되지 않은 두 구간을 더할 수 없습니다.");
+        }
+
+        return new Section(this.up, section.down, distance + section.distance);
+    }
+
     public boolean isDownThan(final Section section) {
         return this.up.equals(section.down);
     }
 
+    public boolean isUpThan(final Section section) {
+        return this.down.equals(section.up);
+    }
+
     public boolean hasSameUpOrDownStation(final Section section) {
-        return  this.up.equals(section.up) || this.down.equals(section.down);
+        return this.up.equals(section.up) || this.down.equals(section.down);
     }
 
     public Station getUp() {
