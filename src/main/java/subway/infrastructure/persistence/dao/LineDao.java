@@ -46,4 +46,8 @@ public class LineDao {
     public List<LineEntity> findAll() {
         return template.query("select * from line", lineRowMapper);
     }
+
+    public void delete(final LineEntity entity) {
+        template.update("delete from line where line.id = ?", entity.getId());
+    }
 }

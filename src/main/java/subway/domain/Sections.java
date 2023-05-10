@@ -96,6 +96,10 @@ public class Sections {
 
     public void removeStation(final Station removedStation) {
         validateStationIsExist(removedStation);
+        if (sections.size() == 1) {
+            sections.clear();
+            return;
+        }
         if (removedTerminal(removedStation)) {
             return;
         }

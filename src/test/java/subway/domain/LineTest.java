@@ -216,6 +216,19 @@ class LineTest {
             ).getMessage();
             assertThat(message).isEqualTo("없는 역은 제거할 수 없습니다.");
         }
+
+        @Test
+        void 노선에_역이_단_두개일_경우_하나의_역을_제거하면_나머지_역도_제거된다() {
+            // given
+            final Line line = new Line("1호선",
+                    new Sections(createSection("출발역", "종착역", 10)));
+
+            // when
+            line.removeStation(new Station("출발역"));
+
+            // then
+            assertThat(line.getSections()).isEmpty();
+        }
     }
 
     private static void 포함된_노선들을_검증한다(final Line line, final String... sectionStrings) {

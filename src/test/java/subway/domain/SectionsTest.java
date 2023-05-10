@@ -243,6 +243,18 @@ class SectionsTest {
             ).getMessage();
             assertThat(message).isEqualTo("없는 역은 제거할 수 없습니다.");
         }
+
+        @Test
+        void 구간이_단_하나일_경우_하나의_역을_제거하면_구간_자체가_제거된다() {
+            // given
+            final Sections sections = new Sections(createSection("출발역", "종착역", 10));
+
+            // when
+            sections.removeStation(new Station("출발역"));
+
+            // then
+            assertThat(sections.getSections()).isEmpty();
+        }
     }
 
     private void 포함된_구간들을_검증한다(final Sections sections, final String... sectionStrings) {

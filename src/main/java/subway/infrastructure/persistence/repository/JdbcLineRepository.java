@@ -79,7 +79,7 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     private Section mapToSection(final Map<Long, StationEntity> idStationEntityMap,
-                                      final SectionEntity sectionEntity) {
+                                 final SectionEntity sectionEntity) {
         final Station up = idStationEntityMap.get(sectionEntity.getUpStationId()).toDomain();
         final Station down = idStationEntityMap.get(sectionEntity.getDownStationId()).toDomain();
         final int distance = sectionEntity.getDistance();
@@ -92,5 +92,11 @@ public class JdbcLineRepository implements LineRepository {
                 .stream()
                 .map(it -> it.toDomain(getSections(it.getName())))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public void delete(final Line line) {
+        sectionDao.deleteAllByLineName(line.getName());
+        lineDao.delete(LineEntity.from(line));
     }
 }

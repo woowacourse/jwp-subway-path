@@ -12,4 +12,6 @@ public interface LineRepository {
     Optional<Line> findByName(final String name);
 
     List<Line> findAll();
+
+    void delete(final Line line);
 }

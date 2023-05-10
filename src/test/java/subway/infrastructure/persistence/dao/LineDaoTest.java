@@ -51,4 +51,17 @@ class LineDaoTest {
         // when & then
         assertThat(lineDao.findAll()).hasSize(3);
     }
+
+    @Test
+    void 노선을_제거한다() {
+        // given
+        final LineEntity lineEntity = new LineEntity("1호선");
+        final Long id = lineDao.save(lineEntity);
+
+        // when
+        lineDao.delete(new LineEntity(id, lineEntity.getName()));
+
+        // then
+        assertThat(lineDao.findByName("1호선")).isEmpty();
+    }
 }

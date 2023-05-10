@@ -33,7 +33,7 @@ public class LineStationController {
     public ResponseEntity<Void> deleteStation(
             @Valid @RequestBody final DeleteStationFromLineRequest request
     ) {
-        lineService.deleteStation(request.toCommand());
+        lineService.removeStation(request.toCommand());
         return ResponseEntity.ok().build();
     }
 
