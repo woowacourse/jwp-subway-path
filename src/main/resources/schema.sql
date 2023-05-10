@@ -1,4 +1,4 @@
--- TODO: Forign key 등록하기
+-- TODO: Foreign key 등록하기
 create table if not exists STATION
 (
     id bigint auto_increment not null,
@@ -24,11 +24,19 @@ create table if not exists LINE_STATION
     primary key(id)
 );
 
-create table if not exists EDGE
+create table if not exists SECTION
 (
     id bigint auto_increment not null,
     left_station_id bigint not null,
-    righht_station_id bigint not null,
+    right_station_id bigint not null,
     weight int not null,
     primary key(id)
+);
+
+create table if not exists LINE_SECTION
+(
+  id bigint auto_increment not null,
+  line_id  bigint not null,
+  section_id bigint not null,
+  primary key(id)
 );
