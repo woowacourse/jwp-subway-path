@@ -30,7 +30,6 @@
     - [x] 해당 노선 역 전체 조회
         - GET /lines/{id}/stations
         - Response: Status 200, {{id, 이름}, ...}
-- [ ] Station(역)
     - [ ] 노선에 역 등록
         - POST /lines/{id}/paths
         - Request: {line_id, 상행역 이름, 하행역 이름, 거리}
