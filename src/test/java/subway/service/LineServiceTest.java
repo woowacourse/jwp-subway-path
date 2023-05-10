@@ -3,7 +3,11 @@ package subway.service;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.LineService;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -15,18 +19,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
+@ExtendWith(MockitoExtension.class)
 class LineServiceTest {
 
+    @Mock
     private LineDao lineDao;
+    @Mock
     private StationDao stationDao;
+    @Mock
     private SectionDao sectionDao;
+    @InjectMocks
     private LineService lineService;
 
     @BeforeEach
     void setUp() {
-        lineDao = Mockito.mock(LineDao.class);
-        stationDao = Mockito.mock(StationDao.class);
-        sectionDao = Mockito.mock(SectionDao.class); // TODO: @MockBean 으로 주입할 수 있도록하기
         lineService = new LineService(lineDao, stationDao, sectionDao);
     }
 
