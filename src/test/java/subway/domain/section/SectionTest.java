@@ -101,14 +101,26 @@ class SectionTest {
     }
 
     @Test
-    void createFrontSection() {
-    }
+    void 구간_병합_테스트() {
+        //given
+        final Section sectionA = new Section(
+                new Station("fromA"),
+                new Station("toA"),
+                new StationDistance(5)
+        );
 
-    @Test
-    void createBehindSection() {
-    }
+        final Section sectionB = new Section(
+                new Station("fromB"),
+                new Station("toB"),
+                new StationDistance(3)
+        );
 
-    @Test
-    void createBetweenSections() {
+        //when
+        final Section mergedSection = sectionA.merge(sectionB);
+
+        //then
+        assertThat(mergedSection.getFirstStation()).isEqualTo(new Station("fromA"));
+        assertThat(mergedSection.getSecondStation()).isEqualTo(new Station("toB"));
+        assertThat(mergedSection.getDistance()).isEqualTo(new StationDistance(8));
     }
 }

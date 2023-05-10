@@ -44,6 +44,11 @@ public class Section {
         return Set.of(firstStation, secondStation).contains(station);
     }
 
+    public Section merge(final Section other) {
+        final StationDistance sumDistance = this.distance.sum(other.distance);
+        return new Section(firstStation, other.secondStation, sumDistance);
+    }
+    
     public Station getFirstStation() {
         return firstStation;
     }
