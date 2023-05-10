@@ -20,10 +20,10 @@ public class LineRepository {
     }
 
     public Line save(Line line) {
-        List<Section> saveSections = line.getSections().stream()
-                .map(sectionDao::insert)
-                .collect(Collectors.toList());
         Line saveLine = lineDao.insert(line);
+        List<Section> saveSections = line.getSections().stream()
+                .map(section -> sectionDao.insert(section, saveLine.getId()))
+                .collect(Collectors.toList());
         saveLine.addSections(saveSections);
         return saveLine;
     }

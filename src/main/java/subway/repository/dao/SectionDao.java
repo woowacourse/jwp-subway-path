@@ -19,8 +19,9 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Section insert(Section section) {
+    public Section insert(Section section, Long lineId) {
         Map<String, Object> params = new HashMap<>();
+        params.put("line_id", lineId);
         params.put("source_station_id", section.getSource().getId());
         params.put("target_station_id", section.getTarget().getId());
         params.put("distance", section.getDistance());

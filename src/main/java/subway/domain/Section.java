@@ -11,8 +11,8 @@ public class Section {
         this(null, source, target, new Distance(distance));
     }
 
-    public Section(Station source, Station target, Distance distance) {
-        this(null, source, target, distance);
+    public Section(Long id, Station source, Station target, int distance) {
+        this(null, source, target, new Distance(distance));
     }
 
     public Section(Long id, Station source, Station target, Distance distance) {
@@ -30,7 +30,7 @@ public class Section {
         return target;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.getValue();
     }
 }
