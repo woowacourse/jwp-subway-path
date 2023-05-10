@@ -13,6 +13,7 @@ import subway.application.LineService;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
+import subway.dto.StationRequest;
 import subway.exception.LineNotFoundException;
 
 import java.util.List;
@@ -21,8 +22,7 @@ import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LineController.class)
@@ -85,4 +85,23 @@ class LineControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @DisplayName("노선에 역을 등록한다")
+    @Test
+    void addStation() throws Exception {
+        given(lineService.addStation(any(), any()))
+                .willReturn(1L);
+
+        mockMvc.perform(post("/lines/1/stations")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new StationRequest())))
+                .andExpect(header().string("location", equalTo("/lines/1/stations/1")))
+                .andExpect(status().isCreated());
+    }
+
+    @DisplayName("노선에서 역을 삭제할 수 있다")
+    @Test
+    void deleteStation() throws Exception {
+        mockMvc.perform(delete("/lines/1/stations/1"))
+                .andExpect(status().isNoContent());
+    }
 }

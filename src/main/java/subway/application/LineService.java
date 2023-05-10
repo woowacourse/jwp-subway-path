@@ -10,6 +10,7 @@ import subway.domain.Line;
 import subway.domain.Path;
 import subway.domain.Station;
 import subway.dto.LineRequest;
+import subway.dto.StationRequest;
 import subway.exception.LineNotFoundException;
 
 import java.util.Collections;
@@ -85,5 +86,12 @@ public class LineService {
                 .filter(pathEntity -> Objects.equals(pathEntity.getUpStationId(), beforeStation.getId()))
                 .findAny()
                 .get();
+    }
+
+    public Long addStation(final Long lineId, final StationRequest stationRequest) {
+        return null;
+    }
+
+    public void deleteStation(final Long lineId, final Long id) {
     }
 }

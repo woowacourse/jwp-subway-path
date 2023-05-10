@@ -1,16 +1,29 @@
 package subway.dto;
 
 public class StationRequest {
-    private String name;
+
+    private String upStationName;
+    private String downStationName;
+    private Integer distance;
 
     public StationRequest() {
     }
 
-    public StationRequest(String name) {
-        this.name = name;
+    public StationRequest(final String upStationName, final String downStationName, final Integer distance) {
+        this.upStationName = upStationName;
+        this.downStationName = downStationName;
+        this.distance = distance;
     }
 
-    public String getName() {
-        return name;
+    public String getUpStationName() {
+        return upStationName;
+    }
+
+    public String getDownStationName() {
+        return downStationName;
+    }
+
+    public Integer getDistance() {
+        return distance;
     }
 }

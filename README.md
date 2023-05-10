@@ -30,10 +30,10 @@
     - [x] 해당 노선 역 전체 조회
         - GET /lines/{id}/stations
         - Response: Status 200, {{id, 이름}, ...}
-    - [ ] 노선에 역 등록
-        - POST /lines/{id}/paths
+    - [x] 노선에 역 등록
+        - POST /lines/{id}/stations
         - Request: {line_id, 상행역 이름, 하행역 이름, 거리}
         - Response: Status 201, Locations: /lines/{id}/stations/{id}
-    - [ ] 노선에 역 제거
+    - [x] 노선에 역 제거
         - DELETE /lines/{id}/stations/{id}
         - Response: Status 204
