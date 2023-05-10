@@ -114,10 +114,40 @@ class SectionDaoTest {
             @Nested
             class ContextFindNeighborStation {
 
+                @DisplayName("아랫 방향에 인접한 역이 존재하면 그 역을 반환한다.")
+                @Test
+                void findNeighborStationDown() {
+                    final Optional<Section> section = sectionDao.findNeighborSection(lineId, stationId1, Direction.DOWN);
+                    assertAll(
+                            () -> assertThat(section).isPresent(),
+                            () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
+                    );
+                }
+
                 @DisplayName("특정 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
-                void findNeighborStation() {
-                    final Optional<Section> section = sectionDao.findNeighborStation(lineId, stationId1, Direction.DOWN);
+                void findNeighborDownStation() {
+                    final Optional<Section> section = sectionDao.findNeighborDownSection(lineId, stationId1);
+                    assertAll(
+                            () -> assertThat(section).isPresent(),
+                            () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
+                    );
+                }
+
+                @DisplayName("윗 방향에 인접한 역이 존재하면 그 역을 반환한다.")
+                @Test
+                void findNeighborStationUp() {
+                    final Optional<Section> section = sectionDao.findNeighborSection(lineId, stationId2, Direction.UP);
+                    assertAll(
+                            () -> assertThat(section).isPresent(),
+                            () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
+                    );
+                }
+
+                @DisplayName("특정 방향에 인접한 역이 존재하면 그 역을 반환한다.")
+                @Test
+                void findNeighborUpStation() {
+                    final Optional<Section> section = sectionDao.findNeighborUpSection(lineId, stationId2);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -127,7 +157,7 @@ class SectionDaoTest {
                 @DisplayName("특정 방향에 인접한 역이 존재하지 않으면 Optional.empty 를 반환한다.")
                 @Test
                 void findNeighborStationFail() {
-                    final Optional<Section> section = sectionDao.findNeighborStation(lineId, stationId1, Direction.UP);
+                    final Optional<Section> section = sectionDao.findNeighborSection(lineId, stationId1, Direction.UP);
                     assertThat(section).isEmpty();
                 }
             }

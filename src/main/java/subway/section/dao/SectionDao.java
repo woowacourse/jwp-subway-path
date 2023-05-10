@@ -68,14 +68,26 @@ public class SectionDao {
     }
 
 
-    public Optional<Section> findNeighborStation(final Long lineId, final Long baseId, final Direction direction) {
+    public Optional<Section> findNeighborSection(final Long lineId, final Long baseId, final Direction direction) {
+        if (direction == Direction.UP) {
+            return findNeighborUpSection(lineId, baseId);
+        }
+        return findNeighborDownSection(lineId, baseId);
+    }
+
+    public Optional<Section> findNeighborUpSection(final Long lineId, final Long stationId) {
         try {
-            if (direction == Direction.UP) {
-                final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and down_station_id = ?";
-                return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, baseId));
-            }
+            final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and down_station_id = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Section> findNeighborDownSection(final Long lineId, final Long stationId) {
+        try {
             final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and up_station_id = ?";
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, baseId));
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }
