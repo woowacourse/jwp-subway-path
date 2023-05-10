@@ -12,8 +12,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 
 @JdbcTest
+@Sql({"classpath:/schema.sql"})
 class SectionDaoTest {
 
     private final SectionDao sectionDao;
@@ -40,5 +42,14 @@ class SectionDaoTest {
 
         assertThat(sectionDao.findByLineId(FIXTURE_LINE_1.getId()))
                 .containsExactlyInAnyOrder(SECTION_START);
+    }
+
+    @DisplayName("구간을 삭제할 수 있다.")
+    @Test
+    void delete() {
+        sectionDao.insert(FIXTURE_LINE_1, SECTION_START);
+        sectionDao.deleteById(1L, 1L);
+
+        assertThat(sectionDao.findAll()).isEmpty();
     }
 }

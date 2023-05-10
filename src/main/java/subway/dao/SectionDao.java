@@ -51,13 +51,8 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-//    public void update(Station newStation) {
-//        String sql = "update STATION set name = ? where id = ?";
-//        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
-//    }
-//
-//    public void deleteById(Long id) {
-//        String sql = "delete from STATION where id = ?";
-//        jdbcTemplate.update(sql, id);
-//    }
+    public void deleteById(Long lineId, Long stationId) {
+        String sql = "delete from SECTIONS where (left_station_id = ? or right_station_id = ?) and line_id = ?";
+        jdbcTemplate.update(sql, stationId, stationId, lineId);
+    }
 }

@@ -11,8 +11,8 @@ public class Subway {
     private final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations;
     private final Station start;
 
-    public Subway(final Line line, final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations,
-                  final Station start) {
+    private Subway(final Line line, final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations,
+                   final Station start) {
         this.line = line;
         this.stations = stations;
         this.start = start;
