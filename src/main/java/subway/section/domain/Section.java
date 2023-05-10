@@ -1,8 +1,12 @@
 package subway.section.domain;
 
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 
+@ToString
+@EqualsAndHashCode
 @Getter
 public class Section {
 
@@ -23,6 +27,10 @@ public class Section {
 
     public Section(final Long id, final Section section) {
         this(id, section.lineId, section.upStationId, section.downStationId, section.distance);
+    }
+
+    public Section(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+        this(null, lineId, upStationId, downStationId, distance);
     }
 
     private void validate(final int distance) {
