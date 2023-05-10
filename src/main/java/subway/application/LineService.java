@@ -3,26 +3,41 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
 import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.exception.DuplicatedNameException;
+import subway.repository.LineRepository;
+import subway.repository.StationRepository;
+import subway.repository.dao.LineDao;
 
 @Service
 public class LineService {
     private final LineDao lineDao;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
-    public LineService(LineDao lineDao) {
+    public LineService(LineDao lineDao, LineRepository lineRepository,
+                       StationRepository stationRepository) {
         this.lineDao = lineDao;
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        String name = request.getName();
+        String name = request.getLineName();
         if (lineDao.existsByName(name)) {
             throw new DuplicatedNameException(name);
         }
-        Line persistLine = lineDao.insert(new Line(name));
+
+        Station source = stationRepository.findOrSaveStation(request.getSourceStation());
+        Station target = stationRepository.findOrSaveStation(request.getTargetStation());
+
+        Section section = new Section(source, target, request.getDistance());
+        Line line = new Line(name, List.of(section));
+        Line persistLine = lineRepository.save(line);
         return LineResponse.of(persistLine);
     }
 
@@ -47,7 +62,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName()));
+//        lineDao.update(new Line(id, lineUpdateRequest.getName()));
     }
 
     public void deleteLineById(Long id) {
