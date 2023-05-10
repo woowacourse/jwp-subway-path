@@ -22,4 +22,12 @@ public class Section {
         }
         return false;
     }
+
+    public boolean isUpwardStation(Station station) {
+        return this.upwardStation.equals(station);
+    }
+
+    public boolean isDownwardStation(Station station) {
+        return this.downwardStation.equals(station);
+    }
 }
