@@ -12,9 +12,10 @@ CREATE TABLE IF NOT EXISTS station
 
 CREATE TABLE IF NOT EXISTS line
 (
-    line_id BIGINT AUTO_INCREMENT NOT NULL,
-    name    VARCHAR(255)          NOT NULL UNIQUE,
-    color   VARCHAR(20)           NOT NULL,
+    line_id     BIGINT AUTO_INCREMENT NOT NULL,
+    line_number BIGINT(255)           NOT NULL UNIQUE,
+    name        VARCHAR(255)          NOT NULL UNIQUE,
+    color       VARCHAR(20)           NOT NULL,
     PRIMARY KEY (line_id)
 );
 
@@ -38,6 +39,6 @@ VALUES (1, '잠실역'),
        (4, '삼성역'),
        (5, '선릉역');
 
-INSERT INTO line(line_id, name, color)
-VALUES (1, '2호선', '초록색'),
-       (2, '8호선', '핑크색');
+INSERT INTO line(line_id, line_number, name, color)
+VALUES (1, 2, '2호선', '초록색'),
+       (2, 8, '8호선', '핑크색');
