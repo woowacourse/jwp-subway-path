@@ -17,7 +17,7 @@ import subway.exception.InvalidSectionException;
 class SubwayTest {
 
     @Test
-    void 전체_라인에서_등록할_구간이_존재하면_예외를_던진다() {
+    void 역_추가시_전체_라인에서_등록할_구간이_존재하면_예외를_던진다() {
         // given
         final Line line1 = new Line("1호선", "RED", List.of(
                 new Section("A", "B", 5),
@@ -43,7 +43,7 @@ class SubwayTest {
     }
 
     @Test
-    void 입력한_노선_이름이_존재하지_않으면_예외를_던진다() {
+    void 역_추가시_입력한_노선_이름이_존재하지_않으면_예외를_던진다() {
         // given
         final Subway subway = new Subway(Collections.emptyList());
 
@@ -84,6 +84,36 @@ class SubwayTest {
                 new Section("B", "C", 5),
                 new Section("Z", "B", 5),
                 new Section("B", "Y", 5)
+        ));
+    }
+
+    @Test
+    void 역_제거시_입력한_노선_이름이_존재하지_않으면_예외를_던진다() {
+        // given
+        final Subway subway = new Subway(Collections.emptyList());
+
+        // expect
+        assertThatThrownBy(() -> subway.remove("1호선", new Station("B")))
+                .isInstanceOf(InvalidLineNameException.class)
+                .hasMessage("존재하지 않는 노선 이름입니다.");
+    }
+
+    @Test
+    void 노선에_구간이_정상적으로_제거된다() {
+        // given
+        final Subway subway = new Subway(List.of(
+                new Line("1호선", "RED", List.of(
+                        new Section("A", "B", 5),
+                        new Section("B", "C", 5)
+                ))
+        ));
+
+        // when
+        subway.remove("1호선", new Station("B"));
+
+        // then
+        assertThat(subway.getLines()).flatExtracting(Line::getSections).containsAll(List.of(
+                new Section("A", "C", 10)
         ));
     }
 }

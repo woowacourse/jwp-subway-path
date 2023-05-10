@@ -32,6 +32,15 @@ public class Subway {
         findLine.add(base, additional, distance, direction);
     }
 
+    public void remove(final String lineName, final Station station) {
+        final Line findLine = lines.stream()
+                .filter(line -> line.isSameName(lineName))
+                .findFirst()
+                .orElseThrow(InvalidLineNameException::new);
+
+        findLine.remove(station);
+    }
+
     public List<Line> getLines() {
         return lines;
     }
