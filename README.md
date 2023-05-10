@@ -25,7 +25,7 @@ Host: localhost:8080
 ```
 ```json
 {
-    "line": "2호선",
+    "name": "2호선",
     "upward_terminus": "잠실역",
     "downward_terminus": "몽촌토성역",
     "distance": 5
@@ -72,7 +72,7 @@ Content-Type: application/json
 
 #### Request example
 ```text
-DELETE /lines/station HTTP/1.1
+DELETE /lines/1/stations/1 HTTP/1.1
 Content-type: application/json; charset=UTF-8
 Host: localhost:8080
 ```
@@ -93,7 +93,6 @@ Content-type: application/json; charset=UTF-8
 Host: localhost:8080
 ```
 
-
 #### Response example
 ```text
 HTTP/1.1 200 OK
@@ -101,11 +100,10 @@ Content-Type: application/json
 ```
 ```json
 {
-    "line" : "2호선",
+    "name" : "2호선",
     "stations": ["몽촌토성역", "잠실역"]
 }
 ```
-
 
 ### GET /lines
 - 모든 노선의 정보를 조회합니다.
@@ -127,15 +125,15 @@ Content-Type: application/json
 ```json
 [
     {
-        "line" : "2호선",
+        "name" : "2호선",
         "stations": ["몽촌토성역", "잠실역"]
     },
     {
-        "line" : "3호선",
+        "name" : "3호선",
         "stations": ["수서역", "양재역, 잠실역"]
     },
     {
-        "line" : "4호선",
+        "name" : "4호선",
         "stations": ["사당역", "삼각지역"]
     }
 ]
