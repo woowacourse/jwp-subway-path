@@ -11,6 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.fixture.LineFixture.LINE_999;
 import static subway.fixture.StationFixture.*;
 
@@ -28,7 +29,7 @@ class SubwayGraphTest {
         final SubwayGraph subwayGraph = new SubwayGraph(LINE_999);
         subwayGraph.createNewLine(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
 
-        Assertions.assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
+        assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
                 EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION);
     }
 
@@ -52,9 +53,16 @@ class SubwayGraphTest {
             final SubwayGraph subwayGraph = createSubwayGraph();
 
             subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
-            // 고속터미널 -> 새 역 -> 사평역
-            assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
-                    EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, SAPYEONG_STATION);
+            // 고속터미널 -> (3) 새 역 -> (2) 사평역
+
+            assertAll(
+                    () -> assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
+                            EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, SAPYEONG_STATION),
+                    () -> assertThat(subwayGraph.findDistanceBetween(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION))
+                            .isEqualTo(3),
+                    () -> assertThat(subwayGraph.findDistanceBetween(NEW_STATION, SAPYEONG_STATION))
+                            .isEqualTo(2)
+            );
         }
 
         @Test
@@ -64,7 +72,7 @@ class SubwayGraphTest {
 
             subwayGraph.addStation(NEW_STATION, EXPRESS_BUS_TERMINAL_STATION, 2);
             // 새 역 -> 고속터미널 -> 사평역
-            Assertions.assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
+            assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
                     NEW_STATION, EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION);
         }
 
@@ -189,5 +197,36 @@ class SubwayGraphTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("역 사이 거리는 양의 정수로 입력해 주세요.");
         }
+    }
+
+    @Test
+    @DisplayName("하나의 역과 연결된 역을 제거할 수 있다.")
+    void removeStationAtEnd() {
+        SubwayGraph subwayGraph = createSubwayGraph();
+        subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
+        // 고속터미널 -> 새 역 -> 사평역
+
+        subwayGraph.remove(SAPYEONG_STATION);
+        // 고속터미널 -> 새 역
+
+        assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
+                EXPRESS_BUS_TERMINAL_STATION, NEW_STATION);
+    }
+
+    @Test
+    @DisplayName("하나의 역과 연결된 역을 제거할 수 있다.")
+    void removeStationInMiddle() {
+        SubwayGraph subwayGraph = createSubwayGraph();
+        subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
+        // 고속터미널 -> (3) 새 역 -> (2) 사평역
+
+        subwayGraph.remove(NEW_STATION);
+        // 고속터미널 -> (5) 사평역
+
+        assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
+                EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION);
+
+        assertThat(subwayGraph.findDistanceBetween(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION))
+                .isEqualTo(5);
     }
 }

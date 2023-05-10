@@ -4,6 +4,7 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -44,6 +45,11 @@ public class SubwayGraph {
             }
         }
         return allStationsInOrder;
+    }
+
+    public int findDistanceBetween(Station upLineStation, Station downLineStation) {
+        final DefaultWeightedEdge edge = graph.getEdge(upLineStation, downLineStation);
+        return (int) graph.getEdgeWeight(edge);
     }
 
     public void addStation(Station upLineStation, Station downLineStation, int distance) {
@@ -168,5 +174,52 @@ public class SubwayGraph {
         graph.setEdgeWeight(graph.addEdge(upLineStation, newStation), distance);
         // newStation, upLineNextStation 연결 -> distance: 계산한 거리
         graph.setEdgeWeight(graph.addEdge(newStation, upLineNextStation), distanceBetweenNewStationAndUpLineNextStation);
+    }
+
+    public void remove(Station station) {
+        List<DefaultWeightedEdge> adjacentEdges = new ArrayList<>(graph.edgesOf(station));
+
+        // 양쪽 연결된 경우
+        if (adjacentEdges.size() == 2) {
+            removeMiddleStation(station);
+        }
+
+        // 한 쪽만 연결된 경우
+        if (adjacentEdges.size() == 1) {
+            graph.removeEdge(adjacentEdges.get(0));
+        }
+
+        // Station 지우기
+        graph.removeVertex(station);
+    }
+
+    private void removeMiddleStation(Station station) {
+        Set<DefaultWeightedEdge> edgesToRemove = new HashSet<>();
+        Station upLineStation = null;
+        Station downLineStation = null;
+        int distanceBetweenUpLineStationAndStation = 0;
+        int distanceBetweenStationAndDownLineStation = 0;
+
+        for (DefaultWeightedEdge edge : graph.incomingEdgesOf(station)) {
+            edgesToRemove.add(edge);
+            distanceBetweenUpLineStationAndStation = (int) graph.getEdgeWeight(edge);
+            upLineStation = graph.getEdgeSource(edge);
+        }
+
+        for (DefaultWeightedEdge edge : graph.outgoingEdgesOf(station)) {
+            edgesToRemove.add(edge);
+            distanceBetweenStationAndDownLineStation = (int) graph.getEdgeWeight(edge);
+            downLineStation = graph.getEdgeTarget(edge);
+        }
+
+        // 거리 재배치
+        int distance = distanceBetweenUpLineStationAndStation + distanceBetweenStationAndDownLineStation;
+
+        // 연결 다시 이어주기
+        graph.setEdgeWeight(graph.addEdge(upLineStation, downLineStation), distance);
+
+        // 지우기
+        graph.removeAllEdges(edgesToRemove);
+        graph.removeVertex(station);
     }
 }
