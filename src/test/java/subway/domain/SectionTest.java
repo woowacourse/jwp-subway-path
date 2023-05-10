@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SectionTest {
 
@@ -126,5 +127,19 @@ class SectionTest {
         assertAll(
                 () -> assertEquals(section4.getTo(), 새로운_섹션)
         );
+    }
+
+    @Test
+    @DisplayName("isLinked() : 시작 섹션의 목적지와 도착 섹션의 출발지가 같으면 두 섹션은 연결될 수 있다.")
+    void test_isLinked() throws Exception {
+        //given
+        final Stations stations1 = new Stations(new Station("A"), new Station("B"), 5);
+        final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
+
+        final Section start = new Section(stations1);
+        final Section end = new Section(stations2);
+
+        //when & then
+        assertTrue(end.isLinked(start));
     }
 }

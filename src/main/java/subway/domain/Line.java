@@ -4,26 +4,36 @@ public class Line {
 
     private Long id;
     private String name;
-    private Section section;
+    private Section starter;
 
-    public Line(final String name, final Section section) {
+    public Line(final String name, final Section starter) {
+        validateNotNull(starter);
         this.name = name;
-        this.section = section;
+        this.starter = starter;
+    }
+
+    private void validateNotNull(final Section section) {
+        if (section == null) {
+            throw new IllegalArgumentException("섹션이 없다면 Line을 생성할 수 없습니다.");
+        }
+    }
+
+    public void add(Section newSection) {
+        final Section head = starter.find(newSection);
+
+        if (head == null) {
+            if (starter.isLinked(newSection)) {
+                newSection.updateNextSection(starter);
+                starter = newSection;
+                return;
+            }
+            throw new IllegalArgumentException("해당 섹션은 현재 Line에 추가할 수 없습니다.");
+        }
+
+        starter.addNext(newSection);
+    }
+
+    public Section getStarter() {
+        return starter;
     }
 }
-
-/**
- * //for문을 통해서 start를 찾음
- * <p>
- * <p>
- * // C
- * C = 기존section.start;
- * <p>
- * // D
- * D = 기존section.end;
- * <p>
- * 기존.end = G;
- * 새로운.start = G;
- * 새로운.end = D;
- * 기존.start = C;
- */

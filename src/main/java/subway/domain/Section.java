@@ -46,6 +46,14 @@ public class Section {
         newSection.to.stations.updateStationOnAdd(newSection.stations);
     }
 
+    public void updateNextSection(final Section section) {
+        to = section;
+    }
+
+    public boolean isLinked(final Section other) {
+        return other.stations.isLinked(this.stations);
+    }
+
     public Stations getStations() {
         return stations;
     }
