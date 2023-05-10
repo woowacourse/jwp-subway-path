@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.controller.dto.LineCreateRequest;
 import subway.controller.dto.LineStationsResponse;
+import subway.controller.dto.LinesResponse;
 import subway.service.LineService;
 
 @RequestMapping("/lines")
@@ -32,6 +33,12 @@ public class LineController {
     @GetMapping("/{id}")
     public ResponseEntity<LineStationsResponse> findLine(@PathVariable(name = "id") Long lineId) {
         final LineStationsResponse response = lineService.findLineById(lineId);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping
+    public ResponseEntity<LinesResponse> findLines() {
+        final LinesResponse response = lineService.findLines();
         return ResponseEntity.ok(response);
     }
 }

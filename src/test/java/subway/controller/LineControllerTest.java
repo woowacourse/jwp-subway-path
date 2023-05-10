@@ -24,7 +24,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.dto.LineCreateRequest;
+import subway.controller.dto.LineResponse;
 import subway.controller.dto.LineStationsResponse;
+import subway.controller.dto.LinesResponse;
 import subway.controller.dto.StationResponse;
 import subway.service.LineService;
 
@@ -121,5 +123,27 @@ class LineControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest());
         }
+    }
+
+    @Test
+    @DisplayName("노선 목록을 조회한다.")
+    void findLines() throws Exception {
+        final List<LineResponse> lines = List.of(
+                new LineResponse(1L, "2호선", "초록색"),
+                new LineResponse(2L, "4호선", "하늘색"));
+        final LinesResponse response = new LinesResponse(lines);
+
+        given(lineService.findLines()).willReturn(response);
+
+        mockMvc.perform(get("/lines"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.lines", hasSize(2)))
+                .andExpect(jsonPath("$.lines[0].id").value(1))
+                .andExpect(jsonPath("$.lines[0].name").value("2호선"))
+                .andExpect(jsonPath("$.lines[0].color").value("초록색"))
+                .andExpect(jsonPath("$.lines[1].id").value(2))
+                .andExpect(jsonPath("$.lines[1].name").value("4호선"))
+                .andExpect(jsonPath("$.lines[1].color").value("하늘색"));
     }
 }
