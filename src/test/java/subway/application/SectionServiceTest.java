@@ -142,7 +142,7 @@ class SectionServiceTest {
     }
 
     @Test
-    @DisplayName("노선에서 역을 제거한다.")
+    @DisplayName("노선에서 역을 제거한다. - 노선에 역이 두개만 있는 경우")
     void deleteStationTest() {
         Long lineId = 1L;
         Long sourceStationId = 1L;
@@ -159,7 +159,7 @@ class SectionServiceTest {
     }
 
     @Test
-    @DisplayName("노선에서 역을 제거한다. - 노선에 역이 두개만 있는 경우")
+    @DisplayName("노선에서 역을 제거한다.")
     void deleteStationJustTwoStationTest() {
         Long lineId = 1L;
         Long station1Id = 1L;
