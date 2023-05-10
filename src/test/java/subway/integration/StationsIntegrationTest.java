@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
-import subway.dto.StationsRequest;
+import subway.dto.StationsSavingRequest;
 
 import java.util.Map;
 
@@ -43,13 +43,13 @@ public class StationsIntegrationTest extends IntegrationTest {
                 .post("/stations")
                 .then().log().all();
 
-        StationsRequest stationsRequest
-                = new StationsRequest("개룡역", "거여역", 5, true);
+        StationsSavingRequest stationsSavingRequest
+                = new StationsSavingRequest("개룡역", "거여역", 5, true);
         ExtractableResponse<Response> response2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsRequest)
-                .when().post(requestUri)
+                .body(stationsSavingRequest)
+                .when().post(requestUri + "/stations")
                 .then().log().all()
                 .extract();
 
@@ -84,13 +84,13 @@ public class StationsIntegrationTest extends IntegrationTest {
                 .post("/stations")
                 .then().log().all();
 
-        StationsRequest stationsRequest
-                = new StationsRequest("개룡역", "거여역", 5, false);
+        StationsSavingRequest stationsSavingRequest
+                = new StationsSavingRequest("개룡역", "거여역", 5, false);
         ExtractableResponse<Response> response2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsRequest)
-                .when().post(requestUri)
+                .body(stationsSavingRequest)
+                .when().post(requestUri + "/stations")
                 .then().log().all()
                 .extract();
 
@@ -125,13 +125,13 @@ public class StationsIntegrationTest extends IntegrationTest {
                 .post("/stations")
                 .then().log().all();
 
-        StationsRequest stationsRequest
-                = new StationsRequest("개룡역", "거여역", -1, false);
+        StationsSavingRequest stationsSavingRequest
+                = new StationsSavingRequest("개룡역", "거여역", -1, false);
         ExtractableResponse<Response> response2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsRequest)
-                .when().post(requestUri)
+                .body(stationsSavingRequest)
+                .when().post(requestUri + "/stations")
                 .then().log().all()
                 .extract();
 
@@ -172,26 +172,90 @@ public class StationsIntegrationTest extends IntegrationTest {
                 .post("/stations")
                 .then().log().all();
 
-        StationsRequest stationsRequest
-                = new StationsRequest("개룡역", "거여역", 5, false);
+        StationsSavingRequest stationsSavingRequest
+                = new StationsSavingRequest("개룡역", "거여역", 5, false);
         ExtractableResponse<Response> response2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsRequest)
-                .when().post(requestUri)
+                .body(stationsSavingRequest)
+                .when().post(requestUri + "/stations")
                 .then().log().all()
                 .extract();
 
-        StationsRequest stationsRequest2
-                = new StationsRequest("개룡역", "용암역", 5, false);
+        StationsSavingRequest stationsSavingRequest2
+                = new StationsSavingRequest("개룡역", "용암역", 5, false);
         ExtractableResponse<Response> response3 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsRequest2)
-                .when().post(requestUri)
+                .body(stationsSavingRequest2)
+                .when().post(requestUri + "/stations")
                 .then().log().all()
                 .extract();
 
         assertThat(response3.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    @DisplayName("노선상에 있는 역을 삭제할 수 있습니다.")
+    void delete() {
+        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
+        String requestUri = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when().post("/lines")
+                .then().log().all()
+                .extract()
+                .header("location");
+
+        RestAssured.given().log().all()
+                .body(Map.of("name", "개룡역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all();
+
+        RestAssured.given().log().all()
+                .body(Map.of("name", "거여역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all();
+
+        RestAssured.given().log().all()
+                .body(Map.of("name", "용암역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all();
+
+        StationsSavingRequest stationsSavingRequest
+                = new StationsSavingRequest("개룡역", "거여역", 5, false);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationsSavingRequest)
+                .when().post(requestUri + "/stations")
+                .then().log().all();
+
+        StationsSavingRequest stationsSavingRequest2
+                = new StationsSavingRequest("개룡역", "용암역", 2, false);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationsSavingRequest2)
+                .when().post(requestUri + "/stations")
+                .then().log().all();
+
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(Map.of("name", "용암역"))
+                .when().delete(requestUri + "/stations")
+                .then().log().all()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

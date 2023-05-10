@@ -108,4 +108,10 @@ public class StationsService {
         );
         return savedStations.getId();
     }
+
+    public void deleteStation(long lineId, String stationName) {
+        Line line = lineDao.findById(lineId);
+        Station station = stationDao.findByName(stationName);
+        stationsDao.deleteStation(station, line);
+    }
 }

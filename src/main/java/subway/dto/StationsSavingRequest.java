@@ -1,15 +1,15 @@
 package subway.dto;
 
-public class StationsRequest {
+public class StationsSavingRequest {
     String previousStationName;
     String nextStationName;
     int distance;
     boolean isDown;
 
-    public StationsRequest() {
+    public StationsSavingRequest() {
     }
 
-    public StationsRequest(String previousStationName, String nextStationName, int distance, boolean isDown) {
+    public StationsSavingRequest(String previousStationName, String nextStationName, int distance, boolean isDown) {
         this.previousStationName = previousStationName;
         this.nextStationName = nextStationName;
         this.distance = distance;
