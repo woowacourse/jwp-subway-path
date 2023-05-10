@@ -34,4 +34,8 @@ public class Distance {
     public Distance minus(final Distance other) {
         return new Distance(this.distance - other.distance);
     }
+
+    public boolean isGreaterThanOrEqualTo(final Distance target) {
+        return this.distance >= target.distance;
+    }
 }

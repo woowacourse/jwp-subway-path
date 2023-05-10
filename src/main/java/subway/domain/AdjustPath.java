@@ -1,6 +1,8 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AdjustPath {
@@ -35,5 +37,19 @@ public class AdjustPath {
         validateExistStation(station);
 
         adjustPath.remove(station);
+    }
+
+    public Distance findByStation(final Station station) {
+        validateExistStation(station);
+
+        return adjustPath.get(station);
+    }
+
+    public boolean contains(final Station station) {
+        return adjustPath.containsKey(station);
+    }
+
+    public List<Station> findAllStation() {
+        return new ArrayList<>(adjustPath.keySet());
     }
 }

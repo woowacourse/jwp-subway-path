@@ -19,7 +19,7 @@ public class LineService {
     }
 
     public CreationLineDto saveLine(final CreationLineRequest request) {
-        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        final Line persistLine = lineDao.insert(Line.of(request.getName(), request.getColor()));
         return CreationLineDto.from(persistLine);
     }
 

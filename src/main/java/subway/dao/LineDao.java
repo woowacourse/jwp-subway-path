@@ -17,7 +17,7 @@ public class LineDao {
     private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+            Line.of(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
@@ -37,7 +37,7 @@ public class LineDao {
         params.put("color", line.getColor());
 
         final Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return Line.of(lineId, line.getName(), line.getColor());
     }
 
     public List<Line> findAll() {
