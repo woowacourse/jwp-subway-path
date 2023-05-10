@@ -42,9 +42,7 @@ public class Line {
     }
 
     private void add(Section target) {
-        sections.stream()
-                .filter(section -> section.includeSection(target))
-                .findAny()
+        findSectionOf(section -> section.includeSection(target))
                 .ifPresentOrElse((section) -> connectNewSection(section, target),
                         () -> sections.add(target));
     }
