@@ -1,5 +1,6 @@
 package subway.service;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import subway.domain.Station;
 import subway.exception.DuplicatedStationNameException;
@@ -21,5 +22,9 @@ public class StationService {
                 });
 
         return stationRepository.create(new Station(name));
+    }
+
+    public List<Station> findById(List<Long> ids) {
+        return stationRepository.findById(ids);
     }
 }

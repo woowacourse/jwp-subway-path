@@ -64,7 +64,7 @@ public class LineService {
                 .ifPresent(updatedEdge -> lineRepository.updateWithSavedEdge(line, updatedEdge));
     }
 
-    private Line findLineById(Long id) {
+    public Line findLineById(Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(LineNotFoundException::new);
     }

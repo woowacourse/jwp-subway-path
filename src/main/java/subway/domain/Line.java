@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import subway.domain.dto.InsertionResult;
 import subway.exception.StationAlreadyExistsException;
 import subway.exception.StationNotFoundException;
@@ -118,6 +119,12 @@ public class Line {
 
     public List<StationEdge> getStationEdges() {
         return stationEdges;
+    }
+
+    public List<Long> getStationIds() {
+        return stationEdges.stream()
+                .map(stationEdge -> stationEdge.getDownStationId())
+                .collect(Collectors.toList());
     }
 
     @Override

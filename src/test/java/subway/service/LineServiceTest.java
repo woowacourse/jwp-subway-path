@@ -135,4 +135,18 @@ class LineServiceTest {
         //then
         assertThat(lineRepository.findById(lineId)).isEmpty();
     }
+
+    @Test
+    @DisplayName("id로 노선을 찾는다.")
+    void findById() {
+        //given
+        LineRequest lineRequest = createLineRequest();
+        Long lineId = lineService.create(lineRequest);
+
+        //when
+        Line createdLine = lineService.findLineById(lineId);
+
+        //then
+        assertThat(createdLine.getId()).isEqualTo(lineId);
+    }
 }

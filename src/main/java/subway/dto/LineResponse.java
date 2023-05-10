@@ -1,7 +1,9 @@
 package subway.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import subway.domain.Line;
+import subway.domain.Station;
 
 public class LineResponse {
     private Long id;
@@ -17,9 +19,11 @@ public class LineResponse {
         this.stations = stations;
     }
 
-    // TODO: stations를 올바르게 변경
-    public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), List.of());
+    public static LineResponse of(Line line, List<Station> stations) {
+        List<StationResponse> stationResponses = stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
     }
 
     public Long getId() {

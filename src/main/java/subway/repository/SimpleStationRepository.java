@@ -1,8 +1,10 @@
 package subway.repository;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 
@@ -36,5 +38,13 @@ public class SimpleStationRepository implements StationRepository {
     public Long create(Station station) {
         stations.add(new Station(idIndex, station.getName()));
         return idIndex++;
+    }
+
+    @Override
+    public List<Station> findById(List<Long> ids) {
+        return ids.stream()
+                .map(id -> stations.stream()
+                        .filter(station -> station.getId().equals(id)).findFirst().orElseThrow())
+                .collect(Collectors.toList());
     }
 }

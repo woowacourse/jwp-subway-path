@@ -36,11 +36,6 @@ public class LineIntegrationTest extends IntegrationTest {
         stationId2 = createStation("잠실새내");
     }
 
-    @AfterEach
-    public void tearDown() {
-        //TODO: 생성된 station 제거하기
-    }
-
     private Long createStation(final String name) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
