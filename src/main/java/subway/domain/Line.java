@@ -19,6 +19,10 @@ public class Line {
         this(id, name, new Sections(new ArrayList<>()));
     }
 
+    public Line(final LineName name, final Sections sections) {
+        this(null, name, sections);
+    }
+
     public Long getId() {
         return id;
     }
@@ -31,28 +35,30 @@ public class Line {
         return sections.getSections();
     }
 
-    public void addSection(final Section newSection) {
+    public Line addSection(final Section newSection) {
         if (sections.isHeadStation(newSection.getNextStation())) {
-            sections.addHead(newSection);
-            return;
+            final Sections addedSections = sections.addHead(newSection);
+            return new Line(name, addedSections);
         }
         if (sections.isTailStation(newSection.getBeforeStation())) {
-            sections.addTail(newSection);
-            return;
+            final Sections addedSections = sections.addTail(newSection);
+            return new Line(name, addedSections);
         }
-        sections.addCentral(newSection);
+        final Sections addedSections = sections.addCentral(newSection);
+        return new Line(name, addedSections);
     }
 
-    public void removeStation(final Station station) {
+    public Line removeStation(final Station station) {
         if (sections.isHeadStation(station)) {
-            sections.removeHead();
-            return;
+            final Sections removedSections = sections.removeHead();
+            return new Line(name, removedSections);
         }
         if (sections.isTailStation(station)) {
-            sections.removeTail();
-            return;
+            final Sections removedSections = sections.removeTail();
+            return new Line(name, removedSections);
         }
-        sections.removeCentral(station);
+        final Sections removedSections = sections.removeCentral(station);
+        return new Line(name, removedSections);
     }
 
     @Override

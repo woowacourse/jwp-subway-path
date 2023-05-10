@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Sections {
@@ -22,58 +23,72 @@ public class Sections {
         return sections.get(sections.size() - 1).getNextStation().equals(station);
     }
 
-    public void addHead(final Section section) {
-        sections.add(0, section);
+    public Sections addHead(final Section section) {
+        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        newSections.add(0, section);
+        return new Sections(newSections);
     }
 
-    public void addTail(final Section section) {
-        sections.add(sections.size(), section);
+    public Sections addTail(final Section section) {
+        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        newSections.add(sections.size(), section);
+        return new Sections(newSections);
     }
 
-    public void addCentral(final Section section) {
-        final Section originSection = sections.stream()
-                .filter(node -> node.getBeforeStation().equals(section.getBeforeStation()))
+    public Sections addCentral(final Section section) {
+        final ArrayList<Section> newSections = new ArrayList<>(sections);
+
+        final Section originSection = newSections.stream()
+                .filter(element -> element.getBeforeStation().equals(section.getBeforeStation()))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("이전 역을 찾을 수 없습니다."));
-        final int originIndex = sections.indexOf(originSection);
-        sections.remove(originSection);
-        sections.add(originIndex, section);
-        sections.add(originIndex + 1,
+        final int originIndex = newSections.indexOf(originSection);
+        newSections.remove(originSection);
+        newSections.add(originIndex, section);
+        newSections.add(originIndex + 1,
                 new Section(
                         section.getNextStation(),
                         originSection.getNextStation(),
                         originSection.getDistance().minusValue(section.getDistance())
                 )
         );
+
+        return new Sections(newSections);
     }
 
-    public void removeHead() {
-        sections.remove(0);
+    public Sections removeHead() {
+        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        newSections.remove(0);
+        return new Sections(newSections);
     }
 
-    public void removeTail() {
-        sections.remove(sections.size() - 1);
+    public Sections removeTail() {
+        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        newSections.remove(sections.size() - 1);
+        return new Sections(newSections);
     }
 
-    public void removeCentral(final Station station) {
-        final Section beforeSection = sections.stream()
+    public Sections removeCentral(final Station station) {
+        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        final Section beforeSection = newSections.stream()
                 .filter(section -> section.getNextStation().equals(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
 
-        final Section nextSection = sections.stream()
+        final Section nextSection = newSections.stream()
                 .filter(section -> section.getBeforeStation().equals(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
 
-        final int index = sections.indexOf(beforeSection);
-        sections.remove(beforeSection);
-        sections.remove(nextSection);
+        final int index = newSections.indexOf(beforeSection);
+        newSections.remove(beforeSection);
+        newSections.remove(nextSection);
         final Section newSection = new Section(
                 beforeSection.getBeforeStation(),
                 nextSection.getNextStation(),
                 beforeSection.getDistance().plusValue(nextSection.getDistance())
         );
-        sections.add(index, newSection);
+        newSections.add(index, newSection);
+        return new Sections(newSections);
     }
 }

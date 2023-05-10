@@ -24,11 +24,11 @@ class LineTest {
         final Section section2 = new Section(STATION_B, STATION_C, new Distance(10));
         final Section newSection = new Section(STATION_B, STATION_D, new Distance(3));
 
-        line.addSection(section1);
-        line.addSection(section2);
-        line.addSection(newSection);
+        final Line newLine = line.addSection(section1)
+                .addSection(section2)
+                .addSection(newSection);
 
-        final List<Section> sections = line.getSections();
+        final List<Section> sections = newLine.getSections();
         assertAll(
                 () -> assertThat(sections)
                         .extracting(Section::getBeforeStation)
@@ -55,12 +55,12 @@ class LineTest {
             final Line line = new Line(1L, new LineName("2호선"));
             final Section section1 = new Section(STATION_A, STATION_B, new Distance(7));
             final Section section2 = new Section(STATION_B, STATION_C, new Distance(10));
-            line.addSection(section1);
-            line.addSection(section2);
+            final Line newLine = line.addSection(section1)
+                    .addSection(section2);
 
-            line.removeStation(STATION_A);
-            final List<Section> sections = line.getSections();
 
+            final Line removedLine = newLine.removeStation(STATION_A);
+            final List<Section> sections = removedLine.getSections();
             assertAll(
                     () -> assertThat(sections)
                             .extracting(Section::getBeforeStation)
@@ -83,11 +83,12 @@ class LineTest {
             final Line line = new Line(1L, new LineName("2호선"));
             final Section section1 = new Section(STATION_A, STATION_B, new Distance(7));
             final Section section2 = new Section(STATION_B, STATION_C, new Distance(10));
-            line.addSection(section1);
-            line.addSection(section2);
+            final Line newLine = line.addSection(section1)
+                    .addSection(section2);
 
-            line.removeStation(STATION_C);
-            final List<Section> sections = line.getSections();
+
+            final Line removedLine = newLine.removeStation(STATION_C);
+            final List<Section> sections = removedLine.getSections();
 
             assertAll(
                     () -> assertThat(sections)
@@ -111,11 +112,12 @@ class LineTest {
             final Line line = new Line(1L, new LineName("2호선"));
             final Section section1 = new Section(STATION_A, STATION_B, new Distance(7));
             final Section section2 = new Section(STATION_B, STATION_C, new Distance(10));
-            line.addSection(section1);
-            line.addSection(section2);
+            final Line newLine = line.addSection(section1)
+                    .addSection(section2);
 
-            line.removeStation(STATION_B);
-            final List<Section> sections = line.getSections();
+
+            final Line removedLine = newLine.removeStation(STATION_B);
+            final List<Section> sections = removedLine.getSections();
 
             assertAll(
                     () -> assertThat(sections)
@@ -138,10 +140,10 @@ class LineTest {
         void removeWhenLineHas2Station() {
             final Line line = new Line(1L, new LineName("2호선"));
             final Section section1 = new Section(STATION_A, STATION_B, new Distance(7));
-            line.addSection(section1);
+            final Line newLine = line.addSection(section1);
 
-            line.removeStation(STATION_B);
-            final List<Section> sections = line.getSections();
+            final Line removedLine = newLine.removeStation(STATION_B);
+            final List<Section> sections = removedLine.getSections();
 
             assertThat(sections.isEmpty()).isTrue();
         }
