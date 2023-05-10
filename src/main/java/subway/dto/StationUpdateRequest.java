@@ -1,16 +1,16 @@
 package subway.dto;
 
 public class StationUpdateRequest {
-    private String name;
+    private String stationName;
 
     public StationUpdateRequest() {
     }
 
-    public StationUpdateRequest(String name) {
-        this.name = name;
+    public StationUpdateRequest(String stationName) {
+        this.stationName = stationName;
     }
 
-    public String getName() {
-        return name;
+    public String getStationName() {
+        return stationName;
     }
 }

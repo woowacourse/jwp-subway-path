@@ -1,16 +1,16 @@
 package subway.dto;
 
 public class LineUpdateRequest {
-    private String name;
+    private String lineName;
     private String color;
 
-    public LineUpdateRequest(String name, String color) {
-        this.name = name;
+    public LineUpdateRequest(String lineName, String color) {
+        this.lineName = lineName;
         this.color = color;
     }
 
-    public String getName() {
-        return name;
+    public String getLineName() {
+        return lineName;
     }
 
     public String getColor() {

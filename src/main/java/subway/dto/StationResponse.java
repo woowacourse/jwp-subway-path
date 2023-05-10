@@ -3,17 +3,17 @@ package subway.dto;
 import subway.domain.Station;
 
 public class StationResponse {
-    private String name;
+    private String stationName;
 
-    public StationResponse(String name) {
-        this.name = name;
+    public StationResponse(String stationName) {
+        this.stationName = stationName;
     }
 
     public static StationResponse from(Station station) {
         return new StationResponse(station.getName());
     }
 
-    public String getName() {
-        return name;
+    public String getStationName() {
+        return stationName;
     }
 }

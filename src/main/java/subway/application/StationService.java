@@ -18,7 +18,7 @@ public class StationService {
     }
 
     public void saveStation(StationCreateRequest stationCreateRequest) {
-        stationDao.insert(new Station(stationCreateRequest.getName()));
+        stationDao.insert(new Station(stationCreateRequest.getStationName()));
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -29,7 +29,7 @@ public class StationService {
     }
 
     public void updateStation(String prevStationName, StationUpdateRequest stationUpdateRequest) {
-        stationDao.update(prevStationName, new Station(stationUpdateRequest.getName()));
+        stationDao.update(prevStationName, new Station(stationUpdateRequest.getStationName()));
     }
 
     public void deleteStationByName(String stationName) {

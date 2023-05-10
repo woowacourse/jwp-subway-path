@@ -1,25 +1,25 @@
 package subway.dto;
 
 public class SectionCreateRequest {
-    private String startStation;
-    private String endStation;
+    private String startStationName;
+    private String endStationName;
     private int distance;
 
     public SectionCreateRequest() {
     }
 
-    public SectionCreateRequest(String startStation, String endStation, int distance) {
-        this.startStation = startStation;
-        this.endStation = endStation;
+    public SectionCreateRequest(String startStationName, String endStationName, int distance) {
+        this.startStationName = startStationName;
+        this.endStationName = endStationName;
         this.distance = distance;
     }
 
-    public String getStartStation() {
-        return startStation;
+    public String getStartStationName() {
+        return startStationName;
     }
 
-    public String getEndStation() {
-        return endStation;
+    public String getEndStationName() {
+        return endStationName;
     }
 
     public int getDistance() {

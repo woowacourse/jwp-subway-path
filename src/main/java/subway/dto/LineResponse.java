@@ -3,13 +3,13 @@ package subway.dto;
 import subway.dao.entity.LineEntity;
 
 public class LineResponse {
-    private Long id;
-    private String name;
+    private Long lineId;
+    private String lineName;
     private String color;
 
-    public LineResponse(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
+    public LineResponse(Long lineId, String lineName, String color) {
+        this.lineId = lineId;
+        this.lineName = lineName;
         this.color = color;
     }
 
@@ -17,12 +17,12 @@ public class LineResponse {
         return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
-    public Long getId() {
-        return id;
+    public Long getLineId() {
+        return lineId;
     }
 
-    public String getName() {
-        return name;
+    public String getLineName() {
+        return lineName;
     }
 
     public String getColor() {

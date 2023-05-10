@@ -20,7 +20,7 @@ public class LineService {
     }
 
     public long saveLine(LineCreateRequest request) {
-        return lineDao.insert(new Line(request.getName(), request.getColor()));
+        return lineDao.insert(new Line(request.getLineName(), request.getColor()));
     }
 
     public List<LineResponse> findLineResponses() {
@@ -36,7 +36,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
-        lineDao.update(id, new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineDao.update(id, new Line(lineUpdateRequest.getLineName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {

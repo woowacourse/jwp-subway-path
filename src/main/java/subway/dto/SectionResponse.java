@@ -3,16 +3,16 @@ package subway.dto;
 import subway.domain.Section;
 
 public class SectionResponse {
-    private String startStation;
-    private String endStation;
+    private String startStationName;
+    private String endStationName;
     private int distance;
 
     public SectionResponse() {
     }
 
-    public SectionResponse(String startStation, String endStation, int distance) {
-        this.startStation = startStation;
-        this.endStation = endStation;
+    public SectionResponse(String startStationName, String endStationName, int distance) {
+        this.startStationName = startStationName;
+        this.endStationName = endStationName;
         this.distance = distance;
     }
 
@@ -21,12 +21,12 @@ public class SectionResponse {
                 section.getDistance());
     }
 
-    public String getStartStation() {
-        return startStation;
+    public String getStartStationName() {
+        return startStationName;
     }
 
-    public String getEndStation() {
-        return endStation;
+    public String getEndStationName() {
+        return endStationName;
     }
 
     public int getDistance() {

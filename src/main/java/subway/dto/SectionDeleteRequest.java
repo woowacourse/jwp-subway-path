@@ -1,16 +1,16 @@
 package subway.dto;
 
 public class SectionDeleteRequest {
-    private String station;
+    private String stationName;
 
     public SectionDeleteRequest() {
     }
 
-    public SectionDeleteRequest(String station) {
-        this.station = station;
+    public SectionDeleteRequest(String stationName) {
+        this.stationName = stationName;
     }
 
-    public String getStation() {
-        return station;
+    public String getStationName() {
+        return stationName;
     }
 }

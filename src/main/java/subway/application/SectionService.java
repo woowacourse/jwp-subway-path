@@ -27,8 +27,8 @@ public class SectionService {
     }
 
     public void saveSection(Long lineId, SectionCreateRequest sectionCreateRequest) {
-        String startStationName = sectionCreateRequest.getStartStation();
-        String endStationName = sectionCreateRequest.getEndStation();
+        String startStationName = sectionCreateRequest.getStartStationName();
+        String endStationName = sectionCreateRequest.getEndStationName();
         validateStation(startStationName, endStationName);
         addSection(lineId, new Section(new Station(startStationName), new Station(endStationName),
                 sectionCreateRequest.getDistance()));
