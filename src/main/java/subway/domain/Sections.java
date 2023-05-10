@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 public class Sections {
@@ -19,17 +20,16 @@ public class Sections {
     private List<Section> sortSections(List<Section> sections) {
         Map<Station, Section> stationToSection = sections.stream()
                 .collect(toMap(Section::getStartStation, section -> section));
-        Station firstStation = findFirstStation(sections);
-        return getSortedSections(stationToSection, firstStation);
+        return findFirstStation(sections).map(firstStation -> getSortedSections(stationToSection, firstStation))
+                .orElse(Collections.emptyList());
     }
 
-    private Station findFirstStation(List<Section> sections) {
+    private Optional<Station> findFirstStation(List<Section> sections) {
         Map<Station, Station> stationToStation = sections.stream()
                 .collect(toMap(Section::getStartStation, Section::getEndStation));
         Set<Station> startStations = new HashSet<>(stationToStation.keySet());
         startStations.removeAll(stationToStation.values());
-        return startStations.stream().findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("상행 종점 역을 찾을 수 없습니다."));
+        return startStations.stream().findFirst();
     }
 
     private List<Section> getSortedSections(Map<Station, Section> stationToSection, Station firstStation) {
