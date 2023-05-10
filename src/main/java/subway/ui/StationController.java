@@ -22,7 +22,7 @@ import java.util.List;
 public class StationController {
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationController(final StationService stationService) {
         this.stationService = stationService;
     }
 
@@ -39,12 +39,12 @@ public class StationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ReadStationResponse> showStation(@PathVariable Long id) {
+    public ResponseEntity<ReadStationResponse> showStation(@PathVariable final Long id) {
         return ResponseEntity.ok().body(stationService.findStationResponseById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }

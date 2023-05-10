@@ -16,7 +16,7 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
             new Line(
                     rs.getLong("id"),
                     rs.getString("name"),
@@ -30,27 +30,27 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
+    public Line insert(final Line line) {
+        final Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
+        final Long lineId = insertAction.executeAndReturnKey(params).longValue();
         return new Line(lineId, line.getName(), line.getColor());
     }
 
     public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+        final String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
+    public Line findById(final Long id) {
+        final String sql = "select id, name, color from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }
