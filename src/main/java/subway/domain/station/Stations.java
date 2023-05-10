@@ -40,4 +40,8 @@ public class Stations {
     public boolean isCorrectSectionsSize(final Sections sections) {
         return stations.size() - 1 == sections.size();
     }
+
+    public boolean isEmpty() {
+        return stations.isEmpty();
+    }
 }

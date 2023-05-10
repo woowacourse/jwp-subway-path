@@ -17,4 +17,8 @@ public class Sections {
     public int size() {
         return sections.size();
     }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
 }

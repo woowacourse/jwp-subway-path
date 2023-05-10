@@ -40,4 +40,15 @@ class LineTest {
         // when + then
         assertDoesNotThrow(() -> new Line(1L, "2호선", "#111111", stations, sections));
     }
+
+    @Test
+    @DisplayName("역과 간선의 개수가 0개면 노선이 생성됩니다.")
+    void generate_line_no_station_success() {
+        // given
+        Stations stations = new Stations(List.of());
+        Sections sections = new Sections(List.of());
+
+        // when + then
+        assertDoesNotThrow(() -> new Line(1L, "2호선", "#111111", stations, sections));
+    }
 }

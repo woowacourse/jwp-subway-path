@@ -28,7 +28,7 @@ public class Line {
     }
 
     private void validate(final Stations stations, final Sections sections) {
-        if(stations.isCorrectSectionsSize(sections)) {
+        if((stations.isEmpty() && sections.isEmpty()) || stations.isCorrectSectionsSize(sections)) {
             return;
         }
         throw new IllegalArgumentException("역의 수에 따른 간선의 수가 올바르지 않습니다.");
