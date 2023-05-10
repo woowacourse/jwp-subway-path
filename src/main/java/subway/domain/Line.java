@@ -30,6 +30,10 @@ public class Line {
         }
     }
 
+    public boolean isSameName(Line other) {
+        return name.equals(other.getName());
+    }
+
     public void addSections(List<Section> saveSections) {
         sections.addAll(saveSections);
     }
