@@ -14,6 +14,23 @@ import static org.assertj.core.api.Assertions.assertThat;
 class SectionsTest {
 
     @Test
+    void 초기_상태에_구간을_추가한다() {
+        // given
+        final Sections sections = new Sections();
+
+        final Station 디노 = new Station(1L, "디노");
+        final Station 후추 = new Station(2L, "후추");
+
+        // when
+        sections.insertInitially(디노, 후추, 7);
+
+        // then
+        assertThat(sections.getSections()).contains(
+                new Section(new Station(1L, "디노"), new Station(2L, "후추"), 7)
+        );
+    }
+
+    @Test
     void 역을_오른쪽_사이에_추가한다() {
         // given
         // 뚝섬 - 5 - 성수 - 7 - 건대입구
@@ -109,6 +126,23 @@ class SectionsTest {
                 new Section(new Station(4L, "후추"), new Station(2L, "성수"), 2),
                 new Section(new Station(2L, "성수"), new Station(3L, "건대입구"), 7)
         );
+    }
+
+    @Test
+    void 역을_수정한다() {
+        // given
+        final Station 뚝섬 = new Station(1L, "뚝섬");
+        final Station 성수 = new Station(2L, "성수");
+        final Station 건대입구 = new Station(3L, "건대입구");
+
+        final Section 뚝섬_성수 = new Section(뚝섬, 성수, 5);
+        final Section 성수_건대입구 = new Section(성수, 건대입구, 7);
+
+        final Sections sections = new Sections(new ArrayList<>(List.of(뚝섬_성수, 성수_건대입구)));
+        // when
+        sections.updateStation(성수, new Station(4L, "후추"));
+        // then
+        assertThat(sections.getSections()).contains(new Section(new Station(1L, "뚝섬"), new Station(4L, "후추"), 5), new Section(new Station(4L, "후추"), new Station(3L, "건대입구"), 7));
     }
 
 }

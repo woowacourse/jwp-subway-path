@@ -4,8 +4,8 @@ import java.util.Objects;
 
 public class Section {
 
-    private final Station from;
-    private final Station to;
+    private Station from;
+    private Station to;
     private final Distance distance;
 
     public Section(final Station from, final Station to, final int distance) {
@@ -43,6 +43,14 @@ public class Section {
 
     public Section changeRight(final Station otherStation, final int otherDistance) {
         return new Section(from, otherStation, distance.subtract(otherDistance));
+    }
+
+    public void updateStation(final Station targetStation, final Station updateStation) {
+        if (from.equals(targetStation)) {
+            from = updateStation;
+            return;
+        }
+        to = updateStation;
     }
 
     @Override

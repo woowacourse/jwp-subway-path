@@ -73,4 +73,16 @@ class SectionTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @Test
+    void 역을_수정한다() {
+        // given
+        final Station 잠실 = new Station("잠실역");
+        final Station 잠실새내 = new Station("잠실새내역");
+        final Section section = new Section(잠실, 잠실새내, 3);
+        // when
+        section.updateStation(잠실, new Station("디노"));
+        // then
+        assertThat(section).isEqualTo(new Section(new Station("디노"), new Station("잠실새내역"), 3));
+    }
+
 }

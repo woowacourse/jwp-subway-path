@@ -74,5 +74,5 @@
     - [x] 구간을 연결하는 두 역을 갖는다. (stationNodes)
     - [x] 길이를 갖는다. (distance)
 
-- [ ] 전체 노선도 (Route)
-    - [ ] 특정 호선과 해당 호선의 구간 목록을 각각 key와 value로 가지는 map을 갖는다.
+- [x] 전체 노선도 (Route)
+    - [x] 특정 호선과 해당 호선의 구간 목록을 각각 key와 value로 가지는 map을 갖는다.

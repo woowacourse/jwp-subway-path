@@ -15,12 +15,15 @@ public class Sections {
         this.sections = sections;
     }
 
+    public void insertInitially(final Station from, final Station to, final int distance) {
+        sections.add(new Section(from, to, distance));
+    }
+
     public void insert(final Station from, final Station to, final int distance) {
         // 역 존재
         if (exist(from) == exist(to)) {
             throw new IllegalArgumentException("해당 조건으로 역을 설치할 수 없습니다.");
         }
-
 
         if (exist(from)) {
             // 추가 - 사이 오른쪽에 넣기
@@ -80,14 +83,24 @@ public class Sections {
                 .noneMatch(section -> section.existLeft(from));
     }
 
-    private boolean canInsertToRight(final Station from, final int distance) {
-        return sections.stream()
-                .anyMatch(section -> section.existLeft(from) && section.isInsertable(distance));
-    }
-
     private boolean exist(final Station station) {
         return sections.stream()
                 .anyMatch(section -> section.exist(station));
+    }
+
+    public boolean isEmpty() {
+        return sections.size() == 0;
+    }
+
+    public boolean hasStation(final Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.exist(station));
+    }
+
+    public void updateStation(final Station targetStation, final Station updateStation) {
+        sections.stream()
+                .filter(section -> section.exist(targetStation))
+                .forEach(section -> section.updateStation(targetStation, updateStation));
     }
 
     public List<Section> getSections() {
