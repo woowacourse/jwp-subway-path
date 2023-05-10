@@ -17,28 +17,22 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationCreateRequest stationCreateRequest) {
-        Station station = stationDao.insert(new Station(stationCreateRequest.getName()));
-        return StationResponse.of(station);
-    }
-
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public void saveStation(StationCreateRequest stationCreateRequest) {
+        stationDao.insert(new Station(stationCreateRequest.getName()));
     }
 
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
-
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationUpdateRequest stationUpdateRequest) {
-        stationDao.update(new Station(id, stationUpdateRequest.getName()));
+    public void updateStation(String prevStationName, StationUpdateRequest stationUpdateRequest) {
+        stationDao.update(prevStationName, new Station(stationUpdateRequest.getName()));
     }
 
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    public void deleteStationByName(String stationName) {
+        stationDao.deleteByName(stationName);
     }
 }
