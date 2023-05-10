@@ -4,15 +4,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
+import subway.domain.line.Line;
+import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -30,14 +31,15 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+    public Long insert(LineEntity lineEntity) {
+//        Map<String, Object> params = new HashMap<>();
+//        params.put("id", line.getId());
+//        params.put("name", line.getName());
+//        params.put("color", line.getColor());
+//
+//        Long lineId = insertAction.executeAndReturnKey(params).longValue();
+//        return new Line(lineId, line.getName(), line.getColor());
+        return 1L;
     }
 
     public List<Line> findAll() {
@@ -57,5 +59,9 @@ public class LineDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public Optional<LineEntity> findByLineName(String lineName) {
+        return null;
     }
 }

@@ -6,34 +6,34 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.domain.station.Station;
+import subway.entity.StationEntity;
 
-import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
-                    rs.getLong("id"),
                     rs.getString("name")
             );
 
 
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public Long insert(StationEntity stationEntity) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
     public List<Station> findAll() {
@@ -46,9 +46,13 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
+    public Optional<StationEntity> findByStationNameAndLineName(String stationName, String lineName) {
+        return null;
+    }
+
     public void update(Station newStation) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        jdbcTemplate.update(sql, new Object[]{newStation.getName()});
     }
 
     public void deleteById(Long id) {

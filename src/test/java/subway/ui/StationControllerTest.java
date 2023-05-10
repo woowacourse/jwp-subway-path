@@ -12,7 +12,7 @@ import subway.application.StationService;
 import subway.dto.StationRequest;
 import subway.dto.StationSaveResponse;
 
-import static fixtures.StationFixtures.SAVE_INITIAL_STATIONS_RESPONSE;
+import static fixtures.StationFixtures.SAVE_INITIAL_STATIONS_잠실_TO_건대_RESPONSE;
 import static fixtures.StationFixtures.잠실_TO_건대_REQUEST;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -35,7 +35,7 @@ class StationControllerTest {
     void createLineTest() throws Exception {
         // given
         StationRequest request = 잠실_TO_건대_REQUEST;
-        StationSaveResponse response = SAVE_INITIAL_STATIONS_RESPONSE;
+        StationSaveResponse response = SAVE_INITIAL_STATIONS_잠실_TO_건대_RESPONSE;
         when(stationService.saveStation(request))
                 .thenReturn(response);
 
