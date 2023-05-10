@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS SUBWAY_SECTION;
+DROP TABLE IF EXISTS station;
+DROP TABLE IF EXISTS line;
+
 create table if not exists LINE
 (
     id bigint auto_increment not null,

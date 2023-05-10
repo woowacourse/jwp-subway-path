@@ -49,7 +49,7 @@ class StationServiceTest {
                 // given
                 StationRequest request = 잠실_TO_건대_REQUEST;
                 when(lineDao.findByLineName(request.getLineName())).thenReturn(Optional.empty());
-                when(lineDao.insert(LINE2_INSERT_ENTITY)).thenReturn(DUMMY_LINE_ID);
+                when(lineDao.insert(LINE2_INSERT_ENTITY)).thenReturn(DUMMY_LINE2_ID);
                 when(stationDao.insert(잠실_INSERT_ENTITY)).thenReturn(DUMMY_잠실_INSERTED_ID);
                 when(stationDao.insert(건대_INSERT_ENTITY)).thenReturn(DUMMY_건대_INSERTED_ID);
                 when(sectionDao.insert(잠실_TO_건대_INSERT_SECTION_ENTITY)).thenReturn(DUMMY_SECTION_잠실_TO_건대_ID);
@@ -105,7 +105,7 @@ class StationServiceTest {
                 when(stationDao.findByStationNameAndLineName(DUMMY_STATION_잠실역_NAME, DUMMY_LINE2_NAME)).thenReturn(Optional.of(잠실_FIND_ENTITY));
                 when(stationDao.findByStationNameAndLineName(DUMMY_STATION_강변역_NAME, DUMMY_LINE2_NAME)).thenReturn(Optional.empty());
                 when(stationDao.insert(강변_INSERT_ENTITY)).thenReturn(DUMMY_강변_INSERTED_ID);
-                when(sectionDao.findByUpStationId(DUMMY_잠실_INSERTED_ID)).thenReturn(Optional.of(잠실_TO_건대_FIND_SECTION_ENTITY));
+                when(sectionDao.findByUpStationIdAndLindId(DUMMY_잠실_INSERTED_ID, DUMMY_LINE2_ID)).thenReturn(Optional.of(잠실_TO_건대_FIND_SECTION_ENTITY));
                 doNothing().when(sectionDao).deleteBySectionId(DUMMY_SECTION_잠실_TO_건대_ID);
                 when(sectionDao.insert(잠실_TO_강변_INSERT_SECTION_ENTITY)).thenReturn(DUMMY_SECTION_잠실_TO_강변_ID);
                 when(sectionDao.insert(강변_TO_건대_INSERT_SECTION_ENTITY)).thenReturn(DUMMY_SECTION_강변_TO_건대_ID);
@@ -126,7 +126,7 @@ class StationServiceTest {
                 when(stationDao.findByStationNameAndLineName(DUMMY_STATION_강변역_NAME, DUMMY_LINE2_NAME)).thenReturn(Optional.empty());
                 when(stationDao.findByStationNameAndLineName(DUMMY_STATION_건대역_NAME, DUMMY_LINE2_NAME)).thenReturn(Optional.of(건대_FIND_ENTITY));
                 when(stationDao.insert(강변_INSERT_ENTITY)).thenReturn(DUMMY_강변_INSERTED_ID);
-                when(sectionDao.findByDownStationId(DUMMY_건대_INSERTED_ID)).thenReturn(Optional.of(잠실_TO_건대_FIND_SECTION_ENTITY));
+                when(sectionDao.findByDownStationIdAndLindId(DUMMY_건대_INSERTED_ID, DUMMY_LINE2_ID)).thenReturn(Optional.of(잠실_TO_건대_FIND_SECTION_ENTITY));
                 doNothing().when(sectionDao).deleteBySectionId(DUMMY_SECTION_잠실_TO_건대_ID);
                 when(sectionDao.insert(잠실_TO_강변_INSERT_SECTION_ENTITY)).thenReturn(DUMMY_SECTION_잠실_TO_강변_ID);
                 when(sectionDao.insert(강변_TO_건대_INSERT_SECTION_ENTITY)).thenReturn(DUMMY_SECTION_강변_TO_건대_ID);

@@ -61,6 +61,7 @@ public class StationService {
     }
 
     private StationSaveResponse saveNewStation(LineEntity lineEntity, Section section) {
+        // TODO: 끼워넣었을 때 거리가 음수가 되면 안됨
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
         boolean isUpStationEmpty =
@@ -92,7 +93,7 @@ public class StationService {
         Long savedNewUpStationId = stationDao.insert(new StationEntity(null, upStationToSave.getName(), lineId));
         Optional<StationEntity> findCurrentDownStation = stationDao.findByStationNameAndLineName(currentDownStation.getName(), lineEntity.getName());
         Long currentDownStationId = findCurrentDownStation.get().getId();
-        Optional<SectionEntity> findCurrentSection = sectionDao.findByDownStationId(currentDownStationId);
+        Optional<SectionEntity> findCurrentSection = sectionDao.findByDownStationIdAndLindId(currentDownStationId, lineId);
         sectionDao.deleteBySectionId(findCurrentSection.get().getId());
         Long currentUpStationId = findCurrentSection.get().getUpStationId();
         int currentDistance = findCurrentSection.get().getDistance();
@@ -108,7 +109,7 @@ public class StationService {
         Long savedNewDownStationId = stationDao.insert(new StationEntity(null, downStationToSave.getName(), lineId));
         Optional<StationEntity> findCurrentUpStation = stationDao.findByStationNameAndLineName(currentUpStation.getName(), lineEntity.getName());
         Long currentUpStationId = findCurrentUpStation.get().getId();
-        Optional<SectionEntity> findCurrentSection = sectionDao.findByUpStationId(currentUpStationId);
+        Optional<SectionEntity> findCurrentSection = sectionDao.findByUpStationIdAndLindId(currentUpStationId, lineId);
         sectionDao.deleteBySectionId(findCurrentSection.get().getId());
         Long currentDownStationId = findCurrentSection.get().getDownStationId();
         int currentDistance = findCurrentSection.get().getDistance();

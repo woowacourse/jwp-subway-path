@@ -2,13 +2,13 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.station.Station;
 import subway.entity.StationEntity;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +16,6 @@ import java.util.Optional;
 public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
 
     private RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
@@ -26,14 +25,19 @@ public class StationDao {
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
     }
 
     public Long insert(StationEntity stationEntity) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
-        return insertAction.executeAndReturnKey(params).longValue();
+        String sql = "INSERT INTO station (name, line_id) VALUES (?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"id"});
+            preparedStatement.setString(1, stationEntity.getName());
+            preparedStatement.setLong(2, stationEntity.getLineId());
+            return preparedStatement;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
     }
 
     public List<Station> findAll() {
@@ -47,7 +51,25 @@ public class StationDao {
     }
 
     public Optional<StationEntity> findByStationNameAndLineName(String stationName, String lineName) {
-        return null;
+        String sql = "SELECT station.id, station.name, line.id FROM LINE " +
+                "INNER JOIN STATION " +
+                "ON line.id = station.line_id " +
+                "WHERE station.name = ? AND line.name = ?";
+
+        List<StationEntity> stationEntities = jdbcTemplate.query(sql,
+                stationEntityRowMapper(),
+                stationName, lineName);
+        return stationEntities.stream()
+                .findAny();
+    }
+
+    private RowMapper<StationEntity> stationEntityRowMapper() {
+        return (rs, rowNum) -> {
+            long findStationId = rs.getLong("station.id");
+            String findStationName = rs.getString("name");
+            long findLineId = rs.getLong("line.id");
+            return new StationEntity(findStationId, findStationName, findLineId);
+        };
     }
 
     public void update(Station newStation) {

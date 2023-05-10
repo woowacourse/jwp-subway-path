@@ -2,12 +2,13 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
 import subway.entity.LineEntity;
 
-import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,7 +16,6 @@ import java.util.Optional;
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
 
     private RowMapper<Line> rowMapper = (rs, rowNum) ->
             new Line(
@@ -24,22 +24,21 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
-                .usingGeneratedKeyColumns("id");
     }
 
     public Long insert(LineEntity lineEntity) {
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("id", line.getId());
-//        params.put("name", line.getName());
-//        params.put("color", line.getColor());
-//
-//        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-//        return new Line(lineId, line.getName(), line.getColor());
-        return 1L;
+        String sql = "INSERT INTO line (name) VALUES (?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"id"});
+            preparedStatement.setString(1, lineEntity.getName());
+            return preparedStatement;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
+
     }
 
     public List<Line> findAll() {
@@ -62,6 +61,18 @@ public class LineDao {
     }
 
     public Optional<LineEntity> findByLineName(String lineName) {
-        return null;
+        String sql = "SELECT id, name FROM line WHERE name = ?";
+        List<LineEntity> lineEntities = jdbcTemplate.query(sql,
+                lineEntityRowMapper(), lineName
+        );
+        return lineEntities.stream().findAny();
+    }
+
+    private RowMapper<LineEntity> lineEntityRowMapper() {
+        return (rs, rowNum) ->
+                new LineEntity(
+                        rs.getLong("id"),
+                        rs.getString("name")
+                );
     }
 }
