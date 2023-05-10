@@ -3,18 +3,19 @@ package subway.domain;
 public class StationEdge {
 
     private final Station destination;
-    private final double distance;
+    private final int distance;
 
-    public StationEdge(final Station destination, final double distance) {
-        this.destination = destination;
+    public StationEdge(final Station station, final int distance) {
+        this.destination = station;
         this.distance = distance;
     }
+
 
     public Station getDestination() {
         return destination;
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 

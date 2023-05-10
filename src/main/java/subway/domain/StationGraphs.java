@@ -20,7 +20,7 @@ public class StationGraphs {
     public void createLine(final Line line,
                            final Station upsLineStation,
                            final Station downLineStation,
-                           final double distance) {
+                           final int distance) {
         final StationGraph stationGraph = new StationGraph(line);
         stationGraph.addStation(upsLineStation, downLineStation, distance);
         stationGraphs.add(stationGraph);
@@ -42,5 +42,14 @@ public class StationGraphs {
 
     public List<StationGraph> getStationGraphs() {
         return stationGraphs;
+    }
+
+    public void createStation(final Line line,
+                              final Station station,
+                              final Station adjacentStation,
+                              final boolean isUpLine,
+                              final double distance) {
+        final StationGraph stationGraph = findStationGraphOf(line);
+
     }
 }
