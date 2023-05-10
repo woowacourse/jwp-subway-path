@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.dao.entity.SectionEntity;
+
 public class Section {
     private Station startStation;
     private Station endStation;
@@ -18,16 +20,9 @@ public class Section {
         }
     }
 
-    public boolean hasEndStation(Station station) {
-        return endStation.equals(station);
-    }
-
-    public void updateEndStation(Station station) {
-        endStation = station;
-    }
-
-    public void updateStartStation(Station station) {
-        startStation = station;
+    public static Section fromEntity(SectionEntity sectionEntity) {
+        return new Section(new Station(sectionEntity.getStartStationName()), new Station(
+                sectionEntity.getEndStationName()), sectionEntity.getDistance());
     }
 
     public Station getStartStation() {

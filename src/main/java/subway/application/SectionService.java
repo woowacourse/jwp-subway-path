@@ -2,11 +2,11 @@ package subway.application;
 
 import java.util.Optional;
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
@@ -15,12 +15,10 @@ import subway.dto.SectionDeleteRequest;
 public class SectionService {
     private final SectionDao sectionDao;
     private final StationDao stationDao;
-    private final LineDao lineDao;
 
-    public SectionService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
+    public SectionService(SectionDao sectionDao, StationDao stationDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
-        this.lineDao = lineDao;
     }
 
     public void saveSection(Long lineId, SectionCreateRequest sectionCreateRequest) {
@@ -41,7 +39,6 @@ public class SectionService {
         int distance = section.getDistance();
         if (sectionDao.isEmptyByLineId(lineId)) {
             sectionDao.insert(lineId, section);
-            lineDao.updateStartStationById(lineId, section.getStartStation());
             return;
         }
         Station startStation = section.getStartStation();
@@ -87,7 +84,6 @@ public class SectionService {
                 return;
             }
             sectionDao.insert(lineId, section);
-            lineDao.updateStartStationById(lineId, section.getStartStation());
         }
     }
 

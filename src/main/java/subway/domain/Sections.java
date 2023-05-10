@@ -1,67 +1,49 @@
 package subway.domain;
 
+import static java.util.stream.Collectors.toMap;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
+import java.util.Set;
 
 public class Sections {
-
-    private List<Section> sections;
+    private final List<Section> sections;
 
     public Sections(List<Section> sections) {
-        this.sections = sections;
+        this.sections = sortSections(sections);
     }
 
-    public void addSection(Section section) {
-        if (sections.isEmpty()) {
-            sections.add(section);
-            return;
-        }
-        Station startStation = section.getStartStation();
-        Station endStation = section.getEndStation();
-        boolean hasStartStation = sections.stream()
-                .anyMatch(section1 -> section1.hasStation(startStation));
-        boolean hasEndStation = sections.stream()
-                .anyMatch(section1 ->
-                        section1.hasStation(endStation));
-        if (hasStartStation && hasEndStation) {
-            throw new IllegalArgumentException();
-        }
-        if (!hasStartStation && !hasEndStation) {
-            throw new IllegalArgumentException();
-        }
-        if (hasStartStation) {
-            Optional<Section> targetSectionOptional = sections.stream()
-                    .filter(section1 -> section1.hasStartStation(startStation))
-                    .findAny();
+    private List<Section> sortSections(List<Section> sections) {
+        Map<Station, Section> stationToSection = sections.stream()
+                .collect(toMap(Section::getStartStation, section -> section));
+        Station firstStation = findFirstStation(sections);
+        return getSortedSections(stationToSection, firstStation);
+    }
 
-            if (targetSectionOptional.isPresent()) {
-                Section targetSection = targetSectionOptional.get();
-                Station tmpEndStation = targetSection.getEndStation();
-                targetSection.updateEndStation(endStation);
-                Section newSectionToAdd = new Section(endStation, tmpEndStation, 1);
-                sections.add(newSectionToAdd);
-                return;
-            }
-            sections.add(section);
-        }
-        if (hasEndStation) {
-            Optional<Section> targetSectionOptional = sections.stream()
-                    .filter(section1 -> section1.hasEndStation(endStation))
-                    .findAny();
+    private Station findFirstStation(List<Section> sections) {
+        Map<Station, Station> stationToStation = sections.stream()
+                .collect(toMap(Section::getStartStation, Section::getEndStation));
+        Set<Station> startStations = new HashSet<>(stationToStation.keySet());
+        startStations.removeAll(stationToStation.values());
+        return startStations.stream().findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("상행 종점 역을 찾을 수 없습니다."));
+    }
 
-            if (targetSectionOptional.isPresent()) {
-                Section targetSection = targetSectionOptional.get();
-                Station tmpStartStation = targetSection.getStartStation();
-                targetSection.updateStartStation(startStation);
-                Section newSectionToAdd = new Section(tmpStartStation, startStation, 1);
-                sections.add(newSectionToAdd);
-                return;
-            }
-            sections.add(section);
+    private List<Section> getSortedSections(Map<Station, Section> stationToSection, Station firstStation) {
+        List<Section> sortedSection = new ArrayList<>();
+        Section section = stationToSection.get(firstStation);
+        sortedSection.add(section);
+        while (stationToSection.size() != sortedSection.size()) {
+            section = stationToSection.get(section.getEndStation());
+            sortedSection.add(section);
         }
+        return sortedSection;
     }
 
     public List<Section> getSections() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 }
