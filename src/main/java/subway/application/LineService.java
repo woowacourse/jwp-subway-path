@@ -5,7 +5,7 @@ import subway.application.dto.CreationLineDto;
 import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.dto.ReadLineResponse;
 import subway.ui.dto.request.CreationLineRequest;
 
 import java.util.List;
@@ -24,10 +24,10 @@ public class LineService {
         return CreationLineDto.from(persistLine);
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<ReadLineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponse::of)
+                .map(ReadLineResponse::of)
                 .collect(Collectors.toList());
     }
 
@@ -35,9 +35,9 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public ReadLineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return ReadLineResponse.of(persistLine);
     }
 
     public Line findLineById(Long id) {
