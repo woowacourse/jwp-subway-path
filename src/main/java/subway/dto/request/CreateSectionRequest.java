@@ -4,28 +4,28 @@ import subway.domain.Direction;
 
 public class CreateSectionRequest {
 
-    private Long origin;
-    private Long destination;
+    private Long upStation;
+    private Long downStation;
     private Integer distance;
     private Direction direction;
 
     public CreateSectionRequest() {
     }
 
-    public CreateSectionRequest(final Long origin, final Long destination, final Integer distance,
+    public CreateSectionRequest(final Long upStation, final Long downStation, final Integer distance,
             final Direction direction) {
-        this.origin = origin;
-        this.destination = destination;
+        this.upStation = upStation;
+        this.downStation = downStation;
         this.distance = distance;
         this.direction = direction;
     }
 
-    public Long getOrigin() {
-        return origin;
+    public Long getUpStation() {
+        return upStation;
     }
 
-    public Long getDestination() {
-        return destination;
+    public Long getDownStation() {
+        return downStation;
     }
 
     public Integer getDistance() {

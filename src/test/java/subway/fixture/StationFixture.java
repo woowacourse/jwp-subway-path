@@ -1,5 +1,6 @@
 package subway.fixture;
 
+import subway.domain.Station;
 import subway.dto.request.StationRequest;
 import subway.entity.StationEntity;
 
@@ -8,22 +9,41 @@ public class StationFixture {
 
     public static class 역삼역 {
 
-        public static final StationEntity ENTITY = new StationEntity(1L, "역삼역");
-        public static final StationRequest REQUEST = new StationRequest("역삼역");
+        private static final Long ID = 1L;
+        private static final String NAME = "역삼역";
 
+        public static final Station STATION = new Station(ID, NAME);
+        public static final StationEntity ENTITY = new StationEntity(ID, NAME);
+        public static final StationRequest REQUEST = new StationRequest(NAME);
     }
 
     public static class 삼성역 {
 
-        public static final StationEntity ENTITY = new StationEntity(2L, "삼성역");
-        public static final StationRequest REQUEST = new StationRequest("삼성역");
+        private static final Long ID = 2L;
+        private static final String NAME = "삼성역";
 
+        public static final Station STATION = new Station(ID, NAME);
+        public static final StationEntity ENTITY = new StationEntity(ID, NAME);
+        public static final StationRequest REQUEST = new StationRequest(NAME);
     }
 
     public static class 잠실역 {
 
-        public static final StationEntity STATION_ENTITY = new StationEntity(3L, "잠실역");
-        public static final StationRequest REQUEST = new StationRequest("잠실역");
+        private static final Long ID = 3L;
+        private static final String NAME = "잠실역";
 
+        public static final Station STATION = new Station(ID, NAME);
+        public static final StationEntity ENTITY = new StationEntity(ID, NAME);
+        public static final StationRequest REQUEST = new StationRequest(NAME);
+    }
+
+    public static class 건대역 {
+
+        private static final Long ID = 4L;
+        private static final String NAME = "건대역";
+
+        public static final Station STATION = new Station(ID, NAME);
+        public static final StationEntity ENTITY = new StationEntity(ID, NAME);
+        public static final StationRequest REQUEST = new StationRequest(NAME);
     }
 }

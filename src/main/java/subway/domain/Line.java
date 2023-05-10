@@ -12,9 +12,13 @@ public class Line {
     private final String color;
 
     public Line(final String name, final String color) {
+        this(null, name, color);
+    }
+
+    public Line(final Long id, final String name, final String color) {
         validateName(name);
         validateColor(color);
-        this.id = null;
+        this.id = id;
         this.name = name.strip();
         this.color = color.strip();
     }

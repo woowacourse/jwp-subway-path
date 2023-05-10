@@ -15,10 +15,10 @@ CREATE TABLE IF NOT EXISTS line
 
 CREATE TABLE IF NOT EXISTS section
 (
-    id             BIGINT AUTO_INCREMENT NOT NULL,
-    line_id        BIGINT                NOT NULL,
-    origin_id      BIGINT                NOT NULL,
-    destination_id BIGINT                NOT NULL,
-    distance       INT                   NOT NULL,
+    id              BIGINT AUTO_INCREMENT NOT NULL,
+    line_id         BIGINT                NOT NULL,
+    up_station_id   BIGINT                NOT NULL,
+    down_station_id BIGINT                NOT NULL,
+    distance        INT                   NOT NULL,
     PRIMARY KEY (id)
 );

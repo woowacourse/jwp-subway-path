@@ -20,8 +20,8 @@ public class SectionDao {
             new SectionEntity(
                     rs.getLong("id"),
                     rs.getLong("line_id"),
-                    rs.getLong("origin_id"),
-                    rs.getLong("destination_id"),
+                    rs.getLong("up_station_id"),
+                    rs.getLong("down_station_id"),
                     rs.getInt("distance")
             );
 
@@ -36,32 +36,32 @@ public class SectionDao {
     public SectionEntity insert(SectionEntity sectionEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", sectionEntity.getLineId());
-        params.put("origin_id", sectionEntity.getOriginId());
-        params.put("destination_id", sectionEntity.getDestinationId());
+        params.put("up_station_id", sectionEntity.getUpStationId());
+        params.put("down_station_id", sectionEntity.getDownStationId());
         params.put("distance", sectionEntity.getDistance());
 
         Long sectionId = insertAction.executeAndReturnKey(params).longValue();
-        return new SectionEntity(sectionId, sectionEntity.getLineId(), sectionEntity.getOriginId(),
-                sectionEntity.getDestinationId(),
+        return new SectionEntity(sectionId, sectionEntity.getLineId(), sectionEntity.getUpStationId(),
+                sectionEntity.getDownStationId(),
                 sectionEntity.getDistance());
     }
 
     public List<SectionEntity> findAll() {
-        String sql = "SELECT id, line_id, origin_id, destination_id, distance FROM section";
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public SectionEntity findById(Long id) {
-        String sql = "SELECT id, line_id, origin_id, destination_id, distance FROM section WHERE id = ?";
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public void update(SectionEntity newSectionEntity) {
-        String sql = "UPDATE section SET line_id = ? , origin_id = ?, destination_id = ?, distance = ? WHERE id = ?";
+        String sql = "UPDATE section SET line_id = ? , up_station_id = ?, down_station_id = ?, distance = ? WHERE id = ?";
         jdbcTemplate.update(sql,
-                new Object[]{newSectionEntity.getLineId(), newSectionEntity.getOriginId(),
-                        newSectionEntity.getDestinationId(),
-                        newSectionEntity.getDistance(), newSectionEntity.getId()});
+                newSectionEntity.getLineId(), newSectionEntity.getUpStationId(),
+                newSectionEntity.getDownStationId(),
+                newSectionEntity.getDistance(), newSectionEntity.getId());
     }
 
     public void deleteById(Long id) {

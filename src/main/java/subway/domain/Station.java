@@ -10,8 +10,12 @@ public class Station {
     private final String name;
 
     public Station(final String name) {
+        this(null, name);
+    }
+
+    public Station(final Long id, final String name) {
         validateName(name);
-        this.id = null;
+        this.id = id;
         this.name = name.strip();
     }
 

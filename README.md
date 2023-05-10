@@ -7,17 +7,20 @@
 - [ ] 노선 목록 조회 API 수정
     - 노선에 포함된 역을 순서대로 보여주도록 응답을 개선합니다.
 
+---
+
 # 용어 사전
 
 | 한글명 | 영문명 | 설명 |
 | --- | --- | --- |
 | 노선 | line | 구간의 모음, 이름을 가진다 |
 | 역 | station | 이름을 가진다 |
-| 구간 | section | 출발역(origin) : 기존에 있는 역<br>거리(distance) : 두 역 사이의 거리<br>도착역(destination) : 추가할 역 |
-| 출발역 | origin | 기존에 있는 역 |
-| 도착역 | destination | 추가할 역 |
-| 거리 | distance | 두 역 사이의 거리 |
-| 방향 | direction | UP : (상행) → (하행) / 도착역 → 출발역 / 상행방향<br>DOWN : (상행) ← (하행) / 출발역 → 도착역 / 하행방향 |
+| 구간 | section | 상행역, 하행역, 거리를 가진다. |
+| 상행역 | upStation | 위에 존재하는 역이다. |
+| 하행역 | downStation | 아래에 존재하는 역이다. |
+| 거리 | distance | 두 역 사이의 거리다. |
+
+---
 
 # 기능목록
 
@@ -43,7 +46,11 @@
 - [ ] 노선에 등록된 역이 2개일 경우, 하나의 역 제거시 두 역 모두 제거된다.
 - [ ] 중간 역이 제거될 경우, 양 옆 역의 거리를 합해준다.
 
-# API 명세서
+---
+
+# API 명세
+
+## Line API
 
 | Method | URL | HttpStatus | Description |
 | --- | --- | --- | --- |
@@ -55,13 +62,13 @@
 | POST | /lines/{lineId}/stations | 201 | 해당 노선에 구간을 추가한다. |
 | DELETE | /lines/{lineId}/stations/{stationId} | 204 | 해당 노선에서 해당 역을 삭제한다. |
 
-## GET /lines
+### GET /lines
 
-### Request
+#### Request
 
 NONE
 
-### Response
+#### Response
 
 Body
 
@@ -110,13 +117,13 @@ Body
 }
 ```
 
-## GET /lines/{lineId}
+### GET /lines/{lineId}
 
-### Request
+#### Request
 
 NONE
 
-### Response
+#### Response
 
 Body
 
@@ -142,9 +149,9 @@ Body
 }
 ```
 
-## POST /lines
+### POST /lines
 
-### Request
+#### Request
 
 BODY
 
@@ -155,7 +162,7 @@ BODY
 }
 ```
 
-### Response
+#### Response
 
 BODY
 
@@ -167,9 +174,9 @@ BODY
 }
 ```
 
-## PUT /lines/{lineId}
+### PUT /lines/{lineId}
 
-### Request
+#### Request
 
 BODY
 
@@ -180,26 +187,25 @@ BODY
 }
 ```
 
-### Response
+#### Response
 
 NONE
 
-## POST /lines/{lineId}/stations
+### POST /lines/{lineId}/stations
 
-### Request
+#### Request
 
 Body
 
 ```json
 {
-  "origin": 1,
-  "destination": 2,
-  "distance": 15,
-  "direction": "UP"
+  "upStation": 1,
+  "downStation": 2,
+  "distance": 15
 }
 ```
 
-### Response
+#### Response
 
 Body
 
@@ -225,25 +231,135 @@ Body
 }
 ```
 
-## DELETE /lines/{lineId}
+### DELETE /lines/{lineId}
 
-### Request
-
-NONE
-
-### Response
+#### Request
 
 NONE
 
-## DELETE /lines/{lineId}/stations/{stationId}
-
-### Request
+#### Response
 
 NONE
 
-### Response
+### DELETE /lines/{lineId}/stations/{stationId}
+
+#### Request
 
 NONE
+
+#### Response
+
+NONE
+
+---
+
+## Station API
+
+| Method | URL | HttpStatus | Description |
+| --- | --- | --- | --- |
+| GET | /stations | 200 | 전체 역 목록을 조회한다. |
+| GET | /stations/{id} | 200 | 해당 역을 조회한다. |
+| POST | /stations | 200 | 해당 역을 등록한다. |
+| PUT | /stations/{id} | 200 | 해당 역을 수정한다. |
+| DELETE | /stations/{id} | 204 | 해당 역을 삭제한다. |
+
+### GET /stations
+
+#### Request
+
+NONE
+
+#### Response
+
+Body
+
+```json
+{
+  "stations": [
+    {
+      "id": 1,
+      "name": "역삼역"
+    },
+    {
+      "id": 2,
+      "name": "삼성역"
+    },
+    {
+      "id": 3,
+      "name": "잠실역"
+    }
+  ]
+}
+```
+
+### GET /stations/{stationId}
+
+#### Request
+
+NONE
+
+#### Response
+
+Body
+
+```json
+{
+  "id": 1,
+  "name": "역삼역"
+}
+```
+
+### POST /stations
+
+#### Request
+
+BODY
+
+```json
+{
+  "name": "역삼역"
+}
+```
+
+#### Response
+
+BODY
+
+```json
+{
+  "id": 1,
+  "name": "역삼역"
+}
+```
+
+### PUT /stations/{stationId}
+
+#### Request
+
+BODY
+
+```json
+{
+  "id": 1,
+  "name": "건대역"
+}
+```
+
+#### Response
+
+NONE
+
+### DELETE /stations/{stationId}
+
+#### Request
+
+NONE
+
+#### Response
+
+NONE
+
+---
 
 # DB 테이블 구조
 
@@ -257,8 +373,8 @@ erDiagram
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }
-    station ||--|{ section : origin_id
-    station ||--|{ section : destination_id
+    station ||--|{ section : up_station_id
+    station ||--|{ section : down_station_id
     station {
         BIGINT id
         VARCHAR(50) name
@@ -269,9 +385,9 @@ erDiagram
     section {
         BIGINT id
         BIGINT line_id
-        BIGINT origin_id
-        BIGINT destination_id
-        INT distance
+        BIGINT up_station_id
+        BIGINT down_station_id
+				INT distance
         TIMESTAMP created_at
         TIMESTAMP updated_at
     }

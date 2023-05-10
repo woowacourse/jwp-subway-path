@@ -40,8 +40,8 @@ class SectionEntityDaoTest {
             new SectionEntity(
                     rs.getLong("id"),
                     rs.getLong("line_id"),
-                    rs.getLong("origin_id"),
-                    rs.getLong("destination_id"),
+                    rs.getLong("up_station_id"),
+                    rs.getLong("down_station_id"),
                     rs.getInt("distance")
             );
 
@@ -63,10 +63,10 @@ class SectionEntityDaoTest {
 
     @Test
     void 전체_조회_테스트() {
-        jdbcTemplate.update("INSERT INTO section(line_id, origin_id, destination_id, distance) VALUES (?,?,?,?)",
+        jdbcTemplate.update("INSERT INTO section(line_id, up_station_id, down_station_id, distance) VALUES (?,?,?,?)",
                 이호선.ENTITY.getId(), 역삼역.ENTITY.getId(), 삼성역.ENTITY.getId(), 3);
-        jdbcTemplate.update("INSERT INTO section(line_id, origin_id, destination_id, distance) VALUES (?,?,?,?)",
-                이호선.ENTITY.getId(), 삼성역.ENTITY.getId(), 잠실역.STATION_ENTITY.getId(), 2);
+        jdbcTemplate.update("INSERT INTO section(line_id, up_station_id, down_station_id, distance) VALUES (?,?,?,?)",
+                이호선.ENTITY.getId(), 삼성역.ENTITY.getId(), 잠실역.ENTITY.getId(), 2);
         List<SectionEntity> sectionEntities = sectionDao.findAll();
         assertAll(
                 () -> assertThat(sectionEntities.size())
@@ -82,8 +82,8 @@ class SectionEntityDaoTest {
     void 아이디로_조회_테스트() {
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", 이호선.ENTITY.getId());
-        params.put("origin_id", 삼성역.ENTITY.getId());
-        params.put("destination_id", 잠실역.STATION_ENTITY.getId());
+        params.put("up_station_id", 삼성역.ENTITY.getId());
+        params.put("down_station_id", 잠실역.ENTITY.getId());
         params.put("distance", 2);
 
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
@@ -100,14 +100,14 @@ class SectionEntityDaoTest {
     void 갱신_테스트() {
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", 이호선.ENTITY.getId());
-        params.put("origin_id", 삼성역.ENTITY.getId());
-        params.put("destination_id", 잠실역.STATION_ENTITY.getId());
+        params.put("up_station_id", 삼성역.ENTITY.getId());
+        params.put("down_station_id", 잠실역.ENTITY.getId());
         params.put("distance", 2);
 
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         sectionDao.update(new SectionEntity(sectionId, 이호선.ENTITY.getId(), 삼성역.ENTITY.getId(),
-                잠실역.STATION_ENTITY.getId(), 5));
+                잠실역.ENTITY.getId(), 5));
 
         SectionEntity result = jdbcTemplate.queryForObject("SELECT * FROM section WHERE id = ?", sectionRowMapper,
                 sectionId);
@@ -118,8 +118,8 @@ class SectionEntityDaoTest {
     void 삭제_테스트() {
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", 이호선.ENTITY.getId());
-        params.put("origin_id", 삼성역.ENTITY.getId());
-        params.put("destination_id", 잠실역.STATION_ENTITY.getId());
+        params.put("up_station_id", 삼성역.ENTITY.getId());
+        params.put("down_station_id", 잠실역.ENTITY.getId());
         params.put("distance", 2);
 
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();

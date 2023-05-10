@@ -1,5 +1,6 @@
 package subway.fixture;
 
+import subway.domain.Line;
 import subway.dto.request.LineRequest;
 import subway.entity.LineEntity;
 
@@ -8,8 +9,13 @@ public class LineFixture {
 
     public static class 이호선 {
 
-        public static final LineEntity ENTITY = new LineEntity(1L, "2호선", "GREEN");
-        public static final LineRequest REQUEST = new LineRequest("2호선", "GREEN");
+        private static final Long ID = 1L;
+        private static final String NAME = "2호선";
+        private static final String COLOR = "GREEN";
+
+        public static final Line LINE = new Line(ID, NAME, COLOR);
+        public static final LineEntity ENTITY = new LineEntity(ID, NAME, COLOR);
+        public static final LineRequest REQUEST = new LineRequest(NAME, COLOR);
     }
 
 }

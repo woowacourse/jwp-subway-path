@@ -17,7 +17,7 @@ import subway.exception.ApiIllegalArgumentException;
 class LineTest {
 
     @Test
-    void 호선을_생성한다() {
+    void 노선을_생성한다() {
         String name = "2호선";
         String color = "GREEN";
 
