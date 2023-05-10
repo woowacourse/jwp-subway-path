@@ -36,10 +36,12 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void updateStation(Long id, StationSaveRequest request) {
         stationDao.updateById(id, request.toEntity());
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
     }
