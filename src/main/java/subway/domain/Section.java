@@ -26,6 +26,14 @@ public class Section {
         return distance.getValue();
     }
 
+    public Long getLeftId() {
+        return left.getId();
+    }
+
+    public Long getRightId() {
+        return right.getId();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
