@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
+import subway.domain.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -16,9 +17,9 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
+    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
+                    rs.getLong("station_id"),
                     rs.getString("name")
             );
 
@@ -27,7 +28,7 @@ public class StationDao {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+                .usingGeneratedKeyColumns("station_id");
     }
 
     public boolean isExistStationByName(final String stationName) {
@@ -35,29 +36,34 @@ public class StationDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationName));
     }
 
-    public Station insert(Station station) {
+    public StationEntity insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        return new StationEntity(id, station.getName());
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
+    public List<StationEntity> findAll() {
+        String sql = "SELECT * FROM station";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
+    public StationEntity findById(Long id) {
+        String sql = "SELECT * FROM station WHERE station_id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
+    public StationEntity findByName(final String name) {
+        String sql = "SELECT * FROM station WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
+    }
+
     public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+//        String sql = "UPDATE station SET name = ? WHERE id = ?";
+//        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
+        String sql = "DELETE FROM station WHERE station_id = ?";
         jdbcTemplate.update(sql, id);
     }
 }
