@@ -17,7 +17,7 @@ import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
 import subway.dto.StationRequest;
 
-public class SectionIntegrationTest extends IntegrationTest {
+public class AddSectionIntegrationTest extends IntegrationTest {
     
     @Nested
     public class InitializedTest extends IntegrationTest {
@@ -201,6 +201,26 @@ public class SectionIntegrationTest extends IntegrationTest {
             assertThat(result.get(0).getDistance()).isEqualTo(2);
             assertThat(result.get(1).getDistance()).isEqualTo(1);
         }
+        
+        @DisplayName("새로운 역이 구역에 존재하는 경우 예외처리")
+        @Test
+        void createSectionWithNewStationButInSection() {
+            // when
+            
+            final SectionRequest sectionRequest2 = new SectionRequest(1, 2, 1, true, 3);
+            final ExtractableResponse<Response> response = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(sectionRequest2)
+                    .when().post("/section")
+                    .then().log().all().
+                    extract();
+            
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertThat(response.body().asString()).isEqualTo("새로운역이 라인에 이미 존재합니다.");
+        }
+        
     }
     
     @DisplayName("라인테이블에 라인이 존재하지 않는 경우 예외 처리")
@@ -253,96 +273,5 @@ public class SectionIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.body().asString()).isEqualTo("2는 존재하지 않는 역 아이디입니다.");
-    }
-    
-    @DisplayName("구역테이블에 라인이 존재하지 않는 경우 신규 등록")
-    @Test
-    void createLineWithNoSection() {
-        // when
-        final LineRequest lineRequest = new LineRequest("2호선", "green");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest)
-                .when().post("/lines")
-                .then().log().all();
-        
-        final StationRequest stationRequest = new StationRequest("강남역");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest)
-                .when().post("/stations")
-                .then().log().all();
-        
-        final StationRequest stationRequest2 = new StationRequest("잠실역");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest2)
-                .when().post("/stations")
-                .then().log().all();
-        
-        final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, true, 3);
-        final ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/section")
-                .then().log().all().
-                extract();
-        
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-    
-    @DisplayName("새로운 역이 구역에 존재하는 경우 예외처리")
-    @Test
-    void createSectionWithNewStationButInSection() {
-        // when
-        final LineRequest lineRequest = new LineRequest("2호선", "green");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest)
-                .when().post("/lines")
-                .then().log().all();
-        
-        final StationRequest stationRequest = new StationRequest("강남역");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest)
-                .when().post("/stations")
-                .then().log().all();
-        
-        final StationRequest stationRequest2 = new StationRequest("잠실역");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest2)
-                .when().post("/stations")
-                .then().log().all();
-        
-        final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, true, 3);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest)
-                .when().post("/section")
-                .then().log().all();
-        
-        final SectionRequest sectionRequest2 = new SectionRequest(1, 2, 1, true, 3);
-        final ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest2)
-                .when().post("/section")
-                .then().log().all().
-                extract();
-        
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-        assertThat(response.body().asString()).isEqualTo("새로운역이 라인에 이미 존재합니다.");
     }
 }

@@ -51,4 +51,9 @@ public class SectionDAO {
         final String sql = "delete from section where id = ?";
         this.jdbcTemplate.update(sql, id);
     }
+    
+    public List<Section> findSectionsBy(final long lineId) {
+        final String sql = "select * from section where line_id = ?";
+        return this.jdbcTemplate.query(sql, this.rowMapper, lineId);
+    }
 }

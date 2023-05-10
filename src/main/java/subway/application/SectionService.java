@@ -1,12 +1,14 @@
 package subway.application;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDAO;
 import subway.dao.StationDao;
 import subway.domain.Section;
+import subway.dto.DeleteSectionRequest;
 import subway.dto.SectionRequest;
 import subway.dto.SectionResponse;
 import subway.exception.InvalidInputException;
@@ -22,6 +24,13 @@ public class SectionService {
         this.sectionDAO = sectionDAO;
         this.lineDao = lineDao;
         this.stationDao = stationDao;
+    }
+    
+    public List<SectionResponse> getSections(final long lineId) {
+        return this.sectionDAO.findSectionsBy(lineId)
+                .stream()
+                .map(SectionResponse::of)
+                .collect(Collectors.toUnmodifiableList());
     }
     
     public List<SectionResponse> saveSection(final SectionRequest sectionRequest) {
@@ -129,5 +138,51 @@ public class SectionService {
             }
         }
         throw new InvalidInputException("도달할 수 없는 예외입니다." + sectionSize);
+    }
+    
+    public void validate(final DeleteSectionRequest deleteSectionRequest) {
+        this.validateLine(deleteSectionRequest.getLineId());
+        this.validateStation(deleteSectionRequest.getStationId());
+    }
+    
+    private List<Section> findSections(final long stationId, final long lineId) {
+        final List<Section> sections = this.sectionDAO.findSectionsBy(stationId, lineId);
+        if (sections.size() == 0) {
+            throw new InvalidInputException(stationId + "는 라인 아이디 " + lineId + "에 존재하지 않는 역 아이디입니다.");
+        }
+        return sections;
+    }
+    
+    public void deleteSection(final DeleteSectionRequest deleteSectionRequest) {
+        final List<Section> sections = this.findSections(deleteSectionRequest.getStationId(),
+                deleteSectionRequest.getLineId());
+        
+        if (sections.size() == 1) {
+            this.sectionDAO.deleteById(sections.get(0).getId());
+            return;
+        }
+        
+        if (sections.size() == 2) {
+            final Section section1 = sections.get(0);
+            final Section section2 = sections.get(1);
+            this.sectionDAO.deleteById(section1.getId());
+            this.sectionDAO.deleteById(section2.getId());
+            
+            if (section1.getUpStationId() == deleteSectionRequest.getStationId()) {
+                this.mergeSections(section1, section2);
+                return;
+            }
+            this.mergeSections(section2, section1);
+            return;
+        }
+        throw new InvalidInputException("잘못된 요청입니다.");
+    }
+    
+    private void mergeSections(final Section upSection,
+            final Section downSection) {
+        final int distance = upSection.getDistance() + downSection.getDistance();
+        final Section newSection = new Section(upSection.getLineId(), upSection.getUpStationId(),
+                downSection.getDownStationId(), distance);
+        this.sectionDAO.insert(newSection);
     }
 }
