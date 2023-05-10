@@ -59,7 +59,7 @@ public class Sections {
     }
 
     public Long findLastStationId() {
-        return sections.get(sections.size() - 1).getId();
+        return sections.get(sections.size() - 1).getTargetStationId();
     }
 
     public Section findSection(Long sourceStationId, Long targetStationId) {
