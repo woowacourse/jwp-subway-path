@@ -1,6 +1,7 @@
 package subway.exception;
 
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 
 import org.slf4j.Logger;
@@ -22,9 +23,15 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
                 .body(new ExceptionResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(NotFoundStationException.class)
-    public ResponseEntity<ExceptionResponse> handleNotFoundException(final NotFoundStationException e) {
+    @ExceptionHandler({NotFoundStationException.class, NotFoundLineException.class})
+    public ResponseEntity<ExceptionResponse> handleNotFoundException(final RuntimeException e) {
         return ResponseEntity.status(NOT_FOUND)
+                .body(new ExceptionResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler({DuplicateStationException.class, DuplicateLineException.class})
+    public ResponseEntity<ExceptionResponse> handleDuplicateException(final RuntimeException e) {
+        return ResponseEntity.status(CONFLICT)
                 .body(new ExceptionResponse(e.getMessage()));
     }
 

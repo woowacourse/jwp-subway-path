@@ -20,7 +20,7 @@ public class LineEntity {
     }
 
     public static LineEntity from(final Line line) {
-        return new LineEntity(line.getName());
+        return new LineEntity(line.getId(), line.getName());
     }
 
     public Line toDomain(final List<Section> sections) {

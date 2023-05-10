@@ -11,6 +11,9 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.exception.DuplicateLineException;
+import subway.exception.NotFoundLineException;
+import subway.exception.NotFoundStationException;
 
 @Service
 @Transactional
@@ -27,7 +30,7 @@ public class LineService {
 
     public Long create(final LineCreateCommand command) {
         if (lineRepository.findByName(command.getLineName()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 노선 이름입니다.");
+            throw new DuplicateLineException(command.getLineName());
         }
         final Station up = findStationByName(command.getUpTerminalName());
         final Station down = findStationByName(command.getDownTerminalName());
@@ -37,7 +40,7 @@ public class LineService {
 
     private Station findStationByName(final String name) {
         return stationRepository.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException(name + " 역이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotFoundStationException(name));
     }
 
     public void addStation(final AddStationToLineCommand command) {
@@ -62,6 +65,6 @@ public class LineService {
 
     private Line findLineByName(final String name) {
         return lineRepository.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new NotFoundLineException(name));
     }
 }

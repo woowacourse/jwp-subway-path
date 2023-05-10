@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.LineQueryResponse;
 import subway.domain.Line;
 import subway.domain.LineRepository;
+import subway.exception.NotFoundLineException;
 
 @Service
 @Transactional(readOnly = true)
@@ -21,7 +22,7 @@ public class LineQueryService {
 
     public LineQueryResponse findById(final Long id) {
         final Line line = lineRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("찾으시는 노선이 없습니다."));
+                .orElseThrow(() -> new NotFoundLineException(id));
         return LineQueryResponse.from(line);
     }
 

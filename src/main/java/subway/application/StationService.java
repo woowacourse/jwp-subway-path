@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.StationCreateCommand;
 import subway.domain.StationRepository;
+import subway.exception.DuplicateStationException;
 
 @Service
 @Transactional
@@ -17,8 +18,8 @@ public class StationService {
     }
 
     public Long create(final StationCreateCommand command) {
-        if (stationRepository.findByName(command.getName()).isPresent()){
-            throw new IllegalArgumentException("이미 존재하는 역입니다.");
+        if (stationRepository.findByName(command.getName()).isPresent()) {
+            throw new DuplicateStationException(command.getName());
         }
         return stationRepository.save(command.toDomain());
     }

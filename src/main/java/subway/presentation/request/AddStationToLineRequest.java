@@ -21,6 +21,22 @@ public class AddStationToLineRequest {
     }
 
     public AddStationToLineCommand toCommand() {
-        return null;
+        return new AddStationToLineCommand(lineName, upStationName, downStationName, distance);
+    }
+
+    public String getLineName() {
+        return lineName;
+    }
+
+    public String getUpStationName() {
+        return upStationName;
+    }
+
+    public String getDownStationName() {
+        return downStationName;
+    }
+
+    public Integer getDistance() {
+        return distance;
     }
 }

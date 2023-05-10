@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import subway.application.dto.StationCreateCommand;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.exception.DuplicateStationException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -43,7 +44,7 @@ class StationServiceTest {
                 .willReturn(Optional.of(new Station("잠실역")));
 
         // when & then
-        assertThrows(IllegalArgumentException.class, () ->
+        assertThrows(DuplicateStationException.class, () ->
                 stationService.create(new StationCreateCommand("잠실역"))
         );
     }

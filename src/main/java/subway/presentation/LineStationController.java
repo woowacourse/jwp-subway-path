@@ -36,5 +36,4 @@ public class LineStationController {
         lineService.removeStation(request.toCommand());
         return ResponseEntity.ok().build();
     }
-
 }

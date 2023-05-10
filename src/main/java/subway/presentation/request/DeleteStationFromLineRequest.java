@@ -15,15 +15,15 @@ public class DeleteStationFromLineRequest {
         this.deleteStationName = deleteStationName;
     }
 
+    public DeleteStationFromLineCommand toCommand() {
+        return new DeleteStationFromLineCommand(lineName, deleteStationName);
+    }
+
     public String getLineName() {
         return lineName;
     }
 
     public String getDeleteStationName() {
         return deleteStationName;
-    }
-
-    public DeleteStationFromLineCommand toCommand() {
-        return new DeleteStationFromLineCommand(lineName, deleteStationName);
     }
 }
