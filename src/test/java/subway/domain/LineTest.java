@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.domain.Direction.LEFT;
 import static subway.domain.Direction.RIGHT;
 
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -164,5 +165,15 @@ class LineTest {
                 new Section("A", "B", 5),
                 new Section("B", "C", 5)
         ));
+    }
+
+    @ParameterizedTest(name = "입력받은 노선명과 동일한지 확인한다. 기존: 1호선, 입력: {0}, 결과: {1}")
+    @CsvSource({"1호선, true", "2호선, false"})
+    void 입력받은_노선명과_동일한지_확인한다(final String name, final boolean result) {
+        // given
+        final Line line = new Line("1호선", "RED", Collections.emptyList());
+
+        // expect
+        assertThat(line.isSameName(name)).isEqualTo(result);
     }
 }

@@ -118,6 +118,10 @@ public class Line {
         sections.remove(originSection);
     }
 
+    public boolean isSameName(final String lineName) {
+        return name.equals(lineName);
+    }
+
     @Override
     public String toString() {
         return "Line{" +
