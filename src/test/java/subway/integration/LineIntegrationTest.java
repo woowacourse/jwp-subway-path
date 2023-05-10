@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import io.restassured.RestAssured;
+import io.restassured.http.ContentType;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.HashMap;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationInsertRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -236,15 +238,14 @@ public class LineIntegrationTest extends IntegrationTest {
         Long stationId = createStation("건대");
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .when().post("/lines/{lineId}/{stationId}", lineId, stationId)
+                .contentType(ContentType.JSON)
+                .body(new StationInsertRequest(stationId, lineId, stationId1, "DOWN", 1))
+                .when().post("/lines/stations")
                 .then().log().all()
                 .extract();
 
         //then
-        assertSoftly(softly -> {
-            softly.assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-            softly.assertThat(response.header("Location")).isNotBlank();
-        });
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     @Test

@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationInsertRequest;
 import subway.service.LineService;
 
 @RestController
@@ -26,9 +27,15 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
         Long id = lineService.create(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
+    }
+
+    @PostMapping("/stations")
+    public ResponseEntity<Void> insertStation(@RequestBody StationInsertRequest stationInsertRequest) {
+//        lineService.insertStation(stationInsertRequest);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping

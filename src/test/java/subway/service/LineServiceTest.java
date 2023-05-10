@@ -1,13 +1,17 @@
 package subway.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import subway.domain.Line;
 import subway.domain.Station;
+import subway.domain.StationEdge;
 import subway.dto.LineRequest;
+import subway.dto.StationInsertRequest;
 import subway.exception.DuplicatedLineNameException;
 import subway.repository.LineRepository;
 import subway.repository.SimpleLineRepository;
@@ -33,36 +37,62 @@ class LineServiceTest {
     @DisplayName("노선을 생성한다.")
     void createLine() {
         //given
-        final String name = "8호선";
-        final String color = "분홍색";
-        final Long upStationId = stationRepository.create(new Station("잠실"));;
-        final Long downStationId = stationRepository.create(new Station("건대"));
-        final int distance = 7;
-
-        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
+        LineRequest lineRequest = createLineRequest();
 
         //when
         Long createdId = lineService.create(lineRequest);
 
         //then
-        Assertions.assertThat(createdId).isNotNull();
+        assertThat(createdId).isNotNull();
+    }
+
+    private LineRequest createLineRequest() {
+        final String name = "8호선";
+        final String color = "분홍색";
+        final Long upStationId = stationRepository.create(new Station("잠실"));
+        final Long downStationId = stationRepository.create(new Station("건대"));
+        final int distance = 7;
+
+        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
+        return lineRequest;
     }
 
     @Test
     @DisplayName("이미 존재하는 이름으로 노선을 생성한다.")
     void createLineWithDuplicatedName() {
         //given
-        final String name = "8호선";
-        final String color = "분홍색";
-        final Long upStationId = stationRepository.create(new Station("잠실"));;
-        final Long downStationId = stationRepository.create(new Station("건대"));
-        final int distance = 7;
-        lineService.create(new LineRequest(name, color, upStationId, downStationId, distance));
+        lineService.create(createLineRequest());
+        LineRequest lineRequest = createLineRequest();
 
-        LineRequest lineRequest = new LineRequest(name, color, upStationId, downStationId, distance);
         //when
         //then
         assertThatThrownBy(() -> lineService.create(lineRequest))
                 .isInstanceOf(DuplicatedLineNameException.class);
+    }
+
+    @Test
+    @DisplayName("노선에 역을 추가한다.")
+    void insertStation() {
+        //given
+        LineRequest lineRequest = createLineRequest();
+        Long lineId = lineService.create(lineRequest);
+
+        Long stationId = stationRepository.create(new Station("강남"));
+
+        // upstation 에서 1 떨어진 곳에 추가....
+        StationInsertRequest stationInsertRequest = new StationInsertRequest(stationId, lineId,
+                lineRequest.getUpStationId(), "DOWN",
+                1);
+        //when
+        lineService.insertStation(stationInsertRequest);
+
+        //then
+        Line line = lineRepository.findByName(lineRequest.getName()).get();
+        assertThat(line.getStationEdges().get(1).getDownStationId()).isEqualTo(stationId);
+
+        StationEdge updatedStationEdge = line.getStationEdges().stream()
+                .filter(stationEdge -> stationEdge.getDownStationId().equals(lineRequest.getDownStationId()))
+                .findFirst().get();
+        assertThat(updatedStationEdge.getDistance()).isEqualTo(6);
     }
 }

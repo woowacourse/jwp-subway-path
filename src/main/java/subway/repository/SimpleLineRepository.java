@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.domain.StationEdge;
 
 @Repository
 public class SimpleLineRepository implements LineRepository {
@@ -19,6 +20,11 @@ public class SimpleLineRepository implements LineRepository {
     }
 
     @Override
+    public Optional<Line> findById(Long id) {
+        return lines.stream().filter(line -> line.getId().equals(id)).findFirst();
+    }
+
+    @Override
     public Optional<Line> findByName(String name) {
         return lines.stream().filter(line -> line.getName().equals(name)).findFirst();
     }
@@ -27,5 +33,15 @@ public class SimpleLineRepository implements LineRepository {
     public Long create(Line line) {
         lines.add(Line.of(idIndex, line.getName(), line.getColor(), line.getStationEdges()));
         return idIndex++;
+    }
+
+    @Override
+    public void updateWithSavedEdge(Line line, StationEdge stationEdge) {
+        Line originalLine = lines.stream().filter(l -> l.getId().equals(line.getId()))
+                .findFirst()
+                .get();
+
+        lines.remove(originalLine);
+        lines.add(line);
     }
 }

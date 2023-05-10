@@ -1,11 +1,18 @@
 package subway.service;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
+import subway.domain.LineDirection;
 import subway.domain.Station;
 import subway.domain.StationEdge;
+import subway.domain.dto.InsertionResult;
 import subway.dto.LineRequest;
+import subway.dto.StationInsertRequest;
 import subway.exception.DuplicatedLineNameException;
+import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -23,16 +30,45 @@ public class LineService {
     }
 
     public Long create(LineRequest lineRequest) {
-        final Station upStation = stationRepository.findById(lineRequest.getUpStationId())
-                .orElseThrow(StationNotFoundException::new);
-        final Station downStation = stationRepository.findById(lineRequest.getDownStationId())
-                .orElseThrow(StationNotFoundException::new);
-        final StationEdge stationEdge = new StationEdge(upStation, downStation, lineRequest.getDistance());
-        final Line line = Line.of(lineRequest.getName(), lineRequest.getColor(), stationEdge);
+        final Station upStation = findStationById(lineRequest.getUpStationId());
+        final Station downStation = findStationById(lineRequest.getDownStationId());
+
+        final StationEdge upEndEdge = new StationEdge(upStation.getId(), 0);
+        final StationEdge downEndEdge = new StationEdge(downStation.getId(), lineRequest.getDistance());
+
+        final Line line = Line.of(lineRequest.getName(), lineRequest.getColor(), List.of(upEndEdge, downEndEdge));
 
         lineRepository.findByName(line.getName()).ifPresent( lineWithSameName -> {
             throw new DuplicatedLineNameException(line.getName());
         });
+
         return lineRepository.create(line);
+    }
+
+    @Transactional
+    public void insertStation(StationInsertRequest stationInsertRequest) {
+        Long stationId = stationInsertRequest.getStationId();
+        findStationById(stationId);
+        Long adjacentStationId = stationInsertRequest.getAdjacentStationId();
+        findStationById(adjacentStationId);
+
+        Line line = lineRepository.findById(stationInsertRequest.getLineId())
+                .orElseThrow(LineNotFoundException::new);
+
+        // TODO: 이미 존재하는 역인지 검증.
+
+        InsertionResult insertionResult = line.insertStation(stationId, adjacentStationId,
+                stationInsertRequest.getDistance(), LineDirection.valueOf(stationInsertRequest.getDirection()));
+        StationEdge insertedEdge = insertionResult.getInsertedEdge();
+
+        lineRepository.updateWithSavedEdge(line, insertedEdge);
+
+        Optional.ofNullable(insertionResult.getUpdatedEdge())
+                .ifPresent(updatedEdge -> lineRepository.updateWithSavedEdge(line, updatedEdge));
+    }
+
+    private Station findStationById(Long stationId) {
+        return stationRepository.findById(stationId)
+                .orElseThrow(StationNotFoundException::new);
     }
 }
