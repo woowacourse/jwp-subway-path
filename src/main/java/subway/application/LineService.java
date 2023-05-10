@@ -39,7 +39,7 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id).orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 없습니다."));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

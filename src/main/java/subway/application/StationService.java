@@ -1,13 +1,12 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
 import subway.domain.station.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -23,7 +22,7 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        return StationResponse.of(getById(id));
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -40,5 +39,10 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    private Station getById(final Long id) {
+        return stationDao.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당하는 역이 없습니다."));
     }
 }
