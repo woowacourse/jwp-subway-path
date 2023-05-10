@@ -1,14 +1,22 @@
 package subway.ui;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-import subway.application.StationService;
-
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import javax.annotation.PostConstruct;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import subway.application.StationService;
+import subway.dto.StationRequest;
+import subway.dto.StationResponse;
 
 @RestController
 @RequestMapping("/stations")
@@ -17,6 +25,17 @@ public class StationController {
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
+    }
+
+    @PostConstruct
+    public void init() {
+        stationService.saveStation(new StationRequest("종각역"));
+        stationService.saveStation(new StationRequest("서울역"));
+        stationService.saveStation(new StationRequest("시청역"));
+        stationService.saveStation(new StationRequest("아현역"));
+        stationService.saveStation(new StationRequest("잠실역"));
+        stationService.saveStation(new StationRequest("잠실새내역"));
+
     }
 
     @PostMapping
