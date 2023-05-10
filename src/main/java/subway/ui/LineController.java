@@ -14,6 +14,7 @@ import java.util.List;
 @RequestMapping("/lines")
 public class LineController {
 
+/*
     private final LineService lineService;
 
     public LineController(LineService lineService) {
@@ -49,7 +50,10 @@ public class LineController {
     }
 
     @ExceptionHandler(SQLException.class)
+
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
     }
+
+ */
 }

@@ -3,6 +3,7 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
 import subway.domain.Station;
+import subway.dto.AddStationRequest;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
@@ -10,16 +11,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class StationService {
+public class SubwayService {
     private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    public SubwayService(StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public long addStation(AddStationRequest addStationRequest) {
+        long stationId = stationDao.insert(new Station(addStationRequest.getName()));
+        return stationId;
     }
 
     public StationResponse findStationResponseById(Long id) {
