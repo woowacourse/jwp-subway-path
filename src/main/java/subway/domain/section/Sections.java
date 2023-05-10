@@ -1,4 +1,4 @@
-package subway.domain.station;
+package subway.domain.section;
 
 import java.util.LinkedList;
 import java.util.List;

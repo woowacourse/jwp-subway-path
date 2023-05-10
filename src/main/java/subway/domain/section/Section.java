@@ -1,4 +1,7 @@
-package subway.domain.station;
+package subway.domain.section;
+
+import subway.domain.station.Station;
+import subway.domain.station.StationDistance;
 
 public class Section {
     private final Station from;
