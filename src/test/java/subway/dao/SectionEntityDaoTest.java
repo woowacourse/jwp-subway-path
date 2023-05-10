@@ -17,9 +17,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import subway.entity.SectionEntity;
 import subway.fixture.LineFixture.이호선;
-import subway.fixture.SectionFixture;
-import subway.fixture.SectionFixture.이호선_삼성_잠실;
-import subway.fixture.SectionFixture.이호선_역삼_삼성;
+import subway.fixture.SectionFixture.이호선_삼성_잠실_2;
+import subway.fixture.SectionFixture.이호선_역삼_삼성_3;
 import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.역삼역;
 import subway.fixture.StationFixture.잠실역;
@@ -55,7 +54,7 @@ class SectionEntityDaoTest {
 
     @Test
     void 삽입_테스트() {
-        SectionEntity sectionEntity = sectionDao.insert(SectionFixture.이호선_역삼_삼성.ENTITY);
+        SectionEntity sectionEntity = sectionDao.insert(이호선_역삼_삼성_3.ENTITY);
         SectionEntity result = jdbcTemplate.queryForObject("SELECT * FROM section WHERE id = ?", sectionRowMapper,
                 sectionEntity.getId());
         assertThat(result).isNotNull();
@@ -74,7 +73,7 @@ class SectionEntityDaoTest {
                 () -> assertThat(sectionEntities)
                         .usingRecursiveComparison()
                         .ignoringFields("id")
-                        .isEqualTo(List.of(이호선_역삼_삼성.ENTITY, 이호선_삼성_잠실.ENTITY))
+                        .isEqualTo(List.of(이호선_역삼_삼성_3.ENTITY, 이호선_삼성_잠실_2.ENTITY))
         );
     }
 
@@ -93,7 +92,7 @@ class SectionEntityDaoTest {
         assertThat(sectionEntity)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(이호선_삼성_잠실.ENTITY);
+                .isEqualTo(이호선_삼성_잠실_2.ENTITY);
     }
 
     @Test
