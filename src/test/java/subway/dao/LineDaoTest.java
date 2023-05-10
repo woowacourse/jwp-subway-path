@@ -3,6 +3,7 @@ package subway.dao;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static subway.data.LineFixture.LINE_2;
 
+import java.util.Optional;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -40,4 +41,17 @@ class LineDaoTest {
         assertThat(result.getColor()).isEqualTo(LINE_2.getColor());
     }
 
+    @Test
+    @DisplayName("노선을 이름으로 찾는다.")
+    void findByName() {
+        // given
+        Line insertedLine = lineDao.insert(LINE_2);
+
+        // when
+        Optional<Line> result = lineDao.findByName(insertedLine.getName());
+
+        // then
+        assertThat(result.get().getName()).isEqualTo(insertedLine.getName());
+        assertThat(result.get().getColor()).isEqualTo(insertedLine.getColor());
+    }
 }
