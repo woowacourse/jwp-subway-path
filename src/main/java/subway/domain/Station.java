@@ -23,16 +23,16 @@ public class Station {
     }
 
     public Station(Long id, String name, Station next, Distance distance) {
-        this.name = name;
-        validateSameStations(next);
+        validateSameStations(name, next);
         this.id = id;
+        this.name = name;
         this.next = next;
         this.distance = distance;
     }
 
     public Station(String name, Station next, Distance distance) {
+        validateSameStations(name, next);
         this.name = name;
-        validateSameStations(next);
         this.next = next;
         this.distance = distance;
     }
@@ -50,8 +50,8 @@ public class Station {
         return false;
     }
 
-    private void validateSameStations(Station next) {
-        if (next.equals(this)) {
+    private void validateSameStations(String name, Station next) {
+        if (next.name.equals(name)) {
             throw new IllegalArgumentException("상행역과 하행역은 같은 이름을 가질 수 없습니다.");
         }
     }
