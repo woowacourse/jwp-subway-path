@@ -76,4 +76,17 @@ class StationServiceTest {
                         StationResponse.of(강남역)
                 ));
     }
+
+    @Test
+    void id_saveRequest를_받아_역을_업데이트_한다() {
+        // given
+        final Long id = 1L;
+        final StationSaveRequest request = new StationSaveRequest("자암실역");
+
+        // when
+        stationService.updateStation(id, request);
+
+        // then
+        verify(stationDao, times(1)).updateById(id, request.toEntity());
+    }
 }

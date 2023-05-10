@@ -43,9 +43,9 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(Station newStation) {
+    public void updateById(Long id, Station newStation) {
         String sql = "update STATIONS set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        jdbcTemplate.update(sql, new Object[]{newStation.getName(), id});
     }
 
     public void deleteById(Long id) {

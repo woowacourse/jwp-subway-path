@@ -82,10 +82,10 @@ class StationDaoTest {
     void 등록된_역을_수정한다() {
         // given
         final Long id = stationDao.insert(GangnamStation.gangnamStation);
-        final Station 선릉역 = Station.of(id, "선릉역");
+        final Station 선릉역 = Station.of("선릉역");
 
         // when
-        stationDao.update(선릉역);
+        stationDao.updateById(id, 선릉역);
         final Station result = stationDao.findById(id);
 
         // then

@@ -36,8 +36,8 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationSaveRequest stationSaveRequest) {
-//        stationDao.update(Station.of(id, stationSaveRequest.getFrom()));
+    public void updateStation(Long id, StationSaveRequest request) {
+        stationDao.updateById(id, request.toEntity());
     }
 
     public void deleteStationById(Long id) {
