@@ -4,25 +4,25 @@ import java.util.Objects;
 
 public class Section {
     private final Long id;
-    private final Station src;
-    private final Station tar;
-    private final Line line;
-    private final Distance distance;
+    private final Long sourceStationId;
+    private final Long targetStationId;
+    private final Long lineId;
+    private final Integer distance;
 
-    public Section(Long id, Station src, Station tar, Line line, Distance distance) {
+    public Section(Long id, Long sourceStationId, Long targetStationId, Long lineId, Integer distance) {
         this.id = id;
-        this.src = src;
-        this.tar = tar;
-        this.line = line;
+        this.sourceStationId = sourceStationId;
+        this.targetStationId = targetStationId;
+        this.lineId = lineId;
         this.distance = distance;
     }
 
     public boolean isSrc(Long sourceStationId) {
-        return src.getId().equals(sourceStationId);
+        return this.sourceStationId.equals(sourceStationId);
     }
 
     public boolean isTar(Long targetStationId) {
-        return tar.getId().equals(targetStationId);
+        return this.targetStationId.equals(targetStationId);
     }
 
     public boolean containsTheseStations(Long sourceStationId, Long targetStationId) {
@@ -31,26 +31,26 @@ public class Section {
     }
 
     public boolean hasShorterOrSameDistanceThan(Integer distance) {
-        return this.distance.value() <= distance;
+        return this.distance <= distance;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Station getSrc() {
-        return src;
+    public Long getSourceStationId() {
+        return sourceStationId;
     }
 
-    public Station getTar() {
-        return tar;
+    public Long getTargetStationId() {
+        return targetStationId;
     }
 
-    public Line getLine() {
-        return line;
+    public Long getLine() {
+        return lineId;
     }
 
-    public Distance getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 
@@ -61,13 +61,17 @@ public class Section {
         if (o == null || getClass() != o.getClass())
             return false;
         Section section = (Section)o;
-        return Objects.equals(src, section.src) && Objects.equals(tar, section.tar)
-            && Objects.equals(line, section.line) && Objects.equals(distance, section.distance);
+        return Objects.equals(id, section.id) && Objects.equals(sourceStationId,
+            section.sourceStationId) && Objects.equals(targetStationId, section.targetStationId)
+            && Objects.equals(lineId, section.lineId) && Objects.equals(distance, section.distance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(src, tar, line, distance);
+        return Objects.hash(id, sourceStationId, targetStationId, lineId, distance);
     }
 
+    public boolean includeStation(Long stationId) {
+        return isSrc(stationId) || isTar(stationId);
+    }
 }

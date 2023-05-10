@@ -2,8 +2,11 @@ package subway.dao;
 
 import java.util.List;
 
+import org.springframework.stereotype.Repository;
+
 import subway.domain.Section;
 
+@Repository
 public class SectionDao {
     public Long insert(Section section) {
         return 1L;
@@ -13,13 +16,16 @@ public class SectionDao {
         return List.of();
     }
 
-    public Long findfirstStation() {
+    public Long findFirstStation() {
+        return null;
     }
 
-    public Long findlastStation() {
+    public Long findLastStation() {
+        return null;
     }
 
     public Section findById(Long sectionId) {
+        return null;
     }
 
     public void deleteById(Long id) {

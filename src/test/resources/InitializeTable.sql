@@ -1,2 +1,1 @@
 truncate table line;
-insert

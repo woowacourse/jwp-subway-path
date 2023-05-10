@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
 import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionAddRequest;
-import subway.dto.SectionResponse;
+import subway.dto.SectionAddResponse;
 
 @RequestMapping("/sections")
 @RestController
@@ -24,18 +24,18 @@ public class SectionController {
     }
 
     @PostMapping("/initial")
-    public ResponseEntity<SectionResponse> addInitialSection(
+    public ResponseEntity<SectionAddResponse> addInitialSection(
         @RequestBody InitialSectionAddRequest initialSectionAddRequest) {
-        SectionResponse sectionResponse = sectionService.addSection(initialSectionAddRequest);
-        return ResponseEntity.created(URI.create("/sections/" + sectionResponse.getId()))
-            .body(sectionResponse);
+        SectionAddResponse sectionAddResponse = sectionService.addSection(initialSectionAddRequest);
+        return ResponseEntity.created(URI.create("/sections/" + sectionAddResponse.getId()))
+            .body(sectionAddResponse);
     }
 
     @PostMapping
-    public ResponseEntity<List<SectionResponse>> addSection(@RequestBody SectionAddRequest sectionAddRequest) {
-        List<SectionResponse> sectionResponses = sectionService.addSection(sectionAddRequest);
+    public ResponseEntity<List<SectionAddResponse>> addSection(@RequestBody SectionAddRequest sectionAddRequest) {
+        List<SectionAddResponse> sectionAddRespons = sectionService.addSection(sectionAddRequest);
         return ResponseEntity.created(
-                URI.create("/sections/" + sectionResponses.get(0).getId() + "," + sectionResponses.get(1).getId()))
-            .body(sectionResponses);
+                URI.create("/sections/" + sectionAddRespons.get(0).getId() + "," + sectionAddRespons.get(1).getId()))
+            .body(sectionAddRespons);
     }
 }
