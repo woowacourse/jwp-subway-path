@@ -48,6 +48,20 @@ public class SectionDao {
         return new Section(sectionId, section);
     }
 
+    public Optional<Section> findById(final Long id) {
+        final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION where id = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public void deleteById(final Long id) {
+        final String sql = "delete from SECTION where id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
     public List<Section> findByLineId(final Long lineId) {
         final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);

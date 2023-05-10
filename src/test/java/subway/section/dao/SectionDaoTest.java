@@ -82,7 +82,7 @@ class SectionDaoTest {
                 sectionId2 = section2.getId();
             }
 
-            @DisplayName("LineId로 Section들을 검색한다.")
+            @DisplayName("lineId로 구간들을 검색한다.")
             @Test
             void findByLineId() {
                 final List<Section> sections = sectionDao.findByLineId(lineId);
@@ -90,6 +90,24 @@ class SectionDaoTest {
                         () -> assertThat(sections.get(0).getId()).isEqualTo(sectionId1),
                         () -> assertThat(sections.get(1).getId()).isEqualTo(sectionId2)
                 );
+            }
+
+            @DisplayName("id로 구간을 검색한다.")
+            @Test
+            void findById() {
+                final Optional<Section> result = sectionDao.findById(sectionId1);
+                assertAll(
+                        () -> assertThat(result).isPresent(),
+                        () -> assertThat(result.get().getId()).isEqualTo(sectionId1)
+                );
+            }
+
+            @DisplayName("id로 구간을 삭제한다.")
+            @Test
+            void deleteById() {
+                sectionDao.deleteById(sectionId1);
+                final Optional<Section> result = sectionDao.findById(sectionId1);
+                assertThat(result).isEmpty();
             }
 
             @DisplayName("특정 역에서 특정 방향에 인접한 역을 검색한다.")
