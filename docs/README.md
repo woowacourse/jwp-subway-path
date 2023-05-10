@@ -6,8 +6,8 @@
   - Request
     - station-name
     - line-name
-    - upstream-name
-    - downstream-name
+    - upstream-name(상행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
+    - downstream-name(하행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
     - distance-to-upstream
 
   - Response
@@ -17,7 +17,6 @@
       - (line-name이 존재하지 않는 경우)
       - (upstream-name, downstream-name이 Section으로 존재하지 않는 경우)
       - (distance-to-upstream >= distance(upstream, downstream)인 경우)
-      - (종점이 아닌 station에 종점을 추가하는 경우)
       - (station-name이 이미 Line에 존재하는 경우)
     - 201 CREATED
 
@@ -49,9 +48,9 @@
 
 ## 도메인
 
-- [ ] Station
-  - [ ] 역 이름을 갖는다.
-    - [ ] 역 이름이 2글자 이상 15글자 이하가 아닌 경우 예외를 던진다.
+- [x] Station
+  - [x] 역 이름을 갖는다.
+    - [x] 역 이름이 2글자 이상 15글자 이하가 아닌 경우 예외를 던진다.
 
 - [ ] Section
   - [ ] 하행역, 상행역에 해당하는 Station을 갖는다.
