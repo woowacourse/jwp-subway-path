@@ -34,12 +34,12 @@ public class StationsDao {
         return jdbcTemplate.queryForObject(sql, Integer.class, line.getId());
     }
 
-    public void initialize(Stations stations) {
+    public long initialize(Stations stations) {
         if (countStations(stations.getLine()) != 0) {
             throw new IllegalArgumentException("이미 초기 설정이 완료된 노선입니다.");
         }
 
-        insertAndReturnId(
+        long savedId = insertAndReturnId(
                 stations.getLine().getId(),
                 stations.getPreviousStation().getId(),
                 stations.getNextStation().getId(),
@@ -52,6 +52,8 @@ public class StationsDao {
                 null,
                 0
         );
+
+        return savedId;
     }
 
     public Stations insert(Stations stations) {
