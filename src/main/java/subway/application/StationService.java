@@ -18,7 +18,7 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        Station station = stationDao.insert(Station.from(stationRequest.getName()));
         return StationResponse.of(station);
     }
 

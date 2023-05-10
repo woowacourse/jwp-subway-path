@@ -10,14 +10,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 class StationTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"잠실역,true", "선릉역,false"})
-    @DisplayName("역 이름이 동일한지 아닌지 확인할 수 있다")
+    @CsvSource(value = {"잠실,true", "선릉,false"})
+    @DisplayName("역 이름이 동일한지 아닌지 확인할 수 있다.")
     void isSameNameTest(String name, boolean expected) {
         // given
-        Station station = new Station(1L, "잠실역");
+        Station station = new Station(1L, "잠실");
 
         // when
-        boolean result = station.isSameName(name);
+        boolean result = station.isSameName(new Station(null, name));
 
         // then
         assertThat(result).isEqualTo(expected);
