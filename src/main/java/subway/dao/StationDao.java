@@ -1,7 +1,9 @@
 package subway.dao;
 
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -33,6 +35,15 @@ public class StationDao {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();
         return new Station(id, station.getName());
+    }
+
+    public Optional<Station> findByName(String name) {
+        String sql = "select id, name from STATION WHERE name = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<Station> findAll() {
