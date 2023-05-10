@@ -47,9 +47,15 @@ class LineTest {
                 new Distance(3)
         ));
 
+        line.addSection(new Section(
+                new Station("테오"),
+                new Station("제이온"),
+                new Distance(1)
+        ));
+
         Section section = new Section(
                 new Station("푸우"),
-                new Station("테오"),
+                new Station("제이온"),
                 new Distance(1)
         );
 

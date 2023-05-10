@@ -20,15 +20,19 @@ public class Section {
         return left.equals(station) || right.equals(station);
     }
 
-    public boolean sameSectionWith(Section section) {
-        return hasStationOf(section.left) && hasStationOf(section.right);
-    }
-
     public boolean isDistanceBiggerThan(Section target) {
         return distance.isBiggerThan(target.distance);
     }
 
     public boolean includeSection(Section target) {
         return target.right.equals(right) || target.left.equals(left);
+    }
+
+    public boolean containRightStationOf(Section target) {
+        return right.equals(target.right) || left.equals(target.right);
+    }
+
+    public boolean containLeftStationOf(Section target) {
+        return right.equals(target.left) || left.equals(target.left);
     }
 }

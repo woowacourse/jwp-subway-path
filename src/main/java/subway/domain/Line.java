@@ -52,10 +52,11 @@ public class Line {
     }
 
     private void validateDuplication(Section target) {
-        findSectionOf(section -> section.sameSectionWith(target))
-                .ifPresent(ignored -> {
-                    throw new IllegalStateException("해당 노선은 이미 존재합니다.");
-                });
+        boolean existLeftStation = sections.stream().anyMatch(section -> section.containLeftStationOf(target));
+        boolean existRightStation = sections.stream().anyMatch(section -> section.containRightStationOf(target));
+        if(existLeftStation && existRightStation){
+            throw new IllegalStateException("이미 노선에 등록된 역입니다.");
+        }
     }
 
     private void validateDistance(Section target) {
