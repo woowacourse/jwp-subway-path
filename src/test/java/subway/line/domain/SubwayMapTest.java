@@ -1,0 +1,45 @@
+package subway.line.domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import subway.section.domain.Section;
+import subway.station.domain.Station;
+
+class SubwayMapTest {
+
+    @DisplayName("노선의 경로 조회 테스트")
+    @Test
+    void getStations() {
+        final Station station1 = new Station(1L, "1L");
+        final Station station2 = new Station(2L, "2L");
+        final Station station3 = new Station(3L, "3L");
+        final Station station4 = new Station(4L, "4L");
+        final Station station5 = new Station(5L, "5L");
+        final Station station6 = new Station(6L, "6L");
+        final Station station7 = new Station(7L, "7L");
+
+        final List<Section> sections = List.of(
+                new Section(1L, 1L, station1, station2, 3),
+                new Section(2L, 1L, station2, station3, 3),
+                new Section(3L, 1L, station3, station4, 3),
+                new Section(4L, 1L, station4, station5, 3),
+                new Section(5L, 1L, station5, station6, 3),
+                new Section(6L, 1L, station6, station7, 3)
+        );
+
+        final SubwayMap subwayMap = SubwayMap.of(sections);
+        assertThat(subwayMap.getStations()).containsExactly(
+                station1,
+                station2,
+                station3,
+                station4,
+                station5,
+                station6,
+                station7
+        );
+    }
+}
