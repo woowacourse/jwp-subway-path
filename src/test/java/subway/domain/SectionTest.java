@@ -1,5 +1,6 @@
 package subway.domain;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +15,22 @@ class SectionTest {
         // given
         Station upwardStation = Station.of(2L, "잠실나루");
         Station downwardStation = Station.of(1L, "잠실");
+        Line line = Line.of("2호선", "초록색");
 
         // then
-        assertDoesNotThrow(() -> Section.of(upwardStation, downwardStation, 10));
+        assertDoesNotThrow(() -> Section.of(upwardStation, downwardStation, 10, line));
+    }
+
+    @Test
+    @DisplayName("상행 방향 역과 하행 방향 역이 동일하면 예외처리한다.")
+    void sectionHasSameStationExceptionTest() {
+        // given
+        Station upwardStation = Station.of(1L, "잠실나루");
+        Line line = Line.of("2호선", "초록색");
+
+        // then
+        assertThatThrownBy(() -> Section.of(upwardStation, upwardStation, 10, line))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 구간을 구성하는 역은 동일한 역일 수 없습니다.");
     }
 }
