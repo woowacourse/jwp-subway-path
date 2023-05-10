@@ -10,6 +10,7 @@ import subway.domain.entity.LineEntity;
 import subway.domain.entity.SectionEntity;
 import subway.domain.entity.StationEntity;
 import subway.dto.section.SectionCreateRequest;
+import subway.dto.section.SectionDeleteRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -123,7 +124,80 @@ public class SectionService {
 
     @Transactional(readOnly = true)
     public List<SectionEntity> findSectionsByLineNumber(final Long lineNumber) {
+        return getSectionEntities(lineNumber);
+    }
+
+    private List<SectionEntity> getSectionEntities(final Long lineNumber) {
         LineEntity lineEntity = lineService.findByLineNumber(lineNumber);
         return sectionDao.findSectionsByLineId(lineEntity.getLineId());
+    }
+
+    @Transactional
+    public void deleteSection(final SectionDeleteRequest req) {
+        Long lineNumber = req.getLineNumber();
+        String targetStation = req.getStation();
+
+        List<SectionEntity> sectionEntities = getSectionEntities(lineNumber);
+
+        long nearStationCount = sectionEntities.stream()
+                .filter(section -> {
+                    StationEntity upStationEntity = stationService.findStationEntityById(section.getUpStationId());
+                    StationEntity downStationEntity = stationService.findStationEntityById(section.getDownStationId());
+                    StationEntity targetStationEntity = stationService.findStationByName(targetStation);
+
+                    return upStationEntity.equals(targetStationEntity) || downStationEntity.equals(targetStationEntity);
+                })
+                .count();
+
+        if (nearStationCount == 1) {
+            // target 역이 종점인 경우
+            SectionEntity targetSectionEntity = sectionEntities.stream()
+                    .filter(section -> {
+                        StationEntity upStationEntity = stationService.findStationEntityById(section.getUpStationId());
+                        StationEntity downStationEntity = stationService.findStationEntityById(section.getDownStationId());
+                        StationEntity targetStationEntity = stationService.findStationByName(targetStation);
+
+                        return upStationEntity.equals(targetStationEntity) || downStationEntity.equals(targetStationEntity);
+                    })
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException("잘못된 요청입니다."));
+
+            sectionDao.remove(targetSectionEntity);
+        }
+
+        if (nearStationCount == 2) {
+            // target 역이 중간에 껴있는 경우
+            List<SectionEntity> targetSectionEntities = sectionEntities.stream()
+                    .filter(section -> {
+                        StationEntity upStationEntity = stationService.findStationEntityById(section.getUpStationId());
+                        StationEntity downStationEntity = stationService.findStationEntityById(section.getDownStationId());
+                        StationEntity targetStationEntity = stationService.findStationByName(targetStation);
+
+                        return upStationEntity.equals(targetStationEntity) || downStationEntity.equals(targetStationEntity);
+                    })
+                    .collect(Collectors.toList());
+
+            StationEntity targetStationEntity = stationService.findStationByName(targetStation);
+
+            // target이 상행으로 존재하는 section
+            SectionEntity upStationTargetSectionEntity = targetSectionEntities.stream()
+                    .filter(target -> target.getUpStationId().equals(targetStationEntity.getStationId()))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException("잘못된 요청입니다."));
+
+            // target이 하행으로 존재하는 section
+            SectionEntity downStationTargetSectionEntity = targetSectionEntities.stream()
+                    .filter(target -> target.getDownStationId().equals(targetStationEntity.getStationId()))
+                    .findAny()
+                    .orElseThrow(() -> new IllegalArgumentException("잘못된 요청입니다."));
+
+            LineEntity lineEntity = lineService.findByLineNumber(lineNumber);
+
+            SectionEntity newSectionEntity = new SectionEntity(null, lineEntity.getLineId(), downStationTargetSectionEntity.getUpStationId(), upStationTargetSectionEntity.getDownStationId(), upStationTargetSectionEntity.getDistance() + downStationTargetSectionEntity.getDistance());
+
+            sectionDao.remove(upStationTargetSectionEntity);
+            sectionDao.remove(downStationTargetSectionEntity);
+            sectionDao.insert(newSectionEntity);
+        }
     }
 }
