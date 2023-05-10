@@ -5,13 +5,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.dto.CreationLineDto;
-import subway.dto.LineRequest;
 import subway.dto.ReadLineResponse;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.response.CreationLineResponse;
@@ -43,12 +41,6 @@ public class LineController {
     @GetMapping("/{id}")
     public ResponseEntity<ReadLineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
