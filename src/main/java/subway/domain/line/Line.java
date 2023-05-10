@@ -115,4 +115,31 @@ public class Line {
     public List<Station> show() {
         return sections.getUpwards();
     }
+
+    public void deleteStation(final Station upward) {
+        final int position = sections.findPosition(upward);
+        if (position == -1) {
+            throw new InvalidSectionException("노선에 해당 역이 존재하지 않습니다.");
+        }
+
+        if (sections.size() == 2) {
+            sections.clear();
+            return;
+        }
+
+        if (position == 0) {
+            sections.deleteByPosition(position);
+            return;
+        }
+
+        final Section targetSection = sections.findSectionByPosition(position);
+        final Section previousSection = sections.findSectionByPosition(position - 1);
+
+        sections.deleteByPosition(position - 1);
+        sections.deleteByPosition(position - 1);
+
+        sections.add(position - 1,
+                new Section(previousSection.getUpward(), targetSection.getDownward(),
+                        targetSection.getDistance() + previousSection.getDistance()));
+    }
 }

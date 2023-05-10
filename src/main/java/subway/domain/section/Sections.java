@@ -56,4 +56,8 @@ public class Sections {
     public int size() {
         return sections.size();
     }
+
+    public void clear() {
+        sections.clear();
+    }
 }

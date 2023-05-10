@@ -16,24 +16,24 @@ import subway.exception.InvalidSectionException;
 
 class LineTest {
 
+    private Line line;
+    private Station upward;
+    private Station downward;
+
+    @BeforeEach
+    void setUp() {
+        upward = new Station(1L, "잠실역");
+        downward = new Station(2L, "종합운동장역");
+        final List<Section> sections = List.of(
+                new Section(upward, downward, 10),
+                new Section(downward, Station.TERMINAL, 0)
+        );
+        line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+    }
+
     @Nested
     @DisplayName("노선 역 추가 시 ")
     class AddSection {
-
-        private Line line;
-        private Station upward;
-        private Station downward;
-
-        @BeforeEach
-        void setUp() {
-            upward = new Station(1L, "잠실역");
-            downward = new Station(2L, "종합운동장역");
-            final List<Section> sections = List.of(
-                    new Section(upward, downward, 10),
-                    new Section(downward, Station.TERMINAL, 0)
-            );
-            line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
-        }
 
         @Test
         @DisplayName("노선에 역을 최초 추가한다.")
@@ -144,6 +144,64 @@ class LineTest {
             assertThatThrownBy(() -> line.addSection(upward, additionStation, 10))
                     .isInstanceOf(InvalidDistanceException.class)
                     .hasMessage("추가될 역의 거리는 추가될 위치의 두 역사이의 거리보다 작아야합니다.");
+        }
+    }
+
+    @Nested
+    @DisplayName("노선에서 역 제거할 시 ")
+    class DeleteStation {
+
+        @Test
+        @DisplayName("역이 2개일 때 역을 제거한다.")
+        void deleteStationAtInitialState() {
+            //given
+            //when
+            line.deleteStation(upward);
+
+            //then
+            final List<Station> result = line.show();
+            assertThat(result).isEmpty();
+        }
+
+        @Test
+        @DisplayName("역이 2개가 아닐 때 맨 앞의 역을 제거한다.")
+        void deleteStationAtFirst() {
+            //given
+            final Station additionStation = new Station(3L, "잠실새내역");
+            line.addSection(upward, additionStation, 3);
+
+            //when
+            line.deleteStation(upward);
+
+            //then
+            final List<Station> result = line.show();
+            assertThat(result).containsExactly(additionStation, downward);
+        }
+
+        @Test
+        @DisplayName("역이 2개가 아닐 때 중간의 역을 제거한다.")
+        void deleteStationBetweenStations() {
+            //given
+            final Station additionStation = new Station(3L, "잠실새내역");
+            line.addSection(upward, additionStation, 3);
+
+            //when
+            line.deleteStation(additionStation);
+
+            //then
+            final List<Station> result = line.show();
+            assertThat(result).containsExactly(upward, downward);
+        }
+
+        @Test
+        @DisplayName("역이 존재하지 않을 때 예외를 던진다.")
+        void deleteStationWithNotExistStation() {
+            //given
+            //when
+            //then
+            assertThatThrownBy(() -> line.deleteStation(new Station(3L, "잠실새내역")))
+                    .isInstanceOf(InvalidSectionException.class)
+                    .hasMessage("노선에 해당 역이 존재하지 않습니다.");
         }
     }
 }
