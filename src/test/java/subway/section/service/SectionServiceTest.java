@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.DisplayName;
@@ -18,7 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.section.dao.SectionDao;
 import subway.section.domain.Section;
-import subway.section.dto.SectionResponse;
 
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
@@ -36,8 +36,8 @@ class SectionServiceTest {
             final Section inputSection = invocation.getArgument(0);
             return inputSection;
         });
-        final SectionResponse sectionResponse = sectionService.createSection(1L, 2L, 3L, true, 5);
-        assertThat(sectionResponse.getSections()).containsExactly(new Section(null, 1L, 3L, 2L, 5));
+        final List<Section> sections = sectionService.createSection(1L, 2L, 3L, true, 5);
+        assertThat(sections).containsExactly(new Section(null, 1L, 3L, 2L, 5));
     }
 
     @DisplayName("인접한 역이 없을 때 기준역 아래에 역을 추가한 경우 만든 구간 하나가 반환된다.")
@@ -48,8 +48,8 @@ class SectionServiceTest {
             final Section inputSection = invocation.getArgument(0);
             return inputSection;
         });
-        final SectionResponse sectionResponse = sectionService.createSection(1L, 2L, 3L, false, 5);
-        assertThat(sectionResponse.getSections()).containsExactly(new Section(null, 1L, 2L, 3L, 5));
+        final List<Section> sections = sectionService.createSection(1L, 2L, 3L, false, 5);
+        assertThat(sections).containsExactly(new Section(null, 1L, 2L, 3L, 5));
     }
 
     @DisplayName("인접한 역이 있을 때 존재하는 구간의 거리가 더 작으면 예외를 발생시킨다.")
@@ -72,8 +72,8 @@ class SectionServiceTest {
             return inputSection;
         });
 
-        final SectionResponse sectionResponse = sectionService.createSection(1L, 3L, 4L, true, 4);
-        assertThat(sectionResponse.getSections()).containsExactly(
+        final List<Section> sections = sectionService.createSection(1L, 3L, 4L, true, 4);
+        assertThat(sections).containsExactly(
                 new Section(1L, 2L, 4L, 1),
                 new Section(1L, 4L, 3L, 4)
         );
@@ -88,8 +88,8 @@ class SectionServiceTest {
             return inputSection;
         });
 
-        final SectionResponse sectionResponse = sectionService.createSection(1L, 2L, 4L, false, 4);
-        assertThat(sectionResponse.getSections()).containsExactly(
+        final List<Section> sections = sectionService.createSection(1L, 2L, 4L, false, 4);
+        assertThat(sections).containsExactly(
                 new Section(1L, 2L, 4L, 4),
                 new Section(1L, 4L, 3L, 1)
         );

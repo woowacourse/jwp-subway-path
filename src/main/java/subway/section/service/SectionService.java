@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.section.dao.SectionDao;
 import subway.section.domain.Direction;
 import subway.section.domain.Section;
-import subway.section.dto.SectionResponse;
 
 @AllArgsConstructor
 @Service
@@ -18,7 +17,7 @@ public class SectionService {
     private SectionDao sectionDao;
 
     @Transactional
-    public SectionResponse createSection(
+    public List<Section> createSection(
             final Long lineId,
             final Long baseId,
             final Long addedId,
@@ -40,18 +39,18 @@ public class SectionService {
         return divideSectionByAddedStation(lineId, addedId, direction, distance, existSection);
     }
 
-    private SectionResponse createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
+    private List<Section> createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
         if (Direction.from(direction) == Direction.UP) {
             final Section newSection = new Section(lineId, addedId, baseId, distance);
             final Section savedSection = sectionDao.insert(newSection);
-            return new SectionResponse(List.of(savedSection));
+            return List.of(savedSection);
         }
         final Section newSection = new Section(lineId, baseId, addedId, distance);
         final Section savedSection = sectionDao.insert(newSection);
-        return new SectionResponse(List.of(savedSection));
+        return List.of(savedSection);
     }
 
-    private SectionResponse divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final Section existSection) {
+    private List<Section> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final Section existSection) {
         sectionDao.deleteById(existSection.getId());
 
         if (Direction.from(direction) == Direction.UP) {
@@ -59,12 +58,12 @@ public class SectionService {
             final Section upSavedSection = sectionDao.insert(upSection);
             final Section downSection = new Section(lineId, addedId, existSection.getDownStationId(), distance);
             final Section downSavedSection = sectionDao.insert(downSection);
-            return new SectionResponse(List.of(upSavedSection, downSavedSection));
+            return List.of(upSavedSection, downSavedSection);
         }
         final Section upSection = new Section(lineId, existSection.getUpStationId(), addedId, distance);
         final Section upSavedSection = sectionDao.insert(upSection);
         final Section downSection = new Section(lineId, addedId, existSection.getDownStationId(), existSection.getDistance() - distance);
         final Section downSavedSection = sectionDao.insert(downSection);
-        return new SectionResponse(List.of(upSavedSection, downSavedSection));
+        return List.of(upSavedSection, downSavedSection);
     }
 }

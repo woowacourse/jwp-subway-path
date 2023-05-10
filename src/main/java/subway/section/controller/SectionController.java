@@ -1,8 +1,10 @@
 package subway.section.controller;
 
-import java.net.URI;
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,18 +15,28 @@ import subway.section.domain.Section;
 import subway.section.dto.SectionCreateRequest;
 import subway.section.dto.SectionDeleteRequest;
 import subway.section.dto.SectionResponse;
+import subway.section.service.SectionService;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/sections")
 public class SectionController {
 
+    private final SectionService sectionService;
+
     @PostMapping
-    public ResponseEntity<SectionResponse> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
-        final SectionResponse sectionResponse = new SectionResponse(Arrays.asList(
-                new Section(1L, 2L, 3L, 4L, 5),
-                new Section(5L, 6L, 7L, 8L, 9)
-        ));
-        return ResponseEntity.created(URI.create("/sections/1")).body(sectionResponse);
+    public ResponseEntity<List<SectionResponse>> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
+        final List<Section> sections = sectionService.createSection(
+                sectionCreateRequest.getLineId(),
+                sectionCreateRequest.getBaseId(),
+                sectionCreateRequest.getAddedId(),
+                sectionCreateRequest.getDirection(),
+                sectionCreateRequest.getDistance()
+        );
+        final List<SectionResponse> sectionResponses = sections.stream()
+                .map(SectionResponse::of)
+                .collect(Collectors.toList());
+        return ResponseEntity.status(HttpStatus.CREATED).body(sectionResponses);
     }
 
     @DeleteMapping
