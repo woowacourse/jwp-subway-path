@@ -22,19 +22,39 @@ public class Sections {
     }
 
     public void addFirstStation(
-            final Station from,
-            final Station station,
+            final Station firstStation,
+            final Station additionStation,
             final StationDistance stationDistance
     ) {
-        final Section firstSection = peekUniqueSectionByFromStation(from);
-        final Section attachedSection = firstSection.attachFront(station, stationDistance);
+        final Section firstSection = peekUniqueSectionByFromStation(firstStation);
+        final Section attachedSection = firstSection.attachFront(additionStation, stationDistance);
 
         sections.add(attachedSection);
     }
 
-    public Section peekUniqueSectionByFromStation(final Station from) {
+    public void addLastStation(
+            final Station lastStation,
+            final Station additionStation,
+            final StationDistance stationDistance
+    ) {
+        final Section firstSection = peekUniqueSectionByToStation(lastStation);
+        final Section attachedSection = firstSection.attachBehind(additionStation, stationDistance);
+
+        sections.add(attachedSection);
+    }
+
+    public Section peekUniqueSectionByFromStation(final Station from) { //FIXME 접근제어자
         final LinkedList<Section> findSections = sections.stream()
                 .filter(section -> section.matchFromStation(from))
+                .collect(Collectors.toCollection(LinkedList::new));
+
+        validateUniqueSection(findSections);
+        return findSections.peekFirst();
+    }
+
+    public Section peekUniqueSectionByToStation(final Station to) { //FIXME 접근제어자
+        final LinkedList<Section> findSections = sections.stream()
+                .filter(section -> section.matchToStation(to))
                 .collect(Collectors.toCollection(LinkedList::new));
 
         validateUniqueSection(findSections);
