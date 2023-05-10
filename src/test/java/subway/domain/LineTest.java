@@ -132,5 +132,18 @@ class LineTest {
                             .containsExactly(17)
             );
         }
+
+        @DisplayName("역이 두개만 있을 때 하나를 제거하는 경우")
+        @Test
+        void removeWhenLineHas2Station() {
+            final Line line = new Line(1L, new LineName("2호선"));
+            final Section section1 = new Section(STATION_A, STATION_B, new Distance(7));
+            line.addSection(section1);
+
+            line.removeStation(STATION_B);
+            final List<Section> sections = line.getSections();
+
+            assertThat(sections.isEmpty()).isTrue();
+        }
     }
 }
