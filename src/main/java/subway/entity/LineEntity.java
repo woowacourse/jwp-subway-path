@@ -8,6 +8,9 @@ public class LineEntity {
     private final String name;
     private final String color;
 
+    public LineEntity(final String name, final String color) {
+        this(null, name, color);
+    }
 
     public LineEntity(final Long id, final String name, final String color) {
         this.id = id;
