@@ -84,6 +84,7 @@ class StationServiceTest {
 
         // then
         assertThat(stationResponses.get(0).getId()).isEqualTo(stationUpWithId.getId());
+        verify(sectionDao, times(2)).insertSection(any(), anyLong());
     }
 
     @Test
