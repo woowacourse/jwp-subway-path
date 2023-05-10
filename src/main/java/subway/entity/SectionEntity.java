@@ -1,6 +1,6 @@
 package subway.entity;
 
-public class Section {
+public class SectionEntity {
 
     private final Long id;
     private final Long lineId;
@@ -8,7 +8,7 @@ public class Section {
     private final Long destinationId;
     private final Integer distance;
 
-    public Section(final Long id, final Long lineId, final Long originId, final Long destinationId,
+    public SectionEntity(final Long id, final Long lineId, final Long originId, final Long destinationId,
             final Integer distance) {
         this.id = id;
         this.lineId = lineId;

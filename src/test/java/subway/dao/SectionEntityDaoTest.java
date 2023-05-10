@@ -15,7 +15,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import subway.entity.Section;
+import subway.entity.SectionEntity;
 import subway.fixture.LineFixture.이호선;
 import subway.fixture.SectionFixture;
 import subway.fixture.SectionFixture.이호선_삼성_잠실;
@@ -27,7 +27,7 @@ import subway.fixture.StationFixture.잠실역;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
-class SectionDaoTest {
+class SectionEntityDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -36,8 +36,8 @@ class SectionDaoTest {
 
     private SectionDao sectionDao;
 
-    private RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
-            new Section(
+    private final RowMapper<SectionEntity> sectionRowMapper = (rs, rowNum) ->
+            new SectionEntity(
                     rs.getLong("id"),
                     rs.getLong("line_id"),
                     rs.getLong("origin_id"),
@@ -55,76 +55,79 @@ class SectionDaoTest {
 
     @Test
     void 삽입_테스트() {
-        Section section = sectionDao.insert(SectionFixture.이호선_역삼_삼성.SECTION);
-        Section result = jdbcTemplate.queryForObject("SELECT * FROM section WHERE id = ?", sectionRowMapper,
-                section.getId());
+        SectionEntity sectionEntity = sectionDao.insert(SectionFixture.이호선_역삼_삼성.ENTITY);
+        SectionEntity result = jdbcTemplate.queryForObject("SELECT * FROM section WHERE id = ?", sectionRowMapper,
+                sectionEntity.getId());
         assertThat(result).isNotNull();
     }
 
     @Test
     void 전체_조회_테스트() {
         jdbcTemplate.update("INSERT INTO section(line_id, origin_id, destination_id, distance) VALUES (?,?,?,?)",
-                이호선.LINE.getId(), 역삼역.STATION.getId(), 삼성역.STATION.getId(), 3);
+                이호선.ENTITY.getId(), 역삼역.ENTITY.getId(), 삼성역.ENTITY.getId(), 3);
         jdbcTemplate.update("INSERT INTO section(line_id, origin_id, destination_id, distance) VALUES (?,?,?,?)",
-                이호선.LINE.getId(), 삼성역.STATION.getId(), 잠실역.STATION.getId(), 2);
-        List<Section> sections = sectionDao.findAll();
+                이호선.ENTITY.getId(), 삼성역.ENTITY.getId(), 잠실역.STATION_ENTITY.getId(), 2);
+        List<SectionEntity> sectionEntities = sectionDao.findAll();
         assertAll(
-                () -> assertThat(sections.size())
+                () -> assertThat(sectionEntities.size())
                         .isEqualTo(2),
-                () -> assertThat(sections)
+                () -> assertThat(sectionEntities)
                         .usingRecursiveComparison()
                         .ignoringFields("id")
-                        .isEqualTo(List.of(이호선_역삼_삼성.SECTION, 이호선_삼성_잠실.SECTION))
+                        .isEqualTo(List.of(이호선_역삼_삼성.ENTITY, 이호선_삼성_잠실.ENTITY))
         );
     }
 
     @Test
     void 아이디로_조회_테스트() {
         Map<String, Object> params = new HashMap<>();
-        params.put("line_id", 이호선.LINE.getId());
-        params.put("origin_id", 삼성역.STATION.getId());
-        params.put("destination_id", 잠실역.STATION.getId());
+        params.put("line_id", 이호선.ENTITY.getId());
+        params.put("origin_id", 삼성역.ENTITY.getId());
+        params.put("destination_id", 잠실역.STATION_ENTITY.getId());
         params.put("distance", 2);
 
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        Section section = sectionDao.findById(sectionId);
+        SectionEntity sectionEntity = sectionDao.findById(sectionId);
 
-        assertThat(section)
+        assertThat(sectionEntity)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(이호선_삼성_잠실.SECTION);
+                .isEqualTo(이호선_삼성_잠실.ENTITY);
     }
 
     @Test
     void 갱신_테스트() {
         Map<String, Object> params = new HashMap<>();
-        params.put("line_id", 이호선.LINE.getId());
-        params.put("origin_id", 삼성역.STATION.getId());
-        params.put("destination_id", 잠실역.STATION.getId());
+        params.put("line_id", 이호선.ENTITY.getId());
+        params.put("origin_id", 삼성역.ENTITY.getId());
+        params.put("destination_id", 잠실역.STATION_ENTITY.getId());
         params.put("distance", 2);
 
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        sectionDao.update(new Section(sectionId, 이호선.LINE.getId(), 삼성역.STATION.getId(), 잠실역.STATION.getId(), 5));
+        sectionDao.update(new SectionEntity(sectionId, 이호선.ENTITY.getId(), 삼성역.ENTITY.getId(),
+                잠실역.STATION_ENTITY.getId(), 5));
 
-        Section result = jdbcTemplate.queryForObject("SELECT * FROM section WHERE id = ?", sectionRowMapper, sectionId);
+        SectionEntity result = jdbcTemplate.queryForObject("SELECT * FROM section WHERE id = ?", sectionRowMapper,
+                sectionId);
         assertThat(result.getDistance()).isEqualTo(5);
     }
 
     @Test
     void 삭제_테스트() {
         Map<String, Object> params = new HashMap<>();
-        params.put("line_id", 이호선.LINE.getId());
-        params.put("origin_id", 삼성역.STATION.getId());
-        params.put("destination_id", 잠실역.STATION.getId());
+        params.put("line_id", 이호선.ENTITY.getId());
+        params.put("origin_id", 삼성역.ENTITY.getId());
+        params.put("destination_id", 잠실역.STATION_ENTITY.getId());
         params.put("distance", 2);
 
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
         sectionDao.deleteById(sectionId);
 
-        List<Section> result = jdbcTemplate.query("SELECT * FROM section WHERE id = ?", sectionRowMapper, sectionId);
+        List<SectionEntity> result = jdbcTemplate.query("SELECT * FROM section WHERE id = ?", sectionRowMapper,
+                sectionId);
         assertThat(result).isEmpty();
     }
 }

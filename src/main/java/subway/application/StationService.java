@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.entity.StationEntity;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
 
@@ -18,8 +18,8 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        StationEntity stationEntity = stationDao.insert(new StationEntity(stationRequest.getName()));
+        return StationResponse.of(stationEntity);
     }
 
     public StationResponse findStationResponseById(Long id) {
@@ -27,15 +27,15 @@ public class StationService {
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
 
-        return stations.stream()
+        return stationEntities.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        stationDao.update(new StationEntity(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {

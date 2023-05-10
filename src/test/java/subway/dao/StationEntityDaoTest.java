@@ -15,13 +15,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import subway.domain.Station;
+import subway.entity.StationEntity;
 import subway.fixture.StationFixture.삼성역;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
-class StationDaoTest {
+class StationEntityDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -30,8 +30,8 @@ class StationDaoTest {
 
     private StationDao stationDao;
 
-    private RowMapper<Station> stationRowMapper = (rs, rowNum) ->
-            new Station(
+    private final RowMapper<StationEntity> stationRowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
@@ -46,9 +46,9 @@ class StationDaoTest {
 
     @Test
     void 삽입_테스트() {
-        Station station = stationDao.insert(삼성역.STATION);
-        Station result = jdbcTemplate.queryForObject("SELECT * FROM station WHERE id = ?", stationRowMapper,
-                station.getId());
+        StationEntity stationEntity = stationDao.insert(삼성역.ENTITY);
+        StationEntity result = jdbcTemplate.queryForObject("SELECT * FROM station WHERE id = ?", stationRowMapper,
+                stationEntity.getId());
         assertThat(result).isNotNull();
     }
 
@@ -56,11 +56,11 @@ class StationDaoTest {
     void 전체_조회_테스트() {
         jdbcTemplate.update("INSERT INTO station(name) VALUES (?)", "삼성역");
         jdbcTemplate.update("INSERT INTO station(name) VALUES (?)", "역삼역");
-        List<Station> stations = stationDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
         assertAll(
-                () -> assertThat(stations.size())
+                () -> assertThat(stationEntities.size())
                         .isEqualTo(2),
-                () -> assertThat(stations)
+                () -> assertThat(stationEntities)
                         .extracting("name")
                         .containsExactlyInAnyOrder("삼성역", "역삼역")
         );
@@ -73,9 +73,9 @@ class StationDaoTest {
 
         Long stationId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        Station station = stationDao.findById(stationId);
+        StationEntity stationEntity = stationDao.findById(stationId);
 
-        assertThat(station.getName()).isEqualTo("삼성역");
+        assertThat(stationEntity.getName()).isEqualTo("삼성역");
     }
 
     @Test
@@ -85,9 +85,10 @@ class StationDaoTest {
 
         Long stationId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        stationDao.update(new Station(stationId, "잠실역"));
+        stationDao.update(new StationEntity(stationId, "잠실역"));
 
-        Station result = jdbcTemplate.queryForObject("SELECT * FROM station WHERE id = ?", stationRowMapper, stationId);
+        StationEntity result = jdbcTemplate.queryForObject("SELECT * FROM station WHERE id = ?", stationRowMapper,
+                stationId);
 
         assertThat(result.getName()).isEqualTo("잠실역");
     }
@@ -101,7 +102,8 @@ class StationDaoTest {
 
         stationDao.deleteById(stationId);
 
-        List<Station> result = jdbcTemplate.query("SELECT * FROM station WHERE id = ?", stationRowMapper, stationId);
+        List<StationEntity> result = jdbcTemplate.query("SELECT * FROM station WHERE id = ?", stationRowMapper,
+                stationId);
         assertThat(result).isEmpty();
     }
 }

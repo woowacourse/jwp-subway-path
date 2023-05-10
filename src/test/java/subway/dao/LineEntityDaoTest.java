@@ -15,13 +15,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import subway.domain.Line;
+import subway.entity.LineEntity;
 import subway.fixture.LineFixture.이호선;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
-class LineDaoTest {
+class LineEntityDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -30,8 +30,8 @@ class LineDaoTest {
 
     private LineDao lineDao;
 
-    private RowMapper<Line> lineRowMapper = (rs, rowNum) ->
-            new Line(
+    private final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
@@ -47,8 +47,9 @@ class LineDaoTest {
 
     @Test
     void 삽입_테스트() {
-        Line line = lineDao.insert(이호선.LINE);
-        Line result = jdbcTemplate.queryForObject("SELECT * FROM line WHERE id = ?", lineRowMapper, line.getId());
+        LineEntity lineEntity = lineDao.insert(이호선.ENTITY);
+        LineEntity result = jdbcTemplate.queryForObject("SELECT * FROM line WHERE id = ?", lineRowMapper,
+                lineEntity.getId());
         assertThat(result).isNotNull();
     }
 
@@ -56,11 +57,11 @@ class LineDaoTest {
     void 전체_조회_테스트() {
         jdbcTemplate.update("INSERT INTO line(name, color) VALUES (?,?)", "2호선", "GREEN");
         jdbcTemplate.update("INSERT INTO line(name, color) VALUES (?,?)", "3호선", "ORANGE");
-        List<Line> lines = lineDao.findAll();
+        List<LineEntity> lineEntities = lineDao.findAll();
         assertAll(
-                () -> assertThat(lines.size())
+                () -> assertThat(lineEntities.size())
                         .isEqualTo(2),
-                () -> assertThat(lines)
+                () -> assertThat(lineEntities)
                         .extracting("name")
                         .containsExactlyInAnyOrder("2호선", "3호선")
         );
@@ -74,11 +75,11 @@ class LineDaoTest {
 
         Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        Line line = lineDao.findById(lineId);
+        LineEntity lineEntity = lineDao.findById(lineId);
 
         assertAll(
-                () -> assertThat(line.getName()).isEqualTo("2호선"),
-                () -> assertThat(line.getColor()).isEqualTo("GREEN")
+                () -> assertThat(lineEntity.getName()).isEqualTo("2호선"),
+                () -> assertThat(lineEntity.getColor()).isEqualTo("GREEN")
         );
     }
 
@@ -90,9 +91,9 @@ class LineDaoTest {
 
         Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        lineDao.update(new Line(lineId, "3호선", "ORANGE"));
+        lineDao.update(new LineEntity(lineId, "3호선", "ORANGE"));
 
-        Line result = jdbcTemplate.queryForObject("SELECT * FROM line WHERE id = ?", lineRowMapper, lineId);
+        LineEntity result = jdbcTemplate.queryForObject("SELECT * FROM line WHERE id = ?", lineRowMapper, lineId);
         assertAll(
                 () -> assertThat(result.getName()).isEqualTo("3호선"),
                 () -> assertThat(result.getColor()).isEqualTo("ORANGE")
@@ -109,7 +110,7 @@ class LineDaoTest {
 
         lineDao.deleteById(lineId);
 
-        List<Line> result = jdbcTemplate.query("SELECT * FROM line WHERE id = ?", lineRowMapper, lineId);
+        List<LineEntity> result = jdbcTemplate.query("SELECT * FROM line WHERE id = ?", lineRowMapper, lineId);
         assertThat(result).isEmpty();
     }
 }

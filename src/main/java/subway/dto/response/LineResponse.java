@@ -2,7 +2,7 @@ package subway.dto.response;
 
 import java.util.Collections;
 import java.util.List;
-import subway.domain.Line;
+import subway.entity.LineEntity;
 
 public class LineResponse {
 
@@ -18,8 +18,9 @@ public class LineResponse {
         this.stations = stations;
     }
 
-    public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), Collections.emptyList());
+    public static LineResponse of(LineEntity lineEntity) {
+        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
+                Collections.emptyList());
     }
 
     public Long getId() {
