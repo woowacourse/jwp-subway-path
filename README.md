@@ -58,6 +58,150 @@ Line
     - Station 제거
     - 정렬
 
+## API 설계
 
+### Line 등록
 
+요청 `POST("/lines")`
 
+```json
+{
+  "lineName": "2호선",
+  "sourceStation": "강남역",
+  "destinationStation": "역삼역",
+  "distance": 10
+}
+```
+
+응답
+
+```json
+{
+  "lineId": 1
+}
+```
+
+### 전체 Line 조회
+
+요청 `GET("/lines")`
+
+응답
+
+```json
+{
+  "lines": [
+    {
+      "name": "1호선",
+      "id": 1
+    },
+    {
+      "name": "2호선",
+      "id": 2
+    }
+  ]
+}
+```
+
+### Line 단건 조회
+
+요청 ` GET("/lines/{id}")`
+
+응답
+
+```json
+{
+  "line": "1호선"
+}
+```
+
+### Line 수정
+
+요청 `PUT("/lines/{id}")`
+
+```json
+{
+  "lineName": "2호선"
+}
+```
+
+응답 X
+
+### Line 삭제
+
+요청 `DELETE("/lines/{id}")`
+
+응답 X
+
+---
+
+### Station 등록
+
+요청 `POST("/stations")`
+
+```json
+{
+  "lineId": 1,
+  "station": "강남역",
+  "downStation": "역삼역",
+  "distance": 10
+}
+```
+
+응답
+
+```json
+{
+  "stationId": 1
+}
+```
+
+### Station 전체 조회
+
+요청 `GET("/stations")`
+
+응답
+
+```json
+{
+  "stations": [
+    {
+      "name": "강남역",
+      "id": 1
+    },
+    {
+      "name": "역삼역",
+      "id": 2
+    }
+  ]
+}
+```
+
+### Station 단건 조회
+
+요청 `GET("/stations/{id}")`
+
+응답
+
+```json
+{
+  "name": "겅남역"
+}
+```
+
+### Station 수정
+
+요청 `PUT("/stations/{id}")`
+
+```json
+{
+  "stationName": "선릉역"
+}
+```
+
+응답 X
+
+### Station 삭제
+
+요청 `DELETE("/stations/{id}")`
+
+응답 X
