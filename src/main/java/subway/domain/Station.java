@@ -43,6 +43,13 @@ public class Station {
 //        }
 //    }
 
+    public boolean isDownEndStation() {
+        if (next.equals(Station.emptyStation)) {
+            return true;
+        }
+        return false;
+    }
+
     private void validateSameStations(Station next) {
         if (next.equals(this)) {
             throw new IllegalArgumentException("상행역과 하행역은 같은 이름을 가질 수 없습니다.");

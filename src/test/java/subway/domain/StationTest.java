@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 class StationTest {
 
@@ -36,4 +37,24 @@ class StationTest {
         assertThatCode(() -> new Station(name, next, distance))
                 .doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("isDownEndStation()를 호출했을 때 다음역이 emptyStation이라면 true를 반환한다.")
+    void isIncludeEmptyStation_true() {
+
+        //given
+        String name = "상행역";
+        Station next = Station.emptyStation;
+        Distance distance = new Distance(10);
+        Station station = new Station(name, next, distance);
+
+        //when
+        boolean actual = station.isDownEndStation();
+
+        // then
+        assertThat(actual).isTrue();
+    }
+
+    //TODO: isIncludeEmptyStation() false검증
+
 }
