@@ -159,6 +159,7 @@ public class Line {
     public void deleteStation(String stationName) {
         Station stationToDelete = new Station(stationName);
         validateNotExist(stationToDelete);
+        validateOnlyTwoStations();
     }
 
     private void validateNotExist(Station stationToDelete) {
@@ -170,6 +171,12 @@ public class Line {
         throw new IllegalArgumentException(
                 String.format("삭제하려는 역이 노선에 존재하지 않습니다." + System.lineSeparator() +
                         "삭제하려는 역 : %s", stationToDelete.getName()));
+    }
+
+    private void validateOnlyTwoStations() {
+        if (sections.size() == 1) {
+            throw new IllegalArgumentException("노선에 역이 2개 밖에 존재하지 않아, 역을 제외할 수 없습니다.");
+        }
     }
 
     public Long getId() {

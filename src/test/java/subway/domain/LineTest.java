@@ -92,4 +92,14 @@ class LineTest {
                 .hasMessage("삭제하려는 역이 노선에 존재하지 않습니다." + System.lineSeparator() +
                         "삭제하려는 역 : 신도림역");
     }
+
+    @DisplayName("역 삭제 시, 노선에 두 개의 역만 존재하는 경우 예외가 발생한다.")
+    @Test
+    void shouldThrowExceptionWhenDeleteStationFromLineHaveOnly2Stations() {
+        Line line = Line.of("2호선", "잠실역", "몽촌토성역", 5);
+
+        assertThatThrownBy(() -> line.deleteStation("잠실역"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("노선에 역이 2개 밖에 존재하지 않아, 역을 제외할 수 없습니다.");
+    }
 }
