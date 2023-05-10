@@ -46,4 +46,12 @@ class StationServiceTest {
                 .isInstanceOf(DuplicatedStationNameException.class);
     }
 
+    @Test
+    @DisplayName("id로 역을 조회한다.")
+    void findById() {
+        //given
+
+        //when
+        //then
+    }
 }

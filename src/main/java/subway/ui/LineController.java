@@ -4,6 +4,7 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -34,7 +35,7 @@ public class LineController {
 
     @PostMapping("/stations")
     public ResponseEntity<Void> insertStation(@RequestBody StationInsertRequest stationInsertRequest) {
-//        lineService.insertStation(stationInsertRequest);
+        lineService.insertStation(stationInsertRequest);
         return ResponseEntity.ok().build();
     }
 
@@ -48,8 +49,11 @@ public class LineController {
         return null;
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+    @DeleteMapping("/{lineId}/{stationId}")
+    public ResponseEntity<Void> deleteStation(
+            @PathVariable(value = "lineId") Long lineId,
+            @PathVariable(value = "stationId") Long stationId) {
+        lineService.deleteStation(lineId, stationId);
+        return ResponseEntity.noContent().build();
     }
 }

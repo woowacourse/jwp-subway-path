@@ -263,7 +263,9 @@ public class LineIntegrationTest extends IntegrationTest {
         Long stationId = createStation("성수");
         RestAssured
                 .given().log().all()
-                .when().post("/lines/{lineId}/{stationId}", lineId, stationId);
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationInsertRequest(stationId, lineId, stationId1, "DOWN", 1))
+                .when().post("/lines/stations");
 
         //when
         ExtractableResponse<Response> response = RestAssured
@@ -296,6 +298,6 @@ public class LineIntegrationTest extends IntegrationTest {
                 .extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

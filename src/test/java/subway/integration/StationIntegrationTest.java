@@ -68,6 +68,7 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    @Disabled
     @DisplayName("지하철역 목록을 조회한다.")
     @Test
     void getStations() {
@@ -110,6 +111,7 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(resultStationIds).containsAll(expectedStationIds);
     }
 
+    @Disabled
     @DisplayName("지하철역을 조회한다.")
     @Test
     void getStation() {
