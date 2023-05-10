@@ -2,6 +2,7 @@ package subway.repository;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,5 +43,23 @@ class SimpleStationRepositoryTest {
         Station result = stationRepository.findByName(name).get();
         //then
         assertThat(result.getName()).isEqualTo(name);
+    }
+
+    @Test
+    @DisplayName("id로 역을 찾는다.")
+    void findById() {
+        //given
+        final Station station = new Station("잠실");
+        Long id = stationRepository.create(station);
+
+        final String name = "잠실";
+
+        //when
+        Station result = stationRepository.findById(id).get();
+        //then
+        assertSoftly(softly -> {
+            softly.assertThat(result.getId()).isEqualTo(id);
+            softly.assertThat(result.getName()).isEqualTo(name);
+        });
     }
 }

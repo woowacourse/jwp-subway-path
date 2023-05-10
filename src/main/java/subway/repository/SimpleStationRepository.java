@@ -19,6 +19,13 @@ public class SimpleStationRepository implements StationRepository {
     }
 
     @Override
+    public Optional<Station> findById(Long id) {
+        return stations.stream()
+                .filter(station -> station.getId().equals(id))
+                .findFirst();
+    }
+
+    @Override
     public Optional<Station> findByName(String name) {
         return stations.stream()
                 .filter(station -> station.getName().equals(name))

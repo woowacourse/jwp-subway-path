@@ -1,24 +1,44 @@
 package subway.domain;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 public class Line {
     private Long id;
     private String name;
     private String color;
+    private List<StationEdge> stationEdges;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
+    private Line(final String name, final String color, final List<StationEdge> stationEdges) {
         this.name = name;
         this.color = color;
+        this.stationEdges = stationEdges;
     }
 
-    public Line(Long id, String name, String color) {
+    private Line(final Long id, final String name, final String color, final List<StationEdge> stationEdges) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.stationEdges = stationEdges;
+    }
+
+    public static Line of(final String name, final String color, final StationEdge stationEdge) {
+        List<StationEdge> stationEdges = new LinkedList<>();
+        stationEdges.add(stationEdge);
+
+        return new Line(name, color, stationEdges);
+    }
+
+    public static Line of(final Long id, final String name, final String color, final StationEdge stationEdge) {
+        List<StationEdge> stationEdges = new LinkedList<>();
+        stationEdges.add(stationEdge);
+
+        return new Line(id, name, color, stationEdges);
+    }
+
+    public static Line of(final Long id, final String name, final String color, final List<StationEdge> stationEdges) {
+        return new Line(id, name, color, stationEdges);
     }
 
     public Long getId() {
@@ -31,6 +51,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public List<StationEdge> getStationEdges() {
+        return stationEdges;
     }
 
     @Override

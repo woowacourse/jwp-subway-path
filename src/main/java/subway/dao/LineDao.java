@@ -9,6 +9,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.domain.Station;
+import subway.domain.StationEdge;
 
 @Repository
 public class LineDao {
@@ -16,10 +18,11 @@ public class LineDao {
     private final SimpleJdbcInsert insertAction;
 
     private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+            Line.of(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    new StationEdge(new Station("up"), new Station("down"), 10)
             );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -36,7 +39,7 @@ public class LineDao {
         params.put("color", line.getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return null;
     }
 
     public List<Line> findAll() {
