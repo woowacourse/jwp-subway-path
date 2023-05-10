@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.repository.dao;
 
 import java.util.HashMap;
 import java.util.List;
@@ -30,7 +30,6 @@ public class LineDao {
 
     public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
         params.put("name", line.getName());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
