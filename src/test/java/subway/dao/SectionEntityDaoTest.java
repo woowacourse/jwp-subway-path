@@ -1,7 +1,6 @@
 package subway.dao;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,33 +9,35 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.entity.LineSection;
+import subway.entity.SectionEntity;
 
 @JdbcTest
-class LineSectionDaoTest {
+class SectionEntityDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private DataSource dataSource;
-    private LineSectionDao lineSectionDao;
+    private SectionDao sectionDao;
 
     @BeforeEach
     void setUp() {
-        lineSectionDao = new LineSectionDao(jdbcTemplate, dataSource);
+        sectionDao = new SectionDao(jdbcTemplate, dataSource);
     }
 
     @Test
-    @DisplayName("Line_Section 테이블 삽입")
-    void line_section_insert() {
+    @DisplayName("section 테이블 삽입")
+    void line_station_insert() {
         // given
-        LineSection lineSection = new LineSection(1L, 1L);
+        SectionEntity sectionEntity = new SectionEntity(1L, 2L, 10);
 
         // when
-        LineSection result = lineSectionDao.insert(lineSection);
+        SectionEntity result = sectionDao.insert(sectionEntity);
 
         // then
-        assertThat(result.getSectionId()).isEqualTo(lineSection.getSectionId());
-        assertThat(result.getLineId()).isEqualTo(lineSection.getLineId());
+        assertThat(result.getLeftStationId()).isEqualTo(sectionEntity.getLeftStationId());
+        assertThat(result.getRightStationId()).isEqualTo(sectionEntity.getRightStationId());
+        assertThat(result.getDistance()).isEqualTo(sectionEntity.getDistance());
     }
+
 }

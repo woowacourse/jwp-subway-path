@@ -8,15 +8,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.entity.LineStation;
+import subway.entity.LineStationEntity;
 
 @Repository
 public class LineStationDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-    private RowMapper<LineStation> rowMapper = ((rs, rowNum) ->
-        new LineStation(
+    private RowMapper<LineStationEntity> rowMapper = ((rs, rowNum) ->
+        new LineStationEntity(
             rs.getLong("id"),
             rs.getLong("station_id"),
             rs.getLong("line_id")
@@ -30,16 +30,16 @@ public class LineStationDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public LineStation insert(final LineStation lineStation) {
+    public LineStationEntity insert(final LineStationEntity lineStationEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("station_id", lineStation.getStationId());
-        params.put("line_id", lineStation.getLineId());
+        params.put("station_id", lineStationEntity.getStationId());
+        params.put("line_id", lineStationEntity.getLineId());
 
         Long lineStationId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineStation(lineStationId, lineStation.getStationId(), lineStation.getLineId());
+        return new LineStationEntity(lineStationId, lineStationEntity.getStationId(), lineStationEntity.getLineId());
     }
 
-    public List<LineStation> findByLineId(final Long lineId) {
+    public List<LineStationEntity> findByLineId(final Long lineId) {
         String sql = "SELECT id, station_id, line_id from LINE_STATION WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }

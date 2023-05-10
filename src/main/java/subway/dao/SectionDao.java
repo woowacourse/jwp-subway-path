@@ -3,12 +3,10 @@ package subway.dao;
 import java.util.HashMap;
 import java.util.Map;
 import javax.sql.DataSource;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.entity.LineStation;
-import subway.entity.Section;
+import subway.entity.SectionEntity;
 
 @Repository
 public class SectionDao {
@@ -23,13 +21,13 @@ public class SectionDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public Section insert(final Section section) {
+    public SectionEntity insert(final SectionEntity sectionEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("left_station_id", section.getLeftStationId());
-        params.put("right_station_id", section.getRightStationId());
-        params.put("distance", section.getDistance());
+        params.put("left_station_id", sectionEntity.getLeftStationId());
+        params.put("right_station_id", sectionEntity.getRightStationId());
+        params.put("distance", sectionEntity.getDistance());
 
         Long sectionId = insertAction.executeAndReturnKey(params).longValue();
-        return new Section(sectionId, section.getLeftStationId(), section.getRightStationId(), section.getDistance());
+        return new SectionEntity(sectionId, sectionEntity.getLeftStationId(), sectionEntity.getRightStationId(), sectionEntity.getDistance());
     }
 }

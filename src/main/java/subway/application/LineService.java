@@ -9,15 +9,16 @@ import subway.dao.LineStationDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.line.Line;
+import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.RegisterStationsRequest;
-import subway.entity.LineSection;
-import subway.entity.LineStation;
-import subway.entity.Section;
+import subway.entity.LineSectionEntity;
+import subway.entity.LineStationEntity;
+import subway.entity.SectionEntity;
 
 @Service
 public class LineService {
@@ -77,22 +78,21 @@ public class LineService {
         Station leftStation = stationDao.findByName(registerStationsRequest.getLeftStationName()).orElseThrow(RuntimeException::new);
         Station rightStation = stationDao.findByName(registerStationsRequest.getRightStationName()).orElseThrow(RuntimeException::new);
 
-        List<LineStation> lineStations = lineStationDao.findByLineId(line.getId());
-        if (lineStations.size() != 0) {
+        List<LineStationEntity> lineStationEntities = lineStationDao.findByLineId(line.getId());
+        if (lineStationEntities.size() != 0) {
             throw new IllegalStateException("초기화 할 때는 노선에 역이 하나도 없어여 합니다.");
         }
 
-        lineStationDao.insert(new LineStation(leftStation.getId(), line.getId()));
-        lineStationDao.insert(new LineStation(rightStation.getId(), line.getId()));
-        Section section = sectionDao.insert(new Section(leftStation.getId(), rightStation.getId(), registerStationsRequest.getDistance()));
-        lineSectionDao.insert(new LineSection(line.getId(), section.getId()));
+        lineStationDao.insert(new LineStationEntity(leftStation.getId(), line.getId()));
+        lineStationDao.insert(new LineStationEntity(rightStation.getId(), line.getId()));
+        SectionEntity sectionEntity = sectionDao.insert(new SectionEntity(leftStation.getId(), rightStation.getId(), registerStationsRequest.getDistance()));
+        lineSectionDao.insert(new LineSectionEntity(line.getId(), sectionEntity.getId()));
         Line newLine = new Line(
             line.getId(),
             line.getName(),
             line.getColor(),
             new Stations(List.of(leftStation, rightStation)),
-            new Sections(
-                List.of(new subway.domain.section.Section(section.getId(), leftStation, rightStation, registerStationsRequest.getDistance()))));
+            new Sections(List.of(new Section(sectionEntity.getId(), leftStation, rightStation, registerStationsRequest.getDistance()))));
         lineDao.update(newLine);
     }
 }

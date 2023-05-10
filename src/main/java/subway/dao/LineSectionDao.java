@@ -6,7 +6,7 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.entity.LineSection;
+import subway.entity.LineSectionEntity;
 
 @Repository
 public class LineSectionDao {
@@ -22,12 +22,12 @@ public class LineSectionDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public LineSection insert(final LineSection lineSection) {
+    public LineSectionEntity insert(final LineSectionEntity lineSectionEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("line_id", lineSection.getLineId());
-        params.put("section_id", lineSection.getSectionId());
+        params.put("line_id", lineSectionEntity.getLineId());
+        params.put("section_id", lineSectionEntity.getSectionId());
 
         Long lineSectionId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineSection(lineSectionId, lineSection.getLineId(), lineSection.getSectionId());
+        return new LineSectionEntity(lineSectionId, lineSectionEntity.getLineId(), lineSectionEntity.getSectionId());
     }
 }
