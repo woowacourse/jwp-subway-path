@@ -21,6 +21,11 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
+    @GetMapping("/{lindId}")
+    public ResponseEntity<List<SectionResponse>> findAllSectionsByLineId(@PathVariable Long lindId) {
+        return ResponseEntity.ok(sectionService.findSectionsByLineId(lindId));
+    }
+
     @PostMapping("/{lineId}")
     public ResponseEntity<Void> createSection(@PathVariable Long lineId,
                                               @RequestBody SectionCreateRequest sectionCreateRequest) {
@@ -29,7 +34,8 @@ public class SectionController {
     }
 
     @DeleteMapping("/{lineId}")
-    public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestBody SectionDeleteRequest sectionDeleteRequest) {
+    public ResponseEntity<Void> deleteSection(@PathVariable Long lineId,
+                                              @RequestBody SectionDeleteRequest sectionDeleteRequest) {
         sectionService.deleteSection(lineId, sectionDeleteRequest);
         return ResponseEntity.noContent().build();
     }

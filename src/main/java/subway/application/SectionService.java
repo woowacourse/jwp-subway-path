@@ -1,5 +1,9 @@
 package subway.application;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
@@ -10,6 +14,7 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
+import subway.dto.SectionResponse;
 
 @Service
 public class SectionService {
@@ -89,5 +94,14 @@ public class SectionService {
 
     public void deleteSection(Long lineId, SectionDeleteRequest sectionDeleteRequest) {
 
+    }
+
+    public List<SectionResponse> findSectionsByLineId(Long lineId) {
+        Sections sections = sectionDao.findAllByLineId(lineId).stream()
+                .map(Section::fromEntity)
+                .collect(collectingAndThen(toList(), Sections::new));
+        return sections.getSections().stream()
+                .map(SectionResponse::from)
+                .collect(toList());
     }
 }
