@@ -24,15 +24,16 @@ public class Section {
         return this.secondStation.equals(secondStation);
     }
 
-    public Section attachFront(final Station additionStation, final StationDistance stationDistance) {
+    public Section createFrontSection(final Station additionStation, final StationDistance stationDistance) {
         return new Section(additionStation, firstStation, stationDistance);
     }
 
-    public Section attachBehind(final Station additionStation, final StationDistance stationDistance) {
+    public Section createBehindSection(final Station additionStation, final StationDistance stationDistance) {
         return new Section(secondStation, additionStation, stationDistance);
     }
 
-    public List<Section> attachBetween(final Station additionStation, final StationDistance stationDistance) {
+    public List<Section> separateByFirstStation(final Station additionStation,
+                                                final StationDistance stationDistance) {
         final Section firstSection = new Section(firstStation, additionStation, stationDistance);
         final Section secondSection = new Section(additionStation, secondStation, distance.subtract(stationDistance));
         return List.of(firstSection, secondSection);

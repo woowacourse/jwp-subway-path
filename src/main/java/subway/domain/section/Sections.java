@@ -21,24 +21,24 @@ public class Sections {
         this.sections.add(section);
     }
 
-    public void addFirstStation(
+    public void attachAtFirstStation(
             final Station firstStation,
             final Station additionStation,
             final StationDistance stationDistance
     ) {
         final Section firstSection = peekByFirstStationUnique(firstStation);
-        final Section attachedSection = firstSection.attachFront(additionStation, stationDistance);
+        final Section attachedSection = firstSection.createFrontSection(additionStation, stationDistance);
 
         sections.add(attachedSection);
     }
 
-    public void addLastStation(
+    public void attachAtLastStation(
             final Station lastStation,
             final Station additionStation,
             final StationDistance stationDistance
     ) {
         final Section lastSection = peekBySecondStationUnique(lastStation);
-        final Section attachedSection = lastSection.attachBehind(additionStation, stationDistance);
+        final Section attachedSection = lastSection.createBehindSection(additionStation, stationDistance);
 
         sections.add(attachedSection);
     }
@@ -49,7 +49,7 @@ public class Sections {
             final StationDistance stationDistance
     ) {
         final Section section = peekByFirstStationUnique(firstStation);
-        final List<Section> sections = section.attachBetween(additionStation, stationDistance);
+        final List<Section> sections = section.separateByFirstStation(additionStation, stationDistance);
 
         this.sections.remove(section);
         this.sections.addAll(sections);

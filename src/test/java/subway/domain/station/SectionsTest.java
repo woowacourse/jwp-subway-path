@@ -54,7 +54,7 @@ class SectionsTest {
         final Station newStation = new Station("newStation");
 
         //when
-        sections.addFirstStation(startStation, newStation, new StationDistance(3));
+        sections.attachAtFirstStation(startStation, newStation, new StationDistance(3));
 
         //then
         assertThat(sections.getSections()).hasSize(2);
@@ -74,7 +74,7 @@ class SectionsTest {
         final Station newStation = new Station("newStation");
 
         //when
-        sections.addLastStation(endStation, newStation, new StationDistance(3));
+        sections.attachAtLastStation(endStation, newStation, new StationDistance(3));
 
         //then
         assertThat(sections.getSections()).hasSize(2);
