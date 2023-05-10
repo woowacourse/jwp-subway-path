@@ -92,6 +92,7 @@ Content-Type: application/json
 
 [
     {
+        "id" : 1,
         "name" : "2호선"
         "stations" : [
             {
@@ -100,6 +101,7 @@ Content-Type: application/json
         ]
     },
     {
+        "id" : 2,
         "name" : "8호선"
         "stations" : [
             {
