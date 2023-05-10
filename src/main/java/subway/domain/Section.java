@@ -21,6 +21,10 @@ public class Section {
                 || (this.start.equals(end) && this.end.equals(start));
     }
 
+    public boolean moreThanOrEqual(final Distance distance) {
+        return this.distance.moreThanOrEqual(distance);
+    }
+
     public Station getStart() {
         return start;
     }

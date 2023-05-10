@@ -30,4 +30,14 @@ class SectionTest {
         // expect
         assertThat(section.containsAll(new Station(start), new Station(end))).isEqualTo(result);
     }
+
+    @ParameterizedTest(name = "Section(A, B)의 거리가 3일 때 입력받은 값이 크거나 같은지 확인한다. 입력: {0}, 결과: {1}")
+    @CsvSource({"2, false", "3, true", "4, true"})
+    void 자신의_거리보다_크거나_같은지_확인한다(final int value, final boolean result) {
+        // given
+        final Section section = new Section("A", "B", 3);
+
+        // expect
+        assertThat(section.moreThanOrEqual(new Distance(value))).isEqualTo(result);
+    }
 }
