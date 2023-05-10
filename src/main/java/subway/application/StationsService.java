@@ -59,7 +59,16 @@ public class StationsService {
             return insertDownStations(stations, previousStations.get());
         }
 
+        // 3. 등록할 역이 맨 앞인 경우
+        if (stationsDao.isHighestStationOfLine(stations.getNextStation(), stations.getLine())) {
+            return insertHighestStation(stations);
+        }
+
         throw new IllegalArgumentException("등록하는 역과 연결되는 기존의 역 정보가 노선상에 존재하지 않습니다.");
+    }
+
+    private long insertHighestStation(Stations stations) {
+        return stationsDao.insert(stations).getId();
     }
 
     private long initialize(Line line, Station previousStation, Station nextStation, int distance, boolean isDown) {
