@@ -44,6 +44,15 @@ public class StationService {
             final Station station1 = stationDao.insert(new Station(requestUp.getName()));
             final Station station2 = stationDao.insert(new Station(requestDown.getName()));
             // section 저장
+
+            final Section downSection = new Section(requestUp.getNextDistance(), station1.getId(), station2.getId(), Direction.DOWN);
+            sectionDao.insertSection(downSection, line.getId());
+            final Section upSection = new Section(requestDown.getPreviousDistance(), station2.getId(), station1.getId(), Direction.UP);
+            sectionDao.insertSection(upSection, line.getId());
+
+            lineService.updateEndpoint(line.getId(), Direction.UP, station1.getId());
+            lineService.updateEndpoint(line.getId(), Direction.DOWN, station2.getId());
+            
             return List.of(StationResponse.of(station1), StationResponse.of(station2));
         }
         final StationRequest request = stationRequests.get(0);

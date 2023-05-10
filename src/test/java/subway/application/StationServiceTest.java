@@ -51,7 +51,7 @@ class StationServiceTest {
         final Station stationDown = new Station(stationRequestDown.getName());
         final Station stationUpWithId = new Station(1L, stationRequestUp.getName());
         final Station stationDownWithId = new Station(2L, stationRequestDown.getName());
-        final Line line = new Line("2호선", "green");
+        final Line line = new Line(1L, "2호선", "green", null, null);
 
         when(lineService.findLineByName(line.getName())).thenReturn(line);
         when(stationDao.insert(stationUp)).thenReturn(stationUpWithId);
@@ -63,6 +63,8 @@ class StationServiceTest {
         // then
         assertThat(stationResponses.get(0).getId()).isEqualTo(stationUpWithId.getId());
         assertThat(stationResponses.get(1).getId()).isEqualTo(stationDownWithId.getId());
+        verify(sectionDao, times(2)).insertSection(any(), anyLong());
+
     }
 
     @Test
