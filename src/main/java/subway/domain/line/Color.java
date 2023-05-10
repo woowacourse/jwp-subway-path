@@ -23,4 +23,8 @@ final class Color {
             throw new InvalidColorException("색 이름은 '색'으로 끝나야 합니다.");
         }
     }
+
+    public String getValue() {
+        return value;
+    }
 }

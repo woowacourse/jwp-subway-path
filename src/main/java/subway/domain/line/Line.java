@@ -16,6 +16,10 @@ public class Line {
     private final Color color;
     private final Sections sections;
 
+    public Line(final String name, final String color) {
+        this(null, name, color);
+    }
+
     public Line(final Long id, final String name, final String color) {
         this(id, name, color, new LinkedList<>());
     }
@@ -141,6 +145,18 @@ public class Line {
         sections.add(position - 1,
                 new Section(previousSection.getUpward(), targetSection.getDownward(),
                         targetSection.getDistance() + previousSection.getDistance()));
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name.getValue();
+    }
+
+    public String getColor() {
+        return color.getValue();
     }
 
     public List<Section> getSections() {

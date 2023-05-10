@@ -23,4 +23,8 @@ final class Name {
             throw new InvalidLineNameException("노선 이름은 1~9호선이어야 합니다.");
         }
     }
+
+    public String getValue() {
+        return value;
+    }
 }
