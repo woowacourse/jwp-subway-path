@@ -154,4 +154,22 @@ class StationsDaoTest {
                 .as("송탄역을 1호선과 2호선 위에 동시에 올릴 수 있습니다.")
                 .doesNotThrowAnyException();
     }
+
+    @Test
+    @DisplayName("노선에서 역을 제거할 경우 정상 동작을 위해 재배치됩니다.")
+    void delete() {
+
+    }
+
+    @Test
+    @DisplayName("노선에서 역이 제거될 경우 역과 역 사이의 거리가 재배정됩니다.")
+    void deleteDistance() {
+
+    }
+
+    @Test
+    @DisplayName("노선에 등록된 역이 2개인 경우 하나의 역을 제거할 때 두 역이 모두 제거됩니다.")
+    void deleteAll() {
+
+    }
 }

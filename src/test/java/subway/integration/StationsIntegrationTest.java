@@ -97,6 +97,7 @@ public class StationsIntegrationTest extends IntegrationTest {
         assertThat(response2.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response2.header("Location")).isNotBlank();
     }
+
     @DisplayName("역과 역 사이의 거리로 양의 정수만을 입력할 수 있다.")
     @Test
     void invalidDistance() {
