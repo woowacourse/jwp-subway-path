@@ -10,8 +10,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.application.dto.CreationLineDto;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.ui.dto.request.CreationLineRequest;
+import subway.ui.dto.response.CreationLineResponse;
 
 import java.net.URI;
 import java.util.List;
@@ -27,9 +30,9 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    public ResponseEntity<CreationLineResponse> createLine(@RequestBody CreationLineRequest lineRequest) {
+        final CreationLineDto lineDto = lineService.saveLine(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + lineDto.getId())).body(CreationLineResponse.from(lineDto));
     }
 
     @GetMapping
