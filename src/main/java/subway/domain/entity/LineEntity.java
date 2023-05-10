@@ -5,17 +5,23 @@ import java.util.Objects;
 public class LineEntity {
 
     private final Long lineId;
+    private final Long lineNumber;
     private final String name;
     private final String color;
 
-    public LineEntity(final Long lineId, final String name, final String color) {
+    public LineEntity(final Long lineId, final Long lineNumber, final String name, final String color) {
         this.lineId = lineId;
+        this.lineNumber = lineNumber;
         this.name = name;
         this.color = color;
     }
 
     public Long getLineId() {
         return lineId;
+    }
+
+    public Long getLineNumber() {
+        return lineNumber;
     }
 
     public String getName() {

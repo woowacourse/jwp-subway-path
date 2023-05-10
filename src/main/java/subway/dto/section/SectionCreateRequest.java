@@ -2,10 +2,14 @@ package subway.dto.section;
 
 public class SectionCreateRequest {
 
-    private final String lineName;
-    private final String upStation;
-    private final String downStation;
-    private final Long distance;
+    private String lineName;
+    private String upStation;
+    private String downStation;
+    private Long distance;
+
+    private SectionCreateRequest() {
+
+    }
 
     public SectionCreateRequest(final String lineName, final String upStation, final String downStation, final Long distance) {
         this.lineName = lineName;
