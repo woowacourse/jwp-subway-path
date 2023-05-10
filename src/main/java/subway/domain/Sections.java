@@ -29,10 +29,10 @@ public class Sections {
 
     public void addSection(final Section addedSection) {
         validateAlreadyExistStation(addedSection);
-        if (isAddedTerminal(addedSection)) {
+        if (isAddedToTerminal(addedSection)) {
             return;
         }
-        addNonTerminal(addedSection);
+        addInMiddle(addedSection);
     }
 
     private void validateAlreadyExistStation(final Section addedSection) {
@@ -43,7 +43,7 @@ public class Sections {
         }
     }
 
-    private boolean isAddedTerminal(final Section addedSection) {
+    private boolean isAddedToTerminal(final Section addedSection) {
         final Section first = firstSection();
         final Section last = lastSection();
         if (first.isDownThan(addedSection)) {
@@ -65,12 +65,12 @@ public class Sections {
         return sections.get(0);
     }
 
-    private void addNonTerminal(final Section addedSection) {
+    private void addInMiddle(final Section addedSection) {
         final int removedIdx = sections.indexOf(findRemovedSection(addedSection));
         final Section removedSection = sections.remove(removedIdx);
         final Section remain = removedSection.minus(addedSection);
-        sections.add(removedIdx, judgeUp(remain, addedSection));
-        sections.add(removedIdx + 1, judgeDown(remain, addedSection));
+        sections.add(removedIdx, judgeUpSection(remain, addedSection));
+        sections.add(removedIdx + 1, judgeDownSection(remain, addedSection));
     }
 
     private Section findRemovedSection(final Section addedSection) {
@@ -80,14 +80,14 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("두 구간이 연관관계가 없어 뺄 수 없습니다."));
     }
 
-    private Section judgeUp(final Section remain, final Section addedSection) {
+    private Section judgeUpSection(final Section remain, final Section addedSection) {
         if (remain.isDownThan(addedSection)) {
             return addedSection;
         }
         return remain;
     }
 
-    private Section judgeDown(final Section remain, final Section addedSection) {
+    private Section judgeDownSection(final Section remain, final Section addedSection) {
         if (remain.isDownThan(addedSection)) {
             return remain;
         }
@@ -100,7 +100,7 @@ public class Sections {
             sections.clear();
             return;
         }
-        if (removedTerminal(removedStation)) {
+        if (removedFromTerminal(removedStation)) {
             return;
         }
         for (int i = 0; i < sections.size(); i++) {
@@ -113,7 +113,7 @@ public class Sections {
         }
     }
 
-    private boolean removedTerminal(final Station removedStation) {
+    private boolean removedFromTerminal(final Station removedStation) {
         final Station upTerminal = firstSection().up();
         final Station downTerminal = lastSection().down();
         if (upTerminal.equals(removedStation)) {
