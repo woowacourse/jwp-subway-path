@@ -1,6 +1,6 @@
 package subway.dto;
 
-import subway.domain.Line;
+import subway.business.domain.Line;
 
 public class LineResponse {
     private Long id;

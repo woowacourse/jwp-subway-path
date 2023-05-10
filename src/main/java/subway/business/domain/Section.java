@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.business.domain;
 
 public class Section {
     private final Station upwardStation;
