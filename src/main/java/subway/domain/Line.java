@@ -37,8 +37,8 @@ public class Line {
     public void addSection(Section newSection) {
         validateDuplicatedName(newSection);
 
-        Optional<Section> downSection = findBySource(newSection);
-        Optional<Section> upSection = findByTarget(newSection);
+        Optional<Section> downSection = findBySource(newSection.getSource());
+        Optional<Section> upSection = findByTarget(newSection.getTarget());
         if (downSection.isPresent()) {
             Section section = downSection.get();
             sections.remove(section);
@@ -58,15 +58,15 @@ public class Line {
         sections.add(newSection);
     }
 
-    private Optional<Section> findByTarget(Section newSection) {
+    private Optional<Section> findByTarget(Station target) {
         return sections.stream()
-                .filter(section -> section.getTarget().isSameName(newSection.getTarget()))
+                .filter(section -> section.getTarget().isSameName(target))
                 .findAny();
     }
 
-    private Optional<Section> findBySource(Section newSection) {
+    private Optional<Section> findBySource(Station source) {
         return sections.stream()
-                .filter(section -> section.getSource().isSameName(newSection.getSource()))
+                .filter(section -> section.getSource().isSameName(source))
                 .findAny();
     }
 
@@ -76,9 +76,23 @@ public class Line {
         }
     }
 
-    private boolean isDuplicatedName(Station source) {
+    private boolean isDuplicatedName(Station station) {
         return sections.stream()
-                .anyMatch(it -> it.isAnySame(source));
+                .anyMatch(it -> it.isAnySame(station));
+    }
+
+    public void removeStation(Station station) {
+        if (!isDuplicatedName(station)) {
+            throw new IllegalArgumentException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
+        }
+        Section downSection = findBySource(station).get();
+        Section upSection = findByTarget(station).get();
+
+        sections.remove(downSection);
+        sections.remove(upSection);
+
+        sections.add(new Section(upSection.getSource(), downSection.getTarget(), downSection.getDistance()
+                + upSection.getDistance()));
     }
 
     public Long getId() {

@@ -115,7 +115,36 @@ class LineTest {
         Line otherLine = new Line("2호선", List.of(new Section("강남역", "교대역", 15)));
 
         // then
-        assertThat(line.getSections()).map(Section::getSource).containsExactly(new Station("강남역"));
-        assertThat(otherLine.getSections()).map(Section::getSource).containsExactly(new Station("강남역"));
+        assertThat(line.getSections()).map(Section::getSource)
+                .containsExactly(new Station("강남역"));
+        assertThat(otherLine.getSections()).map(Section::getSource)
+                .containsExactly(new Station("강남역"));
+    }
+
+    @Test
+    void 삭제할_구간이_노선에_존재하지_않으면_예외가_발생한다() {
+        // given
+        Line line = new Line("1호선", List.of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
+        Station nonExistStation = new Station("교대역");
+
+        // when
+        assertThatThrownBy(() -> line.removeStation(nonExistStation))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
+    }
+
+
+    @Test
+    void 노선에_역을_삭제하면_두_역이_이어지고_거리가_더해진다() {
+        // given
+        Line line = new Line("1호선", List.of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
+
+        // when
+        line.removeStation(new Station("역삼역"));
+
+        //then
+        assertThat(line.getSections()).contains(
+                new Section("강남역", "삼성역", 15)
+        );
     }
 }
