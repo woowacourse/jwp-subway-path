@@ -9,14 +9,14 @@ public class LineRequest {
     @NotNull
     private String sourceStation;
     @NotNull
-    private String destinationStation;
+    private String targetStation;
     @NotNull
     private Integer distance;
 
-    public LineRequest(String lineName, String sourceStation, String destinationStation, Integer distance) {
+    public LineRequest(String lineName, String sourceStation, String targetStation, Integer distance) {
         this.lineName = lineName;
         this.sourceStation = sourceStation;
-        this.destinationStation = destinationStation;
+        this.targetStation = targetStation;
         this.distance = distance;
     }
 
@@ -31,8 +31,8 @@ public class LineRequest {
         return sourceStation;
     }
 
-    public String getDestinationStation() {
-        return destinationStation;
+    public String getTargetStation() {
+        return targetStation;
     }
 
     public Integer getDistance() {
