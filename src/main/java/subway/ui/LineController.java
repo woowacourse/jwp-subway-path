@@ -1,19 +1,19 @@
 package subway.ui;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
 import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import subway.domain.Line;
+import subway.dto.LineCreateRequest;
+import subway.dto.LineCreateResponse;
+import subway.service.LineService;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
-
     private final LineService lineService;
 
     public LineController(LineService lineService) {
@@ -21,9 +21,16 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    public ResponseEntity<LineCreateResponse> createLine(@RequestBody LineCreateRequest createRequest) {
+        Line newLine = lineService.createNewLine(createRequest);
+        LineCreateResponse lineCreateResponse = new LineCreateResponse(newLine.getId(), newLine.getName());
+        return ResponseEntity.created(URI.create("/lines/" + newLine.getId())).body(lineCreateResponse);
+    }
+
+    /*@PostMapping("/{lineId}/stations")
+    public ResponseEntity<Void> addStationToLine(@PathVariable Long lineId) {
+
+        return ResponseEntity.created(URI.create("hello")).build();
     }
 
     @GetMapping
@@ -31,25 +38,15 @@ public class LineController {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    @GetMapping("/{lineId}")
+    public ResponseEntity<LineResponse> findLineById(@PathVariable Long lineId) {
+        return ResponseEntity.ok(lineService.findLineResponseById(lineId));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
+    @DeleteMapping("/{lineId}/stations/{stationId}")
+    public ResponseEntity<Void> delete(@PathVariable Long lineId,
+                                       @PathVariable Long stationId) {
+        // TODO
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
+    }*/
 }

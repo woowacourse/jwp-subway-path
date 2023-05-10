@@ -32,6 +32,16 @@ public class StationDao {
         return new Station(stationId, station.getName());
     }
 
+    public Optional<Station> findById(long stationId) {
+        String sql = "SELECT * FROM station WHERE id = ?";
+        BeanPropertyRowMapper<Station> mapper = BeanPropertyRowMapper.newInstance(Station.class);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, mapper, stationId));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
     public Optional<Station> findByName(Station station) {
         String sql = "SELECT * FROM station WHERE name = ?";
         BeanPropertyRowMapper<Station> mapper = BeanPropertyRowMapper.newInstance(Station.class);
