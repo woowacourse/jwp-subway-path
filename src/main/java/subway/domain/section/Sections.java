@@ -73,6 +73,28 @@ public class Sections {
         return findSections.peekFirst();
     }
 
+    public void removeFirstStation(final Station station) {
+        validateEndPointStation(station);
+        final Section firstSection = peekByFirstStationUnique(station);
+        sections.remove(firstSection);
+    }
+
+    public void removeLastStation(final Station station) {
+        validateEndPointStation(station);
+        final Section lastSection = peekBySecondStationUnique(station);
+        sections.remove(lastSection);
+    }
+
+    private void validateEndPointStation(final Station station) {
+        final int count = (int) sections.stream()
+                .filter(section -> section.contains(station))
+                .count();
+
+        if (count != 1) {
+            throw new IllegalArgumentException();
+        }
+    }
+
     private void validateUniqueSection(final List<Section> collect) {
         if (collect.size() != 1) {
             throw new IllegalStateException();

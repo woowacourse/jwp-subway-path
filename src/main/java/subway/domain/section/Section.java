@@ -2,6 +2,7 @@ package subway.domain.section;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
 
@@ -37,6 +38,10 @@ public class Section {
         final Section firstSection = new Section(firstStation, additionStation, stationDistance);
         final Section secondSection = new Section(additionStation, secondStation, distance.subtract(stationDistance));
         return List.of(firstSection, secondSection);
+    }
+
+    public boolean contains(final Station station) {
+        return Set.of(firstStation, secondStation).contains(station);
     }
 
     public Station getFirstStation() {
