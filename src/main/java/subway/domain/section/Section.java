@@ -6,12 +6,12 @@ public class Section {
 
     private final Station source;
     private final Station target;
-    private final int distance;
+    private final SectionDistance distance;
 
     public Section(final Station source, final Station target, final int distance) {
         this.source = source;
         this.target = target;
-        this.distance = distance;
+        this.distance = new SectionDistance(distance);
     }
 
     public Station getSource() {
@@ -22,7 +22,7 @@ public class Section {
         return target;
     }
 
-    public int getDistance() {
+    public SectionDistance getDistance() {
         return distance;
     }
 }
