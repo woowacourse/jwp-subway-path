@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static subway.domain.fixture.SectionFixtures.createSection;
+import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -68,7 +69,7 @@ class SectionsTest {
             sections.addSection(middle2);
 
             // then
-            포함된_구간들을_검증한다(sections,
+            포함된_구간들을_검증한다(sections.getSections(),
                     "출발역-[1km]-경유역 1",
                     "경유역 1-[5km]-경유역 2",
                     "경유역 2-[4km]-종착역"
@@ -90,7 +91,7 @@ class SectionsTest {
             sections.addSection(top);
 
             // then
-            포함된_구간들을_검증한다(sections,
+            포함된_구간들을_검증한다(sections.getSections(),
                     "출발역-[1km]-낙성대역",
                     "낙성대역-[7km]-잠실역",
                     "잠실역-[10km]-종착역"
@@ -112,7 +113,7 @@ class SectionsTest {
             sections.addSection(down);
 
             // then
-            포함된_구간들을_검증한다(sections,
+            포함된_구간들을_검증한다(sections.getSections(),
                     "출발역-[10km]-잠실역",
                     "잠실역-[7km]-건대역",
                     "건대역-[1km]-종착역"
@@ -188,7 +189,7 @@ class SectionsTest {
             sections.removeStation(new Station("잠실역"));
 
             // then
-            포함된_구간들을_검증한다(sections,
+            포함된_구간들을_검증한다(sections.getSections(),
                     "출발역-[15km]-잠실나루역",
                     "잠실나루역-[7km]-종착역"
             );
@@ -207,7 +208,7 @@ class SectionsTest {
             sections.removeStation(new Station("출발역"));
 
             // then
-            포함된_구간들을_검증한다(sections,
+            포함된_구간들을_검증한다(sections.getSections(),
                     "잠실역-[5km]-잠실나루역",
                     "잠실나루역-[7km]-종착역"
             );
@@ -226,7 +227,7 @@ class SectionsTest {
             sections.removeStation(new Station("종착역"));
 
             // then
-            포함된_구간들을_검증한다(sections,
+            포함된_구간들을_검증한다(sections.getSections(),
                     "출발역-[10km]-잠실역",
                     "잠실역-[5km]-잠실나루역"
             );
@@ -255,11 +256,5 @@ class SectionsTest {
             // then
             assertThat(sections.getSections()).isEmpty();
         }
-    }
-
-    private void 포함된_구간들을_검증한다(final Sections sections, final String... sectionStrings) {
-        assertThat(sections.getSections())
-                .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
-                .containsExactly(sectionStrings);
     }
 }

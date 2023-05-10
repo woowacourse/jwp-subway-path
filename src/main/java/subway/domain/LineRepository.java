@@ -9,6 +9,8 @@ public interface LineRepository {
 
     void update(final Line line);
 
+    Optional<Line> findById(final Long id);
+
     Optional<Line> findByName(final String name);
 
     List<Line> findAll();

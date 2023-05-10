@@ -50,4 +50,13 @@ public class LineDao {
     public void delete(final LineEntity entity) {
         template.update("delete from line where line.id = ?", entity.getId());
     }
+
+    public Optional<LineEntity> findById(final Long id) {
+        try {
+            final String sql = "select * from line where line.id = ?";
+            return Optional.ofNullable(template.queryForObject(sql, lineRowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
 }

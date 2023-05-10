@@ -1,6 +1,7 @@
 package subway.infrastructure.persistence.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -93,7 +94,30 @@ class JdbcLineRepositoryTest {
     }
 
     @Test
-    void 단일_노선을_조회한다() {
+    void ID로_단일_노선을_조회한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 1),
+                new Section(역2, 역3, 2),
+                new Section(역3, 역4, 3),
+                new Section(역4, 역5, 4)
+        ));
+        final Long id = lineRepository.save(new Line("1호선", sections));
+
+        // when
+        final List<Section> find = lineRepository.findById(id).get().getSections();
+
+        // then
+        포함된_구간들을_검증한다(find,
+                "역1-[1km]-역2",
+                "역2-[2km]-역3",
+                "역3-[3km]-역4",
+                "역4-[4km]-역5"
+        );
+    }
+
+    @Test
+    void 이름으로_단일_노선을_조회한다() {
         // given
         final Sections sections = new Sections(List.of(
                 new Section(역1, 역2, 1),
@@ -143,11 +167,5 @@ class JdbcLineRepositoryTest {
                 "역3-[3km]-역4",
                 "역4-[4km]-역5"
         );
-    }
-
-    private void 포함된_구간들을_검증한다(final List<Section> sections, final String... sectionStrings) {
-        assertThat(sections)
-                .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
-                .containsExactly(sectionStrings);
     }
 }

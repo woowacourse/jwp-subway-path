@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.times;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.Mockito.mock;
 import static subway.domain.fixture.SectionFixtures.createSection;
+import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
 
 import java.util.List;
 import java.util.Optional;
@@ -126,11 +127,5 @@ class LineServiceTest {
     private void 역을_저장한다(final String name) {
         given(stationRepository.findByName(name))
                 .willReturn(Optional.of(new Station(name)));
-    }
-
-    private void 포함된_구간들을_검증한다(final List<Section> sections, final String... sectionStrings) {
-        assertThat(sections)
-                .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
-                .containsExactly(sectionStrings);
     }
 }

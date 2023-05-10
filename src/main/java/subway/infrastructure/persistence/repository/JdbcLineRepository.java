@@ -51,6 +51,12 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     @Override
+    public Optional<Line> findById(final Long id) {
+        return lineDao.findById(id)
+                .map(it -> it.toDomain(getSections(it.getName())));
+    }
+
+    @Override
     public Optional<Line> findByName(final String name) {
         return lineDao.findByName(name)
                 .map(it -> it.toDomain(getSections(name)));

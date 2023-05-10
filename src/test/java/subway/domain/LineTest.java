@@ -3,6 +3,7 @@ package subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static subway.domain.fixture.SectionFixtures.createSection;
+import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -231,9 +232,7 @@ class LineTest {
         }
     }
 
-    private static void 포함된_노선들을_검증한다(final Line line, final String... sectionStrings) {
-        assertThat(line.getSections())
-                .extracting(it -> it.getUp().getName() + "-[" + it.getDistance() + "km]-" + it.getDown().getName())
-                .containsExactly(sectionStrings);
+    private void 포함된_노선들을_검증한다(final Line line, final String... sectionStrings) {
+        포함된_구간들을_검증한다(line.getSections(), sectionStrings);
     }
 }

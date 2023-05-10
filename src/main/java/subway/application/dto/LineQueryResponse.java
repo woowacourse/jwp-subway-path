@@ -1,13 +1,16 @@
 package subway.application.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import subway.domain.Line;
+import subway.domain.Section;
 
 public class LineQueryResponse {
 
     private final String lineName;
-    private final List<StationQueryResponse> stationQueryResponseList;
+    private final List<SectionQueryResponse> stationQueryResponseList;
 
-    public LineQueryResponse(final String lineName, final List<StationQueryResponse> stationQueryResponseList) {
+    public LineQueryResponse(final String lineName, final List<SectionQueryResponse> stationQueryResponseList) {
         this.lineName = lineName;
         this.stationQueryResponseList = stationQueryResponseList;
     }
@@ -16,25 +19,47 @@ public class LineQueryResponse {
         return lineName;
     }
 
-    public List<StationQueryResponse> getStationQueryResponseList() {
+    public List<SectionQueryResponse> getStationQueryResponseList() {
         return stationQueryResponseList;
     }
 
-    public static class StationQueryResponse {
-        private final String stationName;
-        private final int nextStationDistance;
+    public static LineQueryResponse from(final Line line) {
+        final List<SectionQueryResponse> sectionQueryResponses = line.getSections()
+                .stream()
+                .map(SectionQueryResponse::from)
+                .collect(Collectors.toList());
+        return new LineQueryResponse(line.getName(), sectionQueryResponses);
+    }
 
-        public StationQueryResponse(final String stationName, final int nextStationDistance) {
-            this.stationName = stationName;
-            this.nextStationDistance = nextStationDistance;
+    public static class SectionQueryResponse {
+
+        private final String upStationName;
+        private final String downStationName;
+        private final int distance;
+
+        public SectionQueryResponse(final String upStationName, final String downStationName, final int distance) {
+            this.upStationName = upStationName;
+            this.downStationName = downStationName;
+            this.distance = distance;
         }
 
-        public String getStationName() {
-            return stationName;
+        public static SectionQueryResponse from(final Section section) {
+            return new SectionQueryResponse(
+                    section.getUp().getName(),
+                    section.getDown().getName(),
+                    section.getDistance());
         }
 
-        public int getNextStationDistance() {
-            return nextStationDistance;
+        public String getUpStationName() {
+            return upStationName;
+        }
+
+        public String getDownStationName() {
+            return downStationName;
+        }
+
+        public int getDistance() {
+            return distance;
         }
     }
 }

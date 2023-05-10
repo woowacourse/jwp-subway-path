@@ -42,6 +42,16 @@ class LineDaoTest {
     }
 
     @Test
+    void ID로_노선을_조회한다() {
+        // given
+        final LineEntity lineEntity = new LineEntity("1호선");
+        final Long id = lineDao.save(lineEntity);
+
+        // when & then
+        assertThat(lineDao.findById(id)).isPresent();
+    }
+
+    @Test
     void 모든_노선을_조회한다() {
         // given
         lineDao.save(new LineEntity("1호선"));
