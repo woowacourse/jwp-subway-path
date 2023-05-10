@@ -54,7 +54,6 @@ public class Line {
         }
 
         Station lastStation = findDownEndStation();
-        //TODO: addStation의 입력값 검증로직 추가
 
         if (downStation.equals(headStation)) {
             headStation = station;
@@ -62,7 +61,6 @@ public class Line {
             lastStation.setNext(downStation);
             lastStation.setDistance(station.getDistance());
         } else {
-            //TODO: hasStation으로 if문
             // 상행: 강남, 하행: newStation일 경우
             if (hasStation(station.getName())) {
                 Distance newDistance = upStation.minusDistance(station);
@@ -134,6 +132,10 @@ public class Line {
         } while (station != null && !station.equals(Station.emptyStation));
 
         return stations;
+    }
+
+    public boolean hasSameName(Line line) {
+        return name.equals(line.name);
     }
 
     public Long getId() {
