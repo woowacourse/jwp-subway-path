@@ -4,6 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 import subway.exception.InvalidDistanceException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @ToString
 @EqualsAndHashCode
 public class Section {
@@ -25,5 +28,20 @@ public class Section {
         if (distance < MINIMUM_DISTANCE) {
             throw new InvalidDistanceException("거리는 " + MINIMUM_DISTANCE + "이상이어야 합니다");
         }
+    }
+
+    public boolean isCorrespondingSection(Station upstream, Station downstream) {
+        return this.upstream.equals(upstream) && this.downstream.equals(downstream);
+    }
+
+    public List<Section> insertInTheMiddle(Station newStation, int distanceToUpstream) {
+        List<Section> split = new ArrayList<>();
+
+        Section firstSection = new Section(upstream, newStation, distanceToUpstream);
+        Section secondSection = new Section(newStation, downstream, distance - distanceToUpstream);
+        split.add(firstSection);
+        split.add(secondSection);
+
+        return split;
     }
 }
