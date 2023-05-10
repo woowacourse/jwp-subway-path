@@ -12,6 +12,7 @@ import subway.domain.Sections;
 import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
+import subway.dto.SectionDeleteRequest;
 import subway.exception.DomainException;
 import subway.exception.ExceptionType;
 
@@ -49,8 +50,7 @@ public class SectionService {
         Long targetStationId = sectionAddRequest.getTargetId();
         Integer distance = sectionAddRequest.getDistance();
 
-        List<Section> sections1 = sectionDao.findAllSectionByLineId(lineId);
-        Sections sections = new Sections(sections1);
+        Sections sections = new Sections(sectionDao.findAllSectionByLineId(lineId));
 
         if (sections.hasNoSection()) {
             throw new DomainException(ExceptionType.LINE_HAS_NO_SECTION);
@@ -84,7 +84,7 @@ public class SectionService {
 
         sectionDao.deleteById(splitTargetSection.getId());
 
-        if (splitTargetSection.isSrc(sourceStationId)) {
+        if (splitTargetSection.isSourceStation(sourceStationId)) {
             Section firstSection = new Section(null, sourceStationId, stationId, lineId, distance);
             Section lastSection = new Section(null, stationId, targetStationId, lineId,
                 splitTargetSection.getDistance() - distance);
@@ -101,5 +101,40 @@ public class SectionService {
         Long firstSectionId = sectionDao.insert(firstSection);
         Long lastSectionId = sectionDao.insert(lastSection);
         return List.of(SectionAddResponse.from(firstSectionId), SectionAddResponse.from(lastSectionId));
+    }
+
+    public void deleteSection(SectionDeleteRequest sectionDeleteRequest) {
+        Long lineId = sectionDeleteRequest.getLineId();
+        Long stationId = sectionDeleteRequest.getStationId();
+
+        Sections sections = new Sections(sectionDao.findAllSectionByLineId(lineId));
+
+        List<Section> sectionsIncludeStation = sections.findSectionsIncludeStation(stationId);
+
+        for (Section section : sectionsIncludeStation) {
+            sectionDao.deleteById(section.getId());
+        }
+
+        if (sectionsIncludeStation.size() == 1) {
+            return;
+        }
+
+        Long sourceStationId = sectionsIncludeStation.stream()
+            .filter(section -> section.isTargetStation(stationId))
+            .map(Section::getSourceStationId)
+            .findFirst()
+            .orElse(null);
+
+        Long targetStationId = sectionsIncludeStation.stream()
+            .filter(section -> section.isSourceStation(stationId))
+            .map(Section::getTargetStationId)
+            .findFirst()
+            .orElse(null);
+
+        int distanceSum = sectionsIncludeStation.stream()
+            .mapToInt(Section::getDistance)
+            .sum();
+
+        sectionDao.insert(new Section(null, sourceStationId, targetStationId, lineId, distanceSum));
     }
 }

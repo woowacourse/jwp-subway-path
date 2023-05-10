@@ -69,4 +69,9 @@ public class Sections {
             .orElseThrow(() -> new DomainException(ExceptionType.NON_EXISTENT_SECTION));
     }
 
+    public List<Section> findSectionsIncludeStation(Long stationId) {
+        return sections.stream()
+            .filter(section -> section.includeStation(stationId))
+            .collect(Collectors.toList());
+    }
 }

@@ -17,6 +17,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionAddRequest;
+import subway.dto.SectionDeleteRequest;
 
 @DisplayName("구간 관련 기능")
 public class SectionIntegrationTest extends IntegrationTest{
@@ -80,12 +81,6 @@ public class SectionIntegrationTest extends IntegrationTest{
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    // TODO: 2023/05/09
-    // 1. 역 아이디 없음 (세개 역 전부다)
-    // 2. 노선 아이디 없음
-    // 3. 노선에 해당 구간 없음
-    // 4. 길이 에러(길이 자체 에러, 기존 길이보다 긴 에러)
-
     @ParameterizedTest(name = "구간이 있는 노선에 첫 구간을 추가한다.")
     @MethodSource("addSectionInvalidRequest")
     void addSectionTestFail(SectionAddRequest sectionAddRequest) {
@@ -109,5 +104,22 @@ public class SectionIntegrationTest extends IntegrationTest{
             Arguments.of(new SectionAddRequest(1L, 1L, 1L, 2L, 0)),
             Arguments.of(new SectionAddRequest(1L, 2L, 1L, 2L, 1))
         );
+    }
+
+    @Test
+    @DisplayName("노선에서 역을 삭제한다.")
+    void deleteSectionTest() {
+        SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest(1L, 2L);
+
+        ExtractableResponse<Response> response = RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(sectionDeleteRequest)
+            .when().delete("/sections")
+            .then().log().all()
+            .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

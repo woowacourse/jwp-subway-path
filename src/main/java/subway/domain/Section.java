@@ -17,25 +17,33 @@ public class Section {
         this.distance = distance;
     }
 
-    public boolean isSrc(Long sourceStationId) {
+    public boolean isSourceStation(Long sourceStationId) {
         return this.sourceStationId.equals(sourceStationId);
     }
 
-    public boolean isTar(Long targetStationId) {
+    public boolean isTargetStation(Long targetStationId) {
         return this.targetStationId.equals(targetStationId);
     }
 
     public boolean containsTheseStations(Long sourceStationId, Long targetStationId) {
-        return (isSrc(sourceStationId) && isTar(targetStationId))
-            || (isSrc(targetStationId) && isTar(sourceStationId));
+        return (isSourceStation(sourceStationId) && isTargetStation(targetStationId))
+            || (isSourceStation(targetStationId) && isTargetStation(sourceStationId));
     }
 
     public boolean hasShorterOrSameDistanceThan(Integer distance) {
         return this.distance <= distance;
     }
 
+    public boolean includeStation(Long stationId) {
+        return isSourceStation(stationId) || isTargetStation(stationId);
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public Long getLine() {
+        return lineId;
     }
 
     public Long getSourceStationId() {
@@ -46,9 +54,6 @@ public class Section {
         return targetStationId;
     }
 
-    public Long getLine() {
-        return lineId;
-    }
 
     public Integer getDistance() {
         return distance;
@@ -69,9 +74,5 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(id, sourceStationId, targetStationId, lineId, distance);
-    }
-
-    public boolean includeStation(Long stationId) {
-        return isSrc(stationId) || isTar(stationId);
     }
 }

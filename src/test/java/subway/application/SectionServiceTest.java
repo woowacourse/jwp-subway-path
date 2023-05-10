@@ -5,7 +5,6 @@ import static org.mockito.Mockito.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,13 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Distance;
-import subway.domain.Line;
 import subway.domain.Section;
-import subway.domain.Station;
 import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
+import subway.dto.SectionDeleteRequest;
 import subway.exception.DomainException;
 
 @ExtendWith(MockitoExtension.class)
@@ -142,5 +139,41 @@ class SectionServiceTest {
 
         assertThatThrownBy(() -> sectionService.addSection(sectionAddRequest))
             .isInstanceOf(DomainException.class);
+    }
+
+    @Test
+    @DisplayName("노선에서 역을 제거한다.")
+    void deleteStationTest() {
+        Long lineId = 1L;
+        Long sourceStationId = 1L;
+        Long stationId = 2L;
+        Long sectionId = 1L;
+        SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest(lineId, stationId);
+        Section section = new Section(sectionId, sourceStationId, stationId, lineId, 10);
+        when(sectionDao.findAllSectionByLineId(lineId)).thenReturn(List.of(section));
+
+        sectionService.deleteSection(sectionDeleteRequest);
+
+        verify(sectionDao, times(1)).deleteById(sectionId);
+        verify(sectionDao, never()).insert(any(Section.class));
+    }
+
+    @Test
+    @DisplayName("노선에서 역을 제거한다. - 노선에 역이 두개만 있는 경우")
+    void deleteStationJustTwoStationTest() {
+        Long lineId = 1L;
+        Long station1Id = 1L;
+        Long station2Id = 2L;
+        Long station3Id = 3L;
+        Long sectionId = 1L;
+        SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest(lineId, station2Id);
+        Section section1 = new Section(sectionId, station1Id, station2Id, lineId, 10);
+        Section section2 = new Section(sectionId, station2Id, station3Id, lineId, 10);
+        when(sectionDao.findAllSectionByLineId(lineId)).thenReturn(List.of(section1, section2));
+
+        sectionService.deleteSection(sectionDeleteRequest);
+
+        verify(sectionDao, times(2)).deleteById(sectionId);
+        verify(sectionDao, times(1)).insert(any(Section.class));
     }
 }
