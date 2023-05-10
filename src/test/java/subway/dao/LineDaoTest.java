@@ -4,18 +4,23 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.test.context.jdbc.Sql;
 import subway.entity.LineEntity;
+import subway.exception.LineNotFoundException;
 
 import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 @DisplayName("Line Dao")
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class LineDaoTest {
 
     private final RowMapper<LineEntity> lineEntityRowMapper = (rs, rn) -> new LineEntity(
@@ -53,6 +58,32 @@ class LineDaoTest {
 
         assertThat(response).hasSize(1)
                 .anyMatch(entity -> entity.getColor().equals(color));
+    }
+
+    @Test
+    @DisplayName("이름으로 id 조회 성공")
+    @Sql("/line_test_data.sql")
+    void findIdByName_success() {
+        // given
+        final String name = "2호선";
+
+        // when
+        final Long id = lineDao.findIdByName(name);
+
+        // then
+        assertThat(id).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("이름으로 id 조회 실패 - 존재하지 않는 이름 입력")
+    @Sql("/line_test_data.sql")
+    void findIdByName_fail_name_not_found() {
+        // given
+        final String name = "포비";
+
+        // expected
+        assertThatThrownBy(() -> lineDao.findIdByName(name))
+                .isInstanceOf(LineNotFoundException.class);
     }
 
 }

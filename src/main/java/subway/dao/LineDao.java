@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
+import subway.exception.LineNotFoundException;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -39,8 +40,20 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select id, name, color from LINE";
+        final String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    // TODO: 꼭 queryForList로 해야하나? 다른 방법 찾아보자. 옵셔널 말고.
+    public Long findIdByName(final String name) {
+        final String sql = "SELECT id FROM line WHERE name = ?";
+        final List<Long> result = jdbcTemplate.query(sql, (resultSet, rowNumber) -> resultSet.getLong("id"), name);
+
+        if (result.isEmpty()) {
+            throw new LineNotFoundException("존재하지 않는 노선 이름입니다.");
+        }
+
+        return result.get(0);
     }
 
     public LineEntity findById(Long id) {
