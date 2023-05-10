@@ -18,4 +18,8 @@ public class Distance {
     public boolean isBiggerThan(Distance targetDistance) {
         return distance > targetDistance.distance;
     }
+
+    public Distance sub(Distance targetDistance) {
+        return new Distance(distance - targetDistance.distance);
+    }
 }

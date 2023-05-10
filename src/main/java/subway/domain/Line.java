@@ -41,9 +41,23 @@ public class Line {
         validateDistance(section);
     }
 
-    private void add(Section section) {
-        sections.add(section);
-        // TODO: 실제 연결로직 작성
+    private void add(Section target) {
+        sections.stream()
+                .filter(section -> section.includeSection(target))
+                .findAny()
+                .ifPresentOrElse((section) -> connectNewSection(section, target),
+                        () -> sections.add(target));
+    }
+
+    private void connectNewSection(Section originSection, Section newSection) {
+        if (originSection.containLeftStationOf(newSection)) {
+            sections.add(originSection.makeLeftSectionTo(newSection));
+        }
+        if (originSection.containRightStationOf(newSection)) {
+            sections.add(originSection.makeRightSectionTo(newSection));
+        }
+        sections.add(newSection);
+        sections.remove(originSection);
     }
 
     private void validateConnectivity(Section target) {
@@ -54,7 +68,7 @@ public class Line {
     private void validateDuplication(Section target) {
         boolean existLeftStation = sections.stream().anyMatch(section -> section.containLeftStationOf(target));
         boolean existRightStation = sections.stream().anyMatch(section -> section.containRightStationOf(target));
-        if(existLeftStation && existRightStation){
+        if (existLeftStation && existRightStation) {
             throw new IllegalStateException("이미 노선에 등록된 역입니다.");
         }
     }
