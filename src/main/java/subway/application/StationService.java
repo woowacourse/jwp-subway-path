@@ -18,7 +18,7 @@ public class StationService {
     }
 
     public CreationStationDto saveStation(final String stationName) {
-        final Station station = stationDao.insert(new Station(stationName));
+        final Station station = stationDao.insert(Station.from(stationName));
         return CreationStationDto.from(station);
     }
 

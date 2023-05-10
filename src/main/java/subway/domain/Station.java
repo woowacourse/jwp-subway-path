@@ -1,21 +1,51 @@
 package subway.domain;
 
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 public class Station {
-    private Long id;
-    private String name;
 
-    public Station() {
-    }
+    private static final Pattern PATTERN = Pattern.compile("^[가-힣0-9]*$");
+    private static final int MINIMUM_LENGTH = 2;
+    private static final int MAXIMUM_LENGTH = 9;
 
-    public Station(final Long id, final String name) {
+    private final Long id;
+    private final String name;
+
+    private Station(final Long id, final String name) {
+        validate(name);
+
         this.id = id;
         this.name = name;
     }
 
-    public Station(final String name) {
-        this.name = name;
+    private Station(final String name) {
+        this(null, name);
+    }
+
+    public static Station of(final Long id, final String name) {
+        return new Station(id, name);
+    }
+
+    public static Station from(final String name) {
+        return new Station(name);
+    }
+
+    private void validate(final String name) {
+        validateFormat(name);
+        validateLength(name);
+    }
+
+    private void validateLength(final String name) {
+        if (!(MINIMUM_LENGTH <= name.length() && name.length() <= MAXIMUM_LENGTH)) {
+            throw new IllegalArgumentException("역 이름은 2글자 ~ 9글자만 가능합니다");
+        }
+    }
+
+    private void validateFormat(final String name) {
+        if (!PATTERN.matcher(name).matches()) {
+            throw new IllegalArgumentException("역 이름은 한글과 숫자만 가능합니다");
+        }
     }
 
     public Long getId() {
@@ -27,15 +57,15 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        final Station station = (Station) o;
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }
