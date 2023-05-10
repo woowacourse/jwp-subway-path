@@ -4,23 +4,27 @@ import java.util.Objects;
 
 public class Station {
 
-        public static final Station TERMINAL = new Station(0L, "종착역");
+    public static final Station TERMINAL = new Station(0L, "종착역");
 
-        private final Long id;
-        private final Name name;
+    private final Long id;
+    private final Name name;
 
-        public Station(final Long id, final String name) {
-            this.id = id;
-            this.name = new Name(name);
-        }
+    public Station(final String name) {
+        this(null, name);
+    }
 
-        public Long getId() {
-            return id;
-        }
+    public Station(final Long id, final String name) {
+        this.id = id;
+        this.name = new Name(name);
+    }
 
-        public String getName() {
-            return name.getValue();
-        }
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name.getValue();
+    }
 
     @Override
     public boolean equals(final Object o) {
