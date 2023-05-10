@@ -18,6 +18,7 @@ class LineTest {
     @NullAndEmptySource
     @ParameterizedTest
     void 이름에는_공백이나_null이_들어올_수_없다(String value) {
+        // when, then
         assertThatThrownBy(() -> new Line(value, Collections.emptyList()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("아름에는 빈 문자가 들어올 수 없습니다.");
@@ -40,8 +41,7 @@ class LineTest {
         // given
         Line line = new Line("1호선", List.of(new Section("강남역", "역삼역", 10), new Section("역삼역", "선릉역", 5)));
 
-        //when
-        //then
+        // when, then
         assertThatThrownBy(() -> line.addSection(new Section("강남역", "선릉역", 15)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("두 역이 이미 모두 존재합니다.");
@@ -100,9 +100,22 @@ class LineTest {
         // given
         Line line = new Line("1호선", List.of(new Section("강남역", "역삼역", 10)));
 
-        // when
+        // when, then
         assertThatThrownBy(() -> line.addSection(new Section("강남역", "선릉역", 20)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 음수가 될 수 없습니다.");
+    }
+
+    @Test
+    void 하나의_역은_여러_노선에_등록될_수_있다() {
+        // given
+        Line line = new Line("1호선", List.of(new Section("강남역", "역삼역", 10)));
+
+        // when
+        Line otherLine = new Line("2호선", List.of(new Section("강남역", "교대역", 15)));
+
+        // then
+        assertThat(line.getSections()).map(Section::getSource).containsExactly(new Station("강남역"));
+        assertThat(otherLine.getSections()).map(Section::getSource).containsExactly(new Station("강남역"));
     }
 }
