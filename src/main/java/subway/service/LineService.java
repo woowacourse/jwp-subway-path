@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.LineDirection;
 import subway.domain.Station;
-import subway.domain.StationEdge;
 import subway.domain.dto.InsertionResult;
 import subway.dto.LineRequest;
 import subway.dto.StationInsertRequest;
@@ -33,10 +32,8 @@ public class LineService {
         final Station upStation = findStationById(lineRequest.getUpStationId());
         final Station downStation = findStationById(lineRequest.getDownStationId());
 
-        final StationEdge upEndEdge = new StationEdge(upStation.getId(), 0);
-        final StationEdge downEndEdge = new StationEdge(downStation.getId(), lineRequest.getDistance());
-
-        final Line line = Line.of(lineRequest.getName(), lineRequest.getColor(), List.of(upEndEdge, downEndEdge));
+        final Line line = Line.of(lineRequest.getName(), lineRequest.getColor(),
+                upStation.getId(), downStation.getId(), lineRequest.getDistance());
 
         lineRepository.findByName(line.getName()).ifPresent(lineWithSameName -> {
             throw new DuplicatedLineNameException(line.getName());

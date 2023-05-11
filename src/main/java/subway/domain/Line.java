@@ -9,6 +9,9 @@ import subway.exception.StationAlreadyExistsException;
 import subway.exception.StationNotFoundException;
 
 public class Line {
+
+    public static final int UP_END_EDGE_DISTANCE = 0;
+
     private Long id;
     private String name;
     private String color;
@@ -27,8 +30,10 @@ public class Line {
         this.stationEdges = new LinkedList<>(stationEdges);
     }
 
-    public static Line of(final String name, final String color, final List<StationEdge> stationEdges) {
-        return new Line(name, color, stationEdges);
+    public static Line of(final String name, final String color, final Long upStationId, final Long downStationId, final int distance) {
+        final StationEdge upEndEdge = new StationEdge(upStationId, UP_END_EDGE_DISTANCE);
+        final StationEdge downEndEdge = new StationEdge(downStationId, distance);
+        return new Line(name, color, List.of(upEndEdge, downEndEdge));
     }
 
     public static Line of(final Long id, final String name, final String color, final List<StationEdge> stationEdges) {

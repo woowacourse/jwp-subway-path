@@ -47,8 +47,7 @@ class LineRepositoryTest {
         //given
         Long upStationId = stationRepository.create(new Station("up"));
         Long downStationId = stationRepository.create(new Station("down"));
-        Line line = Line.of("2호선", "초록색",
-                List.of(new StationEdge(upStationId, 0), new StationEdge(downStationId, INITIAL_DISTANCE)));
+        Line line = Line.of("2호선", "초록색", upStationId, downStationId, INITIAL_DISTANCE);
         //when
         Long id = lineRepository.create(line);
         //then
@@ -72,8 +71,7 @@ class LineRepositoryTest {
     private Line createLineWithTwoStation() {
         Long upStationId = stationRepository.create(new Station("up"));
         Long downStationId = stationRepository.create(new Station("down"));
-        Line line = Line.of("2호선", "초록색",
-                List.of(new StationEdge(upStationId, 0), new StationEdge(downStationId, INITIAL_DISTANCE)));
+        Line line = Line.of("2호선", "초록색", upStationId, downStationId, INITIAL_DISTANCE);
         Long id = lineRepository.create(line);
         return lineRepository.findById(id).get();
     }

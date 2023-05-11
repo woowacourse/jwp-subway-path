@@ -2,7 +2,6 @@ package subway.domain;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,8 +26,7 @@ class LineTest {
         String color = "초록색";
 
         //when
-        final var line = Line.of(name, color,
-                List.of(new StationEdge(stationId, 0), new StationEdge(stationId2, distance)));
+        final var line = Line.of(name, color, stationId, stationId2, distance);
 
         //then
         Assertions.assertThat(line)
@@ -69,8 +67,7 @@ class LineTest {
     }
 
     private Line createLine() {
-        Line line = Line.of(name, color,
-                List.of(new StationEdge(stationId1, 0), new StationEdge(stationId2, distance)));
+        Line line = Line.of(name, color, stationId1, stationId2, distance);
         return line;
     }
 
