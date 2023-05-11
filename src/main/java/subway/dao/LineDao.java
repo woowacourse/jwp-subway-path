@@ -34,9 +34,8 @@ public class LineDao {
     }
 
     public LineEntity findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-//        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-        return null;
+        String sql = "select id, line_name from LINE WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, lineEntityRowMapper(), id);
     }
 
     public void deleteById(Long id) {

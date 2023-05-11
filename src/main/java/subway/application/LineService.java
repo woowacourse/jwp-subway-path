@@ -3,7 +3,6 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.domain.station.StationConnections;
 import subway.dto.LineFindResponse;
 import subway.entity.LineEntity;
@@ -15,12 +14,10 @@ import java.util.List;
 public class LineService {
 
     private final LineDao lineDao;
-    private final StationDao stationDao;
     private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
+    public LineService(LineDao lineDao, SectionDao sectionDao) {
         this.lineDao = lineDao;
-        this.stationDao = stationDao;
         this.sectionDao = sectionDao;
     }
 
