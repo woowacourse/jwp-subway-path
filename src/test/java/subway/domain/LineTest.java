@@ -1,5 +1,10 @@
 package subway.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,12 +14,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-
-import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -212,7 +211,7 @@ class LineTest {
 
         @Test
         void 노선에_저장된_역을_조회할_때_상행역부터_하행역으로_가져온다() {
-            List<Station> stations = line.getAllStation();
+            List<Station> stations = line.findStationsByOrdered();
 
             SoftAssertions.assertSoftly(softAssertions -> {
                 softAssertions.assertThat(stations.get(0).getName()).isEqualTo("잠실역");

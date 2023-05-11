@@ -22,7 +22,7 @@ public class Line {
     private final List<Station> stations;
 
     private Line(final Long id, final String name, final String color, final List<Station> stations) {
-        validate(name, color);
+        validateLineInfo(name, color);
 
         this.id = id;
         this.name = name;
@@ -42,7 +42,7 @@ public class Line {
         return new Line(name, color, new ArrayList<>());
     }
 
-    private void validate(final String name, final String color) {
+    private void validateLineInfo(final String name, final String color) {
         validateNameFormat(name);
         validateNameLength(name);
         validateColorFormat(color);
@@ -67,11 +67,13 @@ public class Line {
     }
 
     public void initialStations(final Station upStation, final Station downStation, final Distance distance) {
-        final Station newUpStation = Station.of(upStation.getName(), StationStatus.UP);
-        final Station newDownStation = Station.of(downStation.getName(), StationStatus.DOWN);
+        validateStation(upStation);
+        validateStation(downStation);
+        final Station newUpStation = Station.of(upStation, StationStatus.UP);
+        final Station newDownStation = Station.of(downStation, StationStatus.DOWN);
 
-        newUpStation.addPath(newDownStation, distance);
-        newDownStation.addPath(newUpStation, distance);
+        newUpStation.addPath(newDownStation, distance, RelationStatus.DOWN);
+        newDownStation.addPath(newUpStation, distance, RelationStatus.UP);
 
         stations.add(newUpStation);
         stations.add(newDownStation);
@@ -88,19 +90,27 @@ public class Line {
     }
 
     public void addEndStation(final Station sourceStation, final Station targetStation, final Distance distance) {
+        validateStation(targetStation);
         final Station newSourceStation = findStation(sourceStation);
 
         if (!(newSourceStation.isEnd(StationStatus.UP) || newSourceStation.isEnd(StationStatus.DOWN))) {
             throw new IllegalArgumentException("해당 역은 종점역이 아닙니다");
         }
 
-        newSourceStation.addPath(targetStation, distance);
-        targetStation.addPath(newSourceStation, distance);
+        RelationStatus status = RelationStatus.DOWN;
+        final boolean upStationEnd = newSourceStation.isEnd(StationStatus.UP);
+        if (upStationEnd) {
+            status = RelationStatus.UP;
+        }
+        newSourceStation.addPath(targetStation, distance, status);
+        targetStation.addPath(newSourceStation, distance, status.reverse());
         targetStation.changeEndStatus(newSourceStation);
         stations.add(targetStation);
     }
 
-    public void addMiddleStation(final Station upStation, final Station downStation, final Station target, final Distance distance) {
+    public void addMiddleStation(final Station upStation, final Station downStation, final Station targetStation,
+            final Distance distance) {
+        validateStation(targetStation);
         final Station newUpStation = findStation(upStation);
         final Station newDownStation = findStation(downStation);
 
@@ -113,12 +123,37 @@ public class Line {
             throw new IllegalArgumentException("역 사이의 거리는 양수여야 합니다");
         }
 
-        upStation.deletePath(downStation);
-        downStation.deletePath(upStation);
-        newUpStation.addPath(target, distance);
-        target.addPath(newUpStation, distance);
-        newDownStation.addPath(target, originDistance.minus(distance));
-        target.addPath(newDownStation, originDistance.minus(distance));
+        newUpStation.deletePath(newDownStation);
+        newDownStation.deletePath(newUpStation);
+        newUpStation.addPath(targetStation, distance, RelationStatus.DOWN);
+        targetStation.addPath(newUpStation, distance, RelationStatus.UP);
+        newDownStation.addPath(targetStation, originDistance.minus(distance), RelationStatus.UP);
+        targetStation.addPath(newDownStation, originDistance.minus(distance), RelationStatus.DOWN);
+        stations.add(targetStation);
+    }
+
+    public void removeStation(final Station targetStation) {
+        final Station newTargetStation = findStation(targetStation);
+        final AdjustPath adjustPath = newTargetStation.getAdjustPath();
+        final List<Station> stations = adjustPath.findAllStation();
+
+        if (stations.size() == 1) {
+            stations.remove(stations.get(0));
+        }
+        final Station upStation = adjustPath.findUpStation();
+        final Station downStation = adjustPath.findDownStation();
+        final Distance upStationDistance = upStation.getAdjustPath().findDistance(newTargetStation).getDistance();
+        final Distance downStationDistance = downStation.getAdjustPath().findDistance(newTargetStation).getDistance();
+        final Distance distance = upStationDistance.add(downStationDistance);
+
+        upStation.addPath(downStation, distance, RelationStatus.DOWN);
+        downStation.addPath(upStation, distance, RelationStatus.UP);
+    }
+
+    private void validateStation(final Station targetStation) {
+        if (stations.contains(targetStation)) {
+            throw new IllegalArgumentException("이미 해당 노선에 등록된 역입니다.");
+        }
     }
 
     public Long getId() {
@@ -133,20 +168,7 @@ public class Line {
         return color;
     }
 
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Line line = (Line) o;
-        return Objects.equals(id, line.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
-    public List<Station> getAllStation() {
+    public List<Station> findStationsByOrdered() {
         final Queue<Station> queue = new LinkedList<>();
         final Set<Station> visited = new LinkedHashSet<>();
 
@@ -175,5 +197,18 @@ public class Line {
         }
 
         throw new IllegalArgumentException("아직 노선이 생성되지 않았습니다");
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

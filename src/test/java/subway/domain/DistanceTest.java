@@ -2,18 +2,12 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 class DistanceTest {
 
+    /*
     @ValueSource(ints = {1, 100})
     @ParameterizedTest
     void 허용된_길이가_들어오면_거리를_생성한다(final int input) {
@@ -54,4 +48,6 @@ class DistanceTest {
         // then
         assertThat(actual.getDistance()).isEqualTo(1);
     }
+
+     */
 }

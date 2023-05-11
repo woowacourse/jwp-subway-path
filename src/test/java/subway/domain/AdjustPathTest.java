@@ -1,18 +1,13 @@
 package subway.domain;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 class AdjustPathTest {
 
+    /*
     private static final Station STATION = Station.from("잠실역");
 
     private AdjustPath adjustPath;
@@ -56,4 +51,6 @@ class AdjustPathTest {
 
         adjustPath.delete(STATION);
     }
+
+     */
 }

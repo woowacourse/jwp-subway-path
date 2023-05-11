@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class AdjustPath {
 
-    private final Map<Station, Distance> adjustPath;
+    private final Map<Station, PathInfo> adjustPath;
 
-    private AdjustPath(final Map<Station, Distance> adjustPath) {
+    private AdjustPath(final Map<Station, PathInfo> adjustPath) {
         this.adjustPath = adjustPath;
     }
 
@@ -17,11 +17,11 @@ public class AdjustPath {
         return new AdjustPath(new HashMap<>());
     }
 
-    public void add(final Station station, final Distance distance) {
-        adjustPath.put(station, distance);
+    public void add(final Station station, final Distance distance, final RelationStatus status) {
+        adjustPath.put(station, PathInfo.of(distance, status));
     }
 
-    public Distance findDistance(final Station station) {
+    public PathInfo findDistance(final Station station) {
         validateExistStation(station);
 
         return adjustPath.get(station);
@@ -39,7 +39,7 @@ public class AdjustPath {
         adjustPath.remove(station);
     }
 
-    public Distance findByStation(final Station station) {
+    public PathInfo findPathInfoByStation(final Station station) {
         validateExistStation(station);
 
         return adjustPath.get(station);
@@ -51,5 +51,21 @@ public class AdjustPath {
 
     public List<Station> findAllStation() {
         return new ArrayList<>(adjustPath.keySet());
+    }
+
+    public Station findUpStation() {
+        return adjustPath.keySet()
+                .stream()
+                .filter(station -> adjustPath.get(station).isUpStation())
+                .findAny()
+                .orElseThrow();
+    }
+
+    public Station findDownStation() {
+        return adjustPath.keySet()
+                .stream()
+                .filter(station -> !adjustPath.get(station).isUpStation())
+                .findAny()
+                .orElseThrow();
     }
 }

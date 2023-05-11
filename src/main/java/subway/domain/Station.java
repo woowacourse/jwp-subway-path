@@ -28,12 +28,20 @@ public class Station {
         return new Station(null, name, AdjustPath.create(), null);
     }
 
+    public static Station of(final String name) {
+        return new Station(null, name, AdjustPath.create(), null);
+    }
+
     public static Station of(final Long id, final String name) {
         return new Station(id, name, AdjustPath.create(), null);
     }
 
     public static Station of(final String name, final StationStatus status) {
         return new Station(null, name, AdjustPath.create(), status);
+    }
+
+    public static Station of(final Station station, final StationStatus stationStatus) {
+        return new Station(station.id, station.name, AdjustPath.create(), stationStatus);
     }
 
     private void validate(final String name) {
@@ -53,8 +61,8 @@ public class Station {
         }
     }
 
-    public void addPath(final Station station, final Distance distance) {
-        adjustPath.add(station, distance);
+    public void addPath(final Station station, final Distance distance, final RelationStatus status) {
+        adjustPath.add(station, distance, status);
     }
 
     public void deletePath(final Station station) {
@@ -62,7 +70,7 @@ public class Station {
     }
 
     public Distance findDistanceByStation(final Station target) {
-        return adjustPath.findByStation(target);
+        return adjustPath.findPathInfoByStation(target).getDistance();
     }
 
     public boolean isEnd(final StationStatus status) {
@@ -71,6 +79,10 @@ public class Station {
 
     public List<Station> findAdjustStation() {
         return adjustPath.findAllStation();
+    }
+
+    public AdjustPath getAdjustPath() {
+        return adjustPath;
     }
 
     public Long getId() {
