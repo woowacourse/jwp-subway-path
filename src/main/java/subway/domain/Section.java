@@ -11,7 +11,7 @@ public class Section {
         to = null;
     }
 
-    public Section find(final Section newSection) {
+    public Section findPreSectionOnAdd(final Section newSection) {
         Section current = this;
 
         while (current != null) {
@@ -25,9 +25,9 @@ public class Section {
     }
 
     public void addNext(final Section newSection) {
-        Section current = find(newSection);
+        Section current = findPreSectionOnAdd(newSection);
 
-        if (current.to == null) {
+        if (isTail(current)) {
             current.to = newSection;
             return;
         }
@@ -37,6 +37,10 @@ public class Section {
         }
 
         addIntermediate(newSection, current);
+    }
+
+    private boolean isTail(final Section current) {
+        return current.to == null;
     }
 
     private void addIntermediate(final Section newSection, final Section current) {
@@ -51,7 +55,7 @@ public class Section {
     }
 
     public void delete(final Station deletedStation) {
-        final Section current = find(deletedStation);
+        final Section current = findPreSectionOnDelete(deletedStation);
 
         if (current == null) {
             throw new IllegalArgumentException("해당 Section에는 삭제할 역이 존재하지 않습니다.");
@@ -69,11 +73,11 @@ public class Section {
         deletedSection.to = null;
     }
 
-    public Section find(final Station station) {
+    public Section findPreSectionOnDelete(final Station station) {
         Section current = this;
 
         while (current != null) {
-            if (current.stations.getNext().isSame(station)) {
+            if (current.stations.isSameNext(station)) {
                 return current;
             }
             current = current.to;

@@ -14,11 +14,11 @@ class SectionTest {
     /**
      * 기존 : A-B-C-D-E
      * 추가 : D-F
-     * 결과 : CanNotInsertSectionException
+     * 결과 : IllegalArgumentException
      */
     @Test
-    @DisplayName("addNext() : 중간에 끼어드는 섹션의 길이가 현재 연결된 섹션의 길이보다 크면 CanNotInsertSectionException가 발생한다.")
-    void test_addNext_CanNotInsertSectionException() throws Exception {
+    @DisplayName("addNext() : 중간에 끼어드는 섹션의 길이가 현재 연결된 섹션의 길이보다 크면 IllegalArgumentException가 발생한다.")
+    void test_addNext_IllegalArgumentException() throws Exception {
         //given
         final Stations stations1 = new Stations(new Station("A"), new Station("B"), 5);
         final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
@@ -130,6 +130,11 @@ class SectionTest {
         );
     }
 
+    /**
+     * 기존 : A -> B
+     * 추가 : B -> C
+     * 결과 : A -> B -> C
+     */
     @Test
     @DisplayName("isLinked() : 시작 섹션의 목적지와 도착 섹션의 출발지가 같으면 두 섹션은 연결될 수 있다.")
     void test_isLinked() throws Exception {

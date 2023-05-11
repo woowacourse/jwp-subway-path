@@ -19,7 +19,7 @@ public class Line {
             return;
         }
 
-        final Section targetSection = starter.find(newSection);
+        final Section targetSection = starter.findPreSectionOnAdd(newSection);
 
         if (canExchangeStarter(targetSection)) {
             if (starter.isLinked(newSection)) {
@@ -42,7 +42,7 @@ public class Line {
     }
 
     public void delete(final Station deletedStation) {
-        final Section target = starter.find(deletedStation);
+        final Section target = starter.findPreSectionOnDelete(deletedStation);
 
         if (canExchangeStarter(target)) {
             if (starter.isSameCurrentWith(deletedStation)) {
