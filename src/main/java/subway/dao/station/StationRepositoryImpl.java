@@ -36,6 +36,8 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     public Long save(final Station station) {
-        return null;
+        final StationEntity stationEntity = new StationEntity(station.getStationName());
+
+        return stationDao.insert(stationEntity).getStationId();
     }
 }

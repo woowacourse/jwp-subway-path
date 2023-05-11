@@ -35,6 +35,7 @@ public class AttachFrontStationService implements AttachFrontStationUseCase {
 
         final Station standardStation = new Station(request.getStandardStation());
         final Station newStation = new Station(request.getNewStation());
+        saveIfNotExist(newStation);
         final StationDistance stationDistance = new StationDistance(request.getDistance());
 
         final Sections sections = line.getSections();
@@ -42,7 +43,6 @@ public class AttachFrontStationService implements AttachFrontStationUseCase {
 
         final Section newSection = sections.peekByFirstStationUnique(newStation);
         sectionRepository.save(newSection, lineId);
-        saveIfNotExist(newStation);
     }
 
     private void saveIfNotExist(final Station station) {

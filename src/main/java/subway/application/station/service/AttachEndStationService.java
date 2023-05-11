@@ -35,6 +35,7 @@ public class AttachEndStationService implements AttachEndStationUseCase {
 
         final Station standardStation = new Station(request.getStandardStation());
         final Station newStation = new Station(request.getNewStation());
+        saveIfNotExist(newStation);
         final StationDistance stationDistance = new StationDistance(request.getDistance());
 
         final Sections sections = line.getSections();
@@ -42,7 +43,6 @@ public class AttachEndStationService implements AttachEndStationUseCase {
 
         final Section newSection = new Section(standardStation, newStation, stationDistance);
         sectionRepository.save(newSection, lineId);
-        saveIfNotExist(newStation);
     }
 
     private void saveIfNotExist(final Station station) {
