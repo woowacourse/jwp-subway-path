@@ -9,10 +9,13 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DataIntegrityViolationException;
 import subway.dao.LineDao;
 import subway.dao.PathDao;
+import subway.dao.StationDao;
 import subway.dao.entity.PathEntity;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
+import subway.dto.StationRequest;
+import subway.exception.LineNotFoundException;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -33,6 +36,9 @@ class LineServiceTest {
 
     @Mock
     private PathDao pathDao;
+
+    @Mock
+    private StationDao stationDao;
 
 
     @DisplayName("노선을 추가할 수 있다")
@@ -81,6 +87,25 @@ class LineServiceTest {
                 .containsExactly("부산역", "서면역", "해운대역");
     }
 
+    @DisplayName("해당 노선의 모든 역들을 가져올 수 있다")
+    @Test
+    void findAllStations2() {
+        //given
+        when(lineDao.findById(anyLong()))
+                .thenReturn(Optional.of(new Line("1호선", "red")));
+        when(pathDao.findStationsByLineId(anyLong()))
+                .thenReturn(List.of(new PathEntity(2L, "부산역", null, null),
+                        new PathEntity(1L, "서면역", 2L, 10),
+                        new PathEntity(3L, "해운대역", 1L, 10)));
+
+        //when
+        final List<Station> result = lineService.findAllStations(1L);
+
+        //then
+        assertThat(result).map(Station::getName)
+                .containsExactly("부산역", "서면역", "해운대역");
+    }
+
     @DisplayName("빈 노선의 역을 조회하면 빈 리스트가 반환된다")
     @Test
     void findAllStationsOfEmptyLine() {
@@ -95,5 +120,36 @@ class LineServiceTest {
 
         //then
         assertThat(result).isEmpty();
+    }
+
+    @DisplayName("빈 노선에 최초의 두 역을 넣을 수 있다")
+    @Test
+    void insertInitialStations() {
+        //given
+        when(lineDao.findById(anyLong()))
+                .thenReturn(Optional.of(new Line("1호선", "red")));
+        when(pathDao.findStationsByLineId(anyLong()))
+                .thenReturn(Collections.emptyList());
+        when(stationDao.insertAll(any()))
+                .thenReturn(List.of(new Station(1L, "상행역"), new Station(2L, "하행역")));
+
+        //when
+        final Long upId = lineService.addStation(1L, new StationRequest("상행역", "하행역", 5));
+
+        //then
+        assertThat(upId).isSameAs(1L);
+    }
+
+    @DisplayName("존재하지 않는 노선에 역을 넣으려면 예외가 발생한다")
+    @Test
+    void insertNotExistLine() {
+        //given
+        when(lineDao.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(null));
+
+        //when, then
+        assertThatThrownBy(
+                () -> lineService.addStation(1L, new StationRequest("상행역", "하행역", 10))
+        ).isInstanceOf(LineNotFoundException.class);
     }
 }

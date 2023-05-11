@@ -52,4 +52,8 @@ public class LineDao {
 
         return Optional.ofNullable(line);
     }
+
+    public boolean hasNoStations(final Long lineId) {
+        return true;
+    }
 }

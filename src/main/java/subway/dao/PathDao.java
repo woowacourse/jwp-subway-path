@@ -28,4 +28,11 @@ public class PathDao {
                 rs.getLong("up_station_id"),
                 rs.getInt("distance")), lineId);
     }
+
+    public Long save(final PathEntity pathEntity) {
+        return null;
+    }
+
+    public void deletePathByUpStationIdAndDownStationId(final Long id, final Long id1) {
+    }
 }

@@ -13,6 +13,10 @@ public final class PathEntity {
         this.distance = distance;
     }
 
+    public PathEntity(final Long upStationId, final Long downStationId, final Integer distance) {
+        this(downStationId, null, upStationId, distance);
+    }
+
     public Long getStationId() {
         return stationId;
     }

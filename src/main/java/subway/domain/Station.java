@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Station {
     private final Long id;
@@ -41,6 +42,18 @@ public class Station {
         station.ups.put(line, path);
 
         return station;
+    }
+
+    public Optional<Path> getNextDownPath(final Line line) {
+        return Optional.ofNullable(downs.get(line));
+    }
+
+    public Optional<Path> getNextUpPath(final Line line) {
+        return Optional.ofNullable(ups.get(line));
+    }
+
+    public boolean nameEquals(final String name) {
+        return this.name.equals(name);
     }
 
     public Long getId() {

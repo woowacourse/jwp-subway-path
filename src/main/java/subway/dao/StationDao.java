@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -34,6 +35,10 @@ public class StationDao {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();
         return new Station(id, station.getName());
+    }
+
+    public List<Station> insertAll(List<Station> stations) {
+        return Collections.emptyList();
     }
 
     public List<Station> findAll() {
