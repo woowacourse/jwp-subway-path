@@ -54,8 +54,8 @@ public class LineService {
         return null;
     }
 
-    public StationsResponse getStationByLineId(Long id) {
-        Line line = lineRepository.findById(id);
+    public StationsResponse getStationsByLineId(Long lineId) {
+        Line line = lineRepository.findById(lineId);
         return StationsResponse.from(line.getStations());
     }
 
@@ -68,7 +68,7 @@ public class LineService {
     }
 
     public StationResponse addStation(Long lineId, StationSaveRequest stationRequest) {
-        Subway subway = new Subway(lineRepository.findAll());
+        Subway subway = new Subway(lineRepository.findAllLine());
         LineEntity byId = lineDao.findById(lineId);
         Line lineByName = subway.findLineByName(byId.getName());
         Optional<Station> newStation = lineByName.getStations()

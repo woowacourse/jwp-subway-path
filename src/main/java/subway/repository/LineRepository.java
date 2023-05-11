@@ -48,7 +48,7 @@ public class LineRepository {
         return newLineEntity.getId();
     }
 
-    public List<Line> findAll() {
+    public List<Line> findAllLine() {
         List<LineEntity> lineEntities = lineDao.findAll();
 
         Map<Long, StationEntity> collect = stationDao.findAll().stream()
@@ -96,7 +96,7 @@ public class LineRepository {
     }
 
     public Line findById(Long id) {
-        Subway subway = new Subway(findAll());
+        Subway subway = new Subway(findAllLine());
         LineEntity lineEntity = lineDao.findById(id);
         return subway.findLineByName(lineEntity.getName());
     }
