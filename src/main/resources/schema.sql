@@ -1,5 +1,4 @@
 DROP TABLE IF EXISTS section;
-DROP TABLE IF EXISTS station_point;
 DROP TABLE IF EXISTS station;
 DROP TABLE IF EXISTS line;
 
