@@ -1,15 +1,15 @@
 package subway.dao;
 
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class LineDao {
@@ -31,13 +31,15 @@ public class LineDao {
     }
 
     public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
+        try {
+            BeanPropertySqlParameterSource parameters = new BeanPropertySqlParameterSource(line);
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+            Long lineId = insertAction.executeAndReturnKey(parameters).longValue();
+            return new Line(lineId, line.getName(), line.getColor());
+        } catch (DuplicateKeyException e) {
+            throw new IllegalArgumentException("해당 노선은 이미 존재합니다.");
+        }
+
     }
 
     public List<Line> findAll() {

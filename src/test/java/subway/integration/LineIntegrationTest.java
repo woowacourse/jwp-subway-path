@@ -1,6 +1,7 @@
 package subway.integration;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
@@ -68,6 +69,11 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then().log().all().
                 extract();
 
+        JsonPath responseBody = response.body().jsonPath();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(responseBody.getString("message")).isEqualTo("해당 노선은 이미 존재합니다.");
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }

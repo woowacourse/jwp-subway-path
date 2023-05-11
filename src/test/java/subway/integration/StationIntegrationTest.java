@@ -1,6 +1,7 @@
 package subway.integration;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
@@ -64,8 +65,12 @@ public class StationIntegrationTest extends IntegrationTest {
                 .log().all()
                 .extract();
 
+        JsonPath responseBody = response.body().jsonPath();
+
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(responseBody.getString("message")).isEqualTo("해당 역 이름이 이미 존재합니다.");
+
     }
 
     @DisplayName("지하철역 목록을 조회한다.")
