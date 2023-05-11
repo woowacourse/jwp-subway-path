@@ -12,7 +12,7 @@ class StationTest {
 
     @DisplayName("역이 정상적으로 생성된다.")
     @Test
-    void createStationSuccess() {
+    void createStation() {
         // given
         String name = "잠실역";
 
