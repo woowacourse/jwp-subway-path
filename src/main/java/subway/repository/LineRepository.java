@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -19,7 +18,6 @@ import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 import subway.exception.LineNotFoundException;
 
-@Transactional
 @Repository
 public class LineRepository {
 

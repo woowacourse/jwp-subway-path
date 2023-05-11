@@ -3,6 +3,7 @@ package subway.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
+import subway.domain.Section;
 import subway.dto.LineResponse;
 import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
@@ -86,5 +88,29 @@ class LineServiceTest {
                 () -> assertThat(result.getColor()).isEqualTo("RED"),
                 () -> assertThat(result.getStations()).isEmpty()
         );
+    }
+
+    @Test
+    void 라인을_전체_조회한다() {
+        // given
+        lineRepository.save(new Line("1호선", "RED", List.of(
+                new Section("B", "C", 3),
+                new Section("A", "B", 2),
+                new Section("D", "E", 5),
+                new Section("C", "D", 4)
+        )));
+        lineRepository.save(new Line("2호선", "BLUE", List.of(
+                new Section("Z", "B", 3),
+                new Section("B", "Y", 2)
+        )));
+
+        // when
+        final List<LineResponse> result = lineService.findAll();
+
+        // then
+        assertThat(result).usingRecursiveComparison().isEqualTo(List.of(
+                new LineResponse("1호선", "RED", List.of("A", "B", "C", "D", "E")),
+                new LineResponse("2호선", "BLUE", List.of("Z", "B", "Y"))
+        ));
     }
 }

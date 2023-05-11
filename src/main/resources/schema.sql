@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS LINE
 (
     id    BIGINT AUTO_INCREMENT NOT NULL,
-    name  VARCHAR(255)          NOT NULL UNIQUE,
+    name  VARCHAR(255)          NOT NULL,
     color VARCHAR(20)           NOT NULL,
     PRIMARY KEY (id)
 );
@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS LINE
 CREATE TABLE IF NOT EXISTS STATION
 (
     id      BIGINT AUTO_INCREMENT NOT NULL,
-    name    VARCHAR(255)          NOT NULL UNIQUE,
+    name    VARCHAR(255)          NOT NULL,
     line_id BIGINT                NOT NULL,
     PRIMARY KEY (id),
     FOREIGN KEY (line_id) REFERENCES LINE (id)

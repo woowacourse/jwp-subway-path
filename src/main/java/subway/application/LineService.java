@@ -1,6 +1,9 @@
 package subway.application;
 
+import static java.util.stream.Collectors.toList;
+
 import java.util.Collections;
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
@@ -36,5 +39,11 @@ public class LineService {
     public LineResponse findById(final Long id) {
         final Line line = lineRepository.findById(id);
         return LineResponse.from(line);
+    }
+
+    public List<LineResponse> findAll() {
+        return lineRepository.findAll().stream()
+                .map(LineResponse::from)
+                .collect(toList());
     }
 }

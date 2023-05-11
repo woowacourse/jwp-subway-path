@@ -34,15 +34,17 @@ public class SectionDao {
 
     public void insertAll(final List<SectionEntity> sections) {
         final String sql = "INSERT INTO section (start_station_id, end_station_id, distance, line_id) VALUES ("
-                + "SELECT id FROM station WHERE name = ?, "
-                + "SELECT id FROM station WHERE name = ?, "
+                + "SELECT id FROM station WHERE name = ? and line_id = ?, "
+                + "SELECT id FROM station WHERE name = ? and line_id = ?, "
                 + "?, "
                 + "?)";
         jdbcTemplate.batchUpdate(sql, sections, sections.size(), ((ps, section) -> {
             ps.setString(1, section.getStartStationName());
-            ps.setString(2, section.getEndStationName());
-            ps.setInt(3, section.getDistance());
+            ps.setLong(2, section.getLineId());
+            ps.setString(3, section.getEndStationName());
             ps.setLong(4, section.getLineId());
+            ps.setInt(5, section.getDistance());
+            ps.setLong(6, section.getLineId());
         }));
     }
 
