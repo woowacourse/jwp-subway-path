@@ -1,6 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
@@ -9,6 +10,7 @@ import subway.dto.LineResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class LineService {
     private final LineDao lineDao;

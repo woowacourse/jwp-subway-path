@@ -5,15 +5,13 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.LineStationDao;
 import subway.dao.StationDao;
-import subway.domain.LineStation;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.dto.*;
 import subway.exceptions.customexceptions.InvalidDataException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -39,7 +37,17 @@ public class LineStationService {
         List<LineStation> lineStations = lineStationDao.findByLine(lineId);
         Sections sections = new Sections(makeSections(lineStations));
         AddResult addResult = sections.addSection(newSection);
-        return LineStationResponse.of(updateAddResult(addResult, lineId));
+
+        LineStation lineStation = updateAddResult(addResult, lineId);
+        Line line = lineDao.findById(lineId);
+
+        return new LineStationResponse(
+                lineStation.getId(),
+                StationResponse.of(upBoundStation),
+                StationResponse.of(downBoundStation),
+                LineResponse.of(line),
+                distance
+        );
     }
 
     private List<Section> makeSections(List<LineStation> lineStations) {
@@ -94,5 +102,19 @@ public class LineStationService {
             Integer distance = section.getDistance();
             lineStationDao.update(new LineStation(id, upBoundId, downBoundId, lineId, distance));
         }
+    }
+
+    public StationsResponse findStationsByLineId(Long lineId) {
+        List<LineStation> lineStations = lineStationDao.findByLine(lineId);
+        Sections sections = new Sections(makeSections(lineStations));
+        return new StationsResponse(sections.getStationsWithUpToDownDirection());
+    }
+
+    public List<StationsInLineResponse> findAllLines(List<Line> lines) {
+        return lines.stream()
+                .map(line -> {
+                    StationsResponse stationsResponse = findStationsByLineId(line.getId());
+                    return new StationsInLineResponse(LineResponse.of(line), stationsResponse);
+                }).collect(Collectors.toList());
     }
 }
