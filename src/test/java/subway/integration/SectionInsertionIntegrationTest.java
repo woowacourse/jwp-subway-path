@@ -21,7 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/truncate.sql")
-public class SectionIntegrationTest {
+public class SectionInsertionIntegrationTest {
     @LocalServerPort
     int port;
 
