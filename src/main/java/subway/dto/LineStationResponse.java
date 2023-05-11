@@ -1,47 +1,37 @@
 package subway.dto;
 
-import subway.domain.LineStation;
-
 public class LineStationResponse {
     private Long id;
-    private Long upBoundId;
-    private Long downBoundId;
-    private Long lineId;
+    private StationResponse upBoundStation;
+    private StationResponse downBoundStation;
+    private LineResponse line;
     private Integer distance;
 
-    public LineStationResponse(Long upBoundId, Long downBoundId, Long lineId, Integer distance) {
-        this.upBoundId = upBoundId;
-        this.downBoundId = downBoundId;
-        this.lineId = lineId;
-        this.distance = distance;
+    public LineStationResponse() {
     }
 
-    public LineStationResponse(Long id, Long upBoundId, Long downBoundId, Long lineId, Integer distance) {
+    public LineStationResponse(Long id, StationResponse upBoundStation, StationResponse downBoundStation, LineResponse line, Integer distance) {
         this.id = id;
-        this.upBoundId = upBoundId;
-        this.downBoundId = downBoundId;
-        this.lineId = lineId;
+        this.upBoundStation = upBoundStation;
+        this.downBoundStation = downBoundStation;
+        this.line = line;
         this.distance = distance;
-    }
-
-    public static LineStationResponse of(LineStation lineStation) {
-        return new LineStationResponse(lineStation.getId(), lineStation.getUpBoundId(), lineStation.getDownBoundId(), lineStation.getLineId(), lineStation.getDistance());
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getUpBoundId() {
-        return upBoundId;
+    public StationResponse getUpBoundStation() {
+        return upBoundStation;
     }
 
-    public Long getDownBoundId() {
-        return downBoundId;
+    public StationResponse getDownBoundStation() {
+        return downBoundStation;
     }
 
-    public Long getLineId() {
-        return lineId;
+    public LineResponse getLine() {
+        return line;
     }
 
     public Integer getDistance() {
