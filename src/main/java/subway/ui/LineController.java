@@ -3,8 +3,10 @@ package subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
+import subway.application.RouteService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationsByLineResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -15,9 +17,11 @@ import java.util.List;
 public class LineController {
 
     private final LineService lineService;
+    private final RouteService routeService;
 
-    public LineController(LineService lineService) {
+    public LineController(LineService lineService, final RouteService routeService) {
         this.lineService = lineService;
+        this.routeService = routeService;
     }
 
     @PostMapping
@@ -27,13 +31,13 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<StationsByLineResponse>> findAllLines() {
+        return ResponseEntity.ok(routeService.findAllStationsByLineResponses());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    @GetMapping("/{lineId}")
+    public ResponseEntity<StationsByLineResponse> findLineById(@PathVariable Long lineId) {
+        return ResponseEntity.ok(routeService.findStationByLineResponseById(lineId));
     }
 
     @PutMapping("/{id}")
@@ -51,5 +55,15 @@ public class LineController {
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> handleIllegalArgumentException(final Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+    
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(final Exception e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
