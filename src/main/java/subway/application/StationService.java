@@ -13,7 +13,6 @@ import subway.domain.Station;
 import subway.domain.StationLine;
 import subway.dto.DeleteStationRequest;
 import subway.dto.StationRequest;
-import subway.dto.StationResponse;
 
 import java.util.List;
 import java.util.Optional;
@@ -115,11 +114,57 @@ public class StationService {
         return stationDao.findById(stationId).orElseThrow(() -> new IllegalStateException("역 저장 시 오류가 발생하였습니다."));
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+    @Transactional
+    public void deleteStationByStationNameAndLineName(final DeleteStationRequest deleteStationRequest) {
+        final Station station = stationDao.findByName(deleteStationRequest.getStationName())
+                .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다."));
+        final Line line = lineDao.findByName(deleteStationRequest.getLineName())
+                .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
+        final Optional<SectionDto> maybeUpSection = sectionDao.findUpSectionByStationIdAndLineId(station.getId(), line.getId());
+        final Optional<SectionDto> maybeDownSection = sectionDao.findDownSectionByStationIdAndLineId(station.getId(), line.getId());
+
+        if (maybeUpSection.isPresent() && maybeDownSection.isPresent()) {
+            final SectionDto upSectionDto = maybeUpSection.get();
+            final SectionDto downSectionDto = maybeDownSection.get();
+
+            sectionDao.delete(upSectionDto.getId());
+            sectionDao.delete(downSectionDto.getId());
+
+            sectionDao.save(
+                    upSectionDto.getUpStationId(),
+                    downSectionDto.getDownStationId(),
+                    line.getId(),
+                    upSectionDto.getStart(),
+                    new Distance(upSectionDto.getDistance() + downSectionDto.getDistance())
+            );
+        }
+
+        if((maybeUpSection.isPresent() && maybeDownSection.isEmpty())) { // 타겟 역이 하행 종점
+            final SectionDto upSectionDto = maybeUpSection.get();
+            sectionDao.delete(upSectionDto.getId());
+        }
+
+        if((maybeDownSection.isPresent() && maybeUpSection.isEmpty())) { // 타겟 역이 상행 종점
+            final SectionDto downSectionDto = maybeDownSection.get();
+            sectionDao.delete(downSectionDto.getId());
+        }
+
+        //타겟 역을 지우기
+        deleteStationWhenAnotherLineNotExist(station.getId(), line.getId());
+
+        List<StationLine> stationLines = stationLineDao.findByLineId(line.getId());
+        if (stationLines.size() <= 1) {
+            final StationLine stationLine = stationLines.get(0);
+            deleteStationWhenAnotherLineNotExist(stationLine.getStation().getId(), line.getId());
+            lineDao.deleteById(line.getId());
+        }
     }
 
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    private void deleteStationWhenAnotherLineNotExist(final Long stationId, final Long lineId) { //
+        stationLineDao.deleteByStationIdAndLineId(stationId, lineId);
+        final List<StationLine> stationLines = stationLineDao.findByStationId(stationId);
+        if (stationLines.isEmpty()) {
+            stationDao.deleteById(stationId);
+        }
     }
 }
