@@ -82,4 +82,9 @@ public class SectionDao {
             return Optional.empty();
         }
     }
+
+    public void deleteBy(SectionEntity sectionEntity) {
+        String sql = "DELETE FROM SECTION WHERE id = ?";
+        jdbcTemplate.update(sql, sectionEntity.getId());
+    }
 }

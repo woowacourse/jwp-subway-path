@@ -4,9 +4,11 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.dao.entity.SectionEntity;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -97,7 +99,28 @@ public class SectionService {
     }
 
     public void deleteSection(Long lineId, SectionDeleteRequest sectionDeleteRequest) {
+        String stationName = sectionDeleteRequest.getStationName();
+        validateStationInLine(lineId, stationName);
+        Optional<SectionEntity> startSection = sectionDao.findByEndStationNameAndLineId(stationName, lineId);
+        Optional<SectionEntity> endSection = sectionDao.findByStartStationNameAndLineId(stationName, lineId);
+        if (startSection.isPresent() && endSection.isPresent()) {
+            mergeSection(startSection.get(), endSection.get());
+            return;
+        }
+        endSection.ifPresent(sectionDao::deleteBy);
+        startSection.ifPresent(sectionDao::deleteBy);
+    }
 
+    private void validateStationInLine(Long lineId, String stationName) {
+        if (!sectionDao.isStationInLine(lineId, stationName)) {
+            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
+        }
+    }
+
+    private void mergeSection(SectionEntity startSection, SectionEntity endSection) {
+        sectionDao.deleteBy(startSection);
+        sectionDao.update(endSection.getId(), new Section(startSection.getStartStation(), endSection.getEndStation(),
+                startSection.getDistance() + endSection.getDistance()));
     }
 
     public List<SectionResponse> findSectionsByLineId(Long lineId) {
