@@ -43,10 +43,10 @@ public class AttachBetweenStationService implements AttachBetweenStationUseCase 
 
         sectionRepository.delete(removedSection);
 
-        final Section sectionA = sections.peekByFirstStationUnique(standardStation);
-        final Section sectionB = sections.peekByFirstStationUnique(newStation);
-        sectionRepository.save(sectionA, lineId);
-        sectionRepository.save(sectionB, lineId);
+        final Section leftSection = sections.peekByFirstStationUnique(standardStation);
+        final Section rightSection = sections.peekByFirstStationUnique(newStation);
+        sectionRepository.save(leftSection, lineId);
+        sectionRepository.save(rightSection, lineId);
     }
 
     private void saveIfNotExist(final Station station) {
