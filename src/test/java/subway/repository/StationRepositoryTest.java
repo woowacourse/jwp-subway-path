@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.Station;
+import subway.entity.StationEntity;
 import subway.repository.dao.StationDao;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -30,13 +30,13 @@ class StationRepositoryTest {
     @Test
     void 이름으로_검색한_뒤_없으면_생성한다() {
         // given
-        Optional<Station> beforeSaveStation = stationRepository.findByName("역삼역");
+        Optional<StationEntity> beforeSaveStation = stationRepository.findByName("역삼역");
 
         //when
-        Station station = stationRepository.findOrSaveStation("역삼역");
+        StationEntity station = stationRepository.findOrSaveStation("역삼역");
 
         //then
-        Station findStation = stationRepository.findById(station.getId()).get();
+        StationEntity findStation = stationRepository.findById(station.getId()).get();
         assertThat(beforeSaveStation).isEmpty();
         assertThat(station).usingRecursiveComparison()
                 .isEqualTo(findStation);
@@ -45,10 +45,10 @@ class StationRepositoryTest {
     @Test
     void 이름으로_검색한_뒤_있으면_그대로_반환한다() {
         // given
-        Station station = stationRepository.save(new Station("역삼역"));
+        StationEntity station = stationRepository.save(new StationEntity("역삼역"));
 
         // when
-        Station findStation = stationRepository.findOrSaveStation("역삼역");
+        StationEntity findStation = stationRepository.findOrSaveStation("역삼역");
 
         //then
         assertThat(station).usingRecursiveComparison()

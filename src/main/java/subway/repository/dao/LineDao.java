@@ -1,7 +1,5 @@
 package subway.repository.dao;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,18 +7,17 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
+import subway.entity.LineEntity;
 
 @Repository
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+    private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
-                    rs.getString("name"),
-                    new ArrayList<>()
+                    rs.getString("name")
             );
 
     public LineDao(JdbcTemplate jdbcTemplate) {
@@ -30,27 +27,27 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
+    public LineEntity insert(LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", line.getName());
+        params.put("name", lineEntity.getName());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), Collections.emptyList());
+        return new LineEntity(lineId, lineEntity.getName());
     }
 
-    public List<Line> findAll() {
+    public List<LineEntity> findAll() {
         String sql = "select id, name from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
+    public LineEntity findById(Long id) {
         String sql = "select id, name from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(Line newLine) {
+    public void update(LineEntity lineEntity) {
         String sql = "update LINE set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getId()});
+        jdbcTemplate.update(sql, new Object[]{lineEntity.getName(), lineEntity.getId()});
     }
 
     public void deleteById(Long id) {

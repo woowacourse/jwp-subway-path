@@ -2,7 +2,7 @@ package subway.repository;
 
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.entity.StationEntity;
 import subway.repository.dao.StationDao;
 
 @Repository
@@ -14,20 +14,20 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public Station save(Station station) {
+    public StationEntity save(StationEntity station) {
         return stationDao.insert(station);
     }
 
-    public Optional<Station> findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         return stationDao.findById(id);
     }
 
-    public Station findOrSaveStation(String stationName) {
+    public StationEntity findOrSaveStation(String stationName) {
         return stationDao.findByName(stationName)
-                .orElseGet(() -> stationDao.insert(new Station(stationName)));
+                .orElseGet(() -> stationDao.insert(new StationEntity(stationName)));
     }
 
-    public Optional<Station> findByName(String name) {
+    public Optional<StationEntity> findByName(String name) {
         return stationDao.findByName(name);
     }
 }

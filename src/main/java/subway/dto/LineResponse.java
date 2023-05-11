@@ -1,6 +1,6 @@
 package subway.dto;
 
-import subway.domain.Line;
+import subway.entity.LineEntity;
 
 public class LineResponse {
     private Long id;
@@ -12,7 +12,7 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public static LineResponse of(Line line) {
+    public static LineResponse of(LineEntity line) {
         return new LineResponse(line.getId());
     }
 

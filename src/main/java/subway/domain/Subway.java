@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Subway {
+
     private final List<Line> lines;
 
     public Subway() {

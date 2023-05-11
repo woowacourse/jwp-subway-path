@@ -4,26 +4,16 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Line {
-    private Long id;
-    private String name;
-    private List<Section> sections;
-
-    public Line() {
-    }
+    private final String name;
+    private final List<Section> sections;
 
     public Line(String name, List<Section> sections) {
-        this(null, name, sections);
-    }
-
-    public Line(Long id, String name, List<Section> sections) {
         validateName(name);
-        this.id = id;
         this.name = name;
         this.sections = new ArrayList<>(sections);
         validateIsLinked(sections);
@@ -155,10 +145,6 @@ public class Line {
                 .findAny().orElseThrow(() -> new IllegalArgumentException("종점역을 찾지 못했습니다"));
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public String getName() {
         return name;
     }
@@ -167,20 +153,4 @@ public class Line {
         return sections;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Line line = (Line) o;
-        return Objects.equals(id, line.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
 }

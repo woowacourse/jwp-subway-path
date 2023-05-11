@@ -9,15 +9,15 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.entity.StationEntity;
 
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
@@ -30,18 +30,18 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
+    public StationEntity insert(StationEntity station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        return new StationEntity(id, station.getName());
     }
 
-    public List<Station> findAll() {
+    public List<StationEntity> findAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Station> findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         String sql = "select * from STATION where id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -50,7 +50,7 @@ public class StationDao {
         }
     }
 
-    public void update(Station newStation) {
+    public void update(StationEntity newStation) {
         String sql = "update STATION set name = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
@@ -60,7 +60,7 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Optional<Station> findByName(String name) {
+    public Optional<StationEntity> findByName(String name) {
         String sql = "select * from STATION where name = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));

@@ -4,26 +4,20 @@ import java.util.Objects;
 
 public class Section {
 
-    private final Long id;
     private final Station source;
     private final Station target;
     private final Distance distance;
 
-    public Section(Station source, Station target, int distance) {
-        this(null, source, target, new Distance(distance));
-    }
-
     public Section(String source, String target, int distance) {
-        this(new Station(source), new Station(target), distance);
+        this(new Station(source), new Station(target), new Distance(distance));
     }
 
-    public Section(Long id, Station source, Station target, int distance) {
-        this(null, source, target, new Distance(distance));
+    public Section(Station source, Station target, int distance) {
+        this(source, target, new Distance(distance));
     }
 
-    public Section(Long id, Station source, Station target, Distance distance) {
+    public Section(Station source, Station target, Distance distance) {
         validateTarget(source, target);
-        this.id = id;
         this.source = source;
         this.target = target;
         this.distance = distance;
@@ -72,7 +66,6 @@ public class Section {
     @Override
     public String toString() {
         return "Section{" +
-                "id=" + id +
                 ", source=" + source +
                 ", target=" + target +
                 ", distance=" + distance +
