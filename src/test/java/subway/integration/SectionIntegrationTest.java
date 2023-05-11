@@ -75,7 +75,7 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     @DisplayName("구간이 있는 노선에 구간을 추가한다.")
     void addSectionTest() {
-        SectionAddRequest sectionAddRequest = new SectionAddRequest(2L, 3L, 2L, 1L, 5);
+        SectionAddRequest sectionAddRequest = new SectionAddRequest(2L, 4L, 2L, 1L, 5);
 
         ExtractableResponse<Response> response = RestAssured
             .given().log().all()

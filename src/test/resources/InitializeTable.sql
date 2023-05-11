@@ -1,7 +1,7 @@
 SET REFERENTIAL_INTEGRITY FALSE;
-truncate table SECTION;
-truncate table LINE;
-truncate table STATION;
+truncate table SECTION restart identity ;
+truncate table LINE restart identity ;
+truncate table STATION restart identity ;
 
 
 insert into line (name, color) values ('1호선', '남색');

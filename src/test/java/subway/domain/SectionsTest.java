@@ -26,6 +26,6 @@ class SectionsTest {
         Sections sections1 = new Sections(sections);
         assertAll(
             () -> assertThat(sections1.findFirstStationId()).isEqualTo(1L),
-            () -> assertThat(sections1.findLastStationId()).isEqualTo(3L));
+            () -> assertThat(sections1.findLastStationId()).isEqualTo(4L));
     }
 }

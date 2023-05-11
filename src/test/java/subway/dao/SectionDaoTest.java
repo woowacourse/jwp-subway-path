@@ -32,7 +32,9 @@ class SectionDaoTest {
 
     @Test
     void insert() {
-        Section section = new Section(null, 2L, 3L, 2L, 5);
+        StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
+        stationDao.findAll().forEach(station -> System.out.println(station.getId()));
+        Section section = new Section(null, 3L, 4L, 2L, 5);
         Long id = sectionDao.insert(section);
 
         assertThat(id).isEqualTo(3L);
