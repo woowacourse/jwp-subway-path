@@ -20,7 +20,7 @@ class SectionsTest {
         Section section2 = new Section(잠실, 잠실새내, new Distance(10));
         List<Section> sections = List.of(section1, section2);
 
-        assertThatThrownBy(() -> new Sections(sections, 잠실, 잠실새내))
+        assertThatThrownBy(() -> new Sections(sections))
                 .isInstanceOf(GlobalException.class);
     }
 
@@ -34,7 +34,7 @@ class SectionsTest {
         Section section2 = new Section(잠실새내, 잠실나루, new Distance(10));
         List<Section> sections = List.of(section1, section2);
 
-        assertDoesNotThrow(() -> new Sections(sections, 잠실, 잠실나루));
+        assertDoesNotThrow(() -> new Sections(sections));
     }
 
     @DisplayName("중복된 Section은 추가할 수 없다.")
@@ -44,7 +44,7 @@ class SectionsTest {
         Station 잠실새내 = new Station("잠실새내");
         Section section = new Section(잠실, 잠실새내, new Distance(10));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section));
 
         assertThatThrownBy(() -> sections.add(section))
                 .isInstanceOf(GlobalException.class);
@@ -59,7 +59,7 @@ class SectionsTest {
         Section section1 = new Section(잠실, 잠실새내, new Distance(10));
         Section section2 = new Section(잠실새내, 잠실나루, new Distance(10));
 
-        Sections sections = new Sections(List.of(section1, section2), 잠실, 잠실나루);
+        Sections sections = new Sections(List.of(section1, section2));
         Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(10));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
@@ -75,7 +75,7 @@ class SectionsTest {
         Station 건대 = new Station("건대");
         Section section = new Section(잠실, 잠실새내, new Distance(10));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실나루);
+        Sections sections = new Sections(List.of(section));
         Section sectionForAdd = new Section(잠실나루, 건대, new Distance(10));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
@@ -90,7 +90,7 @@ class SectionsTest {
         Station 잠실나루 = new Station("잠실나루");
         Section section = new Section(잠실, 잠실새내, new Distance(10));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section));
         Section sectionForAdd = new Section(잠실나루, 잠실, new Distance(5));
 
         assertDoesNotThrow(() -> sections.add(sectionForAdd));
@@ -104,7 +104,7 @@ class SectionsTest {
         Station 잠실나루 = new Station("잠실나루");
         Section section = new Section(잠실, 잠실새내, new Distance(10));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section));
         Section sectionForAdd = new Section(잠실새내, 잠실나루, new Distance(5));
 
         assertDoesNotThrow(() -> sections.add(sectionForAdd));
@@ -118,7 +118,7 @@ class SectionsTest {
         Station 잠실나루 = new Station("잠실나루");
         Section section = new Section(잠실, 잠실새내, new Distance(10));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section));
         Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(5));
 
         assertDoesNotThrow(() -> sections.add(sectionForAdd));
@@ -132,7 +132,7 @@ class SectionsTest {
         Station 잠실나루 = new Station("잠실나루");
         Section section = new Section(잠실, 잠실새내, new Distance(10));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section));
         Section sectionForAdd = new Section(잠실나루, 잠실새내, new Distance(5));
 
         assertDoesNotThrow(() -> sections.add(sectionForAdd));
@@ -146,7 +146,7 @@ class SectionsTest {
         Station 잠실나루 = new Station("잠실나루");
         Section section = new Section(잠실, 잠실새내, new Distance(5));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section));
         Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(6));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
@@ -161,7 +161,7 @@ class SectionsTest {
         Station 잠실나루 = new Station("잠실나루");
         Section section = new Section(잠실, 잠실새내, new Distance(5));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section));
         Section sectionForAdd = new Section(잠실나루, 잠실새내, new Distance(6));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
@@ -176,7 +176,7 @@ class SectionsTest {
         Station 잠실나루 = new Station("잠실나루");
         Section section = new Section(잠실, 잠실새내, new Distance(5));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section));
 
         assertThatThrownBy(() -> sections.remove(잠실나루))
                 .isInstanceOf(GlobalException.class);
@@ -189,7 +189,7 @@ class SectionsTest {
         Station 잠실새내 = new Station("잠실새내");
         Section section = new Section(잠실, 잠실새내, new Distance(5));
 
-        Sections sections = new Sections(List.of(section), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section));
 
         assertDoesNotThrow(() -> sections.remove(잠실));
         assertThat(sections.getSections()).hasSize(0);
@@ -204,7 +204,7 @@ class SectionsTest {
         Section section1 = new Section(잠실, 잠실새내, new Distance(5));
         Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
 
-        Sections sections = new Sections(List.of(section1, section2), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section1, section2));
 
         assertDoesNotThrow(() -> sections.remove(잠실));
         assertThat(sections.getSections()).hasSize(1);
@@ -220,7 +220,7 @@ class SectionsTest {
         Section section1 = new Section(잠실, 잠실새내, new Distance(5));
         Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
 
-        Sections sections = new Sections(List.of(section1, section2), 잠실, 잠실새내);
+        Sections sections = new Sections(List.of(section1, section2));
 
         assertDoesNotThrow(() -> sections.remove(잠실나루));
         assertThat(sections.getSections()).hasSize(1);
@@ -236,7 +236,7 @@ class SectionsTest {
         Section section1 = new Section(잠실, 잠실새내, new Distance(5));
         Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
 
-        Sections sections = new Sections(List.of(section1, section2), 잠실, 잠실나루);
+        Sections sections = new Sections(List.of(section1, section2));
 
         assertDoesNotThrow(() -> sections.remove(잠실새내));
         assertThat(sections.getSections()).hasSize(1);
@@ -253,7 +253,7 @@ class SectionsTest {
         Section section1 = new Section(잠실, 잠실새내, new Distance(5));
         Section section2 = new Section(잠실새내, 잠실나루, new Distance(5));
 
-        Sections sections = new Sections(List.of(section2, section1), 잠실, 잠실나루);
+        Sections sections = new Sections(List.of(section2, section1));
 
         assertDoesNotThrow(() -> sections.remove(잠실새내));
         assertThat(sections.getSections()).hasSize(1);

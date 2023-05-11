@@ -8,7 +8,7 @@ public class Section {
     private final Station endStation;
     private final Distance distance;
 
-    public Section(final Station startStation, final Station endStation, final Distance distance) {
+    public Section(Station startStation, Station endStation, Distance distance) {
         validate(startStation, endStation);
 
         this.startStation = startStation;
@@ -16,7 +16,7 @@ public class Section {
         this.distance = distance;
     }
 
-    private void validate(final Station startStation, final Station endStation) {
+    private void validate(Station startStation, Station endStation) {
         if (startStation.equals(endStation)) {
             throw new GlobalException("시작 역과 도착 역은 같을 수 없습니다.");
         }
@@ -38,7 +38,7 @@ public class Section {
         return this.endStation.equals(otherStation);
     }
 
-    public Distance subtractDistance(final Section otherSection) {
+    public Distance subtractDistance(Section otherSection) {
         return this.distance.subtract(otherSection.distance);
     }
 
@@ -55,7 +55,7 @@ public class Section {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
@@ -72,7 +72,7 @@ public class Section {
         return Objects.hash(startStation, endStation);
     }
 
-    public boolean isGreaterThanOtherDistance(final Section otherSection) {
+    public boolean isGreaterThanOtherDistance(Section otherSection) {
         return this.distance.isBiggerThanOtherDistance(otherSection.distance);
     }
 
