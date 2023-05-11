@@ -225,4 +225,14 @@ public class Sections {
         removeResult.insertIdToRemoveIds(downBoundSection.getId());
         return removeResult;
     }
+
+    public List<Station> getStationsWithUpToDownDirection() {
+        List<Station> stations = new ArrayList<>();
+        for(Section section : sections) {
+            stations.add(section.getUpBoundStation());
+        }
+        Section lastSection = sections.get(sections.size() - 1);
+        stations.add(lastSection.getDownBoundStation());
+        return stations;
+    }
 }
