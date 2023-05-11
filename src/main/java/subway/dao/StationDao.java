@@ -60,7 +60,7 @@ public class StationDao {
     }
 
     public boolean existsByName(String name) {
-        String sql = "SELECT COUNT(*) FROM Line WHERE name = ?";
+        String sql = "SELECT COUNT(*) FROM Station WHERE name = ?";
         Integer integer = jdbcTemplate.queryForObject(sql, Integer.class, name);
 
         if (integer == null) {
