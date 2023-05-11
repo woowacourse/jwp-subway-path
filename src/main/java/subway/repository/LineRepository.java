@@ -1,6 +1,7 @@
 package subway.repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -33,7 +34,10 @@ public class LineRepository {
     }
 
     public List<Line> findAll() {
-        return null;
+        return lineDao.findAll()
+                .stream()
+                .map(entity -> findById(entity.getId()))
+                .collect(Collectors.toList());
     }
 
     public void update(final Line line) {
