@@ -277,7 +277,6 @@ class SectionServiceTest {
             .extracting("name", "color")
             .containsExactly("이호선", "bg-green-600");
 
-        // 잠실-신림-선릉-강남
         final List<StationResponse> stationResponses = lineResponse.getStationResponses();
         assertThat(stationResponses)
             .extracting(StationResponse::getName)
@@ -330,5 +329,31 @@ class SectionServiceTest {
             .containsExactly(
                 "잠실역", "선릉역", "강남역", "복정역", "남위례역", "산성역"
             );
+    }
+
+    @Test
+    @DisplayName("특정 노선에 있는 역을 지울 수 있다.")
+    void deleteByLineIdAndStationId() {
+        // given
+        when(lineDao.findById(any()))
+            .thenReturn(Optional.of(이호선));
+        when(sectionDao.findByLineId(any()))
+            .thenReturn(이호선_역들);
+
+        doReturn(Optional.of(잠실역))
+            .when(stationDao).findById(1L);
+        doReturn(Optional.of(선릉역))
+            .when(stationDao).findById(2L);
+        doReturn(Optional.of(강남역))
+            .when(stationDao).findById(3L);
+
+        when(sectionDao.deleteByLineIdAndStationId(any(), any()))
+            .thenReturn(2);
+
+        // when
+        sectionService.deleteByLineIdAndStationId(1L, 2L);
+
+        // then
+        verify(sectionDao, times(1)).insert(any());
     }
 }

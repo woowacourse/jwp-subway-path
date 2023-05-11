@@ -32,8 +32,7 @@ public class SectionService {
     @Transactional
     public void saveSection(final SectionRequest sectionRequest) {
         final Line line = getLineById(sectionRequest.getLineId());
-        final List<SectionEntity> allSections = sectionDao.findByLineId(line.getId());
-        final Sections sections = convertSections(allSections);
+        final Sections sections = getSections(line);
 
         if (sections.isEmpty()) {
             saveFirstSection(sectionRequest, line.getId());
@@ -55,10 +54,14 @@ public class SectionService {
         updateExistedTargetSection(line.getId(), sections, section, targetStation.getId(), sourceStation.getId());
     }
 
+    private Sections getSections(final Line line) {
+        final List<SectionEntity> allSections = sectionDao.findByLineId(line.getId());
+        return convertSections(allSections);
+    }
+
     public LineResponse getStationsByLineId(final Long lineId) {
         final Line line = getLineById(lineId);
-        final List<SectionEntity> lineEntities = sectionDao.findByLineId(lineId);
-        final Sections sections = convertSections(lineEntities);
+        final Sections sections = getSections(line);
         final List<Station> stations = sections.getStations();
         final List<StationResponse> stationResponses = convertStationResponses(stations);
         return LineResponse.of(line.getId(), line.getName(), line.getColor(), stationResponses);
@@ -146,5 +149,16 @@ public class SectionService {
         return lines.stream()
             .map(line -> getStationsByLineId(line.getId()))
             .collect(Collectors.toUnmodifiableList());
+    }
+
+    @Transactional
+    public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
+        final Line line = getLineById(lineId);
+        final Sections sections = getSections(line);
+        final Station station = getStationById(stationId);
+        sectionDao.deleteByLineIdAndStationId(lineId, stationId);
+        sections.combineSection(station)
+            .ifPresent((newSection) -> saveNewSection(lineId, newSection.getSource().getId(),
+                newSection.getTarget().getId(), newSection.getDistance()));
     }
 }

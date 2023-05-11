@@ -61,6 +61,26 @@ public class Sections {
         return Optional.empty();
     }
 
+    public Optional<Section> combineSection(final Station station) {
+        if (isTargetUpward(station) || isSourceDownward(station)) {
+            return Optional.empty();
+        }
+
+        Station newSourceStation = null, newTargetStation = null;
+        int distance = 0;
+        for (Section section : sections) {
+            if (section.getSource().equals(station)) {
+                distance += section.getDistance();
+                newTargetStation = section.getTarget();
+            }
+            if (section.getTarget().equals(station)) {
+                distance += section.getDistance();
+                newSourceStation = section.getSource();
+            }
+        }
+        return Optional.of(new Section(newSourceStation, newTargetStation, distance));
+    }
+
     private Optional<Section> validateDistance(final Section requestSection, final Section section) {
         final int distance = section.getDistance();
         final int requestDistance = requestSection.getDistance();

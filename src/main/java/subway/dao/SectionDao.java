@@ -50,4 +50,10 @@ public class SectionDao {
         final String sql = "DELETE FROM section WHERE line_id = ? and source_station_id = ?";
         return jdbcTemplate.update(sql, lineId, sourceStationId);
     }
+
+    public int deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
+        final String sql = "DELETE FROM section WHERE (line_id = ?  and source_station_id = ?) "
+            + "OR (line_id = ?  and target_station_id = ?)";
+        return jdbcTemplate.update(sql, lineId, stationId, lineId, stationId);
+    }
 }
