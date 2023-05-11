@@ -37,7 +37,7 @@ public class SectionController {
     public ResponseEntity<List<SectionAddResponse>> addSection(@RequestBody SectionAddRequest sectionAddRequest) {
         List<SectionAddResponse> sectionAddResponse = sectionService.addSection(sectionAddRequest);
         return ResponseEntity.created(
-                URI.create("/sections/" + sectionAddResponse.get(0).getId() + "," + sectionAddResponse.get(1).getId()))
+                URI.create("/sections/" + sectionAddResponse.get(0).getId()))
             .body(sectionAddResponse);
     }
 
