@@ -60,4 +60,14 @@ public class JdbcLineRepository implements LineRepository {
 
         sectionDao.insertAll(sections);
     }
+
+    @Override
+    public List<Line> findAll() {
+
+        List<LineEntity> lines = lineDao.findAll();
+
+        return lines.stream()
+                .map(entity -> findById(entity.getId()))
+                .collect(Collectors.toList());
+    }
 }

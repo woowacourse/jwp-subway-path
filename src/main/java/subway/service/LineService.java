@@ -28,14 +28,14 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLineEntities = findLines();
-        return persistLineEntities.stream()
-                .map(LineResponse::of)
+        List<Line> lines = findLines();
+        return lines.stream()
+                .map(LineMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public List<LineEntity> findLines() {
-        return lineDao.findAll();
+    public List<Line> findLines() {
+        return lineRepository.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {

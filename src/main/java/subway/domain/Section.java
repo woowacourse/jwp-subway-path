@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exception.ApiIllegalArgumentException;
+
 public class Section {
 
     private final Long id;
@@ -14,10 +16,17 @@ public class Section {
 
     public Section(final Long id, final Station upStation, final Station downStation,
             final int distance) {
+        validateStations(upStation, downStation);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    private void validateStations(final Station upStation, final Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new ApiIllegalArgumentException("상행역과 하행역은 달라야합니다.");
+        }
     }
 
     public Long getId() {
