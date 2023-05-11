@@ -27,9 +27,15 @@ public class SectionService {
 	}
 
 	public List<AddStationResponse> addStationByLineId(final Long lineId, AddStationRequest addStationRequest) {
-		final Line line = Line.from(sectionDao.findSectionsByLineId(lineId));
+		final List<Section> sections = sectionDao.findSectionsByLineId(lineId);
 
-		if (line.isEmpty() || isTerminalAdding(addStationRequest, line)) {
+		if (sections.size() == 0) {
+			return addSingleSection(lineId, addStationRequest);
+		}
+
+		final Line line = Line.from(sections);
+
+		if (isTerminalAdding(addStationRequest, line)) {
 			return addSingleSection(lineId, addStationRequest);
 		}
 

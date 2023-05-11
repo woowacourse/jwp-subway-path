@@ -51,9 +51,8 @@ public class SectionDao {
 	public SectionDto saveSection(Long lineId, int distance, String departure, String arrival) {
 		final String sql = "INSERT INTO sections (line_id, departure_id, arrival_id, distance) "
 			+ "SELECT ?, departure_station.id, arrival_station.id, ? "
-			+ "FROM station AS departure_station "
-			+ "LEFT JOIN station AS arrival_station "
-			+ "ON departure_station.name = ? AND arrival_station.name = ?";
+			+ "FROM station AS departure_station, station AS arrival_station "
+			+ "WHERE departure_station.name = ? AND arrival_station.name = ?";
 
 		final KeyHolder keyHolder = new GeneratedKeyHolder();
 		jdbcTemplate.update(connection -> {
@@ -72,11 +71,11 @@ public class SectionDao {
 
 	public Map<LineInfo, List<Section>> findSections() {
 		String sql =
-			"SELECT section.id, section.line_id, line.name, line.color,  departure_station.id, departure_station.name, arrival_station.id, arrival_station.name, section.distance "
-				+ "FROM section "
-				+ "LEFT JOIN station AS departure_station ON departure_station.id = section.departure_id "
-				+ "LEFT JOIN station AS arrival_station ON arrival_station.id = section.arrival_id "
-				+ "LEFT JOIN line ON line.id = section.line_id";
+			"SELECT sections.id, sections.line_id, line.name, line.color,  departure_station.id, departure_station.name, arrival_station.id, arrival_station.name, sections.distance "
+				+ "FROM sections "
+				+ "LEFT JOIN station AS departure_station ON departure_station.id = sections.departure_id "
+				+ "LEFT JOIN station AS arrival_station ON arrival_station.id = sections.arrival_id "
+				+ "LEFT JOIN line ON line.id = sections.line_id";
 
 		final List<LineSection> lineSections = jdbcTemplate.query(sql, lineSectionRowMapper);
 
@@ -86,16 +85,16 @@ public class SectionDao {
 
 	public List<Section> findSectionsByLineId(Long id) {
 		String sql =
-			"SELECT section.id, section.line_id, departure_station.id, departure_station.name, arrival_station.id, arrival_station.name, section.distance "
-				+ "FROM section "
-				+ "LEFT JOIN station AS departure_station ON departure_station.id = section.departure_id "
-				+ "LEFT JOIN station AS arrival_station ON arrival_station.id = section.arrival_id "
-				+ "WHERE section.line_id = ?";
+			"SELECT sections.id, sections.line_id, departure_station.id, departure_station.name, arrival_station.id, arrival_station.name, sections.distance "
+				+ "FROM sections "
+				+ "LEFT JOIN station AS departure_station ON departure_station.id = sections.departure_id "
+				+ "LEFT JOIN station AS arrival_station ON arrival_station.id = sections.arrival_id "
+				+ "WHERE sections.line_id = ?";
 		return jdbcTemplate.query(sql, sectionRowMapper, id);
 	}
 
 	public List<Section> findSectionByLineIdAndStationId(Long lineId, Long stationId) {
-		String sql = "SELECT * FROM section WHERE line_id = ? AND departure_id =? OR arrival_id =?";
+		String sql = "SELECT * FROM sections WHERE line_id = ? AND departure_id =? OR arrival_id =?";
 		return jdbcTemplate.query(sql, sectionRowMapper, lineId, stationId);
 	}
 
