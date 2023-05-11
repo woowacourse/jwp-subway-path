@@ -200,6 +200,14 @@ public class Line {
         }
     }
 
+    public Station getUpwardTerminus() {
+        return sections.get(0).getUpwardStation();
+    }
+
+    public Station getDownwardTerminus() {
+        return sections.get(sections.size() - 1).getDownwardStation();
+    }
+
     public Long getId() {
         return id;
     }

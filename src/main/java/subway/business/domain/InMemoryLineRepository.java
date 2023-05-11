@@ -2,9 +2,7 @@ package subway.business.domain;
 
 import java.util.LinkedList;
 import java.util.List;
-import org.springframework.stereotype.Repository;
 
-@Repository
 public class InMemoryLineRepository implements LineRepository {
     private final List<Line> lines;
 
