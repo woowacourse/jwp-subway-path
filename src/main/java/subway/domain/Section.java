@@ -1,28 +1,31 @@
 package subway.domain;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.exception.ErrorCode;
 import subway.exception.InvalidException;
 
-public class Section extends DefaultWeightedEdge {
-    private final Station startStation;
-    private final Station endStation;
+public class Section {
+    private final Station upStation;
+    private final Station downStation;
     private final int distance;
-    private final Line line;
 
-    public Section(final Station startStation, final Station endStation, final int distance, final Line line) {
-        this.startStation = startStation;
-        this.endStation = endStation;
+    public Section(final Station upStation, final Station downStation, final int distance) {
+        validateDifferentUpAndDown(upStation, downStation);
+        validatePositiveDistance(distance);
+        this.upStation = upStation;
+        this.downStation = downStation;
         this.distance = distance;
-        this.line = line;
     }
 
-    public boolean isSameStartStation(final Station station) {
-        return startStation.equals(station);
+    private void validatePositiveDistance(final int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("거리는 양수여야 합니다.");
+        }
     }
 
-    public boolean isSameEndStation(final Station station) {
-        return endStation.equals(station);
+    private void validateDifferentUpAndDown(final Station upStation, final Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new IllegalArgumentException("시작역과 끝역은 같을 수 없습니다.");
+        }
     }
 
     public void validateDistance(final int distance) {
@@ -31,12 +34,21 @@ public class Section extends DefaultWeightedEdge {
         }
     }
 
-    public Station getStartStation() {
-        return startStation;
+    public Section getDividedSection(final Section newSection) {
+        validateDistance(newSection.distance);
+
+        if (upStation.equals(newSection.upStation)) {
+            return new Section(newSection.downStation, downStation, distance - newSection.distance);
+        }
+        return new Section(upStation, newSection.upStation, distance - newSection.distance);
     }
 
-    public Station getEndStation() {
-        return endStation;
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
     }
 
     public int getDistance() {

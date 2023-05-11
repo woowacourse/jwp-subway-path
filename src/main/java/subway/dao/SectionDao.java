@@ -16,17 +16,10 @@ public class SectionDao {
     private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("id"),
-                    rs.getLong("start_station_id"),
-                    rs.getLong("end_station_id"),
+                    rs.getLong("up_station_id"),
+                    rs.getLong("down_station_id"),
                     rs.getLong("line_id"),
                     rs.getInt("distance")
-            );
-
-    private final RowMapper<SectionInformationDto> rowDetailMapper = (rs, rowNum) ->
-            new SectionInformationDto(
-                    rs.getString("start_station.name"),
-                    rs.getString("end_station.name"),
-                    rs.getInt("section.distance")
             );
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
@@ -45,15 +38,12 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public void deleteByStationsId(final Long startStationId, final Long endStationId) {
-        final String sql = "DELETE FROM section WHERE start_station_id = ? AND end_station_id = ?";
-        jdbcTemplate.update(sql, startStationId, endStationId);
-    }
-
-    public List<SectionInformationDto> findDetailsByLineId(final Long lineId) {
-        final String sql = "SELECT * FROM section "
-                + "INNER JOIN station AS start_station ON start_station.id = section.start_station_id"
-                + "INNER JOIN station AS end_station ON end_station.id = section.end_station_id WHERE line_id = ?";
-        return jdbcTemplate.query(sql, rowDetailMapper, lineId);
+    public void delete(final SectionEntity sectionEntity) {
+        final String sql = "DELETE FROM section WHERE up_station_id = ? AND down_station_id = ? AND line_id = ?";
+        jdbcTemplate.update(sql,
+                sectionEntity.getUpStationId(),
+                sectionEntity.getDownStationId(),
+                sectionEntity.getDistance()
+        );
     }
 }

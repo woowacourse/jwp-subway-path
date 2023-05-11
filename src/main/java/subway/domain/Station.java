@@ -1,15 +1,19 @@
 package subway.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Station {
     private final String name;
-    private final List<Line> lines;
 
-    public Station(final String name, final List<Line> lines) {
+    public Station(final String name) {
+        validateName(name);
         this.name = name;
-        this.lines = lines;
+    }
+
+    private void validateName(final String name) {
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("이름은 공백이 될 수 없습니다.");
+        }
     }
 
     public String getName() {
@@ -25,11 +29,11 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return Objects.equals(name, station.name) && Objects.equals(lines, station.lines);
+        return Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, lines);
+        return Objects.hash(name);
     }
 }

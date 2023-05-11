@@ -6,16 +6,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.SectionInformationDto;
 import subway.dao.StationDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.Line;
 import subway.domain.Section;
-import subway.domain.Sections;
 import subway.domain.Station;
-import subway.domain.Stations;
 import subway.dto.StationRequest;
 
 @Service
@@ -33,113 +30,78 @@ public class StationService {
 
     public void save(final StationRequest stationRequest) {
         long lineId = stationRequest.getLineId();
+        Line line = makeLine(lineId);
 
+        List<Station> originalStations = line.getStations();
+        List<Section> originalSections = line.getSectionsByList();
+
+        line.addSection(
+                new Station(stationRequest.getUpStation()),
+                new Station(stationRequest.getDownStation()),
+                stationRequest.getDistance()
+        );
+
+        saveNewStation(lineId, originalStations, line);
+        saveNewSections(lineId, originalSections, line);
+        deleteOriginalSection(lineId, originalSections, line);
+    }
+
+    private Line makeLine(final long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId);
-        Line line = new Line(lineEntity.getName());
+        List<Section> sections = makeSections(lineId);
 
-        Stations stations = makeStations(lineId, line);
-        Station startStation = makeStation(stationRequest.getStartStation(), line);
-        Station endStation = makeStation(stationRequest.getEndStation(), line);
+        return Line.of(lineEntity.getName(), sections);
+    }
 
-        if (stations.isEmpty()) {
-            saveInitialStations(stationRequest, lineId, startStation, endStation);
+    private void saveNewStation(final long lineId, final List<Station> originalStations, final Line line) {
+        List<Station> newStations = line.getStations();
+        newStations.removeAll(originalStations);
+        Station newStation = newStations.get(0);
+        stationDao.save(new StationEntity(newStation.getName(), lineId));
+    }
+
+    private void saveNewSections(final long lineId, final List<Section> originalSections, final Line line) {
+        List<Section> newSections = line.getSectionsByList();
+        newSections.removeAll(originalSections);
+        for (Section newSection : newSections) {
+            StationEntity newUpStation = stationDao.findByName(newSection.getUpStation().getName());
+            StationEntity newDownStation = stationDao.findByName(newSection.getDownStation().getName());
+
+            sectionDao.save(new SectionEntity(
+                    newUpStation.getId(),
+                    newDownStation.getId(),
+                    lineId,
+                    newSection.getDistance())
+            );
+        }
+    }
+
+    private void deleteOriginalSection(final long lineId, final List<Section> originalSections, final Line line) {
+        if (originalSections.isEmpty()) {
             return;
         }
+        List<Section> newSections = line.getSectionsByList();
+        originalSections.removeAll(newSections);
+        Section deletedSection = originalSections.get(0);
+        StationEntity deletedUpStation = stationDao.findByName(deletedSection.getUpStation().getName());
+        StationEntity deletedDownStation = stationDao.findByName(deletedSection.getDownStation().getName());
 
-        stations.validateStations(startStation, endStation);
-
-        if (stations.contains(startStation)) {
-            saveEndStation(stationRequest, line, startStation, endStation);
-            return;
-        }
-
-        saveStartStation(stationRequest, line, startStation, endStation);
+        sectionDao.delete(new SectionEntity(
+                deletedUpStation.getId(),
+                deletedDownStation.getId(),
+                lineId,
+                deletedSection.getDistance())
+        );
     }
 
-    private void saveInitialStations(final StationRequest stationRequest, final long lineId, final Station startStation,
-                                     final Station endStation) {
-        Long startStationId = stationDao.save(new StationEntity(startStation.getName(), lineId));
-        Long endStationId = stationDao.save(new StationEntity(endStation.getName(), lineId));
-        sectionDao.save(new SectionEntity(startStationId, endStationId, lineId, stationRequest.getDistance()));
-    }
+    private List<Section> makeSections(final Long id) {
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
 
-    private Station makeStation(final String name, final Line line) {
-        return new Station(name, List.of(line));
-    }
-
-    private Stations makeStations(final long lineId, final Line line) {
-        List<StationEntity> stationEntities = stationDao.findByLineId(lineId);
-        List<Station> stations = stationEntities.stream()
-                .map(entity -> new Station(entity.getName(), List.of(line)))
-                .collect(Collectors.toList());
-        return new Stations(stations);
-    }
-
-    public Sections makeSections(Long lineId, Line line) {
-        List<SectionInformationDto> sectionInformationDtos = sectionDao.findDetailsByLineId(lineId);
-        List<Section> sections = sectionInformationDtos.stream()
-                .map(dto -> new Section(
-                        new Station(dto.getStartStationName(), List.of(line)),
-                        new Station(dto.getEndStationName(), List.of(line)),
-                        dto.getDistance(),
-                        line)
-                ).collect(Collectors.toList());
-        return new Sections(sections);
-    }
-
-    private void saveEndStation(final StationRequest stationRequest, final Line line,
-                                final Station startStation, final Station endStation) {
-        int distance = stationRequest.getDistance();
-        Long lineId = stationRequest.getLineId();
-
-        Sections sections = makeSections(lineId, line);
-        Long startStationId = stationDao.findByName(startStation.getName()).getId();
-        Long endStationId = stationDao.save(new StationEntity(endStation.getName(), lineId));
-        if (sections.isTerminalStation(startStation)) {
-            sectionDao.save(new SectionEntity(startStationId, endStationId, lineId, distance));
-            return;
-        }
-
-        Section sectionStartedByStartStation = sections.getSectionByStartStation(startStation);
-        sectionStartedByStartStation.validateDistance(distance);
-        Long existStationId = stationDao.findByName(sectionStartedByStartStation.getEndStation().getName()).getId();
-
-        sectionDao.save(new SectionEntity(startStationId, endStationId, lineId, distance));
-        sectionDao.save(
-                new SectionEntity(
-                        endStationId,
-                        existStationId,
-                        lineId,
-                        sectionStartedByStartStation.getDistance() - distance
-                ));
-        sectionDao.deleteByStationsId(startStationId, existStationId);
-    }
-
-    private void saveStartStation(final StationRequest stationRequest, final Line line,
-                                  final Station startStation, final Station endStation) {
-        int distance = stationRequest.getDistance();
-        Long lineId = stationRequest.getLineId();
-
-        Sections sections = makeSections(lineId, line);
-        Long endStationId = stationDao.findByName(endStation.getName()).getId();
-        Long startStationId = stationDao.save(new StationEntity(startStation.getName(), lineId));
-        if (sections.isTerminalStation(endStation)) {
-            sectionDao.save(new SectionEntity(startStationId, endStationId, lineId, distance));
-            return;
-        }
-
-        Section sectionEndByEndStation = sections.getSectionByEndStation(endStation);
-        sectionEndByEndStation.validateDistance(distance);
-        Long existStationId = stationDao.findByName(sectionEndByEndStation.getStartStation().getName()).getId();
-
-        sectionDao.save(new SectionEntity(existStationId, startStationId, lineId, distance));
-        sectionDao.save(
-                new SectionEntity(
-                        startStationId,
-                        endStationId,
-                        lineId,
-                        sectionEndByEndStation.getDistance() - distance
-                ));
-        sectionDao.deleteByStationsId(existStationId, endStationId);
+        return sectionEntities.stream()
+                .map(entity -> new Section(
+                        new Station(stationDao.findById(entity.getUpStationId()).getName()),
+                        new Station(stationDao.findById(entity.getDownStationId()).getName()),
+                        entity.getDistance()
+                )).collect(Collectors.toList());
     }
 }
