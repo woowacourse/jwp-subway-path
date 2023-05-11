@@ -42,11 +42,11 @@ public class SectionService {
 		final List<Section> sortedSections = sectionSorter.sortSections(allSections);
 
 		List<Section> departureSections = allSections.stream()
-			.filter(section -> hasSection(section.getDeparture(), addStationRequest))
-			.collect(toList());
+				.filter(section -> hasSection(section,addStationRequest.getDepartureStation()))
+				.collect(toList());
 
 		List<Section> arrivalSections = allSections.stream()
-			.filter(section -> hasSection(section.getArrival(), addStationRequest))
+			.filter(section -> hasSection(section, addStationRequest.getArrivalStation()))
 			.collect(toList());
 
 		// 검증 후 연결할 수 없을 시 예외 발생
@@ -130,8 +130,8 @@ public class SectionService {
 		if (sections.size() == 2) {
 			sectionDao.deleteSection(sections.get(1).getId());
 			sectionDao.saveSection(lineId,
-				sections.get(0).getDistance().getDistance() + sections.get(1).getDistance().getDistance(),
-				sortedSections.get(0).getDeparture().getName(), sortedSections.get(1).getArrival().getName());
+					sections.get(0).getDistance().getDistance() + sections.get(1).getDistance().getDistance(),
+					sortedSections.get(0).getDeparture().getName(), sortedSections.get(1).getArrival().getName());
 		}
 	}
 
@@ -139,9 +139,9 @@ public class SectionService {
 		return sectionCount == 0;
 	}
 
-	private boolean hasSection(Station station, AddStationRequest addStationRequest) {
-		return station.getName().equals(addStationRequest.getDepartureStation()) || station.getName()
-			.equals(addStationRequest.getArrivalStation());
+	private boolean hasSection(Section section, String requestStation) {
+		return section.getDeparture().getName().equals(requestStation)||
+				section.getArrival().getName().equals(requestStation);
 	}
 
 	private void validate(List<Section> departureSections, List<Section> arrivalSections) {
@@ -158,7 +158,7 @@ public class SectionService {
 	}
 
 	private boolean isAbnormalCase(final long departureMatchCount, final long arrivalMatchCount) {
-		return !new HashSet<>(List.of(departureMatchCount, arrivalMatchCount)).contains(0L);
+		return !List.of(departureMatchCount, arrivalMatchCount).contains(0l);
 	}
 
 	private boolean isTerminalAdding(final AddStationRequest addStationRequest,

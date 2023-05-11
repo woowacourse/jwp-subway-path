@@ -100,7 +100,7 @@ public class LineController {
 		return ResponseEntity.noContent().build();
 	}
 
-	@ExceptionHandler(SQLException.class)
+	@ExceptionHandler({SQLException.class,IllegalArgumentException.class})
 	public ResponseEntity<Void> handleSQLException() {
 		return ResponseEntity.badRequest().build();
 	}
