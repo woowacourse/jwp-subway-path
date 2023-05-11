@@ -1,64 +1,39 @@
 package subway.controller;
 
 import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
+import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-import subway.service.StationService;
+import subway.controller.dto.AddStationRequest;
+import subway.controller.dto.AddStationResponse;
+import subway.controller.dto.RemoveStationRequest;
+import subway.service.LineService;
 
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/stations")
 public class StationController {
 
-    private final StationService stationService;
-
-    public StationController(final StationService stationService) {
-        this.stationService = stationService;
-    }
+    private final LineService lineService;
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(
-        @RequestBody final StationRequest stationRequest) {
-        final StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+    public ResponseEntity<AddStationResponse> addStation(@RequestBody @Valid final AddStationRequest request) {
+        final AddStationResponse addStationResponse = lineService.addStation(request);
+        final URI uri = URI.create("/stations/" + addStationResponse.getStationId());
+        return ResponseEntity.created(uri)
+                .body(addStationResponse);
     }
 
-    @GetMapping
-    public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable final Long id,
-        @RequestBody final StationRequest stationRequest) {
-        stationService.updateStation(id, stationRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
-        stationService.deleteStationById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+    @DeleteMapping
+    public ResponseEntity<Void> deleteStation(@RequestBody @Valid final RemoveStationRequest request) {
+        lineService.removeStation(request);
+        return ResponseEntity.noContent()
+                .build();
     }
 }
