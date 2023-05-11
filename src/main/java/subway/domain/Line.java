@@ -1,8 +1,11 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Line {
@@ -37,10 +40,18 @@ public class Line {
     }
 
     public List<Station> getStations() {
-        List<Station> result = edges.stream()
-                .map(Edge::getUpStation)
-                .collect(Collectors.toList());
-        result.add(edges.get(edges.size() - 1).getDownStation());
+        Map<Station, Station> stationToStation = edges.stream()
+                .collect(Collectors.toMap(Edge::getUpStation, Edge::getDownStation));
+        Set<Station> ups = new HashSet<>(stationToStation.keySet());
+        ups.removeAll(stationToStation.values());
+
+        List<Station> result = new ArrayList<>(ups);
+        Station targetStation = result.get(0);
+        while (stationToStation.containsKey(targetStation)) {
+            Station next = stationToStation.get(targetStation);
+            result.add(next);
+            targetStation = next;
+        }
         return result;
     }
 
