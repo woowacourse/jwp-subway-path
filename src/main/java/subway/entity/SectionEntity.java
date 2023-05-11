@@ -1,5 +1,11 @@
 package subway.entity;
 
+import static java.util.stream.Collectors.toList;
+
+import java.util.List;
+import java.util.Objects;
+import subway.domain.Line;
+
 public class SectionEntity {
 
     private final Long id;
@@ -29,6 +35,36 @@ public class SectionEntity {
         this.endStationName = endStationName;
         this.distance = distance;
         this.lineId = lineId;
+    }
+
+    public static List<SectionEntity> of(final Line line, final long lineId) {
+        return line.getSections().stream()
+                .map(section -> new SectionEntity(
+                        section.getStartName(),
+                        section.getEndName(),
+                        section.getDistanceValue(),
+                        lineId
+                ))
+                .collect(toList());
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final SectionEntity that = (SectionEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(startStationName, that.startStationName)
+                && Objects.equals(endStationName, that.endStationName) && Objects.equals(distance,
+                that.distance) && Objects.equals(lineId, that.lineId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, startStationName, endStationName, distance, lineId);
     }
 
     public Long getId() {

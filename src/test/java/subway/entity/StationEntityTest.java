@@ -1,31 +1,20 @@
-package subway.repository;
+package subway.entity;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.domain.Section;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-@SpringBootTest
-class LineRepositoryTest {
-
-    @Autowired
-    private LineRepository lineRepository;
-
-    @Autowired
-    private SectionDao sectionDao;
+class StationEntityTest {
 
     @Test
-    void 노선을_저장한다() {
+    void 라인과_라인id를_받아_StationEntity_리스트를_반환한다() {
         // given
         final Line line = new Line("2호선", "RED", List.of(
                 new Section("B", "C", 3),
@@ -35,12 +24,9 @@ class LineRepositoryTest {
         ));
 
         // when
-        final Long id = lineRepository.save(line);
+        List<StationEntity> result = StationEntity.of(line, 1L);
 
         // then
-        assertAll(
-                () -> assertThat(sectionDao.findAll()).hasSize(4),
-                () -> assertThat(id).isPositive()
-        );
+        assertThat(result).extracting(StationEntity::getName).containsAll(List.of("A", "B", "C", "D", "E"));
     }
 }

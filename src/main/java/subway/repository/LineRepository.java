@@ -1,7 +1,5 @@
 package subway.repository;
 
-import static java.util.stream.Collectors.toList;
-
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
@@ -26,27 +24,19 @@ public class LineRepository {
         this.sectionDao = sectionDao;
     }
 
-    public void save(final Line line) {
+    public Long save(final Line line) {
         final Optional<LineEntity> lineEntity = lineDao.findByName(line.getName());
         if (lineEntity.isPresent()) {
             deleteAllByLineId(lineEntity.get());
         }
         final LineEntity newLine = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
-        final List<StationEntity> stations = line.findAllStation().stream()
-                .map(station -> new StationEntity(station.getName(), newLine.getId()))
-                .collect(toList());
+        final List<StationEntity> stations = StationEntity.of(line, newLine.getId());
         stationDao.insertAll(stations);
-        final List<SectionEntity> sections = line.getSections().stream()
-                .map(section -> new SectionEntity(
-                        section.getStartName(),
-                        section.getEndName(),
-                        section.getDistanceValue(),
-                        newLine.getId()
-                ))
-                .collect(toList());
+        final List<SectionEntity> sections = SectionEntity.of(line, newLine.getId());
         sectionDao.insertAll(sections);
+        return newLine.getId();
     }
-
+    
     private void deleteAllByLineId(final LineEntity lineEntity) {
         sectionDao.deleteAll(lineEntity.getId());
         stationDao.deleteByLineId(lineEntity.getId());
