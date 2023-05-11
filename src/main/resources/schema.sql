@@ -9,6 +9,16 @@ create table if not exists LINE
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
-    color varchar(20) not null,
+    color varchar(20) not null unique,
     primary key(id)
+);
+
+--//todo 물어볼 것 : 기본 키 id를 없애도 되는지?
+create table if not exists SECTION
+(
+    line_id            bigint    not null      references line(id)        on delete cascade,
+    up_station_id      bigint    not null      references station(id)     on delete cascade,
+    down_station_id    bigint    not null      references station(id)     on delete cascade,
+    distance           int       not null,
+    primary key(up_station_id, down_station_id)
 );

@@ -1,16 +1,16 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class StationService {
+
     private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
@@ -18,12 +18,14 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        checkDuplicatedStationName(stationRequest);
         Station station = stationDao.insert(new Station(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        Station station = stationDao.findById(id).orElseThrow(() -> new NotFoundException("해당 역이 존재하지 않습니다."));
+        return StationResponse.of(station);
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -40,5 +42,11 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    private void  checkDuplicatedStationName(StationRequest stationRequest) {
+        if (stationDao.findByName(stationRequest.getName()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 역 이름 입니다");
+        }
     }
 }
