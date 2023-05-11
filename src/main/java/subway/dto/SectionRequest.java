@@ -1,10 +1,16 @@
 package subway.dto;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class SectionRequest {
 
-    private final String beforeStationName;
-    private final String nextStationName;
-    private final Integer distance;
+    @NotBlank
+    private String beforeStationName;
+    @NotBlank
+    private String nextStationName;
+    @NotNull
+    private Integer distance;
 
     public SectionRequest(final String beforeStationName, final String nextStationName, final Integer distance) {
         this.beforeStationName = beforeStationName;
@@ -13,7 +19,6 @@ public class SectionRequest {
     }
 
     private SectionRequest() {
-        this(null, null, null);
     }
 
 

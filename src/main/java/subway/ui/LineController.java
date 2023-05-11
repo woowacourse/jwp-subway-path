@@ -9,6 +9,7 @@ import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationRequest;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
@@ -41,7 +42,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable final Long id, @RequestBody final LineRequest lineUpdateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable final Long id, @Valid @RequestBody final LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
@@ -53,13 +54,13 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/register")
-    public ResponseEntity<Void> registerStation(@PathVariable final Long lineId, @RequestBody final SectionRequest request) {
+    public ResponseEntity<Void> registerStation(@PathVariable final Long lineId, @Valid @RequestBody final SectionRequest request) {
         lineService.registerStation(lineId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{lineId}/unregister")
-    public ResponseEntity<Void> unregisterStation(@PathVariable final Long lineId, @RequestBody final StationRequest request) {
+    public ResponseEntity<Void> unregisterStation(@PathVariable final Long lineId, @Valid @RequestBody final StationRequest request) {
         lineService.unregisterStation(lineId, request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }

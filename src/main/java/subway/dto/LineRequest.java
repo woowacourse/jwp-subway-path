@@ -1,6 +1,9 @@
 package subway.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class LineRequest {
+    @NotBlank
     private final String name;
 
     public LineRequest(final String name) {
