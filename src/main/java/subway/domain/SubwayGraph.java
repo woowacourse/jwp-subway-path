@@ -58,7 +58,7 @@ public class SubwayGraph {
         return (int) graph.getEdgeWeight(edge);
     }
 
-    public void addStation(Station upLineStation, Station downLineStation, int distance) {
+    public Station addStation(Station upLineStation, Station downLineStation, int distance) {
         validateStations(upLineStation, downLineStation);
         validateDistance(distance);
 
@@ -73,13 +73,13 @@ public class SubwayGraph {
 
             if (isDownLastStation) {
                 addStationToDownLine(upLineStation, downLineStation, distance);
-                return;
+                return downLineStation;
             }
 
             // upLineStation -> downLineStation (새 역) -> 기존 다음 역
             final Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(upLineStation);
             addStationToDownLine(upLineStation, downLineStation, findNextStation(outgoingEdges), distance);
-            return;
+            return downLineStation;
         }
 
         // 기존 역: downLineStation, 새로운 역: upLineStation
@@ -94,13 +94,15 @@ public class SubwayGraph {
 
             if (isUpFirstStation) {
                 addStationToUpLine(upLineStation, downLineStation, distance);
-                return;
+                return upLineStation;
             }
             // 기존 상행 역 -> upLineStation (새 역) -> downLineStation
             final Set<DefaultWeightedEdge> defaultWeightedEdges = graph.incomingEdgesOf(downLineStation);
             final Station previousStation = findPreviousStation(defaultWeightedEdges);
             addStationToUpLine(previousStation, upLineStation, downLineStation, distance);
+            return upLineStation;
         }
+        throw new IllegalArgumentException("부적절한 입력입니다.");
     }
 
     private static void validateDistance(final int distance) {

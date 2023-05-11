@@ -23,10 +23,15 @@ public class SubwayGraphs {
         return new LineDto(line, allStationsInOrder);
     }
 
-    public int getOrderOf(Line line, Station station) {
+    public int findOrderOf(Line line, Station station) {
         final SubwayGraph lineGraph = findSubwayGraphOf(line);
 
         return lineGraph.findOrderOf(station);
+    }
+
+    public List<Station> findAllStationsInOrderOf(Line line) {
+        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
+        return subwayGraph.findAllStationsInOrder();
     }
 
     public LineDto addStation(Line line, Station upLineStation, Station downLineStation, int distance) {
@@ -43,5 +48,11 @@ public class SubwayGraphs {
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException("해당 노선이 존재하지 않습니다."));
         return lineGraph;
+    }
+
+    public Station createStation(final Line line, final Station upLineStation, final Station downLineStation, final int distance) {
+        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
+
+        return subwayGraph.addStation(upLineStation, downLineStation, distance);
     }
 }

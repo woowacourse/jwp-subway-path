@@ -49,4 +49,10 @@ public class DbLine2Dao {
         final Map<String, Long> parameters = Map.of("id", id);
         return namedParameterJdbcTemplate.queryForObject(sql, parameters, LINE_ROW_MAPPER);
     }
+
+    public Line findByName(final String name) {
+        final String sql = "SELECT * FROM line2 WHERE name = :name";
+        final Map<String, String> parameters = Map.of("name", name);
+        return namedParameterJdbcTemplate.queryForObject(sql, parameters, LINE_ROW_MAPPER);
+    }
 }

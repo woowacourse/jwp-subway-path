@@ -40,4 +40,9 @@ public class DbEdgeDao {
 
         return insertAction.executeAndReturnKey(params).longValue();
     }
+
+    public void deleteEdgesIn(final Line line) {
+        String sql = "delete from edge where line_id = ? ";
+
+    }
 }

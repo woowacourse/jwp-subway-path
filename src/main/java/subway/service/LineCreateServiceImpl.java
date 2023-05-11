@@ -40,7 +40,7 @@ public class LineCreateServiceImpl implements LineCreateService {
 
         final Line savedLine = dbLine2Dao.saveLine(line);
 
-        final LineDto lineDto = subwayGraphs.createLine(line, upLineStation, downLineStation, distance);
+        final LineDto lineDto = subwayGraphs.createLine(line, savedUpLineStation, savedDownLineStation, distance);
         final List<Station> allStationsInOrder = lineDto.getAllStationsInOrder();
 
         final long upLineStationOrder = allStationsInOrder.indexOf(upLineStation);
