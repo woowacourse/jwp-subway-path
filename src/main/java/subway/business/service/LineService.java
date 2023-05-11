@@ -3,6 +3,7 @@ package subway.business.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.business.domain.Direction;
 import subway.business.domain.Line;
 import subway.business.domain.LineRepository;
@@ -12,6 +13,7 @@ import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.LineStationsResponse;
 import subway.business.service.dto.StationAddToLineRequest;
 
+@Transactional
 @Service
 public class LineService {
 
@@ -38,6 +40,7 @@ public class LineService {
         lineRepository.update(line);
     }
 
+    @Transactional(readOnly = true)
     public List<LineStationsResponse> findLineResponses() {
         List<Line> lines = lineRepository.findAll();
         return lines.stream()
@@ -45,9 +48,20 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public LineStationsResponse findLineResponseById(Long id) {
         Line line = lineRepository.findById(id);
         return getLineStationsResponseFrom(line);
+    }
+
+    public LineResponse createLine(LineSaveRequest lineSaveRequest) {
+        Line line = Line.of(
+                lineSaveRequest.getName(),
+                lineSaveRequest.getUpwardTerminus(),
+                lineSaveRequest.getDownwardTerminus(),
+                lineSaveRequest.getDistance()
+        );
+        return new LineResponse(lineRepository.create(line), line.getName());
     }
 
     private LineStationsResponse getLineStationsResponseFrom(Line line) {
@@ -61,15 +75,5 @@ public class LineService {
 
     private String getDownwardTerminusName(List<Section> sections) {
         return sections.get(sections.size() - 1).getDownwardStation().getName();
-    }
-
-    public LineResponse createLine(LineSaveRequest lineSaveRequest) {
-        Line line = Line.of(
-                lineSaveRequest.getName(),
-                lineSaveRequest.getUpwardTerminus(),
-                lineSaveRequest.getDownwardTerminus(),
-                lineSaveRequest.getDistance()
-        );
-        return new LineResponse(lineRepository.create(line), line.getName());
     }
 }
