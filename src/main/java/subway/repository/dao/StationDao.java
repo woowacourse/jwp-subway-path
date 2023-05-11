@@ -70,9 +70,16 @@ public class StationDao {
     }
 
     public void insertAll(List<StationEntity> stations) {
-        final String sql = "INSERT INTO station (name) VALUES (?)";
+        String sql = "INSERT INTO station (name) VALUES (?)";
         jdbcTemplate.batchUpdate(sql, stations, stations.size(), ((ps, station) -> {
             ps.setString(1, station.getName());
         }));
+    }
+
+    public void deleteByLineId(Long lineId) {
+        String sql = "delete from STATION as sta"
+                + "join SECTION as sec on sta.id = sec.source_station_id or sta.id = sec.target_station_id"
+                + "where sec.line_id = ?";
+        jdbcTemplate.update(sql, lineId);
     }
 }

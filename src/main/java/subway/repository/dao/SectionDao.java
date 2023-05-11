@@ -49,4 +49,9 @@ public class SectionDao {
         String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
+
+    public List<SectionEntity> findAll() {
+        String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
 }

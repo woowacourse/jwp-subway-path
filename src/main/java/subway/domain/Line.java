@@ -31,8 +31,12 @@ public class Line {
         }
     }
 
-    public boolean isSameName(Line other) {
+    public boolean isSame(Line other) {
         return name.equals(other.getName());
+    }
+
+    public boolean isSameName(String otherName) {
+        return name.equals(otherName);
     }
 
     public void addSections(List<Section> saveSections) {

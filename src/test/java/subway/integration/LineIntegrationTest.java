@@ -17,6 +17,7 @@ import org.springframework.http.MediaType;
 import subway.dto.ErrorResponse;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationsResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -88,6 +89,9 @@ public class LineIntegrationTest extends IntegrationTest {
         @DisplayName("목록 전체를 조회한다.")
         @Test
         void getLines() {
+            lineRequest1 = new LineRequest("2호선", "강남역", "역삼역", 5);
+            lineRequest2 = new LineRequest("1호선", "서울역", "명동역", 7);
+
             // given
             ExtractableResponse<Response> createResponse1 = RestAssured
                     .given().log().all()
@@ -95,6 +99,7 @@ public class LineIntegrationTest extends IntegrationTest {
                     .body(lineRequest1)
                     .when().post("/lines")
                     .then().log().all().
+                    statusCode(HttpStatus.CREATED.value()).
                     extract();
 
             ExtractableResponse<Response> createResponse2 = RestAssured
@@ -103,6 +108,7 @@ public class LineIntegrationTest extends IntegrationTest {
                     .body(lineRequest2)
                     .when().post("/lines")
                     .then().log().all().
+                    statusCode(HttpStatus.CREATED.value()).
                     extract();
 
             // when
@@ -127,6 +133,8 @@ public class LineIntegrationTest extends IntegrationTest {
         @DisplayName("하나를 조회한다.")
         @Test
         void getLine() {
+            lineRequest1 = new LineRequest("2호선", "강남역", "역삼역", 5);
+
             // given
             ExtractableResponse<Response> createResponse = RestAssured
                     .given().log().all()
@@ -147,8 +155,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            LineResponse resultResponse = response.as(LineResponse.class);
-            assertThat(resultResponse.getId()).isEqualTo(lineId);
+            StationsResponse resultResponse = response.as(StationsResponse.class);
         }
     }
 

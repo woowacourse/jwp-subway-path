@@ -11,7 +11,7 @@ public class Subway {
         this(new ArrayList<>());
     }
 
-    private Subway(List<Line> lines) {
+    public Subway(List<Line> lines) {
         this.lines = lines;
     }
 
@@ -27,7 +27,7 @@ public class Subway {
     }
 
     private boolean isDuplicatedName(Line other) {
-        return lines.stream().anyMatch(it -> it.isSameName(other));
+        return lines.stream().anyMatch(it -> it.isSame(other));
     }
 
     public List<Line> getLines() {
@@ -47,5 +47,10 @@ public class Subway {
                 .filter(line -> line.getName().equals(lineName))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+    }
+
+    public void addStation(String name, String sourceStation, String targetStation, int distance) {
+        Line line = findLineByName(name);
+        line.addSection(new Section(sourceStation, targetStation, distance));
     }
 }
