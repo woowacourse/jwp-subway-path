@@ -61,7 +61,13 @@ public class SectionDao {
                 + " FROM section s"
                 + " JOIN station us ON s.upward_station_id = us.id"
                 + " JOIN station ds ON s.downward_station_id = ds.id"
-                + " WHERE s.line_id = ?";
+                + " WHERE s.line_id = ?"
+                + " ORDER BY s.id";
         return jdbcTemplate.query(sql, ROW_MAPPER, lineId);
+    }
+
+    public void deleteAllByLineId(final Long lineId) {
+        final String sql = "DELETE FROM section WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
     }
 }

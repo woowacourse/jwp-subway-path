@@ -43,4 +43,20 @@ class SectionDaoTest {
 
         assertThat(sections).containsExactly(savedEntity);
     }
+
+    @Test
+    @DisplayName("노선의 구간 정보를 삭제한다.")
+    void deleteAllByLineId() {
+        final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
+        final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
+        final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
+        final SectionEntity entity = new SectionEntity(lineEntity.getId(), upward.getId(), downward.getId(), 10);
+        final SectionEntity savedEntity = sectionDao.save(entity);
+
+        sectionDao.deleteAllByLineId(savedEntity.getLineId());
+
+        final List<SectionEntity> sections = sectionDao.findAllByLineId(savedEntity.getLineId());
+
+        assertThat(sections).isEmpty();
+    }
 }
