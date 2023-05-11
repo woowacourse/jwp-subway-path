@@ -1,5 +1,6 @@
 package subway.section;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,7 +27,7 @@ public class SectionController {
     }
 
     @PostMapping("/section")
-    public void create(@RequestBody SectionCreateDto sectionCreateDto) {
+    public ResponseEntity<Void> create(@RequestBody SectionCreateDto sectionCreateDto) {
         final LineEntity lineEntity = lineService.findById(sectionCreateDto.getLineId());
         final StationEntity upStation = stationService.findByName(sectionCreateDto.getUp());
         final StationEntity downStation = stationService.findByName(sectionCreateDto.getDown());
@@ -35,10 +36,12 @@ public class SectionController {
             downStation.getId(), sectionCreateDto.getDistance());
 
         sectionService.addSection(sectionEntity, upStation.getName(), downStation.getName());
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/section")
-    public void delete(@RequestBody final SectionDeleteDto sectionDeleteDto) {
+    public ResponseEntity<Void> delete(@RequestBody final SectionDeleteDto sectionDeleteDto) {
         sectionService.removeStationBy(sectionDeleteDto);
+        return ResponseEntity.ok().build();
     }
 }

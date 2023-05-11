@@ -51,7 +51,8 @@ public class LineController {
     }
 
     @PostMapping("/line")
-    public void create(@RequestBody LineCreateDto lineCreateDto) {
+    public ResponseEntity<Void> create(@RequestBody LineCreateDto lineCreateDto) {
         lineService.create(SubwayLine.register(lineCreateDto.getName()));
+        return ResponseEntity.ok().build();
     }
 }
