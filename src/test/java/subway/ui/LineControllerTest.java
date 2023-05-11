@@ -32,7 +32,7 @@ class LineControllerTest {
     void findLineByIdTest() throws Exception {
         // given
         Long lineId = 1L;
-        when(lineService.findLineById(lineId)).thenReturn(LINE2_노선도);
+        when(lineService.findStationNamesByLineId(lineId)).thenReturn(LINE2_노선도);
 
         // when, then
         mockMvc.perform(get("/lines/" + lineId))
