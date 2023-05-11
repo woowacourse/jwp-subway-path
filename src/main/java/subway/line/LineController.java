@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import subway.line.domain.SubwayLine;
 import subway.line.dto.LineResponseDto;
-import subway.line.dto.StationResponseDto;
 import subway.line.persistence.LineEntity;
 import subway.section.SectionService;
+import subway.station.dto.StationResponseDto;
 import subway.station.persistence.StationEntity;
 import subway.station.util.StationEntityConverter;
 

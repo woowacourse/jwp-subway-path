@@ -1,6 +1,7 @@
 package subway.line.dto;
 
 import java.util.List;
+import subway.station.dto.StationResponseDto;
 
 public class LineResponseDto {
 

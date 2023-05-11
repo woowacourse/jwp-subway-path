@@ -2,7 +2,7 @@ package subway.station.util;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.line.dto.StationResponseDto;
+import subway.station.dto.StationResponseDto;
 import subway.station.persistence.StationEntity;
 
 public class StationEntityConverter {
