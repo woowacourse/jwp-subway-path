@@ -1,5 +1,6 @@
 package subway.ui;
 
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,9 +14,6 @@ import subway.application.dto.CreationStationDto;
 import subway.ui.dto.request.CreationStationRequest;
 import subway.ui.dto.response.CreationStationResponse;
 import subway.ui.dto.response.ReadStationResponse;
-
-import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/stations")
@@ -33,14 +31,9 @@ public class StationController {
         return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ReadStationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ReadStationResponse> showStation(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
+        return ResponseEntity.ok().body(stationService.findStationById(id));
     }
 
     @DeleteMapping("/{id}")
