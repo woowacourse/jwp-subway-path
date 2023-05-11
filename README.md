@@ -48,8 +48,7 @@
         ```
           GET /lines
         ```
-      
-
+    
 4. 테스트 하기
  - 노선에 역이 하나도 등록되지 않은 상황에서 최초 등록 시 두 역을 동시에 등록해야 합니다. 
    - 하나의 역은 여러 노선에 등록이 될 수 있습니다.
@@ -67,3 +66,32 @@
        A-B가 2km, B-C가 3km, C-D가 4km인 경우 C역이 제거되면 B-D 거리가 7km가 되어야 합니다.
      - 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거되어야 합니다. 
        A-B 노선에서 B를 제거할 때 거리 정보를 포함할 수 없기 때문에 두 역 모두 제거되어야 합니다.
+
+
+## 도메인 설계하기
+### Line
+- 필드
+  - Long id
+  - String name => LineName name (-선으로 끝나야함) endwith
+  - String color => Color color
+  - Sections
+- 기능
+  - 역 목록 조회하기
+
+### Sections
+- 필드
+  - List<Section>
+- 기능
+  - 역 상행-하행 순으로 정렬하기
+  - 역 목록 조회하기
+
+### Section
+- 필드
+  - Station upStation
+  - Station downStation
+  - Integer distance => Distance distance
+
+### Station
+- 필드
+  - Long id
+  - String name => StaionName name (-역으로 끝나야함)  endwith
