@@ -40,13 +40,13 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public void deleteByLineId(final Long lineId) {
+    public int deleteByLineId(final Long lineId) {
         final String sql = "DELETE FROM station WHERE line_id = ?";
-        jdbcTemplate.update(sql, lineId);
+        return jdbcTemplate.update(sql, lineId);
     }
 
-    public void deleteByName(final String name) {
+    public int deleteByName(final String name) {
         final String sql = "DELETE FROM station WHERE name = ?";
-        jdbcTemplate.update(sql, name);
+        return jdbcTemplate.update(sql, name);
     }
 }
