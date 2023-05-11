@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface LineDao {
 
-    List<Number> saveLineEntities(final List<LineEntity> lineEntities);
+    List<LineEntity> saveLineEntities(final List<LineEntity> lineEntities);
 
     List<LineEntity> findLine(Line line);
 
