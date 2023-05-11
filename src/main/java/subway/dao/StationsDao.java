@@ -184,9 +184,11 @@ public class StationsDao {
                 "FROM SUBWAY_MAP t1 " +
                 "JOIN SUBWAY_MAP t2 ON t1.next_station_id = t2.current_station_id " +
                 "RIGHT OUTER JOIN STATION s ON t1.current_station_id = s.id " +
+                "WHERE t1.line_id = ?" +
                 "ORDER BY t1.current_station_id DESC, t2.current_station_id DESC;";
         return jdbcTemplate.query(sql,
-                (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")));
+                (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")),
+                line.getId());
     }
 
     public boolean isHighestStationOfLine(Station station, Line line) {

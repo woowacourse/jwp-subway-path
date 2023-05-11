@@ -29,7 +29,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponse::of)
+                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor(), stationsDao.findAllOrderByUp(line)))
                 .collect(Collectors.toList());
     }
 
