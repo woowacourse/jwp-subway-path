@@ -27,7 +27,7 @@ public class LineIntegrationTest extends IntegrationTest {
         super.setUp();
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-601");
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -105,6 +105,8 @@ public class LineIntegrationTest extends IntegrationTest {
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
+
+
         List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
