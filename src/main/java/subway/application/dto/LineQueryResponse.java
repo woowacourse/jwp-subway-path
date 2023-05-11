@@ -7,8 +7,11 @@ import subway.domain.Section;
 
 public class LineQueryResponse {
 
-    private final String lineName;
-    private final List<SectionQueryResponse> stationQueryResponseList;
+    private String lineName;
+    private List<SectionQueryResponse> stationQueryResponseList;
+
+    private LineQueryResponse() {
+    }
 
     public LineQueryResponse(final String lineName, final List<SectionQueryResponse> stationQueryResponseList) {
         this.lineName = lineName;
@@ -33,9 +36,12 @@ public class LineQueryResponse {
 
     public static class SectionQueryResponse {
 
-        private final String upStationName;
-        private final String downStationName;
-        private final int distance;
+        private String upStationName;
+        private String downStationName;
+        private int distance;
+
+        private SectionQueryResponse() {
+        }
 
         public SectionQueryResponse(final String upStationName, final String downStationName, final int distance) {
             this.upStationName = upStationName;
