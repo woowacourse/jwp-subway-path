@@ -12,6 +12,10 @@ public class Distance {
         this.distance = distance;
     }
 
+    public Distance reduce(Distance another) {
+        return new Distance(this.distance - another.distance);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

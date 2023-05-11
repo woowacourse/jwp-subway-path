@@ -19,6 +19,14 @@ public class Section {
         this(null, upStation, downStation, distance, line);
     }
 
+    public boolean contains(Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
+
+    public Distance calculateNewSectionDistance(Distance another) {
+        return this.distance.reduce(another);
+    }
+
     public Long getId() {
         return id;
     }
@@ -37,9 +45,5 @@ public class Section {
 
     public Line getLine() {
         return line;
-    }
-
-    public boolean contains(Station station) {
-        return upStation.equals(station) || downStation.equals(station);
     }
 }
