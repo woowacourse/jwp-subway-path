@@ -9,36 +9,23 @@ public class Lines {
     private final List<Line> lines = new ArrayList<>();
 
     public Line addNewLine(String lineName, Station station1, Station station2, int distance) {
-        System.out.println("Lines.addNewLine");
         // TODO : lineName이 이미 존재하는지 검증 (중복 검증)
         Line line = Line.createLine(lineName, station1, station2, distance);
         lines.add(line);
         return line;
     }
 
-    public Line addStationToLine(String lineName, Station upStation, Station downStation, int distance) {
-        Line findLine = lines.stream()
-                .filter(line -> line.getName().equals(lineName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 호선이 없습니다."));
-        findLine.addEdge(upStation, downStation, distance);
-        return findLine;
+    public Line addStationToLine(Line line, Station upStation, Station downStation, int distance) {
+        line.addEdge(upStation, downStation, distance);
+        return line;
     }
 
-    public List<Station> findAllStation(String lineName) {
-        Line line = lines.stream()
-                .filter(it -> it.getName().equals(lineName))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 호선이 없습니다."));
+    public List<Station> findAllStation(Line line) {
         return line.getStations();
     }
 
-    public Line deleteStationFromLine(String lineName, Station station) {
-        Line findLine = lines.stream()
-                .filter(it -> it.getName().equals(lineName))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 호선이 없습니다."));
-        findLine.deleteStation(station);
-        return findLine;
+    public Line deleteStationFromLine(Line line, Station station) {
+        line.deleteStation(station);
+        return line;
     }
 }

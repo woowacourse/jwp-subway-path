@@ -1,7 +1,6 @@
 package subway.service;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.EdgeDao;
@@ -37,42 +36,55 @@ public class LineService {
         Station downStation = stationDao.findById(createRequest.getDownStationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
 
-        Line line = lines.addNewLine(createRequest.getLineName(), upStation, downStation, createRequest.getDistance());
+        Line updatedLine = lines.addNewLine(createRequest.getLineName(), upStation, downStation,
+                createRequest.getDistance());
 
-        Line createdLine = lineDao.insert(line);
+        Line createdLine = lineDao.insert(updatedLine);
 
-        edgeDao.insert(createdLine.getId(), new Edge(upStation, downStation, createRequest.getDistance()));
+        edgeDao.insert(createdLine.getId(), updatedLine.getEdges().get(0));
 
-        return createdLine;
+        Line findLine = assembleLine(createdLine.getId());
+        return lineDao.findById(createdLine.getId()).get();
     }
 
+    @Transactional
     public Line addStationToExistLine(Long lineId, AddStationToLineRequest addStationToLineRequest) {
         Station upStation = stationDao.findById(addStationToLineRequest.getUpStationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
         Station downStation = stationDao.findById(addStationToLineRequest.getDownStationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Line line = lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+        Line line = assembleLine(lineId);
 
-        // TODO : line 테이블과 edge테이블을 JOIN해서 한번에 가져오는게 나을까?
-        Line updatedLine = lines.addStationToLine(line.getName(), upStation, downStation, addStationToLineRequest.getDistance());
-        // TODO : edge 테이블 업데이트 .. 다 덮어씌워야할까? 수정된 부분만?
+        Line updatedLine = lines.addStationToLine(line, upStation, downStation, addStationToLineRequest.getDistance());
+        edgeDao.deleteAllByLineId(updatedLine.getId());
+        edgeDao.insertAllByLineId(updatedLine.getId(), updatedLine.getEdges());
 
-        return updatedLine;
+        return assembleLine(updatedLine.getId());
     }
 
-    public List<Station> findAllStation(String lineName) {
-        return lines.findAllStation(lineName);
-    }
-
+    @Transactional
     public Line deleteStationFromLine(Long lineId, Long stationId) {
         Station station = stationDao.findById(stationId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+        Line line = assembleLine(lineId);
+
+        Line updatedLine = lines.deleteStationFromLine(line, station);
+        edgeDao.deleteAllByLineId(updatedLine.getId());
+        edgeDao.insertAllByLineId(updatedLine.getId(), updatedLine.getEdges());
+
+        return assembleLine(updatedLine.getId());
+    }
+
+    public List<Station> findAllStation(Long lineId) {
+        Line assembleLine = assembleLine(lineId);
+        return lines.findAllStation(assembleLine);
+    }
+
+    public Line assembleLine(Long lineId) {
         Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
 
-        Line updatedLine = lines.deleteStationFromLine(line.getName(), station);
-        // TODO : edge 테이블에 어떻게 반영할까?
-        return updatedLine;
+        List<Edge> edges = edgeDao.findEdgesByLineId(line.getId());
+        return new Line(line.getId(), line.getName(), edges);
     }
 }
