@@ -30,6 +30,7 @@ public class LineService {
         this.lineDao = lineDao;
     }
 
+    @Transactional
     public LineResponse saveLine(final LineRequest request) {
         final Line persistLine = lineDao.insert(new LineName(request.getName()));
         return LineResponse.from(persistLine);
@@ -95,10 +96,12 @@ public class LineService {
         return new Section(beforeStation, nextStation, new Distance(request.getDistance()));
     }
 
+    @Transactional
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
         lineDao.updateName(id, new LineName(lineUpdateRequest.getName()));
     }
 
+    @Transactional
     public void deleteLineById(final Long id) {
         lineDao.deleteById(id);
     }
