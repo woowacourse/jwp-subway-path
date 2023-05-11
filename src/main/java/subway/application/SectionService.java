@@ -38,12 +38,12 @@ public class SectionService {
         Long lineId = sectionRequest.getLineId();
         List<Section> sections = sectionDao.findByLineId(lineId);
 
-        Station nextStation = stationDao.findById(sectionRequest.getNextStationId());
+        Station nextStation = stationDao.findById(sectionRequest.nextStationId());
         Integer addingDistance = sectionRequest.getSectionStations().getDistance();
 
         // 빈 노선에 등록하는 경우 (두 역 모두 새로운 역이다)
-        if (sections.isEmpty() && sectionRequest.getBaseStationId() != null) {
-            Station baseStation = stationDao.findById(sectionRequest.getBaseStationId());
+        if (sections.isEmpty() && sectionRequest.baseStationId() != null) {
+            Station baseStation = stationDao.findById(sectionRequest.baseStationId());
             sectionDao.insert(new Line(lineId),
                     new Section(baseStation, nextStation, new Distance(addingDistance)));
             return;
@@ -53,7 +53,7 @@ public class SectionService {
         validateExistingNextStation(nextStation, subway);
 
         // baseStationId가 없는 경우
-        if (sectionRequest.getBaseStationId() == null) {
+        if (sectionRequest.baseStationId() == null) {
             Station startingStation = subway.getStart();
             sectionDao.insert(new Line(lineId),
                     new Section(nextStation, startingStation, new Distance(addingDistance)));
@@ -61,7 +61,7 @@ public class SectionService {
         }
 
         // baseStationId가 있는 경우
-        Station baseStation = stationDao.findById(sectionRequest.getBaseStationId());
+        Station baseStation = stationDao.findById(sectionRequest.baseStationId());
         // 2. 기준 역 다음 등록일 경우
         // 2-1. 기준 역이 해당 노선에 존재하지 않으면 예외
         validateNonExistingBaseStation(subway, baseStation);
@@ -96,6 +96,24 @@ public class SectionService {
     }
 
     public void deleteStation(Long lineId, Long stationId) {
-        // TODO 비즈니스 로직 처리
+        Station station = stationDao.findById(stationId);
+
+        List<Section> sections = sectionDao.findByLineId(lineId);
+        Subway subway = Subway.of(new Line(lineId), sections);
+
+        if (!subway.hasStation(station)) {
+            throw new IllegalArgumentException("역이 존재하지 않습니다.");
+        }
+
+        if (subway.hasLeftSection(station) && subway.hasRightSection(station)) {
+            Section rightSection = subway.findRightSection(station);
+            Section leftSection = subway.findLeftSection(station);
+            Station right = rightSection.getRight();
+            Station left = leftSection.getLeft();
+            int leftDistance = leftSection.getDistance();
+            int rightDistance = rightSection.getDistance();
+            sectionDao.insert(new Line(lineId), new Section(left, right, new Distance(leftDistance + rightDistance)));
+        }
+        sectionDao.deleteByStationId(lineId, stationId);
     }
 }
