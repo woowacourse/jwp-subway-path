@@ -1,35 +1,60 @@
 package subway.ui;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import subway.application.LineService;
+import subway.application.SectionService;
+import subway.domain.Distance;
+import subway.domain.Section;
+import subway.domain.Station;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
+import subway.dto.LineStationResponse;
+import subway.dto.SectionResponse;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
-    private final LineService lineService;
+	private final LineService lineService;
+	private final SectionService sectionService;
 
-    public LineController(LineService lineService) {
-        this.lineService = lineService;
-    }
+	public LineController(final LineService lineService, final SectionService sectionService) {
+		this.lineService = lineService;
+		this.sectionService = sectionService;
+	}
 
-    @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-    }
+	@PostMapping
+	public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+		LineResponse line = lineService.saveLine(lineRequest);
+		return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+	}
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
-    }
+	@GetMapping
+	public ResponseEntity<List<LineStationResponse>> findAllLines() {
+		final List<LineStationResponse> lineStationResponses = sectionService.findSections()
+			.entrySet()
+			.stream()
+			.map(entry -> new LineStationResponse(new LineResponse(entry.getKey()),
+				getSectionResponses(entry.getValue())))
+			.collect(Collectors.toList());
+
+		return ResponseEntity.ok(lineStationResponses);
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<LineStationResponse> findLineById(@PathVariable Long id) {
@@ -45,20 +70,29 @@ public class LineController {
 			.collect(Collectors.toList());
 	}
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
-    }
+	@PutMapping("/{id}")
+	public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+		lineService.updateLine(id, lineUpdateRequest);
+		return ResponseEntity.ok().build();
+	}
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
-        return ResponseEntity.noContent().build();
-    }
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+		lineService.deleteLineById(id);
+		return ResponseEntity.noContent().build();
+	}
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
+	@ExceptionHandler(SQLException.class)
+	public ResponseEntity<Void> handleSQLException() {
+		return ResponseEntity.badRequest().build();
+	}
+
+	private SectionResponse getSectionResponse(final Section section) {
+		final Station departure = section.getDeparture();
+		final Station arrival = section.getArrival();
+		final Distance distance = section.getDistance();
+
+		return new SectionResponse(section.getId(), departure.getName(), arrival.getName(),
+			distance.getDistance());
+	}
 }

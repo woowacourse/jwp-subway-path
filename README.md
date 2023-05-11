@@ -60,6 +60,7 @@
 - [x] Line
     - `LineInfo lineInfo`
     - `List<Section> line`
+
 - [x] SectionSorter
     - `List<Section>`를 상행에서 하행 순으로 정렬
 
@@ -74,14 +75,14 @@
       LEFT JOIN station AS arrival_station ON arrival_station.id = section.arrival_id
   ```
 
-- 노선 조회
+- [x] 노선 조회
     - `GET /lines/{id}` 를 통해 노선의 ID 받아오기
     - SELECT 쿼리
     - `List<Section>`으로 변환
     - 상행 → 하행 순으로 탐색 후 순서대로 정렬
     - DTO 변환
 
-- 노선 목록 조회
+- [x] 노선 목록 조회
     - `GET /lines`
     - SELECT 쿼리
     - `Map<Long,List<Section>>` 으로 변환 → `stream groupingBy`

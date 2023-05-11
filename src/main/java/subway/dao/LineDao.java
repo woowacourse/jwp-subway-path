@@ -41,10 +41,10 @@ public class LineDao {
 		return new LineInfo(lineId, line.getName(), line.getColor());
 	}
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
-    }
+	public List<LineInfo> findAll() {
+		String sql = "select id, name, color from LINE";
+		return jdbcTemplate.query(sql, lineRowMapper);
+	}
 
 	public LineInfo findById(Long id) {
 		String sql = "select id, name, color from LINE WHERE id = ?";
@@ -56,7 +56,7 @@ public class LineDao {
 		jdbcTemplate.update(sql, new Object[] {newLine.getName(), newLine.getColor(), newLine.getId()});
 	}
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
-    }
+	public void deleteById(Long id) {
+		jdbcTemplate.update("delete from Line where id = ?", id);
+	}
 }
