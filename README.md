@@ -15,7 +15,7 @@
 |-------------|----------------------------------------|-------------------------|-------------|
 | get         | /lines                                 | 노선 목록 조회                | 200         |
 | get         | /lines/{id}                            | 노선 조회                   | 200         |
-| post        | /lines/{line_id}/stations              | 노선에 역 등록 (@RequestBody) | 200         |
+| post        | /lines/{line_id}/stations              | 노선에 역 등록 (@RequestBody) | 201         |
 | delete      | /lines/{line_id}/stations/{station_id} | 노선에 역 제거                | 204         |
 
 ### Line Table 설계
