@@ -9,19 +9,19 @@ public class LineInfo {
 
     private final String name;
 
-    public LineInfo(final String name) {
+    public LineInfo(String name) {
         validateName(name);
         this.name = name;
     }
 
-    private void validateName(final String name) {
+    private void validateName(String name) {
         if (name == null || name.length() < NAME_MIN_LENGTH || NAME_MAX_LENGTH < name.length()) {
             throw new GlobalException("호선은 이름은 1글자 이상, 10글자 이하여야 한다.");
         }
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }

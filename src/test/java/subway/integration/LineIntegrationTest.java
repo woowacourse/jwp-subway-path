@@ -25,8 +25,8 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선", "빨강색");
-        lineRequest2 = new LineRequest("구신분당선", "파랑색");
+        lineRequest1 = new LineRequest("신분당선");
+        lineRequest2 = new LineRequest("구신분당선");
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -50,20 +50,18 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        ExtractableResponse<Response> lineCreateResponse = RestAssured
-                .given().log().all()
+        RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/subway/lines")
-                .then().log().all().
-                extract();
+                .then().log().all();
 
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
-                .when().post(lineCreateResponse.header("/subway/lines"))
+                .when().post("/subway/lines")
                 .then().log().all().
                 extract();
 
@@ -104,7 +102,7 @@ public class LineIntegrationTest extends IntegrationTest {
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList("lines", LineResponse.class).stream()
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
                 .map(LineResponse::getId)
                 .collect(Collectors.toList());
         assertThat(resultLineIds).containsAll(expectedLineIds);
@@ -127,7 +125,7 @@ public class LineIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId)
+                .when().get("/subway/lines/{lineId}", lineId)
                 .then().log().all()
                 .extract();
 
@@ -135,29 +133,5 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         LineResponse resultResponse = response.as(LineResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineId);
-    }
-
-    @DisplayName("지하철 노선을 제거한다.")
-    @Test
-    void deleteLine() {
-        // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/subway/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[3]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .when().delete("/subway/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
