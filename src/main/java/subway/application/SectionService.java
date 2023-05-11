@@ -39,7 +39,7 @@ public class SectionService {
 
     private void validateStation(String startStationName, String endStationName) {
         if (!stationDao.existsBy(startStationName) || !stationDao.existsBy(endStationName)) {
-            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
+            throw new StationNotFoundException();
         }
     }
 
@@ -113,7 +113,7 @@ public class SectionService {
 
     private void validateStationInLine(Long lineId, String stationName) {
         if (!sectionDao.isStationInLine(lineId, stationName)) {
-            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
+            throw new StationNotFoundException();
         }
     }
 
