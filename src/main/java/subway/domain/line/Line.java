@@ -45,7 +45,7 @@ public class Line {
                 lineEntity.getName(),
                 lineEntity.getColor()
         );
-        generateSections(sectionEntities).forEach(e -> line.addSection(e.getUpward(), e.getDownward(), e.getDistance()));
+        loadSections(line, generateSections(sectionEntities));
         return line;
     }
 
@@ -53,6 +53,17 @@ public class Line {
         return sectionEntities.stream()
                 .map(Section::from)
                 .collect(Collectors.toList());
+    }
+
+    private static void loadSections(final Line line, final List<Section> sections) {
+        while (!sections.isEmpty()) {
+            final Section section = sections.remove(0);
+            try {
+                line.addSection(section.getUpward(), section.getDownward(), section.getDistance());
+            } catch (InvalidSectionException e) {
+                sections.add(section);
+            }
+        }
     }
 
     public void addSection(final Station upward, final Station downward, final int distance) {
