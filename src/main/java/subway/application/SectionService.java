@@ -39,7 +39,7 @@ public class SectionService {
 
     private boolean isEmptyLine(Long lineId) {
         Optional<List<SectionEntity>> byLineId = sectionDao.findByLineId(lineId);
-        return byLineId.isEmpty();
+        return byLineId.get().isEmpty();
     }
 
     private void saveSectionWhenLineIsNotEmpty(SectionEntity sectionEntity) {
@@ -88,6 +88,7 @@ public class SectionService {
                     revisedDistance);
             sectionDao.updateByDownStationId(revisedSection);
             sectionDao.insert(sectionToAdd);
+            return;
         }
 
         if (sectionDao.findByDownStationId(upStationId, lineId).isPresent()) {
@@ -99,6 +100,7 @@ public class SectionService {
         Long lineId = sectionToAdd.getLineId();
         if (sectionDao.findByUpStationId(downStationId, lineId).isPresent()) {
             sectionDao.insert(sectionToAdd);
+            return;
         }
         Optional<SectionEntity> originalSectionEntity = sectionDao.findByDownStationId(downStationId, lineId);
         if (originalSectionEntity.isPresent()) {

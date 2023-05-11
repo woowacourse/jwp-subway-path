@@ -95,14 +95,14 @@ public class SectionDao {
 
     public void updateByUpStationId(SectionEntity sectionEntity) {
         String sql = "UPDATE SECTION SET down_station_id = :downStationId, distance = :distance "
-                + "WHERE line_id = :lineId AND up_station_id = :upStationsId";
+                + "WHERE line_id = :lineId AND up_station_id = :upStationId";
 
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
         jdbcTemplate.update(sql, source);
     }
 
     public void updateByDownStationId(SectionEntity sectionEntity) {
-        String sql = "UPDATE SECTION SET up_station_id = :upStationsId, distance = :distance "
+        String sql = "UPDATE SECTION SET up_station_id = :upStationId, distance = :distance "
                 + "WHERE line_id = :lineId AND down_station_id = :downStationId";
 
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
