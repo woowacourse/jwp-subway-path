@@ -185,4 +185,8 @@ public final class Sections {
     public List<Section> getSections() {
         return sections;
     }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
 }

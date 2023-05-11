@@ -33,6 +33,9 @@ public class SectionService {
         final String downStationName
     ) {
         final Sections sections = generateSections(sectionEntity.getLineId());
+        if (sections.isEmpty()) {
+            sections.initializeSections(upStationName, downStationName, sectionEntity.getDistance());
+        }
         sections.addSection(upStationName, downStationName, sectionEntity.getDistance());
         updateLine(sectionEntity.getLineId(), sections);
     }
@@ -40,6 +43,9 @@ public class SectionService {
     private Sections generateSections(final Long lineId) {
         final List<SectionStationDto> sortedSectionsStationDtoByLineId = findSortedSectionStationDtoByLineId(
             lineId);
+        if (sortedSectionsStationDtoByLineId.isEmpty()) {
+            return Sections.empty();
+        }
         final List<Section> sortedSections = sortedSectionsStationDtoByLineId.stream()
             .map((sectionStationDto) -> Section.of(
                 Station.register(sectionStationDto.getUpStationName()),
