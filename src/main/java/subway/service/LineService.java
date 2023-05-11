@@ -83,8 +83,7 @@ public class LineService {
 
     Line findById(final Long id) {
         Line line = lineDao.findById(id);
-        final Sections sections = sectionService.findByLineId(id);
-        for (final Section section : sections.getSections()) {
+        for (final Section section : sectionService.findByLineId(id)) {
             line = line.addSection(section);
         }
         return line;

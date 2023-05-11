@@ -15,9 +15,8 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public Sections findByLineId(final Long lineId) {
-        final List<Section> sections = sectionDao.findByLineId(lineId);
-        return new Sections(sections);
+    public List<Section> findByLineId(final Long lineId) {
+        return sectionDao.findByLineId(lineId);
     }
 
     public void deleteSections(final Sections sections) {
