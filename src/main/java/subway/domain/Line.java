@@ -36,6 +36,7 @@ public class Line {
     }
 
     public Line addSection(final Section newSection) {
+        validateDuplicateSection(newSection);
         if (sections.isHeadStation(newSection.getNextStation())) {
             final Sections addedSections = sections.addHead(newSection);
             return new Line(name, addedSections);
@@ -46,6 +47,12 @@ public class Line {
         }
         final Sections addedSections = sections.addCentral(newSection);
         return new Line(name, addedSections);
+    }
+
+    private void validateDuplicateSection(final Section newSection) {
+        if (sections.containSection(newSection)) {
+            throw new IllegalArgumentException("이미 등록되어 있는 구간입니다.");
+        }
     }
 
     public Line removeStation(final Station station) {
