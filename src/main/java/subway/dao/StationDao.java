@@ -1,6 +1,8 @@
 package subway.dao;
 
+import java.util.List;
 import java.util.Optional;
+import javax.sql.DataSource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -9,9 +11,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 @Repository
 public class StationDao {
@@ -60,5 +59,14 @@ public class StationDao {
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public Optional<Station> findByName(String name) {
+        String sql = "select * from STATION where name = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        } catch (DataAccessException exception) {
+            return Optional.empty();
+        }
     }
 }

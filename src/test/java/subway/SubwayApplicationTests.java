@@ -6,8 +6,6 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -57,32 +55,4 @@ class SubwayApplicationTests {
 				.header("Location", "/lines/1");
 	}
 
-	@DisplayName("특정 비지 않은 노선에 역 추가하기 - 거리에 의한 예외 발생")
-	@ParameterizedTest
-	@ValueSource(ints = {7, 8})
-	void createSectionInLineException(int distance) throws Exception {
-//		RestAssured.given()
-//				.body(objectMapper.writeValueAsString(new SectionRequest(1L, 3L, distance)))
-//				.contentType(MediaType.APPLICATION_JSON_VALUE)
-//				.when()
-//				.post("/sections/1")
-//				.then()
-//				.statusCode(HttpStatus.BAD_REQUEST.value());
-
-	}
-//
-//	@DisplayName("특정 노선 조회하기")
-//	@Test
-//	void contextLoads() {
-//	}
-//
-//	@DisplayName("모든 노선 조회하기")
-//	@Test
-//	void contextLoads() {
-//	}
-//
-//	@DisplayName("역 삭제하기")
-//	@Test
-//	void contextLoads() {
-//	}
 }

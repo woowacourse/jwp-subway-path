@@ -10,6 +10,7 @@ import subway.dto.StationResponse;
 
 @Service
 public class StationService {
+
     private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
@@ -17,6 +18,7 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        checkDuplicatedStationName(stationRequest);
         Station station = stationDao.insert(new Station(stationRequest.getName()));
         return StationResponse.of(station);
     }
@@ -40,5 +42,11 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    private void  checkDuplicatedStationName(StationRequest stationRequest) {
+        if (stationDao.findByName(stationRequest.getName()).isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 역 이름 입니다");
+        }
     }
 }

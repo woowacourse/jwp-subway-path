@@ -3,12 +3,14 @@ package subway.ui;
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import subway.application.NotFoundException;
 import subway.dto.ExceptionResponse;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineDuplicatedException;
 
+@ControllerAdvice
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalArgumentException.class)
