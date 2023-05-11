@@ -1,31 +1,35 @@
 package subway.dto;
 
-import subway.domain.Line;
+import subway.domain.LineInfo;
 
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
+	private Long id;
+	private String name;
+	private String color;
 
-    public LineResponse(Long id, String name, String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-    }
+	public LineResponse(LineInfo lineInfo) {
+		this(lineInfo.getId(), lineInfo.getName(), lineInfo.getColor());
+	}
 
-    public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
-    }
+	public LineResponse(Long id, String name, String color) {
+		this.id = id;
+		this.name = name;
+		this.color = color;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public static LineResponse of(LineInfo line) {
+		return new LineResponse(line.getId(), line.getName(), line.getColor());
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public String getColor() {
-        return color;
-    }
+	public String getName() {
+		return name;
+	}
+
+	public String getColor() {
+		return color;
+	}
 }

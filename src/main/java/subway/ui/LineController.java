@@ -31,10 +31,19 @@ public class LineController {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
-    }
+	@GetMapping("/{id}")
+	public ResponseEntity<LineStationResponse> findLineById(@PathVariable Long id) {
+		final LineResponse lineResponse = new LineResponse(lineService.findLineById(id));
+		final List<SectionResponse> sectionResponses = getSectionResponses(sectionService.findSectionsById(id));
+
+		return ResponseEntity.ok().body(new LineStationResponse(lineResponse, sectionResponses));
+	}
+
+	private List<SectionResponse> getSectionResponses(final List<Section> sections) {
+		return sections.stream()
+			.map(this::getSectionResponse)
+			.collect(Collectors.toList());
+	}
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {

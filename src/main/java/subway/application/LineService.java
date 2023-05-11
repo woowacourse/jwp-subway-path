@@ -1,53 +1,56 @@
 package subway.application;
 
+import static java.util.stream.Collectors.*;
+
+import java.util.List;
+
 import org.springframework.stereotype.Service;
+
 import subway.dao.LineDao;
-import subway.domain.Line;
+import subway.domain.LineInfo;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
-    }
+	private final LineDao lineDao;
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
-    }
+	public LineService(final LineDao lineDao) {
+		this.lineDao = lineDao;
+	}
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
+	public LineResponse saveLine(LineRequest request) {
+		LineInfo persistLine = lineDao.insert(new LineInfo(request.getName(), request.getColor()));
+		return LineResponse.of(persistLine);
+	}
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
+	public List<LineResponse> findLineResponses() {
+		List<LineInfo> persistLines = findLines();
+		return persistLines.stream()
+			.map(LineResponse::of)
+			.collect(toList());
+	}
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
+	public List<LineInfo> findLines() {
+		return lineDao.findAll();
+	}
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
+	public LineResponse findLineResponseById(Long id) {
+		LineInfo persistLine = findLineById(id);
+		return LineResponse.of(persistLine);
+	}
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
+	public LineInfo findLineById(Long id) {
+		return lineDao.findById(id);
+	}
 
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
-    }
+	public void updateLine(Long id, LineRequest lineUpdateRequest) {
+		lineDao.update(new LineInfo(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+	}
+
+	public void deleteLineById(Long id) {
+		lineDao.deleteById(id);
+	}
 
 }
