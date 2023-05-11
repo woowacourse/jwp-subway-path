@@ -1,5 +1,6 @@
 package subway.application;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -45,6 +46,17 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         LineDto foundLine = findByLineId(id);
         return new LineResponse(foundLine.getId(), foundLine.getName());
+    }
+
+    public List<LineStationResponse> findAllLinesAndStations() {
+        List<LineDto> lines = lineDao.findAll();
+
+        List<LineStationResponse> responses = new ArrayList<>();
+        for (LineDto line : lines) {
+            LineStationResponse response = findStationsById(line.getId());
+            responses.add(response);
+        }
+        return responses;
     }
 
     public LineStationResponse findStationsById(Long lineId) {
