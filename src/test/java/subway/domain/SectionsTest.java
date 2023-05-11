@@ -36,6 +36,28 @@ class SectionsTest {
                     .containsExactly(역삼역.STATION, 삼성역.STATION);
         }
 
+        @Test
+        void 두개의_역이_모두_노선에_존재하면_예외() {
+            Section section = new Section(삼성역.STATION, 잠실역.STATION, 2);
+            Sections sections = new Sections();
+            sections.add(section);
+
+            assertThatThrownBy(() -> sections.add(section))
+                    .isInstanceOf(ApiIllegalArgumentException.class)
+                    .hasMessage("이미 존재하는 구간입니다.");
+        }
+
+        @Test
+        void 두개의_역이_모두_노선에_존재하지_않으면_예외() {
+            Section section = new Section(삼성역.STATION, 잠실역.STATION, 2);
+            Sections sections = new Sections();
+            sections.add(section);
+
+            assertThatThrownBy(() -> sections.add(new Section(건대역.STATION, 역삼역.STATION, 2)))
+                    .isInstanceOf(ApiIllegalArgumentException.class)
+                    .hasMessage("하나의 역은 반드시 노선에 존재해야합니다.");
+        }
+
         @Nested
         class 하나의_역이_노선에_존재하고_ {
 
@@ -123,9 +145,10 @@ class SectionsTest {
                         sections.add(section);
 
                         sections.add(new Section(잠실역.STATION, 건대역.STATION, 3));
-
+                        
                         assertThat(sections.getSections())
                                 .usingRecursiveComparison()
+                                .ignoringCollectionOrder()
                                 .ignoringFields("id")
                                 .isEqualTo(List.of(new Section(삼성역.STATION, 잠실역.STATION, 2),
                                         new Section(잠실역.STATION, 건대역.STATION, 3)));
@@ -137,6 +160,26 @@ class SectionsTest {
 
     @Nested
     class 노선에서_역_제거시_ {
+
+        @Test
+        void 노선에_구간이_없을시_예외() {
+            Sections sections = new Sections();
+
+            assertThatThrownBy(() -> sections.remove(역삼역.STATION))
+                    .isInstanceOf(ApiIllegalArgumentException.class)
+                    .hasMessage("해당 역이 노선에 존재하지 않습니다.");
+        }
+
+        @Test
+        void 노선에_해당_역이_없을시_예외() {
+            Section section = 이호선_역삼_삼성_3.SECTION;
+            Sections sections = new Sections();
+            sections.add(section);
+
+            assertThatThrownBy(() -> sections.remove(잠실역.STATION))
+                    .isInstanceOf(ApiIllegalArgumentException.class)
+                    .hasMessage("해당 역이 노선에 존재하지 않습니다.");
+        }
 
         @Test
         void 구간이_하나일_때_해당_구간을_제거한다() {
@@ -194,8 +237,8 @@ class SectionsTest {
     @Test
     void 상행에서_하행_순으로_역을_반환한다() {
         Section section1 = new Section(잠실역.STATION, 건대역.STATION, 2);
-        Section section2 = new Section(역삼역.STATION, 삼성역.STATION, 2);
-        Section section3 = new Section(삼성역.STATION, 잠실역.STATION, 2);
+        Section section2 = new Section(삼성역.STATION, 잠실역.STATION, 2);
+        Section section3 = new Section(역삼역.STATION, 삼성역.STATION, 2);
         Sections sections = new Sections();
         sections.add(section1);
         sections.add(section2);
