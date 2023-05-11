@@ -3,6 +3,7 @@ package subway.integration.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
@@ -34,7 +35,6 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.jdbc.Sql;
 import subway.application.dto.LineQueryResponse;
-import subway.presentation.request.LineCreateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -55,26 +55,13 @@ public class LineControllerIntegrationTest {
     class 노선을_생성할_떄 {
 
         @Test
-        void 존재하지_않은_역으로_생성하면_예외() {
-            // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10);
-
-            // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(request);
-
-            // then
-            assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
-        }
-
-        @Test
         void 두_종착역이_존재하는_경우_생성된다() {
             // given
             역_생성_요청("잠실역");
             역_생성_요청("사당역");
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10);
 
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10);
 
             // then
             assertThat(response.statusCode()).isEqualTo(CREATED.value());
@@ -82,14 +69,51 @@ public class LineControllerIntegrationTest {
         }
 
         @Test
+        void 노선이_이미_존재하면_예외() {
+            // given
+            역_생성_요청("잠실역");
+            역_생성_요청("사당역");
+            노선_생성_요청("1호선", "잠실역", "사당역", 10);
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 20);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(CONFLICT.value());
+        }
+
+        @Test
+        void 상행역이_존재하지_않으면_예외() {
+            // given
+            역_생성_요청("사당역");
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
+        }
+
+        @Test
+        void 하행역이_존재하지_않으면_예외() {
+            // given
+            역_생성_요청("잠실역");
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 10);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
+        }
+
+        @Test
         void 역_사이의_거리가_양수가_아니면_오류이다() {
             // given
             역_생성_요청("잠실역");
             역_생성_요청("사당역");
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 0);
 
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 0);
 
             // then
             assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
@@ -99,11 +123,8 @@ public class LineControllerIntegrationTest {
         @ParameterizedTest
         @NullAndEmptySource
         void 호선이_공백이거나_널이면_예외(final String nullAndEmpty) {
-            // given
-            final LineCreateRequest request = new LineCreateRequest(nullAndEmpty, "잠실역", "사당역", 0);
-
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+            final ExtractableResponse<Response> response = 노선_생성_요청(nullAndEmpty, "잠실역", "사당역", 0);
 
             // then
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
@@ -113,11 +134,8 @@ public class LineControllerIntegrationTest {
         @ParameterizedTest
         @NullAndEmptySource
         void 상행역이_공백이거나_널이면_예외(final String nullAndEmpty) {
-            // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", nullAndEmpty, "사당역", 0);
-
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", nullAndEmpty, "사당역", 0);
 
             // then
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
@@ -126,11 +144,8 @@ public class LineControllerIntegrationTest {
         @ParameterizedTest
         @NullAndEmptySource
         void 하행역이_공백이거나_널이면_예외(final String nullAndEmpty) {
-            // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", nullAndEmpty, 0);
-
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", nullAndEmpty, 0);
 
             // then
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
@@ -138,11 +153,8 @@ public class LineControllerIntegrationTest {
 
         @Test
         void 거리가_널이면_예외() {
-            // given
-            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", null);
-
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+            final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", null);
 
             // then
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
