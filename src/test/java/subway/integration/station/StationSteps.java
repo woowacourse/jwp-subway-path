@@ -6,7 +6,7 @@ import static subway.integration.common.JsonMapper.toJson;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.presentation.request.StationCreateRequest;
+import subway.controller.request.StationCreateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StationSteps {

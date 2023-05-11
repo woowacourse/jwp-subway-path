@@ -77,7 +77,7 @@ public class Sections {
         return sections.stream()
                 .filter(addedSection::hasSameUpOrDownStation)
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("두 구간이 연관관계가 없어 뺄 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("노선에 존재하지 않는 역과 연결할 수 없습니다."));
     }
 
     private Section judgeUp(final Section remain, final Section addedSection) {

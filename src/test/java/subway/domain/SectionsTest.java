@@ -151,7 +151,7 @@ class SectionsTest {
                     sections.addSection(
                             createSection("없는역", "없는역2", 15)
                     )).getMessage();
-            assertThat(message).isEqualTo("두 구간이 연관관계가 없어 뺄 수 없습니다.");
+            assertThat(message).isEqualTo("노선에 존재하지 않는 역과 연결할 수 없습니다.");
         }
 
         @Test
