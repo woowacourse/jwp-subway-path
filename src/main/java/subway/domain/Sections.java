@@ -9,6 +9,8 @@ import subway.exception.DuplicateException;
 import subway.exception.ErrorCode;
 
 public class Sections {
+    private static final int TERMINAL_COUNT = 1;
+
     private final List<Section> sections;
 
     public Sections(final List<Section> sections) {
@@ -73,6 +75,13 @@ public class Sections {
         addMiddleSection(newSection);
     }
 
+    private void validateDuplicateSection(final Station upStation, final Station downStation) {
+        List<Station> stations = getStations();
+        if (stations.contains(upStation) && stations.contains(downStation)) {
+            throw new DuplicateException(ErrorCode.DUPLICATE_STATION);
+        }
+    }
+
     private void addTerminalSection(final Section newSection) {
         if (isDownStationSameAsFirstStation(newSection)) {
             addFirstStation(newSection);
@@ -80,6 +89,24 @@ public class Sections {
         if (isUpStationSameAsLastStation(newSection)) {
             addLastStation(newSection);
         }
+    }
+
+    private boolean isDownStationSameAsFirstStation(final Section newSection) {
+        Station firstStation = sections.get(0).getUpStation();
+        return firstStation.equals(newSection.getDownStation());
+    }
+
+    private boolean isUpStationSameAsLastStation(final Section newSection) {
+        Station lastStation = sections.get(sections.size() - 1).getDownStation();
+        return lastStation.equals(newSection.getUpStation());
+    }
+
+    private void addFirstStation(final Section newSection) {
+        sections.add(0, newSection);
+    }
+
+    private void addLastStation(final Section newSection) {
+        sections.add(newSection);
     }
 
     private void addMiddleSection(final Section newSection) {
@@ -122,36 +149,51 @@ public class Sections {
         }
     }
 
-    private boolean isDownStationSameAsFirstStation(final Section newSection) {
-        Station firstStation = sections.get(0).getUpStation();
-        return firstStation.equals(newSection.getDownStation());
-    }
+    public void deleteStation(final Station deletedStation) {
+        List<Section> deletedSections = sections.stream()
+                .filter(section -> section.getUpStation().equals(deletedStation) || section.getDownStation()
+                        .equals(deletedStation))
+                .collect(Collectors.toList());
 
-    private void addFirstStation(final Section newSection) {
-        sections.add(0, newSection);
-    }
-
-    private boolean isUpStationSameAsLastStation(final Section newSection) {
-        Station lastStation = sections.get(sections.size() - 1).getDownStation();
-        return lastStation.equals(newSection.getUpStation());
-    }
-
-    private void addLastStation(final Section newSection) {
-        sections.add(newSection);
-    }
-
-    private void validateDuplicateSection(final Station upStation, final Station downStation) {
-        List<Station> stations = getStations();
-        if (stations.contains(upStation) && stations.contains(downStation)) {
-            throw new DuplicateException(ErrorCode.DUPLICATE_STATION);
+        if (isOneSection(deletedSections)) {
+            sections.clear();
+            return;
         }
+
+        deleteMiddleSection(deletedStation, deletedSections);
     }
 
-    private boolean isEmpty() {
+    private void deleteMiddleSection(final Station deletedStation, final List<Section> deletedSections) {
+        int newDistance = deletedSections.stream()
+                .mapToInt(Section::getDistance)
+                .sum();
+
+        Section backSection = deletedSections.stream()
+                .filter(deletedSection -> deletedSection.getUpStation().equals(deletedStation))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("역을 찾을 수 없습니다."));
+
+        Section frontSection = deletedSections.stream()
+                .filter(deletedSection -> deletedSection.getDownStation().equals(deletedStation))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("역을 찾을 수 없습니다."));
+
+        Section newSection = new Section(frontSection.getUpStation(), backSection.getDownStation(), newDistance);
+
+        int index = sections.indexOf(frontSection);
+        sections.add(index, newSection);
+        sections.removeAll(deletedSections);
+    }
+
+    private boolean isOneSection(final List<Section> sections) {
+        return sections.size() == TERMINAL_COUNT;
+    }
+
+    public boolean isEmpty() {
         return sections.isEmpty();
     }
 
     public List<Section> getSections() {
-        return sections;
+        return new ArrayList<>(sections);
     }
 }

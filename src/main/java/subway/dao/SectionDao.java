@@ -46,4 +46,9 @@ public class SectionDao {
                 sectionEntity.getDistance()
         );
     }
+
+    public void deleteByLineId(final Long lineId) {
+        final String sql = "DELETE FROM section WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
 }

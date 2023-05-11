@@ -11,24 +11,19 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
-import subway.dto.StationRequest;
+import subway.dto.StationCreateRequest;
+import subway.dto.StationDeleteRequest;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
 
-    private StationRequest stationRequest1;
+    private StationCreateRequest stationCreateRequest;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        stationRequest1 = new StationRequest("잠실역", "잠실새내역", 10, 1);
-    }
-
-    @DisplayName("지하철역을 생성한다.")
-    @Test
-    void createStation() {
-        // given
+        // 노선을 생성한다.
         LineRequest lineRequest = new LineRequest("2호선");
         RestAssured.given().log().all()
                 .body(lineRequest)
@@ -38,9 +33,15 @@ public class StationIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
+        stationCreateRequest = new StationCreateRequest("잠실역", "잠실새내역", 10, 1);
+    }
+
+    @DisplayName("지하철역을 생성한다.")
+    @Test
+    void createStation() {
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(stationRequest1)
+                .body(stationCreateRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/stations")
@@ -51,5 +52,30 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
+    @DisplayName("역이 두 개 존재하는 노선의 지하철역을 제거한다.")
+    @Test
+    void deleteStation() {
+        // given
+        StationDeleteRequest stationDeletedRequest = new StationDeleteRequest("잠실역");
 
+        RestAssured.given().log().all()
+                .body(stationCreateRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(stationDeletedRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/stations")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }

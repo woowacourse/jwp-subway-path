@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Line {
@@ -18,20 +19,28 @@ public class Line {
         return new Line(name, Sections.from(sections));
     }
 
+    public void addSection(final Station upStation, final Station downStation, final int distance) {
+        Section newSection = new Section(upStation, downStation, distance);
+        sections.addSection(newSection);
+    }
+
+    public void deleteStation(final Station station) {
+        sections.deleteStation(station);
+    }
+
     public String getName() {
         return name;
     }
 
     public List<Section> getSectionsByList() {
-        return sections.getSections();
+        return new ArrayList<>(sections.getSections());
     }
 
     public List<Station> getStations() {
-        return sections.getStations();
+        return new ArrayList<>(sections.getStations());
     }
 
-    public void addSection(final Station upStation, final Station downStation, final int distance) {
-        Section newSection = new Section(upStation, downStation, distance);
-        sections.addSection(newSection);
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 }
