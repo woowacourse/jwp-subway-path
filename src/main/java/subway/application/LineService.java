@@ -1,6 +1,5 @@
 package subway.application;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -43,12 +42,16 @@ public class LineService {
         List<Section> persistSections = sectionDao.findAll();
 
         Subway subway = new Subway(persistLines, persistStations, persistSections);
-        Map<Line, List<Station>> lineMap = subway.getSubway();
+        Map<Line, List<Station>> lineMap = subway.getLineMap();
 
+        return getResponses(lineMap);
+    }
+
+    private List<LineStationsResponse> getResponses(Map<Line, List<Station>> lineMap) {
         return lineMap.entrySet()
             .stream()
             .map(entry -> LineStationsResponse.of(entry.getKey(), entry.getValue()))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public List<Line> findLines() {
@@ -57,21 +60,25 @@ public class LineService {
 
     public LineStationsResponse findLineStationsResponseById(Long id) {
         List<Station> stations = stationDao.findAll();
-        Map<Long, Station> idToStations = stations.stream()
-            .collect(Collectors.toMap(Station::getId, Function.identity()));
-
         List<Section> allSections = sectionDao.findAllSectionByLineId(id);
-        Sections sections = new Sections(allSections);
-        List<Station> orderedStations = sections.findOrderedStationIds()
-            .stream()
-            .map(idToStations::get)
-            .collect(Collectors.toList());
 
         Line persistLine = findLineById(id);
+
+        Sections sections = new Sections(allSections);
+        List<Station> orderedStations = getOrderedStations(stations, sections);
 
         return LineStationsResponse.of(persistLine, orderedStations);
     }
 
+    private List<Station> getOrderedStations(List<Station> stations, Sections sections) {
+        Map<Long, Station> idToStations = stations.stream()
+            .collect(Collectors.toMap(Station::getId, Function.identity()));
+
+        return sections.findOrderedStationIds()
+            .stream()
+            .map(idToStations::get)
+            .collect(Collectors.toList());
+    }
 
     public Line findLineById(Long id) {
         return lineDao.findById(id);

@@ -21,38 +21,45 @@ public class Sections {
         return sections.isEmpty();
     }
 
-    private LinkedList<Section> lineUp(List<Section> input) {
-        if (input.isEmpty()) {
+    private LinkedList<Section> lineUp(List<Section> unorderedSections) {
+        if (unorderedSections.isEmpty()) {
             return new LinkedList<>();
         }
 
+        return getOrderedSections(unorderedSections);
+    }
+
+    private LinkedList<Section> getOrderedSections(List<Section> unorderedSections) {
         Map<Long, Section> sourceStations = new HashMap<>();
         Map<Long, Section> targetStations = new HashMap<>();
 
-        for (Section section : input) {
+        for (Section section : unorderedSections) {
             sourceStations.put(section.getSourceStationId(), section);
             targetStations.put(section.getTargetStationId(), section);
         }
 
-        Section source = findSource(input, targetStations);
+        Section source = findSource(unorderedSections, targetStations);
 
+        return lineUpSections(unorderedSections, sourceStations, source);
+    }
+
+    private Section findSource(List<Section> sections, Map<Long, Section> targetStations) {
+        return sections.stream()
+            .filter(section -> !targetStations.containsKey(section.getSourceStationId()))
+            .findFirst()
+            .orElseThrow(() -> new DomainException(ExceptionType.NO_SOURCE));
+    }
+
+    private LinkedList<Section> lineUpSections(List<Section> unorderedSections, Map<Long, Section> sourceStations,
+        Section source) {
         LinkedList<Section> linedUpSections = new LinkedList<>();
 
-        while (linedUpSections.size() != input.size()) {
+        while (linedUpSections.size() != unorderedSections.size()) {
             linedUpSections.add(source);
             source = sourceStations.get(source.getTargetStationId());
         }
 
         return linedUpSections;
-    }
-
-    private Section findSource(List<Section> sections, Map<Long, Section> targetStations) {
-        for (Section section : sections) {
-            if (!targetStations.containsKey(section.getSourceStationId())) {
-                return section;
-            }
-        }
-        throw new DomainException(ExceptionType.NO_SOURCE);
     }
 
     public Long findFirstStationId() {

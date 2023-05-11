@@ -3,9 +3,9 @@ package subway.dto;
 import subway.domain.Line;
 
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
 
     private LineResponse(Long id, String name, String color) {
         this.id = id;

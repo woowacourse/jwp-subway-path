@@ -15,9 +15,9 @@ class SectionsTest {
 
     @BeforeEach
     private void setUp() {
-        sections.add(new Section(3L,3L,4L,1L,10));
-        sections.add(new Section(1L,1L,2L,1L,10));
-        sections.add(new Section(2L,2L,3L,1L,10));
+        sections.add(new Section(3L, 3L, 4L, 1L, 10));
+        sections.add(new Section(1L, 1L, 2L, 1L, 10));
+        sections.add(new Section(2L, 2L, 3L, 1L, 10));
     }
 
     @Test

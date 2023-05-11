@@ -32,12 +32,11 @@ public class SectionService {
         Long lineId = initialSectionAddRequest.getLineId();
         Integer distance = initialSectionAddRequest.getDistance();
 
-        Section section = new Section(null, firstStationId, secondStationId, lineId, distance);
-        Sections sections = new Sections(sectionDao.findAllSectionByLineId(lineId));
-        if (!sections.hasNoSection()) {
-            throw new DomainException(ExceptionType.LINE_HAS_NO_SECTION);
+        if (!sectionDao.findAllSectionByLineId(lineId).isEmpty()) {
+            throw new DomainException(ExceptionType.LINE_HAS_STATION);
         }
 
+        Section section = new Section(null, firstStationId, secondStationId, lineId, distance);
         Long id = sectionDao.insert(section);
         return SectionAddResponse.from(id);
     }
@@ -46,12 +45,19 @@ public class SectionService {
     public List<SectionAddResponse> addSection(SectionAddRequest sectionAddRequest) {
         Long lineId = sectionAddRequest.getLineId();
         Long stationId = sectionAddRequest.getStationId();
-        Long sourceStationId = sectionAddRequest.getSourceId();
         Long targetStationId = sectionAddRequest.getTargetId();
-        Integer distance = sectionAddRequest.getDistance();
 
         Sections sections = new Sections(sectionDao.findAllSectionByLineId(lineId));
+        validate(stationId, sections);
 
+        if (targetStationId == null) {
+            return addAtLastStop(sectionAddRequest, sections);
+        }
+
+        return addBetweenStations(sectionAddRequest, sections);
+    }
+
+    private void validate(Long stationId, Sections sections) {
         if (sections.hasStation(stationId)) {
             throw new DomainException(ExceptionType.STATION_ALREADY_EXIST);
         }
@@ -59,27 +65,47 @@ public class SectionService {
         if (sections.hasNoSection()) {
             throw new DomainException(ExceptionType.LINE_HAS_NO_SECTION);
         }
+    }
 
-        //종점에 추가
-        if (targetStationId == null) {
-            Long firstStationId = sections.findFirstStationId();
-            Long lastStationId = sections.findLastStationId();
+    private List<SectionAddResponse> addAtLastStop(SectionAddRequest sectionAddRequest,
+        Sections sections) {
+        Long sourceStationId = sectionAddRequest.getSourceId();
 
-            Long sectionId;
-            if (Objects.equals(sourceStationId, firstStationId)) {
-                sectionId = sectionDao.insert(
-                    new Section(null, lineId, firstStationId, stationId, distance));
-                return List.of(SectionAddResponse.from(sectionId));
-            }
-            if (Objects.equals(sourceStationId, lastStationId)) {
-                sectionId = sectionDao.insert(
-                    new Section(null, lastStationId, stationId, lineId, distance));
-                return List.of(SectionAddResponse.from(sectionId));
-            }
+        Long firstStationId = sections.findFirstStationId();
+        Long lastStationId = sections.findLastStationId();
+
+        if (!Objects.equals(sourceStationId, firstStationId) && !Objects.equals(sourceStationId, lastStationId)) {
             throw new DomainException(ExceptionType.NOT_LAST_STOP);
         }
 
-        //사이에 추가
+        return getSectionAddResponses(sectionAddRequest, sections);
+    }
+
+    private List<SectionAddResponse> getSectionAddResponses(SectionAddRequest sectionAddRequest,
+        Sections sections) {
+        Long lineId = sectionAddRequest.getLineId();
+        Long stationId = sectionAddRequest.getStationId();
+        Long sourceStationId = sectionAddRequest.getSourceId();
+        Integer distance = sectionAddRequest.getDistance();
+        Long firstStationId = sections.findFirstStationId();
+        Long lastStationId = sections.findLastStationId();
+
+        Long newSourceStationId = stationId;
+        Long newTargetStationId = firstStationId;
+        if (Objects.equals(sourceStationId, lastStationId)) {
+            newSourceStationId = lastStationId;
+            newTargetStationId = stationId;
+        }
+
+        Long sectionId = sectionDao.insert(new Section(null, newSourceStationId, newTargetStationId, lineId, distance));
+        return List.of(SectionAddResponse.from(sectionId));
+    }
+    private List<SectionAddResponse> addBetweenStations(SectionAddRequest sectionAddRequest,
+        Sections sections) {
+        Long sourceStationId = sectionAddRequest.getSourceId();
+        Long targetStationId = sectionAddRequest.getTargetId();
+        Integer distance = sectionAddRequest.getDistance();
+
         Section splitTargetSection = sections.findSection(sourceStationId, targetStationId);
 
         if (splitTargetSection.hasShorterOrSameDistanceThan(distance)) {
@@ -87,20 +113,25 @@ public class SectionService {
         }
 
         sectionDao.deleteById(splitTargetSection.getId());
+        return getSectionAddResponses(sectionAddRequest, splitTargetSection);
+    }
 
-        if (splitTargetSection.isSourceStation(sourceStationId)) {
-            Section firstSection = new Section(null, sourceStationId, stationId, lineId, distance);
-            Section lastSection = new Section(null, stationId, targetStationId, lineId,
-                splitTargetSection.getDistance() - distance);
+    private List<SectionAddResponse> getSectionAddResponses(SectionAddRequest sectionAddRequest,
+        Section splitTargetSection) {
+        Long lineId = sectionAddRequest.getLineId();
+        Long stationId = sectionAddRequest.getStationId();
+        Long sourceStationId = sectionAddRequest.getSourceId();
+        Long targetStationId = sectionAddRequest.getTargetId();
+        Integer firstDistance = sectionAddRequest.getDistance();
+        Integer lastDistance = splitTargetSection.getDistance() - firstDistance;
 
-            Long firstSectionId = sectionDao.insert(firstSection);
-            Long lastSectionId = sectionDao.insert(lastSection);
-            return List.of(SectionAddResponse.from(firstSectionId), SectionAddResponse.from(lastSectionId));
+        if (splitTargetSection.isTargetStation(sourceStationId)) {
+            firstDistance = splitTargetSection.getDistance() - firstDistance;
+            lastDistance = sectionAddRequest.getDistance();
         }
 
-        Section firstSection = new Section(null, sourceStationId, stationId, lineId,
-            splitTargetSection.getDistance() - distance);
-        Section lastSection = new Section(null, stationId, targetStationId, lineId, distance);
+        Section firstSection = new Section(null, sourceStationId, stationId, lineId, firstDistance);
+        Section lastSection = new Section(null, stationId, targetStationId, lineId, lastDistance);
 
         Long firstSectionId = sectionDao.insert(firstSection);
         Long lastSectionId = sectionDao.insert(lastSection);
@@ -127,6 +158,10 @@ public class SectionService {
             return;
         }
 
+        connectRemainedStations(lineId, stationId, sectionsIncludeStation);
+    }
+
+    private void connectRemainedStations(Long lineId, Long stationId, List<Section> sectionsIncludeStation) {
         Long sourceStationId = sectionsIncludeStation.stream()
             .filter(section -> section.isTargetStation(stationId))
             .map(Section::getSourceStationId)

@@ -64,7 +64,6 @@ public class Section {
         return targetStationId;
     }
 
-
     public Integer getDistance() {
         return distance;
     }

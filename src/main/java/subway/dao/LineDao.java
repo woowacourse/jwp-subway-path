@@ -1,15 +1,17 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.sql.DataSource;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
 
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import subway.domain.Line;
 
 @Repository
 public class LineDao {
@@ -17,17 +19,17 @@ public class LineDao {
     private final SimpleJdbcInsert insertAction;
 
     private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
-            );
+        new Line(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color")
+        );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("line")
+            .usingGeneratedKeyColumns("id");
     }
 
     public Line insert(Line line) {
@@ -52,7 +54,7 @@ public class LineDao {
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, new Object[] {newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
     public void deleteById(Long id) {

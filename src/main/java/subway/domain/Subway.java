@@ -41,7 +41,7 @@ public class Subway {
             .orElseThrow(() -> new DomainException(ExceptionType.NO_EXISTENT_STATION));
     }
 
-    public Map<Line, List<Station>> getSubway() {
+    public Map<Line, List<Station>> getLineMap() {
         return subway;
     }
 }
