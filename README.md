@@ -109,7 +109,7 @@ Content-Type: application/json
 }
 ```
 
-### GET /lines
+### ✅ GET /lines
 - 모든 노선의 정보를 조회합니다.
   - 노선의 정보는 노선의 이름과 포함된 모든 역의 이름을 가지고 있습니다.
 

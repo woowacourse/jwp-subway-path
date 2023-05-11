@@ -1,5 +1,6 @@
 package subway.persistence.dao;
 
+import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -38,5 +39,11 @@ public class LineDao {
         String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
+    }
+
+    public List<LineEntity> findAll() {
+        //TODO EmptyResultDataAccessException 처리
+        String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line";
+        return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
 }

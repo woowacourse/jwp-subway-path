@@ -55,6 +55,21 @@ public class DbLineRepository implements LineRepository {
         return new Line(lineEntity.getId(), lineEntity.getName(), orderedSections);
     }
 
+    @Override
+    public List<Line> findAll() {
+        List<LineEntity> lineEntities = lineDao.findAll();
+        List<Line> lines = new ArrayList<>();
+        for (LineEntity lineEntity : lineEntities) {
+            lines.add(findById(lineEntity.getId()));
+        }
+        return lines;
+    }
+
+    @Override
+    public void update(Line line) {
+
+    }
+
     private List<Section> mapSectionEntitiesToSections(List<SectionEntity> sectionEntities) {
         return sectionEntities.stream()
                 .map(sectionEntity -> new Section(
@@ -90,15 +105,5 @@ public class DbLineRepository implements LineRepository {
                 .filter(section -> section.getUpwardStation().equals(upwardStation))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("노선을 조회하던 중 서버 내부 에러가 발생했습니다."));
-    }
-
-    @Override
-    public List<Line> findAll() {
-        return null;
-    }
-
-    @Override
-    public void update(Line line) {
-
     }
 }
