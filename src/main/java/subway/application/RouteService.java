@@ -108,7 +108,7 @@ public class RouteService {
                 return new StationsByLineResponse(line, orderedStations);
             }
         }
-        throw new IllegalArgumentException("이거 출력되면 미션 GG");
+        throw new UnsupportedOperationException("처리할 수 없는 요청입니다.");
     }
 
     public <K, V> List<K> getKeysByValue(Map<K, V> map, V value) {

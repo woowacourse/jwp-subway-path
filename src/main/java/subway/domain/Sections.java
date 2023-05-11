@@ -34,13 +34,13 @@ public class Sections {
                         .filter(section -> section.existLeft(from) && section.isInsertable(distance))
                         .map(section -> section.changeLeft(to, distance))
                         .findAny()
-                        .orElseThrow(() -> new IllegalStateException("이거 무조건 됨"));
+                        .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
 
 
                 final Section pastSection = sections.stream()
                         .filter(section -> section.existLeft(from))
                         .findAny()
-                        .orElseThrow(() -> new IllegalStateException("이거 무조건 됨"));
+                        .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
 
                 sections.remove(pastSection);
                 sections.add(changedSection);
@@ -57,12 +57,12 @@ public class Sections {
                         .filter(section -> section.existRight(to) && section.isInsertable(distance))
                         .map(section -> section.changeRight(from, distance))
                         .findAny()
-                        .orElseThrow(() -> new IllegalStateException("이거 무조건 됨"));
+                        .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
 
                 final Section pastSection2 = sections.stream()
                         .filter(section -> section.existRight(to))
                         .findAny()
-                        .orElseThrow(() -> new IllegalStateException("이거 무조건 됨"));
+                        .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
 
                 System.out.println("changedSection2 = " + changedSection2);
 
@@ -72,7 +72,7 @@ public class Sections {
             sections.add(new Section(from, to, distance));
             return;
         }
-        throw new IllegalArgumentException("이건 진짜 나오면 안되는 거임");
+        throw new UnsupportedOperationException("처리할 수 없는 요청입니다.");
     }
 
     private boolean isLeftEnd(final Station to) {
