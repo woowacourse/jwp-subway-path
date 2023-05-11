@@ -162,4 +162,8 @@ public class Line {
     public int hashCode() {
         return Objects.hash(id, name, color);
     }
+
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
+    }
 }

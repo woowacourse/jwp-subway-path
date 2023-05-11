@@ -16,17 +16,21 @@
 - DB 테이블 설계
 - 테이블 이름 - STATION
 
-  | id | name |
-              | --- | --- |
-  | 1L | 노포역 |
-  | 2L | 화정역 |
+  | id | name | next | distance | line_id  |
+          | --- | --- |------|----------| -------- |
+  | 1L | 노포역 | 2L | 10   | 1L       |
+  | 2L | 화정역 | 3L | 5    | 1L       |
+  | 3L | 잠실역 | 0L | null | 1L       |
+  | 4L | 화정역 | 5L | 8    | 2L       |
+
+name next가 중복 허용
 
 - 테이블 이름 - LINE
 
-  | id | name | color |
-              | --- | --- | --- |
-  | 1L | 1호선 | 파란색 |
-  | 2L | 2호선 | 초록색 |
+  | id | name | color | head_station |
+          | --- | --- |-------| ------------ |
+  | 1L | 1호선 | 파란색 | 1L    |
+  | 2L | 2호선 | 초록색 | 4L    |
 
 # 👨‍🍳 기능 목록
 
@@ -74,70 +78,73 @@
   추가된 역의 아이디 리스트
   ```
 
+- [ ] 노선 제거
+    - [x] 이름으로 노선을 삭제
+
 - [ ]  노선의 역 제거
     - [ ]  A-B-C에서 B를 제거할 경우 A-C의 연결이 남는다
     - [ ]  역이 제거될 때 역과 역 사이의 거리도 재배정되어야 한다.
     - [ ]  노선에 역이 2개인 경우 하나를 제거하면 둘 다 제거되어야 한다.
 
-  ```jsx
-  DELETE /stations/{line_id}
-  
-  RequestBody = {
-      stationId : 2,
-  }
-  ```
+```jsx
+DELETE /stations/{line_id}
 
-  ```jsx
-  삭제된 아이디 리스트
-  ```
+RequestBody = {
+    stationId : 2,
+}
+```
+
+```jsx
+삭제된 아이디 리스트
+```
 
 - [ ]  노선 조회
 
-  ```jsx
-  GET /lines/{line_id}
-  ```
+```jsx
+GET /lines/{line_id}
+```
 
-  ```jsx
-  [
-          {
-                  id : 1,
-                  name : "노포역",
-                  
-          },{
-                  id : 2,
-                  name : "범어사역",
-                  
-          },{
-                  id : 3,
-                  name:"남산역",
-          }
-  ]
-  ```
+```jsx
+[
+        {
+                id : 1,
+                name : "노포역",
+                
+        },{
+                id : 2,
+                name : "범어사역",
+                
+        },{
+                id : 3,
+                name:"남산역",
+        }
+]
+```
 
 - [ ]  노선 목록 조회
 
-  ```jsx
-  GET /lines
-  ```
+```jsx
+GET /lines
+```
 
-  ```jsx
-  [
-          {
-                  id : 1,
-                  name : "동해선",
-                  color : "파란색",
-          },{
-                  id : 2,
-                  name : "수인분당선",
-                  color : "노란색",
-                  
-          },{
-                  id : 3,
-                  name : "우이신설선",
-                  color : "연두색",
-          }
-  ]
-  ```
+```jsx
+[
+        {
+                id : 1,
+                name : "동해선",
+                color : "파란색",
+        },{
+                id : 2,
+                name : "수인분당선",
+                color : "노란색",
+                
+        },{
+                id : 3,
+                name : "우이신설선",
+                color : "연두색",
+        }
+]
+```
 
 # 📌 Commit Convention
 

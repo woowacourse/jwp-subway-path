@@ -281,6 +281,5 @@ class LineTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("이미 존재하는 역입니다.");
         }
-
     }
 }
