@@ -128,4 +128,9 @@ public class Sections {
     public int hashCode() {
         return Objects.hash(sections);
     }
+
+    public boolean containSection(final Section otherSection) {
+        return sections.stream()
+                .anyMatch(section -> section.isSameStations(otherSection));
+    }
 }
