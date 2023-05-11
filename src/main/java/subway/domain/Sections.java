@@ -1,6 +1,9 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -30,15 +33,16 @@ public class Sections {
         return downEndSection.isNextContinuable(section);
     }
 
-    public Section getDownEndSection() {
-        return sections.stream().filter(section1 -> section1.getNextSectionId() == 0)
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("하행 종점이 존재하지 않습니다"));
-    }
 
     public boolean isUpEndAppend(final Section section) {
         Section upEndSection = getUpEndSection();
 
         return upEndSection.isPreviousContinuable(section);
+    }
+
+    public Section getDownEndSection() {
+        return sections.stream().filter(section1 -> section1.getNextSectionId() == 0)
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("하행 종점이 존재하지 않습니다"));
     }
 
     public Section getUpEndSection() {
@@ -63,5 +67,47 @@ public class Sections {
 
     public List<Section> getSections() {
         return sections;
+    }
+
+    public Section findSectionByNextSection(Section section) {
+        return sections.stream()
+                .filter(section1 -> section1.getNextSectionId().equals(section.getNextSectionId()))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("노선에 해당 구간이 존재하지 않습니다."));
+    }
+
+    public Section findSectionByUpStation(final long stationId) {
+        return sections.stream().filter(section -> section.isSameUpStationId(stationId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 상행역을 가진 구간이 존재하지 않습니다."));
+    }
+
+
+    public Section findSectionByDownStation(final long stationId) {
+        return sections.stream().filter(section -> section.isSameDownStationId(stationId))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 하행역을 가진 구간이 존재하지 않습니다."));
+    }
+
+    public boolean isNotExistStation(final long stationId) {
+        return sections.stream()
+                .noneMatch(section -> section.containsStation(stationId));
+    }
+
+    public List<Section> getSorted() {
+        Map<Long, Section> allSections = new HashMap<>();
+
+        sections.forEach(section -> allSections.put(section.getId(), section));
+        Section upEndSection = getUpEndSection();
+        Section currentSection = upEndSection;
+
+        List<Section> result = new ArrayList<>();
+
+        while (currentSection.getNextSectionId() != 0) {
+            result.add(currentSection);
+            Section nextSection = allSections.get(currentSection.getNextSectionId());
+            currentSection = nextSection;
+        }
+
+        return result;
     }
 }

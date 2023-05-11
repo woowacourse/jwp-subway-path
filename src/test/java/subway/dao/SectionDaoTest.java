@@ -18,9 +18,16 @@ import subway.domain.Station;
 @Sql("/schema.sql")
 class SectionDaoTest {
 
+    public static final Station station1 = new Station(1L, "잠실역");
+    public static final Station station2 = new Station(2L, "잠실나루역");
+    public static final Station station3 = new Station(3L, "숙대입구역");
+    public static final Station station4 = new Station(4L, "암사역");
+    public static final Line line1 = new Line("1호선", "파랑");
+
     private StationDao stationDao;
     private LineDao lineDao;
     private SectionDao sectionDao;
+    private long lineId;
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -30,76 +37,126 @@ class SectionDaoTest {
         stationDao = new StationDao(jdbcTemplate);
         lineDao = new LineDao(jdbcTemplate);
         sectionDao = new SectionDao(jdbcTemplate);
+
+        insertStations(station1, station2, station3, station4);
+        lineId = lineDao.insert(line1).getId();
     }
 
     @Test
     @DisplayName("노선에 속하는 모든 구간들을 조회한다")
     void findAllSectionByLineId() {
-        Station st1 = new Station(1L, "역1");
-        stationDao.insert(st1);
-        Station st2 = new Station(2L, "역2");
-        stationDao.insert(st2);
-        Line li = lineDao.insert(new Line("1호선", "파랑"));
-        Section section = new Section(st1, st2, 10, li.getId());
-        sectionDao.save(section, li.getId());
-        Sections sections = sectionDao.findSectionsByLineId(li.getId());
+        // given
+        Section section = new Section(station1, station2, 10, lineId);
+        sectionDao.save(section, lineId);
+
+        // when
+        Sections sections = sectionDao.findSectionsByLineId(lineId);
+
+        // then
         assertThat(sections.getSections().get(0)).usingRecursiveComparison()
                 .comparingOnlyFields("upStation")
                 .comparingOnlyFields("downStation").isEqualTo(section);
     }
 
     @Test
-    @DisplayName("노선에 최초로 구간을 등록한다")
+    @DisplayName("노선에 구간을 등록한다")
     void saveInitialSection() {
-        Section section = new Section(new Station(1L, "역"), new Station(2L, "암사역"), 10);
+        // given
+        Section section = new Section(station1, station2, 10);
+
+        // when
         long id = sectionDao.save(section, 1L);
+
+        // then
         assertThat(id).isEqualTo(1);
     }
 
     @Test
-    @DisplayName("노선 하행종점에 새로 구간을 등록한다.")
-    void saveDownEndSection() {
-        //given
-        long lineId = 1L;
-        Station station1 = new Station(1L, "역");
-        Station station2 = new Station(2L, "암사역");
-        Station station3 = new Station(2L, "숙대입구역");
-        stationDao.insert(station1);
-        stationDao.insert(station2);
-        stationDao.insert(station3);
-        Section section = new Section(station1, station2, 10);
-        Section newSection = new Section(station2, station3, 10);
+    @DisplayName("해당 구간의 다음 구간을 수정한다.")
+    void updateNextSection() {
+        // given
+        Section nextSection = new Section(station2, station3, 10);
+        Section newNextSection = new Section(station2, station4, 5);
+        long nextSectionId = sectionDao.save(nextSection, lineId);
+        long newNextSectionId = sectionDao.save(newNextSection, lineId);
 
-        //when
-        long savedId = sectionDao.save(section, lineId);
-        long newSectionId = sectionDao.save(newSection, lineId);
-        sectionDao.updateNextSection(newSectionId, savedId);
+        Section section = new Section(station1, station2, 10, nextSectionId);
+        long sectionId = sectionDao.save(section, lineId);
 
-        //then
-        Sections sections = sectionDao.findSectionsByLineId(lineId);
-        assertThat(sections.size()).isEqualTo(2);
+        // when
+        sectionDao.updateNextSection(newNextSectionId, sectionId);
+
+        // then
+        assertThat(sectionDao.findById(sectionId).getNextSectionId()).isEqualTo(newNextSectionId);
     }
 
     @Test
-    @DisplayName("노선 상행종점에 새로 구간을 등록한다.")
-    void saveUpEndSection() {
-        //given
-        long lineId = 1L;
-        Station station1 = new Station(1L, "역");
-        Station station2 = new Station(2L, "암사역");
-        Station station3 = new Station(2L, "숙대입구역");
-        stationDao.insert(station1);
-        stationDao.insert(station2);
-        stationDao.insert(station3);
-        Section section = new Section(station1, station2, 10);
-        long savedId = sectionDao.save(section, lineId);
+    @DisplayName("구간의 정보를 업데이트한다.")
+    void update() {
+        // given
+        Section section = new Section(station1, station3, 10);
+        long sectionId = sectionDao.save(section, lineId);
 
-        //when
-        Section newSection = new Section(station3, station1, 10, savedId);
-        sectionDao.save(newSection, lineId);
+        Section newSection = new Section(sectionId, station1, station3, 5);
 
-        //then
-        Sections sections = sectionDao.findSectionsByLineId(lineId);
-        assertThat(sections.size()).isEqualTo(2);
+        // when
+        sectionDao.update(newSection);
+
+        // then
+        assertThat(sectionDao.findById(sectionId).getDistance()).isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("구간의 상행 역이 같으면 삭제한다.")
+    void deleteUpEnd() {
+        // given
+        Section section = new Section(station1, station3, 10);
+        sectionDao.save(section, lineId);
+
+        // when
+        int previousSize = sectionDao.findSectionsByLineId(lineId).size();
+        sectionDao.deleteSectionByUpStationId(station1.getId(), lineId);
+
+        // then
+        assertThat(sectionDao.findSectionsByLineId(lineId).size())
+                .isEqualTo(previousSize - 1);
+    }
+
+    @Test
+    @DisplayName("구간의 하행 역이 같으면 삭제한다.")
+    void deleteDownEnd() {
+        // given
+        Section section = new Section(station1, station3, 10);
+        sectionDao.save(section, lineId);
+
+        // when
+        int previousSize = sectionDao.findSectionsByLineId(lineId).size();
+        sectionDao.deleteSectionByDownStationId(station3.getId(), lineId);
+
+        // then
+        assertThat(sectionDao.findSectionsByLineId(lineId).size())
+                .isEqualTo(previousSize - 1);
+    }
+
+    @Test
+    @DisplayName("특정 호선 내 구간 모두을 삭제한다.")
+    void deleteByLineId() {
+        // given
+        Section section = new Section(station1, station3, 10);
+        sectionDao.save(section, lineId);
+
+        // when
+        int previousSize = sectionDao.findSectionsByLineId(lineId).size();
+        sectionDao.deleteByLineId(lineId);
+
+        // then
+        assertThat(sectionDao.findSectionsByLineId(lineId).size())
+                .isEqualTo(previousSize - 1);
+    }
+
+    private void insertStations(Station...stations) {
+        for (Station station : stations) {
+            stationDao.insert(station);
+        }
     }
 }

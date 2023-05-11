@@ -41,8 +41,11 @@ public class Section {
         return this.upStation.equals(newSection.downStation);
     }
 
-    public boolean isSameDownStation(Station station) {
-        return this.downStation.equals(station);
+    public boolean isSameUpStationId(long stationId) {
+        return this.getUpStationId() == stationId;
+    }
+    public boolean isSameDownStationId(long stationId) {
+        return this.getDownStationId() == stationId;
     }
 
     public Direction checkDirection(Section section) {
@@ -93,5 +96,9 @@ public class Section {
 
     public boolean isDistanceSmallOrSame(final Section section) {
         return this.distance <= section.distance;
+    }
+
+    public boolean containsStation(long stationId) {
+        return this.getUpStationId() == stationId || this.getDownStationId() == stationId;
     }
 }

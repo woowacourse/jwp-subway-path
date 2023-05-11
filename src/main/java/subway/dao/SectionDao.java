@@ -58,7 +58,7 @@ public class SectionDao {
         return simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
     }
 
-    public void updateNextSection(long nextId, long sectionId) {
+    public void updateNextSection(Long nextId, long sectionId) {
         String sql = "UPDATE SECTIONS SET next_id = ? WHERE id = ?";
         jdbcTemplate.update(sql, nextId, sectionId);
     }
@@ -71,5 +71,35 @@ public class SectionDao {
                 section.getDistance(),
                 section.getNextSectionId(),
                 section.getId());
+    }
+
+    public void deleteById(final long sectionId) {
+        String sql = "delete SECTIONS where id = ?";
+        jdbcTemplate.update(sql, sectionId);
+    }
+
+    public void deleteSectionByUpStationId(final long stationId, final long lineId) {
+        String sql = "delete SECTIONS where up_id = ? AND line_id = ?";
+        jdbcTemplate.update(sql, stationId, lineId);
+    }
+
+    public void deleteSectionByDownStationId(final long stationId, final long lineId) {
+        String sql = "delete SECTIONS where down_id = ? AND line_id = ?";
+        jdbcTemplate.update(sql, stationId, lineId);
+    }
+
+    public void deleteByLineId(long lineId) {
+        String sql = "delete SECTIONS where line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public Section findById(long sectionId) {
+        String sql = "SELECT SEC.id, S1.id, S1.name, S2.id, S2.name, SEC.distance, SEC.next_id"
+                + " FROM SECTIONS AS SEC "
+                + " JOIN STATION AS S1 ON SEC.up_id = S1.id "
+                + " JOIN STATION AS S2 ON SEC.down_id = S2.id "
+                + " WHERE SEC.id = ?";
+
+        return jdbcTemplate.queryForObject(sql, upStationMapper(), sectionId);
     }
 }

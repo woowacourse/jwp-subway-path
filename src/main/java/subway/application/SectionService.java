@@ -1,5 +1,6 @@
 package subway.application;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -69,5 +70,47 @@ public class SectionService {
                 savedId);
         sectionDao.update(innerLeft);
         return savedId;
+    }
+
+    public void removeStation(long stationId, long lineId) {
+        Sections sections = sectionDao.findSectionsByLineId(lineId);
+
+        if (sections.isNotExistStation(stationId)) {
+            throw new IllegalArgumentException("해당 노선에 존재하지 않는 역입니다.");
+        }
+
+        // 역이 2개 남았을 때
+        if (sections.size() == 1) {
+            sectionDao.deleteByLineId(lineId);
+        }
+        // 상행 종점일 때
+        if (sections.getUpEndSection().isSameUpStationId(stationId)) {
+            sectionDao.deleteSectionByUpStationId(stationId, lineId);
+            return;
+        }
+        // 하행 종점일 때
+        Section downEndSection = sections.getDownEndSection();
+        if (downEndSection.isSameDownStationId(stationId)) {
+            Section section = sections.findSectionByNextSection(downEndSection);
+            sectionDao.deleteSectionByDownStationId(stationId, lineId);
+            sectionDao.updateNextSection(null, section.getId());
+            return;
+        }
+        Section innerRight = sections.findSectionByUpStation(stationId);
+        Section innerLeft = sections.findSectionByDownStation(stationId);
+        Section newSection = new Section(innerLeft.getId(), innerLeft.getUpStation(), innerRight.getDownStation(),
+                innerLeft.getDistance() + innerRight.getDistance(),
+                innerRight.getNextSectionId());
+        sectionDao.update(newSection);
+        sectionDao.deleteById(innerRight.getId());
+    }
+
+    public Sections findAllByLindId(long lineId) {
+         return sectionDao.findSectionsByLineId(lineId);
+    }
+
+    public List<Section> findSortedAllByLindId(long lineId) {
+        Sections sections = sectionDao.findSectionsByLineId(lineId);
+        return sections.getSorted();
     }
 }
