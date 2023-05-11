@@ -162,4 +162,59 @@ public class LineService {
         }
         throw new IllegalArgumentException("사이에 새로 추가하는 역과 기존 역간 거리가 잘못되었습니다.");
     }
+
+    public void deleteStation(final String lineName, final String stationName) {
+        Line line = lineRepository.findByName(lineName);
+        if (line.isStationCount2()) {
+            deleteLastStation(line);
+            return;
+        }
+        Station station = stationDao.findByName(stationName).orElseThrow(RuntimeException::new);
+        if (line.isBoundStation(station)) {
+            deleteBoundStation(line, station);
+            return;
+        }
+        lineStationDao.deleteByLineIdAndStationId(line.getId(), station.getId());
+        List<SectionEntity> sectionEntities = sectionRepository.findByLineIdAndStationId(line.getId(), station.getId());
+        for (SectionEntity section : sectionEntities) {
+            lineSectionDao.deleteBySectionId(section.getId());
+            sectionRepository.deleteById(section.getId());
+        }
+        SectionEntity insertedSection = sectionRepository.insert(mixSection(sectionEntities, station.getId()));
+        lineSectionDao.insert(new LineSectionEntity(line.getId(), insertedSection.getId()));
+    }
+
+    private SectionEntity mixSection(final List<SectionEntity> sectionEntities, final Long stationId) {
+        SectionEntity leftSection = sectionEntities.get(0);
+        SectionEntity rightSection = sectionEntities.get(1);
+        if (leftSection.getRightStationId() != stationId) {
+            leftSection = sectionEntities.get(1);
+            rightSection = sectionEntities.get(0);
+        }
+
+        return new SectionEntity(leftSection.getLeftStationId(), rightSection.getRightStationId(),
+            leftSection.getDistance() + rightSection.getDistance());
+    }
+
+    private void deleteBoundStation(final Line line, final Station station) {
+        lineStationDao.deleteByLineIdAndStationId(line.getId(), station.getId());
+        SectionEntity section = sectionRepository.findByStationId(station.getId()).orElseThrow(RuntimeException::new);
+        lineSectionDao.deleteBySectionId(section.getId());
+        sectionRepository.deleteById(section.getId());
+        if (line.isUpBoundStation(station)) {
+            lineRepository.updateBoundStations(new LineEntity(line.getId(), line.getName(), line.getColor(),
+                section.getRightStationId(), line.getDownBoundStation().getId()));
+            return;
+        }
+        lineRepository.updateBoundStations(new LineEntity(line.getId(), line.getName(), line.getColor(),
+            line.getUpBoundStation().getId(), section.getLeftStationId()));
+    }
+
+    private void deleteLastStation(final Line line) {
+        lineStationDao.deleteByLineId(line.getId());
+        List<LineSectionEntity> lineSectionEntities = lineSectionDao.findByLineId(line.getId());
+        lineSectionDao.deleteByLineId(line.getId());
+        sectionRepository.deleteById(lineSectionEntities.get(0).getSectionId());
+        lineRepository.updateBoundStations(new LineEntity(line.getId(), line.getName(), line.getColor(), null, null));
+    }
 }

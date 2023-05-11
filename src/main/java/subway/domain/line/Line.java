@@ -65,6 +65,19 @@ public class Line {
         throw new IllegalArgumentException("역의 수에 따른 간선의 수가 올바르지 않습니다.");
     }
 
+    public boolean isStationCount2() {
+        return stations.size() == 2;
+    }
+
+    public boolean isBoundStation(Station station) {
+        return stations.getFirstStation().getId().equals(station.getId())
+            || stations.getLastStation().getId().equals(station.getId());
+    }
+
+    public boolean isUpBoundStation(final Station station) {
+        return stations.getFirstStation().getId().equals(station.getId());
+    }
+
     public Long getId() {
         return id;
     }

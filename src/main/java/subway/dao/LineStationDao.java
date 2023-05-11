@@ -43,4 +43,14 @@ public class LineStationDao {
         String sql = "SELECT id, station_id, line_id from LINE_STATION WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
+
+    public void deleteByLineId(final Long lineId) {
+        String sql = "DELETE FROM LINE_STATION WHERE Line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
+        String sql = "DELETE FROM LINE_STATION WHERE Line_id = ? AND station_id = ?";
+        jdbcTemplate.update(sql, lineId, stationId);
+    }
 }
