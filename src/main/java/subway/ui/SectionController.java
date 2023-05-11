@@ -11,6 +11,7 @@ import subway.application.SectionService;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -23,13 +24,13 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> insertSection(@RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> insertSection(@Valid @RequestBody SectionRequest sectionRequest) {
         Long sectionId = sectionService.insertSection(sectionRequest);
         return ResponseEntity.created(URI.create("/sections/" + sectionId)).build();
     }
 
     @DeleteMapping("/stations/{stationId}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long stationId, @RequestBody SectionDeleteRequest sectionRequest) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Long stationId, @Valid @RequestBody SectionDeleteRequest sectionRequest) {
         sectionService.deleteStation(stationId, sectionRequest);
         return ResponseEntity.noContent().build();
     }
