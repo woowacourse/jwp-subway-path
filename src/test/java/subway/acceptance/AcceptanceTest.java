@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
-import subway.domain.Direction;
 import subway.dto.request.CreateSectionRequest;
 import subway.dto.request.LineRequest;
 import subway.dto.request.StationRequest;
@@ -47,9 +46,9 @@ public class AcceptanceTest {
 
         // 노선에 역을 등록한다.
         CreateSectionRequest createSectionRequest1 = new CreateSectionRequest(stationResponse1.getId(),
-                stationResponse3.getId(), 5, Direction.UP);
-        CreateSectionRequest createSectionRequest2 = new CreateSectionRequest(stationResponse3.getId(),
-                stationResponse2.getId(), 2, Direction.DOWN);
+                stationResponse3.getId(), 5);
+        CreateSectionRequest createSectionRequest2 = new CreateSectionRequest(stationResponse2.getId(),
+                stationResponse3.getId(), 2);
 
         addSection(createSectionRequest1, lineResponse.getId());
         addSection(createSectionRequest2, lineResponse.getId());
@@ -74,9 +73,9 @@ public class AcceptanceTest {
 
         // 노선에 역을 등록한다.
         CreateSectionRequest createSectionRequest1 = new CreateSectionRequest(stationResponse1.getId(),
-                stationResponse3.getId(), 5, Direction.UP);
-        CreateSectionRequest createSectionRequest2 = new CreateSectionRequest(stationResponse3.getId(),
-                stationResponse2.getId(), 2, Direction.DOWN);
+                stationResponse3.getId(), 5);
+        CreateSectionRequest createSectionRequest2 = new CreateSectionRequest(stationResponse2.getId(),
+                stationResponse3.getId(), 2);
 
         addSection(createSectionRequest1, lineResponse.getId());
         addSection(createSectionRequest2, lineResponse.getId());
@@ -103,7 +102,7 @@ public class AcceptanceTest {
 
         // 노선에 역을 등록한다.
         CreateSectionRequest createSectionRequest = new CreateSectionRequest(stationResponse1.getId(),
-                stationResponse2.getId(), 5, Direction.UP);
+                stationResponse2.getId(), 5);
 
         addSection(createSectionRequest, lineResponse.getId());
 
