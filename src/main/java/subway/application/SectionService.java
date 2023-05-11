@@ -57,7 +57,7 @@ public class SectionService {
 
     private List<SectionEntity> saveDownSection(final Long lineId, final Long nextStationId,
                                                  final Long additionalStationId, final int distance) {
-        final List<SectionEntity> sections = sectionDao.findByLineIdAndPreviousStationId(lineId, nextStationId);
+        final List<SectionEntity> sections = sectionDao.findByLineIdAndNextStationId(lineId, nextStationId);
 
         if (sections.isEmpty()) {
             return saveLastStation(lineId, additionalStationId, nextStationId, distance);
@@ -99,7 +99,7 @@ public class SectionService {
                 insertSectionEntity(lineId, originalSection.getPreviousStationId(), previousStationId, nextDistance));
     }
 
-    private static int getNewDistance(final int distance, final SectionEntity originalSection) {
+    private int getNewDistance(final int distance, final SectionEntity originalSection) {
         int originalSectionDistance = originalSection.getDistance();
 
         if (originalSectionDistance <= distance) {

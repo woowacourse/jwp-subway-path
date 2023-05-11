@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.ui.dto.response.SingleLineDetailResponse;
 import subway.application.dto.LineDto;
 import subway.application.dto.SectionCreateDto;
 import subway.ui.dto.request.LineRequest;
-import subway.ui.dto.response.LineResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -39,15 +39,14 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
-//    @GetMapping("/{name}")
-//    public ResponseEntity<List<LineResponse>> findAllLines(@PathVariable("name") String name) {
-//        return ResponseEntity.ok(lineService.findLineResponses());
-//    }
+    @GetMapping
+    public ResponseEntity<List<SingleLineDetailResponse>> readAllLine() {
+        return ResponseEntity.ok(lineService.getAllLine());
+    }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        lineService.getLine(id);
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    public ResponseEntity<SingleLineDetailResponse> findLineById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.getLine(id));
     }
 
     @PutMapping("/{id}")

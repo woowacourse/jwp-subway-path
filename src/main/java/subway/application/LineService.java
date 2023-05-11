@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.converter.SectionConverter;
 import subway.application.domain.Section;
 import subway.application.domain.Station;
+import subway.application.domain.Stations;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -14,11 +15,10 @@ import subway.application.converter.LineConverter;
 import subway.application.dto.LineDto;
 import subway.application.dto.SectionCreateDto;
 import subway.entity.StationEntity;
-import subway.exception.StationNotFoundException;
 import subway.ui.dto.request.LineRequest;
-import subway.ui.dto.response.LineReadResponse;
 import subway.ui.dto.response.LineResponse;
 import subway.entity.LineEntity;
+import subway.ui.dto.response.SingleLineDetailResponse;
 import subway.ui.query_option.SubwayDirection;
 
 import java.util.ArrayList;
@@ -58,9 +58,20 @@ public class LineService {
         return lineId;
     }
 
+    public List<SingleLineDetailResponse> getAllLine() {
+        return sectionDao.findSectionDetail().stream()
+                .collect(Collectors.groupingBy(SectionDetail::getLineId))
+                .values().stream()
+                .map(this::convert)
+                .collect(Collectors.toUnmodifiableList());
+    }
+
+    public SingleLineDetailResponse getLine(final Long lineId) {
+        return convert(sectionDao.findSectionDetailByLineId(lineId));
+    }
+
     // TODO: 리팩토링
-    public List<LineReadResponse> getLine(final Long lineId) {
-        List<SectionDetail> sectionDetails = sectionDao.findSectionDetailByLineId(lineId);
+    private SingleLineDetailResponse convert(final List<SectionDetail> sectionDetails) {
         if (sectionDetails.isEmpty()) {
             throw new IllegalArgumentException("존재하지 않는 노선입니다.");
         }
@@ -82,9 +93,8 @@ public class LineService {
         Deque<Station> deque = new LinkedList<>();
         Set<Station> visited = new HashSet<>();
         dfs(sections.get(0).getPreviousStation(), deque, map, visited, SubwayDirection.UP);
-        System.out.println(deque);
 
-        return null;
+        return new SingleLineDetailResponse(sectionDetails.get(0).getLineId(), sections.get(0).getLine().getName(), sections.get(0).getLine().getColor(), new Stations(new ArrayList<>(deque)));
     }
 
     public void dfs(Station station, Deque<Station> deque, Map<Station, List<Object[]>> map, Set<Station> visited, SubwayDirection direction) {

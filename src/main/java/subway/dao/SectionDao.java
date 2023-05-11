@@ -47,6 +47,12 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, previousStationId);
     }
 
+    public List<SectionEntity> findByLineIdAndNextStationId(final Long lineId, final Long nextStationId) {
+        final String sql = "SELECT * FROM section WHERE line_id = ? AND next_station_id = ?";
+
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, nextStationId);
+    }
+
     public List<SectionEntity> findByLineId(final Long lineId) {
         final String sql = "SELECT * " +
                 "FROM section WHERE line_id = ?";
@@ -100,8 +106,23 @@ public class SectionDao {
                 "FROM section se " +
                 "JOIN station pst ON se.previous_station_id = pst.id " +
                 "JOIN station nst ON se.next_station_id = nst.id " +
-                "JOIN line ON line.id = ?";
+                "JOIN line " +
+                "WHERE se.line_id = ?";
 
         return jdbcTemplate.query(sql, sectionDetailRowMapper, lineId);
+    }
+
+    public List<SectionDetail> findSectionDetail() {
+        final String sql = "SELECT se.id, se.distance, se.line_id, " +
+                "line.name line_name, line.color line_color, " +
+                "pst.id previous_station_id, pst.name previous_station_name, " +
+                "nst.id next_station_id, nst.name next_station_name " +
+                "FROM section se " +
+                "JOIN station pst ON se.previous_station_id = pst.id " +
+                "JOIN station nst ON se.next_station_id = nst.id " +
+                "JOIN line " +
+                "WHERE line.id = se.line_id";
+
+        return jdbcTemplate.query(sql, sectionDetailRowMapper);
     }
 }

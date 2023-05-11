@@ -63,4 +63,18 @@ public class SectionDetail {
         return nextStationName;
     }
 
+    @Override
+    public String toString() {
+        return "SectionDetail{" +
+                "id=" + id +
+                ", distance=" + distance +
+                ", lineId=" + lineId +
+                ", lineName='" + lineName + '\'' +
+                ", lineColor='" + lineColor + '\'' +
+                ", previousStationId=" + previousStationId +
+                ", previousStationName='" + previousStationName + '\'' +
+                ", nextStationId=" + nextStationId +
+                ", nextStationName='" + nextStationName + '\'' +
+                '}';
+    }
 }
