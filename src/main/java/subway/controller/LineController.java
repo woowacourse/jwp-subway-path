@@ -16,14 +16,6 @@ import java.util.List;
 @RequestMapping("/lines")
 public class LineController {
 
-    // TODO: 테스트 추가, 도메인 메서드 및 변수명 변경, README 수정, 메서드 분리, 예외 핸들링, @Valid 적용
-
-    /**
-     * 2. 테스트
-     * 3. 예외 핸들링
-     * 5. README 수정
-     */
-
     private final LineService lineService;
     private final SubwayMapService subwayMapService;
 
@@ -33,9 +25,9 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createLine(@RequestBody @Valid LineRequest lineRequest) {
+    public ResponseEntity<Void> createLine(@RequestBody @Valid LineRequest lineRequest) {
         Long id = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + id)).body(id);
+        return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
     @GetMapping
