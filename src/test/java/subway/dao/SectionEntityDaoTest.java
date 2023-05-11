@@ -96,6 +96,26 @@ class SectionEntityDaoTest {
     }
 
     @Test
+    void 라인_아이디로_조회_테스트() {
+        Long lineId = 이호선.ENTITY.getId();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("line_id", lineId);
+        params.put("up_station_id", 삼성역.ENTITY.getId());
+        params.put("down_station_id", 잠실역.ENTITY.getId());
+        params.put("distance", 2);
+
+        simpleJdbcInsert.executeAndReturnKey(params).longValue();
+
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+
+        assertThat(sectionEntities)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(List.of(이호선_삼성_잠실_2.ENTITY));
+    }
+
+    @Test
     void 갱신_테스트() {
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", 이호선.ENTITY.getId());
@@ -127,6 +147,25 @@ class SectionEntityDaoTest {
 
         List<SectionEntity> result = jdbcTemplate.query("SELECT * FROM section WHERE id = ?", sectionRowMapper,
                 sectionId);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void 라인_아이디로_삭제_테스트() {
+        Long lineId = 이호선.ENTITY.getId();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("line_id", lineId);
+        params.put("up_station_id", 삼성역.ENTITY.getId());
+        params.put("down_station_id", 잠실역.ENTITY.getId());
+        params.put("distance", 2);
+
+        simpleJdbcInsert.executeAndReturnKey(params).longValue();
+
+        sectionDao.deleteAllByLineId(lineId);
+
+        List<SectionEntity> result = jdbcTemplate.query("SELECT * FROM section WHERE line_id = ?", sectionRowMapper,
+                lineId);
         assertThat(result).isEmpty();
     }
 }
