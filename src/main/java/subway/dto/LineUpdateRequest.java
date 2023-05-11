@@ -1,8 +1,13 @@
 package subway.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class LineUpdateRequest {
 
+    @NotBlank(message = "노선명을 입력해주세요.")
     private String name;
+
+    @NotBlank(message = "노선 색을 입력해주세요.")
     private String color;
 
     public LineUpdateRequest(String name, String color) {
