@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import subway.exception.ArgumentNotValidException;
 
 public class Sections {
 
@@ -22,7 +23,7 @@ public class Sections {
             final Station down = sections.get(i).getDown();
             final Station nextUp = sections.get(i + 1).getUp();
             if (!down.equals(nextUp)) {
-                throw new IllegalArgumentException("각 구간의 연결 상태가 올바르지 않습니다.");
+                throw new ArgumentNotValidException("각 구간의 연결 상태가 올바르지 않습니다.");
             }
         }
     }

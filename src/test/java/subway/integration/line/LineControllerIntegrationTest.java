@@ -2,7 +2,6 @@ package subway.integration.line;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
@@ -116,7 +115,7 @@ public class LineControllerIntegrationTest {
             final ExtractableResponse<Response> response = 노선_생성_요청("1호선", "잠실역", "사당역", 0);
 
             // then
-            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
         }
 
 

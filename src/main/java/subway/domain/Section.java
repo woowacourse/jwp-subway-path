@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exception.ArgumentNotValidException;
+
 public class Section {
 
     private final Station up;
@@ -15,7 +17,7 @@ public class Section {
 
     private void validateDistance(final int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("역간 거리는 양수여야 합니다.");
+            throw new ArgumentNotValidException("역간 거리는 양수여야 합니다.");
         }
     }
 

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import subway.exception.ArgumentNotValidException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -45,7 +46,7 @@ class SectionsTest {
             );
 
             // when & then
-            assertThrows(IllegalArgumentException.class, () ->
+            assertThrows(ArgumentNotValidException.class, () ->
                     new Sections(sections)
             );
         }

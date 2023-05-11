@@ -126,7 +126,7 @@ public class LineStationControllerIntegrationTest {
                     노선에_역_추가_요청("1호선", "말랑역", "경유역", 0);
 
             // then
-            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
         }
 
         @Test

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import subway.exception.ArgumentNotValidException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -26,7 +27,7 @@ class SectionTest {
         // when & then
         assertThatThrownBy(() ->
                 new Section(출발역, 종착역, 0)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).isInstanceOf(ArgumentNotValidException.class);
     }
 
     @Nested
