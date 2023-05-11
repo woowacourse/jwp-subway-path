@@ -147,4 +147,38 @@ class LineTest {
                 new Section("강남역", "삼성역", 15)
         );
     }
+
+    @Test
+    void 상행종점을_삭제한다() {
+        // given
+        Line line = new Line("1호선", List.of(
+                new Section("강남역", "역삼역", 10),
+                new Section("역삼역", "삼성역", 5))
+        );
+
+        // when
+        line.removeStation(new Station("강남역"));
+
+        //then
+        assertThat(line.getSections()).containsExactly(
+                new Section("역삼역", "삼성역", 5)
+        );
+    }
+
+    @Test
+    void 하행종점을_삭제한다() {
+        // given
+        Line line = new Line("1호선", List.of(
+                new Section("강남역", "역삼역", 10),
+                new Section("역삼역", "삼성역", 5))
+        );
+
+        // when
+        line.removeStation(new Station("삼성역"));
+
+        //then
+        assertThat(line.getSections()).containsExactly(
+                new Section("강남역", "역삼역", 10)
+        );
+    }
 }

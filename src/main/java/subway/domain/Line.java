@@ -89,14 +89,25 @@ public class Line {
         if (!isDuplicatedName(station)) {
             throw new IllegalArgumentException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
         }
-        Section downSection = findBySource(station).get();
-        Section upSection = findByTarget(station).get();
+        Optional<Section> findSource = findBySource(station);
+        Optional<Section> findTarget = findByTarget(station);
 
-        sections.remove(downSection);
-        sections.remove(upSection);
+        if (findSource.isPresent() && findTarget.isPresent()) {
+            Section downSection = findSource.get();
+            Section upSection = findTarget.get();
 
-        sections.add(new Section(upSection.getSource(), downSection.getTarget(), downSection.getDistance()
-                + upSection.getDistance()));
+            sections.remove(downSection);
+            sections.remove(upSection);
+
+            sections.add(new Section(upSection.getSource(), downSection.getTarget(), downSection.getDistance()
+                    + upSection.getDistance()));
+        }
+        findSource.ifPresent(sections::remove);
+        findTarget.ifPresent(sections::remove);
+    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 
     public Long getId() {
