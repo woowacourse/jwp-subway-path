@@ -8,7 +8,54 @@
 
 
 # 프로그램 설계
-// TODO 추후 작성
+
+### 클래스 다이어그램 - MVC
+```mermaid
+classDiagram
+    WebEnvironment <--> LineController
+    LineController --> LineService
+    LineService --> LineRepository
+    DbLineRepository ..|> LineRepository
+    DbLineRepository --> LineDao
+```
+
+### 클래스 다이어그램 - 도메인
+```mermaid
+classDiagram
+    Line *-- Section
+    Section *-- Station
+    class Line {
+        - List(Section) sections
+    }
+    class Section {
+        - Station upwardStation
+        - Station downwardStation
+        - int distance
+    }
+    class Station {
+        - String name
+    }
+```
+
+### Entity-Relationship Diagram
+```mermaid
+erDiagram
+    LINE ||--|{ SECTION : ""
+	LINE {
+		BIGINT id PK
+		VARCHAR(50) name
+		VARCHAR(50) upward_terminus
+		VARCHAR(50) downward_terminus
+	}
+    SECTION {
+        BIGINT id PK
+        BIGINT line_id FK
+        VARCHAR(50) upward_station
+        VARCHAR(50) downward_station
+        INT distance
+        DATE created_at
+    }
+```
 
 # API 명세서
 
