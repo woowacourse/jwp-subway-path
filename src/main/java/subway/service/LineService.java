@@ -3,32 +3,70 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
-import subway.service.dto.LineRegisterRequest;
+import subway.dao.SectionDao;
+import subway.domain.Line;
+import subway.service.dto.LineResponse;
+import subway.service.dto.SearchAllSectionLineRequest;
+import subway.service.dto.SectionInLineResponse;
 
-import java.util.Optional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
 
     private final LineDao lineDao;
-    private final SectionService sectionService;
+    private final CommonService commonService;
 
-    public LineService(final LineDao lineDao, final SectionService sectionService) {
+    public LineService(
+            final LineDao lineDao,
+            final CommonService commonService
+    ) {
+
         this.lineDao = lineDao;
-        this.sectionService = sectionService;
+        this.commonService = commonService;
     }
 
-    public void registerLine(final LineRegisterRequest lineRegisterRequest) {
+    public List<LineResponse> searchAllSectionInLines(final SearchAllSectionLineRequest searchAllSectionLineRequest) {
 
-        final Optional<LineEntity> savedLine =
-                lineDao.findLineByName(lineRegisterRequest.getLineName());
-
-        if (savedLine.isPresent()) {
-            throw new IllegalArgumentException("이미 해당 라인을 가진 이름은 존재합니다.");
+        if (searchAllSectionLineRequest == null) {
+            return searchSectionsAllLine();
         }
 
-        final Long savedLineId = lineDao.save(new LineEntity(lineRegisterRequest.getLineName()));
+        return List.of(searchSectionsSpecificLine(searchAllSectionLineRequest));
+    }
 
-        sectionService.registerFirstSection(lineRegisterRequest, savedLineId);
+    private List<LineResponse> searchSectionsAllLine() {
+
+        final List<LineEntity> lineEntities = lineDao.findAll();
+
+        return lineEntities.stream()
+                           .map(lineEntity -> {
+                               Line line = commonService.mapToLineFrom(lineEntity.getName());
+                               List<SectionInLineResponse> sectionInLineResponses
+                                       = mapToSectionInLineResponseFrom(line);
+                               return new LineResponse(line.getName(), sectionInLineResponses);
+                           })
+                           .collect(Collectors.toList());
+    }
+
+    private List<SectionInLineResponse> mapToSectionInLineResponseFrom(final Line line) {
+        return line.getSections()
+                   .stream()
+                   .map(it -> new SectionInLineResponse(
+                           it.getStations().getCurrent().getName(),
+                           it.getStations().getNext().getName(),
+                           it.getStations().getDistance()))
+                   .collect(Collectors.toList());
+    }
+
+    private LineResponse searchSectionsSpecificLine(final SearchAllSectionLineRequest searchAllSectionLineRequest) {
+
+        final String lineName = searchAllSectionLineRequest.getLineName();
+        final Line line = commonService.mapToLineFrom(lineName);
+
+        final List<SectionInLineResponse> sectionInLineResponses = mapToSectionInLineResponseFrom(line);
+
+        return new LineResponse(line.getName(), sectionInLineResponses);
     }
 }
