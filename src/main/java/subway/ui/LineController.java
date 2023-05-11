@@ -70,12 +70,6 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{id}/stations")
-    public ResponseEntity<Void> getStation(@PathVariable Long id, @RequestBody StationsRegisterRequest request) {
-        lineService.registerStations(id, request);
-        return ResponseEntity.ok().build();
-    }
-
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
