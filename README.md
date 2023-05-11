@@ -29,11 +29,11 @@
   - [x] 수정 PUT "/lines/{id}"
   - [x] 삭제 DELETE "/lines/{id}"
 - [ ] 지하철 + 노선 (노선에 역)
-  - [ ] 등록 POST "/lines/{line_id}/stations/"
+  - [x] 등록 POST "/lines/{line_id}/stations/"
     - RequestBody "upBoundStationsName" : ~
                   "downBoundStationsName" : ~
                   "distance" : ~
-  - [ ] 제거 DELETE "/lines/{line_id}"/stations/{station_id}
+  - [x] 제거 DELETE "/lines/{line_id}"/stations/{station_id}
 
 
 ### 도메인
