@@ -84,6 +84,21 @@ public class LineStationControllerIntegrationTest {
         }
 
         @Test
+        void 추가_할려는_두_역이_이미_노선에_존재하면_예외() {
+            // given
+            역_생성_요청("말랑역");
+            역_생성_요청("오리역");
+            노선_생성_요청("1호선", "말랑역", "오리역", 10);
+
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_추가_요청("1호선", "말랑역", "오리역", 20);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        }
+
+        @Test
         void 역이_존재하지_않으면_예외() {
             // given
             역_생성_요청("말랑역");

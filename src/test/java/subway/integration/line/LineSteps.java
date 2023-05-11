@@ -8,9 +8,9 @@ import static subway.integration.common.JsonMapper.toJson;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import subway.controller.request.LineCreateRequest;
-import subway.service.dto.LineQueryResponse;
-import subway.service.dto.LineQueryResponse.SectionQueryResponse;
+import subway.dto.request.LineCreateRequest;
+import subway.dto.response.LineQueryResponse;
+import subway.dto.response.LineQueryResponse.SectionQueryResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineSteps {

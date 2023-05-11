@@ -6,8 +6,8 @@ import static subway.integration.common.JsonMapper.toJson;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.controller.request.AddStationToLineRequest;
-import subway.controller.request.DeleteStationFromLineRequest;
+import subway.dto.request.AddStationToLineRequest;
+import subway.dto.request.DeleteStationFromLineRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineStationSteps {

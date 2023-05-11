@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import subway.controller.request.LineCreateRequest;
+import subway.dto.request.LineCreateRequest;
+import subway.dto.response.LineQueryResponse;
 import subway.service.LineQueryService;
 import subway.service.LineService;
-import subway.service.dto.LineQueryResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -30,7 +30,7 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody @Valid final LineCreateRequest request) {
-        final Long id = lineService.create(request.toCommand());
+        final Long id = lineService.create(request);
         final URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

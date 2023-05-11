@@ -13,8 +13,8 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.dto.request.StationCreateRequest;
 import subway.exception.DuplicateStationException;
-import subway.service.dto.StationCreateCommand;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -31,7 +31,7 @@ class StationServiceTest {
                 .willReturn(1L);
 
         // when
-        final Long id = stationService.create(new StationCreateCommand("잠실역"));
+        final Long id = stationService.create(new StationCreateRequest("잠실역"));
 
         // then
         assertThat(id).isEqualTo(1);
@@ -45,7 +45,7 @@ class StationServiceTest {
 
         // when & then
         assertThrows(DuplicateStationException.class, () ->
-                stationService.create(new StationCreateCommand("잠실역"))
+                stationService.create(new StationCreateRequest("잠실역"))
         );
     }
 }

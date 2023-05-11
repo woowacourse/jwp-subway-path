@@ -8,12 +8,12 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.dto.request.AddStationToLineRequest;
+import subway.dto.request.DeleteStationFromLineRequest;
+import subway.dto.request.LineCreateRequest;
 import subway.exception.DuplicateLineException;
 import subway.exception.NotFoundLineException;
 import subway.exception.NotFoundStationException;
-import subway.service.dto.AddStationToLineCommand;
-import subway.service.dto.DeleteStationFromLineCommand;
-import subway.service.dto.LineCreateCommand;
 
 @Service
 @Transactional
@@ -28,14 +28,14 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
-    public Long create(final LineCreateCommand command) {
-        if (lineRepository.findByName(command.getLineName()).isPresent()) {
-            throw new DuplicateLineException(command.getLineName());
+    public Long create(final LineCreateRequest request) {
+        if (lineRepository.findByName(request.getLineName()).isPresent()) {
+            throw new DuplicateLineException(request.getLineName());
         }
-        final Station up = findStationByName(command.getUpTerminalName());
-        final Station down = findStationByName(command.getDownTerminalName());
-        final Sections sections = new Sections(new Section(up, down, command.getDistance()));
-        return lineRepository.save(new Line(command.getLineName(), sections));
+        final Station up = findStationByName(request.getUpTerminalName());
+        final Station down = findStationByName(request.getDownTerminalName());
+        final Sections sections = new Sections(new Section(up, down, request.getDistance()));
+        return lineRepository.save(new Line(request.getLineName(), sections));
     }
 
     private Station findStationByName(final String name) {
@@ -43,11 +43,11 @@ public class LineService {
                 .orElseThrow(() -> new NotFoundStationException(name));
     }
 
-    public void addStation(final AddStationToLineCommand command) {
-        final Line line = findLineByName(command.getLineName());
-        final Station up = findStationByName(command.getUpStationName());
-        final Station down = findStationByName(command.getDownStationName());
-        final Section section = new Section(up, down, command.getDistance());
+    public void addStation(final AddStationToLineRequest request) {
+        final Line line = findLineByName(request.getLineName());
+        final Station up = findStationByName(request.getUpStationName());
+        final Station down = findStationByName(request.getDownStationName());
+        final Section section = new Section(up, down, request.getDistance());
         line.addSection(section);
         lineRepository.update(line);
     }
@@ -57,9 +57,9 @@ public class LineService {
                 .orElseThrow(() -> new NotFoundLineException(name));
     }
 
-    public void removeStation(final DeleteStationFromLineCommand command) {
-        final Line line = findLineByName(command.getLineName());
-        final Station station = findStationByName(command.getDeleteStationName());
+    public void removeStation(final DeleteStationFromLineRequest request) {
+        final Line line = findLineByName(request.getLineName());
+        final Station station = findStationByName(request.getDeleteStationName());
         line.removeStation(station);
         if (line.getSections().isEmpty()) {
             lineRepository.delete(line);

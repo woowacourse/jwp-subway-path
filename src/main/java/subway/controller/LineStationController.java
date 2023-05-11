@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.controller.request.AddStationToLineRequest;
-import subway.controller.request.DeleteStationFromLineRequest;
+import subway.dto.request.AddStationToLineRequest;
+import subway.dto.request.DeleteStationFromLineRequest;
 import subway.service.LineService;
 
 @RestController
@@ -25,7 +25,7 @@ public class LineStationController {
     public ResponseEntity<Void> addStation(
             @RequestBody @Valid final AddStationToLineRequest request
     ) {
-        lineService.addStation(request.toCommand());
+        lineService.addStation(request);
         return ResponseEntity.ok().build();
     }
 
@@ -33,7 +33,7 @@ public class LineStationController {
     public ResponseEntity<Void> deleteStation(
             @RequestBody @Valid final DeleteStationFromLineRequest request
     ) {
-        lineService.removeStation(request.toCommand());
+        lineService.removeStation(request);
         return ResponseEntity.ok().build();
     }
 }

@@ -1,7 +1,6 @@
-package subway.controller.request;
+package subway.dto.request;
 
 import javax.validation.constraints.NotBlank;
-import subway.service.dto.DeleteStationFromLineCommand;
 
 public class DeleteStationFromLineRequest {
 
@@ -19,9 +18,6 @@ public class DeleteStationFromLineRequest {
         this.deleteStationName = deleteStationName;
     }
 
-    public DeleteStationFromLineCommand toCommand() {
-        return new DeleteStationFromLineCommand(lineName, deleteStationName);
-    }
 
     public String getLineName() {
         return lineName;

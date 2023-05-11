@@ -1,6 +1,7 @@
-package subway.controller.request;
+package subway.dto.request;
 
 import javax.validation.constraints.NotBlank;
+import subway.domain.Station;
 
 public class StationCreateRequest {
 
@@ -12,6 +13,10 @@ public class StationCreateRequest {
 
     public StationCreateRequest(final String name) {
         this.name = name;
+    }
+
+    public Station toDomain() {
+        return new Station(name);
     }
 
     public String getName() {

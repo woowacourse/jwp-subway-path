@@ -23,12 +23,12 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.dto.request.AddStationToLineRequest;
+import subway.dto.request.DeleteStationFromLineRequest;
+import subway.dto.request.LineCreateRequest;
 import subway.exception.DuplicateLineException;
 import subway.exception.NotFoundLineException;
 import subway.exception.NotFoundStationException;
-import subway.service.dto.AddStationToLineCommand;
-import subway.service.dto.DeleteStationFromLineCommand;
-import subway.service.dto.LineCreateCommand;
 
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -43,7 +43,7 @@ class LineServiceTest {
     @Nested
     class 노선을_생성시 {
 
-        final LineCreateCommand command = new LineCreateCommand(
+        final LineCreateRequest request = new LineCreateRequest(
                 "1호선",
                 "잠실역",
                 "사당역",
@@ -60,7 +60,7 @@ class LineServiceTest {
                     .willReturn(1L);
 
             // when
-            final Long id = lineService.create(command);
+            final Long id = lineService.create(request);
 
             // then
             assertThat(id).isEqualTo(1L);
@@ -73,7 +73,7 @@ class LineServiceTest {
                     .willReturn(Optional.of(new Line("1호선", null)));
 
             // when & then
-            assertThatThrownBy(() -> lineService.create(command))
+            assertThatThrownBy(() -> lineService.create(request))
                     .isInstanceOf(DuplicateLineException.class);
         }
 
@@ -84,7 +84,7 @@ class LineServiceTest {
             역을_저장한다("사당역");
 
             // when & then
-            assertThatThrownBy(() -> lineService.create(command))
+            assertThatThrownBy(() -> lineService.create(request))
                     .isInstanceOf(NotFoundStationException.class);
         }
 
@@ -95,7 +95,7 @@ class LineServiceTest {
             역을_저장한다("잠실역");
 
             // when & then
-            assertThatThrownBy(() -> lineService.create(command))
+            assertThatThrownBy(() -> lineService.create(request))
                     .isInstanceOf(NotFoundStationException.class);
         }
     }
@@ -103,7 +103,7 @@ class LineServiceTest {
     @Nested
     class 노선에_역을_추가시 {
 
-        final AddStationToLineCommand command = new AddStationToLineCommand(
+        final AddStationToLineRequest request = new AddStationToLineRequest(
                 "1호선",
                 "잠실역",
                 "사당역",
@@ -123,7 +123,7 @@ class LineServiceTest {
                     .willReturn(Optional.of(line));
 
             // when
-            lineService.addStation(command);
+            lineService.addStation(request);
 
             // then
             verify(lineRepository, times(1)).update(line);
@@ -137,7 +137,7 @@ class LineServiceTest {
                     .willReturn(Optional.empty());
 
             // when & then
-            assertThatThrownBy(() -> lineService.addStation(command))
+            assertThatThrownBy(() -> lineService.addStation(request))
                     .isInstanceOf(NotFoundLineException.class);
         }
 
@@ -148,7 +148,7 @@ class LineServiceTest {
             역을_저장한다("사당역");
 
             // when & then
-            assertThatThrownBy(() -> lineService.addStation(command))
+            assertThatThrownBy(() -> lineService.addStation(request))
                     .isInstanceOf(NotFoundStationException.class);
         }
 
@@ -159,7 +159,7 @@ class LineServiceTest {
             역을_저장한다("잠실역");
 
             // when & then
-            assertThatThrownBy(() -> lineService.addStation(command))
+            assertThatThrownBy(() -> lineService.addStation(request))
                     .isInstanceOf(NotFoundStationException.class);
         }
     }
@@ -170,14 +170,14 @@ class LineServiceTest {
         final Sections sections = new Sections(List.of(
                 createSection("역1", "역2", 10),
                 createSection("역2", "역3", 10)));
-        final DeleteStationFromLineCommand command = new DeleteStationFromLineCommand("1호선", "역2");
+        final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", "역2");
         final Line line = new Line("1호선", sections);
         given(lineRepository.findByName("1호선"))
                 .willReturn(Optional.of(line));
         역을_저장한다("역2");
 
         // when
-        lineService.removeStation(command);
+        lineService.removeStation(request);
 
         // then
         verify(lineRepository, times(1)).update(line);
@@ -189,14 +189,14 @@ class LineServiceTest {
     void 노션에_역이_두개일떄_노선에서_역_제거시_노선도_제거된다() {
         // given
         final Sections sections = new Sections(createSection("역1", "역2", 10));
-        final DeleteStationFromLineCommand command = new DeleteStationFromLineCommand("1호선", "역2");
+        final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", "역2");
         final Line line = new Line("1호선", sections);
         given(lineRepository.findByName("1호선"))
                 .willReturn(Optional.of(line));
         역을_저장한다("역2");
 
         // when
-        lineService.removeStation(command);
+        lineService.removeStation(request);
 
         // then
         verify(lineRepository, times(0)).update(line);

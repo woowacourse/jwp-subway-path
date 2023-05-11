@@ -9,9 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import subway.controller.request.StationCreateRequest;
+import subway.dto.request.StationCreateRequest;
 import subway.service.StationService;
-import subway.service.dto.StationCreateCommand;
 
 @RestController
 @RequestMapping("/stations")
@@ -25,7 +24,7 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody @Valid final StationCreateRequest stationCreateRequest) {
-        final Long id = stationService.create(new StationCreateCommand(stationCreateRequest.getName()));
+        final Long id = stationService.create(new StationCreateRequest(stationCreateRequest.getName()));
         final URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

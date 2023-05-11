@@ -34,7 +34,7 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.test.context.jdbc.Sql;
-import subway.service.dto.LineQueryResponse;
+import subway.dto.response.LineQueryResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)

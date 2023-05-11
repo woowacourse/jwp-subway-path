@@ -1,8 +1,7 @@
-package subway.controller.request;
+package subway.dto.request;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import subway.service.dto.AddStationToLineCommand;
 
 public class AddStationToLineRequest {
 
@@ -29,9 +28,6 @@ public class AddStationToLineRequest {
         this.distance = distance;
     }
 
-    public AddStationToLineCommand toCommand() {
-        return new AddStationToLineCommand(lineName, upStationName, downStationName, distance);
-    }
 
     public String getLineName() {
         return lineName;
