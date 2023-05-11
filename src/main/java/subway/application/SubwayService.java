@@ -2,12 +2,12 @@ package subway.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.*;
 import subway.dto.AddLineRequest;
 import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
 import subway.dto.LineResponse;
-import subway.exception.DuplicateLineNameException;
 import subway.exception.LineNotFoundException;
 import subway.repository.SubwayRepository;
 
@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class SubwayService {
 
@@ -27,12 +28,11 @@ public class SubwayService {
 
     public long addStation(AddStationRequest addStationRequest) {
         Station stationToAdd = Station.from(addStationRequest.getAddStationName());
-
         validateStationExist(stationToAdd);
 
         LineNames lineNames = subwayRepository.getLineNames();
         String inputLineName = addStationRequest.getLineName();
-        validateLineExist(lineNames, inputLineName);
+        lineNames.validateLineExist(inputLineName);
 
         Line line = subwayRepository.getLineByName(inputLineName);
         Station upstream = Station.from(addStationRequest.getUpstreamName());
@@ -44,10 +44,16 @@ public class SubwayService {
                 .orElseThrow(() -> new NoSuchElementException("디버깅: 역이 추가되어야 하는데 안됐습니다"));
     }
 
-    private void validateLineExist(LineNames lineNames, String inputLineName) {
-        if (!lineNames.hasLineOfName(inputLineName)) {
-            throw new LineNotFoundException("존재하지 않는 노선입니다");
-        }
+    public void deleteStation(DeleteStationRequest deleteStationRequest) {
+        Station stationToDelete = Station.from(deleteStationRequest.getStationName());
+        validateStationExist(stationToDelete);
+
+        LineNames lineNames = subwayRepository.getLineNames();
+        lineNames.validateLineExist(deleteStationRequest.getLineName());
+
+        Line line = subwayRepository.getLineByName(deleteStationRequest.getLineName());
+        line.deleteStation(stationToDelete);
+        subwayRepository.updateLine(line);
     }
 
     private void validateStationExist(Station stationToAdd) {
@@ -57,34 +63,29 @@ public class SubwayService {
         }
     }
 
-    public void deleteStation(DeleteStationRequest deleteStationRequest) {
-        Station stationToDelete = Station.from(deleteStationRequest.getStationName());
-        validateStationExist(stationToDelete);
-        LineNames lineNames = subwayRepository.getLineNames();
-        validateLineExist(lineNames, deleteStationRequest.getLineName());
-
-        Line line = subwayRepository.getLineByName(deleteStationRequest.getLineName());
-        line.deleteStation(stationToDelete);
-        subwayRepository.updateLine(line);
-    }
-
     public Long addLine(AddLineRequest addLineRequest) {
-        if (subwayRepository.getLineNames().hasLineOfName(addLineRequest.getName())) {
-            throw new DuplicateLineNameException("이미 존재하는 노선입니다");
-        }
+        LineNames lineNames = subwayRepository.getLineNames();
+        lineNames.validateLineNotExist(addLineRequest.getName());
+
         Station upstream = Station.from(addLineRequest.getUpstreamName());
         Station downstream = Station.from(addLineRequest.getDownstreamName());
         Section section = new Section(upstream, downstream, addLineRequest.getDistance());
         Line line = new Line(addLineRequest.getName(), List.of(section));
 
-        if (!subwayRepository.getStations().contains(upstream)) {
+        registerStationIfNotExist(upstream, downstream);
+        subwayRepository.addLine(addLineRequest.getName());
+
+        return subwayRepository.updateLine(line);
+    }
+
+    private void registerStationIfNotExist(Station upstream, Station downstream) {
+        Stations stations = subwayRepository.getStations();
+        if (!stations.contains(upstream)) {
             subwayRepository.addStation(upstream);
         }
-        if (!subwayRepository.getStations().contains(downstream)) {
+        if (!stations.contains(downstream)) {
             subwayRepository.addStation(downstream);
         }
-        subwayRepository.addLine(addLineRequest.getName());
-        return subwayRepository.updateLine(line);
     }
 
     public LineResponse findLineById(Long id) {
