@@ -4,9 +4,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.entity.SectionEntity;
+import subway.entity.SectionEntity;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +49,30 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public void remove(final SectionEntity sectionEntity) {
+    public void delete(final SectionEntity sectionEntity) {
         String sql = "DELETE FROM section WHERE line_id = ? AND up_station_id = ? AND down_station_id = ?";
         jdbcTemplate.update(sql, sectionEntity.getLineId(), sectionEntity.getUpStationId(), sectionEntity.getDownStationId());
+    }
+
+    public void deleteAllByLineId(final Long lineId) {
+        String sql = "DELETE FROM section WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public void insertBatchSections(final List<SectionEntity> sectionEntities) {
+        String sql = "INSERT INTO section (line_id, up_station_id, down_station_id, distance) VALUES (?, ?, ?, ?)";
+        List<Object[]> batchValues = new ArrayList<>();
+
+        for (SectionEntity entity : sectionEntities) {
+            Object[] values = new Object[]{
+                    entity.getLineId(),
+                    entity.getUpStationId(),
+                    entity.getDownStationId(),
+                    entity.getDistance()
+            };
+            batchValues.add(values);
+        }
+
+        jdbcTemplate.batchUpdate(sql, batchValues);
     }
 }

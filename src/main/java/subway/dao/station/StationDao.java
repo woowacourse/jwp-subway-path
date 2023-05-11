@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
-import subway.domain.entity.StationEntity;
+import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -24,7 +24,6 @@ public class StationDao {
                     rs.getString("name")
             );
 
-
     public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
@@ -37,10 +36,9 @@ public class StationDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationName));
     }
 
-    public StationEntity insert(final Station station) {
+    public Long insert(final Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new StationEntity(id, station.getName());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
     public List<StationEntity> findAll() {
