@@ -1,7 +1,5 @@
 package subway.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -12,47 +10,12 @@ import org.springframework.http.MediaType;
 import subway.dto.SectionSaveRequest;
 import subway.dto.StationRequest;
 
-@DisplayName("지하철 구간 관련 기능")
-public class SectionIntegrationTest extends IntegrationTest {
+import static org.assertj.core.api.Assertions.assertThat;
 
-    @DisplayName("노선에 역을 최초로 추가한다.")
+public class SectionRemoveIntegrationTest extends IntegrationTest {
+    @DisplayName("노선의 상행 종점을 제거한다.")
     @Test
-    void addInitialSectionToLine_success() {
-        //given
-        ExtractableResponse<Response> response1 = RestAssured.given().log().all()
-                .body(new StationRequest("강남역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
-
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
-                .body(new StationRequest("잠실역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
-
-        // when
-        long lineId = 1L;
-        SectionSaveRequest request = new SectionSaveRequest(1L, 2L, 10);
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .body(request)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/" + lineId + "/sections")
-                .then().log().all().
-                extract();
-
-        // then
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    @DisplayName("노선의 종점에 역을 추가한다.")
-    @Test
-    void addEndSectionToLine_success() {
+    void removeUpEndSection_success() {
         //given
         ExtractableResponse<Response> response1 = RestAssured.given().log().all()
                 .body(new StationRequest("강남역"))
@@ -78,6 +41,7 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
+        //노선에 첫 구간 등록
         long lineId = 1L;
         SectionSaveRequest initSaveRequest = new SectionSaveRequest(1L, 2L, 10);
         ExtractableResponse<Response> createResponse = RestAssured
@@ -88,23 +52,31 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .then().log().all().
                 extract();
 
-        //when
-        SectionSaveRequest upEndSaveRequest = new SectionSaveRequest(3L, 1L, 5);
+        SectionSaveRequest saveRequest2 = new SectionSaveRequest(2L, 3L, 10);
         ExtractableResponse<Response> createResponse2 = RestAssured
                 .given().log().all()
-                .body(upEndSaveRequest)
+                .body(saveRequest2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/lines/" + lineId + "/sections")
                 .then().log().all().
                 extract();
 
+        //when
+        //현재상태: 1-2-3
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/" + lineId + "/sections/" + 1)
+                .then().log().all().
+                extract();
+
         // then
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("노선의 중간에 역을 추가한다.")
+    @DisplayName("노선의 하행종점을 제거한다.")
     @Test
-    void addMiddleSectionToLine_success() {
+    void removeDownEndSection_success() {
         //given
         ExtractableResponse<Response> response1 = RestAssured.given().log().all()
                 .body(new StationRequest("강남역"))
@@ -130,6 +102,121 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
+        //노선에 첫 구간 등록
+        long lineId = 1L;
+        SectionSaveRequest initSaveRequest = new SectionSaveRequest(1L, 2L, 10);
+        ExtractableResponse<Response> createResponse = RestAssured
+                .given().log().all()
+                .body(initSaveRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines/" + lineId + "/sections")
+                .then().log().all().
+                extract();
+
+        SectionSaveRequest saveRequest2 = new SectionSaveRequest(2L, 3L, 10);
+        ExtractableResponse<Response> createResponse2 = RestAssured
+                .given().log().all()
+                .body(saveRequest2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines/" + lineId + "/sections")
+                .then().log().all().
+                extract();
+
+        //when
+        //현재상태: 1-2-3
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/" + lineId + "/sections/" + 3)
+                .then().log().all().
+                extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("노선의 중간역을 제거한다.")
+    @Test
+    void removeMiddleSection_success() {
+        //given
+        ExtractableResponse<Response> response1 = RestAssured.given().log().all()
+                .body(new StationRequest("강남역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+                .body(new StationRequest("잠실역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        ExtractableResponse<Response> response3 = RestAssured.given().log().all()
+                .body(new StationRequest("잠실나루역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        //노선에 첫 구간 등록
+        long lineId = 1L;
+        SectionSaveRequest initSaveRequest = new SectionSaveRequest(1L, 2L, 10);
+        ExtractableResponse<Response> createResponse = RestAssured
+                .given().log().all()
+                .body(initSaveRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines/" + lineId + "/sections")
+                .then().log().all().
+                extract();
+
+        SectionSaveRequest saveRequest2 = new SectionSaveRequest(2L, 3L, 10);
+        ExtractableResponse<Response> createResponse2 = RestAssured
+                .given().log().all()
+                .body(saveRequest2)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines/" + lineId + "/sections")
+                .then().log().all().
+                extract();
+
+        //when
+        //현재상태: 1-2-3
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/" + lineId + "/sections/" + 2)
+                .then().log().all().
+                extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("노선에 존재하지 않는 역을 제거하면 400에러를 발생시킨다.")
+    @Test
+    void removeSection_not_exist_fail() {
+        //given
+        ExtractableResponse<Response> response1 = RestAssured.given().log().all()
+                .body(new StationRequest("강남역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+                .body(new StationRequest("잠실역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        //노선에 첫 구간 등록
         long lineId = 1L;
         SectionSaveRequest initSaveRequest = new SectionSaveRequest(1L, 2L, 10);
         ExtractableResponse<Response> createResponse = RestAssured
@@ -141,16 +228,15 @@ public class SectionIntegrationTest extends IntegrationTest {
                 extract();
 
         //when
-        SectionSaveRequest middleSaveRequest = new SectionSaveRequest(1L, 3L, 2);
-        ExtractableResponse<Response> createResponse2 = RestAssured
+        //현재상태: 1-2
+        ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .body(middleSaveRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/" + lineId + "/sections")
+                .when().delete("/lines/" + lineId + "/sections/" + 5)
                 .then().log().all().
                 extract();
 
         // then
-        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }

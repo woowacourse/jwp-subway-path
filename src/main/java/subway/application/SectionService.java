@@ -9,6 +9,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionSaveRequest;
+import subway.exception.StationNotExistException;
 
 @Service
 public class SectionService {
@@ -76,7 +77,7 @@ public class SectionService {
         Sections sections = sectionDao.findSectionsByLineId(lineId);
 
         if (sections.isNotExistStation(stationId)) {
-            throw new IllegalArgumentException("해당 노선에 존재하지 않는 역입니다.");
+            throw new StationNotExistException();
         }
 
         if (sections.size() == 1) {
