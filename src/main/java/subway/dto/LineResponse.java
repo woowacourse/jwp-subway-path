@@ -12,7 +12,7 @@ public class LineResponse {
         this(null, null, null, null);
     }
 
-    public LineResponse(final Long id, final String name, final String color) {
+    private LineResponse(final Long id, final String name, final String color) {
         this(id, name, color, null);
     }
 

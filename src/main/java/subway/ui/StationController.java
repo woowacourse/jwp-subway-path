@@ -44,7 +44,7 @@ public class StationController {
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateStation(@PathVariable Long id, @Valid@RequestBody StationRequest stationRequest) {
         stationService.updateStation(id, stationRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
