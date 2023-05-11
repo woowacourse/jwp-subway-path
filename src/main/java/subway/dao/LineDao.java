@@ -46,15 +46,10 @@ public class LineDao {
         String sql = "select id, name, color from LINE WHERE id = ?";
         try {
             final Line line = jdbcTemplate.queryForObject(sql, rowMapper, id);
-            return Optional.of(line);
+            return Optional.ofNullable(line);
         } catch (final EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
-    }
-
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
     public void deleteById(Long id) {
