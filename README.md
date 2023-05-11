@@ -17,7 +17,7 @@
 - 테이블 이름 - STATION
 
   | id | name | next | distance | line_id  |
-            | --- | --- |------|----------| -------- |
+                  | --- | --- |------|----------| -------- |
   | 1L | 노포역 | 2L | 10   | 1L       |
   | 2L | 화정역 | 3L | 5    | 1L       |
   | 3L | 잠실역 | 0L | null | 1L       |
@@ -28,7 +28,7 @@ name next가 중복 허용
 - 테이블 이름 - LINE
 
   | id | name | color | head_station |
-            | --- | --- |-------| ------------ |
+                  | --- | --- |-------| ------------ |
   | 1L | 1호선 | 파란색 | 1L    |
   | 2L | 2호선 | 초록색 | 4L    |
 
@@ -47,6 +47,7 @@ name next가 중복 허용
       color:"주황색",
       upStation:"강남역",
       downStation:"역삼역",
+      distance:10,
   }
   ```
 
@@ -66,12 +67,12 @@ name next가 중복 허용
   ```jsx
   POST /stations/{line_id}
   
-  RequestBody = [{
-      name : "노포역",
-  },{
-      name : "범어사역",
-  }]
-  +)TODO 어디에 추가할 건지 
+  RequestBody = {
+      upStation : "노포역",
+      downStation : "강남역",
+      distance : 10,
+  }
+   
   ```
 
   ```jsx
@@ -90,7 +91,7 @@ name next가 중복 허용
 DELETE /stations/{line_id}
 
 RequestBody = {
-    stationId : 2,
+    name : "역삼역"
 }
 ```
 
@@ -98,7 +99,7 @@ RequestBody = {
 삭제된 아이디 리스트
 ```
 
-- [ ]  노선 조회
+- [x]  노선 조회
 
 ```jsx
 GET /lines/{line_id}
@@ -121,7 +122,7 @@ GET /lines/{line_id}
 ]
 ```
 
-- [ ]  노선 목록 조회
+- [x]  노선 목록 조회
 
 ```jsx
 GET /lines

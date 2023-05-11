@@ -3,6 +3,7 @@ package subway.dto;
 public class LineRequest {
     private String name;
     private String color;
+    private Long head_station;
 
     public LineRequest() {
     }

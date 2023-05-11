@@ -181,6 +181,10 @@ public class Line {
         return color;
     }
 
+    public Station getHeadStation() {
+        return headStation;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

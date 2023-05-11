@@ -5,6 +5,7 @@ import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,18 +18,25 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+//    public StationResponse saveStation(StationRequest stationRequest) {
+//        StationEntity station = stationDao.insert(new Station(stationRequest.getName()));
+//        return StationResponse.of(station);
+//    }
+
+//    public StationResponse findStationResponseById(Long id) {
+//        return StationResponse.of(stationDao.findById(id));
+//    }
+
+    public List<StationEntity> findAllStationTest() {
+        return stationDao.findAll();
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
-    }
+    public List<StationResponse> findAllStationResponses(Long lineId, Long headStationId) {
+        StationEntity headEntity = stationDao.findById(headStationId);
+        List<StationEntity> entities = stationDao.findByLineId(lineId);
+        // TODO: 2023/05/11 headEntity가 entities에 포함되어 있지 않을 경우 예외처리
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
+        List<Station> stations = Station.from(entities, headEntity);
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());

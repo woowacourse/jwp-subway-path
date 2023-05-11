@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -13,49 +14,55 @@ import java.util.Map;
 
 @Repository
 public class LineDao {
-//    private final JdbcTemplate jdbcTemplate;
-//    private final SimpleJdbcInsert insertAction;
-//
-//    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-//            new Line(
-//                    rs.getLong("id"),
-//                    rs.getString("name"),
-//                    rs.getString("color")
-//            );
-//
-//    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-//        this.jdbcTemplate = jdbcTemplate;
-//        this.insertAction = new SimpleJdbcInsert(dataSource)
-//                .withTableName("line")
-//                .usingGeneratedKeyColumns("id");
-//    }
-//
-//    public Line insert(Line line) {
-//        Map<String, Object> params = new HashMap<>();
-//        params.put("id", line.getId());
-//        params.put("name", line.getName());
-//        params.put("color", line.getColor());
-//
-//        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-//        return new Line(lineId, line.getName(), line.getColor());
-//    }
-//
-//    public List<Line> findAll() {
-//        String sql = "select id, name, color from LINE";
-//        return jdbcTemplate.query(sql, rowMapper);
-//    }
-//
-//    public Line findById(Long id) {
-//        String sql = "select id, name, color from LINE WHERE id = ?";
-//        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-//    }
-//
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+            new LineEntity(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("color"),
+                    rs.getLong("head_station")
+            );
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
+
+    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.insertAction = new SimpleJdbcInsert(dataSource)
+                .withTableName("line")
+                .usingGeneratedKeyColumns("id");
+    }
+
+    // TODO: 2023/05/11 name을 받고 id를 찾아 반환하는 메서드 구현하기 
+    public LineEntity insert(Line line) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", line.getName());
+        params.put("color", line.getColor());
+        params.put("head_station", line.getHeadStation().getId());
+
+        Long lineId = insertAction.executeAndReturnKey(params).longValue();
+        return new LineEntity(lineId, line.getName(), line.getColor(), line.getHeadStation().getId());
+    }
+
+    public List<LineEntity> findAll() {
+        String sql = "select * from LINE";
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public LineEntity findById(Long id) {
+        String sql = "select * from LINE WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
 //    public void update(Line newLine) {
 //        String sql = "update LINE set name = ?, color = ? where id = ?";
-//        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+//        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
 //    }
-//
-//    public void deleteById(Long id) {
-//        jdbcTemplate.update("delete from Line where id = ?", id);
-//    }
+
+    public void updateHeadStation(Line line, Long headStation) {
+        String sql = "update LINE set head_station = ? where id = ?";
+        jdbcTemplate.update(sql, headStation, line.getId());
+    }
+
+    public void deleteById(Long id) {
+        jdbcTemplate.update("delete from Line where id = ?", id);
+    }
 }

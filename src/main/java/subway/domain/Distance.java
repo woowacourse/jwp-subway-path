@@ -4,15 +4,20 @@ import java.util.Objects;
 
 public class Distance {
 
+    public static final Distance emptyDistance = new Distance();
     private static final int MIN = 1;
-    private final int value;
+    private final Integer value;
 
-    public Distance(int value) {
+    public Distance(Integer value) {
         validatePositive(value);
         this.value = value;
     }
 
-    private void validatePositive(int value) {
+    private Distance() {
+        this.value = 0;
+    }
+
+    private void validatePositive(Integer value) {
         if (value < MIN) {
             throw new IllegalArgumentException("거리는 양의 정수여야 합니다");
         }

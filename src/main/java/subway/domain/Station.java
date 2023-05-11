@@ -1,5 +1,9 @@
 package subway.domain;
 
+import subway.entity.StationEntity;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 //TODO: getDistance() 제거 도전
@@ -36,6 +40,32 @@ public class Station {
         this.name = name;
         this.next = next;
         this.distance = distance;
+    }
+
+    public static List<Station> from(List<StationEntity> entities, StationEntity headEntity) {
+        if (!entities.contains(headEntity)) {
+            throw new IllegalArgumentException("해당 노선의 상행 종점이 아닙니다.");
+        }
+        StationEntity entity = headEntity;
+        Station station = Station.from(entity);
+        List<Station> stations = new ArrayList<Station>(List.of(station));
+        while (entity.getNext() != 0L) {
+            StationEntity finalEntity = entity;
+            entity = entities.stream().filter((e) -> e.getId() == finalEntity.getNext()).findFirst().orElseThrow(() -> new IllegalArgumentException("해당 역이 노선에 존재하지 않습니다."));
+            station = Station.from(entity);
+            stations.add(station);
+        }
+        return stations;
+    }
+
+    public static Station from(StationEntity entity) {
+        Distance distance;
+        if (entity.getDistance() == 0) {
+            distance = Distance.emptyDistance;
+        } else {
+            distance = new Distance(entity.getDistance());
+        }
+        return new Station(entity.getId(), entity.getName(), emptyStation, distance);
     }
 
     public boolean isDownEndStation() {
