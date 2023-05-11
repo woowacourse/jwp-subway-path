@@ -19,12 +19,11 @@ public class Line {
             return;
         }
 
-        final Section head = starter.find(newSection);
+        final Section targetSection = starter.find(newSection);
 
-        if (head == null) {
+        if (canExchangeStarter(targetSection)) {
             if (starter.isLinked(newSection)) {
-                newSection.updateNextSection(starter);
-                starter = newSection;
+                exchangeStarterOnAdd(newSection);
                 return;
             }
             throw new IllegalArgumentException("해당 섹션은 현재 Line에 추가할 수 없습니다.");
@@ -33,18 +32,27 @@ public class Line {
         starter.addNext(newSection);
     }
 
+    private boolean canExchangeStarter(final Section targetSection) {
+        return targetSection == null;
+    }
+
+    private void exchangeStarterOnAdd(final Section newSection) {
+        newSection.updateNextSection(starter);
+        starter = newSection;
+    }
+
     public void delete(final Station deletedStation) {
         final Section target = starter.find(deletedStation);
 
-        if (target == null) {
+        if (canExchangeStarter(target)) {
             if (starter.isSameCurrentWith(deletedStation)) {
-                exchangeStarter();
+                exchangeStarterOnDelete();
                 return;
             }
             throw new IllegalArgumentException("삭제할 역이 없습니다.");
         }
 
-        if (target.getTo() == null) {
+        if (canExchangeTail(target)) {
             Section newLastSection = findPreSection(target);
             newLastSection.disconnectNextSection();
             return;
@@ -53,10 +61,23 @@ public class Line {
         starter.delete(deletedStation);
     }
 
-    private void exchangeStarter() {
+    private void exchangeStarterOnDelete() {
         final Section newStarter = starter.getTo();
         starter.disconnectNextSection();
         starter = newStarter;
+    }
+
+    private boolean canExchangeTail(final Section target) {
+        return target.getTo() == null;
+    }
+
+    private Section findPreSection(Section targetSection) {
+        Section current = starter;
+
+        while (current.getTo() != targetSection) {
+            current = current.getTo();
+        }
+        return current;
     }
 
     public List<Section> getSections() {
@@ -71,15 +92,6 @@ public class Line {
         }
 
         return sections;
-    }
-
-    private Section findPreSection(Section targetSection) {
-        Section current = starter;
-
-        while (current.getTo() != targetSection) {
-            current = current.getTo();
-        }
-        return current;
     }
 
     public Section getStarter() {

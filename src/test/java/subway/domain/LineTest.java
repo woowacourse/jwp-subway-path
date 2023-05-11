@@ -11,6 +11,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LineTest {
 
+    /**
+     * 기존 : A -> B
+     * 추가 : B -> C
+     * 결과 : A -> B -> C
+     */
     @Test
     @DisplayName("add() : Line의 맨 끝에 새로운 섹션을 추가할 수 있다.")
     void test_add_last() throws Exception {
@@ -135,7 +140,6 @@ class LineTest {
     }
 
 
-
     /**
      * 기존 : A -> B -> C -> D
      * 삭제 : B
@@ -208,6 +212,11 @@ class LineTest {
         );
     }
 
+    /**
+     * 기존 : A -> B -> C -> D
+     * 삭제 : D
+     * 결과 : A -> B -> C
+     */
     @Test
     @DisplayName("delete() : Line의 마지막 역을 삭제할 수 있다.")
     void test_delete_last_station() throws Exception {
