@@ -18,7 +18,6 @@ public class LineController {
     // TODO: 테스트 추가, 도메인 메서드 및 변수명 변경, README 수정, 메서드 분리, 예외 핸들링, @Valid 적용
 
     /**
-     * 1. 리팩토링 (코드 분리 + 도메인 메서드 명 변경)
      * 2. 테스트
      * 3. 예외 핸들링
      * 4. @Valid 적용
