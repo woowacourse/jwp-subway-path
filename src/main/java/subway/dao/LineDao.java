@@ -51,7 +51,7 @@ public class LineDao {
 
     public void updateName(final Long id, final LineName lineName) {
         final String sql = "update LINE set name = ? where id = ?";
-        jdbcTemplate.update(sql, lineName, id);
+        jdbcTemplate.update(sql, lineName.getValue(), id);
     }
 
     public void deleteById(final Long id) {
