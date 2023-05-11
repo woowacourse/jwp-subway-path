@@ -134,4 +134,17 @@ class SubwayTest {
                 .isInstanceOf(LineNotEmptyException.class)
                 .hasMessage("노선이 비어있지 않습니다.");
     }
+
+    @Test
+    void 초기_구간을_추가할_때_이름이_같은_역을_추가하려는_경우_예외를_던진다() {
+        // given
+        final Subway subway = new Subway(List.of(
+                new Line("2호선", "RED", Collections.emptyList())
+        ));
+
+        // expect
+        assertThatThrownBy(() -> subway.initialAdd("2호선", "A", "A", 4))
+                .isInstanceOf(InvalidSectionException.class)
+                .hasMessage("동일한 이름을 가진 역을 구간에 추가할 수 없습니다.");
+    }
 }
