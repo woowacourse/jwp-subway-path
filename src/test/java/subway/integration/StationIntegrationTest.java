@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -78,21 +77,26 @@ class StationIntegrationTest extends IntegrationTest {
     @Test
     void getStations() {
         // given
-        final ExtractableResponse<Response> createResponse1 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest1)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        final Long stationId1 = Long.parseLong(
+                RestAssured
+                        .given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(stationRequest1)
+                        .when().post("/stations")
+                        .then().log().all()
+                        .extract()
+                        .header("Location").split("/")[2]
+        );
 
-        final ExtractableResponse<Response> createResponse2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest2)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        final Long stationId2 = Long.parseLong(
+                RestAssured
+                        .given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(stationRequest2)
+                        .when().post("/stations")
+                        .then().log().all()
+                        .extract().header("Location").split("/")[2]
+        );
 
         // when
         final ExtractableResponse<Response> response = RestAssured
@@ -103,13 +107,10 @@ class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final List<Long> expectedStationIds = Stream.of(createResponse1, createResponse2)
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
         final List<Long> resultStationIds = response.jsonPath().getList(".", StationResponse.class).stream()
                 .map(StationResponse::getId)
                 .collect(Collectors.toList());
-        assertThat(resultStationIds).containsAll(expectedStationIds);
+        assertThat(resultStationIds).containsExactly(stationId1, stationId2);
     }
 
     @DisplayName("지하철역을 조회한다.")
