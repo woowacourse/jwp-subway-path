@@ -20,7 +20,7 @@ import subway.station.domain.Station;
 
 @DisplayName("지하철 노선 관련 기능")
 class LineIntegrationTest extends IntegrationTest {
-    
+
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
@@ -42,8 +42,8 @@ class LineIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -59,8 +59,8 @@ class LineIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all()
+                .extract();
 
         // when
         final ExtractableResponse<Response> response = RestAssured
@@ -68,8 +68,8 @@ class LineIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -130,18 +130,20 @@ class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final LineSearchResponse lineSearchResponse = response.as(LineSearchResponse.class);
-        assertThat(lineSearchResponse.getId()).isEqualTo(1);
-        assertThat(lineSearchResponse.getName()).isEqualTo("1호선");
-        assertThat(lineSearchResponse.getColor()).isEqualTo("파란색");
-        assertThat(lineSearchResponse.getStations()).containsExactly(
-                new Station(1L, "1L"),
-                new Station(2L, "2L"),
-                new Station(3L, "3L"),
-                new Station(4L, "4L"),
-                new Station(5L, "5L"),
-                new Station(6L, "6L"),
-                new Station(7L, "7L")
+        final LineSearchResponse result = response.as(LineSearchResponse.class);
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(1),
+                () -> assertThat(result.getName()).isEqualTo("1호선"),
+                () -> assertThat(result.getColor()).isEqualTo("파란색"),
+                () -> assertThat(result.getStations()).containsExactly(
+                        new Station(1L, "1L"),
+                        new Station(2L, "2L"),
+                        new Station(3L, "3L"),
+                        new Station(4L, "4L"),
+                        new Station(5L, "5L"),
+                        new Station(6L, "6L"),
+                        new Station(7L, "7L")
+                )
         );
     }
 
@@ -154,8 +156,8 @@ class LineIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all()
+                .extract();
 
         // when
         final Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
