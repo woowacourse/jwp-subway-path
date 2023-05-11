@@ -8,12 +8,12 @@ public class Distance {
 
     private final int distance;
 
-    public Distance(final int distance) {
+    public Distance(int distance) {
         validate(distance);
         this.distance = distance;
     }
 
-    private void validate(final int distance) {
+    private void validate(int distance) {
         if (distance < MIN_DISTANCE || distance > MAX_DISTANCE) {
             throw new GlobalException("역간 거리는 10km이하 양의 정수만 가능합니다.");
         }
@@ -23,11 +23,11 @@ public class Distance {
         return distance;
     }
 
-    public boolean isBiggerThanOtherDistance(final Distance otherDistance) {
+    public boolean isBiggerThanOtherDistance(Distance otherDistance) {
         return this.distance > otherDistance.distance;
     }
 
-    public Distance subtract(final Distance otherDistance) {
+    public Distance subtract(Distance otherDistance) {
         return new Distance(this.distance - otherDistance.distance);
     }
 }
