@@ -21,7 +21,6 @@ import subway.dto.LineSection;
 
 @Repository
 public class SectionDao {
-
 	private final JdbcTemplate jdbcTemplate;
 
 	private final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
@@ -90,6 +89,11 @@ public class SectionDao {
 				+ "LEFT JOIN station AS arrival_station ON arrival_station.id = section.arrival_id "
 				+ "WHERE section.line_id = ?";
 		return jdbcTemplate.query(sql, sectionRowMapper, id);
+	}
+
+	public List<Section> findSectionByLineIdAndStationId(Long lineId, Long stationId) {
+		String sql = "SELECT * FROM section WHERE line_id = ? AND departure_id =? OR arrival_id =?";
+		return jdbcTemplate.query(sql, sectionRowMapper, lineId, stationId);
 	}
 
 	public void deleteSection(Long sectionId) {

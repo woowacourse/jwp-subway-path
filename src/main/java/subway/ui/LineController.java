@@ -94,6 +94,12 @@ public class LineController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(addStationResponses);
 	}
 
+	@DeleteMapping("/{lineId}/stations/{stationId}")
+	public ResponseEntity<Void> deleteStation(@PathVariable final Long lineId, @PathVariable final Long stationId) {
+		sectionService.deleteSectionByLineIdAndSectionId(lineId, stationId);
+		return ResponseEntity.noContent().build();
+	}
+
 	@ExceptionHandler(SQLException.class)
 	public ResponseEntity<Void> handleSQLException() {
 		return ResponseEntity.badRequest().build();

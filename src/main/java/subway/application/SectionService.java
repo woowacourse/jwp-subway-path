@@ -119,6 +119,22 @@ public class SectionService {
 		return sectionSorter.sortSections(sections);
 	}
 
+	public void deleteSectionByLineIdAndSectionId(Long lineId, Long sectionId) {
+		final List<Section> sections = sectionDao.findSectionByLineIdAndStationId(lineId, sectionId);
+		final SectionSorter sectionSorter = SectionSorter.getInstance();
+		final List<Section> sortedSections = sectionSorter.sortSections(sections);
+		if (sections.size() == 0) {
+			throw new IllegalArgumentException("해당하는 역이 없습니다.");
+		}
+		sectionDao.deleteSection(sections.get(0).getId());
+		if (sections.size() == 2) {
+			sectionDao.deleteSection(sections.get(1).getId());
+			sectionDao.saveSection(lineId,
+				sections.get(0).getDistance().getDistance() + sections.get(1).getDistance().getDistance(),
+				sortedSections.get(0).getDeparture().getName(), sortedSections.get(1).getArrival().getName());
+		}
+	}
+
 	private boolean isFirstSave(final int sectionCount) {
 		return sectionCount == 0;
 	}

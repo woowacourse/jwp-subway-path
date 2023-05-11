@@ -113,7 +113,7 @@
           각 구간의 거리를 구하여 만들기
     - 기존의 section delete
 
-- 노선에서 역 제거
+- [ ] 노선에서 역 제거
     - `DELETE /lines/{line_id}/stations/{station_id}`
         - `@PathVariable line_id` → 노선 ID / `station_id` → 역 ID
     - `findSectionByLineIdAndStationId()`로 섹션 찾기
