@@ -9,13 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasSize;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -72,71 +69,65 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
+
+    @DisplayName("지하철 노선과 해당하는 역을 조회한다.")
     @Test
-    void getLines() {
-        // given
-        ExtractableResponse<Response> createResponse1 = RestAssured
+    void findStationsByLineId() {
+        RestAssured
                 .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("lineResponse.id", equalTo(1))
+                .body("lineResponse.name", equalTo("2호선"))
+                .body("lineResponse.color", equalTo("Green"))
+                .body("stationResponses.size()", equalTo(4))
+                .body("stationResponses[0].id", equalTo(1))
+                .body("stationResponses[0].name", equalTo("후추"))
+                .body("stationResponses[1].id", equalTo(2))
+                .body("stationResponses[1].name", equalTo("디노"))
+                .body("stationResponses[2].id", equalTo(3))
+                .body("stationResponses[2].name", equalTo("조앤"))
+                .body("stationResponses[3].id", equalTo(4))
+                .body("stationResponses[3].name", equalTo("로운"));
+    }
 
-        ExtractableResponse<Response> createResponse2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        ExtractableResponse<Response> response = RestAssured
+    @DisplayName("모든 지하철 노선과 해당하는 역을 차례로 조회한다.")
+    @Test
+    void findLines() {
+        RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines")
                 .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-        assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
-
-    @DisplayName("지하철 노선을 조회한다.")
-    @Test
-    void getLine() {
-        // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
+                .statusCode(HttpStatus.OK.value())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
-        assertThat(resultResponse.getId()).isEqualTo(lineId);
+                .body("$", hasSize(2))
+                .body("[0].lineResponse.id", equalTo(1))
+                .body("[0].lineResponse.name", equalTo("2호선"))
+                .body("[0].lineResponse.color", equalTo("Green"))
+                .body("[0].stationResponses", hasSize(4))
+                .body("[0].stationResponses[0].id", equalTo(1))
+                .body("[0].stationResponses[0].name", equalTo("후추"))
+                .body("[0].stationResponses[1].id", equalTo(2))
+                .body("[0].stationResponses[1].name", equalTo("디노"))
+                .body("[0].stationResponses[2].id", equalTo(3))
+                .body("[0].stationResponses[2].name", equalTo("조앤"))
+                .body("[0].stationResponses[3].id", equalTo(4))
+                .body("[0].stationResponses[3].name", equalTo("로운"))
+                .body("[1].lineResponse.id", equalTo(2))
+                .body("[1].lineResponse.name", equalTo("8호선"))
+                .body("[1].lineResponse.color", equalTo("pink"))
+                .body("[1].stationResponses", hasSize(3))
+                .body("[1].stationResponses[0].id", equalTo(3))
+                .body("[1].stationResponses[0].name", equalTo("조앤"))
+                .body("[1].stationResponses[1].id", equalTo(5))
+                .body("[1].stationResponses[1].name", equalTo("포비"))
+                .body("[1].stationResponses[2].id", equalTo(4))
+                .body("[1].stationResponses[2].name", equalTo("로운"));
     }
+
 
     @DisplayName("지하철 노선을 수정한다.")
     @Test
