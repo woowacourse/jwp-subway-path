@@ -14,7 +14,9 @@ import subway.dto.StationSaveResponse;
 
 import static fixtures.StationFixtures.SAVE_INITIAL_STATIONS_잠실_TO_건대_RESPONSE;
 import static fixtures.StationFixtures.잠실_TO_건대_REQUEST;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,7 +34,7 @@ class StationControllerTest {
 
     @Test
     @DisplayName("POST /stations uri로 요청하면 201을 반환한다.")
-    void createLineTest() throws Exception {
+    void createStationTest() throws Exception {
         // given
         StationRequest request = 잠실_TO_건대_REQUEST;
         StationSaveResponse response = SAVE_INITIAL_STATIONS_잠실_TO_건대_RESPONSE;
@@ -45,5 +47,17 @@ class StationControllerTest {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", "/lines/" + response.getLineId()));
+    }
+
+    @Test
+    @DisplayName("DELETE /stations/{id} uri로 요청하면 반환이 noContent이다.")
+    void deleteStationTest() throws Exception {
+        // given
+        Long stationIdToDelete = 1L;
+        doNothing().when(stationService).deleteStationById(stationIdToDelete);
+
+        // when, then
+        mockMvc.perform(delete("/stations/" + stationIdToDelete))
+                .andExpect(status().isNoContent());
     }
 }
