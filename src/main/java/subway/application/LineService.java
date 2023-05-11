@@ -39,7 +39,10 @@ public class LineService {
     }
 
     public List<Line> findLines() {
-        return lineDao.findAll();
+        return lineDao.findAll()
+                .stream()
+                .map(line -> findLineById(line.getId()))
+                .collect(Collectors.toList());
     }
 
     public LineResponse findLineResponseById(Long id) {
