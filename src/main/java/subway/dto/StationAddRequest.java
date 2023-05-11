@@ -2,28 +2,28 @@ package subway.dto;
 
 public class StationAddRequest {
 
-    private final Long previousStationId;
-    private final Long nextStationId;
+    private final Long upStationId;
+    private final Long downStationId;
     private final Integer distance;
 
     private StationAddRequest() {
         this.distance = null;
-        this.previousStationId = null;
-        this.nextStationId = null;
+        this.upStationId = null;
+        this.downStationId = null;
     };
 
-    public StationAddRequest(Long previousStationId, Long nextStationId, Integer distance) {
-        this.previousStationId = previousStationId;
-        this.nextStationId = nextStationId;
+    public StationAddRequest(Long upStationId, Long downStationId, Integer distance) {
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
         this.distance = distance;
     }
 
-    public Long getPreviousStationId() {
-        return previousStationId;
+    public Long getUpStationId() {
+        return upStationId;
     }
 
-    public Long getNextStationId() {
-        return nextStationId;
+    public Long getDownStationId() {
+        return downStationId;
     }
 
     public Integer getDistance() {
