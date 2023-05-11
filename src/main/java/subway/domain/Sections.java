@@ -25,9 +25,7 @@ public class Sections {
 
         isSectionDuplicate(newSection);
 
-        final List<Station> endPoint = findEndPoint();
-
-        if (newSection.validateEqualEndPoint(endPoint)) {
+        if (newSection.validateEqualEndPoint(findUpEndPoint(),findDownEndPoint())) {
             sections.add(newSection);
             return;
         }
@@ -48,7 +46,7 @@ public class Sections {
         sections.add(newSection);
     }
 
-    private List<Station> findEndPoint() {
+    private Station findUpEndPoint() {
         List<Station> upStations = new ArrayList<>();
         List<Station> downStations = new ArrayList<>();
 
@@ -56,11 +54,22 @@ public class Sections {
             upStations.add(section.getUpStation());
             downStations.add(section.getDownStation());
         }
-        List<Station> upTemp = new ArrayList<>(upStations);
         upStations.removeAll(downStations);
-        downStations.removeAll(upTemp);
 
-        return List.of(upStations.get(0), downStations.get(0));
+        return upStations.get(0);
+    }
+
+    private Station findDownEndPoint() {
+        List<Station> upStations = new ArrayList<>();
+        List<Station> downStations = new ArrayList<>();
+
+        for (Section section : sections) {
+            upStations.add(section.getUpStation());
+            downStations.add(section.getDownStation());
+        }
+        downStations.removeAll(upStations);
+
+        return downStations.get(0);
     }
 
     public void remove(final Station station) {
@@ -113,7 +122,7 @@ public class Sections {
     }
 
     public List<Station> getSortedStations() {
-        Station nowStation = findEndPoint().get(0);
+        Station nowStation = findUpEndPoint();
         List<Station> sortStation = new ArrayList<>();
         sortStation.add(nowStation);
 
