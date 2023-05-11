@@ -1,5 +1,6 @@
 package subway.integration;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import subway.dto.LineNodeRequests;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -15,7 +17,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.integration.IntegrationFixture.*;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -187,5 +191,68 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("노선에 역을 최초 등록한다.")
+    @Test
+    void addInitialStationInLine() throws JsonProcessingException {
+        final LineNodeRequests request = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE));
+
+        final String json = jsonSerialize(request);
+
+        given().body(json)
+                .when().post("/lines/stations")
+                .then().statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("빈 노선에 하나의 역만 추가하는 경우 BadRequest를 반환한다.")
+    @Test
+    void addOneStationInEmptyLineThrowException() throws JsonProcessingException {
+        final LineNodeRequests request = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE));
+
+        final String json = jsonSerialize(request);
+
+        given().body(json)
+                .when().post("/lines/stations")
+                .then().statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선에서 역을 삭제한다.")
+    @Test
+    void deleteStationInLine() throws JsonProcessingException {
+        final LineNodeRequests createRequest = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE, C_NODE));
+        final long deleteId = 2;
+
+        final String json = jsonSerialize(createRequest);
+
+        given().body(json)
+                .when().post("/lines/stations")
+                .then().statusCode(HttpStatus.CREATED.value());
+
+        given()
+                .when().delete("/lines/stations/" + deleteId)
+                .then().statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("남은 역이 하나인 경우 역도 함께 삭제된다.")
+    @Test
+    void unregisterLine() throws JsonProcessingException {
+        final LineNodeRequests createRequest = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE));
+        final long lineId = 1;
+        final long deleteStationId = 2;
+
+        final String json = jsonSerialize(createRequest);
+
+        given().body(json)
+                .when().post("/lines/stations")
+                .then().statusCode(HttpStatus.CREATED.value());
+
+        given()
+                .when().delete("/lines/stations/" + deleteStationId)
+                .then().statusCode(HttpStatus.NO_CONTENT.value());
+
+        given()
+                .when().get("/lines/" + lineId)
+                .then().statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

@@ -28,9 +28,6 @@ import static subway.integration.IntegrationFixture.*;
 public class StationIntegrationTest extends IntegrationTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-    private static final String LINE_NAME_2 = "2";
-    private static final String LINE_NAME_3 = "3";
-
 
     private static String jsonSerialize(final Object request) throws JsonProcessingException {
         return OBJECT_MAPPER.writeValueAsString(request);
@@ -209,69 +206,6 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("노선에 역을 최초 등록한다.")
-    @Test
-    void addInitialStationInLine() throws JsonProcessingException {
-        final LineNodeRequests request = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE));
-
-        final String json = jsonSerialize(request);
-
-        given().body(json)
-                .when().post("/lines/stations")
-                .then().statusCode(HttpStatus.CREATED.value());
-    }
-
-    @DisplayName("빈 노선에 하나의 역만 추가하는 경우 BadRequest를 반환한다.")
-    @Test
-    void addOneStationInEmptyLineThrowException() throws JsonProcessingException {
-        final LineNodeRequests request = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE));
-
-        final String json = jsonSerialize(request);
-
-        given().body(json)
-                .when().post("/lines/stations")
-                .then().statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("노선에서 역을 삭제한다.")
-    @Test
-    void deleteStationInLine() throws JsonProcessingException {
-        final LineNodeRequests createRequest = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE, C_NODE));
-        final long deleteId = 2;
-
-        final String json = jsonSerialize(createRequest);
-
-        given().body(json)
-                .when().post("/lines/stations")
-                .then().statusCode(HttpStatus.CREATED.value());
-
-        given()
-                .when().delete("/lines/stations/" + deleteId)
-                .then().statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("남은 역이 하나인 경우 역도 함께 삭제된다.")
-    @Test
-    void deleteLine() throws JsonProcessingException {
-        final LineNodeRequests createRequest = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE));
-        final long lineId = 1;
-        final long deleteStationId = 2;
-
-        final String json = jsonSerialize(createRequest);
-
-        given().body(json)
-                .when().post("/lines/stations")
-                .then().statusCode(HttpStatus.CREATED.value());
-
-        given()
-                .when().delete("/lines/stations/" + deleteStationId)
-                .then().statusCode(HttpStatus.NO_CONTENT.value());
-
-        given()
-                .when().get("/lines/" + lineId)
-                .then().statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @DisplayName("노선의 역들을 조회한다.")
