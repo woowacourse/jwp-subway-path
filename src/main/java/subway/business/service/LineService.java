@@ -7,10 +7,10 @@ import subway.business.domain.Direction;
 import subway.business.domain.Line;
 import subway.business.domain.LineRepository;
 import subway.business.domain.Section;
-import subway.dto.LineResponse;
-import subway.dto.LineSaveRequest;
-import subway.dto.LineStationsResponse;
-import subway.dto.StationAddToLineRequest;
+import subway.business.service.dto.LineResponse;
+import subway.business.service.dto.LineSaveRequest;
+import subway.business.service.dto.LineStationsResponse;
+import subway.business.service.dto.StationAddToLineRequest;
 
 @Service
 public class LineService {

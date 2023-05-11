@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.business.service.dto;
 
 import subway.business.domain.Line;
 

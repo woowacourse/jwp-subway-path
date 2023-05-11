@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.business.service.dto;
 
 public class LineSaveRequest {
     private final String name;

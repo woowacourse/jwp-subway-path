@@ -12,11 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.business.service.LineService;
-import subway.dto.LineResponse;
-import subway.dto.LineSaveRequest;
-import subway.dto.LineStationsResponse;
-import subway.dto.StationAddToLineRequest;
-import subway.dto.StationDeleteRequest;
+import subway.business.service.dto.LineResponse;
+import subway.business.service.dto.LineSaveRequest;
+import subway.business.service.dto.LineStationsResponse;
+import subway.business.service.dto.StationAddToLineRequest;
+import subway.ui.dto.StationDeleteRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -44,11 +44,9 @@ public class LineController {
     @DeleteMapping("/{lineId}/station")
     public ResponseEntity<Void> deleteStation(@PathVariable Long lineId,
                                               @RequestBody StationDeleteRequest stationDeleteRequest) {
-        System.out.println("stationName: " + stationDeleteRequest.getStation());
         lineService.deleteStation(lineId, stationDeleteRequest.getStation());
         return ResponseEntity.ok().build();
     }
-
 
     @GetMapping("/{lineId}")
     public ResponseEntity<LineStationsResponse> findLineById(@PathVariable Long lineId) {
