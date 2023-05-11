@@ -7,9 +7,9 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.entity.LineEntity;
 import subway.domain.Line;
-import subway.dto.LineCreateRequest;
-import subway.dto.LineResponse;
-import subway.dto.LineUpdateRequest;
+import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineResponse;
+import subway.dto.line.LineUpdateRequest;
 
 @Service
 public class LineService {

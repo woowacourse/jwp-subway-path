@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.dto.section;
 
 public class SectionCreateRequest {
     private String startStationName;

@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.dto.line;
 
 import subway.dao.entity.LineEntity;
 

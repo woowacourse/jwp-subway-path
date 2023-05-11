@@ -15,7 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
 import subway.application.SectionService;
-import subway.dto.LineCreateRequest;
+import subway.dto.line.LineCreateRequest;
 
 @WebMvcTest(LineController.class)
 class LineControllerTest {

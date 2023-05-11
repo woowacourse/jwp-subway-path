@@ -1,6 +1,7 @@
-package subway.dto;
+package subway.dto.line;
 
 import java.util.List;
+import subway.dto.section.SectionResponse;
 
 public class LineDetailResponse {
     private LineResponse lineResponse;

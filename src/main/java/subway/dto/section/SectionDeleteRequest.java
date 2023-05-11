@@ -1,12 +1,12 @@
-package subway.dto;
+package subway.dto.section;
 
-public class StationUpdateRequest {
+public class SectionDeleteRequest {
     private String stationName;
 
-    public StationUpdateRequest() {
+    public SectionDeleteRequest() {
     }
 
-    public StationUpdateRequest(String stationName) {
+    public SectionDeleteRequest(String stationName) {
         this.stationName = stationName;
     }
 

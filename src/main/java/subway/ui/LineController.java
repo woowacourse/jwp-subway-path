@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.SectionService;
-import subway.dto.LineCreateRequest;
-import subway.dto.LineDetailResponse;
-import subway.dto.LineResponse;
-import subway.dto.LineUpdateRequest;
-import subway.dto.SectionResponse;
+import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineDetailResponse;
+import subway.dto.line.LineResponse;
+import subway.dto.line.LineUpdateRequest;
+import subway.dto.section.SectionResponse;
 
 @RestController
 @RequestMapping("/lines")
