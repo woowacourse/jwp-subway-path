@@ -49,13 +49,18 @@
   - id ID
   - String 이름
   - String 색깔
-  - List<Section> 구간
 
+- Sections
+  - List<Section> sections
 - Section(구간)
-  - Station 상행선
-  - Station 하행선
-  - int 거리
+  - Long upStationId
+  - Long downStationId
+  - Long lineId
+  - int distance
 
 - Station(역)
   - id ID
   - String 이름
+
+## API 문서
+- [API 구현 목록](https://documenter.getpostman.com/view/22400395/2s93ebTAmd#85e97606-4a86-4627-8ee1-e7feaf8d80b5)
