@@ -4,13 +4,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
 import java.util.List;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dto.request.CreateSectionRequest;
 import subway.dto.request.LineRequest;
 import subway.dto.request.StationRequest;
@@ -24,14 +28,25 @@ import subway.fixture.StationFixture.잠실역;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional
 public class AcceptanceTest {
 
     @LocalServerPort
     int port;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
+    }
+
+    @AfterEach
+    void clear() {
+        jdbcTemplate.update("TRUNCATE TABLE station");
+        jdbcTemplate.update("TRUNCATE TABLE line");
+        jdbcTemplate.update("TRUNCATE TABLE section");
     }
 
     @Test
@@ -158,7 +173,6 @@ public class AcceptanceTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/lines/" + lineId + "/stations/" + stationId)
-                .then().log().all()
-                .extract().as(StationResponse.class);
+                .then().log().all();
     }
 }

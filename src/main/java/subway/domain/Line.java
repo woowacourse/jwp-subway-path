@@ -50,6 +50,10 @@ public class Line {
         sections.add(section);
     }
 
+    public void removeStation(final Station station) {
+        sections.remove(station);
+    }
+
     public List<Station> findOrderedStation() {
         return sections.findOrderedStation();
     }

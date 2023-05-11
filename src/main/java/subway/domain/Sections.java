@@ -110,7 +110,7 @@ public class Sections {
         }
 
         List<Section> stationSections = sections.stream()
-                .filter(section -> section.getUpStation() == station || section.getDownStation() == station)
+                .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
                 .collect(Collectors.toList());
 
         if (stationSections.isEmpty()) {

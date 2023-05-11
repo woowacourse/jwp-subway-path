@@ -51,7 +51,7 @@ public class JdbcLineRepository implements LineRepository {
 
     @Override
     public void updateSections(final Line line) {
-        sectionDao.deleteById(line.getId());
+        sectionDao.deleteAllByLineId(line.getId());
 
         List<SectionEntity> sections = line.getSections()
                 .stream()

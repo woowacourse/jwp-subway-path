@@ -66,6 +66,12 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
+    @DeleteMapping("/{id}/stations/{stationId}")
+    public ResponseEntity<Void> deleteSection(@PathVariable Long id, @PathVariable Long stationId) {
+        sectionService.deleteSection(id, stationId);
+        return ResponseEntity.noContent().build();
+    }
+
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();

@@ -27,7 +27,6 @@ public class SectionService {
     }
 
     public LineResponse createSection(final long lineId, final CreateSectionRequest request) {
-
         Line line = lineRepository.findById(lineId);
         if (line == null) {
             throw new NoSuchLineException();
@@ -44,5 +43,21 @@ public class SectionService {
         lineRepository.updateSections(line);
 
         return LineMapper.toResponse(line);
+    }
+
+    public void deleteSection(final long lineId, final long stationId) {
+        Line line = lineRepository.findById(lineId);
+        if (line == null) {
+            throw new NoSuchLineException();
+        }
+
+        Station station = stationRepository.findById(stationId);
+        if (station == null) {
+            throw new NoSuchStationException();
+        }
+
+        line.removeStation(station);
+
+        lineRepository.updateSections(line);
     }
 }
