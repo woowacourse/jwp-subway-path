@@ -6,6 +6,8 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.line.Line;
 import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.exception.InvalidLineException;
 
 @Repository
 public class LineRepository {
@@ -23,11 +25,14 @@ public class LineRepository {
         return Line.from(entity);
     }
 
-    public List<Line> findAll() {
-        return null;
+    public Line findById(final Long lineId) {
+        final LineEntity lineEntity = lineDao.findById(lineId)
+                .orElseThrow(() -> new InvalidLineException("존재하지 않는 노선 ID 입니다."));
+        final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
+        return Line.of(lineEntity, sectionEntities);
     }
 
-    public Line findById(final Long lineId) {
+    public List<Line> findAll() {
         return null;
     }
 

@@ -35,13 +35,18 @@ public class Line {
         this.sections = new Sections(sections);
     }
 
+    public static Line from(final LineEntity entity) {
+        return new Line(entity.getId(), entity.getName(), entity.getColor());
+    }
+
     public static Line of(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
-        return new Line(
+        final Line line = new Line(
                 lineEntity.getId(),
                 lineEntity.getName(),
-                lineEntity.getColor(),
-                generateSections(sectionEntities)
+                lineEntity.getColor()
         );
+        generateSections(sectionEntities).forEach(e -> line.addSection(e.getUpward(), e.getDownward(), e.getDistance()));
+        return line;
     }
 
     private static List<Section> generateSections(final List<SectionEntity> sectionEntities) {
