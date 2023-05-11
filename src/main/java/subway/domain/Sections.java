@@ -33,10 +33,20 @@ public class Sections {
         return addStationInMiddle(upStation, downStation, distance, line);
     }
 
+
     private void validateIsEqualStations(Station upStation, Station downStation) {
         if (upStation.equals(downStation)) {
             throw new IllegalArgumentException("동일한 역 2개가 입력으로 들어왔습니다. 이름을 다르게 설정해주세요.");
         }
+    }
+
+    private AddResultDto addInitStations(Station upStation, Station downStation, Distance distance, Line line) {
+        Section section = new Section(upStation, downStation, distance, line);
+        return new AddResultDto(
+                List.of(section),
+                List.of(),
+                List.of(upStation, downStation)
+        );
     }
 
     private void validateIsNonExistStations(Station upStation, Station downStation) {
@@ -53,15 +63,6 @@ public class Sections {
     private AddResultDto addUpEndStation(Station upStation, Station downStation, Distance distance, Line line) {
         Section newUpEndStation = new Section(upStation, downStation, distance, line);
         return new AddResultDto(List.of(newUpEndStation), List.of(), List.of(upStation));
-    }
-
-    private AddResultDto addInitStations(Station upStation, Station downStation, Distance distance, Line line) {
-        Section section = new Section(upStation, downStation, distance, line);
-        return new AddResultDto(
-                List.of(section),
-                List.of(),
-                List.of(upStation, downStation)
-        );
     }
 
     private AddResultDto addStationInMiddle(Station upStation, Station downStation, Distance distance, Line line) {
