@@ -207,4 +207,30 @@ class LineTest {
                 () -> assertNull(starter.getTo())
         );
     }
+
+    @Test
+    @DisplayName("delete() : Line의 마지막 역을 삭제할 수 있다.")
+    void test_delete_last_station() throws Exception {
+        //given
+        final Stations stations1 = new Stations(new Station("A"), new Station("B"), 5);
+        final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
+        final Stations stations3 = new Stations(new Station("C"), new Station("D"), 3);
+
+        Section starter = new Section(stations1);
+        final Line line = new Line("2호선");
+
+        line.add(starter);
+
+        final Section section2 = new Section(stations2);
+        line.add(section2);
+
+        final Section section3 = new Section(stations3);
+        line.add(section3);
+
+        //when
+        line.delete(new Station("D"));
+
+        //then
+        assertNull(section2.getTo());
+    }
 }

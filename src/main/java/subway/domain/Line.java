@@ -34,14 +34,20 @@ public class Line {
     }
 
     public void delete(final Station deletedStation) {
-        final Section head = starter.find(deletedStation);
+        final Section target = starter.find(deletedStation);
 
-        if (head == null) {
+        if (target == null) {
             if (starter.isSameCurrentWith(deletedStation)) {
                 exchangeStarter();
                 return;
             }
             throw new IllegalArgumentException("삭제할 역이 없습니다.");
+        }
+
+        if (target.getTo() == null) {
+            Section newLastSection = findPreSection(target);
+            newLastSection.disconnectNextSection();
+            return;
         }
 
         starter.delete(deletedStation);
@@ -65,6 +71,15 @@ public class Line {
         }
 
         return sections;
+    }
+
+    private Section findPreSection(Section targetSection) {
+        Section current = starter;
+
+        while (current.getTo() != targetSection) {
+            current = current.getTo();
+        }
+        return current;
     }
 
     public Section getStarter() {
