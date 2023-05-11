@@ -30,17 +30,13 @@ public class LineRepository {
     }
 
     public Line findByName(final String name) {
-        String stationQuery =
-            "SELECT S.ID, S.NAME FROM STATION S, LINE L, LINE_STATION LS " +
-                "WHERE S.ID = LS.STATION_ID AND L.ID = LS.LINE_ID " +
-                "AND L.NAME = ?";
+        List<Station> stations = stationDao.findByLineNameJoinLine(name);
+        List<Section> sections = findSectionsByLineNameJoinLine(name);
+        LineEntity line = lineDao.findByName(name).orElseThrow(RuntimeException::new);
+        return new Line(line.getId(), line.getName(), line.getColor(), new Stations(stations), new Sections(sections), line.getUpBoundStationId());
+    }
 
-        List<Station> stations = jdbcTemplate.query(stationQuery,
-            (rs, rowNum) -> new Station(
-                rs.getLong("ID"),
-                rs.getString("NAME")),
-            name);
-
+    private List<Section> findSectionsByLineNameJoinLine(final String name) {
         String sectionQuery =
             "SELECT S.ID, S.LEFT_STATION_ID, S.RIGHT_STATION_ID, S.DISTANCE FROM SECTION S, LINE L, LINE_SECTION LS " +
                 "WHERE S.ID = LS.SECTION_ID AND L.ID = LS.LINE_ID " +
@@ -53,13 +49,7 @@ public class LineRepository {
                 stationDao.findById(rs.getLong("RIGHT_STATION_ID")),
                 rs.getInt("DISTANCE")),
             name);
-
-        LineEntity line = lineDao.findByName(name).orElseThrow(RuntimeException::new);
-
-        String upBoundStationIdQuery =
-            "SELECT UPBOUND_STATION_ID FROM LINE WHERE NAME = ?";
-        Long upBoundStationId = jdbcTemplate.queryForObject(upBoundStationIdQuery, Long.class, name);
-        return new Line(line.getId(), line.getName(), line.getColor(), new Stations(stations), new Sections(sections), upBoundStationId);
+        return sections;
     }
 
     public LineEntity insert(Line line) {

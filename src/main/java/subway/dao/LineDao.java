@@ -11,8 +11,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
-import subway.domain.section.Sections;
-import subway.domain.station.Stations;
 import subway.entity.LineEntity;
 
 @Repository
@@ -62,7 +60,7 @@ public class LineDao {
     public Optional<LineEntity> findByName(final String name) {
         String sql = "SELECT id, name, color, upbound_station_id, downbound_station_id FROM LINE WHERE name = ?";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper , name));
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
