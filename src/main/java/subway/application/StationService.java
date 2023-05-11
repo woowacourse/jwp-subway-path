@@ -6,7 +6,7 @@ import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,7 +50,7 @@ public class StationService {
 
     public List<Station> findStationsById(final List<Long> stationIds) {
         if (stationIds.isEmpty()) {
-            return new ArrayList<>();
+            return new LinkedList<>();
         }
         return stationDao.findAllById(stationIds);
     }

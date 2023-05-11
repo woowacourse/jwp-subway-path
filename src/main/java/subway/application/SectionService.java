@@ -6,7 +6,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,7 +30,7 @@ public class SectionService {
 
     private static List<Long> serializeToStationIds(final List<Section> sections) {
         if (sections.isEmpty()) {
-            return new ArrayList<>();
+            return new LinkedList<>();
         }
         final List<Long> stationIds = sections.stream()
                 .map(section -> section.getBeforeStation().getId())
@@ -40,7 +40,7 @@ public class SectionService {
     }
 
     private static Sections joinStationsToSections(final List<Section> sections, final List<Station> stations) {
-        final List<Section> joinedSections = new ArrayList<>();
+        final List<Section> joinedSections = new LinkedList<>();
         for (int i = 0; i < sections.size(); i++) {
             final Station beforeStation = stations.get(i);
             final Station nextStation = stations.get(i + 1);

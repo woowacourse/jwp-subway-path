@@ -1,6 +1,6 @@
 package subway.domain;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 
@@ -25,19 +25,19 @@ public class Sections {
     }
 
     public Sections addHead(final Section section) {
-        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        final List<Section> newSections = new LinkedList<>(sections);
         newSections.add(0, section);
         return new Sections(newSections);
     }
 
     public Sections addTail(final Section section) {
-        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        final List<Section> newSections = new LinkedList<>(sections);
         newSections.add(sections.size(), section);
         return new Sections(newSections);
     }
 
     public Sections addCentral(final Section section) {
-        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        final LinkedList<Section> newSections = new LinkedList<>(sections);
 
         final Section originSection = newSections.stream()
                 .filter(element -> element.getBeforeStation().equals(section.getBeforeStation()))
@@ -58,28 +58,22 @@ public class Sections {
     }
 
     public Sections removeHead() {
-        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        final List<Section> newSections = new LinkedList<>(sections);
         newSections.remove(0);
         return new Sections(newSections);
     }
 
     public Sections removeTail() {
-        final ArrayList<Section> newSections = new ArrayList<>(sections);
+        final List<Section> newSections = new LinkedList<>(sections);
         newSections.remove(sections.size() - 1);
         return new Sections(newSections);
     }
 
     public Sections removeCentral(final Station station) {
-        final ArrayList<Section> newSections = new ArrayList<>(sections);
-        final Section beforeSection = newSections.stream()
-                .filter(section -> section.getNextStation().equals(station))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+        final List<Section> newSections = new LinkedList<>(sections);
 
-        final Section nextSection = newSections.stream()
-                .filter(section -> section.getBeforeStation().equals(station))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+        final Section beforeSection = findBeforeSection(station, newSections);
+        final Section nextSection = findNextSection(station, newSections);
 
         final int index = newSections.indexOf(beforeSection);
         newSections.remove(beforeSection);
@@ -93,8 +87,22 @@ public class Sections {
         return new Sections(newSections);
     }
 
+    private static Section findBeforeSection(final Station station, final List<Section> newSections) {
+        return newSections.stream()
+                .filter(section -> section.getNextStation().equals(station))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+    }
+
+    private static Section findNextSection(final Station station, final List<Section> newSections) {
+        return newSections.stream()
+                .filter(section -> section.getBeforeStation().equals(station))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+    }
+
     public Sections getDifferenceOfSet(final Sections otherSections) {
-        final List<Section> result = new ArrayList<>(sections);
+        final List<Section> result = new LinkedList<>(sections);
         result.removeAll(otherSections.getSections());
         return new Sections(result);
     }

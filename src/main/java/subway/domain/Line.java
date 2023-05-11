@@ -1,6 +1,6 @@
 package subway.domain;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Objects;
 
 public class Line {
@@ -15,7 +15,7 @@ public class Line {
     }
 
     public Line(final Long id, final LineName name) {
-        this(id, name, new Sections(new ArrayList<>()));
+        this(id, name, new Sections(new LinkedList<>()));
     }
 
     public Line(final LineName name, final Sections sections) {

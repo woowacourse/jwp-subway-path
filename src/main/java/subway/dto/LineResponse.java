@@ -3,7 +3,7 @@ package subway.dto;
 import subway.domain.Line;
 import subway.domain.Section;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LineResponse {
@@ -24,9 +24,9 @@ public class LineResponse {
 
     public static LineResponse from(final Line line) {
         if (line.getSections().getSections().isEmpty()) {
-            return new LineResponse(line.getId(), line.getName().getValue(), new ArrayList<>());
+            return new LineResponse(line.getId(), line.getName().getValue(), new LinkedList<>());
         }
-        final List<StationResponse> stationResponses = new ArrayList<>();
+        final List<StationResponse> stationResponses = new LinkedList<>();
         final List<Section> sections = line.getSections().getSections();
         for (final Section section : sections) {
             stationResponses.add(StationResponse.of(section.getBeforeStation()));
