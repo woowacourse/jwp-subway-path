@@ -61,16 +61,16 @@
   - [x] 두 Section을 병합한다.
     - [x] 하나의 Downstream과 다른 하나의 Upstream이 같지 않은 경우 예외를 던진다.
  
-- [ ] Line
+- [x] Line
   - [x] 이름을 갖는다.
     - [x] 이름이 2자 이상 15자 이하가 아니면 예외를 던진다.
-  - [x] Line에 해당하는 Section들을 갖는다.
-  - [x] 추가하려는 Station이 이미 존재하는 경우 예외를 던진다.
-  - [x] Line에 존재하지 않는 Station을 삭제할 경우 예외를 던진다.
-  - [x] Station을 추가할 때 Upstream과 Downstream이 Section으로 등록되지 않은 경우 예외를 던진다.
-  - [ ] Station을 삭제할 수 있다.
-  
-  
+  - [x] Line에 해당하는 Section들을 갖는다 .
+  - [x] Station을 추가할 수 있다.
+    - [x] 추가하려는 Station이 이미 존재하는 경우 예외를 던진다.
+    - [x] Station을 추가할 때 Upstream과 Downstream이 Section으로 등록되지 않은 경우 예외를 던진다.
+  - [x] Station을 삭제할 수 있다.
+    - [x] Line에 존재하지 않는 Station을 삭제할 경우 예외를 던진다.
+
 -[ ] Lines
   - [ ] Line들을 갖는다.
   - [ ] 찾는 Line이 있는지 확인한다.

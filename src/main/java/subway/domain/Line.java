@@ -7,6 +7,7 @@ import subway.exception.StationNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Line {
 
@@ -21,6 +22,11 @@ public class Line {
         validateNameLength(stripped);
         this.name = stripped;
         this.sections = new LinkedList<>(sections);
+        addEndpoints(sections);
+    }
+
+    public Line(Line otherLine) {
+        this(otherLine.getName(), otherLine.getSections());
     }
 
     private void validateNameLength(String name) {
@@ -29,33 +35,22 @@ public class Line {
         }
     }
 
-    public Line(Line otherLine) {
-        this(otherLine.getName(), otherLine.getSections());
-    }
+    private void addEndpoints(List<Section> sections) {
+        Station upstreamEndpoint = sections.get(0).getUpstream();
+        Station downstreamEndpoint = sections.get(sections.size() - 1).getDownstream();
 
-    public String getName() {
-        return name;
-    }
-
-    public List<Section> getSections() {
-        return new LinkedList<>(sections);
+        this.sections.addFirst(new Section(Station.getEmptyEndpoint(), upstreamEndpoint, Integer.MAX_VALUE));
+        this.sections.addLast(new Section(downstreamEndpoint, Station.getEmptyEndpoint(), Integer.MAX_VALUE));
     }
 
     public List<Section> addStation(Station newStation, Station upstream, Station downstream, int distanceToUpstream) {
         validateDuplicateStations(newStation);
-        validateCorrespondingSection(upstream, downstream);
-        return null;
-    }
 
-    private void validateCorrespondingSection(Station upstream, Station downstream) {
-        if (hasCorrespondingSection(upstream, downstream)) {
-            throw new SectionNotFoundException("노선에 해당하는 구간이 존재하지 않습니다.");
-        }
-    }
+        Section correspondingSection = findCorrespondingSection(upstream, downstream);
+        List<Section> sectionsToAdd = correspondingSection.insertInTheMiddle(newStation, distanceToUpstream);
+        addSections(correspondingSection, sectionsToAdd);
 
-    private boolean hasCorrespondingSection(Station upstream, Station downstream) {
-        return sections.stream()
-                .noneMatch(section -> section.isCorrespondingSection(upstream, downstream));
+        return sectionsToAdd;
     }
 
     private void validateDuplicateStations(Station newStation) {
@@ -64,8 +59,32 @@ public class Line {
         }
     }
 
+    private Section findCorrespondingSection(Station upstream, Station downstream) {
+        return sections.stream()
+                .filter(section -> section.isCorrespondingSection(upstream, downstream))
+                .findAny()
+                .orElseThrow(() -> new SectionNotFoundException("노선에 해당하는 구간이 존재하지 않습니다."));
+    }
+
+    private void addSections(Section correspondingSection, List<Section> sectionsToAdd) {
+        sections.add(sections.indexOf(correspondingSection), sectionsToAdd.get(1));
+        sections.add(sections.indexOf(correspondingSection), sectionsToAdd.get(0));
+
+        sections.remove(correspondingSection);
+    }
+
+    // TODO: 쓸모 확인
+//    private boolean hasCorrespondingSection(Station upstream, Station downstream) {
+//        return sections.stream()
+//                .noneMatch(section -> section.isCorrespondingSection(upstream, downstream));
+//    }
+
     public void deleteStation(Station stationToDelete) {
         validateStationExist(stationToDelete);
+        List<Section> sectionsToMerge = findSectionsToMerge(stationToDelete);
+        Section mergedSection = sectionsToMerge.get(0).merge(sectionsToMerge.get(1));
+
+        deleteSections(sectionsToMerge, mergedSection);
     }
 
     private void validateStationExist(Station stationToDelete) {
@@ -74,8 +93,29 @@ public class Line {
         }
     }
 
+    private List<Section> findSectionsToMerge(Station stationToDelete) {
+        return sections.stream()
+                .filter(section -> section.contains(stationToDelete))
+                .collect(Collectors.toList());
+    }
+
+    private void deleteSections(List<Section> sectionsToMerge, Section mergedSection) {
+        sections.add(sectionsToMerge.indexOf(sectionsToMerge.get(0)), mergedSection);
+
+        sections.remove(sectionsToMerge.get(0));
+        sections.remove(sectionsToMerge.get(1));
+    }
+
     private boolean hasStation(Station newStation) {
         return sections.stream()
                 .anyMatch(section -> section.contains(newStation));
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Section> getSections() {
+        return new LinkedList<>(sections);
     }
 }

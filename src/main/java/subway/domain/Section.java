@@ -74,4 +74,12 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    public Station getUpstream() {
+        return upstream;
+    }
+
+    public Station getDownstream() {
+        return downstream;
+    }
 }

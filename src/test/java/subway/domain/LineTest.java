@@ -10,8 +10,7 @@ import subway.exception.StationNotFoundException;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
 import static subway.utils.SectionFixture.JAMSIL_TO_JAMSILNARU;
@@ -46,7 +45,7 @@ class LineTest {
      */
     @Test
     void 추가하려는_Station이_이미_존재하는_경우_예외를_던진다() {
-        assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(JAMSIL_STATION, Station.getEndpoint(), SULLEUNG_STATION, 2))
+        assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(JAMSIL_STATION, Station.getEmptyEndpoint(), SULLEUNG_STATION, 2))
                 .isInstanceOf(DuplicateStationInLineException.class);
     }
 
@@ -63,8 +62,33 @@ class LineTest {
         assertSoftly(softly -> {
             softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, SULLEUNG_STATION, JAMSIL_NARU_STATION, 3))
                     .isInstanceOf(SectionNotFoundException.class);
-            softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, JAMSIL_STATION, Station.getEndpoint(), 3))
+            softly.assertThatThrownBy(() -> LINE_NUMBER_TWO.addStation(newStation, JAMSIL_STATION, Station.getEmptyEndpoint(), 3))
                     .isInstanceOf(SectionNotFoundException.class);
         });
     }
+
+    @Test
+    void Station을_삭제할_수_있다() {
+        Line lineNumberTwo = new Line(LINE_NUMBER_TWO);
+
+        lineNumberTwo.deleteStation(JAMSIL_STATION);
+
+        assertThat(lineNumberTwo.getSections())
+                .contains(new Section(SULLEUNG_STATION, JAMSIL_NARU_STATION, 10));
+    }
+
+    @Test
+    void Station을_추가할_수_있다() {
+        Line lineNumberTwo = new Line(LINE_NUMBER_TWO);
+
+        Station newStation = Station.from("건대입구");
+        lineNumberTwo.addStation(newStation, JAMSIL_STATION, JAMSIL_NARU_STATION, 2);
+
+        assertThat(lineNumberTwo.getSections())
+                .doesNotContain(JAMSIL_TO_JAMSILNARU)
+                .contains(new Section(JAMSIL_STATION, newStation, 2))
+                .contains(new Section(newStation, JAMSIL_NARU_STATION, 3));
+
+    }
+
 }
