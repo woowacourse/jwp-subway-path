@@ -10,11 +10,19 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import subway.exception.HttpException;
 
 @RestControllerAdvice
 public class ControllerAdvice {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ControllerAdvice.class);
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<String> handleException(final Exception exception) {
+        final String message = exception.getMessage();
+        LOGGER.warn(message);
+        return ResponseEntity.internalServerError().body("알 수 없는 서버 에러가 발생했습니다.");
+    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleException(final MethodArgumentNotValidException exception) {
@@ -34,6 +42,13 @@ public class ControllerAdvice {
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<String> handleException(final MissingServletRequestParameterException exception) {
+        final String message = exception.getMessage();
+        LOGGER.warn(message);
+        return ResponseEntity.badRequest().body(message);
+    }
+
+    @ExceptionHandler(HttpException.class)
+    public ResponseEntity<String> handleException(final HttpException exception) {
         final String message = exception.getMessage();
         LOGGER.warn(message);
         return ResponseEntity.badRequest().body(message);
