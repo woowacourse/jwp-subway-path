@@ -65,4 +65,4 @@
 
 ## DB
 
-- [ ] 
+![지하철 ERD](https://github.com/woowacourse-precourse/java-menu/assets/96688810/d33cfc2a-1fe9-4eb5-852d-1e586bffef8e)
