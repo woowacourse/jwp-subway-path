@@ -58,14 +58,39 @@ public class SectionEntity {
         }
     }
 
-    @Override
-    public String toString() {
-        return "SectionEntity{" +
-                "id=" + id +
-                ", lineId=" + lineId +
-                ", upStationId=" + upStationId +
-                ", downStationId=" + downStationId +
-                ", distance=" + distance +
-                '}';
+    public boolean containsStationId(Long stationId) {
+        return upStationId.equals(stationId) || downStationId.equals(stationId);
+    }
+
+    public boolean containsDownStationId(Long stationId) {
+        return downStationId.equals(stationId);
+    }
+
+    public boolean containsUpStationId(Long stationId) {
+        return upStationId.equals(stationId);
+    }
+
+    public boolean matchesByUpAndDownStationId(Long upStationId, Long downStationId) {
+        return upStationId.equals(upStationId) && downStationId.equals(downStationId);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getLineId() {
+        return lineId;
+    }
+
+    public Long getUpStationId() {
+        return upStationId;
+    }
+
+    public Long getDownStationId() {
+        return downStationId;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }
