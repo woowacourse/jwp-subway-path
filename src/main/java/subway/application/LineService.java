@@ -2,19 +2,33 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.application.converter.SectionConverter;
+import subway.application.domain.Section;
+import subway.application.domain.Station;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.dao.rowmapper.SectionDetail;
 import subway.entity.SectionEntity;
 import subway.application.converter.LineConverter;
 import subway.application.dto.LineDto;
 import subway.application.dto.SectionCreateDto;
 import subway.entity.StationEntity;
+import subway.exception.StationNotFoundException;
 import subway.ui.dto.request.LineRequest;
+import subway.ui.dto.response.LineReadResponse;
 import subway.ui.dto.response.LineResponse;
 import subway.entity.LineEntity;
+import subway.ui.query_option.SubwayDirection;
 
+import java.util.ArrayList;
+import java.util.Deque;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,10 +58,51 @@ public class LineService {
         return lineId;
     }
 
-    public Long saveLine(LineRequest request) {
-        Long id = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
-        return id;
-        // TODO: LineResponse 처리하기
+    // TODO: 리팩토링
+    public List<LineReadResponse> getLine(final Long lineId) {
+        List<SectionDetail> sectionDetails = sectionDao.findSectionDetailByLineId(lineId);
+        if (sectionDetails.isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+        }
+
+        List<Section> sections = SectionConverter.queryResultToDomains(sectionDetails);
+
+        Map<Station, List<Object[]>> map = new HashMap<>();
+
+        for (Section section : sections) {
+            map.put(section.getPreviousStation(), new ArrayList<>());
+            map.put(section.getNextStation(), new ArrayList<>());
+        }
+
+        for (Section section : sections) {
+            map.get(section.getPreviousStation()).add(new Object[] {SubwayDirection.UP, section.getNextStation(), section.getDistance()});
+            map.get(section.getNextStation()).add(new Object[] {SubwayDirection.DOWN, section.getPreviousStation(), section.getDistance()});
+        }
+
+        Deque<Station> deque = new LinkedList<>();
+        Set<Station> visited = new HashSet<>();
+        dfs(sections.get(0).getPreviousStation(), deque, map, visited, SubwayDirection.UP);
+        System.out.println(deque);
+
+        return null;
+    }
+
+    public void dfs(Station station, Deque<Station> deque, Map<Station, List<Object[]>> map, Set<Station> visited, SubwayDirection direction) {
+        visited.add(station);
+
+        if (direction == SubwayDirection.UP) {
+            deque.addLast(station);
+        } else {
+            deque.addFirst(station);
+        }
+
+        for (Object[] object: map.get(station)) {
+            if (visited.contains((Station) object[1])) {
+                continue;
+            }
+
+            dfs((Station) object[1], deque, map, visited, (SubwayDirection) object[0]);
+        }
     }
 
     public List<LineResponse> findLineResponses() {

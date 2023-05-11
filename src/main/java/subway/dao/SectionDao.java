@@ -1,28 +1,24 @@
 package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.dao.rowmapper.SectionDetail;
 import subway.entity.SectionEntity;
-import subway.entity.SectionEntity.Builder;
+import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
+
+import static subway.dao.rowmapper.util.RowMapperUtil.*;
 
 @Repository
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
-    private final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rn) -> new Builder()
-            .id(rs.getLong("id"))
-            .lineId(rs.getLong("line_id"))
-            .previousStationId(rs.getLong("previous_station_id"))
-            .nextStationId(rs.getLong("next_station_id"))
-            .distance(rs.getInt("distance")).build();
 
     public SectionDao(final DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -51,6 +47,19 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, previousStationId);
     }
 
+    public List<SectionEntity> findByLineId(final Long lineId) {
+        final String sql = "SELECT * " +
+                "FROM section WHERE line_id = ?";
+
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
+    }
+
+    public List<SectionEntity> findAll() {
+        final String sql = "SELECT * FROM section";
+
+        return jdbcTemplate.query(sql, sectionEntityRowMapper);
+    }
+
     public void delete(final SectionEntity sectionEntity) {
         final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.update(sql, sectionEntity.getId());
@@ -71,5 +80,28 @@ public class SectionDao {
         if (result.size() > 2) {
             throw new RuntimeException("간선의 정보가 잘못되었습니다.");
         }
+    }
+
+    public List<StationEntity> findStationByLineId(final long lineId) {
+        final String sql = "SELECT DISTINCT station.id, station.name " +
+                "FROM section JOIN station " +
+                "ON section.previous_station_id = station.id " +
+                "OR section.next_station_id = station.id " +
+                "WHERE section.line_id = ?";
+
+        return jdbcTemplate.query(sql, stationEntityRowMapper, lineId);
+    }
+
+    public List<SectionDetail> findSectionDetailByLineId(final long lineId) {
+        final String sql = "SELECT se.id, se.distance, se.line_id, " +
+                "line.name line_name, line.color line_color, " +
+                "pst.id previous_station_id, pst.name previous_station_name, " +
+                "nst.id next_station_id, nst.name next_station_name " +
+                "FROM section se " +
+                "JOIN station pst ON se.previous_station_id = pst.id " +
+                "JOIN station nst ON se.next_station_id = nst.id " +
+                "JOIN line ON line.id = ?";
+
+        return jdbcTemplate.query(sql, sectionDetailRowMapper, lineId);
     }
 }

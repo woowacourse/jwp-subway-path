@@ -39,13 +39,14 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
-    }
+//    @GetMapping("/{name}")
+//    public ResponseEntity<List<LineResponse>> findAllLines(@PathVariable("name") String name) {
+//        return ResponseEntity.ok(lineService.findLineResponses());
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+        lineService.getLine(id);
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
@@ -61,8 +62,8 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
+//    @ExceptionHandler(SQLException.class)
+//    public ResponseEntity<Void> handleSQLException() {
+//        return ResponseEntity.badRequest().build();
+//    }
 }
