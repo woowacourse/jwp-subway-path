@@ -38,17 +38,18 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public void delete(final SectionEntity sectionEntity) {
+    public int delete(final SectionEntity sectionEntity) {
         final String sql = "DELETE FROM section WHERE up_station_id = ? AND down_station_id = ? AND line_id = ?";
-        jdbcTemplate.update(sql,
+        return jdbcTemplate.update(
+                sql,
                 sectionEntity.getUpStationId(),
                 sectionEntity.getDownStationId(),
-                sectionEntity.getDistance()
+                sectionEntity.getLineId()
         );
     }
 
-    public void deleteByLineId(final Long lineId) {
+    public int deleteByLineId(final Long lineId) {
         final String sql = "DELETE FROM section WHERE line_id = ?";
-        jdbcTemplate.update(sql, lineId);
+        return jdbcTemplate.update(sql, lineId);
     }
 }

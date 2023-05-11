@@ -13,27 +13,68 @@ import subway.dao.entity.SectionEntity;
 
 @JdbcTest
 class SectionDaoTest {
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     private SectionDao sectionDao;
+    private final Long lineId = 1L;
+    private SectionEntity sectionEntity;
 
     @BeforeEach
     void setUp() {
         sectionDao = new SectionDao(jdbcTemplate);
+        sectionEntity = new SectionEntity(1L, 2L, lineId, 10);
     }
 
     @Test
-    @DisplayName("lineId가 존재하지 않으면 빈 컬렉션이 반환된다.")
-    void findByLineId_NotExistLineId() {
+    @DisplayName("저장한다.")
+    void save() {
+        // when
+        sectionDao.save(sectionEntity);
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+
+        // expected
+        assertThat(sectionEntities).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("Line id를 입력받아 해당하는 Section Entity 를 반환한다.")
+    void findById() {
         // given
-        final Long lineId = 1L;
+        sectionDao.save(sectionEntity);
+        sectionDao.save(new SectionEntity(2L, 3L, 1L, 20));
+        sectionDao.save(new SectionEntity(3L, 4L, 1L, 30));
 
         // when
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
 
         // expected
-        assertThat(sectionEntities).hasSize(0);
+        assertThat(sectionEntities).hasSize(3);
+    }
+
+    @Test
+    @DisplayName("Section Entity 를 입력받아 일치하는 Section 을 삭제한다.")
+    void deleteByName() {
+        // when
+        sectionDao.save(sectionEntity);
+        int deleteRowNumber = sectionDao.delete(sectionEntity);
+
+        // expected
+        assertThat(deleteRowNumber).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Line id를 입력받아 일치하는 Section 들을 모두 삭제한다.")
+    void deleteByLineId() {
+        // given
+        sectionDao.save(sectionEntity);
+        sectionDao.save(new SectionEntity(2L, 3L, 1L, 20));
+        sectionDao.save(new SectionEntity(3L, 4L, 1L, 30));
+
+        // when
+        int deleteRowNumber = sectionDao.deleteByLineId(1L);
+
+        // expected
+        assertThat(deleteRowNumber).isEqualTo(3);
     }
 }
