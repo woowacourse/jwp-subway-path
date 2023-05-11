@@ -105,12 +105,14 @@ public class LineStationService {
         }
     }
 
+    @Transactional(readOnly = true)
     public StationsResponse findStationsByLineId(Long lineId) {
         List<LineStation> lineStations = lineStationDao.findByLine(lineId);
         Sections sections = new Sections(makeSections(lineStations));
         return new StationsResponse(sections.getStationsWithUpToDownDirection());
     }
 
+    @Transactional(readOnly = true)
     public List<StationsInLineResponse> findAllLines(List<Line> lines) {
         return lines.stream()
                 .map(line -> {
