@@ -117,18 +117,6 @@ CREATE TABLE LINE
 ```
 
 ```mysql
-CREATE TABLE LINE_STATION
-(
-    id         BIGINT AUTO_INCREMENT NOT NULL,
-    line_id    BIGINT,
-    station_id BIGINT,
-    PRIMARY KEY (id),
-    FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE,
-    FOREIGN KEY (station_id) REFERENCES STATION (id) ON DELETE CASCADE
-);
-```
-
-```mysql
 CREATE TABLE SECTION
 (
     id         BIGINT AUTO_INCREMENT NOT NULL,
