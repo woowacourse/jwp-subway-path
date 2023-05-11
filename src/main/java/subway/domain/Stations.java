@@ -4,12 +4,12 @@ public class Stations {
 
     private Station current;
     private Station next;
-    private int distance;
+    private Distance distance;
 
     public Stations(final Station current, final Station next, final int distance) {
         this.current = current;
         this.next = next;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public boolean isLinked(final Stations other) {
@@ -25,21 +25,21 @@ public class Stations {
     }
 
     public boolean isDistanceShorterThan(final Stations other) {
-        return distance <= other.distance;
+        return distance.isShorterThan(other.distance);
     }
 
     public void updateStationOnAdd(final Stations newStations) {
         current.updateStationName(newStations.next);
-        distance = distance - newStations.distance;
+        distance = distance.minus(newStations.distance);
     }
 
     public void updateStationOnDelete(final Stations deleteStations) {
         next.updateStationName(deleteStations.next);
-        distance = distance + deleteStations.distance;
+        distance = distance.plus(deleteStations.distance);
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getValue();
     }
 
     public Station getCurrent() {
