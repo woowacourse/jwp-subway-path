@@ -2,9 +2,9 @@ package subway.dto.line;
 
 public class LineResponse {
 
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
 
     public LineResponse(final Long id, final String name, final String color) {
         this.id = id;
