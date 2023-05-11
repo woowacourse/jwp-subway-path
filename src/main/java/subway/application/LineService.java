@@ -31,15 +31,12 @@ public class LineService {
         this.stationDao = stationDao;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
-    }
+    public List<LineResponse> findAllLines() {
+        final List<Line> lines = lineDao.findAll();
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
+        return lines.stream()
+                .map(Line::getName)
+                .map(this::findStationsByLineName)
                 .collect(Collectors.toList());
     }
 
