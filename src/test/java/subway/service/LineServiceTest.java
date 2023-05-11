@@ -78,7 +78,7 @@ class LineServiceTest {
         }
 
         @Test
-        void 존재하지_않는_역을_상행역으로_전달시_예외 () {
+        void 존재하지_않는_역을_상행역으로_전달시_예외() {
             given(lineRepository.findByName("1호선"))
                     .willReturn(Optional.empty());
             역을_저장한다("사당역");
@@ -142,7 +142,7 @@ class LineServiceTest {
         }
 
         @Test
-        void 존재하지_않는_역을_상행역으로_전달시_예외 () {
+        void 존재하지_않는_역을_상행역으로_전달시_예외() {
             given(lineRepository.findByName("1호선"))
                     .willReturn(Optional.of(new Line(null, null)));
             역을_저장한다("사당역");
@@ -184,7 +184,6 @@ class LineServiceTest {
         assertThat(line.getSections()).hasSize(1);
         포함된_구간들을_검증한다(line.getSections(), "역1-[20km]-역3");
     }
-
     @Test
     void 노션에_역이_두개일떄_노선에서_역_제거시_노선도_제거된다() {
         // given

@@ -118,7 +118,6 @@ public class LineControllerIntegrationTest {
             assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
         }
 
-
         @ParameterizedTest
         @NullAndEmptySource
         void 호선이_공백이거나_널이면_예외(final String nullAndEmpty) {

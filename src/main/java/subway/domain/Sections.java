@@ -70,9 +70,9 @@ public class Sections {
     private void addNonTerminal(final Section addedSection) {
         final int removedIdx = sections.indexOf(findRemovedSection(addedSection));
         final Section removedSection = sections.remove(removedIdx);
-        final Section remain = removedSection.minus(addedSection);
-        sections.add(removedIdx, judgeUp(remain, addedSection));
-        sections.add(removedIdx + 1, judgeDown(remain, addedSection));
+        final Section remainSection = removedSection.minus(addedSection);
+        sections.add(removedIdx, judgeUp(remainSection, addedSection));
+        sections.add(removedIdx + 1, judgeDown(remainSection, addedSection));
     }
 
     private Section findRemovedSection(final Section addedSection) {
@@ -82,16 +82,16 @@ public class Sections {
                 .orElseThrow(() -> new LineStationAddException("노선에 존재하지 않는 역과 연결할 수 없습니다."));
     }
 
-    private Section judgeUp(final Section remain, final Section addedSection) {
-        if (remain.isDownThan(addedSection)) {
+    private Section judgeUp(final Section remainSection, final Section addedSection) {
+        if (remainSection.isDownThan(addedSection)) {
             return addedSection;
         }
-        return remain;
+        return remainSection;
     }
 
-    private Section judgeDown(final Section remain, final Section addedSection) {
-        if (remain.isDownThan(addedSection)) {
-            return remain;
+    private Section judgeDown(final Section remainSection, final Section addedSection) {
+        if (remainSection.isDownThan(addedSection)) {
+            return remainSection;
         }
         return addedSection;
     }
