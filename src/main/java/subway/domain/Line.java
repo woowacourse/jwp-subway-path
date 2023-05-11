@@ -43,7 +43,7 @@ public class Line {
     public void delete(final Station deletedStation) {
         final Section target = starter.findPreSectionOnDelete(deletedStation);
 
-        if (target == starter) {
+        if (canDeleteLine(target)) {
             starter = null;
             return;
         }
@@ -63,6 +63,10 @@ public class Line {
         }
 
         starter.delete(deletedStation);
+    }
+
+    private boolean canDeleteLine(final Section target) {
+        return target == starter && target.getTo() == null;
     }
 
     private void exchangeStarterOnDelete() {
