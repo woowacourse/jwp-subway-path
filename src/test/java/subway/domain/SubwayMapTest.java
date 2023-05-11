@@ -1,12 +1,12 @@
 package subway.domain;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.HashMap;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.vo.Distance;
 
 class SubwayMapTest {
 
@@ -14,7 +14,7 @@ class SubwayMapTest {
 
     @BeforeEach
     void setUp() {
-        this.subwayMap = new SubwayMap();
+        this.subwayMap = new SubwayMap(new Lines(new HashMap<>()));
     }
 
     @DisplayName("역을 추가한다")
@@ -23,10 +23,9 @@ class SubwayMapTest {
         //given
         Station station1 = new Station(1L, "잠실");
         Station station2 = new Station(2L, "선릉");
-        Distance distance = new Distance(11);
 
         //when
-        subwayMap.addStation(station1, station2, distance);
+        subwayMap.addStation(station1, station2, 11);
 
         //then
         assertAll(
@@ -42,8 +41,7 @@ class SubwayMapTest {
         //given
         Station station1 = new Station(1L, "잠실");
         Station station2 = new Station(2L, "선릉");
-        Distance distance = new Distance(11);
-        subwayMap.addStation(station1, station2, distance);
+        subwayMap.addStation(station1, station2, 11);
 
         //when
         subwayMap.deleteStation(station1);

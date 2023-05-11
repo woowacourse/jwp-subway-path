@@ -37,7 +37,11 @@ public class Stations {
         return stations.size() == 0;
     }
 
+    public boolean contains(Station station) {
+        return stations.contains(station);
+    }
+
     public LinkedList<Station> getStations() {
-        return stations;
+        return new LinkedList<>(stations);
     }
 }

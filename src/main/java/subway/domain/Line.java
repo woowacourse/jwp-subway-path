@@ -24,10 +24,6 @@ public class Line {
         this.stations = stations;
     }
 
-    /**
-     * Line: 2호선
-     * Stations: 강남 - 서초 - 잠실 3333 - 방배 - 사당
-     */
     public void initStations(Station previousStation, Station nextStation) {
         if (stations.isEmpty()) {
             stations.addLast(previousStation);
@@ -53,7 +49,14 @@ public class Line {
         stations.addLast(station);
     }
 
-    // 기존 라인에 역 1개 추가
+    public boolean isInitState() {
+        return stations.isEmpty();
+    }
+
+    public boolean hasStation(Station station) {
+        return stations.contains(station);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
