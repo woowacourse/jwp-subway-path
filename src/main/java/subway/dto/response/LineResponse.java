@@ -1,8 +1,9 @@
 package subway.dto.response;
 
+import subway.entity.LineEntity;
+
 import java.util.Collections;
 import java.util.List;
-import subway.entity.LineEntity;
 
 public class LineResponse {
 

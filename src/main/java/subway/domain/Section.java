@@ -10,12 +10,12 @@ public class Section {
     private final int distance;
 
     public Section(final Station upStation, final Station downStation,
-            final int distance) {
+                   final int distance) {
         this(null, upStation, downStation, distance);
     }
 
     public Section(final Long id, final Station upStation, final Station downStation,
-            final int distance) {
+                   final int distance) {
         validateStations(upStation, downStation);
         this.id = id;
         this.upStation = upStation;

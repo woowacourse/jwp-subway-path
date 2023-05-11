@@ -1,11 +1,12 @@
 package subway.domain;
 
+import subway.exception.ApiIllegalArgumentException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import subway.exception.ApiIllegalArgumentException;
 
 public class Sections {
 
@@ -15,20 +16,18 @@ public class Sections {
         this.sections = new ArrayList<>();
     }
 
-    // TODO: sections 초기화시 구간이 연속되는지 validate
     public Sections(final List<Section> sections) {
         this.sections = sections;
     }
 
     public void add(final Section section) {
 
-        if (sections.isEmpty()) { // 최초등록
+        if (sections.isEmpty()) {
             sections.add(section);
             return;
         }
 
-        Map<Station, Station> upToDown = sections.stream()
-                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+        Map<Station, Station> upToDown = getStationUpToDown();
 
         boolean isUpExists = isExists(upToDown, section.getUpStation());
         boolean isDownExists = isExists(upToDown, section.getDownStation());
@@ -39,23 +38,19 @@ public class Sections {
             throw new ApiIllegalArgumentException("하나의 역은 반드시 노선에 존재해야합니다.");
         }
 
-        // 상행역이 이미 노선에 존재할 경우
         if (isUpExists) {
-            Station existStation = section.getUpStation(); // 기존에 노선에 존재하는 역
+            Station existStation = section.getUpStation();
 
-            // 해당 역의 하행역이 존재하지 않을 경우 : 종점 추가
             if (!upToDown.containsKey(existStation)) {
                 sections.add(section);
                 return;
             }
 
-            // 기존 구간 가져오기!
             Section originSection = sections.stream()
                     .filter(it -> it.getUpStation().equals(existStation))
                     .findAny()
                     .orElseThrow(IllegalStateException::new);
 
-            // 해당 역의 하행역이 존재할 경우 -> 해당 역이 상행역일 경우 : 구간 사이에 추가
             int oldDistance = originSection.getDistance();
             int newDistance = section.getDistance();
 
@@ -71,21 +66,18 @@ public class Sections {
         }
 
         if (isDownExists) {
-            Station existStation = section.getDownStation(); // 기존에 노선에 존재하는 역
+            Station existStation = section.getDownStation();
 
-            // 해당 역의 상행역이 존재하지 않을 경우 : 종점 추가
             if (!upToDown.containsValue(existStation)) {
                 sections.add(section);
                 return;
             }
 
-            // 기존 구간 가져오기!
             Section originSection = sections.stream()
                     .filter(it -> it.getDownStation().equals(existStation))
                     .findAny()
                     .orElseThrow(IllegalStateException::new);
 
-            // 해당 역의 상행역이 존재할 경우 -> 해당 역이 하행역일 경우 : 구간 사이에 추가
             int oldDistance = originSection.getDistance();
             int newDistance = section.getDistance();
 
@@ -145,8 +137,7 @@ public class Sections {
             return Collections.emptyList();
         }
 
-        Map<Station, Station> upToDown = sections.stream()
-                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+        Map<Station, Station> upToDown = getStationUpToDown();
 
         List<Station> downStations = new ArrayList<>(upToDown.values());
         Station upEndPoint = upToDown.keySet().stream()
@@ -163,6 +154,11 @@ public class Sections {
         }
 
         return orderedStations;
+    }
+
+    private Map<Station, Station> getStationUpToDown() {
+        return sections.stream()
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
     }
 
     public List<Section> getSections() {

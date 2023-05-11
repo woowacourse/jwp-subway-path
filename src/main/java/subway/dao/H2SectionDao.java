@@ -28,7 +28,7 @@ public class H2SectionDao implements SectionDao {
             );
 
 
-    public H2SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public H2SectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("section")
@@ -36,7 +36,7 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public SectionEntity insert(SectionEntity sectionEntity) {
+    public SectionEntity insert(final SectionEntity sectionEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", sectionEntity.getLineId());
         params.put("up_station_id", sectionEntity.getUpStationId());
@@ -50,7 +50,7 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public void insertAll(List<SectionEntity> sectionEntities) {
+    public void insertAll(final List<SectionEntity> sectionEntities) {
         String sql = "INSERT INTO section (line_id, up_station_id, down_station_id, distance) "
                 + "VALUES (?,?,?,?)";
 
@@ -70,7 +70,7 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public SectionEntity findById(Long id) {
+    public SectionEntity findById(final Long id) {
         String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
@@ -82,7 +82,7 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public void update(SectionEntity newSectionEntity) {
+    public void update(final SectionEntity newSectionEntity) {
         String sql = "UPDATE section SET line_id = ? , up_station_id = ?, down_station_id = ?, distance = ? WHERE id = ?";
         jdbcTemplate.update(sql,
                 newSectionEntity.getLineId(), newSectionEntity.getUpStationId(),
@@ -91,7 +91,7 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         jdbcTemplate.update("DELETE FROM section WHERE id = ?", id);
     }
 

@@ -23,7 +23,7 @@ public class H2StationDao implements StationDao {
                     rs.getString("name")
             );
 
-    public H2StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public H2StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
@@ -31,7 +31,7 @@ public class H2StationDao implements StationDao {
     }
 
     @Override
-    public StationEntity insert(StationEntity stationEntity) {
+    public StationEntity insert(final StationEntity stationEntity) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
         Long id = insertAction.executeAndReturnKey(params).longValue();
         return new StationEntity(id, stationEntity.getName());
@@ -44,19 +44,19 @@ public class H2StationDao implements StationDao {
     }
 
     @Override
-    public StationEntity findById(Long id) {
+    public StationEntity findById(final Long id) {
         String sql = "SELECT * FROM station WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     @Override
-    public void update(StationEntity newStationEntity) {
+    public void update(final StationEntity newStationEntity) {
         String sql = "UPDATE station SET name = ? WHERE id = ?";
         jdbcTemplate.update(sql, newStationEntity.getName(), newStationEntity.getId());
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         String sql = "DELETE FROM STATION WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }

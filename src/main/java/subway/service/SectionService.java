@@ -21,7 +21,7 @@ public class SectionService {
     private final StationRepository stationRepository;
 
     public SectionService(final LineRepository lineRepository,
-            final StationRepository stationRepository) {
+                          final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }

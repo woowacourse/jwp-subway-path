@@ -5,7 +5,7 @@ import subway.entity.SectionEntity;
 import java.util.List;
 
 public interface SectionDao {
-    
+
     SectionEntity insert(SectionEntity sectionEntity);
 
     void insertAll(List<SectionEntity> sectionEntities);

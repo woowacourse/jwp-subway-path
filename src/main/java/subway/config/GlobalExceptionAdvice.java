@@ -18,31 +18,31 @@ public class GlobalExceptionAdvice {
     private final Logger log = LoggerFactory.getLogger(GlobalExceptionAdvice.class);
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(Exception e) {
+    public ResponseEntity<ErrorResponse> handleException(final Exception e) {
         log.warn(e.getMessage());
         return ResponseEntity.internalServerError().body(ErrorResponse.from("서버에서 오류가 발생했습니다."));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(ApiException e) {
+    public ResponseEntity<ErrorResponse> handleException(final ApiException e) {
         log.warn(e.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(e.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(ApiIllegalArgumentException e) {
+    public ResponseEntity<ErrorResponse> handleException(final ApiIllegalArgumentException e) {
         log.warn(e.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(e.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(ApiNoSuchResourceException e) {
+    public ResponseEntity<ErrorResponse> handleException(final ApiNoSuchResourceException e) {
         log.warn(e.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(e.getMessage()));
     }
 
     @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> handleException(final MethodArgumentNotValidException e) {
         log.warn(e.getMessage());
         return ResponseEntity.badRequest().body(ErrorResponse.from(e.getMessage()));
     }

@@ -1,9 +1,10 @@
 package subway.domain;
 
+import subway.exception.ApiIllegalArgumentException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import subway.exception.ApiIllegalArgumentException;
 
 public class Line {
 
