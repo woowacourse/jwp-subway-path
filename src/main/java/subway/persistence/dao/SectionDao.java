@@ -35,15 +35,21 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public SectionEntity insert(SectionEntity sectionEntity, long lineId) {
+    public SectionEntity insert(SectionEntity sectionEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("up_station_id", sectionEntity.getUpStationId());
         params.put("down_station_id", sectionEntity.getDownStationId());
         params.put("distance", sectionEntity.getDistance());
-        params.put("line_id", lineId);
+        params.put("line_id", sectionEntity.getLindId());
 
         long sectionId = insertAction.executeAndReturnKey(params).longValue();
-        return new SectionEntity(sectionId, sectionEntity.getUpStationId(), sectionEntity.getDownStationId(), sectionEntity.getDistance(), lineId);
+        return new SectionEntity(
+                sectionId,
+                sectionEntity.getUpStationId(),
+                sectionEntity.getDownStationId(),
+                sectionEntity.getDistance(),
+                sectionEntity.getLindId()
+        );
     }
 
     public List<SectionEntity> findSectionsByLine(long lineId) {

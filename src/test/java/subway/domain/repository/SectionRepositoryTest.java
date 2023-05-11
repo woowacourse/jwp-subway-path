@@ -72,8 +72,8 @@ class SectionRepositoryTest {
         SectionEntity seonleungJamsilSectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
         SectionEntity gangnamJamsilSectionEntity = new SectionEntity(savedSeonleung.getId(), savedGangnam.getId(), 3, savedSecondLine.getId());
 
-        sectionDao.insert(seonleungJamsilSectionEntity, savedSecondLine.getId());
-        sectionDao.insert(gangnamJamsilSectionEntity, savedSecondLine.getId());
+        sectionDao.insert(seonleungJamsilSectionEntity);
+        sectionDao.insert(gangnamJamsilSectionEntity);
 
         Sections sectionsByLine = sectionRepository.findSectionsByLine(savedSecondLine);
 

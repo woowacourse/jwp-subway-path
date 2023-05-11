@@ -36,7 +36,7 @@ public class SectionRepository {
                 section.getDistance().getDistance(),
                 line.getId()
         );
-        SectionEntity savedSectionEntity = sectionDao.insert(sectionEntity, line.getId());
+        SectionEntity savedSectionEntity = sectionDao.insert(sectionEntity);
         return new Section(
                 savedSectionEntity.getId(),
                 section.getUpStation(),

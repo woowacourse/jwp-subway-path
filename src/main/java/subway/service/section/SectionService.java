@@ -3,6 +3,7 @@ package subway.service.section;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.persistence.dao.LineDao;
+import subway.persistence.dao.StationDao;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
@@ -23,17 +24,19 @@ public class SectionService {
 
     private final LineDao lineDao;
     private final SectionRepository sectionRepository;
+    private final StationDao stationDao;
 
-    public SectionService(LineDao lineDao, SectionRepository sectionRepository) {
+    public SectionService(LineDao lineDao, SectionRepository sectionRepository, StationDao stationDao) {
         this.lineDao = lineDao;
         this.sectionRepository = sectionRepository;
+        this.stationDao = stationDao;
     }
 
     public SectionCreateResponse insert(SectionCreateRequest sectionCreateRequest, long lineId) {
-        Line line = lineDao.findById(lineId);
+        Line line = lineDao.findById(lineId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
         Sections sections = sectionRepository.findSectionsByLine(line);
-        Station upStation = new Station(sectionCreateRequest.getUpStationName());
-        Station downStation = new Station(sectionCreateRequest.getDownStationName());
+        Station upStation = stationDao.findById(sectionCreateRequest.getUpStationId());
+        Station downStation = stationDao.findById(sectionCreateRequest.getDownStationId());
         Distance distance = new Distance(sectionCreateRequest.getDistance());
 
         AddResultDto addResult = sections.add(upStation, downStation, distance);

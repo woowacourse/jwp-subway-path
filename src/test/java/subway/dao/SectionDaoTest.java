@@ -50,7 +50,7 @@ class SectionDaoTest {
 
         SectionEntity sectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
 
-        SectionEntity savedSection = sectionDao.insert(sectionEntity, savedSecondLine.getId());
+        SectionEntity savedSection = sectionDao.insert(sectionEntity);
 
         org.junit.jupiter.api.Assertions.assertAll(
                 () -> assertThat(savedSection.getId()).isPositive(),
@@ -71,9 +71,8 @@ class SectionDaoTest {
         SectionEntity upSectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
         SectionEntity downSectionEntity = new SectionEntity(savedSeonleung.getId(), savedGangnam.getId(), 3, savedSecondLine.getId());
 
-        sectionDao.insert(upSectionEntity, savedSecondLine.getId());
-        sectionDao.insert(downSectionEntity, savedSecondLine.getId());
-
+        sectionDao.insert(upSectionEntity);
+        sectionDao.insert(downSectionEntity);
 
         sectionDao.findSectionsByLine(savedSecondLine.getId());
     }

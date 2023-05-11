@@ -19,7 +19,7 @@ public class Sections {
         if (sections.isEmpty()) {
             return addInitStations(upStation, downStation, distance);
         }
-        validateIsNonExistStations(upStation, downStation);
+        validateStationExistence(upStation, downStation);
         Station upEndStation = findUpEndStation();
         Station downEndStation = findDownEndStation();
 
@@ -50,8 +50,14 @@ public class Sections {
         );
     }
 
-    private void validateIsNonExistStations(Station upStation, Station downStation) {
-        if (isNonExistInSection(upStation) && isNonExistInSection(downStation)) {
+    private void validateStationExistence(Station upStation, Station downStation) {
+        boolean upStationExistence = isExistInSection(upStation);
+        boolean downStationExistence = isExistInSection(downStation);
+        if (upStationExistence && downStationExistence) {
+            throw new IllegalArgumentException("추가하려는 경로의 역들은 이미 노선에 존재하는 역들입니다.");
+        }
+
+        if (!upStationExistence && !downStationExistence) {
             throw new IllegalArgumentException("이미 노선에 역들이 존재하기 때문에 한 번에 새로운 역 2개를 추가할 수 없습니다.");
         }
     }
@@ -95,9 +101,9 @@ public class Sections {
         return new AddResultDto(List.of(newSectionDownward, newSectionUpward), List.of(originalDownSection), List.of(upStation));
     }
 
-    private boolean isNonExistInSection(Station station) {
+    private boolean isExistInSection(Station station) {
         return sections.stream()
-                .noneMatch(section -> section.contains(station));
+                .anyMatch(section -> section.contains(station));
     }
 
     private Station findUpEndStation() {

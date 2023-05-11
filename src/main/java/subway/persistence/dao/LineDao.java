@@ -10,6 +10,7 @@ import subway.service.line.domain.Line;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class LineDao {
@@ -47,9 +48,10 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
+    public Optional<Line> findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.query(sql, rowMapper, id).stream()
+                .findAny();
     }
 
     public void update(Line newLine) {
