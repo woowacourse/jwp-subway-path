@@ -3,6 +3,7 @@ package subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.controller.dto.LineCreateRequest;
 import subway.controller.dto.LineResponse;
 import subway.controller.dto.LinesResponse;
@@ -13,6 +14,7 @@ import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
 
     private final LineRepository lineRepository;
@@ -23,6 +25,7 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public Long createLine(final LineCreateRequest request) {
         final Line line = new Line(request.getName(), request.getColor());
         return lineRepository.save(line).getId();
@@ -44,6 +47,7 @@ public class LineService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
+    @Transactional
     public void createSection(final Long lineId, final SectionCreateRequest request) {
         final Line line = lineRepository.findById(lineId);
         final Station upward = stationRepository.findById(request.getUpwardStationId());
@@ -52,6 +56,7 @@ public class LineService {
         lineRepository.update(line);
     }
 
+    @Transactional
     public void deleteStation(final Long lineId, final Long stationId) {
         final Line line = lineRepository.findById(lineId);
         final Station station = stationRepository.findById(stationId);
