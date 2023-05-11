@@ -36,11 +36,13 @@ public class LineService {
         lineRepository.updateNameAndColorById(id, request.getName(), request.getColor());
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findById(final Long id) {
         final Line line = lineRepository.findById(id);
         return LineResponse.from(line);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
         return lineRepository.findAll().stream()
                 .map(LineResponse::from)
