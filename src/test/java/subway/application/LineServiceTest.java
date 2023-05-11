@@ -16,6 +16,7 @@ import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.StationRequest;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 
 import java.sql.SQLException;
 import java.util.Collections;
@@ -74,10 +75,10 @@ class LineServiceTest {
         //given
         when(lineDao.findById(anyLong()))
                 .thenReturn(Optional.of(new Line("1호선", "red")));
-        when(pathDao.findStationsByLineId(anyLong()))
+        when(pathDao.findPathsByLineId(anyLong()))
                 .thenReturn(List.of(new PathEntity(1L, "부산역", null, null),
-                        new PathEntity(2L, "서면역", 1L, 10),
-                        new PathEntity(3L, "해운대역", 2L, 10)));
+                        new PathEntity(2L, "서면역", 1L, 10L),
+                        new PathEntity(3L, "해운대역", 2L, 10L)));
 
         //when
         final List<Station> result = lineService.findAllStations(1L);
@@ -93,10 +94,10 @@ class LineServiceTest {
         //given
         when(lineDao.findById(anyLong()))
                 .thenReturn(Optional.of(new Line("1호선", "red")));
-        when(pathDao.findStationsByLineId(anyLong()))
+        when(pathDao.findPathsByLineId(anyLong()))
                 .thenReturn(List.of(new PathEntity(2L, "부산역", null, null),
-                        new PathEntity(1L, "서면역", 2L, 10),
-                        new PathEntity(3L, "해운대역", 1L, 10)));
+                        new PathEntity(1L, "서면역", 2L, 10L),
+                        new PathEntity(3L, "해운대역", 1L, 10L)));
 
         //when
         final List<Station> result = lineService.findAllStations(1L);
@@ -112,7 +113,7 @@ class LineServiceTest {
         //given
         when(lineDao.findById(anyLong()))
                 .thenReturn(Optional.of(new Line("1호선", "red")));
-        when(pathDao.findStationsByLineId(anyLong()))
+        when(pathDao.findPathsByLineId(anyLong()))
                 .thenReturn(Collections.emptyList());
 
         //when
@@ -128,13 +129,13 @@ class LineServiceTest {
         //given
         when(lineDao.findById(anyLong()))
                 .thenReturn(Optional.of(new Line("1호선", "red")));
-        when(pathDao.findStationsByLineId(anyLong()))
+        when(pathDao.findPathsByLineId(anyLong()))
                 .thenReturn(Collections.emptyList());
         when(stationDao.insertAll(any()))
                 .thenReturn(List.of(new Station(1L, "상행역"), new Station(2L, "하행역")));
 
         //when
-        final Long upId = lineService.addStation(1L, new StationRequest("상행역", "하행역", 5));
+        final Long upId = lineService.addStation(1L, new StationRequest("상행역", "하행역", 5L));
 
         //then
         assertThat(upId).isSameAs(1L);
@@ -149,7 +150,18 @@ class LineServiceTest {
 
         //when, then
         assertThatThrownBy(
-                () -> lineService.addStation(1L, new StationRequest("상행역", "하행역", 10))
+                () -> lineService.addStation(1L, new StationRequest("상행역", "하행역", 10L))
         ).isInstanceOf(LineNotFoundException.class);
+    }
+
+    @DisplayName("존재하지 않는 역을 삭제하려면 예외가 발생한다")
+    @Test
+    void deleteNonExistsStation() {
+        when(stationDao.findById(anyLong()))
+                .thenReturn(Optional.ofNullable(null));
+
+        assertThatThrownBy(
+                () -> lineService.deleteStation(1L)
+        ).isInstanceOf(StationNotFoundException.class);
     }
 }
