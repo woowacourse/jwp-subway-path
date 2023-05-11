@@ -1,40 +1,30 @@
 # jwp-subway-path
 
 ## API
-
 ``station``
-
-``POST /stations`` 역 등록
+``POST /stations`` 역 등록 .
 
 ``GET /stations`` 모든 역 정보 조회
 
-``DELETE /stations {id}`` 원하는 역 삭제
-
+``DELETE /stations {id}`` 원하는 역 삭제 .
 
 ``/lines``
 
-``POST /lines`` 노선 등록
+``POST /lines`` 노선 등록 .
 
-``GET /lines {id}`` 원하는 노선 정보 조회
+``GET /lines {id}`` 원하는 노선 정보 조회.
 
-``GET /lines`` 노선 전체 조회
+``GET /lines`` 노선 전체 조회 .
 
-``DELETE /lines {id}`` 원하는 노선 삭제
-
+``DELETE /lines {id}`` 원하는 노선 삭제.
 
 `/line/statios`
 
-`POST /line/statios` 노선의 대한 역 최초 등록
+`POST /line/{line_id}/stations` 노선의 대한 역 등록.
 
-`POST /line/statios/up-End` 노선의 대한 시작역 등록
+``DELETE /line/{line_id}/stations`` 노선의 따른 원하는 역 삭제
 
-`POST /line/statios/down-End` 노선의 대한 종점역 등록
-
-`POST /line/statios/meddle` 노선의 대한 중간역 등록
-
-``DELETE /line/statios`` 노선의 따른 원하는 역 삭제
-
-
+`GET /line/{line_id}/stations` 노선의 대한 역 조회.
 
 ## 기능 목록
 
