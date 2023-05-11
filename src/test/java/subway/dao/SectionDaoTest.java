@@ -147,7 +147,7 @@ class SectionDaoTest {
 
         // when
         int previousSize = sectionDao.findSectionsByLineId(lineId).size();
-        sectionDao.deleteByLineId(lineId);
+        sectionDao.deleteAllByLineId(lineId);
 
         // then
         assertThat(sectionDao.findSectionsByLineId(lineId).size())

@@ -20,7 +20,7 @@ public class Sections {
         Section includeSection = sections.stream()
                 .filter(section1 -> section1.hasIntersection(section))
                 .findFirst()
-                .orElseThrow(() -> new InvalidSectionLengthException());
+                .orElseThrow(InvalidSectionLengthException::new);
 
         if (includeSection.isDistanceSmallOrSame(section)) {
             throw new InvalidSectionLengthException();
@@ -43,7 +43,7 @@ public class Sections {
 
     public Section getDownEndSection() {
         return sections.stream().filter(section1 -> section1.getNextSectionId() == 0)
-                .findFirst().orElseThrow(() -> new EndStationNotExistException());
+                .findFirst().orElseThrow(EndStationNotExistException::new);
     }
 
     public Section getUpEndSection() {
@@ -51,7 +51,7 @@ public class Sections {
                 .collect(Collectors.toList());
 
         return sections.stream().filter(section1 -> !downSectionIds.contains(section1.getId()))
-                .findFirst().orElseThrow(() -> new EndStationNotExistException());
+                .findFirst().orElseThrow(EndStationNotExistException::new);
     }
 
     public boolean isInitialSave() {
@@ -69,19 +69,19 @@ public class Sections {
     public Section findSectionByNextSection(Section section) {
         return sections.stream()
                 .filter(section1 -> section1.getNextSectionId().equals(section.getNextSectionId()))
-                .findFirst().orElseThrow(() -> new SectionNotFoundException());
+                .findFirst().orElseThrow(SectionNotFoundException::new);
     }
 
     public Section findSectionByUpStation(final long stationId) {
         return sections.stream().filter(section -> section.isSameUpStationId(stationId))
                 .findFirst()
-                .orElseThrow(() -> new SectionNotFoundException());
+                .orElseThrow(SectionNotFoundException::new);
     }
 
     public Section findSectionByDownStation(final long stationId) {
         return sections.stream().filter(section -> section.isSameDownStationId(stationId))
                 .findFirst()
-                .orElseThrow(() -> new SectionNotFoundException());
+                .orElseThrow(SectionNotFoundException::new);
     }
 
     public boolean isNotExistStation(final long stationId) {

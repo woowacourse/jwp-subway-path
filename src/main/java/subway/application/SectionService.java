@@ -6,12 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.SectionPart;
+import subway.domain.SectionDirection;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionSaveRequest;
 import subway.dto.StationResponse;
+import subway.exception.SectionNotFoundException;
 import subway.exception.StationNotExistException;
 
 @Service
@@ -29,41 +30,56 @@ public class SectionService {
 
         Station requestUpStation = stationDao.findById(request.getUpStationId());
         Station requestDownStation = stationDao.findById(request.getDownStationId());
-
         Section requestedSection = new Section(requestUpStation, requestDownStation, request.getDistance());
 
         if (sections.isInitialSave()) {
             return sectionDao.save(requestedSection, lineId);
         }
         if (sections.isDownEndAppend(requestedSection)) {
-            long savedSectionId = sectionDao.save(requestedSection, lineId);
-            Section downEndSection = sections.getDownEndSection();
-            sectionDao.updateSectionNext(savedSectionId, downEndSection.getId());
-            return savedSectionId;
+            return updateDownEnd(lineId, sections, requestedSection);
         }
         if (sections.isUpEndAppend(requestedSection)) {
-            Section upEndSection = sections.getUpEndSection();
-            Section newSection = new Section(requestUpStation, requestDownStation, request.getDistance(),
-                    upEndSection.getId());
-            return sectionDao.save(newSection, lineId);
+            return updateUpEnd(lineId, request, sections, requestUpStation, requestDownStation);
         }
 
         Section includeSection = sections.getIncludeSection(requestedSection);
-        SectionPart sectionPart = includeSection.checkDirection(requestedSection);
-        if (sectionPart == SectionPart.INNER_LEFT) {
-            Section innerRight = new Section(requestedSection.getDownStation(), includeSection.getDownStation(),
-                    includeSection.getDistance() - requestedSection.getDistance(),
-                    includeSection.getNextSectionId());
+        SectionDirection newSectionDirection = includeSection.checkNewSectionDirection(requestedSection);
+        validateAddAvailable(newSectionDirection);
+        if (newSectionDirection == SectionDirection.INNER_LEFT) {
+            return addInnerLeft(lineId, requestedSection, includeSection);
+        }
+        return addInnerRight(lineId, requestedSection, includeSection);
+    }
 
-            long savedId = sectionDao.save(innerRight, lineId);
+    public void removeStation(long stationId, long lineId) {
+        Sections sections = sectionDao.findSectionsByLineId(lineId);
 
-            Section innerLeft = new Section(includeSection.getId(), requestedSection.getUpStation(),
-                    requestedSection.getDownStation(), requestedSection.getDistance(), savedId);
-
-            sectionDao.update(innerLeft);
-            return savedId;
+        validateStationExist(stationId, sections);
+        if (isLastSection(sections)) {
+            sectionDao.deleteAllByLineId(lineId);
+            return;
         }
 
+        if (isUpEnd(stationId, sections)) {
+            sectionDao.deleteSectionByUpStationId(stationId, lineId);
+            return;
+        }
+
+        Section downEndSection = sections.getDownEndSection();
+        if (sections.getDownEndSection().isSameDownStationId(stationId)) {
+            updateDownEnd(stationId, lineId, sections, downEndSection);
+            return;
+        }
+        removeMiddleStation(stationId, sections);
+    }
+
+    private static void validateAddAvailable(SectionDirection newSectionDirection) {
+        if (newSectionDirection == SectionDirection.NONE) {
+            throw new SectionNotFoundException();
+        }
+    }
+
+    private long addInnerRight(long lineId, Section requestedSection, Section includeSection) {
         Section innerRight = new Section(requestedSection.getUpStation(), requestedSection.getDownStation(),
                 requestedSection.getDistance(), includeSection.getNextSectionId());
         long savedId = sectionDao.save(innerRight, lineId);
@@ -76,27 +92,41 @@ public class SectionService {
         return savedId;
     }
 
-    public void removeStation(long stationId, long lineId) {
-        Sections sections = sectionDao.findSectionsByLineId(lineId);
+    private long addInnerLeft(long lineId, Section requestedSection, Section includeSection) {
+        Section innerRight = new Section(requestedSection.getDownStation(), includeSection.getDownStation(),
+                includeSection.getDistance() - requestedSection.getDistance(),
+                includeSection.getNextSectionId());
 
-        if (sections.isNotExistStation(stationId)) {
-            throw new StationNotExistException();
-        }
+        long savedId = sectionDao.save(innerRight, lineId);
 
-        if (sections.size() == 1) {
-            sectionDao.deleteByLineId(lineId);
-        }
-        if (sections.getUpEndSection().isSameUpStationId(stationId)) {
-            sectionDao.deleteSectionByUpStationId(stationId, lineId);
-            return;
-        }
+        Section innerLeft = new Section(includeSection.getId(), requestedSection.getUpStation(),
+                requestedSection.getDownStation(), requestedSection.getDistance(), savedId);
+
+        sectionDao.update(innerLeft);
+        return savedId;
+    }
+
+    private long updateUpEnd(long lineId, SectionSaveRequest request, Sections sections, Station requestUpStation, Station requestDownStation) {
+        Section upEndSection = sections.getUpEndSection();
+        Section newSection = new Section(requestUpStation, requestDownStation, request.getDistance(),
+                upEndSection.getId());
+        return sectionDao.save(newSection, lineId);
+    }
+
+    private long updateDownEnd(long lineId, Sections sections, Section requestedSection) {
+        long savedSectionId = sectionDao.save(requestedSection, lineId);
         Section downEndSection = sections.getDownEndSection();
-        if (downEndSection.isSameDownStationId(stationId)) {
-            Section section = sections.findSectionByNextSection(downEndSection);
-            sectionDao.deleteSectionByDownStationId(stationId, lineId);
-            sectionDao.updateSectionNext(null, section.getId());
-            return;
-        }
+        sectionDao.updateSectionNext(savedSectionId, downEndSection.getId());
+        return savedSectionId;
+    }
+
+    private void updateDownEnd(long stationId, long lineId, Sections sections, Section downEndSection) {
+        Section section = sections.findSectionByNextSection(downEndSection);
+        sectionDao.deleteSectionByDownStationId(stationId, lineId);
+        sectionDao.updateSectionNext(null, section.getId());
+    }
+
+    private void removeMiddleStation(long stationId, Sections sections) {
         Section innerRight = sections.findSectionByUpStation(stationId);
         Section innerLeft = sections.findSectionByDownStation(stationId);
         Section newSection = new Section(innerLeft.getId(), innerLeft.getUpStation(), innerRight.getDownStation(),
@@ -104,6 +134,20 @@ public class SectionService {
                 innerRight.getNextSectionId());
         sectionDao.update(newSection);
         sectionDao.deleteById(innerRight.getId());
+    }
+
+    private static boolean isUpEnd(long stationId, Sections sections) {
+        return sections.getUpEndSection().isSameUpStationId(stationId);
+    }
+
+    private static boolean isLastSection(Sections sections) {
+        return sections.size() == 1;
+    }
+
+    private static void validateStationExist(long stationId, Sections sections) {
+        if (sections.isNotExistStation(stationId)) {
+            throw new StationNotExistException();
+        }
     }
 
     public Sections findAllByLindId(long lineId) {
@@ -115,7 +159,7 @@ public class SectionService {
         System.out.println(sections);
 
         List<Station> stations = sections.getStationsInOrder();
-        return stations.stream().map(station -> StationResponse.of(station))
+        return stations.stream().map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 }

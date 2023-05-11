@@ -1,8 +1,8 @@
 package subway.domain;
 
-import static subway.domain.SectionPart.INNER_RIGHT;
-import static subway.domain.SectionPart.NONE;
-import static subway.domain.SectionPart.INNER_LEFT;
+import static subway.domain.SectionDirection.INNER_RIGHT;
+import static subway.domain.SectionDirection.NONE;
+import static subway.domain.SectionDirection.INNER_LEFT;
 
 public class Section {
     private final Long id;
@@ -48,12 +48,12 @@ public class Section {
         return this.getDownStationId() == stationId;
     }
 
-    public SectionPart checkDirection(Section section) {
-        if (this.upStation.equals(section.upStation)) {
+    public SectionDirection checkNewSectionDirection(Section newSection) {
+        if (this.upStation.equals(newSection.upStation)) {
             return INNER_LEFT;
         }
 
-        if (this.downStation.equals(section.downStation)) {
+        if (this.downStation.equals(newSection.downStation)) {
             return INNER_RIGHT;
         }
 

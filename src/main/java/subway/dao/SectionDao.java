@@ -88,7 +88,7 @@ public class SectionDao {
         jdbcTemplate.update(sql, stationId, lineId);
     }
 
-    public void deleteByLineId(long lineId) {
+    public void deleteAllByLineId(long lineId) {
         String sql = "delete SECTIONS where line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }
