@@ -1,5 +1,6 @@
 package subway.application.station.service;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.station.usecase.AttachEndStationUseCase;
@@ -41,6 +42,15 @@ public class AttachEndStationService implements AttachEndStationUseCase {
 
         final Section newSection = new Section(standardStation, newStation, stationDistance);
         sectionRepository.save(newSection, lineId);
-        stationRepository.save(newStation);
+        saveIfNotExist(newStation);
+    }
+
+    private void saveIfNotExist(final Station station) {
+        final Optional<Station> findByNameStation =
+                stationRepository.findByName(station.getStationName());
+
+        if (findByNameStation.isEmpty()) {
+            stationRepository.save(station);
+        }
     }
 }

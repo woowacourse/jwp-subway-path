@@ -1,5 +1,6 @@
 package subway.application.station.service;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.station.usecase.AttachFrontStationUseCase;
@@ -39,8 +40,17 @@ public class AttachFrontStationService implements AttachFrontStationUseCase {
         final Sections sections = line.getSections();
         sections.attachAtFirstStation(standardStation, newStation, stationDistance);
 
-        final Section newSection = new Section(newStation, standardStation, stationDistance);
+        final Section newSection = sections.peekByFirstStationUnique(newStation);
         sectionRepository.save(newSection, lineId);
-        stationRepository.save(newStation);
+        saveIfNotExist(newStation);
+    }
+
+    private void saveIfNotExist(final Station station) {
+        final Optional<Station> findByNameStation =
+                stationRepository.findByName(station.getStationName());
+
+        if (findByNameStation.isEmpty()) {
+            stationRepository.save(station);
+        }
     }
 }

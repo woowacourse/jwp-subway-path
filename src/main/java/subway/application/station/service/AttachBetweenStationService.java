@@ -1,5 +1,6 @@
 package subway.application.station.service;
 
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.station.usecase.AttachBetweenStationUseCase;
@@ -35,7 +36,7 @@ public class AttachBetweenStationService implements AttachBetweenStationUseCase 
 
         final Station newStation = new Station(request.getNewStation());
         final Station standardStation = new Station(request.getStandardStation());
-        stationRepository.save(newStation);
+        saveIfNotExist(newStation);
         final Section removedSection = sections.peekByFirstStationUnique(standardStation);
 
         sections.insertBehindStation(standardStation, newStation, new StationDistance(request.getDistance()));
@@ -46,5 +47,14 @@ public class AttachBetweenStationService implements AttachBetweenStationUseCase 
         final Section sectionB = sections.peekByFirstStationUnique(newStation);
         sectionRepository.save(sectionA, lineId);
         sectionRepository.save(sectionB, lineId);
+    }
+
+    private void saveIfNotExist(final Station station) {
+        final Optional<Station> findByNameStation =
+                stationRepository.findByName(station.getStationName());
+
+        if (findByNameStation.isEmpty()) {
+            stationRepository.save(station);
+        }
     }
 }
