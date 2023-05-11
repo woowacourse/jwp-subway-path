@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Line {
@@ -55,19 +56,92 @@ public class Line {
         return edges;
     }
 
-    public void addEdge(Station from, Station to, int distance) {
+    public void addEdge(Station upStation, Station downStation, int distance) {
         /* TODO : validate
-        1. from, to 둘 중 하나는 포함되어 있어야 한다.
-        2. from, to 둘 다 포함되어서는 안된다.
-        3. from 또는 to가 존재하고, 이미 존재하는 edge의 distance와 동일하면 안된다.
-        4. 기존의 edge와 방향이 같을 경우 길이는 기존 dist보다 짧아야 한다.
-        -> validate 실패시 예외 발생
-         */
-        edges.add(new Edge(from, to, distance));
+        1. from, to 둘 중 하나가 기존 노선에 등록되어 있는지 확인 (둘 다 있으면 안됨)
+        2. from, to 둘 중 기존 노선에 등록되어 있는 애 찾기
+        3. 기존 노선의 해당 station를 가지고 있는 edge들 가져오기
+        4. 그중 타겟이 되는 edge 선정
+        3. 새로운 애랑 기존 애 up, down 판별
+            down-up : 뒤에 추가
+            up-down : 앞에 추가
+            up-up 이거나 down-down : 사이에 추가
+                기존 edge의 dist보다 작아야 함
+        */
+
+        // 1번
+        if (isAlreadyExistBoth(upStation, downStation)) {
+            throw new IllegalArgumentException("해당 노선에 두 역이 모두 존재합니다.");
+        }
+        if (isNothingExist(upStation, downStation)) {
+            throw new IllegalArgumentException("해당 노선에 두 역이 모두 존재하지 않습니다.");
+        }
+
+        // 2번
+        Optional<Station> upStationOptional = getStations().stream()
+                .filter(station -> station.equals(upStation))
+                .findFirst();
+        Optional<Station> downStationOptional = getStations().stream()
+                .filter(station -> station.equals(downStation))
+                .findFirst();
+
+        if (upStationOptional.isPresent()) {
+            // 기존 역이 upStation이다
+            Optional<Edge> edgeOptional = edges.stream()
+                    .filter(edge -> edge.getUpStation().equals(upStationOptional.get()))
+                    .findFirst();
+
+            if (edgeOptional.isPresent()) {
+                // 거리비교하면 됨
+                Edge targetEdge = edgeOptional.get();
+                if (distance < targetEdge.getDistance()) { // 성공적으로 추가 가능
+                    Edge newEdge1 = new Edge(upStation, downStation, distance);
+                    Edge newEdge2 = new Edge(downStation, targetEdge.getDownStation(),
+                            targetEdge.getDistance() - distance);
+                    int removedIndex = edges.indexOf(targetEdge);
+                    edges.remove(removedIndex);
+                    edges.add(removedIndex, newEdge2);
+                    edges.add(removedIndex, newEdge1);
+                } else {
+                    throw new IllegalArgumentException("추가하려는 거리가 기존의 거리보다 깁니다.");
+                }
+
+            } else {
+                // 종점이니까 그냥 추가하면 돼
+                edges.add(new Edge(upStation, downStation, distance));
+            }
+        } else {
+            // 기존 역이 downStation이다.
+            Optional<Edge> edgeOptional = edges.stream()
+                    .filter(edge -> edge.getDownStation().equals(downStationOptional.get()))
+                    .findFirst();
+
+            if (edgeOptional.isPresent()) {
+                // 거리비교하면 됨
+                Edge targetEdge = edgeOptional.get();
+                if (distance < targetEdge.getDistance()) {
+                    Edge edge1 = new Edge(targetEdge.getUpStation(), upStation, targetEdge.getDistance() - distance);
+                    Edge edge2 = new Edge(upStation, downStation, distance);
+                    int removedIndex = edges.indexOf(targetEdge);
+                    edges.remove(removedIndex);
+                    edges.add(removedIndex, edge2);
+                    edges.add(removedIndex, edge1);
+                } else {
+                    throw new IllegalArgumentException("추가하려는 거리가 기존의 거리보다 깁니다.");
+                }
+            } else {
+                // 종점이니까 그냥 추가하면 돼
+                edges.add(0, new Edge(upStation, downStation, distance));
+            }
+        }
     }
 
-    public void deleteEdge(Station station) {
+    private boolean isNothingExist(Station upStation, Station downStation) {
+        return !getStations().contains(upStation) && !getStations().contains(downStation);
+    }
 
+    private boolean isAlreadyExistBoth(Station upStation, Station downStation) {
+        return getStations().containsAll(List.of(upStation, downStation));
     }
 
     public void setId(Long id) {

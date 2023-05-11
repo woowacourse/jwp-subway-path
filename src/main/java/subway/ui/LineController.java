@@ -1,14 +1,19 @@
 package subway.ui;
 
 import java.net.URI;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.domain.Line;
+import subway.domain.Station;
 import subway.dto.AddStationToLineRequest;
+import subway.dto.AddStationToLineResponse;
 import subway.dto.LineCreateRequest;
 import subway.dto.LineCreateResponse;
 import subway.service.LineService;
@@ -30,10 +35,13 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/stations")
-    public ResponseEntity<Void> addStationToLine(@PathVariable Long lineId,
-                                                 @RequestBody AddStationToLineRequest addStationToLineRequest) {
-        lineService.addStationToExistLine(lineId, addStationToLineRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<AddStationToLineResponse> addStationToLine(@PathVariable Long lineId,
+                                                                     @RequestBody AddStationToLineRequest addStationToLineRequest) {
+        Line line = lineService.addStationToExistLine(lineId, addStationToLineRequest);
+        List<Long> stationIds = line.getStations().stream()
+                .map(Station::getId)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(new AddStationToLineResponse(line.getId(), line.getName(), stationIds));
     }
 
     /*

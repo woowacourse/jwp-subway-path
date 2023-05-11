@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,9 +42,9 @@ class LineServiceTest {
         List<Station> allStation = lineService.findAllStation("3호선");
 
         // then
-        assertThat(allStation).containsExactly(
-                new Station("안국"),
-                new Station("경복궁")
+        assertAll(
+                () -> assertThat(allStation.get(0).getName()).isEqualTo("안국"),
+                () -> assertThat(allStation.get(1).getName()).isEqualTo("경복궁")
         );
     }
 
@@ -65,10 +66,10 @@ class LineServiceTest {
         List<Station> allStation = lineService.findAllStation("3호선");
 
         // then
-        assertThat(allStation).containsExactly(
-                new Station("안국"),
-                new Station("경복궁"),
-                new Station("충무로")
+        assertAll(
+                () -> assertThat(allStation.get(0).getName()).isEqualTo("안국"),
+                () -> assertThat(allStation.get(1).getName()).isEqualTo("경복궁"),
+                () -> assertThat(allStation.get(2).getName()).isEqualTo("충무로")
         );
     }
 }

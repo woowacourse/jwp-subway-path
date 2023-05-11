@@ -32,6 +32,14 @@
 - [x] 노선에 역 등록 API 신규 구현 (post - "/lines/{lineId}/stations")
 ```JSON
   {
+    "existStationId" : 3,
+    "addStationId" : 1,
+    "direction" : "UP",
+    "distance" : 5
+  }
+```
+```JSON
+  {
     "upStationId" : 3,
     "downStationId" : 1,
     "distance" : 5
@@ -44,6 +52,14 @@
   "stations" : [1, 2, 3]
   }
 ```
+
+3. 역 제거 API <- 좀 비즈니스 로직 있음
+4. edge 테이블 update 어떻게 할건지 .. <- db관련
+5. 조회 api
+
+1. Line의 73번째줄 (기존에 있는 역의 개수 검사) <- 테스트 내일하자
+2. Line에 역을 추가할 때 거리가 에러나는경우 테스트
+
 
 - [ ] 노선의 모든 역 조회 API (get - "/lines/{lineId}")
 - [ ] 모든 노선 조회 API (get - "/lines")
