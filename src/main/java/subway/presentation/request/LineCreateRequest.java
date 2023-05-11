@@ -6,16 +6,16 @@ import subway.application.dto.LineCreateCommand;
 
 public class LineCreateRequest {
 
-    @NotBlank
+    @NotBlank(message = "노선을 입력해주세요.")
     private String lineName;
 
-    @NotBlank
+    @NotBlank(message = "상행역 입력해주세요.")
     private String upTerminalName;
 
-    @NotBlank
+    @NotBlank(message = "하행역 입력해주세요.")
     private String downTerminalName;
 
-    @NotNull
+    @NotNull(message = "역간의 거리를 입력해주세요.")
     private Integer distance;
 
     private LineCreateRequest() {
