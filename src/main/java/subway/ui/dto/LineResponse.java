@@ -1,20 +1,22 @@
-package subway.dto;
+package subway.ui.dto;
 
 import subway.domain.Line;
 
 public class LineResponse {
+
     private Long id;
     private String name;
-    private String color;
 
-    public LineResponse(Long id, String name, String color) {
+    private LineResponse() {
+    }
+
+    public LineResponse(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.color = color;
     }
 
     public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+        return new LineResponse(line.getId(), line.getName());
     }
 
     public Long getId() {
@@ -23,9 +25,5 @@ public class LineResponse {
 
     public String getName() {
         return name;
-    }
-
-    public String getColor() {
-        return color;
     }
 }

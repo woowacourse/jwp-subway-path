@@ -7,6 +7,9 @@ public class SectionRequest {
     private String rightStationName;
     private Integer distance;
 
+    private SectionRequest() {
+    }
+
     public SectionRequest(Long lineId, String leftStationName, String rightStationName, Integer distance) {
         this.lineId = lineId;
         this.leftStationName = leftStationName;
