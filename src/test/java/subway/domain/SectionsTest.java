@@ -1,11 +1,10 @@
 package subway.domain;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class SectionsTest {
 
@@ -23,7 +22,6 @@ class SectionsTest {
         final Sections difference = originSections.getDifferenceOfSet(newSections);
 
         assertThat(difference.getSections())
-                .containsExactly(sections1
-                );
+                .containsExactly(sections1);
     }
 }

@@ -18,6 +18,14 @@ public class Section {
         this.distance = distance;
     }
 
+    public boolean isEqualBeforeStation(final Station station) {
+        return station.equals(beforeStation);
+    }
+
+    public boolean isEqualNextStation(final Station station) {
+        return station.equals(nextStation);
+    }
+
     public Long getId() {
         return id;
     }

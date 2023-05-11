@@ -1,5 +1,11 @@
 package subway.integration;
 
+import static io.restassured.RestAssured.given;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.integration.IntegrationFixture.OBJECT_MAPPER;
+import static subway.integration.IntegrationFixture.jsonSerialize;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -9,18 +15,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.*;
 import subway.service.dto.LineRequest;
 import subway.service.dto.LineResponse;
 import subway.service.dto.SectionRequest;
 import subway.service.dto.StationRequest;
 import subway.service.dto.StationResponse;
-
-import static io.restassured.RestAssured.given;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.integration.IntegrationFixture.OBJECT_MAPPER;
-import static subway.integration.IntegrationFixture.jsonSerialize;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {

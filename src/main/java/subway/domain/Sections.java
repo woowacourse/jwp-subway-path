@@ -94,14 +94,14 @@ public class Sections {
 
     private static Section findBeforeSection(final Station station, final List<Section> newSections) {
         return newSections.stream()
-                .filter(section -> section.getNextStation().equals(station))
+                .filter(section -> section.isEqualNextStation(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
     }
 
     private static Section findNextSection(final Station station, final List<Section> newSections) {
         return newSections.stream()
-                .filter(section -> section.getBeforeStation().equals(station))
+                .filter(section -> section.isEqualBeforeStation(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
     }
@@ -114,8 +114,12 @@ public class Sections {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final Sections sections1 = (Sections) o;
         return Objects.equals(sections, sections1.sections);
     }

@@ -1,10 +1,9 @@
 package subway.service.dto;
 
-import subway.domain.Line;
-import subway.domain.Section;
-
 import java.util.LinkedList;
 import java.util.List;
+import subway.domain.Line;
+import subway.domain.Section;
 
 public class LineResponse {
 

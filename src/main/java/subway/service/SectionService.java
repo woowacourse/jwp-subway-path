@@ -1,14 +1,13 @@
 package subway.service;
 
-import org.springframework.stereotype.Service;
-import subway.persistence.dao.SectionDao;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
+import subway.persistence.dao.SectionDao;
 
 @Service
 public class SectionService {

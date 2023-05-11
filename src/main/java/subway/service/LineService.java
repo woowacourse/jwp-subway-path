@@ -1,16 +1,20 @@
 package subway.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Distance;
+import subway.domain.Line;
+import subway.domain.LineName;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
 import subway.persistence.dao.LineDao;
-import subway.domain.*;
 import subway.service.dto.LineRequest;
 import subway.service.dto.LineResponse;
 import subway.service.dto.SectionRequest;
 import subway.service.dto.StationRequest;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -19,7 +23,8 @@ public class LineService {
     private final SectionService sectionService;
     private final LineDao lineDao;
 
-    public LineService(final StationService stationService, final SectionService sectionService, final LineDao lineDao) {
+    public LineService(final StationService stationService, final SectionService sectionService,
+                       final LineDao lineDao) {
         this.stationService = stationService;
         this.sectionService = sectionService;
         this.lineDao = lineDao;
