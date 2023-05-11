@@ -18,4 +18,24 @@ public class Section {
     public Section(Station upStation, Station downStation, Distance distance, Line line) {
         this(null, upStation, downStation, distance, line);
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public Distance getDistance() {
+        return distance;
+    }
+
+    public Line getLine() {
+        return line;
+    }
 }
