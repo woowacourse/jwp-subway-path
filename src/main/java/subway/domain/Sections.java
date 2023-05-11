@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Sections {
 
@@ -103,7 +104,62 @@ public class Sections {
                 .forEach(section -> section.updateStation(targetStation, updateStation));
     }
 
+    public void deleteSection(final Station targetStation) {
+        final List<Section> targetSection = sections.stream()
+                .filter(section -> section.exist(targetStation))
+                .collect(Collectors.toUnmodifiableList());
+
+        if (targetSection.size() == 1) {
+            sections.remove(targetSection.get(0));
+        }
+
+        if (targetSection.size() == 2) {
+            Station leftStation = null;
+            Station rightStation = null;
+            int distance = 0;
+
+            for (Section section : targetSection) {
+                if (section.existRight(targetStation)) {
+                    leftStation = section.getFrom();
+                    distance += section.getDistanceValue();
+                }
+                if (section.existLeft(targetStation)) {
+                    rightStation = section.getTo();
+                    distance += section.getDistanceValue();
+                }
+                sections.remove(section);
+            }
+            sections.add(new Section(leftStation, rightStation, distance));
+        }
+    }
+
     public List<Section> getSections() {
         return sections;
+    }
+
+    public boolean isHead(final Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.existLeft(station));
+    }
+
+    public List<Station> getOrderedStations(final Station station) {
+        final List<Station> orderedStations = new ArrayList<>();
+        Station targetStation = station;
+        while (true) {
+
+            for (Section section : sections) {
+                if (section.existLeft(targetStation)) {
+                    orderedStations.add(section.getFrom());
+                    targetStation = section.getTo();
+                    break;
+                }
+            }
+
+            if (orderedStations.size() == sections.size()) {
+                orderedStations.add(targetStation);
+                break;
+            }
+        }
+        return orderedStations;
     }
 }
