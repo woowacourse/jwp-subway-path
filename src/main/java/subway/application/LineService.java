@@ -45,34 +45,9 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
-        return persistLines.stream()
-            .map(LineResponse::of)
-            .collect(Collectors.toList());
-    }
-
     public List<LineEntity> findLines() {
         return lineRepository.findAll();
     }
-
-    public LineResponse findLineResponseById(Long id) {
-        LineEntity persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public LineEntity findLineById(Long id) {
-        return lineRepository.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        //lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(Long id) {
-        lineRepository.deleteById(id);
-    }
-
 
     public void registerInitStations(final String name, final RegisterStationsRequest registerStationsRequest) {
         Line line = lineRepository.findByName(name);
@@ -80,9 +55,8 @@ public class LineService {
         Station leftStation = stationDao.findByName(registerStationsRequest.getLeftStationName()).orElseThrow(RuntimeException::new);
         Station rightStation = stationDao.findByName(registerStationsRequest.getRightStationName()).orElseThrow(RuntimeException::new);
 
-        List<LineStationEntity> lineStationEntities = lineStationDao.findByLineId(line.getId());
-        if (lineStationEntities.size() != 0) {
-            throw new IllegalStateException("초기화 할 때는 노선에 역이 하나도 없어여 합니다.");
+        if(line.getStations().size() != 0) {
+            throw new IllegalStateException("초기 등록할 때는 노선에 역이 하나도 없어야 합니다.");
         }
 
         lineStationDao.insert(new LineStationEntity(leftStation.getId(), line.getId()));
