@@ -112,9 +112,9 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then().extract();
 
         Map<String, String> sectionParams = new HashMap<>();
-        sectionParams.put("lineId", lineResponse1.jsonPath().getString("id"));
-        sectionParams.put("stationId", stationResponse1.jsonPath().getString("id"));
-        sectionParams.put("upStationId", stationResponse2.jsonPath().getString("id"));
+        sectionParams.put("lineId", "1");
+        sectionParams.put("stationId", "1");
+        sectionParams.put("upStationId", "2");
         sectionParams.put("distance", "3");
 
         RestAssured
@@ -135,8 +135,8 @@ public class LineIntegrationTest extends IntegrationTest {
 
         Map<String, String> sectionParams2 = new HashMap<>();
         sectionParams.put("lineId", "2");
-        sectionParams.put("stationId", stationResponse3.jsonPath().getString("id"));
-        sectionParams.put("upStationId", stationResponse2.jsonPath().getString("id"));
+        sectionParams.put("stationId", "2");
+        sectionParams.put("upStationId", "3");
         sectionParams.put("distance", "3");
 
         RestAssured

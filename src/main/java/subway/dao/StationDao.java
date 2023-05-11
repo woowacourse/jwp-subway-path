@@ -32,11 +32,11 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public StationEntity insert(Station station) {
+    public Long insert(Station station) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", station.getStationName());
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new StationEntity(id, station.getStationName());
+        return id;
     }
 
     public List<StationEntity> findAll() {

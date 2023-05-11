@@ -21,9 +21,8 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse save(StationRequest stationRequest) {
-        StationEntity stationEntity = stationDao.insert(new Station(new StationName(stationRequest.getName())));
-        return StationResponse.of(stationEntity);
+    public Long save(StationRequest stationRequest) {
+        return stationDao.insert(new Station(new StationName(stationRequest.getName())));
     }
 
     public StationResponse findById(Long id) {

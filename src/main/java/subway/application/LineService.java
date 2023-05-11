@@ -29,14 +29,14 @@ public class LineService {
         this.stationDao = stationDao;
     }
 
-    public LineResponse save(LineRequest request) {
+    public Long save(LineRequest request) {
         LineEntity persistLineEntity = lineDao.insert(
                 new Line(
                         new LineName(request.getName()),
                         new LineColor(request.getColor())
                 )
         );
-        return LineResponse.of(persistLineEntity);
+        return persistLineEntity.getId();
     }
 
     public List<LineStationResponse> findAll() {
