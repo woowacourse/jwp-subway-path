@@ -4,7 +4,9 @@ import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
@@ -22,15 +24,15 @@ public class SectionDao {
             rs.getInt("distance")
     );
 
-    private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
+    private final NamedParameterJdbcTemplate jdbcTemplate;
 
     public SectionDao(final JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("section")
                 .usingColumns("line_id", "upward_station_id", "downward_station_id", "distance")
                 .usingGeneratedKeyColumns("id");
+        this.jdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
     public SectionEntity save(final SectionEntity entity) {
@@ -47,7 +49,7 @@ public class SectionDao {
                 + " JOIN station us ON s.upward_station_id = us.id"
                 + " JOIN station ds ON s.downward_station_id = ds.id"
                 + " WHERE s.id = ?";
-        return jdbcTemplate.queryForObject(sql, ROW_MAPPER, id);
+        return jdbcTemplate.getJdbcOperations().queryForObject(sql, ROW_MAPPER, id);
     }
 
     public List<SectionEntity> findAllByLineId(final Long lineId) {
@@ -63,11 +65,16 @@ public class SectionDao {
                 + " JOIN station ds ON s.downward_station_id = ds.id"
                 + " WHERE s.line_id = ?"
                 + " ORDER BY s.id";
-        return jdbcTemplate.query(sql, ROW_MAPPER, lineId);
+        return jdbcTemplate.getJdbcOperations().query(sql, ROW_MAPPER, lineId);
     }
 
     public void deleteAllByLineId(final Long lineId) {
         final String sql = "DELETE FROM section WHERE line_id = ?";
-        jdbcTemplate.update(sql, lineId);
+        jdbcTemplate.getJdbcOperations().update(sql, lineId);
+    }
+
+    public void saveAll(final List<SectionEntity> entities) {
+        final String sql = "INSERT INTO section (line_id, upward_station_id, downward_station_id, distance) VALUES (:lineId, :upwardStationId, :downwardStationId, :distance)";
+        jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(entities));
     }
 }
