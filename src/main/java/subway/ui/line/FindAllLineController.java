@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.ui.line;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.line.FindAllLinesUseCase;
+import subway.application.line.usecase.FindAllLinesUseCase;
 import subway.ui.dto.response.LineResponse;
 
 @RestController

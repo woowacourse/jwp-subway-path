@@ -1,9 +1,10 @@
-package subway.application.line;
+package subway.application.line.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.application.line.usecase.FindSingleLineUseCase;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.section.Sections;
@@ -27,7 +28,7 @@ public class FindSingleLineService implements FindSingleLineUseCase {
 
         final Sections sections = line.getSections();
         final SortedSection sortedSection = new SortedSection(sections);
-        
+
         final List<StationResponse> stationResponses = toStationResponses(sortedSection);
         return new LineResponse(line.getLineName(), line.getLineColor(), stationResponses);
     }

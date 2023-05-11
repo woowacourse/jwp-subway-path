@@ -1,7 +1,8 @@
-package subway.application.station;
+package subway.application.station.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.application.station.usecase.AttachEndStationUseCase;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.section.Section;

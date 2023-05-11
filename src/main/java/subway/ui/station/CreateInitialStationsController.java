@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.ui.station;
 
 import java.sql.SQLException;
 import org.springframework.http.HttpStatus;
@@ -8,24 +8,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.station.AttachBetweenStationUseCase;
-import subway.ui.dto.request.AttachStationRequest;
+import subway.application.station.usecase.CreateInitialStationsUseCase;
+import subway.ui.dto.request.CreateInitialStationsRequest;
 
 @RestController
-public class AttachBetweenStationController {
+public class CreateInitialStationsController {
 
-    private final AttachBetweenStationUseCase attachBetweenStationService;
+    private final CreateInitialStationsUseCase createInitialStationsService;
 
-    public AttachBetweenStationController(final AttachBetweenStationUseCase attachBetweenStationService) {
-        this.attachBetweenStationService = attachBetweenStationService;
+
+    public CreateInitialStationsController(final CreateInitialStationsUseCase createInitialStationsService) {
+        this.createInitialStationsService = createInitialStationsService;
     }
 
-    @PostMapping("/lines/{lineId}/station/between")
-    public ResponseEntity<Void> attachStationAtEnd(
+    @PostMapping("/lines/{lineId}/station/init")
+    public ResponseEntity<Void> createInitialStations(
             @PathVariable final Long lineId,
-            @RequestBody final AttachStationRequest request
+            @RequestBody final CreateInitialStationsRequest request
     ) {
-        attachBetweenStationService.attachBetweenStation(lineId, request);
+        createInitialStationsService.addInitialStations(lineId, request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)

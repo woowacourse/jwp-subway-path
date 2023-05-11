@@ -1,4 +1,4 @@
-package subway.application.station;
+package subway.application.station.usecase;
 
 import subway.ui.dto.request.AttachStationRequest;
 

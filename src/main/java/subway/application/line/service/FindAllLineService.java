@@ -1,10 +1,11 @@
-package subway.application.line;
+package subway.application.line.service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.application.line.usecase.FindAllLinesUseCase;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.section.SortedSection;

@@ -1,4 +1,4 @@
-package subway.application.line;
+package subway.application.line.usecase;
 
 import java.util.List;
 import subway.ui.dto.response.LineResponse;

@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.ui.station;
 
 import java.sql.SQLException;
 import org.springframework.http.HttpStatus;
@@ -8,24 +8,24 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.station.AttachEndStationUseCase;
+import subway.application.station.usecase.AttachBetweenStationUseCase;
 import subway.ui.dto.request.AttachStationRequest;
 
 @RestController
-public class AttachEndStationController {
+public class AttachBetweenStationController {
 
-    private final AttachEndStationUseCase attachEndStationService;
+    private final AttachBetweenStationUseCase attachBetweenStationService;
 
-    public AttachEndStationController(final AttachEndStationUseCase attachEndStationService) {
-        this.attachEndStationService = attachEndStationService;
+    public AttachBetweenStationController(final AttachBetweenStationUseCase attachBetweenStationService) {
+        this.attachBetweenStationService = attachBetweenStationService;
     }
 
-    @PostMapping("/lines/{lineId}/station/end")
+    @PostMapping("/lines/{lineId}/station/between")
     public ResponseEntity<Void> attachStationAtEnd(
             @PathVariable final Long lineId,
             @RequestBody final AttachStationRequest request
     ) {
-        attachEndStationService.attachEndStation(lineId, request);
+        attachBetweenStationService.attachBetweenStation(lineId, request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
