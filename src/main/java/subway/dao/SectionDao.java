@@ -47,7 +47,7 @@ public class SectionDao {
     }
 
     public long saveSection(Long lineId, int distance, String departure, String arrival) {
-        final String sql = "INSERT INTO sections (line_id, departure_id, arrival_id, distance) "
+        final String sql = "INSERT INTO sections (line_id, departure_id, ARRIVAL_ID, distance) "
                 + "SELECT ?, departure_station.id, arrival_station.id, ? "
                 + "FROM station AS departure_station "
                 + "LEFT JOIN station AS arrival_station "
