@@ -12,12 +12,7 @@ public class Stations {
         this.stations = stations;
     }
 
-    public void add(final Station station) {
-        validateDuplication(station);
-        stations.add(station);
-    }
-
-    private void validateDuplication(final Station station) {
+    public void validateDuplication(final Station station) {
         final List<String> stationNames = getStationNames();
         if (stationNames.contains(station.getName())) {
             throw new GlobalException(ErrorCode.STATION_NAME_DUPLICATED);

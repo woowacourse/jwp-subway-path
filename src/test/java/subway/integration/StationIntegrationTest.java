@@ -215,15 +215,13 @@ public class StationIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        // when
+        // expected
         String uri = createResponse.header("Location");
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .when()
                 .delete(uri)
                 .then().log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value())
                 .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -79,7 +79,7 @@ public class SectionService {
 
     private List<StationResponse> convertStationResponses(final List<Station> stations) {
         return stations.stream()
-            .map(StationResponse::of)
+            .map(station -> StationResponse.of(station.getId(), station.getName()))
             .collect(Collectors.toUnmodifiableList());
     }
 
