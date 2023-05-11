@@ -46,16 +46,23 @@
 ## 도메인 설계
 
 - Line(노선)
-  - id ID
-  - String 이름
-  - String 색깔
-  - List<Section> 구간
+  - id
+  - String name
+  - String color
+
+- Sections
+  - List<Section> sections 
 
 - Section(구간)
-  - Station 상행선
-  - Station 하행선
-  - int 거리
+  - Long downStationId
+  - Long upStationId
+  - Long lineId
+  - int distance
 
 - Station(역)
   - id ID
   - String 이름
+
+
+## API 문서
+- [API 구현 목록](https://documenter.getpostman.com/view/22400395/2s93ebTAmd#85e97606-4a86-4627-8ee1-e7feaf8d80b5)
