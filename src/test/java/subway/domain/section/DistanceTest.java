@@ -18,12 +18,12 @@ class DistanceTest {
     }
 
     @ParameterizedTest
-    @DisplayName("거리가 0보다 작거나 15보다 클 경우 예외를 던진다.")
-    @ValueSource(ints = {-1, 16})
+    @DisplayName("거리가 0보다 작을 경우 예외를 던진다.")
+    @ValueSource(ints = {-1, -3})
     void validateWithInvalidRange(final int input) {
         assertThatThrownBy(() -> new Distance(input))
                 .isInstanceOf(InvalidDistanceException.class)
-                .hasMessage("역 사이의 거리는 0이상, 15이하여야합니다.");
+                .hasMessage("역 사이의 거리는 0이상이어야합니다.");
     }
 }
 
