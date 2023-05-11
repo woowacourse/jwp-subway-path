@@ -4,8 +4,6 @@
 
 ### Domain
 
-- [x] Lines
-    - 전체 호선 관리
 - [x] Line (1호선, 2호선, ...)
     - LineInfo
     - Sections(호선에 존재하는 역들의 구간 정보)
@@ -49,8 +47,7 @@
 POST /subway/lines
 
 Request {
-    lineName : "1호선",
-    lineColor : "파랑색"
+    lineName : "1호선"
 }
 
 Response Headers {
@@ -62,7 +59,7 @@ Response Headers {
 노선에 역 구간 등록
 
 ```text
-POST /subway/lines/{line_id}
+POST /subway/lines/{line_id}/sections
 
 Request {
     startStation : "회기",
@@ -78,7 +75,7 @@ Response Headers {
 노선에 역 제거
 
 ```text
-DELETE /subway/lines/sections/{station_id}
+DELETE /subway/lines/{lineId}/stations/{station_id}
 
 Response Headers {
     Status : 204
@@ -95,10 +92,17 @@ Response Headers {
 }
 
 Response Body {
+    id : 1L,
     lineName : "1호선",
-    lineColor : "파랑색",
     stations : [
-        "회기", "청량리"   
+         {
+            id : 1L,
+            name : "회기"
+        },
+        {
+            id : 2L,
+            name : "청량리"
+        }
    ]
 }
 ```
@@ -112,24 +116,30 @@ Response Headers {
     Status : 200
 }
 
-Response Body {
-    lines : [
-        {
+Response Body {[
+    {id : 1L,
+    lineName : "1호선",
+    stations : [
+         {
             id : 1L,
-            lineName : "1호선",
-            lineColor : "파랑색",
-            stations : [
-              "회기", "청량리"   
-            ]
+            name : "회기"
         },
         {
             id : 2L,
-            lineName : "2호선",
-            lineColor : "초록색",
-            stations : [
-             "잠실", "잠실새내"   
-            ]
+            name : "청량리"
         }
-    ]
-}
+   ]},
+   {id : 2L,
+    lineName : "2호선",
+    stations : [
+         {
+            id : 3L,
+            name : "잠실"
+        },
+        {
+            id : 4L,
+            name : "잠실새내"
+        }
+   ]}
+]}
 ```
