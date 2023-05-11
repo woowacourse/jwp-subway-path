@@ -4,6 +4,8 @@ import subway.Entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.response.LineResponse;
+import subway.dto.response.StationResponse;
 
 public class DtoMapper {
 

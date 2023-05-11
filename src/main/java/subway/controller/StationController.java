@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.StationRequest;
+import subway.dto.response.StationResponse;
 import subway.service.StationService;
 
 import java.net.URI;

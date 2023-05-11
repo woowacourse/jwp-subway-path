@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.dto.LineStationsResponse;
-import subway.dto.StationResponse;
+import subway.dto.response.LineStationsResponse;
+import subway.dto.response.StationResponse;
 import subway.service.SectionService;
 
 import java.util.List;

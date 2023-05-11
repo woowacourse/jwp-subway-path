@@ -3,8 +3,8 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import subway.dao.H2StationDao;
 import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.StationRequest;
+import subway.dto.response.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

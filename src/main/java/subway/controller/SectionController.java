@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import subway.dto.EndSectionRequest;
-import subway.dto.InitSectionRequest;
-import subway.dto.SectionDeleteRequest;
-import subway.dto.SectionLastDeleteRequest;
-import subway.dto.SectionRequest;
+import subway.dto.request.EndSectionRequest;
+import subway.dto.request.InitSectionRequest;
+import subway.dto.request.SectionDeleteRequest;
+import subway.dto.request.SectionLastDeleteRequest;
+import subway.dto.request.SectionRequest;
 import subway.service.SectionService;
 
 import javax.validation.Valid;

@@ -9,9 +9,9 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.EndSectionRequest;
-import subway.dto.InitSectionRequest;
-import subway.dto.SectionRequest;
+import subway.dto.request.EndSectionRequest;
+import subway.dto.request.InitSectionRequest;
+import subway.dto.request.SectionRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/schema.sql")
