@@ -31,7 +31,7 @@ public class LineController {
     }
 
     @GetMapping("/{lineName}/stations")
-    public ResponseEntity<LineResponse> getLineStations(@PathVariable String lineName) {
+    public ResponseEntity<LineResponse> findLineStations(@PathVariable String lineName) {
         final LineResponse stations = lineService.findStationsByLineName(lineName);
 
         return ResponseEntity

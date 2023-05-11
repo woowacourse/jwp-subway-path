@@ -88,7 +88,7 @@ public class StationService {
             }
 
             sectionDao.delete(upSection.getId());
-            sectionDao.save(upSection.getDownStationId(), upStation.getId(), line.getId(), isStart, distance);
+            sectionDao.save(upSection.getUpStationId(), upStation.getId(), line.getId(), isStart, distance);
             return sectionDao.save(upStation.getId(), downStation.getId(), line.getId(), false, distance);
         } else {
             return sectionDao.save(upStation.getId(), downStation.getId(), line.getId(), isStart, distance);
@@ -120,6 +120,7 @@ public class StationService {
                 .orElseThrow(() -> new IllegalArgumentException("역이 존재하지 않습니다."));
         final Line line = lineDao.findByName(deleteStationRequest.getLineName())
                 .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
+
         final Optional<SectionDto> maybeUpSection = sectionDao.findUpSectionByStationIdAndLineId(station.getId(), line.getId());
         final Optional<SectionDto> maybeDownSection = sectionDao.findDownSectionByStationIdAndLineId(station.getId(), line.getId());
 

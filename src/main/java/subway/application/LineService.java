@@ -49,25 +49,25 @@ public class LineService {
         final Map<Long, Long> upToDown = sectionDtos.stream()
                 .collect(Collectors.toMap(SectionDto::getUpStationId, SectionDto::getDownStationId));
 
-        final Map<Long, Station> stationsById = new HashMap<>();
+        final Map<Long, Station> stationsWithId = new HashMap<>();
 
         final List<Station> stations = stationDao.findAll();
         for (Station station : stations) {
-            stationsById.put(station.getId(), station);
+            stationsWithId.put(station.getId(), station);
         }
 
-        final Long firstStationIdByLineId = sectionDao.findFirstStationIdByLineId(line.getId());
-        final List<Station> sortedStation = new ArrayList<>();
+        final Long firstStationId = sectionDao.findFirstStationIdByLineId(line.getId());
+        final List<Station> sortedStations = new ArrayList<>();
 
-        Long currId = firstStationIdByLineId;
+        Long currId = firstStationId;
         while(upToDown.containsKey(currId)) {
             Long nextId = upToDown.get(currId);
-            sortedStation.add(stationsById.get(currId));
+            sortedStations.add(stationsWithId.get(currId));
             currId = nextId;
         }
-        sortedStation.add(stationsById.get(currId));
+        sortedStations.add(stationsWithId.get(currId));
 
-        final List<StationResponse> stationResponses = sortedStation.stream()
+        final List<StationResponse> stationResponses = sortedStations.stream()
                 .map(station -> new StationResponse(
                         station.getId(),
                         station.getName()

@@ -86,7 +86,7 @@ public class SectionDao {
     public Long findFirstStationIdByLineId(final Long lineId) {
         final String sql = "SELECT up_station_id " +
                 "FROM sections " +
-                "WHERE is_start = 1 " +
+                "WHERE is_start = true " +
                 "AND line_id = ? ";
         return jdbcTemplate.queryForObject(sql, Long.class, lineId);
     }
