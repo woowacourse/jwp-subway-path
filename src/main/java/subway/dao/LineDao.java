@@ -1,10 +1,14 @@
 package subway.dao;
 
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.exceptions.customexceptions.InvalidDataException;
+import subway.exceptions.customexceptions.NotFoundException;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -35,9 +39,12 @@ public class LineDao {
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
-
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        try {
+            Long lineId = insertAction.executeAndReturnKey(params).longValue();
+            return new Line(lineId, line.getName(), line.getColor());
+        } catch (DataIntegrityViolationException e) {
+            throw new InvalidDataException("이미 존재하는 라인입니다.");
+        }
     }
 
     public List<Line> findAll() {
@@ -47,7 +54,21 @@ public class LineDao {
 
     public Line findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (DataAccessException e) {
+            throw new NotFoundException("해당하는 라인이 존재하지 않습니다.");
+        }
+    }
+
+    public Line findByName(String name) {
+        String sql = "select id, name, color from LINE WHERE name = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, rowMapper, name);
+        } catch (DataAccessException e) {
+            throw new NotFoundException("해당하는 라인이 존재하지 않습니다.");
+        }
+
     }
 
     public void update(Line newLine) {
