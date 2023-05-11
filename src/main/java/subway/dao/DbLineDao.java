@@ -53,15 +53,15 @@ public class DbLineDao implements LineDao {
 
     @Override
     public List<LineEntity> findLine(Line line) {
-        String sql = "select (id, name, station_id, station_order) from line where line = :line";
-        final Map<String, String> parameter = Map.of("line", line.getName());
+        String sql = "select * from line where name = :name";
+        final Map<String, String> parameter = Map.of("name", line.getName());
         return namedParameterJdbcTemplate.query(sql, parameter, lineEntityRowMapper);
     }
 
     @Override
     public void deleteAllStationsOfLine(Line line) {
-        String sql = "delete from line where line = :line";
-        final Map<String, Line> parameters = Map.of("line", line);
+        String sql = "delete from line where name = :name";
+        final Map<String, String> parameters = Map.of("name", line.getName());
         namedParameterJdbcTemplate.update(sql, parameters);
     }
 }
