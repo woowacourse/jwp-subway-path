@@ -20,11 +20,6 @@ public class SectionController {
 
     @PostMapping("/{line_id}/stations")
     public void createSection(@PathVariable("line_id") Long line_id, @RequestBody SectionCreateRequest sectionCreateRequest) {
-        System.out.println(line_id);
-        System.out.println(sectionCreateRequest.getDownStation());
-        System.out.println(sectionCreateRequest.getUpStation());
-
-
         sectionService.createSection(line_id, sectionCreateRequest);
         ResponseEntity.ok().build();
     }
