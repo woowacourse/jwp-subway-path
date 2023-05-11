@@ -1,5 +1,9 @@
 package subway.dto;
 
+import subway.domain.Line;
+import subway.domain.Section;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public class FinalLineResponse {
@@ -12,6 +16,16 @@ public class FinalLineResponse {
         this.id = id;
         this.name = name;
         this.stations = stations;
+    }
+
+    public static FinalLineResponse from(final Line line) {
+        final List<StationResponse> stationResponses = new ArrayList<>();
+        final List<Section> sections = line.getSections().getSections();
+        for (final Section section : sections) {
+            stationResponses.add(StationResponse.of(section.getBeforeStation()));
+        }
+        stationResponses.add(StationResponse.of(sections.get(sections.size() - 1).getNextStation()));
+        return new FinalLineResponse(line.getId(), line.getName().getValue(), stationResponses);
     }
 
     private FinalLineResponse() {

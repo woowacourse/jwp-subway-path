@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.integration.IntegrationFixture.*;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -116,18 +117,18 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @DisplayName("지하철 노선을 조회한다.")
     @Test
-    void getLine() {
+    void getLine() throws JsonProcessingException {
         // given
-        final ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
+        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
+        final String json = jsonSerialize(request);
+        final Long lineId = 1L;
+
+        given().body(json)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+                .when().post("/lines/{lineId}/register", lineId)
+                .then().statusCode(HttpStatus.CREATED.value());
 
         // when
-        final Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -137,8 +138,14 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final LineResponse resultResponse = response.as(LineResponse.class);
-        assertThat(resultResponse.getId()).isEqualTo(lineId);
+        final FinalLineResponse result = response.as(FinalLineResponse.class);
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(lineId),
+                () -> assertThat(result.getName()).isEqualTo("2호선"),
+                () -> assertThat(result.getStations())
+                        .extracting(StationResponse::getName)
+                        .containsExactly("잠실", "강남")
+        );
     }
 
     @DisplayName("지하철 노선을 수정한다.")
