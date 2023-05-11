@@ -14,6 +14,7 @@ import subway.dto.LineResponse;
 import subway.dto.RegisterInnerStationRequest;
 import subway.dto.RegisterLastStationRequest;
 import subway.dto.RegisterStationsRequest;
+import subway.dto.StationResponse;
 import subway.entity.LineEntity;
 import subway.entity.LineSectionEntity;
 import subway.entity.LineStationEntity;
@@ -216,5 +217,21 @@ public class LineService {
         lineSectionDao.deleteByLineId(line.getId());
         sectionRepository.deleteById(lineSectionEntities.get(0).getSectionId());
         lineRepository.updateBoundStations(new LineEntity(line.getId(), line.getName(), line.getColor(), null, null));
+    }
+
+    public LineResponse findLineResponseByName(final String name) {
+        Line line = lineRepository.findByName(name);
+        List<StationResponse> stationResponses = line.getStations().getStations().stream()
+            .map(station -> new StationResponse(station.getId(), station.getName()))
+            .collect(Collectors.toUnmodifiableList());
+
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
+    }
+
+    public List<LineResponse> findAll() {
+        List<LineEntity> lineEntities = lineRepository.findAll();
+        return lineEntities.stream()
+            .map(lineEntity -> findLineResponseByName(lineEntity.getName()))
+            .collect(Collectors.toUnmodifiableList());
     }
 }

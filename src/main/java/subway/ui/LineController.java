@@ -48,14 +48,19 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+//    @GetMapping("/{id}")
+//    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+//        return ResponseEntity.ok(lineService.findLineResponseById(id));
+//    }
+
+    @GetMapping("/{name}")
+    public ResponseEntity<LineResponse> findLineByName(@PathVariable String name) {
+        return ResponseEntity.ok(lineService.findLineResponseByName(name));
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+    @GetMapping()
+    public ResponseEntity<List<LineResponse>> findAll() {
+        return ResponseEntity.ok(lineService.findAll());
     }
 
     @PutMapping("/{id}")
