@@ -1,8 +1,10 @@
 package subway.dao;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -56,5 +58,28 @@ public class EdgeDao {
                     return new Edge(resultSet.getLong("id"), upStation, downStation, resultSet.getInt("distance"));
                 };
         return jdbcTemplate.query(sql, mapper, lineId);
+    }
+    public void deleteAllByLineId(Long lineId) {
+        String sql = "DELETE FROM edge WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public void insertAllByLineId(Long lineId, List<Edge> edges) {
+        String sql = "INSERT INTO edge(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                Edge edge = edges.get(i);
+                ps.setLong(1, lineId);
+                ps.setLong(2, edge.getUpStation().getId());
+                ps.setLong(3, edge.getDownStation().getId());
+                ps.setInt(4, edge.getDistance());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return edges.size();
+            }
+        });
     }
 }
