@@ -1,5 +1,7 @@
 package subway.ui;
 
+import static java.util.stream.Collectors.toList;
+
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,15 @@ public class LineController {
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
+    }
+
+    @GetMapping("/detail")
+    public ResponseEntity<List<LineDetailResponse>> findAllDetailLines() {
+        List<LineDetailResponse> lineDetailResponses = lineService.findLineResponses()
+                .stream()
+                .map(line -> new LineDetailResponse(line, sectionService.findSectionsByLineId(line.getLineId())))
+                .collect(toList());
+        return ResponseEntity.ok(lineDetailResponses);
     }
 
     @GetMapping("/{lineId}")

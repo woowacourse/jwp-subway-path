@@ -14,6 +14,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
+import subway.application.SectionService;
 import subway.dto.LineCreateRequest;
 
 @WebMvcTest(LineController.class)
@@ -27,6 +28,9 @@ class LineControllerTest {
 
     @MockBean
     private LineService lineService;
+
+    @MockBean
+    private SectionService sectionService;
 
     @Test
     @DisplayName("/lines로 POST 요청과 함께 line의 정보를 보내면, HTTP 201 코드와 응답이 반환되어야 한다.")
