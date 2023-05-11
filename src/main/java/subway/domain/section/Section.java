@@ -3,7 +3,7 @@ package subway.domain.section;
 import subway.domain.station.Station;
 import subway.entity.SectionEntity;
 
-public class Section {
+public final class Section {
 
     private final Station upward;
     private final Station downward;

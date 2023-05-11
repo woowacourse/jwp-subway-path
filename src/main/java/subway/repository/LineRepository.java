@@ -38,21 +38,26 @@ public class LineRepository {
     public List<Line> findAll() {
         return lineDao.findAll()
                 .stream()
-                .map(entity -> Line.of(entity, sectionDao.findAllByLineId(entity.getId())))
+                .map(lineEntity -> Line.of(lineEntity, sectionDao.findAllByLineId(lineEntity.getId())))
                 .collect(Collectors.toList());
     }
 
     public void update(final Line line) {
         lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor()));
         sectionDao.deleteAllByLineId(line.getId());
+        final List<SectionEntity> entities = generateSectionEntities(line);
+        sectionDao.saveAll(entities);
+    }
+
+    private List<SectionEntity> generateSectionEntities(final Line line) {
         final List<Section> sections = line.getSections();
         sections.removeIf(section -> section.getDownward() == Station.TERMINAL);
-        final List<SectionEntity> entities = sections.stream()
-                .map(section -> new SectionEntity(line.getId(),
+        return sections.stream()
+                .map(section -> new SectionEntity(
+                        line.getId(),
                         section.getUpward().getId(),
                         section.getDownward().getId(),
                         section.getDistance()))
                 .collect(Collectors.toUnmodifiableList());
-        sectionDao.saveAll(entities);
     }
 }

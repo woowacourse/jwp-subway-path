@@ -25,11 +25,11 @@ public class StationDao {
 
     public StationEntity save(final StationEntity stationEntity) {
         final SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(stationEntity);
-        final Long id = jdbcInsert.executeAndReturnKey(parameterSource).longValue();
-        return new StationEntity(id, stationEntity.getName());
+        final Long stationId = jdbcInsert.executeAndReturnKey(parameterSource).longValue();
+        return new StationEntity(stationId, stationEntity.getName());
     }
 
-    public Optional<StationEntity> findById(final Long id) {
+    public Optional<StationEntity> findById(final Long stationId) {
         final String sql = "SELECT id, name FROM station WHERE id = ?";
         try {
             final StationEntity result = jdbcTemplate.queryForObject(
@@ -38,7 +38,7 @@ public class StationDao {
                             rs.getLong("id"),
                             rs.getString("name")
                     ),
-                    id);
+                    stationId);
             return Optional.ofNullable(result);
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();

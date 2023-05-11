@@ -39,15 +39,15 @@ class StationRepositoryTest {
         @DisplayName("존재하는 역이라면 역 정보를 반환한다.")
         void findById() {
             //given
-            final StationEntity entity = stationDao.save(new StationEntity("잠실역"));
+            final StationEntity stationEntity = stationDao.save(new StationEntity("잠실역"));
 
             //when
-            final Station result = stationRepository.findById(entity.getId());
+            final Station result = stationRepository.findById(stationEntity.getId());
 
             //then
             assertAll(
-                    () -> assertThat(result.getId()).isEqualTo(entity.getId()),
-                    () -> assertThat(result.getName()).isEqualTo(entity.getName())
+                    () -> assertThat(result.getId()).isEqualTo(stationEntity.getId()),
+                    () -> assertThat(result.getName()).isEqualTo(stationEntity.getName())
             );
         }
 

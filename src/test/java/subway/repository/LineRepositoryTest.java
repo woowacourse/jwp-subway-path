@@ -114,6 +114,7 @@ class LineRepositoryTest {
             //when
             final List<Line> lines = lineRepository.findAll();
 
+            //then
             final List<Section> sections = lines.get(0).getSections();
             assertAll(
                     () -> assertThat(lines).hasSize(1),
@@ -143,7 +144,13 @@ class LineRepositoryTest {
             final StationEntity middle = stationDao.save(new StationEntity("종합운동장역"));
             final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
             final SectionEntity sectionEntity = sectionDao.save(
-                    new SectionEntity(lineEntity.getId(), upward.getId(), downward.getId(), 10));
+                    new SectionEntity(
+                            lineEntity.getId(),
+                            upward.getId(),
+                            downward.getId(),
+                            10
+                    )
+            );
             final Line line = Line.of(lineEntity, List.of(sectionEntity));
             line.addSection(Station.from(upward), Station.from(middle), 3);
 
@@ -152,11 +159,13 @@ class LineRepositoryTest {
 
             //then
             final Line result = lineRepository.findById(lineEntity.getId());
-            final List<Station> stations = result.show();
+            final List<Station> stations = result.getStations();
             assertAll(
                     () -> assertThat(stations).hasSize(3),
                     () -> assertThat(stations).extracting(Station::getName).containsExactly(
-                            "잠실역", "종합운동장역", "잠실새내역"
+                            "잠실역",
+                            "종합운동장역",
+                            "잠실새내역"
                     )
             );
         }
@@ -170,7 +179,13 @@ class LineRepositoryTest {
             final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
             final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
             final SectionEntity sectionEntity = sectionDao.save(
-                    new SectionEntity(lineEntity.getId(), upward.getId(), downward.getId(), 10));
+                    new SectionEntity(
+                            lineEntity.getId(),
+                            upward.getId(),
+                            downward.getId(),
+                            10
+                    )
+            );
             final Line line = Line.of(lineEntity, List.of(sectionEntity));
             line.deleteStation(Station.from(upward));
 
@@ -179,7 +194,7 @@ class LineRepositoryTest {
 
             //then
             final Line result = lineRepository.findById(lineEntity.getId());
-            final List<Station> stations = result.show();
+            final List<Station> stations = result.getStations();
             assertThat(stations).isEmpty();
         }
     }

@@ -21,7 +21,7 @@ class NameTest {
     @ParameterizedTest
     @NullSource
     @DisplayName("노선이 이름이 존재하지 않으면 예외를 던진다.")
-    void validate_with_null(final String input) {
+    void validateWithNull(final String input) {
         assertThatThrownBy(() -> new Name(input))
                 .isInstanceOf(InvalidLineNameException.class)
                 .hasMessage("노선 이름은 존재해야 합니다.");
@@ -30,7 +30,7 @@ class NameTest {
     @ParameterizedTest
     @DisplayName("노선의 이름 형식이 맞지 않을 경우 예외를 던진다.")
     @ValueSource(strings = {"3", "삼호선", "0호선", "A호선", " ", "12호선"})
-    void validate_with_invalid_name_format(final String input) {
+    void validateWithInvalidNameFormat(final String input) {
         assertThatThrownBy(() -> new Name(input))
                 .isInstanceOf(InvalidLineNameException.class)
                 .hasMessage("노선 이름은 1~9호선이어야 합니다.");

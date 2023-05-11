@@ -3,7 +3,7 @@ package subway.domain.station;
 import java.util.Objects;
 import subway.entity.StationEntity;
 
-public class Station {
+public final class Station {
 
     public static final Station TERMINAL = new Station(0L, "종착역");
 
@@ -19,8 +19,8 @@ public class Station {
         this.name = new Name(name);
     }
 
-    public static Station from(final StationEntity entity) {
-        return new Station(entity.getId(), entity.getName());
+    public static Station from(final StationEntity stationEntity) {
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
     public Long getId() {

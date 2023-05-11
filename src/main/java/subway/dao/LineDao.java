@@ -31,10 +31,10 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public LineEntity save(final LineEntity entity) {
-        final SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(entity);
-        final Long id = jdbcInsert.executeAndReturnKey(parameterSource).longValue();
-        return new LineEntity(id, entity.getName(), entity.getColor());
+    public LineEntity save(final LineEntity lineEntity) {
+        final SqlParameterSource parameterSource = new BeanPropertySqlParameterSource(lineEntity);
+        final Long lineId = jdbcInsert.executeAndReturnKey(parameterSource).longValue();
+        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
     }
 
     public Optional<LineEntity> findById(final Long lineId) {

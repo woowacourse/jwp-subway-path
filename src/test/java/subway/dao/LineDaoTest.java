@@ -35,16 +35,16 @@ class LineDaoTest {
         @DisplayName("존재하는 ID라면 노선 정보를 반환한다.")
         void findById() {
             //given
-            final LineEntity entity = lineDao.save(new LineEntity("2호선", "초록색"));
+            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
 
             //when
-            final Optional<LineEntity> line = lineDao.findById(entity.getId());
+            final Optional<LineEntity> line = lineDao.findById(lineEntity.getId());
 
             //then
             assertAll(
-                    () -> assertThat(line.get().getId()).isEqualTo(entity.getId()),
-                    () -> assertThat(line.get().getName()).isEqualTo(entity.getName()),
-                    () -> assertThat(line.get().getColor()).isEqualTo(entity.getColor())
+                    () -> assertThat(line.get().getId()).isEqualTo(lineEntity.getId()),
+                    () -> assertThat(line.get().getName()).isEqualTo(lineEntity.getName()),
+                    () -> assertThat(line.get().getColor()).isEqualTo(lineEntity.getColor())
             );
         }
 

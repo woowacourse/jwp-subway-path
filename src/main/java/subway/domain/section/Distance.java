@@ -2,7 +2,7 @@ package subway.domain.section;
 
 import subway.exception.InvalidDistanceException;
 
-public class Distance {
+final class Distance {
 
     private static final int MINIMUM_VALUE = 0;
     private static final int MAXIMUM_VALUE = 15;

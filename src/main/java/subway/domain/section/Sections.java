@@ -5,15 +5,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 import subway.domain.station.Station;
 
-public class Sections {
+public final class Sections {
 
     public static final int NOT_EXIST_INDEX = -1;
 
     private final List<Section> sections;
-
-    public Sections() {
-        this(new LinkedList<>());
-    }
 
     public Sections(final List<Section> sections) {
         this.sections = sections;
@@ -35,15 +31,9 @@ public class Sections {
         sections.remove(position);
     }
 
-    public List<Station> getUpwards() {
-        return sections.stream()
-                .map(Section::getUpward)
-                .collect(Collectors.toList());
-    }
-
-    public int findPosition(final Station target) {
+    public int findPosition(final Station station) {
         try {
-            return getUpwards().indexOf(target);
+            return getUpwards().indexOf(station);
         } catch (NullPointerException exception) {
             return NOT_EXIST_INDEX;
         }
@@ -59,6 +49,12 @@ public class Sections {
 
     public void clear() {
         sections.clear();
+    }
+
+    public List<Station> getUpwards() {
+        return sections.stream()
+                .map(Section::getUpward)
+                .collect(Collectors.toList());
     }
 
     public List<Section> getValue() {

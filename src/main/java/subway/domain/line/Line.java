@@ -11,9 +11,10 @@ import subway.entity.SectionEntity;
 import subway.exception.InvalidDistanceException;
 import subway.exception.InvalidSectionException;
 
-public class Line {
+public final class Line {
 
     private static final int ADDITIONAL_INDEX = -1;
+    private static final int INITIAL_SECTION_SIZE = 2;
 
     private final Long id;
     private final Name name;
@@ -35,8 +36,8 @@ public class Line {
         this.sections = new Sections(sections);
     }
 
-    public static Line from(final LineEntity entity) {
-        return new Line(entity.getId(), entity.getName(), entity.getColor());
+    public static Line from(final LineEntity lineEntity) {
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
     public static Line of(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
@@ -76,7 +77,7 @@ public class Line {
         final int downwardPosition = sections.findPosition(downward);
         validateForAddSection(upwardPosition, downwardPosition);
 
-        if (shouldAddUpward(upwardPosition)) {
+        if (shouldAdd(upwardPosition)) {
             if (isFirstSection(downwardPosition)) {
                 sections.add(0, new Section(upward, downward, distance));
                 return;
@@ -108,12 +109,12 @@ public class Line {
         }
     }
 
-    private boolean shouldAddUpward(final int upwardPosition) {
-        return upwardPosition == ADDITIONAL_INDEX;
+    private boolean shouldAdd(final int position) {
+        return position == ADDITIONAL_INDEX;
     }
 
-    private boolean isFirstSection(final int downwardPosition) {
-        return downwardPosition == 0;
+    private boolean isFirstSection(final int position) {
+        return position == 0;
     }
 
     private void addUpwardSectionBetweenStations(final Station upward, final Station downward, final int distance,
@@ -126,8 +127,8 @@ public class Line {
         sections.add(targetPosition, new Section(section.getUpward(), upward, section.getDistance() - distance));
     }
 
-    private boolean isLastSection(final int upwardPosition) {
-        return sections.size() - 1 == upwardPosition;
+    private boolean isLastSection(final int position) {
+        return sections.size() - 1 == position;
     }
 
     private void addDownwardSectionInLast(final Station upward, final Station downward, final int distance) {
@@ -137,12 +138,12 @@ public class Line {
     }
 
     private void addDownwardSectionBetweenStations(final Station upward, final Station downward, final int distance,
-                                                   final int upwardPosition) {
-        final Section section = sections.findSectionByPosition(upwardPosition);
-        sections.deleteByPosition(upwardPosition);
+                                                   final int position) {
+        final Section section = sections.findSectionByPosition(position);
+        sections.deleteByPosition(position);
         validateDistance(section.getDistance(), distance);
-        sections.add(upwardPosition, new Section(downward, section.getDownward(), section.getDistance() - distance));
-        sections.add(upwardPosition, new Section(upward, downward, distance));
+        sections.add(position, new Section(downward, section.getDownward(), section.getDistance() - distance));
+        sections.add(position, new Section(upward, downward, distance));
     }
 
     private void validateDistance(final int oldDistance, final int inputDistance) {
@@ -151,17 +152,13 @@ public class Line {
         }
     }
 
-    public List<Station> show() {
-        return sections.getUpwards();
-    }
-
-    public void deleteStation(final Station upward) {
-        final int position = sections.findPosition(upward);
+    public void deleteStation(final Station station) {
+        final int position = sections.findPosition(station);
         if (position == Sections.NOT_EXIST_INDEX) {
             throw new InvalidSectionException("노선에 해당 역이 존재하지 않습니다.");
         }
 
-        if (sections.size() == 2) {
+        if (sections.size() == INITIAL_SECTION_SIZE) {
             sections.clear();
             return;
         }
@@ -192,6 +189,10 @@ public class Line {
 
     public String getColor() {
         return color.getValue();
+    }
+
+    public List<Station> getStations() {
+        return sections.getUpwards();
     }
 
     public List<Section> getSections() {

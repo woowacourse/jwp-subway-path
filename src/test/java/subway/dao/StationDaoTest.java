@@ -33,21 +33,27 @@ class StationDaoTest {
         @Test
         @DisplayName("존재하는 ID라면 역 정보를 반환한다.")
         void findById() {
-            final StationEntity entity = stationDao.save(new StationEntity("잠실역"));
+            //given
+            final StationEntity stationEntity = stationDao.save(new StationEntity("잠실역"));
 
-            final Optional<StationEntity> station = stationDao.findById(entity.getId());
+            //when
+            final Optional<StationEntity> station = stationDao.findById(stationEntity.getId());
 
+            //then
             assertAll(
-                    () -> assertThat(station.get().getId()).isEqualTo(entity.getId()),
-                    () -> assertThat(station.get().getName()).isEqualTo(entity.getName())
+                    () -> assertThat(station.get().getId()).isEqualTo(stationEntity.getId()),
+                    () -> assertThat(station.get().getName()).isEqualTo(stationEntity.getName())
             );
         }
 
         @Test
         @DisplayName("존재하지 않는 ID라면 빈 값을 반환한다.")
         void findByWithInvalidId() {
+            //given
+            //when
             final Optional<StationEntity> station = stationDao.findById(-3L);
 
+            //then
             assertThat(station).isEmpty();
         }
     }

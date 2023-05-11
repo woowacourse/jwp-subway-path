@@ -21,7 +21,7 @@ public class LineResponse {
     }
 
     public static LineResponse from(final Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), generateStations(line.show()));
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), generateStations(line.getStations()));
     }
 
     private static List<StationResponse> generateStations(final List<Station> stations) {
