@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -96,7 +97,15 @@ public class Subway {
         return line;
     }
 
-    public SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> getStations() {
-        return stations;
+    public List<Station> getOrderedStations() {
+        List<Station> orderedStations = new ArrayList<>();
+        Station station = new Station(start.getId(), start.getName());
+        while (!stations.outgoingEdgesOf(station).isEmpty()) {
+            orderedStations.add(station);
+            Section rightSection = findRightSection(station);
+            station = rightSection.getRight();
+        }
+        orderedStations.add(station);
+        return orderedStations;
     }
 }

@@ -31,8 +31,8 @@ public class StationController {
     public void init() {
         stationService.saveStation(new StationRequest("종각역"));
         stationService.saveStation(new StationRequest("서울역"));
-        stationService.saveStation(new StationRequest("시청역"));
         stationService.saveStation(new StationRequest("아현역"));
+        stationService.saveStation(new StationRequest("시청역"));
         stationService.saveStation(new StationRequest("잠실역"));
         stationService.saveStation(new StationRequest("잠실새내역"));
 
