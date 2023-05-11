@@ -3,6 +3,7 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.station.StationCreateRequest;
@@ -10,6 +11,7 @@ import subway.dto.station.StationResponse;
 import subway.dto.station.StationUpdateRequest;
 
 @Service
+@Transactional
 public class StationService {
     private final StationDao stationDao;
 
@@ -21,6 +23,7 @@ public class StationService {
         stationDao.insert(new Station(stationCreateRequest.getStationName()));
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
         return stations.stream()

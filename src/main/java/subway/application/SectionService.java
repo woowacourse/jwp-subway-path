@@ -6,6 +6,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
@@ -20,6 +21,7 @@ import subway.exception.IllegalSectionException;
 import subway.exception.StationNotFoundException;
 
 @Service
+@Transactional
 public class SectionService {
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -123,6 +125,7 @@ public class SectionService {
                 startSection.getDistance() + endSection.getDistance()));
     }
 
+    @Transactional(readOnly = true)
     public List<SectionResponse> findSectionsByLineId(Long lineId) {
         Sections sections = sectionDao.findAllByLineId(lineId).stream()
                 .map(Section::fromEntity)
