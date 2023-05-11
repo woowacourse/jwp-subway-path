@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.exception.ArgumentNotValidException;
+import subway.exception.LineStationAddException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -57,7 +58,7 @@ class SectionTest {
             final Section section2 = createSection("잠실나루역", "마산역", 10);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final String message = assertThrows(LineStationAddException.class, () ->
                     section1.minus(section2)
             ).getMessage();
             assertThat(message).isEqualTo("현재 구간이 더 작아 차이를 구할 수 없습니다.");

@@ -2,7 +2,7 @@ package subway.integration.line;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
+import static org.springframework.http.HttpStatus.CONFLICT;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -80,7 +80,7 @@ public class LineStationControllerIntegrationTest {
                     노선에_역_추가_요청("1호선", "말랑역", "경유역", 10);
 
             // then
-            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+            assertThat(response.statusCode()).isEqualTo(CONFLICT.value());
         }
 
         @Test
@@ -95,11 +95,11 @@ public class LineStationControllerIntegrationTest {
                     노선에_역_추가_요청("1호선", "말랑역", "오리역", 20);
 
             // then
-            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+            assertThat(response.statusCode()).isEqualTo(CONFLICT.value());
         }
 
         @Test
-        void 역이_존재하지_않으면_예외() {
+        void 추가할려는_두_역이_모두_노선에_존재하지_않으면_예외() {
             // given
             역_생성_요청("말랑역");
             역_생성_요청("오리역");
@@ -143,7 +143,7 @@ public class LineStationControllerIntegrationTest {
                     노선에_역_추가_요청("1호선", "말랑역", "오리역", 3);
 
             // then
-            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+            assertThat(response.statusCode()).isEqualTo(CONFLICT.value());
         }
 
         @ParameterizedTest
@@ -226,6 +226,20 @@ public class LineStationControllerIntegrationTest {
 
             // then
             final ExtractableResponse<Response> response = 노선_조회_요청(노선_아이디);
+            assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
+        }
+
+        @Test
+        void 노선에_존재하지_않는_역을_제거_요청시_예외() {
+            // given
+            역_생성_요청("잠실역");
+            역_생성_요청("선릉역");
+            노선_생성_요청("1호선", "잠실역", "선릉역", 10);
+
+            // when
+            final ExtractableResponse<Response> response = 노선에_역_제거_요청("1호선", "사당역");
+
+            // then
             assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
         }
 

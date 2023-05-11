@@ -13,6 +13,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.exception.ArgumentNotValidException;
+import subway.exception.LineStationAddException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -131,7 +132,7 @@ class SectionsTest {
             sections.addSection(middle2);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final String message = assertThrows(LineStationAddException.class, () ->
                     sections.addSection(
                             createSection("출발역", "종착역", 1)
                     )).getMessage();
@@ -148,7 +149,7 @@ class SectionsTest {
             sections.addSection(middle2);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final String message = assertThrows(LineStationAddException.class, () ->
                     sections.addSection(
                             createSection("없는역", "없는역2", 15)
                     )).getMessage();
@@ -166,7 +167,7 @@ class SectionsTest {
             sections.addSection(middle1);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final String message = assertThrows(LineStationAddException.class, () ->
                     sections.addSection(
                             createSection("경유역 1", "경유역 2", 6)
                     )).getMessage();

@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.exception.ArgumentNotValidException;
+import subway.exception.LineStationAddException;
 
 public class Section {
 
@@ -24,7 +25,7 @@ public class Section {
     public Section minus(final Section addedSection) {
         final int dist = this.distance - addedSection.distance;
         if (dist <= 0) {
-            throw new IllegalArgumentException("현재 구간이 더 작아 차이를 구할 수 없습니다.");
+            throw new LineStationAddException("현재 구간이 더 작아 차이를 구할 수 없습니다.");
         }
         if (this.up.equals(addedSection.up)) {
             return new Section(addedSection.down, this.down, dist);

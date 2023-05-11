@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.exception.ArgumentNotValidException;
+import subway.exception.LineStationAddException;
 
 public class Sections {
 
@@ -40,7 +41,7 @@ public class Sections {
         final List<Station> stations = getStations();
         if (stations.contains(addedSection.getUp())
                 && stations.contains(addedSection.getDown())) {
-            throw new IllegalArgumentException("추가하려는 두 역이 이미 포함되어 있습니다.");
+            throw new LineStationAddException("추가하려는 두 역이 이미 포함되어 있습니다.");
         }
     }
 
@@ -78,7 +79,7 @@ public class Sections {
         return sections.stream()
                 .filter(addedSection::hasSameUpOrDownStation)
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("노선에 존재하지 않는 역과 연결할 수 없습니다."));
+                .orElseThrow(() -> new LineStationAddException("노선에 존재하지 않는 역과 연결할 수 없습니다."));
     }
 
     private Section judgeUp(final Section remain, final Section addedSection) {

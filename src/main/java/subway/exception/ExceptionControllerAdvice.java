@@ -1,7 +1,6 @@
 package subway.exception;
 
 import static java.util.stream.Collectors.joining;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import org.slf4j.Logger;
@@ -35,11 +34,11 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
                 .body(new ExceptionResponse(e.getMessage()));
     }
 
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ExceptionResponse> handleBadRequest(final IllegalArgumentException e) {
-        return ResponseEntity.status(BAD_REQUEST)
-                .body(new ExceptionResponse(e.getMessage()));
-    }
+//    @ExceptionHandler(IllegalArgumentException.class)
+//    public ResponseEntity<ExceptionResponse> handleBadRequest(final IllegalArgumentException e) {
+//        return ResponseEntity.status(BAD_REQUEST)
+//                .body(new ExceptionResponse(e.getMessage()));
+//    }
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
