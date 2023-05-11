@@ -62,6 +62,6 @@ public class Sections {
     }
 
     public List<Section> getValue() {
-        return sections;
+        return new LinkedList<>(sections);
     }
 }

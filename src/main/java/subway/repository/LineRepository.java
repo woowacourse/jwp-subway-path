@@ -6,6 +6,8 @@ import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.exception.InvalidLineException;
@@ -41,6 +43,16 @@ public class LineRepository {
     }
 
     public void update(final Line line) {
-
+        lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor()));
+        sectionDao.deleteAllByLineId(line.getId());
+        final List<Section> sections = line.getSections();
+        sections.removeIf(section -> section.getDownward() == Station.TERMINAL);
+        final List<SectionEntity> entities = sections.stream()
+                .map(section -> new SectionEntity(line.getId(),
+                        section.getUpward().getId(),
+                        section.getDownward().getId(),
+                        section.getDistance()))
+                .collect(Collectors.toUnmodifiableList());
+        sectionDao.saveAll(entities);
     }
 }

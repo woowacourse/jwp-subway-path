@@ -129,4 +129,58 @@ class LineRepositoryTest {
             );
         }
     }
+
+    @Nested
+    @DisplayName("노선 정보 업데이트 시")
+    class Update {
+
+        @Test
+        @DisplayName("섹션이 추가 됐을 때 노선 정보를 업데이트한다.")
+        void updateWhenStationAdded() {
+            //given
+            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
+            final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
+            final StationEntity middle = stationDao.save(new StationEntity("종합운동장역"));
+            final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
+            final SectionEntity sectionEntity = sectionDao.save(
+                    new SectionEntity(lineEntity.getId(), upward.getId(), downward.getId(), 10));
+            final Line line = Line.of(lineEntity, List.of(sectionEntity));
+            line.addSection(Station.from(upward), Station.from(middle), 3);
+
+            //when
+            lineRepository.update(line);
+
+            //then
+            final Line result = lineRepository.findById(lineEntity.getId());
+            final List<Station> stations = result.show();
+            assertAll(
+                    () -> assertThat(stations).hasSize(3),
+                    () -> assertThat(stations).extracting(Station::getName).containsExactly(
+                            "잠실역", "종합운동장역", "잠실새내역"
+                    )
+            );
+        }
+
+
+        @Test
+        @DisplayName("섹션이 삭제 됐을 때 노선 정보를 업데이트한다.")
+        void updateWhenStationDeleted() {
+            //given
+            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
+            final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
+            final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
+            final SectionEntity sectionEntity = sectionDao.save(
+                    new SectionEntity(lineEntity.getId(), upward.getId(), downward.getId(), 10));
+            final Line line = Line.of(lineEntity, List.of(sectionEntity));
+            line.deleteStation(Station.from(upward));
+
+            //when
+            lineRepository.update(line);
+
+            //then
+            final Line result = lineRepository.findById(lineEntity.getId());
+            final List<Station> stations = result.show();
+            assertThat(stations).isEmpty();
+        }
+    }
 }
