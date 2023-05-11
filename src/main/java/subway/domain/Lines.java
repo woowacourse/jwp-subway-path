@@ -31,6 +31,14 @@ public class Lines {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 호선이 없습니다."));
         return line.getStations();
+    }
 
+    public Line deleteStationFromLine(String lineName, Station station) {
+        Line findLine = lines.stream()
+                .filter(it -> it.getName().equals(lineName))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당 호선이 없습니다."));
+        findLine.deleteStation(station);
+        return findLine;
     }
 }

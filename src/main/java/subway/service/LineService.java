@@ -54,6 +54,7 @@ public class LineService {
         Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
 
+        // TODO : line 테이블과 edge테이블을 JOIN해서 한번에 가져오는게 나을까?
         Line updatedLine = lines.addStationToLine(line.getName(), upStation, downStation, addStationToLineRequest.getDistance());
         // TODO : edge 테이블 업데이트 .. 다 덮어씌워야할까? 수정된 부분만?
 
@@ -62,5 +63,16 @@ public class LineService {
 
     public List<Station> findAllStation(String lineName) {
         return lines.findAllStation(lineName);
+    }
+
+    public Line deleteStationFromLine(Long lineId, Long stationId) {
+        Station station = stationDao.findById(stationId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+        Line line = lineDao.findById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+
+        Line updatedLine = lines.deleteStationFromLine(line.getName(), station);
+        // TODO : edge 테이블에 어떻게 반영할까?
+        return updatedLine;
     }
 }

@@ -54,11 +54,15 @@ public class LineController {
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long lineId) {
         return ResponseEntity.ok(lineService.findLineResponseById(lineId));
     }
+    */
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> delete(@PathVariable Long lineId,
+    public ResponseEntity<AddStationToLineResponse> delete(@PathVariable Long lineId,
                                        @PathVariable Long stationId) {
-        // TODO
-        return ResponseEntity.noContent().build();
-    }*/
+        Line line = lineService.deleteStationFromLine(lineId, stationId);
+        List<Long> stationIds = line.getStations().stream()
+                .map(Station::getId)
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(new AddStationToLineResponse(line.getId(), line.getName(), stationIds));
+    }
 }

@@ -20,6 +20,10 @@ public class Edge {
         this.distance = distance;
     }
 
+    public boolean hasStation(Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
+
     public Long getId() {
         return id;
     }

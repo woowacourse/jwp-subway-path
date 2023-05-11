@@ -32,14 +32,6 @@
 - [x] 노선에 역 등록 API 신규 구현 (post - "/lines/{lineId}/stations")
 ```JSON
   {
-    "existStationId" : 3,
-    "addStationId" : 1,
-    "direction" : "UP",
-    "distance" : 5
-  }
-```
-```JSON
-  {
     "upStationId" : 3,
     "downStationId" : 1,
     "distance" : 5
@@ -49,7 +41,7 @@
   {
   "lineId" : 1,
   "lineName" : "2호선",
-  "stations" : [1, 2, 3]
+  "stationIds" : [1, 2, 3]
   }
 ```
 
@@ -63,7 +55,7 @@
 
 - [ ] 노선의 모든 역 조회 API (get - "/lines/{lineId}")
 - [ ] 모든 노선 조회 API (get - "/lines")
-- [ ] 노선에 역 제거 API 신규 구현 (delete - "/lines/{lineId}/stations/{stationId}") <- 역
+- [x] 노선에 역 제거 API 신규 구현 (delete - "/lines/{lineId}/stations/{stationId}") <- 역
 
 ## 요구사항 정리
 - [ ] 노선에 역 등록

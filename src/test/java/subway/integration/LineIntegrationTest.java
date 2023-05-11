@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.AddStationToLineRequest;
 import subway.dto.LineCreateRequest;
@@ -56,6 +54,7 @@ public class LineIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+        // TODO : 반환값 body제대로 확인
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
@@ -96,23 +95,56 @@ public class LineIntegrationTest extends IntegrationTest {
                 extract();
         String location = response.header("Location");
         Long lineId = Long.parseLong(location.split("/")[2]);
-        System.out.println("lineId = " + lineId);
 
         // when
         Station newStation = stationDao.insert(new Station("충무로"));
         AddStationToLineRequest addRequest = new AddStationToLineRequest(initialUpStation.getId(),
                 newStation.getId(), 5);
-        Line line = lineDao.findById(lineId).get();
-        System.out.println("line = " + line);
 
         // then
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(addRequest)
-                .when().post("/lines/{lineId}/stations", line.getId())
+                .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
+    }
+
+    @DisplayName("기존 노선에 존재하는 역을 제거한다.")
+    @Test
+    void deleteStationFromLine() {
+        // given
+        ExtractableResponse<Response> createResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(createRequest)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+        String location = createResponse.header("Location");
+        Long lineId = Long.parseLong(location.split("/")[2]);
+
+        Station newStation = stationDao.insert(new Station("충무로"));
+        AddStationToLineRequest addRequest = new AddStationToLineRequest(initialUpStation.getId(), newStation.getId(),
+                5);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(addRequest)
+                .when().post("/lines/{lineId}/stations", lineId)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+        // when
+        ExtractableResponse<Response> deleteResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/{lineId}/stations/{stationId}", lineId, newStation.getId())
+                .then().log().all().
+                extract();
+
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 /*
     @DisplayName("지하철 노선 목록을 조회한다.")

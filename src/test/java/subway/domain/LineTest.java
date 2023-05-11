@@ -18,13 +18,11 @@ class LineTest {
     @Test
     void createLine() {
         // given
-        Line line = Line.createLine("2호선", new Station("잠실"), new Station("잠실나루"), 10);
-
         // when
-        line.addEdge(new Station("강변"), new Station("잠실"), 3);
+        Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
 
         // then
-        assertThat(line.getEdges()).hasSize(2);
+        assertThat(line.getEdges()).hasSize(1);
     }
 
     @Nested
@@ -108,9 +106,56 @@ class LineTest {
         }
 
         @Nested
-        class AddFail{
+        class AddFail {
 
         }
+    }
 
+    @Nested
+    class DeleteStationFromLine {
+
+        @Test
+        void deleteStation1() {
+            // given
+            Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+            line.addEdge(STATION_B, STATION_C, 3);
+
+            // when
+            line.deleteStation(STATION_A);
+
+            // then
+            assertThat(line.getStations()).containsExactly(STATION_B, STATION_C);
+        }
+
+        @Test
+        void deleteStation2() {
+            // given
+            Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+            line.addEdge(STATION_B, STATION_C, 3);
+
+            // when
+            line.deleteStation(STATION_B);
+
+            // then
+            assertThat(line.getStations()).containsExactly(STATION_A, STATION_C);
+        }
+
+        @Test
+        void deleteStation3() {
+            // given
+            Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
+            line.addEdge(STATION_B, STATION_C, 3);
+
+            // when
+            line.deleteStation(STATION_C);
+
+            // then
+            assertThat(line.getStations()).containsExactly(STATION_A, STATION_B);
+        }
+
+        @Nested
+        class AddFail {
+
+        }
     }
 }

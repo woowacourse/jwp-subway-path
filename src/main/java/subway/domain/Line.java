@@ -144,6 +144,40 @@ public class Line {
         return getStations().containsAll(List.of(upStation, downStation));
     }
 
+    public void deleteStation(Station station) {
+        /*
+        1. station이 그 line에 있는지 확인
+        2. station을 포함하고 있는 edge들을 가져온다.
+            - 2개일 경우 : 합치고 삭제
+            - 1개일 경우 : 삭제
+         */
+        List<Edge> findEdges = edges.stream()
+                .filter(edge -> edge.hasStation(station))
+                .collect(Collectors.toList());
+
+        if (findEdges.isEmpty()) {
+            throw new IllegalArgumentException("해당 역이 해당 노선에 존재하지 않습니다.");
+        }
+        if (findEdges.size() > 2) {
+            throw new IllegalArgumentException("해당 노선에 갈래길이 존재합니다. 확인해주세요.");
+        }
+
+        if (findEdges.size() == 1) {
+            edges.remove(findEdges.get(0));
+        }
+        if (findEdges.size() == 2) {
+            Edge edge1 = findEdges.get(0);
+            Edge edge2 = findEdges.get(1);
+
+            Edge newEdge = new Edge(edge1.getUpStation(), edge2.getDownStation(),
+                    edge1.getDistance() + edge2.getDistance());
+            int removedIndex = edges.indexOf(edge1);
+            edges.remove(edge1);
+            edges.remove(edge2);
+            edges.add(removedIndex, newEdge);
+        }
+    }
+
     public void setId(Long id) {
         this.id = id;
     }
