@@ -13,7 +13,7 @@ public class Section {
 
     public Section(final Long id, final Station upStation, final Station downStation, final int distance,
                    final Long nextSectionId) {
-        // TODO: 2023/05/10 distance 1이상 검증
+        validateDistance(distance);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -100,5 +100,11 @@ public class Section {
 
     public boolean containsStation(long stationId) {
         return this.getUpStationId() == stationId || this.getDownStationId() == stationId;
+    }
+
+    private void validateDistance(int distance) {
+        if (distance < 1) {
+            throw new IllegalArgumentException("거리는 1이상의 정수이어야 합니다.");
+        }
     }
 }
