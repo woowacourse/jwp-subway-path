@@ -1,6 +1,5 @@
 package subway.service;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -45,12 +44,5 @@ public class StationService {
     public Station findStationByName(final String name) {
         return stationDao.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
-    }
-
-    public List<Station> findStationsById(final List<Long> stationIds) {
-        if (stationIds.isEmpty()) {
-            return new LinkedList<>();
-        }
-        return stationDao.findAllById(stationIds);
     }
 }

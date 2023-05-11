@@ -19,8 +19,8 @@ public class SectionDao {
 
     private static final RowMapper<Section> SECTION_ROW_MAPPER = (rs, num) -> new Section(
             rs.getLong("id"),
-            new Station(rs.getLong("before_station")),
-            new Station(rs.getLong("next_station")),
+            new Station(rs.getLong("before_station_id"), rs.getString("before_station_name")),
+            new Station(rs.getLong("next_station_id"), rs.getString("next_station_name")),
             new Distance(rs.getInt("distance"))
     );
     private final JdbcTemplate jdbcTemplate;
@@ -62,8 +62,13 @@ public class SectionDao {
     }
 
     public List<Section> findByLineId(final Long lineId) {
-        final String sql = "select id, before_station, next_station, distance, line_id " +
-                "from section where line_id = ?";
+        final String sql =
+                "SELECT s.id, before_station.NAME AS before_station_name, before_station.id AS before_station_id, " +
+                        "next_station.NAME AS next_station_name, next_station.id AS next_station_id, s.distance " +
+                        "FROM SECTION s " +
+                        "JOIN STATION before_station ON s.BEFORE_STATION = before_station.ID " +
+                        "JOIN STATION next_station ON s.NEXT_STATION = next_station.ID " +
+                        "WHERE s.LINE_ID = ?";
         return jdbcTemplate.query(sql, SECTION_ROW_MAPPER, lineId);
     }
 }

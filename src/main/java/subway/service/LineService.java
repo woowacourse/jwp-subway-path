@@ -81,7 +81,7 @@ public class LineService {
         sectionService.insertSections(line.getId(), insertSections);
     }
 
-    public Line findById(final Long id) {
+    Line findById(final Long id) {
         final Line emptyLine = lineDao.findById(id);
         final Sections sections = sectionService.findByLineId(emptyLine.getId());
         return new Line(emptyLine.getId(), emptyLine.getName(), sections);
