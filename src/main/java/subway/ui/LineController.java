@@ -3,6 +3,7 @@ package subway.ui;
 import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import subway.dto.LineResponse;
 import subway.dto.LineSaveRequest;
 import subway.dto.LineStationsResponse;
 import subway.dto.StationAddToLineRequest;
+import subway.dto.StationDeleteRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -28,20 +30,22 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<Void> createLine(@RequestBody LineSaveRequest lineSaveRequest) {
-        LineResponse lineResponse = lineService.saveLine(lineSaveRequest);
+        LineResponse lineResponse = lineService.createLine(lineSaveRequest);
         return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).build();
     }
 
     @PostMapping("/{lineId}/station")
-    public ResponseEntity<Void> addStationToLine(@PathVariable Long lineId,
+    public ResponseEntity<Void> addStationToLine(@NonNull @PathVariable Long lineId,
                                                  @RequestBody StationAddToLineRequest stationAddToLineRequest) {
-        lineService.addStationToLine(stationAddToLineRequest);
+        lineService.addStationToLine(lineId, stationAddToLineRequest);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long lineId, @PathVariable Long stationId) {
-        lineService.deleteStation(lineId, stationId);
+    @DeleteMapping("/{lineId}/station")
+    public ResponseEntity<Void> deleteStation(@PathVariable Long lineId,
+                                              @RequestBody StationDeleteRequest stationDeleteRequest) {
+        System.out.println("stationName: " + stationDeleteRequest.getStation());
+        lineService.deleteStation(lineId, stationDeleteRequest.getStation());
         return ResponseEntity.ok().build();
     }
 

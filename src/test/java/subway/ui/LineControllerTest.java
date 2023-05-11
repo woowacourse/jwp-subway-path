@@ -38,7 +38,7 @@ public class LineControllerTest {
     @Test
         // given(memberService.findAll()).willReturn(List.of(FIRST_MEMBER.RESPONSE));
     void shouldCreateLineWhenRequest() throws Exception {
-        given(lineService.saveLine(any())).willReturn(new LineResponse(1L, "잠실역"));
+        given(lineService.createLine(any())).willReturn(new LineResponse(1L, "잠실역"));
 
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",

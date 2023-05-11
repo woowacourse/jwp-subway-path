@@ -8,13 +8,13 @@ import org.springframework.stereotype.Repository;
 public class InMemoryLineRepository implements LineRepository {
     private final List<Line> lines;
 
-    public InMemoryLineRepository(List<Line> lines) {
+    public InMemoryLineRepository() {
         this.lines = new LinkedList<>();
     }
 
     @Override
-    public long save(Line line) {
-        lines.add(line);
+    public long create(Line line) {
+        lines.add(new Line((long) lines.size(), line.getName(), line.getSections()));
         return lines.indexOf(line);
     }
 
@@ -26,5 +26,10 @@ public class InMemoryLineRepository implements LineRepository {
     @Override
     public List<Line> findAll() {
         return this.lines;
+    }
+
+    @Override
+    public void save(Line line) {
+        lines.set(line.getId().intValue(), line);
     }
 }

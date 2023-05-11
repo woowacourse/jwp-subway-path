@@ -3,6 +3,7 @@ package subway.business.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import subway.business.domain.Direction;
 import subway.business.domain.Line;
 import subway.business.domain.LineRepository;
 import subway.business.domain.Section;
@@ -20,13 +21,20 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    public void addStationToLine(StationAddToLineRequest stationAddToLineRequest) {
-        // TODO 로직 구현
-
+    public void addStationToLine(long lineId, StationAddToLineRequest stationAddToLineRequest) {
+        Line line = lineRepository.findById(lineId);
+        line.addStation(
+                stationAddToLineRequest.getStation(),
+                stationAddToLineRequest.getNeighborhoodStation(),
+                Direction.from(stationAddToLineRequest.getAddDirection()),
+                stationAddToLineRequest.getDistance()
+        );
     }
 
-    public void deleteStation(Long lineId, Long stationId) {
-        // TODO 로직 구현
+    public void deleteStation(Long lineId, String stationName) {
+        Line line = lineRepository.findById(lineId);
+        line.deleteStation(stationName);
+        lineRepository.save(line);
     }
 
     public List<LineStationsResponse> findLineResponses() {
@@ -54,13 +62,13 @@ public class LineService {
         return sections.get(sections.size() - 1).getDownwardStation().getName();
     }
 
-    public LineResponse saveLine(LineSaveRequest lineSaveRequest) {
+    public LineResponse createLine(LineSaveRequest lineSaveRequest) {
         Line line = Line.of(
                 lineSaveRequest.getName(),
                 lineSaveRequest.getUpwardTerminus(),
                 lineSaveRequest.getDownwardTerminus(),
                 lineSaveRequest.getDistance()
         );
-        return new LineResponse(lineRepository.save(line), line.getName());
+        return new LineResponse(lineRepository.create(line), line.getName());
     }
 }

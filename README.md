@@ -72,9 +72,13 @@ Content-Type: application/json
 
 #### Request example
 ```text
-DELETE /lines/1/stations/1 HTTP/1.1
+DELETE /lines/1/station HTTP/1.1
 Content-type: application/json; charset=UTF-8
 Host: localhost:8080
+
+{
+    "station": "잠실역"
+}
 ```
 
 #### Response example
