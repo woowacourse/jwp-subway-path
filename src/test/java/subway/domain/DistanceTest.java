@@ -34,4 +34,19 @@ class DistanceTest {
 
         assertThat(reducedDistance).isEqualTo(new Distance(7));
     }
+
+    @ParameterizedTest
+    @ValueSource(ints = {14, 10})
+    void 입력으로_들어온_거리보다_작으면_true(int distance) {
+        Distance original = new Distance(10);
+        assertThat(original.isSmaller(new Distance(distance))).isTrue();
+    }
+
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 9})
+    void 입력으로_들어온_거리보다_크면_false(int distance) {
+        Distance original = new Distance(10);
+        assertThat(original.isSmaller(new Distance(distance))).isFalse();
+    }
 }

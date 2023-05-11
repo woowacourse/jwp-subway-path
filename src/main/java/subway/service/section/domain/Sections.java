@@ -73,12 +73,14 @@ public class Sections {
     }
 
     private AddResultDto addStationInMiddle(Station upStation, Station downStation, Distance distance) {
+
         Optional<Section> isExistUpStation = sections.stream()
                 .filter(section -> section.contains(upStation))
                 .findAny();
         // upstation이 기존 노선에 존재할 경우 하행 방향에 역 추가
         if (isExistUpStation.isPresent()) {
             Section originalSection = isExistUpStation.get();
+            validateDistance(distance, originalSection);
             Distance newSectionDistance = originalSection.calculateNewSectionDistance(distance);
             Section newSectionUpward = new Section(upStation, downStation, distance);
             Section newSectionDownward = new Section(downStation, originalSection.getDownStation(), newSectionDistance);
@@ -93,6 +95,7 @@ public class Sections {
                 .filter(section -> section.contains(downStation))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("이미 노선에 역들이 존재하기 때문에 한 번에 새로운 역 2개를 추가할 수 없습니다."));
+        validateDistance(distance, originalDownSection);
 
         Distance newSectionDistance = originalDownSection.calculateNewSectionDistance(distance);
         Section newSectionUpward = new Section(upStation, downStation, distance);
@@ -104,6 +107,12 @@ public class Sections {
     private boolean isExistInSection(Station station) {
         return sections.stream()
                 .anyMatch(section -> section.contains(station));
+    }
+
+    private void validateDistance(Distance distance, Section originalSection) {
+        if (originalSection.isSmaller(distance)) {
+            throw new IllegalArgumentException("새로운 경로의 거리는 기존 경로보다 클 수 없습니다.");
+        }
     }
 
     private Station findUpEndStation() {

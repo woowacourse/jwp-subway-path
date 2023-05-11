@@ -27,6 +27,10 @@ public class Section {
         return this.distance.reduce(another);
     }
 
+    public boolean isSmaller(Distance another) {
+        return distance.isSmaller(another);
+    }
+
     public Long getId() {
         return id;
     }

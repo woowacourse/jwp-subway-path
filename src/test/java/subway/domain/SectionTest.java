@@ -1,6 +1,8 @@
 package subway.domain;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
 
@@ -34,5 +36,13 @@ class SectionTest {
         Distance reducedDistance = originalSection.calculateNewSectionDistance(new Distance(4));
 
         assertThat(reducedDistance).isEqualTo(new Distance(6));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {15, 10})
+    void 기존_섹션의_거리가_새로운_경로의_거리보다_작으면_예외(int distance) {
+        Section section = new Section(JAMSIL, SEONLEUNG, new Distance(10));
+
+        assertThat(section.isSmaller(new Distance(distance))).isTrue();
     }
 }

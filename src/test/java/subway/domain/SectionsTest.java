@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static subway.domain.StationFixture.GANGNAM;
 import static subway.domain.StationFixture.JAMSIL;
 import static subway.domain.StationFixture.SEONLEUNG;
@@ -124,6 +125,30 @@ class SectionsTest {
                 () -> assertThat(addedStation).hasSize(1),
                 () -> assertThat(addedStation).containsExactly(YUKSAM)
         );
+    }
+
+    @Test
+    void 새롭게_추가되는_경로가_기존_경로보다_거리가_길면_예외() {
+        Distance jamsilGangnamDistance = new Distance(10);
+        Section jamsilGangnamSection = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance);
+        Sections sections = new Sections(List.of(jamsilGangnamSection));
+
+        Distance jamsilSeonleungDistance = new Distance(10);
+
+        assertThatThrownBy(() -> sections.add(JAMSIL, SEONLEUNG, jamsilSeonleungDistance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("새로운 경로의 거리는 기존 경로보다 클 수 없습니다.");
+    }
+
+    @Test
+    void 새롭게_추가되는_경로가_기존_경로보다_작으면_정상수행() {
+        Distance jamsilGangnamDistance = new Distance(10);
+        Section jamsilGangnamSection = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance);
+        Sections sections = new Sections(List.of(jamsilGangnamSection));
+
+        Distance jamsilSeonleungDistance = new Distance(9);
+
+        assertDoesNotThrow(() -> sections.add(JAMSIL, SEONLEUNG, jamsilSeonleungDistance));
     }
 
     @Test
