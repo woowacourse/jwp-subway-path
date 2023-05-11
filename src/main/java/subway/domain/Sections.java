@@ -57,18 +57,6 @@ public class Sections {
         return sections.isEmpty();
     }
 
-    public int size() {
-        return this.sections.size();
-    }
-
-    public long getLineId() {
-        return lineId;
-    }
-
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public Section findSectionByNextSection(Section section) {
         return sections.stream()
                 .filter(section1 -> section1.getNextSectionId().equals(section.getNextSectionId()))
@@ -80,7 +68,6 @@ public class Sections {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 상행역을 가진 구간이 존재하지 않습니다."));
     }
-
 
     public Section findSectionByDownStation(final long stationId) {
         return sections.stream().filter(section -> section.isSameDownStationId(stationId))
@@ -95,12 +82,13 @@ public class Sections {
 
     public List<Station> getSortedStations() {
         Map<Long, Section> allSections = new HashMap<>();
-
         sections.forEach(section -> allSections.put(section.getId(), section));
+
         Section upEndSection = getUpEndSection();
         Section currentSection = upEndSection;
 
         List<Station> result = new ArrayList<>();
+
         result.add(upEndSection.getUpStation());
         result.add(upEndSection.getDownStation());
 
@@ -111,5 +99,17 @@ public class Sections {
         }
 
         return result;
+    }
+
+    public int size() {
+        return this.sections.size();
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
+    public long getLineId() {
+        return lineId;
     }
 }

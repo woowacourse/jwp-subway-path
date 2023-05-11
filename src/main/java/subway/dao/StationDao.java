@@ -58,4 +58,15 @@ public class StationDao {
         String sql = "select * from STATION where name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
+
+    public boolean existsByName(String name) {
+        String sql = "SELECT COUNT(*) FROM Line WHERE name = ?";
+        Integer integer = jdbcTemplate.queryForObject(sql, Integer.class, name);
+
+        if (integer == null) {
+            return false;
+        }
+
+        return integer > 0;
+    }
 }

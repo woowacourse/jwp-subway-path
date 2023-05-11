@@ -2,6 +2,7 @@ package subway.application;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -11,6 +12,7 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionRequest;
 
+@Transactional
 @Service
 public class SectionService {
     private final StationDao stationDao;
@@ -25,12 +27,12 @@ public class SectionService {
 
     public long addSection(final long lineId, SectionRequest request) {
         validateLineId(lineId);
-        Station upStation = findVerifiedStationByName(request.getUpStationName());
-        Station downStation = findVerifiedStationByName(request.getDownStationName());
+        Station requestUpStation = findVerifiedStationByName(request.getUpStationName());
+        Station requestDownStation = findVerifiedStationByName(request.getDownStationName());
 
         Sections sections = sectionDao.findSectionsByLineId(lineId);
 
-        Section requestedSection = new Section(upStation, downStation, request.getDistance());
+        Section requestedSection = new Section(requestUpStation, requestDownStation, request.getDistance());
 
         if (sections.isInitialSave()) {
             return sectionDao.save(requestedSection, lineId);
@@ -43,7 +45,7 @@ public class SectionService {
         }
         if (sections.isUpEndAppend(requestedSection)) {
             Section upEndSection = sections.getUpEndSection();
-            Section newSection = new Section(upStation, downStation, request.getDistance(),
+            Section newSection = new Section(requestUpStation, requestDownStation, request.getDistance(),
                     upEndSection.getNextSectionId());
             return sectionDao.save(newSection, lineId);
         }
@@ -79,9 +81,7 @@ public class SectionService {
     public void removeStation(long stationId, long lineId) {
         Sections sections = sectionDao.findSectionsByLineId(lineId);
 
-        if (sections.isNotExistStation(stationId)) {
-            throw new IllegalArgumentException("해당 노선에 존재하지 않는 역입니다.");
-        }
+        validateStationInLine(stationId, sections);
 
         // 역이 2개 남았을 때
         if (sections.size() == 1) {
@@ -109,6 +109,12 @@ public class SectionService {
         sectionDao.deleteById(innerRight.getId());
     }
 
+    private void validateStationInLine(final long stationId, final Sections sections) {
+        if (sections.isNotExistStation(stationId)) {
+            throw new IllegalArgumentException("해당 노선에 존재하지 않는 역입니다.");
+        }
+    }
+
     public Sections findAllByLindId(long lineId) {
          return sectionDao.findSectionsByLineId(lineId);
     }
@@ -118,17 +124,17 @@ public class SectionService {
         return sections.getSortedStations();
     }
 
-    public void validateLineId(long lineId) {
+    private void validateLineId(long lineId) {
         if (!lineDao.existsById(lineId)) {
             throw new IllegalArgumentException("존재하지 않는 호선입니다.");
         }
     }
 
-    public Station findVerifiedStationByName(String name) {
-        Station station = stationDao.findByName(name);
-        if (station == null) {
+    private Station findVerifiedStationByName(String name) {
+        if(!stationDao.existsByName(name)) {
             return stationDao.insert(new Station(name));
         }
-        return station;
+
+        return stationDao.findByName(name);
     }
 }
