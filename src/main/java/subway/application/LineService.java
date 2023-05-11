@@ -55,23 +55,11 @@ public class LineService {
         Station leftStation = stationDao.findByName(registerStationsRequest.getLeftStationName()).orElseThrow(RuntimeException::new);
         Station rightStation = stationDao.findByName(registerStationsRequest.getRightStationName()).orElseThrow(RuntimeException::new);
 
-        if(line.getStations().size() != 0) {
+        if (line.getStations().size() != 0) {
             throw new IllegalStateException("초기 등록할 때는 노선에 역이 하나도 없어야 합니다.");
         }
 
-        lineStationDao.insert(new LineStationEntity(leftStation.getId(), line.getId()));
-        lineStationDao.insert(new LineStationEntity(rightStation.getId(), line.getId()));
-        SectionEntity sectionEntity = sectionRepository.insert(
-            new SectionEntity(leftStation.getId(), rightStation.getId(), registerStationsRequest.getDistance()));
-        lineSectionDao.insert(new LineSectionEntity(line.getId(), sectionEntity.getId()));
-        LineEntity newLine = new LineEntity(
-            line.getId(),
-            line.getName(),
-            line.getColor(),
-            leftStation.getId(),
-            rightStation.getId()
-        );
-        lineRepository.updateBoundStations(newLine);
+        lineRepository.saveInitStations(leftStation, rightStation, line, registerStationsRequest.getDistance());
     }
 
     public void registerLastStation(String name, RegisterLastStationRequest registerLastStationRequest) {
@@ -80,8 +68,7 @@ public class LineService {
             registerLastStationRequest.getBaseStation());
         Station inputStation = stationDao.findByName(registerLastStationRequest.getNewStationName()).orElseThrow(RuntimeException::new);
         Long sectionId = insertLeftOrRightLastStation(baseStation, inputStation, line, new Distance(registerLastStationRequest.getDistance()));
-        lineSectionDao.insert(new LineSectionEntity(line.getId(), sectionId));
-        lineStationDao.insert(new LineStationEntity(inputStation.getId(), line.getId()));
+        lineRepository.saveBoundStation(line, inputStation, sectionId);
     }
 
     private Long insertLeftOrRightLastStation(Station baseStation, Station newStation, Line line, Distance distance) {
@@ -111,9 +98,13 @@ public class LineService {
 
     public void registerInnerStation(final String name, final RegisterInnerStationRequest registerInnerStationRequest) {
         Line line = lineRepository.findByName(name);
+        List<Station> stations = lineRepository.findStations(
+            registerInnerStationRequest.getLeftBaseStationName(),
+            registerInnerStationRequest.getRightBaseStationName()
+        );
 
-        Station leftStation = stationDao.findByName(registerInnerStationRequest.getLeftBaseStationName()).orElseThrow(RuntimeException::new);
-        Station rightStation = stationDao.findByName(registerInnerStationRequest.getRightBaseStationName()).orElseThrow(RuntimeException::new);
+        Station leftStation = stations.get(0);
+        Station rightStation = stations.get(1);
         SectionEntity section = sectionRepository.findByLineIdAndLeftStationIdAndRightStationId(
             line.getId(), leftStation.getId(), rightStation.getId()).orElseThrow(RuntimeException::new);
 

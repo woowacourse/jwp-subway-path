@@ -1,10 +1,11 @@
 package subway.repository;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
+import subway.dao.LineSectionDao;
+import subway.dao.LineStationDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.line.Line;
@@ -12,7 +13,12 @@ import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
+import subway.dto.RegisterInnerStationRequest;
+import subway.dto.RegisterStationsRequest;
 import subway.entity.LineEntity;
+import subway.entity.LineSectionEntity;
+import subway.entity.LineStationEntity;
+import subway.entity.SectionEntity;
 
 @Repository
 public class LineRepository {
@@ -21,12 +27,17 @@ public class LineRepository {
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
+    private final LineStationDao lineStationDao;
+    private final LineSectionDao lineSectionDao;
 
-    public LineRepository(JdbcTemplate jdbcTemplate, LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
+    public LineRepository(JdbcTemplate jdbcTemplate, LineDao lineDao, StationDao stationDao, SectionDao sectionDao,
+        final LineStationDao lineStationDao, final LineSectionDao lineSectionDao) {
         this.jdbcTemplate = jdbcTemplate;
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
+        this.lineStationDao = lineStationDao;
+        this.lineSectionDao = lineSectionDao;
     }
 
     public Line findByName(final String name) {
@@ -52,6 +63,34 @@ public class LineRepository {
         return sections;
     }
 
+    public void saveInitStations(Station leftStation, Station rightStation, Line line, int distance) {
+        lineStationDao.insert(new LineStationEntity(leftStation.getId(), line.getId()));
+        lineStationDao.insert(new LineStationEntity(rightStation.getId(), line.getId()));
+        SectionEntity sectionEntity = sectionDao.insert(
+            new SectionEntity(leftStation.getId(), rightStation.getId(), distance));
+        lineSectionDao.insert(new LineSectionEntity(line.getId(), sectionEntity.getId()));
+        LineEntity newLine = new LineEntity(
+            line.getId(),
+            line.getName(),
+            line.getColor(),
+            leftStation.getId(),
+            rightStation.getId()
+        );
+        updateBoundStations(newLine);
+    }
+
+    public void saveBoundStation(Line line, Station station ,Long sectionId) {
+        lineSectionDao.insert(new LineSectionEntity(line.getId(), sectionId));
+        lineStationDao.insert(new LineStationEntity(station.getId(), line.getId()));
+    }
+
+    public List<Station> findStations(String leftStationName, String rightStationName) {
+        return List.of(
+            stationDao.findByName(leftStationName).orElseThrow(RuntimeException::new),
+            stationDao.findByName(rightStationName).orElseThrow(RuntimeException::new)
+        );
+    }
+
     public LineEntity insert(Line line) {
         return lineDao.insert(line);
     }
@@ -60,20 +99,9 @@ public class LineRepository {
         return lineDao.findAll();
     }
 
-    public Optional<LineEntity> findEntityByName(String name) {
-        return lineDao.findByName(name);
-    }
-
-    public LineEntity findById(Long id) {
-        return lineDao.findById(id);
-    }
 
     public void updateBoundStations(LineEntity newLine) {
         lineDao.updateBoundStations(newLine);
-    }
-
-    public void deleteById(Long id) {
-        lineDao.deleteById(id);
     }
 
 }
