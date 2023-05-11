@@ -48,7 +48,7 @@ class SectionDaoTest {
     @Test
     void delete() {
         sectionDao.insert(FIXTURE_LINE_1, SECTION_START);
-        sectionDao.deleteById(1L, 1L);
+        sectionDao.deleteByStationId(1L, 1L);
 
         assertThat(sectionDao.findAll()).isEmpty();
     }

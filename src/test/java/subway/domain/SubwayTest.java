@@ -28,7 +28,7 @@ class SubwayTest {
     @DisplayName("주어진 역의 왼쪽에 구간이 있는지 알 수 있다.-true")
     @Test
     void hasLeftSection_true() {
-        assertThat(FIXTURE_SUBWAY.hasLeftSection(FIXTURE_STATION_2)).isTrue();
+        assertThat(FIXTURE_SUBWAY.hasLeftSection(FIXTURE_STATION_6)).isTrue();
     }
 
     @DisplayName("주어진 역의 왼쪽에 구간이 있는지 알 수 있다.-false")

@@ -9,9 +9,16 @@ public class Section {
     private final Distance distance;
 
     public Section(final Station left, final Station right, final Distance distance) {
+        validate(left, right);
         this.left = left;
         this.right = right;
         this.distance = distance;
+    }
+
+    private void validate(final Station left, final Station right) {
+        if (left.equals(right)) {
+            throw new IllegalArgumentException("동일한 역 간 구간을 생성할 수 없습니다.");
+        }
     }
 
     public Station getLeft() {
@@ -33,6 +40,7 @@ public class Section {
     public Long getRightId() {
         return right.getId();
     }
+
 
     @Override
     public boolean equals(final Object o) {

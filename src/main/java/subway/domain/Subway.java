@@ -44,11 +44,21 @@ public class Subway {
         }
     }
 
+    public boolean hasStation(final Station station) {
+        return stations.containsVertex(station);
+    }
+
     public boolean hasLeftSection(final Station station) {
+        if (!hasStation(station)) {
+            throw new IllegalArgumentException("아직 역이 노선에 없습니다.");
+        }
         return !stations.incomingEdgesOf(station).isEmpty();
     }
 
     public boolean hasRightSection(final Station station) {
+        if (!hasStation(station)) {
+            throw new IllegalArgumentException("아직 역이 노선에 없습니다.");
+        }
         return !stations.outgoingEdgesOf(station).isEmpty();
     }
 
@@ -76,6 +86,10 @@ public class Subway {
         if (edge.size() != 1) {
             throw new IllegalArgumentException("구간을 찾을 수 없습니다.");
         }
+    }
+
+    public Station getStart() {
+        return start;
     }
 
     public Line getLine() {
