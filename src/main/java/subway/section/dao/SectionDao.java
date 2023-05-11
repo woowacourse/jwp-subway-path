@@ -1,11 +1,11 @@
 package subway.section.dao;
 
-import java.util.List;
-import java.util.Optional;
-
 import subway.section.domain.Direction;
 import subway.section.domain.Section;
 import subway.section.entity.SectionEntity;
+
+import java.util.List;
+import java.util.Optional;
 
 public interface SectionDao {
 

@@ -1,11 +1,11 @@
 package subway.line.dto;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import subway.station.domain.Station;
+
+import java.util.List;
 
 @Getter
 @NoArgsConstructor

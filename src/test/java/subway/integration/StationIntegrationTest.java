@@ -1,13 +1,5 @@
 package subway.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -17,6 +9,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.station.dto.StationResponse;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
     @DisplayName("지하철역을 생성한다.")
@@ -24,7 +24,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void createStation() {
         // given
         final Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
+        params.put("name", "잠실역");
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -45,7 +45,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void createStationWithDuplicateName() {
         // given
         final Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
+        params.put("name", "잠실역");
         RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -73,7 +73,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void getStations() {
         /// given
         final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
+        params1.put("name", "잠실역");
         final ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all()
                 .body(params1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -83,7 +83,7 @@ public class StationIntegrationTest extends IntegrationTest {
                 .extract();
 
         final Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "역삼역");
+        params2.put("name", "잠실새내역");
         final ExtractableResponse<Response> createResponse2 = RestAssured.given().log().all()
                 .body(params2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -115,7 +115,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void getStation() {
         /// given
         final Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
+        params1.put("name", "잠실역");
         final ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
                 .body(params1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -143,7 +143,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void updateStation() {
         // given
         final Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
+        params.put("name", "잠실역");
         final ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -154,7 +154,7 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // when
         final Map<String, String> otherParams = new HashMap<>();
-        otherParams.put("name", "삼성역");
+        otherParams.put("name", "잠실새내역");
         final String uri = createResponse.header("Location");
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -173,7 +173,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void deleteStation() {
         // given
         final Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
+        params.put("name", "잠실역");
         final ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

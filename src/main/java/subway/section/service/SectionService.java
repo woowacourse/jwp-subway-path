@@ -10,11 +10,11 @@ import subway.section.entity.SectionEntity;
 import java.util.List;
 import java.util.Optional;
 
-@AllArgsConstructor
 @Service
+@AllArgsConstructor
 public class SectionService {
 
-    private SectionDao sectionDao;
+    private final SectionDao sectionDao;
 
     @Transactional
     public List<SectionEntity> createSection(

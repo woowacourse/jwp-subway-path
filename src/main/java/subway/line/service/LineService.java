@@ -1,8 +1,5 @@
 package subway.line.service;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import subway.line.dao.LineDao;
@@ -14,6 +11,9 @@ import subway.line.dto.LineSearchResponse;
 import subway.section.dao.SectionDao;
 import subway.section.domain.Section;
 import subway.station.domain.Station;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @AllArgsConstructor
 @Service
