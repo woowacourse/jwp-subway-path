@@ -70,6 +70,10 @@ public class Section {
         return right;
     }
 
+    public Distance getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

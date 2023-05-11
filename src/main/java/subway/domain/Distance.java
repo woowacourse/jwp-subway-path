@@ -26,4 +26,8 @@ public class Distance {
     public Distance sub(Distance targetDistance) {
         return new Distance(distance - targetDistance.distance);
     }
+
+    public int getDistance() {
+        return distance;
+    }
 }

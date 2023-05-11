@@ -32,8 +32,8 @@ class SubwayControllerTest {
     void enrollStation() throws Exception {
         //given
         Integer lineId = 1;
-        Integer from = 1;
-        Integer to = 2;
+        Long from = 1L;
+        Long to = 2L;
         Integer distance = 1;
 
         String body = objectMapper.writeValueAsString(new StationEnrollRequest(from, to, distance));

@@ -31,7 +31,7 @@ public class SubwayController {
     }
 
     @DeleteMapping("/{lineId}/{stationId}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Integer lineId, @PathVariable Integer stationId) {
+    public ResponseEntity<Void> deleteStation(@PathVariable Integer lineId, @PathVariable Long stationId) {
         subwayService.deleteStation(lineId, stationId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .header("Location", "/line/" + lineId).build();

@@ -1,6 +1,6 @@
 package subway.domain;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -12,17 +12,21 @@ public class Line {
     private String name;
     private String color;
 
-    private List<Section> sections = new ArrayList<>();
+    private List<Section> sections;
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(null, name, color, Collections.emptyList());
     }
 
     public Line(Long id, String name, String color) {
+        this(id, name, color, Collections.emptyList());
+    }
+
+    public Line(Long id, String name, String color, List<Section> sections) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.sections = sections;
     }
 
     public void addSection(Section section) {
@@ -120,6 +124,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     @Override

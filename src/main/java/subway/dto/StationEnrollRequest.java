@@ -2,24 +2,24 @@ package subway.dto;
 
 public class StationEnrollRequest {
 
-    private Integer fromStation;
-    private Integer toStation;
+    private Long fromStation;
+    private Long toStation;
     private Integer distance;
 
     public StationEnrollRequest() {
     }
 
-    public StationEnrollRequest(Integer fromStation, Integer toStation, Integer distance) {
+    public StationEnrollRequest(Long fromStation, Long toStation, Integer distance) {
         this.fromStation = fromStation;
         this.toStation = toStation;
         this.distance = distance;
     }
 
-    public Integer getFromStation() {
+    public Long getFromStation() {
         return fromStation;
     }
 
-    public Integer getToStation() {
+    public Long getToStation() {
         return toStation;
     }
 
