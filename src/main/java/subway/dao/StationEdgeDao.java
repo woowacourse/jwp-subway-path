@@ -15,7 +15,7 @@ public class StationEdgeDao {
 
     private static final RowMapper<StationEdgeEntity> stationEdgeRowMapper = (rs, i) -> {
         Long previousStationEdgeId = rs.getLong("previous_station_edge_id");
-        if(previousStationEdgeId == 0){
+        if (previousStationEdgeId == 0) {
             previousStationEdgeId = null;
         }
         return new StationEdgeEntity(

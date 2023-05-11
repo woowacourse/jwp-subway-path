@@ -12,7 +12,7 @@ public class StationEntity {
         this.name = name;
     }
 
-    public static StationEntity from(Station station){
+    public static StationEntity from(Station station) {
         return new StationEntity(station.getId(), station.getName());
     }
 
