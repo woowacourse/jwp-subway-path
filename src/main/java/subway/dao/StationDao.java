@@ -16,6 +16,7 @@ import java.util.Optional;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertAction;
@@ -25,7 +26,6 @@ public class StationDao {
                     rs.getLong("id"),
                     rs.getString("name")
             );
-
 
     public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;

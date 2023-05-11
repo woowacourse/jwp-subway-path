@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 public class Line {
+
     private final Long id;
     private final LineName name;
     private final Sections sections;
@@ -62,8 +63,12 @@ public class Line {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final Line line = (Line) o;
         return Objects.equals(id, line.id);
     }

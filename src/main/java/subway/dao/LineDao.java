@@ -11,10 +11,10 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -56,13 +56,5 @@ public class LineDao {
 
     public void deleteById(final Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
-    }
-
-    public Optional<Line> findLineByName(final String lineName) {
-        final String sql = "select id, name from LINE where name = ?";
-
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(sql, rowMapper, lineName)
-        );
     }
 }

@@ -1,6 +1,9 @@
 package subway.dao;
 
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.List;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -10,10 +13,6 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
-
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.List;
 
 @Repository
 public class SectionDao {

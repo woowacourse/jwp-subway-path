@@ -3,6 +3,7 @@ package subway.domain;
 public class Distance {
 
     private static final int MIN_VALUE = 1;
+
     private final int value;
 
     public Distance(final int value) {

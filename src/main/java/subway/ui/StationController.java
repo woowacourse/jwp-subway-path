@@ -14,6 +14,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/lines/stations")
 public class StationController {
+
     private final StationService stationService;
 
     public StationController(final StationService stationService) {

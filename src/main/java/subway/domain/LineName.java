@@ -3,6 +3,7 @@ package subway.domain;
 public class LineName {
 
     private static final int MAX_LENGTH = 20;
+
     private final String value;
 
     public LineName(final String value) {
