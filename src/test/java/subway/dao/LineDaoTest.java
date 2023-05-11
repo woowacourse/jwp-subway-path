@@ -21,7 +21,7 @@ import subway.fixture.LineFixture.이호선;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
-class LineEntityDaoTest {
+class LineDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;

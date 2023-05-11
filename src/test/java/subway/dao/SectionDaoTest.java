@@ -26,7 +26,7 @@ import subway.fixture.StationFixture.잠실역;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
-class SectionEntityDaoTest {
+class SectionDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
