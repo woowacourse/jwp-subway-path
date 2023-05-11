@@ -282,4 +282,78 @@ class LineTest {
                     .hasMessage("이미 존재하는 역입니다.");
         }
     }
+
+    @Nested
+    @DisplayName("removeStation을 호출할 때")
+    class removeStation {
+        private Line line;
+        private Station upEndStation;
+        private Station downEndStation;
+
+        @BeforeEach
+        void init() {
+            String name = "강남역";
+            downEndStation = new Station("역삼역");
+            Distance distance = new Distance(10);
+            upEndStation = new Station(name, downEndStation, distance);
+
+            line = new Line("2호선", "초록색", upEndStation);
+            line.addStation(new Station(name, new Station("잠실역"), new Distance(6)));
+        }
+
+        @Test
+        @DisplayName("상행 종점을 삭제할 수 있다")
+        void upEndStation_success() {
+            //given
+            String removeName = "강남역";
+
+            //when
+            line.removeStation(removeName);
+            int expectedSize = line.findSize();
+            Station newUpEndStation = line.getStations().get(0);
+
+            //then
+            assertThat(expectedSize).isEqualTo(2);
+            assertThat(newUpEndStation.getName()).isEqualTo("잠실역");
+
+            assertThat(newUpEndStation.getDistance().getValue()).isEqualTo(4);
+
+        }
+
+        @Test
+        @DisplayName("하행 종점을 삭제할 수 있다")
+        void downEndStation_success() {
+            //given
+            String removeName = "역삼역";
+
+            //when
+            line.removeStation(removeName);
+            int expectedSize = line.findSize();
+            Station newDownEndStation = line.getStations().get(1);
+
+            //then
+            assertThat(expectedSize).isEqualTo(2);
+            assertThat(newDownEndStation.getName()).isEqualTo("잠실역");
+
+            assertThat(newDownEndStation.getNext()).isEqualTo(Station.emptyStation);
+        }
+
+        @Test
+        @DisplayName("두 역 사이에 있는 역을 삭제할 수 있다")
+        void middle_Station_success() {
+            //given
+            String removeName = "잠실역";
+
+            //when
+            line.removeStation(removeName);
+            int expectedSize = line.findSize();
+            Station upEndStation = line.getStations().get(0);
+            Station nextStation = upEndStation.getNext();
+            //then
+            assertThat(expectedSize).isEqualTo(2);
+            assertThat(nextStation.getName()).isEqualTo("역삼역");
+
+            assertThat(upEndStation.getDistance().getValue()).isEqualTo(10);
+        }
+    }
 }

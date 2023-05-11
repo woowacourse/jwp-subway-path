@@ -80,6 +80,10 @@ public class Station {
         return distance.minus(station.distance);
     }
 
+    public Distance plusDistance(Station station) {
+        return distance.plus(station.distance);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

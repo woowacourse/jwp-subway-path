@@ -138,6 +138,37 @@ public class Line {
         return name.equals(line.name);
     }
 
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
+    }
+
+    public int findSize() {
+        return getStations().size();
+    }
+
+    public void removeStation(String name) {
+        int size = findSize();
+        Station downEndStation = getStations().get(size - 1);
+
+        if (headStation.isSameName(name)) { //상행 종점 삭제
+            headStation = headStation.getNext();
+        } else if (downEndStation.getName().equals(name)) { //하행 종점 삭제
+            Station previousStation = findPreviousStation(name);
+            previousStation.setNext(Station.emptyStation);
+        } else {
+            // 역과 역 사이에 있는 역을 삭제
+            if (hasStation(name)) {
+                Station previousStation = findPreviousStation(name);
+                Station station = findStation(name);
+                Distance newDistance = previousStation.plusDistance(station);
+
+                previousStation.setDistance(newDistance);
+                previousStation.setNext(station.getNext());
+            }
+
+        }
+    }
+
     public Long getId() {
         return id;
     }
@@ -163,7 +194,4 @@ public class Line {
         return Objects.hash(id, name, color);
     }
 
-    public boolean isSameName(String name) {
-        return this.name.equals(name);
-    }
 }
