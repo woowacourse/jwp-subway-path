@@ -23,8 +23,20 @@ public class Section {
         return upStation.equals(station) || downStation.equals(station);
     }
 
+    public boolean isDownStation(Station station) {
+        return downStation.equals(station);
+    }
+
+    public boolean isUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
     public Distance calculateNewSectionDistance(Distance another) {
         return this.distance.reduce(another);
+    }
+
+    public Distance calcuateCombineDistance(Section another) {
+        return this.distance.plus(another.distance);
     }
 
     public boolean isSmaller(Distance another) {

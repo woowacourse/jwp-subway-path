@@ -49,4 +49,12 @@ class DistanceTest {
         Distance original = new Distance(10);
         assertThat(original.isSmaller(new Distance(distance))).isFalse();
     }
+
+    @Test
+    void 두_개의_거리를_합해_새로운_객체를_반환() {
+        Distance firstDistance = new Distance(3);
+        Distance secondDistance = new Distance(5);
+
+        assertThat(firstDistance.plus(secondDistance)).isEqualTo(new Distance(8));
+    }
 }

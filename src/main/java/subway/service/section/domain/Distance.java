@@ -16,6 +16,10 @@ public class Distance {
         return new Distance(this.distance - another.distance);
     }
 
+    public Distance plus(Distance another) {
+        return new Distance(this.distance + another.distance);
+    }
+
     public boolean isSmaller(Distance another) {
 
         return this.distance <= another.distance;

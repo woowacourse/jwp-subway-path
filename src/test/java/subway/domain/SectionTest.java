@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -44,5 +45,32 @@ class SectionTest {
         Section section = new Section(JAMSIL, SEONLEUNG, new Distance(10));
 
         assertThat(section.isSmaller(new Distance(distance))).isTrue();
+    }
+
+    @Test
+    void 섹션의_upStation_인지_확인한다() {
+        Section section = new Section(JAMSIL, SEONLEUNG, new Distance(10));
+        Assertions.assertAll(
+                () -> assertThat(section.isUpStation(JAMSIL)).isTrue(),
+                () -> assertThat(section.isUpStation(SEONLEUNG)).isFalse()
+        );
+    }
+
+    @Test
+    void 섹션의_downStation_인지_확인한다() {
+        Section section = new Section(JAMSIL, SEONLEUNG, new Distance(10));
+        Assertions.assertAll(
+                () -> assertThat(section.isDownStation(JAMSIL)).isFalse(),
+                () -> assertThat(section.isDownStation(SEONLEUNG)).isTrue()
+        );
+    }
+
+    @Test
+    void 두_개의_섹션_거리를_합한다() {
+        Section firstSection = new Section(JAMSIL, SEONLEUNG, new Distance(10));
+        Section secondSection = new Section(SEONLEUNG, GANGNAM, new Distance(7));
+
+        Distance distance = firstSection.calcuateCombineDistance(secondSection);
+        assertThat(distance).isEqualTo(new Distance(17));
     }
 }
