@@ -45,6 +45,27 @@ public class Subway {
         findLine.remove(new Station(stationName));
     }
 
+    public void initialAdd(
+            final String lineName,
+            final String leftStationName,
+            final String rightStationName,
+            final Integer distance
+    ) {
+        final Station left = new Station(leftStationName);
+        final Station right = new Station(rightStationName);
+
+        if (lines.stream().anyMatch(line -> line.containsAll(left, right))) {
+            throw new InvalidSectionException("지하철 전체 노선에 이미 존재하는 구간입니다.");
+        }
+
+        final Line findLine = lines.stream()
+                .filter(line -> line.isSameName(lineName))
+                .findFirst()
+                .orElseThrow(InvalidLineNameException::new);
+
+        findLine.initialAdd(new Section(left, right, new Distance((distance))));
+    }
+
     public List<Line> getLines() {
         return lines;
     }

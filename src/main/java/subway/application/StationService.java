@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Subway;
 import subway.dto.StationDeleteRequest;
+import subway.dto.StationInitialSaveRequest;
 import subway.dto.StationSaveRequest;
 import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
@@ -42,6 +43,17 @@ public class StationService {
     public void delete(final StationDeleteRequest request) {
         final Subway subway = new Subway(lineRepository.findAll());
         subway.remove(request.getLineName(), request.getStationName());
+        saveUpdatedLine(subway, request.getLineName());
+    }
+
+    public void initialSave(final StationInitialSaveRequest request) {
+        final Subway subway = new Subway(lineRepository.findAll());
+        subway.initialAdd(
+                request.getLineName(),
+                request.getLeftStationName(),
+                request.getRightStationName(),
+                request.getDistance()
+        );
         saveUpdatedLine(subway, request.getLineName());
     }
 }

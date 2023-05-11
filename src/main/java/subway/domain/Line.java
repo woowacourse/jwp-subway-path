@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import subway.exception.InvalidSectionException;
+import subway.exception.LineNotEmptyException;
 import subway.exception.StationNotFoundException;
 
 public class Line {
@@ -175,6 +176,13 @@ public class Line {
             station = next;
         }
         return result;
+    }
+
+    public void initialAdd(final Section section) {
+        if (!sections.isEmpty()) {
+            throw new LineNotEmptyException();
+        }
+        sections.add(section);
     }
 
     @Override

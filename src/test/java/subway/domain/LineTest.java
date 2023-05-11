@@ -14,6 +14,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.InvalidSectionException;
+import subway.exception.LineNotEmptyException;
 import subway.exception.StationNotFoundException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -290,6 +291,31 @@ class LineTest {
 
         // then
         assertThat(stations).isEmpty();
+    }
+
+    @Test
+    void 노선에_비어있을_때_초기_구간을_추가한다() {
+        // given
+        final Line line = new Line("2호선", "RED", Collections.emptyList());
+
+        // when
+        line.initialAdd(new Section("A", "B", 3));
+
+        // then
+        assertThat(line.getSections()).contains(new Section("A", "B", 3));
+    }
+
+    @Test
+    void 초기_구간을_추가할_때_노선이_비어있지_않은_경우_예외를_던진다() {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("B", "C", 3)
+        ));
+
+        // expect
+        assertThatThrownBy(() -> line.initialAdd(new Section("A", "B", 3)))
+                .isInstanceOf(LineNotEmptyException.class)
+                .hasMessage("노선이 비어있지 않습니다.");
     }
 }
 

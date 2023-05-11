@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import subway.exception.InvalidLineNameException;
 import subway.exception.InvalidSectionException;
+import subway.exception.LineNotEmptyException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -101,5 +102,36 @@ class SubwayTest {
         assertThat(subway.getLines()).flatExtracting(Line::getSections).containsAll(List.of(
                 new Section("A", "C", 10)
         ));
+    }
+
+    @Test
+    void 노선에_비어있을_때_초기_구간을_추가한다() {
+        // given
+        final Subway subway = new Subway(List.of(
+                new Line("2호선", "RED", Collections.emptyList())
+        ));
+
+        // when
+        subway.initialAdd("2호선", "A", "B", 4);
+
+        // then
+        assertThat(subway.getLines()).flatExtracting(Line::getSections).containsAll(List.of(
+                new Section("A", "B", 4)
+        ));
+    }
+
+    @Test
+    void 초기_구간을_추가할_때_노선이_비어있지_않은_경우_예외를_던진다() {
+        // given
+        final Subway subway = new Subway(List.of(
+                new Line("2호선", "RED", List.of(
+                        new Section("B", "C", 3)
+                ))
+        ));
+
+        // expect
+        assertThatThrownBy(() -> subway.initialAdd("2호선", "A", "B", 4))
+                .isInstanceOf(LineNotEmptyException.class)
+                .hasMessage("노선이 비어있지 않습니다.");
     }
 }

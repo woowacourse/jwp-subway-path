@@ -3,6 +3,7 @@ package subway.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.domain.Direction.RIGHT;
 
+import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.dto.StationDeleteRequest;
+import subway.dto.StationInitialSaveRequest;
 import subway.dto.StationSaveRequest;
 import subway.repository.LineRepository;
 
@@ -73,6 +75,21 @@ public class StationServiceTest {
                 new Section("A", "C", 5),
                 new Section("Z", "B", 2),
                 new Section("B", "Y", 3)
+        );
+    }
+
+    @Test
+    void 라인이_비어있을_때_초기_역을_등록한다() {
+        // given
+        lineRepository.save(new Line("1호선", "RED", Collections.emptyList()));
+        final StationInitialSaveRequest request = new StationInitialSaveRequest("1호선", "A", "B", 3);
+
+        // when
+        stationService.initialSave(request);
+
+        // then
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections).contains(
+                new Section("A", "B", 3)
         );
     }
 }
