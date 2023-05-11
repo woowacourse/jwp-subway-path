@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.domain.*;
 
 import javax.sql.DataSource;
@@ -18,6 +19,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
+@Sql("classpath:test_data.sql")
 class RouteDaoTest {
 
     @Autowired
@@ -26,19 +28,28 @@ class RouteDaoTest {
     private DataSource dataSource;
     private RouteDao routeDao;
     private LineDao lineDao;
+    private StationDao stationDao;
+    private SectionDao sectionDao;
 
     @BeforeEach
     void setUp() {
         routeDao = new RouteDao(jdbcTemplate, dataSource);
         lineDao = new LineDao(jdbcTemplate, dataSource);
+        stationDao = new StationDao(jdbcTemplate, dataSource);
+        sectionDao = new SectionDao(jdbcTemplate, dataSource);
     }
 
     @Test
     void DB_데이터를_통해_Route_객체를_생성한다() {
         // given
+        final Station 후추 = stationDao.insert(new Station("후추"));
+        final Station 디노 = stationDao.insert(new Station("디노"));
+        final Line lineNumber2 = lineDao.insert(new Line("2호선", "green"));
+        sectionDao.insert(후추.getId(), 디노.getId(), 5, lineNumber2.getId());
+        // when
         final List<Line> lines = lineDao.findAll();
         final Route route = routeDao.findRoute(lines);
-        // expect
+        // then
         assertSoftly(softly -> {
             final Map<Line, Sections> sectionsByLine = route.getSectionsByLine();
             softly.assertThat(sectionsByLine.get(lines.get(0)))
