@@ -82,12 +82,11 @@ public class SectionService {
         final SectionEntity originalSection = sections.get(0);
         final int nextDistance = getNewDistance(distance, originalSection);
         sectionDao.delete(originalSection);
-        SectionEntity e1 = insertSectionEntity(line.getId(), previousStation.getId(), nextStation.getId(), distance);
-        SectionEntity e2 = insertSectionEntity(line.getId(), nextStation.getId(), originalSection.getNextStationId(), nextDistance);
-        StationEntity stationEntity = stationDao.findById(originalSection.getNextStationId());
+        SectionEntity backsectionEntity = insertSectionEntity(line.getId(), previousStation.getId(), nextStation.getId(), distance);
+        SectionEntity frontSectionEntity = insertSectionEntity(line.getId(), nextStation.getId(), originalSection.getNextStationId(), nextDistance);
 
-        return List.of(sectionEntityToSection(e1, line, previousStation, nextStation, distance),
-                sectionEntityToSection(e2, line, nextStation, stationEntity, nextDistance));
+        return List.of(sectionEntityToSection(backsectionEntity, line, previousStation, nextStation, distance),
+                sectionEntityToSection(frontSectionEntity, line, nextStation, stationDao.findById(originalSection.getNextStationId()), nextDistance));
     }
 
     private List<Section> saveBetweenStationWhenDown(final List<SectionEntity> sections,
@@ -101,12 +100,11 @@ public class SectionService {
         final SectionEntity originalSection = sections.get(0);
         final int nextDistance = getNewDistance(distance, originalSection);
         sectionDao.delete(originalSection);
-        SectionEntity e1 = insertSectionEntity(line.getId(), previousStation.getId(), nextStation.getId(), distance);
-        SectionEntity e2 = insertSectionEntity(line.getId(), originalSection.getPreviousStationId(), previousStation.getId(), nextDistance);
-        StationEntity stationEntity = stationDao.findById(originalSection.getPreviousStationId());
+        SectionEntity frontSectionEntity = insertSectionEntity(line.getId(), previousStation.getId(), nextStation.getId(), distance);
+        SectionEntity backSectionEntity = insertSectionEntity(line.getId(), originalSection.getPreviousStationId(), previousStation.getId(), nextDistance);
 
-        return List.of(sectionEntityToSection(e1, line, previousStation, nextStation, distance),
-                sectionEntityToSection(e2, line, stationEntity, previousStation, nextDistance));
+        return List.of(sectionEntityToSection(frontSectionEntity, line, previousStation, nextStation, distance),
+                sectionEntityToSection(backSectionEntity, line, stationDao.findById(originalSection.getPreviousStationId()), previousStation, nextDistance));
     }
 
     private int getNewDistance(final int distance, final SectionEntity originalSection) {
