@@ -67,6 +67,7 @@ public class JdbcLineRepository implements LineRepository {
         sectionDao.insertAll(sections);
     }
 
+    // TODO: n번 쿼리를 날리는 구조 개선....
     @Override
     public List<Line> findAll() {
 
