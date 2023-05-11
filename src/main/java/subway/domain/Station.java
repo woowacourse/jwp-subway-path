@@ -33,14 +33,18 @@ public class Station {
 
         Station station = (Station) o;
 
-        if (!Objects.equals(id, station.id)) return false;
         return Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return name != null ? name.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "name='" + name + '\'' +
+                '}';
     }
 }
