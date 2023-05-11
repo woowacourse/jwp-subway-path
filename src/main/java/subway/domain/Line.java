@@ -1,9 +1,13 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Line {
     private Long id;
@@ -22,6 +26,13 @@ public class Line {
         this.id = id;
         this.name = name;
         this.sections = new ArrayList<>(sections);
+        validateIsLinked(sections);
+    }
+
+    private void validateIsLinked(List<Section> sections) {
+        if (sections.size() + 1 != getStations().size()) {
+            throw new IllegalArgumentException("연결되지 않은 역이 있습니다");
+        }
     }
 
     private void validateName(String name) {
@@ -59,7 +70,15 @@ public class Line {
             sections.add(new Section(newSection.getSource(), section.getTarget(), newSection.getDistance()));
             return;
         }
-        sections.add(newSection);
+        if (sections.isEmpty() || isLastSection(newSection)) {
+            sections.add(newSection);
+            return;
+        }
+        throw new IllegalArgumentException("연결되지 않은 역이 있습니다");
+    }
+
+    private boolean isLastSection(Section newSection) {
+        return findByTarget(newSection.getSource()).isPresent() || findBySource(newSection.getTarget()).isPresent();
     }
 
     private Optional<Section> findByTarget(Station target) {
@@ -108,6 +127,32 @@ public class Line {
 
     public boolean isEmpty() {
         return sections.isEmpty();
+    }
+
+    public List<Station> getStations() {
+        Map<Station, Station> sourceToTarget = sections.stream()
+                .collect(Collectors.toMap(Section::getSource, Section::getTarget));
+        Station firstStation = findFirstStation(sourceToTarget);
+        return getSortedStations(sourceToTarget, firstStation);
+    }
+
+    private List<Station> getSortedStations(Map<Station, Station> sourceToTarget, Station firstStation) {
+        List<Station> stations = new ArrayList<>();
+        Station station = firstStation;
+        stations.add(station);
+        while (sourceToTarget.containsKey(station)) {
+            Station nextStation = sourceToTarget.get(station);
+            stations.add(nextStation);
+            station = nextStation;
+        }
+        return stations;
+    }
+
+    private Station findFirstStation(Map<Station, Station> sourceToTarget) {
+        Set<Station> sources = new HashSet<>(sourceToTarget.keySet());
+        sources.removeAll(sourceToTarget.values());
+        return sources.stream()
+                .findAny().orElseThrow(() -> new IllegalArgumentException("종점역을 찾지 못했습니다"));
     }
 
     public Long getId() {
