@@ -22,4 +22,9 @@ public class InMemoryLineRepository implements LineRepository {
     public Line findById(Long id) {
         return lines.get(id.intValue());
     }
+
+    @Override
+    public List<Line> findAll() {
+        return this.lines;
+    }
 }

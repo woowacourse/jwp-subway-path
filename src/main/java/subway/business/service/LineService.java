@@ -30,12 +30,18 @@ public class LineService {
     }
 
     public List<LineStationsResponse> findLineResponses() {
-        // TODO 로직 추가
-        return null;
+        List<Line> lines = lineRepository.findAll();
+        return lines.stream()
+                .map(this::getLineStationsResponseFrom)
+                .collect(Collectors.toList());
     }
-    
+
     public LineStationsResponse findLineResponseById(Long id) {
         Line line = lineRepository.findById(id);
+        return getLineStationsResponseFrom(line);
+    }
+
+    private LineStationsResponse getLineStationsResponseFrom(Line line) {
         List<Section> sections = line.getSections();
         List<String> stationNames = sections.stream()
                 .map(section -> section.getUpwardStation().getName())
