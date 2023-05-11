@@ -14,4 +14,9 @@ public class LineConverter {
     public static LineResponse domainToResponseDto(final Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
+
+    public static Line entityToDomain(LineEntity lineEntity) {
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+    }
+
 }

@@ -2,7 +2,6 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,7 +16,6 @@ import subway.application.dto.SectionCreateDto;
 import subway.ui.dto.request.LineRequest;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -30,11 +28,11 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping("/initial")
+    @PostMapping
     public ResponseEntity<Void> createLine(@RequestBody LineRequest request) {
         final LineDto lineDto = new LineDto(request.getName(), request.getColor());
         SectionCreateDto sectionCreateDto = new SectionCreateDto(
-                request.getDistance(), request.getFirstStationName(), request.getSecondStationName());
+                request.getDistance(), request.getFirstStation(), request.getSecondStation());
         final long id = lineService.save(lineDto, sectionCreateDto);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }

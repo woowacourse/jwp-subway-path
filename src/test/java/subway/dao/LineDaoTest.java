@@ -68,10 +68,10 @@ class LineDaoTest {
         final String name = "2호선";
 
         // when
-        final Long id = lineDao.findIdByName(name);
+        final LineEntity entity = lineDao.findByName(name);
 
         // then
-        assertThat(id).isEqualTo(1L);
+        assertThat(entity.getId()).isEqualTo(1L);
     }
 
     @Test
@@ -82,7 +82,7 @@ class LineDaoTest {
         final String name = "포비";
 
         // expected
-        assertThatThrownBy(() -> lineDao.findIdByName(name))
+        assertThatThrownBy(() -> lineDao.findByName(name))
                 .isInstanceOf(LineNotFoundException.class);
     }
 

@@ -5,16 +5,16 @@ public class LineRequest {
     private final String name;
     private final String color;
     private final Integer distance;
-    private final String firstStationName;
-    private final String secondStationName;
+    private final String firstStation;
+    private final String secondStation;
 
     public LineRequest(final String name, final String color, final Integer distance,
-                       final String firstStationName, final String secondStationName) {
+                       final String firstStation, final String secondStation) {
         this.name = name;
         this.color = color;
         this.distance = distance;
-        this.firstStationName = firstStationName;
-        this.secondStationName = secondStationName;
+        this.firstStation = firstStation;
+        this.secondStation = secondStation;
     }
 
     public String getName() {
@@ -29,12 +29,12 @@ public class LineRequest {
         return distance;
     }
 
-    public String getFirstStationName() {
-        return firstStationName;
+    public String getFirstStation() {
+        return firstStation;
     }
 
-    public String getSecondStationName() {
-        return secondStationName;
+    public String getSecondStation() {
+        return secondStation;
     }
 
 }

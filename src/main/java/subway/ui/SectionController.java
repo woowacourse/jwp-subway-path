@@ -1,6 +1,5 @@
 package subway.ui;
 
-import org.apache.coyote.Response;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
 import subway.application.dto.SectionInsertDto;
 import subway.ui.dto.request.SectionRequest;
+import subway.ui.dto.response.SectionResponse;
 import subway.ui.query_option.SubwayDirection;
 
 import java.net.URI;
@@ -27,8 +27,8 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<List<Long>> add(@RequestBody SectionRequest request) {
-        final List<Long> ids = sectionService.save(
+    public ResponseEntity<List<SectionResponse>> add(@RequestBody SectionRequest request) {
+        final List<SectionResponse> responses = sectionService.save(
                 new SectionInsertDto(
                         request.getLineName(),
                         SubwayDirection.from(request.getDirection()),
@@ -37,7 +37,7 @@ public class SectionController {
                         request.getDistance())
         );
 
-        return ResponseEntity.created(URI.create("/sections")).body(ids);
+        return ResponseEntity.created(URI.create("/sections")).body(responses);
     }
 
     @DeleteMapping

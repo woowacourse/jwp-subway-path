@@ -43,8 +43,8 @@ class LineServiceTest {
 
         // when
         given(lineDao.insert(any())).willReturn(1L); // TODO : lineDao insert 반환 값 int
-        given(stationDao.findByName("디")).willReturn(1L);
-        given(stationDao.findByName("투")).willReturn(2L);
+        given(stationDao.findByName("디")).willReturn(any());
+        given(stationDao.findByName("투")).willReturn(any());
         given(sectionDao.insert(any())).willReturn(any()); // TODO : sectionDao insert 반환 값 int
 
         // then

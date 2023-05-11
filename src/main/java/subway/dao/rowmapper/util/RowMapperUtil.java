@@ -2,6 +2,7 @@ package subway.dao.rowmapper.util;
 
 import org.springframework.jdbc.core.RowMapper;
 import subway.dao.rowmapper.SectionDetail;
+import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 
@@ -10,6 +11,12 @@ public class RowMapperUtil {
     public static final RowMapper<StationEntity> stationEntityRowMapper = (rs, rn) -> new StationEntity(
             rs.getLong("id"),
             rs.getString("name")
+    );
+
+    public static final RowMapper<LineEntity> lineEntityRowMapper = (rs, rowNum) -> new LineEntity(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color")
     );
 
     public static final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rn) -> new SectionEntity(

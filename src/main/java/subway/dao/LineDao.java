@@ -12,17 +12,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static subway.dao.rowmapper.util.RowMapperUtil.lineEntityRowMapper;
+
 @Repository
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-
-    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
-            new LineEntity(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
-            );
 
     public LineDao(DataSource dataSource) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
@@ -41,13 +36,13 @@ public class LineDao {
 
     public List<LineEntity> findAll() {
         final String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, lineEntityRowMapper);
     }
 
     // TODO: 꼭 queryForList로 해야하나? 다른 방법 찾아보자. 옵셔널 말고.
-    public Long findIdByName(final String name) {
-        final String sql = "SELECT id FROM line WHERE name = ?";
-        final List<Long> result = jdbcTemplate.query(sql, (resultSet, rowNumber) -> resultSet.getLong("id"), name);
+    public LineEntity findByName(final String name) {
+        final String sql = "SELECT * FROM line WHERE name = ?";
+        final List<LineEntity> result = jdbcTemplate.query(sql, lineEntityRowMapper, name);
 
         if (result.isEmpty()) {
             throw new LineNotFoundException("존재하지 않는 노선 이름입니다.");
@@ -58,7 +53,7 @@ public class LineDao {
 
     public LineEntity findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.queryForObject(sql, lineEntityRowMapper, id);
     }
 
     public void update(LineEntity newLine) {

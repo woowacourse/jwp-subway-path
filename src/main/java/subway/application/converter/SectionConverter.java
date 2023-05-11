@@ -4,6 +4,7 @@ import subway.application.domain.Line;
 import subway.application.domain.Section;
 import subway.application.domain.Station;
 import subway.dao.rowmapper.SectionDetail;
+import subway.entity.SectionEntity;
 import subway.ui.dto.response.SectionResponse;
 
 import java.util.List;

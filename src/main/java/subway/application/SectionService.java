@@ -2,16 +2,22 @@ package subway.application;
 
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
+import subway.application.domain.Section;
 import subway.application.dto.SectionInsertDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
+import subway.ui.dto.response.SectionResponse;
 import subway.ui.query_option.SubwayDirection;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static subway.application.converter.LineConverter.entityToDomain;
+import static subway.application.converter.SectionConverter.domainToResponseDtos;
+import static subway.application.converter.StationConverter.entityToDomain;
 
 @Service
 public class SectionService {
@@ -26,50 +32,48 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public List<Long> save(final SectionInsertDto sectionInsertDto) {
-        final Long lineId = lineDao.findIdByName(sectionInsertDto.getLineName());
+    public List<SectionResponse> save(final SectionInsertDto sectionInsertDto) {
+        final LineEntity line = lineDao.findByName(sectionInsertDto.getLineName());
         final StationEntity standardStation = stationDao.findByName(sectionInsertDto.getStandardStationName());
         final StationEntity additionStation = stationDao.findByName(sectionInsertDto.getAdditionalStationName());
 
         if (sectionInsertDto.getDirection() == SubwayDirection.UP) {
-            return saveUpperSection(lineId, standardStation.getId(), additionStation.getId(), sectionInsertDto.getDistance())
-                    .stream()
-                    .map(SectionEntity::getId)
-                    .collect(Collectors.toUnmodifiableList());
+            return domainToResponseDtos(saveUpperSection(line, standardStation, additionStation, sectionInsertDto.getDistance()));
         }
 
-        return saveDownSection(lineId, standardStation.getId(), additionStation.getId(), sectionInsertDto.getDistance())
-                .stream()
-                .map(SectionEntity::getId)
-                .collect(Collectors.toUnmodifiableList());
+        return domainToResponseDtos(saveDownSection(line, standardStation, additionStation, sectionInsertDto.getDistance()));
     }
 
-    private List<SectionEntity> saveUpperSection(final Long lineId, final Long previousStationId,
-                                                 final Long additionalStationId, final int distance) {
-        final List<SectionEntity> sections = sectionDao.findByLineIdAndPreviousStationId(lineId, previousStationId);
+    private List<Section> saveUpperSection(final LineEntity line,
+                                                 final StationEntity previousStation,
+                                                 final StationEntity additionalStation,
+                                                 final int distance) {
+        final List<SectionEntity> sections = sectionDao.findByLineIdAndPreviousStationId(line.getId(), previousStation.getId());
 
         if (sections.isEmpty()) {
-            return saveLastStation(lineId, previousStationId, additionalStationId, distance);
+            return saveLastStation(line, previousStation, additionalStation, distance);
         }
 
-        return saveBetweenStationWhenUpper(sections, lineId, previousStationId, additionalStationId, distance);
+        return saveBetweenStationWhenUpper(sections, line, previousStation, additionalStation, distance);
     }
 
-    private List<SectionEntity> saveDownSection(final Long lineId, final Long nextStationId,
-                                                 final Long additionalStationId, final int distance) {
-        final List<SectionEntity> sections = sectionDao.findByLineIdAndNextStationId(lineId, nextStationId);
+    private List<Section> saveDownSection(final LineEntity line,
+                                                final StationEntity nextStation,
+                                                final StationEntity additionalStation,
+                                                final int distance) {
+        final List<SectionEntity> sections = sectionDao.findByLineIdAndNextStationId(line.getId(), nextStation.getId());
 
         if (sections.isEmpty()) {
-            return saveLastStation(lineId, additionalStationId, nextStationId, distance);
+            return saveLastStation(line, additionalStation, nextStation, distance);
         }
 
-        return saveBetweenStationWhenDown(sections, lineId, additionalStationId, nextStationId, distance);
+        return saveBetweenStationWhenDown(sections, line, additionalStation, nextStation, distance);
     }
 
-    private List<SectionEntity> saveBetweenStationWhenUpper(final List<SectionEntity> sections,
-                                                   final Long lineId,
-                                                   final Long previousStationId,
-                                                   final Long nextStationId,
+    private List<Section> saveBetweenStationWhenUpper(final List<SectionEntity> sections,
+                                                   final LineEntity line,
+                                                   final StationEntity previousStation,
+                                                   final StationEntity nextStation,
                                                    final int distance) {
         if (sections.size() > 1) {
             throw new RuntimeException("중복된 경로가 검색됩니다.");
@@ -78,15 +82,18 @@ public class SectionService {
         final SectionEntity originalSection = sections.get(0);
         final int nextDistance = getNewDistance(distance, originalSection);
         sectionDao.delete(originalSection);
+        SectionEntity e1 = insertSectionEntity(line.getId(), previousStation.getId(), nextStation.getId(), distance);
+        SectionEntity e2 = insertSectionEntity(line.getId(), nextStation.getId(), originalSection.getNextStationId(), nextDistance);
+        StationEntity stationEntity = stationDao.findById(originalSection.getNextStationId());
 
-        return List.of(insertSectionEntity(lineId, previousStationId, nextStationId, distance),
-                insertSectionEntity(lineId, nextStationId, originalSection.getNextStationId(), nextDistance));
+        return List.of(sectionEntityToSection(e1, line, previousStation, nextStation, distance),
+                sectionEntityToSection(e2, line, nextStation, stationEntity, nextDistance));
     }
 
-    private List<SectionEntity> saveBetweenStationWhenDown(final List<SectionEntity> sections,
-                                                            final Long lineId,
-                                                            final Long previousStationId,
-                                                            final Long nextStationId,
+    private List<Section> saveBetweenStationWhenDown(final List<SectionEntity> sections,
+                                                            final LineEntity line,
+                                                            final StationEntity previousStation,
+                                                            final StationEntity nextStation,
                                                             final int distance) {
         if (sections.size() > 1) {
             throw new RuntimeException("중복된 경로가 검색됩니다.");
@@ -94,9 +101,12 @@ public class SectionService {
         final SectionEntity originalSection = sections.get(0);
         final int nextDistance = getNewDistance(distance, originalSection);
         sectionDao.delete(originalSection);
+        SectionEntity e1 = insertSectionEntity(line.getId(), previousStation.getId(), nextStation.getId(), distance);
+        SectionEntity e2 = insertSectionEntity(line.getId(), originalSection.getPreviousStationId(), previousStation.getId(), nextDistance);
+        StationEntity stationEntity = stationDao.findById(originalSection.getPreviousStationId());
 
-        return List.of(insertSectionEntity(lineId, previousStationId, nextStationId, distance),
-                insertSectionEntity(lineId, originalSection.getPreviousStationId(), previousStationId, nextDistance));
+        return List.of(sectionEntityToSection(e1, line, previousStation, nextStation, distance),
+                sectionEntityToSection(e2, line, stationEntity, previousStation, nextDistance));
     }
 
     private int getNewDistance(final int distance, final SectionEntity originalSection) {
@@ -109,10 +119,13 @@ public class SectionService {
         return originalSectionDistance - distance;
     }
 
-    private List<SectionEntity> saveLastStation(final long lineId, final long previousStationId,
-                                                final long nextStationId, final int distance) {
-        SectionEntity sectionEntity = insertSectionEntity(lineId, previousStationId, nextStationId, distance);
-        return List.of(sectionEntity);
+    private List<Section> saveLastStation(final LineEntity lineEntity,
+                                                final StationEntity previousStationEntity,
+                                                final StationEntity nextStationEntity,
+                                                final int distance) {
+        SectionEntity sectionEntity = insertSectionEntity(lineEntity.getId(), previousStationEntity.getId(), nextStationEntity.getId(), distance);
+
+        return List.of(sectionEntityToSection(sectionEntity, lineEntity, previousStationEntity, nextStationEntity, distance));
     }
 
     private SectionEntity insertSectionEntity(final long lineId, final long previousStationId, final long nextStationId, final int distance) {
@@ -122,6 +135,16 @@ public class SectionService {
                 .nextStationId(nextStationId)
                 .distance(distance)
                 .build());
+    }
+
+    private Section sectionEntityToSection(final SectionEntity sectionEntity, final LineEntity lineEntity, StationEntity previousStationEntity, StationEntity nextStationEntity, final int distance) {
+        return new Section(
+                sectionEntity.getId(),
+                entityToDomain(lineEntity),
+                entityToDomain(previousStationEntity),
+                entityToDomain(nextStationEntity),
+                distance
+        );
     }
 
     public void remove(final Long lineId, final Long stationId) {

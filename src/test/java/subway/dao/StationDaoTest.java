@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.entity.StationEntity;
 import subway.exception.StationNotFoundException;
 
 import javax.sql.DataSource;
@@ -39,10 +40,10 @@ class StationDaoTest {
         final String name = "잠실";
 
         // when
-        final Long id = stationDao.findByName(name);
+        final StationEntity stationEntity = stationDao.findByName(name);
 
         // then
-        assertThat(id).isEqualTo(1L);
+        assertThat(stationEntity.getId()).isEqualTo(1L);
     }
 
     @Test

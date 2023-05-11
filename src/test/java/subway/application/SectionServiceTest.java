@@ -12,7 +12,10 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.entity.SectionEntity;
+import subway.ui.dto.response.SectionResponse;
 import subway.ui.query_option.SubwayDirection;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -44,9 +47,9 @@ class SectionServiceTest {
         final String additionalStationName = "송파";
         final int distance = 3;
 
-        given(lineDao.findIdByName("2호선")).willReturn(1L);
-        given(stationDao.findByName(standardStationName)).willReturn(1L);
-        given(stationDao.findByName(additionalStationName)).willReturn(5L);
+        given(lineDao.findByName("2호선")).willReturn(any());
+        given(stationDao.findByName(standardStationName)).willReturn(any());
+        given(stationDao.findByName(additionalStationName)).willReturn(any());
         given(sectionDao.insert(any()))
                 .willReturn(new SectionEntity.Builder()
                         .id(1L)
@@ -60,9 +63,9 @@ class SectionServiceTest {
         final SectionInsertDto sectionInsertDto = new SectionInsertDto(
                 lineName, SubwayDirection.UP, standardStationName, additionalStationName, distance
         );
-        long id = sectionService.save(sectionInsertDto);
+        final List<SectionResponse> responses = sectionService.save(sectionInsertDto);
 
         // then
-        assertThat(id).isEqualTo(1L);;
+        assertThat(responses.get(0).getId()).isEqualTo(1L);;
     }
 }
