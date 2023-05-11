@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS SECTIONS
     line_id BIGINT NOT NULL,
     up_station_id BIGINT NOT NULL,
     down_station_id BIGINT NOT NULL,
-    distance INT NOT NULL
---     FOREIGN KEY (up_station_id) REFERENCES STATIONS (id),
---     FOREIGN KEY (down_station_id) REFERENCES STATIONS (id)
+    distance INT NOT NULL,
+    FOREIGN KEY (up_station_id) REFERENCES STATIONS (id) ON DELETE CASCADE,
+    FOREIGN KEY (down_station_id) REFERENCES STATIONS (id) ON DELETE CASCADE
     );

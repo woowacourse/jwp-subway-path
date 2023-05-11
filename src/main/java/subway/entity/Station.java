@@ -1,5 +1,6 @@
 package subway.entity;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Station {
@@ -26,6 +27,16 @@ public class Station {
 
     public String getName() {
         return name;
+    }
+
+    public boolean isContainStations(final List<Station> stations) {
+        for (Station otherStation : stations) {
+            if (this.name.equals(otherStation.name)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     @Override

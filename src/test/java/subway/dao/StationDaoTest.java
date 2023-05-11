@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -14,6 +15,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.entity.Line;
+import subway.entity.Section;
 import subway.entity.Station;
 import subway.fixture.StationFixture.GangnamStation;
 import subway.fixture.StationFixture.JamsilStation;
@@ -28,10 +31,14 @@ class StationDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     private StationDao stationDao;
+    private LineDao lineDao;
+    private SectionDao sectionDao;
 
     @BeforeEach
     void setUp() {
         stationDao = new StationDao(jdbcTemplate);
+        lineDao = new LineDao(jdbcTemplate);
+        sectionDao = new SectionDao(jdbcTemplate);
     }
 
     @Test
@@ -104,6 +111,29 @@ class StationDaoTest {
         assertThrows(
                 DataAccessException.class, () -> stationDao.findById(id)
         );
+    }
+
+    @Test
+    void 종점들을_반환한다() {
+        // given
+        final Long lineId1 = lineDao.insert(Line.of("2호선", "초록"));
+
+        final Long stationId1 = stationDao.insert(GangnamStation.gangnamStation);
+        final Long stationId2 = stationDao.insert(JamsilStation.jamsilStation);
+        final Long stationId3 = stationDao.insert(Station.of("잠실새내역"));
+
+        final Section section1 = Section.of(lineId1, stationId1, stationId2, 3);
+        final Section section2 = Section.of(lineId1, stationId2, stationId3, 3);
+        sectionDao.insert(section1);
+        sectionDao.insert(section2);
+
+        // when
+        final List<Station> terminalStations = stationDao.getTerminalStations(lineId1);
+
+        // then
+        assertThat(terminalStations)
+                .extracting(Station::getName)
+                .contains("강남역", "잠실새내역");
     }
 
 }

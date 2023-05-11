@@ -24,7 +24,7 @@ public class LineRequest {
         return color;
     }
 
-    public Line toEntity(){
+    public Line toEntity() {
         return Line.of(name, color);
     }
 

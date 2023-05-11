@@ -39,6 +39,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    //TODO: 삭제
     public Line findLineById(Long id) {
         return lineDao.findById(id);
     }

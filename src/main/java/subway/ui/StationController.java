@@ -1,8 +1,7 @@
 package subway.ui;
 
-import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,8 +27,8 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<Void> createStation(@RequestBody StationSaveRequest stationSaveRequest) {
-        Long id = stationService.saveStation(stationSaveRequest);
-        return ResponseEntity.created(URI.create("/stations/" + id)).build();
+        stationService.saveStation(stationSaveRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
@@ -42,20 +41,9 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findStationResponseById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationSaveRequest stationSaveRequest) {
-        stationService.updateStation(id, stationSaveRequest);
-        return ResponseEntity.ok().build();
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

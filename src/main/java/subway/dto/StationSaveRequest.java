@@ -5,21 +5,43 @@ import subway.entity.Station;
 
 public class StationSaveRequest {
 
-    private String name;
+    private Long lineId;
+    private String upStation;
+    private String downStation;
+    private int distance;
 
     public StationSaveRequest() {
     }
 
-    public StationSaveRequest(final String name) {
-        this.name = name;
+    public StationSaveRequest(final Long lineId, final String upStation, final String downStation, final int distance) {
+        this.lineId = lineId;
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
     }
 
-    public String getName() {
-        return name;
+    public Long getLineId() {
+        return lineId;
     }
 
-    public Station toEntity() {
-        return Station.of(name);
+    public String getUpStation() {
+        return upStation;
+    }
+
+    public String getDownStation() {
+        return downStation;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public Station getUpStationEntity() {
+        return Station.of(upStation);
+    }
+
+    public Station getDownStationEntity() {
+        return Station.of(downStation);
     }
 
     @Override
@@ -31,11 +53,11 @@ public class StationSaveRequest {
             return false;
         }
         final StationSaveRequest request = (StationSaveRequest) o;
-        return Objects.equals(name, request.name);
+        return Objects.equals(upStation, request.upStation) && Objects.equals(downStation, request.downStation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(upStation, downStation);
     }
 }
