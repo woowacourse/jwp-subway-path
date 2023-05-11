@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.domain.Station;
 import subway.dto.station.StationRequest;
 import subway.dto.station.StationResponse;
+import subway.dto.station.StationsResponse;
 import subway.repository.StationRepository;
 
 import java.util.List;
@@ -27,13 +28,15 @@ public class StationService {
         return StationResponse.from(id, station);
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        return stationRepository.findAll().stream()
+    public StationsResponse findAllStationResponses() {
+        List<StationResponse> stations = stationRepository.findAll().stream()
                 .map(station -> {
                     Long id = stationRepository.findStationIdByStationName(station.getName());
                     return StationResponse.from(id, station);
                 })
                 .collect(Collectors.toList());
+
+        return StationsResponse.from(stations);
     }
 
     public void deleteStationById(final Long id) {

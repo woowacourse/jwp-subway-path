@@ -4,6 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.station.StationRequest;
 import subway.dto.station.StationResponse;
+import subway.dto.station.StationsResponse;
 import subway.entity.StationEntity;
 import subway.service.StationService;
 
@@ -28,7 +29,7 @@ public class StationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StationResponse>> showStations() {
+    public ResponseEntity<StationsResponse> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 
