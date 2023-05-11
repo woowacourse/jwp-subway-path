@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.AddStationToLineRequest;
 import subway.dto.AddStationToLineResponse;
+import subway.dto.GetAllStationsInLineResponse;
 import subway.dto.LineCreateRequest;
 import subway.dto.LineCreateResponse;
 import subway.service.LineService;
@@ -44,21 +46,25 @@ public class LineController {
         return ResponseEntity.ok(new AddStationToLineResponse(line.getId(), line.getName(), stationIds));
     }
 
-    /*
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<LineResponse>> findAllLines() {
+//        // TODO
+//        return ResponseEntity.ok(lineService.findLineResponses());
+//    }
 
     @GetMapping("/{lineId}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long lineId) {
-        return ResponseEntity.ok(lineService.findLineResponseById(lineId));
+    public ResponseEntity<GetAllStationsInLineResponse> findLineById(@PathVariable Long lineId) {
+        List<Station> stations = lineService.findAllStation(lineId);
+        Line line = lineService.assembleLine(lineId);
+
+        GetAllStationsInLineResponse response = new GetAllStationsInLineResponse(line.getId(),
+                line.getName(), line.getStations());
+        return ResponseEntity.ok(response);
     }
-    */
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
     public ResponseEntity<AddStationToLineResponse> delete(@PathVariable Long lineId,
-                                       @PathVariable Long stationId) {
+                                                           @PathVariable Long stationId) {
         Line line = lineService.deleteStationFromLine(lineId, stationId);
         List<Long> stationIds = line.getStations().stream()
                 .map(Station::getId)

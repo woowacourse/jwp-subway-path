@@ -36,10 +36,10 @@ class LineServiceTest {
         // given
         Station upStation = stationDao.insert(new Station("안국"));
         Station downStation = stationDao.insert(new Station("경복궁"));
-        lineService.createNewLine(new LineCreateRequest("3호선", upStation.getId(), downStation.getId(), 10));
-
+        Line newLine = lineService.createNewLine(
+                new LineCreateRequest("3호선", upStation.getId(), downStation.getId(), 10));
         // when
-        List<Station> allStation = lineService.findAllStation("3호선");
+        List<Station> allStation = lineService.findAllStation(newLine.getId());
 
         // then
         assertAll(
@@ -60,11 +60,9 @@ class LineServiceTest {
         Station newStation = stationDao.insert(new Station("충무로"));
         AddStationToLineRequest addRequest = new AddStationToLineRequest(downStation.getId(),
                 newStation.getId(), 5);
-        lineService.addStationToExistLine(line.getId(), addRequest);
-
+        Line newLine = lineService.addStationToExistLine(line.getId(), addRequest);
         // when
-        List<Station> allStation = lineService.findAllStation("3호선");
-
+        List<Station> allStation = lineService.findAllStation(newLine.getId());
         // then
         assertAll(
                 () -> assertThat(allStation.get(0).getName()).isEqualTo("안국"),
