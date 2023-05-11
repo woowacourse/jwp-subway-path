@@ -17,6 +17,7 @@ import subway.domain.Station;
 import subway.dto.DtoMapper;
 import subway.dto.EndSectionRequest;
 import subway.dto.InitSectionRequest;
+import subway.dto.LineStationsResponse;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionLastDeleteRequest;
 import subway.dto.SectionRequest;
@@ -261,5 +262,18 @@ public class SectionService {
         return orderedStations.stream()
                 .map(DtoMapper::convertToStationReponse)
                 .collect(Collectors.toList());
+    }
+
+    public List<LineStationsResponse> readAllStationsOfAllLines() {
+        List<Line> lines = lineDao.findAll();
+        List<LineStationsResponse> lineStationsResponses = new ArrayList<>();
+
+        for (Line line : lines) {
+            List<StationResponse> stationResponses = readAllStationsOfLine(line.getId());
+            LineStationsResponse lineStationsResponse = new LineStationsResponse(DtoMapper.convertToLineResponse(line), stationResponses);
+            lineStationsResponses.add(lineStationsResponse);
+        }
+
+        return lineStationsResponses;
     }
 }
