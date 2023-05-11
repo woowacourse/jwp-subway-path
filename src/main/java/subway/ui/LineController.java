@@ -7,6 +7,7 @@ import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
+import subway.dto.StationRequest;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -50,10 +51,16 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/register/{lineId}")
+    @PostMapping("/{lineId}/register")
     public ResponseEntity<Void> registerStation(@PathVariable final Long lineId, @RequestBody final SectionRequest request) {
         lineService.registerStation(lineId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/{lineId}/unregister")
+    public ResponseEntity<Void> unregisterStation(@PathVariable final Long lineId, @RequestBody final StationRequest request) {
+        lineService.unregisterStation(lineId, request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @ExceptionHandler(SQLException.class)

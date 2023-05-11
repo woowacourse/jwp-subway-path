@@ -9,10 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineNodeRequests;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.SectionRequest;
+import subway.dto.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -200,40 +197,27 @@ public class LineIntegrationTest extends IntegrationTest {
         final SectionRequest request = new SectionRequest("잠실", "강남", 10);
 
         final String json = jsonSerialize(request);
-        System.out.println(json);
 
         given().body(json)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/register/1")
+                .when().post("/lines/1/register")
                 .then().statusCode(HttpStatus.CREATED.value());
-    }
-
-    @DisplayName("빈 노선에 하나의 역만 추가하는 경우 BadRequest를 반환한다.")
-    @Test
-    void addOneStationInEmptyLineThrowException() throws JsonProcessingException {
-        final LineNodeRequests request = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE));
-
-        final String json = jsonSerialize(request);
-
-        given().body(json)
-                .when().post("/lines/stations")
-                .then().statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("노선에서 역을 삭제한다.")
     @Test
     void deleteStationInLine() throws JsonProcessingException {
-        final LineNodeRequests createRequest = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE, C_NODE));
-        final long deleteId = 2;
-
-        final String json = jsonSerialize(createRequest);
-
+        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
+        final String json = jsonSerialize(request);
         given().body(json)
-                .when().post("/lines/stations")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines/1/register")
                 .then().statusCode(HttpStatus.CREATED.value());
+        final StationRequest stationRequest = new StationRequest("잠실");
 
-        given()
-                .when().delete("/lines/stations/" + deleteId)
+        given().body(jsonSerialize(stationRequest))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/1/unregister")
                 .then().statusCode(HttpStatus.NO_CONTENT.value());
     }
 

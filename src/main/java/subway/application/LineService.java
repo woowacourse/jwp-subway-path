@@ -7,6 +7,7 @@ import subway.domain.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
+import subway.dto.StationRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -59,10 +60,19 @@ public class LineService {
         sectionService.insertSections(line.getId(), insertSections);
     }
 
-    private Section createSections(final SectionRequest request) {
-        final Station beforeStation = stationService.findStationByName(request.getBeforeStationName());
-        final Station nextStation = stationService.findStationByName(request.getNextStationName());
-        return new Section(beforeStation, nextStation, new Distance(request.getDistance()));
+    @Transactional
+    public void unregisterStation(final Long id, final StationRequest request) {
+        final Line line = findById(id);
+
+        final Station station = stationService.findStationByName(request.getName());
+        final Line deletedLine = line.removeStation(station);
+
+
+        final Sections deleteSections = line.getSections().getDifferenceOfSet(deletedLine.getSections());
+        final Sections insertSections = deletedLine.getSections().getDifferenceOfSet(line.getSections());
+
+        sectionService.deleteSections(deleteSections);
+        sectionService.insertSections(line.getId(), insertSections);
     }
 
     public Line findById(final Long id) {
@@ -71,15 +81,17 @@ public class LineService {
         return new Line(emptyLine.getId(), emptyLine.getName(), sections);
     }
 
+    private Section createSections(final SectionRequest request) {
+        final Station beforeStation = stationService.findStationByName(request.getBeforeStationName());
+        final Station nextStation = stationService.findStationByName(request.getNextStationName());
+        return new Section(beforeStation, nextStation, new Distance(request.getDistance()));
+    }
+
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
         lineDao.updateName(id, new LineName(lineUpdateRequest.getName()));
     }
 
     public void deleteLineById(final Long id) {
         lineDao.deleteById(id);
-    }
-
-    public void unregisterStation(final SectionRequest request) {
-
     }
 }
