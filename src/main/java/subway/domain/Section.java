@@ -107,4 +107,15 @@ public class Section {
             throw new IllegalArgumentException("거리는 1이상의 정수이어야 합니다.");
         }
     }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                ", nextSectionId=" + nextSectionId +
+                '}';
+    }
 }

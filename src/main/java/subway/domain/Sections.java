@@ -1,9 +1,6 @@
 package subway.domain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -12,7 +9,7 @@ public class Sections {
 
     public Sections(final long lineId, final List<Section> sections) {
         this.lineId = lineId;
-        this.sections = sections;
+        this.sections = new ArrayList<>(sections);
     }
 
     public Section getIncludeSection(Section section) {
@@ -93,21 +90,44 @@ public class Sections {
                 .noneMatch(section -> section.containsStation(stationId));
     }
 
-    public List<Section> getSorted() {
-        Map<Long, Section> allSections = new HashMap<>();
+    private List<Section> getSorted() {
+        Map<Long, Section> sectionIdMapping = new HashMap<>();
 
-        sections.forEach(section -> allSections.put(section.getId(), section));
+        sections.forEach(section -> sectionIdMapping.put(section.getId(), section));
         Section upEndSection = getUpEndSection();
         Section currentSection = upEndSection;
-
         List<Section> result = new ArrayList<>();
 
+        result.add(upEndSection);
         while (currentSection.getNextSectionId() != 0) {
-            result.add(currentSection);
-            Section nextSection = allSections.get(currentSection.getNextSectionId());
+            Section nextSection = sectionIdMapping.get(currentSection.getNextSectionId());
+            result.add(nextSection);
             currentSection = nextSection;
         }
 
         return result;
+    }
+
+    public List<Station> getStationsInOrder() {
+        List<Section> sorted = this.getSorted();
+
+        if (sorted.size() == 0) {
+            return Collections.emptyList();
+        }
+        List<Station> stations = new ArrayList<>();
+
+        stations.add(sorted.get(0).getUpStation());
+        for (Section section : sorted) {
+            stations.add(section.getDownStation());
+        }
+        return stations;
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "lineId=" + lineId +
+                ", sections=" + sections +
+                '}';
     }
 }

@@ -84,7 +84,7 @@ class SectionDaoTest {
         long sectionId = sectionDao.save(section, lineId);
 
         // when
-        sectionDao.updateNextSection(newNextSectionId, sectionId);
+        sectionDao.updateSectionNext(newNextSectionId, sectionId);
 
         // then
         assertThat(sectionDao.findById(sectionId).getNextSectionId()).isEqualTo(newNextSectionId);

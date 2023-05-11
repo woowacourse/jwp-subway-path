@@ -4,6 +4,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.util.List;
+import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,18 +15,21 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.SectionSaveRequest;
+import subway.dto.StationResponse;
 import subway.integration.IntegrationTest;
 
 class SectionServiceTest extends IntegrationTest {
 
-    public static final Station station1 = new Station(1L, "암사역");
-    public static final Station station2 = new Station(2L, "숙대역");
-    public static final Station station3 = new Station(3L, "잠실나루");
-    public static final Station station4 = new Station(4L, "잠실");
-    public static final Station station5 = new Station(5L, "나루");
+    public static final Station station1 = new Station(1L, "역1");
+    public static final Station station2 = new Station(2L, "역2");
+    public static final Station station3 = new Station(3L, "역3");
+    public static final Station station4 = new Station(4L, "역4");
+    public static final Station station5 = new Station(5L, "역5");
     public static final SectionSaveRequest request1_2 = new SectionSaveRequest(1L, 2L, 10);
     public static final SectionSaveRequest request2_3 = new SectionSaveRequest(2L, 3L, 10);
     public static final SectionSaveRequest request3_4 = new SectionSaveRequest(3L, 4L, 10);
+    public static final SectionSaveRequest request3_1 = new SectionSaveRequest(3L, 1L, 10);
+
     public static final Line line1 = new Line("line1", "black");
     @Autowired
     SectionService sectionService;
@@ -181,20 +186,21 @@ class SectionServiceTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("특정 노선의 정렬된 전체 구간을 반환한다.")
+    @DisplayName("특정 노선의 정렬된 역들을 반환한다.")
     void findSortedSections_success() {
         //given
         initInsert();
-        sectionService.addSection(1L, request2_3);
-        sectionService.addSection(1L, request3_4);
+        sectionService.addSection(1L, request3_1);
 
         //when
-        List<Section> sortedSections = sectionService.findSortedAllByLindId(1L);
+        //현재 상태: 3-1-2
+        List<StationResponse> sortedStations = sectionService.findStationsInOrder(1L);
 
         // then
-//        assertThat(sortedSections)
-
-
+        List<String> sortedNames = sortedStations.stream()
+                .map(stationResponse -> stationResponse.getName())
+                .collect(Collectors.toList());
+        assertThat(sortedNames).isEqualTo(List.of("역3", "역1", "역2"));
     }
 
     private long initInsert() {

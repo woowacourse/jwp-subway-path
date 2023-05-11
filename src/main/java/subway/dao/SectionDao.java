@@ -58,7 +58,7 @@ public class SectionDao {
         return simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
     }
 
-    public void updateNextSection(Long nextId, long sectionId) {
+    public void updateSectionNext(Long nextId, long sectionId) {
         String sql = "UPDATE SECTIONS SET next_id = ? WHERE id = ?";
         jdbcTemplate.update(sql, nextId, sectionId);
     }

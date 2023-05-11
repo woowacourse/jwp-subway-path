@@ -5,6 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.SectionService;
 import subway.dto.SectionSaveRequest;
+import subway.dto.StationResponse;
+
+import java.util.List;
 
 @RestController
 public class SectionController {
@@ -12,6 +15,12 @@ public class SectionController {
 
     public SectionController(final SectionService sectionService) {
         this.sectionService = sectionService;
+    }
+
+    @GetMapping("lines/{lineId}/sections")
+    public ResponseEntity<List<StationResponse>> addSection(@PathVariable long lineId) {
+        sectionService.findStationsInOrder(lineId);
+        return ResponseEntity.status(HttpStatus.OK).build();
     }
 
     @PostMapping("lines/{lineId}/sections")
