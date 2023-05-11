@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.domain.*;
-import subway.dto.*;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
+import subway.dto.SectionRequest;
+import subway.dto.StationRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,13 +27,13 @@ public class LineService {
 
     public LineResponse saveLine(final LineRequest request) {
         final Line persistLine = lineDao.insert(new LineName(request.getName()));
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
-    public List<FinalLineResponse> findLineResponses() {
+    public List<LineResponse> findLineResponses() {
         final List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(FinalLineResponse::from)
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -40,9 +43,9 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public FinalLineResponse findLineResponseById(final Long id) {
+    public LineResponse findLineResponseById(final Long id) {
         final Line line = findById(id);
-        return FinalLineResponse.from(line);
+        return LineResponse.from(line);
     }
 
     @Transactional

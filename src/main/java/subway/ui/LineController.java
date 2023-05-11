@@ -4,7 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
-import subway.dto.*;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
+import subway.dto.SectionRequest;
+import subway.dto.StationRequest;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -27,13 +30,13 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FinalLineResponse>> findAllLines() {
-        final List<FinalLineResponse> res = lineService.findLineResponses();
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        final List<LineResponse> res = lineService.findLineResponses();
         return ResponseEntity.ok(res);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<FinalLineResponse> findLineById(@PathVariable final Long id) {
+    public ResponseEntity<LineResponse> findLineById(@PathVariable final Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 

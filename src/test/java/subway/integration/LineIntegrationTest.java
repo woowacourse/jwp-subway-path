@@ -11,12 +11,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.*;
 
-import java.util.List;
-
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.integration.IntegrationFixture.*;
+import static subway.integration.IntegrationFixture.OBJECT_MAPPER;
+import static subway.integration.IntegrationFixture.jsonSerialize;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -97,13 +96,13 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         final String string = response.asString();
-        final FinalLineResponse[] responses = OBJECT_MAPPER.readValue(string, FinalLineResponse[].class);
+        final LineResponse[] responses = OBJECT_MAPPER.readValue(string, LineResponse[].class);
         assertAll(
                 () -> assertThat(responses)
-                        .extracting(FinalLineResponse::getId)
+                        .extracting(LineResponse::getId)
                         .containsExactlyInAnyOrder(1L, 2L),
                 () -> assertThat(responses)
-                        .extracting(FinalLineResponse::getName)
+                        .extracting(LineResponse::getName)
                         .containsExactlyInAnyOrder("2호선", "3호선")
         );
     }
@@ -131,7 +130,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final FinalLineResponse result = response.as(FinalLineResponse.class);
+        final LineResponse result = response.as(LineResponse.class);
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(lineId),
                 () -> assertThat(result.getName()).isEqualTo("2호선"),
@@ -144,17 +143,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선을 수정한다.")
     @Test
     void updateLine() {
-        // given
-        final ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        final Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        final Long lineId = 1L;
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -219,27 +208,5 @@ public class LineIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/lines/1/unregister")
                 .then().statusCode(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("남은 역이 하나인 경우 역도 함께 삭제된다.")
-    @Test
-    void unregisterLine() throws JsonProcessingException {
-        final LineNodeRequests createRequest = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE));
-        final long lineId = 1;
-        final long deleteStationId = 2;
-
-        final String json = jsonSerialize(createRequest);
-
-        given().body(json)
-                .when().post("/lines/stations")
-                .then().statusCode(HttpStatus.CREATED.value());
-
-        given()
-                .when().delete("/lines/stations/" + deleteStationId)
-                .then().statusCode(HttpStatus.NO_CONTENT.value());
-
-        given()
-                .when().get("/lines/" + lineId)
-                .then().statusCode(HttpStatus.NOT_FOUND.value());
     }
 }

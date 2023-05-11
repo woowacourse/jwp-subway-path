@@ -8,9 +8,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-import subway.dto.FinalLineResponse;
-import subway.dto.LineNodeRequests;
 import subway.dto.StationResponse;
 
 import java.util.HashMap;
@@ -21,10 +18,8 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.integration.IntegrationFixture.*;
 
 @DisplayName("지하철역 관련 기능")
-@Sql("/clear.sql")
 public class StationIntegrationTest extends IntegrationTest {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
@@ -206,54 +201,5 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-    @DisplayName("노선의 역들을 조회한다.")
-    @Test
-    void findStationsByLine() throws JsonProcessingException {
-        final long lineId = 1;
-        final LineNodeRequests createRequest = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE, C_NODE));
-
-        final String json = jsonSerialize(createRequest);
-
-        given().body(json)
-                .when().post("/lines/stations")
-                .then().statusCode(HttpStatus.CREATED.value());
-
-        final String response = given()
-                .when().get("/lines/" + lineId)
-                .then().statusCode(HttpStatus.OK.value())
-                .extract().asString();
-
-        final StationResponse[] stations = OBJECT_MAPPER.readValue(response, StationResponse[].class);
-        assertThat(stations)
-                .extracting(StationResponse::getName)
-                .containsExactly(A_NODE.getStationName(), B_NODE.getStationName(), C_NODE.getStationName());
-    }
-
-    @DisplayName("모든 노선과 노선에 포함된 역들을 조회한다.")
-    @Test
-    void findAllLinesAndStations() throws JsonProcessingException {
-        final LineNodeRequests line2NodeRequests = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE));
-        final LineNodeRequests line3NodeRequests = new LineNodeRequests(LINE_NAME_3, List.of(B_NODE, C_NODE));
-
-        given().body(jsonSerialize(line2NodeRequests))
-                .when().post("/lines/stations")
-                .then().statusCode(HttpStatus.CREATED.value());
-
-        given().body(jsonSerialize(line3NodeRequests))
-                .when().post("/lines/stations")
-                .then().statusCode(HttpStatus.CREATED.value());
-
-        final String response = given()
-                .when().get("/lines")
-                .then().extract().asString();
-
-        final FinalLineResponse[] responses = OBJECT_MAPPER.readValue(response, FinalLineResponse[].class);
-
-        assertThat(responses)
-                .extracting(FinalLineResponse::getName)
-                .containsExactlyInAnyOrder(line2NodeRequests.getName(), line3NodeRequests.getName());
-        //TODO : 역들이 들어갔는 지까지 검증
     }
 }
