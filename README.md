@@ -158,10 +158,10 @@ POST /stations HTTP/1.1
 Host: localhost:8080
 
 {
-    "startStation" : "잠실역",
-    "endStation" : "잠실새내역",
+    "upStation" : "잠실역",
+    "downStation" : "잠실새내역",
     "distance" : 10,
-    "line" : 1
+    "lineId" : 1
 }
 ```
 
