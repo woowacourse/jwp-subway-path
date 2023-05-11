@@ -1,7 +1,10 @@
 package subway.dto.request;
 
+import javax.validation.constraints.NotNull;
+
 public class StationRequest {
 
+    @NotNull
     private String name;
 
     public StationRequest() {

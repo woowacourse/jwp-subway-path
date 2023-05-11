@@ -3,6 +3,8 @@ package subway.controller;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,7 +30,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
@@ -39,18 +41,19 @@ public class StationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
+    public ResponseEntity<StationResponse> showStation(@PathVariable @NotNull Long id) {
         return ResponseEntity.ok().body(stationService.findStationResponseById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
+    public ResponseEntity<Void> updateStation(@PathVariable @NotNull Long id,
+            @RequestBody @Valid StationRequest stationRequest) {
         stationService.updateStation(id, stationRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable @NotNull Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }

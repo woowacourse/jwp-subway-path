@@ -45,6 +45,7 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+    // TODO: IncorrectResultSizeDataAccessException 처리
     public LineEntity findById(Long id) {
         String sql = "SELECT id, name, color FROM line WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);

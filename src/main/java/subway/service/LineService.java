@@ -22,6 +22,7 @@ public class LineService {
         this.lineDao = lineDao;
     }
 
+    // TODO: 이름 중복 검사
     public LineResponse saveLine(LineRequest request) {
         LineEntity persistLineEntity = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
         return LineResponse.of(persistLineEntity);
