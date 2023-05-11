@@ -36,7 +36,7 @@ class SectionsTest {
         Sections sections = new Sections(List.of(createSection()));
 
         // when & then
-        assertThatThrownBy(() -> sections.validateFirst(isExistUpStation, isExistDownStation))
+        assertThatThrownBy(() -> sections.validateSection(isExistUpStation, isExistDownStation))
                 .isInstanceOf(SectionInvalidException.class);
     }
 

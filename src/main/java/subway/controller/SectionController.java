@@ -1,11 +1,11 @@
-package subway.ui;
+package subway.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.SectionService;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
+import subway.service.SectionService;
 
 @RequestMapping("/sections")
 @RestController
@@ -18,14 +18,14 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> insertSection(@RequestBody SectionCreateRequest req) {
-        sectionService.insertSection(req);
+    public ResponseEntity<Void> insertSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
+        sectionService.insertSection(sectionCreateRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteSection(@RequestBody SectionDeleteRequest req) {
-        sectionService.deleteSection(req);
+    public ResponseEntity<Void> deleteSection(@RequestBody final SectionDeleteRequest sectionDeleteRequest) {
+        sectionService.deleteSection(sectionDeleteRequest);
         return ResponseEntity.noContent().build();
     }
 }
