@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,18 +16,20 @@ import subway.section.dto.SectionCreateRequest;
 import subway.section.dto.SectionDeleteRequest;
 import subway.section.dto.SectionResponse;
 import subway.section.entity.SectionEntity;
-import subway.section.service.SectionService;
+import subway.section.service.SectionCreateService;
+import subway.section.service.SectionDeleteService;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/sections")
 public class SectionController {
 
-    private final SectionService sectionService;
+    private final SectionCreateService sectionCreateService;
+    private final SectionDeleteService sectionDeleteService;
 
     @PostMapping
     public ResponseEntity<List<SectionResponse>> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
-        final List<SectionEntity> sectionEntities = sectionService.createSection(
+        final List<SectionEntity> sectionEntities = sectionCreateService.createSection(
                 sectionCreateRequest.getLineId(),
                 sectionCreateRequest.getBaseId(),
                 sectionCreateRequest.getAddedId(),
@@ -41,7 +44,12 @@ public class SectionController {
 
     @DeleteMapping
     public ResponseEntity<Void> deleteSection(@RequestBody final SectionDeleteRequest sectionDeleteRequest) {
-        sectionService.deleteSection(sectionDeleteRequest.getLineId(), sectionDeleteRequest.getStationId());
+        sectionDeleteService.deleteSection(sectionDeleteRequest.getLineId(), sectionDeleteRequest.getStationId());
         return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<Void> handleIllegalArgumentException() {
+        return ResponseEntity.badRequest().build();
     }
 }

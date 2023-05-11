@@ -12,7 +12,7 @@ import subway.section.entity.SectionEntity;
 
 @AllArgsConstructor
 @Service
-public class SectionService {
+public class SectionCreateService {
 
     private SectionDao sectionDao;
 
@@ -24,6 +24,16 @@ public class SectionService {
             final Boolean direction,
             final Integer distance
     ) {
+        if (sectionDao.findByLineId(lineId).isEmpty()) {
+            return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
+        }
+
+        final Optional<SectionEntity> neighborUpSection = sectionDao.findNeighborUpSection(lineId, baseId);
+        final Optional<SectionEntity> neighborDownSection = sectionDao.findNeighborDownSection(lineId, baseId);
+        if (neighborUpSection.isEmpty() && neighborDownSection.isEmpty()) {
+            throw new IllegalArgumentException("기준점이 되는 역은 이미 구간에 존재해야 합니다.");
+        }
+
         final Optional<SectionEntity> section = sectionDao.findNeighborSection(lineId, baseId, Direction.from(direction));
 
         if (section.isEmpty()) {
@@ -65,39 +75,5 @@ public class SectionService {
         final SectionEntity downSectionEntity = new SectionEntity(lineId, addedId, existSectionEntity.getDownStationId(), existSectionEntity.getDistance() - distance);
         final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
         return List.of(upSavedSectionEntity, downSavedSectionEntity);
-    }
-
-    public void deleteSection(final Long lineId, final Long stationId) {
-        final Optional<SectionEntity> upSection = sectionDao.findNeighborUpSection(lineId, stationId);
-        final Optional<SectionEntity> downSection = sectionDao.findNeighborDownSection(lineId, stationId);
-
-        if (upSection.isEmpty() && downSection.isEmpty()) {
-            throw new IllegalArgumentException("등록되어있지 않은 역은 지울 수 없습니다.");
-        }
-
-        if (upSection.isEmpty()) {
-            sectionDao.deleteById(downSection.get().getId());
-            return;
-        }
-
-        if (downSection.isEmpty()) {
-            sectionDao.deleteById(upSection.get().getId());
-            return;
-        }
-
-        final SectionEntity existUpSectionEntity = upSection.get();
-        final SectionEntity existDownSectionEntity = downSection.get();
-
-        sectionDao.deleteById(existUpSectionEntity.getId());
-        sectionDao.deleteById(existDownSectionEntity.getId());
-
-        final SectionEntity sectionEntity = new SectionEntity(
-                lineId,
-                existUpSectionEntity.getUpStationId(),
-                existDownSectionEntity.getDownStationId(),
-                existUpSectionEntity.getDistance() + existDownSectionEntity.getDistance()
-        );
-
-        sectionDao.insert(sectionEntity);
     }
 }
