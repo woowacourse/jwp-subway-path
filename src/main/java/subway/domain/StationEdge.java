@@ -21,10 +21,10 @@ public class StationEdge {
         return distance;
     }
 
-    public List<StationEdge> split(Long insertStationId, int distanceFromDownStation) {
-        int distanceFromUpStation = calculateDistanceFromUpStation(distanceFromDownStation);
+    public List<StationEdge> splitFromDownStation(Long insertStationId, int distance) {
+        int distanceFromUpStation = calculateDistanceFromUpStation(distance);
         StationEdge upStationEdge = new StationEdge(insertStationId, distanceFromUpStation);
-        StationEdge downStationEdge = new StationEdge(downStationId, distanceFromDownStation);
+        StationEdge downStationEdge = new StationEdge(downStationId, distance);
         return List.of(upStationEdge, downStationEdge);
     }
 

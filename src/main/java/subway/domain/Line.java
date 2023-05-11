@@ -35,40 +35,50 @@ public class Line {
         return new Line(id, name, color, stationEdges);
     }
 
-    // TODO: 리팩터링 (방향별로 메서드 분리)
-    public InsertionResult insertStation(
+    public InsertionResult insertUpStation(
             Long insertStationId,
-            Long adjacentStationId,
-            int distance,
-            LineDirection direction
+            long adjacentStationId,
+            int distance
     ) {
         if (contains(insertStationId)) {
             throw new StationAlreadyExistsException();
         }
-        final int targetIndex = getTargetStationEdge(adjacentStationId, direction);
-        if (targetIndex == stationEdges.size()) { // 하행 종점 추가일 경우
+        
+        StationEdge adjacentDownStationEdge = getStationEdge(adjacentStationId);
+        int adjacentDownStationIndex = stationEdges.indexOf(adjacentDownStationEdge);
+
+        List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distance);
+        stationEdges.remove(adjacentDownStationIndex);
+        stationEdges.addAll(adjacentDownStationIndex, splitEdges);
+        return new InsertionResult(splitEdges.get(0), splitEdges.get(1));
+    }
+
+    public InsertionResult insertDownStation(
+            Long insertStationId,
+            Long adjacentStationId,
+            int distance
+    ) {
+        if (contains(insertStationId)) {
+            throw new StationAlreadyExistsException();
+        }
+
+        final int adjacentDownStationIndex = stationEdges.indexOf(getStationEdge(adjacentStationId)) + 1;
+
+        boolean isLastEdge = adjacentDownStationIndex == stationEdges.size();
+        if (isLastEdge) {
             StationEdge insertedStationEdge = new StationEdge(insertStationId, distance);
             stationEdges.add(insertedStationEdge);
             return new InsertionResult(insertedStationEdge, null);
         }
-        StationEdge targetStationEdge = stationEdges.get(targetIndex);
+        
+        StationEdge adjacentDownStationEdge = stationEdges.get(adjacentDownStationIndex);
 
-        int distanceFromDown =
-                (direction == LineDirection.DOWN) ? targetStationEdge.getDistance() - distance : distance;
-        List<StationEdge> splitEdges = targetStationEdge.split(insertStationId, distanceFromDown);
-        stationEdges.remove(targetIndex);
-        stationEdges.addAll(targetIndex, splitEdges);
+        int distanceFromDown = adjacentDownStationEdge.getDistance() - distance;
+
+        List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distanceFromDown);
+        stationEdges.remove(adjacentDownStationIndex);
+        stationEdges.addAll(adjacentDownStationIndex, splitEdges);
         return new InsertionResult(splitEdges.get(0), splitEdges.get(1));
-    }
-
-    private int getTargetStationEdge(Long adjacentStationId, LineDirection direction) {
-        StationEdge stationEdge = getStationEdge(adjacentStationId);
-
-        int order = stationEdges.indexOf(stationEdge);
-        if (direction == LineDirection.UP) {
-            return order;
-        }
-        return order + 1;
     }
 
     public StationEdge deleteStation(long stationId) {

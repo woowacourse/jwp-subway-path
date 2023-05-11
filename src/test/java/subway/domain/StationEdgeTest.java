@@ -30,7 +30,7 @@ class StationEdgeTest {
         //given
         StationEdge stationEdge = new StationEdge(1L, 5);
         //when
-        List<StationEdge> split = stationEdge.split(2L, 3);
+        List<StationEdge> split = stationEdge.splitFromDownStation(2L, 3);
         //then
         assertSoftly(
                 softly -> {

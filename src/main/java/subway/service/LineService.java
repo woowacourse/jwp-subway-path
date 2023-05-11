@@ -47,21 +47,32 @@ public class LineService {
 
     @Transactional
     public void insertStation(StationInsertRequest stationInsertRequest) {
-        Long stationId = stationInsertRequest.getStationId();
-        findStationById(stationId);
-        Long adjacentStationId = stationInsertRequest.getAdjacentStationId();
-        findStationById(adjacentStationId);
+        findStationById(stationInsertRequest.getStationId());
+        findStationById(stationInsertRequest.getAdjacentStationId());
 
         Line line = findLineById(stationInsertRequest.getLineId());
+        InsertionResult insertionResult = insertStationAndReturnEdgesToSave(stationInsertRequest, line);
 
-        InsertionResult insertionResult = line.insertStation(stationId, adjacentStationId,
-                stationInsertRequest.getDistance(), LineDirection.valueOf(stationInsertRequest.getDirection()));
-        StationEdge insertedEdge = insertionResult.getInsertedEdge();
+        lineRepository.insertStationEdge(line, insertionResult.getInsertedEdge());
+        if (insertionResult.getUpdatedEdge() != null) {
+            lineRepository.updateStationEdge(line, insertionResult.getUpdatedEdge());
+        }
+    }
 
-        lineRepository.insertStationEdge(line, insertedEdge);
 
-        Optional.ofNullable(insertionResult.getUpdatedEdge())
-                .ifPresent(updatedEdge -> lineRepository.updateStationEdge(line, updatedEdge));
+    private InsertionResult insertStationAndReturnEdgesToSave(
+            StationInsertRequest stationInsertRequest,
+            Line line
+    ) {
+        Long stationId = stationInsertRequest.getStationId();
+        Long adjacentStationId = stationInsertRequest.getAdjacentStationId();
+        LineDirection direction = LineDirection.valueOf(stationInsertRequest.getDirection());
+        int distance = stationInsertRequest.getDistance();
+
+        if (direction == LineDirection.UP) {
+            return line.insertUpStation(stationId, adjacentStationId, distance);
+        }
+        return line.insertDownStation(stationId, adjacentStationId, distance);
     }
 
     public Line findLineById(Long id) {

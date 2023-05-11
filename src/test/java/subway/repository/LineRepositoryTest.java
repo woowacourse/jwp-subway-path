@@ -15,7 +15,6 @@ import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dao.StationEdgeDao;
 import subway.domain.Line;
-import subway.domain.LineDirection;
 import subway.domain.Station;
 import subway.domain.StationEdge;
 import subway.domain.dto.InsertionResult;
@@ -88,8 +87,7 @@ class LineRepositoryTest {
 
         Long middleStationId = stationRepository.create(new Station("middle"));
         Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        InsertionResult insertionResult = createdLine.insertStation(middleStationId, downStationId, 2,
-                LineDirection.UP);
+        InsertionResult insertionResult = createdLine.insertUpStation(middleStationId, downStationId, 2);
 
         //when
         lineRepository.insertStationEdge(createdLine, insertionResult.getInsertedEdge());
@@ -122,8 +120,7 @@ class LineRepositoryTest {
 
         Long middleStationId = stationRepository.create(new Station("middle"));
         Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        InsertionResult insertionResult = createdLine.insertStation(middleStationId, downStationId, 2,
-                LineDirection.UP);
+        InsertionResult insertionResult = createdLine.insertUpStation(middleStationId, downStationId, 2);
         lineRepository.insertStationEdge(createdLine, insertionResult.getInsertedEdge());
         return createdLine;
     }

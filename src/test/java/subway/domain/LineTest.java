@@ -3,13 +3,9 @@ package subway.domain;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.List;
-import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import subway.domain.dto.InsertionResult;
 
 class LineTest {
@@ -40,28 +36,36 @@ class LineTest {
                 .isNotNull();
     }
 
-    @ParameterizedTest(name = "노선에 역을 등록한다. {4}")
-    @MethodSource("provideInsertedStation")
-    void insertStation(Long adjacentStationId, LineDirection direction, int expectedInsertEdgeDistance,
-                       int expectedUpdatedEdgeDistance, String testName) {
+    @Test
+    @DisplayName("상행 방향으로 역을 추가한다.")
+    void insertUpStation() {
         //given
         Line line = createLine();
 
         //when
         Long newStationId = 3L;
-        InsertionResult changedEdges = line.insertStation(newStationId, adjacentStationId, 2, direction);
+        InsertionResult changedEdges = line.insertUpStation(newStationId, stationId2, 2);
         //then
         assertSoftly(softly -> {
-            softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(expectedInsertEdgeDistance);
-            softly.assertThat(changedEdges.getUpdatedEdge().getDistance()).isEqualTo(expectedUpdatedEdgeDistance);
+            softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(3);
+            softly.assertThat(changedEdges.getUpdatedEdge().getDistance()).isEqualTo(2);
         });
     }
 
-    private static Stream<Arguments> provideInsertedStation() {
-        return Stream.of(
-                Arguments.arguments(stationId1, LineDirection.DOWN, 2, 3, "역 중간에 추가"),
-                Arguments.arguments(stationId1, LineDirection.UP, 0, 2, "상행 종점 추가")
-        );
+    @Test
+    @DisplayName("하행 방향으로 역을 추가한다.")
+    void insertDownStation() {
+        //given
+        Line line = createLine();
+
+        //when
+        Long newStationId = 3L;
+        InsertionResult changedEdges = line.insertDownStation(newStationId, stationId1, 2);
+        //then
+        assertSoftly(softly -> {
+            softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(2);
+            softly.assertThat(changedEdges.getUpdatedEdge().getDistance()).isEqualTo(3);
+        });
     }
 
     private Line createLine() {
@@ -78,7 +82,7 @@ class LineTest {
 
         //when
         Long newStationId = 3L;
-        InsertionResult changedEdges = line.insertStation(newStationId, stationId2, 2, LineDirection.DOWN);
+        InsertionResult changedEdges = line.insertDownStation(newStationId, stationId2, 2);
         //then
         assertSoftly(softly -> {
             softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(2);
@@ -91,7 +95,7 @@ class LineTest {
     void deleteStation() {
         //given
         final Line line = createLine();
-        line.insertStation(3L, stationId1, 2, LineDirection.DOWN);
+        line.insertDownStation(3L, stationId1, 2);
 
         //when
         StationEdge changedStationEdge = line.deleteStation(3L);
