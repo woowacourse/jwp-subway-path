@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
+import subway.entity.LineEntity;
 
 public class Line {
     private Long id;
@@ -11,13 +12,16 @@ public class Line {
     private Station headStation;
 
 
+    public static Line from(LineEntity entity, Station headStation){
+        return new Line(entity.getId(), entity.getName(), entity.getColor(), headStation);
+    }
     public Line() {
     }
 
-    public Line(String name, String color, Station headStation) {
+    public Line(Long id, String name, String color, Station headStation) {
         validate(headStation);
         //headStation이 emptyStation이면 안 된다
-
+        this.id=id;
         this.name = name;
         this.color = color;
         this.headStation = headStation;
@@ -103,8 +107,7 @@ public class Line {
 
     private Station findDownEndStation() {
         int lastStationIndex = getStations().size() - 1;
-        Station lastStation = getStations().get(lastStationIndex);
-        return lastStation;
+        return getStations().get(lastStationIndex);
     }
 
     public Station findStation(String name) {

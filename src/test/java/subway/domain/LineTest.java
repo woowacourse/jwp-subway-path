@@ -23,7 +23,7 @@ class LineTest {
         Station station = new Station(name, nextStation, distance);
 
         //when, then
-        assertThatCode(() -> new Line("2호선", "초록색", station)).doesNotThrowAnyException();
+        assertThatCode(() -> new Line(1L, "2호선", "초록색", station)).doesNotThrowAnyException();
     }
 
     @Test
@@ -36,7 +36,7 @@ class LineTest {
         Station station = new Station(name, nextStation, distance);
 
         //when, then
-        assertThatThrownBy(() -> new Line("2호선", "초록색", station))
+        assertThatThrownBy(() -> new Line(1L, "2호선", "초록색", station))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("노선을 생성할 때 최소 2개 이상의 역이 존재해야 합니다.");
     }
@@ -50,7 +50,7 @@ class LineTest {
         Distance distance = new Distance(10);
         Station UpEndstation = new Station(name, nextStation, distance);
 
-        Line line = new Line("2호선", "초록색", UpEndstation);
+        Line line = new Line(1L, "2호선", "초록색", UpEndstation);
 
         //when
         Station actualStation = line.findStation("강남역");
@@ -70,7 +70,7 @@ class LineTest {
         Distance distance = new Distance(10);
         Station UpEndstation = new Station(name, nextStation, distance);
 
-        Line line = new Line("2호선", "초록색", UpEndstation);
+        Line line = new Line(1L, "2호선", "초록색", UpEndstation);
 
         //when
         Station actualStation = line.findStation("강남역");
@@ -90,7 +90,7 @@ class LineTest {
         Distance distance = new Distance(10);
         Station UpEndstation = new Station(name, nextStation, distance);
 
-        Line line = new Line("2호선", "초록색", UpEndstation);
+        Line line = new Line(1L, "2호선", "초록색", UpEndstation);
 
         //when
         boolean actual = line.hasStation("강남역");
@@ -108,7 +108,7 @@ class LineTest {
         Distance distance = new Distance(10);
         Station UpEndstation = new Station(name, nextStation, distance);
 
-        Line line = new Line("2호선", "초록색", UpEndstation);
+        Line line = new Line(1L, "2호선", "초록색", UpEndstation);
 
         //when
         boolean actual = line.hasStation("잠실역");
@@ -126,7 +126,7 @@ class LineTest {
         Distance distance = new Distance(10);
         Station UpEndstation = new Station(name, nextStation, distance);
 
-        Line line = new Line("2호선", "초록색", UpEndstation);
+        Line line = new Line(1L, "2호선", "초록색", UpEndstation);
 
         //when
         int actual = line.getStations().size();
@@ -149,7 +149,7 @@ class LineTest {
             Distance distance = new Distance(10);
             upEndStation = new Station(name, downEndStation, distance);
 
-            line = new Line("2호선", "초록색", upEndStation);
+            line = new Line(1L, "2호선", "초록색", upEndStation);
         }
 
         @Test
@@ -297,7 +297,7 @@ class LineTest {
             Distance distance = new Distance(10);
             upEndStation = new Station(name, downEndStation, distance);
 
-            line = new Line("2호선", "초록색", upEndStation);
+            line = new Line(1L, "2호선", "초록색", upEndStation);
             line.addStation(new Station(name, new Station("잠실역"), new Distance(6)));
         }
 

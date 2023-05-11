@@ -100,6 +100,19 @@ RequestBody = {
 ```
 
 - [x]  노선 조회
+```jsx
+GET /lines/stations/{line_id}
+```
+
+```jsx
+{
+    id : 1,
+    name : "동해선",
+    color : "파란색",
+}
+```
+
+- [x] 역 목록 조회
 
 ```jsx
 GET /lines/{line_id}

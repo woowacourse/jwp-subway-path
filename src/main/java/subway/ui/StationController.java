@@ -26,20 +26,19 @@ public class StationController {
         this.stationService = stationService;
     }
 
-//    @PostMapping
-//    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-//        StationResponse station = stationService.saveStation(stationRequest);
-//        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
-//    }
-
     @GetMapping("/test")
     public ResponseEntity<List<StationEntity>> showAllStations() {
         return ResponseEntity.ok().body(stationService.findAllStationTest());
     }
 
-    @GetMapping
-    public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses(1L, 1L));
+    /**
+     * 특정 노선의 역 목록 조회
+     * @param lineId
+     * @return
+     */
+    @GetMapping("/{lineId}")
+    public ResponseEntity<List<StationResponse>> findLineStationsById(@PathVariable Long lineId) {
+        return ResponseEntity.ok(stationService.findLineStationResponsesById(lineId));
     }
 
 //    @GetMapping("/{id}")
@@ -47,11 +46,16 @@ public class StationController {
 //        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
 //    }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
-        stationService.updateStation(id, stationRequest);
-        return ResponseEntity.ok().build();
-    }
+//    @PostMapping
+//    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+//        StationResponse station = stationService.saveStation(stationRequest);
+//        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+//    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
+//        stationService.updateStation(id, stationRequest);
+//        return ResponseEntity.ok().build();
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {

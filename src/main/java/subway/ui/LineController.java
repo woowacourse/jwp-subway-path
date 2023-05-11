@@ -2,12 +2,14 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.dto.LineResponse;
 
 import java.util.List;
+import subway.dto.StationResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -26,17 +28,25 @@ public class LineController {
 //        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
 //    }
 
+    /**
+     * 노선도에 있는 모든 노선들의 정보를 조회
+     * @return
+     */
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
+    /**
+     * 특정 노선의 정보 조회
+     * @param lineId
+     * @return
+     */
+    @GetMapping("/{lineId}")
+    public ResponseEntity<LineResponse> findLineById(@PathVariable Long lineId) {
+        return ResponseEntity.ok(lineService.findLineResponseById(lineId));
+    }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-//        return ResponseEntity.ok(lineService.findLineResponseById(id));
-//    }
-//
 //    @PutMapping("/{id}")
 //    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
 //        lineService.updateLine(id, lineUpdateRequest);

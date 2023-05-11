@@ -21,7 +21,7 @@ class SubwayMapTest {
         Station downEndStation = new Station("역삼역");
         Distance distance = new Distance(10);
         Station upEndStation = new Station(name, downEndStation, distance);
-        line = new Line("2호선", "초록색", upEndStation);
+        line = new Line(1L, "2호선", "초록색", upEndStation);
 
         subwayMap = new SubwayMap(new ArrayList<>(List.of(line)));
     }
@@ -43,7 +43,7 @@ class SubwayMapTest {
         Station downEndStation = new Station("역삼역");
         Distance distance = new Distance(10);
         Station upEndStation = new Station(name, downEndStation, distance);
-        Line newLine = new Line("3호선", "초록색", upEndStation);
+        Line newLine = new Line(1L, "3호선", "초록색", upEndStation);
 
         //when
         subwayMap.addLine(newLine);
@@ -60,7 +60,7 @@ class SubwayMapTest {
         Station downEndStation = new Station("역삼역");
         Distance distance = new Distance(10);
         Station upEndStation = new Station(name, downEndStation, distance);
-        Line newLine = new Line("3호선", "초록색", upEndStation);
+        Line newLine = new Line(1L, "3호선", "초록색", upEndStation);
 
         SubwayMap subwayMap = new SubwayMap(new ArrayList<>(List.of(line, newLine)));
 
@@ -82,7 +82,7 @@ class SubwayMapTest {
         Station downEndStation = new Station("역삼역");
         Distance distance = new Distance(10);
         Station upEndStation = new Station(name, downEndStation, distance);
-        Line newLine = new Line("3호선", "초록색", upEndStation);
+        Line newLine = new Line(1L, "3호선", "초록색", upEndStation);
 
         SubwayMap subwayMap = new SubwayMap(List.of(line, newLine));
 

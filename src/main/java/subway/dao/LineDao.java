@@ -14,21 +14,22 @@ import java.util.Map;
 
 @Repository
 public class LineDao {
+
     private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
-            new LineEntity(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color"),
-                    rs.getLong("head_station")
-            );
+        new LineEntity(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color"),
+            rs.getLong("head_station")
+        );
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("line")
+            .usingGeneratedKeyColumns("id");
     }
 
     // TODO: 2023/05/11 name을 받고 id를 찾아 반환하는 메서드 구현하기 
@@ -39,7 +40,13 @@ public class LineDao {
         params.put("head_station", line.getHeadStation().getId());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineEntity(lineId, line.getName(), line.getColor(), line.getHeadStation().getId());
+        return new LineEntity(lineId, line.getName(), line.getColor(),
+            line.getHeadStation().getId());
+    }
+
+    public Long findIdByName(String name) {
+        String sql = "select id from LINE where name = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("id"), name);
     }
 
     public List<LineEntity> findAll() {

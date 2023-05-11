@@ -32,14 +32,14 @@ public class LineService {
         return lineDao.findAll();
     }
 
-//    public LineResponse findLineResponseById(Long id) {
-//        Line persistLine = findLineById(id);
-//        return LineResponse.of(persistLine);
-//    }
-//
-//    public Line findLineById(Long id) {
-//        return lineDao.findById(id);
-//    }
+    public LineResponse findLineResponseById(Long id) {
+        LineEntity persistLine = findLineById(id);
+        return LineResponse.of(persistLine);
+    }
+
+    public LineEntity findLineById(Long id) {
+        return lineDao.findById(id);
+    }
 //
 //    public void updateLine(Long id, LineRequest lineUpdateRequest) {
 //        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
