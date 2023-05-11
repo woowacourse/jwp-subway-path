@@ -35,9 +35,13 @@
 
 - URI Mapping 예시 -GET
     - `/lines` : 전체 노선 조회 ex) 1호선, 2호선, ...
-    - `/lines/{lineId}` : 해당 노선 정보 조회 ex) 2호선, 2호선 color
-    - `/lines/{lineId}/stations` : 해당 노선의 역 전체 조회 ex) 합정 -> 홍대 -> 신촌 -> 이대 ...
-    - `/lines/{lineId}/stations/{stationId}` : 해당 노선의 해당 역 정보 조회 -> 신촌역 정보
+    - `/lines/{lineId}` : 해당 노선의 역 전체 조회 ex) 합정 -> 홍대 -> 신촌 -> 이대 ...
+
+- URI Mapping 예시 -POST
+    - `/sections/lineId=?` : 역 추가 (구간 추가)
+
+- URI Mapping 예시 -DELETE
+    - `/sections/lineId=?&&stationId=?` : 역 삭제 (해당 구간 삭제 및 재배치)
 
 ### 비즈니스 규칙
 
@@ -82,79 +86,31 @@
 ```sql
 create table if not exists STATION
 (
-    id
-    bigint
-    auto_increment
-    not
-    null,
-    name
-    varchar
-(
-    255
-) not null unique,
+    id   bigint auto_increment not null,
+    name varchar(255)          not null unique
     );
 
 create table if not exists LINE
 (
-    id
-    bigint
-    auto_increment
-    not
-    null,
-    name
-    varchar
-(
-    255
-) not null unique,
-    color varchar
-(
-    20
-) not null,
+    id    bigint auto_increment not null,
+    name  varchar(255)          not null unique,
+    color varchar(20)           not null
     );
 
 create table if not exists SECTION
 (
-    id
-    bigint
-    auto_increment
-    not
-    null,
-    line_id
-    bigint
-    not
-    null,
-    from_id
-    bigint
-    not
-    null,
-    to_id
-    bigint
-    not
-    null,
-    distance
-    bigint
-    not
-    null
+    id       bigint auto_increment not null,
+    line_id  bigint                not null,
+    from_id  bigint                not null,
+    to_id    bigint                not null,
+    distance bigint                not null
 );
 
 create table if not exists ENDPOINT
 (
-    id
-    bigint
-    auto_increment
-    not
-    null,
-    line_id
-    bigint
-    not
-    null,
-    top_id
-    bigint
-    not
-    null,
-    down_id
-    bigint
-    not
-    null,
+    id      bigint auto_increment not null,
+    line_id bigint                not null,
+    top_id  bigint                not null,
+    down_id bigint                not null
 );
 ```
