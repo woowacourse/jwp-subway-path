@@ -1,5 +1,8 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -7,11 +10,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public class LineDao {
@@ -25,9 +23,9 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
@@ -57,8 +55,8 @@ public class LineDao {
     }
 
     public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        final String sql = "update LINE set name = ?, color = ? where id = ?";
+        jdbcTemplate.update(sql, sql, newLine.getColor(), newLine.getId());
     }
 
     public void deleteById(Long id) {

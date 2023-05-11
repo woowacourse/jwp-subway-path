@@ -43,6 +43,6 @@ public class StationService {
 
     private Station getById(final Long id) {
         return stationDao.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 역이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 역이 없습니다."));
     }
 }

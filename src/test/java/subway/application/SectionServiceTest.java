@@ -38,7 +38,6 @@ import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationResponse;
 
-
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
 
@@ -87,7 +86,6 @@ class SectionServiceTest {
         // then
         verify(sectionDao, times(1)).insert(any());
     }
-
 
     @Test
     @DisplayName("해당하는 역이 없으면 예외가 발생한다.")

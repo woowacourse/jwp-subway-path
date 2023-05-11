@@ -63,45 +63,45 @@ public class SectionService {
 
     private Line getLineById(final Long lineId) {
         return lineDao.findById(lineId)
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 없습니다."));
     }
 
     private Station getStationById(final Long stationId) {
         return stationDao.findById(stationId)
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 역이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 역이 없습니다."));
     }
 
     private List<StationResponse> convertStationResponses(final List<Station> stations) {
         return stations.stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toUnmodifiableList());
+                .map(StationResponse::of)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     private Section convertSection(final SectionEntity sectionEntity) {
         return new Section(
-            getStationById(sectionEntity.getSourceStationId()),
-            getStationById(sectionEntity.getTargetStationId()),
-            sectionEntity.getDistance());
+                getStationById(sectionEntity.getSourceStationId()),
+                getStationById(sectionEntity.getTargetStationId()),
+                sectionEntity.getDistance());
     }
 
     private Section convertSection(final SectionRequest sectionRequest) {
         return new Section(
-            getStationById(sectionRequest.getSourceStationId()),
-            getStationById(sectionRequest.getTargetStationId()),
-            sectionRequest.getDistance());
+                getStationById(sectionRequest.getSourceStationId()),
+                getStationById(sectionRequest.getTargetStationId()),
+                sectionRequest.getDistance());
     }
 
     private Sections convertSections(final List<SectionEntity> sectionEntities) {
         final List<Section> sections = sectionEntities.stream()
-            .map(this::convertSection)
-            .collect(Collectors.toList());
+                .map(this::convertSection)
+                .collect(Collectors.toList());
         return new Sections(sections);
     }
 
     private void saveFirstSection(final SectionRequest sectionRequest, final Long lineId) {
         final Section section = convertSection(sectionRequest);
         saveNewSection(lineId, section.getSource().getId(), section.getTarget().getId(),
-            section.getDistance());
+                section.getDistance());
     }
 
     private void updateExistedSourceSection(final Long lineId, final Sections sections,
@@ -127,7 +127,7 @@ public class SectionService {
     private void saveNewSection(final Long lineId, final Long sourceStationId, final Long targetStationId,
                                 final int distance) {
         final SectionEntity newSectionEntity = new SectionEntity(lineId, sourceStationId,
-            targetStationId, distance);
+                targetStationId, distance);
         sectionDao.insert(newSectionEntity);
     }
 
@@ -141,8 +141,8 @@ public class SectionService {
     public List<LineResponse> getAllStations() {
         final List<Line> lines = lineDao.findAll();
         return lines.stream()
-            .map(line -> getStationsByLineId(line.getId()))
-            .collect(Collectors.toUnmodifiableList());
+                .map(line -> getStationsByLineId(line.getId()))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     @Transactional
@@ -152,7 +152,7 @@ public class SectionService {
         final Station station = getStationById(stationId);
         sectionDao.deleteByLineIdAndStationId(lineId, stationId);
         sections.combineSection(station)
-            .ifPresent((newSection) -> saveNewSection(lineId, newSection.getSource().getId(),
-                newSection.getTarget().getId(), newSection.getDistance()));
+                .ifPresent((newSection) -> saveNewSection(lineId, newSection.getSource().getId(),
+                        newSection.getTarget().getId(), newSection.getDistance()));
     }
 }

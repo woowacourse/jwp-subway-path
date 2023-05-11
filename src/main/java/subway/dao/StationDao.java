@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.util.List;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -9,9 +10,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.station.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 @Repository
 public class StationDao {
@@ -25,9 +23,9 @@ public class StationDao {
             );
 
 
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
@@ -44,7 +42,7 @@ public class StationDao {
     }
 
     public Optional<Station> findById(Long id) {
-        final String sql = "select * from STATION where id = ?";
+        final String sql = "select id, name from STATION where id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (final EmptyResultDataAccessException e) {
@@ -53,8 +51,8 @@ public class StationDao {
     }
 
     public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        final String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, newStation.getName(), newStation.getId());
     }
 
     public void deleteById(Long id) {

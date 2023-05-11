@@ -24,8 +24,8 @@ public class Stations {
 
     private List<String> getStationNames() {
         return stations.stream()
-            .map(Station::getName)
-            .collect(Collectors.toUnmodifiableList());
+                .map(Station::getName)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public List<Station> getStations() {

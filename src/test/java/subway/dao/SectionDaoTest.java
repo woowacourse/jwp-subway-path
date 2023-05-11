@@ -4,27 +4,32 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.entity.SectionEntity;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 
 @JdbcTest
-@Import({SectionDao.class, LineDao.class, StationDao.class})
 class SectionDaoTest {
 
     @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    private LineDao lineDao;
+    private StationDao stationDao;
     private SectionDao sectionDao;
 
-    @Autowired
-    private LineDao lineDao;
-
-    @Autowired
-    private StationDao stationDao;
+    @BeforeEach
+    void setUp() {
+        lineDao = new LineDao(jdbcTemplate);
+        stationDao = new StationDao(jdbcTemplate);
+        sectionDao = new SectionDao(jdbcTemplate);
+    }
 
     @Test
     @DisplayName("노선의 아이디로 노선에 있는 역 리스트를 조회한다.")
@@ -51,10 +56,10 @@ class SectionDaoTest {
 
         // then
         assertAll(
-            () -> assertThat(sectionEntities).hasSize(1),
-            () -> assertThat(sectionEntities.get(0))
-                .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance")
-                .containsExactly(savedId, 저장된_이호선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10));
+                () -> assertThat(sectionEntities).hasSize(1),
+                () -> assertThat(sectionEntities.get(0))
+                        .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance")
+                        .containsExactly(savedId, 저장된_이호선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10));
     }
 
     @Test
@@ -82,10 +87,10 @@ class SectionDaoTest {
         // then
         final List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L);
         assertAll(
-            () -> assertThat(sectionEntities).hasSize(1),
-            () -> assertThat(sectionEntities.get(0))
-                .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance")
-                .containsExactly(savedId, 저장된_이호선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10));
+                () -> assertThat(sectionEntities).hasSize(1),
+                () -> assertThat(sectionEntities.get(0))
+                        .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance")
+                        .containsExactly(savedId, 저장된_이호선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10));
     }
 
     @Test
@@ -115,7 +120,7 @@ class SectionDaoTest {
         final List<SectionEntity> sectionEntities = sectionDao.findByLineId(저장된_이호선_아이디);
         assertThat(sectionEntities).isEmpty();
     }
-    
+
     @Test
     @DisplayName("노선 아이디와 역 아이디로 구간 정보를 제거한다.")
     void deleteByLineIdAndStationId() {
