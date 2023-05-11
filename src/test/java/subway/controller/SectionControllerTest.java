@@ -15,6 +15,7 @@ import subway.dto.SectionRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/schema.sql")
+@DisplayName("SectionController는 ")
 class SectionControllerTest {
 
     @LocalServerPort
@@ -31,11 +32,11 @@ class SectionControllerTest {
         InitSectionRequest request = new InitSectionRequest(2L, 1L, 2L, 10);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/lines/2/init-sections")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
 
@@ -49,11 +50,11 @@ class SectionControllerTest {
         InitSectionRequest initRequest = new InitSectionRequest(2L, 3L, 2L, 10);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
                 .when().post("/lines/2/init-sections")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         SectionRequest mainRequest = new SectionRequest(
@@ -65,11 +66,11 @@ class SectionControllerTest {
                 7);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
                 .when().post("/lines/2/section")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
 
@@ -83,11 +84,11 @@ class SectionControllerTest {
         InitSectionRequest initRequest = new InitSectionRequest(2L, 1L, 2L, 10);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
                 .when().post("/lines/2/init-sections")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         EndSectionRequest mainRequest = new EndSectionRequest(
@@ -98,11 +99,11 @@ class SectionControllerTest {
         );
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
                 .when().post("/lines/2/end-section")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
 
@@ -116,11 +117,11 @@ class SectionControllerTest {
         InitSectionRequest initRequest1 = new InitSectionRequest(2L, 3L, 2L, 10);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
                 .when().post("/lines/2/init-sections")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         SectionRequest initRequest2 = new SectionRequest(
@@ -132,18 +133,18 @@ class SectionControllerTest {
                 7);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest2)
                 .when().post("/lines/2/section")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/lines/2/section?station-id=1")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
@@ -158,11 +159,11 @@ class SectionControllerTest {
         InitSectionRequest initRequest1 = new InitSectionRequest(2L, 3L, 2L, 10);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
                 .when().post("/lines/2/init-sections")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         SectionRequest initRequest2 = new SectionRequest(
@@ -174,18 +175,18 @@ class SectionControllerTest {
                 7);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest2)
                 .when().post("/lines/2/section")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/lines/2/end-section?station-id=3")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
@@ -207,10 +208,10 @@ class SectionControllerTest {
                 .statusCode(HttpStatus.CREATED.value());
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/lines/2/last-sections?upward-id=3&downward-id=2")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }

@@ -14,6 +14,7 @@ import subway.dto.SectionRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/schema.sql")
+@DisplayName("LineStationsController는 ")
 class LineStationsControllerTest {
 
     @LocalServerPort
@@ -54,14 +55,14 @@ class LineStationsControllerTest {
                 .statusCode(HttpStatus.CREATED.value());
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/line-stations/2")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value());
     }
 
-    @DisplayName("노선을 순서대로 조회할 수 있다.")
+    @DisplayName("전체 노선을 순서대로 조회할 수 있다.")
     @Test
     void readAllLinesStations() {
 
@@ -120,7 +121,7 @@ class LineStationsControllerTest {
                 .statusCode(HttpStatus.CREATED.value());
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/line-stations")
                 .then().log().all()
