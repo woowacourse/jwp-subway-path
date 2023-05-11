@@ -40,6 +40,9 @@ public class Section {
             throw new IllegalArgumentException("중복된 이름입니다. 다른 이름을 입력해주세요.");
         }
     }
+    public boolean validateEqualEndPoint(final Station upEndPoint,final Station downEndPoint) {
+        return upEndPoint.equals(this.downStation) ^ downEndPoint.equals(this.upStation);
+    }
 
     public boolean validateDuplicateSection(final Section newSection) {
         return this.downStation.equals(newSection.downStation)
