@@ -1,7 +1,12 @@
 package subway.ui;
 
+import static java.util.stream.Collectors.toMap;
+
 import java.net.URI;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,7 +49,35 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return null;
+        List<Line> lines = lineService.findAll();
+        List<Station> stations = stationService.findAll();
+        Map<Long, Station> stationIdToStation = getIdToStation(stations);
+        List<LineResponse> lineResponses = getLineResponses(lines, stationIdToStation);
+        return ResponseEntity.ok(lineResponses);
+    }
+
+    private Map<Long, Station> getIdToStation(List<Station> stations) {
+        return stations.stream()
+                .collect(toMap(station -> station.getId(), Function.identity()));
+    }
+
+    private List<LineResponse> getLineResponses(List<Line> lines, Map<Long, Station> stationIdToStation) {
+        List<LineResponse> lineResponses = lines.stream()
+                .map(lineToLineResponse(stationIdToStation))
+                .collect(Collectors.toList());
+        return lineResponses;
+    }
+
+    private Function<Line, LineResponse> lineToLineResponse(Map<Long, Station> stationIdToStation) {
+        return line -> {
+            List<Station> stations = line.getStationEdges().stream()
+                    .map(stationEdge -> {
+                        Long downStationId = stationEdge.getDownStationId();
+                        return stationIdToStation.get(downStationId);
+                    })
+                    .collect(Collectors.toList());
+            return LineResponse.of(line, stations);
+        };
     }
 
     @GetMapping("/{id}")

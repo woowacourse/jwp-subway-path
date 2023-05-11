@@ -84,4 +84,8 @@ public class LineService {
                 .ifPresent(stationEdge -> lineRepository.updateWithSavedEdge(line, stationEdge));
         lineRepository.deleteStation(line, stationId);
     }
+
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
 }

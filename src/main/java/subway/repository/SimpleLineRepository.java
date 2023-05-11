@@ -25,6 +25,11 @@ public class SimpleLineRepository implements LineRepository {
     }
 
     @Override
+    public List<Line> findAll() {
+        return lines;
+    }
+
+    @Override
     public Optional<Line> findByName(String name) {
         return lines.stream().filter(line -> line.getName().equals(name)).findFirst();
     }

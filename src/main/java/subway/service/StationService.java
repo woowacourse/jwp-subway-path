@@ -27,4 +27,8 @@ public class StationService {
     public List<Station> findById(List<Long> ids) {
         return stationRepository.findById(ids);
     }
+
+    public List<Station> findAll() {
+        return stationRepository.findAll();
+    }
 }

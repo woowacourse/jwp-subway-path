@@ -1,5 +1,6 @@
 package subway.repository;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -13,10 +14,10 @@ public class SimpleStationRepository implements StationRepository {
 
     private Long idIndex;
 
-    final Set<Station> stations;
+    final List<Station> stations;
 
     public SimpleStationRepository() {
-        this.stations = new HashSet<>();
+        this.stations = new ArrayList<>();
         idIndex = 1L;
     }
 
@@ -46,5 +47,10 @@ public class SimpleStationRepository implements StationRepository {
                 .map(id -> stations.stream()
                         .filter(station -> station.getId().equals(id)).findFirst().orElseThrow())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Station> findAll() {
+        return stations;
     }
 }

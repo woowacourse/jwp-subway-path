@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -148,5 +149,32 @@ class LineServiceTest {
 
         //then
         assertThat(createdLine.getId()).isEqualTo(lineId);
+    }
+
+    @Test
+    @DisplayName("전체 노선을 찾는다.")
+    void findAll() {
+        //given
+        LineRequest lineRequest = createLineRequest();
+        Long firstLineId = lineService.create(lineRequest);
+
+        Long secondLineId = lineService.create(new LineRequest(
+                "2호선",
+                "초록색",
+                stationRepository.create(new Station("up")),
+                stationRepository.create(new Station("down")),
+                5
+        ));
+
+        //when
+        List<Line> lines = lineService.findAll();
+
+        //then
+        assertSoftly(softly -> {
+            softly.assertThat(lines).hasSize(2);
+            softly.assertThat(lines.get(0).getId()).isEqualTo(firstLineId);
+            softly.assertThat(lines.get(1).getId()).isEqualTo(secondLineId);
+        });
+
     }
 }
