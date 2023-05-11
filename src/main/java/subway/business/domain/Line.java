@@ -10,9 +10,7 @@ public class Line {
     private final List<Section> sections;
 
     public Line(String name, List<Section> sections) {
-        this.id = null;
-        this.name = name;
-        this.sections = sections;
+        this(null, name, sections);
     }
 
     public Line(Long id, String name, List<Section> sections) {
