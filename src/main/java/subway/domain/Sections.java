@@ -4,6 +4,7 @@ import subway.dto.AddResultDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Sections {
     private final List<Section> sections;
@@ -18,8 +19,20 @@ public class Sections {
             return addInitStations(upStation, downStation, distance, line);
         }
         validateIsNonExistStations(upStation, downStation);
+        Station upEndStation = findUpEndStation();
+        Station downEndStation = findDownEndStation();
+
+        // 상행종점 추가
+        if (downStation.equals(upEndStation)) {
+            return addUpEndStation(upStation, downStation, distance, line);
+        }
 
         return new AddResultDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+    }
+
+    private static AddResultDto addUpEndStation(Station upStation, Station downStation, Distance distance, Line line) {
+        Section newSection = new Section(upStation, downStation, distance, line);
+        return new AddResultDto(List.of(newSection), List.of(), List.of(upStation));
     }
 
     private static AddResultDto addInitStations(Station upStation, Station downStation, Distance distance, Line line) {
@@ -46,6 +59,34 @@ public class Sections {
     private boolean isNonExistInSection(Station station) {
         return sections.stream()
                 .noneMatch(section -> section.contains(station));
+    }
+
+    private Station findUpEndStation() {
+        List<Station> upStations = findUpStations();
+        List<Station> downStations = findDownStations();
+
+        upStations.removeAll(downStations);
+        return upStations.get(0);
+    }
+
+    private Station findDownEndStation() {
+        List<Station> upStations = findUpStations();
+        List<Station> downStations = findDownStations();
+
+        downStations.removeAll(upStations);
+        return downStations.get(0);
+    }
+
+    private List<Station> findDownStations() {
+        return sections.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+    }
+
+    private List<Station> findUpStations() {
+        return sections.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
     }
 
 

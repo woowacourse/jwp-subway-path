@@ -59,4 +59,35 @@ class SectionsTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 노선에 역들이 존재하기 때문에 한 번에 새로운 역 2개를 추가할 수 없습니다.");
     }
+
+    @Test
+    void 상행_종점을_추가한다() {
+        //given
+        Distance gandnamYuksamDistance = new Distance(10);
+        Section section = new Section(YUKSAM, GANGNAM, gandnamYuksamDistance, SECOND_LINE);
+        Sections sections = new Sections(List.of(section));
+
+        Distance jamsilYuksamDistance = new Distance(5);
+
+        //when
+        AddResultDto addUpEndStationResult = sections.add(JAMSIL, YUKSAM, jamsilYuksamDistance, SECOND_LINE);
+
+        //then
+        List<Section> addedResults = addUpEndStationResult.getAddedResults();
+        List<Section> deletedResults = addUpEndStationResult.getDeletedResults();
+        List<Station> addedStation = addUpEndStationResult.getAddedStation();
+
+        Section newSection = addedResults.get(0);
+
+        Assertions.assertAll(
+                () -> assertThat(addedResults).hasSize(1),
+                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
+                () -> assertThat(newSection.getUpStation()).isEqualTo(JAMSIL),
+                () -> assertThat(newSection.getDownStation()).isEqualTo(YUKSAM),
+                () -> assertThat(newSection.getDistance()).isEqualTo(jamsilYuksamDistance),
+                () -> assertThat(deletedResults).hasSize(0),
+                () -> assertThat(addedStation).hasSize(1),
+                () -> assertThat(addedStation).containsExactly(JAMSIL)
+        );
+    }
 }
