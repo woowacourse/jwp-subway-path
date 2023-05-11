@@ -4,8 +4,11 @@ import subway.entity.StationEntity;
 
 public class StationResponse {
 
-    private final Long id;
-    private final String name;
+    private Long id;
+    private String name;
+
+    public StationResponse() {
+    }
 
     public StationResponse(Long id, String name) {
         this.id = id;
