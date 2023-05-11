@@ -1,4 +1,4 @@
-package subway.entity;
+package subway.domain;
 
 public class Section {
 

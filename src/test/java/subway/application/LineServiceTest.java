@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.entity.Line;
+import subway.domain.Line;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)

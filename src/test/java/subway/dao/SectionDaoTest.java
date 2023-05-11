@@ -2,8 +2,6 @@ package subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -12,10 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.entity.Line;
-import subway.entity.Section;
-import subway.entity.Station;
-import subway.fixture.StationFixture;
+import subway.domain.Line;
+import subway.domain.Section;
 import subway.fixture.StationFixture.GangnamStation;
 import subway.fixture.StationFixture.JamsilStation;
 

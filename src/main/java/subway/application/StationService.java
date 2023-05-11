@@ -8,8 +8,9 @@ import subway.dao.StationDao;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 import subway.dto.StationSaveRequest;
-import subway.entity.Section;
-import subway.entity.Station;
+import subway.domain.FinalStation;
+import subway.domain.Section;
+import subway.domain.Station;
 
 @Transactional(readOnly = true)
 @Service
@@ -25,77 +26,94 @@ public class StationService {
 
     @Transactional
     public void saveStation(StationSaveRequest request) {
-        final List<String> stationNames = List.of(
-                request.getUpStation(),
-                request.getDownStation());
-
-        validateAlreadyExistRequestStations(stationNames);
+        validateAlreadyExistRequestStations(List.of(request.getUpStation(), request.getDownStation()));
         if (checkEmptyStations()) {
-            final Long upStationId = stationDao.insert(request.getUpStationEntity());
-            final Long downStationId = stationDao.insert(request.getDownStationEntity());
-
-            sectionService.saveSection(Section.of(
-                    request.getLineId(),
-                    upStationId,
-                    downStationId,
-                    request.getDistance())
-            );
+            saveAllRequestStations(request);
             return;
         }
 
         if (isAlreadyExistStation(request.getUpStation())) {
-            final Station baseStation = stationDao.findByName(request.getUpStation()).get();
-            final Station upTerminalStation = stationDao.getUpTerminalStation(request.getLineId());
-            final Station downTerminalStation = stationDao.getDownTerminalStation(request.getLineId());
-            final List<Station> terminalStations = List.of(upTerminalStation, downTerminalStation);
-
-            if (!baseStation.isContainStations(terminalStations) ||
-                    baseStation.isContainStations(List.of(upTerminalStation))
-            ) {
-
-                final Section section = sectionService.findByUpStationId(baseStation.getId());
-                validateDistance(request, section);
-
-                final Long downStationId = stationDao.insert(request.getDownStationEntity());
-                final int beforeSectionDistance = section.getDistance() - request.getDistance();
-
-                final Section beforeSection = Section.of(
-                        request.getLineId(),
-                        baseStation.getId(),
-                        downStationId,
-                        beforeSectionDistance
-                );
-
-                final Section afterSection = Section.of(
-                        request.getLineId(),
-                        downStationId,
-                        section.getDownStationId(),
-                        section.getDistance() - beforeSectionDistance);
-
-                sectionService.deleteById(section.getId());
-                sectionService.saveSection(beforeSection);
-                sectionService.saveSection(afterSection);
-                return;
-            }
-
-            final Long newUpStationId = baseStation.getId();
-            final Long newDownStationId = stationDao.insert(request.getDownStationEntity());
-            sectionService.saveSection(
-                    Section.of(request.getLineId(), newUpStationId, newDownStationId, request.getDistance()));
+            nonCalculateDistanceAndCreateStation(request);
             return;
         }
 
         if (isAlreadyExistStation(request.getDownStation())) {
-            final Long upStationId = stationDao.insert(request.getUpStationEntity());
-            final Long downStationId = stationDao.findByName(request.getDownStation()).get().getId();
-
-            sectionService.saveSection(
-                    Section.of(request.getLineId(), upStationId, downStationId, request.getDistance()));
+            createSection(request);
         }
     }
 
-    private static void validateDistance(final StationSaveRequest request, final Section section) {
-        if (section.getDistance() - request.getDistance() < 0) {
+    private void nonCalculateDistanceAndCreateStation(final StationSaveRequest request) {
+        final Station alreadyExistStation = stationDao.findByName(request.getUpStation()).get();
+        FinalStation finalStation = getFinalStationInfo(request);
+
+        if (finalStation.isNotFinalStation(alreadyExistStation.getName()) || finalStation.isFinalUpStation(alreadyExistStation.getName())) {
+            calculateDistanceAndCreateStation(request, alreadyExistStation);
+            return;
+        }
+        nonCalculateDistanceAndCreateStation(request, alreadyExistStation);
+    }
+
+    private void nonCalculateDistanceAndCreateStation(final StationSaveRequest request, final Station alreadyExistStation) {
+        final Long newUpStationId = alreadyExistStation.getId();
+        final Long newDownStationId = stationDao.insert(request.getDownStationEntity());
+        sectionService.saveSection(
+                Section.of(request.getLineId(), newUpStationId, newDownStationId, request.getDistance()));
+    }
+
+    private void calculateDistanceAndCreateStation(final StationSaveRequest request, final Station alreadyExistStation) {
+        final Section originSection = sectionService.findSectionByUpStationId(alreadyExistStation.getId());
+        validateDistance(originSection.getDistance(), request.getDistance());
+        sectionService.deleteById(originSection.getId());
+        createNewSections(request, originSection, alreadyExistStation);
+    }
+
+    private FinalStation getFinalStationInfo(StationSaveRequest request) {
+        final String finalUpStationName = stationDao.getUpTerminalStation(request.getLineId()).getName();
+        final String finalDownStationName = stationDao.getDownTerminalStation(request.getLineId()).getName();
+        return FinalStation.of(finalUpStationName, finalDownStationName);
+    }
+
+    private void createSection(final StationSaveRequest request) {
+        final Long upStationId = stationDao.insert(request.getUpStationEntity());
+        final Long downStationId = stationDao.findByName(request.getDownStation()).get().getId();
+
+        sectionService.saveSection(
+                Section.of(request.getLineId(), upStationId, downStationId, request.getDistance())
+        );
+    }
+
+    private void createNewSections(StationSaveRequest request, Section section, Station alreadyExistStation) {
+        final Long downStationId = stationDao.insert(request.getDownStationEntity());
+        final int beforeSectionDistance = section.getDistance() - request.getDistance();
+
+        sectionService.saveSection(Section.of(
+                request.getLineId(),
+                alreadyExistStation.getId(),
+                downStationId,
+                beforeSectionDistance
+        ));
+        sectionService.saveSection(Section.of(
+                request.getLineId(),
+                downStationId,
+                section.getDownStationId(),
+                section.getDistance() - beforeSectionDistance
+        ));
+    }
+
+    private void saveAllRequestStations(StationSaveRequest request) {
+        final Long upStationId = stationDao.insert(request.getUpStationEntity());
+        final Long downStationId = stationDao.insert(request.getDownStationEntity());
+
+        sectionService.saveSection(Section.of(
+                request.getLineId(),
+                upStationId,
+                downStationId,
+                request.getDistance())
+        );
+    }
+
+    private static void validateDistance(final int originDistance, final int newDistance) {
+        if (originDistance - newDistance < 0) {
             throw new IllegalArgumentException("거리는 기존 구간의 길이보다 작아야합니다.");
         }
     }

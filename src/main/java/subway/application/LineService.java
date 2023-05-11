@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.entity.Line;
+import subway.domain.Line;
 
 @Transactional(readOnly = true)
 @Service

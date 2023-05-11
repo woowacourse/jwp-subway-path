@@ -1,7 +1,7 @@
 package subway.dto;
 
 import java.util.Objects;
-import subway.entity.Station;
+import subway.domain.Station;
 
 public class StationSaveRequest {
 
