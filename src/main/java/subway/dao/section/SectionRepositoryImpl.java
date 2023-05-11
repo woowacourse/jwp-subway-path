@@ -25,4 +25,12 @@ public class SectionRepositoryImpl implements SectionRepository {
 
         return insert.getId();
     }
+
+    @Override
+    public void delete(final Section removedSection) {
+        sectionDao.deleteByStations(
+                removedSection.getFirstStation().getStationName(),
+                removedSection.getSecondStation().getStationName()
+        );
+    }
 }

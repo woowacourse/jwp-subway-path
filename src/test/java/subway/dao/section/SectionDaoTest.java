@@ -106,7 +106,7 @@ class SectionDaoTest {
     }
 
     @Test
-    void 식별자_삭제_테스트() {
+    void 구간_삭제_테스트() {
         //given
         final LineEntity insertLine = lineDao.insert(new LineEntity("2호선", "초록"));
         stationDao.insert(new StationEntity("강남"));
@@ -114,10 +114,10 @@ class SectionDaoTest {
         final SectionEntity sectionEntity = new SectionEntity(
                 "강남", "역삼", 3, insertLine.getLineId()
         );
-        final SectionEntity insert = sectionDao.insert(sectionEntity);
+        sectionDao.insert(sectionEntity);
 
         //when
-        sectionDao.deleteById(insert.getId());
+        sectionDao.deleteByStations("강남", "역삼");
 
         //then
         final List<SectionEntity> all = sectionDao.findAll();

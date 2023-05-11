@@ -1,5 +1,6 @@
 package subway.dao.section;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -57,8 +58,15 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public void deleteById(final Long id) {
-        final String sql = "DELETE FROM section WHERE section_id = ?";
-        jdbcTemplate.update(sql, id);
+    public void deleteByStations(final String firstStation, final String secondStation) {
+        final String sql = "DELETE FROM section WHERE first_station = ? AND second_station = ?";
+
+        jdbcTemplate.update(con -> {
+            final PreparedStatement preparedStatement = con.prepareStatement(sql);
+            preparedStatement.setString(1, firstStation);
+            preparedStatement.setString(2, secondStation);
+
+            return preparedStatement;
+        });
     }
 }
