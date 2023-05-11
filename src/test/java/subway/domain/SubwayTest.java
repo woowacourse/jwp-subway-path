@@ -30,14 +30,7 @@ class SubwayTest {
         final Subway subway = new Subway(List.of(line1, line2));
 
         // expect
-        assertThatThrownBy(
-                () -> subway.add(
-                        "1호선",
-                        new Station("B"),
-                        new Station("Y"),
-                        new Distance(5),
-                        LEFT
-                ))
+        assertThatThrownBy(() -> subway.add("1호선", "B", "Y", 5, LEFT))
                 .isInstanceOf(InvalidSectionException.class)
                 .hasMessage("지하철 전체 노선에 이미 존재하는 구간입니다.");
     }
@@ -48,14 +41,7 @@ class SubwayTest {
         final Subway subway = new Subway(Collections.emptyList());
 
         // expect
-        assertThatThrownBy(
-                () -> subway.add(
-                        "1호선",
-                        new Station("B"),
-                        new Station("Y"),
-                        new Distance(5),
-                        LEFT
-                ))
+        assertThatThrownBy(() -> subway.add("1호선", "B", "Y", 5, LEFT))
                 .isInstanceOf(InvalidLineNameException.class)
                 .hasMessage("존재하지 않는 노선 이름입니다.");
     }
@@ -75,7 +61,7 @@ class SubwayTest {
         ));
 
         // when
-        subway.add("1호선", new Station("B"), new Station("D"), new Distance(3), LEFT);
+        subway.add("1호선", "B", "D", 3, LEFT);
 
         // then
         assertThat(subway.getLines()).flatExtracting(Line::getSections).containsAll(List.of(
@@ -93,7 +79,7 @@ class SubwayTest {
         final Subway subway = new Subway(Collections.emptyList());
 
         // expect
-        assertThatThrownBy(() -> subway.remove("1호선", new Station("B")))
+        assertThatThrownBy(() -> subway.remove("1호선", "B"))
                 .isInstanceOf(InvalidLineNameException.class)
                 .hasMessage("존재하지 않는 노선 이름입니다.");
     }
@@ -109,7 +95,7 @@ class SubwayTest {
         ));
 
         // when
-        subway.remove("1호선", new Station("B"));
+        subway.remove("1호선", "B");
 
         // then
         assertThat(subway.getLines()).flatExtracting(Line::getSections).containsAll(List.of(
