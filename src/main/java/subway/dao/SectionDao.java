@@ -34,12 +34,20 @@ public class SectionDao {
     public Section insert(Section section) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", section.getId());
-        params.put("up_station", section.getUpStation().getId());
-        params.put("down_station", section.getDownStation().getId());
+        params.put("up_station_id", section.getUpStation().getId());
+        params.put("down_station_id", section.getDownStation().getId());
         params.put("distance", section.getDistance().getDistance());
         params.put("line_id", section.getLine().getId());
 
         long sectionId = insertAction.executeAndReturnKey(params).longValue();
         return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance(), section.getLine());
     }
+
+//    public Sections findSectionsByLine(Line line) {
+//        String query = "SELECT *(s)\n" +
+//                "FROM section\n" +
+//                "LEFT JOIN line\n" +
+//                "ON line.id = section.line_id\n";
+//        jdbcTemplate.query()
+//    }
 }

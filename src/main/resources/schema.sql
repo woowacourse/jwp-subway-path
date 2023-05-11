@@ -19,10 +19,15 @@ create table if not exists SECTION
 (
     id bigint auto_increment not null
         PRIMARY KEY,
-    up_station varchar(20) not null,
-    down_station varchar(20) not null,
     distance int not null,
+    up_station_id int not null,
+    down_station_id int not null,
     line_id int not null,
+
     CONSTRAINT line_id
-        foreign key (line_id) references LINE (id)
-    );
+        foreign key (line_id) references LINE (id),
+    CONSTRAINT up_station_id
+        foreign key (up_station_id) references STATION (id),
+    CONSTRAINT down_station_id
+        foreign key (down_station_id) references STATION (id)
+);
