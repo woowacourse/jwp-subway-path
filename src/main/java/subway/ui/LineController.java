@@ -89,7 +89,7 @@ public class LineController {
 
 	@PostMapping("/{id}/stations")
 	public ResponseEntity<List<AddStationResponse>> addStation(@PathVariable Long id,
-		@Valid @RequestBody AddStationRequest addStationRequest) {
+		@Valid @RequestBody AddStationRequest addStationRequest) throws IllegalAccessException {
 		final List<AddStationResponse> addStationResponses = sectionService.addStationByLineId(id, addStationRequest);
 		return ResponseEntity.status(HttpStatus.CREATED).body(addStationResponses);
 	}
