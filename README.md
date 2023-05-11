@@ -3,31 +3,33 @@
 # 구현할 기능 목록
 
 - 노선에 역 등록 API 신규 구현
-    - 요청 {HTTP method: POST, URI: "/lines/{lineId}/station", body: stationId의 리스트}
+    - 한 개 역 등록 요청 {HTTP method: POST, URI: "/lines/{lineId}/station", body: where, stationId, baseStationId, distance}
       ```json
-        [
-          {
-            "id": 1
-          },
-          {
-            "id": 2
-          }
-        ]
+        {
+          "where": "UPPER",
+          "stationId": 1,
+          "baseStationId": 2,
+          "distance": 10
+        }
+        ```
+    - 응답 {Status Code: `OK`}
+      
+    - 두개 역 등록 요청 {HTTP method: POST, URI: "/lines/{lineId}/stations", body: 
+        ```json
+        {
+            "topId": 1,
+            "bottomId": 2,
+            "distance": 10
+        }
         ```
 
     - 응답 {Status Code: `OK`}
 - 노선에 역 제거 API 신규 구현
-    - 요청 {HTTP method: DELETE, URI: "/lines/{lineId}/station}", body stationIds}
+    - 요청 {HTTP method: DELETE, URI: "/lines/{lineId}/station", body stationId}
         ```json
-        [
-          {
-            "id": 1
-          },
-          ...
-          {
-            "id": 2
-          }
-        ]
+        {
+          "id": 1
+        }
         ```
     - 응답 {Status Code: `NO_CONTENT`}
 
@@ -53,7 +55,12 @@
     - 역
       - 이름이 같으면 같은 역으로 취급한다
 
+- API
+  - 노선 조회
+    - 노선 조회 시 노선에 등록된 역을 순서대로 반환한다.
+  - 노선 목록 조회
+    - 노선 목록 조회 시 노선들에 등록된 역을 순서대로 반환한다.
 
 - 질문 목록
   - db를 수정할 때 db의 모든 항목을 지워버리고 최신 버전으로 다시 추가하는 방법 vs 수정된 항목만 업데이트하는 방법
-  - Repository 계층이 존재할 때 Service에서 repository를 통해서만 DB에 접근할 수 있는지
+  - Repository 계층이 존재할 때 Service에서 Repository를 통해서만 DB에 접근할 수 있는지
