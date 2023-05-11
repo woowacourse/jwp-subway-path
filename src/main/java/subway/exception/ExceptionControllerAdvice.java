@@ -2,8 +2,6 @@ package subway.exception;
 
 import static java.util.stream.Collectors.joining;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 import org.slf4j.Logger;
@@ -31,21 +29,15 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
                 .body(new ExceptionResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(ApplicationException.class)
+    public ResponseEntity<ExceptionResponse> handleNotFoundException(final ApplicationException e) {
+        return ResponseEntity.status(e.status())
+                .body(new ExceptionResponse(e.getMessage()));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExceptionResponse> handleBadRequest(final IllegalArgumentException e) {
         return ResponseEntity.status(BAD_REQUEST)
-                .body(new ExceptionResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler({NotFoundStationException.class, NotFoundLineException.class})
-    public ResponseEntity<ExceptionResponse> handleNotFoundException(final RuntimeException e) {
-        return ResponseEntity.status(NOT_FOUND)
-                .body(new ExceptionResponse(e.getMessage()));
-    }
-
-    @ExceptionHandler({DuplicateStationException.class, DuplicateLineException.class})
-    public ResponseEntity<ExceptionResponse> handleDuplicateException(final RuntimeException e) {
-        return ResponseEntity.status(CONFLICT)
                 .body(new ExceptionResponse(e.getMessage()));
     }
 
