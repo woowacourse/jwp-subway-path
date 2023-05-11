@@ -5,7 +5,6 @@ import java.util.List;
 
 public class Line {
 
-    private Long id;
     private String name;
     private Section starter;
 

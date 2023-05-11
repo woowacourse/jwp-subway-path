@@ -2,7 +2,6 @@ package subway.domain;
 
 public class Section {
 
-    private Long id;
     private Stations stations;
     private Section to;
 
