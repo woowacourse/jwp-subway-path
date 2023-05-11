@@ -27,7 +27,7 @@ import subway.ui.dto.request.AttachStationRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
-class AttachFrontStationServiceTest {
+class AttachEndStationServiceTest {
 
     @Mock
     private LineRepository lineRepository;
@@ -38,11 +38,11 @@ class AttachFrontStationServiceTest {
     @Mock
     private StationRepository stationRepository;
 
-    private AttachFrontStationService attachFrontStationService;
+    private AttachEndStationService attachEndStationService;
 
     @BeforeEach
     void setUp() {
-        attachFrontStationService = new AttachFrontStationService(
+        attachEndStationService = new AttachEndStationService(
                 lineRepository,
                 sectionRepository,
                 stationRepository
@@ -50,7 +50,7 @@ class AttachFrontStationServiceTest {
     }
 
     @Test
-    void 노선_전반에_역_추가_테스트() {
+    void 노선_맨뒤에_역_추가_테스트() {
         //given
         final List<Section> sectionList = new ArrayList<>();
         sectionList.add(new Section(new Station("역삼"), new Station("선릉"), new StationDistance(2)));
@@ -62,13 +62,13 @@ class AttachFrontStationServiceTest {
         given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("강남")));
         given(stationRepository.save(any())).willReturn(1L);
 
-        final AttachStationRequest request = new AttachStationRequest("강남", "서초", 5);
+        final AttachStationRequest request = new AttachStationRequest("선릉", "삼성", 5);
 
         //when
-        attachFrontStationService.attachFrontStation(1L, request);
+        attachEndStationService.attachEndStation(1L, request);
 
         final Sections updateSections = line.getSections();
         assertThat(updateSections.getSections()).hasSize(3);
-        assertThat(updateSections.peekByFirstStationUnique(new Station("서초"))).isNotNull();
+        assertThat(updateSections.peekBySecondStationUnique(new Station("삼성"))).isNotNull();
     }
 }

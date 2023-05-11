@@ -1,7 +1,7 @@
 package subway.application.station;
 
-import subway.ui.dto.request.AttachFrontStationRequest;
+import subway.ui.dto.request.AttachStationRequest;
 
 public interface AttachFrontStationUseCase {
-    void attachEndStation(Long lineId, AttachFrontStationRequest request);
+    void attachFrontStation(Long lineId, AttachStationRequest request);
 }

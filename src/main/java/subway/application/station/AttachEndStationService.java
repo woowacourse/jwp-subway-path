@@ -14,27 +14,27 @@ import subway.ui.dto.request.AttachStationRequest;
 
 @Transactional
 @Service
-public class AttachFrontStationService implements AttachFrontStationUseCase {
+public class AttachEndStationService implements AttachEndStationUseCase {
 
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
 
-    public AttachFrontStationService(final LineRepository lineRepository, final SectionRepository sectionRepository,
-                                     final StationRepository stationRepository) {
+    public AttachEndStationService(final LineRepository lineRepository, final SectionRepository sectionRepository,
+                                   final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationRepository;
     }
 
     @Override
-    public void attachFrontStation(final Long lineId, final AttachStationRequest request) {
+    public void attachEndStation(final Long lineId, final AttachStationRequest request) {
         final Line line = lineRepository.findById(lineId);
 
         final Section section = createSection(lineId, request);
 
         final Sections sections = line.getSections();
-        sections.attachAtFirstStation(
+        sections.attachAtLastStation(
                 new Station(request.getStandardStation()),
                 new Station(request.getNewStation()),
                 section.getDistance()
@@ -49,7 +49,7 @@ public class AttachFrontStationService implements AttachFrontStationUseCase {
         final StationDistance stationDistance = new StationDistance(request.getDistance());
 
         stationRepository.save(newStation);
-        final Section newSection = new Section(newStation, standardStation, stationDistance);
+        final Section newSection = new Section(standardStation, newStation, stationDistance);
         sectionRepository.save(newSection, lineId);
 
         return newSection;
