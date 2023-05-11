@@ -1,27 +1,31 @@
-CREATE TABLE IF NOT EXISTS station
+DROP TABLE IF EXISTS edge;
+DROP TABLE IF EXISTS station;
+DROP TABLE IF EXISTS line;
+
+CREATE TABLE station
 (
-    id BIGINT AUTO_INCREMENT NOT NULL,
+    id   BIGINT AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL UNIQUE,
-    PRIMARY KEY(id)
+    PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS line
+CREATE TABLE line
 (
-    id BIGINT AUTO_INCREMENT NOT NULL,
+    id   BIGINT AUTO_INCREMENT NOT NULL,
     name VARCHAR(255) NOT NULL UNIQUE,
-    PRIMARY KEY(id)
+    PRIMARY KEY (id)
 );
 
-CREATE TABLE IF NOT EXISTS edge
+CREATE TABLE edge
 (
-    id BIGINT AUTO_INCREMENT NOT NULL,
-    line_id BIGINT NOT NULL,
-    upstation_id BIGINT NOT NULL,
+    id             BIGINT AUTO_INCREMENT NOT NULL,
+    line_id        BIGINT NOT NULL,
+    upstation_id   BIGINT NOT NULL,
     downstation_id BIGINT NOT NULL,
-    distance INT NOT NULL,
+    distance       INT    NOT NULL,
 
-    PRIMARY KEY(id),
-    FOREIGN KEY (line_id) REFERENCES line(id) ON DELETE CASCADE,
-    FOREIGN KEY (upstation_id) REFERENCES station(id) ON DELETE CASCADE,
-    FOREIGN KEY (downstation_id) REFERENCES station(id) ON DELETE CASCADE
+    PRIMARY KEY (id),
+    FOREIGN KEY (line_id) REFERENCES line (id) ON DELETE CASCADE,
+    FOREIGN KEY (upstation_id) REFERENCES station (id) ON DELETE CASCADE,
+    FOREIGN KEY (downstation_id) REFERENCES station (id) ON DELETE CASCADE
 );
