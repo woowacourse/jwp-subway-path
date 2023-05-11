@@ -7,6 +7,8 @@ import subway.application.LineStationService;
 import subway.dto.request.LineStationRequest;
 import subway.dto.response.LineStationResponse;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/lines/{line_id}/stations")
 public class LineStationController {
@@ -17,7 +19,7 @@ public class LineStationController {
     }
 
     @PostMapping
-    ResponseEntity<LineStationResponse> createLineStation(@PathVariable("line_id") Long lineId, @RequestBody LineStationRequest lineStationRequest) {
+    ResponseEntity<LineStationResponse> createLineStation(@PathVariable("line_id") Long lineId, @RequestBody @Valid LineStationRequest lineStationRequest) {
         String upBoundStationName = lineStationRequest.getUpBoundStationName();
         String downBoundStationName = lineStationRequest.getDownBoundStationName();
         int distance = lineStationRequest.getDistance();
