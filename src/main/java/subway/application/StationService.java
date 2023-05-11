@@ -37,10 +37,10 @@ public class StationService {
             final StationRequest requestUp = stationRequests.get(0);
             final StationRequest requestDown = stationRequests.get(1);
 
-            SubwayMap subwayMap = subwayMapRepository.find();
-            Station upStation = new Station(requestUp.getName());
-            Station downStation = new Station(requestDown.getName());
-            Section upToDown = new Section(requestUp.getNextDistance(), upStation, downStation, line);
+            final SubwayMap subwayMap = subwayMapRepository.find();
+            final Station upStation = new Station(requestUp.getName());
+            final Station downStation = new Station(requestDown.getName());
+            final Section upToDown = new Section(requestUp.getNextDistance(), upStation, downStation, line);
 
             subwayMap.addInitialStations(upToDown, upToDown.getReverse());
 
@@ -49,25 +49,25 @@ public class StationService {
         }
         final StationRequest request = stationRequests.get(0);
         if (type == CreateType.UP) {
-            SubwayMap subwayMap = subwayMapRepository.find();
+            final SubwayMap subwayMap = subwayMapRepository.find();
 
-            Station thisStation = new Station(request.getName());
-            Station nextStation = new Station(request.getNextStation());
-            Section thisToNext = new Section(request.getNextDistance(), thisStation, nextStation, line);
+            final Station thisStation = new Station(request.getName());
+            final Station nextStation = new Station(request.getNextStation());
+            final Section thisToNext = new Section(request.getNextDistance(), thisStation, nextStation, line);
 
-            subwayMap.addEndPointStation(thisToNext);
+            subwayMap.addUpEndPoint(thisToNext);
 
             subwayMapRepository.save(subwayMap);
             return List.of(StationResponse.of(thisStation));
         }
         if (type == CreateType.DOWN) {
-            SubwayMap subwayMap = subwayMapRepository.find();
+            final SubwayMap subwayMap = subwayMapRepository.find();
 
-            Station thisStation = new Station(request.getName());
-            Station prevStation = new Station(request.getPreviousStation());
-            Section thisToPrev = new Section(request.getPreviousDistance(), thisStation, prevStation, line);
+            final Station thisStation = new Station(request.getName());
+            final Station prevStation = new Station(request.getPreviousStation());
+            final Section thisToPrev = new Section(request.getPreviousDistance(), thisStation, prevStation, line);
 
-            subwayMap.addEndPointStation(thisToPrev);
+            subwayMap.addDownEndPoint(thisToPrev);
 
             subwayMapRepository.save(subwayMap);
             return List.of(StationResponse.of(thisStation));
@@ -75,13 +75,13 @@ public class StationService {
         if (type == CreateType.MID) {
             validateRequestMid(request);
 
-            SubwayMap subwayMap = subwayMapRepository.find();
+            final SubwayMap subwayMap = subwayMapRepository.find();
 
-            Station prevStation = new Station(request.getPreviousStation());
-            Station thisStation = new Station(request.getName());
-            Station nextStation = new Station(request.getNextStation());
-            Section thisToPrev = new Section(request.getPreviousDistance(), thisStation, prevStation, line);
-            Section thisToNext = new Section(request.getNextDistance(), thisStation, nextStation, line);
+            final Station prevStation = new Station(request.getPreviousStation());
+            final Station thisStation = new Station(request.getName());
+            final Station nextStation = new Station(request.getNextStation());
+            final Section thisToPrev = new Section(request.getPreviousDistance(), thisStation, prevStation, line);
+            final Section thisToNext = new Section(request.getNextDistance(), thisStation, nextStation, line);
 
             subwayMap.addIntermediateStation(thisToPrev, thisToNext);
 

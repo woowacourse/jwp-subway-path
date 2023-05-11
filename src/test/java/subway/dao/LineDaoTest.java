@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.dao.entity.LineEntity;
 import subway.domain.Line;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -26,7 +27,7 @@ class LineDaoTest {
     void findByName() {
         // given
         final Line line = new Line("2호선", "green");
-        lineDao.insert(line);
+        lineDao.insert(new LineEntity(line.getName(), line.getColor()));
 
         // when
         final Line foundLine = lineDao.findByName(line.getName());
@@ -39,7 +40,7 @@ class LineDaoTest {
     void update() {
         // given
         final Line line = new Line("2호선", "green");
-        final Line insertedLine = lineDao.insert(line);
+        final Line insertedLine = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
         final Line newLine = new Line("1호선", "blue");
 
         // when

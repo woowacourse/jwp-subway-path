@@ -6,7 +6,6 @@ import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
-import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -16,15 +15,15 @@ public class LineController {
 
     private final LineService lineService;
 
-    public LineController(LineService lineService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
     }
 
-    @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-    }
+//    @PostMapping
+//    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+//        LineResponse line = lineService.saveLine(lineRequest);
+//        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+//    }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
@@ -32,18 +31,18 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+    public ResponseEntity<LineResponse> findLineById(@PathVariable final Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable final Long id, @RequestBody final LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteLine(@PathVariable final Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }

@@ -1,23 +1,22 @@
 # jwp-subway-path
 
-
 ## 🎯 기능 요구사항
 
-- [ ]  역 등록
-    - [ ]  첫 등록인 경우
-        - [ ]  두 역을 한번에 등록한다
-    - [ ]  상행 종점인 경우
-        - [ ]  기존 상행 종점의 이전 역으로 등록한다
-        - [ ]  다음 역 까지의 거리를 등록한다
-        - [ ]  기존 상행 종점의 이전 거리를 등록한다
-    - [ ]  하행 종점인 경우
-        - [ ]  기존 하행 종점의 다음 역으로 등록한다
-        - [ ]  이전 역 까지의 거리를 등록한다
-        - [ ]  기존 하행 종점의 다음 거리를 등록한다
-    - [ ]  중간 역인 경우
-        - [ ]  다음 역과 이전 역 사이에 삽입 가능한 거리인지 검증한다
-        - [ ]  다음 역과 이전 역의 연결을 변경한다
-        - [ ]  다음 역과 이전 역 까지의 거리를 변경한다
+- [X]  역 등록
+    - [X]  첫 등록인 경우
+        - [X]  두 역을 한번에 등록한다
+    - [X]  상행 종점인 경우
+        - [X]  기존 상행 종점의 이전 역으로 등록한다
+        - [X]  다음 역 까지의 거리를 등록한다
+        - [X]  기존 상행 종점의 이전 거리를 등록한다
+    - [X]  하행 종점인 경우
+        - [X]  기존 하행 종점의 다음 역으로 등록한다
+        - [X]  이전 역 까지의 거리를 등록한다
+        - [X]  기존 하행 종점의 다음 거리를 등록한다
+    - [X]  중간 역인 경우
+        - [X]  다음 역과 이전 역 사이에 삽입 가능한 거리인지 검증한다
+        - [X]  다음 역과 이전 역의 연결을 변경한다
+        - [X]  다음 역과 이전 역 까지의 거리를 변경한다
 - [ ]  역 제거
     - [ ]  상행 종점인 경우
         - [ ]  다음 역의 이전 역을 삭제한다
@@ -39,29 +38,32 @@
     - [ ]  상행 종점부터 다음 역을 탐색한다
     - [ ]  하행 종점에 도달하면 종료한다
 
-
 ## 🛠️설계
+
 ### DB
 
 - Line
 
-| column | type |  |
-| --- | --- | --- |
-| id | BIGINT | PK, AUTO INCREMENT |
-| name | VARCHAR(255) | UNIQUE |
-| color | VARCHAR(20) |  |
+| column         | type         |                    |
+|----------------|--------------|--------------------|
+| id             | BIGINT       | PK, AUTO INCREMENT |
+| name           | VARCHAR(255) | UNIQUE             |
+| color          | VARCHAR(20)  |                    |
+| up_endpoint_id | BIGINT       |                    |
+
 - Station
 
-| column | type |  |
-| --- | --- | --- |
-| id | BIGINT |  PK, AUTO INCREMENT |
-| name | VARCHAR(255) | UNIQUE |
+| column | type         |                    |
+|--------|--------------|--------------------|
+| id     | BIGINT       | PK, AUTO INCREMENT |
+| name   | VARCHAR(255) | UNIQUE             |
+
 - Section
 
-| column | type |  |
-| --- | --- | --- |
-| id | BIGINT | PK, AUTO INCREMENT |
-| departure_id | BIGINT | NOT NULL |
-| arrival_id | BIGINT | NOT NULL |
-| distance | INT | NOT NULL |
-| line_id | BIGINT | NOT NULL |
+| column       | type   |                    |
+|--------------|--------|--------------------|
+| id           | BIGINT | PK, AUTO INCREMENT |
+| departure_id | BIGINT | NOT NULL           |
+| arrival_id   | BIGINT | NOT NULL           |
+| distance     | INT    | NOT NULL           |
+| line_id      | BIGINT | NOT NULL           |

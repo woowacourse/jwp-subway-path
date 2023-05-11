@@ -12,6 +12,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.SubwayMap;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
@@ -40,7 +41,7 @@ class SubwayMapRepositoryTest {
     @DisplayName("SubwayMap을 생성 및 조회 한다")
     void find() {
         // given
-        SubwayMap subwayMap1 = new SubwayMap(subwayMap.getSubwayMap());
+        final SubwayMap subwayMap1 = new SubwayMap(new HashMap<>(subwayMap.getSubwayMap()), new HashMap<>(subwayMap.getEndpointMap()));
         subwayMapRepository.save(subwayMap1);
 
         // when

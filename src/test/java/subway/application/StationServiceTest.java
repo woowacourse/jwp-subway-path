@@ -40,7 +40,8 @@ class StationServiceTest {
         final StationRequest stationRequestDown = new StationRequest("선릉역", CreateType.INIT, "2호선", "잠실역", null, 1, 1);
         final Line line = new Line(1L, "2호선", "green");
 
-        SubwayMap subwayMap = new SubwayMap(new HashMap<>(Collections.emptyMap()));
+
+        final SubwayMap subwayMap = new SubwayMap(new HashMap<>(Collections.emptyMap()), new HashMap<>(Fixture.tempLineMap));
         when(subwayMapRepository.find()).thenReturn(subwayMap);
         when(lineService.findLineByName(line.getName())).thenReturn(line);
 

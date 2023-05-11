@@ -15,16 +15,14 @@ public class Fixture {
     public static final Section sectionBA = new Section(2, stationB, stationA, line);
     public static final Section sectionBC = new Section(1, stationB, stationC, line);
     public static final Section sectionCB = new Section(1, stationC, stationB, line);
-    public static final Map<Station, Sections> tempSubwayMap;
-
-    static {
-        tempSubwayMap = new HashMap<>();
-        tempSubwayMap.put(stationA, new Sections(List.of(sectionAB)));
-        tempSubwayMap.put(stationB, new Sections(List.of(sectionBA, sectionBC)));
-        tempSubwayMap.put(stationC, new Sections(List.of(sectionCB)));
-    }
-
-
-    public static final SubwayMap subwayMap = new SubwayMap(tempSubwayMap);
+    public static final Map<Station, Sections> tempSubwayMap = new HashMap<Station, Sections>() {{
+        put(stationA, new Sections(List.of(sectionAB)));
+        put(stationB, new Sections(List.of(sectionBA, sectionBC)));
+        put(stationC, new Sections(List.of(sectionCB)));
+    }};
+    public static final Map<Line, Station> tempLineMap = new HashMap<Line, Station>() {{
+        put(line, stationA);
+    }};
+    public static final SubwayMap subwayMap = new SubwayMap(tempSubwayMap, tempLineMap);
 
 }

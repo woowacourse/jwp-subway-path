@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.dao.entity.LineEntity;
 import subway.domain.Line;
 
 import java.util.HashMap;
@@ -22,6 +23,14 @@ public class LineDao {
                     rs.getString("color")
             );
 
+    private final RowMapper<LineEntity> entityRowMapper = (rs, rowNum) ->
+            new LineEntity(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getString("color"),
+                    rs.getLong("up_endpoint_id")
+            );
+
     public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
@@ -29,19 +38,20 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(final Line line) {
+    public Line insert(final LineEntity line) {
         final Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
+        params.put("up_endpoint_id", line.getUpEndpointId());
 
         final Long lineId = insertAction.executeAndReturnKey(params).longValue();
         return new Line(lineId, line.getName(), line.getColor());
     }
 
-    public List<Line> findAll() {
-        final String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+    public List<LineEntity> findAll() {
+        final String sql = "select id, name, color, up_endpoint_id from LINE";
+        return jdbcTemplate.query(sql, entityRowMapper);
     }
 
     public Line findById(final Long id) {
