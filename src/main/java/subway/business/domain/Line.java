@@ -28,31 +28,70 @@ public class Line {
     }
 
     public void addStation(String stationName, String neighborhoodStationName, Direction direction, int distance) {
-        // TODO 로직 분리
         Station station = new Station(stationName);
         Station neighborhoodStation = new Station(neighborhoodStationName);
-
         validateAlreadyExist(station);
 
-        if (isUpwardTerminus(neighborhoodStation) && direction.equals(Direction.UPWARD)) {
-            addUpwardTerminus(station, neighborhoodStation, distance);
+        if (isTerminusOfDirection(neighborhoodStation, direction)) {
+            addTerminus(station, neighborhoodStation, direction, distance);
             return;
         }
 
-        if (isDownwardTerminus(neighborhoodStation) && direction.equals(Direction.DOWNWARD)) {
-            addDownwardTerminus(station, neighborhoodStation, distance);
+        addStationOfDirection(station, neighborhoodStation, distance, direction);
+    }
+
+    public void deleteStation(String stationName) {
+        Station stationToDelete = new Station(stationName);
+        validateNotExist(stationToDelete);
+        validateOnlyTwoStations();
+
+        if (isUpwardTerminus(stationToDelete)) {
+            sections.remove(0);
             return;
         }
 
+        if (isDownwardTerminus(stationToDelete)) {
+            sections.remove(sections.size() - 1);
+            return;
+        }
+
+        deleteStationIfNotTerminus(stationToDelete);
+    }
+
+    private void deleteStationIfNotTerminus(Station stationToDelete) {
+        Section downwardSection = getSectionDownwardSameWith(stationToDelete);
+        Section upwardSection = getSectionUpwardSameWith(stationToDelete);
+
+        Station upwardStation = downwardSection.getUpwardStation();
+        Station downwardStation = upwardSection.getDownwardStation();
+
+        int newDistance = upwardSection.getDistance() + downwardSection.getDistance();
+        Section newSection = new Section(upwardStation, downwardStation, newDistance);
+
+        sections.add(sections.indexOf(downwardSection), newSection);
+        sections.remove(downwardSection);
+        sections.remove(upwardSection);
+    }
+
+    public Station getUpwardTerminus() {
+        return sections.get(0).getUpwardStation();
+    }
+
+    public Station getDownwardTerminus() {
+        return getDownwardEndSection().getDownwardStation();
+    }
+
+    private boolean isTerminusOfDirection(Station station, Direction direction) {
         if (direction.equals(Direction.UPWARD)) {
-            addStationUpward(station, neighborhoodStation, distance);
-            return;
+            Section upwardEndSection = sections.get(0);
+            return upwardEndSection.getUpwardStation().equals(station);
         }
+        Section downwardEndSection = getDownwardEndSection();
+        return downwardEndSection.getDownwardStation().equals(station);
+    }
 
-        if (direction.equals(Direction.DOWNWARD)) {
-            addStationDownward(station, neighborhoodStation, distance);
-            return;
-        }
+    private Section getDownwardEndSection() {
+        return sections.get(sections.size() - 1);
     }
 
     private boolean isUpwardTerminus(Station station) {
@@ -61,8 +100,16 @@ public class Line {
     }
 
     private boolean isDownwardTerminus(Station station) {
-        Section downwardEndSection = sections.get(sections.size() - 1);
+        Section downwardEndSection = getDownwardEndSection();
         return downwardEndSection.getDownwardStation().equals(station);
+    }
+
+    private void addTerminus(Station station, Station neighborhoodStation, Direction direction, int distance) {
+        if (direction.equals(Direction.UPWARD)) {
+            addUpwardTerminus(station, neighborhoodStation, distance);
+            return;
+        }
+        addDownwardTerminus(station, neighborhoodStation, distance);
     }
 
     private void addUpwardTerminus(Station station, Station neighborhoodStation, int distance) {
@@ -77,6 +124,16 @@ public class Line {
         sections.add(sectionToSave);
     }
 
+    private void addStationOfDirection(
+            Station station, Station neighborhoodStation, int distance, Direction direction
+    ) {
+        if (direction.equals(Direction.UPWARD)) {
+            addStationUpward(station, neighborhoodStation, distance);
+            return;
+        }
+        addStationDownward(station, neighborhoodStation, distance);
+    }
+
     private void addStationUpward(Station station, Station neighborhoodStation, int distance) {
         Section sectionToModify = getSectionDownwardSameWith(neighborhoodStation);
         validateDistance(distance, sectionToModify.getDistance());
@@ -86,10 +143,14 @@ public class Line {
         int upwardDistance = sectionToModify.calculateRemainingDistance(distance);
         Section upwardSectionToSave = new Section(otherNeighborhoodStation, station, upwardDistance);
 
-        int sectionIndex = sections.indexOf(sectionToModify);
-        sections.add(sectionIndex + 1, downwardSectionToSave);
-        sections.add(sectionIndex + 1, upwardSectionToSave);
+        int nextSectionIndex = getNextIndexOf(sectionToModify);
+        sections.add(nextSectionIndex, downwardSectionToSave);
+        sections.add(nextSectionIndex, upwardSectionToSave);
         sections.remove(sectionToModify);
+    }
+
+    private int getNextIndexOf(Section sectionToModify) {
+        return sections.indexOf(sectionToModify) + 1;
     }
 
     private void addStationDownward(Station station, Station neighborhoodStation, int distance) {
@@ -101,24 +162,24 @@ public class Line {
         int downwardDistance = sectionToModify.calculateRemainingDistance(distance);
         Section downwardSectionToSave = new Section(station, otherNeighborhoodStation, downwardDistance);
 
-        int sectionIndex = sections.indexOf(sectionToModify);
-        sections.add(sectionIndex + 1, downwardSectionToSave);
-        sections.add(sectionIndex + 1, upwardSectionToSave);
+        int nextSectionIndex = getNextIndexOf(sectionToModify);
+        sections.add(nextSectionIndex, downwardSectionToSave);
+        sections.add(nextSectionIndex, upwardSectionToSave);
         sections.remove(sectionToModify);
     }
 
-    private Section getSectionDownwardSameWith(Station neighborhoodStation) {
+    private Section getSectionUpwardSameWith(Station neighborhoodStation) {
         return sections.stream()
-                .filter(section -> section.isDownwardStation(neighborhoodStation))
+                .filter(section -> section.isUpwardStation(neighborhoodStation))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("추가하려는 역의 이웃 역이 존재하지 않습니다. " +
                                 "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name, neighborhoodStation.getName())));
     }
 
-    private Section getSectionUpwardSameWith(Station neighborhoodStation) {
+    private Section getSectionDownwardSameWith(Station neighborhoodStation) {
         return sections.stream()
-                .filter(section -> section.isUpwardStation(neighborhoodStation))
+                .filter(section -> section.isDownwardStation(neighborhoodStation))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("추가하려는 역의 이웃 역이 존재하지 않습니다. " +
@@ -150,35 +211,6 @@ public class Line {
         return false;
     }
 
-    public void deleteStation(String stationName) {
-        Station stationToDelete = new Station(stationName);
-        validateNotExist(stationToDelete);
-        validateOnlyTwoStations();
-
-        if (isUpwardTerminus(stationToDelete)) {
-            sections.remove(0);
-            return;
-        }
-
-        if (isDownwardTerminus(stationToDelete)) {
-            sections.remove(sections.size() - 1);
-            return;
-        }
-
-        Section downwardSection = getSectionDownwardSameWith(stationToDelete);
-        Section upwardSection = getSectionUpwardSameWith(stationToDelete);
-
-        Station upwardStation = downwardSection.getUpwardStation();
-        Station downwardStation = upwardSection.getDownwardStation();
-        int newDistance = upwardSection.getDistance() + downwardSection.getDistance();
-        Section newSection = new Section(upwardStation, downwardStation, newDistance);
-
-        int index = sections.indexOf(downwardSection);
-        sections.add(index, newSection);
-        sections.remove(downwardSection);
-        sections.remove(upwardSection);
-    }
-
     private void validateNotExist(Station stationToDelete) {
         for (Section section : sections) {
             if (section.hasStation(stationToDelete)) {
@@ -194,14 +226,6 @@ public class Line {
         if (sections.size() == 1) {
             throw new IllegalArgumentException("노선에 역이 2개 밖에 존재하지 않아, 역을 제외할 수 없습니다.");
         }
-    }
-
-    public Station getUpwardTerminus() {
-        return sections.get(0).getUpwardStation();
-    }
-
-    public Station getDownwardTerminus() {
-        return sections.get(sections.size() - 1).getDownwardStation();
     }
 
     public Long getId() {
