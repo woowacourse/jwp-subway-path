@@ -1,34 +1,29 @@
 package subway.controller.dto;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
-@AllArgsConstructor
 @Getter
-public class AddStationRequest {
-
-    @NotNull
-    private Boolean isEnd;
-
-    @NotBlank
-    private String lineName;
+@AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public class AddLineRequest {
 
     @NotBlank
-    private String frontStation;
+    private String name;
 
     @NotBlank
-    private String backStation;
+    private String color;
 
     @NotBlank
-    private String stationName;
+    private String frontStationName;
 
-    @NotNull
+    @NotBlank
+    private String backStationName;
+
     @Positive
     private Long distance;
 }
