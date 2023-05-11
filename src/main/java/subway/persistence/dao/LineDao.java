@@ -1,6 +1,7 @@
 package subway.persistence.dao;
 
 import java.util.List;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -35,14 +36,18 @@ public class LineDao {
     }
 
     public LineEntity findById(Long id) {
-        //TODO EmptyResultDataAccessException 처리
-        String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line WHERE id=:id";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
-        return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
+        try {
+            String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line WHERE id=:id";
+            SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
+            return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new IllegalArgumentException(String.format(
+                    "DB에서 ID에 해당하는 Line을 조회할 수 없습니다." + System.lineSeparator() +
+                            "입력한 ID : %d", id));
+        }
     }
 
     public List<LineEntity> findAll() {
-        //TODO EmptyResultDataAccessException 처리
         String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line";
         return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
