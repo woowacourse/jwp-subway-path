@@ -37,7 +37,28 @@ public class LineStationIntegrationTest extends IntegrationTest {
     }
 
     @Sql("classpath:/testData.sql")
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 삭제한다.")
+    @DisplayName("기존에 존재하지 않는 지하철역 이름으로 노선에 역을 추가하려하면 예외를 던진다.")
+    @Test
+    void createLineStationWithNotExistingStation() {
+        // given
+        LineStationRequest lineStationRequest = new LineStationRequest("강남", "종합운동장", 4);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(lineStationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/1/stations")
+                .then()
+                .log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Sql("classpath:/testData.sql")
+    @DisplayName("기존에 존재하는 지하철역 Id로 지하철역을 삭제한다.")
     @Test
     void removeLineStation() {
         // when
@@ -51,5 +72,22 @@ public class LineStationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Sql("classpath:/testData.sql")
+    @DisplayName("기존에 존재하지 않은 지하철역 Id로 지하철역을 삭제하면 예외를 던진다.")
+    @Test
+    void removeLineStationWithNotExisingId() {
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/lines/1/stations/4")
+                .then()
+                .log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
