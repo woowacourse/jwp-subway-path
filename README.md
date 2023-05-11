@@ -11,6 +11,26 @@
 | GET    | /lines/{id}                | 노선의 역들을 조회하는 API            |
 | GET    | /lines                     | 모든 노선과 노선에 포함된 역들을 조회하는 API |
 
+### Request Body
+
+#### [POST] /lines/{lineId}/register
+
+```json
+{
+  "beforeStationName": "잠실",
+  "nextStationName": "강남",
+  "distance": 10
+}
+```
+
+#### [DELETE] /lines/{lineId}/unregister
+
+```json
+{
+  "name": "잠실"
+}
+```
+
 ### 기능 요구사항
 
 - [x] 노선에 역 등록 API 신규 구현
