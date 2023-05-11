@@ -1,5 +1,6 @@
 package subway.application;
 
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
 import subway.application.dto.SectionInsertDto;
 import subway.dao.LineDao;
@@ -123,4 +124,29 @@ public class SectionService {
                 .build());
     }
 
+    public void remove(final Long lineId, final Long stationId) {
+        List<SectionEntity> originalSections = sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId);
+
+        if (originalSections.size() == 1) {
+            sectionDao.delete(originalSections.get(0));
+            return;
+        }
+
+        removeStationInLineWhenTwoSection(lineId, stationId, originalSections);
+    }
+
+    private void removeStationInLineWhenTwoSection(final Long lineId, final Long stationId, final List<SectionEntity> originalSections) {
+        SectionEntity nextSection = originalSections.stream()
+                .filter(section -> section.getPreviousStationId().equals(stationId))
+                .findFirst()
+                .orElseThrow(() -> new DataAccessResourceFailureException("데이터 정보가 잘못되었습니다."));
+        SectionEntity previousSection = originalSections.stream()
+                .filter(section -> section.getNextStationId().equals(stationId))
+                .findFirst()
+                .orElseThrow(() -> new DataAccessResourceFailureException("데이터 정보가 잘못되었습니다."));
+
+        int distance = nextSection.getDistance() + previousSection.getDistance();
+        insertSectionEntity(lineId, previousSection.getPreviousStationId(), nextSection.getNextStationId(), distance);
+        originalSections.forEach(sectionDao::delete);
+    }
 }

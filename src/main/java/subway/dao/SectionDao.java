@@ -55,4 +55,21 @@ public class SectionDao {
         final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.update(sql, sectionEntity.getId());
     }
+
+    public List<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(final Long lineId, final Long stationId) {
+        final String sql = "SELECT * FROM section WHERE line_id = ? AND previous_station_id = ? OR next_station_id = ?";
+        List<SectionEntity> result = jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationId, stationId);
+        validateSection(result);
+        return result;
+    }
+
+    private static void validateSection(final List<SectionEntity> result) {
+        if (result.isEmpty()) {
+            throw new IllegalArgumentException("해당 노선에 해당 역이 존재하지 않습니다.");
+        }
+
+        if (result.size() > 2) {
+            throw new RuntimeException("간선의 정보가 잘못되었습니다.");
+        }
+    }
 }
