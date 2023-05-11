@@ -40,7 +40,7 @@ public class LineDao {
     public Long insert(final LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getName());
-        params.put("line_number", lineEntity.getLineId());
+        params.put("line_number", lineEntity.getLineNumber());
         params.put("color", lineEntity.getColor());
 
         return insertAction.executeAndReturnKey(params).longValue();
