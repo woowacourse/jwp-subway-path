@@ -1,5 +1,8 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import subway.exception.ApiIllegalArgumentException;
 
 public class Line {
@@ -10,17 +13,19 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
+    private final Sections sections;
 
     public Line(final String name, final String color) {
-        this(null, name, color);
+        this(null, name, color, Collections.emptyList());
     }
 
-    public Line(final Long id, final String name, final String color) {
+    public Line(final Long id, final String name, final String color, final List<Section> sections) {
         validateName(name);
         validateColor(color);
         this.id = id;
         this.name = name.strip();
         this.color = color.strip();
+        this.sections = new Sections(new ArrayList<>(sections));
     }
 
     private void validateName(final String name) {
@@ -41,6 +46,9 @@ public class Line {
         }
     }
 
+    public List<Station> findOrderedStation() {
+        return sections.findOrderedStation();
+    }
 
     public Long getId() {
         return id;

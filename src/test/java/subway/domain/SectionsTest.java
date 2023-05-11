@@ -145,7 +145,7 @@ class SectionsTest {
                         sections.add(section);
 
                         sections.add(new Section(잠실역.STATION, 건대역.STATION, 3));
-                        
+
                         assertThat(sections.getSections())
                                 .usingRecursiveComparison()
                                 .ignoringCollectionOrder()
@@ -234,19 +234,32 @@ class SectionsTest {
         }
     }
 
-    @Test
-    void 상행에서_하행_순으로_역을_반환한다() {
-        Section section1 = new Section(잠실역.STATION, 건대역.STATION, 2);
-        Section section2 = new Section(삼성역.STATION, 잠실역.STATION, 2);
-        Section section3 = new Section(역삼역.STATION, 삼성역.STATION, 2);
-        Sections sections = new Sections();
-        sections.add(section1);
-        sections.add(section2);
-        sections.add(section3);
+    @Nested
+    class 노선에서_역_반환시_ {
 
-        List<Station> stations = sections.findOrderedStation();
+        @Test
+        void 구간이_없을시_빈_리스트를_반환한다() {
+            Sections sections = new Sections();
 
-        assertThat(stations)
-                .isEqualTo(List.of(역삼역.STATION, 삼성역.STATION, 잠실역.STATION, 건대역.STATION));
+            List<Station> stations = sections.findOrderedStation();
+
+            assertThat(stations).isEmpty();
+        }
+
+        @Test
+        void 상행에서_하행_순으로_역을_반환한다() {
+            Section section1 = new Section(잠실역.STATION, 건대역.STATION, 2);
+            Section section2 = new Section(삼성역.STATION, 잠실역.STATION, 2);
+            Section section3 = new Section(역삼역.STATION, 삼성역.STATION, 2);
+            Sections sections = new Sections();
+            sections.add(section1);
+            sections.add(section2);
+            sections.add(section3);
+
+            List<Station> stations = sections.findOrderedStation();
+
+            assertThat(stations)
+                    .isEqualTo(List.of(역삼역.STATION, 삼성역.STATION, 잠실역.STATION, 건대역.STATION));
+        }
     }
 }

@@ -15,6 +15,10 @@ public class Sections {
         this.sections = new ArrayList<>();
     }
 
+    public Sections(final List<Section> sections) {
+        this.sections = sections;
+    }
+
     public void add(final Section section) {
 
         if (sections.isEmpty()) { // 최초등록
@@ -128,7 +132,7 @@ public class Sections {
                 section1.getDistance() + section2.getDistance());
 
         sections.add(newSection);
-        
+
         sections.remove(section1);
         sections.remove(section2);
     }
