@@ -6,7 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.dto.SectionRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,11 +21,17 @@ class SectionServiceTest {
     @Mock
     private SectionDao sectionDao;
 
+    @Mock
+    private StationDao stationDao;
+
+    @Mock
+    private LineDao lineDao;
+
     private SectionService sectionService;
 
     @BeforeEach
     void setUp() {
-        sectionService = new SectionService(sectionDao);
+        sectionService = new SectionService(sectionDao, stationDao, lineDao);
     }
 
     @DisplayName("section이 정상적으로 저장되고 sectionId 값을 반환한다.")

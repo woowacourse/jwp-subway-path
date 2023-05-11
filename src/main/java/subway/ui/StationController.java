@@ -7,7 +7,6 @@ import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -47,8 +46,8 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
+//    @ExceptionHandler(SQLException.class)
+//    public ResponseEntity<Void> handleSQLException() {
+//        return ResponseEntity.badRequest().build();
+//    }
 }

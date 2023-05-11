@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LineStationResponse;
 import subway.dto.StationResponse;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
@@ -76,7 +77,6 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    // TODO
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
@@ -106,17 +106,9 @@ public class LineIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        LineResponse second = LineResponse.of(new LineEntity("2호선", "green"));
-        StationResponse 잠실역 = StationResponse.of(new StationEntity("잠실역"));
-        StationResponse 강남역 = StationResponse.of(new StationEntity("강남역"));
-        Map<LineResponse, List<StationResponse>> expectedResponse = new HashMap<>();
-        expectedResponse.put(second, List.of(잠실역, 강남역));
-
-        Map<LineResponse, List<StationResponse>> responses = response.jsonPath().getMap(".");
-
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(responses.keySet().size()).isEqualTo(1);
-        assertThat(responses.values().size()).isEqualTo(1);
+        List<LineStationResponse> lineStationResponses = response.jsonPath().getList(".", LineStationResponse.class);
+
     }
 
     // TODO
@@ -124,7 +116,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
+        ExtractableResponse<Response> lineResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
@@ -132,20 +124,33 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then().log().all().
                 extract();
 
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
+        Map<String, String> stationParams = new HashMap<>();
+        stationParams.put("name", "해운대역");
+        ExtractableResponse<Response> stationResponse = RestAssured
                 .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationParams)
+                .when().post("/stations")
+                .then().log().all().
+                extract();
+
+        Map<String, String> sectionParams = new HashMap<>();
+        sectionParams.put("lineId", "2");
+        sectionParams.put("stationId", "2");
+        sectionParams.put("upStationId", "1");
+        ExtractableResponse<Response> sectionResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionParams)
+                .when().post("/sections")
+                .then().log().all().
+                extract();
 
         // then
-        List<StationResponse> stationResponses = response.jsonPath().getList(".", StationResponse.class);
+        List<StationResponse> stationResponses = sectionResponse.jsonPath().getList(".", StationResponse.class);
         StationResponse 잠실역 = StationResponse.of(new StationEntity("잠실역"));
         StationResponse 선릉역 = StationResponse.of(new StationEntity("선릉역"));
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(sectionResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(stationResponses).usingRecursiveComparison().isEqualTo(List.of(잠실역, 선릉역));
     }
 

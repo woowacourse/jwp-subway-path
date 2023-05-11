@@ -1,16 +1,18 @@
 package subway.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.station.Station;
 import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -23,7 +25,6 @@ public class StationDao {
                     rs.getString("name")
             );
 
-
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
@@ -32,9 +33,10 @@ public class StationDao {
     }
 
     public StationEntity insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", station.getStationName());
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new StationEntity(id, station.getStationName().getName());
+        return new StationEntity(id, station.getStationName());
     }
 
     public List<StationEntity> findAll() {
@@ -42,14 +44,18 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     public void update(Long id, Station station) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{station.getStationName().getName(), id});
+        jdbcTemplate.update(sql, new Object[]{station.getStationName(), id});
     }
 
     public void deleteById(Long id) {

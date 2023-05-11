@@ -24,7 +24,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void createStation() {
         // given
         Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
+        params.put("name", "해운대역");
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -73,7 +73,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void getStations() {
         /// given
         Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
+        params1.put("name", "동대구역");
         ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all()
                 .body(params1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -83,7 +83,7 @@ public class StationIntegrationTest extends IntegrationTest {
                 .extract();
 
         Map<String, String> params2 = new HashMap<>();
-        params2.put("name", "역삼역");
+        params2.put("name", "신천역");
         ExtractableResponse<Response> createResponse2 = RestAssured.given().log().all()
                 .body(params2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -115,7 +115,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void getStation() {
         /// given
         Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
+        params1.put("name", "동대구역");
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
                 .body(params1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -143,7 +143,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void updateStation() {
         // given
         Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
+        params.put("name", "동대구역");
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -154,7 +154,7 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // when
         Map<String, String> otherParams = new HashMap<>();
-        otherParams.put("name", "삼성역");
+        otherParams.put("name", "신천역");
         String uri = createResponse.header("Location");
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -173,7 +173,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void deleteStation() {
         // given
         Map<String, String> params = new HashMap<>();
-        params.put("name", "강남역");
+        params.put("name", "동대구역");
         ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
                 .body(params)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

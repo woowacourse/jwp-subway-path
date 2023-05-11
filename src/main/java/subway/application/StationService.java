@@ -9,6 +9,8 @@ import subway.dto.StationResponse;
 import subway.entity.StationEntity;
 
 import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,7 +27,11 @@ public class StationService {
     }
 
     public StationResponse findById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        Optional<StationEntity> station = stationDao.findById(id);
+        if (station.isEmpty()) {
+            throw new NoSuchElementException("해당하는 역이 존재하지 않습니다.");
+        }
+        return StationResponse.of(station.get());
     }
 
     public List<StationResponse> findAll() {

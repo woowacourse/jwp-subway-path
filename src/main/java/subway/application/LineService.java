@@ -15,10 +15,7 @@ import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class LineService {
@@ -68,12 +65,15 @@ public class LineService {
     }
 
     public LineStationResponse findById(Long id) {
-        LineEntity line = lineDao.findById(id);
+        Optional<LineEntity> line = lineDao.findById(id);
+        if (line.isEmpty()) {
+            throw new NoSuchElementException("해당하는 ID가 없습니다.");
+        }
         List<SectionEntity> sections = sectionDao.findByLineId(id);
         List<StationEntity> stations = stationDao.findAll();
 
         List<StationResponse> stationResponses = linkStationsByLine(sections, stations);
-        return LineStationResponse.from(LineResponse.of(line), stationResponses);
+        return LineStationResponse.from(LineResponse.of(line.get()), stationResponses);
     }
 
     private List<StationResponse> linkStationsByLine(final List<SectionEntity> sections, final List<StationEntity> stations) {
