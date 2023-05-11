@@ -50,7 +50,7 @@ public class Section {
     }
 
     public boolean isSameStations(final Section section) {
-        return (section.beforeStation == beforeStation && section.nextStation == nextStation)
-                || (section.beforeStation == nextStation && section.nextStation == beforeStation);
+        return (section.beforeStation.equals(beforeStation) && section.nextStation.equals(nextStation))
+                || (section.nextStation.equals(beforeStation) && section.beforeStation.equals(nextStation));
     }
 }
