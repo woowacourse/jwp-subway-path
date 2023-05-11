@@ -1,11 +1,9 @@
 package subway.domain;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import subway.exception.DomainException;
 import subway.exception.ExceptionType;
@@ -18,29 +16,29 @@ public class Subway {
     }
 
     private Map<Line, List<Station>> makeSubway(List<Line> lines, List<Station> stations, List<Section> allSections) {
-        Map<Long, List<Section>> lineIdToUnorderedSections = new HashMap<>();
-        for (Line line : lines) {
-            lineIdToUnorderedSections.put(line.getId(), new ArrayList<>());
-        }
-        for (Section section : allSections) {
-            lineIdToUnorderedSections.get(section.getLineId()).add(section);
-        }
-        Map<Line, List<Station>> subway = new HashMap<>();
-        lineIdToUnorderedSections.forEach((key, value) -> {
-            Sections sections = new Sections(value);
-            List<Long> orderedStationIds = sections.findOrderedStationIds();
-            List<Station> orderedStations = orderedStationIds.stream()
-                .map(id -> stations.stream()
-                    .filter(station -> Objects.equals(station.getId(), id))
-                    .findFirst()
-                    .orElseThrow(() -> new DomainException(ExceptionType.NO_EXISTENT_STATION)))
-                .collect(Collectors.toList());
-            subway.put(lines.stream()
-                .filter(line -> line.getId() == key)
-                .findFirst()
-                .orElseThrow(() -> new DomainException(ExceptionType.NO_EXISTENT_LINE)), orderedStations);
-        });
-        return subway;
+        return lines.stream()
+            .collect(Collectors.toMap(
+                line -> line,
+                line -> getStations(line, stations, allSections)));
+    }
+
+    private List<Station> getStations(Line line, List<Station> stations, List<Section> allSections) {
+        List<Long> stationIds = allSections.stream()
+            .filter(section -> section.getLineId().equals(line.getId()))
+            .flatMap(section -> Stream.of(section.getSourceStationId(), section.getTargetStationId()))
+            .distinct()
+            .collect(Collectors.toList());
+
+        return stationIds.stream()
+            .map(stationId -> mapStationIdToStation(stationId, stations))
+            .collect(Collectors.toList());
+    }
+
+    private Station mapStationIdToStation(Long stationId, List<Station> stations) {
+        return stations.stream()
+            .filter(station -> station.getId().equals(stationId))
+            .findFirst()
+            .orElseThrow(() -> new DomainException(ExceptionType.NO_EXISTENT_STATION));
     }
 
     public Map<Line, List<Station>> getSubway() {
