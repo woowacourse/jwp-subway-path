@@ -10,7 +10,7 @@ public class Subway {
         this(new ArrayList<>());
     }
 
-    public Subway(List<Line> lines) {
+    private Subway(List<Line> lines) {
         this.lines = lines;
     }
 
@@ -31,5 +31,20 @@ public class Subway {
 
     public List<Line> getLines() {
         return lines;
+    }
+
+    public void removeStation(String lineName, Station station) {
+        Line line = findLineByName(lineName);
+        line.removeStation(station);
+        if (line.isEmpty()) {
+            lines.remove(line);
+        }
+    }
+
+    public Line findLineByName(String lineName) {
+        return lines.stream()
+                .filter(line -> line.getName().equals(lineName))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
     }
 }
