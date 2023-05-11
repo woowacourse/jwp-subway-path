@@ -1,24 +1,24 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Line {
 
     private Long id;
     private String name;
     private Section starter;
 
-    public Line(final String name, final Section starter) {
-        validateNotNull(starter);
+    public Line(final String name) {
         this.name = name;
-        this.starter = starter;
-    }
-
-    private void validateNotNull(final Section section) {
-        if (section == null) {
-            throw new IllegalArgumentException("섹션이 없다면 Line을 생성할 수 없습니다.");
-        }
     }
 
     public void add(Section newSection) {
+        if (starter == null) {
+            starter = newSection;
+            return;
+        }
+
         final Section head = starter.find(newSection);
 
         if (head == null) {
@@ -48,8 +48,23 @@ public class Line {
     }
 
     private void exchangeStarter() {
+        final Section newStarter = starter.getTo();
         starter.disconnectNextSection();
-        starter = starter.getTo();
+        starter = newStarter;
+    }
+
+    public List<Section> getSections() {
+        Section current = starter;
+
+        List<Section> sections = new ArrayList<>();
+
+        while (current != null) {
+            sections.add(current);
+
+            current = current.getTo();
+        }
+
+        return sections;
     }
 
     public Section getStarter() {

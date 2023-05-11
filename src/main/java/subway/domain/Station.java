@@ -16,4 +16,8 @@ public class Station {
     public boolean isSame(final Station other) {
         return name.equals(other.name);
     }
+
+    public String getName() {
+        return name;
+    }
 }
