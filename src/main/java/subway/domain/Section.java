@@ -38,4 +38,8 @@ public class Section {
     public Line getLine() {
         return line;
     }
+
+    public boolean contains(Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
 }
