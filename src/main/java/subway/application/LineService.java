@@ -58,12 +58,12 @@ public class LineService {
                 .collect(Collectors.toList());
         stationsIds.add(sortedSections.get(sortedSections.size() - 1).getDownStationId());
 
-        final List<Station> stationNames = stationsIds.stream()
+        final List<Station> stations = stationsIds.stream()
                 .map(stationDao::findById)
                 .collect(Collectors.toList());
 
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine,stationNames);
+        return LineResponse.of(persistLine, stations);
     }
 
     public Line findLineById(Long id) {
