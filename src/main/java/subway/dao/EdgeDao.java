@@ -1,11 +1,14 @@
 package subway.dao;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Objects;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.Edge;
+import subway.domain.Station;
 
 @Repository
 public class EdgeDao {
@@ -29,5 +32,29 @@ public class EdgeDao {
         }, keyHolder);
         long edgeId = Objects.requireNonNull(keyHolder.getKey()).longValue();
         return new Edge(edgeId, edge.getUpStation(), edge.getDownStation(), edge.getDistance());
+    }
+
+    public List<Edge> findEdgesByLineId(Long lineId) {
+        String sql =
+                "SELECT e.id,"
+                        + "s1.id AS upstation_id, s1.name AS upstation_name, "
+                        + "s2.id AS downstation_id, s2.name AS downstation_name, "
+                        + "e.distance "
+                        + "FROM edge e "
+                        + "JOIN station s1 ON e.upstation_id = s1.id "
+                        + "JOIN station s2 ON e.downstation_id = s2.id "
+                        + "WHERE e.line_id = ?";
+
+        RowMapper<Edge> mapper =
+                (resultSet, rowNum) -> {
+                    Station upStation = new Station(
+                            resultSet.getLong("upstation_id"),
+                            resultSet.getString("upstation_name"));
+                    Station downStation = new Station(
+                            resultSet.getLong("downstation_id"),
+                            resultSet.getString("downstation_name"));
+                    return new Edge(resultSet.getLong("id"), upStation, downStation, resultSet.getInt("distance"));
+                };
+        return jdbcTemplate.query(sql, mapper, lineId);
     }
 }

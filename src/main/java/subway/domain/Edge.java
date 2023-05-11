@@ -3,9 +3,12 @@ package subway.domain;
 public class Edge {
 
     private Long id;
-    private final Station upStation;
-    private final Station downStation;
-    private final int distance;
+    private Station upStation;
+    private Station downStation;
+    private int distance;
+
+    public Edge() {
+    }
 
     public Edge(Long id, Station upStation, Station downStation, int distance) {
         this.id = id;
@@ -38,5 +41,15 @@ public class Edge {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "id=" + id +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
     }
 }
