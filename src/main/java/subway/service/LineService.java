@@ -1,12 +1,12 @@
-package subway.application;
+package subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.entity.LineEntity;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
+import subway.entity.LineEntity;
 
 @Service
 public class LineService {
