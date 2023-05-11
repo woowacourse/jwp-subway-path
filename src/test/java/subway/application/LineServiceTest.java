@@ -26,9 +26,9 @@ class LineServiceTest {
     void registerLine() {
         final long lineId = 1L;
         final SectionRequest sectionRequest =
-                new SectionRequest(lineId, "잠실", "강남", 10);
+                new SectionRequest("잠실", "강남", 10);
 
-        lineService.registerStation(sectionRequest);
+        lineService.registerStation(lineId, sectionRequest);
 
         //검증
         final Line line = lineService.findById(lineId);

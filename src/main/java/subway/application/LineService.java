@@ -46,8 +46,8 @@ public class LineService {
     }
 
     @Transactional
-    public void registerStation(final SectionRequest request) {
-        final Line line = findById(request.getLineId());
+    public void registerStation(final Long lineId, final SectionRequest request) {
+        final Line line = findById(lineId);
 
         final Section section = createSections(request);
         final Line addedLine = line.addSection(section);
@@ -79,4 +79,7 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
+    public void unregisterStation(final SectionRequest request) {
+
+    }
 }

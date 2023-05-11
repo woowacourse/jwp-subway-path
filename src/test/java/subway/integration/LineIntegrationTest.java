@@ -12,6 +12,7 @@ import org.springframework.http.MediaType;
 import subway.dto.LineNodeRequests;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.SectionRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -196,12 +197,14 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("노선에 역을 최초 등록한다.")
     @Test
     void addInitialStationInLine() throws JsonProcessingException {
-        final LineNodeRequests request = new LineNodeRequests(LINE_NAME_2, List.of(A_NODE, B_NODE));
+        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
 
         final String json = jsonSerialize(request);
+        System.out.println(json);
 
         given().body(json)
-                .when().post("/lines/stations")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines/register/1")
                 .then().statusCode(HttpStatus.CREATED.value());
     }
 

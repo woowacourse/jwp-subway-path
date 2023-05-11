@@ -4,16 +4,16 @@
 
 ### API 명세서
 
-| Method | URI               | Description                 |
-|--------|-------------------|-----------------------------|
-| POST   | /lines/register   | 노선에 역을 등록하는 API             |
-| DELETE | /lines/unregister | 노선의 역을 삭제하는 API             |
-| GET    | /lines/{id}       | 노선의 역들을 조회하는 API            |
-| GET    | /lines            | 모든 노선과 노선에 포함된 역들을 조회하는 API |
+| Method | URI                        | Description                 |
+|--------|----------------------------|-----------------------------|
+| POST   | /lines/{lineId}/register   | 노선에 역을 등록하는 API             |
+| DELETE | /lines/{lineId}/unregister | 노선의 역을 삭제하는 API             |
+| GET    | /lines/{id}                | 노선의 역들을 조회하는 API            |
+| GET    | /lines                     | 모든 노선과 노선에 포함된 역들을 조회하는 API |
 
 ### 기능 요구사항
 
-- [ ] 노선에 역 등록 API 신규 구현
+- [x] 노선에 역 등록 API 신규 구현
 - [ ] 노선에 역 제거 API 신규 구현
 - [ ] 노선 조회 API 수정
     - [ ] 노선에 포함된 역을 순서대로 보여주도록 응답을 개선합니다.
