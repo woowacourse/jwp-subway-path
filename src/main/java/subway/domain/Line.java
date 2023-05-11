@@ -46,6 +46,10 @@ public class Line {
         }
     }
 
+    public void addSection(final Section section) {
+        sections.add(section);
+    }
+
     public List<Station> findOrderedStation() {
         return sections.findOrderedStation();
     }
@@ -60,5 +64,9 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 }

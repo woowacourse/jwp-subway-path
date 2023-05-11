@@ -4,16 +4,21 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
+import subway.domain.Line;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.entity.LineEntity;
+import subway.mapper.LineMapper;
+import subway.repository.LineRepository;
 
 @Service
 public class LineService {
 
+    private final LineRepository lineRepository;
     private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(final LineRepository lineRepository, final LineDao lineDao) {
+        this.lineRepository = lineRepository;
         this.lineDao = lineDao;
     }
 
@@ -34,8 +39,8 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        LineEntity persistLineEntity = findLineById(id);
-        return LineResponse.of(persistLineEntity);
+        Line line = lineRepository.findById(id);
+        return LineMapper.toResponse(line);
     }
 
     public LineEntity findLineById(Long id) {

@@ -13,18 +13,22 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import subway.dto.request.CreateSectionRequest;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.service.LineService;
+import subway.service.SectionService;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
+    private final SectionService sectionService;
 
-    public LineController(LineService lineService) {
+    public LineController(final LineService lineService, final SectionService sectionService) {
         this.lineService = lineService;
+        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -53,6 +57,13 @@ public class LineController {
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/stations")
+    public ResponseEntity<LineResponse> createSection(@PathVariable Long id,
+            @RequestBody CreateSectionRequest createSectionRequest) {
+        LineResponse line = sectionService.createSection(id, createSectionRequest);
+        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
     @ExceptionHandler(SQLException.class)

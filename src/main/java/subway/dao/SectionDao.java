@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,6 +47,19 @@ public class SectionDao {
                 sectionEntity.getDistance());
     }
 
+    public void insertAll(List<SectionEntity> sectionEntities) {
+        String sql = "INSERT INTO section (line_id, up_station_id, down_station_id, distance) "
+                + "VALUES (?,?,?,?)";
+
+        jdbcTemplate.batchUpdate(sql, sectionEntities, sectionEntities.size(),
+                (PreparedStatement ps, SectionEntity sectionEntity) -> {
+                    ps.setLong(1, sectionEntity.getLineId());
+                    ps.setLong(2, sectionEntity.getUpStationId());
+                    ps.setLong(3, sectionEntity.getDownStationId());
+                    ps.setInt(4, sectionEntity.getDistance());
+                });
+    }
+
     public List<SectionEntity> findAll() {
         String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section";
         return jdbcTemplate.query(sql, rowMapper);
@@ -54,6 +68,11 @@ public class SectionDao {
     public SectionEntity findById(Long id) {
         String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public List<SectionEntity> findByLineId(final long lineId) {
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     public void update(SectionEntity newSectionEntity) {
@@ -66,5 +85,9 @@ public class SectionDao {
 
     public void deleteById(Long id) {
         jdbcTemplate.update("DELETE FROM section WHERE id = ?", id);
+    }
+
+    public void deleteAllByLineId(Long lineId) {
+        jdbcTemplate.update("DELETE FROM section WHERE line_id = ?", lineId);
     }
 }

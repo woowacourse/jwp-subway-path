@@ -15,6 +15,7 @@ public class Sections {
         this.sections = new ArrayList<>();
     }
 
+    // TODO: sections 초기화시 구간이 연속되는지 validate
     public Sections(final List<Section> sections) {
         this.sections = sections;
     }
@@ -49,7 +50,8 @@ public class Sections {
             }
 
             // 기존 구간 가져오기!
-            Section originSection = sections.stream().filter(it -> it.getUpStation() == existStation)
+            Section originSection = sections.stream()
+                    .filter(it -> it.getUpStation().equals(existStation))
                     .findAny()
                     .orElseThrow(IllegalStateException::new);
 
@@ -78,7 +80,8 @@ public class Sections {
             }
 
             // 기존 구간 가져오기!
-            Section originSection = sections.stream().filter(it -> it.getDownStation() == existStation)
+            Section originSection = sections.stream()
+                    .filter(it -> it.getDownStation().equals(existStation))
                     .findAny()
                     .orElseThrow(IllegalStateException::new);
 
