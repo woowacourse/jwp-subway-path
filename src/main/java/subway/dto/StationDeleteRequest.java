@@ -1,8 +1,13 @@
 package subway.dto;
 
+import javax.validation.constraints.NotBlank;
+
 public class StationDeleteRequest {
 
+    @NotBlank(message = "노선명을 입력해주세요.")
     private final String lineName;
+
+    @NotBlank(message = "역명을 입력해주세요.")
     private final String stationName;
 
     public StationDeleteRequest(final String lineName, final String stationName) {
