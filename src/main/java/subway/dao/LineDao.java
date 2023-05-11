@@ -48,7 +48,7 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "select id, name, color, upbound_station_id, downbound_station_id from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 

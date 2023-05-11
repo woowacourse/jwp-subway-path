@@ -12,6 +12,10 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Line {
+
+    private static final int EMPTY = 0;
+    private static final int NOT_EXIST = 0;
+
     private Long id;
     private Name name;
     private Color color;
@@ -39,6 +43,10 @@ public class Line {
     }
 
     private static Stations sortStation(final Stations randomStations, final Sections sections, final Long upBoundStationId) {
+        if (upBoundStationId == NOT_EXIST) {
+            return new Stations(List.of());
+        }
+
         Map<Long, Station> indexedStations = new HashMap<>();
         randomStations.getStations().forEach(station -> indexedStations.put(station.getId(), station));
 
@@ -47,7 +55,8 @@ public class Line {
 
         List<Station> stations = new ArrayList<>();
         Long nowStationId = upBoundStationId;
-        while (indexedSections.size() != 0) {
+
+        while (indexedSections.size() != EMPTY) {
             stations.add(indexedStations.get(nowStationId));
             Long beforeStationId = nowStationId;
             nowStationId = indexedSections.get(nowStationId).getRightStation().getId();

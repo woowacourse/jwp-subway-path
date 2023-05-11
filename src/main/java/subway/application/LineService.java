@@ -75,7 +75,7 @@ public class LineService {
 
 
     public void registerInitStations(final String name, final RegisterStationsRequest registerStationsRequest) {
-        LineEntity line = lineRepository.findEntityByName(name).orElseThrow(RuntimeException::new);
+        Line line = lineRepository.findByName(name);
 
         Station leftStation = stationDao.findByName(registerStationsRequest.getLeftStationName()).orElseThrow(RuntimeException::new);
         Station rightStation = stationDao.findByName(registerStationsRequest.getRightStationName()).orElseThrow(RuntimeException::new);
