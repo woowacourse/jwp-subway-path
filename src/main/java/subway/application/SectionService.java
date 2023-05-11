@@ -33,23 +33,17 @@ public class SectionService {
     public void saveSection(final SectionRequest sectionRequest) {
         final Line line = getLineById(sectionRequest.getLineId());
         final Sections sections = getSections(line);
-
         if (sections.isEmpty()) {
             saveFirstSection(sectionRequest, line.getId());
             return;
         }
-
         final Section section = convertSection(sectionRequest);
         sections.validateSections(section);
-
         final Station targetStation = getStationById(sectionRequest.getTargetStationId());
         final Station sourceStation = getStationById(sectionRequest.getSourceStationId());
-
         if (sections.isTargetUpward(targetStation) || sections.isSourceDownward(sourceStation)) {
-            saveNewSection(line.getId(), sourceStation.getId(), targetStation.getId(),
-                section.getDistance());
+            saveNewSection(line.getId(), sourceStation.getId(), targetStation.getId(), section.getDistance());
         }
-
         updateExistedSourceSection(line.getId(), sections, section, targetStation.getId(), sourceStation.getId());
         updateExistedTargetSection(line.getId(), sections, section, targetStation.getId(), sourceStation.getId());
     }

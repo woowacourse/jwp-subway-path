@@ -21,7 +21,7 @@ create table if not exists SECTION
     target_station_id bigint not null,
     distance int not null,
     primary key(id),
-    foreign key(line_id) references line(id),
-    foreign key(source_station_id) references station(id),
-    foreign key(target_station_id) references station(id)
+    foreign key(line_id) references line(id) on delete cascade,
+    foreign key(source_station_id) references station(id) on delete cascade,
+    foreign key(target_station_id) references station(id) on delete cascade
 );

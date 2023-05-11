@@ -8,8 +8,12 @@ public class LineResponse {
     private final String color;
     private final List<StationResponse> stationResponses;
 
+    private LineResponse() {
+        this(null, null, null, null);
+    }
+
     private LineResponse(final Long id, final String name, final String color,
-                        final List<StationResponse> stationResponses) {
+                         final List<StationResponse> stationResponses) {
         this.id = id;
         this.name = name;
         this.color = color;
