@@ -41,4 +41,10 @@ public class SectionDao {
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", id);
         return namedParameterJdbcTemplate.query(sql, sqlParameterSource, rowMapper);
     }
+
+    public void deleteAllByLineId(Long id) {
+        String sql = "DELETE FROM section WHERE line_id=:lineId";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", id);
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+    }
 }

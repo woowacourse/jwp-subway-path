@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS line
     name                VARCHAR(255)           NOT NULL,
     upward_terminus     VARCHAR(255)           NOT NULL,
     downward_terminus   VARCHAR(255)           NOT NULL,
-    created_at          TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at          TIMESTAMP              NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
 );
 
 CREATE TABLE IF NOT EXISTS section
@@ -14,5 +15,7 @@ CREATE TABLE IF NOT EXISTS section
     upward_station      VARCHAR(255)          NOT NULL,
     downward_station    VARCHAR(255)          NOT NULL,
     distance            INT                   NOT NULL,
-    created_at          TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP
+    created_at          TIMESTAMP             NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (id),
+    FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
 );

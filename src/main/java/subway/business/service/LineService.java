@@ -29,6 +29,7 @@ public class LineService {
                 Direction.from(stationAddToLineRequest.getAddDirection()),
                 stationAddToLineRequest.getDistance()
         );
+        lineRepository.update(line);
     }
 
     public void deleteStation(Long lineId, String stationName) {

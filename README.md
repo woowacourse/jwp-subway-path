@@ -39,7 +39,7 @@ Content-Type: application/json
 Location: /lines/1
 ```
 
-### POST /lines/{line_id}/station
+### ✅ POST /lines/{line_id}/station
 - 노선에 역 한 개를 등록합니다.
 - 노선의 id를 URI에 포함해서 요청해야 합니다.
 - 존재하지 않는 역인 경우, 새로운 역을 생성합니다.
@@ -65,7 +65,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 ```
 
-### Delete /lines/{line_id}/stations/{station_id}
+### ✅ Delete /lines/{line_id}/stations/{station_id}
 - 노선에 포함된 역 한 개를 제외합니다.
 - 해당 역이 더이상 어떤 노선에도 포함되지 않으면, 해당 역을 삭제합니다.
 - 노선에 포함된 역이 2개뿐이라면, Status 401을 반환합니다.

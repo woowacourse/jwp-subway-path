@@ -46,4 +46,20 @@ public class LineDao {
         String sql = "SELECT id, name, upward_terminus, downward_terminus FROM line";
         return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM line WHERE id=:id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+    }
+
+    public void update(LineEntity lineEntity) {
+        String sql = "UPDATE line SET name=:name, upward_terminus=:upwardTerminus, downward_terminus=:downwardTerminus WHERE id=:id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
+                .addValue("name", lineEntity.getName())
+                .addValue("upwardTerminus", lineEntity.getUpwardTerminus())
+                .addValue("downwardTerminus", lineEntity.getDownwardTerminus())
+                .addValue("id", lineEntity.getId());
+        namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+    }
 }

@@ -34,14 +34,7 @@ public class DbLineRepository implements LineRepository {
         long lineId = lineDao.insert(lineEntityToSave);
 
         Section section = line.getSections().get(0);
-        SectionEntity sectionEntityToSave = new SectionEntity(
-                lineId,
-                section.getUpwardStation().getName(),
-                section.getDownwardStation().getName(),
-                section.getDistance()
-        );
-        sectionDao.insert(sectionEntityToSave);
-
+        createSection(lineId, section);
         return lineId;
     }
 
@@ -67,7 +60,29 @@ public class DbLineRepository implements LineRepository {
 
     @Override
     public void update(Line line) {
+        LineEntity lineEntityToUpdate = new LineEntity(
+                line.getId(),
+                line.getName(),
+                line.getUpwardTerminus().getName(),
+                line.getDownwardTerminus().getName()
+        );
+        lineDao.update(lineEntityToUpdate);
 
+        sectionDao.deleteAllByLineId(line.getId());
+
+        for (Section section : line.getSections()) {
+            createSection(line.getId(), section);
+        }
+    }
+
+    private void createSection(long lineId, Section section) {
+        SectionEntity sectionEntityToSave = new SectionEntity(
+                lineId,
+                section.getUpwardStation().getName(),
+                section.getDownwardStation().getName(),
+                section.getDistance()
+        );
+        sectionDao.insert(sectionEntityToSave);
     }
 
     private List<Section> mapSectionEntitiesToSections(List<SectionEntity> sectionEntities) {
