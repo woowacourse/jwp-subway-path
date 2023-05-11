@@ -86,24 +86,29 @@ public class SectionService {
         Long downStationId = sectionRequest.getStationId();
 
         if (downSections.isEmpty()) {
+            // A-B
             upSections.stream()
                     .filter(it -> it.getUpStationId().equals(upStationId))
                     .findAny()
                     .ifPresent(section -> {
+                        if (section.getDistance() <= sectionRequest.getDistance()) {
+                            throw new IllegalArgumentException("현재 구간보다 긴 구간을 추가할 수 없습니다.");
+                        }
                         sectionDao.deleteBySectionId(section.getId());
-                        sectionDao.insert(new Section(sectionRequest.getLineId(), upStationId, sectionRequest.getStationId(), new Distance(sectionRequest.getDistance())));
-                        sectionDao.insert(new Section(sectionRequest.getLineId(), sectionRequest.getStationId(), section.getDownStationId(),  new Distance(sectionRequest.getDistance())));
+                        sectionDao.insert(new Section(sectionRequest.getLineId(), upStationId, sectionRequest.getStationId(), new Distance(sectionRequest.getDistance()))); // A-B
+                        sectionDao.insert(new Section(sectionRequest.getLineId(), sectionRequest.getStationId(), section.getDownStationId(),  new Distance(section.getDistance() - sectionRequest.getDistance())));
                     });
         }
 
         if (upSections.isEmpty()) {
+            // B-C
             downSections.stream()
                     .filter(it -> it.getDownStationId().equals(downStationId))
                     .findAny()
                     .ifPresent(section -> {
                         sectionDao.deleteBySectionId(section.getId());
-                        sectionDao.insert(new Section(sectionRequest.getLineId(), sectionRequest.getUpStationId(), downStationId, new Distance(sectionRequest.getDistance())));
-                        sectionDao.insert(new Section(sectionRequest.getLineId(), section.getUpStationId(), sectionRequest.getUpStationId(),  new Distance(sectionRequest.getDistance())));
+                        sectionDao.insert(new Section(sectionRequest.getLineId(), sectionRequest.getUpStationId(), downStationId, new Distance(sectionRequest.getDistance()))); // B-C
+                        sectionDao.insert(new Section(sectionRequest.getLineId(), section.getUpStationId(), sectionRequest.getUpStationId(),  new Distance(section.getDistance() - sectionRequest.getDistance())));
                     });
         }
         return 1L;

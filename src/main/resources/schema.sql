@@ -41,11 +41,11 @@ INSERT INTO STATION(name) VALUES ('해운대역');
 INSERT INTO STATION(name) VALUES ('동대구역');
 INSERT INTO STATION(name) VALUES ('신천역');
 
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, null, 1, 3);
+INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, null, 1, 0);
 INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, 1, 2, 4);
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, 2, null, 4);
+INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, 2, null, 0);
 
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, null, 3, 3);
+INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, null, 3, 0);
 INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, 3, 4, 4);
 INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, 4, 5, 4);
-INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, 5, null, 4);
+INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (2, 5, null, 0);
