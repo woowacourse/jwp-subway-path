@@ -2,11 +2,13 @@
 
 ## API 설계
 - [x] 역 등록 API (post - "/stations")
+request
 ```JSON
   {
     "stationName" : "잠실"
   }
 ```
+response
 ```JSON
   {
   "stationId" : 1,
@@ -15,6 +17,7 @@
 ```
 
 - [x] 최초 노선 등록 API (post - "/lines") `addInitialLine(Line line, Station s1, Station s2, int dist)`
+request
 ```JSON
   {
     "lineName" : "2호선",
@@ -23,13 +26,16 @@
     "distance" : 10
    }
 ```
+response
 ````JSON
 {
     "lineId" : 1,
     "lineName" : "2호선"
 }
 ````
+
 - [x] 노선에 역 등록 API 신규 구현 (post - "/lines/{lineId}/stations")
+request
 ```JSON
   {
     "upStationId" : 3,
@@ -37,6 +43,7 @@
     "distance" : 5
   }
 ```
+response
 ```JSON
   {
   "lineId" : 1,
@@ -46,6 +53,7 @@
 ```
 
 - [x] 노선의 모든 역 조회 API (get - "/lines/{lineId}")
+response
 ```JSON
 {
   "lineId" : 1,
@@ -62,8 +70,50 @@
   ]
 }
 ```
-- [ ] 모든 노선 조회 API (get - "/lines")
-- [x] 노선에 역 제거 API 신규 구현 (delete - "/lines/{lineId}/stations/{stationId}") <- 역
+- [x] 모든 노선의 모든 역 조회 API (get - "/lines")
+response
+```JSON
+[
+  {
+    "lineId" : 1,
+    "lineName": "2호선",
+    "stations" : [
+      {
+        "stationId" : 1,
+        "stationName" : "잠실"
+      },
+      {
+        "stationId" : 2,
+        "stationName" : "잠실새내"
+      }
+    ]
+  },
+  {
+    "lineId" : 2,
+    "lineName": "3호선",
+    "stations" : [
+      {
+        "stationId" : 3,
+        "stationName" : "경복궁"
+      },
+      {
+        "stationId" : 4,
+        "stationName" : "안국"
+      }
+    ]
+  }
+]
+```
+
+- [x] 노선에 역 제거 API (delete - "/lines/{lineId}/stations/{stationId}")
+response
+```JSON
+  {
+  "lineId" : 1,
+  "lineName" : "2호선",
+  "stationIds" : [1, 2, 3]
+  }
+```
 
 ## 요구사항 정리
 - [x] 노선에 역 등록
@@ -91,6 +141,3 @@
     - [x] A-B가 2km, B-C가 3km, C-D가 4km인 경우 C역이 제거되면 B-D 거리가 7km가 되어야 합니다.
   - [x] 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거되어야 합니다.
     - [x] A-B 노선에서 B를 제거할 때 거리 정보를 포함할 수 없기 때문에 두 역 모두 제거되어야 합니다.
-
-1. Line의 73번째줄 (기존에 있는 역의 개수 검사) <- 테스트 내일하자
-2. Line에 역을 추가할 때 거리가 에러나는경우 테스트
