@@ -19,7 +19,7 @@ public class Section {
     }
 
     private void validateBothStationsIsNull(final Station leftStation, final Station rightStation) {
-        if(Objects.isNull(leftStation) || Objects.isNull(rightStation)) {
+        if (Objects.isNull(leftStation) || Objects.isNull(rightStation)) {
             throw new IllegalArgumentException("비어 있는 역이 존재하면 안됩니다.");
         }
     }

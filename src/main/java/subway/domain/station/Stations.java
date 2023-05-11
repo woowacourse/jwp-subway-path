@@ -54,6 +54,6 @@ public class Stations {
     }
 
     public Station getLastStation() {
-        return stations.get(size()-1);
+        return stations.get(size() - 1);
     }
 }

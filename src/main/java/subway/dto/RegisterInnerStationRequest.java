@@ -11,7 +11,8 @@ public class RegisterInnerStationRequest {
     public RegisterInnerStationRequest() {
     }
 
-    public RegisterInnerStationRequest(final String newStationName, String leftBaseStationName, int leftDistance, String rightBaseStationName, int rightDistance) {
+    public RegisterInnerStationRequest(final String newStationName, String leftBaseStationName, int leftDistance, String rightBaseStationName,
+        int rightDistance) {
         this.newStationName = newStationName;
         this.leftBaseStationName = leftBaseStationName;
         this.leftDistance = leftDistance;

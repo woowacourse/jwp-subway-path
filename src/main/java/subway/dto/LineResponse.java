@@ -1,10 +1,10 @@
 package subway.dto;
 
 import java.util.List;
-import subway.domain.line.Line;
 import subway.entity.LineEntity;
 
 public class LineResponse {
+
     private Long id;
     private String name;
     private String color;

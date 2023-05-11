@@ -13,8 +13,6 @@ import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
-import subway.dto.RegisterInnerStationRequest;
-import subway.dto.RegisterStationsRequest;
 import subway.entity.LineEntity;
 import subway.entity.LineSectionEntity;
 import subway.entity.LineStationEntity;
@@ -79,7 +77,7 @@ public class LineRepository {
         updateBoundStations(newLine);
     }
 
-    public void saveBoundStation(Line line, Station station ,Long sectionId) {
+    public void saveBoundStation(Line line, Station station, Long sectionId) {
         lineSectionDao.insert(new LineSectionEntity(line.getId(), sectionId));
         lineStationDao.insert(new LineStationEntity(station.getId(), line.getId()));
     }

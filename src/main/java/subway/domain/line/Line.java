@@ -1,15 +1,14 @@
 package subway.domain.line;
 
-import subway.domain.section.Section;
-import subway.domain.section.Sections;
-import subway.domain.station.Station;
-import subway.domain.station.Stations;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
+import subway.domain.station.Station;
+import subway.domain.station.Stations;
 
 public class Line {
 
@@ -117,8 +116,12 @@ public class Line {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Line line = (Line) o;
         return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
     }
