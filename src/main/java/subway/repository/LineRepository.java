@@ -1,5 +1,7 @@
 package subway.repository;
 
+import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
@@ -10,8 +12,6 @@ import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.Stations;
-
-import java.util.List;
 import subway.entity.LineEntity;
 
 @Repository
@@ -31,34 +31,59 @@ public class LineRepository {
 
     public Line findByName(final String name) {
         String stationQuery =
-                "SELECT S.ID, S.NAME FROM STATION S, LINE L, LINE_STATION LS " +
-                        "WHERE S.ID = LS.STATION_ID AND L.ID = LS.LINE_ID " +
-                        "AND L.NAME = ?";
+            "SELECT S.ID, S.NAME FROM STATION S, LINE L, LINE_STATION LS " +
+                "WHERE S.ID = LS.STATION_ID AND L.ID = LS.LINE_ID " +
+                "AND L.NAME = ?";
 
         List<Station> stations = jdbcTemplate.query(stationQuery,
-                (rs, rowNum) -> new Station(
-                        rs.getLong("ID"),
-                        rs.getString("NAME")),
-                name);
+            (rs, rowNum) -> new Station(
+                rs.getLong("ID"),
+                rs.getString("NAME")),
+            name);
 
         String sectionQuery =
-                "SELECT S.ID, S.LEFT_STATION_ID, S.RIGHT_STATION_ID, S.DISTANCE FROM SECTION S, LINE L, LINE_SECTION LS " +
-                        "WHERE S.ID = LS.SECTION_ID AND L.ID = LS.LINE_ID " +
-                        "AND L.NAME = ?";
+            "SELECT S.ID, S.LEFT_STATION_ID, S.RIGHT_STATION_ID, S.DISTANCE FROM SECTION S, LINE L, LINE_SECTION LS " +
+                "WHERE S.ID = LS.SECTION_ID AND L.ID = LS.LINE_ID " +
+                "AND L.NAME = ?";
 
         List<Section> sections = jdbcTemplate.query(sectionQuery,
-                (rs, rowNum) -> new Section(
-                        rs.getLong("ID"),
-                        stationDao.findById(rs.getLong("LEFT_STATION_ID")),
-                        stationDao.findById(rs.getLong("RIGHT_STATION_ID")),
-                        rs.getInt("DISTANCE")),
-                name);
+            (rs, rowNum) -> new Section(
+                rs.getLong("ID"),
+                stationDao.findById(rs.getLong("LEFT_STATION_ID")),
+                stationDao.findById(rs.getLong("RIGHT_STATION_ID")),
+                rs.getInt("DISTANCE")),
+            name);
 
         LineEntity line = lineDao.findByName(name).orElseThrow(RuntimeException::new);
 
         String upBoundStationIdQuery =
-                "SELECT UPBOUND_STATION_ID FROM LINE WHERE NAME = ?";
+            "SELECT UPBOUND_STATION_ID FROM LINE WHERE NAME = ?";
         Long upBoundStationId = jdbcTemplate.queryForObject(upBoundStationIdQuery, Long.class, name);
         return new Line(line.getId(), line.getName(), line.getColor(), new Stations(stations), new Sections(sections), upBoundStationId);
     }
+
+    public LineEntity insert(Line line) {
+        return lineDao.insert(line);
+    }
+
+    public List<LineEntity> findAll() {
+        return lineDao.findAll();
+    }
+
+    public Optional<LineEntity> findEntityByName(String name) {
+        return lineDao.findByName(name);
+    }
+
+    public LineEntity findById(Long id) {
+        return lineDao.findById(id);
+    }
+
+    public void updateBoundStations(LineEntity newLine) {
+        lineDao.updateBoundStations(newLine);
+    }
+
+    public void deleteById(Long id) {
+        lineDao.deleteById(id);
+    }
+
 }
