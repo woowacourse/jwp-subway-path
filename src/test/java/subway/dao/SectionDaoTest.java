@@ -38,7 +38,7 @@ class SectionDaoTest {
     @DisplayName("구간을 저장할 수 있다.")
     @Test
     void insert() {
-        sectionDao.insert(FIXTURE_LINE_1, SECTION_START);
+        sectionDao.insert(FIXTURE_LINE_1.getId(), SECTION_START);
 
         assertThat(sectionDao.findByLineId(FIXTURE_LINE_1.getId()))
                 .containsExactlyInAnyOrder(SECTION_START);
@@ -47,7 +47,7 @@ class SectionDaoTest {
     @DisplayName("구간을 삭제할 수 있다.")
     @Test
     void delete() {
-        sectionDao.insert(FIXTURE_LINE_1, SECTION_START);
+        sectionDao.insert(FIXTURE_LINE_1.getId(), SECTION_START);
         sectionDao.deleteByStationId(1L, 1L);
 
         assertThat(sectionDao.findAll()).isEmpty();
@@ -56,7 +56,7 @@ class SectionDaoTest {
     @DisplayName("구간을 조회할 수 있다.")
     @Test
     void findById() {
-        sectionDao.insert(FIXTURE_LINE_1, SECTION_START);
+        sectionDao.insert(FIXTURE_LINE_1.getId(), SECTION_START);
 
         assertThat(sectionDao.findById(1L))
                 .isEqualTo(SECTION_START);

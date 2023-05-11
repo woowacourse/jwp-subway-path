@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import subway.domain.Distance;
-import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 
@@ -25,9 +24,9 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insert(Line line, Section section) {
+    public void insert(Long lineId, Section section) {
         String sql = "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.update(sql, line.getId(), section.getLeftId(), section.getRightId(), section.getDistance());
+        jdbcTemplate.update(sql, lineId, section.getLeftId(), section.getRightId(), section.getDistance());
     }
 
     public List<Section> findAll() {

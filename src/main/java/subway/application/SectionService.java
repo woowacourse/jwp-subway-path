@@ -22,12 +22,6 @@ public class SectionService {
         this.stationDao = stationDao;
     }
 
-    private static void validateEmptySubwayAdding(final List<Section> sections) {
-        if (sections.isEmpty()) {
-            throw new IllegalArgumentException("빈 노선에 하나의 역만 등록할 수 없습니다.");
-        }
-    }
-
     private static void validateNonExistingBaseStation(final Subway subway, final Station baseStation) {
         if (!subway.hasStation(baseStation)) {
             throw new IllegalArgumentException("존재하지 않는 역과의 구간을 등록할 수 없습니다.");
@@ -44,8 +38,7 @@ public class SectionService {
         // 빈 노선에 등록하는 경우 (두 역 모두 새로운 역이다)
         if (sections.isEmpty() && sectionRequest.baseStationId() != null) {
             Station baseStation = stationDao.findById(sectionRequest.baseStationId());
-            sectionDao.insert(new Line(lineId),
-                    new Section(baseStation, nextStation, new Distance(addingDistance)));
+            sectionDao.insert(lineId, new Section(baseStation, nextStation, new Distance(addingDistance)));
             return;
         }
 
@@ -55,7 +48,7 @@ public class SectionService {
         // baseStationId가 없는 경우
         if (sectionRequest.baseStationId() == null) {
             Station startingStation = subway.getStart();
-            sectionDao.insert(new Line(lineId),
+            sectionDao.insert(lineId,
                     new Section(nextStation, startingStation, new Distance(addingDistance)));
             return;
         }
@@ -69,7 +62,7 @@ public class SectionService {
         // 2-2-1. 현재 기준 역에 우측으로 연결된 구간이 없으면 별도 거리 작업 없이 가장 우측에 새 역을 가지는 구간 추가
         if (!subway.hasRightSection(baseStation)) {
             sectionDao.insert(
-                    new Line(lineId),
+                    lineId,
                     new Section(baseStation, nextStation, new Distance(addingDistance)));
             return;
         }
@@ -85,8 +78,8 @@ public class SectionService {
         Section rightSplited = new Section(nextStation, existingSection.getRight(),
                 new Distance(existingDistance - addingDistance));
         sectionDao.deleteByLeftStationIdAndRightStationId(lineId, leftSplited.getLeftId(), rightSplited.getRightId());
-        sectionDao.insert(new Line(lineId), leftSplited);
-        sectionDao.insert(new Line(lineId), rightSplited);
+        sectionDao.insert(lineId, leftSplited);
+        sectionDao.insert(lineId, rightSplited);
     }
 
     private void validateExistingNextStation(final Station nextStation, final Subway subway) {
@@ -112,7 +105,7 @@ public class SectionService {
             Station left = leftSection.getLeft();
             int leftDistance = leftSection.getDistance();
             int rightDistance = rightSection.getDistance();
-            sectionDao.insert(new Line(lineId), new Section(left, right, new Distance(leftDistance + rightDistance)));
+            sectionDao.insert(lineId, new Section(left, right, new Distance(leftDistance + rightDistance)));
         }
         sectionDao.deleteByStationId(lineId, stationId);
     }
