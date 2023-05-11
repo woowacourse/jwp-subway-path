@@ -1,6 +1,6 @@
 package subway.domain;
 
-public enum Direction {
+public enum SectionPart {
     INNER_LEFT,
     INNER_RIGHT,
     NONE

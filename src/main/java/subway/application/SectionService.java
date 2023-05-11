@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Direction;
+import subway.domain.SectionPart;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -49,8 +49,8 @@ public class SectionService {
         }
 
         Section includeSection = sections.getIncludeSection(requestedSection);
-        Direction direction = includeSection.checkDirection(requestedSection);
-        if (direction == Direction.INNER_LEFT) {
+        SectionPart sectionPart = includeSection.checkDirection(requestedSection);
+        if (sectionPart == SectionPart.INNER_LEFT) {
             Section innerRight = new Section(requestedSection.getDownStation(), includeSection.getDownStation(),
                     includeSection.getDistance() - requestedSection.getDistance(),
                     includeSection.getNextSectionId());
