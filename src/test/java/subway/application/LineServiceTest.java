@@ -1,6 +1,7 @@
 package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.times;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.application.dto.AddStationToLineCommand;
 import subway.application.dto.DeleteStationFromLineCommand;
@@ -24,6 +26,9 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.exception.DuplicateLineException;
+import subway.exception.NotFoundLineException;
+import subway.exception.NotFoundStationException;
 
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -35,15 +40,8 @@ class LineServiceTest {
     private final StationRepository stationRepository = mock(StationRepository.class);
     private final LineService lineService = new LineService(lineRepository, stationRepository);
 
-    @Test
-    void 노선을_생성한다() {
-        // given
-        given(lineRepository.findByName("1호선"))
-                .willReturn(Optional.empty());
-        역을_저장한다("잠실역");
-        역을_저장한다("사당역");
-        given(lineRepository.save(any()))
-                .willReturn(1L);
+    @Nested
+    class 노선을_생성시 {
 
         final LineCreateCommand command = new LineCreateCommand(
                 "1호선",
@@ -51,37 +49,119 @@ class LineServiceTest {
                 "사당역",
                 10);
 
-        // when
-        final Long id = lineService.create(command);
+        @Test
+        void 성공한다() {
+            // given
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.empty());
+            역을_저장한다("잠실역");
+            역을_저장한다("사당역");
+            given(lineRepository.save(any()))
+                    .willReturn(1L);
 
-        // then
-        assertThat(id).isEqualTo(1L);
+            // when
+            final Long id = lineService.create(command);
+
+            // then
+            assertThat(id).isEqualTo(1L);
+        }
+
+        @Test
+        void 이미_존재하는_노선을_전달시_예외() {
+            // given
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.of(new Line("1호선", null)));
+
+            // when & then
+            assertThatThrownBy(() -> lineService.create(command))
+                    .isInstanceOf(DuplicateLineException.class);
+        }
+
+        @Test
+        void 존재하지_않는_역을_상행역으로_전달시_예외 () {
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.empty());
+            역을_저장한다("사당역");
+
+            // when & then
+            assertThatThrownBy(() -> lineService.create(command))
+                    .isInstanceOf(NotFoundStationException.class);
+        }
+
+        @Test
+        void 존재하지_않는_역을_하행역으로_전달시_예외() {
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.empty());
+            역을_저장한다("잠실역");
+
+            // when & then
+            assertThatThrownBy(() -> lineService.create(command))
+                    .isInstanceOf(NotFoundStationException.class);
+        }
     }
 
-    @Test
-    void 노선에_역을_추가한다() {
-        // given
-        final Station up = new Station("잠실역");
-        final Station down = new Station("역삼역");
-        역을_저장한다("잠실역");
-        역을_저장한다("사당역");
+    @Nested
+    class 노선에_역을_추가시 {
 
-        final Section section = new Section(up, down, 10);
-        final Line line = new Line("1호선", new Sections(section));
-        given(lineRepository.findByName("1호선"))
-                .willReturn(Optional.of(line));
         final AddStationToLineCommand command = new AddStationToLineCommand(
                 "1호선",
                 "잠실역",
                 "사당역",
                 6);
 
-        // when
-        lineService.addStation(command);
+        @Test
+        void 성공한다() {
+            // given
+            final Station up = new Station("잠실역");
+            final Station down = new Station("역삼역");
+            역을_저장한다("잠실역");
+            역을_저장한다("사당역");
 
-        // then
-        verify(lineRepository, times(1)).update(line);
-        assertThat(line.getSections()).hasSize(2);
+            final Section section = new Section(up, down, 10);
+            final Line line = new Line("1호선", new Sections(section));
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.of(line));
+
+            // when
+            lineService.addStation(command);
+
+            // then
+            verify(lineRepository, times(1)).update(line);
+            assertThat(line.getSections()).hasSize(2);
+        }
+
+        @Test
+        void 존재하지_않는_노선을_전달시_예외() {
+            // given
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.empty());
+
+            // when & then
+            assertThatThrownBy(() -> lineService.addStation(command))
+                    .isInstanceOf(NotFoundLineException.class);
+        }
+
+        @Test
+        void 존재하지_않는_역을_상행역으로_전달시_예외 () {
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.of(new Line(null, null)));
+            역을_저장한다("사당역");
+
+            // when & then
+            assertThatThrownBy(() -> lineService.addStation(command))
+                    .isInstanceOf(NotFoundStationException.class);
+        }
+
+        @Test
+        void 존재하지_않는_역을_하행역으로_전달시_예외() {
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.of(new Line(null, null)));
+            역을_저장한다("잠실역");
+
+            // when & then
+            assertThatThrownBy(() -> lineService.addStation(command))
+                    .isInstanceOf(NotFoundStationException.class);
+        }
     }
 
     @Test

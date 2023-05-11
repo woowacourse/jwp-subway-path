@@ -1,6 +1,7 @@
 package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static subway.domain.fixture.SectionFixtures.createSection;
@@ -15,6 +16,7 @@ import subway.application.dto.LineQueryResponse;
 import subway.domain.Line;
 import subway.domain.LineRepository;
 import subway.domain.Sections;
+import subway.exception.NotFoundLineException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -47,6 +49,17 @@ class LineQueryServiceTest {
                         "역2-[10km]-역3",
                         "역3-[10km]-역4"
                 );
+    }
+
+    @Test
+    void 존재하지_않는_id의_노선_조회시_예외() {
+        // given
+        given(lineRepository.findById(1L))
+                .willReturn(Optional.empty());
+
+        // when
+        assertThatThrownBy(() -> lineQueryService.findById(1L))
+                .isInstanceOf(NotFoundLineException.class);
     }
 
     @Test

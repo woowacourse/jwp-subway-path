@@ -52,6 +52,11 @@ public class LineService {
         lineRepository.update(line);
     }
 
+    private Line findLineByName(final String name) {
+        return lineRepository.findByName(name)
+                .orElseThrow(() -> new NotFoundLineException(name));
+    }
+
     public void removeStation(final DeleteStationFromLineCommand command) {
         final Line line = findLineByName(command.getLineName());
         final Station station = findStationByName(command.getDeleteStationName());
@@ -61,10 +66,5 @@ public class LineService {
             return;
         }
         lineRepository.update(line);
-    }
-
-    private Line findLineByName(final String name) {
-        return lineRepository.findByName(name)
-                .orElseThrow(() -> new NotFoundLineException(name));
     }
 }
