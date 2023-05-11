@@ -5,7 +5,10 @@ import java.util.stream.Collectors;
 import subway.domain.Station;
 
 public class StationsResponse {
-    private final List<StationResponse> stations;
+    private List<StationResponse> stations;
+
+    private StationsResponse() {
+    }
 
     public StationsResponse(List<StationResponse> stations) {
         this.stations = stations;
@@ -24,7 +27,11 @@ public class StationsResponse {
     }
 
     static class StationResponse {
-        private final String name;
+
+        private String name;
+
+        private StationResponse() {
+        }
 
         public StationResponse(String name) {
             this.name = name;
