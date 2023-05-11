@@ -2,53 +2,62 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.entity.StationEntity;
 
-import javax.sql.DataSource;
+import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
-
-
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public Long insert(StationEntity stationEntity) {
+        String sql = "INSERT INTO station (name, line_id) VALUES (?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(con -> {
+            PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"id"});
+            preparedStatement.setString(1, stationEntity.getName());
+            preparedStatement.setLong(2, stationEntity.getLineId());
+            return preparedStatement;
+        }, keyHolder);
+
+        return keyHolder.getKey().longValue();
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+    public Optional<StationEntity> findById(Long id) {
+        String sql = "select id, name, line_id from STATION where id = ?";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationEntityRowMapper(), id));
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<StationEntity> findByStationNameAndLineName(String stationName, String lineName) {
+        String sql = "SELECT station.id, station.name, line.id FROM LINE " +
+                "INNER JOIN STATION " +
+                "ON line.id = station.line_id " +
+                "WHERE station.name = ? AND line.name = ?";
+
+        List<StationEntity> stationEntities = jdbcTemplate.query(sql,
+                stationEntityRowMapper(),
+                stationName, lineName);
+        return stationEntities.stream()
+                .findAny();
     }
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+    private RowMapper<StationEntity> stationEntityRowMapper() {
+        return (rs, rowNum) -> {
+            long findStationId = rs.getLong("station.id");
+            String findStationName = rs.getString("name");
+            long findLineId = rs.getLong("line.id");
+            return new StationEntity(findStationId, findStationName, findLineId);
+        };
     }
 
     public void deleteById(Long id) {
