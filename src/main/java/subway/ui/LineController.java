@@ -27,10 +27,10 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    // @GetMapping
-    // public ResponseEntity<List<LineStationsResponse>> findAllLines() {
-    //     return ResponseEntity.ok(lineService.findLineStationsResponses());
-    // }
+    @GetMapping
+    public ResponseEntity<List<LineStationsResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findLineStationsResponses());
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineStationsResponse> findLineById(@PathVariable Long id) {

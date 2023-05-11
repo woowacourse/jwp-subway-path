@@ -43,7 +43,7 @@ public class SectionDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Section> findAllSection() {
+    public List<Section> findAll() {
         String sql = "select * from SECTION";
 
         return jdbcTemplate.query(sql, rowMapper);

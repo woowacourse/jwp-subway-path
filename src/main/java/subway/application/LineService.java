@@ -14,6 +14,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationsResponse;
@@ -35,12 +36,18 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    // public List<LineStationsResponse> findLineStationsResponses() {
-    //     List<Line> persistLines = findLines();
-    //     return persistLines.stream()
-    //         .map(LineResponse::of)
-    //         .collect(Collectors.toList());
-    // }
+    public List<LineStationsResponse> findLineStationsResponses() {
+        List<Line> persistLines = findLines();
+        List<Station> persistStations = stationDao.findAll();
+        List<Section> persistSections = sectionDao.findAll();
+        Subway subway = new Subway(persistLines, persistStations, persistSections);
+        Map<Line, List<Station>> lineMap = subway.getSubway();
+        return lineMap.entrySet()
+            .stream()
+            .map(entry -> LineStationsResponse.of(entry.getKey(), entry.getValue()))
+            .collect(
+                Collectors.toList());
+    }
 
     public List<Line> findLines() {
         return lineDao.findAll();

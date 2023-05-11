@@ -85,6 +85,9 @@ public class Sections {
         for (Section section : sections) {
             stationIds.add(section.getSourceStationId());
         }
+        if (stationIds.isEmpty()) {
+            return stationIds;
+        }
         stationIds.add(sections.get(sections.size() - 1).getTargetStationId());
         return stationIds;
     }
