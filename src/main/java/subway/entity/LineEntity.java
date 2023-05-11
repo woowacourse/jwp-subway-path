@@ -4,16 +4,12 @@ import java.util.Objects;
 
 public class LineEntity {
 
-    private Long id;
-    private String name;
-    private String color;
-
-    public LineEntity() {
-    }
+    private final Long id;
+    private final String name;
+    private final String color;
 
     public LineEntity(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(null, name, color);
     }
 
     public LineEntity(Long id, String name, String color) {

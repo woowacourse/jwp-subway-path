@@ -4,11 +4,8 @@ import java.util.Objects;
 
 public class StationEntity {
 
-    private Long id;
-    private String name;
-
-    public StationEntity() {
-    }
+    private final Long id;
+    private final String name;
 
     public StationEntity(Long id, String name) {
         this.id = id;
@@ -16,7 +13,7 @@ public class StationEntity {
     }
 
     public StationEntity(String name) {
-        this.name = name;
+        this(null, name);
     }
 
     public Long getId() {
