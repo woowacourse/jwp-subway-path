@@ -33,7 +33,7 @@ public class StationDao {
             );
 
 
-    public Long save(fin al String stationName) {
+    public Long save(final String stationName) {
         final MapSqlParameterSource name = new MapSqlParameterSource().addValue("name", stationName);
         return insertAction.executeAndReturnKeyHolder(name).getKey().longValue();
     }
