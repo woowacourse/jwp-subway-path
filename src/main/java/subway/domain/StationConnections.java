@@ -77,7 +77,7 @@ public class StationConnections {
                 .filter(entry -> isStart(entry.getValue()))
                 .map(Entry::getKey)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("시작점을 찾을 수 없습니다."));
+                .orElse(null);
     }
 
     public Station findEndStation() {
@@ -86,7 +86,7 @@ public class StationConnections {
                 .filter(entry -> isEnd(entry.getValue()))
                 .map(Entry::getKey)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("종점을 찾을 수 없습니다."));
+                .orElse(null);
     }
 
     private boolean isStart(Connection connection) {

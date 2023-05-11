@@ -29,25 +29,30 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
+        List<Line> lines = lineDao.findAll();
+        return lines.stream()
+                .map(line -> LineResponse.of(line, createStationResponse(line)))
                 .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineDao.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<Section> sections = sectionDao.findByLineId(id);
+        List<StationResponse> stationResponses = createStationResponse(persistLine);
+        return LineResponse.of(persistLine, stationResponses);
+    }
+
+    private List<StationResponse> createStationResponse(final Line persistLine) {
+        List<Section> sections = sectionDao.findByLineId(persistLine.getId());
+        return extractStationResponses(persistLine, sections);
+    }
+
+    private List<StationResponse> extractStationResponses(final Line persistLine, final List<Section> sections) {
         Subway subway = Subway.of(persistLine, sections);
         List<Station> orderedStations = subway.getOrderedStations();
         List<StationResponse> stationResponses = orderedStations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stationResponses);
+        return stationResponses;
     }
 
     public Line findLineById(Long id) {

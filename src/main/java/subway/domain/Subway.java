@@ -99,6 +99,9 @@ public class Subway {
 
     public List<Station> getOrderedStations() {
         List<Station> orderedStations = new ArrayList<>();
+        if (isStationEmpty()) {
+            return orderedStations;
+        }
         Station station = new Station(start.getId(), start.getName());
         while (!stations.outgoingEdgesOf(station).isEmpty()) {
             orderedStations.add(station);
@@ -107,5 +110,9 @@ public class Subway {
         }
         orderedStations.add(station);
         return orderedStations;
+    }
+
+    private boolean isStationEmpty() {
+        return stations.edgeSet().isEmpty();
     }
 }
