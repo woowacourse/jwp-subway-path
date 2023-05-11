@@ -1,10 +1,11 @@
-package subway.ui;
+package subway.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.StationService;
-import subway.domain.entity.StationEntity;
 import subway.dto.station.StationRequest;
+import subway.dto.station.StationResponse;
+import subway.entity.StationEntity;
+import subway.service.StationService;
 
 import java.net.URI;
 import java.util.List;
@@ -26,12 +27,12 @@ public class StationController {
     }
 
     @GetMapping
-    public ResponseEntity<List<StationEntity>> showStations() {
+    public ResponseEntity<List<StationResponse>> showStations() {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationEntity> showStation(@PathVariable final Long id) {
+    public ResponseEntity<StationResponse> showStation(@PathVariable final Long id) {
         return ResponseEntity.ok().body(stationService.findStationEntityById(id));
     }
 
