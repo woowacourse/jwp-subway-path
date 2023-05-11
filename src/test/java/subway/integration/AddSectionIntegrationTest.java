@@ -48,7 +48,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .when().post("/stations")
                     .then().log().all();
             
-            final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, true, 3);
+            final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, "DOWN", 3);
             RestAssured
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -77,7 +77,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .when().post("/stations")
                     .then().log().all();
             
-            final SectionRequest sectionRequest2 = new SectionRequest(1, 4, 3, true, 3);
+            final SectionRequest sectionRequest2 = new SectionRequest(1, 4, 3, "DOWN", 3);
             final ExtractableResponse<Response> response = RestAssured
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -103,7 +103,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .when().post("/stations")
                     .then().log().all();
             
-            final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 1, false, 3);
+            final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 1, "UP", 3);
             final ExtractableResponse<Response> response = RestAssured
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -131,7 +131,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .when().post("/stations")
                     .then().log().all();
             
-            final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 2, true, 3);
+            final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 2, "DOWN", 3);
             final ExtractableResponse<Response> response = RestAssured
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -159,7 +159,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .when().post("/stations")
                     .then().log().all();
             
-            final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 1, true, 4);
+            final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 1, "DOWN", 4);
             final ExtractableResponse<Response> response = RestAssured
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -185,7 +185,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .when().post("/stations")
                     .then().log().all();
             
-            final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 1, true, 2);
+            final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 1, "DOWN", 2);
             final ExtractableResponse<Response> response = RestAssured
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -207,7 +207,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
         void createSectionWithNewStationButInSection() {
             // when
             
-            final SectionRequest sectionRequest2 = new SectionRequest(1, 2, 1, true, 3);
+            final SectionRequest sectionRequest2 = new SectionRequest(1, 2, 1, "DOWN", 3);
             final ExtractableResponse<Response> response = RestAssured
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -227,7 +227,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
     @Test
     void createSectionWithNoLine() {
         // when
-        final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, true, 3);
+        final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, "DOWN", 3);
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -261,7 +261,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                 .when().post("/stations")
                 .then().log().all();
         
-        final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, true, 3);
+        final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, "DOWN", 3);
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -274,4 +274,5 @@ public class AddSectionIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         assertThat(response.body().asString()).isEqualTo("2는 존재하지 않는 역 아이디입니다.");
     }
+    
 }

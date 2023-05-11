@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDAO;
 import subway.dao.StationDao;
+import subway.domain.Direction;
 import subway.domain.Section;
 import subway.dto.DeleteSectionRequest;
 import subway.dto.SectionRequest;
@@ -33,15 +34,6 @@ public class SectionService {
                 .collect(Collectors.toUnmodifiableList());
     }
     
-    public List<SectionResponse> saveSection(final SectionRequest sectionRequest) {
-        // 구역테이블에 라인이 존재하지 않는 경우 (신규 둥록)
-        final int count = this.sectionDAO.countSectionInLine(sectionRequest.getLineId());
-        if (count == 0) {
-            return this.creatNewSection(sectionRequest);
-        }
-        return this.addNewStationInSection(sectionRequest);
-    }
-    
     public void validate(final SectionRequest sectionRequest) {
         this.validateLine(sectionRequest.getLineId());
         this.validateStation(sectionRequest.getBaseStationId());
@@ -64,6 +56,15 @@ public class SectionService {
         }
     }
     
+    public List<SectionResponse> saveSection(final SectionRequest sectionRequest) {
+        // 구역테이블에 라인이 존재하지 않는 경우 (신규 둥록)
+        final int count = this.sectionDAO.countSectionInLine(sectionRequest.getLineId());
+        if (count == 0) {
+            return this.creatNewSection(sectionRequest);
+        }
+        return this.addNewStationInSection(sectionRequest);
+    }
+    
     private List<SectionResponse> creatNewSection(final SectionRequest sectionRequest) {
         return List.of(SectionResponse.of(this.sectionDAO.insert(Section.from(sectionRequest))));
     }
@@ -82,14 +83,16 @@ public class SectionService {
             throw new InvalidInputException("기준역이 라인에 존재하지 않습니다.");
         }
         
+        final Direction direction = Direction.of(sectionRequest.getDirection());
+        
         if (sectionSize == 1) {
             if (baseStationSections.get(0).getUpStationId() == sectionRequest.getBaseStationId()
-                    && !sectionRequest.isDirection()) {
+                    && direction.isUp()) {
                 //새로운 역 상행 종점
                 return this.creatNewSection(sectionRequest);
             }
             if (baseStationSections.get(0).getDownStationId() == sectionRequest.getBaseStationId()
-                    && sectionRequest.isDirection()) {
+                    && direction.isDown()) {
                 //새로운 역 하행 종점
                 return this.creatNewSection(sectionRequest);
             }
@@ -97,7 +100,7 @@ public class SectionService {
         
         // 새로운 역이 종점이 아닐 경우
         for (final Section section : baseStationSections) {
-            if (sectionRequest.isDirection() && section.getUpStationId() == sectionRequest.getBaseStationId()) {
+            if (direction.isDown() && section.getUpStationId() == sectionRequest.getBaseStationId()) {
                 // 거리비교
                 if (sectionRequest.getDistance() >= section.getDistance()) {
                     throw new InvalidInputException("거리가 기존 구역 거리를 초과했습니다.");
@@ -116,7 +119,7 @@ public class SectionService {
                 this.sectionDAO.insert(newSection2);
                 return List.of(SectionResponse.of(newSection1), SectionResponse.of(newSection2));
             }
-            if (!sectionRequest.isDirection() && section.getDownStationId() == sectionRequest.getBaseStationId()) {
+            if (direction.isUp() && section.getDownStationId() == sectionRequest.getBaseStationId()) {
                 // 거리비교
                 if (sectionRequest.getDistance() >= section.getDistance()) {
                     throw new InvalidInputException("거리가 기존 구역 거리를 초과했습니다");

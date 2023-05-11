@@ -27,11 +27,11 @@ public class Section {
     }
     
     public static Section from(final SectionRequest sectionRequest) {
-        if (sectionRequest.isDirection()) {
+        final Direction direction = Direction.of(sectionRequest.getDirection());
+        if (direction.isDown()) {
             return new Section(sectionRequest.getLineId(), sectionRequest.getBaseStationId(),
                     sectionRequest.getNewStationId(), sectionRequest.getDistance());
         }
-        
         return new Section(sectionRequest.getLineId(), sectionRequest.getNewStationId(),
                 sectionRequest.getBaseStationId(),
                 sectionRequest.getDistance());

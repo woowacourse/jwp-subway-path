@@ -50,7 +50,7 @@ public class DeleteSectionIntegrationTest extends IntegrationTest {
                 .when().post("/stations")
                 .then().log().all();
         
-        final SectionRequest sectionRequest = new SectionRequest(2, 2, 1, true, 3);
+        final SectionRequest sectionRequest = new SectionRequest(2, 2, 1, "DOWN", 3);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -133,7 +133,7 @@ public class DeleteSectionIntegrationTest extends IntegrationTest {
                 .when().post("/station")
                 .then().log().all();
         
-        final SectionRequest sectionRequest = new SectionRequest(2, 3, 2, true, 3);
+        final SectionRequest sectionRequest = new SectionRequest(2, 3, 2, "DOWN", 3);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

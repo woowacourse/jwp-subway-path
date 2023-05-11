@@ -5,10 +5,10 @@ public class SectionRequest {
     long lineId;
     long newStationId;
     long baseStationId;
-    boolean direction;
+    String direction;
     int distance;
     
-    public SectionRequest(final long lineId, final long newStationId, final long baseStationId, final boolean direction,
+    public SectionRequest(final long lineId, final long newStationId, final long baseStationId, final String direction,
             final int distance) {
         this.lineId = lineId;
         this.newStationId = newStationId;
@@ -29,7 +29,7 @@ public class SectionRequest {
         return this.baseStationId;
     }
     
-    public boolean isDirection() {
+    public String getDirection() {
         return this.direction;
     }
     

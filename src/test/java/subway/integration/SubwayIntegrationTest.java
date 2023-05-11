@@ -36,16 +36,16 @@ public class SubwayIntegrationTest extends IntegrationTest {
         final StationRequest stationRequest5 = new StationRequest("잠실새내역");
         this.postStationRequest(stationRequest5);
         
-        final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, true, 4);
+        final SectionRequest sectionRequest = new SectionRequest(1, 2, 1, "DOWN", 4);
         this.postSectionRequest(sectionRequest);
         
-        final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 1, true, 1);
+        final SectionRequest sectionRequest2 = new SectionRequest(1, 3, 1, "DOWN", 1);
         this.postSectionRequest(sectionRequest2);
         
-        final SectionRequest sectionRequest3 = new SectionRequest(1, 4, 3, true, 1);
+        final SectionRequest sectionRequest3 = new SectionRequest(1, 4, 3, "DOWN", 1);
         this.postSectionRequest(sectionRequest3);
         
-        final SectionRequest sectionRequest4 = new SectionRequest(1, 5, 4, true, 1);
+        final SectionRequest sectionRequest4 = new SectionRequest(1, 5, 4, "DOWN", 1);
         this.postSectionRequest(sectionRequest4);
         
         
@@ -82,8 +82,8 @@ public class SubwayIntegrationTest extends IntegrationTest {
         
         this.postLineRequest(line);
         
-        final SectionRequest sectionRequest1 = new SectionRequest(2, 6, 2, false, 1);
-        final SectionRequest sectionRequest2 = new SectionRequest(2, 7, 2, true, 1);
+        final SectionRequest sectionRequest1 = new SectionRequest(2, 6, 2, "", 1);
+        final SectionRequest sectionRequest2 = new SectionRequest(2, 7, 2, "DOWN", 1);
         
         this.postSectionRequest(sectionRequest1);
         this.postSectionRequest(sectionRequest2);
@@ -98,6 +98,21 @@ public class SubwayIntegrationTest extends IntegrationTest {
         Assertions.assertThat(subwayResponses.get(0).getStationResponses().size()).isEqualTo(5);
         Assertions.assertThat(subwayResponses.get(1).getLineResponse().getName()).isEqualTo("8호선");
         Assertions.assertThat(subwayResponses.get(1).getStationResponses().size()).isEqualTo(3);
+    }
+    
+    @DisplayName("만약 노선에 역이 아무것도 없는 경우 아무 역도 출력하지 않는다")
+    @Test
+    void findAllStationsInLineWithNoStations() {
+        final LineRequest lineRequest = new LineRequest("3호선", "green");
+        this.postLineRequest(lineRequest);
+        
+        final SubwayResponse subwayResponse = RestAssured.given().log().all()
+                .when().get("/lines/2/stations")
+                .then().log().all()
+                .extract().as(SubwayResponse.class);
+        
+        final List<StationResponse> orderedStations = subwayResponse.getStationResponses();
+        Assertions.assertThat(orderedStations.size()).isEqualTo(0);
     }
     
     private void postLineRequest(final LineRequest line) {
