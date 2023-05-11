@@ -1,31 +1,62 @@
 package subway.domain;
 
+import java.util.Objects;
+
 public class Section {
     private final int distance;
-    private final Long departureId;
-    private final Long arrivalId;
-    private final Direction direction;
+    private final Station departure;
+    private final Station arrival;
+    private final Line line;
 
-    public Section(final int distance, final Long departureId, final Long arrivalId, final Direction direction) {
+    public Section(int distance, Station departure, Station arrival, Line line) {
         this.distance = distance;
-        this.departureId = departureId;
-        this.arrivalId = arrivalId;
-        this.direction = direction;
+        this.departure = departure;
+        this.arrival = arrival;
+        this.line = line;
     }
 
-    public Direction getDirection() {
-        return direction;
+    public Section getReverse() {
+        return new Section(distance, arrival, departure, line);
+    }
+
+    public boolean LineEquals(Section other) {
+        return line.equals(other.getLine());
+    }
+
+    public boolean isDeparture(Station station) {
+        return departure.equals(station);
+    }
+
+    public boolean isArrival(Station station) {
+        return arrival.getName().equals(station.getName());
     }
 
     public int getDistance() {
         return distance;
     }
 
-    public Long getDepartureId() {
-        return departureId;
+    public Station getDeparture() {
+        return departure;
     }
 
-    public Long getArrivalId() {
-        return arrivalId;
+    public Station getArrival() {
+        return arrival;
+    }
+
+    public Line getLine() {
+        return line;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return distance == section.distance && Objects.equals(departure, section.departure) && Objects.equals(arrival, section.arrival) && Objects.equals(line, section.line);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance, departure, arrival, line);
     }
 }

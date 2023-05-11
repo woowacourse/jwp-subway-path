@@ -28,7 +28,7 @@ public class Station {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(name);
     }
 
     @Override
@@ -37,9 +37,6 @@ public class Station {
         if (o == null || getClass() != o.getClass()) return false;
         final Station station = (Station) o;
 
-        if (id == null && station.id == null) {
-            return name.equals(station.name);
-        }
-        return id.equals(station.id) && name.equals(station.name);
+        return name.equals(station.name);
     }
 }

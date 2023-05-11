@@ -7,14 +7,13 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Direction;
-import subway.domain.Line;
 import subway.domain.Section;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.Fixture.*;
 
 @JdbcTest
 @Sql("classpath:schema.sql")
@@ -30,11 +29,8 @@ class SectionDaoTest {
     @DisplayName("Section 입력 테스트")
     void insertSection() {
         // given
-        final Section section = new Section(1, 1L, 2L, Direction.DOWN);
-        final Line line = new Line(1L, "2호선", "green", null, null);
-
         // when
-        sectionDao.insertSection(section, line.getId());
+        sectionDao.insertSection(sectionAB);
 
         // then
         final List<SectionEntity> sectionEntities = sectionDao.findByLineId(line.getId());
@@ -45,9 +41,7 @@ class SectionDaoTest {
     @DisplayName("LineId로 section을 조회한다.")
     void findByLineId() {
         // given
-        final Section section = new Section(1, 1L, 2L, Direction.DOWN);
-        final Line line = new Line(1L, "2호선", "green", null, null);
-        sectionDao.insertSection(section, line.getId());
+        sectionDao.insertSection(sectionAB);
 
         // when
         final List<SectionEntity> sectionEntities = sectionDao.findByLineId(line.getId());
@@ -60,19 +54,15 @@ class SectionDaoTest {
     @DisplayName("StationId로 Section을 조회한다")
     void findByStationIds() {
         // given
-        final long departureId = 1L;
-        final long arrivalId = 2L;
-        final Section section = new Section(1, departureId, arrivalId, Direction.DOWN);
-        final Line line = new Line(1L, "2호선", "green", null, null);
-        sectionDao.insertSection(section, line.getId());
+        sectionDao.insertSection(sectionAB);
 
         // when
-        final SectionEntity sectionEntity = sectionDao.findByStationIds(departureId, arrivalId);
+        final SectionEntity sectionEntity = sectionDao.findByStationIds(stationA.getId(), stationB.getId());
 
         // then
         assertAll(
-                () -> assertThat(sectionEntity.getDepartureId()).isEqualTo(departureId),
-                () -> assertThat(sectionEntity.getArrivalId()).isEqualTo(arrivalId)
+                () -> assertThat(sectionEntity.getDepartureId()).isEqualTo(stationA.getId()),
+                () -> assertThat(sectionEntity.getArrivalId()).isEqualTo(stationB.getId())
         );
     }
 
@@ -80,19 +70,17 @@ class SectionDaoTest {
     @DisplayName("Section의 정보를 수정한다")
     void update() {
         // given
-        final Section section = new Section(1, 1L, 2L, Direction.DOWN);
-        final Line line = new Line(1L, "2호선", "green", null, null);
-        sectionDao.insertSection(section, line.getId());
+        sectionDao.insertSection(sectionAB);
 
         // when
-        final Section updateSection = new Section(2, 1L, 3L, Direction.DOWN);
-        sectionDao.update(line.getId(), updateSection);
+        final Section updateSection = new Section(2, stationA, stationC, line);
+        sectionDao.update(sectionAB, updateSection);
 
         // then
         final SectionEntity entity = sectionDao.findByLineId(line.getId()).get(0);
         assertAll(
                 () -> assertThat(entity.getDistance()).isEqualTo(updateSection.getDistance()),
-                () -> assertThat(entity.getArrivalId()).isEqualTo(updateSection.getArrivalId())
+                () -> assertThat(entity.getArrivalId()).isEqualTo(updateSection.getArrival().getId())
         );
     }
 }

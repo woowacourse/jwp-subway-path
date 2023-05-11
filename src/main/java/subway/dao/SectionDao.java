@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Direction;
 import subway.domain.Section;
 
 import java.util.List;
@@ -19,18 +18,17 @@ public class SectionDao {
         Long departure = rs.getLong("departure_id");
         Long arrival = rs.getLong("arrival_id");
         Long lineId = rs.getLong("line_id");
-        String direction = rs.getString("direction");
-        return new SectionEntity(id, distance, departure, arrival, lineId, Direction.getDirection(direction));
+        return new SectionEntity(id, distance, departure, arrival, lineId);
     };
 
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insertSection(final Section section, final Long lineId) {
-        final String sql = "INSERT INTO section(departure_id, arrival_id, distance, line_id, direction) VALUES (?, ?, ?, ?, ?)";
+    public void insertSection(final Section section) {
+        final String sql = "INSERT INTO section(departure_id, arrival_id, distance, line_id) VALUES (?, ?, ?, ?)";
 
-        jdbcTemplate.update(sql, section.getDepartureId(), section.getArrivalId(), section.getDistance(), lineId, section.getDirection().getValue());
+        jdbcTemplate.update(sql, section.getDeparture().getId(), section.getArrival().getId(), section.getDistance(), section.getLine().getId());
     }
 
     public List<SectionEntity> findByLineId(final Long lineId) {
@@ -45,9 +43,21 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, departureId, arrivalId);
     }
 
-    public void update(final Long id, final Section section) {
-        final String sql = "UPDATE section SET distance = ?, departure_id = ?, arrival_id = ? WHERE id = ?";
+    public void update(final Section before, final Section after) {
+        final String sql = "UPDATE section SET distance = ?, departure_id = ?, arrival_id = ? WHERE departure_id = ? AND arrival_id = ?";
 
-        jdbcTemplate.update(sql, section.getDistance(), section.getDepartureId(), section.getArrivalId(), id);
+        jdbcTemplate.update(sql, after.getDistance(), after.getDeparture().getId(), after.getArrival().getId(), before.getDeparture().getId(), before.getArrival().getId());
+    }
+
+    public List<SectionEntity> findAll() {
+        final String sql = "SELECT * FROM section";
+
+        return jdbcTemplate.query(sql, sectionEntityRowMapper);
+    }
+
+    public void deleteAll() {
+        String sql = "DELETE FROM section";
+
+        jdbcTemplate.update(sql);
     }
 }
