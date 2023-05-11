@@ -43,6 +43,11 @@ public class Line {
     public void delete(final Station deletedStation) {
         final Section target = starter.findPreSectionOnDelete(deletedStation);
 
+        if (target == starter) {
+            starter = null;
+            return;
+        }
+
         if (canExchangeStarter(target)) {
             if (starter.isSameCurrentWith(deletedStation)) {
                 exchangeStarterOnDelete();
@@ -77,6 +82,10 @@ public class Line {
             current = current.getTo();
         }
         return current;
+    }
+
+    public boolean isDeleted() {
+        return starter == null;
     }
 
     public List<Section> getSections() {

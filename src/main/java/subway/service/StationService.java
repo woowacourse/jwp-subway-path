@@ -19,13 +19,15 @@ public class StationService {
     private final SectionDao sectionDao;
 
     private final CommonService commonService;
+    private final LineService lineService;
 
     public StationService(
             final SectionDao sectionDao,
-            final CommonService commonService
-    ) {
+            final CommonService commonService,
+            final LineService lineService) {
         this.sectionDao = sectionDao;
         this.commonService = commonService;
+        this.lineService = lineService;
     }
 
     public void registerStation(final StationRegisterRequest stationRegisterRequest) {
@@ -71,6 +73,12 @@ public class StationService {
         final Line line = commonService.mapToLineFrom(lineName);
 
         line.delete(new Station(stationDeleteRequest.getStationName()));
+
+        if (line.isDeleted()) {
+            sectionDao.deleteAll(lineEntity.getId());
+            lineService.deleteLine(lineEntity.getId());
+            return;
+        }
 
         updateLine(lineEntity, line);
     }

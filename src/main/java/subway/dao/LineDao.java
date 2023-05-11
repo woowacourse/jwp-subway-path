@@ -37,4 +37,10 @@ public class LineDao {
 
         return jdbcTemplate.query(sql, rowMapper);
     }
+
+    public void deleteLineById(final Long lineId) {
+        final String sql = "DELETE FROM LINE L WHERE L.id = ?";
+
+        jdbcTemplate.update(sql, lineId);
+    }
 }

@@ -69,4 +69,8 @@ public class LineService {
 
         return new LineResponse(line.getName(), sectionInLineResponses);
     }
+
+    public void deleteLine(final Long lineId) {
+        lineDao.deleteLineById(lineId);
+    }
 }

@@ -242,4 +242,25 @@ class LineTest {
         //then
         assertNull(section2.getTo());
     }
+
+    /**
+     * 기존 : A -> B
+     * 삭제 : B
+     * 결과 : Line 삭제
+     */
+    @Test
+    @DisplayName("delete() : Line 에 Section 이 하나밖에 없을 때, 역을 삭제할 경우 Line이 사라진다.")
+    void test_delete_line() throws Exception {
+        //given
+        final Stations stations = new Stations(new Station("A"), new Station("B"), 5);
+        final Line line = new Line("2호선");
+
+        line.add(new Section(stations));
+
+        //when
+        line.delete(new Station("B"));
+
+        //then
+        assertNull(line.getStarter());
+    }
 }
