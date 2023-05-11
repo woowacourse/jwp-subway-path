@@ -41,4 +41,9 @@ public class Section {
     public Distance getDistance() {
         return distance;
     }
+
+    public boolean isSameStations(final Section section) {
+        return (section.beforeStation == beforeStation && section.nextStation == nextStation)
+                || (section.beforeStation == nextStation && section.nextStation == beforeStation);
+    }
 }
