@@ -22,7 +22,7 @@ class RouteTest {
         final Line line = new Line(1L, "2호선", "green");
 
         // expect
-        assertThatThrownBy(() -> route.insertStation(line, new Station(1L, "디노"), new Station(2L, "후추"), 7))
+        assertThatThrownBy(() -> route.insertSection(line, new Station(1L, "디노"), new Station(2L, "후추"), 7))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 호선이 존재하지 않습니다.");
     }
@@ -48,7 +48,7 @@ class RouteTest {
         final Route route = new Route(new HashMap<>());
         route.insertLine(lineNumber2);
         // when
-        route.insertStation(lineNumber2, 뚝섬, 성수, 5);
+        route.insertSection(lineNumber2, 뚝섬, 성수, 5);
         // then
         assertSoftly(softly -> {
             final Map<Line, Sections> sectionsByLine = route.getSectionsByLine();
@@ -68,7 +68,7 @@ class RouteTest {
 
         final Route route = new Route(new HashMap<>());
         route.insertLine(lineNumber2);
-        route.insertStation(lineNumber2, 뚝섬, 성수, 5);
+        route.insertSection(lineNumber2, 뚝섬, 성수, 5);
         // when
         route.updateStation(lineNumber2, 성수, 후추);
 
@@ -90,7 +90,7 @@ class RouteTest {
 
         final Route route = new Route(new HashMap<>());
         route.insertLine(lineNumber2);
-        route.insertStation(lineNumber2, 뚝섬, 성수, 5);
+        route.insertSection(lineNumber2, 뚝섬, 성수, 5);
         // when
         route.updateLine(lineNumber2, lineNumber8);
         // then

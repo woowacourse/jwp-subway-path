@@ -1,6 +1,8 @@
 package subway.domain;
 
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Route {
 
@@ -26,7 +28,7 @@ public class Route {
         }
     }
 
-    public void insertStation(final Line line, final Station from, final Station to, final int distance) {
+    public void insertSection(final Line line, final Station from, final Station to, final int distance) {
         validateLineExistence(line);
         final Sections sections = sectionsByLine.get(line);
 
@@ -49,7 +51,16 @@ public class Route {
         sections.updateStation(targetStation, updateStation);
     }
 
+    public void deleteStation(final Line line, final Station station) {
+        final Sections sections = sectionsByLine.get(line);
+        sections.deleteSection(station);
+    }
+
     public Map<Line, Sections> getSectionsByLine() {
         return sectionsByLine;
+    }
+
+    public List<Line> getLines() {
+        return sectionsByLine.keySet().stream().collect(Collectors.toUnmodifiableList());
     }
 }
