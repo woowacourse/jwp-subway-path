@@ -128,8 +128,8 @@ class StationDaoTest {
         sectionDao.insert(section2);
 
         // when
-        final Station upTerminalStation = stationDao.getUpTerminalStation(lineId1);
-        final Station downTerminalStation = stationDao.getDownTerminalStation(lineId1);
+        final Station upTerminalStation = stationDao.findUpTerminalStation(lineId1);
+        final Station downTerminalStation = stationDao.findDownTerminalStation(lineId1);
 
         // then
         assertThat(upTerminalStation.getName()).isEqualTo("강남역");

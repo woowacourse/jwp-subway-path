@@ -1,16 +1,16 @@
 package subway.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
-import subway.dto.StationDeleteRequest;
-import subway.dto.StationResponse;
-import subway.dto.StationSaveRequest;
 import subway.domain.FinalStation;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.StationResponse;
+import subway.dto.StationSaveRequest;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
@@ -25,87 +25,87 @@ public class StationService {
     }
 
     @Transactional
-    public void saveStation(StationSaveRequest request) {
+    public void saveStation(final Long lineId, final StationSaveRequest request) {
         validateAlreadyExistRequestStations(List.of(request.getUpStation(), request.getDownStation()));
         if (checkEmptyStations()) {
-            saveAllRequestStations(request);
+            saveAllRequestStations(lineId, request);
             return;
         }
 
         if (isAlreadyExistStation(request.getUpStation())) {
-            nonCalculateDistanceAndCreateStation(request);
+            createAnotherStation(lineId, request);
             return;
         }
 
         if (isAlreadyExistStation(request.getDownStation())) {
-            createSection(request);
+            createSection(lineId, request);
         }
     }
 
-    private void nonCalculateDistanceAndCreateStation(final StationSaveRequest request) {
+    private void createAnotherStation(final Long lineId, final StationSaveRequest request) {
         final Station alreadyExistStation = stationDao.findByName(request.getUpStation()).get();
-        FinalStation finalStation = getFinalStationInfo(request);
+        FinalStation finalStation = getFinalStation(lineId);
 
         if (finalStation.isNotFinalStation(alreadyExistStation.getName()) || finalStation.isFinalUpStation(alreadyExistStation.getName())) {
-            calculateDistanceAndCreateStation(request, alreadyExistStation);
+            calculateDistanceAndCreateStation(lineId, request, alreadyExistStation);
             return;
         }
-        nonCalculateDistanceAndCreateStation(request, alreadyExistStation);
+        nonCalculateDistanceAndCreateStation(lineId, request, alreadyExistStation);
     }
 
-    private void nonCalculateDistanceAndCreateStation(final StationSaveRequest request, final Station alreadyExistStation) {
+    private void nonCalculateDistanceAndCreateStation(final Long lineId, final StationSaveRequest request, final Station alreadyExistStation) {
         final Long newUpStationId = alreadyExistStation.getId();
         final Long newDownStationId = stationDao.insert(request.getDownStationEntity());
         sectionService.saveSection(
-                Section.of(request.getLineId(), newUpStationId, newDownStationId, request.getDistance()));
+                Section.of(lineId, newUpStationId, newDownStationId, request.getDistance()));
     }
 
-    private void calculateDistanceAndCreateStation(final StationSaveRequest request, final Station alreadyExistStation) {
+    private void calculateDistanceAndCreateStation(final Long lineId, final StationSaveRequest request, final Station alreadyExistStation) {
         final Section originSection = sectionService.findSectionByUpStationId(alreadyExistStation.getId());
         validateDistance(originSection.getDistance(), request.getDistance());
         sectionService.deleteById(originSection.getId());
-        createNewSections(request, originSection, alreadyExistStation);
+        createNewSections(lineId, request, originSection, alreadyExistStation);
     }
 
-    private FinalStation getFinalStationInfo(StationSaveRequest request) {
-        final String finalUpStationName = stationDao.getUpTerminalStation(request.getLineId()).getName();
-        final String finalDownStationName = stationDao.getDownTerminalStation(request.getLineId()).getName();
+    private FinalStation getFinalStation(final Long lineId) {
+        final String finalUpStationName = stationDao.findUpTerminalStation(lineId).getName();
+        final String finalDownStationName = stationDao.findDownTerminalStation(lineId).getName();
         return FinalStation.of(finalUpStationName, finalDownStationName);
     }
 
-    private void createSection(final StationSaveRequest request) {
+    private void createSection(final Long lineId, final StationSaveRequest request) {
         final Long upStationId = stationDao.insert(request.getUpStationEntity());
         final Long downStationId = stationDao.findByName(request.getDownStation()).get().getId();
 
         sectionService.saveSection(
-                Section.of(request.getLineId(), upStationId, downStationId, request.getDistance())
+                Section.of(lineId, upStationId, downStationId, request.getDistance())
         );
     }
 
-    private void createNewSections(StationSaveRequest request, Section section, Station alreadyExistStation) {
+    private void createNewSections(final Long lineId, final StationSaveRequest request, final Section section, final Station alreadyExistStation) {
         final Long downStationId = stationDao.insert(request.getDownStationEntity());
         final int beforeSectionDistance = section.getDistance() - request.getDistance();
 
         sectionService.saveSection(Section.of(
-                request.getLineId(),
+                lineId,
                 alreadyExistStation.getId(),
                 downStationId,
                 beforeSectionDistance
         ));
         sectionService.saveSection(Section.of(
-                request.getLineId(),
+                lineId,
                 downStationId,
                 section.getDownStationId(),
                 section.getDistance() - beforeSectionDistance
         ));
     }
 
-    private void saveAllRequestStations(StationSaveRequest request) {
+    private void saveAllRequestStations(final Long lineId, final StationSaveRequest request) {
         final Long upStationId = stationDao.insert(request.getUpStationEntity());
         final Long downStationId = stationDao.insert(request.getDownStationEntity());
 
         sectionService.saveSection(Section.of(
-                request.getLineId(),
+                lineId,
                 upStationId,
                 downStationId,
                 request.getDistance())
@@ -137,11 +137,11 @@ public class StationService {
         return allStations.size() == 0;
     }
 
-    public StationResponse findStationResponseById(Long id) {
+    public StationResponse findStationResponseById(final Long id) {
         return StationResponse.of(stationDao.findById(id));
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponse> getAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
@@ -156,52 +156,26 @@ public class StationService {
     }
 
     @Transactional
-    public void deleteStationById(final StationDeleteRequest request) {
-        final List<Section> allSections = sectionService.findAll();
-
-        final Section connectedOnLeft = getConnectedOnLeft(allSections, request.getStationId());
-
-        final Section connectedOnRight = getConnectedOnRight(allSections, request.getStationId());
-
-        if (connectedOnLeft == null || connectedOnRight == null) {
-            stationDao.deleteById(request.getStationId());
+    public void deleteStationById(final Long lineId, final Long stationId) {
+        Station station = stationDao.findById(stationId);
+        if (getFinalStation(lineId).isFinalStation(station.getName())) {
+            stationDao.deleteById(stationId);
             return;
         }
 
-        int newDistance = connectedOnLeft.getDistance() + connectedOnRight.getDistance();
+        final Section leftSection = sectionService.getLeftSectionByStationId(stationId);
+        final Section rightSection = sectionService.getRightSectionByStationId(stationId);
+        int newDistance = leftSection.getDistance() + rightSection.getDistance();
 
-        sectionService.deleteById(connectedOnLeft.getId());
-        sectionService.deleteById(connectedOnRight.getId());
-        stationDao.deleteById(request.getStationId());
+        stationDao.deleteById(stationId);
         sectionService.saveSection(
-                Section.of(request.getLineId(),
-                        connectedOnLeft.getUpStationId(),
-                        connectedOnRight.getDownStationId(),
-                        newDistance));
+                Section.of(
+                        lineId,
+                        leftSection.getUpStationId(),
+                        rightSection.getDownStationId(),
+                        newDistance
+                )
+        );
     }
 
-    private Section getConnectedOnLeft(final List<Section> allSections, final Long id) {
-        final List<Section> sections = allSections.stream()
-                .filter(it -> it.getDownStationId() == id)
-                .collect(Collectors.toList());
-        if (sections.size() == 0) {
-            return null;
-        }
-
-        return sections.get(0);
-    }
-
-    private Section getConnectedOnRight(final List<Section> allSections, final Long id) {
-        final List<Section> sections = allSections.stream()
-                .filter(it -> it.getUpStationId() == id)
-                .collect(Collectors.toList());
-        if (sections.size() == 0) {
-            return null;
-        }
-
-        return sections.get(0);
-    }
-
-    public void updateStation(final Long id, final StationSaveRequest request) {
-    }
 }

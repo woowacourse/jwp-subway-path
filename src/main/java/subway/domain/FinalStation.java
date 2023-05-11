@@ -21,4 +21,9 @@ public class FinalStation {
     public boolean isFinalUpStation(final String stationName) {
         return finalUpStationName.equals(stationName);
     }
+
+    public boolean isFinalStation(final String stationName) {
+        return finalUpStationName.equals(stationName) || finalDownStationName.equals(stationName);
+    }
+
 }

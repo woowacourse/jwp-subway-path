@@ -66,6 +66,4 @@ public class LineController {
         return ResponseEntity.ok(stationService.findAllStationOrderBySection());
     }
 
-
-
 }

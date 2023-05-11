@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Section;
+import subway.domain.Station;
 
 @Repository
 public class SectionDao {
@@ -60,4 +61,17 @@ public class SectionDao {
         String sql = "select * from SECTIONS";
         return jdbcTemplate.query(sql, sectionRowMapper);
     }
+
+    public Section findLeftSectionByStationId(Long stationId) {
+        String sql = "select * from sections se " +
+                "where se.down_station_id = ?";
+        return jdbcTemplate.queryForObject(sql, sectionRowMapper, stationId);
+    }
+
+    public Section findRightSectionByStationId(Long stationId) {
+        String sql = "select * from sections se " +
+                "where se.up_station_id = ?";
+        return jdbcTemplate.queryForObject(sql, sectionRowMapper, stationId);
+    }
+
 }

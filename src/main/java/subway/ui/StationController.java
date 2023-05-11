@@ -4,16 +4,13 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
-import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 import subway.dto.StationSaveRequest;
 
@@ -26,15 +23,18 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody StationSaveRequest stationSaveRequest) {
-        stationService.saveStation(stationSaveRequest);
+    @PostMapping("/{lineId}")
+    public ResponseEntity<Void> createStation(
+            @PathVariable Long lineId,
+            @RequestBody StationSaveRequest stationSaveRequest
+    ) {
+        stationService.saveStation(lineId, stationSaveRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
+        return ResponseEntity.ok().body(stationService.getAllStationResponses());
     }
 
     @GetMapping("/{id}")
@@ -42,9 +42,12 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findStationResponseById(id));
     }
 
-    @DeleteMapping()
-    public ResponseEntity<Void> deleteStation(@RequestBody StationDeleteRequest request) {
-        stationService.deleteStationById(request);
+    @DeleteMapping("/{lineId}/{stationId}")
+    public ResponseEntity<Void> deleteStation(
+            @PathVariable Long lineId,
+            @PathVariable Long stationId
+    ) {
+        stationService.deleteStationById(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 

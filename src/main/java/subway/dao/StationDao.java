@@ -73,7 +73,7 @@ public class StationDao {
         }
     }
 
-    public Station getUpTerminalStation(Long lineId) {
+    public Station findUpTerminalStation(Long lineId) {
         String sql = "SELECT st.* "
                 + "FROM STATIONS st "
                 + "WHERE ( "
@@ -87,7 +87,7 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, lineId, lineId);
     }
 
-    public Station getDownTerminalStation(Long lineId) {
+    public Station findDownTerminalStation(Long lineId) {
         String sql = "SELECT st.* "
                 + "FROM STATIONS st "
                 + "WHERE ( "

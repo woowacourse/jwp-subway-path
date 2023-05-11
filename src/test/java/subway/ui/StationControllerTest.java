@@ -1,6 +1,5 @@
 package subway.ui;
 
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -26,7 +25,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.StationService;
 import subway.dto.StationResponse;
-import subway.dto.StationSaveRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -66,7 +64,7 @@ class StationControllerTest {
                 new StationResponse(1L, "잠실역"),
                 new StationResponse(2L, "선릉역")
         );
-        when(stationService.findAllStationResponses()).thenReturn(responses);
+        when(stationService.getAllStationResponses()).thenReturn(responses);
         final String responseJson = objectMapper.writeValueAsString(responses);
 
         // when, then

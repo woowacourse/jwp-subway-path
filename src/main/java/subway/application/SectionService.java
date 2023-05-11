@@ -34,7 +34,11 @@ public class SectionService {
         return sectionDao.findAll();
     }
 
-    public Section findByDownStationId(final Long downStationId) {
-        return sectionDao.findByDownStationId(downStationId);
+    public Section getLeftSectionByStationId(final Long stationId) {
+        return sectionDao.findLeftSectionByStationId(stationId);
+    }
+
+    public Section getRightSectionByStationId(final Long stationId) {
+        return sectionDao.findRightSectionByStationId(stationId);
     }
 }
