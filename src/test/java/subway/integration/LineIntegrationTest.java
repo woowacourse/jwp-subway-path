@@ -23,6 +23,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationDeleteRequest;
 import subway.dto.StationRegisterRequest;
 import subway.dto.StationsRegisterRequest;
 
@@ -401,5 +402,46 @@ class LineIntegrationTest extends IntegrationTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선의 역을 제거한다")
+    @Test
+    void deleteStation() {
+        // given
+        ExtractableResponse<Response> createResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationsRegisterRequest(JAMSIL_ID, JAMSILNARU_ID, 10))
+                .when().post("/lines/{lineId}/station", lineId)
+                .then().log().all().
+                extract();
+
+        // when
+        RestAssured
+                .given().log().all()
+                .body(new StationDeleteRequest(JAMSIL_ID))
+                .when().delete("/lines/{lineId}/station", lineId)
+                .then().log().all()
+                .extract();
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .when().get("/lines/{lineId}", lineId)
+                .then().log().all()
+                .extract();
+        LineResponse lineResponse = response.body().as(LineResponse.class);
+
+        // then
+        assertThat(lineResponse.getStations()).hasSize(0);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
