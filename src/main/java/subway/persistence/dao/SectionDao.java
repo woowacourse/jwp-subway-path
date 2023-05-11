@@ -4,8 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
-import subway.domain.Section;
 import subway.persistence.dao.entity.SectionEntity;
 
 import javax.sql.DataSource;
@@ -23,9 +21,9 @@ public class SectionDao {
     private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("id"),
-                    rs.getInt("distance"),
                     rs.getInt("up_station_id"),
                     rs.getInt("down_station_id"),
+                    rs.getInt("distance"),
                     rs.getInt("line_id")
             );
 
@@ -37,16 +35,15 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Section insert(Section section, Line line) {
+    public SectionEntity insert(SectionEntity sectionEntity, long lineId) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", section.getId());
-        params.put("up_station_id", section.getUpStation().getId());
-        params.put("down_station_id", section.getDownStation().getId());
-        params.put("distance", section.getDistance().getDistance());
-        params.put("line_id", line.getId());
+        params.put("up_station_id", sectionEntity.getUpStationId());
+        params.put("down_station_id", sectionEntity.getDownStationId());
+        params.put("distance", sectionEntity.getDistance());
+        params.put("line_id", lineId);
 
         long sectionId = insertAction.executeAndReturnKey(params).longValue();
-        return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
+        return new SectionEntity(sectionId, sectionEntity.getUpStationId(), sectionEntity.getDownStationId(), sectionEntity.getDistance(), lineId);
     }
 
     public List<SectionEntity> findSectionsByLine(long lineId) {
