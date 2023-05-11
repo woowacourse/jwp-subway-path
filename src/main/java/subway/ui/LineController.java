@@ -49,10 +49,4 @@ public class LineController {
         lineService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Void> handleSQLException(Exception exception) {
-        exception.printStackTrace();
-        return ResponseEntity.badRequest().build();
-    }
 }
