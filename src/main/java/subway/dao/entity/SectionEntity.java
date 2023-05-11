@@ -1,20 +1,22 @@
 package subway.dao.entity;
 
+import subway.domain.Station;
+
 public class SectionEntity {
     private Long id;
     private Long lineId;
-    private String startStationName;
-    private String endStationName;
+    private Station startStation;
+    private Station endStation;
     private int distance;
 
     public SectionEntity() {
     }
 
-    public SectionEntity(Long id, Long lineId, String startStationName, String endStationName, int distance) {
+    public SectionEntity(Long id, Long lineId, Station startStation, Station endStation, int distance) {
         this.id = id;
         this.lineId = lineId;
-        this.startStationName = startStationName;
-        this.endStationName = endStationName;
+        this.startStation = startStation;
+        this.endStation = endStation;
         this.distance = distance;
     }
 
@@ -26,24 +28,16 @@ public class SectionEntity {
         return lineId;
     }
 
-    public String getStartStationName() {
-        return startStationName;
+    public Station getStartStation() {
+        return startStation;
     }
 
-    public String getEndStationName() {
-        return endStationName;
+    public Station getEndStation() {
+        return endStation;
     }
 
     public int getDistance() {
         return distance;
-    }
-
-    public void setStartStationName(String startStationName) {
-        this.startStationName = startStationName;
-    }
-
-    public void setEndStationName(String endStationName) {
-        this.endStationName = endStationName;
     }
 
     public void setDistance(int distance) {

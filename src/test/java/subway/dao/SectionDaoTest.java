@@ -65,11 +65,11 @@ class SectionDaoTest {
         long sectionId = sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
 
         // when
-        sectionDao.update(new SectionEntity(sectionId, lineId, "samsung", "busan", 1));
+        sectionDao.update(sectionId, new Section(new Station("samsung"), new Station("busan"), 1));
 
         List<SectionEntity> sections = sectionDao.findAllByLineId(lineId);
 
-        List<SectionEntity> sectionEntities = List.of(new SectionEntity(sectionId, lineId, "samsung", "busan", 1));
+        List<SectionEntity> sectionEntities = List.of(new SectionEntity(sectionId, lineId, new Station("samsung"), new Station("busan"), 1));
         assertThat(sections).usingRecursiveComparison()
                 .isEqualTo(sectionEntities);
     }

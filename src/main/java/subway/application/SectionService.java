@@ -4,17 +4,18 @@ import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.dao.entity.SectionEntity;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionResponse;
+import subway.exception.IllegalDistanceException;
+import subway.exception.IllegalSectionException;
+import subway.exception.StationNotFoundException;
 
 @Service
 public class SectionService {
@@ -36,59 +37,62 @@ public class SectionService {
 
     private void validateStation(String startStationName, String endStationName) {
         if (!stationDao.existsBy(startStationName) || !stationDao.existsBy(endStationName)) {
-            throw new IllegalArgumentException();
+            throw new StationNotFoundException("해당 되는 역을 찾을 수 없습니다.");
         }
     }
 
-    private void addSection(Long lineId, Section section) {
-        int distance = section.getDistance();
+    private void addSection(Long lineId, Section newSection) {
         if (sectionDao.isEmptyByLineId(lineId)) {
-            sectionDao.insert(lineId, section);
+            sectionDao.insert(lineId, newSection);
             return;
         }
-        Station startStation = section.getStartStation();
-        Station endStation = section.getEndStation();
-
-        boolean hasStartStation = sectionDao.isStationInLine(lineId, startStation.getName());
-        boolean hasEndStation = sectionDao.isStationInLine(lineId, endStation.getName());
-        if ((hasStartStation && hasEndStation) || (!hasStartStation && !hasEndStation)) {
-            throw new IllegalArgumentException();
-        }
+        boolean hasStartStation = sectionDao.isStationInLine(lineId, newSection.getStartStationName());
+        boolean hasEndStation = sectionDao.isStationInLine(lineId, newSection.getEndStationName());
+        validateHasStation(hasStartStation, hasEndStation);
         if (hasStartStation) {
-            Optional<SectionEntity> targetSectionOptional = sectionDao.findByStartStationNameAndLineId(
-                    startStation.getName(), lineId);
-            if (targetSectionOptional.isPresent()) {
-                SectionEntity sectionEntity = targetSectionOptional.get();
-                if (distance >= sectionEntity.getDistance()) {
-                    throw new IllegalArgumentException();
-                }
-                String tempEndStationName = sectionEntity.getEndStationName();
-                sectionDao.insert(lineId, new Section(endStation, new Station(tempEndStationName),
-                        sectionEntity.getDistance() - distance));
-                sectionEntity.setEndStationName(endStation.getName());
-                sectionEntity.setDistance(distance);
-                sectionDao.update(sectionEntity);
-                return;
-            }
-            sectionDao.insert(lineId, section);
+            addEndSection(lineId, newSection);
         }
         if (hasEndStation) {
-            Optional<SectionEntity> targetSectionOptional = sectionDao.findByEndStationNameAndLineId(
-                    endStation.getName(), lineId);
-            if (targetSectionOptional.isPresent()) {
-                SectionEntity sectionEntity = targetSectionOptional.get();
-                if (distance >= sectionEntity.getDistance()) {
-                    throw new IllegalArgumentException();
-                }
-                String tempStartStationName = sectionEntity.getStartStationName();
-                sectionDao.insert(lineId, new Section(new Station(tempStartStationName), startStation,
-                        sectionEntity.getDistance() - distance));
-                sectionEntity.setStartStationName(startStation.getName());
-                sectionEntity.setDistance(distance);
-                sectionDao.update(sectionEntity);
-                return;
-            }
-            sectionDao.insert(lineId, section);
+            addStartSection(lineId, newSection);
+        }
+    }
+
+    private void addEndSection(Long lineId, Section newSection) {
+        sectionDao.findByStartStationNameAndLineId(newSection.getStartStationName(), lineId)
+            .ifPresentOrElse(section -> {
+                int distance = section.getDistance();
+                int newDistance = newSection.getDistance();
+                validateDistance(distance, newDistance);
+                Station newStation = newSection.getEndStation();
+                sectionDao.update(section.getId(), new Section(section.getStartStation(), newStation, newDistance));
+                sectionDao.insert(lineId, new Section(newStation, section.getEndStation(), distance - newDistance));
+            }, () -> sectionDao.insert(lineId, newSection));
+    }
+
+    private void addStartSection(Long lineId, Section newSection) {
+        sectionDao.findByEndStationNameAndLineId(newSection.getEndStationName(), lineId)
+                .ifPresentOrElse(section -> {
+                    int distance = section.getDistance();
+                    int newDistance = newSection.getDistance();
+                    validateDistance(distance, newDistance);
+                    Station newStation = newSection.getStartStation();
+                    sectionDao.update(section.getId(), new Section(newStation, section.getEndStation(), newDistance));
+                    sectionDao.insert(lineId, new Section(section.getStartStation(), newStation, distance - newDistance));
+                }, () -> sectionDao.insert(lineId, newSection));
+    }
+
+    private void validateDistance(int distance, int newDistance) {
+        if (distance <= newDistance) {
+            throw new IllegalDistanceException("새로운 구간의 길이는 기존 구간의 길이보다 작아야 합니다.");
+        }
+    }
+
+    private void validateHasStation(boolean hasStartStation, boolean hasEndStation) {
+        if (hasStartStation && hasEndStation) {
+            throw new IllegalSectionException("이미 노선에 추가할 역이 존재합니다.");
+        }
+        if (!hasStartStation && !hasEndStation) {
+            throw new IllegalSectionException("노선에 기준이 되는 역을 찾을 수 없습니다.");
         }
     }
 

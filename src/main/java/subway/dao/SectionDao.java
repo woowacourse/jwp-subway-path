@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Section;
+import subway.domain.Station;
 
 @Repository
 public class SectionDao {
@@ -18,8 +19,8 @@ public class SectionDao {
     private static final RowMapper<SectionEntity> rowMapper = (rs, rowNum) -> new SectionEntity(
             rs.getLong("id"),
             rs.getLong("line_id"),
-            rs.getString("start_station_name"),
-            rs.getString("end_station_name"),
+            new Station(rs.getString("start_station_name")),
+            new Station(rs.getString("end_station_name")),
             rs.getInt("distance"));
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
@@ -38,10 +39,10 @@ public class SectionDao {
         )).longValue();
     }
 
-    public void update(SectionEntity sectionEntity) {
+    public void update(Long sectionId, Section section) {
         String sql = "UPDATE SECTION SET start_station_name = ?, end_station_name = ?, distance = ? WHERE id = ?";
-        jdbcTemplate.update(sql, sectionEntity.getStartStationName(), sectionEntity.getEndStationName(),
-                sectionEntity.getDistance(), sectionEntity.getId());
+        jdbcTemplate.update(sql, section.getStartStationName(), section.getEndStationName(),
+                section.getDistance(), sectionId);
     }
 
     public Long countByLineId(Long lineId) {

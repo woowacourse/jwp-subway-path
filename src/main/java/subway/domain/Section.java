@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.dao.entity.SectionEntity;
+import subway.exception.IllegalDistanceException;
 
 public class Section {
     private final Station startStation;
@@ -16,21 +17,28 @@ public class Section {
 
     private void validateDistance(int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("구간의 길이는 1 이상 이어야 합니다.");
+            throw new IllegalDistanceException("구간의 길이는 1 이상 이어야 합니다.");
         }
     }
 
     public static Section fromEntity(SectionEntity sectionEntity) {
-        return new Section(new Station(sectionEntity.getStartStationName()), new Station(
-                sectionEntity.getEndStationName()), sectionEntity.getDistance());
+        return new Section(sectionEntity.getStartStation(), sectionEntity.getEndStation(), sectionEntity.getDistance());
     }
 
     public Station getStartStation() {
         return startStation;
     }
 
+    public String getStartStationName() {
+        return startStation.getName();
+    }
+
     public Station getEndStation() {
         return endStation;
+    }
+
+    public String getEndStationName() {
+        return endStation.getName();
     }
 
     public int getDistance() {
