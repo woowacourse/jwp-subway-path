@@ -3,9 +3,11 @@ package subway.ui;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
-import subway.dto.LineCreateRequest;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.domain.Line;
+import subway.dto.*;
+import subway.service.LineCreateService;
+import subway.service.LineCreateServiceImpl;
+import subway.service.LineFindService;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -17,23 +19,31 @@ public class LineController {
 
     private final LineService lineService;
 
-    public LineController(LineService lineService) {
+    private final LineCreateService lineCreateService;
+    private final LineFindService lineFindService;
+
+    public LineController(LineService lineService, final LineCreateServiceImpl lineCreateService, final LineFindService lineFindService) {
         this.lineService = lineService;
+        this.lineCreateService = lineCreateService;
+        this.lineFindService = lineFindService;
     }
 
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody LineCreateRequest lineRequest) {
-        final LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).build();
+        final LineCreateDto lineCreateDto = LineCreateDto.from(lineRequest);
+        final Line line = lineCreateService.createLine(lineCreateDto);
+        return ResponseEntity
+                .created(URI.create("/lines/" + line.getId()))
+                .body(LineResponse.of(line));
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+        return null;
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+    public ResponseEntity<LineResponse3> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 

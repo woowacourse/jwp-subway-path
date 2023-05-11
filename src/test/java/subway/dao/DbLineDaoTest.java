@@ -47,12 +47,29 @@ class DbLineDaoTest {
 
     @Test
     void findAllStationsOfLine() {
+        final LineEntity lineEntity = new LineEntity(LINE_999.getName(), 1L, 1L);
+        final LineEntity lineEntity2 = new LineEntity(LINE_999.getName(), 2L, 2L);
+        stationDao.saveStation(EXPRESS_BUS_TERMINAL_STATION);
+        stationDao.saveStation(SAPYEONG_STATION);
 
+        lineDao.saveLineEntities(List.of(lineEntity, lineEntity2));
+        final List<LineEntity> lineEntities = lineDao.findLine(LINE_999);
 
-
-
-        
-
+        assertThat(lineEntities.size()).isEqualTo(2);
     }
 
+    @Test
+    void deleteAllStationsOfLine() {
+        final LineEntity lineEntity = new LineEntity(LINE_999.getName(), 1L, 1L);
+        final LineEntity lineEntity2 = new LineEntity(LINE_999.getName(), 2L, 2L);
+
+        stationDao.saveStation(EXPRESS_BUS_TERMINAL_STATION);
+        stationDao.saveStation(SAPYEONG_STATION);
+
+        lineDao.saveLineEntities(List.of(lineEntity, lineEntity2));
+        lineDao.deleteAllStationsOfLine(LINE_999);
+
+        final List<LineEntity> lines = lineDao.findLine(LINE_999);
+        assertThat(lines.size()).isEqualTo(0);
+    }
 }

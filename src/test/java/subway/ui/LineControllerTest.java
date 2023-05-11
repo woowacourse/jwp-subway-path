@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
 import subway.dto.LineCreateRequest;
-import subway.dto.LineResponse;
+import subway.dto.LineResponse3;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -35,7 +35,7 @@ class LineControllerTest {
     void create_line() throws Exception {
         final LineCreateRequest request = new LineCreateRequest("잠실역", "잠실새내역", "2호선", 3);
         final String content = objectMapper.writeValueAsString(request);
-        final LineResponse lineResponse = new LineResponse(1L, "2호선", "초록색");
+        final LineResponse3 lineResponse = new LineResponse3(1L, "2호선", "초록색");
         when(lineService.saveLine(any())).thenReturn(lineResponse);
 
         mockMvc.perform(post("/lines")

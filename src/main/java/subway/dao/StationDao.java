@@ -8,5 +8,7 @@ public interface StationDao {
 
     Station saveStation(Station station);
 
-    List<Number> saveStations(List<Station> stations);
+    List<Station> findAll();
+
+    Station findById(Long id);
 }

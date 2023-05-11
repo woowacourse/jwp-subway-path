@@ -12,4 +12,6 @@ public interface LineDao {
     List<LineEntity> findLine(Line line);
 
     void deleteAllStationsOfLine(Line line);
+
+    void findAllLines();
 }

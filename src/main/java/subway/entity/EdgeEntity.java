@@ -1,30 +1,28 @@
 package subway.entity;
 
-public class LineEntity {
-    // unused
-
+public class EdgeEntity {
     private final Long id;
-    private final String name;
+    private final Long lineId;
     private final Long stationId;
     private final Long stationOrder;
 
-    public LineEntity(final Long id, final String name, final Long stationId, final Long stationOrder) {
+    public EdgeEntity(final Long id, final Long lineId, final Long stationId, final Long stationOrder) {
         this.id = id;
-        this.name = name;
+        this.lineId = lineId;
         this.stationId = stationId;
         this.stationOrder = stationOrder;
     }
 
-    public LineEntity(final String name, final Long stationId, final Long stationOrder) {
-        this(null, name, stationId, stationOrder);
+    public EdgeEntity(final Long lineId, final Long stationId, final Long stationOrder) {
+        this(null, lineId, stationId, stationOrder);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public Long getLineId() {
+        return lineId;
     }
 
     public Long getStationId() {

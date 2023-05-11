@@ -64,4 +64,8 @@ public class DbLineDao implements LineDao {
         final Map<String, String> parameters = Map.of("name", line.getName());
         namedParameterJdbcTemplate.update(sql, parameters);
     }
+
+    @Override
+    public void findAllLines() {
+    }
 }

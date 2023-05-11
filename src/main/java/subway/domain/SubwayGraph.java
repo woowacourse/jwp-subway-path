@@ -27,6 +27,10 @@ public class SubwayGraph {
         return this.line.equals(line);
     }
 
+    public int findOrderOf(final Station station) {
+        return findAllStationsInOrder().indexOf(station);
+    }
+
     public Station findUpEndStation() {
         return graph.vertexSet().stream()
                 .filter(vertex -> this.graph.incomingEdgesOf(vertex).isEmpty())

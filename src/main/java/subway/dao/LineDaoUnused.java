@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class LineDao2 {
+public class LineDaoUnused {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -23,7 +23,7 @@ public class LineDao2 {
                     rs.getString("color")
             );
 
-    public LineDao2(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LineDaoUnused(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")

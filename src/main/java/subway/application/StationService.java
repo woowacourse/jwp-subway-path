@@ -1,7 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
+import subway.dao.StationDao2;
 import subway.domain.Station3;
 import subway.dto.StationCreateRequest;
 import subway.dto.StationResponse;
@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private final StationDao stationDao;
+    private final StationDao2 stationDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(StationDao2 stationDao) {
         this.stationDao = stationDao;
     }
 
