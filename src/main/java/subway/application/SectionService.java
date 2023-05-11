@@ -155,4 +155,11 @@ public class SectionService {
             throw new IllegalArgumentException("DB 삭제가 정상적으로 진행되지 않았습니다.");
         }
     }
+
+    public List<LineResponse> getAllStations() {
+        final List<Line> lines = lineDao.findAll();
+        return lines.stream()
+            .map(line -> getStationsByLineId(line.getId()))
+            .collect(Collectors.toUnmodifiableList());
+    }
 }
