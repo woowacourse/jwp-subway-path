@@ -1,12 +1,12 @@
-package subway.dto;
+package subway.ui.dto;
 
-public class StationRequest {
+public class LineRequest {
     private String name;
 
-    public StationRequest() {
+    public LineRequest() {
     }
 
-    public StationRequest(String name) {
+    public LineRequest(final String name) {
         this.name = name;
     }
 
