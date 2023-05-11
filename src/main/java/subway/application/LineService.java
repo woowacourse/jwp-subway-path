@@ -18,10 +18,10 @@ public class LineService {
         this.lineDao = lineDao;
     }
 
-//    public LineResponse saveLine(final LineRequest request) {
-//        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-//        return LineResponse.of(persistLine);
-//    }
+    public LineResponse saveLine(final LineRequest request) {
+        final Line persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
+        return LineResponse.of(persistLine);
+    }
 
     public List<LineResponse> findLineResponses() {
         final List<Line> persistLines = findLines();

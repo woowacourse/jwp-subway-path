@@ -1,34 +1,69 @@
 package subway.dto;
 
-public class StationRequest {
-    private final String name;
-    private final CreateType type;
-    private final String line;
-    private final String previousStation;
-    private final String nextStation;
-    private final Integer previousDistance;
-    private final Integer nextDistance;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public StationRequest(final String name, final CreateType type, final String line, final String previousStation, final String nextStation, final Integer previousDistance, final Integer nextDistance) {
+public class StationRequest {
+    @JsonProperty("name")
+    private String name;
+    @JsonProperty("create_type")
+    private String createType;
+    @JsonProperty("line")
+    private String line;
+    @JsonProperty("up_endpoint")
+    private boolean upEndpoint;
+    @JsonProperty("down_endpoint")
+    private boolean downEndpoint;
+    @JsonProperty("previous_station")
+    private String previousStation;
+    @JsonProperty("previous_distance")
+    private Integer previousDistance;
+    @JsonProperty("next_station")
+    private String nextStation;
+    @JsonProperty("next_distance")
+    private Integer nextDistance;
+
+    public StationRequest(String name, String createType, String line, boolean upEndpoint, boolean downEndpoint, String previousStation, String nextStation, Integer previousDistance, Integer nextDistance) {
         this.name = name;
-        this.type = type;
+        this.createType = createType;
         this.line = line;
+        this.upEndpoint = upEndpoint;
+        this.downEndpoint = downEndpoint;
         this.previousStation = previousStation;
         this.nextStation = nextStation;
         this.previousDistance = previousDistance;
         this.nextDistance = nextDistance;
     }
 
+//    public StationRequest(String name, CreateType createType, String line, boolean upEndpoint, boolean downEndpoint, String previousStation, String nextStation, Integer previousDistance, Integer nextDistance) {
+//        this.name = name;
+//        this.createType = createType;
+//        this.line = line;
+//        this.upEndpoint = upEndpoint;
+//        this.downEndpoint = downEndpoint;
+//        this.previousStation = previousStation;
+//        this.nextStation = nextStation;
+//        this.previousDistance = previousDistance;
+//        this.nextDistance = nextDistance;
+//    }
+
     public String getName() {
         return name;
     }
 
-    public CreateType getType() {
-        return type;
+    public String getCreateType() {
+        return createType;
     }
 
     public String getLine() {
         return line;
+    }
+
+    public boolean isUpEndpoint() {
+        return upEndpoint;
+    }
+
+    public boolean isDownEndpoint() {
+        return downEndpoint;
     }
 
     public String getPreviousStation() {

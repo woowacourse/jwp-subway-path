@@ -211,4 +211,14 @@ class SubwayMapTest {
         sectionList.forEach(section -> System.out.println(section.getDeparture().getName() + section.getArrival().getName()));
         Assertions.assertThat(sectionList).containsExactly(sectionAC, sectionCA);
     }
+
+    @Test
+    void test() {
+        // given
+        final SubwayMap subwayMap1 = new SubwayMap(new HashMap<>(subwayMap.getSubwayMap()), new HashMap<>(subwayMap.getEndpointMap()));
+
+        final List<Station> stations = subwayMap1.stationsInLine(line);
+
+        stations.forEach(station -> System.out.println(station.getName()));
+    }
 }

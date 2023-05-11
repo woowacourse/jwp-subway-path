@@ -6,6 +6,7 @@ import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
+import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -19,11 +20,11 @@ public class LineController {
         this.lineService = lineService;
     }
 
-//    @PostMapping
-//    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-//        LineResponse line = lineService.saveLine(lineRequest);
-//        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-//    }
+    @PostMapping
+    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+        LineResponse line = lineService.saveLine(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {

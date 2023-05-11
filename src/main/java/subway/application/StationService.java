@@ -12,7 +12,6 @@ import subway.dto.CreateType;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,23 +28,35 @@ public class StationService {
         this.subwayMapRepository = subwayMapRepository;
     }
 
-    public List<StationResponse> saveStation(final List<StationRequest> stationRequests) {
-        final CreateType type = stationRequests.get(0).getType();
+    public List<StationResponse> findStationsByLineId(final Long lineId) {
+        final SubwayMap subwayMap = subwayMapRepository.find();
+
+        final Line line = lineService.findLineById(lineId);
+
+        final List<Station> stations = subwayMap.stationsInLine(line);
+        return stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public void saveStation(final List<StationRequest> stationRequests) {
+        final CreateType type = CreateType.valueOf(stationRequests.get(0).getCreateType());
         final Line line = lineService.findLineByName(stationRequests.get(0).getLine());
 
         if (type == CreateType.INIT) {
             final StationRequest requestUp = stationRequests.get(0);
             final StationRequest requestDown = stationRequests.get(1);
 
-            final SubwayMap subwayMap = subwayMapRepository.find();
+            final SubwayMap subwayMap = new SubwayMap();
             final Station upStation = new Station(requestUp.getName());
             final Station downStation = new Station(requestDown.getName());
             final Section upToDown = new Section(requestUp.getNextDistance(), upStation, downStation, line);
+            final Section downToUp = new Section(requestUp.getNextDistance(), downStation, upStation, line);
 
-            subwayMap.addInitialStations(upToDown, upToDown.getReverse());
+            subwayMap.addInitialStations(upToDown, downToUp);
 
             subwayMapRepository.save(subwayMap);
-            return List.of(StationResponse.of(upStation), StationResponse.of(downStation));
+            return;
         }
         final StationRequest request = stationRequests.get(0);
         if (type == CreateType.UP) {
@@ -58,7 +69,7 @@ public class StationService {
             subwayMap.addUpEndPoint(thisToNext);
 
             subwayMapRepository.save(subwayMap);
-            return List.of(StationResponse.of(thisStation));
+            return;
         }
         if (type == CreateType.DOWN) {
             final SubwayMap subwayMap = subwayMapRepository.find();
@@ -70,7 +81,7 @@ public class StationService {
             subwayMap.addDownEndPoint(thisToPrev);
 
             subwayMapRepository.save(subwayMap);
-            return List.of(StationResponse.of(thisStation));
+            return;
         }
         if (type == CreateType.MID) {
             validateRequestMid(request);
@@ -86,11 +97,9 @@ public class StationService {
             subwayMap.addIntermediateStation(thisToPrev, thisToNext);
 
             subwayMapRepository.save(subwayMap);
-
-            return List.of(StationResponse.of(thisStation));
+            return;
         }
-
-        return Collections.emptyList();
+        throw new IllegalArgumentException("잘못된 타입입니다.");
     }
 
     private void validateRequestMid(final StationRequest request) {

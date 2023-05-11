@@ -22,6 +22,11 @@ public class Station {
         return id;
     }
 
+    public void setId(Station other) {
+        this.id = other.id;
+        this.name = other.name;
+    }
+
     public String getName() {
         return name;
     }

@@ -1,18 +1,60 @@
 package subway.domain;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class SubwayMap {
 
     private final Map<Station, Sections> subwayMap;
     private final Map<Line, Station> endpointMap;
 
+    public SubwayMap() {
+        this.subwayMap = new HashMap<>();
+        this.endpointMap = new HashMap<>();
+    }
+
     public SubwayMap(final Map<Station, Sections> subwayMap, final Map<Line, Station> endpointMap) {
         this.subwayMap = new HashMap<>(subwayMap);
         this.endpointMap = new HashMap<>(endpointMap);
+    }
+
+    public Map<Line, List<Station>> getAllStationsGroupByLine() {
+        return endpointMap.keySet().stream()
+                .collect(Collectors.toMap(Function.identity(),
+                        this::stationsInLine));
+    }
+
+    public List<Station> stationsInLine(final Line line) {
+        final Station upEndpoint = endpointMap.get(line);
+        final List<Station> stations = new ArrayList<>();
+
+        Optional<Section> currentSection = getNextSection(line, upEndpoint, null);
+        stations.add(currentSection.orElseThrow().getDeparture());
+        while (currentSection.isPresent()) {
+            final Station visited = currentSection.orElseThrow().getDeparture();
+            final Station current = currentSection.orElseThrow().getArrival();
+            stations.add(currentSection.orElseThrow().getArrival());
+            currentSection = getNextSection(line, current, visited);
+        }
+        return stations;
+    }
+
+    private Optional<Section> getNextSection(final Line line, final Station current, final Station visited) {
+        final List<Section> sameLineSections = subwayMap.get(current).getSameLineSections(line);
+        final int length = sameLineSections.size();
+        if (length == 1) {
+            if (sameLineSections.get(0).getArrival().equals(visited)) {
+                return Optional.empty();
+            }
+            return Optional.of(sameLineSections.get(0));
+        }
+        if (length == 2) {
+            return sameLineSections.stream().
+                    filter(s -> !s.isArrival(visited))
+                    .findAny();
+        }
+        throw new IllegalArgumentException("한 라인에 갈림길이 존재할 수 없습니다.");
     }
 
     public void addIntermediateStation(final Section thisToPrev, final Section thisToNext) {
