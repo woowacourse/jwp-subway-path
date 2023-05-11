@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 public class Sections {
 
+    private static final int INITIAL_SIZE = 1;
     private final List<Section> sections;
 
     private Sections(List<Section> sections) {
@@ -16,10 +17,6 @@ public class Sections {
 
     public static Sections from(List<Section> unsortedSections) {
         return new Sections(sortSections(unsortedSections));
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 
     private static List<Section> sortSections(List<Section> sections) {
@@ -56,5 +53,54 @@ public class Sections {
             }
         }
         return nextStationId;
+    }
+
+    public boolean isDownEndPoint(Long upStationId) {
+        return upStationId == sections.get(sections.size() - 1).getDownStationId();
+    }
+
+    public boolean isUpEndPoint(Long downStationId) {
+        return downStationId == sections.get(0).getUpStationId();
+    }
+
+    public boolean isUpStationPoint(Long upStationId) {
+        return sections.stream()
+                .anyMatch(section -> section.getUpStationId() == upStationId);
+    }
+
+    public Section getTargtUpStationSection(Long upStationId) {
+        return sections.stream()
+                .filter(section -> section.getUpStationId() == upStationId)
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
+    }
+
+    public Section getTargtDownStationSection(Long downStationId) {
+        return sections.stream()
+                .filter(section -> section.getDownStationId() == downStationId)
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
+    }
+
+    public List<Section> findIncludeTargetSection(Long stationId){
+        return sections.stream()
+                .filter(section -> section.getUpStationId() == stationId || section.getDownStationId() == stationId)
+                .collect(Collectors.toList());
+    }
+
+    public boolean isInitialState() {
+        return sections.size() == INITIAL_SIZE;
+    }
+
+    public Long findFirstSectionId() {
+        return sections.get(0).getId();
+    }
+
+    public Long findLastSectionId() {
+        return sections.get(sections.size() - 1).getId();
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
