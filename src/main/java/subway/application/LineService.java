@@ -92,27 +92,35 @@ public class LineService {
 
         Deque<Station> deque = new LinkedList<>();
         Set<Station> visited = new HashSet<>();
-        dfs(sections.get(0).getPreviousStation(), deque, map, visited, SubwayDirection.UP);
+        moveStation(sections.get(0).getPreviousStation(), deque, map, visited, SubwayDirection.UP);
 
         return new SingleLineDetailResponse(sectionDetails.get(0).getLineId(), sections.get(0).getLine().getName(), sections.get(0).getLine().getColor(), new Stations(new ArrayList<>(deque)));
     }
 
-    public void dfs(Station station, Deque<Station> deque, Map<Station, List<Object[]>> map, Set<Station> visited, SubwayDirection direction) {
+    public void moveStation(Station station, Deque<Station> deque, Map<Station, List<Object[]>> map, Set<Station> visited, SubwayDirection direction) {
         visited.add(station);
 
-        if (direction == SubwayDirection.UP) {
-            deque.addLast(station);
-        } else {
-            deque.addFirst(station);
-        }
+        getDirection(station, deque, direction);
 
         for (Object[] object: map.get(station)) {
-            if (visited.contains((Station) object[1])) {
-                continue;
-            }
-
-            dfs((Station) object[1], deque, map, visited, (SubwayDirection) object[0]);
+            moveNextStation(deque, map, visited, object);
         }
+    }
+
+    private void getDirection(final Station station, final Deque<Station> deque, final SubwayDirection direction) {
+        if (direction == SubwayDirection.UP) {
+            deque.addLast(station);
+            return;
+        }
+        deque.addFirst(station);
+    }
+
+    private void moveNextStation(final Deque<Station> deque, final Map<Station, List<Object[]>> map, final Set<Station> visited, final Object[] object) {
+        if (visited.contains((Station) object[1])) {
+            return;
+        }
+
+        moveStation((Station) object[1], deque, map, visited, (SubwayDirection) object[0]);
     }
 
     public List<LineResponse> findLineResponses() {

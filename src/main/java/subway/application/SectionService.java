@@ -84,6 +84,7 @@ public class SectionService {
         sectionDao.delete(originalSection);
         SectionEntity backsectionEntity = insertSectionEntity(line.getId(), previousStation.getId(), nextStation.getId(), distance);
         SectionEntity frontSectionEntity = insertSectionEntity(line.getId(), nextStation.getId(), originalSection.getNextStationId(), nextDistance);
+        System.out.println(originalSection.getPreviousStationId() + " " + originalSection.getNextStationId());
 
         return List.of(sectionEntityToSection(backsectionEntity, line, previousStation, nextStation, distance),
                 sectionEntityToSection(frontSectionEntity, line, nextStation, stationDao.findById(originalSection.getNextStationId()), nextDistance));

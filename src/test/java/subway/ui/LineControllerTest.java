@@ -39,7 +39,7 @@ class LineControllerTest {
                 .willReturn(1L);
 
         // expect
-        mockMvc.perform(post("/lines/initial")
+        mockMvc.perform(post("/lines")
                         .content(requestBody)
                         .contentType(MediaType.APPLICATION_JSON_VALUE))
                 .andExpect(header().string("Location", "/lines/1"))
