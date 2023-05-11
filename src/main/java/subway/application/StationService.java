@@ -1,7 +1,6 @@
 package subway.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -167,7 +166,7 @@ public class StationService {
         final List<Section> sections = allSections.stream()
                 .filter(it -> it.getDownStationId() == id)
                 .collect(Collectors.toList());
-        if (sections.size() == 0){
+        if (sections.size() == 0) {
             return null;
         }
 
@@ -178,11 +177,13 @@ public class StationService {
         final List<Section> sections = allSections.stream()
                 .filter(it -> it.getUpStationId() == id)
                 .collect(Collectors.toList());
-        if (sections.size() == 0){
+        if (sections.size() == 0) {
             return null;
         }
 
         return sections.get(0);
     }
 
+    public void updateStation(final Long id, final StationSaveRequest request) {
+    }
 }

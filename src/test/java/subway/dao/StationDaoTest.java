@@ -128,12 +128,12 @@ class StationDaoTest {
         sectionDao.insert(section2);
 
         // when
-        final List<Station> terminalStations = stationDao.getTerminalStations(lineId1);
+        final Station upTerminalStation = stationDao.getUpTerminalStation(lineId1);
+        final Station downTerminalStation = stationDao.getDownTerminalStation(lineId1);
 
         // then
-        assertThat(terminalStations)
-                .extracting(Station::getName)
-                .contains("강남역", "잠실새내역");
+        assertThat(upTerminalStation.getName()).isEqualTo("강남역");
+        assertThat(downTerminalStation.getName()).isEqualTo("잠실새내역");
     }
 
 }
