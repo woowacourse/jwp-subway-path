@@ -1,6 +1,9 @@
 package subway.service;
 
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.Entity.SectionEntity;
@@ -12,14 +15,16 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.DtoMapper;
-import subway.dto.InitSectionRequest;
 import subway.dto.EndSectionRequest;
+import subway.dto.InitSectionRequest;
+import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionLastDeleteRequest;
 import subway.dto.SectionRequest;
-import subway.dto.SectionDeleteRequest;
+import subway.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -89,7 +94,7 @@ public class SectionService {
 
         Section endSection;
 
-        if (sectionEntity.getUpwardId() == originalEndStation.getId()) {
+        if (Objects.equals(sectionEntity.getUpwardId(), originalEndStation.getId())) {
             //하행종착
             endSection = Section.ofEmptyDownwardSection(
                     originalEndStation,
@@ -104,7 +109,7 @@ public class SectionService {
             }
         }
 
-        if (sectionEntity.getDownwardId() == originalEndStation.getId()) {
+        if (Objects.equals(sectionEntity.getDownwardId(), originalEndStation.getId())) {
             //상행종착
             endSection = Section.ofEmptyUpwardSection(
                     originalEndStation,
@@ -149,7 +154,7 @@ public class SectionService {
 
         Section section = createEndSection(station, line, sectionEntities);
 
-        for (SectionEntity sectionEntity : sectionEntities){
+        for (SectionEntity sectionEntity : sectionEntities) {
             sectionDao.deleteById(sectionEntity.getId());
         }
         sectionDao.insert(DtoMapper.convertToSectionEntity(section));
@@ -165,11 +170,11 @@ public class SectionService {
 
 
         for (SectionEntity sectionEntity : sectionEntities) {
-            if(sectionEntity.getDownwardId() == null){
+            if (sectionEntity.getDownwardId() == null) {
                 //하행 종착역
                 return Section.ofEmptyDownwardSection(newEndStation, line);
             }
-            if(sectionEntity.getUpwardId() == null){
+            if (sectionEntity.getUpwardId() == null) {
                 //상행 종착역
                 return Section.ofEmptyUpwardSection(newEndStation, line);
             }
@@ -179,7 +184,7 @@ public class SectionService {
 
     private SectionEntity findNonEndSectionEntity(List<SectionEntity> sectionEntities) {
         for (SectionEntity sectionEntity : sectionEntities) {
-            if(sectionEntity.getDownwardId() != null && sectionEntity.getUpwardId() != null){
+            if (sectionEntity.getDownwardId() != null && sectionEntity.getUpwardId() != null) {
                 return sectionEntity;
             }
         }
@@ -194,17 +199,67 @@ public class SectionService {
         List<SectionEntity> sectionEntities = sectionDao.selectSectionsByLineId(line.getId());
 
         List<Long> stations = new ArrayList<>();
-        for(SectionEntity sectionEntity: sectionEntities){
+        for (SectionEntity sectionEntity : sectionEntities) {
             stations.add(sectionEntity.getUpwardId());
             stations.add(sectionEntity.getDownwardId());
         }
         boolean result = stations.containsAll(List.of(upward.getId(), downward.getId()));
 
-        if(!result && sectionEntities.size() != 3){
+        if (!result && sectionEntities.size() != 3) {
             throw new IllegalArgumentException("[ERROR] 노선의 마지막 남은 구간이 아니라 삭제할 수 없습니다.");
         }
         for (SectionEntity sectionEntity : sectionEntities) {
             sectionDao.deleteById(sectionEntity.getId());
         }
+    }
+
+    public List<StationResponse> readAllStationsOfLine(Long lineId) {
+        List<SectionEntity> sectionEntities = sectionDao.selectSectionsByLineId(lineId);
+
+        SectionEntity upwardEndSectionEntity = sectionEntities.stream()
+                .filter(entity -> entity.getUpwardId() == null)
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("[ERROR] 노선이 아직 역이 없습니다."));
+
+        SectionEntity downwardEndSectionEntity = sectionEntities.stream()
+                .filter(entity -> entity.getDownwardId() == null)
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("[ERROR] 노선이 아직 역이 없습니다."));
+
+        sectionEntities.removeAll(List.of(upwardEndSectionEntity, downwardEndSectionEntity));
+
+        List<Section> sections = sectionEntities.stream().map(entity -> Section.of(
+                entity.getId(),
+                stationDao.findById(entity.getUpwardId()),
+                stationDao.findById(entity.getDownwardId()),
+                entity.getDistance(),
+                lineDao.findById(entity.getLineId())
+        )).collect(Collectors.toList());
+        Sections allSections = Sections.from(sections);
+
+
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
+        List<Station> allStations = allSections.getStations();
+        for (Station station : allStations) {
+            graph.addVertex(station.getName());
+        }
+
+        for (Section section : sections) {
+            graph.setEdgeWeight(
+                    graph.addEdge(section.getUpward().getName(), section.getDownward().getName()), section.getDistance()
+            );
+        }
+
+        DijkstraShortestPath<String, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+
+        Station upwardEndStation = stationDao.findById(upwardEndSectionEntity.getDownwardId());
+        Station downwardEndStation = stationDao.findById(downwardEndSectionEntity.getUpwardId());
+        List<String> shortestPath = dijkstraShortestPath.getPath(upwardEndStation.getName(), downwardEndStation.getName()).getVertexList();
+
+        List<Station> orderedStations = shortestPath.stream()
+                .map(stationDao::findByName)
+                .collect(Collectors.toList());
+        return orderedStations.stream()
+                .map(DtoMapper::convertToStationReponse)
+                .collect(Collectors.toList());
     }
 }

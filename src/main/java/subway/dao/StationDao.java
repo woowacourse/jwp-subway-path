@@ -15,4 +15,6 @@ public interface StationDao {
     void update(Station newStation);
 
     void deleteById(Long id);
+
+    Station findByName(String name);
 }

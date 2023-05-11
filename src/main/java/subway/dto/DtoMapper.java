@@ -2,6 +2,7 @@ package subway.dto;
 
 import subway.Entity.SectionEntity;
 import subway.domain.Section;
+import subway.domain.Station;
 
 public class DtoMapper {
 
@@ -13,5 +14,9 @@ public class DtoMapper {
                 section.getDistance(),
                 section.getLine().getId()
         );
+    }
+
+    public static StationResponse convertToStationReponse(Station station) {
+        return new StationResponse(station.getId(), station.getName());
     }
 }

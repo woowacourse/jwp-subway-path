@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.Entity.SectionEntity;
-import subway.domain.Line;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -37,8 +36,8 @@ public class H2SectionDao implements SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private Long convertToNullIfZero(long id){
-        if(id == 0){
+    private Long convertToNullIfZero(long id) {
+        if (id == 0) {
             return null;
         }
         return id;

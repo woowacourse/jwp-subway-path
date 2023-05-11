@@ -55,4 +55,10 @@ public class H2StationDao implements StationDao {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    @Override
+    public Station findByName(String name) {
+        String sql = "SELECT * from STATION where name=?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
+    }
 }

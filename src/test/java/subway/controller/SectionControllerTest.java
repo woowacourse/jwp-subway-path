@@ -8,12 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.InitSectionRequest;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dto.EndSectionRequest;
-import subway.dto.SectionDeleteRequest;
+import subway.dto.InitSectionRequest;
 import subway.dto.SectionRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Sql("/schema.sql")
 class SectionControllerTest {
 
     @LocalServerPort
@@ -27,13 +28,13 @@ class SectionControllerTest {
     @DisplayName("처음 노선에 구간을 등록할 수 있다.")
     @Test
     void createInitSections() {
-        InitSectionRequest request = new InitSectionRequest(1L, 1L, 2L, 10);
+        InitSectionRequest request = new InitSectionRequest(2L, 1L, 2L, 10);
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/lines/1/init-sections")
+                .when().post("/lines/2/init-sections")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -45,18 +46,18 @@ class SectionControllerTest {
         // 2L 잠실
         // 1L 잠실나루
 
-        InitSectionRequest initRequest = new InitSectionRequest(1L, 3L, 2L, 10);
+        InitSectionRequest initRequest = new InitSectionRequest(2L, 3L, 2L, 10);
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
-                .when().post("/lines/1/init-sections")
+                .when().post("/lines/2/init-sections")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
 
         SectionRequest mainRequest = new SectionRequest(
-                1L,
+                2L,
                 1L,
                 3L,
                 2L,
@@ -67,7 +68,7 @@ class SectionControllerTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
-                .when().post("/lines/1/section")
+                .when().post("/lines/2/section")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -79,18 +80,18 @@ class SectionControllerTest {
         // 2L 잠실
         // 1L 잠실나루
 
-        InitSectionRequest initRequest = new InitSectionRequest(1L, 1L, 2L, 10);
+        InitSectionRequest initRequest = new InitSectionRequest(2L, 1L, 2L, 10);
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
-                .when().post("/lines/1/init-sections")
+                .when().post("/lines/2/init-sections")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
 
         EndSectionRequest mainRequest = new EndSectionRequest(
-                1L,
+                2L,
                 3L,
                 1L,
                 5
@@ -100,7 +101,7 @@ class SectionControllerTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
-                .when().post("/lines/1/end-section")
+                .when().post("/lines/2/end-section")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -112,18 +113,18 @@ class SectionControllerTest {
         // 2L 잠실
         // 1L 잠실나루
 
-        InitSectionRequest initRequest1 = new InitSectionRequest(1L, 3L, 2L, 10);
+        InitSectionRequest initRequest1 = new InitSectionRequest(2L, 3L, 2L, 10);
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post("/lines/1/init-sections")
+                .when().post("/lines/2/init-sections")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
 
         SectionRequest initRequest2 = new SectionRequest(
-                1L,
+                2L,
                 1L,
                 3L,
                 2L,
@@ -134,14 +135,14 @@ class SectionControllerTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest2)
-                .when().post("/lines/1/section")
+                .when().post("/lines/2/section")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/1/section?station-id=1")
+                .when().delete("/lines/2/section?station-id=1")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -154,18 +155,18 @@ class SectionControllerTest {
         // 2L 잠실
         // 1L 잠실나루
 
-        InitSectionRequest initRequest1 = new InitSectionRequest(1L, 3L, 2L, 10);
+        InitSectionRequest initRequest1 = new InitSectionRequest(2L, 3L, 2L, 10);
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post("/lines/1/init-sections")
+                .when().post("/lines/2/init-sections")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
 
         SectionRequest initRequest2 = new SectionRequest(
-                1L,
+                2L,
                 1L,
                 3L,
                 2L,
@@ -176,14 +177,14 @@ class SectionControllerTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest2)
-                .when().post("/lines/1/section")
+                .when().post("/lines/2/section")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value());
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/1/end-section?station-id=3")
+                .when().delete("/lines/2/end-section?station-id=3")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -195,22 +196,21 @@ class SectionControllerTest {
         // 2L 잠실
         // 1L 잠실나루
 
-        InitSectionRequest initRequest1 = new InitSectionRequest(1L, 3L, 2L, 10);
+        InitSectionRequest initRequest1 = new InitSectionRequest(2L, 3L, 2L, 10);
 
         RestAssured
-                .given().log().all()
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post("/lines/1/init-sections")
-                .then().log().all()
+                .when().post("/lines/2/init-sections")
+                .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/1/last-sections?upward-id=3&downward-id=2")
+                .when().delete("/lines/2/last-sections?upward-id=3&downward-id=2")
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
-
 }

@@ -10,7 +10,7 @@ public class EndSectionRequest {
 
     private Long lineId;
     private Long stationId;
-    private Long originalLastStationId;
+    private Long originalEndStationId;
     @Positive
     private Integer distance;
 
@@ -18,10 +18,10 @@ public class EndSectionRequest {
 
     }
 
-    public EndSectionRequest(Long lineId, Long stationId, Long originalLastStationId, Integer distance) {
+    public EndSectionRequest(Long lineId, Long stationId, Long originalEndStationId, Integer distance) {
         this.lineId = lineId;
         this.stationId = stationId;
-        this.originalLastStationId = originalLastStationId;
+        this.originalEndStationId = originalEndStationId;
         this.distance = distance;
     }
 
@@ -34,10 +34,20 @@ public class EndSectionRequest {
     }
 
     public Long getOriginalEndStationId() {
-        return originalLastStationId;
+        return originalEndStationId;
     }
 
     public Integer getDistance() {
         return distance;
+    }
+
+    @Override
+    public String toString() {
+        return "EndSectionRequest{" +
+                "lineId=" + lineId +
+                ", stationId=" + stationId +
+                ", originalEndStationId=" + originalEndStationId +
+                ", distance=" + distance +
+                '}';
     }
 }

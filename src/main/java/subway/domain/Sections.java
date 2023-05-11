@@ -138,4 +138,8 @@ public class Sections {
 
         return Section.of(upwardSection.getUpward(), downwardSection.getDownward(), distance, line);
     }
+
+    public List<Station> getStations() {
+        return new ArrayList<>(adjacentStations.keySet());
+    }
 }

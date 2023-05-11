@@ -1,3 +1,7 @@
+DROP TABLE IF EXISTS SECTION;
+DROP TABLE IF EXISTS LINE;
+DROP TABLE IF EXISTS STATION;
+
 create table if not exists STATION
 (
     id bigint auto_increment not null,
@@ -26,8 +30,15 @@ create table if not exists SECTION
     foreign key(line_id) references LINE(id)
 );
 
+INSERT INTO line(name, color) VALUES ('1호선', '남색');
 INSERT INTO line(name, color) VALUES ('2호선', '초록색');
+
 INSERT INTO station(name) VALUES ('잠실나루');
 INSERT INTO station(name) VALUES ('잠실');
 INSERT INTO station(name) VALUES ('강변');
+
+INSERT INTO station(name) VALUES ('노량진');
+INSERT INTO station(name) VALUES ('용산');
+INSERT INTO station(name) VALUES ('서울역');
+
 
