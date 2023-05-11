@@ -6,22 +6,20 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.LineStationResponse;
-import subway.dto.StationResponse;
-import subway.entity.LineEntity;
-import subway.entity.StationEntity;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
+@Sql({"/test-data.sql"})
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
@@ -77,81 +75,144 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
+    @DisplayName("지하철 모든 노선을 조회한다.")
     @Test
     void getLines() {
         // given
-        ExtractableResponse<Response> createResponse1 = RestAssured
+        ExtractableResponse<Response> lineResponse1 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().extract();
 
-        ExtractableResponse<Response> createResponse2 = RestAssured
+        ExtractableResponse<Response> lineResponse2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest2)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().extract();
 
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<LineStationResponse> lineStationResponses = response.jsonPath().getList(".", LineStationResponse.class);
-
-    }
-
-    // TODO
-    @DisplayName("지하철 노선을 조회한다.")
-    @Test
-    void getLine() {
-        // given
-        ExtractableResponse<Response> lineResponse = RestAssured
+        Map<String, String> stationParams1 = new HashMap<>();
+        stationParams1.put("name", "해운대역");
+        ExtractableResponse<Response> stationResponse1 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        Map<String, String> stationParams = new HashMap<>();
-        stationParams.put("name", "해운대역");
-        ExtractableResponse<Response> stationResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationParams)
+                .body(stationParams1)
                 .when().post("/stations")
-                .then().log().all().
-                extract();
+                .then().extract();
+
+        Map<String, String> stationParams2 = new HashMap<>();
+        stationParams2.put("name", "동대구역");
+        ExtractableResponse<Response> stationResponse2 = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationParams2)
+                .when().post("/stations")
+                .then().extract();
 
         Map<String, String> sectionParams = new HashMap<>();
-        sectionParams.put("lineId", "2");
-        sectionParams.put("stationId", "2");
-        sectionParams.put("upStationId", "1");
-        ExtractableResponse<Response> sectionResponse = RestAssured
+        sectionParams.put("lineId", lineResponse1.jsonPath().getString("id"));
+        sectionParams.put("stationId", stationResponse1.jsonPath().getString("id"));
+        sectionParams.put("upStationId", stationResponse2.jsonPath().getString("id"));
+        sectionParams.put("distance", "3");
+
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionParams)
                 .when().post("/sections")
+                .then().log().all().extract();
+
+        Map<String, String> stationParams3 = new HashMap<>();
+        stationParams2.put("name", "신천역");
+        ExtractableResponse<Response> stationResponse3 = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationParams2)
+                .when().post("/stations")
+                .then().extract();
+
+        Map<String, String> sectionParams2 = new HashMap<>();
+        sectionParams.put("lineId", "2");
+        sectionParams.put("stationId", stationResponse3.jsonPath().getString("id"));
+        sectionParams.put("upStationId", stationResponse2.jsonPath().getString("id"));
+        sectionParams.put("distance", "3");
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionParams)
+                .when().post("/sections")
+                .then().log().all().extract();
+
+        ExtractableResponse<Response> sectionResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines")
                 .then().log().all().
                 extract();
 
         // then
-        List<StationResponse> stationResponses = sectionResponse.jsonPath().getList(".", StationResponse.class);
-        StationResponse 잠실역 = StationResponse.of(new StationEntity("잠실역"));
-        StationResponse 선릉역 = StationResponse.of(new StationEntity("선릉역"));
+
+        List<String> stationResponses = sectionResponse.jsonPath().getList("stationResponses.name", String.class);
         assertThat(sectionResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(stationResponses).usingRecursiveComparison().isEqualTo(List.of(잠실역, 선릉역));
+        assertThat(stationResponses.get(0)).contains("해운대역", "동대구역");
+    }
+
+    @DisplayName("지하철 특정 노선을 조회한다.")
+    @Test
+    void getLine() {
+        // given
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when().post("/lines")
+                .then().extract();
+
+        Map<String, String> stationParams1 = new HashMap<>();
+        stationParams1.put("name", "해운대역");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationParams1)
+                .when().post("/stations")
+                .then().extract();
+
+        Map<String, String> stationParams2 = new HashMap<>();
+        stationParams2.put("name", "동대구역");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationParams2)
+                .when().post("/stations")
+                .then().extract();
+
+        Map<String, String> sectionParams = new HashMap<>();
+        sectionParams.put("lineId", "1");
+        sectionParams.put("stationId", "1");
+        sectionParams.put("upStationId", "2");
+        sectionParams.put("distance", "3");
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionParams)
+                .when().post("/sections")
+                .then().extract();
+
+        ExtractableResponse<Response> sectionResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", 1)
+                .then().log().all().
+                extract();
+
+        // then
+
+        List<String> stationResponses = sectionResponse.jsonPath().getList("stationResponses.name", String.class);
+        assertThat(sectionResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(stationResponses).containsAnyOf("해운대역", "동대구역");
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -202,55 +263,5 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
-
-
-    @DisplayName("특정 노선의 구간 목록을 조회한다.")
-    @Test
-    void getSections() {
-        /// given
-//        Map<String, String> params1 = new HashMap<>();
-//        params1.put("name", "강남역");
-//        params1.put("lineId", "2");
-//        params1.put("upStationId", "4");
-//
-//        ExtractableResponse<Response> createdResponse1 = RestAssured.given().log().all()
-//                .body(params1)
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .when()
-//                .post("/sections")
-//                .then().log().all()
-//                .extract();
-//
-//
-//        Map<String, String> params2 = new HashMap<>();
-//        params2.put("name", "선릉역");
-//        params2.put("lineId", "2");
-//        params2.put("upStationId", "5");
-//
-//        ExtractableResponse<Response> createdResponse2 = RestAssured.given().log().all()
-//                .body(params1)
-//                .contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .when()
-//                .post("/sections")
-//                .then().log().all()
-//                .extract();
-
-        // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when()
-                .get("/lines/{id}", 2)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-//        List<Long> expectedStationIds = Stream.of(createResponse1, createResponse2)
-//                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-//                .collect(Collectors.toList());
-        List<StationResponse> resultStationIds = new ArrayList<>(response.jsonPath().getList(".", StationResponse.class));
-        StationResponse 선릉역 = StationResponse.of(new StationEntity("선릉역"));
-        StationResponse 잠실역 = StationResponse.of(new StationEntity("잠실역"));
-        assertThat(resultStationIds).usingRecursiveComparison().isEqualTo(List.of(잠실역, 선릉역));
     }
 }

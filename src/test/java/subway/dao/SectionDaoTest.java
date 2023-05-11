@@ -14,7 +14,7 @@ import subway.dto.SectionRequest;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
 @Sql({"/test-data.sql"})
 @Import(SectionDao.class)
 class SectionDaoTest {

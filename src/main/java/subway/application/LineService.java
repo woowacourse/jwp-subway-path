@@ -77,6 +77,10 @@ public class LineService {
     }
 
     private List<StationResponse> linkStationsByLine(final List<SectionEntity> sections, final List<StationEntity> stations) {
+        if (sections == null) {
+            return new ArrayList<>();
+        }
+
         Map<Long, String> stationMap = new HashMap<>();
         stations.forEach(stationEntity -> stationMap.put(stationEntity.getId(), stationEntity.getName()));
 
