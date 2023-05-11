@@ -13,6 +13,12 @@ public class LineResponse {
         this.color = color;
     }
 
+    public LineResponse(final Line line) {
+        this.id = line.getId();
+        this.name = line.getName();
+        this.color = line.getColor();
+    }
+
     public static LineResponse of(Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
