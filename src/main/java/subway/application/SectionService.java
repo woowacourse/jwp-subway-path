@@ -13,7 +13,9 @@ import subway.domain.section.Section;
 import subway.domain.section.SectionType;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
+import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
+import subway.dto.StationResponse;
 
 @Service
 public class SectionService {
@@ -30,7 +32,7 @@ public class SectionService {
 
     @Transactional
     public void saveSection(final SectionRequest sectionRequest) {
-        final Line line = getLineById(sectionRequest);
+        final Line line = getLineById(sectionRequest.getLineId());
         final List<SectionEntity> allSections = sectionDao.findByLineId(line.getId());
         final Sections sections = convertSections(allSections);
 
@@ -60,6 +62,15 @@ public class SectionService {
         updateExistedTargetSection(line.getId(), sections, section, targetStation.getId(), sourceStation.getId());
     }
 
+    public LineResponse getStationsByLineId(final Long lineId) {
+        final Line line = getLineById(lineId);
+        final List<SectionEntity> lineEntities = sectionDao.findByLineId(lineId);
+        final Sections sections = convertSections(lineEntities);
+        final List<Station> stations = sections.getStations();
+        final List<StationResponse> stationResponses = convertStationResponses(stations);
+        return LineResponse.of(line.getId(), line.getName(), line.getColor(), stationResponses);
+    }
+
     private void updateFirstSection(final Long lineId, final Long targetStationId) {
         final int updatedCount = sectionDao.updateSectionTypeByLineIdAndSourceStationId(lineId,
             targetStationId, SectionType.NORMAL.name());
@@ -68,14 +79,20 @@ public class SectionService {
         }
     }
 
-    private Line getLineById(final SectionRequest sectionRequest) {
-        return lineDao.findById(sectionRequest.getLineId())
+    private Line getLineById(final Long lineId) {
+        return lineDao.findById(lineId)
             .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 없습니다."));
     }
 
     private Station getStationById(final Long stationId) {
         return stationDao.findById(stationId)
             .orElseThrow(() -> new IllegalArgumentException("해당하는 역이 없습니다."));
+    }
+
+    private List<StationResponse> convertStationResponses(final List<Station> stations) {
+        return stations.stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toUnmodifiableList());
     }
 
     private Section convertSection(final SectionEntity sectionEntity) {
@@ -95,7 +112,7 @@ public class SectionService {
     private Sections convertSections(final List<SectionEntity> sectionEntities) {
         final List<Section> sections = sectionEntities.stream()
             .map(this::convertSection)
-            .collect(Collectors.toUnmodifiableList());
+            .collect(Collectors.toList());
         return new Sections(sections);
     }
 

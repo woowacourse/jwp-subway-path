@@ -1,6 +1,7 @@
 package subway.application;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -24,7 +25,9 @@ import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
+import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
+import subway.dto.StationResponse;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -42,7 +45,6 @@ class SectionServiceTest {
 
     @InjectMocks
     private SectionService sectionService;
-
 
     @Test
     @DisplayName("저장할 때의 노선이 존재하지 않으면 예외가 발생한다.")
@@ -341,4 +343,44 @@ class SectionServiceTest {
         verify(sectionDao, times(1)).deleteByLineIdAndSourceStationId(any(), any());
     }
 
+    @Test
+    @DisplayName("노선에 포함된 역을 순서대로 조회한다.")
+    void getStationsByLineId() {
+        // given
+        final Line 신분당선 = new Line("신분당선", "bg-red-600");
+
+        when(lineDao.findById(any()))
+            .thenReturn(Optional.of(신분당선));
+
+        final Station 잠실역 = new Station(1L,"잠실역");
+        final Station 선릉역 = new Station(2L, "선릉역");
+        final Station 강남역 = new Station(3L, "강남역");
+
+        final SectionEntity 잠실_선릉 = new SectionEntity(1L, 1L, 2L, 10, "UPWARD");
+        final SectionEntity 선릉_강남 = new SectionEntity(1L, 2L, 3L, 10, "NORMAL");
+        final List<SectionEntity> 이호선_역들 = List.of(잠실_선릉, 선릉_강남);
+        when(sectionDao.findByLineId(any()))
+            .thenReturn(이호선_역들);
+
+        doReturn(Optional.of(잠실역))
+            .when(stationDao).findById(1L);
+        doReturn(Optional.of(선릉역))
+            .when(stationDao).findById(2L);
+        doReturn(Optional.of(강남역))
+            .when(stationDao).findById(3L);
+
+        // when
+        final LineResponse lineResponse = sectionService.getStationsByLineId(신분당선.getId());
+
+        // then
+        assertThat(lineResponse)
+            .extracting("name", "color")
+            .containsExactly("신분당선", "bg-red-600");
+
+        // 잠실-신림-선릉-강남
+        final List<StationResponse> stationResponses = lineResponse.getStationResponses();
+        assertThat(stationResponses)
+            .extracting(StationResponse::getName)
+            .containsExactly("잠실역", "선릉역", "강남역");
+    }
 }
