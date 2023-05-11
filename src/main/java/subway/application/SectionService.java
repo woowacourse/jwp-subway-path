@@ -9,6 +9,7 @@ import subway.application.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.dao.dto.LineDto;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -32,7 +33,7 @@ public class SectionService {
         Long lineId = sectionRequest.getLineId();
 
         // 1. 노선 검증
-        Line persistLine = lineDao.findById(lineId)
+        LineDto foundLine = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
 
         // 2. DB로 부터 노선 만들기
@@ -45,7 +46,7 @@ public class SectionService {
                         )
                 ).collect(Collectors.toCollection(LinkedList::new));
 
-        Line line = new Line(lineId, persistLine.getName(), sections);
+        Line line = new Line(lineId, foundLine.getName(), sections);
 
         // 3. 넣는 역 검증
         Station leftStation = stationDao.findByName(sectionRequest.getLeftStationName())

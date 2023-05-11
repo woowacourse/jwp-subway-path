@@ -14,7 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
+import subway.dao.dto.LineDto;
 import subway.domain.Station;
 import subway.ui.dto.SectionRequest;
 
@@ -27,13 +27,13 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Autowired
     private StationDao stationDao;
 
-    private Line line;
+    private Long lineId;
 
     @BeforeEach
     void setUpLineAndStation() {
         super.setUp();
 
-        line = lineDao.insert(new Line("1호선"));
+        lineId = lineDao.insert(new LineDto(null, "1호선"));
         stationDao.insert(new Station("강남역"));
         stationDao.insert(new Station("잠실역"));
         stationDao.insert(new Station("역삼역"));
@@ -45,7 +45,7 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("노선에 역을 추가한다.")
     @Test
     void createSectionSuccess() {
-        SectionRequest sectionRequest = new SectionRequest(line.getId(), "강남역", "사당역", 10);
+        SectionRequest sectionRequest = new SectionRequest(lineId, "강남역", "사당역", 10);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest);
 
@@ -55,11 +55,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 가장 왼쪽에 역을 추가한다.")
     @Test
     void createSectionInLeft() {
-        SectionRequest sectionRequest1 = new SectionRequest(line.getId(), "강남역", "사당역", 10);
+        SectionRequest sectionRequest1 = new SectionRequest(lineId, "강남역", "사당역", 10);
 
         createSectionRequest(sectionRequest1);
 
-        SectionRequest sectionRequest2 = new SectionRequest(line.getId(), "잠실역", "강남역", 5);
+        SectionRequest sectionRequest2 = new SectionRequest(lineId, "잠실역", "강남역", 5);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest2);
 
@@ -69,11 +69,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 가장 오른쪽에 역을 추가한다.")
     @Test
     void createSectionInRight() {
-        SectionRequest sectionRequest1 = new SectionRequest(line.getId(), "강남역", "사당역", 10);
+        SectionRequest sectionRequest1 = new SectionRequest(lineId, "강남역", "사당역", 10);
 
         createSectionRequest(sectionRequest1);
 
-        SectionRequest sectionRequest2 = new SectionRequest(line.getId(), "사당역", "잠실역", 5);
+        SectionRequest sectionRequest2 = new SectionRequest(lineId, "사당역", "잠실역", 5);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest2);
 
@@ -83,11 +83,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 역과 역 사이에 왼쪽 역을 기준으로 역을 추가한다.")
     @Test
     void createSectionBetweenLeft() {
-        SectionRequest sectionRequest1 = new SectionRequest(line.getId(), "강남역", "사당역", 10);
+        SectionRequest sectionRequest1 = new SectionRequest(lineId, "강남역", "사당역", 10);
 
         createSectionRequest(sectionRequest1);
 
-        SectionRequest sectionRequest2 = new SectionRequest(line.getId(), "강남역", "서초역", 5);
+        SectionRequest sectionRequest2 = new SectionRequest(lineId, "강남역", "서초역", 5);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest2);
 
@@ -97,11 +97,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 역과 역 사이에 오른쪽 역을 기준으로 역을 추가한다.")
     @Test
     void createSectionBetweenRight() {
-        SectionRequest sectionRequest1 = new SectionRequest(line.getId(), "강남역", "사당역", 10);
+        SectionRequest sectionRequest1 = new SectionRequest(lineId, "강남역", "사당역", 10);
 
         createSectionRequest(sectionRequest1);
 
-        SectionRequest sectionRequest2 = new SectionRequest(line.getId(), "서초역", "사당역", 5);
+        SectionRequest sectionRequest2 = new SectionRequest(lineId, "서초역", "사당역", 5);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest2);
 

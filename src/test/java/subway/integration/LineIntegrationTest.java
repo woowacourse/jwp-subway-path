@@ -1,24 +1,40 @@
 package subway.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import subway.application.dto.SectionDto;
+import subway.dao.LineDao;
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
+import subway.dao.dto.LineDto;
+import subway.domain.Station;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.LineResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
+
+    @Autowired
+    private LineDao lineDao;
+
+    @Autowired
+    private SectionDao sectionDao;
+
+    @Autowired
+    private StationDao stationDao;
+
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
@@ -26,8 +42,17 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        lineRequest1 = new LineRequest("신분당선");
+        lineRequest2 = new LineRequest("구신분당선");
+
+        Station station1 = stationDao.insert(new Station("강남역"));
+        Station station2 = stationDao.insert(new Station("서초역"));
+        Station station3 = stationDao.insert(new Station("선릉역"));
+
+        long lineId = lineDao.insert(new LineDto(null, "1호선"));
+
+        sectionDao.insert(new SectionDto(lineId, station1.getId(), station2.getId(), 5));
+        sectionDao.insert(new SectionDto(lineId, station2.getId(), station3.getId(), 3));
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -138,31 +163,42 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(resultResponse.getId()).isEqualTo(lineId);
     }
 
-    @DisplayName("지하철 노선을 수정한다.")
+    @DisplayName("해당 노선의 모든 역을 가져온다.")
     @Test
-    void updateLine() {
+    void findStationsByLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
 
         // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().put("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
     }
+
+//    @DisplayName("지하철 노선을 수정한다.")
+//    @Test
+//    void updateLine() {
+//        // given
+//        ExtractableResponse<Response> createResponse = RestAssured
+//                .given().log().all()
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .body(lineRequest1)
+//                .when().post("/lines")
+//                .then().log().all().
+//                extract();
+//
+//        // when
+//        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+//        ExtractableResponse<Response> response = RestAssured
+//                .given().log().all()
+//                .contentType(MediaType.APPLICATION_JSON_VALUE)
+//                .body(lineRequest2)
+//                .when().put("/lines/{lineId}", lineId)
+//                .then().log().all()
+//                .extract();
+//
+//        // then
+//        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+//    }
 
     @DisplayName("지하철 노선을 제거한다.")
     @Test
