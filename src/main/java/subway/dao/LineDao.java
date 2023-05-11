@@ -1,6 +1,7 @@
 package subway.dao;
 
 import java.sql.PreparedStatement;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -38,5 +39,11 @@ public class LineDao {
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public List<Line> findAll() {
+        String sql = "SELECT * FROM line";
+        BeanPropertyRowMapper<Line> mapper = BeanPropertyRowMapper.newInstance(Line.class);
+        return jdbcTemplate.query(sql, mapper);
     }
 }

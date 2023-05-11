@@ -228,4 +228,35 @@ public class LineIntegrationTest extends IntegrationTest {
                 .body("stations[1].stationName", is("충무로"))
                 .body("stations[2].stationName", is("안국"));
     }
+
+    @Test
+    @DisplayName("모든 노선의 모든 역을 조회한다")
+    void findAllLines() {
+        // given
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(createRequest)
+                .when().post("/lines")
+                .then().log().all();
+
+        Station upStation = stationDao.insert(new Station("잠실"));
+        Station downStation = stationDao.insert(new Station("잠실새내"));
+        LineCreateRequest createRequest2 = new LineCreateRequest("2호선", upStation.getId(), downStation.getId(), 5);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(createRequest2)
+                .when().post("/lines")
+                .then().log().all();
+
+        // when
+        RestAssured
+                .given().log().all()
+                .when().get("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value());
+
+    }
 }

@@ -1,6 +1,7 @@
 package subway.ui;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
@@ -46,19 +47,24 @@ public class LineController {
         return ResponseEntity.ok(new AddStationToLineResponse(line.getId(), line.getName(), stationIds));
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<LineResponse>> findAllLines() {
-//        // TODO
-//        return ResponseEntity.ok(lineService.findLineResponses());
-//    }
+    @GetMapping
+    public ResponseEntity<List<GetAllStationsInLineResponse>> findAllLines() {
+        List<GetAllStationsInLineResponse> result = new ArrayList<>();
+        List<Line> lines = lineService.findAllLine();
+        for (Line line : lines) {
+            Line assembleLine = lineService.assembleLine(line.getId());
+            GetAllStationsInLineResponse response = new GetAllStationsInLineResponse(assembleLine.getId(), assembleLine.getName(), assembleLine.getStations());
+            result.add(response);
+        }
+        return ResponseEntity.ok(result);
+    }
 
     @GetMapping("/{lineId}")
     public ResponseEntity<GetAllStationsInLineResponse> findLineById(@PathVariable Long lineId) {
         List<Station> stations = lineService.findAllStation(lineId);
-        Line line = lineService.assembleLine(lineId);
+        Line assembleLine = lineService.assembleLine(lineId);
 
-        GetAllStationsInLineResponse response = new GetAllStationsInLineResponse(line.getId(),
-                line.getName(), line.getStations());
+        GetAllStationsInLineResponse response = new GetAllStationsInLineResponse(assembleLine.getId(), assembleLine.getName(), assembleLine.getStations());
         return ResponseEntity.ok(response);
     }
 

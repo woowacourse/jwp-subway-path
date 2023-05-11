@@ -87,4 +87,8 @@ public class LineService {
         List<Edge> edges = edgeDao.findEdgesByLineId(line.getId());
         return new Line(line.getId(), line.getName(), edges);
     }
+
+    public List<Line> findAllLine() {
+        return lineDao.findAll();
+    }
 }
