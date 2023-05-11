@@ -35,40 +35,74 @@ public class LineRepository {
     }
 
     public Long save(Line line) {
-        if (lineDao.existsByName(line.getName())) {
-            throw new DuplicatedNameException(line.getName());
-        }
-        LineEntity newLineEntity = lineDao.insert(new LineEntity(line.getName()));
+        final String lineName = line.getName();
+        validateDuplicatedLineName(lineName);
+
+        LineEntity savedLineEntity = lineDao.insert(new LineEntity(lineName));
 
         List<StationEntity> stations = StationEntity.of(line);
         stationDao.insertAll(stations);
 
-        saveSections(newLineEntity.getId(), line);
+        saveSections(savedLineEntity.getId(), line);
 
-        return newLineEntity.getId();
+        return savedLineEntity.getId();
+    }
+
+    private void validateDuplicatedLineName(final String lineName) {
+        if (lineDao.existsByName(lineName)) {
+            throw new DuplicatedNameException(lineName);
+        }
+    }
+
+    private void saveSections(Long lineId, Line line) {
+        for (Section section : line.getSections()) {
+            StationEntity sourceStationEntity = toEntity(section.getSource());
+            StationEntity targetStationEntity = toEntity(section.getTarget());
+
+            sectionDao.insert(
+                    new SectionEntity(sourceStationEntity.getId(), targetStationEntity.getId(),
+                            lineId,
+                            section.getDistance())
+            );
+        }
+    }
+
+    private StationEntity toEntity(final Station station) {
+        return stationDao.findByName(station.getName())
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 역 이름입니다."));
+    }
+
+    public Line findById(Long id) {
+        Subway subway = new Subway(findAllLine());
+        LineEntity lineEntity = lineDao.findById(id);
+        return subway.findLineByName(lineEntity.getName());
     }
 
     public List<Line> findAllLine() {
         List<LineEntity> lineEntities = lineDao.findAll();
 
-        Map<Long, StationEntity> collect = stationDao.findAll().stream()
+        Map<Long, StationEntity> stationEntityById = stationDao.findAll().stream()
                 .collect(toMap(StationEntity::getId, stationEntity -> stationEntity));
 
-        Map<Long, List<SectionEntity>> idBySections = sectionDao.findAll().stream()
+        Map<Long, List<SectionEntity>> sectionEntitiesByLineId = sectionDao.findAll().stream()
                 .collect(Collectors.groupingBy(SectionEntity::getLineId));
 
         return lineEntities.stream()
-                .map(lineEntity -> toLine(lineEntity, idBySections.getOrDefault(lineEntity.getId(), new ArrayList<>()),
-                        collect))
+                .map(lineEntity -> toLine(
+                        lineEntity,
+                        sectionEntitiesByLineId.getOrDefault(lineEntity.getId(), new ArrayList<>()),
+                        stationEntityById))
                 .collect(toList());
     }
 
-    private Line toLine(final LineEntity lineEntity, final List<SectionEntity> sectionEntities,
-                        Map<Long, StationEntity> idByStation) {
+    private Line toLine(final LineEntity lineEntity,
+                        final List<SectionEntity> sectionEntities,
+                        final Map<Long, StationEntity> stationEntityById) {
+
         List<Section> sections = sectionEntities.stream()
                 .map(sectionEntity -> new Section(
-                        idByStation.get(sectionEntity.getSourceStationId()).getName(),
-                        idByStation.get(sectionEntity.getTargetStationId()).getName(),
+                        stationEntityById.get(sectionEntity.getSourceStationId()).getName(),
+                        stationEntityById.get(sectionEntity.getTargetStationId()).getName(),
                         sectionEntity.getDistance()
                 ))
                 .collect(toList());
@@ -79,25 +113,5 @@ public class LineRepository {
     public void updateLine(Long lineId, Line updatedLine) {
         sectionDao.deleteAll(lineId);
         saveSections(lineId, updatedLine);
-    }
-
-    private void saveSections(Long lineId, Line line) {
-        for (Section section : line.getSections()) {
-            Station source = section.getSource();
-            Station target = section.getTarget();
-            StationEntity sourceStationEntity = stationDao.findByName(source.getName())
-                    .orElseThrow(() -> new NoSuchElementException());
-            StationEntity targetStationEntity = stationDao.findByName(target.getName())
-                    .orElseThrow(() -> new NoSuchElementException());
-
-            sectionDao.insert(new SectionEntity(sourceStationEntity.getId(), targetStationEntity.getId(),
-                    lineId, section.getDistance()));
-        }
-    }
-
-    public Line findById(Long id) {
-        Subway subway = new Subway(findAllLine());
-        LineEntity lineEntity = lineDao.findById(id);
-        return subway.findLineByName(lineEntity.getName());
     }
 }
