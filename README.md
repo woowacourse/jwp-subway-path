@@ -22,6 +22,147 @@
   }
   ```
 
+- [x] 노선 구간 조회
+  - `/sections/:lineId`
+  - GET
+  ```json
+  [
+    {
+        "startStationName": "잠실역",
+        "endStationName": "삼성역",
+        "distance": 10
+    },
+    {
+        "startStationName": "삼성역",
+        "endStationName": "포항역",
+        "distance": 10
+    },
+    {
+        "startStationName": "포항역",
+        "endStationName": "대구역",
+        "distance": 10
+    }
+  ]
+  ```
+
+- [x] 전체 노선 조회
+  - `/lines`
+  - GET
+  ```json
+  [
+    {
+        "lineId": 1,
+        "lineName": "2호선",
+        "color": "green"
+    },
+    {
+        "lineId": 2,
+        "lineName": "3호선",
+        "color": "orange"
+    },
+    {
+        "lineId": 3,
+        "lineName": "4호선",
+        "color": "blue"
+    }
+  ]
+  ```
+
+- [x] 전체 노선 구간 조회
+  - `/lines/detail`
+  - GET
+  ```json
+  [
+    {
+        "line": {
+            "lineId": 1,
+            "lineName": "2호선",
+            "color": "green"
+        },
+        "sections": [
+            {
+                "startStationName": "잠실역",
+                "endStationName": "삼성역",
+                "distance": 10
+            },
+            {
+                "startStationName": "삼성역",
+                "endStationName": "포항역",
+                "distance": 10
+            },
+            {
+                "startStationName": "포항역",
+                "endStationName": "대구역",
+                "distance": 10
+            }
+        ]
+    },
+    {
+        "line": {
+            "lineId": 2,
+            "lineName": "3호선",
+            "color": "orange"
+        },
+        "sections": [
+            {
+                "startStationName": "잠실역",
+                "endStationName": "양재역",
+                "distance": 10
+            },
+            {
+                "startStationName": "양재역",
+                "endStationName": "대치역",
+                "distance": 10
+            },
+            {
+                "startStationName": "대치역",
+                "endStationName": "강남역",
+                "distance": 10
+            },
+            {
+                "startStationName": "강남역",
+                "endStationName": "상도역",
+                "distance": 10
+            }
+        ]
+    },
+    {
+        "line": {
+            "lineId": 3,
+            "lineName": "4호선",
+            "color": "blue"
+        },
+        "sections": [
+            {
+                "startStationName": "장승배기역",
+                "endStationName": "상도역",
+                "distance": 10
+            },
+            {
+                "startStationName": "상도역",
+                "endStationName": "숭실대입구역",
+                "distance": 10
+            },
+            {
+                "startStationName": "숭실대입구역",
+                "endStationName": "대치역",
+                "distance": 10
+            },
+            {
+                "startStationName": "대치역",
+                "endStationName": "삼성역",
+                "distance": 10
+            },
+            {
+                "startStationName": "삼성역",
+                "endStationName": "잠실역",
+                "distance": 10
+            }
+        ]
+    }
+  ]
+  ```
+
 ### 기능 요구 사항
 
 - [x] 노선에 역 등록
