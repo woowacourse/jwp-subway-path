@@ -38,7 +38,7 @@ public class LineRepository {
     public List<Line> findAll() {
         return lineDao.findAll()
                 .stream()
-                .map(entity -> findById(entity.getId()))
+                .map(entity -> Line.of(entity, sectionDao.findAllByLineId(entity.getId())))
                 .collect(Collectors.toList());
     }
 
