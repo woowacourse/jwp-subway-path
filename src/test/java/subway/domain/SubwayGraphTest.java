@@ -1,6 +1,5 @@
 package subway.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,6 +11,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static subway.fixture.LineFixture.LINE_999;
 import static subway.fixture.StationFixture.*;
 
@@ -113,12 +113,21 @@ class SubwayGraphTest {
     }
 
     @Nested
-    @DisplayName("두 역 사이에 새로운 역을 추가할 때 거리 검증:")
+    @DisplayName("거리 검증: ")
     class AddStationDistanceValidation {
+
         @ParameterizedTest
-        @DisplayName("두 역 사이의 하행 방향")
-        @ValueSource(ints = {5, 6, 7, 8})
+        @DisplayName("두 역 사이의 거리보다 짧은 거리로 하행 방향에 새로운 역을 추가할 수 있다.")
+        @ValueSource(ints = {1, 2, 3, 4})
         void addStationToDownLineTest(int distance) {
+            final SubwayGraph subwayGraph = createSubwayGraph();
+            assertDoesNotThrow(() -> subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance));
+        }
+
+        @ParameterizedTest
+        @DisplayName("두 역 사이의 거리보다 추가되는 하행 방향의 역과의 거리가 길면 예외가 발생한다.")
+        @ValueSource(ints = {5, 6, 7, 8})
+        void addStationToDownLineExceptionTest(int distance) {
             final SubwayGraph subwayGraph = createSubwayGraph();
 
             assertThatThrownBy(
@@ -128,9 +137,17 @@ class SubwayGraphTest {
         }
 
         @ParameterizedTest
-        @DisplayName("두 역 사이의 상행 방향")
-        @ValueSource(ints = {5, 6, 7, 8})
+        @DisplayName("두 역 사이의 거리보다 짧은 거리로 상행 방향에 새로운 역을 추가할 수 있다.")
+        @ValueSource(ints = {1, 2, 3, 4})
         void addStationToUpLineTest(int distance) {
+            final SubwayGraph subwayGraph = createSubwayGraph();
+            assertDoesNotThrow(() -> subwayGraph.addStation(NEW_STATION, SAPYEONG_STATION, distance));
+        }
+
+        @ParameterizedTest
+        @DisplayName("두 역 사이의 거리보다 추가되는 상행 방향의 역과의 거리가 길면 에외가 발생한다.")
+        @ValueSource(ints = {5, 6, 7, 8})
+        void addStationToUpLineExceptionTest(int distance) {
             final SubwayGraph subwayGraph = createSubwayGraph();
 
             assertThatThrownBy(
