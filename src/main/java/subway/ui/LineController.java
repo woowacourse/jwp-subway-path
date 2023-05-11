@@ -29,38 +29,67 @@ public class LineController {
         this.lineService = lineService;
     }
 
+    /**
+     * 노선을 생성한다.
+     * @param lineRequest (lineName, sourceStation, targetStation, distance)
+     * @return 생성한 Line Id
+     */
     @PostMapping
     public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
+    /**
+     * 노선을 여러개 생성한다.
+     * @return 생성한 노선들의 Id 목록
+     */
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<StationsResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.getStationByLineId(id));
+    /**
+     * 한 노선의 정보를 조회한다.
+     * @param lineId
+     * @return StationsResponse - 노선 내에 존재하는 모든 역의 이름 목록
+     */
+    @GetMapping("/{lineId}")
+    public ResponseEntity<StationsResponse> findLineById(@PathVariable Long lineId) {
+        return ResponseEntity.ok(lineService.getStationByLineId(lineId));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
+    /**
+     * (요구사항 X) 한 노선의 정보를 수정한다.
+     * @param lineId
+     * @param lineUpdateRequest -> Line 수정에 어떤 정보가 필요할지 더 고민해보고 나중에 결정
+     */
+    @PutMapping("/{lineId}")
+    public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody LineRequest lineUpdateRequest) {
+        lineService.updateLine(lineId, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
+    /**
+     * 노선을 삭제한다.
+     * @param lineId
+     */
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
+        lineService.deleteLineById(lineId);
         return ResponseEntity.noContent().build();
     }
 
+    /**
+     * 노선에 역을 추가한다.
+     * @param lineId
+     * @param stationSaveRequest (SourceStation, TargetStation, Distance)
+     * @return StationResponse 추가한 역의 이름
+     */
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<StationResponse> createStation(@PathVariable Long lineId,
-                                                         @RequestBody StationSaveRequest stationRequest) {
-        StationResponse response = lineService.addStation(lineId, stationRequest);
+                                                         @RequestBody StationSaveRequest stationSaveRequest) {
+        StationResponse response = lineService.addStation(lineId, stationSaveRequest);
         return ResponseEntity.ok(response);
     }
 }
