@@ -2,29 +2,33 @@ package subway.application;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
+import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Direction;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.SectionSaveRequest;
+import subway.dto.SectionRequest;
 
 @Service
 public class SectionService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
+    private final LineDao lineDao;
 
-    public SectionService(final StationDao stationDao, final SectionDao sectionDao) {
+    public SectionService(final StationDao stationDao, final SectionDao sectionDao, final LineDao lineDao) {
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
+        this.lineDao = lineDao;
     }
 
-    public long addSection(final long lineId, SectionSaveRequest request) {
-        Sections sections = sectionDao.findSectionsByLineId(lineId);
+    public long addSection(final long lineId, SectionRequest request) {
+        validateLineId(lineId);
+        Station upStation = findVerifiedStationByName(request.getUpStationName());
+        Station downStation = findVerifiedStationByName(request.getDownStationName());
 
-        Station upStation = stationDao.findById(request.getUpStationId());
-        Station downStation = stationDao.findById(request.getDownStationId());
+        Sections sections = sectionDao.findSectionsByLineId(lineId);
 
         Section requestedSection = new Section(upStation, downStation, request.getDistance());
 
@@ -109,8 +113,22 @@ public class SectionService {
          return sectionDao.findSectionsByLineId(lineId);
     }
 
-    public List<Section> findSortedAllByLindId(long lineId) {
+    public List<Station> findSortedAllStationsByLindId(long lineId) {
         Sections sections = sectionDao.findSectionsByLineId(lineId);
-        return sections.getSorted();
+        return sections.getSortedStations();
+    }
+
+    public void validateLineId(long lineId) {
+        if (!lineDao.existsById(lineId)) {
+            throw new IllegalArgumentException("존재하지 않는 호선입니다.");
+        }
+    }
+
+    public Station findVerifiedStationByName(String name) {
+        Station station = stationDao.findByName(name);
+        if (station == null) {
+            return stationDao.insert(new Station(name));
+        }
+        return station;
     }
 }

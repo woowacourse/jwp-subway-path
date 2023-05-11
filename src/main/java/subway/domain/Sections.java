@@ -93,18 +93,20 @@ public class Sections {
                 .noneMatch(section -> section.containsStation(stationId));
     }
 
-    public List<Section> getSorted() {
+    public List<Station> getSortedStations() {
         Map<Long, Section> allSections = new HashMap<>();
 
         sections.forEach(section -> allSections.put(section.getId(), section));
         Section upEndSection = getUpEndSection();
         Section currentSection = upEndSection;
 
-        List<Section> result = new ArrayList<>();
+        List<Station> result = new ArrayList<>();
+        result.add(upEndSection.getUpStation());
+        result.add(upEndSection.getDownStation());
 
         while (currentSection.getNextSectionId() != 0) {
-            result.add(currentSection);
             Section nextSection = allSections.get(currentSection.getNextSectionId());
+            result.add(nextSection.getDownStation());
             currentSection = nextSection;
         }
 

@@ -2,6 +2,8 @@ package subway.application;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static subway.fixture.SectionRequestFixture.*;
+import static subway.fixture.StationFixture.*;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -12,19 +14,10 @@ import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.dto.SectionSaveRequest;
 import subway.integration.IntegrationTest;
 
 class SectionServiceTest extends IntegrationTest {
 
-    public static final Station station1 = new Station(1L, "암사역");
-    public static final Station station2 = new Station(2L, "숙대역");
-    public static final Station station3 = new Station(3L, "잠실나루");
-    public static final Station station4 = new Station(4L, "잠실");
-    public static final Station station5 = new Station(5L, "나루");
-    public static final SectionSaveRequest request1_2 = new SectionSaveRequest(1L, 2L, 10);
-    public static final SectionSaveRequest request2_3 = new SectionSaveRequest(2L, 3L, 10);
-    public static final SectionSaveRequest request3_4 = new SectionSaveRequest(3L, 4L, 10);
     public static final Line line1 = new Line("line1", "black");
     @Autowired
     SectionService sectionService;
@@ -49,9 +42,7 @@ class SectionServiceTest extends IntegrationTest {
         initInsert();
 
         //when
-        SectionSaveRequest endSectionRequest = new SectionSaveRequest(2L, 3L, 5);
-
-        long id = sectionService.addSection(1L, endSectionRequest);
+        long id = sectionService.addSection(1L, SECTION_REQUEST2_3);
         assertThat(id).isEqualTo(2L);
     }
 
@@ -62,9 +53,7 @@ class SectionServiceTest extends IntegrationTest {
         initInsert();
 
         //when
-        SectionSaveRequest endSectionRequest = new SectionSaveRequest(3L, 1L, 5);
-
-        long id = sectionService.addSection(1L, endSectionRequest);
+        long id = sectionService.addSection(1L, SECTION_REQUEST5_1);
         assertThat(id).isEqualTo(2L);
     }
 
@@ -76,9 +65,7 @@ class SectionServiceTest extends IntegrationTest {
         initInsert();
 
         //when
-        SectionSaveRequest middleSectionRequest = new SectionSaveRequest(3L, 2L, 10);
-
-        assertThatThrownBy(() -> sectionService.addSection(1L, middleSectionRequest))
+        assertThatThrownBy(() -> sectionService.addSection(1L, SECTION_REQUEST3_2))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -89,9 +76,7 @@ class SectionServiceTest extends IntegrationTest {
         initInsert();
 
         //when
-        SectionSaveRequest middleSectionRequest = new SectionSaveRequest(3L, 2L, 5);
-
-        long id = sectionService.addSection(1L, middleSectionRequest);
+        long id = sectionService.addSection(1L, SECTION_REQUEST3_2);
         assertThat(id).isEqualTo(2L);
     }
 
@@ -103,9 +88,7 @@ class SectionServiceTest extends IntegrationTest {
         initInsert();
 
         //when
-        SectionSaveRequest middleSectionRequest = new SectionSaveRequest(1L, 3L, 5);
-
-        long id = sectionService.addSection(1L, middleSectionRequest);
+        long id = sectionService.addSection(1L, SECTION_REQUEST1_3);
         assertThat(id).isEqualTo(2L);
     }
 
@@ -125,7 +108,7 @@ class SectionServiceTest extends IntegrationTest {
     void deleteEndSection_UpEnd_success() {
         //given
         initInsert();
-        sectionService.addSection(1L, request2_3);
+        sectionService.addSection(1L, SECTION_REQUEST2_3);
 
         //when
         sectionService.removeStation(1L, 1L);
@@ -141,7 +124,7 @@ class SectionServiceTest extends IntegrationTest {
     void deleteEndSection_downEnd_success() {
         //given
         initInsert();
-        sectionService.addSection(1L, request2_3);
+        sectionService.addSection(1L, SECTION_REQUEST2_3);
 
         //when
         sectionService.removeStation(3L, 1L);
@@ -157,7 +140,7 @@ class SectionServiceTest extends IntegrationTest {
     void deleteSection_middle_success() {
         //given
         initInsert();
-        sectionService.addSection(1L, request2_3);
+        sectionService.addSection(1L, SECTION_REQUEST2_3);
 
         //when
         sectionService.removeStation(2L, 1L);
@@ -173,7 +156,7 @@ class SectionServiceTest extends IntegrationTest {
     void deleteSection_when_not_exist() {
         //given
         initInsert();
-        sectionService.addSection(1L, request2_3);
+        sectionService.addSection(1L, SECTION_REQUEST2_3);
 
         //when
         assertThatThrownBy(() -> sectionService.removeStation(5L, 1L))
@@ -185,16 +168,17 @@ class SectionServiceTest extends IntegrationTest {
     void findSortedSections_success() {
         //given
         initInsert();
-        sectionService.addSection(1L, request2_3);
-        sectionService.addSection(1L, request3_4);
+        sectionService.addSection(1L, SECTION_REQUEST2_3);
+        sectionService.addSection(1L, SECTION_REQUEST3_4);
 
         //when
-        List<Section> sortedSections = sectionService.findSortedAllByLindId(1L);
+        List<Station> sortedSections = sectionService.findSortedAllStationsByLindId(1L);
 
         // then
-//        assertThat(sortedSections)
-
-
+        assertThat(sortedSections)
+                .usingRecursiveComparison()
+                .comparingOnlyFields("name")
+                .isEqualTo(List.of(station1, station2, station3, station4));
     }
 
     private long initInsert() {
@@ -205,6 +189,6 @@ class SectionServiceTest extends IntegrationTest {
         stationDao.insert(station4);
         stationDao.insert(station5);
 
-        return sectionService.addSection(1L, request1_2);
+        return sectionService.addSection(1L, SECTION_REQUEST1_2);
     }
 }
