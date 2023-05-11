@@ -30,4 +30,9 @@ public class SectionDao {
         Long sectionId = insertAction.executeAndReturnKey(params).longValue();
         return new SectionEntity(sectionId, sectionEntity.getLeftStationId(), sectionEntity.getRightStationId(), sectionEntity.getDistance());
     }
+
+    public void deleteById(final Long id) {
+        String sql = "DELETE FROM SECTION WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

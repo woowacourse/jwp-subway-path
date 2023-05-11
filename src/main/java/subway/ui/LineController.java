@@ -10,6 +10,7 @@ import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
 
+import subway.dto.RegisterInnerStationRequest;
 import subway.dto.RegisterLastStationRequest;
 import subway.dto.RegisterStationsRequest;
 
@@ -41,6 +42,12 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
+    @PostMapping("/{name}/inner-station")
+    public ResponseEntity<Void> registerInnerStation(@PathVariable String name, @RequestBody RegisterInnerStationRequest registerInnerStationRequest) {
+        lineService.registerInnerStation(name, registerInnerStationRequest);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
@@ -64,7 +71,7 @@ public class LineController {
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleSQLException(SQLException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

@@ -5,13 +5,13 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineSectionDao;
 import subway.dao.LineStationDao;
-import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.line.Line;
 import subway.domain.section.Distance;
 import subway.domain.station.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.RegisterInnerStationRequest;
 import subway.dto.RegisterLastStationRequest;
 import subway.dto.RegisterStationsRequest;
 import subway.entity.LineEntity;
@@ -19,6 +19,7 @@ import subway.entity.LineSectionEntity;
 import subway.entity.LineStationEntity;
 import subway.entity.SectionEntity;
 import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
 
 @Service
 public class LineService {
@@ -26,15 +27,15 @@ public class LineService {
     private final LineRepository lineRepository;
     private final StationDao stationDao;
     private final LineStationDao lineStationDao;
-    private final SectionDao sectionDao;
+    private final SectionRepository sectionRepository;
     private final LineSectionDao lineSectionDao;
 
-    public LineService(LineRepository lineRepository, final StationDao stationDao, final LineStationDao lineStationDao, final SectionDao sectionDao,
-        final LineSectionDao lineSectionDao) {
+    public LineService(LineRepository lineRepository, final StationDao stationDao, final LineStationDao lineStationDao,
+        final SectionRepository sectionRepository, final LineSectionDao lineSectionDao) {
         this.lineRepository = lineRepository;
         this.stationDao = stationDao;
         this.lineStationDao = lineStationDao;
-        this.sectionDao = sectionDao;
+        this.sectionRepository = sectionRepository;
         this.lineSectionDao = lineSectionDao;
     }
 
@@ -85,7 +86,7 @@ public class LineService {
 
         lineStationDao.insert(new LineStationEntity(leftStation.getId(), line.getId()));
         lineStationDao.insert(new LineStationEntity(rightStation.getId(), line.getId()));
-        SectionEntity sectionEntity = sectionDao.insert(
+        SectionEntity sectionEntity = sectionRepository.insert(
             new SectionEntity(leftStation.getId(), rightStation.getId(), registerStationsRequest.getDistance()));
         lineSectionDao.insert(new LineSectionEntity(line.getId(), sectionEntity.getId()));
         LineEntity newLine = new LineEntity(
@@ -112,12 +113,12 @@ public class LineService {
         if (baseStation.getName().equals(line.getUpBoundStation().getName())) {
             lineRepository.updateBoundStations(
                 new LineEntity(line.getId(), line.getName(), line.getColor(), newStation.getId(), line.getDownBoundStation().getId()));
-            return sectionDao.insert(new SectionEntity(newStation.getId(), baseStation.getId(), distance.getDistance())).getId();
+            return sectionRepository.insert(new SectionEntity(newStation.getId(), baseStation.getId(), distance.getDistance())).getId();
         }
         if (baseStation.getName().equals(line.getDownBoundStation().getName())) {
             lineRepository.updateBoundStations(
                 new LineEntity(line.getId(), line.getName(), line.getColor(), line.getUpBoundStation().getId(), newStation.getId()));
-            return sectionDao.insert(new SectionEntity(baseStation.getId(), newStation.getId(), distance.getDistance())).getId();
+            return sectionRepository.insert(new SectionEntity(baseStation.getId(), newStation.getId(), distance.getDistance())).getId();
         }
         throw new IllegalStateException("기준점이 종점이 아닙니다.");
     }
@@ -131,5 +132,34 @@ public class LineService {
         }
 
         throw new IllegalArgumentException("기준점이 종점이 아닙니다.");
+    }
+
+    public void registerInnerStation(final String name, final RegisterInnerStationRequest registerInnerStationRequest) {
+        Line line = lineRepository.findByName(name);
+
+        Station leftStation = stationDao.findByName(registerInnerStationRequest.getLeftBaseStationName()).orElseThrow(RuntimeException::new);
+        Station rightStation = stationDao.findByName(registerInnerStationRequest.getRightBaseStationName()).orElseThrow(RuntimeException::new);
+        SectionEntity section = sectionRepository.findByLineIdAndLeftStationIdAndRightStationId(
+            line.getId(), leftStation.getId(), rightStation.getId()).orElseThrow(RuntimeException::new);
+
+        validateNewDistanceEqualBeforeDistance(section, registerInnerStationRequest);
+        reCalculateInnerDistance(line.getId(), section, registerInnerStationRequest);
+    }
+
+    private void reCalculateInnerDistance(final Long lineId, final SectionEntity section,
+        final RegisterInnerStationRequest registerInnerStationRequest) {
+        Station newStation = stationDao.findByName(registerInnerStationRequest.getNewStationName()).orElseThrow(RuntimeException::new);
+        lineStationDao.insert(new LineStationEntity(newStation.getId(), lineId));
+        sectionRepository.deleteSectionAndLineSectionBySectionId(section.getId());
+        sectionRepository.insertReCalculateSection(lineId, new SectionEntity(section.getLeftStationId(), newStation.getId(),
+            registerInnerStationRequest.getLeftDistance()), new SectionEntity(newStation.getId(), section.getRightStationId(),
+            registerInnerStationRequest.getRightDistance()));
+    }
+
+    private void validateNewDistanceEqualBeforeDistance(final SectionEntity section, final RegisterInnerStationRequest registerInnerStationRequest) {
+        if (section.getDistance() == registerInnerStationRequest.getLeftDistance() + registerInnerStationRequest.getRightDistance()) {
+            return;
+        }
+        throw new IllegalArgumentException("사이에 새로 추가하는 역과 기존 역간 거리가 잘못되었습니다.");
     }
 }

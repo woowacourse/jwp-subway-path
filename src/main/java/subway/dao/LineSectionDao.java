@@ -30,4 +30,9 @@ public class LineSectionDao {
         Long lineSectionId = insertAction.executeAndReturnKey(params).longValue();
         return new LineSectionEntity(lineSectionId, lineSectionEntity.getLineId(), lineSectionEntity.getSectionId());
     }
+
+    public void deleteBySectionId(final Long sectionId) {
+        String sql = "DELETE FROM LINE_SECTION WHERE section_id = ?";
+        jdbcTemplate.update(sql, sectionId);
+    }
 }
