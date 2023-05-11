@@ -71,7 +71,10 @@ public class Sections {
 
         validateDuplicateSection(newSection.getUpStation(), newSection.getDownStation());
 
-        addTerminalSection(newSection);
+        if (isAddedTerminalSection(newSection)) {
+            return;
+        }
+
         addMiddleSection(newSection);
     }
 
@@ -82,13 +85,16 @@ public class Sections {
         }
     }
 
-    private void addTerminalSection(final Section newSection) {
+    private boolean isAddedTerminalSection(final Section newSection) {
         if (isDownStationSameAsFirstStation(newSection)) {
             addFirstStation(newSection);
+            return true;
         }
         if (isUpStationSameAsLastStation(newSection)) {
             addLastStation(newSection);
+            return true;
         }
+        return false;
     }
 
     private boolean isDownStationSameAsFirstStation(final Section newSection) {
@@ -156,7 +162,7 @@ public class Sections {
                 .collect(Collectors.toList());
 
         if (isOneSection(deletedSections)) {
-            sections.clear();
+            sections.remove(deletedSections.get(0));
             return;
         }
 

@@ -7,7 +7,7 @@ public class Line {
     private final String name;
     private final Sections sections;
 
-    public Line(final String name, final Sections sections) {
+    private Line(final String name, final Sections sections) {
         this.name = name;
         this.sections = sections;
     }
