@@ -1,22 +1,20 @@
 package subway.dto.station;
 
-import subway.domain.entity.StationEntity;
-
 import java.util.List;
 
 public class LineMapResponse {
 
-    private final List<StationEntity> stations;
+    private final List<StationResponse> stations;
 
-    public LineMapResponse(final List<StationEntity> stations) {
+    public LineMapResponse(final List<StationResponse> stations) {
         this.stations = stations;
     }
 
-    public static LineMapResponse from(final List<StationEntity> stations) {
+    public static LineMapResponse from(final List<StationResponse> stations) {
         return new LineMapResponse(stations);
     }
 
-    public List<StationEntity> getStations() {
+    public List<StationResponse> getStations() {
         return stations;
     }
 }
