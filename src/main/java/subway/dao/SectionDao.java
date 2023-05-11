@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -42,7 +41,7 @@ public class SectionDao {
     }
 
     public List<Section> findSectionsByLineId(Long lineId) {
-        String sql = "SELECT up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance객 "
+        String sql = "SELECT up.id as up_station_id, up.name as up_station_name, down.id as down_station_id, down.name as down_station_name, s.distance "
                 + "FROM SECTION AS s "
                 + "JOIN STATION AS up ON s.up_station_id = up.id "
                 + "JOIN STATION AS down ON s.down_station_id = down.id "
