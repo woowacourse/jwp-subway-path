@@ -1,53 +1,32 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
 import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.domain.repository.LineRepository;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.LineResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    public void createLine(final LineRequest lineRequest) {
+        final Line line = new Line(lineRequest.getName());
+
+        lineRepository.createLine(line);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public void deleteLine(final Long lineIdRequest) {
+        lineRepository.deleteById(lineIdRequest);
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    public List<LineResponse> findAll(){
+        return LineResponse.of(lineRepository.findAll());
     }
-
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
-    }
-
 }

@@ -1,44 +1,36 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.domain.repository.StationRepository;
+import subway.ui.dto.StationCreateRequest;
+import subway.ui.dto.StationResponse;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public void createStation(final StationCreateRequest stationCreateRequest) {
+        final Station station = new Station(stationCreateRequest.getName());
+
+        stationRepository.createStation(station);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public List<StationResponse> findAll() {
+        return StationResponse.of(stationRepository.findAll());
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public Station findById(final Long stationIdRequest) {
+        return stationRepository.findById(stationIdRequest);
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
-    }
-
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    public void deleteById(final Long stationIdRequest) {
+        stationRepository.deleteById(stationIdRequest);
     }
 }
