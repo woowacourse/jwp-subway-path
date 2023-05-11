@@ -40,6 +40,11 @@ public enum LineExceptionType implements BaseExceptionType {
             HttpStatus.BAD_REQUEST,
             "추가될 구간은 기존 구간의 길이보다 작아야 합니다."
     ),
+    INCONSISTENT_EXISTING_SECTION(
+            207,
+            HttpStatus.BAD_REQUEST,
+            "기존에 등록된 구간과 불일치합니다."
+    ),
     ABNORMAL_EXCEPTION(
             299,
             HttpStatus.INTERNAL_SERVER_ERROR,

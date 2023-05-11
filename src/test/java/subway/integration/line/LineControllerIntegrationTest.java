@@ -134,5 +134,48 @@ public class LineControllerIntegrationTest {
             // then
             assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
         }
+
+        @Test
+        void 초기_구간이_이미_다른_노선에_존재하며_해당_노선과_거리가_일치하지_않는_경우_예외() {
+            // given
+            역_생성_요청("역1");
+            역_생성_요청("역2");
+            노선_생성_요청("1호선", "역1", "역2", 1);
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청("2호선", "역1", "역2", 2);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        }
+
+        @Test
+        void 초기_구간이_이미_다른_노선에_존재하며_해당_노선의_역과_상하관계가_일치하지_않는_경우_예외() {
+            // given
+            역_생성_요청("역1");
+            역_생성_요청("역2");
+            노선_생성_요청("1호선", "역1", "역2", 1);
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청("2호선", "역2", "역1", 1);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        }
+
+        @Test
+        void 초기_구간이_이미_다른_노선에_존재하더라도_정보가_일치하면_생성() {
+            // given
+            역_생성_요청("역1");
+            역_생성_요청("역2");
+            노선_생성_요청("1호선", "역1", "역2", 1);
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청("2호선", "역1", "역2", 1);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(CREATED.value());
+            location_헤더를_검증한다(response, 2L);
+        }
     }
 }

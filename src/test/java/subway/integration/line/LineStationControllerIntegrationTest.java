@@ -126,6 +126,60 @@ public class LineStationControllerIntegrationTest {
             // then
             assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
         }
+
+        @Test
+        void 구간이_이미_다른_노선에_존재하며_해당_노선과_거리가_일치하지_않는_경우_예외() {
+            // given
+            역_생성_요청("역1");
+            역_생성_요청("역2");
+            역_생성_요청("역3");
+            노선_생성_요청("1호선", "역1", "역2", 1);
+            노선_생성_요청("2호선", "역2", "역3", 2);
+
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_추가_요청("2호선", "역1", "역2", 3);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        }
+
+        @Test
+        void 구간이_이미_다른_노선에_존재하며_해당_노선의_역과_상하관계가_일치하지_않는_경우_예외() {
+            // given
+            역_생성_요청("역1");
+            역_생성_요청("역2");
+            역_생성_요청("역3");
+            노선_생성_요청("1호선", "역1", "역2", 1);
+            노선_생성_요청("2호선", "역2", "역3", 10);
+
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_추가_요청("2호선", "역2", "역1", 1);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
+        }
+
+        @Test
+        void 구간이_이미_다른_노선에_존재하더라도_정보가_일치하면_생성() {
+            // given
+            역_생성_요청("역1");
+            역_생성_요청("역2");
+            역_생성_요청("역3");
+            노선_생성_요청("1호선", "역1", "역2", 2);
+            final Long 생성된_노선_아이디 = 노선_생성하고_아이디_반환("2호선", "역2", "역3", 10);
+
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_추가_요청("2호선", "역1", "역2", 2);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(OK.value());
+            final ExtractableResponse<Response> 노선_조회_응답 = 노선_조회_요청(생성된_노선_아이디);
+            노선에_포함된_N번째_구간을_검증한다(노선_조회_응답, 0, "역1", "역2", 2);
+            노선에_포함된_N번째_구간을_검증한다(노선_조회_응답, 1, "역2", "역3", 10);
+        }
     }
 
     @Nested

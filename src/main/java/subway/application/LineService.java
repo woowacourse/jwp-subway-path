@@ -11,6 +11,7 @@ import subway.application.dto.DeleteStationFromLineCommand;
 import subway.application.dto.LineCreateCommand;
 import subway.domain.Line;
 import subway.domain.LineRepository;
+import subway.domain.LineValidator;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -25,24 +26,32 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
+    private final LineValidator lineValidator;
     private final RemoveStationFromLineService removeStationFromLineService;
 
     public LineService(final LineRepository lineRepository,
                        final StationRepository stationRepository,
+                       final LineValidator lineValidator,
                        final RemoveStationFromLineService removeStationFromLineService) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
+        this.lineValidator = lineValidator;
         this.removeStationFromLineService = removeStationFromLineService;
     }
 
     public Long create(final LineCreateCommand command) {
+        validateDuplicateLineName(command);
+        final Station up = findStationByName(command.upTerminalName());
+        final Station down = findStationByName(command.downTerminalName());
+        final Section section = new Section(up, down, command.distance());
+        lineValidator.validateSectionConsistency(section);
+        return lineRepository.save(new Line(command.lineName(), new Sections(section)));
+    }
+
+    private void validateDuplicateLineName(final LineCreateCommand command) {
         if (lineRepository.findByName(command.lineName()).isPresent()) {
             throw new LineException(DUPLICATE_LINE_NAME);
         }
-        final Station up = findStationByName(command.upTerminalName());
-        final Station down = findStationByName(command.downTerminalName());
-        final Sections sections = new Sections(new Section(up, down, command.distance()));
-        return lineRepository.save(new Line(command.lineName(), sections));
     }
 
     private Station findStationByName(final String name) {
@@ -55,6 +64,7 @@ public class LineService {
         final Station up = findStationByName(command.upStationName());
         final Station down = findStationByName(command.downStationName());
         final Section section = new Section(up, down, command.distance());
+        lineValidator.validateSectionConsistency(section);
         line.addSection(section);
         lineRepository.update(line);
     }
