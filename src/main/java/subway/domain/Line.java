@@ -8,9 +8,9 @@ import java.util.stream.Collectors;
 
 public class Line {
 
-    private Long id;
-    private String name;
-    private LinkedList<Section> sections;
+    private final Long id;
+    private final String name;
+    private final LinkedList<Section> sections;
 
     public Line(Long id, String name, LinkedList<Section> sections) {
         this.id = id;
@@ -18,16 +18,19 @@ public class Line {
         this.sections = sections;
     }
 
+    public boolean hasStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> (section.getLeft().equals(station) || section.getRight().equals(station)));
+    }
+
     public boolean hasLeftStationInSection(Station station) {
         return sections.stream()
-                .filter(section -> section.getLeft().equals(station))
-                .count() > 0;
+                .anyMatch(section -> section.getLeft().equals(station));
     }
 
     public boolean hasRightStationInSection(Station station) {
         return sections.stream()
-                .filter(section -> section.getRight().equals(station))
-                .count() > 0;
+                .anyMatch(section -> section.getRight().equals(station));
     }
 
     public Section findSectionByLeftStation(Station station) {
@@ -42,18 +45,6 @@ public class Line {
                 .filter(section -> section.getRight().equals(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 없습니다."));
-    }
-
-    public boolean hasStation(Station station) {
-        for (Section section : sections) {
-            Station leftStation = section.getLeft();
-            Station rightStation = section.getRight();
-
-            if (station.equals(leftStation) || station.equals(rightStation)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     public boolean hasOneSection() {
@@ -111,29 +102,16 @@ public class Line {
                 .orElseThrow(() -> new IllegalArgumentException("종점을 찾을 수 없습니다."));
     }
 
-    private Station findLastStationAtRight() {
-        List<Station> leftStations = findLeftStations();
-        List<Station> rightStations = findRightStations();
-
-        rightStations.removeAll(leftStations);
-
-        return rightStations.stream()
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("종점을 찾을 수 없습니다."));
-    }
-
     private List<Station> findLeftStations() {
-        List<Station> leftStations = sections.stream()
+        return sections.stream()
                 .map(Section::getLeft)
                 .collect(Collectors.toList());
-        return leftStations;
     }
 
     private List<Station> findRightStations() {
-        List<Station> rightStations = sections.stream()
+        return sections.stream()
                 .map(Section::getRight)
                 .collect(Collectors.toList());
-        return rightStations;
     }
 
     public Long getId() {

@@ -10,6 +10,7 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.dto.LineDto;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -68,7 +69,7 @@ public class LineService {
                 .map(sectionDto -> new Section(
                                 stationDao.findById(sectionDto.getLeftStationId()),
                                 stationDao.findById(sectionDto.getRightStationId()),
-                                sectionDto.getDistance()
+                                new Distance(sectionDto.getDistance())
                         )
                 ).collect(Collectors.toCollection(LinkedList::new));
 
