@@ -112,10 +112,9 @@ public class Sections {
     }
 
     private AddResult addSectionToUp(Section newSection) {
-        // 하행에 존재하니 상행방향으로 추가
         Station existStation = newSection.getDownBoundStation();
         Section upEndPointSection = findUpEndPointSection();
-        // 상행 종점의 역과 추가하고자하는 하행 방향의 역이 일치하면
+
         if (existStation.equals(upEndPointSection.getUpBoundStation())) {
             AddResult addResult = new AddResult();
             addResult.insertSectionToAddSections(newSection);
@@ -136,10 +135,9 @@ public class Sections {
     }
 
     private AddResult addSectionToDown(Section newSection) {
-        // 상행에 존재하니 하행방향으로 추가
         Station existStation = newSection.getUpBoundStation();
         Section downEndPointSection = findDownEndPointSection();
-        // 하행 종점의 역과 추가하고자하는 상행 방향의 역이 일치히면
+
         if (existStation.equals(downEndPointSection.getDownBoundStation())) {
             AddResult addResult = new AddResult();
             addResult.insertSectionToAddSections(newSection);
