@@ -1,13 +1,14 @@
 package subway.ui;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
-import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -42,14 +43,12 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
-        return ResponseEntity.noContent().build();
-    }
+    @GetMapping("/{lineName}/stations")
+    public ResponseEntity<LineResponse> getLineStations(@PathVariable String lineName) {
+        final LineResponse stations = lineService.findStationsByLineName(lineName);
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(stations);
     }
 }

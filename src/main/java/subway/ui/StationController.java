@@ -30,20 +30,12 @@ public class StationController {
                 .build();
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
-        stationService.updateStation(id, stationRequest);
-        return ResponseEntity.ok().build();
-    }
+    @DeleteMapping
+    public ResponseEntity<Void> deleteStationByName(@RequestBody DeleteStationRequest deleteStationRequest) {
+        stationService.deleteStationByStationNameAndLineName(deleteStationRequest);
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
-        stationService.deleteStationById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }
