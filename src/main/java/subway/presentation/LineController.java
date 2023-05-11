@@ -29,7 +29,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@Valid @RequestBody final LineCreateRequest request) {
+    public ResponseEntity<Void> create(@RequestBody @Valid final LineCreateRequest request) {
         final Long id = lineService.create(request.toCommand());
         final URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()

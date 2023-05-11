@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static subway.integration.line.LineStationSteps.노선에_역_제거_요청;
 import static subway.integration.line.LineStationSteps.노선에_역_추가_요청;
 import static subway.integration.line.LineSteps.노선_생성_요청;
@@ -22,6 +23,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -127,6 +130,49 @@ public class LineStationControllerIntegrationTest {
             // then
             assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
         }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void 호선이_공백이거나_널이면_예외(final String nullAndEmpty) {
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_추가_요청(nullAndEmpty, "말랑역", "오리역", 3);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void 상행역이_공백이거나_널이면_예외(final String nullAndEmpty) {
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_추가_요청("1호선", nullAndEmpty, "오리역", 3);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void 하행역이_공백이거나_널이면_예외(final String nullAndEmpty) {
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_추가_요청("1호선", "말랑역", nullAndEmpty, 3);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
+
+        @Test
+        void 거리가_널이면_예외() {
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_추가_요청("1호선", "말랑역", "오리역", null);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
     }
 
     @Nested
@@ -166,6 +212,28 @@ public class LineStationControllerIntegrationTest {
             // then
             final ExtractableResponse<Response> response = 노선_조회_요청(노선_아이디);
             assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void 호선이_공백이거나_널이면_예외(final String nullAndEmpty) {
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_제거_요청(nullAndEmpty, "카프카역");
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void 삭제할_역이_공백이거나_널이면_예외(final String nullAndEmpty) {
+            // when
+            final ExtractableResponse<Response> response =
+                    노선에_역_제거_요청("1호선", nullAndEmpty);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
         }
     }
 }

@@ -23,7 +23,7 @@ public class LineStationController {
 
     @PostMapping
     public ResponseEntity<Void> addStation(
-            @Valid @RequestBody final AddStationToLineRequest request
+            @RequestBody @Valid final AddStationToLineRequest request
     ) {
         lineService.addStation(request.toCommand());
         return ResponseEntity.ok().build();
@@ -31,7 +31,7 @@ public class LineStationController {
 
     @DeleteMapping
     public ResponseEntity<Void> deleteStation(
-            @Valid @RequestBody final DeleteStationFromLineRequest request
+            @RequestBody @Valid final DeleteStationFromLineRequest request
     ) {
         lineService.removeStation(request.toCommand());
         return ResponseEntity.ok().build();

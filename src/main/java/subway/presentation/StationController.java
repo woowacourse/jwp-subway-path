@@ -2,6 +2,7 @@ package subway.presentation;
 
 
 import java.net.URI;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +24,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody final StationCreateRequest stationCreateRequest) {
+    public ResponseEntity<Void> create(@RequestBody @Valid final StationCreateRequest stationCreateRequest) {
         final Long id = stationService.create(new StationCreateCommand(stationCreateRequest.getName()));
         final URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()

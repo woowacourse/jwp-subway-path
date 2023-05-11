@@ -6,6 +6,7 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 import static subway.integration.common.LocationAsserter.location_헤더를_검증한다;
 import static subway.integration.line.LineSteps.노선_생성_요청;
 import static subway.integration.line.LineSteps.노선_생성하고_아이디_반환;
@@ -25,6 +26,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.server.LocalServerPort;
@@ -91,23 +94,89 @@ public class LineControllerIntegrationTest {
             // then
             assertThat(response.statusCode()).isEqualTo(BAD_REQUEST.value());
         }
+
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void 호선이_공백이거나_널이면_예외(final String nullAndEmpty) {
+            // given
+            final LineCreateRequest request = new LineCreateRequest(nullAndEmpty, "잠실역", "사당역", 0);
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
+
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void 상행역이_공백이거나_널이면_예외(final String nullAndEmpty) {
+            // given
+            final LineCreateRequest request = new LineCreateRequest("1호선", nullAndEmpty, "사당역", 0);
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
+
+        @ParameterizedTest
+        @NullAndEmptySource
+        void 하행역이_공백이거나_널이면_예외(final String nullAndEmpty) {
+            // given
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", nullAndEmpty, 0);
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
+
+        @Test
+        void 거리가_널이면_예외() {
+            // given
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", null);
+
+            // when
+            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
+        }
     }
 
-    @Test
-    void 단일_노선을_조회한다() {
-        // given
-        역_생성_요청("잠실역");
-        역_생성_요청("사당역");
-        final Long 생성된_노선_아이디 =
-                노선_생성하고_아이디_반환("1호선", "잠실역", "사당역", 5);
+    @Nested
+    class 단일_노선을_조회할때 {
 
-        // when
-        final ExtractableResponse<Response> response = 노선_조회_요청(생성된_노선_아이디);
+        @Test
+        void 성공한다() {
+            // given
+            역_생성_요청("잠실역");
+            역_생성_요청("사당역");
+            final Long 생성된_노선_아이디 =
+                    노선_생성하고_아이디_반환("1호선", "잠실역", "사당역", 5);
 
-        // then
-        assertThat(response.statusCode()).isEqualTo(OK.value());
-        단일_노선의_이름을_검증한다(response, "1호선");
-        노선에_포함된_N번째_구간을_검증한다(response, 0, "잠실역", "사당역", 5);
+            // when
+            final ExtractableResponse<Response> response = 노선_조회_요청(생성된_노선_아이디);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(OK.value());
+            단일_노선의_이름을_검증한다(response, "1호선");
+            노선에_포함된_N번째_구간을_검증한다(response, 0, "잠실역", "사당역", 5);
+        }
+
+        @Test
+        void 존재하지_않는_노선의_id로_요청하면_실패한다() {
+            // when
+            final ExtractableResponse<Response> response = 노선_조회_요청(Long.MAX_VALUE);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
+        }
     }
 
     @Test
