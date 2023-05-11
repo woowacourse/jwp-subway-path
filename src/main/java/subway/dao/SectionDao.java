@@ -2,6 +2,7 @@ package subway.dao;
 
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -53,5 +54,10 @@ public class SectionDao {
     public Section findByDownStationId(final Long downStationId) {
         String sql = "select * from SECTIONS where down_station_id = ?";
         return jdbcTemplate.queryForObject(sql, sectionRowMapper, downStationId);
+    }
+
+    public List<Section> findAll() {
+        String sql = "select * from SECTIONS";
+        return jdbcTemplate.query(sql, sectionRowMapper);
     }
 }

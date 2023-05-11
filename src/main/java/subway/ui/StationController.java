@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
+import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 import subway.dto.StationSaveRequest;
 
@@ -41,9 +42,10 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findStationResponseById(id));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
-        stationService.deleteStationById(id);
+    @DeleteMapping()
+    public ResponseEntity<Void> deleteStation(@RequestBody StationDeleteRequest request) {
+        stationService.deleteStationById(request);
         return ResponseEntity.noContent().build();
     }
+
 }

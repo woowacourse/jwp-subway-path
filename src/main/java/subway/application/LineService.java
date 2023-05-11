@@ -12,9 +12,10 @@ import subway.entity.Line;
 @Transactional(readOnly = true)
 @Service
 public class LineService {
+
     private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(final LineDao lineDao) {
         this.lineDao = lineDao;
     }
 
@@ -39,7 +40,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    //TODO: 삭제
+
     public Line findLineById(Long id) {
         return lineDao.findById(id);
     }
@@ -53,5 +54,4 @@ public class LineService {
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }
-
 }

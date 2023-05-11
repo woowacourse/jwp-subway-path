@@ -1,10 +1,12 @@
 package subway.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
+import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 import subway.dto.StationSaveRequest;
 import subway.entity.Section;
@@ -130,8 +132,57 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    @Transactional
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    public List<StationResponse> findAllStationOrderBySection() {
+        return stationDao.findAll().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
+
+    @Transactional
+    public void deleteStationById(final StationDeleteRequest request) {
+        final List<Section> allSections = sectionService.findAll();
+
+        final Section connectedOnLeft = getConnectedOnLeft(allSections, request.getStationId());
+
+        final Section connectedOnRight = getConnectedOnRight(allSections, request.getStationId());
+
+        if (connectedOnLeft == null || connectedOnRight == null) {
+            stationDao.deleteById(request.getStationId());
+            return;
+        }
+
+        int newDistance = connectedOnLeft.getDistance() + connectedOnRight.getDistance();
+
+        sectionService.deleteById(connectedOnLeft.getId());
+        sectionService.deleteById(connectedOnRight.getId());
+        stationDao.deleteById(request.getStationId());
+        sectionService.saveSection(
+                Section.of(request.getLineId(),
+                        connectedOnLeft.getUpStationId(),
+                        connectedOnRight.getDownStationId(),
+                        newDistance));
+    }
+
+    private Section getConnectedOnLeft(final List<Section> allSections, final Long id) {
+        final List<Section> sections = allSections.stream()
+                .filter(it -> it.getDownStationId() == id)
+                .collect(Collectors.toList());
+        if (sections.size() == 0){
+            return null;
+        }
+
+        return sections.get(0);
+    }
+
+    private Section getConnectedOnRight(final List<Section> allSections, final Long id) {
+        final List<Section> sections = allSections.stream()
+                .filter(it -> it.getUpStationId() == id)
+                .collect(Collectors.toList());
+        if (sections.size() == 0){
+            return null;
+        }
+
+        return sections.get(0);
+    }
+
 }

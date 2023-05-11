@@ -1,5 +1,6 @@
 package subway.application;
 
+import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
@@ -27,6 +28,10 @@ public class SectionService {
     @Transactional
     public void deleteById(final Long id) {
         sectionDao.deleteById(id);
+    }
+
+    public List<Section> findAll() {
+        return sectionDao.findAll();
     }
 
     public Section findByDownStationId(final Long downStationId) {

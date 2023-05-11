@@ -14,17 +14,26 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.application.SectionService;
+import subway.application.StationService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationResponse;
+import subway.entity.Section;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
+    private final StationService stationService;
+    private final SectionService sectionService;
 
-    public LineController(LineService lineService) {
+    public LineController(final LineService lineService, final StationService stationService,
+                          final SectionService sectionService) {
         this.lineService = lineService;
+        this.stationService = stationService;
+        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -55,8 +64,11 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+    @GetMapping("/{id}/sections")
+    public ResponseEntity<List<StationResponse>> findAllStationOrderBySection(){
+        return ResponseEntity.ok(stationService.findAllStationOrderBySection());
     }
+
+
+
 }
