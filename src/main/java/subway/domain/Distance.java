@@ -28,4 +28,11 @@ public class Distance {
     public int hashCode() {
         return Objects.hash(distance);
     }
+
+    @Override
+    public String toString() {
+        return "Distance{" +
+                "distance=" + distance +
+                '}';
+    }
 }

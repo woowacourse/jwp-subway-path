@@ -46,4 +46,15 @@ public class Section {
     public Line getLine() {
         return line;
     }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                ", line=" + line +
+                '}';
+    }
 }

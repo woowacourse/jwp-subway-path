@@ -136,6 +136,18 @@ class SectionsTest {
         List<Section> deletedResults = addDownwardInMiddleResult.getDeletedResults();
         List<Station> addedStation = addDownwardInMiddleResult.getAddedStation();
 
+        // 새롭게 추가된 SEONLEUNG -> JAMSIM섹션의 거리
+        Section jamsilSeonleungSection = addedResults.stream()
+                .filter(section -> section.getUpStation().equals(JAMSIL) && section.getDownStation().equals(SEONLEUNG))
+                .findAny()
+                .get();
+
+        // SEONLEUNG -> JAMSIM섹션 추가로 인해 생긴 GANGNAM -> SEONLEUNG섹션의 거리
+        Section seonleungGangNameSection = addedResults.stream()
+                .filter(section -> section.getUpStation().equals(SEONLEUNG) && section.getDownStation().equals(GANGNAM))
+                .findAny()
+                .get();
+
         // 상행 역 조회
         List<Station> upStations = addedResults.stream()
                 .map(Section::getUpStation)
@@ -155,7 +167,67 @@ class SectionsTest {
                 () -> assertThat(deletedResults).hasSize(1),
                 () -> assertThat(addedStation).hasSize(1),
                 () -> assertThat(addedStation).containsExactly(SEONLEUNG),
-                () -> assertThat(stations).containsExactlyInAnyOrder(JAMSIL, SEONLEUNG, GANGNAM)
+                () -> assertThat(stations).containsExactlyInAnyOrder(JAMSIL, SEONLEUNG, GANGNAM),
+                () -> assertThat(jamsilSeonleungSection.getDistance()).isEqualTo(jamsilSeonleungDistance),
+                // 새롭게 추가된 노선으로 인해 기존 노선의 변경 확인
+                () -> assertThat(seonleungGangNameSection.getDistance()).isEqualTo(jamsilGangnamSection.calculateNewSectionDistance(jamsilSeonleungDistance))
         );
+
+    }
+
+    @Test
+    void 하행역이_존재하고_새로운_상행역을_추가한다() {
+        //given
+        Distance jamsilGangnamDistance = new Distance(10);
+        Section jamsilGangnamSection = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance, SECOND_LINE);
+        Sections sections = new Sections(List.of(jamsilGangnamSection));
+
+        Distance yuksamGangnamDistance = new Distance(4);
+
+        //when
+        AddResultDto addUpwardInMiddleTest = sections.add(YUKSAM, GANGNAM, yuksamGangnamDistance, SECOND_LINE);
+        List<Section> addedResults = addUpwardInMiddleTest.getAddedResults();
+        List<Section> deletedResults = addUpwardInMiddleTest.getDeletedResults();
+        List<Station> addedStation = addUpwardInMiddleTest.getAddedStation();
+
+        // 새롭게 추가된 GANGNAM -> YUKSAM섹션의 거리
+        Section yuksamGangnamSection = addedResults.stream()
+                .filter(section -> section.getUpStation().equals(YUKSAM) && section.getDownStation().equals(GANGNAM))
+                .findAny()
+                .get();
+
+        // YUKSAM -> JAMSIL섹션 추가로 인해 생긴 GANGNAM -> SEONLEUNG섹션의 거리
+        Section jamsilYuksamSection = addedResults.stream()
+                .filter(section -> section.getUpStation().equals(JAMSIL) && section.getDownStation().equals(YUKSAM))
+                .findAny()
+                .get();
+
+        // 상행 역 조회
+        List<Station> upStations = addedResults.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+        // 하행 역 조회
+        List<Station> downStations = addedResults.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+
+        // 상행 역과 하행 역을 합쳐 노선의 역들 추출
+        upStations.addAll(downStations);
+        List<Station> stations = upStations.stream()
+                .distinct()
+                .collect(Collectors.toList());
+
+        //then
+        Assertions.assertAll(
+                () -> assertThat(addedResults).hasSize(2),
+                () -> assertThat(deletedResults).hasSize(1),
+                () -> assertThat(addedStation).hasSize(1),
+                () -> assertThat(addedStation).containsExactly(YUKSAM),
+                () -> assertThat(stations).containsExactlyInAnyOrder(JAMSIL, YUKSAM, GANGNAM),
+                () -> assertThat(yuksamGangnamSection.getDistance()).isEqualTo(yuksamGangnamDistance),
+                // 새롭게 추가된 노선으로 인해 기존 노선의 변경 확인
+                () -> assertThat(jamsilYuksamSection.getDistance()).isEqualTo(jamsilGangnamSection.calculateNewSectionDistance(yuksamGangnamDistance))
+        );
+
     }
 }
