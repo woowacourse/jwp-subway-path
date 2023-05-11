@@ -1,14 +1,11 @@
 package subway.repository;
 
-import java.util.Collections;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.line.Line;
 import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.exception.InvalidLineException;
 
 @Repository
 public class LineRepository {
@@ -22,19 +19,16 @@ public class LineRepository {
     }
 
     public Line save(final Line line) {
-        final LineEntity entity = new LineEntity(line.getId(), line.getName(), line.getColor());
+        final LineEntity entity = lineDao.save(new LineEntity(line.getId(), line.getName(), line.getColor()));
+        return Line.from(entity);
+    }
+
+    public List<Line> findAll() {
         return null;
     }
 
     public Line findById(final Long lineId) {
-        final LineEntity lineEntity = lineDao.findById(lineId)
-                .orElseThrow(() -> new InvalidLineException("존재하지 않는 노선 번호 입니다."));
-        final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
-        return Line.of(lineEntity, sectionEntities);
-    }
-
-    public List<Line> findAll() {
-        return Collections.emptyList();
+        return null;
     }
 
     public void update(final Line line) {
