@@ -1,5 +1,9 @@
 package subway.domain;
 
+import subway.exception.EndStationNotExistException;
+import subway.exception.InvalidSectionLengthException;
+import subway.exception.SectionNotFoundException;
+
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -16,10 +20,10 @@ public class Sections {
         Section includeSection = sections.stream()
                 .filter(section1 -> section1.hasIntersection(section))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("구간의 중간에 등록될 수 있는 구간이 아닙니다."));
+                .orElseThrow(() -> new InvalidSectionLengthException());
 
         if (includeSection.isDistanceSmallOrSame(section)) {
-            throw new IllegalArgumentException("중간에 등록될 수 없는 길이의 구간입니다. 너무 큽니다.");
+            throw new InvalidSectionLengthException();
         }
         return includeSection;
     }
@@ -39,7 +43,7 @@ public class Sections {
 
     public Section getDownEndSection() {
         return sections.stream().filter(section1 -> section1.getNextSectionId() == 0)
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("하행 종점이 존재하지 않습니다"));
+                .findFirst().orElseThrow(() -> new EndStationNotExistException());
     }
 
     public Section getUpEndSection() {
@@ -47,7 +51,7 @@ public class Sections {
                 .collect(Collectors.toList());
 
         return sections.stream().filter(section1 -> !downSectionIds.contains(section1.getId()))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("상행 종점이 존재하지 않습니다."));
+                .findFirst().orElseThrow(() -> new EndStationNotExistException());
     }
 
     public boolean isInitialSave() {
@@ -58,10 +62,6 @@ public class Sections {
         return this.sections.size();
     }
 
-    public long getLineId() {
-        return lineId;
-    }
-
     public List<Section> getSections() {
         return sections;
     }
@@ -69,20 +69,19 @@ public class Sections {
     public Section findSectionByNextSection(Section section) {
         return sections.stream()
                 .filter(section1 -> section1.getNextSectionId().equals(section.getNextSectionId()))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("노선에 해당 구간이 존재하지 않습니다."));
+                .findFirst().orElseThrow(() -> new SectionNotFoundException());
     }
 
     public Section findSectionByUpStation(final long stationId) {
         return sections.stream().filter(section -> section.isSameUpStationId(stationId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 상행역을 가진 구간이 존재하지 않습니다."));
+                .orElseThrow(() -> new SectionNotFoundException());
     }
-
 
     public Section findSectionByDownStation(final long stationId) {
         return sections.stream().filter(section -> section.isSameDownStationId(stationId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 하행역을 가진 구간이 존재하지 않습니다."));
+                .orElseThrow(() -> new SectionNotFoundException());
     }
 
     public boolean isNotExistStation(final long stationId) {
