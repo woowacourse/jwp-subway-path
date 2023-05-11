@@ -1,16 +1,19 @@
-package subway.application;
+package subway.service;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
+import subway.persistence.dao.LineDao;
+import subway.persistence.dao.SectionDao;
+import subway.persistence.dao.StationDao;
 import subway.domain.Line;
-import subway.dto.SectionRequest;
-import subway.dto.StationRequest;
+import subway.service.dto.SectionRequest;
+import subway.service.dto.StationRequest;
+import subway.service.LineService;
+import subway.service.SectionService;
+import subway.service.StationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

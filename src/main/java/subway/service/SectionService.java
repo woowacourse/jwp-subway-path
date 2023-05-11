@@ -1,7 +1,7 @@
-package subway.application;
+package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.SectionDao;
+import subway.persistence.dao.SectionDao;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;

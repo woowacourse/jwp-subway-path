@@ -1,18 +1,17 @@
-package subway.dto;
-
+package subway.service.dto;
 
 import javax.validation.constraints.NotBlank;
 
-public class StationRequest {
+public class LineRequest {
 
     @NotBlank
     private final String name;
 
-    public StationRequest(final String name) {
+    public LineRequest(final String name) {
         this.name = name;
     }
 
-    private StationRequest() {
+    private LineRequest() {
         this(null);
     }
 

@@ -10,6 +10,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.*;
+import subway.service.dto.LineRequest;
+import subway.service.dto.LineResponse;
+import subway.service.dto.SectionRequest;
+import subway.service.dto.StationRequest;
+import subway.service.dto.StationResponse;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;

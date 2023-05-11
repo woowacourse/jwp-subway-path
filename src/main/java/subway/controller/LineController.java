@@ -1,13 +1,13 @@
-package subway.ui;
+package subway.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.SectionRequest;
-import subway.dto.StationRequest;
+import subway.service.LineService;
+import subway.service.dto.LineRequest;
+import subway.service.dto.LineResponse;
+import subway.service.dto.SectionRequest;
+import subway.service.dto.StationRequest;
 
 import javax.validation.Valid;
 import java.net.URI;
