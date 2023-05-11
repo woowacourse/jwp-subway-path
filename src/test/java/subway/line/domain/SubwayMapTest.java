@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.section.domain.Distance;
 import subway.section.domain.Section;
 import subway.station.domain.Station;
 
@@ -23,12 +24,12 @@ class SubwayMapTest {
         final Station station7 = new Station(7L, "7L");
 
         final List<Section> sections = List.of(
-                new Section(1L, 1L, station1, station2, 3),
-                new Section(2L, 1L, station2, station3, 3),
-                new Section(3L, 1L, station3, station4, 3),
-                new Section(4L, 1L, station4, station5, 3),
-                new Section(5L, 1L, station5, station6, 3),
-                new Section(6L, 1L, station6, station7, 3)
+                new Section(1L, 1L, station1, station2, new Distance(3)),
+                new Section(2L, 1L, station2, station3, new Distance(3)),
+                new Section(3L, 1L, station3, station4, new Distance(3)),
+                new Section(4L, 1L, station4, station5, new Distance(3)),
+                new Section(5L, 1L, station5, station6, new Distance(3)),
+                new Section(6L, 1L, station6, station7, new Distance(3))
         );
 
         final SubwayMap subwayMap = SubwayMap.of(sections);
@@ -55,12 +56,12 @@ class SubwayMapTest {
         final Station station4 = new Station(4L, "4L");
 
         final List<Section> sections = List.of(
-                new Section(1L, 1L, station1, station2, 3),
-                new Section(2L, 1L, station2, station3, 3),
-                new Section(3L, 1L, station3, station4, 3),
-                new Section(4L, 1L, station4, station5, 3),
-                new Section(5L, 1L, station5, station6, 3),
-                new Section(6L, 1L, station6, station7, 3)
+                new Section(1L, 1L, station1, station2, new Distance(3)),
+                new Section(2L, 1L, station2, station3, new Distance(3)),
+                new Section(3L, 1L, station3, station4, new Distance(3)),
+                new Section(4L, 1L, station4, station5, new Distance(3)),
+                new Section(5L, 1L, station5, station6, new Distance(3)),
+                new Section(6L, 1L, station6, station7, new Distance(3))
         );
 
         final SubwayMap subwayMap = SubwayMap.of(sections);

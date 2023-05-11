@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.section.domain.Direction;
+import subway.section.domain.Distance;
 import subway.section.domain.Section;
 import subway.section.entity.SectionEntity;
 import subway.station.domain.Station;
@@ -38,7 +39,7 @@ public class RdsSectionDao implements SectionDao {
                     rs.getLong("line_id"),
                     new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")),
                     new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")),
-                    rs.getInt("distance")
+                    new Distance(rs.getInt("distance"))
             );
 
     public RdsSectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {

@@ -16,5 +16,5 @@ public class Section {
     private Long lineId;
     private Station upStation;
     private Station downStation;
-    private int distance;
+    private Distance distance;
 }
