@@ -56,24 +56,37 @@ public class Line {
         return false;
     }
 
-    public List<Station> findLeftToRightRoute() {
-        List<Station> leftStations = sections.stream()
-                .map(Section::getLeft)
-                .collect(Collectors.toList());
+    public boolean hasOneSection() {
+        return sections.size() == 1;
+    }
 
-        List<Station> rightStations = sections.stream()
-                .map(Section::getRight)
-                .collect(Collectors.toList());
+    public boolean isLastStationAtLeft(Station station) {
+        List<Station> leftStations = findLeftStations();
+        List<Station> rightStations = findRightStations();
 
         leftStations.removeAll(rightStations);
 
-        Station startStation = leftStations.stream()
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("종점을 찾을 수 없습니다."));
+        return leftStations.stream()
+                .filter(lettStation -> lettStation.equals(station))
+                .count() == 1;
+    }
 
-        List<Station> stations = new ArrayList<>(List.of(startStation));
+    public boolean isLastStationAtRight(Station station) {
+        List<Station> leftStations = findLeftStations();
+        List<Station> rightStations = findRightStations();
 
-        Station targetStation = startStation;
+        rightStations.removeAll(leftStations);
+
+        return rightStations.stream()
+                .filter(rightStation -> rightStation.equals(station))
+                .count() == 1;
+    }
+
+    public List<Station> findLeftToRightRoute() {
+        Station lastStations = findLastStationAtLeft();
+        List<Station> stations = new ArrayList<>(List.of(lastStations));
+
+        Station targetStation = lastStations;
         while (stations.size() < sections.size() + 1) {
             for (Section section : sections) {
                 if (section.getLeft().equals(targetStation)) {
@@ -85,6 +98,42 @@ public class Line {
             }
         }
         return stations;
+    }
+
+    private Station findLastStationAtLeft() {
+        List<Station> leftStations = findLeftStations();
+        List<Station> rightStations = findRightStations();
+
+        leftStations.removeAll(rightStations);
+
+        return leftStations.stream()
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("종점을 찾을 수 없습니다."));
+    }
+
+    private Station findLastStationAtRight() {
+        List<Station> leftStations = findLeftStations();
+        List<Station> rightStations = findRightStations();
+
+        rightStations.removeAll(leftStations);
+
+        return rightStations.stream()
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("종점을 찾을 수 없습니다."));
+    }
+
+    private List<Station> findLeftStations() {
+        List<Station> leftStations = sections.stream()
+                .map(Section::getLeft)
+                .collect(Collectors.toList());
+        return leftStations;
+    }
+
+    private List<Station> findRightStations() {
+        List<Station> rightStations = sections.stream()
+                .map(Section::getRight)
+                .collect(Collectors.toList());
+        return rightStations;
     }
 
     public Long getId() {

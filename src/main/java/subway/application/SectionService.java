@@ -13,6 +13,7 @@ import subway.dao.dto.LineDto;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.ui.dto.SectionDeleteRequest;
 import subway.ui.dto.SectionRequest;
 
 @Service
@@ -120,6 +121,66 @@ public class SectionService {
                     originDistance - sectionRequest.getDistance()));
             sectionDao.insert(new SectionDto(lineId, leftStation.getId(), rightStation.getId(),
                     sectionRequest.getDistance()));
+        }
+    }
+
+    @Transactional
+    public void deleteSection(SectionDeleteRequest deleteRequest) {
+        // 해당 노선이 존재하는지 확인
+        Long lineId = deleteRequest.getLineId();
+        LineDto foundLine = lineDao.findById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 노선이 존재하지 않습니다."));
+
+        // 해당 역이 존재하는지 확인
+        String stationName = deleteRequest.getStationName();
+        Station station = stationDao.findByName(stationName)
+                .orElseThrow(() -> new IllegalArgumentException("해당 역이 존재하지 않습니다."));
+
+        // 해당 역이 노선에 존재하는지 확인
+        List<SectionDto> sectionDtos = sectionDao.findByLineId(lineId);
+        LinkedList<Section> sections = sectionDtos.stream()
+                .map(sectionDto -> new Section(
+                                stationDao.findById(sectionDto.getLeftStationId()),
+                                stationDao.findById(sectionDto.getRightStationId()),
+                                sectionDto.getDistance()
+                        )
+                ).collect(Collectors.toCollection(LinkedList::new));
+
+        Line line = new Line(lineId, foundLine.getName(), sections);
+
+        if (!line.hasStation(station)) {
+            throw new IllegalArgumentException("노선에 해당 역이 존재하지 않습니다.");
+        }
+
+        if (line.hasOneSection()) {
+            Section section = line.getSections().get(0);
+            sectionDao.deleteByStationId(section.getLeft().getId(), section.getRight().getId());
+            return;
+        }
+
+        // 해당 역이 종점이 아니면 -> 좌, 우 section 가져오기
+        if (line.hasLeftStationInSection(station) && line.hasRightStationInSection(station)) {
+            Section leftSection = line.findSectionByRightStation(station);
+            Section rightSection = line.findSectionByLeftStation(station);
+
+            sectionDao.deleteByStationId(leftSection.getLeft().getId(), leftSection.getRight().getId());
+            sectionDao.deleteByStationId(rightSection.getLeft().getId(), rightSection.getRight().getId());
+
+            int newDistance = leftSection.getDistance() + rightSection.getDistance();
+            sectionDao.insert(new SectionDto(lineId, leftSection.getLeft().getId(), rightSection.getRight().getId(),
+                    newDistance));
+            return;
+        }
+
+        // 해당 역이 종점인지 확인 -> section 삭제
+        if (line.isLastStationAtLeft(station)) {
+            Section section = line.findSectionByLeftStation(station);
+            sectionDao.deleteByStationId(section.getLeft().getId(), section.getRight().getId());
+        }
+
+        if (line.isLastStationAtRight(station)) {
+            Section section = line.findSectionByRightStation(station);
+            sectionDao.deleteByStationId(section.getLeft().getId(), section.getRight().getId());
         }
     }
 }

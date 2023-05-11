@@ -16,6 +16,7 @@ import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dao.dto.LineDto;
 import subway.domain.Station;
+import subway.ui.dto.SectionDeleteRequest;
 import subway.ui.dto.SectionRequest;
 
 @Sql("/truncate.sql")
@@ -108,6 +109,73 @@ public class SectionIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("노선에 간선이 하나 있으면 모든 역을 제거한다.")
+    @Test
+    void deleteSectionSuccess() {
+        // given
+        SectionRequest createRequest = new SectionRequest(lineId, "강남역", "잠실역", 5);
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineId, "강남역");
+        createSectionRequest(createRequest);
+
+        // when
+        ExtractableResponse<Response> response = createDeleteSectionRequest(deleteRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("상행 종점 역을 제거한다.")
+    @Test
+    void deleteSectionLastLeftStation() {
+        // given
+        SectionRequest createRequest1 = new SectionRequest(lineId, "강남역", "잠실역", 5);
+        SectionRequest createRequest2 = new SectionRequest(lineId, "잠실역", "선릉역", 5);
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineId, "강남역");
+        createSectionRequest(createRequest1);
+        createSectionRequest(createRequest2);
+
+        // when
+        ExtractableResponse<Response> response = createDeleteSectionRequest(deleteRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("하행 종점 역을 제거한다.")
+    @Test
+    void deleteSectionLastRightStation() {
+        // given
+        SectionRequest createRequest1 = new SectionRequest(lineId, "강남역", "잠실역", 5);
+        SectionRequest createRequest2 = new SectionRequest(lineId, "잠실역", "선릉역", 5);
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineId, "선릉역");
+        createSectionRequest(createRequest1);
+        createSectionRequest(createRequest2);
+
+        // when
+        ExtractableResponse<Response> response = createDeleteSectionRequest(deleteRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("역과 역 사이의 역을 제거한다.")
+    @Test
+    void deleteSectionBetweenStations() {
+        // given
+        SectionRequest createRequest1 = new SectionRequest(lineId, "강남역", "잠실역", 5);
+        SectionRequest createRequest2 = new SectionRequest(lineId, "잠실역", "선릉역", 5);
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineId, "잠실역");
+        createSectionRequest(createRequest1);
+        createSectionRequest(createRequest2);
+
+        // when
+        ExtractableResponse<Response> response = createDeleteSectionRequest(deleteRequest);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    // TODO 이름 바꾸기
     private ExtractableResponse<Response> createSectionRequest(SectionRequest sectionRequest) {
         return RestAssured
                 .given().log().all()
@@ -118,24 +186,13 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .extract();
     }
 
-//
-//    @DisplayName("노선에 역을 제거한다.")
-//    @Test
-//    void deleteSectionSuccess() {
-//        // given
-//        Long lineId = 1L;
-//        Long stationId = 2L;
-//
-//        // when
-//        ExtractableResponse<Response> response = RestAssured
-//                .given().log().all()
-//                .queryParam("lineId", lineId)
-//                .queryParam("stationId", stationId)
-//                .when().delete("/sections")
-//                .then().log().all()
-//                .extract();
-//
-//        // then
-//        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-//    }
+    private ExtractableResponse<Response> createDeleteSectionRequest(SectionDeleteRequest request) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().delete("/sections")
+                .then().log().all()
+                .extract();
+    }
 }
