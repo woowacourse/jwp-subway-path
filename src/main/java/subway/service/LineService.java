@@ -1,7 +1,7 @@
-package subway.application;
+package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
+import subway.dao.H2LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
+    private final H2LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(H2LineDao lineDao) {
         this.lineDao = lineDao;
     }
 

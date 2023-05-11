@@ -1,7 +1,10 @@
 package subway.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import subway.domain.Line;
 
+@JsonNaming(PropertyNamingStrategies.KebabCaseStrategy.class)
 public class LineResponse {
     private Long id;
     private String name;

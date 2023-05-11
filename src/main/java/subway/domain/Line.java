@@ -21,7 +21,7 @@ public class Line {
         return new Line(null, name, color);
     }
 
-    public boolean isSameName(Line line){
+    public boolean isSameName(Line line) {
         return this.name.equals(line.name);
     }
 

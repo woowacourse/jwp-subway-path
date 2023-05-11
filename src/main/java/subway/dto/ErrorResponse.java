@@ -4,17 +4,15 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(PropertyNamingStrategies.KebabCaseStrategy.class)
-public class StationRequest {
-    private String name;
+public class ErrorResponse {
 
-    public StationRequest() {
+    private final String message;
+
+    public ErrorResponse(String message) {
+        this.message = message;
     }
 
-    public StationRequest(String name) {
-        this.name = name;
-    }
-
-    public String getName() {
-        return name;
+    public String getMessage() {
+        return message;
     }
 }

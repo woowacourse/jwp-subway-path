@@ -23,14 +23,14 @@ public class Lines {
 
     private void validateDuplicatedName(Line line) {
         boolean result = lines.stream().anyMatch(each -> each.isSameName(line));
-        if(result){
+        if (result) {
             throw new IllegalArgumentException("[ERROR] 중복되는 이름으로 노선을 생성할 수 없습니다.");
         }
     }
 
     private void validateDuplicatedColor(Line line) {
         boolean result = lines.stream().anyMatch(each -> each.isSameColor(line));
-        if(result){
+        if (result) {
             throw new IllegalArgumentException("[ERROR] 중복되는 색상으로 노선을 생성할 수 없습니다.");
         }
     }
