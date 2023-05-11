@@ -36,11 +36,26 @@ public class LineRepositoryImpl implements LineRepository {
                 new LineColor(lineEntity.getColor()));
     }
 
+    @Override
+    public List<Line> findAll() {
+        final List<LineEntity> allLineEntities = lineDao.findAll();
+
+        return allLineEntities.stream()
+                .map(this::toLine) //FIXME: N + 1
+                .collect(Collectors.toList());
+    }
+
+    private Line toLine(final LineEntity lineEntity) {
+        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getLineId());
+        final Sections sections = toSections(sectionEntities);
+        return new Line(sections, new LineName(lineEntity.getName()), new LineColor(lineEntity.getColor()));
+    }
+
     private Sections toSections(final List<SectionEntity> sectionEntities) {
         final List<Section> sections = sectionEntities.stream()
                 .map(SectionEntity::toSection)
                 .collect(Collectors.toList());
-        
+
         return new Sections(sections);
     }
 }

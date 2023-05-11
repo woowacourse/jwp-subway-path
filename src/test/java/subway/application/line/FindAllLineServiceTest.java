@@ -19,37 +19,45 @@ import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
 import subway.ui.dto.response.LineResponse;
 
-
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
-class FindSingleLineServiceTest {
+class FindAllLineServiceTest {
+
 
     @Mock
     private LineRepository lineRepository;
 
-    private FindSingleLineService findSingleLineService;
+    private FindAllLineService findAllLineService;
 
     @BeforeEach
     void setUp() {
-        findSingleLineService = new FindSingleLineService(lineRepository);
+        findAllLineService = new FindAllLineService(lineRepository);
     }
 
     @Test
-    void 노선_단일_조회_테스트() {
+    void 노선_전체_조회_테스트() {
         //given
         final Sections sections = new Sections(List.of(
                 new Section(new Station("역삼"), new Station("선릉"), new StationDistance(2)),
                 new Section(new Station("강남"), new Station("역삼"), new StationDistance(3))
         ));
-        final Line line = new Line(sections, new LineName("2호선"), new LineColor("청록색"));
-        given(lineRepository.findById(1L)).willReturn(line);
+        final Line lineA = new Line(sections, new LineName("1호선"), new LineColor("파랑색"));
+        final Line lineB = new Line(sections, new LineName("2호선"), new LineColor("청록색"));
+        given(lineRepository.findAll()).willReturn(List.of(lineA, lineB));
 
         //when
-        final LineResponse lineResponse = findSingleLineService.findSingleLine(1L);
+        final List<LineResponse> allLines = findAllLineService.findAllLines();
 
         //then
-        assertThat(lineResponse.getName()).isEqualTo("2호선");
-        assertThat(lineResponse.getStations()).extracting("stationName")
+        assertThat(allLines).hasSize(2);
+        final LineResponse firstLine = allLines.get(0);
+        assertThat(firstLine.getName()).isEqualTo("1호선");
+        assertThat(firstLine.getStations()).extracting("stationName")
+                .containsExactly("강남", "역삼", "선릉");
+
+        final LineResponse secondLine = allLines.get(1);
+        assertThat(secondLine.getName()).isEqualTo("2호선");
+        assertThat(secondLine.getStations()).extracting("stationName")
                 .containsExactly("강남", "역삼", "선릉");
     }
 }
