@@ -19,7 +19,7 @@ class SortedSectionTest {
         ); // A-B-C-D
 
         //when
-        final SortedSection sortedSection = new SortedSection(sections);
+        final SortedSection sortedSection = new SortedSection(new Sections(sections));
 
         //then
         final List<Station> sortedStations = sortedSection.getStations();

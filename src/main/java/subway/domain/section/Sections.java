@@ -16,6 +16,10 @@ public class Sections {
         this.sections = new LinkedList<>();
     }
 
+    public Sections(final List<Section> sections) {
+        this.sections = sections;
+    }
+
     public void addInitialStations(final Section section) {
         if (!sections.isEmpty()) {
             throw new IllegalStateException();

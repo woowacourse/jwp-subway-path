@@ -6,4 +6,8 @@ public class LineColor {
     public LineColor(final String colorValue) {
         this.colorValue = colorValue;
     }
+
+    public String getColorValue() {
+        return colorValue;
+    }
 }

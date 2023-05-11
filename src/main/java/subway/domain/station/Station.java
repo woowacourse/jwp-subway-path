@@ -13,8 +13,8 @@ public class Station {
         this.stationName = stationName;
     }
 
-    public StationName getStationName() {
-        return stationName;
+    public String getStationName() {
+        return stationName.getName();
     }
 
     @Override

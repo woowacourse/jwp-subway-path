@@ -12,8 +12,8 @@ import subway.domain.station.Station;
 public class SortedSection {
     private final List<Station> stations;
 
-    public SortedSection(final List<Section> sections) {
-        this.stations = sort(sections);
+    public SortedSection(final Sections sections) {
+        this.stations = sort(sections.getSections());
     }
 
     private List<Station> sort(final List<Section> sections) {
