@@ -3,6 +3,7 @@ package subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,5 +52,24 @@ class LineDaoTest {
 
             assertThat(line).isEmpty();
         }
+    }
+
+    @Test
+    @DisplayName("모든 노선을 조회한다.")
+    void findAll() {
+        final LineEntity lineTwo = lineDao.save(new LineEntity("2호선", "초록색"));
+        final LineEntity lineFour = lineDao.save(new LineEntity("4호선", "하늘색"));
+
+        final List<LineEntity> lines = lineDao.findAll();
+
+        assertAll(
+                () -> assertThat(lines).hasSize(2),
+                () -> assertThat(lines.get(0).getId()).isEqualTo(lineTwo.getId()),
+                () -> assertThat(lines.get(0).getName()).isEqualTo(lineTwo.getName()),
+                () -> assertThat(lines.get(0).getColor()).isEqualTo(lineTwo.getColor()),
+                () -> assertThat(lines.get(1).getId()).isEqualTo(lineFour.getId()),
+                () -> assertThat(lines.get(1).getName()).isEqualTo(lineFour.getName()),
+                () -> assertThat(lines.get(1).getColor()).isEqualTo(lineFour.getColor())
+        );
     }
 }
