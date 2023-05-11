@@ -203,4 +203,15 @@ class SectionServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("역이 존재하지 않습니다.");
     }
+
+    @DisplayName("노선에 역이 두 개 있으면 모두 삭제한다.")
+    @Test
+    void deleteStationOnlyTwoExisting() {
+        when(sectionDao.findByLineId(1L)).thenReturn(
+                List.of(SECTION_START));
+        when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
+
+        assertThatCode(() -> sectionService.deleteStation(1L, 2L))
+                .doesNotThrowAnyException();
+    }
 }

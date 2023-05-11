@@ -37,7 +37,7 @@ public class StationConnections {
                 .map(entry -> entry.getValue())
                 .filter(Connection::isDisConnected)
                 .count();
-        if (disconnectedCount != 2) {
+        if (!connectionByStation.isEmpty() && disconnectedCount != 2) {
             throw new IllegalArgumentException("구간은 하나의 연결로 이루어져 있어야 합니다.");
         }
     }
