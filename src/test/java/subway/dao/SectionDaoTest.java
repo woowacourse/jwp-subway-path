@@ -9,13 +9,15 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.persistence.dao.LineDao;
+import subway.persistence.dao.SectionDao;
+import subway.persistence.dao.StationDao;
 
 import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.domain.LineFixture.SECOND_LINE;
-import static subway.domain.StationFixture.JAMSIL;
-import static subway.domain.StationFixture.SEONLEUNG;
+import static subway.domain.StationFixture.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
@@ -45,16 +47,33 @@ class SectionDaoTest {
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE);
 
-        Section section = new Section(savedJamsil, savedSeonleung, new Distance(10), savedSecondLine);
+        Section section = new Section(savedJamsil, savedSeonleung, new Distance(10));
 
-        Section savedSection = sectionDao.insert(section);
+        Section savedSection = sectionDao.insert(section, savedSecondLine);
 
         org.junit.jupiter.api.Assertions.assertAll(
                 () -> assertThat(savedSection.getId()).isPositive(),
-                () -> assertThat(savedSection.getLine()).isEqualTo(savedSecondLine),
                 () -> assertThat(savedSection.getUpStation()).isEqualTo(savedJamsil),
                 () -> assertThat(savedSection.getDownStation()).isEqualTo(savedSeonleung),
                 () -> assertThat(savedSection.getDistance()).isEqualTo(new Distance(10))
         );
+    }
+
+    @Test
+    void 섹션_조회() {
+        Station savedJamsil = stationDao.insert(JAMSIL);
+        Station savedSeonleung = stationDao.insert(SEONLEUNG);
+        Station savedGangnam = stationDao.insert(GANGNAM);
+
+        Line savedSecondLine = lineDao.insert(SECOND_LINE);
+
+        Section section = new Section(savedJamsil, savedSeonleung, new Distance(10));
+        Section section1 = new Section(savedJamsil, savedGangnam, new Distance(3));
+
+        Section savedSection = sectionDao.insert(section, savedSecondLine);
+        sectionDao.insert(section1, savedSecondLine);
+
+
+        sectionDao.findSectionsByLine(savedSecondLine.getId());
     }
 }
