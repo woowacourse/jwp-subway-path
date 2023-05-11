@@ -1,6 +1,7 @@
 package subway.service.section.domain;
 
-import subway.service.section.dto.AddResultDto;
+import subway.service.section.dto.AddResult;
+import subway.service.section.dto.DeleteResult;
 import subway.service.station.domain.Station;
 
 import java.util.List;
@@ -14,7 +15,7 @@ public class Sections {
         this.sections = sections;
     }
 
-    public AddResultDto add(Station upStation, Station downStation, Distance distance) {
+    public AddResult add(Station upStation, Station downStation, Distance distance) {
         validateIsEqualStations(upStation, downStation);
         if (sections.isEmpty()) {
             return addInitStations(upStation, downStation, distance);
@@ -34,6 +35,43 @@ public class Sections {
         return addStationInMiddle(upStation, downStation, distance);
     }
 
+    public DeleteResult deleteSection(Station station) {
+        List<Section> sectionsOfContainDeleteStation = sections.stream()
+                .filter(section -> section.contains(station))
+                .collect(Collectors.toList());
+
+        if (sectionsOfContainDeleteStation.size() == 0) {
+            throw new IllegalArgumentException("현재 노선에 존재하지 않는 역을 삭제할 수 없습니다.");
+        }
+        // 종점 제거
+        if (sectionsOfContainDeleteStation.size() == 1) {
+            return new DeleteResult(List.of(), sectionsOfContainDeleteStation);
+        }
+
+        // 중간 역 제거
+        Section sectionOfDeleteStationIsDown = findSectionDeleteStationIsDownStation(station, sectionsOfContainDeleteStation);
+        Section sectionOfDeleteStationIsUp = findSectionDeleteStationIsUpStation(station, sectionsOfContainDeleteStation);
+
+        Distance combinedDistance = sectionOfDeleteStationIsDown.calcuateCombineDistance(sectionOfDeleteStationIsUp);
+
+        Section newSection = new Section(sectionOfDeleteStationIsDown.getUpStation(), sectionOfDeleteStationIsUp.getDownStation(), combinedDistance);
+        return new DeleteResult(List.of(newSection), List.of(sectionOfDeleteStationIsUp, sectionOfDeleteStationIsDown));
+    }
+
+    private Section findSectionDeleteStationIsUpStation(Station station, List<Section> sectionsOfContainDeleteStation) {
+        return sectionsOfContainDeleteStation.stream()
+                .filter(section -> section.isUpStation(station))
+                .findFirst()
+                .get();
+    }
+
+    private Section findSectionDeleteStationIsDownStation(Station station, List<Section> sectionsOfContainDeleteStation) {
+        return sectionsOfContainDeleteStation.stream()
+                .filter(section -> section.isDownStation(station))
+                .findFirst()
+                .get();
+    }
+
 
     private void validateIsEqualStations(Station upStation, Station downStation) {
         if (upStation.equals(downStation)) {
@@ -41,9 +79,9 @@ public class Sections {
         }
     }
 
-    private AddResultDto addInitStations(Station upStation, Station downStation, Distance distance) {
+    private AddResult addInitStations(Station upStation, Station downStation, Distance distance) {
         Section section = new Section(upStation, downStation, distance);
-        return new AddResultDto(
+        return new AddResult(
                 List.of(section),
                 List.of(),
                 List.of(upStation, downStation)
@@ -62,17 +100,17 @@ public class Sections {
         }
     }
 
-    private static AddResultDto addDownEndStation(Station upStation, Station downStation, Distance distance) {
+    private static AddResult addDownEndStation(Station upStation, Station downStation, Distance distance) {
         Section newDownEndStation = new Section(upStation, downStation, distance);
-        return new AddResultDto(List.of(newDownEndStation), List.of(), List.of(downStation));
+        return new AddResult(List.of(newDownEndStation), List.of(), List.of(downStation));
     }
 
-    private AddResultDto addUpEndStation(Station upStation, Station downStation, Distance distance) {
+    private AddResult addUpEndStation(Station upStation, Station downStation, Distance distance) {
         Section newUpEndStation = new Section(upStation, downStation, distance);
-        return new AddResultDto(List.of(newUpEndStation), List.of(), List.of(upStation));
+        return new AddResult(List.of(newUpEndStation), List.of(), List.of(upStation));
     }
 
-    private AddResultDto addStationInMiddle(Station upStation, Station downStation, Distance distance) {
+    private AddResult addStationInMiddle(Station upStation, Station downStation, Distance distance) {
 
         Optional<Section> isExistUpStation = sections.stream()
                 .filter(section -> section.contains(upStation))
@@ -84,13 +122,13 @@ public class Sections {
             Distance newSectionDistance = originalSection.calculateNewSectionDistance(distance);
             Section newSectionUpward = new Section(upStation, downStation, distance);
             Section newSectionDownward = new Section(downStation, originalSection.getDownStation(), newSectionDistance);
-            return new AddResultDto(List.of(newSectionUpward, newSectionDownward), List.of(originalSection), List.of(downStation));
+            return new AddResult(List.of(newSectionUpward, newSectionDownward), List.of(originalSection), List.of(downStation));
         }
         // downstation이 기존 노선에 존재할 경우 상행 방향에 역 추가
         return addStationDownwardInMiddle(upStation, downStation, distance);
     }
 
-    private AddResultDto addStationDownwardInMiddle(Station upStation, Station downStation, Distance distance) {
+    private AddResult addStationDownwardInMiddle(Station upStation, Station downStation, Distance distance) {
         Section originalDownSection = sections.stream()
                 .filter(section -> section.contains(downStation))
                 .findAny()
@@ -101,7 +139,7 @@ public class Sections {
         Section newSectionUpward = new Section(upStation, downStation, distance);
         Section newSectionDownward = new Section(originalDownSection.getUpStation(), upStation, newSectionDistance);
 
-        return new AddResultDto(List.of(newSectionDownward, newSectionUpward), List.of(originalDownSection), List.of(upStation));
+        return new AddResult(List.of(newSectionDownward, newSectionUpward), List.of(originalDownSection), List.of(upStation));
     }
 
     private boolean isExistInSection(Station station) {

@@ -8,7 +8,7 @@ import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
 import subway.service.section.domain.Sections;
-import subway.service.section.dto.AddResultDto;
+import subway.service.section.dto.AddResult;
 import subway.service.section.dto.SectionCreateRequest;
 import subway.service.section.dto.SectionCreateResponse;
 import subway.service.section.dto.SectionResponse;
@@ -39,7 +39,7 @@ public class SectionService {
         Station downStation = stationDao.findById(sectionCreateRequest.getDownStationId());
         Distance distance = new Distance(sectionCreateRequest.getDistance());
 
-        AddResultDto addResult = sections.add(upStation, downStation, distance);
+        AddResult addResult = sections.add(upStation, downStation, distance);
         List<SectionResponse> addedSectionResponses = new ArrayList<>();
         for (Section section : addResult.getAddedResults()) {
             Section savedSection = sectionRepository.insertSection(section, line);
