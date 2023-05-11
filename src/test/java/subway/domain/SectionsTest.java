@@ -139,7 +139,7 @@ class SectionsTest {
     class 노선에서_역_제거시_ {
 
         @Test
-        void 구간이_하나일_때() {
+        void 구간이_하나일_때_해당_구간을_제거한다() {
             Section section = 이호선_역삼_삼성_3.SECTION;
             Sections sections = new Sections();
             sections.add(section);
@@ -169,7 +169,7 @@ class SectionsTest {
         }
 
         @Test
-        void 해당_역이_중간_역일_경우_제거한다() {
+        void 해당_역이_중간_역일_경우_제거하고_거리를_더한다() {
             Section section1 = new Section(삼성역.STATION, 잠실역.STATION, 2);
             Section section2 = new Section(잠실역.STATION, 건대역.STATION, 3);
             Sections sections = new Sections();
