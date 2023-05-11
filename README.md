@@ -58,7 +58,7 @@
     - `String color`
 
 - [x] Line
-    - `LineInfo lineInfo`
+    - `LineInfo line`
     - `List<Section> line`
 
 - [x] SectionSorter
@@ -113,11 +113,12 @@
           각 구간의 거리를 구하여 만들기
     - 기존의 section delete
 
-- [ ] 노선에서 역 제거
+- [x] 노선에서 역 제거
     - `DELETE /lines/{line_id}/stations/{station_id}`
         - `@PathVariable line_id` → 노선 ID / `station_id` → 역 ID
     - `findSectionByLineIdAndStationId()`로 섹션 찾기
-        - 2개의 section 출발지와 도착지 고르기
+        - 종점인 경우 해당 section 삭제
+        - 2개의 section인 경우 출발지와 도착지 고르기
         - 거리 구하기
         - section 만들기
         - 저장하기

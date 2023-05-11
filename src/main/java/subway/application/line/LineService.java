@@ -1,15 +1,13 @@
-package subway.application;
-
-import static java.util.stream.Collectors.*;
+package subway.application.line;
 
 import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import subway.dao.LineDao;
+import subway.dao.line.LineDao;
 import subway.domain.LineInfo;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.LineResponse;
 
 @Service
 public class LineService {
@@ -25,20 +23,8 @@ public class LineService {
 		return LineResponse.of(persistLine);
 	}
 
-	public List<LineResponse> findLineResponses() {
-		List<LineInfo> persistLines = findLines();
-		return persistLines.stream()
-			.map(LineResponse::of)
-			.collect(toList());
-	}
-
 	public List<LineInfo> findLines() {
 		return lineDao.findAll();
-	}
-
-	public LineResponse findLineResponseById(Long id) {
-		LineInfo persistLine = findLineById(id);
-		return LineResponse.of(persistLine);
 	}
 
 	public LineInfo findLineById(Long id) {

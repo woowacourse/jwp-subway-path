@@ -1,4 +1,6 @@
-package subway.dto;
+package subway.ui.dto;
+
+import subway.dao.section.dto.SectionDto;
 
 public class AddStationResponse {
 
@@ -7,9 +9,8 @@ public class AddStationResponse {
 	private String arrivalStation;
 	private int distance;
 
-	public AddStationResponse(final Long sectionId, final AddStationRequest addStationRequest) {
-		this(sectionId, addStationRequest.getDepartureStation(), addStationRequest.getArrivalStation(),
-			addStationRequest.getDistance());
+	public AddStationResponse(final SectionDto sectionDto) {
+		this(sectionDto.getId(), sectionDto.getDeparture(), sectionDto.getArrival(), sectionDto.getDistance());
 	}
 
 	public AddStationResponse(final Long sectionId, final String departureStation, final String arrivalStation,

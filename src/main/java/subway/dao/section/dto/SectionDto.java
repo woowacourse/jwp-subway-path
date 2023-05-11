@@ -1,12 +1,13 @@
-package subway.dto;
+package subway.dao.section.dto;
 
-public class SectionResponse {
+public class SectionDto {
+
 	private Long id;
 	private String departure;
 	private String arrival;
-	private int distance;
+	private Integer distance;
 
-	public SectionResponse(final Long id, final String departure, final String arrival, final int distance) {
+	public SectionDto(final Long id, final String departure, final String arrival, final Integer distance) {
 		this.id = id;
 		this.departure = departure;
 		this.arrival = arrival;
@@ -25,7 +26,7 @@ public class SectionResponse {
 		return arrival;
 	}
 
-	public int getDistance() {
+	public Integer getDistance() {
 		return distance;
 	}
 }

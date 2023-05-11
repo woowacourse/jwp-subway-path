@@ -26,6 +26,10 @@ public class Station {
 		return name;
 	}
 
+	public boolean isSameName(String stationName) {
+		return this.name.equals(stationName);
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o)

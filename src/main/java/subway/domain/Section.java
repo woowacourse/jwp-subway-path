@@ -17,6 +17,30 @@ public class Section {
 		this.distance = distance;
 	}
 
+	public boolean isSameDeparture(String name) {
+		return departure.isSameName(name);
+	}
+
+	public boolean isSameArrival(String name) {
+		return arrival.isSameName(name);
+	}
+
+	public String findDeparture() {
+		return departure.getName();
+	}
+
+	public String findArrival() {
+		return arrival.getName();
+	}
+
+	public boolean isShorter(int distance) {
+		return this.distance.isShorter(distance);
+	}
+
+	public int subtractDistance(int distance) {
+		return this.distance.subtractDistance(distance);
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -29,8 +53,8 @@ public class Section {
 		return arrival;
 	}
 
-	public Distance getDistance() {
-		return distance;
+	public int getDistance() {
+		return distance.getDistance();
 	}
 
 }

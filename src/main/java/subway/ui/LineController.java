@@ -19,17 +19,16 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import subway.application.LineService;
-import subway.application.SectionService;
-import subway.domain.Distance;
+import subway.application.line.LineService;
+import subway.application.section.SectionService;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.dto.AddStationRequest;
-import subway.dto.AddStationResponse;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.LineStationResponse;
-import subway.dto.SectionResponse;
+import subway.ui.dto.AddStationRequest;
+import subway.ui.dto.AddStationResponse;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.LineResponse;
+import subway.ui.dto.LineStationResponse;
+import subway.ui.dto.SectionResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -108,9 +107,8 @@ public class LineController {
 	private SectionResponse getSectionResponse(final Section section) {
 		final Station departure = section.getDeparture();
 		final Station arrival = section.getArrival();
-		final Distance distance = section.getDistance();
+		final int distance = section.getDistance();
 
-		return new SectionResponse(section.getId(), departure.getName(), arrival.getName(),
-			distance.getDistance());
+		return new SectionResponse(section.getId(), departure.getName(), arrival.getName(), distance);
 	}
 }

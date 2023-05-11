@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.dao.section;
 
 import static java.util.stream.Collectors.*;
 
@@ -13,11 +13,12 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import subway.dao.section.dto.LineSection;
+import subway.dao.section.dto.SectionDto;
 import subway.domain.Distance;
 import subway.domain.LineInfo;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.dto.LineSection;
 
 @Repository
 public class SectionDao {
@@ -47,7 +48,7 @@ public class SectionDao {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	public long saveSection(Long lineId, int distance, String departure, String arrival) {
+	public SectionDto saveSection(Long lineId, int distance, String departure, String arrival) {
 		final String sql = "INSERT INTO sections (line_id, departure_id, arrival_id, distance) "
 			+ "SELECT ?, departure_station.id, arrival_station.id, ? "
 			+ "FROM station AS departure_station "
@@ -64,7 +65,9 @@ public class SectionDao {
 			return ps;
 		}, keyHolder);
 
-		return (long)Objects.requireNonNull(keyHolder.getKeys()).get("id");
+		final long id = (long)Objects.requireNonNull(keyHolder.getKeys()).get("id");
+
+		return new SectionDto(id, departure, arrival, distance);
 	}
 
 	public Map<LineInfo, List<Section>> findSections() {

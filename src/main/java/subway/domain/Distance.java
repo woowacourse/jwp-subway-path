@@ -17,6 +17,17 @@ public class Distance {
 		}
 	}
 
+	public boolean isShorter(int distance) {
+		return this.distance <= distance;
+	}
+
+	public int subtractDistance(int distance) {
+		final int result = this.distance - distance;
+		validatePositive(result);
+
+		return result;
+	}
+
 	public int getDistance() {
 		return distance;
 	}

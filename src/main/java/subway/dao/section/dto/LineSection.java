@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.dao.section.dto;
 
 import subway.domain.LineInfo;
 import subway.domain.Section;

@@ -1,10 +1,10 @@
-package subway.application;
+package subway.application.station;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
+import subway.dao.station.StationDao;
 import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.ui.dto.StationRequest;
+import subway.ui.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.ui.dto;
 
 import javax.validation.constraints.PositiveOrZero;
 
