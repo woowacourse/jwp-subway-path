@@ -1,5 +1,6 @@
 package subway.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -16,8 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import subway.exception.ErrorCode;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
@@ -42,6 +46,26 @@ public class StationIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+    }
+
+    @Test
+    @Sql("classpath:/init.sql")
+    @DisplayName("빈 이름으로 지하철 역을 생성한다")
+    void createStation_empty_name() {
+        // given
+        Map<String, String> params = new HashMap<>();
+        params.put("name", "");
+
+        // when
+        RestAssured.given().log().all()
+            .body(params)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/stations")
+            .then().log().all()
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .body("errorCode", equalTo(ErrorCode.INVALID_REQUEST.name()))
+            .body("errorMessage[0]", equalTo("역 이름을 입력해 주세요."));
     }
 
     @Test

@@ -2,14 +2,14 @@ package subway.domain.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static subway.exception.ErrorCode.STATION_NAME_DUPLICATED;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.station.Station;
-import subway.domain.station.Stations;
+import subway.exception.GlobalException;
 
 class StationsTest {
 
@@ -24,9 +24,9 @@ class StationsTest {
         // expect
         final Station 중복된_잠실역 = new Station("잠실역");
         assertThatThrownBy(() -> stations.add(중복된_잠실역))
-            .isInstanceOf(IllegalArgumentException.class)
-            .extracting("message")
-            .isEqualTo("역 이름은 중복될 수 없습니다.");
+            .isInstanceOf(GlobalException.class)
+            .extracting("errorCode")
+            .isEqualTo(STATION_NAME_DUPLICATED);
     }
 
     @Test

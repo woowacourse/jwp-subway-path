@@ -8,6 +8,7 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static subway.exception.ErrorCode.DB_UPDATE_ERROR;
 import static subway.fixture.StationFixture.강남역;
 import static subway.fixture.StationFixture.남위례역;
 import static subway.fixture.StationFixture.복정역;
@@ -37,6 +38,8 @@ import subway.dao.StationDao;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationResponse;
+import subway.exception.GlobalException;
+import subway.exception.NotFoundException;
 
 
 @ExtendWith(MockitoExtension.class)
@@ -64,7 +67,7 @@ class SectionServiceTest {
 
         // expected
         assertThatThrownBy(() -> sectionService.saveSection(sectionRequest))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage("해당하는 노선이 없습니다.");
     }
 
@@ -103,7 +106,7 @@ class SectionServiceTest {
 
         // expected
         assertThatThrownBy(() -> sectionService.saveSection(sectionRequest))
-            .isInstanceOf(IllegalArgumentException.class)
+            .isInstanceOf(NotFoundException.class)
             .hasMessage("해당하는 역이 없습니다.");
     }
 
@@ -187,8 +190,9 @@ class SectionServiceTest {
 
         // expected
         assertThatThrownBy(() ->  sectionService.saveSection(sectionRequest))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("DB 삭제가 정상적으로 진행되지 않았습니다.");
+            .isInstanceOf(GlobalException.class)
+            .extracting("errorCode")
+            .isEqualTo(DB_UPDATE_ERROR);
     }
 
     @Test

@@ -3,9 +3,11 @@ package subway.domain.section;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static subway.exception.ErrorCode.SECTION_DISTANCE;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.exception.GlobalException;
 
 class SectionDistanceTest {
 
@@ -22,8 +24,8 @@ class SectionDistanceTest {
     @ValueSource(ints = {0, 51})
     void station_name_fail_test(final int distance) {
         assertThatThrownBy(() -> new SectionDistance(distance))
-            .isInstanceOf(IllegalArgumentException.class)
-            .extracting("message")
-            .isEqualTo("거리는 최소 1부터 최대 50까지 가능합니다.");
+            .isInstanceOf(GlobalException.class)
+            .extracting("errorCode")
+            .isEqualTo(SECTION_DISTANCE);
     }
 }

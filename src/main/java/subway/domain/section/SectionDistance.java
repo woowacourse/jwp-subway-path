@@ -1,5 +1,8 @@
 package subway.domain.section;
 
+import subway.exception.ErrorCode;
+import subway.exception.GlobalException;
+
 public class SectionDistance {
 
     private static final int MIN_DISTANCE = 1;
@@ -14,7 +17,7 @@ public class SectionDistance {
 
     private void validateRange(final int distance) {
         if (distance < MIN_DISTANCE || distance > MAX_DISTANCE) {
-            throw new IllegalArgumentException(String.format("거리는 최소 %d부터 최대 %d까지 가능합니다.", MIN_DISTANCE, MAX_DISTANCE));
+            throw new GlobalException(ErrorCode.SECTION_DISTANCE);
         }
     }
 

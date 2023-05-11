@@ -7,6 +7,7 @@ import subway.dao.StationDao;
 import subway.domain.station.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.exception.NotFoundException;
 
 @Service
 public class StationService {
@@ -43,6 +44,6 @@ public class StationService {
 
     private Station getById(final Long id) {
         return stationDao.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 역이 없습니다."));
+            .orElseThrow(() -> new NotFoundException("해당하는 역이 없습니다"));
     }
 }

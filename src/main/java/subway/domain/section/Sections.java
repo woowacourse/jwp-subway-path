@@ -1,5 +1,9 @@
 package subway.domain.section;
 
+import static subway.exception.ErrorCode.SECTION_ADD_STATION_NOT_EXISTS;
+import static subway.exception.ErrorCode.SECTION_ALREADY_ADD;
+import static subway.exception.ErrorCode.SECTION_TOO_FAR_DISTANCE;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,6 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import subway.domain.station.Station;
+import subway.exception.GlobalException;
 
 public class Sections {
 
@@ -27,11 +32,11 @@ public class Sections {
         final Station targetRequest = requestSection.getTarget();
 
         if (!stations.contains(sourceRequest) && !stations.contains(targetRequest)) {
-            throw new IllegalArgumentException("존재하지 않는 역을 추가할 수 없습니다.");
+            throw new GlobalException(SECTION_ADD_STATION_NOT_EXISTS);
         }
 
         if (stations.contains(sourceRequest) && stations.contains(targetRequest)) {
-            throw new IllegalArgumentException("이미 추가된 구간입니다.");
+            throw new GlobalException(SECTION_ALREADY_ADD);
         }
     }
 
@@ -85,7 +90,7 @@ public class Sections {
         final int distance = section.getDistance();
         final int requestDistance = requestSection.getDistance();
         if (requestDistance >= distance) {
-            throw new IllegalArgumentException("거리가 너무 커서 역을 추가할 수 없습니다.");
+            throw new GlobalException(SECTION_TOO_FAR_DISTANCE);
         }
         return Optional.of(section);
     }

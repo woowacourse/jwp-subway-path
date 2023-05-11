@@ -3,10 +3,12 @@ package subway.domain.station;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static subway.exception.ErrorCode.STATION_NAME_LENGTH;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.station.StationName;
+import subway.exception.GlobalException;
 
 class StationNameTest {
 
@@ -23,9 +25,9 @@ class StationNameTest {
     @ValueSource(strings = {"일이", "영일이삼사오륙칠팔구십"})
     void station_name_fail_test(final String name) {
         assertThatThrownBy(() -> new StationName(name))
-            .isInstanceOf(IllegalArgumentException.class)
-            .extracting("message")
-            .isEqualTo("역 이름 길이는 3~10여야 합니다.");
+            .isInstanceOf(GlobalException.class)
+            .extracting("errorCode")
+            .isEqualTo(STATION_NAME_LENGTH);
     }
 
 }

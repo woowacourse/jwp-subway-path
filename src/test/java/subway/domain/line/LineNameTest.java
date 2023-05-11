@@ -6,7 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.domain.line.LineName;
+import subway.exception.ErrorCode;
+import subway.exception.GlobalException;
 
 class LineNameTest {
 
@@ -23,9 +24,8 @@ class LineNameTest {
     @ValueSource(strings = {"일이", "영일이삼사오륙칠팔구십"})
     void line_name_fail_test(final String name) {
         assertThatThrownBy(() -> new LineName(name))
-            .isInstanceOf(IllegalArgumentException.class)
-            .extracting("message")
-            .isEqualTo("노선 이름 길이는 3~10여야 합니다.");
+            .isInstanceOf(GlobalException.class)
+            .extracting("errorCode")
+            .isEqualTo(ErrorCode.LINE_NAME_LENGTH);
     }
-
 }

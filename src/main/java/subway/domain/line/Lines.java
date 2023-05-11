@@ -2,6 +2,8 @@ package subway.domain.line;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import subway.exception.ErrorCode;
+import subway.exception.GlobalException;
 
 public class Lines {
 
@@ -11,15 +13,10 @@ public class Lines {
         this.lines = lines;
     }
 
-    public void add(final Line line) {
-        validateDuplication(line);
-        lines.add(line);
-    }
-
-    private void validateDuplication(final Line line) {
+    public void validateDuplication(final Line line) {
         final List<String> lineNames = getLineNames();
         if (lineNames.contains(line.getName())) {
-            throw new IllegalArgumentException("노선 이름은 중복될 수 없습니다.");
+            throw new GlobalException(ErrorCode.LINE_NAME_DUPLICATED);
         }
     }
 

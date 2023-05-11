@@ -1,5 +1,7 @@
 package subway.application;
 
+import static subway.exception.ErrorCode.DB_UPDATE_ERROR;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import subway.domain.station.Station;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationResponse;
+import subway.exception.GlobalException;
+import subway.exception.NotFoundException;
 
 @Service
 public class SectionService {
@@ -41,9 +45,11 @@ public class SectionService {
         sections.validateSections(section);
         final Station targetStation = getStationById(sectionRequest.getTargetStationId());
         final Station sourceStation = getStationById(sectionRequest.getSourceStationId());
+
         if (sections.isTargetUpward(targetStation) || sections.isSourceDownward(sourceStation)) {
             saveNewSection(line.getId(), sourceStation.getId(), targetStation.getId(), section.getDistance());
         }
+
         updateExistedSourceSection(line.getId(), sections, section, targetStation.getId(), sourceStation.getId());
         updateExistedTargetSection(line.getId(), sections, section, targetStation.getId(), sourceStation.getId());
     }
@@ -63,12 +69,12 @@ public class SectionService {
 
     private Line getLineById(final Long lineId) {
         return lineDao.findById(lineId)
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 노선이 없습니다."));
+            .orElseThrow(() -> new NotFoundException("해당하는 노선이 없습니다."));
     }
 
     private Station getStationById(final Long stationId) {
         return stationDao.findById(stationId)
-            .orElseThrow(() -> new IllegalArgumentException("해당하는 역이 없습니다."));
+            .orElseThrow(() -> new NotFoundException("해당하는 역이 없습니다."));
     }
 
     private List<StationResponse> convertStationResponses(final List<Station> stations) {
@@ -134,7 +140,7 @@ public class SectionService {
     private void deleteOldSection(final Long lineId, final Long sourceStationId) {
         final int deleteCount = sectionDao.deleteByLineIdAndSourceStationId(lineId, sourceStationId);
         if (deleteCount != 1) {
-            throw new IllegalArgumentException("DB 삭제가 정상적으로 진행되지 않았습니다.");
+            throw new GlobalException(DB_UPDATE_ERROR);
         }
     }
 

@@ -1,6 +1,7 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
 
 import io.restassured.RestAssured;
@@ -17,17 +18,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.LineRequest;
 import subway.dto.SectionRequest;
+import subway.exception.ErrorCode;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-        lineRequest1 = new LineRequest("이호선", "bg-green-600");
-        lineRequest2 = new LineRequest("팔호선", "bg-pink-600");
     }
 
     @Test
@@ -36,12 +34,12 @@ public class LineIntegrationTest extends IntegrationTest {
     void createLine() {
         // when
         ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new LineRequest("이호선", "bg-green-600"))
+            .when().post("/lines")
+            .then().log().all().
+            extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -50,25 +48,41 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @Test
     @Sql("classpath:/init.sql")
+    @DisplayName("빈 이름과 빈 색상으로 노선을 생성한다.")
+    void createLine_blank_name_and_color() {
+        // when
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new LineRequest("", ""))
+            .when().post("/lines")
+            .then().log().all()
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .body("errorCode", equalTo(ErrorCode.INVALID_REQUEST.name()))
+            .body("errorMessage", containsInAnyOrder("호선 이름을 입력해 주세요.", "호선 색상을 입력해 주세요."));
+    }
+
+    @Test
+    @Sql("classpath:/init.sql")
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     void createLineWithDuplicateName() {
         // given
         RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new LineRequest("이호선", "bg-green-600"))
+            .when().post("/lines")
+            .then().log().all().
+            extract();
 
         // when
         ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new LineRequest("이호선", "bg-green-600"))
+            .when().post("/lines")
+            .then().log().all().
+            extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -82,7 +96,7 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
+            .body(new LineRequest("이호선", "bg-green-600"))
             .when().post("/lines")
             .then().log().all().
             extract();
@@ -107,7 +121,6 @@ public class LineIntegrationTest extends IntegrationTest {
             .then().log().all()
             .extract();
 
-
         // when
         final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 10);
         ExtractableResponse<Response> response = RestAssured
@@ -124,22 +137,58 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @Test
     @Sql("classpath:/init.sql")
+    @DisplayName("지하철 노선 생성 시 노선 아이디, 시작역 아이디, 끝역 아이디, 거리 정보를 빈 값으로 추가한다.")
+    void createSection_empty_section_request() {
+        // expected
+        final SectionRequest sectionRequest = new SectionRequest(null, null, null, null);
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(sectionRequest)
+            .when().post("/lines/sections")
+            .then().log().all()
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .body("errorCode", equalTo(ErrorCode.INVALID_REQUEST.name()))
+            .body("errorMessage", containsInAnyOrder("호선 아이디를 입력해 주세요.", "시작역 아이디를 입력해 주세요.",
+                "끝역 아이디를 입력해 주세요.", "거리를 입력해 주세요."));
+    }
+
+    @Test
+    @Sql("classpath:/init.sql")
+    @DisplayName("지하철 노선 생성 시 올바르지 않은 타입의 노선 아이디, 시작역 아이디, 끝역 아이디, 거리 정보를 추가한다.")
+    void createSection_invalid_type_section_request() {
+        // expected
+        final SectionRequest sectionRequest = new SectionRequest(0L, 0L, 0L, 0);
+        RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(sectionRequest)
+            .when().post("/lines/sections")
+            .then().log().all()
+            .statusCode(HttpStatus.BAD_REQUEST.value())
+            .body("errorCode", equalTo(ErrorCode.INVALID_REQUEST.name()))
+            .body("errorMessage", containsInAnyOrder("올바른 호선 아이디를 입력해 주세요.",
+                "올바른 시작역 아이디를 입력해 주세요.", "올바른 끝역 아이디를 입력해 주세요."));
+    }
+
+    @Test
+    @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선 전체 목록을 조회한다.")
     void getLines() {
         // given
         // 노선 추가
         RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new LineRequest("이호선", "bg-green-600"))
+            .when().post("/lines")
+            .then().log().all().
+            extract();
 
         RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest2)
+            .body(new LineRequest("팔호선", "bg-pink-600"))
             .when().post("/lines")
             .then().log().all().
             extract();
@@ -165,7 +214,6 @@ public class LineIntegrationTest extends IntegrationTest {
             .then().log().all()
             .extract();
 
-
         Map<String, String> params3 = new HashMap<>();
         params3.put("name", "남위례역");
         RestAssured.given().log().all()
@@ -186,7 +234,6 @@ public class LineIntegrationTest extends IntegrationTest {
             .then().log().all()
             .extract();
 
-
         // 구간 추가
         final SectionRequest sectionRequest1 = new SectionRequest(1L, 1L, 2L, 10);
         RestAssured
@@ -206,10 +253,10 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // expected
         RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
-                .then().log().all()
+            .given().log().all()
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/lines")
+            .then().log().all()
             .body("size", Matchers.is(2))
             .body("[0].name", equalTo("이호선"))
             .body("[0].color", equalTo("bg-green-600"))
@@ -230,7 +277,7 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
+            .body(new LineRequest("이호선", "bg-green-600"))
             .when().post("/lines")
             .then().log().all().
             extract();
@@ -283,22 +330,22 @@ public class LineIntegrationTest extends IntegrationTest {
     void updateLine() {
         // given
         ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new LineRequest("이호선", "bg-green-600"))
+            .when().post("/lines")
+            .then().log().all().
+            extract();
 
         // when
         Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().put("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(new LineRequest("팔호선", "bg-pink-600"))
+            .when().put("/lines/{lineId}", lineId)
+            .then().log().all()
+            .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -312,7 +359,7 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> createResponse = RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(lineRequest1)
+            .body(new LineRequest("이호선", "bg-green-600"))
             .when().post("/lines")
             .then().log().all()
             .extract();

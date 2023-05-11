@@ -2,6 +2,8 @@ package subway.domain.station;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import subway.exception.ErrorCode;
+import subway.exception.GlobalException;
 
 public class Stations {
     private final List<Station> stations;
@@ -18,7 +20,7 @@ public class Stations {
     private void validateDuplication(final Station station) {
         final List<String> stationNames = getStationNames();
         if (stationNames.contains(station.getName())) {
-            throw new IllegalArgumentException("역 이름은 중복될 수 없습니다.");
+            throw new GlobalException(ErrorCode.STATION_NAME_DUPLICATED);
         }
     }
 

@@ -3,6 +3,9 @@ package subway.domain.section;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.exception.ErrorCode.SECTION_ADD_STATION_NOT_EXISTS;
+import static subway.exception.ErrorCode.SECTION_ALREADY_ADD;
+import static subway.exception.ErrorCode.SECTION_TOO_FAR_DISTANCE;
 import static subway.fixture.StationFixture.강남역;
 import static subway.fixture.StationFixture.선릉역;
 import static subway.fixture.StationFixture.신림역;
@@ -17,6 +20,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.station.Station;
+import subway.exception.GlobalException;
 
 class SectionsTest {
 
@@ -54,9 +58,9 @@ class SectionsTest {
 
         // expected
         assertThatThrownBy(() -> sections.validateSections(requestSection))
-            .isInstanceOf(IllegalArgumentException.class)
-            .extracting("message")
-            .isEqualTo("존재하지 않는 역을 추가할 수 없습니다.");
+            .isInstanceOf(GlobalException.class)
+            .extracting("errorCode")
+            .isEqualTo(SECTION_ADD_STATION_NOT_EXISTS);
     }
 
     @ParameterizedTest(name = "추가 요청받은 역 모두 다 노선에 존재하면 예외가 발생한다.")
@@ -74,9 +78,9 @@ class SectionsTest {
 
         // expected
         assertThatThrownBy(() -> sections.validateSections(requestSection))
-            .isInstanceOf(IllegalArgumentException.class)
-            .extracting("message")
-            .isEqualTo("이미 추가된 구간입니다.");
+            .isInstanceOf(GlobalException.class)
+            .extracting("errorCode")
+            .isEqualTo(SECTION_ALREADY_ADD);
     }
 
     @ParameterizedTest(name = "요청받은 역이 상행 종점에 존재하는지 확인한다 name = {0} : {1}")
@@ -137,9 +141,9 @@ class SectionsTest {
 
         // expected
         assertThatThrownBy(() -> sections.getExistsSectionOfSource(requestSection))
-            .isInstanceOf(IllegalArgumentException.class)
-            .extracting("message")
-            .isEqualTo("거리가 너무 커서 역을 추가할 수 없습니다.");
+            .isInstanceOf(GlobalException.class)
+            .extracting("errorCode")
+            .isEqualTo(SECTION_TOO_FAR_DISTANCE);
     }
 
     @Test
@@ -187,9 +191,9 @@ class SectionsTest {
 
         // expected
         assertThatThrownBy(() -> sections.getExistsSectionOfTarget(requestSection))
-            .isInstanceOf(IllegalArgumentException.class)
-            .extracting("message")
-            .isEqualTo("거리가 너무 커서 역을 추가할 수 없습니다.");
+            .isInstanceOf(GlobalException.class)
+            .extracting("errorCode")
+            .isEqualTo(SECTION_TOO_FAR_DISTANCE);
     }
 
     @Test

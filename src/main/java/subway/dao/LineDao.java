@@ -1,17 +1,16 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public class LineDao {
@@ -32,14 +31,13 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
+    public Line insert(final Line Line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-
+        params.put("id", Line.getId());
+        params.put("name", Line.getName());
+        params.put("color", Line.getColor());
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, Line.getName(), Line.getColor());
     }
 
     public List<Line> findAll() {
@@ -56,9 +54,9 @@ public class LineDao {
         }
     }
 
-    public void update(Line newLine) {
+    public void update(final Line Line) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, new Object[]{Line.getName(), Line.getColor(), Line.getId()});
     }
 
     public void deleteById(Long id) {

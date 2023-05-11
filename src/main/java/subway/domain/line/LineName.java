@@ -1,6 +1,9 @@
 package subway.domain.line;
 
+import static subway.exception.ErrorCode.LINE_NAME_LENGTH;
+
 import java.util.Objects;
+import subway.exception.GlobalException;
 
 public class LineName {
     private static final int MAX_NAME_LENGTH = 10;
@@ -15,7 +18,7 @@ public class LineName {
 
     private void validateLength(final String name) {
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException("노선 이름 길이는 " + MIN_NAME_LENGTH + "~" + MAX_NAME_LENGTH + "여야 합니다.");
+            throw new GlobalException(LINE_NAME_LENGTH);
         }
     }
 
