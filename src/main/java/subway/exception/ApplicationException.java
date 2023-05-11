@@ -13,6 +13,6 @@ public abstract class ApplicationException extends RuntimeException{
     }
 
 
-    abstract HttpStatus status();
+    public abstract HttpStatus status();
 
 }

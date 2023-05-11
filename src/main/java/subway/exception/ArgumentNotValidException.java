@@ -11,7 +11,7 @@ public class ArgumentNotValidException extends ApplicationException{
     }
 
     @Override
-    HttpStatus status() {
+    public HttpStatus status() {
         return UNPROCESSABLE_ENTITY;
     }
 }

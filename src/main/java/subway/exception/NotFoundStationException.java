@@ -13,7 +13,7 @@ public class NotFoundStationException extends ApplicationException {
     }
 
     @Override
-    HttpStatus status() {
+    public HttpStatus status() {
         return NOT_FOUND;
     }
 }

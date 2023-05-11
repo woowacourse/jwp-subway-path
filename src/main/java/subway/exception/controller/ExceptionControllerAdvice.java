@@ -1,4 +1,4 @@
-package subway.exception;
+package subway.exception.controller;
 
 import static java.util.stream.Collectors.joining;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import subway.exception.ApplicationException;
 
 @RestControllerAdvice
 public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
-
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
@@ -34,12 +34,6 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
                 .body(new ExceptionResponse(e.getMessage()));
     }
 
-//    @ExceptionHandler(IllegalArgumentException.class)
-//    public ResponseEntity<ExceptionResponse> handleBadRequest(final IllegalArgumentException e) {
-//        return ResponseEntity.status(BAD_REQUEST)
-//                .body(new ExceptionResponse(e.getMessage()));
-//    }
-
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,
                                                                   HttpHeaders headers, HttpStatus status,
@@ -49,17 +43,5 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
                 .collect(joining(System.lineSeparator()));
         return ResponseEntity.status(UNPROCESSABLE_ENTITY)
                 .body(new ExceptionResponse(exceptionMessage));
-    }
-
-    public static class ExceptionResponse {
-        private final String message;
-
-        public ExceptionResponse(final String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
     }
 }

@@ -9,7 +9,7 @@ public class LineStationAddException extends ApplicationException {
     }
 
     @Override
-    HttpStatus status() {
+    public HttpStatus status() {
         return HttpStatus.CONFLICT;
     }
 }

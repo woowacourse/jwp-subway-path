@@ -14,7 +14,7 @@ public class DuplicateStationException extends ApplicationException {
 
 
     @Override
-    HttpStatus status() {
+    public HttpStatus status() {
         return CONFLICT;
     }
 }
