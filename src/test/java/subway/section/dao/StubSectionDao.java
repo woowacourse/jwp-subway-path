@@ -59,7 +59,6 @@ public class StubSectionDao implements SectionDao {
         return findNeighborDownSection(lineId, baseId);
     }
 
-    @Override
     public Optional<SectionEntity> findNeighborUpSection(final Long lineId, final Long stationId) {
         return sectionMap.values()
                 .stream()
@@ -67,7 +66,6 @@ public class StubSectionDao implements SectionDao {
                 .findFirst();
     }
 
-    @Override
     public Optional<SectionEntity> findNeighborDownSection(final Long lineId, final Long stationId) {
         return sectionMap.values()
                 .stream()

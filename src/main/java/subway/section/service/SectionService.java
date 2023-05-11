@@ -1,14 +1,14 @@
 package subway.section.service;
 
-import java.util.List;
-import java.util.Optional;
-
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.section.dao.SectionDao;
 import subway.section.domain.Direction;
 import subway.section.entity.SectionEntity;
+
+import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -68,8 +68,8 @@ public class SectionService {
     }
 
     public void deleteSection(final Long lineId, final Long stationId) {
-        final Optional<SectionEntity> upSection = sectionDao.findNeighborUpSection(lineId, stationId);
-        final Optional<SectionEntity> downSection = sectionDao.findNeighborDownSection(lineId, stationId);
+        final Optional<SectionEntity> upSection = sectionDao.findNeighborSection(lineId, stationId, Direction.UP);
+        final Optional<SectionEntity> downSection = sectionDao.findNeighborSection(lineId, stationId, Direction.DOWN);
 
         if (upSection.isEmpty() && downSection.isEmpty()) {
             throw new IllegalArgumentException("등록되어있지 않은 역은 지울 수 없습니다.");

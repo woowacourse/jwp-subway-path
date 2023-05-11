@@ -20,8 +20,4 @@ public interface SectionDao {
     List<Section> findSectionsByLineId(final Long lineId);
 
     Optional<SectionEntity> findNeighborSection(final Long lineId, final Long baseId, final Direction direction);
-
-    Optional<SectionEntity> findNeighborUpSection(final Long lineId, final Long stationId);
-
-    Optional<SectionEntity> findNeighborDownSection(final Long lineId, final Long stationId);
 }

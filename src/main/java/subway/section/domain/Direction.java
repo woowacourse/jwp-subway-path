@@ -17,4 +17,11 @@ public enum Direction {
         }
         return DOWN;
     }
+
+    public String reverseDirectionName() {
+        if (this.value) {
+            return DOWN.name();
+        }
+        return UP.name();
+    }
 }

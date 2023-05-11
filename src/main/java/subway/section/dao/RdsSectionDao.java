@@ -1,12 +1,6 @@
 package subway.section.dao;
 
 
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,6 +10,12 @@ import subway.section.domain.Direction;
 import subway.section.domain.Section;
 import subway.section.entity.SectionEntity;
 import subway.station.domain.Station;
+
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class RdsSectionDao implements SectionDao {
@@ -98,27 +98,9 @@ public class RdsSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<SectionEntity> findNeighborSection(final Long lineId, final Long baseId, final Direction direction) {
-        if (direction == Direction.UP) {
-            return findNeighborUpSection(lineId, baseId);
-        }
-        return findNeighborDownSection(lineId, baseId);
-    }
-
-    @Override
-    public Optional<SectionEntity> findNeighborUpSection(final Long lineId, final Long stationId) {
+    public Optional<SectionEntity> findNeighborSection(final Long lineId, final Long stationId, final Direction direction) {
         try {
-            final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and down_station_id = ?";
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));
-        } catch (final EmptyResultDataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    @Override
-    public Optional<SectionEntity> findNeighborDownSection(final Long lineId, final Long stationId) {
-        try {
-            final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and up_station_id = ?";
+            final String sql = String.format("select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and %s_station_id = ?", direction.reverseDirectionName());
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();

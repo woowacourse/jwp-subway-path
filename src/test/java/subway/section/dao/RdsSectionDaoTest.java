@@ -1,12 +1,5 @@
 package subway.section.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -21,6 +14,13 @@ import subway.section.domain.Section;
 import subway.section.entity.SectionEntity;
 import subway.station.dao.StationDao;
 import subway.station.domain.Station;
+
+import javax.sql.DataSource;
+import java.util.List;
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 class RdsSectionDaoTest {
@@ -144,7 +144,7 @@ class RdsSectionDaoTest {
                 @DisplayName("특정 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborDownStation() {
-                    final Optional<SectionEntity> section = rdsSectionDao.findNeighborDownSection(lineId, stationId1);
+                    final Optional<SectionEntity> section = rdsSectionDao.findNeighborSection(lineId, stationId1, Direction.DOWN);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -164,7 +164,7 @@ class RdsSectionDaoTest {
                 @DisplayName("특정 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborUpStation() {
-                    final Optional<SectionEntity> section = rdsSectionDao.findNeighborUpSection(lineId, stationId2);
+                    final Optional<SectionEntity> section = rdsSectionDao.findNeighborSection(lineId, stationId2, Direction.UP);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
