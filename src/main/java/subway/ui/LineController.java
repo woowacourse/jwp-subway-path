@@ -27,8 +27,9 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<FinalLineResponse>> findAllLines() {
+        final List<FinalLineResponse> res = lineService.findLineResponses();
+        return ResponseEntity.ok(res);
     }
 
     @GetMapping("/{id}")

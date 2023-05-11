@@ -12,8 +12,6 @@ import org.springframework.http.MediaType;
 import subway.dto.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -78,23 +76,16 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
-    void getLines() {
+    void getLines() throws JsonProcessingException {
         // given
-        final ExtractableResponse<Response> createResponse1 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
+        final String json = jsonSerialize(request);
+        final Long lineId = 1L;
 
-        final ExtractableResponse<Response> createResponse2 = RestAssured
-                .given().log().all()
+        given().body(json)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+                .when().post("/lines/{lineId}/register", lineId)
+                .then().statusCode(HttpStatus.CREATED.value());
 
         // when
         final ExtractableResponse<Response> response = RestAssured
@@ -105,14 +96,16 @@ public class LineIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
-        final List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+        final String string = response.asString();
+        final FinalLineResponse[] responses = OBJECT_MAPPER.readValue(string, FinalLineResponse[].class);
+        assertAll(
+                () -> assertThat(responses)
+                        .extracting(FinalLineResponse::getId)
+                        .containsExactlyInAnyOrder(1L, 2L),
+                () -> assertThat(responses)
+                        .extracting(FinalLineResponse::getName)
+                        .containsExactlyInAnyOrder("2호선", "3호선")
+        );
     }
 
     @DisplayName("지하철 노선을 조회한다.")

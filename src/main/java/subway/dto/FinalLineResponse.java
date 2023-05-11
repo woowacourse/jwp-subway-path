@@ -19,6 +19,9 @@ public class FinalLineResponse {
     }
 
     public static FinalLineResponse from(final Line line) {
+        if (line.getSections().getSections().isEmpty()) {
+            return new FinalLineResponse(line.getId(), line.getName().getValue(), new ArrayList<>());
+        }
         final List<StationResponse> stationResponses = new ArrayList<>();
         final List<Section> sections = line.getSections().getSections();
         for (final Section section : sections) {

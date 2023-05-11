@@ -27,15 +27,17 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<FinalLineResponse> findLineResponses() {
         final List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponse::of)
+                .map(FinalLineResponse::from)
                 .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
-        return lineDao.findAll();
+        return lineDao.findAll().stream()
+                .map(line -> findById(line.getId()))
+                .collect(Collectors.toList());
     }
 
     public FinalLineResponse findLineResponseById(final Long id) {
