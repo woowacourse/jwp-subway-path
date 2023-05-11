@@ -47,10 +47,10 @@ public class SectionRepository {
 
     public Sections findSectionsByLine(Line line) {
         List<SectionEntity> sectionEntities = sectionDao.findSectionsByLine(line.getId());
-        Set<Long> uniqueStationIds = makeUniqueStationIds(sectionEntities);
-        if (uniqueStationIds.size() == 0) {
-            throw new IllegalArgumentException("해당 노선에 역이 존재하지 않습니다.");
+        if (sectionEntities.isEmpty()) {
+            return new Sections(List.of());
         }
+        Set<Long> uniqueStationIds = makeUniqueStationIds(sectionEntities);
 
         Map<Long, StationEntity> stationEntityMap = stationDao.findStationsById(uniqueStationIds).stream()
                 .collect(Collectors.toMap(StationEntity::getStationId, stationEntity -> stationEntity));

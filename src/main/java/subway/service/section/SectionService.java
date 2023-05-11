@@ -32,8 +32,8 @@ public class SectionService {
         this.stationDao = stationDao;
     }
 
-    public SectionCreateResponse insert(SectionCreateRequest sectionCreateRequest, long lineId) {
-        Line line = lineDao.findById(lineId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+    public SectionCreateResponse insert(SectionCreateRequest sectionCreateRequest) {
+        Line line = lineDao.findById(sectionCreateRequest.getLineId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
         Sections sections = sectionRepository.findSectionsByLine(line);
         Station upStation = stationDao.findById(sectionCreateRequest.getUpStationId());
         Station downStation = stationDao.findById(sectionCreateRequest.getDownStationId());
@@ -46,7 +46,7 @@ public class SectionService {
             addedSectionResponses.add(SectionResponse.of(savedSection));
         }
 
-        return new SectionCreateResponse(lineId, addedSectionResponses, List.of());
+        return new SectionCreateResponse(sectionCreateRequest.getLineId(), addedSectionResponses, List.of());
 
     }
 }
