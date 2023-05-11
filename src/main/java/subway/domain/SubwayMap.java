@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SubwayMap {
 
@@ -91,15 +92,95 @@ public class SubwayMap {
         addEndPointStation(thisToEnd);
     }
 
+    public void deleteStation(final Long id) {
+        final Station station = getStationById(id);
+        final Sections sectionsByStation = findSectionByStation(station);
+
+        final Set<Line> includingLines = sectionsByStation.getLinesIncludingStation();
+
+        for (final Line line : includingLines) {
+            final Section sameLineSection = sectionsByStation.getSameLineSection(line);
+
+            if (isLastTwoStations(line)) {
+                final Station arrival = sameLineSection.getArrival();
+                subwayMap.remove(arrival);
+                continue;
+            }
+            if (isUpEndpoint(station, line)) {
+                final Station arrival = sameLineSection.getArrival();
+                replaceEndSection(station, arrival);
+                endpointMap.replace(line, arrival);
+                continue;
+            }
+            if (isEndpoint(sectionsByStation, line)) {
+                final Station arrival = sameLineSection.getArrival();
+                replaceEndSection(station, arrival);
+                continue;
+            }
+
+            final List<Section> sameLineSections = sectionsByStation.getSameLineSections(line);
+            final Section prevSection = sameLineSections.get(0);
+            final Section nextSection = sameLineSections.get(1);
+            final int distanceSum = prevSection.getDistance() + nextSection.getDistance();
+
+            final Station prevStation = prevSection.getArrival();
+            final Station nextStation = nextSection.getArrival();
+
+            replaceSection(station, line, distanceSum, prevStation, nextStation);
+            replaceSection(station, line, distanceSum, nextStation, prevStation);
+        }
+        subwayMap.remove(station);
+    }
+
+    private Station getStationById(final Long id) {
+        return subwayMap.keySet().stream()
+                .filter(s -> s.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("삭제하려는 역이 존재하지 않습니다."));
+    }
+
+    public Sections findSectionByStation(final Station station) {
+        return subwayMap.get(station);
+    }
+
+    private boolean isLastTwoStations(final Line line) {
+        final long countSectionsInLine = countSectionsInLine(line);
+        return countSectionsInLine == 2;
+    }
+
+    private boolean isUpEndpoint(final Station station, final Line line) {
+        return station.getId().equals(endpointMap.get(line).getId());
+    }
+
+    private void replaceEndSection(final Station station, final Station arrival) {
+        final Sections arrivalSections = subwayMap.get(arrival);
+        final Sections removedSections = arrivalSections.removeArrival(station);
+        subwayMap.replace(arrival, removedSections);
+    }
+
+    private boolean isEndpoint(final Sections sectionsByStation, final Line line) {
+        return sectionsByStation.countSectionByLine(line) == 1;
+    }
+
+    private void replaceSection(final Station station, final Line line, final int distanceSum, final Station prevStation, final Station nextStation) {
+        final Sections prevSections = findSectionByStation(prevStation);
+        final Sections removedSections = prevSections.removeArrival(station);
+        final Sections addedSections = removedSections.addSection(new Section(distanceSum, prevStation, nextStation, line));
+        subwayMap.replace(prevStation, addedSections);
+    }
+
+    private long countSectionsInLine(final Line line) {
+        return subwayMap.values().stream()
+                .flatMap(sections -> sections.getSections().stream())
+                .filter(section -> section.getLine().equals(line))
+                .count();
+    }
+
     public Map<Station, Sections> getSubwayMap() {
         return new HashMap<>(subwayMap);
     }
 
     public Map<Line, Station> getEndpointMap() {
         return new HashMap<>(endpointMap);
-    }
-
-    public Sections findSectionByStation(final Station station) {
-        return subwayMap.get(station);
     }
 }

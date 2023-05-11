@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static subway.Fixture.*;
@@ -141,5 +142,73 @@ class SubwayMapTest {
         // when
         assertThatThrownBy(() -> subwayMap1.addIntermediateStation(thisToA, thisToC))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("상행 종점을 삭제")
+    void removeUpEndpoint() {
+        // given
+        final SubwayMap subwayMap1 = new SubwayMap(new HashMap<>(subwayMap.getSubwayMap()), new HashMap<>(subwayMap.getEndpointMap()));
+
+        // when
+        subwayMap1.deleteStation(stationA.getId());
+
+        // then
+        final List<Section> sectionList = subwayMap1.getSubwayMap().values().stream()
+                .flatMap(sections -> sections.getSections().stream())
+                .collect(Collectors.toList());
+        Assertions.assertThat(sectionList).containsExactly(sectionBC, sectionCB);
+    }
+
+    @Test
+    @DisplayName("하행 종점을 삭제")
+    void removeDownEndpoint() {
+        // given
+        final SubwayMap subwayMap1 = new SubwayMap(new HashMap<>(subwayMap.getSubwayMap()), new HashMap<>(subwayMap.getEndpointMap()));
+
+        // when
+        subwayMap1.deleteStation(stationC.getId());
+
+        // then
+        final List<Section> sectionList = subwayMap1.getSubwayMap().values().stream()
+                .flatMap(sections -> sections.getSections().stream())
+                .collect(Collectors.toList());
+        Assertions.assertThat(sectionList).containsExactly(sectionAB, sectionBA);
+    }
+
+    @Test
+    @DisplayName("마지막 두 역 삭제")
+    void removeLastStations() {
+        // given
+        final SubwayMap subwayMap1 = new SubwayMap(new HashMap<>(subwayMap.getSubwayMap()), new HashMap<>(subwayMap.getEndpointMap()));
+        subwayMap1.deleteStation(stationC.getId());
+
+        // when
+        subwayMap1.deleteStation(stationA.getId());
+
+        // then
+        final List<Section> sectionList = subwayMap1.getSubwayMap().values().stream()
+                .flatMap(sections -> sections.getSections().stream())
+                .collect(Collectors.toList());
+        Assertions.assertThat(sectionList.isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("중간 역을 삭제")
+    void removeMidStation() {
+        // given
+        final SubwayMap subwayMap1 = new SubwayMap(new HashMap<>(subwayMap.getSubwayMap()), new HashMap<>(subwayMap.getEndpointMap()));
+        final Section sectionAC = new Section(3, stationA, stationC, line);
+        final Section sectionCA = new Section(3, stationC, stationA, line);
+
+        // when
+        subwayMap1.deleteStation(stationB.getId());
+
+        // then
+        final List<Section> sectionList = subwayMap1.getSubwayMap().values().stream()
+                .flatMap(sections -> sections.getSections().stream())
+                .collect(Collectors.toList());
+        sectionList.forEach(section -> System.out.println(section.getDeparture().getName() + section.getArrival().getName()));
+        Assertions.assertThat(sectionList).containsExactly(sectionAC, sectionCA);
     }
 }

@@ -119,6 +119,10 @@ public class StationService {
     }
 
     public void deleteStationById(final Long id) {
-        stationDao.deleteById(id);
+        final SubwayMap subwayMap = subwayMapRepository.find();
+
+        subwayMap.deleteStation(id);
+
+        subwayMapRepository.save(subwayMap);
     }
 }
