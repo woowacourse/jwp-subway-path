@@ -3,6 +3,7 @@ package subway.application;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -40,13 +41,14 @@ public class LineService {
         List<Line> persistLines = findLines();
         List<Station> persistStations = stationDao.findAll();
         List<Section> persistSections = sectionDao.findAll();
+
         Subway subway = new Subway(persistLines, persistStations, persistSections);
         Map<Line, List<Station>> lineMap = subway.getSubway();
+
         return lineMap.entrySet()
             .stream()
             .map(entry -> LineStationsResponse.of(entry.getKey(), entry.getValue()))
-            .collect(
-                Collectors.toList());
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {
@@ -55,13 +57,11 @@ public class LineService {
 
     public LineStationsResponse findLineStationsResponseById(Long id) {
         List<Station> stations = stationDao.findAll();
-        Map<Long, Station> idToStations = new HashMap<>();
-        for (Station station : stations) {
-            idToStations.put(station.getId(), station);
-        }
+        Map<Long, Station> idToStations = stations.stream()
+            .collect(Collectors.toMap(Station::getId, Function.identity()));
 
-        List<Section> allSection = sectionDao.findAllSectionByLineId(id);
-        Sections sections = new Sections(allSection);
+        List<Section> allSections = sectionDao.findAllSectionByLineId(id);
+        Sections sections = new Sections(allSections);
         List<Station> orderedStations = sections.findOrderedStationIds()
             .stream()
             .map(idToStations::get)
@@ -71,6 +71,7 @@ public class LineService {
 
         return LineStationsResponse.of(persistLine, orderedStations);
     }
+
 
     public Line findLineById(Long id) {
         return lineDao.findById(id);
