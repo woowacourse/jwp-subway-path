@@ -32,7 +32,7 @@ class SectionsTest {
 
             sections.add(section);
 
-            assertThat(sections.getStations())
+            assertThat(sections.findOrderedStation())
                     .containsExactly(역삼역.STATION, 삼성역.STATION);
         }
 
@@ -50,7 +50,7 @@ class SectionsTest {
 
                     sections.add(new Section(잠실역.STATION, 건대역.STATION, 1));
 
-                    assertThat(sections.getStations())
+                    assertThat(sections.findOrderedStation())
                             .containsExactly(삼성역.STATION, 잠실역.STATION, 건대역.STATION);
                 }
 
@@ -97,7 +97,7 @@ class SectionsTest {
 
                     sections.add(new Section(삼성역.STATION, 잠실역.STATION, 2));
 
-                    assertThat(sections.getStations())
+                    assertThat(sections.findOrderedStation())
                             .containsExactly(삼성역.STATION, 잠실역.STATION, 건대역.STATION);
                 }
 
@@ -146,7 +146,7 @@ class SectionsTest {
 
             sections.remove(역삼역.STATION);
 
-            assertThat(sections.getStations()).isEmpty();
+            assertThat(sections.findOrderedStation()).isEmpty();
         }
 
         @Test
@@ -189,5 +189,21 @@ class SectionsTest {
                     }
             );
         }
+    }
+
+    @Test
+    void 상행에서_하행_순으로_역을_반환한다() {
+        Section section1 = new Section(잠실역.STATION, 건대역.STATION, 2);
+        Section section2 = new Section(역삼역.STATION, 삼성역.STATION, 2);
+        Section section3 = new Section(삼성역.STATION, 잠실역.STATION, 2);
+        Sections sections = new Sections();
+        sections.add(section1);
+        sections.add(section2);
+        sections.add(section3);
+
+        List<Station> stations = sections.findOrderedStation();
+
+        assertThat(stations)
+                .isEqualTo(List.of(역삼역.STATION, 삼성역.STATION, 잠실역.STATION, 건대역.STATION));
     }
 }

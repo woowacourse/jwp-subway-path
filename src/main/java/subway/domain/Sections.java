@@ -4,19 +4,19 @@ import java.util.List;
 
 public class Sections {
 
-    public List<Station> getStations() {
-        return null;
-    }
-
     public void add(final Section section) {
 
     }
 
-    public List<Section> getSections() {
+    public void remove(final Station station) {
+
+    }
+
+    public List<Station> findOrderedStation() {
         return null;
     }
 
-    public void remove(final Station station) {
-        
+    public List<Section> getSections() {
+        return null;
     }
 }
