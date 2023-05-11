@@ -26,8 +26,8 @@ public class Line {
         return id;
     }
 
-    public String getName() {
-        return name.getValue();
+    public LineName getName() {
+        return name;
     }
 
     public Sections getSections() {

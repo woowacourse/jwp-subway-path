@@ -16,7 +16,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(final Line line) {
-        return new LineResponse(line.getId(), line.getName());
+        return new LineResponse(line.getId(), line.getName().getValue());
     }
 
     public Long getId() {
