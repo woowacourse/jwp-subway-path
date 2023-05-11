@@ -68,22 +68,6 @@ class LineEntityDaoTest {
     }
 
     @Test
-    void 아이디로_조회_테스트() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", "2호선");
-        params.put("color", "GREEN");
-
-        Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-
-        LineEntity lineEntity = lineDao.findById(lineId);
-
-        assertAll(
-                () -> assertThat(lineEntity.getName()).isEqualTo("2호선"),
-                () -> assertThat(lineEntity.getColor()).isEqualTo("GREEN")
-        );
-    }
-
-    @Test
     void 갱신_테스트() {
         Map<String, Object> params = new HashMap<>();
         params.put("name", "2호선");

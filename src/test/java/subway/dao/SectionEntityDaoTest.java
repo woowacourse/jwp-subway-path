@@ -78,24 +78,6 @@ class SectionEntityDaoTest {
     }
 
     @Test
-    void 아이디로_조회_테스트() {
-        Map<String, Object> params = new HashMap<>();
-        params.put("line_id", 이호선.ENTITY.getId());
-        params.put("up_station_id", 삼성역.ENTITY.getId());
-        params.put("down_station_id", 잠실역.ENTITY.getId());
-        params.put("distance", 2);
-
-        Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-
-        SectionEntity sectionEntity = sectionDao.findById(sectionId);
-
-        assertThat(sectionEntity)
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(이호선_삼성_잠실_2.ENTITY);
-    }
-
-    @Test
     void 라인_아이디로_조회_테스트() {
         Long lineId = 이호선.ENTITY.getId();
 

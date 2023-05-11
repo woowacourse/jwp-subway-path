@@ -3,7 +3,9 @@ package subway.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import javax.sql.DataSource;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -45,10 +47,15 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    // TODO: IncorrectResultSizeDataAccessException 처리
-    public LineEntity findById(Long id) {
+    public Optional<LineEntity> findById(Long id) {
         String sql = "SELECT id, name, color FROM line WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+
+        try {
+            LineEntity line = jdbcTemplate.queryForObject(sql, rowMapper, id);
+            return Optional.of(line);
+        } catch (IncorrectResultSizeDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     public void update(LineEntity newLineEntity) {

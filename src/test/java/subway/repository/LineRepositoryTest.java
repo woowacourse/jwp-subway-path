@@ -53,7 +53,7 @@ class LineRepositoryTest {
         SectionEntity sectionEntity2 = sectionDao.insert(
                 new SectionEntity(line.getId(), station2.getId(), station3.getId(), 7));
 
-        Line result = lineRepository.findById(line.getId());
+        Line result = lineRepository.findById(line.getId()).get();
         assertThat(result)
                 .usingRecursiveComparison()
                 .ignoringFields("id")

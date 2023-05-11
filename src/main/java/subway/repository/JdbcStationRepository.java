@@ -1,5 +1,6 @@
 package subway.repository;
 
+import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.domain.Station;
@@ -16,8 +17,11 @@ public class JdbcStationRepository implements StationRepository {
     }
 
     @Override
-    public Station findById(final Long id) {
-        StationEntity entity = stationDao.findById(id);
-        return StationMapper.toStation(entity);
+    public Optional<Station> findById(final Long id) {
+        Optional<StationEntity> entity = stationDao.findById(id);
+        if (entity.isEmpty()) {
+            return Optional.empty();
+        }
+        return Optional.of(StationMapper.toStation(entity.get()));
     }
 }

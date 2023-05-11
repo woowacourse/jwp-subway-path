@@ -7,6 +7,7 @@ import subway.dao.StationDao;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
 import subway.entity.StationEntity;
+import subway.exception.NoSuchStationException;
 
 @Service
 public class StationService {
@@ -23,7 +24,9 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        StationEntity station = stationDao.findById(id)
+                .orElseThrow(NoSuchStationException::new);
+        return StationResponse.of(station);
     }
 
     public List<StationResponse> findAllStationResponses() {

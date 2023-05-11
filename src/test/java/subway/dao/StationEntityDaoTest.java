@@ -73,7 +73,7 @@ class StationEntityDaoTest {
 
         Long stationId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        StationEntity stationEntity = stationDao.findById(stationId);
+        StationEntity stationEntity = stationDao.findById(stationId).get();
 
         assertThat(stationEntity.getName()).isEqualTo("삼성역");
     }

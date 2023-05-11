@@ -1,6 +1,7 @@
 package subway.repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -36,8 +37,12 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     @Override
-    public Line findById(final long lineId) {
-        LineEntity lineEntity = lineDao.findById(lineId);
+    public Optional<Line> findById(final long lineId) {
+        Optional<LineEntity> optionalLineEntity = lineDao.findById(lineId);
+        if (optionalLineEntity.isEmpty()) {
+            return Optional.empty();
+        }
+        LineEntity lineEntity = optionalLineEntity.get();
 
         String sql = "SELECT section.id, up.id, up.name, down.id, down.name, section.distance FROM section "
                 + "INNER JOIN station up ON section.up_station_id = up.id "
@@ -46,7 +51,8 @@ public class JdbcLineRepository implements LineRepository {
 
         List<Section> sections = jdbcTemplate.query(sql, sectionRowMapper, lineId);
 
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+        Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+        return Optional.of(line);
     }
 
     @Override
@@ -67,7 +73,13 @@ public class JdbcLineRepository implements LineRepository {
         List<LineEntity> lines = lineDao.findAll();
 
         return lines.stream()
-                .map(entity -> findById(entity.getId()))
+                .map(entity -> {
+                    Optional<Line> line = findById(entity.getId());
+                    if (line.isEmpty()) {
+                        throw new IllegalStateException();
+                    }
+                    return line.get();
+                })
                 .collect(Collectors.toList());
     }
 }

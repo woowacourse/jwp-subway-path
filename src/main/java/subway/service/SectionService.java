@@ -27,16 +27,13 @@ public class SectionService {
     }
 
     public LineResponse createSection(final long lineId, final CreateSectionRequest request) {
-        Line line = lineRepository.findById(lineId);
-        if (line == null) {
-            throw new NoSuchLineException();
-        }
+        Line line = lineRepository.findById(lineId)
+                .orElseThrow(NoSuchLineException::new);
 
-        Station upStation = stationRepository.findById(request.getUpStation());
-        Station downStation = stationRepository.findById(request.getDownStation());
-        if (upStation == null || downStation == null) {
-            throw new NoSuchStationException();
-        }
+        Station upStation = stationRepository.findById(request.getUpStation())
+                .orElseThrow(NoSuchStationException::new);
+        Station downStation = stationRepository.findById(request.getDownStation())
+                .orElseThrow(NoSuchStationException::new);
 
         line.addSection(new Section(upStation, downStation, request.getDistance()));
 
@@ -46,15 +43,11 @@ public class SectionService {
     }
 
     public void deleteSection(final long lineId, final long stationId) {
-        Line line = lineRepository.findById(lineId);
-        if (line == null) {
-            throw new NoSuchLineException();
-        }
+        Line line = lineRepository.findById(lineId)
+                .orElseThrow(NoSuchLineException::new);
 
-        Station station = stationRepository.findById(stationId);
-        if (station == null) {
-            throw new NoSuchStationException();
-        }
+        Station station = stationRepository.findById(stationId)
+                .orElseThrow(NoSuchStationException::new);
 
         line.removeStation(station);
 

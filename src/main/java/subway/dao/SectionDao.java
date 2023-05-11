@@ -65,11 +65,6 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public SectionEntity findById(Long id) {
-        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
     public List<SectionEntity> findByLineId(final long lineId) {
         String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);

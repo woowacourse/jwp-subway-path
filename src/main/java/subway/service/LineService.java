@@ -8,6 +8,7 @@ import subway.domain.Line;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.entity.LineEntity;
+import subway.exception.NoSuchLineException;
 import subway.mapper.LineMapper;
 import subway.repository.LineRepository;
 
@@ -40,12 +41,9 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line line = lineRepository.findById(id);
+        Line line = lineRepository.findById(id)
+                .orElseThrow(NoSuchLineException::new);
         return LineMapper.toResponse(line);
-    }
-
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
