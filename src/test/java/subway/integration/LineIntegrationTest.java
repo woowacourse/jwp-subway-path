@@ -24,7 +24,7 @@ import subway.station.dao.StationDao;
 import subway.station.domain.Station;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineIntegrationTest extends IntegrationTest {
+class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
