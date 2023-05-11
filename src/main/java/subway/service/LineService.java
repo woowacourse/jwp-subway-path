@@ -3,9 +3,9 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
-import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.service.dto.LineResponse;
+import subway.service.dto.RegisterLineRequest;
 import subway.service.dto.SearchAllSectionLineRequest;
 import subway.service.dto.SectionInLineResponse;
 
@@ -17,14 +17,16 @@ public class LineService {
 
     private final LineDao lineDao;
     private final CommonService commonService;
+    private final SectionService sectionService;
 
     public LineService(
             final LineDao lineDao,
-            final CommonService commonService
-    ) {
+            final CommonService commonService,
+            final SectionService sectionService) {
 
         this.lineDao = lineDao;
         this.commonService = commonService;
+        this.sectionService = sectionService;
     }
 
     public List<LineResponse> searchAllSectionInLines(final SearchAllSectionLineRequest searchAllSectionLineRequest) {
@@ -72,5 +74,17 @@ public class LineService {
 
     public void deleteLine(final Long lineId) {
         lineDao.deleteLineById(lineId);
+    }
+
+    public void registerLine(final RegisterLineRequest registerLineRequest) {
+
+        final Long savedId = lineDao.save(new LineEntity(registerLineRequest.getLineName()));
+
+        sectionService.registerSection(
+                registerLineRequest.getCurrentStationName(),
+                registerLineRequest.getNextStationName(),
+                registerLineRequest.getDistance(),
+                savedId
+        );
     }
 }

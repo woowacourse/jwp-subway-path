@@ -2,6 +2,8 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -11,6 +13,7 @@ import java.util.Optional;
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
     private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
@@ -19,6 +22,10 @@ public class LineDao {
 
     public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert =
+                new SimpleJdbcInsert(jdbcTemplate)
+                        .withTableName("LINE")
+                        .usingGeneratedKeyColumns("id");
     }
 
     public Optional<LineEntity> findLineByName(final String lineName) {
@@ -42,5 +49,10 @@ public class LineDao {
         final String sql = "DELETE FROM LINE L WHERE L.id = ?";
 
         jdbcTemplate.update(sql, lineId);
+    }
+
+    public Long save(final LineEntity lineEntity) {
+        return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(lineEntity))
+                               .longValue();
     }
 }

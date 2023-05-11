@@ -10,6 +10,10 @@ public class LineEntity {
         this.name = name;
     }
 
+    public LineEntity(final String name) {
+        this.name = name;
+    }
+
     public Long getId() {
         return id;
     }

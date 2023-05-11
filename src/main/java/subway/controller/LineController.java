@@ -1,10 +1,12 @@
 package subway.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import subway.service.LineService;
 import subway.service.dto.LineResponse;
+import subway.service.dto.RegisterLineRequest;
 import subway.service.dto.SearchAllSectionLineRequest;
 
 import java.util.List;
@@ -23,5 +25,12 @@ public class LineController {
             @RequestBody(required = false) SearchAllSectionLineRequest searchAllSectionLineRequest
     ) {
         return lineService.searchAllSectionInLines(searchAllSectionLineRequest);
+    }
+
+    @PostMapping("/lines")
+    public void registerLine(
+            @RequestBody RegisterLineRequest registerLineRequest
+    ) {
+        lineService.registerLine(registerLineRequest);
     }
 }
