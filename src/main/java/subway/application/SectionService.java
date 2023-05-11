@@ -32,7 +32,6 @@ public class SectionService {
 
         final Sections sections = new Sections(sectionRepository.findAllByLineId(lineId));
         sections.addSection(section);
-
         sectionRepository.createSection(lineId, sections.getSections());
     }
 
