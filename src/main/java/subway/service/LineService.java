@@ -22,7 +22,8 @@ public class LineService {
     public LineService(
             final LineDao lineDao,
             final CommonService commonService,
-            final SectionService sectionService) {
+            final SectionService sectionService
+    ) {
 
         this.lineDao = lineDao;
         this.commonService = commonService;
@@ -45,29 +46,23 @@ public class LineService {
         return lineEntities.stream()
                            .map(lineEntity -> {
                                Line line = commonService.mapToLineFrom(lineEntity.getName());
+
                                List<SectionInLineResponse> sectionInLineResponses
-                                       = mapToSectionInLineResponseFrom(line);
+                                       = sectionService.mapToSectionInLineResponseFrom(line);
+
                                return new LineResponse(line.getName(), sectionInLineResponses);
                            })
                            .collect(Collectors.toList());
     }
 
-    private List<SectionInLineResponse> mapToSectionInLineResponseFrom(final Line line) {
-        return line.getSections()
-                   .stream()
-                   .map(it -> new SectionInLineResponse(
-                           it.getStations().getCurrent().getName(),
-                           it.getStations().getNext().getName(),
-                           it.getStations().getDistance()))
-                   .collect(Collectors.toList());
-    }
-
-    private LineResponse searchSectionsSpecificLine(final SearchAllSectionLineRequest searchAllSectionLineRequest) {
-
+    private LineResponse searchSectionsSpecificLine(
+            final SearchAllSectionLineRequest searchAllSectionLineRequest
+    ) {
         final String lineName = searchAllSectionLineRequest.getLineName();
         final Line line = commonService.mapToLineFrom(lineName);
 
-        final List<SectionInLineResponse> sectionInLineResponses = mapToSectionInLineResponseFrom(line);
+        final List<SectionInLineResponse> sectionInLineResponses =
+                sectionService.mapToSectionInLineResponseFrom(line);
 
         return new LineResponse(line.getName(), sectionInLineResponses);
     }
