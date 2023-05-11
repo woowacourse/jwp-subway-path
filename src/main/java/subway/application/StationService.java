@@ -2,11 +2,9 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.domain.station.Station;
-import subway.domain.station.StationName;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.entity.StationEntity;
+import subway.entity.Station;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,11 +20,11 @@ public class StationService {
     }
 
     public Long save(StationRequest stationRequest) {
-        return stationDao.insert(new Station(new StationName(stationRequest.getName())));
+        return stationDao.insert(new Station(stationRequest.getName()));
     }
 
     public StationResponse findById(Long id) {
-        Optional<StationEntity> station = stationDao.findById(id);
+        Optional<Station> station = stationDao.findById(id);
         if (station.isEmpty()) {
             throw new NoSuchElementException("해당하는 역이 존재하지 않습니다.");
         }
@@ -34,7 +32,7 @@ public class StationService {
     }
 
     public List<StationResponse> findAll() {
-        List<StationEntity> stationEntities = stationDao.findAll();
+        List<Station> stationEntities = stationDao.findAll();
 
         return stationEntities.stream()
                 .map(StationResponse::of)
@@ -42,7 +40,7 @@ public class StationService {
     }
 
     public void update(Long id, StationRequest stationRequest) {
-        stationDao.update(id, new Station(new StationName(stationRequest.getName())));
+        stationDao.update(id, new Station(stationRequest.getName()));
     }
 
     public void deleteById(Long id) {

@@ -5,8 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.line.Line;
-import subway.entity.LineEntity;
+import subway.entity.Line;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -19,8 +18,8 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
-            new LineEntity(
+    private RowMapper<Line> rowMapper = (rs, rowNum) ->
+            new Line(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
@@ -33,21 +32,21 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public LineEntity insert(Line line) {
+    public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", line.getLineName().getName());
-        params.put("color", line.getLineColor().getColor());
+        params.put("name", line.getName());
+        params.put("color", line.getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineEntity(lineId, line.getLineName().getName(), line.getLineColor().getColor());
+        return new Line(lineId, line.getName(), line.getColor());
     }
 
-    public List<LineEntity> findAll() {
+    public List<Line> findAll() {
         String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<LineEntity> findById(Long id) {
+    public Optional<Line> findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -58,7 +57,7 @@ public class LineDao {
 
     public void update(Long id, Line line) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{line.getLineName().getName(), line.getLineColor().getColor(), id});
+        jdbcTemplate.update(sql, new Object[]{line.getName(), line.getColor(), id});
     }
 
     public void deleteById(Long id) {

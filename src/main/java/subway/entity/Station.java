@@ -2,19 +2,19 @@ package subway.entity;
 
 import java.util.Objects;
 
-public class StationEntity {
+public class Station {
     private Long id;
     private String name;
 
-    public StationEntity() {
+    public Station() {
     }
 
-    public StationEntity(Long id, String name) {
+    public Station(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public StationEntity(String name) {
+    public Station(String name) {
         this.name = name;
     }
 
@@ -30,8 +30,8 @@ public class StationEntity {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StationEntity stationEntity = (StationEntity) o;
-        return id.equals(stationEntity.id) && name.equals(stationEntity.name);
+        Station station = (Station) o;
+        return id.equals(station.id) && name.equals(station.name);
     }
 
     @Override

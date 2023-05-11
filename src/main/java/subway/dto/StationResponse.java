@@ -1,6 +1,6 @@
 package subway.dto;
 
-import subway.entity.StationEntity;
+import subway.entity.Station;
 
 public class StationResponse {
     private Long id;
@@ -11,8 +11,8 @@ public class StationResponse {
         this.name = name;
     }
 
-    public static StationResponse of(StationEntity stationEntity) {
-        return new StationResponse(stationEntity.getId(), stationEntity.getName());
+    public static StationResponse of(Station station) {
+        return new StationResponse(station.getId(), station.getName());
     }
 
     public Long getId() {

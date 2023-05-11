@@ -5,10 +5,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.section.Section;
-import subway.entity.SectionEntity;
+import subway.entity.Section;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class SectionDao {
@@ -16,8 +18,8 @@ public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
-            new SectionEntity(
+    private RowMapper<Section> rowMapper = (rs, rowNum) ->
+            new Section(
                     rs.getLong("id"),
                     rs.getLong("line_id"),
                     rs.getObject("up_station_id", Long.class),
@@ -41,17 +43,17 @@ public class SectionDao {
         return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
-    public List<SectionEntity> findByLineIdAndStationId(final Long lineId, final Long stationId) {
+    public List<Section> findByLineIdAndStationId(final Long lineId, final Long stationId) {
         String sql = "SELECT * FROM section WHERE line_id = ? AND (up_station_id = ? OR down_station_id = ?)";
         return jdbcTemplate.query(sql, rowMapper, lineId, stationId, stationId);
     }
 
-    public List<SectionEntity> findByLineId(final Long lineId) {
+    public List<Section> findByLineId(final Long lineId) {
         String sql = "SELECT * FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public List<SectionEntity> findAll() {
+    public List<Section> findAll() {
         String sql = "SELECT * FROM section";
         return jdbcTemplate.query(sql, rowMapper);
     }

@@ -2,7 +2,7 @@
 
 ## API 명세
 
-> sectionEntity
+> section
 - 노선에 역 등록 API: POST /sections
   - BODY: 역 이름, 노선 ID, 상행역 ID
 - 노선에 역 제거 API: DELETE /sections?lineId={lineId}&stationId={stationId}
