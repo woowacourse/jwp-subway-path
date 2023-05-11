@@ -2,6 +2,7 @@ package subway.fixture;
 
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.request.CreateSectionRequest;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
@@ -27,6 +28,8 @@ public class SectionFixture {
         public static final Section SECTION = new Section(ID, UP_STATION, DOWN_STATION, DISTANCE);
         public static final SectionEntity ENTITY = new SectionEntity(ID, LINE_ENTITY.getId(), UP_STATION_ENTITY.getId(),
                 DOWN_STATION_ENTITY.getId(), DISTANCE);
+        public static final CreateSectionRequest REQUEST = new CreateSectionRequest(UP_STATION.getId(),
+                DOWN_STATION.getId(), DISTANCE);
     }
 
     public static class 이호선_삼성_잠실_2 {
@@ -42,6 +45,8 @@ public class SectionFixture {
         public static final Section SECTION = new Section(ID, UP_STATION, DOWN_STATION, DISTANCE);
         public static final SectionEntity ENTITY = new SectionEntity(ID, LINE_ENTITY.getId(), UP_STATION_ENTITY.getId(),
                 DOWN_STATION_ENTITY.getId(), DISTANCE);
+        public static final CreateSectionRequest REQUEST = new CreateSectionRequest(UP_STATION.getId(),
+                DOWN_STATION.getId(), DISTANCE);
     }
 
     public static class 이호선_잠실_건대_1 {
@@ -57,5 +62,7 @@ public class SectionFixture {
         public static final Section SECTION = new Section(ID, UP_STATION, DOWN_STATION, DISTANCE);
         public static final SectionEntity ENTITY = new SectionEntity(ID, LINE_ENTITY.getId(), UP_STATION_ENTITY.getId(),
                 DOWN_STATION_ENTITY.getId(), DISTANCE);
+        public static final CreateSectionRequest REQUEST = new CreateSectionRequest(UP_STATION.getId(),
+                DOWN_STATION.getId(), DISTANCE);
     }
 }
