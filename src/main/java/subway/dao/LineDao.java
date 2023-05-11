@@ -45,8 +45,8 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public void deleteById(final Long lineId) {
+    public int deleteById(final Long lineId) {
         final String sql = "DELETE FROM line WHERE id = ?";
-        jdbcTemplate.update(sql, lineId);
+        return jdbcTemplate.update(sql, lineId);
     }
 }
