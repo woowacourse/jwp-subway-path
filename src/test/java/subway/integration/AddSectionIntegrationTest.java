@@ -53,7 +53,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(sectionRequest)
-                    .when().post("/section")
+                    .when().post("/sections")
                     .then().log().all();
         }
         
@@ -82,7 +82,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(sectionRequest2)
-                    .when().post("/section")
+                    .when().post("/sections")
                     .then().log().all().
                     extract();
             
@@ -108,7 +108,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(sectionRequest2)
-                    .when().post("/section")
+                    .when().post("/sections")
                     .then().log().all().
                     extract();
             
@@ -136,7 +136,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(sectionRequest2)
-                    .when().post("/section")
+                    .when().post("/sections")
                     .then().log().all().
                     extract();
             
@@ -164,7 +164,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(sectionRequest2)
-                    .when().post("/section")
+                    .when().post("/sections")
                     .then().log().all().
                     extract();
             
@@ -190,7 +190,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(sectionRequest2)
-                    .when().post("/section")
+                    .when().post("/sections")
                     .then().log().all().
                     extract();
             
@@ -212,7 +212,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                     .given().log().all()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(sectionRequest2)
-                    .when().post("/section")
+                    .when().post("/sections")
                     .then().log().all().
                     extract();
             
@@ -232,7 +232,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
-                .when().post("/section")
+                .when().post("/sections")
                 .then().log().all().
                 extract();
         
@@ -266,7 +266,7 @@ public class AddSectionIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
-                .when().post("/section")
+                .when().post("/sections")
                 .then().log().all().
                 extract();
         
