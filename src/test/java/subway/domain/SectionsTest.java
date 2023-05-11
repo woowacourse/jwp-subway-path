@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.LineFixture.SECOND_LINE;
 import static subway.domain.StationFixture.*;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -19,7 +18,7 @@ class SectionsTest {
     void 동일한_역으로_추가하려고_하면_예외() {
         Sections sections = new Sections(new ArrayList<>());
         Distance distance = new Distance(10);
-        assertThatThrownBy(() -> sections.add(JAMSIL, JAMSIL, distance, SECOND_LINE))
+        assertThatThrownBy(() -> sections.add(JAMSIL, JAMSIL, distance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("동일한 역 2개가 입력으로 들어왔습니다. 이름을 다르게 설정해주세요.");
     }
@@ -31,7 +30,7 @@ class SectionsTest {
         Distance distance = new Distance(10);
 
         //when
-        AddResultDto addResult = sections.add(StationFixture.JAMSIL, StationFixture.SEONLEUNG, distance, LineFixture.SECOND_LINE);
+        AddResultDto addResult = sections.add(StationFixture.JAMSIL, StationFixture.SEONLEUNG, distance);
 
         //then
         List<Section> addedResults = addResult.getAddedResults();
@@ -41,7 +40,7 @@ class SectionsTest {
 
         Assertions.assertAll(
                 () -> assertThat(addedResults).hasSize(1),
-                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
+//                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
                 () -> assertThat(newSection.getUpStation()).isEqualTo(JAMSIL),
                 () -> assertThat(newSection.getDownStation()).isEqualTo(SEONLEUNG),
                 () -> assertThat(newSection.getDistance()).isEqualTo(distance),
@@ -53,10 +52,10 @@ class SectionsTest {
 
     @Test
     void 노선에_역이_존재할_때_새로운_역_2개를_추가하려고_하면_예외() {
-        Section section = new Section(JAMSIL, SEONLEUNG, new Distance(10), SECOND_LINE);
+        Section section = new Section(JAMSIL, SEONLEUNG, new Distance(10));
         Sections sections = new Sections(List.of(section));
 
-        assertThatThrownBy(() -> sections.add(GANGNAM, YUKSAM, new Distance(5), SECOND_LINE))
+        assertThatThrownBy(() -> sections.add(GANGNAM, YUKSAM, new Distance(5)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 노선에 역들이 존재하기 때문에 한 번에 새로운 역 2개를 추가할 수 없습니다.");
     }
@@ -65,13 +64,13 @@ class SectionsTest {
     void 상행_종점을_추가한다() {
         //given
         Distance gandnamYuksamDistance = new Distance(10);
-        Section section = new Section(YUKSAM, GANGNAM, gandnamYuksamDistance, SECOND_LINE);
+        Section section = new Section(YUKSAM, GANGNAM, gandnamYuksamDistance);
         Sections sections = new Sections(List.of(section));
 
         Distance jamsilYuksamDistance = new Distance(5);
 
         //when
-        AddResultDto addUpEndStationResult = sections.add(JAMSIL, YUKSAM, jamsilYuksamDistance, SECOND_LINE);
+        AddResultDto addUpEndStationResult = sections.add(JAMSIL, YUKSAM, jamsilYuksamDistance);
 
         //then
         List<Section> addedResults = addUpEndStationResult.getAddedResults();
@@ -82,7 +81,7 @@ class SectionsTest {
 
         Assertions.assertAll(
                 () -> assertThat(addedResults).hasSize(1),
-                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
+//                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
                 () -> assertThat(newSection.getUpStation()).isEqualTo(JAMSIL),
                 () -> assertThat(newSection.getDownStation()).isEqualTo(YUKSAM),
                 () -> assertThat(newSection.getDistance()).isEqualTo(jamsilYuksamDistance),
@@ -95,12 +94,12 @@ class SectionsTest {
     @Test
     void 하행_종점을_추가한다() {
         Distance jamsilGangnamDistance = new Distance(10);
-        Section section = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance, SECOND_LINE);
+        Section section = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance);
         Sections sections = new Sections(List.of(section));
 
         Distance gangnamYuksamDistance = new Distance(4);
 
-        AddResultDto addDownEndStation = sections.add(GANGNAM, YUKSAM, gangnamYuksamDistance, SECOND_LINE);
+        AddResultDto addDownEndStation = sections.add(GANGNAM, YUKSAM, gangnamYuksamDistance);
 
         List<Section> addedResults = addDownEndStation.getAddedResults();
         List<Section> deletedResults = addDownEndStation.getDeletedResults();
@@ -110,7 +109,7 @@ class SectionsTest {
 
         Assertions.assertAll(
                 () -> assertThat(addedResults).hasSize(1),
-                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
+//                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
                 () -> assertThat(newSection.getUpStation()).isEqualTo(GANGNAM),
                 () -> assertThat(newSection.getDownStation()).isEqualTo(YUKSAM),
                 () -> assertThat(newSection.getDistance()).isEqualTo(gangnamYuksamDistance),
@@ -124,13 +123,13 @@ class SectionsTest {
     void 상행역이_존재하고_새로운_하행역을_추가한다() {
         // given
         Distance jamsilGangnamDistance = new Distance(10);
-        Section jamsilGangnamSection = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance, SECOND_LINE);
+        Section jamsilGangnamSection = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance);
         Sections sections = new Sections(List.of(jamsilGangnamSection));
 
         Distance jamsilSeonleungDistance = new Distance(4);
 
         // when
-        AddResultDto addDownwardInMiddleResult = sections.add(JAMSIL, SEONLEUNG, jamsilSeonleungDistance, SECOND_LINE);
+        AddResultDto addDownwardInMiddleResult = sections.add(JAMSIL, SEONLEUNG, jamsilSeonleungDistance);
 
         List<Section> addedResults = addDownwardInMiddleResult.getAddedResults();
         List<Section> deletedResults = addDownwardInMiddleResult.getDeletedResults();
@@ -179,13 +178,13 @@ class SectionsTest {
     void 하행역이_존재하고_새로운_상행역을_추가한다() {
         //given
         Distance jamsilGangnamDistance = new Distance(10);
-        Section jamsilGangnamSection = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance, SECOND_LINE);
+        Section jamsilGangnamSection = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance);
         Sections sections = new Sections(List.of(jamsilGangnamSection));
 
         Distance yuksamGangnamDistance = new Distance(4);
 
         //when
-        AddResultDto addUpwardInMiddleTest = sections.add(YUKSAM, GANGNAM, yuksamGangnamDistance, SECOND_LINE);
+        AddResultDto addUpwardInMiddleTest = sections.add(YUKSAM, GANGNAM, yuksamGangnamDistance);
         List<Section> addedResults = addUpwardInMiddleTest.getAddedResults();
         List<Section> deletedResults = addUpwardInMiddleTest.getDeletedResults();
         List<Station> addedStation = addUpwardInMiddleTest.getAddedStation();

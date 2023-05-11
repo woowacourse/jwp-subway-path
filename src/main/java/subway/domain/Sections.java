@@ -13,10 +13,10 @@ public class Sections {
         this.sections = sections;
     }
 
-    public AddResultDto add(Station upStation, Station downStation, Distance distance, Line line) {
+    public AddResultDto add(Station upStation, Station downStation, Distance distance) {
         validateIsEqualStations(upStation, downStation);
         if (sections.isEmpty()) {
-            return addInitStations(upStation, downStation, distance, line);
+            return addInitStations(upStation, downStation, distance);
         }
         validateIsNonExistStations(upStation, downStation);
         Station upEndStation = findUpEndStation();
@@ -24,13 +24,13 @@ public class Sections {
 
         // 상행 종점 추가
         if (downStation.equals(upEndStation)) {
-            return addUpEndStation(upStation, downStation, distance, line);
+            return addUpEndStation(upStation, downStation, distance);
         }
         // 하행 종점 추가
         if (upStation.equals(downEndStation)) {
-            return addDownEndStation(upStation, downStation, distance, line);
+            return addDownEndStation(upStation, downStation, distance);
         }
-        return addStationInMiddle(upStation, downStation, distance, line);
+        return addStationInMiddle(upStation, downStation, distance);
     }
 
 
@@ -40,8 +40,8 @@ public class Sections {
         }
     }
 
-    private AddResultDto addInitStations(Station upStation, Station downStation, Distance distance, Line line) {
-        Section section = new Section(upStation, downStation, distance, line);
+    private AddResultDto addInitStations(Station upStation, Station downStation, Distance distance) {
+        Section section = new Section(upStation, downStation, distance);
         return new AddResultDto(
                 List.of(section),
                 List.of(),
@@ -55,17 +55,17 @@ public class Sections {
         }
     }
 
-    private static AddResultDto addDownEndStation(Station upStation, Station downStation, Distance distance, Line line) {
-        Section newDownEndStation = new Section(upStation, downStation, distance, line);
+    private static AddResultDto addDownEndStation(Station upStation, Station downStation, Distance distance) {
+        Section newDownEndStation = new Section(upStation, downStation, distance);
         return new AddResultDto(List.of(newDownEndStation), List.of(), List.of(downStation));
     }
 
-    private AddResultDto addUpEndStation(Station upStation, Station downStation, Distance distance, Line line) {
-        Section newUpEndStation = new Section(upStation, downStation, distance, line);
+    private AddResultDto addUpEndStation(Station upStation, Station downStation, Distance distance) {
+        Section newUpEndStation = new Section(upStation, downStation, distance);
         return new AddResultDto(List.of(newUpEndStation), List.of(), List.of(upStation));
     }
 
-    private AddResultDto addStationInMiddle(Station upStation, Station downStation, Distance distance, Line line) {
+    private AddResultDto addStationInMiddle(Station upStation, Station downStation, Distance distance) {
         Optional<Section> isExistUpStation = sections.stream()
                 .filter(section -> section.contains(upStation))
                 .findAny();
@@ -73,23 +73,23 @@ public class Sections {
         if (isExistUpStation.isPresent()) {
             Section originalSection = isExistUpStation.get();
             Distance newSectionDistance = originalSection.calculateNewSectionDistance(distance);
-            Section newSectionUpward = new Section(upStation, downStation, distance, line);
-            Section newSectionDownward = new Section(downStation, originalSection.getDownStation(), newSectionDistance, line);
+            Section newSectionUpward = new Section(upStation, downStation, distance);
+            Section newSectionDownward = new Section(downStation, originalSection.getDownStation(), newSectionDistance);
             return new AddResultDto(List.of(newSectionUpward, newSectionDownward), List.of(originalSection), List.of(downStation));
         }
         // downstation이 기존 노선에 존재할 경우 상행 방향에 역 추가
-        return addStationDownwardInMiddle(upStation, downStation, distance, line);
+        return addStationDownwardInMiddle(upStation, downStation, distance);
     }
 
-    private AddResultDto addStationDownwardInMiddle(Station upStation, Station downStation, Distance distance, Line line) {
+    private AddResultDto addStationDownwardInMiddle(Station upStation, Station downStation, Distance distance) {
         Section originalDownSection = sections.stream()
                 .filter(section -> section.contains(downStation))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("이미 노선에 역들이 존재하기 때문에 한 번에 새로운 역 2개를 추가할 수 없습니다."));
 
         Distance newSectionDistance = originalDownSection.calculateNewSectionDistance(distance);
-        Section newSectionUpward = new Section(upStation, downStation, distance, line);
-        Section newSectionDownward = new Section(originalDownSection.getUpStation(), upStation, newSectionDistance, line);
+        Section newSectionUpward = new Section(upStation, downStation, distance);
+        Section newSectionDownward = new Section(originalDownSection.getUpStation(), upStation, newSectionDistance);
 
         return new AddResultDto(List.of(newSectionDownward, newSectionUpward), List.of(originalDownSection), List.of(upStation));
     }
@@ -127,4 +127,7 @@ public class Sections {
                 .collect(Collectors.toList());
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
 }
