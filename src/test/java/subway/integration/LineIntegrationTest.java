@@ -99,7 +99,6 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         StationsResponse resultResponse = response.as(StationsResponse.class);
         assertThat(resultResponse.getStations().size()).isEqualTo(2);
