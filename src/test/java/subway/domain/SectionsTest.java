@@ -6,6 +6,7 @@ import subway.dto.AddResultDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -116,6 +117,45 @@ class SectionsTest {
                 () -> assertThat(deletedResults).hasSize(0),
                 () -> assertThat(addedStation).hasSize(1),
                 () -> assertThat(addedStation).containsExactly(YUKSAM)
+        );
+    }
+
+    @Test
+    void 상행역이_존재하고_새로운_하행역을_추가한다() {
+        // given
+        Distance jamsilGangnamDistance = new Distance(10);
+        Section jamsilGangnamSection = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance, SECOND_LINE);
+        Sections sections = new Sections(List.of(jamsilGangnamSection));
+
+        Distance jamsilSeonleungDistance = new Distance(4);
+
+        // when
+        AddResultDto addDownwardInMiddleResult = sections.add(JAMSIL, SEONLEUNG, jamsilSeonleungDistance, SECOND_LINE);
+
+        List<Section> addedResults = addDownwardInMiddleResult.getAddedResults();
+        List<Section> deletedResults = addDownwardInMiddleResult.getDeletedResults();
+        List<Station> addedStation = addDownwardInMiddleResult.getAddedStation();
+
+        // 상행 역 조회
+        List<Station> upStations = addedResults.stream()
+                .map(Section::getUpStation)
+                .collect(Collectors.toList());
+        // 하행 역 조회
+        List<Station> downStations = addedResults.stream()
+                .map(Section::getDownStation)
+                .collect(Collectors.toList());
+
+        // 상행 역과 하행 역을 합쳐 노선의 역들 추출
+        upStations.addAll(downStations);
+        List<Station> stations = upStations.stream()
+                .distinct()
+                .collect(Collectors.toList());
+        Assertions.assertAll(
+                () -> assertThat(addedResults).hasSize(2),
+                () -> assertThat(deletedResults).hasSize(1),
+                () -> assertThat(addedStation).hasSize(1),
+                () -> assertThat(addedStation).containsExactly(SEONLEUNG),
+                () -> assertThat(stations).containsExactlyInAnyOrder(JAMSIL, SEONLEUNG, GANGNAM)
         );
     }
 }

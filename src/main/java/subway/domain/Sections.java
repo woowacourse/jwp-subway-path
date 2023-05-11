@@ -2,8 +2,8 @@ package subway.domain;
 
 import subway.dto.AddResultDto;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -30,8 +30,9 @@ public class Sections {
         if (upStation.equals(downEndStation)) {
             return addDownEndStation(upStation, downStation, distance, line);
         }
+        return addStationInMiddle(upStation, downStation, distance, line);
 
-        return new AddResultDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
+//        return new AddResultDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
     private static AddResultDto addDownEndStation(Station upStation, Station downStation, Distance distance, Line line) {
@@ -39,17 +40,31 @@ public class Sections {
         return new AddResultDto(List.of(newDownEndStation), List.of(), List.of(downStation));
     }
 
-    private static AddResultDto addUpEndStation(Station upStation, Station downStation, Distance distance, Line line) {
+    private AddResultDto addUpEndStation(Station upStation, Station downStation, Distance distance, Line line) {
         return addDownEndStation(upStation, downStation, distance, line);
     }
 
-    private static AddResultDto addInitStations(Station upStation, Station downStation, Distance distance, Line line) {
+    private AddResultDto addInitStations(Station upStation, Station downStation, Distance distance, Line line) {
         Section section = new Section(upStation, downStation, distance, line);
         return new AddResultDto(
                 List.of(section),
                 List.of(),
                 List.of(upStation, downStation)
         );
+    }
+
+    private AddResultDto addStationInMiddle(Station upStation, Station downStation, Distance distance, Line line) {
+        Optional<Section> isExistUpStation = sections.stream()
+                .filter(section -> section.contains(upStation))
+                .findAny();
+        if (isExistUpStation.isPresent()) {
+            Section originalSection = isExistUpStation.get();
+            originalSection.calculateNewSectionDistance(distance);
+            Section newSectionUpward = new Section(upStation, downStation, distance, line);
+            Section newSectionDownward = new Section(downStation, originalSection.getDownStation(), originalSection.calculateNewSectionDistance(distance), line);
+            return new AddResultDto(List.of(newSectionUpward, newSectionDownward), List.of(originalSection), List.of(downStation));
+        }
+        return new AddResultDto(List.of(), List.of(), List.of());
     }
 
     private void validateIsEqualStations(Station upStation, Station downStation) {
