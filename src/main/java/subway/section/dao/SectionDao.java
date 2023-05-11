@@ -11,8 +11,6 @@ public interface SectionDao {
 
     SectionEntity insert(final SectionEntity sectionEntity);
 
-    Optional<SectionEntity> findById(final Long id);
-
     void deleteById(final Long id);
 
     List<SectionEntity> findByLineId(final Long lineId);

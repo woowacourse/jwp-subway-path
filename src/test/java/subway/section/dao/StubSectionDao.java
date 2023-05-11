@@ -25,15 +25,6 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<SectionEntity> findById(final Long id) {
-        final SectionEntity sectionEntity = sectionMap.get(id);
-        if (sectionEntity == null) {
-            return Optional.empty();
-        }
-        return Optional.of(sectionEntity);
-    }
-
-    @Override
     public void deleteById(final Long id) {
         sectionMap.remove(id);
     }
@@ -57,6 +48,14 @@ public class StubSectionDao implements SectionDao {
             return findNeighborUpSection(lineId, baseId);
         }
         return findNeighborDownSection(lineId, baseId);
+    }
+
+    public Optional<SectionEntity> findById(final Long id) {
+        final SectionEntity sectionEntity = sectionMap.get(id);
+        if (sectionEntity == null) {
+            return Optional.empty();
+        }
+        return Optional.of(sectionEntity);
     }
 
     public Optional<SectionEntity> findNeighborUpSection(final Long lineId, final Long stationId) {

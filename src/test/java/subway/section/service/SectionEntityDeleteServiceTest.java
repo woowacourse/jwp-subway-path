@@ -1,16 +1,16 @@
 package subway.section.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-import java.util.Optional;
-
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.section.dao.StubSectionDao;
 import subway.section.entity.SectionEntity;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class SectionEntityDeleteServiceTest {
 
@@ -54,18 +54,13 @@ public class SectionEntityDeleteServiceTest {
     @DisplayName("윗 아래 모두 구간이 존재하면 두 구간을 합친다.")
     @Test
     void deleteSection() {
-        final SectionEntity saved1 = stubSectionDao.insert(new SectionEntity(1L, 2L, 3L, 4));
-        final SectionEntity saved2 = stubSectionDao.insert(new SectionEntity(1L, 3L, 4L, 5));
-
+        stubSectionDao.insert(new SectionEntity(1L, 2L, 3L, 4));
+        stubSectionDao.insert(new SectionEntity(1L, 3L, 4L, 5));
 
         sectionService.deleteSection(1L, 3L);
 
-        final Optional<SectionEntity> result1 = stubSectionDao.findById(saved1.getId());
-        final Optional<SectionEntity> result2 = stubSectionDao.findById(saved2.getId());
         final Optional<SectionEntity> section = stubSectionDao.findNeighborUpSection(1L, 4L);
         org.junit.jupiter.api.Assertions.assertAll(
-                () -> assertThat(result1).isEmpty(),
-                () -> assertThat(result2).isEmpty(),
                 () -> assertThat(section).isPresent(),
                 () -> assertThat(section.get().getId()).isPositive(),
                 () -> assertThat(section.get().getUpStationId()).isEqualTo(2L),

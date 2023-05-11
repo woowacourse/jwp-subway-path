@@ -25,6 +25,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 @JdbcTest
 class RdsSectionDaoTest {
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     private RdsSectionDao rdsSectionDao;
     private LineDao lineDao;
     private StationDao stationDao;
@@ -109,22 +112,12 @@ class RdsSectionDaoTest {
                 );
             }
 
-            @DisplayName("id로 구간을 검색한다.")
-            @Test
-            void findById() {
-                final Optional<SectionEntity> result = rdsSectionDao.findById(sectionId1);
-                assertAll(
-                        () -> assertThat(result).isPresent(),
-                        () -> assertThat(result.get().getId()).isEqualTo(sectionId1)
-                );
-            }
-
             @DisplayName("id로 구간을 삭제한다.")
             @Test
             void deleteById() {
                 rdsSectionDao.deleteById(sectionId1);
-                final Optional<SectionEntity> result = rdsSectionDao.findById(sectionId1);
-                assertThat(result).isEmpty();
+                Integer result = jdbcTemplate.queryForObject("select count(*) from section where id = ?", Integer.class, sectionId1);
+                assertThat(result).isZero();
             }
 
             @DisplayName("특정 역에서 특정 방향에 인접한 역을 검색한다.")
