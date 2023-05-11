@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.Objects;
 
 public class Line {
+
     private final Long id;
     private final LineName name;
     private final Sections sections;

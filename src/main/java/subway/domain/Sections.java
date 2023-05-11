@@ -39,10 +39,8 @@ public class Sections {
     public Sections addCentral(final Section section) {
         final LinkedList<Section> newSections = new LinkedList<>(sections);
 
-        final Section originSection = newSections.stream()
-                .filter(element -> element.getBeforeStation().equals(section.getBeforeStation()))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("이전 역을 찾을 수 없습니다."));
+        final Section originSection = findOriginSection(section, newSections);
+
         final int originIndex = newSections.indexOf(originSection);
         newSections.remove(originSection);
         newSections.add(originIndex, section);
@@ -55,6 +53,13 @@ public class Sections {
         );
 
         return new Sections(newSections);
+    }
+
+    private static Section findOriginSection(final Section section, final LinkedList<Section> newSections) {
+        return newSections.stream()
+                .filter(element -> element.getBeforeStation().equals(section.getBeforeStation()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("이전 역을 찾을 수 없습니다."));
     }
 
     public Sections removeHead() {

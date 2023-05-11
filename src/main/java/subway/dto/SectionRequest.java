@@ -6,11 +6,11 @@ import javax.validation.constraints.NotNull;
 public class SectionRequest {
 
     @NotBlank
-    private String beforeStationName;
+    private final String beforeStationName;
     @NotBlank
-    private String nextStationName;
+    private final String nextStationName;
     @NotNull
-    private Integer distance;
+    private final Integer distance;
 
     public SectionRequest(final String beforeStationName, final String nextStationName, final Integer distance) {
         this.beforeStationName = beforeStationName;
@@ -19,6 +19,7 @@ public class SectionRequest {
     }
 
     private SectionRequest() {
+        this(null, null, null);
     }
 
     public String getBeforeStationName() {
