@@ -42,7 +42,6 @@ import subway.dto.StationResponse;
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
 
-
     @Mock
     private SectionDao sectionDao;
 
@@ -108,37 +107,8 @@ class SectionServiceTest {
             .hasMessage("해당하는 역이 없습니다.");
     }
 
-    @ParameterizedTest(name = "구간 타입 업데이트 시 업데이트 한 행 횟수가 1이 아니면 오류가 발생한다.")
-    @ValueSource(ints = {0, 2})
-    void saveSection_update_count_exception_test(final int updatedCount) {
-        // given
-        when(lineDao.findById(any()))
-            .thenReturn(Optional.of(이호선));
-        when(sectionDao.findByLineId(any()))
-            .thenReturn(이호선_역들);
-
-        doReturn(Optional.of(잠실역))
-            .when(stationDao).findById(1L);
-        doReturn(Optional.of(선릉역))
-            .when(stationDao).findById(2L);
-        doReturn(Optional.of(강남역))
-            .when(stationDao).findById(3L);
-        doReturn(Optional.of(신림역))
-            .when(stationDao).findById(4L);
-
-        when(sectionDao.updateSectionTypeByLineIdAndSourceStationId(any(), any(), any()))
-            .thenReturn(updatedCount);
-
-        final SectionRequest sectionRequest = new SectionRequest(1L, 4L, 1L, 3);
-
-        // expected
-        assertThatThrownBy(() -> sectionService.saveSection(sectionRequest))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("DB 업데이트 중 예외가 발생했습니다.");
-    }
-
     @Test
-    @DisplayName("입력받은 끝점이 상행 종점일 때 구간 타입을 업데이트하고, 새로운 정보를 삽입한다.")
+    @DisplayName("입력받은 끝점이 상행 종점일 때 새로운 정보를 삽입한다.")
     void saveSection_isTargetUpward_test() {
         // given
         when(lineDao.findById(any()))
@@ -154,9 +124,6 @@ class SectionServiceTest {
             .when(stationDao).findById(3L);
         doReturn(Optional.of(신림역))
             .when(stationDao).findById(4L);
-
-        when(sectionDao.updateSectionTypeByLineIdAndSourceStationId(any(), any(), any()))
-            .thenReturn(1);
         when(sectionDao.insert(any()))
             .thenReturn(3L);
         final SectionRequest sectionRequest = new SectionRequest(1L, 4L, 1L, 3);
@@ -165,12 +132,11 @@ class SectionServiceTest {
         sectionService.saveSection(sectionRequest);
 
         // then
-        verify(sectionDao, times(1)).updateSectionTypeByLineIdAndSourceStationId(any(), any(), any());
         verify(sectionDao, times(1)).insert(any());
     }
 
     @Test
-    @DisplayName("입력받은 시작점이 하행 종점일 때 구간 타입을 업데이트하고, 새로운 정보를 삽입한다.")
+    @DisplayName("입력받은 시작점이 하행 종점일 때 새로운 정보를 삽입한다.")
     void saveSection_isSourceDownward_test() {
         // given
         when(lineDao.findById(any()))

@@ -17,11 +17,11 @@ public final class StationFixture {
     public static final Station 남위례역 = new Station(5L, "남위례역");
     public static final Station 산성역 = new Station(6L, "산성역");
 
-    public static final SectionEntity 잠실_선릉 = new SectionEntity(1L,1L, 1L, 2L, 10, "UPWARD");
-    public static final SectionEntity 선릉_강남 = new SectionEntity(2L, 1L, 2L, 3L, 10, "NORMAL");
+    public static final SectionEntity 잠실_선릉 = new SectionEntity(1L,1L, 1L, 2L, 10);
+    public static final SectionEntity 선릉_강남 = new SectionEntity(2L, 1L, 2L, 3L, 10);
 
-    public static final SectionEntity 복정_남위례 = new SectionEntity(3L, 2L, 4L, 5L, 10, "UPWARD");
-    public static final SectionEntity 남위례_산성 = new SectionEntity(4L, 2L, 5L, 6L, 10, "NORMAL");
+    public static final SectionEntity 복정_남위례 = new SectionEntity(3L, 2L, 4L, 5L, 10);
+    public static final SectionEntity 남위례_산성 = new SectionEntity(4L, 2L, 5L, 6L, 10);
 
     public static final List<SectionEntity> 이호선_역들 = List.of(잠실_선릉, 선릉_강남);
     public static final List<SectionEntity> 팔호선_역들 = List.of(복정_남위례, 남위례_산성);

@@ -31,7 +31,7 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final Sections sections = new Sections(List.of(section));
 
         // expect
@@ -44,14 +44,14 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
 
         final Station 판교역 = new Station("판교역");
         final Station 몽촌토성역 = new Station("몽촌토성역");
-        final Section requestSection = new Section(판교역, 몽촌토성역, 5, SectionType.NORMAL);
+        final Section requestSection = new Section(판교역, 몽촌토성역, 5);
 
         // expected
         assertThatThrownBy(() -> sections.validateSections(requestSection))
@@ -66,14 +66,14 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station(sourceStationName);
         final Station 선릉역 = new Station(targetStationName);
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
 
         final Station sourceStation = new Station(sourceStationName);
         final Station targetStation = new Station(targetStationName);
-        final Section requestSection = new Section(sourceStation, targetStation, 5, SectionType.NORMAL);
+        final Section requestSection = new Section(sourceStation, targetStation, 5);
 
         // expected
         assertThatThrownBy(() -> sections.validateSections(requestSection))
@@ -88,7 +88,7 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
@@ -105,7 +105,7 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
@@ -122,13 +122,13 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
 
         final Station 몽촌토성역 = new Station("몽촌토성역");
-        final Section requestSection = new Section(몽촌토성역, 잠실역, 10, SectionType.NORMAL);
+        final Section requestSection = new Section(몽촌토성역, 잠실역, 10);
 
         // expected
         assertThat(sections.getExistsSectionOfSource(requestSection)).isEmpty();
@@ -140,13 +140,13 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
 
         final Station 몽촌토성역 = new Station("몽촌토성역");
-        final Section requestSection = new Section(잠실역, 몽촌토성역, distance, SectionType.NORMAL);
+        final Section requestSection = new Section(잠실역, 몽촌토성역, distance);
 
         // expected
         assertThatThrownBy(() -> sections.getExistsSectionOfSource(requestSection))
@@ -161,13 +161,13 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
 
         final Station 몽촌토성역 = new Station("몽촌토성역");
-        final Section requestSection = new Section(잠실역, 몽촌토성역, 8, SectionType.NORMAL);
+        final Section requestSection = new Section(잠실역, 몽촌토성역, 8);
 
         // expected
         assertThat(sections.getExistsSectionOfSource(requestSection))
@@ -180,13 +180,13 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
 
         final Station 몽촌토성역 = new Station("몽촌토성역");
-        final Section requestSection = new Section(몽촌토성역, 잠실역, 10, SectionType.NORMAL);
+        final Section requestSection = new Section(몽촌토성역, 잠실역, 10);
 
         // expected
         assertThat(sections.getExistsSectionOfTarget(requestSection)).isEmpty();
@@ -198,13 +198,13 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
 
         final Station 몽촌토성역 = new Station("몽촌토성역");
-        final Section requestSection = new Section(몽촌토성역, 선릉역, distance, SectionType.NORMAL);
+        final Section requestSection = new Section(몽촌토성역, 선릉역, distance);
 
         // expected
         assertThatThrownBy(() -> sections.getExistsSectionOfTarget(requestSection))
@@ -219,13 +219,13 @@ class SectionsTest {
         // given
         final Station 잠실역 = new Station("잠실역");
         final Station 선릉역 = new Station("선릉역");
-        final Section section = new Section(잠실역, 선릉역, 10, SectionType.UPWARD);
+        final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
 
         final Station 몽촌토성역 = new Station("몽촌토성역");
-        final Section requestSection = new Section(몽촌토성역, 선릉역, 8, SectionType.NORMAL);
+        final Section requestSection = new Section(몽촌토성역, 선릉역, 8);
 
         // expected
         assertThat(sections.getExistsSectionOfTarget(requestSection))

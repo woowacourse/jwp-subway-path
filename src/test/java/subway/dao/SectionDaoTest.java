@@ -43,7 +43,7 @@ class SectionDaoTest {
         final Long 저장된_시작역_아이디 = 저장된_잠실역.getId();
         final Long 저장된_끝역_아이디 = 저장된_선릉역.getId();
 
-        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10, "UPWARD");
+        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10);
         final long savedId = sectionDao.insert(잠실_선릉);
 
         // when
@@ -53,8 +53,8 @@ class SectionDaoTest {
         assertAll(
             () -> assertThat(sectionEntities).hasSize(1),
             () -> assertThat(sectionEntities.get(0))
-                .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance", "sectionType")
-                .containsExactly(savedId, 저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10, "UPWARD"));
+                .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance")
+                .containsExactly(savedId, 저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10));
     }
 
     @Test
@@ -74,7 +74,7 @@ class SectionDaoTest {
         final Long 저장된_시작역_아이디 = 저장된_잠실역.getId();
         final Long 저장된_끝역_아이디 = 저장된_선릉역.getId();
 
-        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10, "UPWARD");
+        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10);
 
         // when
         final long savedId = sectionDao.insert(잠실_선릉);
@@ -84,40 +84,8 @@ class SectionDaoTest {
         assertAll(
             () -> assertThat(sectionEntities).hasSize(1),
             () -> assertThat(sectionEntities.get(0))
-                .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance", "sectionType")
-                .containsExactly(savedId, 저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10, "UPWARD"));
-    }
-
-    @Test
-    @DisplayName("노선의 구간 타입을 상행에서 일반으로 업데이트 한다.")
-    void updateSectionTypeByLineIdAndSourceStationId() {
-        // given
-        final Line 신분당선 = new Line("신분당선", "bg-red-600");
-        final Line 저장된_신분당선 = lineDao.insert(신분당선);
-        final Long 저장된_신분당선_아이디 = 저장된_신분당선.getId();
-
-        final Station 잠실역 = new Station("잠실역");
-        final Station 선릉역 = new Station("선릉역");
-
-        final Station 저장된_잠실역 = stationDao.insert(잠실역);
-        final Station 저장된_선릉역 = stationDao.insert(선릉역);
-
-        final Long 저장된_시작역_아이디 = 저장된_잠실역.getId();
-        final Long 저장된_끝역_아이디 = 저장된_선릉역.getId();
-
-        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10, "UPWARD");
-        final long savedId = sectionDao.insert(잠실_선릉);
-
-        // when
-        sectionDao.updateSectionTypeByLineIdAndSourceStationId(저장된_신분당선_아이디, 저장된_시작역_아이디, "NORMAL");
-
-        // then
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(저장된_신분당선_아이디);
-        assertAll(
-            () -> assertThat(sectionEntities).hasSize(1),
-            () -> assertThat(sectionEntities.get(0))
-                .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance", "sectionType")
-                .containsExactly(savedId, 저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10, "NORMAL"));
+                .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance")
+                .containsExactly(savedId, 저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10));
     }
 
     @Test
@@ -137,7 +105,7 @@ class SectionDaoTest {
         final Long 저장된_시작역_아이디 = 저장된_잠실역.getId();
         final Long 저장된_끝역_아이디 = 저장된_선릉역.getId();
 
-        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10, "UPWARD");
+        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_신분당선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10);
         sectionDao.insert(잠실_선릉);
 
         // when
