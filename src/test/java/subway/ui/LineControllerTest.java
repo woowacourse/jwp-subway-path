@@ -9,8 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
 
-import static fixtures.LineFixtures.LINE2_NAME;
-import static fixtures.LineFixtures.LINE2_노선도;
+import static fixtures.LineFixtures.*;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,5 +39,21 @@ class LineControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lineName").value(is(LINE2_NAME)))
                 .andExpect(jsonPath("$.stationNames").value(is(LINE2_노선도.getStationNames())));
+    }
+
+    @Test
+    @DisplayName("GET /lines uri로 요청하면 모든 노선의 정보를 반환한다.")
+    void findAllLinesTest() throws Exception {
+        // given
+        when(lineService.findAllLineStationNames())
+                .thenReturn(ALL_노선도);
+
+        // when, then
+        mockMvc.perform(get("/lines"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].lineName").value(is(LINE2_NAME)))
+                .andExpect(jsonPath("$[0].stationNames").value(is(LINE2_노선도.getStationNames())))
+                .andExpect(jsonPath("$[1].lineName").value(is(LINE7_NAME)))
+                .andExpect(jsonPath("$[1].stationNames").value(is(LINE7_노선도.getStationNames())));
     }
 }

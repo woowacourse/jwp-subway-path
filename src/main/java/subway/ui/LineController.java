@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.dto.LineFindResponse;
 
+import java.util.List;
+
 // TODO : ControllerAdvice 구현
 @RestController
 @RequestMapping("/lines")
@@ -19,15 +21,9 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-    }
-
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<List<LineFindResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findAllLineStationNames());
     }
 
     @GetMapping("/{id}")
