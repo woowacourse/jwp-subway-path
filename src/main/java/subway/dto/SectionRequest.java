@@ -21,7 +21,6 @@ public class SectionRequest {
     private SectionRequest() {
     }
 
-
     public String getBeforeStationName() {
         return beforeStationName;
     }

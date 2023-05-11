@@ -18,6 +18,10 @@ public class LineResponse {
         this.stations = stations;
     }
 
+    private LineResponse() {
+        this(null, null, null);
+    }
+
     public static LineResponse from(final Line line) {
         if (line.getSections().getSections().isEmpty()) {
             return new LineResponse(line.getId(), line.getName().getValue(), new ArrayList<>());
@@ -29,10 +33,6 @@ public class LineResponse {
         }
         stationResponses.add(StationResponse.of(sections.get(sections.size() - 1).getNextStation()));
         return new LineResponse(line.getId(), line.getName().getValue(), stationResponses);
-    }
-
-    private LineResponse() {
-        this(null, null, null);
     }
 
     public Long getId() {

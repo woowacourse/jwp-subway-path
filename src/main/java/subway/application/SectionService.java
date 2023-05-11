@@ -21,19 +21,22 @@ public class SectionService {
         this.stationService = stationService;
     }
 
-    public void deleteSections(final Sections sections) {
-        sectionDao.delete(sections.getSections());
-    }
-
-    public void insertSections(final Long lineId, final Sections sections) {
-        sectionDao.insert(lineId, sections.getSections());
-    }
-
     public Sections findByLineId(final Long lineId) {
         final List<Section> sections = sectionDao.findByLineId(lineId);
         final List<Long> stationIds = serializeToStationIds(sections);
         final List<Station> stations = stationService.findStationsById(stationIds);
         return joinStationsToSections(sections, stations);
+    }
+
+    private static List<Long> serializeToStationIds(final List<Section> sections) {
+        if (sections.isEmpty()) {
+            return new ArrayList<>();
+        }
+        final List<Long> stationIds = sections.stream()
+                .map(section -> section.getBeforeStation().getId())
+                .collect(Collectors.toList());
+        stationIds.add(sections.get(sections.size() - 1).getNextStation().getId());
+        return stationIds;
     }
 
     private static Sections joinStationsToSections(final List<Section> sections, final List<Station> stations) {
@@ -47,15 +50,12 @@ public class SectionService {
         return new Sections(joinedSections);
     }
 
-    private static List<Long> serializeToStationIds(final List<Section> sections) {
-        if (sections.isEmpty()) {
-            return new ArrayList<>();
-        }
-        final List<Long> stationIds = sections.stream()
-                .map(section -> section.getBeforeStation().getId())
-                .collect(Collectors.toList());
-        stationIds.add(sections.get(sections.size() - 1).getNextStation().getId());
-        return stationIds;
+    public void deleteSections(final Sections sections) {
+        sectionDao.delete(sections.getSections());
+    }
+
+    public void insertSections(final Long lineId, final Sections sections) {
+        sectionDao.insert(lineId, sections.getSections());
     }
 }
 

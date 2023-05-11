@@ -69,7 +69,6 @@ public class LineService {
         final Station station = stationService.findStationByName(request.getName());
         final Line deletedLine = line.removeStation(station);
 
-
         final Sections deleteSections = line.getSections().getDifferenceOfSet(deletedLine.getSections());
         final Sections insertSections = deletedLine.getSections().getDifferenceOfSet(line.getSections());
 
