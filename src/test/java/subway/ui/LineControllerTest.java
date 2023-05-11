@@ -9,7 +9,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
 
-import static fixtures.LineFixtures.*;
+import static fixtures.LineFixtures.LINE2_NAME;
+import static fixtures.LineFixtures.LINE2_노선도;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;

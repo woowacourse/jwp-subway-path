@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.line.Line;
 import subway.entity.LineEntity;
 
 import java.sql.PreparedStatement;
@@ -16,13 +15,6 @@ import java.util.Optional;
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
-            );
 
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -41,20 +33,10 @@ public class LineDao {
 
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
-    }
-
     public LineEntity findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
 //        return jdbcTemplate.queryForObject(sql, rowMapper, id);
         return null;
-    }
-
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
     public void deleteById(Long id) {

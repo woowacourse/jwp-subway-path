@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.station.Station;
 import subway.entity.StationEntity;
 
 import java.sql.PreparedStatement;
@@ -16,12 +15,6 @@ import java.util.Optional;
 public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
-
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getString("name")
-            );
-
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -38,11 +31,6 @@ public class StationDao {
         }, keyHolder);
 
         return keyHolder.getKey().longValue();
-    }
-
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<StationEntity> findById(Long id) {
@@ -70,11 +58,6 @@ public class StationDao {
             long findLineId = rs.getLong("line.id");
             return new StationEntity(findStationId, findStationName, findLineId);
         };
-    }
-
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName()});
     }
 
     public void deleteById(Long id) {

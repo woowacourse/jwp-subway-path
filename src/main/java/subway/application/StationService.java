@@ -11,7 +11,6 @@ import subway.domain.section.Section;
 import subway.domain.section.SectionEntities;
 import subway.domain.station.Station;
 import subway.dto.StationRequest;
-import subway.dto.StationResponse;
 import subway.dto.StationSaveResponse;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
@@ -26,10 +25,6 @@ import java.util.stream.Collectors;
 @Transactional
 public class StationService {
 
-    public static final int SAVED_INITIAL_STATIONS_COUNT = 2;
-    public static final int SAVED_INITIAL_SECTION_COUNT = 1;
-    public static final int SAVED_NEW_STATION_COUNT = 1;
-    public static final int SAVED_MODIFIED_SECTION_COUNT = 2;
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -122,24 +117,6 @@ public class StationService {
         return new StationSaveResponse(lineId, List.of(savedNewDownStationId), List.of(insertedSection1Id, insertedSection2Id));
     }
 
-    public StationResponse findStationResponseById(Long id) {
-//        return StationResponse.of(stationDao.findById(id));
-        return null;
-    }
-
-    public List<StationResponse> findAllStationResponses() {
-//        List<Station> stations = stationDao.findAll();
-//
-//        return stations.stream()
-//                .map(StationResponse::of)
-//                .collect(Collectors.toList());
-        return null;
-    }
-
-    public void updateStation(Long id, StationRequest stationRequest) {
-//        stationDao.update(new Station(id, stationRequest.getName()));
-    }
-
     public void deleteStationById(Long stationId) {
         Optional<StationEntity> findStationEntity = stationDao.findById(stationId);
         // TODO: custom notfound 예외 만들기
@@ -156,19 +133,16 @@ public class StationService {
         if (sectionEntities.getSize() == 1) {
             lineDao.deleteById(findStation.getLineId());
         }
-        // 종점 or 중간역 삭제
+
         Optional<SectionEntity> upSection = sectionEntities.findUpSectionByStation(findStation);
         Optional<SectionEntity> downSection = sectionEntities.findDownSectionByStation(findStation);
 
         MiddleStationRemoveCalculator middleStationRemoveCalculator = new MiddleStationRemoveCalculator(sectionEntities);
 
-        // 상행 or 하행 종점 시 역만 제거해도 섹션은 같이 제거됨
-        //
         if (upSection.isEmpty() && !downSection.isEmpty() || upSection.isEmpty() && !downSection.isEmpty()) {
             stationDao.deleteById(findStation.getId());
         }
 
-        // 중간 역 제거
         SectionEntity sectionToAdd = middleStationRemoveCalculator.calculateSectionToAdd(findStation);
         stationDao.deleteById(findStation.getId());
         sectionDao.insert(sectionToAdd);
