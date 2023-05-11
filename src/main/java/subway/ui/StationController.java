@@ -1,6 +1,7 @@
 package subway.ui;
 
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody StationCreateRequest stationCreateRequest) {
+    public ResponseEntity<Void> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
         stationService.saveStation(stationCreateRequest);
         return ResponseEntity.ok().build();
     }
@@ -37,7 +38,7 @@ public class StationController {
 
     @PutMapping("/{stationName}")
     public ResponseEntity<Void> updateStation(@PathVariable String stationName,
-                                              @RequestBody StationUpdateRequest stationUpdateRequest) {
+                                              @RequestBody @Valid StationUpdateRequest stationUpdateRequest) {
         stationService.updateStation(stationName, stationUpdateRequest);
         return ResponseEntity.ok().build();
     }

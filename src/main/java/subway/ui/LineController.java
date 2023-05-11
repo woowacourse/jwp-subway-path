@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +35,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody LineCreateRequest lineRequest) {
+    public ResponseEntity<Void> createLine(@RequestBody @Valid LineCreateRequest lineRequest) {
         long lineId = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
@@ -62,7 +63,7 @@ public class LineController {
 
     @PutMapping("/{lineId}")
     public ResponseEntity<Void> updateLine(@PathVariable Long lineId,
-                                           @RequestBody LineUpdateRequest lineUpdateRequest) {
+                                           @RequestBody @Valid LineUpdateRequest lineUpdateRequest) {
         lineService.updateLine(lineId, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
