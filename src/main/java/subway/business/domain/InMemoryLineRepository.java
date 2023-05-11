@@ -15,6 +15,11 @@ public class InMemoryLineRepository implements LineRepository {
     @Override
     public long save(Line line) {
         lines.add(line);
-        return lines.indexOf(line) + 1;
+        return lines.indexOf(line);
+    }
+
+    @Override
+    public Line findById(Long id) {
+        return lines.get(id.intValue());
     }
 }
