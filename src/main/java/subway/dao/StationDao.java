@@ -22,6 +22,7 @@ public class StationDao {
                     rs.getString("name")
             );
 
+    private final RowMapper<Boolean> booleanMapper = (resultSet, rowNum) -> resultSet.getBoolean("isExist");
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -44,6 +45,11 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Boolean hasId(Long id) {
+        String sql = "select exists(select * from STATION where id = ?) as isExist";
+        return jdbcTemplate.queryForObject(sql, booleanMapper, id);
     }
 
     public void update(Station newStation) {

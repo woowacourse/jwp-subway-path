@@ -26,6 +26,13 @@ public class StationService {
         return StationResponse.of(stationDao.findById(id));
     }
 
+    public Station findStationById(Long id) {
+        if (!stationDao.hasId(id)) {
+            throw new IllegalArgumentException("해당 역이 존재하지 않습니다.");
+        }
+        return stationDao.findById(id);
+    }
+
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
