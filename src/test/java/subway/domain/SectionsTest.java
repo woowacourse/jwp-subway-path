@@ -90,4 +90,32 @@ class SectionsTest {
                 () -> assertThat(addedStation).containsExactly(JAMSIL)
         );
     }
+
+    @Test
+    void 하행_종점을_추가한다() {
+        Distance jamsilGangnamDistance = new Distance(10);
+        Section section = new Section(JAMSIL, GANGNAM, jamsilGangnamDistance, SECOND_LINE);
+        Sections sections = new Sections(List.of(section));
+
+        Distance gangnamYuksamDistance = new Distance(4);
+
+        AddResultDto addDownEndStation = sections.add(GANGNAM, YUKSAM, gangnamYuksamDistance, SECOND_LINE);
+
+        List<Section> addedResults = addDownEndStation.getAddedResults();
+        List<Section> deletedResults = addDownEndStation.getDeletedResults();
+        List<Station> addedStation = addDownEndStation.getAddedStation();
+
+        Section newSection = addedResults.get(0);
+
+        Assertions.assertAll(
+                () -> assertThat(addedResults).hasSize(1),
+                () -> assertThat(newSection.getLine()).isEqualTo(SECOND_LINE),
+                () -> assertThat(newSection.getUpStation()).isEqualTo(GANGNAM),
+                () -> assertThat(newSection.getDownStation()).isEqualTo(YUKSAM),
+                () -> assertThat(newSection.getDistance()).isEqualTo(gangnamYuksamDistance),
+                () -> assertThat(deletedResults).hasSize(0),
+                () -> assertThat(addedStation).hasSize(1),
+                () -> assertThat(addedStation).containsExactly(YUKSAM)
+        );
+    }
 }

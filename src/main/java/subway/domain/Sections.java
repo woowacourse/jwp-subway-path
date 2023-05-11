@@ -22,17 +22,25 @@ public class Sections {
         Station upEndStation = findUpEndStation();
         Station downEndStation = findDownEndStation();
 
-        // 상행종점 추가
+        // 상행 종점 추가
         if (downStation.equals(upEndStation)) {
             return addUpEndStation(upStation, downStation, distance, line);
+        }
+        // 하행 종점 추가
+        if (upStation.equals(downEndStation)) {
+            return addDownEndStation(upStation, downStation, distance, line);
         }
 
         return new AddResultDto(new ArrayList<>(), new ArrayList<>(), new ArrayList<>());
     }
 
+    private static AddResultDto addDownEndStation(Station upStation, Station downStation, Distance distance, Line line) {
+        Section newDownEndStation = new Section(upStation, downStation, distance, line);
+        return new AddResultDto(List.of(newDownEndStation), List.of(), List.of(downStation));
+    }
+
     private static AddResultDto addUpEndStation(Station upStation, Station downStation, Distance distance, Line line) {
-        Section newSection = new Section(upStation, downStation, distance, line);
-        return new AddResultDto(List.of(newSection), List.of(), List.of(upStation));
+        return addDownEndStation(upStation, downStation, distance, line);
     }
 
     private static AddResultDto addInitStations(Station upStation, Station downStation, Distance distance, Line line) {
