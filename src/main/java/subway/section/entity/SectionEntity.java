@@ -5,9 +5,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString
-@EqualsAndHashCode
 @Getter
+@EqualsAndHashCode
+@ToString
 public class SectionEntity {
 
     private final Long id;
@@ -17,7 +17,6 @@ public class SectionEntity {
     private final int distance;
 
     public SectionEntity(final Long id, final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
-        validate(distance);
         this.id = id;
         this.lineId = lineId;
         this.upStationId = upStationId;
@@ -25,18 +24,11 @@ public class SectionEntity {
         this.distance = distance;
     }
 
-    public SectionEntity(final Long id, final SectionEntity sectionEntity) {
-        this(id, sectionEntity.lineId, sectionEntity.upStationId, sectionEntity.downStationId, sectionEntity.distance);
+    public SectionEntity(final Long id, final SectionEntity other) {
+        this(id, other.lineId, other.upStationId, other.downStationId, other.distance);
     }
 
     public SectionEntity(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
         this(null, lineId, upStationId, downStationId, distance);
-    }
-
-    private void validate(final int distance) {
-        if (distance > 0) {
-            return;
-        }
-        throw new IllegalArgumentException("거리는 양의 정수만 가능합니다.");
     }
 }
