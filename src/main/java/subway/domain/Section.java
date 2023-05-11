@@ -4,11 +4,11 @@ import subway.dto.SectionRequest;
 
 public class Section {
     
-    long id;
-    long lineId;
-    long upStationId;
-    long downStationId;
-    int distance;
+    private final long lineId;
+    private final long upStationId;
+    private final long downStationId;
+    private final int distance;
+    private long id;
     
     public Section(final long lineId, final long upStationId, final long downStationId, final int distance) {
         this.lineId = lineId;

@@ -9,7 +9,6 @@ public class LineSections {
     
     private final List<Section> sections;
     private final long upTerminalStationId;
-    
     private final long downTerminalStationId;
     
     private LineSections(final List<Section> sections, final long upTerminalStationId,
@@ -57,10 +56,14 @@ public class LineSections {
     }
     
     private int getAdjacentSectionsSize(final long stationId) {
-        final List<Section> adjacentSections = this.sections.stream()
+        final List<Section> adjacentSections = this.getAdjacentSections(stationId);
+        return adjacentSections.size();
+    }
+    
+    public List<Section> getAdjacentSections(final long stationId) {
+        return this.sections.stream()
                 .filter(section -> (section.getUpStationId() == stationId) || (section.getDownStationId() == stationId))
                 .collect(Collectors.toUnmodifiableList());
-        return adjacentSections.size();
     }
     
     public boolean isTerminalStation(final long stationId) {

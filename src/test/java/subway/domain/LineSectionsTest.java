@@ -54,7 +54,7 @@ class LineSectionsTest {
         final LineSections lineSections = LineSections.from(sections);
         
         // when
-        final boolean isTerminalStation = lineSections.isTerminalStation(5);
+        final boolean isTerminalStation = lineSections.isTerminalStation(2);
         
         // then
         Assertions.assertThat(isTerminalStation).isTrue();

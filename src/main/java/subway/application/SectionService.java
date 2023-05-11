@@ -7,7 +7,9 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDAO;
 import subway.dao.StationDao;
+import subway.domain.AdjacentSection;
 import subway.domain.Direction;
+import subway.domain.LineSections;
 import subway.domain.Section;
 import subway.dto.DeleteSectionRequest;
 import subway.dto.SectionRequest;
@@ -57,90 +59,52 @@ public class SectionService {
     }
     
     public List<SectionResponse> saveSection(final SectionRequest sectionRequest) {
-        // 구역테이블에 라인이 존재하지 않는 경우 (신규 둥록)
-        final int count = this.sectionDAO.countSectionInLine(sectionRequest.getLineId());
-        if (count == 0) {
+        final List<Section> sections = this.sectionDAO.findSectionsBy(sectionRequest.getLineId());
+        final LineSections lineSections = LineSections.from(sections);
+        if (lineSections.isEmpty()) {
             return this.creatNewSection(sectionRequest);
         }
-        return this.addNewStationInSection(sectionRequest);
+        return this.addNewStationInSection(sectionRequest, lineSections);
     }
     
     private List<SectionResponse> creatNewSection(final SectionRequest sectionRequest) {
-        return List.of(SectionResponse.of(this.sectionDAO.insert(Section.from(sectionRequest))));
+        final Section section = Section.from(sectionRequest);
+        final SectionResponse sectionResponse = SectionResponse.of(this.sectionDAO.insert(section));
+        return List.of(sectionResponse);
     }
     
-    private List<SectionResponse> addNewStationInSection(final SectionRequest sectionRequest) {
-        final List<Section> newStationSections = this.sectionDAO.findSectionsBy(sectionRequest.getNewStationId(),
-                sectionRequest.getLineId());
-        if (newStationSections.size() != 0) {
+    private List<SectionResponse> addNewStationInSection(final SectionRequest sectionRequest,
+            final LineSections lineSections) {
+        
+        if (lineSections.hasStation(sectionRequest.getNewStationId())) {
             throw new InvalidInputException("새로운역이 라인에 이미 존재합니다.");
         }
         
-        final List<Section> baseStationSections = this.sectionDAO.findSectionsBy(sectionRequest.getBaseStationId(),
-                sectionRequest.getLineId());
-        final int sectionSize = baseStationSections.size();
-        if (sectionSize == 0) {
+        final long baseStationId = sectionRequest.getBaseStationId();
+        if (!lineSections.hasStation(baseStationId)) {
             throw new InvalidInputException("기준역이 라인에 존재하지 않습니다.");
         }
         
         final Direction direction = Direction.of(sectionRequest.getDirection());
         
-        if (sectionSize == 1) {
-            if (baseStationSections.get(0).getUpStationId() == sectionRequest.getBaseStationId()
-                    && direction.isUp()) {
-                //새로운 역 상행 종점
-                return this.creatNewSection(sectionRequest);
-            }
-            if (baseStationSections.get(0).getDownStationId() == sectionRequest.getBaseStationId()
-                    && direction.isDown()) {
-                //새로운 역 하행 종점
-                return this.creatNewSection(sectionRequest);
-            }
+        // 종점인 경우
+        if ((lineSections.isUpTerminalStation(baseStationId) && direction.isUp()) || (
+                lineSections.isDownTerminalStation(baseStationId) && direction.isDown())) {
+            return this.creatNewSection(sectionRequest);
         }
         
-        // 새로운 역이 종점이 아닐 경우
-        for (final Section section : baseStationSections) {
-            if (direction.isDown() && section.getUpStationId() == sectionRequest.getBaseStationId()) {
-                // 거리비교
-                if (sectionRequest.getDistance() >= section.getDistance()) {
-                    throw new InvalidInputException("거리가 기존 구역 거리를 초과했습니다.");
-                }
-                // 구역 하나 제거하고, 두개 입력해야함
-                this.sectionDAO.deleteById(section.getId());
-                final Section newSection1 = this.sectionDAO.insert(Section.from(sectionRequest));
-                
-                //up
-                final long upStationId = sectionRequest.getNewStationId();
-                //down
-                final long downStationId = section.getDownStationId();
-                //distance
-                final int distance = section.getDistance() - sectionRequest.getDistance();
-                final Section newSection2 = new Section(section.getLineId(), upStationId, downStationId, distance);
-                this.sectionDAO.insert(newSection2);
-                return List.of(SectionResponse.of(newSection1), SectionResponse.of(newSection2));
-            }
-            if (direction.isUp() && section.getDownStationId() == sectionRequest.getBaseStationId()) {
-                // 거리비교
-                if (sectionRequest.getDistance() >= section.getDistance()) {
-                    throw new InvalidInputException("거리가 기존 구역 거리를 초과했습니다");
-                }
-                
-                // 구역 하나 제거하고, 두개 입력해야함
-                this.sectionDAO.deleteById(section.getId());
-                final Section newSection1 = this.sectionDAO.insert(Section.from(sectionRequest));
-                
-                //up
-                final long upStationId = section.getDownStationId();
-                //down
-                final long downStationId = sectionRequest.getNewStationId();
-                //distance
-                final int distance = section.getDistance() - sectionRequest.getDistance();
-                final Section newSection = new Section(section.getLineId(), upStationId, downStationId, distance);
-                final Section newSection2 = this.sectionDAO.insert(newSection);
-                return List.of(SectionResponse.of(newSection1), SectionResponse.of(newSection2));
-            }
-        }
-        throw new InvalidInputException("도달할 수 없는 예외입니다." + sectionSize);
+        // 중간에 넣는 경우
+        final List<Section> baseStationSections = lineSections.getAdjacentSections(baseStationId);
+        final AdjacentSection adjacentSection = AdjacentSection.filter(baseStationSections, baseStationId, direction);
+        
+        adjacentSection.validate(sectionRequest.getDistance());
+        final Section oldSection = adjacentSection.getSection();
+        this.sectionDAO.deleteById(oldSection.getId());
+        return adjacentSection.splitTwoSections(sectionRequest.getNewStationId(), sectionRequest.getDistance(),
+                        sectionRequest.getLineId()).stream()
+                .map(this.sectionDAO::insert)
+                .map(SectionResponse::of)
+                .collect(Collectors.toUnmodifiableList());
     }
     
     public void validate(final DeleteSectionRequest deleteSectionRequest) {
@@ -159,7 +123,6 @@ public class SectionService {
     public void deleteSection(final DeleteSectionRequest deleteSectionRequest) {
         final List<Section> sections = this.findSections(deleteSectionRequest.getStationId(),
                 deleteSectionRequest.getLineId());
-        
         if (sections.size() == 1) {
             this.sectionDAO.deleteById(sections.get(0).getId());
             return;

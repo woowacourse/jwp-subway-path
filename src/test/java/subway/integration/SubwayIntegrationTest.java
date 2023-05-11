@@ -82,7 +82,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
         
         this.postLineRequest(line);
         
-        final SectionRequest sectionRequest1 = new SectionRequest(2, 6, 2, "", 1);
+        final SectionRequest sectionRequest1 = new SectionRequest(2, 6, 2, "UP", 1);
         final SectionRequest sectionRequest2 = new SectionRequest(2, 7, 2, "DOWN", 1);
         
         this.postSectionRequest(sectionRequest1);
