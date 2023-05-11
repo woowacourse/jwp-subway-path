@@ -53,6 +53,18 @@ public class Section {
         to = updateStation;
     }
 
+    public Station getFrom() {
+        return from;
+    }
+
+    public Station getTo() {
+        return to;
+    }
+
+    public int getDistanceValue() {
+        return distance.getDistance();
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

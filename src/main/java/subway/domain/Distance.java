@@ -25,6 +25,10 @@ public class Distance {
         return distance - otherDistance;
     }
 
+    public int getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
