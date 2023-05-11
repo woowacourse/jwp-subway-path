@@ -2,16 +2,13 @@ package subway.application;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.domain.Stations;
+import subway.domain.*;
 import subway.dto.AddStationRequest;
 import subway.repository.SubwayRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -20,11 +17,9 @@ import static org.mockito.Mockito.doReturn;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
 import static subway.utils.StationFixture.*;
 
+@SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)
 class SubwayServiceTest {
-
-    @InjectMocks
-    private SubwayService subwayService;
 
     @Mock
     private SubwayRepository subwayRepository;
@@ -33,7 +28,6 @@ class SubwayServiceTest {
      * LINE_NUMBER_TWO
      * 선릉 --(거리: 5)--> 잠실 --(거리: 5)--> 잠실나루
      */
-
     @Test
     void 노선에_새로운_역을_추가할_수_있다() {
         Station newStation = Station.from("서울대입구");
@@ -41,10 +35,14 @@ class SubwayServiceTest {
         AddStationRequest addStationRequest = new AddStationRequest(newStation.getName(), LINE_NUMBER_TWO.getName(), JAMSIL_STATION.getName(), JAMSIL_NARU_STATION.getName(), distanceToUpstream);
         Stations stations = new Stations(Set.of(newStation, JAMSIL_NARU_STATION, JAMSIL_STATION, SULLEUNG_STATION));
         Line line = new Line(LINE_NUMBER_TWO);
+        LineNames lineNames = new LineNames(List.of(line.getName()));
 
         doReturn(line).when(subwayRepository).getLineByName(LINE_NUMBER_TWO.getName());
         doReturn(stations).when(subwayRepository).getStations();
-        doReturn(Optional.of(1L)).when(subwayRepository).findStationIdByName();
+        doReturn(Optional.of(1L)).when(subwayRepository).findStationIdByName(newStation.getName());
+        doReturn(lineNames).when(subwayRepository).getLineNames();
+
+        SubwayService subwayService = new SubwayService(subwayRepository);
 
         subwayService.addStation(addStationRequest);
 

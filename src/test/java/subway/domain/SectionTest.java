@@ -10,6 +10,7 @@ import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static subway.utils.StationFixture.*;
 
+@SuppressWarnings("NonAsciiCharacters")
 class SectionTest {
 
     @Test
@@ -93,6 +94,5 @@ class SectionTest {
             softly.assertThat(mergedSection1.getDistance()).isEqualTo(10);
             softly.assertThat(mergedSection2.getDistance()).isEqualTo(10);
         });
-
     }
 }

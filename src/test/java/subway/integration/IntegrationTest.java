@@ -14,41 +14,45 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.domain.Line;
-import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.AddStationRequest;
+import subway.entity.LineEntity;
+import subway.repository.SubwayRepository;
+
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.utils.SectionFixture.JAMSIL_TO_JAMSILNARU;
+import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
+import static subway.utils.StationFixture.JAMSIL_STATION;
 import static subway.utils.TestUtils.toJson;
 
+@SuppressWarnings("NonAsciiCharacters")
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
+@Sql("/schema.sql")
 public class IntegrationTest {
 
     public static final String VALID_STATION_NAME = "서울대입구";
-    private static final String VALID_LINE_NAME = "2호선";
     public static final String VALID_UPSTREAM_NAME = "잠실";
+    public static final String EMPTY_STATION_NAME = "";
+    protected static final String SET_UP_LINE_NAME = "2호선";
+    private static final String VALID_LINE_NAME = "2호선";
     private static final String VALID_DOWNSTREAM_NAME = "잠실나루";
     private static final int DISTANCE = 5;
-    public static final String EMPTY_STATION_NAME = "";
 
     @LocalServerPort
     int port;
 
     @Autowired
+    SubwayRepository subwayRepository;
+
+    @Autowired
     LineDao lineDao;
-
-    @Autowired
-    StationDao stationDao;
-
-    @Autowired
-    SectionDao sectionDao;
 
     private Line line;
     private Station upstream;
@@ -57,11 +61,14 @@ public class IntegrationTest {
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
+        upstream = JAMSIL_STATION;
+        downstream = JAMSIL_NARU_STATION;
+        line = new Line(VALID_LINE_NAME, List.of(JAMSIL_TO_JAMSILNARU));
 
-        line = lineDao.insert(new Line(VALID_LINE_NAME));
-        upstream = stationDao.insert(new Station(VALID_UPSTREAM_NAME));
-        downstream = stationDao.insert(new Station(VALID_DOWNSTREAM_NAME));
-        sectionDao.insert(new Section(upstream.getId(), downstream.getId(), line.getId(), DISTANCE));
+        lineDao.insert(new LineEntity.Builder().name(VALID_LINE_NAME).build());
+        subwayRepository.addStation(upstream);
+        subwayRepository.addStation(downstream);
+        subwayRepository.updateLine(line);
     }
 
     @Test
@@ -167,8 +174,11 @@ public class IntegrationTest {
     @Test
     @DisplayName("/line/stations에 상행역과 하행역이 Section을 이루지 않는 경우 추가할 수 없다.")
     void addStationFail7() {
-        final Station newStation = stationDao.insert(new Station("건대입구"));
-        sectionDao.insert(new Section(downstream.getId(), newStation.getId(), line.getId(), DISTANCE));
+        Line newLine = new Line(line);
+        Station newStation = Station.from("건대입구");
+        newLine.addStation(newStation, downstream, Station.getEmptyEndpoint(), DISTANCE);
+        subwayRepository.addStation(newStation);
+        subwayRepository.updateLine(newLine);
 
         ExtractableResponse<Response> notConnectedSection = given()
                 .contentType(ContentType.JSON)
@@ -193,8 +203,8 @@ public class IntegrationTest {
                 .extract();
 
         assertSoftly(softly -> {
-            softly.assertThat(notConnectedSection.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-            softly.assertThat(midToEndSection.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
+            softly.assertThat(notConnectedSection.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            softly.assertThat(midToEndSection.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
         });
     }
 

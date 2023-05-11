@@ -2,58 +2,43 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.LineService;
-import subway.dto.LineRequest;
+import subway.application.SubwayService;
+import subway.dto.AddLineRequest;
+import subway.dto.DeleteStationRequest;
 import subway.dto.LineResponse;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
-/*
-    private final LineService lineService;
+    private final SubwayService subwayService;
 
-    public LineController(LineService lineService) {
-        this.lineService = lineService;
+    public LineController(SubwayService subwayService) {
+        this.subwayService = subwayService;
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-        LineResponse line = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+    public ResponseEntity<Void> createLine(@RequestBody AddLineRequest addLineRequest) {
+        Long lineId = subwayService.addLine(addLineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    @DeleteMapping
+    public ResponseEntity<Void> deleteStation(@RequestBody DeleteStationRequest deleteStationRequest) {
+        subwayService.deleteStation(deleteStationRequest);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+        return ResponseEntity.ok(subwayService.findLineById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
+    @GetMapping
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        return ResponseEntity.ok(subwayService.findAllLines());
     }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
-
- */
 }

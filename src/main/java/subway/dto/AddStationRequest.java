@@ -1,8 +1,10 @@
 package subway.dto;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
+@EqualsAndHashCode
 public class AddStationRequest {
 
     private String addStationName;

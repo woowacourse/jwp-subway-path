@@ -12,6 +12,6 @@ public class Stations {
     }
 
     public boolean contains(Station stationToAdd) {
-        return false;
+        return stations.contains(stationToAdd);
     }
 }

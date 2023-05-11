@@ -16,6 +16,7 @@ import static subway.utils.LineFixture.LINE_NUMBER_TWO;
 import static subway.utils.SectionFixture.JAMSIL_TO_JAMSILNARU;
 import static subway.utils.StationFixture.*;
 
+@SuppressWarnings("NonAsciiCharacters")
 class LineTest {
 
     @Test
@@ -82,13 +83,9 @@ class LineTest {
         Line lineNumberTwo = new Line(LINE_NUMBER_TWO);
 
         Station newStation = Station.from("건대입구");
-        lineNumberTwo.addStation(newStation, JAMSIL_STATION, JAMSIL_NARU_STATION, 2);
+        lineNumberTwo.addStation(newStation, Station.getEmptyEndpoint(), SULLEUNG_STATION, 2);
 
         assertThat(lineNumberTwo.getSections())
-                .doesNotContain(JAMSIL_TO_JAMSILNARU)
-                .contains(new Section(JAMSIL_STATION, newStation, 2))
-                .contains(new Section(newStation, JAMSIL_NARU_STATION, 3));
-
+                .contains(new Section(newStation, SULLEUNG_STATION, 2));
     }
-
 }

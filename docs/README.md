@@ -1,56 +1,77 @@
 # 기능 목록
 
 ## API 설계
-- 역 추가
-- POST /line/stations 
-  - Request
-    - station-name
-    - line-name
-    - upstream-name(상행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
-    - downstream-name(하행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
-    - distance-to-upstream
 
-  - Response
-    - 400 BAD REQUEST
-      - (station-name < 2 || station-name > 15) ->
-      - (line-name < 2 || line-name > 15) ->
-      - (line-name이 존재하지 않는 경우)
-      - (upstream-name, downstream-name이 Section으로 존재하지 않는 경우)
-      - (distance-to-upstream >= distance(upstream, downstream)인 경우)
-      - (station-name이 이미 Line에 존재하는 경우)
-    - 201 CREATED
+### 역 추가
 
-- POST /lines
-  - Request
-    - line-name 
-    - upstream-name
-    - downstream-name
-    - distance
+- Request
+  - POST /line/stations 
+      - station-name
+      - line-name
+      - upstream-name(상행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
+      - downstream-name(하행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
+      - distance-to-upstream
 
-  - Response
-    - 400 BAD REQUEST
-      - (upstream-name < 2 || upstream-name > 15) ->
-      - (downstream-name < 2 || downstream-name > 15) ->
-      - (line-name < 2 || line-name > 15) ->
-      - (distance < 1인 경우)
-    - 201 CREATED
+- Response
+  - 400 BAD REQUEST
+    - (station-name < 2 || station-name > 15) ->
+    - (line-name < 2 || line-name > 15) ->
+    - (line-name이 존재하지 않는 경우)
+    - (upstream-name, downstream-name이 Section으로 존재하지 않는 경우)
+    - (distance-to-upstream >= distance(upstream, downstream)인 경우)
+    - (station-name이 이미 Line에 존재하는 경우)
+  - 201 CREATED
 
-- DELETE /line/stations
-  - Request
-    - line-name
-    - station-name
+- Request
+  - POST /lines
+      - line-name 
+      - upstream-name
+      - downstream-name
+      - distance
 
-  - Response
-    - 400 BAD REQUEST
-      - (line-name이 존재하지 않는 경우)
-      - (station-name이 Line에 존재하지 않는 경우)
-    - 204 NO-CONTENT
+- Response
+  - 400 BAD REQUEST
+    - (upstream-name < 2 || upstream-name > 15) ->
+    - (downstream-name < 2 || downstream-name > 15) ->
+    - (line-name < 2 || line-name > 15) ->
+    - (distance < 1인 경우)
+    - (line-name의 노선이 이미 존재하는 경우)
+  - 201 CREATED
+
+- Request
+  - DELETE /line/stations
+      - line-name
+      - station-name
+
+- Response
+  - 400 BAD REQUEST
+    - (line-name이 존재하지 않는 경우)
+    - (station-name이 Line에 존재하지 않는 경우)
+  - 204 NO-CONTENT
+
+### 노선 조회
+
+- Request
+  - GET /lines/{lineId}
+      - Path Variable: 노선 아이디
+
+- Response
+  - 400 BAD REQUEST
+    - (line-id가 존재하지 않는 경우)
+  - 200 OK
+
+- Request
+  - GET /lines
+
+- Response
+  - 200 OK
+  
 
 ## 도메인
 
 - [x] Station
   - [x] 역 이름을 갖는다.
-    - [x] 역 이름이 2글자 이상 15글자 이하가 아닌 경우 예외를 던진다.
+    - [x] 역 이름이 2 이상 15글자 이하가 아닌 경우 예외를 던진다.
 
 - [x] Section
   - [x] 하행역, 상행역에 해당하는 Station을 갖는다.
@@ -70,7 +91,3 @@
     - [x] Station을 추가할 때 Upstream과 Downstream이 Section으로 등록되지 않은 경우 예외를 던진다.
   - [x] Station을 삭제할 수 있다.
     - [x] Line에 존재하지 않는 Station을 삭제할 경우 예외를 던진다.
-
--[ ] Lines
-  - [ ] Line들을 갖는다.
-  - [ ] 찾는 Line이 있는지 확인한다.

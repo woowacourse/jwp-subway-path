@@ -1,5 +1,6 @@
 package subway.domain;
 
+import lombok.ToString;
 import subway.exception.DuplicateStationInLineException;
 import subway.exception.NameLengthException;
 import subway.exception.SectionNotFoundException;
@@ -9,13 +10,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@ToString
 public class Line {
 
     public static final int MINIMUM_NAME_LENGTH = 2;
     public static final int MAXIMUM_NAME_LENGTH = 15;
 
-    private String name;
-    private LinkedList<Section> sections;
+    private final String name;
+    private final LinkedList<Section> sections;
 
     public Line(String name, List<Section> sections) {
         String stripped = name.strip();
@@ -68,16 +70,10 @@ public class Line {
 
     private void addSections(Section correspondingSection, List<Section> sectionsToAdd) {
         sections.add(sections.indexOf(correspondingSection), sectionsToAdd.get(1));
-        sections.add(sections.indexOf(correspondingSection), sectionsToAdd.get(0));
+        sections.add(sections.indexOf(sectionsToAdd.get(1)), sectionsToAdd.get(0));
 
         sections.remove(correspondingSection);
     }
-
-    // TODO: 쓸모 확인
-//    private boolean hasCorrespondingSection(Station upstream, Station downstream) {
-//        return sections.stream()
-//                .noneMatch(section -> section.isCorrespondingSection(upstream, downstream));
-//    }
 
     public void deleteStation(Station stationToDelete) {
         validateStationExist(stationToDelete);
@@ -100,7 +96,7 @@ public class Line {
     }
 
     private void deleteSections(List<Section> sectionsToMerge, Section mergedSection) {
-        sections.add(sectionsToMerge.indexOf(sectionsToMerge.get(0)), mergedSection);
+        sections.add(sections.indexOf(sectionsToMerge.get(0)), mergedSection);
 
         sections.remove(sectionsToMerge.get(0));
         sections.remove(sectionsToMerge.get(1));
@@ -116,6 +112,12 @@ public class Line {
     }
 
     public List<Section> getSections() {
-        return new LinkedList<>(sections);
+        return new LinkedList<>(sections.subList(1, sections.size() - 1));
+    }
+
+    public List<String> getStationNamesInOrder() {
+        return sections.subList(0, sections.size() - 1).stream()
+                .map(section -> section.getDownstream().getName())
+                .collect(Collectors.toList());
     }
 }

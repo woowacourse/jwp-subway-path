@@ -17,6 +17,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static subway.utils.TestUtils.toJson;
 
+@SuppressWarnings(value = "NonAsciiCharacters")
 @WebMvcTest
 class StationControllerTest {
 
@@ -31,7 +32,7 @@ class StationControllerTest {
     void createStation() throws Exception {
         AddStationRequest addStationRequest = new AddStationRequest("신림", "2호선", "잠실나루", "잠실", 5);
 
-        doReturn(1L).when(subwayService.addStation(addStationRequest));
+        doReturn(1L).when(subwayService).addStation(addStationRequest);
 
         mockMvc.perform(post("/line/stations")
                         .contentType(MediaType.APPLICATION_JSON)

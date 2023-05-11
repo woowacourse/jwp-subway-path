@@ -38,9 +38,14 @@ public class Section {
 
     public List<Section> insertInTheMiddle(Station newStation, int distanceToUpstream) {
         List<Section> split = new ArrayList<>();
+        int distanceToDownstream = distance - distanceToUpstream;
 
+        if (upstream.equals(Station.getEmptyEndpoint())) {
+            distanceToDownstream = distanceToUpstream;
+            distanceToUpstream = Integer.MAX_VALUE;
+        }
         Section firstSection = new Section(upstream, newStation, distanceToUpstream);
-        Section secondSection = new Section(newStation, downstream, distance - distanceToUpstream);
+        Section secondSection = new Section(newStation, downstream, distanceToDownstream);
         split.add(firstSection);
         split.add(secondSection);
 
@@ -54,7 +59,7 @@ public class Section {
     public Section merge(Section sectionToMerge) {
         Optional<Station> optionalStation = getLinkingStation(sectionToMerge);
         Station linkingStation = optionalStation.orElseThrow(() -> new SectionMergeException("연결할 수 없는 구간입니다."));
-        final int mergedSectionDistance = distance + sectionToMerge.distance;
+        int mergedSectionDistance = distance + sectionToMerge.distance;
         if (downstream.equals(linkingStation)) {
             return new Section(upstream, sectionToMerge.downstream, mergedSectionDistance);
         }

@@ -7,6 +7,7 @@ import subway.exception.NameLengthException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@SuppressWarnings("NonAsciiCharacters")
 class StationTest {
 
     @ParameterizedTest
