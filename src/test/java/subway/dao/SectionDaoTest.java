@@ -12,6 +12,7 @@ import subway.domain.Station;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
+import subway.persistence.dao.entity.SectionEntity;
 
 import javax.sql.DataSource;
 
@@ -49,13 +50,15 @@ class SectionDaoTest {
 
         Section section = new Section(savedJamsil, savedSeonleung, new Distance(10));
 
-        Section savedSection = sectionDao.insert(section, savedSecondLine);
+        SectionEntity sectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
+
+        SectionEntity savedSection = sectionDao.insert(sectionEntity, savedSecondLine.getId());
 
         org.junit.jupiter.api.Assertions.assertAll(
                 () -> assertThat(savedSection.getId()).isPositive(),
-                () -> assertThat(savedSection.getUpStation()).isEqualTo(savedJamsil),
-                () -> assertThat(savedSection.getDownStation()).isEqualTo(savedSeonleung),
-                () -> assertThat(savedSection.getDistance()).isEqualTo(new Distance(10))
+                () -> assertThat(savedSection.getUpStationId()).isEqualTo(savedJamsil.getId()),
+                () -> assertThat(savedSection.getDownStationId()).isEqualTo(savedSeonleung.getId()),
+                () -> assertThat(savedSection.getDistance()).isEqualTo(10)
         );
     }
 
@@ -67,11 +70,14 @@ class SectionDaoTest {
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE);
 
-        Section section = new Section(savedJamsil, savedSeonleung, new Distance(10));
-        Section section1 = new Section(savedJamsil, savedGangnam, new Distance(3));
+        Section upSection = new Section(savedJamsil, savedSeonleung, new Distance(10));
+        Section downSection = new Section(savedSeonleung, savedGangnam, new Distance(3));
 
-        Section savedSection = sectionDao.insert(section, savedSecondLine);
-        sectionDao.insert(section1, savedSecondLine);
+        SectionEntity upSectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
+        SectionEntity downSectionEntity = new SectionEntity(savedSeonleung.getId(), savedGangnam.getId(), 3, savedSecondLine.getId());
+
+        sectionDao.insert(upSectionEntity, savedSecondLine.getId());
+        sectionDao.insert(downSectionEntity, savedSecondLine.getId());
 
 
         sectionDao.findSectionsByLine(savedSecondLine.getId());

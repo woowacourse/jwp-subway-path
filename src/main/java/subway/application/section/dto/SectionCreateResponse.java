@@ -1,29 +1,28 @@
 package subway.application.section.dto;
 
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
+import java.util.List;
 
 public class SectionCreateResponse {
 
-    private final long id;
-    private final Station upStation;
-    private final Station downStation;
-    private final Distance distance;
+    private final long lindId;
+    private final List<SectionResponse> addedSections;
+    private final List<SectionResponse> deletedSections;
 
-    public SectionCreateResponse(long id, Station upStation, Station downStation, Distance distance) {
-        this.id = id;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+    public SectionCreateResponse(long lindId, List<SectionResponse> addedSections, List<SectionResponse> deletedSections) {
+        this.lindId = lindId;
+        this.addedSections = addedSections;
+        this.deletedSections = deletedSections;
     }
 
-    public static SectionCreateResponse of(Section section) {
-        return new SectionCreateResponse(
-                section.getId(),
-                section.getUpStation(),
-                section.getDownStation(),
-                section.getDistance()
-        );
+    public long getLindId() {
+        return lindId;
+    }
+
+    public List<SectionResponse> getAddedSections() {
+        return addedSections;
+    }
+
+    public List<SectionResponse> getDeletedSections() {
+        return deletedSections;
     }
 }

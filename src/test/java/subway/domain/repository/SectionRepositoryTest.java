@@ -1,6 +1,5 @@
 package subway.domain.repository;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -8,8 +7,12 @@ import subway.domain.*;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
+import subway.persistence.dao.entity.SectionEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.domain.LineFixture.FIRST_LINE_NO_ID;
 import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
 import static subway.domain.StationFixture.*;
 
@@ -30,18 +33,39 @@ class SectionRepositoryTest {
     LineDao lineDao;
 
     @Test
+    void 섹션_추가() {
+        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+
+        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+
+        Distance seonleungJamsilDistance = new Distance(10);
+        Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
+
+        Section savedSection = sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
+        assertAll(
+                () -> assertThat(savedSection.getId()).isPositive(),
+                () -> assertThat(savedSection.getUpStation()).isEqualTo(savedJamsil),
+                () -> assertThat(savedSection.getDownStation()).isEqualTo(savedSeonleung),
+                () -> assertThat(savedSection.getDistance()).isEqualTo(seonleungJamsilDistance)
+        );
+    }
+
+    @Test
     void 섹션_조회() {
         Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
         Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
         Station savedGangnam = stationDao.insert(GANGNAM_NO_ID);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedFirstLine = lineDao.insert(FIRST_LINE_NO_ID);
 
-        Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, new Distance(10));
-        Section gangnamJamsilSection = new Section(savedSeonleung, savedGangnam, new Distance(3));
+        SectionEntity seonleungJamsilSectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
+        SectionEntity gangnamJamsilSectionEntity = new SectionEntity(savedSeonleung.getId(), savedGangnam.getId(), 3, savedSecondLine.getId());
 
-        sectionDao.insert(seonleungJamsilSection, savedSecondLine);
-        sectionDao.insert(gangnamJamsilSection, savedSecondLine);
+        sectionDao.insert(seonleungJamsilSectionEntity, savedSecondLine.getId());
+        sectionDao.insert(gangnamJamsilSectionEntity, savedSecondLine.getId());
+
         Sections sectionsByLine = sectionRepository.findSectionsByLine(savedSecondLine);
 
         Section findSeonleungJamsilSection = sectionsByLine.getSections().stream()
@@ -53,10 +77,14 @@ class SectionRepositoryTest {
                 .findAny().get();
 
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThat(sectionsByLine.getSections()).hasSize(2),
                 () -> assertThat(findSeonleungJamsilSection.getDistance()).isEqualTo(new Distance(10)),
-                () -> assertThat(findSeonleungGangnamSection.getDistance()).isEqualTo(new Distance(3))
+                () -> assertThat(findSeonleungGangnamSection.getDistance()).isEqualTo(new Distance(3)),
+                () -> assertThatThrownBy(() -> sectionRepository.findSectionsByLine(savedFirstLine))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("해당 노선에 역이 존재하지 않습니다.")
         );
+
     }
 }
