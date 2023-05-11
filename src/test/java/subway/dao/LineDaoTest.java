@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.line.Line;
+import subway.entity.LineEntity;
 
 @JdbcTest
 class LineDaoTest {
@@ -34,7 +34,7 @@ class LineDaoTest {
         // given
 
         // when
-        Line result = lineDao.insert(LINE_2);
+        LineEntity result = lineDao.insert(LINE_2);
 
         // then
         assertThat(result.getName()).isEqualTo(LINE_2.getName());
@@ -45,10 +45,10 @@ class LineDaoTest {
     @DisplayName("노선을 이름으로 찾는다.")
     void findByName() {
         // given
-        Line insertedLine = lineDao.insert(LINE_2);
+        LineEntity insertedLine = lineDao.insert(LINE_2);
 
         // when
-        Optional<Line> result = lineDao.findByName(insertedLine.getName());
+        Optional<LineEntity> result = lineDao.findByName(insertedLine.getName());
 
         // then
         assertThat(result.get().getName()).isEqualTo(insertedLine.getName());

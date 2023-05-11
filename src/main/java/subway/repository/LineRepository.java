@@ -12,6 +12,7 @@ import subway.domain.station.Station;
 import subway.domain.station.Stations;
 
 import java.util.List;
+import subway.entity.LineEntity;
 
 @Repository
 public class LineRepository {
@@ -53,7 +54,7 @@ public class LineRepository {
                         rs.getInt("DISTANCE")),
                 name);
 
-        Line line = lineDao.findByName(name).orElseThrow(RuntimeException::new);
+        LineEntity line = lineDao.findByName(name).orElseThrow(RuntimeException::new);
 
         String upBoundStationIdQuery =
                 "SELECT UPBOUND_STATION_ID FROM LINE WHERE NAME = ?";

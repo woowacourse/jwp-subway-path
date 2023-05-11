@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
 import subway.domain.section.Sections;
 import subway.domain.station.Stations;
+import subway.entity.LineEntity;
 
 @Repository
 public class LineDao {
@@ -20,13 +21,13 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-        new Line(
+    private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+        new LineEntity(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getString("color"),
-            new Stations(List.of()),
-            new Sections(List.of())
+            rs.getLong("upbound_station_id"),
+            rs.getLong("downbound_station_id")
         );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -36,7 +37,7 @@ public class LineDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
+    public LineEntity insert(Line line) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());
         params.put("name", line.getName());
@@ -45,21 +46,21 @@ public class LineDao {
         params.put("downbound_station_id", null);
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor(), new Stations(List.of()), new Sections(List.of()));
+        return new LineEntity(lineId, line.getName(), line.getColor(), null, null);
     }
 
-    public List<Line> findAll() {
+    public List<LineEntity> findAll() {
         String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
+    public LineEntity findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Optional<Line> findByName(final String name) {
-        String sql = "SELECT id, name, color FROM LINE WHERE name = ?";
+    public Optional<LineEntity> findByName(final String name) {
+        String sql = "SELECT id, name, color, upbound_station_id, downbound_station_id FROM LINE WHERE name = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper , name));
         } catch (EmptyResultDataAccessException e) {
@@ -67,9 +68,9 @@ public class LineDao {
         }
     }
 
-    public void update(Line newLine) {
+    public void updateBoundStations(LineEntity newLine) {
         String sql = "update LINE set  upbound_station_id= ?, downbound_station_id = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getUpBoundStation().getId(), newLine.getDownBoundStation().getId(), newLine.getId()});
+        jdbcTemplate.update(sql, new Object[]{newLine.getUpBoundStationId(), newLine.getDownBoundStationId(), newLine.getId()});
     }
 
     public void deleteById(Long id) {
