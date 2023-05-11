@@ -18,11 +18,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.business.service.LineService;
-import subway.dto.LineResponse;
-import subway.dto.LineSaveRequest;
-import subway.dto.LineStationsResponse;
-import subway.dto.StationAddToLineRequest;
-import subway.dto.StationDeleteRequest;
+import subway.business.service.dto.LineResponse;
+import subway.business.service.dto.LineSaveRequest;
+import subway.business.service.dto.LineStationsResponse;
+import subway.business.service.dto.StationAddToLineRequest;
+import subway.ui.dto.StationDeleteRequest;
 
 @WebMvcTest(LineController.class)
 public class LineControllerTest {
@@ -37,7 +37,6 @@ public class LineControllerTest {
 
     @DisplayName("노선과 두 개의 역을 추가한다")
     @Test
-        // given(memberService.findAll()).willReturn(List.of(FIRST_MEMBER.RESPONSE));
     void shouldCreateLineWhenRequest() throws Exception {
         given(lineService.createLine(any())).willReturn(new LineResponse(1L, "잠실역"));
 

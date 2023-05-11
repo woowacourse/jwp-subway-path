@@ -65,7 +65,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 ```
 
-### ✅ Delete /lines/{line_id}/stations/{station_id}
+### ✅ Delete /lines/{line_id}/station
 - 노선에 포함된 역 한 개를 제외합니다.
 - 해당 역이 더이상 어떤 노선에도 포함되지 않으면, 해당 역을 삭제합니다.
 - 노선에 포함된 역이 2개뿐이라면, Status 401을 반환합니다.
