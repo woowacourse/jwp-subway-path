@@ -19,13 +19,13 @@ public class Section {
 
     private void validatePositiveDistance(final int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("거리는 양수여야 합니다.");
+            throw new InvalidException(ErrorCode.INVALID_NOT_POSITIVE_DISTANCE);
         }
     }
 
     private void validateDifferentUpAndDown(final Station upStation, final Station downStation) {
         if (upStation.equals(downStation)) {
-            throw new IllegalArgumentException("시작역과 끝역은 같을 수 없습니다.");
+            throw new InvalidException(ErrorCode.INVALID_SAME_UP_AND_DOWN_STATION);
         }
     }
 

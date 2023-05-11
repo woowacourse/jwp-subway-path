@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import subway.exception.DuplicateException;
 import subway.exception.ErrorCode;
+import subway.exception.NotFoundException;
 
 public class Sections {
     private static final int TERMINAL_COUNT = 1;
@@ -177,12 +178,12 @@ public class Sections {
         Section backSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getUpStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_STATION));
 
         Section frontSection = deletedSections.stream()
                 .filter(deletedSection -> deletedSection.getDownStation().equals(deletedStation))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("역을 찾을 수 없습니다."));
+                .orElseThrow(() -> new NotFoundException(ErrorCode.NOT_FOUND_STATION));
 
         Section newSection = new Section(frontSection.getUpStation(), backSection.getDownStation(), newDistance);
 

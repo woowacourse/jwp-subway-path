@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EmptySource;
+import subway.exception.InvalidException;
 
 class StationTest {
     @Test
@@ -21,6 +22,6 @@ class StationTest {
     @DisplayName(value = "이름에 공백이 입력되면 예외가 발생한다.")
     void createEmpty(String name) {
         // expected
-        Assertions.assertThatThrownBy(() -> new Station(name)).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> new Station(name)).isInstanceOf(InvalidException.class);
     }
 }

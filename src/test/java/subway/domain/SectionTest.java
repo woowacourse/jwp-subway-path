@@ -33,7 +33,7 @@ class SectionTest {
 
         // expected
         assertThatThrownBy(() -> new Section(upStation, downStation, distance))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidException.class);
     }
 
     @Test
@@ -44,7 +44,7 @@ class SectionTest {
 
         // expected
         assertThatThrownBy(() -> new Section(upStation, upStation, 10))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidException.class);
     }
 
     @Test

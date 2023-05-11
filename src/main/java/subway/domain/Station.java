@@ -1,6 +1,8 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.exception.ErrorCode;
+import subway.exception.InvalidException;
 
 public class Station {
     private final String name;
@@ -12,7 +14,7 @@ public class Station {
 
     private void validateName(final String name) {
         if (name.isBlank()) {
-            throw new IllegalArgumentException("이름은 공백이 될 수 없습니다.");
+            throw new InvalidException(ErrorCode.INVALID_BLANK_NAME);
         }
     }
 
