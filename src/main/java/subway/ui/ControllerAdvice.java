@@ -10,13 +10,20 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import subway.exception.AddStationException;
 
+import java.sql.SQLException;
+
 @RestControllerAdvice
 public class ControllerAdvice extends ResponseEntityExceptionHandler {
     private static final Logger logger = LoggerFactory.getLogger(ControllerAdvice.class);
 
     @ExceptionHandler({AddStationException.class})
     public ResponseEntity<String> handleAddStationException(final Exception e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(SQLException.class)
+    public ResponseEntity<String> handleSQLException() {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("데이터베이스 관련 오류가 발생했습니다.");
     }
 
     @ExceptionHandler({Exception.class})

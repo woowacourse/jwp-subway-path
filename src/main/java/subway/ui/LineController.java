@@ -9,6 +9,7 @@ import subway.dto.LineResponse;
 import subway.dto.LineStationRequest;
 import subway.dto.LineStationResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
@@ -26,7 +27,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -42,7 +43,7 @@ public class LineController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody @Valid LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
     }
@@ -59,7 +60,7 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/stations")
-    public ResponseEntity<Void> addStation(@PathVariable Long lineId, @RequestBody LineStationRequest lineStationRequest) {
+    public ResponseEntity<Void> addStation(@PathVariable Long lineId, @RequestBody @Valid LineStationRequest lineStationRequest) {
         Long id = sectionService.addStation(lineId, lineStationRequest);
         return ResponseEntity.created(URI.create("/lines/" + lineId + "/" + id)).build();
     }
@@ -75,6 +76,4 @@ public class LineController {
         sectionService.removeStation(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
-
-
 }
