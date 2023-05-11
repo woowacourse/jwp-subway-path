@@ -2,12 +2,17 @@ package subway.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.dto.InitSectionRequest;
-import subway.dto.SectionAtLastRequest;
+import subway.dto.EndSectionRequest;
+import subway.dto.SectionDeleteRequest;
+import subway.dto.SectionLastDeleteRequest;
 import subway.dto.SectionRequest;
 import subway.service.SectionService;
 
@@ -35,9 +40,30 @@ public class SectionController {
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @PostMapping("/last-section")
-    public ResponseEntity<Void> createLastSection(@Valid @RequestBody SectionAtLastRequest request) {
-        sectionService.saveSectionAtLast(request);
+    @PostMapping("/end-section")
+    public ResponseEntity<Void> createEndSection(@Valid @RequestBody EndSectionRequest request) {
+        sectionService.saveEndSection(request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @DeleteMapping("/section")
+    public ResponseEntity<Void> deleteSection(@PathVariable("lineId") Long lineId, @RequestParam("station-id") Long stationId) {
+        SectionDeleteRequest request = new SectionDeleteRequest(stationId, lineId);
+        sectionService.removeSectionsByStationAndLine(request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/end-section")
+    public ResponseEntity<Void> deleteEndSection(@PathVariable("lineId") Long lineId, @RequestParam("station-id") Long stationId) {
+        SectionDeleteRequest request = new SectionDeleteRequest(stationId, lineId);
+        sectionService.removeEndSectionByStationAndLine(request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @DeleteMapping("/last-sections")
+    public ResponseEntity<Void> deleteSectionsAtLast(@PathVariable("lineId") Long lineId, @RequestParam("upward-id") Long upwardId, @RequestParam("downward-id") Long downwardId){
+        SectionLastDeleteRequest request = new SectionLastDeleteRequest(lineId, upwardId, downwardId);
+        sectionService.removeLastSectionInLine(request);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }

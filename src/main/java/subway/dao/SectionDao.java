@@ -14,7 +14,9 @@ public interface SectionDao {
 
     SectionEntity selectByStationIdsAndLineId(long upwardId, long downwardId, long lineId);
 
-    SectionEntity selectSectionAtLast(long stationId, long lineId);
+    SectionEntity selectEndSection(long stationId, long lineId);
 
     List<SectionEntity> selectSectionsByStationIdAndLineId(long stationId, long lineId);
+
+    List<SectionEntity> selectSectionsByLineId(long lineId);
 }

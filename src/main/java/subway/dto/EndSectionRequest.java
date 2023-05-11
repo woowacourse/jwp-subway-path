@@ -6,7 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import javax.validation.constraints.Positive;
 
 @JsonNaming(PropertyNamingStrategies.KebabCaseStrategy.class)
-public class SectionAtLastRequest {
+public class EndSectionRequest {
 
     private Long lineId;
     private Long stationId;
@@ -14,11 +14,11 @@ public class SectionAtLastRequest {
     @Positive
     private Integer distance;
 
-    public SectionAtLastRequest() {
+    public EndSectionRequest() {
 
     }
 
-    public SectionAtLastRequest(Long lineId, Long stationId, Long originalLastStationId, Integer distance) {
+    public EndSectionRequest(Long lineId, Long stationId, Long originalLastStationId, Integer distance) {
         this.lineId = lineId;
         this.stationId = stationId;
         this.originalLastStationId = originalLastStationId;
@@ -33,7 +33,7 @@ public class SectionAtLastRequest {
         return stationId;
     }
 
-    public Long getOriginalLastStationId() {
+    public Long getOriginalEndStationId() {
         return originalLastStationId;
     }
 

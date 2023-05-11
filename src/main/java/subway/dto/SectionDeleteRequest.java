@@ -4,16 +4,16 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 @JsonNaming(PropertyNamingStrategies.KebabCaseStrategy.class)
-public class StationDeleteRequest {
+public class SectionDeleteRequest {
 
     private Long stationId;
     private Long lineId;
 
-    public StationDeleteRequest() {
+    public SectionDeleteRequest() {
 
     }
 
-    public StationDeleteRequest(Long stationId, Long lineId) {
+    public SectionDeleteRequest(Long stationId, Long lineId) {
         this.stationId = stationId;
         this.lineId = lineId;
     }

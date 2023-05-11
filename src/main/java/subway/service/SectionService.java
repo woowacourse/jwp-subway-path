@@ -13,10 +13,10 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.DtoMapper;
 import subway.dto.InitSectionRequest;
-import subway.dto.SectionAtLastRequest;
+import subway.dto.EndSectionRequest;
 import subway.dto.SectionLastDeleteRequest;
 import subway.dto.SectionRequest;
-import subway.dto.StationDeleteRequest;
+import subway.dto.SectionDeleteRequest;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,23 +80,23 @@ public class SectionService {
         }
     }
 
-    public void saveSectionAtLast(SectionAtLastRequest request) {
+    public void saveEndSection(EndSectionRequest request) {
         Line line = lineDao.findById(request.getLineId());
-        Station originalLastStation = stationDao.findById(request.getOriginalLastStationId());
+        Station originalEndStation = stationDao.findById(request.getOriginalEndStationId());
         Station newStation = stationDao.findById(request.getStationId());
 
-        SectionEntity sectionEntity = sectionDao.selectSectionAtLast(originalLastStation.getId(), line.getId());
+        SectionEntity sectionEntity = sectionDao.selectEndSection(originalEndStation.getId(), line.getId());
 
-        Section lastSection;
+        Section endSection;
 
-        if (sectionEntity.getUpwardId() == originalLastStation.getId()) {
+        if (sectionEntity.getUpwardId() == originalEndStation.getId()) {
             //하행종착
-            lastSection = Section.ofEmptyDownwardSection(
-                    originalLastStation,
+            endSection = Section.ofEmptyDownwardSection(
+                    originalEndStation,
                     line
             );
-            Sections sections = Sections.from(new ArrayList<>(List.of(lastSection)));
-            List<Section> newSections = sections.addSectionAtDownwardLast(newStation, lastSection, request.getDistance());
+            Sections sections = Sections.from(new ArrayList<>(List.of(endSection)));
+            List<Section> newSections = sections.addEndSectionAtDownward(newStation, endSection, request.getDistance());
             sectionDao.deleteById(sectionEntity.getId());
 
             for (Section section : newSections) {
@@ -104,14 +104,14 @@ public class SectionService {
             }
         }
 
-        if (sectionEntity.getDownwardId() == originalLastStation.getId()) {
+        if (sectionEntity.getDownwardId() == originalEndStation.getId()) {
             //상행종착
-            lastSection = Section.ofEmptyUpwardSection(
-                    originalLastStation,
+            endSection = Section.ofEmptyUpwardSection(
+                    originalEndStation,
                     line
             );
-            Sections sections = Sections.from(new ArrayList<>(List.of(lastSection)));
-            List<Section> newSections = sections.addSectionAtUpwardLast(newStation, lastSection, request.getDistance());
+            Sections sections = Sections.from(new ArrayList<>(List.of(endSection)));
+            List<Section> newSections = sections.addEndSectionAtUpward(newStation, endSection, request.getDistance());
             sectionDao.deleteById(sectionEntity.getId());
 
             for (Section section : newSections) {
@@ -120,7 +120,7 @@ public class SectionService {
         }
     }
 
-    public void removeSectionsByStationAndLine(StationDeleteRequest request) {
+    public void removeSectionsByStationAndLine(SectionDeleteRequest request) {
         Station station = stationDao.findById(request.getStationId());
         Line line = lineDao.findById(request.getLineId());
 
@@ -141,25 +141,70 @@ public class SectionService {
         sectionDao.insert(DtoMapper.convertToSectionEntity(allSections.removeSectionsByStation(station, line)));
     }
 
+    public void removeEndSectionByStationAndLine(SectionDeleteRequest request) {
+        Station station = stationDao.findById(request.getStationId());
+        Line line = lineDao.findById(request.getLineId());
+
+        List<SectionEntity> sectionEntities = sectionDao.selectSectionsByStationIdAndLineId(station.getId(), line.getId());
+
+        Section section = createEndSection(station, line, sectionEntities);
+
+        for (SectionEntity sectionEntity : sectionEntities){
+            sectionDao.deleteById(sectionEntity.getId());
+        }
+        sectionDao.insert(DtoMapper.convertToSectionEntity(section));
+    }
+
+    private Section createEndSection(Station station, Line line, List<SectionEntity> sectionEntities) {
+
+        SectionEntity entity = findNonEndSectionEntity(sectionEntities);
+        Station newEndStation = stationDao.findById(entity.getUpwardId());
+        if (newEndStation.equals(station)) {
+            newEndStation = stationDao.findById(entity.getDownwardId());
+        }
+
+
+        for (SectionEntity sectionEntity : sectionEntities) {
+            if(sectionEntity.getDownwardId() == null){
+                //하행 종착역
+                return Section.ofEmptyDownwardSection(newEndStation, line);
+            }
+            if(sectionEntity.getUpwardId() == null){
+                //상행 종착역
+                return Section.ofEmptyUpwardSection(newEndStation, line);
+            }
+        }
+        throw new IllegalArgumentException("[ERROR] 해당하는 종착역 구간이 없습니다.");
+    }
+
+    private SectionEntity findNonEndSectionEntity(List<SectionEntity> sectionEntities) {
+        for (SectionEntity sectionEntity : sectionEntities) {
+            if(sectionEntity.getDownwardId() != null && sectionEntity.getUpwardId() != null){
+                return sectionEntity;
+            }
+        }
+        throw new IllegalArgumentException("[ERROR] 해당하는 종착역 구간이 없습니다.");
+    }
+
     public void removeLastSectionInLine(SectionLastDeleteRequest request) {
         Line line = lineDao.findById(request.getLineId());
         Station upward = stationDao.findById(request.getUpwardId());
         Station downward = stationDao.findById(request.getDownwardId());
-        List<SectionEntity> sectionEntities = sectionDao.selectAll();
-        List<Section> sections = sectionEntities.stream().map(entity -> Section.of(
-                entity.getId(),
-                stationDao.findById(entity.getUpwardId()),
-                stationDao.findById(entity.getDownwardId()),
-                entity.getDistance(),
-                lineDao.findById(entity.getLineId())
-        )).collect(Collectors.toList());
-        Sections allSections = Sections.from(sections);
-        List<Section> lineSections = allSections.findLineSections(line);
-        if (lineSections.size() != 3) {
+
+        List<SectionEntity> sectionEntities = sectionDao.selectSectionsByLineId(line.getId());
+
+        List<Long> stations = new ArrayList<>();
+        for(SectionEntity sectionEntity: sectionEntities){
+            stations.add(sectionEntity.getUpwardId());
+            stations.add(sectionEntity.getDownwardId());
+        }
+        boolean result = stations.containsAll(List.of(upward.getId(), downward.getId()));
+
+        if(!result && sectionEntities.size() != 3){
             throw new IllegalArgumentException("[ERROR] 노선의 마지막 남은 구간이 아니라 삭제할 수 없습니다.");
         }
-        for (Section section : lineSections) {
-            sectionDao.deleteById(section.getId());
+        for (SectionEntity sectionEntity : sectionEntities) {
+            sectionDao.deleteById(sectionEntity.getId());
         }
     }
 }

@@ -35,4 +35,15 @@ public class SectionEntity {
     public long getLineId() {
         return lineId;
     }
+
+    @Override
+    public String toString() {
+        return "SectionEntity{" +
+                "id=" + id +
+                ", upwardId=" + upwardId +
+                ", downwardId=" + downwardId +
+                ", distance=" + distance +
+                ", lineId=" + lineId +
+                '}';
+    }
 }

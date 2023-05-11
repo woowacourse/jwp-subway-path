@@ -73,7 +73,7 @@ public class Sections {
         return new ArrayList<>(List.of(upwardSection, downwardSection));
     }
 
-    public List<Section> addSectionAtUpwardLast(Station newStation, Section originalSection, int distance) {
+    public List<Section> addEndSectionAtUpward(Station newStation, Section originalSection, int distance) {
         Section upwardSection = Section.ofEmptyUpwardSection(
                 newStation,
                 originalSection.getLine()
@@ -88,7 +88,7 @@ public class Sections {
         return new ArrayList<>(List.of(upwardSection, downwardSection));
     }
 
-    public List<Section> addSectionAtDownwardLast(Station newStation, Section originalSection, int distance) {
+    public List<Section> addEndSectionAtDownward(Station newStation, Section originalSection, int distance) {
         Section upwardSection = Section.of(
                 originalSection.getUpward(),
                 newStation,
