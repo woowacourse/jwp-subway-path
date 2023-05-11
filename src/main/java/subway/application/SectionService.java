@@ -79,16 +79,13 @@ public class SectionService {
             throw new IllegalArgumentException("해당 노선에 존재하지 않는 역입니다.");
         }
 
-        // 역이 2개 남았을 때
         if (sections.size() == 1) {
             sectionDao.deleteByLineId(lineId);
         }
-        // 상행 종점일 때
         if (sections.getUpEndSection().isSameUpStationId(stationId)) {
             sectionDao.deleteSectionByUpStationId(stationId, lineId);
             return;
         }
-        // 하행 종점일 때
         Section downEndSection = sections.getDownEndSection();
         if (downEndSection.isSameDownStationId(stationId)) {
             Section section = sections.findSectionByNextSection(downEndSection);

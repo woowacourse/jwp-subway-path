@@ -50,6 +50,57 @@ public class SectionIntegrationTest extends IntegrationTest {
         assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
+    @DisplayName("노선의 종점에 역을 추가한다.")
+    @Test
+    void addEndSectionToLine_success() {
+        //given
+        ExtractableResponse<Response> response1 = RestAssured.given().log().all()
+                .body(new StationRequest("강남역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+                .body(new StationRequest("잠실역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        ExtractableResponse<Response> response3 = RestAssured.given().log().all()
+                .body(new StationRequest("잠실나루역"))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all()
+                .extract();
+
+        long lineId = 1L;
+        SectionSaveRequest initSaveRequest = new SectionSaveRequest(1L, 2L, 10);
+        ExtractableResponse<Response> createResponse = RestAssured
+                .given().log().all()
+                .body(initSaveRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines/" + lineId + "/sections")
+                .then().log().all().
+                extract();
+
+        //when
+        SectionSaveRequest upEndSaveRequest = new SectionSaveRequest(3L, 1L, 5);
+        ExtractableResponse<Response> createResponse2 = RestAssured
+                .given().log().all()
+                .body(upEndSaveRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().post("/lines/" + lineId + "/sections")
+                .then().log().all().
+                extract();
+
+        // then
+        assertThat(createResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
 
     @DisplayName("노선의 중간에 역을 추가한다.")
     @Test
