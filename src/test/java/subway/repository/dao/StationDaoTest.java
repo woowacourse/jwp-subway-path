@@ -1,4 +1,4 @@
-package subway.repository;
+package subway.repository.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,39 +10,31 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.repository.dao.LineDao;
-import subway.repository.dao.SectionDao;
-import subway.repository.dao.StationDao;
+import subway.entity.StationEntity;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
-class LineRepositoryTest {
+class StationDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private StationDao stationDao;
-    private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {
         stationDao = new StationDao(jdbcTemplate);
-        lineRepository = new LineRepository(new SectionDao(jdbcTemplate), new LineDao(jdbcTemplate),
-                stationDao);
     }
 
     @Test
-    void 노선을_저장한다() {
+    void 여러_Station을_저장한다() {
         // given
-        List<Section> sections = List.of(new Section("교대역", "강남역", 10), new Section("강남역", "역삼역", 5));
-        Line line = new Line("2호선", sections);
+        List<StationEntity> stations = List.of(new StationEntity("강남역"), new StationEntity("역삼역"));
 
         // when
-        Long saveId = lineRepository.save(line);
+        stationDao.insertAll(stations);
 
         // then
-        assertThat(saveId).isPositive();
+        assertThat(stationDao.findAll()).hasSize(2);
     }
 }

@@ -68,4 +68,11 @@ public class StationDao {
             return Optional.empty();
         }
     }
+
+    public void insertAll(List<StationEntity> stations) {
+        final String sql = "INSERT INTO station (name) VALUES (?)";
+        jdbcTemplate.batchUpdate(sql, stations, stations.size(), ((ps, station) -> {
+            ps.setString(1, station.getName());
+        }));
+    }
 }

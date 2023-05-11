@@ -1,8 +1,10 @@
 package subway.repository.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
@@ -10,24 +12,41 @@ import subway.entity.SectionEntity;
 @Repository
 public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-    public SectionDao(JdbcTemplate jdbcTemplate) {
+    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+            new SectionEntity(
+                    rs.getLong("id"),
+                    rs.getLong("source_station_id"),
+                    rs.getLong("target_station_id"),
+                    rs.getLong("line_id"),
+                    rs.getInt("distance")
+            );
+
+    public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public SectionEntity insert(SectionEntity section, Long lineId) {
+    public Long insert(SectionEntity sectionEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("line_id", lineId);
-        params.put("source_station_id", section.getSourceStationId());
-        params.put("target_station_id", section.getTargetStationId());
-        params.put("distance", section.getDistance());
+        params.put("source_station_id", sectionEntity.getSourceStationId());
+        params.put("target_station_id", sectionEntity.getTargetStationId());
+        params.put("line_id", sectionEntity.getLineId());
+        params.put("distance", sectionEntity.getDistance());
 
-        Long sectionId = insertAction.executeAndReturnKey(params).longValue();
-        return new SectionEntity(sectionId, section.getSourceStationId(), section.getTargetStationId(),
-                section.getDistance());
+        return simpleJdbcInsert.executeAndReturnKey(params).longValue();
+    }
+
+    public void deleteAll(final Long lineId) {
+        String sql = "DELETE FROM section WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public List<SectionEntity> findByLineId(final Long lineId) {
+        String sql = "SELECT id, source_station_id, target_station_id, line_id, distance FROM section WHERE line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 }

@@ -1,6 +1,9 @@
 package subway.dto;
 
+import java.util.List;
 import javax.validation.constraints.NotNull;
+import subway.domain.Line;
+import subway.domain.Section;
 
 public class LineRequest {
 
@@ -37,5 +40,9 @@ public class LineRequest {
 
     public Integer getDistance() {
         return distance;
+    }
+
+    public Line toDomain() {
+        return new Line(lineName, List.of(new Section(sourceStation, targetStation, distance)));
     }
 }

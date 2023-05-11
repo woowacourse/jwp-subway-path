@@ -3,16 +3,17 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.entity.LineEntity;
-import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 import subway.repository.dao.LineDao;
 
 @Service
 public class LineService {
+
     private final LineDao lineDao;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
@@ -25,12 +26,9 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        String name = request.getLineName();
-        if (lineDao.existsByName(name)) {
-            throw new DuplicatedNameException(name);
-        }
-        LineEntity saveLine = lineRepository.save(new LineEntity(name));
-        return LineResponse.of(saveLine);
+        Line line = request.toDomain();
+        Long saveId = lineRepository.save(line);
+        return new LineResponse(saveId);
     }
 
     public List<LineResponse> findLineResponses() {
