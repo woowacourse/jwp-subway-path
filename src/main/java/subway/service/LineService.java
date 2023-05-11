@@ -58,10 +58,10 @@ public class LineService {
                 stationInsertRequest.getDistance(), LineDirection.valueOf(stationInsertRequest.getDirection()));
         StationEdge insertedEdge = insertionResult.getInsertedEdge();
 
-        lineRepository.updateWithSavedEdge(line, insertedEdge);
+        lineRepository.insertStationEdge(line, insertedEdge);
 
         Optional.ofNullable(insertionResult.getUpdatedEdge())
-                .ifPresent(updatedEdge -> lineRepository.updateWithSavedEdge(line, updatedEdge));
+                .ifPresent(updatedEdge -> lineRepository.updateStationEdge(line, updatedEdge));
     }
 
     public Line findLineById(Long id) {
@@ -81,7 +81,7 @@ public class LineService {
             return;
         }
         Optional.ofNullable(line.deleteStation(stationId))
-                .ifPresent(stationEdge -> lineRepository.updateWithSavedEdge(line, stationEdge));
+                .ifPresent(stationEdge -> lineRepository.updateStationEdge(line, stationEdge));
         lineRepository.deleteStation(line, stationId);
     }
 

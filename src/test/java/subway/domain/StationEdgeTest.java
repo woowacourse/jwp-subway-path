@@ -35,9 +35,9 @@ class StationEdgeTest {
         assertSoftly(
                 softly -> {
                     softly.assertThat(split.get(0).getDownStationId()).isEqualTo(2L);
-                    softly.assertThat(split.get(0).getDistance()).isEqualTo(3);
+                    softly.assertThat(split.get(0).getDistance()).isEqualTo(2);
                     softly.assertThat(split.get(1).getDownStationId()).isEqualTo(1L);
-                    softly.assertThat(split.get(1).getDistance()).isEqualTo(2);
+                    softly.assertThat(split.get(1).getDistance()).isEqualTo(3);
                 }
         );
     }

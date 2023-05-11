@@ -10,10 +10,14 @@ public interface LineRepository {
     Optional<Line> findById(Long id);
 
     List<Line> findAll();
+
     Optional<Line> findByName(String name);
+
     Long create(Line line);
 
-    void updateWithSavedEdge(Line line, StationEdge stationEdge);
+    Long insertStationEdge(Line line, StationEdge stationEdge);
+
+    void updateStationEdge(Line line, StationEdge stationEdge);
 
     void deleteStation(Line line, Long stationId);
 

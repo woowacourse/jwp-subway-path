@@ -5,24 +5,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
 import subway.exception.DuplicatedStationNameException;
-import subway.repository.SimpleStationRepository;
 import subway.repository.StationRepository;
 
+@SpringBootTest
+@Transactional
 class StationServiceTest {
 
+    @Autowired
     private StationService stationService;
+
+    @Autowired
     private StationRepository stationRepository;
 
-    @BeforeEach
-    void setUp() {
-        stationRepository = new SimpleStationRepository();
-        stationService = new StationService(stationRepository);
-    }
 
     @Test
     @DisplayName("역을 추가한다.")
@@ -34,7 +35,7 @@ class StationServiceTest {
         final Long createdId = stationService.create(name);
 
         //then
-        assertThat(createdId).isEqualTo(1L);
+        assertThat(createdId).isNotNull();
     }
 
     @Test

@@ -1,7 +1,6 @@
 package subway.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.List;
@@ -9,25 +8,38 @@ import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import subway.dao.LineDao;
+import subway.dao.StationDao;
+import subway.dao.StationEdgeDao;
 import subway.domain.Line;
 import subway.domain.LineDirection;
 import subway.domain.Station;
 import subway.domain.StationEdge;
 import subway.domain.dto.InsertionResult;
-import subway.exception.LineNotFoundException;
 
-class SimpleLineRepositoryTest {
-
+@JdbcTest
+class LineRepositoryTest {
 
     private static int INITIAL_DISTANCE = 5;
 
     private LineRepository lineRepository;
     private StationRepository stationRepository;
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     @BeforeEach
     void setUp() {
-        lineRepository = new SimpleLineRepository();
-        stationRepository = new SimpleStationRepository();
+        lineRepository = new DbLineRepository(
+                new LineDao(jdbcTemplate),
+                new StationEdgeDao(jdbcTemplate)
+        );
+        stationRepository = new DbStationRepository(
+                new StationDao(jdbcTemplate)
+        );
     }
 
     @Test
@@ -69,7 +81,7 @@ class SimpleLineRepositoryTest {
 
     @Test
     @DisplayName("추가한 edge를 반영한다.")
-    void updateWithSavedEdge() {
+    void updateWithInsertedEdge() {
         //given
         Line createdLine = createLineWithTwoStation();
         int originalSize = createdLine.getStationEdges().size();
@@ -80,7 +92,8 @@ class SimpleLineRepositoryTest {
                 LineDirection.UP);
 
         //when
-        lineRepository.updateWithSavedEdge(createdLine, insertionResult.getInsertedEdge());
+        lineRepository.insertStationEdge(createdLine, insertionResult.getInsertedEdge());
+        lineRepository.updateStationEdge(createdLine, insertionResult.getUpdatedEdge());
 
         //then
         Line actualLine = lineRepository.findById(createdLine.getId()).get();
@@ -111,7 +124,7 @@ class SimpleLineRepositoryTest {
         Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
         InsertionResult insertionResult = createdLine.insertStation(middleStationId, downStationId, 2,
                 LineDirection.UP);
-        lineRepository.updateWithSavedEdge(createdLine, insertionResult.getInsertedEdge());
+        lineRepository.insertStationEdge(createdLine, insertionResult.getInsertedEdge());
         return createdLine;
     }
 

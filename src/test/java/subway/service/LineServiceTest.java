@@ -5,10 +5,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.StationEdge;
@@ -16,24 +17,21 @@ import subway.dto.LineRequest;
 import subway.dto.StationInsertRequest;
 import subway.exception.DuplicatedLineNameException;
 import subway.repository.LineRepository;
-import subway.repository.SimpleLineRepository;
-import subway.repository.SimpleStationRepository;
 import subway.repository.StationRepository;
 
+@SpringBootTest
+@Transactional
 class LineServiceTest {
 
+    @Autowired
     private LineService lineService;
 
+    @Autowired
     private LineRepository lineRepository;
 
+    @Autowired
     private StationRepository stationRepository;
 
-    @BeforeEach
-    void setUp() {
-        lineRepository = new SimpleLineRepository();
-        stationRepository = new SimpleStationRepository();
-        lineService = new LineService(lineRepository, stationRepository);
-    }
 
     @Test
     @DisplayName("노선을 생성한다.")
@@ -128,7 +126,6 @@ class LineServiceTest {
         //given
         LineRequest lineRequest = createLineRequest();
         Long lineId = lineService.create(lineRequest);
-
 
         //when
         lineService.deleteStation(lineId, lineRequest.getDownStationId());
