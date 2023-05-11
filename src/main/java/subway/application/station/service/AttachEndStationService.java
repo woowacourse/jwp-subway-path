@@ -32,27 +32,15 @@ public class AttachEndStationService implements AttachEndStationUseCase {
     public void attachEndStation(final Long lineId, final AttachStationRequest request) {
         final Line line = lineRepository.findById(lineId);
 
-        final Section section = createSection(lineId, request);
-
-        final Sections sections = line.getSections();
-        sections.attachAtLastStation(
-                new Station(request.getStandardStation()),
-                new Station(request.getNewStation()),
-                section.getDistance()
-        );
-    }
-
-    private Section createSection(final Long lineId, final AttachStationRequest request) {
-        final Station standardStation = stationRepository.findByName(request.getStandardStation())
-                .orElseThrow();
-
+        final Station standardStation = new Station(request.getStandardStation());
         final Station newStation = new Station(request.getNewStation());
         final StationDistance stationDistance = new StationDistance(request.getDistance());
 
-        stationRepository.save(newStation);
+        final Sections sections = line.getSections();
+        sections.attachAtLastStation(standardStation, newStation, stationDistance);
+
         final Section newSection = new Section(standardStation, newStation, stationDistance);
         sectionRepository.save(newSection, lineId);
-
-        return newSection;
+        stationRepository.save(newStation);
     }
 }

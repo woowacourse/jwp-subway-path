@@ -7,7 +7,6 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,7 +59,6 @@ class AttachFrontStationServiceTest {
         final Line line = new Line(sections, new LineName("2호선"), new LineColor("청록색"));
         given(lineRepository.findById(1L)).willReturn(line);
         given(sectionRepository.save(any(), anyLong())).willReturn(1L);
-        given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("강남")));
         given(stationRepository.save(any())).willReturn(1L);
 
         final AttachStationRequest request = new AttachStationRequest("강남", "서초", 5);
