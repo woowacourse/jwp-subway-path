@@ -23,7 +23,7 @@ public class FirstSaveCase extends SectionReader {
                     addStationRequest.getArrivalStation(), addStationRequest.getDistance()));
         }
 
-        return new ValidateCase(addStationRequest,sectionDao).read(id, allSections);
+        return new ValidateCase(addStationRequest, sectionDao).read(id, allSections);
     }
 
     @Override

@@ -7,7 +7,7 @@ import subway.dto.AddStationResponse;
 
 import java.util.List;
 
-public class UpperCase extends SectionReader{
+public class UpperCase extends SectionReader {
     public UpperCase(AddStationRequest addStationRequest, SectionDao sectionDao) {
         super(addStationRequest, sectionDao);
     }
@@ -19,7 +19,7 @@ public class UpperCase extends SectionReader{
 
     @Override
     public List<AddStationResponse> addSection(long id, List<Section> departureSections, List<Section> arrivalSections) throws IllegalAccessException {
-         throw new IllegalAccessException();
+        throw new IllegalAccessException();
     }
 
     @Override

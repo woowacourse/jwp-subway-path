@@ -2,13 +2,12 @@ package subway.application.sectionReader;
 
 import subway.dao.SectionDao;
 import subway.domain.Section;
-import subway.domain.SectionSorter;
 import subway.dto.AddStationRequest;
 import subway.dto.AddStationResponse;
 
 import java.util.List;
 
-public class TerminalCase extends SectionReader{
+public class TerminalCase extends SectionReader {
     public TerminalCase(AddStationRequest addStationRequest, SectionDao sectionDao) {
         super(addStationRequest, sectionDao);
     }

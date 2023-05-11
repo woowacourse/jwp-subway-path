@@ -22,18 +22,18 @@ public class ValidateCase extends SectionReader {
 
 
         List<Section> departureSections = allSections.stream()
-                .filter(section -> hasSection(section,addStationRequest.getDepartureStation()))
+                .filter(section -> hasSection(section, addStationRequest.getDepartureStation()))
                 .collect(toList());
 
         List<Section> arrivalSections = allSections.stream()
                 .filter(section -> hasSection(section, addStationRequest.getArrivalStation()))
                 .collect(toList());
 
-        validate(departureSections,arrivalSections);
-        if (isTerminalAdding(addStationRequest, sortedSections)){
-            return new TerminalCase(addStationRequest,sectionDao).addSection(id,departureSections,arrivalSections);
+        validate(departureSections, arrivalSections);
+        if (isTerminalAdding(addStationRequest, sortedSections)) {
+            return new TerminalCase(addStationRequest, sectionDao).addSection(id, departureSections, arrivalSections);
         }
-        return new SelectDirection(addStationRequest,sectionDao).addSection(id,departureSections,arrivalSections);
+        return new SelectDirection(addStationRequest, sectionDao).addSection(id, departureSections, arrivalSections);
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ValidateCase extends SectionReader {
     }
 
     private boolean hasSection(Section section, String requestStation) {
-        return section.getDeparture().getName().equals(requestStation)||
+        return section.getDeparture().getName().equals(requestStation) ||
                 section.getArrival().getName().equals(requestStation);
     }
 
@@ -63,9 +63,11 @@ public class ValidateCase extends SectionReader {
             throw new IllegalArgumentException("순환 노선입니다");
         }
     }
+
     private boolean isAbnormalCase(final long departureMatchCount, final long arrivalMatchCount) {
         return !List.of(departureMatchCount, arrivalMatchCount).contains(0l);
     }
+
     private boolean isTerminalAdding(final AddStationRequest addStationRequest,
                                      final List<Section> sortedSections) {
         final String upLineTerminal = sortedSections.get(0).getDeparture().getName();

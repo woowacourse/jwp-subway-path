@@ -8,7 +8,7 @@ import subway.dto.AddStationResponse;
 import java.util.List;
 import java.util.Optional;
 
-public class SelectDirection extends SectionReader{
+public class SelectDirection extends SectionReader {
     public SelectDirection(AddStationRequest addStationRequest, SectionDao sectionDao) {
         super(addStationRequest, sectionDao);
     }
@@ -33,10 +33,10 @@ public class SelectDirection extends SectionReader{
             throw new IllegalArgumentException("기존의 거리보다 작아야 합니다.");
         }
 
-        if(findConnectedStation(addStationRequest, section).equals(addStationRequest.getDepartureStation())){
-            return new UpperCase(addStationRequest, sectionDao).addSectionWithDirection(id, departureSections, arrivalSections,section);
+        if (findConnectedStation(addStationRequest, section).equals(addStationRequest.getDepartureStation())) {
+            return new UpperCase(addStationRequest, sectionDao).addSectionWithDirection(id, departureSections, arrivalSections, section);
         }
-        return new LowerCase(addStationRequest,sectionDao).addSectionWithDirection(id,departureSections,arrivalSections,section);
+        return new LowerCase(addStationRequest, sectionDao).addSectionWithDirection(id, departureSections, arrivalSections, section);
     }
 
     @Override

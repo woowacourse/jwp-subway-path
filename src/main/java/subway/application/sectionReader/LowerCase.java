@@ -7,7 +7,7 @@ import subway.dto.AddStationResponse;
 
 import java.util.List;
 
-public class LowerCase extends SectionReader{
+public class LowerCase extends SectionReader {
     public LowerCase(AddStationRequest addStationRequest, SectionDao sectionDao) {
         super(addStationRequest, sectionDao);
     }
