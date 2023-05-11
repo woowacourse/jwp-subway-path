@@ -37,25 +37,18 @@ public class LineService {
         return lineId;
     }
 
-//    public List<LineResponse> findLineResponses() {
-//        List<Line> persistLines = findLines();
-//        return persistLines.stream()
-//                .map(LineResponse::of)
-//                .collect(Collectors.toList());
-//    }
+    public List<LineResponse> findLineResponses() {
+        List<Line> persistLines = findLines();
+
+        return persistLines.stream()
+                .map(line -> findLineResponseById(line.getId()))
+                .collect(Collectors.toList());
+    }
 
     public List<Line> findLines() {
         return lineDao.findAll();
     }
 
-    /**
-     * {
-     *   "id": 1L,
-     *   "name": "노선이름",
-     *   "color": "노선색깔",
-     *   "stations": [{"id": 1L, "name": "역이름1"},{"id": 2L, "name": "역이름2"}]
-     * }
-     */
     public LineResponse findLineResponseById(Long id) {
         final List<Section> sections = sectionDao.findAllByLineId(id);
         List<Section> sortedSections = Sections.from(sections).getSections();
