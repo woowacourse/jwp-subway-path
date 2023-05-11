@@ -11,7 +11,6 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 
 import javax.sql.DataSource;
@@ -27,6 +26,7 @@ class SubwayDaoTest {
     @Autowired
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
+    private StationDao stationDao;
     private SubwayDao subwayDao;
     private LineDao lineDao;
 
@@ -44,6 +44,7 @@ class SubwayDaoTest {
         jdbcTemplate = new JdbcTemplate(dataSource);
         subwayDao = new SubwayDao(jdbcTemplate);
         lineDao = new LineDao(jdbcTemplate, dataSource);
+        stationDao = new StationDao(jdbcTemplate, dataSource);
     }
 
     @Test
@@ -119,6 +120,11 @@ class SubwayDaoTest {
 
 
         //when
+        stationDao.insert(new Station("푸우"));
+        stationDao.insert(new Station("테오"));
+        stationDao.insert(new Station("제이온"));
+        stationDao.insert(new Station("시카"));
+
         lineDao.insert(line);
         subwayDao.save(line);
         Line actualLine = subwayDao.findById(1L);

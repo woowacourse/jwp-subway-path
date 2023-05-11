@@ -1,9 +1,5 @@
 package subway.entity;
 
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
-
 public class SectionEntity {
 
     private final Long id;
@@ -22,14 +18,6 @@ public class SectionEntity {
         this.left = left;
         this.right = right;
         this.distance = distance;
-    }
-
-    public Section toDomain() {
-        return new Section(
-                new Station(left),
-                new Station(right),
-                new Distance(distance)
-        );
     }
 
     public Long getId() {

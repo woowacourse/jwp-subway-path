@@ -3,12 +3,19 @@ package subway.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
@@ -38,10 +45,18 @@ public class SubwayDao {
 
         String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
         List<SectionEntity> sectionEntities = jdbcTemplate.query(sectionSql, sectionMapper, lineId);
-        List<Section> sections = sectionEntities.stream()
-                .map((SectionEntity::toDomain))
-                .collect(Collectors.toList());
 
+        Map<String, Long> stationIdsOf = getStationIdsOf(sectionEntities);
+        List<Section> sections = new ArrayList<>();
+        for (SectionEntity sectionEntity : sectionEntities) {
+            String leftStationName = sectionEntity.getLeft();
+            String rightStationName = sectionEntity.getRight();
+            sections.add(new Section(
+                    new Station(stationIdsOf.get(leftStationName), leftStationName),
+                    new Station(stationIdsOf.get(rightStationName), rightStationName),
+                    new Distance(sectionEntity.getDistance())
+            ));
+        }
         return new Line(
                 lineEntity.getId(),
                 lineEntity.getName(),
@@ -50,18 +65,38 @@ public class SubwayDao {
         );
     }
 
+    private Map<String, Long> getStationIdsOf(List<SectionEntity> sectionEntities) {
+        List<String> stationNames = getStationNames(sectionEntities);
+        Map<String, Long> result = new HashMap<>();
+        String sql = "select id from station where name = ?";
+        for (String stationName : stationNames) {
+            Long stationId = jdbcTemplate.queryForObject(sql, Long.class, stationName);
+            result.put(stationName, stationId);
+        }
+        return result;
+    }
+
+    private List<String> getStationNames(List<SectionEntity> sectionEntities) {
+        Set<String> stationNames = new HashSet<>();
+        for (SectionEntity sectionEntity : sectionEntities) {
+            stationNames.add(sectionEntity.getLeft());
+            stationNames.add(sectionEntity.getRight());
+        }
+        return new ArrayList<>(stationNames);
+    }
+
     public void save(Line line) {
         String deleteSql = "delete from section where line_id = ?";
         String insertSql = "insert into section (line_id, up, down, distance) values (?, ?, ?, ?)";
 
         jdbcTemplate.update(deleteSql, line.getId());
         List<SectionEntity> sections = line.getSections()
-                        .stream().map(section -> new SectionEntity(
-                                line.getId(),
-                                section.getLeft().getName(),
+                .stream().map(section -> new SectionEntity(
+                        line.getId(),
+                        section.getLeft().getName(),
                         section.getRight().getName(),
                         section.getDistance().getDistance()
-                        )).collect(Collectors.toList());
+                )).collect(Collectors.toList());
 
         jdbcTemplate.batchUpdate(insertSql, sections, 50,
                 (ps, entity) -> {

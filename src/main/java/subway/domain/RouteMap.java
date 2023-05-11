@@ -9,6 +9,7 @@ public class RouteMap {
 
     private final List<Station> routeMap;
 
+
     public RouteMap(List<Section> sections) {
         this.routeMap = stationsOf(sections);
     }
