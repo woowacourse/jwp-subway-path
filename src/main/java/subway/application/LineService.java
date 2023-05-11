@@ -10,6 +10,8 @@ import subway.entity.SectionStationJoinEntity;
 
 import java.util.List;
 
+import static java.util.stream.Collectors.toList;
+
 @Service
 public class LineService {
 
@@ -21,14 +23,17 @@ public class LineService {
         this.sectionDao = sectionDao;
     }
 
-    public List<LineFindResponse> findAllLineStationNames() {
-        return null;
-    }
-
     public LineFindResponse findStationNamesByLineId(Long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId);
         List<SectionStationJoinEntity> findSectionStationEntities = sectionDao.findSectionStationByLineId(lineId);
         StationConnections stationConnections = StationConnections.fromEntities(findSectionStationEntities);
         return new LineFindResponse(lineEntity.getName(), stationConnections.getSortedStationNames());
+    }
+
+    public List<LineFindResponse> findAllLineStationNames() {
+        List<LineEntity> lineEntities = lineDao.findAll();
+        return lineEntities.stream()
+                .map(lineEntity -> findStationNamesByLineId(lineEntity.getId()))
+                .collect(toList());
     }
 }

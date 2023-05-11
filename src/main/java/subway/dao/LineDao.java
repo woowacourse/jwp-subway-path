@@ -57,4 +57,9 @@ public class LineDao {
                         rs.getString("name")
                 );
     }
+
+    public List<LineEntity> findAll() {
+        String sql = "SELECT id, name FROM line";
+        return jdbcTemplate.query(sql, lineEntityRowMapper());
+    }
 }
