@@ -9,9 +9,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.LineRequest;
-import subway.dto.StationsInLineResponse;
-import subway.dto.StationsResponse;
+import subway.dto.request.LineRequest;
+import subway.dto.response.StationsInLineResponse;
+import subway.dto.response.StationsResponse;
 
 import java.util.List;
 

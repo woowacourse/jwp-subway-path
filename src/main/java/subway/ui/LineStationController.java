@@ -4,13 +4,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineStationService;
-import subway.dto.LineStationRequest;
-import subway.dto.LineStationResponse;
+import subway.dto.request.LineStationRequest;
+import subway.dto.response.LineStationResponse;
 
 @RestController
 @RequestMapping("/lines/{line_id}/stations")
 public class LineStationController {
-
     private final LineStationService lineStationService;
 
     public LineStationController(LineStationService lineStationService) {

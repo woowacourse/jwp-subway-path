@@ -1,7 +1,6 @@
 package subway.exceptions;
 
 public class ExceptionResponse {
-
     private String message;
 
     public ExceptionResponse(String message) {

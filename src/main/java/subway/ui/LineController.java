@@ -5,10 +5,10 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.application.LineStationService;
 import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationsInLineResponse;
-import subway.dto.StationsResponse;
+import subway.dto.request.LineRequest;
+import subway.dto.response.LineResponse;
+import subway.dto.response.StationsInLineResponse;
+import subway.dto.response.StationsResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -17,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/lines")
 public class LineController {
-
     private final LineService lineService;
     private final LineStationService lineStationService;
 

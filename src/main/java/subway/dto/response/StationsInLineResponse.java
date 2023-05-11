@@ -1,6 +1,4 @@
-package subway.dto;
-
-import subway.domain.Line;
+package subway.dto.response;
 
 public class StationsInLineResponse {
     private LineResponse lineResponse;
