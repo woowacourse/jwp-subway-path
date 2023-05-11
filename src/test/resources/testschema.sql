@@ -20,8 +20,5 @@ create table if not exists LINE_STATION
     down_bound_id bigint not null,
     line_id bigint not null,
     distance int not null,
-    primary key(id),
-    foreign key(up_bound_id) references station(id),
-    foreign key(down_bound_id) references station(id),
-    foreign key(line_id) references line(id)
+    primary key(id)
 );
