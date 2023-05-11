@@ -22,6 +22,7 @@ import subway.dto.LineResponse;
 import subway.dto.LineSaveRequest;
 import subway.dto.LineStationsResponse;
 import subway.dto.StationAddToLineRequest;
+import subway.dto.StationDeleteRequest;
 
 @WebMvcTest(LineController.class)
 public class LineControllerTest {
@@ -74,7 +75,12 @@ public class LineControllerTest {
     @DisplayName("노선에 포함된 역 한 개를 제외한다.")
     @Test
     void shouldRemoveStationFromLineWhenRequest() throws Exception {
-        mockMvc.perform(delete("/lines/1/stations/1"))
+        StationDeleteRequest stationDeleteRequest = new StationDeleteRequest("잠실역");
+        String jsonRequest = objectMapper.writeValueAsString(stationDeleteRequest);
+
+        mockMvc.perform(delete("/lines/1/station")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
                 .andExpect(status().isOk());
     }
 

@@ -42,8 +42,8 @@ public class LineDao {
             return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
         } catch (EmptyResultDataAccessException exception) {
             throw new IllegalArgumentException(String.format(
-                    "DB에서 ID에 해당하는 Line을 조회할 수 없습니다." + System.lineSeparator() +
-                            "입력한 ID : %d", id));
+                    "DB에서 ID에 해당하는 Line을 조회할 수 없습니다. " +
+                            "(입력한 ID : %d)", id));
         }
     }
 

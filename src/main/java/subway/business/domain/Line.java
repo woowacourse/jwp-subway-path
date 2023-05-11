@@ -112,9 +112,8 @@ public class Line {
                 .filter(section -> section.isDownwardStation(neighborhoodStation))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
-                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다." + System.lineSeparator() +
-                                "추가하려는 노선 : %s" + System.lineSeparator() +
-                                "존재하지 않는 이웃 역 : %s", name, neighborhoodStation.getName())));
+                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다. " +
+                                "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name, neighborhoodStation.getName())));
     }
 
     private Section getSectionUpwardSameWith(Station neighborhoodStation) {
@@ -122,26 +121,23 @@ public class Line {
                 .filter(section -> section.isUpwardStation(neighborhoodStation))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
-                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다." + System.lineSeparator() +
-                                "추가하려는 노선 : %s" + System.lineSeparator() +
-                                "존재하지 않는 이웃 역 : %s", name, neighborhoodStation.getName())));
+                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다. " +
+                                "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name, neighborhoodStation.getName())));
     }
 
     private void validateAlreadyExist(Station station) {
         if (isStationExist(station)) {
             throw new IllegalArgumentException(String.format(
-                    "이미 노선에 존재하는 역은 추가할 수 없습니다." + System.lineSeparator() +
-                            "추가하려는 노선 : %s" + System.lineSeparator() +
-                            "추가하려는 역 : %s", name, station.getName()));
+                    "이미 노선에 존재하는 역은 추가할 수 없습니다. " +
+                            "(추가하려는 노선 : %s 추가하려는 역 : %s)", name, station.getName()));
         }
     }
 
     private void validateDistance(int distanceToSave, int existingDistance) {
         if (distanceToSave >= existingDistance) {
             throw new IllegalArgumentException(
-                    String.format("저장하려는 위치의 구간 거리보다, 입력한 거리가 더 크거나 같습니다." + System.lineSeparator() +
-                            "입력한 거리 : %d" + System.lineSeparator() +
-                            "저장하려는 위치의 구간 거리 : %d", distanceToSave, existingDistance));
+                    String.format("저장하려는 위치의 구간 거리보다, 입력한 거리가 더 크거나 같습니다. " +
+                            "(입력한 거리 : %d 저장하려는 위치의 구간 거리 : %d)", distanceToSave, existingDistance));
         }
     }
 
@@ -190,8 +186,8 @@ public class Line {
             }
         }
         throw new IllegalArgumentException(
-                String.format("삭제하려는 역이 노선에 존재하지 않습니다." + System.lineSeparator() +
-                        "삭제하려는 역 : %s", stationToDelete.getName()));
+                String.format("삭제하려는 역이 노선에 존재하지 않습니다. " +
+                        "(삭제하려는 역 : %s)", stationToDelete.getName()));
     }
 
     private void validateOnlyTwoStations() {

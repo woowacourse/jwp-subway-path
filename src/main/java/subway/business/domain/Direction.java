@@ -18,8 +18,8 @@ public enum Direction {
                 .filter(direction -> direction.text.equals(text))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(String.format(
-                        "Direction은 상행 또는 하행만 입력할 수 있습니다." + System.lineSeparator() +
-                                "입력한 Direction : %s", text)
+                        "Direction은 상행 또는 하행만 입력할 수 있습니다. " +
+                                "(입력한 Direction : %s)", text)
                 ));
     }
 }
