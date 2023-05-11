@@ -37,7 +37,7 @@ class LineDaoTest {
         final LineEntity result = lineDao.insert(line);
 
         // then
-        assertThat(lineDao.findById(result.getId())).isEqualTo(result);
+        assertThat(lineDao.findById(result.getId()).get()).isEqualTo(result);
     }
 
     @Test
@@ -51,7 +51,7 @@ class LineDaoTest {
         lineDao.update(newLine);
 
         // then
-        assertThat(lineDao.findById(newLine.getId())).isEqualTo(newLine);
+        assertThat(lineDao.findById(newLine.getId()).get()).isEqualTo(newLine);
     }
 
     @Test
@@ -89,10 +89,10 @@ class LineDaoTest {
         final LineEntity insertLine = lineDao.insert(line);
 
         // when
-        final LineEntity findLine = lineDao.findById(insertLine.getId());
+        final Optional<LineEntity> result = lineDao.findById(insertLine.getId());
 
         // then
-        assertThat(findLine).isEqualTo(insertLine);
+        assertThat(result).isPresent();
     }
 
     @Test
@@ -102,9 +102,9 @@ class LineDaoTest {
         lineDao.insert(line);
 
         // when
-        final Optional<LineEntity> findLine = lineDao.findByName("1호선");
+        final Optional<LineEntity> result = lineDao.findByName("1호선");
 
         // then
-        assertThat(findLine).isPresent();
+        assertThat(result).isPresent();
     }
 }

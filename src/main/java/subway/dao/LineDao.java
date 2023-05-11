@@ -40,9 +40,13 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public LineEntity findById(final Long id) {
+    public Optional<LineEntity> findById(final Long id) {
         String sql = "SELECT id, name, color FROM LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public Optional<LineEntity> findByName(final String name) {

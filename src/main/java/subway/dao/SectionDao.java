@@ -50,4 +50,14 @@ public class SectionDao {
         final String sql = "DELETE FROM section WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }
+
+    public List<SectionEntity> findByLineId(final Long lineId) {
+        final String sql =
+                "SELECT s.id, s1.name AS start_station_name, s2.name AS end_station_name, distance, s.line_id "
+                        + "FROM section s "
+                        + "JOIN station s1 ON s.start_station_id = s1.id "
+                        + "JOIN station s2 ON s.end_station_id = s2.id "
+                        + "WHERE s.line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
 }

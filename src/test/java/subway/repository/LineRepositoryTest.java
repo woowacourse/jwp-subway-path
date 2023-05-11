@@ -64,11 +64,49 @@ class LineRepositoryTest {
                 new Section("C", "D", 4)
         ));
         final Line savedLine = lineRepository.save(line);
+        final Long id = lineRepository.findIdByName(savedLine.getName());
 
         // when
-        lineRepository.delete(savedLine);
+        lineRepository.deleteById(id);
 
         // then
         assertThat(lineRepository.findAll()).isEmpty();
+    }
+
+    @Test
+    void 이름을_입력받아_라인의_id를_반환한다() {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("B", "C", 3),
+                new Section("A", "B", 2),
+                new Section("D", "E", 5),
+                new Section("C", "D", 4)
+        ));
+        lineRepository.save(line);
+
+        // when
+        final Long id = lineRepository.findIdByName("2호선");
+
+        // then
+        assertThat(id).isPositive();
+    }
+
+    @Test
+    void id를_입력받아_라인을_반환한다() {
+        // given
+        final Line line = new Line("2호선", "RED", List.of(
+                new Section("B", "C", 3),
+                new Section("A", "B", 2),
+                new Section("D", "E", 5),
+                new Section("C", "D", 4)
+        ));
+        lineRepository.save(line);
+        final Long id = lineRepository.findIdByName(line.getName());
+
+        // when
+        final Line result = lineRepository.findById(id);
+
+        // then
+        assertThat(result).usingRecursiveComparison().isEqualTo(line);
     }
 }
