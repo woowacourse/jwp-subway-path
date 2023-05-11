@@ -4,16 +4,16 @@ public final class PathEntity {
     private final Long stationId;
     private final String name;
     private final Long upStationId;
-    private final Integer distance;
+    private final Long distance;
 
-    public PathEntity(final Long stationId, final String name, final Long upStationId, final Integer distance) {
+    public PathEntity(final Long stationId, final String name, final Long upStationId, final Long distance) {
         this.stationId = stationId;
         this.name = name;
         this.upStationId = upStationId;
         this.distance = distance;
     }
 
-    public PathEntity(final Long upStationId, final Long downStationId, final Integer distance) {
+    public PathEntity(final Long upStationId, final Long downStationId, final Long distance) {
         this(downStationId, null, upStationId, distance);
     }
 
@@ -29,7 +29,17 @@ public final class PathEntity {
         return upStationId;
     }
 
-    public Integer getDistance() {
+    public Long getDistance() {
         return distance;
+    }
+
+    @Override
+    public String toString() {
+        return "PathEntity{" +
+                "stationId=" + stationId +
+                ", name='" + name + '\'' +
+                ", upStationId=" + upStationId +
+                ", distance=" + distance +
+                '}';
     }
 }

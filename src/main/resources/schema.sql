@@ -17,8 +17,8 @@ CREATE TABLE IF NOT EXISTS paths
 (
     id BIGINT AUTO_INCREMENT NOT NULL,
     line_id BIGINT NOT NULL,
-    up_station_id BIGINT NOT NULL,
+    up_station_id BIGINT ,
     down_station_id BIGINT NOT NULL,
-    distance INT NOT NULL,
+    distance INT ,
     PRIMARY KEY(id)
 )

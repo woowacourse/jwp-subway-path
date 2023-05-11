@@ -4,12 +4,12 @@ public class StationRequest {
 
     private String upStationName;
     private String downStationName;
-    private Integer distance;
+    private Long distance;
 
     public StationRequest() {
     }
 
-    public StationRequest(final String upStationName, final String downStationName, final Integer distance) {
+    public StationRequest(final String upStationName, final String downStationName, final Long distance) {
         this.upStationName = upStationName;
         this.downStationName = downStationName;
         this.distance = distance;
@@ -23,7 +23,7 @@ public class StationRequest {
         return downStationName;
     }
 
-    public Integer getDistance() {
+    public Long getDistance() {
         return distance;
     }
 }

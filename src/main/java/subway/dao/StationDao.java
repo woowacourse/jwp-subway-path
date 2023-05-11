@@ -5,12 +5,15 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 
-import javax.sql.DataSource;
-import java.util.Collections;
+import java.sql.PreparedStatement;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -24,9 +27,9 @@ public class StationDao {
             );
 
 
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
@@ -38,22 +41,24 @@ public class StationDao {
     }
 
     public List<Station> insertAll(List<Station> stations) {
-        return Collections.emptyList();
+        List<Station> persisted = new ArrayList<>();
+        String sql = "INSERT INTO station (name) VALUES (?)";
+        for (Station station : stations) {
+            final KeyHolder keyHolder = new GeneratedKeyHolder();
+            jdbcTemplate.update(connection -> {
+                final PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
+                ps.setString(1, station.getName());
+                return ps;
+            }, keyHolder);
+            persisted.add(new Station((long) keyHolder.getKeys().get("id"), station.getName()));
+        }
+        return persisted;
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
-    }
-
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        final Station station = jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return Optional.ofNullable(station);
     }
 
     public void deleteById(Long id) {

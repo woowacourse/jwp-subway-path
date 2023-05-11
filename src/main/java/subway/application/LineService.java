@@ -13,6 +13,7 @@ import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.StationRequest;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -48,7 +49,7 @@ public class LineService {
     public List<Station> findAllStations(final Long lineId) {
         final Line line = lineDao.findById(lineId).orElseThrow(LineNotFoundException::new);
 
-        final List<PathEntity> pathEntities = pathDao.findStationsByLineId(lineId);
+        final List<PathEntity> pathEntities = pathDao.findPathsByLineId(lineId);
         if (pathEntities.isEmpty()) {
             return Collections.emptyList();
         }
@@ -94,9 +95,8 @@ public class LineService {
         final List<Station> stations = findAllStations(lineId);
 
         if (stations.isEmpty()) {
-            return insertInitialStations(stationRequest);
+            return insertInitialStations(stationRequest, lineId);
         }
-
         final String upStationName = stationRequest.getUpStationName();
         final String downStationName = stationRequest.getDownStationName();
 
@@ -118,7 +118,7 @@ public class LineService {
 
             if (nextDownPath.isEmpty()) {
                 final Station persisted = stationDao.insert(new Station(stationRequest.getDownStationName()));
-                pathDao.save(new PathEntity(upStation.getId(), persisted.getId(), stationRequest.getDistance()));
+                pathDao.save(new PathEntity(upStation.getId(), persisted.getId(), stationRequest.getDistance()), lineId);
 
                 return persisted.getId();
             }
@@ -135,8 +135,8 @@ public class LineService {
             final PathEntity downPath = new PathEntity(middleStation.getId(), finalStation.getId(), originalPath.getDistance() - stationRequest.getDistance());
 
             pathDao.deletePathByUpStationIdAndDownStationId(upStation.getId(), finalStation.getId());
-            pathDao.save(upPath);
-            pathDao.save(downPath);
+            pathDao.save(upPath, lineId);
+            pathDao.save(downPath, lineId);
 
             return middleStation.getId();
         }
@@ -150,7 +150,7 @@ public class LineService {
 
         if (nextUpPath.isEmpty()) {
             final Station persisted = stationDao.insert(new Station(stationRequest.getUpStationName()));
-            pathDao.save(new PathEntity(persisted.getId(), downStation.getId(), stationRequest.getDistance()));
+            pathDao.save(new PathEntity(persisted.getId(), downStation.getId(), stationRequest.getDistance()), lineId);
 
             return persisted.getId();
         }
@@ -167,8 +167,8 @@ public class LineService {
         final PathEntity downPath = new PathEntity(middleStation.getId(), downStation.getId(), stationRequest.getDistance());
 
         pathDao.deletePathByUpStationIdAndDownStationId(finalStation.getId(), downStation.getId());
-        pathDao.save(upPath);
-        pathDao.save(downPath);
+        pathDao.save(upPath, lineId);
+        pathDao.save(downPath, lineId);
 
         return middleStation.getId();
         /**
@@ -194,7 +194,7 @@ public class LineService {
          */
     }
 
-    private Long insertInitialStations(final StationRequest stationRequest) {
+    private Long insertInitialStations(final StationRequest stationRequest, final Long lineId) {
         final List<Station> newStations = List.of(
                 new Station(stationRequest.getUpStationName()),
                 new Station(stationRequest.getDownStationName()));
@@ -203,8 +203,10 @@ public class LineService {
 
         final Station upStation = persisted.get(0);
         final Station downStation = persisted.get(1);
+        final PathEntity upPath = new PathEntity(null, upStation.getId(), null);
         final PathEntity path = new PathEntity(upStation.getId(), downStation.getId(), stationRequest.getDistance());
-        pathDao.save(path);
+        pathDao.save(path, lineId);
+        pathDao.save(upPath, lineId);
 
         return upStation.getId();
     }
@@ -218,6 +220,8 @@ public class LineService {
         }
     }
 
-    public void deleteStation(final Long lineId, final Long id) {
+    public void deleteStation(final Long id) {
+        stationDao.findById(id).orElseThrow(StationNotFoundException::new);
+        stationDao.deleteById(id);
     }
 }
