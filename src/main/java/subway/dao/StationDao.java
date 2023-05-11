@@ -3,6 +3,8 @@ package subway.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -15,6 +17,7 @@ import java.util.Optional;
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<Station> rowMapper = (rs, rowNum) ->
@@ -29,6 +32,7 @@ public class StationDao {
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
+        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
     }
 
     public Station insert(final Station station) {
@@ -60,5 +64,11 @@ public class StationDao {
     public Optional<Station> findByName(final String name) {
         final String sql = "select id, name from STATION where name = ?";
         return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
+    }
+
+    public List<Station> findAllById(final List<Long> stationIds) {
+        final String sql = "select id, name from STATION where id IN (:id)";
+        final MapSqlParameterSource source = new MapSqlParameterSource("id", stationIds);
+        return namedParameterJdbcTemplate.query(sql, source, rowMapper);
     }
 }

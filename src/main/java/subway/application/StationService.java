@@ -6,6 +6,7 @@ import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,5 +46,12 @@ public class StationService {
     public Station findStationByName(final String name) {
         return stationDao.findByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
+    }
+
+    public List<Station> findStationsById(final List<Long> stationIds) {
+        if (stationIds.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return stationDao.findAllById(stationIds);
     }
 }
