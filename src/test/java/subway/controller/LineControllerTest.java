@@ -1,11 +1,6 @@
 package subway.controller;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import java.util.List;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,17 +8,18 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-
 import subway.application.LineService;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationRegisterRequest;
 import subway.dto.StationsRegisterRequest;
 import subway.ui.LineController;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
 @WebMvcTest(LineController.class)
-public class LineControllerTest {
+class LineControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -38,12 +34,12 @@ public class LineControllerTest {
     @Test
     void registerStation() throws Exception {
         String body = objectMapper.writeValueAsString(
-            new StationRegisterRequest(
-                    "UPPER",
-                    2L,
-                    1L,
-                    10
-            )
+                new StationRegisterRequest(
+                        "UPPER",
+                        2L,
+                        1L,
+                        10
+                )
         );
 
         this.mockMvc.perform(post("/lines/1/station")
@@ -56,12 +52,7 @@ public class LineControllerTest {
     @Test
     void registerStations() throws Exception {
         String body = objectMapper.writeValueAsString(
-                new StationsRegisterRequest(
-                        2L,
-                        1L,
-                        10
-                )
-        );
+                new StationsRegisterRequest(2L,1L,10));
 
         this.mockMvc.perform(post("/lines/1/stations")
                         .contentType(MediaType.APPLICATION_JSON)

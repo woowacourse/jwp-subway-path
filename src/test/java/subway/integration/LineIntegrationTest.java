@@ -10,6 +10,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationRegisterRequest;
+import subway.dto.StationsRegisterRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,7 +20,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineIntegrationTest extends IntegrationTest {
+class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
@@ -186,5 +188,162 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("빈 노선에 두 역을 등록한다")
+    @Test
+    void registerStationsSuccess() {
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationsRegisterRequest(1L, 2L, 10))
+                .when().post("/lines/2/stations")
+                .then().log().all().
+                extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("역이 등록된 노선에 두 역을 등록하면 예외가 발생한다")
+    @Test
+    void registerStationsFail() {
+        //given
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationsRegisterRequest(1L, 2L, 10))
+                .when().post("/lines/2/stations")
+                .then().log().all().
+                extract();
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationsRegisterRequest(2L, 3L, 10))
+                .when().post("/lines/2/stations")
+                .then().log().all().
+                extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선에서 기준 역의 상행에 하나의 역을 등록한다")
+    @Test
+    void registerUpperStation() {
+        //given
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationsRegisterRequest(1L, 2L, 10))
+                .when().post("/lines/2/stations")
+                .then().log().all().
+                extract();
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationRegisterRequest("UPPER", 3L, 1L, 5))
+                .when().post("/lines/2/station")
+                .then().log().all().
+                extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("노선에서 기준 역의 하행에 하나의 역을 등록한다")
+    @Test
+    void registerLowerStation() {
+        //given
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationsRegisterRequest(1L, 2L, 10))
+                .when().post("/lines/2/stations")
+                .then().log().all().
+                extract();
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationRegisterRequest("LOWER", 3L, 1L, 5))
+                .when().post("/lines/2/station")
+                .then().log().all().
+                extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @DisplayName("노선에 잘못된 거리 정보를 가지는 하나의 역을 등록하면 예외가 발생한다.")
+    @Test
+    void registerStationFailWhenWrongDistance() {
+        //given
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationsRegisterRequest(1L, 2L, 10))
+                .when().post("/lines/2/stations")
+                .then().log().all().
+                extract();
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationRegisterRequest("LOWER", 3L, 1L, 15))
+                .when().post("/lines/2/station")
+                .then().log().all().
+                extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선에 이미 등록된 역을 등록하면 예외가 발생한다.")
+    @Test
+    void registerStationFailWhenStationExist() {
+        //given
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationsRegisterRequest(1L, 2L, 10))
+                .when().post("/lines/2/stations")
+                .then().log().all().
+                extract();
+
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationRegisterRequest("UPPER", 2L, 1L, 5))
+                .when().post("/lines/2/station")
+                .then().log().all().
+                extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("빈 노선에 하나의 역을 등록하면 예외가 발생한다")
+    @Test
+    void registerStationFailWhenRegisterStationToEmptyLine() {
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationRegisterRequest("UPPER", 2L, 1L, 10))
+                .when().post("/lines/2/station")
+                .then().log().all().
+                extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
