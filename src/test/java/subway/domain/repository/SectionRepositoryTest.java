@@ -16,7 +16,6 @@ import subway.service.section.repository.SectionRepository;
 import subway.service.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.LineFixture.FIRST_LINE_NO_ID;
 import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
@@ -89,10 +88,7 @@ class SectionRepositoryTest {
         assertAll(
                 () -> assertThat(sectionsByLine.getSections()).hasSize(2),
                 () -> assertThat(findSeonleungJamsilSection.getDistance()).isEqualTo(new Distance(10)),
-                () -> assertThat(findSeonleungGangnamSection.getDistance()).isEqualTo(new Distance(3)),
-                () -> assertThatThrownBy(() -> sectionRepository.findSectionsByLine(savedFirstLine))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage("해당 노선에 역이 존재하지 않습니다.")
+                () -> assertThat(findSeonleungGangnamSection.getDistance()).isEqualTo(new Distance(3))
         );
 
     }

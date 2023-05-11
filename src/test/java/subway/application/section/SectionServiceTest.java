@@ -40,8 +40,8 @@ class SectionServiceTest {
     @Test
     void 존재하지_않는_노선에_역을_추가하려고_하면_예외() {
 
-        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 2L, 10);
-        assertThatThrownBy(() -> sectionService.insert(sectionCreateRequest, 10L))
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 2L, 10, 20L);
+        assertThatThrownBy(() -> sectionService.insert(sectionCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 노선입니다.");
     }
@@ -54,9 +54,9 @@ class SectionServiceTest {
         SectionEntity sectionEntity = new SectionEntity(savedJamsil.getId(), savedGangnam.getId(), 10, savedLine.getId());
         sectionDao.insert(sectionEntity);
 
-        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedGangnam.getId(), 10);
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedGangnam.getId(), 10, savedLine.getId());
 
-        assertThatThrownBy(() -> sectionService.insert(sectionCreateRequest, savedLine.getId()))
+        assertThatThrownBy(() -> sectionService.insert(sectionCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("추가하려는 경로의 역들은 이미 노선에 존재하는 역들입니다.");
 
@@ -70,9 +70,9 @@ class SectionServiceTest {
         SectionEntity sectionEntity = new SectionEntity(savedJamsil.getId(), savedGangnam.getId(), 10, savedLine.getId());
         sectionDao.insert(sectionEntity);
 
-        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedJamsil.getId(), 10);
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedJamsil.getId(), 10, savedLine.getId());
 
-        assertThatThrownBy(() -> sectionService.insert(sectionCreateRequest, savedLine.getId()))
+        assertThatThrownBy(() -> sectionService.insert(sectionCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("동일한 역 2개가 입력으로 들어왔습니다. 이름을 다르게 설정해주세요.");
 
@@ -89,9 +89,9 @@ class SectionServiceTest {
         Station savedSeonleung = stationDao.insert(SEONLEUNG);
         Station savedYuksam = stationDao.insert(YUKSAM);
 
-        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedSeonleung.getId(), savedYuksam.getId(), 10);
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedSeonleung.getId(), savedYuksam.getId(), 10, savedLine.getId());
 
-        assertThatThrownBy(() -> sectionService.insert(sectionCreateRequest, savedLine.getId()))
+        assertThatThrownBy(() -> sectionService.insert(sectionCreateRequest))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 노선에 역들이 존재하기 때문에 한 번에 새로운 역 2개를 추가할 수 없습니다.");
 
