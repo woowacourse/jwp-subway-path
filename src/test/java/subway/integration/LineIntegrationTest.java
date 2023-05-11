@@ -11,31 +11,18 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.line.dao.LineDao;
-import subway.line.domain.Line;
+import org.springframework.test.context.jdbc.Sql;
 import subway.line.dto.LineRequest;
 import subway.line.dto.LineSearchResponse;
-import subway.section.dao.SectionDao;
-import subway.section.entity.SectionEntity;
-import subway.station.dao.StationDao;
 import subway.station.domain.Station;
 
 @DisplayName("지하철 노선 관련 기능")
 class LineIntegrationTest extends IntegrationTest {
+    
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
-
-    @Autowired
-    private StationDao stationDao;
-    @Autowired
-    private LineDao lineDao;
-    @Autowired
-    private SectionDao sectionDao;
-    private Long lineId1;
-    private Long lineId2;
 
     @Override
     @BeforeEach
@@ -44,33 +31,6 @@ class LineIntegrationTest extends IntegrationTest {
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
-
-        lineId1 = lineDao.insert(new Line("2호선", "초록색")).getId();
-        lineId2 = lineDao.insert(new Line("3호선", "파랑색")).getId();
-
-        stationDao.insert(new Station("1L"));
-        stationDao.insert(new Station("2L"));
-        stationDao.insert(new Station("3L"));
-        stationDao.insert(new Station("4L"));
-        stationDao.insert(new Station("5L"));
-        stationDao.insert(new Station("6L"));
-        stationDao.insert(new Station("7L"));
-        stationDao.insert(new Station("8L"));
-        stationDao.insert(new Station("9L"));
-        stationDao.insert(new Station("10L"));
-        stationDao.insert(new Station("11L"));
-
-        sectionDao.insert(new SectionEntity(1L, 1L, 1L, 2L, 3));
-        sectionDao.insert(new SectionEntity(2L, 1L, 2L, 3L, 3));
-        sectionDao.insert(new SectionEntity(3L, 1L, 3L, 4L, 3));
-        sectionDao.insert(new SectionEntity(4L, 1L, 4L, 5L, 3));
-        sectionDao.insert(new SectionEntity(5L, 1L, 5L, 6L, 3));
-        sectionDao.insert(new SectionEntity(6L, 1L, 6L, 7L, 3));
-
-        sectionDao.insert(new SectionEntity(7L, 2L, 8L, 9L, 3));
-        sectionDao.insert(new SectionEntity(8L, 2L, 9L, 4L, 3));
-        sectionDao.insert(new SectionEntity(9L, 2L, 4L, 10L, 3));
-        sectionDao.insert(new SectionEntity(10L, 2L, 10L, 11L, 3));
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -117,6 +77,7 @@ class LineIntegrationTest extends IntegrationTest {
 
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
+    @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
     void getLines() {
         // when
         final ExtractableResponse<Response> response = RestAssured
@@ -129,14 +90,10 @@ class LineIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         final List<LineSearchResponse> result = response.jsonPath().getList(".", LineSearchResponse.class);
-        System.out.println();
-        System.out.println(result.get(0).getStations());
-        System.out.println(result.get(1).getId());
-        System.out.println(result.get(1).getStations());
         assertAll(
-                () -> assertThat(result.get(0).getId()).isEqualTo(lineId1),
-                () -> assertThat(result.get(0).getName()).isEqualTo("2호선"),
-                () -> assertThat(result.get(0).getColor()).isEqualTo("초록색"),
+                () -> assertThat(result.get(0).getId()).isPositive(),
+                () -> assertThat(result.get(0).getName()).isEqualTo("1호선"),
+                () -> assertThat(result.get(0).getColor()).isEqualTo("파란색"),
                 () -> assertThat(result.get(0).getStations()).containsExactly(
                         new Station(1L, "1L"),
                         new Station(2L, "2L"),
@@ -146,9 +103,9 @@ class LineIntegrationTest extends IntegrationTest {
                         new Station(6L, "6L"),
                         new Station(7L, "7L")
                 ),
-                () -> assertThat(result.get(1).getId()).isEqualTo(lineId2),
-                () -> assertThat(result.get(1).getName()).isEqualTo("3호선"),
-                () -> assertThat(result.get(1).getColor()).isEqualTo("파랑색"),
+                () -> assertThat(result.get(1).getId()).isPositive(),
+                () -> assertThat(result.get(1).getName()).isEqualTo("2호선"),
+                () -> assertThat(result.get(1).getColor()).isEqualTo("초록색"),
                 () -> assertThat(result.get(1).getStations()).containsExactly(
                         new Station(8L, "8L"),
                         new Station(9L, "9L"),
@@ -161,21 +118,22 @@ class LineIntegrationTest extends IntegrationTest {
 
     @DisplayName("지하철 노선을 조회한다.")
     @Test
+    @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
     void getLine() {
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId1)
+                .when().get("/lines/{lineId}", 1)
                 .then().log().all()
                 .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         final LineSearchResponse lineSearchResponse = response.as(LineSearchResponse.class);
-        assertThat(lineSearchResponse.getId()).isEqualTo(lineId1);
-        assertThat(lineSearchResponse.getName()).isEqualTo("2호선");
-        assertThat(lineSearchResponse.getColor()).isEqualTo("초록색");
+        assertThat(lineSearchResponse.getId()).isEqualTo(1);
+        assertThat(lineSearchResponse.getName()).isEqualTo("1호선");
+        assertThat(lineSearchResponse.getColor()).isEqualTo("파란색");
         assertThat(lineSearchResponse.getStations()).containsExactly(
                 new Station(1L, "1L"),
                 new Station(2L, "2L"),
