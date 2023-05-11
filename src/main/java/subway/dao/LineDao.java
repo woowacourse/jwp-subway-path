@@ -23,6 +23,9 @@ public class LineDao {
                     rs.getString("color")
             );
 
+    private final RowMapper<Boolean> booleanMapper = (resultSet, rowNum) -> resultSet.getBoolean("isExist");
+
+
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
@@ -48,6 +51,11 @@ public class LineDao {
     public Line findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Boolean hasId(final Long id) {
+        String sql = "select exists(select id, name, color from LINE WHERE id = ?) as isExist";
+        return jdbcTemplate.queryForObject(sql, booleanMapper, id);
     }
 
     public void update(Line newLine) {
