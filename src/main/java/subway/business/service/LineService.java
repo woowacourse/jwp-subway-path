@@ -34,7 +34,7 @@ public class LineService {
     public void deleteStation(Long lineId, String stationName) {
         Line line = lineRepository.findById(lineId);
         line.deleteStation(stationName);
-        lineRepository.save(line);
+        lineRepository.update(line);
     }
 
     public List<LineStationsResponse> findLineResponses() {

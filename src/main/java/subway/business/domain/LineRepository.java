@@ -10,5 +10,5 @@ public interface LineRepository {
 
     List<Line> findAll();
 
-    void save(Line line);
+    void update(Line line);
 }

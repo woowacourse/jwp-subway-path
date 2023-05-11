@@ -27,7 +27,7 @@ public class InMemoryLineRepository implements LineRepository {
     }
 
     @Override
-    public void save(Line line) {
+    public void update(Line line) {
         lines.set(line.getId().intValue(), line);
     }
 }

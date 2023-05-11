@@ -12,7 +12,7 @@
 
 # API 명세서
 
-### POST /lines
+### ✅ POST /lines
 - 노선을 추가합니다. 
 - 종점이 될 역 2개와 거리를 설정해야 합니다.
 - 존재하지 않는 역이면, 새로 생성됩니다.
@@ -87,7 +87,7 @@ HTTP/1.1 200 OK
 Content-Type: application/json
 ```
 
-### GET /lines/{line_id}
+### ✅ GET /lines/{line_id}
 - 특정 노선의 이름과 포함된 모든 역을 조회합니다.
 
 #### Request example

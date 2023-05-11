@@ -1,7 +1,9 @@
 package subway.persistence.dao;
 
+import java.util.List;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -31,5 +33,12 @@ public class SectionDao {
     public long insert(SectionEntity sectionEntity) {
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(sectionEntity);
         return simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
+    }
+
+    public List<SectionEntity> findAllByLineId(Long id) {
+        //TODO EmptyResultDataAccessException 처리
+        String sql = "SELECT id, line_id, upward_station, downward_station, distance FROM section WHERE line_id=:lineId";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", id);
+        return namedParameterJdbcTemplate.query(sql, sqlParameterSource, rowMapper);
     }
 }
