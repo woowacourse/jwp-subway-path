@@ -6,6 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
+import subway.entity.SectionStationJoinEntity;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -56,10 +57,6 @@ public class SectionDao {
                 );
     }
 
-    public void deleteBySectionId(Long id) {
-
-    }
-
     public Optional<SectionEntity> findByDownStationIdAndLindId(Long downStationId, Long lineId) {
         String sql = "SELECT id, up_station_id, down_station_id, line_id, distance " +
                 "FROM subway_section WHERE down_station_id = ? AND line_id = ?";
@@ -67,5 +64,47 @@ public class SectionDao {
                 sectionEntityRowMapper(), downStationId, lineId
         );
         return sectionEntities.stream().findAny();
+    }
+
+    public List<SectionEntity> findSectionsByLineId(Long lineId) {
+        String sql = "SELECT id, up_station_id, down_station_id, line_id, distance " +
+                "FROM subway_section WHERE line_id = ?";
+        return jdbcTemplate.query(sql, sectionEntityRowMapper(), lineId);
+    }
+
+    public List<SectionStationJoinEntity> findSectionStationByLineId(Long lineId) {
+        String sql = "SELECT\n" +
+                "ss.id AS section_id,\n" +
+                "us.id AS up_station_id,\n" +
+                "us.name AS up_station_name,\n" +
+                "ds.id AS down_station_id,\n" +
+                "ds.name AS down_station_name,\n" +
+                "ss.line_id,\n" +
+                "ss.distance\n" +
+                "FROM\n" +
+                "subway_section ss\n" +
+                "INNER JOIN station us ON us.line_id = ss.line_id AND us.id = ss.up_station_id\n" +
+                "INNER JOIN station ds ON ds.line_id = ss.line_id AND ds.id = ss.down_station_id\n" +
+                "WHERE ss.line_id = ?";
+
+        return jdbcTemplate.query(sql, sectionStationJoinEntityRowMapper(), lineId);
+    }
+
+    private RowMapper<SectionStationJoinEntity> sectionStationJoinEntityRowMapper() {
+        return (rs, rowNum) ->
+                new SectionStationJoinEntity.Builder()
+                        .sectionId(rs.getLong("section_id"))
+                        .upStationId(rs.getLong("up_station_id"))
+                        .upStationName(rs.getString("up_station_name"))
+                        .downStationId(rs.getLong("down_station_id"))
+                        .downStationName(rs.getString("down_station_name"))
+                        .lineId(rs.getLong("line_id"))
+                        .distance(rs.getInt("distance"))
+                        .build();
+    }
+
+    public void deleteBySectionId(Long id) {
+        String sql = "DELETE FROM subway_section WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

@@ -139,4 +139,74 @@ class StationServiceTest {
             }
         }
     }
+
+    @Nested
+    @DisplayName("역 삭제 시 ")
+    class deleteStationTest {
+
+        @Test
+        @DisplayName("해당하는 역이 없으면 예외가 발생한다.")
+        void deleteStationTest_fail_when_stationNotExist() {
+            // given
+            Long stationIdToDelete = DUMMY_잠실_INSERTED_ID;
+
+            // when, then
+            assertThatThrownBy(() -> stationService.deleteStationById(stationIdToDelete))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("역 id에 해당하는 역 정보를 찾을 수 없습니다.");
+        }
+
+        @Test
+        @DisplayName("해당 노선에 역이 2개 존재하는 경우 2개의 역 모두 제거되어야 한다.")
+        void deleteStationsAndLineTest_when_twoStationsExist() {
+            // given
+            Long stationIdToDelete = DUMMY_잠실_INSERTED_ID;
+
+            // when
+
+
+            // then
+
+        }
+
+        @Test
+        @DisplayName("상행 종점을 제거하는 경우")
+        void deleteUpEndStationTest() {
+            // given
+            Long stationIdToDelete = DUMMY_잠실_INSERTED_ID;
+
+            // when
+
+
+            // then
+
+        }
+
+        @Test
+        @DisplayName("하행 종점을 제거하는 경우")
+        void deleteDownEndStationTest() {
+            // given
+            Long stationIdToDelete = DUMMY_건대_INSERTED_ID;
+
+            // when
+
+
+            // then
+
+        }
+
+        @Test
+        @DisplayName("두 역 사이에 있는 역을 제거하는 경우 역과 역 사이의 관계 및 거리가 재배치된다.")
+        void deleteBetweenStationTest() {
+            // given
+            Long stationIdToDelete = DUMMY_강변_INSERTED_ID;
+
+
+            // when
+
+
+            // then
+
+        }
+    }
 }

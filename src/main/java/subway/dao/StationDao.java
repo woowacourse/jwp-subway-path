@@ -45,9 +45,9 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<StationEntity> findById(Long id) {
+        String sql = "select id, name, line_id from STATION where id = ?";
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationEntityRowMapper(), id));
     }
 
     public Optional<StationEntity> findByStationNameAndLineName(String stationName, String lineName) {

@@ -5,18 +5,22 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.calculator.MiddleStationRemoveCalculator;
 import subway.domain.line.LineName;
 import subway.domain.section.Section;
+import subway.domain.section.SectionEntities;
 import subway.domain.station.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.dto.StationSaveResponse;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.entity.SectionStationJoinEntity;
 import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -136,7 +140,37 @@ public class StationService {
 //        stationDao.update(new Station(id, stationRequest.getName()));
     }
 
-    public void deleteStationById(Long id) {
-//        stationDao.deleteById(id);
+    public void deleteStationById(Long stationId) {
+        Optional<StationEntity> findStationEntity = stationDao.findById(stationId);
+        // TODO: custom notfound 예외 만들기
+        if (findStationEntity.isEmpty()) {
+            throw new IllegalArgumentException("역 id에 해당하는 역 정보를 찾을 수 없습니다.");
+        }
+        StationEntity findStation = findStationEntity.get();
+        List<SectionStationJoinEntity> sectionStations = sectionDao.findSectionStationByLineId(findStation.getLineId());
+
+        SectionEntities sectionEntities = new SectionEntities(sectionStations.stream()
+                .map(sectionStationEntities -> new SectionEntity(sectionStationEntities.getSectionId(), sectionStationEntities.getUpStationId(), sectionStationEntities.getDownStationId(), sectionStationEntities.getLineId(), sectionStationEntities.getDistance()))
+                .collect(Collectors.toUnmodifiableList()));
+
+        if (sectionEntities.getSize() == 1) {
+            lineDao.deleteById(findStation.getLineId());
+        }
+        // 종점 or 중간역 삭제
+        Optional<SectionEntity> upSection = sectionEntities.findUpSectionByStation(findStation);
+        Optional<SectionEntity> downSection = sectionEntities.findDownSectionByStation(findStation);
+
+        MiddleStationRemoveCalculator middleStationRemoveCalculator = new MiddleStationRemoveCalculator(sectionEntities);
+
+        // 상행 or 하행 종점 시 역만 제거해도 섹션은 같이 제거됨
+        //
+        if (upSection.isEmpty() && !downSection.isEmpty() || upSection.isEmpty() && !downSection.isEmpty()) {
+            stationDao.deleteById(findStation.getId());
+        }
+
+        // 중간 역 제거
+        SectionEntity sectionToAdd = middleStationRemoveCalculator.calculateSectionToAdd(findStation);
+        stationDao.deleteById(findStation.getId());
+        sectionDao.insert(sectionToAdd);
     }
 }

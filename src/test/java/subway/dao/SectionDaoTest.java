@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.entity.SectionEntity;
 
+import java.util.List;
 import java.util.Optional;
 
 import static fixtures.StationFixtures.*;
@@ -67,5 +68,31 @@ class SectionDaoTest {
 
         // then
         assertThat(findSection.get()).isEqualTo(잠실_TO_건대_FIND_SECTION_ENTITY);
+    }
+
+    @Test
+    @DisplayName("노선 id에 해당하는 모든 행을 조회한다.")
+    void findSectionsByLineIdTest() {
+        // given
+        Long lineId = DUMMY_LINE2_ID;
+
+        // when
+        List<SectionEntity> findSections = sectionDao.findSectionsByLineId(lineId);
+
+        // then
+        assertThat(findSections).isEqualTo(List.of(잠실_TO_건대_FIND_SECTION_ENTITY));
+    }
+
+    @Test
+    @DisplayName("sectionId에 해당하는 행을 삭제한다.")
+    void deleteBySectionIdTest() {
+        // given
+        Long sectionIdToDelete = DUMMY_SECTION_잠실_TO_건대_ID;
+
+        // when
+        sectionDao.deleteBySectionId(sectionIdToDelete);
+
+        // then
+        assertThat(sectionDao.findSectionsByLineId(DUMMY_LINE2_ID)).hasSize(0);
     }
 }
