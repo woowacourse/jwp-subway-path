@@ -1,7 +1,8 @@
-package subway.domain;
+package subway.persistence.repository;
 
 import java.util.List;
 import java.util.Optional;
+import subway.domain.Line;
 
 public interface LineRepository {
 

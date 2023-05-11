@@ -8,7 +8,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
-import subway.domain.LineRepository;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.persistence.dao.LineDao;

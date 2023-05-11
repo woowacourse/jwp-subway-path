@@ -3,9 +3,9 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.StationRepository;
 import subway.dto.request.StationCreateRequest;
 import subway.exception.DuplicateStationException;
+import subway.persistence.repository.StationRepository;
 
 @Service
 @Transactional

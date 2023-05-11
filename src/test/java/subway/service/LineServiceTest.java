@@ -18,17 +18,17 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
-import subway.domain.LineRepository;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.domain.StationRepository;
 import subway.dto.request.AddStationToLineRequest;
 import subway.dto.request.DeleteStationFromLineRequest;
 import subway.dto.request.LineCreateRequest;
 import subway.exception.DuplicateLineException;
 import subway.exception.NotFoundLineException;
 import subway.exception.NotFoundStationException;
+import subway.persistence.repository.LineRepository;
+import subway.persistence.repository.StationRepository;
 
 
 @SuppressWarnings("NonAsciiCharacters")

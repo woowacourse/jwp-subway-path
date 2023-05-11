@@ -11,11 +11,9 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import subway.domain.Line;
-import subway.domain.LineRepository;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.domain.StationRepository;
 import subway.persistence.RepositoryTest;
 
 

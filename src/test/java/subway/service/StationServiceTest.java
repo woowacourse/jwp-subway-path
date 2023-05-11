@@ -12,9 +12,9 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Station;
-import subway.domain.StationRepository;
 import subway.dto.request.StationCreateRequest;
 import subway.exception.DuplicateStationException;
+import subway.persistence.repository.StationRepository;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)

@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
-import subway.domain.LineRepository;
 import subway.dto.response.LineQueryResponse;
 import subway.exception.NotFoundLineException;
+import subway.persistence.repository.LineRepository;
 
 @Service
 @Transactional(readOnly = true)

@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.persistence.repository;
 
 import java.util.Optional;
+import subway.domain.Station;
 
 public interface StationRepository {
 

@@ -13,10 +13,10 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
-import subway.domain.LineRepository;
 import subway.domain.Sections;
 import subway.dto.response.LineQueryResponse;
 import subway.exception.NotFoundLineException;
+import subway.persistence.repository.LineRepository;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
