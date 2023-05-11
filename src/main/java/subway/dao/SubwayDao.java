@@ -32,7 +32,7 @@ public class SubwayDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Line findById(Integer lineId) {
+    public Line findById(Long lineId) {
         String lineEntitySql = "select id, name, color from line where id = ?";
         LineEntity lineEntity = jdbcTemplate.queryForObject(lineEntitySql, lineRowMapper, lineId);
 

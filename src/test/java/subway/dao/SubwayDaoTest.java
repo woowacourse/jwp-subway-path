@@ -30,11 +30,6 @@ class SubwayDaoTest {
     private SubwayDao subwayDao;
     private LineDao lineDao;
 
-    private final RowMapper<LineEntity> lineRowMapper = (rs, cn) -> new LineEntity(
-            rs.getLong("id"),
-            rs.getString("name"),
-            rs.getString("color")
-    );
     private final RowMapper<SectionEntity> sectionMapper = (rs, cn) -> new SectionEntity(
             rs.getLong("id"),
             rs.getLong("line_id"),
@@ -126,7 +121,7 @@ class SubwayDaoTest {
         //when
         lineDao.insert(line);
         subwayDao.save(line);
-        Line actualLine = subwayDao.findById(1);
+        Line actualLine = subwayDao.findById(1L);
         List<Section> sections = actualLine.getSections();
 
         //then
