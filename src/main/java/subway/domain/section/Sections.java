@@ -9,6 +9,7 @@ import subway.domain.station.StationDistance;
 public class Sections {
     private static final int END_POINT_STATION_FLAG = 1;
     private static final int BETWEEN_STATION_FLAG = 2;
+
     private final List<Section> sections;
 
     public Sections() {

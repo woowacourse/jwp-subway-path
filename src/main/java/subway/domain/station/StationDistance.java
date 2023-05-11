@@ -26,6 +26,10 @@ public class StationDistance {
         return new StationDistance(this.distance + other.distance);
     }
 
+    public int getDistance() {
+        return distance;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -42,4 +46,5 @@ public class StationDistance {
     public int hashCode() {
         return Objects.hash(distance);
     }
+
 }
