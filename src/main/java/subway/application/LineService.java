@@ -54,12 +54,12 @@ public class LineService {
         List<Section> sortedSections = Sections.from(sections).getSections();
 
         final List<Long> stationsIds = sortedSections.stream()
-                .map(section -> section.getUpStationId())
+                .map(Section::getUpStationId)
                 .collect(Collectors.toList());
         stationsIds.add(sortedSections.get(sortedSections.size() - 1).getDownStationId());
 
         final List<Station> stationNames = stationsIds.stream()
-                .map(stationId -> stationDao.findById(stationId))
+                .map(stationDao::findById)
                 .collect(Collectors.toList());
 
         Line persistLine = findLineById(id);
