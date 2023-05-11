@@ -97,9 +97,9 @@ class StationControllerTest {
 
     @Test
     void 역을_전체_조회한다() {
-        stationDao.insert(new Station("조회역")).getId();
-        stationDao.insert(new Station("강남역")).getId();
-        stationDao.insert(new Station("잠실역")).getId();
+        stationDao.insert(new Station("조회역"));
+        stationDao.insert(new Station("강남역"));
+        stationDao.insert(new Station("잠실역"));
 
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when().get("/stations")
