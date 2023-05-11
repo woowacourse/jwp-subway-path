@@ -1,11 +1,5 @@
 package subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -18,27 +12,31 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import subway.entity.StationEntity;
 import subway.fixture.StationFixture.삼성역;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 class StationEntityDaoTest {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private SimpleJdbcInsert simpleJdbcInsert;
-
-    private StationDao stationDao;
 
     private final RowMapper<StationEntity> stationRowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert simpleJdbcInsert;
+    private StationDao stationDao;
 
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        stationDao = new H2StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
         simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
@@ -58,8 +56,8 @@ class StationEntityDaoTest {
         jdbcTemplate.update("INSERT INTO station(name) VALUES (?)", "역삼역");
         List<StationEntity> stationEntities = stationDao.findAll();
         assertAll(
-                () -> assertThat(stationEntities.size())
-                        .isEqualTo(2),
+                () -> assertThat(stationEntities)
+                        .hasSize(2),
                 () -> assertThat(stationEntities)
                         .extracting("name")
                         .containsExactlyInAnyOrder("삼성역", "역삼역")

@@ -1,7 +1,5 @@
 package subway.repository;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -13,6 +11,9 @@ import subway.domain.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.mapper.SectionMapper;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class JdbcLineRepository implements LineRepository {

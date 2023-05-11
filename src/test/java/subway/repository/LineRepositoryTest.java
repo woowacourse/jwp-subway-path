@@ -1,16 +1,11 @@
 package subway.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
+import subway.dao.*;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -20,6 +15,10 @@ import subway.entity.StationEntity;
 import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.역삼역;
 import subway.fixture.StationFixture.잠실역;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
 class LineRepositoryTest {
@@ -34,9 +33,9 @@ class LineRepositoryTest {
 
     @BeforeEach
     void setUp() {
-        lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        sectionDao = new SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        stationDao = new StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        lineDao = new H2LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        sectionDao = new H2SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        stationDao = new H2StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
         lineRepository = new JdbcLineRepository(jdbcTemplate, lineDao, sectionDao);
     }
 

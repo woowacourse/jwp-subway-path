@@ -1,11 +1,5 @@
 package subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -23,17 +17,17 @@ import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.역삼역;
 import subway.fixture.StationFixture.잠실역;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 class SectionEntityDaoTest {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private SimpleJdbcInsert simpleJdbcInsert;
-
-    private SectionDao sectionDao;
 
     private final RowMapper<SectionEntity> sectionRowMapper = (rs, rowNum) ->
             new SectionEntity(
@@ -43,10 +37,14 @@ class SectionEntityDaoTest {
                     rs.getLong("down_station_id"),
                     rs.getInt("distance")
             );
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert simpleJdbcInsert;
+    private SectionDao sectionDao;
 
     @BeforeEach
     void setUp() {
-        sectionDao = new SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        sectionDao = new H2SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
         simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("section")
                 .usingGeneratedKeyColumns("id");
@@ -68,8 +66,8 @@ class SectionEntityDaoTest {
                 이호선.ENTITY.getId(), 삼성역.ENTITY.getId(), 잠실역.ENTITY.getId(), 2);
         List<SectionEntity> sectionEntities = sectionDao.findAll();
         assertAll(
-                () -> assertThat(sectionEntities.size())
-                        .isEqualTo(2),
+                () -> assertThat(sectionEntities)
+                        .hasSize(2),
                 () -> assertThat(sectionEntities)
                         .usingRecursiveComparison()
                         .ignoringFields("id")

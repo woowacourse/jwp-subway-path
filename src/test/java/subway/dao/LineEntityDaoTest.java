@@ -1,11 +1,5 @@
 package subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -18,17 +12,17 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import subway.entity.LineEntity;
 import subway.fixture.LineFixture.이호선;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 class LineEntityDaoTest {
-
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private SimpleJdbcInsert simpleJdbcInsert;
-
-    private LineDao lineDao;
 
     private final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) ->
             new LineEntity(
@@ -36,10 +30,14 @@ class LineEntityDaoTest {
                     rs.getString("name"),
                     rs.getString("color")
             );
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    private SimpleJdbcInsert simpleJdbcInsert;
+    private LineDao lineDao;
 
     @BeforeEach
     void setUp() {
-        lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
+        lineDao = new H2LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
         simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
@@ -59,8 +57,8 @@ class LineEntityDaoTest {
         jdbcTemplate.update("INSERT INTO line(name, color) VALUES (?,?)", "3호선", "ORANGE");
         List<LineEntity> lineEntities = lineDao.findAll();
         assertAll(
-                () -> assertThat(lineEntities.size())
-                        .isEqualTo(2),
+                () -> assertThat(lineEntities)
+                        .hasSize(2),
                 () -> assertThat(lineEntities)
                         .extracting("name")
                         .containsExactlyInAnyOrder("2호선", "3호선")
