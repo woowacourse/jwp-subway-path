@@ -10,6 +10,7 @@ import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -45,7 +46,7 @@ public class SectionService {
             throw new IllegalArgumentException("존재 하지 않는 노선에는 구간을 추가 할 수 없습니다.");
         }
 
-        if (request.getUpStationId() == request.getDownStationId()) {
+        if (Objects.equals(request.getUpStationId(), request.getDownStationId())) {
             throw new IllegalArgumentException("같은 역을 구간으로 등록할 수 없습니다.");
         }
 
@@ -127,7 +128,7 @@ public class SectionService {
 
         final List<Section> includeTargetSection = sortedSections.findIncludeTargetSection(stationId);
         final int newDistance = includeTargetSection.stream()
-                .mapToInt(section -> section.getDistance())
+                .mapToInt(Section::getDistance)
                 .sum();
 
         final Section forwardSection = includeTargetSection.get(0);

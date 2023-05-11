@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -56,35 +57,35 @@ public class Sections {
     }
 
     public boolean isDownEndPoint(Long upStationId) {
-        return upStationId == sections.get(sections.size() - 1).getDownStationId();
+        return Objects.equals(upStationId, sections.get(sections.size() - 1).getDownStationId());
     }
 
     public boolean isUpEndPoint(Long downStationId) {
-        return downStationId == sections.get(0).getUpStationId();
+        return Objects.equals(downStationId, sections.get(0).getUpStationId());
     }
 
     public boolean isUpStationPoint(Long upStationId) {
         return sections.stream()
-                .anyMatch(section -> section.getUpStationId() == upStationId);
+                .anyMatch(section -> Objects.equals(section.getUpStationId(), upStationId));
     }
 
     public Section getTargtUpStationSection(Long upStationId) {
         return sections.stream()
-                .filter(section -> section.getUpStationId() == upStationId)
+                .filter(section -> Objects.equals(section.getUpStationId(), upStationId))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
     public Section getTargtDownStationSection(Long downStationId) {
         return sections.stream()
-                .filter(section -> section.getDownStationId() == downStationId)
+                .filter(section -> Objects.equals(section.getDownStationId(), downStationId))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
     public List<Section> findIncludeTargetSection(Long stationId){
         return sections.stream()
-                .filter(section -> section.getUpStationId() == stationId || section.getDownStationId() == stationId)
+                .filter(section -> Objects.equals(section.getUpStationId(), stationId) || Objects.equals(section.getDownStationId(), stationId))
                 .collect(Collectors.toList());
     }
 
