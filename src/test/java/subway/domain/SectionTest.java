@@ -1,9 +1,13 @@
 package subway.domain;
 
 import org.junit.jupiter.api.Test;
+import subway.service.section.domain.Distance;
+import subway.service.section.domain.Section;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.StationFixture.*;
+import static subway.domain.StationFixture.GANGNAM;
+import static subway.domain.StationFixture.JAMSIL;
+import static subway.domain.StationFixture.SEONLEUNG;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SectionTest {

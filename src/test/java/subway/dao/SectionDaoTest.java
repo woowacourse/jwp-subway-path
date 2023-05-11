@@ -5,20 +5,20 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
+import subway.service.line.domain.Line;
+import subway.service.station.domain.Station;
 
 import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.domain.LineFixture.SECOND_LINE;
-import static subway.domain.StationFixture.*;
+import static subway.domain.StationFixture.GANGNAM;
+import static subway.domain.StationFixture.JAMSIL;
+import static subway.domain.StationFixture.SEONLEUNG;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
@@ -48,8 +48,6 @@ class SectionDaoTest {
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE);
 
-        Section section = new Section(savedJamsil, savedSeonleung, new Distance(10));
-
         SectionEntity sectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
 
         SectionEntity savedSection = sectionDao.insert(sectionEntity, savedSecondLine.getId());
@@ -69,9 +67,6 @@ class SectionDaoTest {
         Station savedGangnam = stationDao.insert(GANGNAM);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE);
-
-        Section upSection = new Section(savedJamsil, savedSeonleung, new Distance(10));
-        Section downSection = new Section(savedSeonleung, savedGangnam, new Distance(3));
 
         SectionEntity upSectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
         SectionEntity downSectionEntity = new SectionEntity(savedSeonleung.getId(), savedGangnam.getId(), 3, savedSecondLine.getId());

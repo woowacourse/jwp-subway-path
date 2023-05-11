@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.service.station.domain.Station;
+
 public class StationFixture {
     public static Station JAMSIL = new Station(1L, "잠실");
     public static Station SEONLEUNG = new Station(2L, "선릉");

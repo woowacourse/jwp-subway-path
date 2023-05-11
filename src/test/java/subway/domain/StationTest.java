@@ -1,6 +1,7 @@
 package subway.domain;
 
 import org.junit.jupiter.api.Test;
+import subway.service.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

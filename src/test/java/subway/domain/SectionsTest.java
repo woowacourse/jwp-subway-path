@@ -2,7 +2,11 @@ package subway.domain;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import subway.dto.AddResultDto;
+import subway.service.section.domain.Distance;
+import subway.service.section.domain.Section;
+import subway.service.section.domain.Sections;
+import subway.service.section.dto.AddResultDto;
+import subway.service.station.domain.Station;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,7 +14,10 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.StationFixture.*;
+import static subway.domain.StationFixture.GANGNAM;
+import static subway.domain.StationFixture.JAMSIL;
+import static subway.domain.StationFixture.SEONLEUNG;
+import static subway.domain.StationFixture.YUKSAM;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SectionsTest {

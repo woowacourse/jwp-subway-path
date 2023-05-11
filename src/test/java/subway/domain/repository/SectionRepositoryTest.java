@@ -3,21 +3,30 @@ package subway.domain.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import subway.domain.*;
+import org.springframework.transaction.annotation.Transactional;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
+import subway.service.line.domain.Line;
+import subway.service.section.domain.Distance;
+import subway.service.section.domain.Section;
+import subway.service.section.domain.Sections;
+import subway.service.section.repository.SectionRepository;
+import subway.service.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.LineFixture.FIRST_LINE_NO_ID;
 import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
-import static subway.domain.StationFixture.*;
+import static subway.domain.StationFixture.GANGNAM_NO_ID;
+import static subway.domain.StationFixture.JAMSIL_NO_ID;
+import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest
+@Transactional
 class SectionRepositoryTest {
 
     @Autowired

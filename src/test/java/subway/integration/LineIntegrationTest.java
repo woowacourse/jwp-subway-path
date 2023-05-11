@@ -9,8 +9,8 @@
 //import org.junit.jupiter.api.Test;
 //import org.springframework.http.HttpStatus;
 //import org.springframework.http.MediaType;
-//import subway.dto.LineRequest;
-//import subway.dto.LineResponse;
+//import subway.service.line.dto.LineRequest;
+//import subway.service.line.dto.LineResponse;
 //
 //import java.util.List;
 //import java.util.stream.Collectors;
