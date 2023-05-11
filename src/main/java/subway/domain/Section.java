@@ -6,16 +6,12 @@ public class Section {
 
     private final Station left;
     private final Station right;
-    private final int distance;
+    private final Distance distance;
 
-    public Section(Station left, Station right, int distance) {
+    public Section(Station left, Station right, Distance distance) {
         this.left = left;
         this.right = right;
         this.distance = distance;
-    }
-
-    public boolean hasStation(Station station) {
-        return left.equals(station) || right.equals(station);
     }
 
     public Station getLeft() {
@@ -27,7 +23,7 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getValue();
     }
 
     @Override
@@ -39,8 +35,8 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return getDistance() == section.getDistance() && Objects.equals(getLeft(), section.getLeft())
-                && Objects.equals(getRight(), section.getRight());
+        return Objects.equals(getLeft(), section.getLeft()) && Objects.equals(getRight(),
+                section.getRight()) && Objects.equals(getDistance(), section.getDistance());
     }
 
     @Override
