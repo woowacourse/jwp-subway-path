@@ -5,6 +5,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.validation.Valid;
+
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -21,6 +24,8 @@ import subway.application.SectionService;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.AddStationRequest;
+import subway.dto.AddStationResponse;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
@@ -80,6 +85,13 @@ public class LineController {
 	public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
 		lineService.deleteLineById(id);
 		return ResponseEntity.noContent().build();
+	}
+
+	@PostMapping("/{id}/stations")
+	public ResponseEntity<List<AddStationResponse>> addStation(@PathVariable Long id,
+		@Valid @RequestBody AddStationRequest addStationRequest) {
+		final List<AddStationResponse> addStationResponses = sectionService.addStationByLineId(id, addStationRequest);
+		return ResponseEntity.status(HttpStatus.CREATED).body(addStationResponses);
 	}
 
 	@ExceptionHandler(SQLException.class)

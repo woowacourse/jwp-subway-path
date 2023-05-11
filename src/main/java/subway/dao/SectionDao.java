@@ -2,11 +2,15 @@ package subway.dao;
 
 import static java.util.stream.Collectors.*;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import subway.domain.Distance;
@@ -19,6 +23,7 @@ import subway.dto.LineSection;
 public class SectionDao {
 
 	private final JdbcTemplate jdbcTemplate;
+
 	private final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
 		new Section(
 			rs.getLong("id"),
@@ -41,6 +46,26 @@ public class SectionDao {
 
 	public SectionDao(final JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
+	}
+
+	public long saveSection(Long lineId, int distance, String departure, String arrival) {
+		final String sql = "INSERT INTO sections (line_id, departure_id, arrival_id, distance) "
+			+ "SELECT ?, departure_station.id, arrival_station.id, ? "
+			+ "FROM station AS departure_station "
+			+ "LEFT JOIN station AS arrival_station "
+			+ "ON departure_station.name = ? AND arrival_station.name = ?";
+
+		final KeyHolder keyHolder = new GeneratedKeyHolder();
+		jdbcTemplate.update(connection -> {
+			PreparedStatement ps = connection.prepareStatement(sql, new String[] {"id"});
+			ps.setLong(1, lineId);
+			ps.setInt(2, distance);
+			ps.setString(3, departure);
+			ps.setString(4, arrival);
+			return ps;
+		}, keyHolder);
+
+		return (long)Objects.requireNonNull(keyHolder.getKeys()).get("id");
 	}
 
 	public Map<LineInfo, List<Section>> findSections() {
@@ -67,4 +92,10 @@ public class SectionDao {
 		return jdbcTemplate.query(sql, sectionRowMapper, id);
 	}
 
+	public void deleteSection(Long sectionId) {
+		final String sql = "DELETE FROM sections WHERE id = ?";
+
+		jdbcTemplate.update(sql, sectionId);
+
+	}
 }
