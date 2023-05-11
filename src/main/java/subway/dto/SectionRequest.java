@@ -10,6 +10,14 @@ public class SectionRequest {
         this.sectionStations = sectionStations;
     }
 
+    public Long getBaseStationId() {
+        return sectionStations.getBaseStationId();
+    }
+
+    public Long getNextStationId() {
+        return sectionStations.getNextStationId();
+    }
+
     public Long getLineId() {
         return lineId;
     }

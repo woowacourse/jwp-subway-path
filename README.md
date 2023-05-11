@@ -47,13 +47,28 @@
 
 #### Request
 
+- 역 등록은 하행 기준 기준역의 다음에 새로운 역을 추가합니다.
+- 만약 하행 기준 첫 역으로 등록하고 싶다면 `baseStationId`를 전달하지 않습니다.
+- 만약 빈 노선에 역을 등록할 경우, 새로운 두 역을 하행 기준 방향으로 전달합니다.
+
 ```http request
 POST /sections HTTP/1.1
 {
     "lineId": 1,
     "section":  {
-        "leftStationId": 1,
-        "rightStationId": 2,
+        "nextStationId": 2,
+        "distance": 2
+    }
+}
+```
+
+```http request
+POST /sections HTTP/1.1
+{
+    "lineId": 1,
+    "section":  {
+        "baseStationId": 1,
+        "nextStationId": 2,
         "distance": 2
     }
 }
