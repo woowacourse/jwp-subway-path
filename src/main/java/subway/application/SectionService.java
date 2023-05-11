@@ -6,10 +6,10 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Sections;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,8 +29,8 @@ public class SectionService {
     public Long insertSection(SectionRequest request) {
         if (lineDao.findById(request.getLineId()).isEmpty()) {
             final List<Line> all = lineDao.findAll();
-            for(Line line : all) {
-                System.out.println("라인 출력해봄: "+ line.getId());
+            for (Line line : all) {
+                System.out.println("라인 출력해봄: " + line.getId());
             }
             throw new IllegalArgumentException("존재 하지 않는 노선에는 구간을 추가 할 수 없습니다.");
         }
@@ -48,7 +48,7 @@ public class SectionService {
         // 역이 있는지 여부를 확인
         final List<Section> sections = sectionDao.findAllByLineId(request.getLineId());
 
-        final List<Section> sortedSections = sortSections(sections);
+        final List<Section> sortedSections = Sections.from(sections).getSections();
 
         // 둘 중의 하나만 있어야 한다.
         final Long upStationId = request.getUpStationId();
@@ -137,7 +137,7 @@ public class SectionService {
 
     public void deleteStation(Long stationId, SectionDeleteRequest request) {
         final List<Section> sections = sectionDao.findAllByLineId(request.getLineId());
-        final List<Section> sortedSections = sortSections(sections);
+        final List<Section> sortedSections = Sections.from(sections).getSections();
         // 구간이 1개이면
         if (sortedSections.size() == 1) {
             sectionDao.delete(sortedSections.get(0).getId());
@@ -166,41 +166,5 @@ public class SectionService {
         for (Section section : includeSections) {
             sectionDao.delete(section.getId());
         }
-    }
-
-    private List<Section> sortSections(List<Section> sections) {
-        final Long firstStationId = getFirstStations(sections);
-        List<Section> result = new ArrayList<>();
-        Long next = firstStationId;
-        for (int i = 0; i < sections.size(); i++) {
-            next = addNextSection(sections, result, next);
-        }
-        return result;
-    }
-
-    private Long getFirstStations(List<Section> sections) {
-        final Set<Long> allStationIds = sections.stream()
-                .flatMap(section -> Stream.of(section.getUpStationId(), section.getDownStationId()))
-                .collect(Collectors.toSet());
-
-        final Set<Long> downStationIds = sections.stream()
-                .map(Section::getDownStationId)
-                .collect(Collectors.toSet());
-
-        final List<Long> stationIds = new ArrayList<>(allStationIds);
-        stationIds.removeAll(downStationIds);
-
-        return stationIds.get(0);
-    }
-
-    private Long addNextSection(List<Section> sections, List<Section> result, Long nextStationId) {
-        for (Section section : sections) {
-            if (section.getUpStationId().equals(nextStationId)) {
-                nextStationId = section.getDownStationId();
-                result.add(section);
-                break;
-            }
-        }
-        return nextStationId;
     }
 }
