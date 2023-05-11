@@ -15,7 +15,6 @@ import subway.dto.LineResponse;
 
 import java.net.URI;
 import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
@@ -33,10 +32,10 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
-    }
+//    @GetMapping
+//    public ResponseEntity<List<LineResponse>> findAllLines() {
+//        return ResponseEntity.ok(lineService.findLineResponses());
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {

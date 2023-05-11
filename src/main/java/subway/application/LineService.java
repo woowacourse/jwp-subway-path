@@ -3,8 +3,11 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -16,10 +19,12 @@ import java.util.stream.Collectors;
 public class LineService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
+    private final StationDao stationDao;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
     }
 
     public Long saveLine(LineRequest request) {
@@ -32,20 +37,40 @@ public class LineService {
         return lineId;
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
+//    public List<LineResponse> findLineResponses() {
+//        List<Line> persistLines = findLines();
+//        return persistLines.stream()
+//                .map(LineResponse::of)
+//                .collect(Collectors.toList());
+//    }
 
     public List<Line> findLines() {
         return lineDao.findAll();
     }
 
+    /**
+     * {
+     *   "id": 1L,
+     *   "name": "노선이름",
+     *   "color": "노선색깔",
+     *   "stations": [{"id": 1L, "name": "역이름1"},{"id": 2L, "name": "역이름2"}]
+     * }
+     */
     public LineResponse findLineResponseById(Long id) {
+        final List<Section> sections = sectionDao.findAllByLineId(id);
+        List<Section> sortedSections = Sections.from(sections).getSections();
+
+        final List<Long> stationsIds = sortedSections.stream()
+                .map(section -> section.getUpStationId())
+                .collect(Collectors.toList());
+        stationsIds.add(sortedSections.get(sortedSections.size() - 1).getDownStationId());
+
+        final List<Station> stationNames = stationsIds.stream()
+                .map(stationId -> stationDao.findById(stationId))
+                .collect(Collectors.toList());
+
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.of(persistLine,stationNames);
     }
 
     public Line findLineById(Long id) {

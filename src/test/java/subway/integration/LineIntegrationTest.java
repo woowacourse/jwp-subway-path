@@ -1,14 +1,18 @@
 package subway.integration;
 
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import subway.dao.StationDao;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -17,18 +21,24 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest;
     private LineRequest lineRequest2;
 
+    @Autowired
+    private StationDao stationDao;
+
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        lineRequest = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
-        lineRequest2 = new LineRequest("신분당선", "bg-red-600", 1L, 2L, 10);
+        final Long 잠실역 = stationDao.insert(new Station("잠실역")).getId();
+        final Long 선릉역 = stationDao.insert(new Station("선릉역")).getId();
+        lineRequest = new LineRequest("신분당선", "bg-red-600", 잠실역, 선릉역, 10);
+        lineRequest2 = new LineRequest("신분당선", "bg-red-600", 잠실역, 선릉역, 10);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -137,9 +147,14 @@ public class LineIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
-        assertThat(resultResponse.getId()).isEqualTo(lineId);
+        final JsonPath result = response.jsonPath();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(result.getLong("id")).isEqualTo(1L),
+                () -> assertThat(result.getString("name")).isEqualTo("신분당선"),
+                () -> assertThat(result.getString("color")).isEqualTo("bg-red-600"),
+                () -> assertThat(result.getList("stations.name")).contains("잠실역", "선릉역")
+        );
     }
 
     @Disabled
