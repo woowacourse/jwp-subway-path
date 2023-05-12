@@ -3,8 +3,6 @@ package subway.persistence.dao;
 import org.junit.jupiter.api.Test;
 import subway.persistence.entity.SectionEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class SectionDaoTest {
 
     @Test

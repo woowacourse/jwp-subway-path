@@ -2,10 +2,11 @@ package subway.ui.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import java.util.List;
-import java.util.stream.Collectors;
 import subway.domain.Line;
 import subway.domain.Station;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonInclude(Include.NON_EMPTY)
 public class ReadLineResponse {

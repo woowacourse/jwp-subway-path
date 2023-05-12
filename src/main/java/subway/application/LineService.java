@@ -1,7 +1,5 @@
 package subway.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.CreationLineDto;
@@ -10,6 +8,9 @@ import subway.persistence.repository.LineRepository;
 import subway.persistence.repository.SectionRepository;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.response.ReadLineResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
