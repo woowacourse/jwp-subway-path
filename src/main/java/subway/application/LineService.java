@@ -3,22 +3,32 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.application.dto.AddStationToBetweenLineRequest;
+import subway.application.dto.AddStationToEndLineRequest;
 import subway.controller.dto.LineRequest;
 import subway.controller.dto.LineResponse;
-import subway.dao.LineDao;
 import subway.domain.Line;
+import subway.domain.Station;
+import subway.domain.exception.BusinessException;
+import subway.repository.LineRepository;
+import subway.repository.StationRepository;
 
+@Transactional(readOnly = true)
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
-    public LineService(final LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineService(final LineRepository lineRepository, final StationRepository stationRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        final Line persistLine = lineRepository.insert(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }
 
@@ -30,7 +40,7 @@ public class LineService {
     }
 
     public List<Line> findLines() {
-        return lineDao.findAll();
+        return lineRepository.findAll();
     }
 
     public LineResponse findLineResponseById(final Long id) {
@@ -39,14 +49,52 @@ public class LineService {
     }
 
     public Line findLineById(final Long id) {
-        return lineDao.findById(id);
+        return lineRepository.findById(id);
     }
 
+    @Transactional
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineRepository.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(final Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void addStationToTopLine(final AddStationToEndLineRequest request) {
+        final Line line = getLine(request.getLineName());
+        final Station station = getStation(request.getStationName());
+        line.addTopStation(station, request.getDistance());
+        lineRepository.update(line);
+    }
+
+    @Transactional
+    public void addStationToBottomLine(final AddStationToEndLineRequest request) {
+        final Line line = getLine(request.getLineName());
+        final Station station = getStation(request.getStationName());
+        line.addBottomStation(station, request.getDistance());
+        lineRepository.update(line);
+    }
+
+    @Transactional
+    public void addStationToBetweenLine(final AddStationToBetweenLineRequest request) {
+        final Line line = getLine(request.getLineName());
+        final Station station = getStation(request.getStationName());
+        final Station upStation = getStation(request.getUpStationName());
+        final Station downStation = getStation(request.getDownStationName());
+        line.addBetweenStation(station, upStation, downStation, request.getDistance());
+        lineRepository.update(line);
+    }
+
+    private Line getLine(final String name) {
+        return lineRepository.findByName(name)
+            .orElseThrow(() -> new BusinessException("존재하지 않는 호선입니다."));
+    }
+
+    private Station getStation(final String name) {
+        return stationRepository.findByName(name)
+            .orElseThrow(() -> new BusinessException("존재하지 않는 역입니다."));
     }
 }

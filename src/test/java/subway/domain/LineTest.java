@@ -19,10 +19,11 @@ class LineTest {
         final Sections sections = new Sections(Collections.emptyList());
         final Line line = new Line("name", "color", sections);
         final Station station = new Station("station");
+        final long distance = 10L;
 
         //when
         //then
-        assertThatThrownBy(() -> line.addTopStation(station))
+        assertThatThrownBy(() -> line.addTopStation(station, distance))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -33,14 +34,15 @@ class LineTest {
         final Station firstStation = new Station("firstStation");
         final Station secondStation = new Station("secondStation");
         final Station thirdStation = new Station("thirdStation");
-        final Section section1 = new Section(firstStation, secondStation);
-        final Section section2 = new Section(secondStation, thirdStation);
+        final long distance = 10L;
+        final Section section1 = new Section(firstStation, secondStation, distance);
+        final Section section2 = new Section(secondStation, thirdStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
         final Station station = new Station("station");
 
         //when
-        line.addTopStation(station);
+        line.addTopStation(station, distance);
 
         //then
         assertThat(line.getStationsSize()).isEqualTo(4);
@@ -54,10 +56,11 @@ class LineTest {
         final Sections sections = new Sections(Collections.emptyList());
         final Line line = new Line("name", "color", sections);
         final Station station = new Station("station");
+        final long distance = 10L;
 
         //when
         //then
-        assertThatThrownBy(() -> line.addBottomStation(station))
+        assertThatThrownBy(() -> line.addBottomStation(station, distance))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -68,14 +71,15 @@ class LineTest {
         final Station firstStation = new Station("firstStation");
         final Station secondStation = new Station("secondStation");
         final Station thirdStation = new Station("thirdStation");
-        final Section section1 = new Section(firstStation, secondStation);
-        final Section section2 = new Section(secondStation, thirdStation);
+        final long distance = 10L;
+        final Section section1 = new Section(firstStation, secondStation, distance);
+        final Section section2 = new Section(secondStation, thirdStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
         final Station station = new Station("station");
 
         //when
-        line.addBottomStation(station);
+        line.addBottomStation(station, distance);
 
         //then
         assertThat(line.getStationsSize()).isEqualTo(4);
@@ -91,10 +95,11 @@ class LineTest {
         final Station station1 = new Station("station1");
         final Station station2 = new Station("station2");
         final Station station = new Station("station");
+        final long distance = 10L;
 
         //when
         //then
-        assertThatThrownBy(() -> line.addBetweenStation(station, station1, station2))
+        assertThatThrownBy(() -> line.addBetweenStation(station, station1, station2, 10L))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -105,14 +110,15 @@ class LineTest {
         final Station firstStation = new Station("firstStation");
         final Station secondStation = new Station("secondStation");
         final Station thirdStation = new Station("thirdStation");
-        final Section section1 = new Section(firstStation, secondStation);
-        final Section section2 = new Section(secondStation, thirdStation);
+        final long distance = 10L;
+        final Section section1 = new Section(firstStation, secondStation, distance);
+        final Section section2 = new Section(secondStation, thirdStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
         final Station station = new Station("station");
 
         //when
-        line.addBetweenStation(station, firstStation, secondStation);
+        line.addBetweenStation(station, firstStation, secondStation, distance);
 
         //then
         assertThat(line.getStationsSize()).isEqualTo(4);

@@ -29,26 +29,27 @@ public class Line {
         this(null, name, color, sections);
     }
 
-    public void addTopStation(final Station station) {
+    public void addTopStation(final Station station, final long distance) {
         checkSectionsEmpty();
         final Station currentTopStation = sections.findTopStation();
-        final Section section = new Section(station, currentTopStation);
+        final Section section = new Section(station, currentTopStation, distance);
         sections.addTop(section);
     }
 
-    public void addBottomStation(final Station station) {
+    public void addBottomStation(final Station station, final long distance) {
         checkSectionsEmpty();
         final Station currentBottomStation = sections.findBottomStation();
-        final Section section = new Section(currentBottomStation, station);
+        final Section section = new Section(currentBottomStation, station, distance);
         sections.addBottom(section);
     }
 
-    public void addBetweenStation(final Station addStation, final Station upStation, final Station downStation) {
+    public void addBetweenStation(final Station addStation, final Station upStation, final Station downStation,
+        final long distance) {
         checkSectionsEmpty();
         final Section existedSection = sections.findSection(upStation, downStation);
         sections.remove(existedSection);
-        final Section upSection = new Section(existedSection.getUpStation(), addStation);
-        final Section downSection = new Section(addStation, existedSection.getDownStation());
+        final Section upSection = new Section(existedSection.getUpStation(), addStation, distance);
+        final Section downSection = new Section(addStation, existedSection.getDownStation(), distance);
         sections.addAll(upSection, downSection);
     }
 

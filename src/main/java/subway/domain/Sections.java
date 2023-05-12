@@ -1,12 +1,13 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import subway.domain.exception.BusinessException;
 
 public class Sections {
 
-    private final List<Section> value;
+    private List<Section> value;
 
     public Sections(final List<Section> value) {
         this.value = value;
@@ -17,48 +18,50 @@ public class Sections {
         if (value.isEmpty()) {
             return;
         }
-        makeTop();
-        tailBite(0);
+        final Section topSection = findTopSection();
+        final Section bottomSection = findBottomSection();
+        Section currentSection = topSection;
+        final List<Section> newValue = new ArrayList<>();
+        newValue.add(topSection);
+        while (!currentSection.equals(bottomSection)) {
+            final Section nextSection = findNextSection(currentSection);
+            newValue.add(nextSection);
+            currentSection = nextSection;
+        }
+        value = newValue;
     }
 
-    private void makeTop() {
+    private Section findTopSection() {
         for (final Section section : value) {
             if (isTopSection(section)) {
-                changeIndex(section, 0);
-                break;
+                return section;
             }
         }
+        throw new BusinessException("존재하지 않는 섹션입니다.");
     }
 
-    private void changeIndex(final Section section, int targetIndex) {
-        final int currentIndex = value.indexOf(section);
-        if (currentIndex >= 0 && currentIndex != targetIndex) {
-            value.remove(currentIndex);
-            if (targetIndex > currentIndex) {
-                targetIndex--;
+    private Section findBottomSection() {
+        for (final Section section : value) {
+            if (isBottomSection(section)) {
+                return section;
             }
-            value.add(targetIndex, section);
         }
+        throw new BusinessException("존재하지 않는 섹션입니다.");
+    }
+
+    private Section findNextSection(final Section currentSection) {
+        for (final Section section : value) {
+            if (currentSection.getDownStation().equals(section.getUpStation())) {
+                return section;
+            }
+        }
+        throw new BusinessException("존재하지 않는 섹션입니다.");
     }
 
     private boolean isTopSection(final Section section) {
         final Station upStation = section.getUpStation();
         return value.stream()
             .noneMatch(otherSection -> otherSection.getDownStation().equals(upStation));
-    }
-
-    private void tailBite(int index) {
-        final Section current = value.get(index);
-        if (isBottomSection(current)) {
-            return;
-        }
-        final Station currentDownStation = current.getDownStation();
-        for (final Section section : value) {
-            if (section.getUpStation().equals(currentDownStation)) {
-                changeIndex(section, ++index);
-                tailBite(index);
-            }
-        }
     }
 
     private boolean isBottomSection(final Section section) {
@@ -69,10 +72,6 @@ public class Sections {
 
     public boolean isEmpty() {
         return value.isEmpty();
-    }
-
-    public boolean isNotEmpty() {
-        return !value.isEmpty();
     }
 
     public int size() {

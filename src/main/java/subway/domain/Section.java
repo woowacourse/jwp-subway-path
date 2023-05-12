@@ -7,15 +7,17 @@ public class Section {
     private final Long id;
     private final Station upStation;
     private final Station downStation;
+    private final long distance;
 
-    public Section(final Long id, final Station upStation, final Station downStation) {
+    public Section(final Long id, final Station upStation, final Station downStation, final long distance) {
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
+        this.distance = distance;
     }
 
-    public Section(final Station upStation, final Station downStation) {
-        this(null, upStation, downStation);
+    public Section(final Station upStation, final Station downStation, final long distance) {
+        this(null, upStation, downStation, distance);
     }
 
     public boolean bothStationsEquals(final Station upStation, final Station downStation) {

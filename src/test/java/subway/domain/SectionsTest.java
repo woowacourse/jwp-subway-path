@@ -17,9 +17,10 @@ class SectionsTest {
         final Station midUpStation = new Station(2L, "midUpStation");
         final Station midDownStation = new Station(2L, "midDownStation");
         final Station bottomStation = new Station(3L, "bottomStation");
-        final Section topSection = new Section(1L, topStation, midUpStation);
-        final Section midSection = new Section(2L, midUpStation, midDownStation);
-        final Section bottomSection = new Section(2L, midDownStation, bottomStation);
+        final long distance = 10L;
+        final Section topSection = new Section(1L, topStation, midUpStation, distance);
+        final Section midSection = new Section(2L, midUpStation, midDownStation, distance);
+        final Section bottomSection = new Section(2L, midDownStation, bottomStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(bottomSection, topSection, midSection)));
 
         //when
@@ -39,9 +40,10 @@ class SectionsTest {
         final Station midUpStation = new Station(2L, "midUpStation");
         final Station midDownStation = new Station(2L, "midDownStation");
         final Station bottomStation = new Station(3L, "bottomStation");
-        final Section topSection = new Section(1L, topStation, midUpStation);
-        final Section midSection = new Section(2L, midUpStation, midDownStation);
-        final Section bottomSection = new Section(2L, midDownStation, bottomStation);
+        final long distance = 10L;
+        final Section topSection = new Section(1L, topStation, midUpStation, distance);
+        final Section midSection = new Section(2L, midUpStation, midDownStation, distance);
+        final Section bottomSection = new Section(2L, midDownStation, bottomStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(bottomSection, topSection, midSection)));
 
         //when
