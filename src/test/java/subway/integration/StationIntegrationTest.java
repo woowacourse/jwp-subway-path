@@ -34,13 +34,7 @@ class StationIntegrationTest extends IntegrationTest {
     @Test
     void createStation() {
         // when
-        final ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest1)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = createStation(stationRequest1);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -51,22 +45,10 @@ class StationIntegrationTest extends IntegrationTest {
     @Test
     void createStationWithDuplicateName() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest1)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        createStation(stationRequest1);
 
         // when
-        final ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest1)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> response = createStation(stationRequest1);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -77,24 +59,11 @@ class StationIntegrationTest extends IntegrationTest {
     void getStations() {
         // given
         final Long stationId1 = Long.parseLong(
-                RestAssured
-                        .given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(stationRequest1)
-                        .when().post("/stations")
-                        .then().log().all()
-                        .extract()
-                        .header("Location").split("/")[2]
+                createStation(stationRequest1).header("Location").split("/")[2]
         );
 
         final Long stationId2 = Long.parseLong(
-                RestAssured
-                        .given().log().all()
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .body(stationRequest2)
-                        .when().post("/stations")
-                        .then().log().all()
-                        .extract().header("Location").split("/")[2]
+                createStation(stationRequest2).header("Location").split("/")[2]
         );
 
         // when
@@ -114,13 +83,7 @@ class StationIntegrationTest extends IntegrationTest {
     @Test
     void getStation() {
         /// given
-        final ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest1)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> createResponse = createStation(stationRequest1);
 
         // when
         final Long stationId = Long.parseLong(createResponse.header("Location").split("/")[2]);
@@ -140,13 +103,7 @@ class StationIntegrationTest extends IntegrationTest {
     @Test
     void updateStation() {
         // given
-        final ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest1)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> createResponse = createStation(stationRequest1);
 
         // when
         final String uri = createResponse.header("Location");
@@ -166,13 +123,7 @@ class StationIntegrationTest extends IntegrationTest {
     @Test
     void deleteStation() {
         // given
-        final ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationRequest1)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+        final ExtractableResponse<Response> createResponse = createStation(stationRequest1);
 
         // when
         final String uri = createResponse.header("Location");
@@ -184,5 +135,15 @@ class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> createStation(final StationRequest stationRequest) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest)
+                .when().post("/stations")
+                .then().log().all()
+                .extract();
     }
 }
