@@ -59,25 +59,16 @@ public class SectionRepository {
         return new Sections(sections);
     }
 
-    private static ArrayList<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {
+    private ArrayList<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {
         ArrayList<Section> sections = new ArrayList<>();
         for (SectionEntity sectionEntity : sectionEntities) {
-            StationEntity upStationEntity = stationEntityMap.get(sectionEntity.getUpStationId());
-            Station upStation = new Station(upStationEntity.getStationId(), upStationEntity.getName());
-
-            StationEntity downStationEntity = stationEntityMap.get(sectionEntity.getDownStationId());
-            Station downStation = new Station(downStationEntity.getStationId(), downStationEntity.getName());
-            sections.add(new Section(
-                    sectionEntity.getId(),
-                    upStation,
-                    downStation,
-                    new Distance(sectionEntity.getDistance())
-            ));
+            Section section = toDomain(sectionEntity, stationEntityMap);
+            sections.add(section);
         }
         return sections;
     }
 
-    private static Set<Long> makeUniqueStationIds(List<SectionEntity> sectionEntities) {
+    private Set<Long> makeUniqueStationIds(List<SectionEntity> sectionEntities) {
         List<Long> upStationIds = sectionEntities.stream()
                 .map(SectionEntity::getUpStationId)
                 .collect(Collectors.toList());
@@ -88,5 +79,29 @@ public class SectionRepository {
 
         upStationIds.addAll(downStationIds);
         return new HashSet<>(upStationIds);
+    }
+
+    private SectionEntity toEntity(Section section, Line line) {
+        return new SectionEntity(
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                section.getDistance().getDistance(),
+                line.getId()
+        );
+    }
+
+    private Section toDomain(SectionEntity sectionEntity, Map<Long, StationEntity> stationEntityMap) {
+
+        StationEntity upStationEntity = stationEntityMap.get(sectionEntity.getUpStationId());
+        Station upStation = new Station(upStationEntity.getStationId(), upStationEntity.getName());
+
+        StationEntity downStationEntity = stationEntityMap.get(sectionEntity.getDownStationId());
+        Station downStation = new Station(downStationEntity.getStationId(), downStationEntity.getName());
+        return new Section(
+                sectionEntity.getId(),
+                upStation,
+                downStation,
+                new Distance(sectionEntity.getDistance())
+        );
     }
 }
