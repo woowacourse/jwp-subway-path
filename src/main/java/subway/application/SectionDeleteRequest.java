@@ -1,22 +1,22 @@
 package subway.application;
 
 public class SectionDeleteRequest {
-    private String upStation;
-    private String downStation;
+    private String upStationName;
+    private String downStationName;
 
     public SectionDeleteRequest() {
     }
 
-    public SectionDeleteRequest(final String upStation, final String downStation) {
-        this.upStation = upStation;
-        this.downStation = downStation;
+    public SectionDeleteRequest(final String upStationName, final String downStationName) {
+        this.upStationName = upStationName;
+        this.downStationName = downStationName;
     }
 
-    public String getUpStation() {
-        return upStation;
+    public String getUpStationName() {
+        return upStationName;
     }
 
-    public String getDownStation() {
-        return downStation;
+    public String getDownStationName() {
+        return downStationName;
     }
 }

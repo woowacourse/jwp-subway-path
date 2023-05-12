@@ -37,8 +37,8 @@ public class SectionService {
 
     public void deleteSection(final Long lineId, final SectionDeleteRequest sectionDeleteRequest) {
         final Section section = Section.of(
-                sectionDeleteRequest.getUpStation(),
-                sectionDeleteRequest.getDownStation()
+                sectionDeleteRequest.getUpStationName(),
+                sectionDeleteRequest.getDownStationName()
         );
 
         sectionRepository.deleteBySection(lineId, section);
