@@ -6,6 +6,7 @@ import static subway.integration.common.JsonMapper.toJson;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.Arrays;
 import subway.presentation.request.StationCreateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -26,5 +27,10 @@ public class StationSteps {
                 .then()
                 .log().all()
                 .extract();
+    }
+
+    public static void 역들을_생성한다(final String... names) {
+        Arrays.stream(names)
+                .forEach(StationSteps::역_생성_요청);
     }
 }

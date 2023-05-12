@@ -12,6 +12,7 @@ import java.util.UUID;
 import org.springframework.core.ParameterizedTypeReference;
 import subway.application.dto.LineQueryResponse;
 import subway.application.dto.LineQueryResponse.SectionQueryResponse;
+import subway.application.dto.ShortestRouteResponse;
 import subway.presentation.request.LineCreateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -112,5 +113,43 @@ public class LineSteps {
                 new ParameterizedTypeReference<List<LineQueryResponse>>() {
                 }.getType()
         );
+    }
+
+    public static ExtractableResponse<Response> 최단경로_조회_요청(
+            final String startStationName,
+            final String endStationName
+    ) {
+        return given()
+                .log().all()
+                .param("startStationName", startStationName)
+                .param("endStationName", endStationName)
+                .when()
+                .get("/lines/shortest")
+                .then()
+                .log().all()
+                .extract();
+    }
+
+    public static void 최단경로의_총_길이는(final ShortestRouteResponse response, final int distance) {
+        assertThat(response.getTotalDistance()).isEqualTo(distance);
+    }
+
+    public static void 최단경로의_환승역은(final ShortestRouteResponse response, final String... transferStations) {
+        assertThat(response.getTransferCount()).isEqualTo(transferStations.length);
+        assertThat(response.getTransferStations())
+                .containsExactly(transferStations);
+    }
+
+    public static void 최단경로의_각_구간은(final ShortestRouteResponse response, final String... sectionInfos) {
+        assertThat(response.getSectionInfos())
+                .extracting(it -> String.format("[%s: (%s) -> (%s), %dkm]",
+                        it.getLine(), it.getFromStation(), it.getToStation(), it.getDistance()))
+                .containsExactly(sectionInfos);
+    }
+
+    public static void 경로가_없다(final ShortestRouteResponse response) {
+        최단경로의_총_길이는(response, 0);
+        최단경로의_환승역은(response);
+        최단경로의_각_구간은(response);
     }
 }

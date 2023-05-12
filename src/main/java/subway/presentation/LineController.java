@@ -6,6 +6,7 @@ import java.util.UUID;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,8 +15,10 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineQueryService;
 import subway.application.LineService;
 import subway.application.dto.LineQueryResponse;
+import subway.application.dto.ShortestRouteResponse;
 import subway.common.UriUtil;
 import subway.presentation.request.LineCreateRequest;
+import subway.presentation.request.QueryShortestPathRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -49,4 +52,16 @@ public class LineController {
     public ResponseEntity<List<LineQueryResponse>> findAll() {
         return ResponseEntity.ok(lineQueryService.findAll());
     }
+
+    @GetMapping("/shortest")
+    public ResponseEntity<ShortestRouteResponse> findShortestPath(
+            @ModelAttribute final QueryShortestPathRequest request
+    ) {
+        final String startStationName = request.getStartStationName();
+        final String endStationName = request.getEndStationName();
+        final ShortestRouteResponse shortestRoute =
+                lineQueryService.findShortestRoute(startStationName, endStationName);
+        return ResponseEntity.ok(shortestRoute);
+    }
+
 }
