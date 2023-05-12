@@ -25,7 +25,7 @@ import subway.domain.Sections;
 class RemoveStationFromLineServiceTest {
 
     private final LineRepository lineRepository = mock(LineRepository.class);
-    private final RemoveStationFromLineService removeStation = new RemoveStationFromLineService();
+    private final RemoveStationFromLineService removeStation = new RemoveStationFromLineService(lineRepository);
 
     @Test
     void 노선에서_역을_제거한다() {
@@ -37,7 +37,7 @@ class RemoveStationFromLineServiceTest {
         final Line line = new Line("1호선", sections);
 
         // when
-        removeStation.remove(lineRepository, line, 역2);
+        removeStation.remove(line, 역2);
 
         // then
         verify(lineRepository, times(1)).update(line);
@@ -53,7 +53,7 @@ class RemoveStationFromLineServiceTest {
         final Line line = new Line("1호선", sections);
 
         // when
-        removeStation.remove(lineRepository, line, 역2);
+        removeStation.remove(line, 역2);
 
         // then
         verify(lineRepository, times(0)).update(line);

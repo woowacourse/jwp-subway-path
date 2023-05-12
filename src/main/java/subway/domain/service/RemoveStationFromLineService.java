@@ -8,7 +8,13 @@ import subway.domain.Station;
 @Component
 public class RemoveStationFromLineService {
 
-    public void remove(final LineRepository lineRepository, final Line line, final Station station) {
+    private final LineRepository lineRepository;
+
+    public RemoveStationFromLineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
+    }
+
+    public void remove(final Line line, final Station station) {
         line.removeStation(station);
         if (line.isEmpty()) {
             lineRepository.delete(line);

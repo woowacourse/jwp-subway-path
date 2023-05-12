@@ -38,7 +38,8 @@ class LineServiceTest {
 
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final StationRepository stationRepository = mock(StationRepository.class);
-    private final RemoveStationFromLineService removeStationFromLineService = new RemoveStationFromLineService();
+    private final RemoveStationFromLineService removeStationFromLineService = new RemoveStationFromLineService(
+            lineRepository);
     private final LineService lineService =
             new LineService(lineRepository, stationRepository, removeStationFromLineService);
 

@@ -62,7 +62,7 @@ public class LineService {
     public void removeStation(final DeleteStationFromLineCommand command) {
         final Line line = findLineByName(command.lineName());
         final Station station = findStationByName(command.deleteStationName());
-        removeStationFromLineService.remove(lineRepository, line, station);
+        removeStationFromLineService.remove(line, station);
     }
 
     private Line findLineByName(final String name) {
