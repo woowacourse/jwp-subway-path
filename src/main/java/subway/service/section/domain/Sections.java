@@ -36,9 +36,6 @@ public class Sections {
     }
 
     public DeleteResult deleteSection(Station station) {
-        if (sections.size() == 1) {
-            return new DeleteResult(List.of(), sections);
-        }
         List<Section> sectionsOfContainDeleteStation = sections.stream()
                 .filter(section -> section.contains(station))
                 .collect(Collectors.toList());
@@ -48,7 +45,7 @@ public class Sections {
         }
         // 종점 제거
         if (sectionsOfContainDeleteStation.size() == 1) {
-            return new DeleteResult(List.of(), sectionsOfContainDeleteStation);
+            return new DeleteResult(List.of(), sectionsOfContainDeleteStation, false);
         }
 
         // 중간 역 제거
@@ -58,7 +55,7 @@ public class Sections {
         Distance combinedDistance = sectionOfDeleteStationIsDown.calcuateCombineDistance(sectionOfDeleteStationIsUp);
 
         Section newSection = new Section(sectionOfDeleteStationIsDown.getUpStation(), sectionOfDeleteStationIsUp.getDownStation(), combinedDistance);
-        return new DeleteResult(List.of(newSection), List.of(sectionOfDeleteStationIsUp, sectionOfDeleteStationIsDown));
+        return new DeleteResult(List.of(newSection), List.of(sectionOfDeleteStationIsUp, sectionOfDeleteStationIsDown), false);
     }
 
     private Section findSectionDeleteStationIsUpStation(Station station, List<Section> sectionsOfContainDeleteStation) {

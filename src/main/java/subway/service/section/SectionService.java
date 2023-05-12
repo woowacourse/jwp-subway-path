@@ -38,8 +38,8 @@ public class SectionService {
     public SectionCreateResponse insert(SectionCreateRequest sectionCreateRequest) {
         Line line = lineDao.findById(sectionCreateRequest.getLineId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
         Sections sections = sectionRepository.findSectionsByLine(line);
-        Station upStation = findStationById(sectionCreateRequest.getUpStationId());
-        Station downStation = findStationById(sectionCreateRequest.getDownStationId());
+        Station upStation = stationDao.findById(sectionCreateRequest.getUpStationId());
+        Station downStation = stationDao.findById(sectionCreateRequest.getDownStationId());
         Distance distance = new Distance(sectionCreateRequest.getDistance());
 
         AddResult addResult = sections.add(upStation, downStation, distance);
@@ -58,35 +58,32 @@ public class SectionService {
     }
 
     public void delete(LineStationDeleteRequest lineStationDeleteRequest) {
-        Line line = lineDao.findById(lineStationDeleteRequest.getLineId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
-        Station station = findStationById(lineStationDeleteRequest.getStationId());
+        Station station = stationDao.findById(lineStationDeleteRequest.getStationId());
         Map<Line, Sections> sectionsPerLine = sectionRepository.findSectionsByStation(station);
 
         for (Line perLine : sectionsPerLine.keySet()) {
             Sections sections = sectionsPerLine.get(perLine);
+            boolean isLastSection = sectionRepository.isLastSectionInLine(perLine);
+            if (isLastSection) {
+                Section lastSection = sections.getSections().get(0);
+                deleteStationsInLastSection(station, lastSection);
+                continue;
+            }
             DeleteResult deleteResult = sections.deleteSection(station);
 
             for (Section addedSection : deleteResult.getAddedSections()) {
-                sectionRepository.insertSection(addedSection, line);
-            }
-
-            for (Section deletedSection : deleteResult.getDeletedSections()) {
-                sectionRepository.deleteSection(deletedSection);
+                sectionRepository.insertSection(addedSection, perLine);
             }
         }
+        stationDao.deleteById(station.getId());
 
-        stationDao.deleteById(lineStationDeleteRequest.getStationId());
-//        DeleteResult deleteResult = sections.deleteSection(station);
-//        for (Section addedSection : deleteResult.getAddedSections()) {
-//            sectionRepository.insertSection(addedSection, line);
-//        }
-//
-//        for (Section deletedSection : deleteResult.getDeletedSections()) {
-//            sectionRepository.deleteSection(deletedSection);
-//        }
     }
 
-    private Station findStationById(long id) {
-        return stationDao.findById(id);
+    private void deleteStationsInLastSection(Station station, Section lastSection) {
+        if (lastSection.isUpStation(station)) {
+            stationDao.deleteById(lastSection.getDownStation().getId());
+            return;
+        }
+        stationDao.deleteById(lastSection.getUpStation().getId());
     }
 }

@@ -297,7 +297,8 @@ class SectionsTest {
 
             assertAll(
                     () -> assertThat(addedSections).isEmpty(),
-                    () -> assertThat(deletedSections).containsExactly(gangnameSeonleungSection)
+                    () -> assertThat(deletedSections).containsExactly(gangnameSeonleungSection),
+                    () -> assertThat(deleteResult.isLastSection()).isFalse()
             );
         }
 
@@ -314,7 +315,8 @@ class SectionsTest {
 
             assertAll(
                     () -> assertThat(addedSections).isEmpty(),
-                    () -> assertThat(deletedSections).containsExactly(jamsilSeonleungSection)
+                    () -> assertThat(deletedSections).containsExactly(jamsilSeonleungSection),
+                    () -> assertThat(deleteResult.isLastSection()).isFalse()
             );
         }
 
@@ -335,9 +337,9 @@ class SectionsTest {
                     () -> assertThat(deletedSections).containsExactlyInAnyOrder(jamsilSeonleungSection, gangnameSeonleungSection),
                     () -> assertThat(addedSection.getDistance()).isEqualTo(newSection.getDistance()),
                     () -> assertThat(addedSection.getDownStation()).isEqualTo(newSection.getDownStation()),
-                    () -> assertThat(addedSection.getUpStation()).isEqualTo(newSection.getUpStation())
+                    () -> assertThat(addedSection.getUpStation()).isEqualTo(newSection.getUpStation()),
+                    () -> assertThat(deleteResult.isLastSection()).isFalse()
             );
-
         }
     }
 
