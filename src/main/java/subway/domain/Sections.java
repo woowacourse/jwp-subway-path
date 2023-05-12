@@ -1,6 +1,5 @@
 package subway.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -15,48 +14,12 @@ public class Sections {
 
     private final List<Section> sections;
 
-    private Sections(List<Section> sections) {
+    Sections(List<Section> sections) {
         this.sections = sections;
     }
 
     public static Sections from(List<Section> unsortedSections) {
-        return new Sections(sortSections(unsortedSections));
-    }
-
-    private static List<Section> sortSections(List<Section> sections) {
-        final Station firstStation = getFirstStations(sections);
-        List<Section> result = new ArrayList<>();
-        Station next = firstStation;
-        for (int i = 0; i < sections.size(); i++) {
-            next = addNextSection(sections, result, next);
-        }
-        return result;
-    }
-
-    private static Station getFirstStations(List<Section> sections) {
-        final Set<Station> allStationIds = sections.stream()
-                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
-                .collect(toSet());
-
-        final Set<Station> downStationIds = sections.stream()
-                .map(Section::getDownStation)
-                .collect(toSet());
-
-        final List<Station> firstStation = new ArrayList<>(allStationIds);
-        firstStation.removeAll(downStationIds);
-
-        return firstStation.get(0);
-    }
-
-    private static Station addNextSection(List<Section> sections, List<Section> result, Station nextStation) {
-        for (Section section : sections) {
-            if (section.getUpStation().equals(nextStation)) {
-                nextStation = section.getDownStation();
-                result.add(section);
-                break;
-            }
-        }
-        return nextStation;
+        return SectionsFactory.createSortedSections(unsortedSections);
     }
 
     public boolean isDownEndPoint(Station upStation) {
