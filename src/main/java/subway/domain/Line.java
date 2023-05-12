@@ -1,37 +1,24 @@
 package subway.domain;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 public final class Line {
     private Long id;
     private final String name;
     private final String color;
-    private List<Station> stations = new ArrayList<>();
+    private final Paths paths;
 
-    public Line(final Long id, final String name, final String color, final List<Station> stations) {
-        this.id = id;
+    public Line(final String name, final String color, final Paths paths) {
         this.name = name;
         this.color = color;
-        this.stations = stations;
-    }
-
-    public Line(final String name, final String color, final List<Station> stations) {
-        this.name = name;
-        this.color = color;
-        this.stations = stations;
-    }
-
-    public Line(final String name, final String color) {
-        this.name = name;
-        this.color = color;
+        this.paths = paths;
     }
 
     public Line(final Long id, final String name, final String color) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.paths = new Paths();
     }
 
     public Long getId() {
