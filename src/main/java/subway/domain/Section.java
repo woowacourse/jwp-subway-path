@@ -88,11 +88,6 @@ public class Section {
         return new Section(this.downStation, section.upStation, distance);
     }
 
-    public boolean validateEqualEndPoint(final List<Station> endPoint) {
-        return endPoint.get(0).equals(upStation) || endPoint.get(0).equals(downStation) ||
-                endPoint.get(1).equals(upStation) || endPoint.get(1).equals(downStation);
-    }
-
     public Station getUpStation() {
         return upStation;
     }
