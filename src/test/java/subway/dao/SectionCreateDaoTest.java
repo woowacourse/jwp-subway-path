@@ -15,6 +15,7 @@ import subway.service.station.domain.Station;
 import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.LineFixture.SECOND_LINE;
 import static subway.domain.StationFixture.GANGNAM;
 import static subway.domain.StationFixture.JAMSIL;
@@ -22,7 +23,7 @@ import static subway.domain.StationFixture.SEONLEUNG;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
-class SectionDaoTest {
+class SectionCreateDaoTest {
 
     @Autowired
     private DataSource dataSource;
@@ -52,7 +53,7 @@ class SectionDaoTest {
 
         SectionEntity savedSection = sectionDao.insert(sectionEntity);
 
-        org.junit.jupiter.api.Assertions.assertAll(
+        assertAll(
                 () -> assertThat(savedSection.getId()).isPositive(),
                 () -> assertThat(savedSection.getUpStationId()).isEqualTo(savedJamsil.getId()),
                 () -> assertThat(savedSection.getDownStationId()).isEqualTo(savedSeonleung.getId()),
