@@ -38,7 +38,7 @@ public class LineMap {
         return visited;
     }
 
-    public void addSection(final Section section) {
+    private void addSection(final Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
 
