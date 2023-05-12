@@ -6,6 +6,7 @@ import subway.exceptions.customexceptions.InvalidDataException;
 import subway.exceptions.customexceptions.NotFoundException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -225,8 +226,12 @@ public class Sections {
     }
 
     public List<Station> getStationsWithUpToDownDirection() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
         List<Station> stations = new ArrayList<>();
-        for(Section section : sections) {
+        for (Section section : sections) {
             stations.add(section.getUpBoundStation());
         }
         Section lastSection = sections.get(sections.size() - 1);
