@@ -24,7 +24,7 @@ class StationTest {
 
         assertThatThrownBy(() -> Station.from(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("역 이름은 한글과 숫자만 가능합니다");
+                .hasMessage("역 이름은 한글과 숫자만 가능합니다.");
     }
 
     @ValueSource(strings = {"가", "가나다라마바사123"})
@@ -33,6 +33,6 @@ class StationTest {
 
         assertThatThrownBy(() -> Station.from(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("역 이름은 2글자 ~ 9글자만 가능합니다");
+                .hasMessage("역 이름은 2글자 ~ 9글자만 가능합니다.");
     }
 }

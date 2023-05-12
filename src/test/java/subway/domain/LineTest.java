@@ -122,8 +122,8 @@ class LineTest {
             final Station newStation = line.findStation(station);
 
             SoftAssertions.assertSoftly(softAssertions -> {
-                softAssertions.assertThat(newStationOne.getStatus()).isEqualTo(StationStatus.MID);
-                softAssertions.assertThat(newStation.getStatus()).isEqualTo(StationStatus.UP);
+                softAssertions.assertThat(newStationOne.isEnd()).isFalse();
+                softAssertions.assertThat(newStation.isEnd()).isTrue();
             });
         }
 
@@ -137,7 +137,7 @@ class LineTest {
 
             assertThatThrownBy(() -> line.addEndStation(stationTwo, station, distance))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("해당 역은 종점역이 아닙니다");
+                    .hasMessage("해당 역은 종점역이 아닙니다.");
         }
 
         @Test
@@ -169,7 +169,7 @@ class LineTest {
 
             Assertions.assertThatThrownBy(() -> line.addMiddleStation(stationOne, stationThree, station, distance))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("역이 서로 연결되어 있지 않습니다");
+                    .hasMessage("역이 서로 연결되어 있지 않습니다.");
         }
 
         @Test
@@ -181,7 +181,7 @@ class LineTest {
 
             Assertions.assertThatThrownBy(() -> line.addMiddleStation(stationOne, stationTwo, station, distance))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("역 사이의 거리는 양수여야 합니다");
+                    .hasMessage("등록되는 역 중간에 다른 역이 존재합니다.");
         }
     }
 
@@ -212,7 +212,7 @@ class LineTest {
 
         @Test
         void 노선에_저장된_역을_조회할_때_상행역부터_하행역으로_가져온다() {
-            List<Station> stations = line.getAllStation();
+            List<Station> stations = line.findStationsByOrdered();
 
             SoftAssertions.assertSoftly(softAssertions -> {
                 softAssertions.assertThat(stations.get(0).getName()).isEqualTo("잠실역");

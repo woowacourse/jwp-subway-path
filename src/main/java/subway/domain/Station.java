@@ -13,27 +13,29 @@ public class Station {
     private final Long id;
     private final String name;
     private final AdjustPath adjustPath;
-    private StationStatus status;
 
-    private Station(final Long id, final String name, final AdjustPath adjustPath, final StationStatus status) {
+    private Station(final Long id, final String name, final AdjustPath adjustPath) {
         validate(name);
 
         this.id = id;
         this.name = name;
         this.adjustPath = adjustPath;
-        this.status = status;
     }
 
     public static Station from(final String name) {
-        return new Station(null, name, AdjustPath.create(), null);
+        return new Station(null, name, AdjustPath.create());
+    }
+
+    public static Station of(final String name) {
+        return new Station(null, name, AdjustPath.create());
     }
 
     public static Station of(final Long id, final String name) {
-        return new Station(id, name, AdjustPath.create(), null);
+        return new Station(id, name, AdjustPath.create());
     }
 
-    public static Station of(final String name, final StationStatus status) {
-        return new Station(null, name, AdjustPath.create(), status);
+    public static Station of(final Station station) {
+        return new Station(station.id, station.name, AdjustPath.create());
     }
 
     private void validate(final String name) {
@@ -43,18 +45,18 @@ public class Station {
 
     private void validateLength(final String name) {
         if (!(MINIMUM_LENGTH <= name.length() && name.length() <= MAXIMUM_LENGTH)) {
-            throw new IllegalArgumentException("역 이름은 2글자 ~ 9글자만 가능합니다");
+            throw new IllegalArgumentException("역 이름은 2글자 ~ 9글자만 가능합니다.");
         }
     }
 
     private void validateFormat(final String name) {
         if (!PATTERN.matcher(name).matches()) {
-            throw new IllegalArgumentException("역 이름은 한글과 숫자만 가능합니다");
+            throw new IllegalArgumentException("역 이름은 한글과 숫자만 가능합니다.");
         }
     }
 
-    public void addPath(final Station station, final Distance distance) {
-        adjustPath.add(station, distance);
+    public void addPath(final Station station, final Distance distance, final Direction direction) {
+        adjustPath.add(station, distance, direction);
     }
 
     public void deletePath(final Station station) {
@@ -62,24 +64,16 @@ public class Station {
     }
 
     public Distance findDistanceByStation(final Station target) {
-        return adjustPath.findByStation(target);
+        return adjustPath.findPathInfoByStation(target)
+                .getDistance();
     }
 
     public List<Station> findAdjustStation() {
         return adjustPath.findAllStation();
     }
 
-    public void changeEndStatus(final Station sourceStation) {
-        this.status = sourceStation.status;
-        sourceStation.status = StationStatus.MID;
-    }
-
-    public boolean isEnd(final StationStatus status) {
-        return this.status.isEqual(status);
-    }
-
-    public boolean isConnect(final Station newDownStation) {
-        return adjustPath.contains(newDownStation);
+    public AdjustPath getAdjustPath() {
+        return adjustPath;
     }
 
     public Long getId() {
@@ -90,8 +84,16 @@ public class Station {
         return name;
     }
 
-    public StationStatus getStatus() {
-        return status;
+    public boolean isConnect(final Station newDownStation) {
+        return adjustPath.isConnect(newDownStation);
+    }
+
+    public Direction findEndStationPathDirection() {
+        return adjustPath.findEndStationPathDirection();
+    }
+
+    public boolean isEnd() {
+        return adjustPath.isEnd();
     }
 
     @Override
