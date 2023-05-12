@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Line {
+public final class Line {
     private Long id;
     private final String name;
     private final String color;
@@ -23,12 +23,12 @@ public class Line {
         this.stations = stations;
     }
 
-    public Line(String name, String color) {
+    public Line(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Line(Long id, String name, String color) {
+    public Line(final Long id, final String name, final String color) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -47,7 +47,7 @@ public class Line {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
