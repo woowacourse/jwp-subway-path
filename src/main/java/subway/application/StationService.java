@@ -152,13 +152,10 @@ public class StationService {
 
         Long beforeStationId = finalUpStation.getId();
 
-        while(sections.size() + 1 != results.size()) {
+        int totalSections = sections.size();
+        while (results.size() < totalSections + 1) {
             for (Section section : sections) {
-                if (section.getUpStationId() == beforeStationId) {
-                    Station station = stationDao.findById(section.getDownStationId());
-                    results.add(station);
-                    beforeStationId = station.getId();
-                }
+                beforeStationId = updateStationIdIfSameStation(results, beforeStationId, section);
             }
         }
 
@@ -166,6 +163,16 @@ public class StationService {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
+
+    private Long updateStationIdIfSameStation(final List<Station> results, Long beforeStationId, final Section section) {
+        if (section.getUpStationId() == beforeStationId) {
+            Station station = stationDao.findById(section.getDownStationId());
+            results.add(station);
+            beforeStationId = station.getId();
+        }
+        return beforeStationId;
+    }
+
 
     public List<StationResponse> findAllStationOrderBySection() {
         return stationDao.findAll().stream()
