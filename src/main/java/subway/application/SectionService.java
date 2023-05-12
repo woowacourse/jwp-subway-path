@@ -81,6 +81,7 @@ public class SectionService {
 
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
+        //특정 호선의 Sections를 가져옴
         List<SectionEntity> sectionEntitiesOfLine = sectionDao.findByLineId(lineId);
 
         List<Section> sectionsOfLine = sectionEntitiesOfLine.stream()
@@ -89,13 +90,13 @@ public class SectionService {
 
         Sections sections = new Sections(sectionsOfLine);
 
-        Station removedStation = toStation(stationDao.findById(stationId));
-        sections.remove(removedStation);
+        // 요청에 대한 station 을 찾음
+        Station targetStation = toStation(stationDao.findById(stationId));
+        // 해당 station 제거
+        sections.remove(targetStation);
 
-        sectionDao.deleteAll();
-
+        sectionDao.deleteAllByLineId(lineId);
         List<SectionEntity> makeSectionEntitiesByAddedSections = makeSectionEntities(lineId, sections.getSections());
-
         sectionDao.insertAll(makeSectionEntitiesByAddedSections);
     }
 

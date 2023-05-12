@@ -1,17 +1,18 @@
 package subway.dao;
 
-import java.sql.PreparedStatement;
-import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.sql.PreparedStatement;
+import java.util.List;
 
 @Repository
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("id"),
                     rs.getLong("line_id"),
@@ -45,6 +46,13 @@ public class SectionDao {
         String sql = "delete from SECTION";
 
         jdbcTemplate.update(sql);
+    }
+
+    public void deleteAllByLineId(Long lineId) {
+        String sql = "delete from SECTION where line_id = ?";
+
+        jdbcTemplate.update(sql,lineId);
+
     }
 
     public List<SectionEntity> findByLineId(Long lineId) {
