@@ -1,6 +1,6 @@
 package subway.dao.dto;
 
-public class SectionDto {
+public class SectionEntity {
 
     private final Long id;
     private final Long upStationId;
@@ -9,7 +9,7 @@ public class SectionDto {
     private final Integer distance;
     private final Boolean isStart;
 
-    public SectionDto(final Long id, final Long upStationId, final Long downStationId, final Long lineId, final Integer distance, final Boolean isStart) {
+    public SectionEntity(final Long id, final Long upStationId, final Long downStationId, final Long lineId, final Integer distance, final Boolean isStart) {
         this.id = id;
         this.upStationId = upStationId;
         this.downStationId = downStationId;

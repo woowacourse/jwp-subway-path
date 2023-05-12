@@ -4,6 +4,7 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
@@ -32,10 +33,11 @@ public class StationDao {
                     Collections.emptyList()
             );
 
-
     public Long save(final String stationName) {
-        final MapSqlParameterSource name = new MapSqlParameterSource().addValue("name", stationName);
-        return insertAction.executeAndReturnKeyHolder(name).getKey().longValue();
+        final SqlParameterSource paramSource = new MapSqlParameterSource()
+                .addValue("name", stationName);
+
+        return insertAction.executeAndReturnKey(paramSource).longValue();
     }
 
     public List<Station> findAll() {
@@ -43,26 +45,26 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Station> findById(Long id) {
+    public Optional<Station> findById(Long stationId) {
         String sql = "select * from STATIONS where id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationId));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
     }
 
-    public Optional<Station> findByName(final String upStationName) {
+    public Optional<Station> findByName(final String stationName) {
         final String sql = "SELECT id, name FROM STATIONS WHERE name = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, upStationName));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationName));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long stationId) {
         String sql = "delete from STATIONS where id = ?";
-        jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(sql, stationId);
     }
 }

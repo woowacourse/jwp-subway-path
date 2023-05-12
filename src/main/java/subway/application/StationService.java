@@ -6,7 +6,7 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.StationLineDao;
-import subway.dao.dto.SectionDto;
+import subway.dao.dto.SectionEntity;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Station;
@@ -63,17 +63,17 @@ public class StationService {
         final Station upStation = getStation(stationRequest.getUpStationName(), line.getId());
         final Station downStation = getStation(stationRequest.getDownStationName(), line.getId());
 
-        final List<SectionDto> sectionDaoByLineId = sectionDao.findByLineId(line.getId());
+        final List<SectionEntity> sectionDaoByLineId = sectionDao.findByLineId(line.getId());
 
         final boolean isStart = sectionDaoByLineId.stream()
-                .filter(SectionDto::getStart)
-                .anyMatch(sectionDto -> sectionDto.getDownStationId().equals(downStation.getId()));
+                .filter(SectionEntity::getStart)
+                .anyMatch(sectionEntity -> sectionEntity.getDownStationId().equals(downStation.getId()));
 
-        Optional<SectionDto> maybeDownSection = sectionDao.findDownSectionByStationIdAndLineId(upStation.getId(), line.getId());
-        Optional<SectionDto> maybeUpSection = sectionDao.findUpSectionByStationIdAndLineId(downStation.getId(), line.getId());
+        Optional<SectionEntity> maybeDownSection = sectionDao.findDownSectionByStationIdAndLineId(upStation.getId(), line.getId());
+        Optional<SectionEntity> maybeUpSection = sectionDao.findUpSectionByStationIdAndLineId(downStation.getId(), line.getId());
 
         if (maybeDownSection.isPresent()) {
-            final SectionDto downSection = maybeDownSection.get();
+            final SectionEntity downSection = maybeDownSection.get();
             if (distance.isSameOrOver(new Distance(downSection.getDistance()))) {
                 throw new IllegalArgumentException("새로운 구간의 거리가 기존 두 역의 거리보다 작아야합니다.");
             }
@@ -82,7 +82,7 @@ public class StationService {
             sectionDao.save(downStation.getId(), downSection.getDownStationId(), line.getId(), false, distance);
             return sectionDao.save(upStation.getId(), downStation.getId(), line.getId(), isStart, distance);
         } else if (maybeUpSection.isPresent()) {
-            final SectionDto upSection = maybeUpSection.get();
+            final SectionEntity upSection = maybeUpSection.get();
             if (distance.isSameOrOver(new Distance(upSection.getDistance()))) {
                 throw new IllegalArgumentException("새로운 구간의 거리가 기존 두 역의 거리보다 작아야합니다.");
             }
@@ -121,33 +121,33 @@ public class StationService {
         final Line line = lineDao.findByName(deleteStationRequest.getLineName())
                 .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
 
-        final Optional<SectionDto> maybeUpSection = sectionDao.findUpSectionByStationIdAndLineId(station.getId(), line.getId());
-        final Optional<SectionDto> maybeDownSection = sectionDao.findDownSectionByStationIdAndLineId(station.getId(), line.getId());
+        final Optional<SectionEntity> maybeUpSection = sectionDao.findUpSectionByStationIdAndLineId(station.getId(), line.getId());
+        final Optional<SectionEntity> maybeDownSection = sectionDao.findDownSectionByStationIdAndLineId(station.getId(), line.getId());
 
         if (maybeUpSection.isPresent() && maybeDownSection.isPresent()) {
-            final SectionDto upSectionDto = maybeUpSection.get();
-            final SectionDto downSectionDto = maybeDownSection.get();
+            final SectionEntity upSectionEntity = maybeUpSection.get();
+            final SectionEntity downSectionEntity = maybeDownSection.get();
 
-            sectionDao.delete(upSectionDto.getId());
-            sectionDao.delete(downSectionDto.getId());
+            sectionDao.delete(upSectionEntity.getId());
+            sectionDao.delete(downSectionEntity.getId());
 
             sectionDao.save(
-                    upSectionDto.getUpStationId(),
-                    downSectionDto.getDownStationId(),
+                    upSectionEntity.getUpStationId(),
+                    downSectionEntity.getDownStationId(),
                     line.getId(),
-                    upSectionDto.getStart(),
-                    new Distance(upSectionDto.getDistance() + downSectionDto.getDistance())
+                    upSectionEntity.getStart(),
+                    new Distance(upSectionEntity.getDistance() + downSectionEntity.getDistance())
             );
         }
 
         if((maybeUpSection.isPresent() && maybeDownSection.isEmpty())) { // 타겟 역이 하행 종점
-            final SectionDto upSectionDto = maybeUpSection.get();
-            sectionDao.delete(upSectionDto.getId());
+            final SectionEntity upSectionEntity = maybeUpSection.get();
+            sectionDao.delete(upSectionEntity.getId());
         }
 
         if((maybeDownSection.isPresent() && maybeUpSection.isEmpty())) { // 타겟 역이 상행 종점
-            final SectionDto downSectionDto = maybeDownSection.get();
-            sectionDao.delete(downSectionDto.getId());
+            final SectionEntity downSectionEntity = maybeDownSection.get();
+            sectionDao.delete(downSectionEntity.getId());
         }
 
         //타겟 역을 지우기

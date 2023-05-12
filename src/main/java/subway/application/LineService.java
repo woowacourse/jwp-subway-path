@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.dao.dto.SectionDto;
+import subway.dao.dto.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineResponse;
@@ -44,10 +44,10 @@ public class LineService {
         final Line line = lineDao.findByName(lineName)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선명입니다."));
 
-        final List<SectionDto> sectionDtos = sectionDao.findByLineId(line.getId());
+        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(line.getId());
 
-        final Map<Long, Long> upToDown = sectionDtos.stream()
-                .collect(Collectors.toMap(SectionDto::getUpStationId, SectionDto::getDownStationId));
+        final Map<Long, Long> upToDown = sectionEntities.stream()
+                .collect(Collectors.toMap(SectionEntity::getUpStationId, SectionEntity::getDownStationId));
 
         final Map<Long, Station> stationsWithId = new HashMap<>();
 

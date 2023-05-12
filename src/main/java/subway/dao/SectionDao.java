@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.dao.dto.SectionDto;
+import subway.dao.dto.SectionEntity;
 import subway.domain.Distance;
 
 import java.util.List;
@@ -25,8 +25,8 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private RowMapper<SectionDto> sectionDtoRowMapper = (rs, rn) -> {
-        return new SectionDto(
+    private RowMapper<SectionEntity> sectionDtoRowMapper = (rs, rn) -> {
+        return new SectionEntity(
                 rs.getLong("id"),
                 rs.getLong("up_station_id"),
                 rs.getLong("down_station_id"),
@@ -52,18 +52,32 @@ public class SectionDao {
         ).longValue();
     }
 
-    public List<SectionDto> findByLineId(final Long lineId) {
+    public Optional<SectionEntity> findBySectionId(final Long sectionId) {
+        final String sql = "SELECT id, distance, is_start, up_station_id, down_station_id, line_id" +
+                " FROM sections " +
+                " WHERE id = ? ";
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionDtoRowMapper, sectionId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public List<SectionEntity> findByLineId(final Long lineId) {
         final String sql = "SELECT id, distance, is_start, up_station_id, down_station_id, line_id" +
                 " FROM sections " +
                 " WHERE line_id = ? ";
+
         return jdbcTemplate.query(sql, sectionDtoRowMapper, lineId);
     }
 
-    public Optional<SectionDto> findDownSectionByStationIdAndLineId(final Long stationId, final Long lineId) {
+    public Optional<SectionEntity> findDownSectionByStationIdAndLineId(final Long stationId, final Long lineId) {
         final String sql = "SELECT id, up_station_id, down_station_id, line_id, distance, is_start " +
                 "FROM sections " +
                 "WHERE up_station_id = ? " +
                 "AND line_id = ? ";
+
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionDtoRowMapper, stationId, lineId));
         } catch (EmptyResultDataAccessException e) {
@@ -71,7 +85,7 @@ public class SectionDao {
         }
     }
 
-    public Optional<SectionDto> findUpSectionByStationIdAndLineId(final Long stationId, final Long lineId) {
+    public Optional<SectionEntity> findUpSectionByStationIdAndLineId(final Long stationId, final Long lineId) {
         final String sql = "SELECT id, up_station_id, down_station_id, line_id, distance, is_start " +
                 "FROM sections " +
                 "WHERE down_station_id = ? " +
