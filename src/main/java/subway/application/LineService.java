@@ -32,13 +32,16 @@ public class LineService {
     @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor(), new Paths()));
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponse::of)
+                .map(line -> {
+                    final Paths paths = pathDao.findByLineId(line.getId());
+                    return LineResponse.of(line, paths);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -47,12 +50,10 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
+        final Line line = lineDao.findById(id);
+        final Paths paths = pathDao.findByLineId(id);
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return LineResponse.of(line, paths);
     }
 
     @Transactional

@@ -62,6 +62,10 @@ public final class Path {
         return new Path(another.up, down, distance + another.distance);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Station getUp() {
         return up;
     }
