@@ -19,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
+
     private LineRequest lineRequest;
     private LineRequest lineRequest2;
 
@@ -27,8 +28,6 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        super.setUp();
-
         final Long 잠실역 = stationDao.insert(new Station("잠실역")).getId();
         final Long 선릉역 = stationDao.insert(new Station("선릉역")).getId();
         final Long 강남역 = stationDao.insert(new Station("강남역")).getId();
