@@ -1,5 +1,7 @@
 package subway.persistence.entity;
 
+import subway.domain.Line;
+
 public class LineEntity {
 
     private final Long id;
@@ -18,6 +20,10 @@ public class LineEntity {
 
     public static LineEntity of(final String name, final String color) {
         return new LineEntity(null, name, color);
+    }
+
+    public Line to() {
+        return Line.of(id, name, color);
     }
 
     public Long getId() {

@@ -6,12 +6,10 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
 import subway.persistence.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -43,12 +41,13 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<StationEntity> findById(final Long id) {
+    public StationEntity findById(final Long id) {
         final String sql = "SELECT id, name FROM station WHERE id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
-                .findAny();
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
     }
 
     public int deleteById(final Long id) {
