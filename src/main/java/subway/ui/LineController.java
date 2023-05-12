@@ -48,14 +48,14 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{id}/paths")
+    @PostMapping("/{id}/stations")
     public ResponseEntity<Void> addPathToLine(@PathVariable final Long id, @RequestBody final PathRequest pathRequest) {
         lineService.addPathToLine(id, pathRequest);
 
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
-    @DeleteMapping("/{id}/paths/stations/{station-id}")
+    @DeleteMapping("/{id}/stations/{station-id}")
     public ResponseEntity<Void> deleteStationFromLine(@PathVariable final Long id, @PathVariable("station-id") final Long stationId) {
         lineService.deletePathByStationId(stationId);
 

@@ -4,19 +4,19 @@
 
 - [x] 노선에 역 등록 API 신규 구현
 - [x] 노선에 역 제거 API 신규 구현
-- [ ] 노선 조회 API 수정
+- [x] 노선 조회 API 수정
     - 노선에 포함된 역을 순서대로 보여주도록 응답을 개선합니다.
-- [ ] 노선 목록 조회 API 수정
+- [x] 노선 목록 조회 API 수정
     - 노선에 포함된 역을 순서대로 보여주도록 응답을 개선합니다.
 
 ## API
 
 - [x] 노선에 역 등록
-    - POST /lines/{id}/paths
+    - POST /lines/{id}/stations
     - Request: {upStationId, downStationId, distance}
     - Response: 201 /lines/{id}
 - [x] 노선에 역 제거
-    - DELETE /lines/{id}/paths/stations/{station-id}
+    - DELETE /lines/{id}/stations/{station-id}
     - Response: 204
 
 ## 도메인

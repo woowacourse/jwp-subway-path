@@ -229,7 +229,7 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/lines/{id}/paths", lineId)
+                .when().post("/lines/{id}/stations", lineId)
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -270,13 +270,13 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/lines/{id}/paths", lineId)
+                .when().post("/lines/{id}/stations", lineId)
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
         //when, then
         RestAssured.given()
-                .when().delete("/lines/{id}/paths/stations/{station-id}", lineId, stationId)
+                .when().delete("/lines/{id}/stations/{station-id}", lineId, stationId)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
