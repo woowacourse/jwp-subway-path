@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.dao.StationsDao;
+import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.Section;
@@ -17,13 +17,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
-@Import({SectionService.class, StationsDao.class, LineDao.class, StationDao.class})
+@Import({SectionService.class, SectionDao.class, LineDao.class, StationDao.class})
 class SectionServiceTest {
     @Autowired
     private SectionService sectionService;
 
     @Autowired
-    private StationsDao stationsDao;
+    private SectionDao sectionDao;
 
     @Autowired
     private LineDao lineDao;
@@ -42,7 +42,7 @@ class SectionServiceTest {
         stationS = stationDao.insert(new Station("송탄"));
         stationJ = stationDao.insert(new Station("진위"));
         stationO = stationDao.insert(new Station("오산"));
-        stationsDao.initialize(Section.builder()
+        sectionDao.initialize(Section.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
@@ -56,7 +56,7 @@ class SectionServiceTest {
         // B-C가 3km, B-D거리가 2km라면 B-D거리는 2km로 등록되어야 하고 D-C 거리는 1km로 등록되어야 합니다.
 
         // given
-        assertThat(stationsDao.findDistanceBetween(stationS, stationJ, line))
+        assertThat(sectionService.findDistanceBetween(stationS, stationJ, line))
                 .as("처음 송탄과 진위 사이의 거리는 6km.")
                 .isEqualTo(6);
 
@@ -64,10 +64,10 @@ class SectionServiceTest {
         sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), 2, true);
 
         // then
-        assertThat(stationsDao.findDistanceBetween(stationS, stationO, line))
+        assertThat(sectionService.findDistanceBetween(stationS, stationO, line))
                 .as("송탄과 오산 사이의 거리는 4km.")
                 .isEqualTo(4);
-        assertThat(stationsDao.findDistanceBetween(stationO, stationJ, line))
+        assertThat(sectionService.findDistanceBetween(stationO, stationJ, line))
                 .as("오산과 진위 사이의 거리는 2km.")
                 .isEqualTo(2);
     }
@@ -79,7 +79,7 @@ class SectionServiceTest {
         // B-C가 3km, B-D거리가 2km라면 B-D거리는 2km로 등록되어야 하고 D-C 거리는 1km로 등록되어야 합니다.
 
         // given
-        assertThat(stationsDao.findDistanceBetween(stationS, stationJ, line))
+        assertThat(sectionService.findDistanceBetween(stationS, stationJ, line))
                 .as("처음 송탄과 진위 사이의 거리는 6km.")
                 .isEqualTo(6);
 
@@ -87,10 +87,10 @@ class SectionServiceTest {
         sectionService.insert(line.getId(), stationO.getName(), stationS.getName(), 2, false);
 
         // then
-        assertThat(stationsDao.findDistanceBetween(stationS, stationO, line))
+        assertThat(sectionService.findDistanceBetween(stationS, stationO, line))
                 .as("송탄과 오산 사이의 거리는 4km.")
                 .isEqualTo(2);
-        assertThat(stationsDao.findDistanceBetween(stationO, stationJ, line))
+        assertThat(sectionService.findDistanceBetween(stationO, stationJ, line))
                 .as("오산과 진위 사이의 거리는 2km.")
                 .isEqualTo(4);
     }
@@ -105,5 +105,73 @@ class SectionServiceTest {
         assertThatThrownBy(() -> sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), 6, true))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("노선의 역과 역 사이는 언제나 양의 정수를 유지해야 합니다.");
+    }
+
+    @Test
+    @DisplayName("노선에 역이 등록될 때 거리 정보도 함께 포함됩니다. 그래서 이웃한 역의 거리정보를 조회할 수 있습니다.")
+    void distanceSaving() {
+        // when & then
+        assertThat(sectionService.findDistanceBetween(stationS, stationJ, line)).isEqualTo(6);
+    }
+
+    @Test
+    @DisplayName("거리를 조회할 두 역을 거꾸로 제공해도 거리를 계산할 수 있습니다.")
+    void distanceSavingReverse() {
+        // when & then
+        assertThat(sectionService.findDistanceBetween(stationJ, stationS, line)).isEqualTo(6);
+    }
+
+    @Test
+    @DisplayName("노선에서 역을 제거할 경우 정상 동작을 위해 재배치됩니다.")
+    void delete() {
+        // given
+        sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), 3, true);
+        assertThat(sectionDao.findByPreviousStation(stationS, line)
+                .get().getNextStation())
+                .as("원래 노선에 등록된 역은 3개고, 송탄역 다음은 오산역입니다.")
+                .isEqualTo(stationO);
+
+        // when
+        sectionService.deleteStation(line.getId(), stationO.getName());
+
+        // then
+        assertThat(sectionDao.findByPreviousStation(stationS, line).get().getNextStation())
+                .as("이제 남은 역은 2개이고, 송탄역 다음은 진위역입니다.")
+                .isEqualTo(stationJ);
+    }
+
+    @Test
+    @DisplayName("노선에서 역이 제거될 경우 역과 역 사이의 거리가 재배정됩니다.")
+    void deleteDistance() {
+        // given
+        sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), 3, true);
+        assertThatThrownBy(() -> sectionService.findDistanceBetween(stationS, stationJ, line))
+                .as("송탄역과 진위역은 이웃하지 않아 조회가 불가능합니다.")
+                .isInstanceOf(IllegalArgumentException.class);
+
+        // when
+        sectionService.deleteStation(line.getId(), stationO.getName());
+
+        // then
+        assertThat(sectionService.findDistanceBetween(stationS, stationJ, line))
+                .as("이제 송탄역과 진위역이 이어져있고, 송탄-오산, 오산-진위 길이를 합한 6km의 길이를 가집니다.")
+                .isEqualTo(6);
+    }
+
+    @Test
+    @DisplayName("노선에 등록된 역이 2개인 경우 하나의 역을 제거할 때 두 역이 모두 제거됩니다.")
+    void deleteAll() {
+        // given
+        assertThat(sectionDao.countStations(line))
+                .as("2개의 역만 등록되어 있습니다.")
+                .isEqualTo(2);
+
+        // when
+        sectionService.deleteStation(line.getId(), stationO.getName());
+
+        // then
+        assertThat(sectionDao.countStations(line))
+                .as("둘만 남은 노선에서 하나를 지우면, 나머지 하나도 함께 지워져 0개가 됩니다.")
+                .isEqualTo(0);
     }
 }

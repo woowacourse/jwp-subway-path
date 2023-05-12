@@ -2,7 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.dao.StationsDao;
+import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineRequest;
@@ -14,11 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
     private final LineDao lineDao;
-    private final StationsDao stationsDao;
+    private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao, StationsDao stationsDao) {
+    public LineService(LineDao lineDao, SectionDao sectionDao) {
         this.lineDao = lineDao;
-        this.stationsDao = stationsDao;
+        this.sectionDao = sectionDao;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -29,7 +29,7 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor(), stationsDao.findAllOrderByUp(line)))
+                .map(line -> new LineResponse(line.getId(), line.getName(), line.getColor(), sectionDao.findAllOrderByUp(line)))
                 .collect(Collectors.toList());
     }
 
@@ -39,7 +39,7 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        List<Station> stations = stationsDao.findAllOrderByUp(persistLine);
+        List<Station> stations = sectionDao.findAllOrderByUp(persistLine);
         return LineResponse.of(persistLine, stations);
     }
 

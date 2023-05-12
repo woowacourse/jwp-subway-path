@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class StationsDao {
+public class SectionDao {
     public static final String LINE_ID = "line_id";
     public static final String CURRENT_STATION_ID = "current_station_id";
     public static final String NEXT_STATION_ID = "next_station_id";
@@ -23,7 +23,7 @@ public class StationsDao {
     private final SimpleJdbcInsert simpleJdbcInsert;
     private final JdbcTemplate jdbcTemplate;
 
-    public StationsDao(DataSource dataSource) {
+    public SectionDao(DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("SUBWAY_MAP")
                 .usingGeneratedKeyColumns("ID");
@@ -97,23 +97,6 @@ public class StationsDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, station.getId(), line.getId());
     }
 
-    public int findDistanceBetween(Station stationA, Station stationB, Line line) {
-        // 두 역이 current, next 나란히 있는 경우
-        Optional<Section> subwayMapOptional = findByPreviousStation(stationA, line);
-        if (subwayMapOptional.isPresent() && subwayMapOptional.get().getNextStation().equals(stationB)) {
-            return subwayMapOptional.get().getDistance();
-        }
-
-        // 두 역이 next, current 이렇게 나란히 있는 경우
-        Optional<Section> subwayMapOptional1 = findByNextStation(stationA, line);
-        if (subwayMapOptional1.isPresent() && subwayMapOptional1.get().getPreviousStation().equals(stationB)) {
-            return subwayMapOptional1.get().getDistance();
-        }
-
-        throw new IllegalArgumentException("주어진 두 역이 이웃한 역이 아닙니다.");
-        // TODO: 아직까지 이웃하지 않은 역의 거리를 조회하지는 않는다고 가정합니다.
-    }
-
     public Optional<Section> findByPreviousStation(Station previousStation, Line line) {
         String sql = "select * from SUBWAY_MAP MAP " +
                 "inner join STATION S " +
@@ -149,21 +132,6 @@ public class StationsDao {
     }
 
     public void deleteStation(Station station, Line line) {
-        Optional<Section> stationsToDeleteOptional = findByPreviousStation(station, line);
-        Optional<Section> stationsLeftOptional = findByNextStation(station, line);
-
-        if (stationsToDeleteOptional.isPresent() && stationsLeftOptional.isPresent()) {
-            Section sectionToDelete = stationsToDeleteOptional.get();
-            Section sectionLeft = stationsLeftOptional.get();
-
-            update(Section.builder()
-                    .id(sectionLeft.getId())
-                    .startingStation(sectionLeft.getPreviousStation())
-                    .before(sectionToDelete.getNextStation())
-                    .distance(sectionToDelete.getDistance() + sectionLeft.getDistance())
-                    .build());
-        }
-
         String sql = "delete from SUBWAY_MAP where current_station_id = ? and line_id = ?";
 
         if (countStations(line) == 2) {
