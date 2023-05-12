@@ -7,9 +7,9 @@ import java.util.List;
 
 @Component
 public class SubwayGraphs {
-    private final List<SubwayGraph> subwayGraphs;
+    private final List<Sections> sections;
 
     public SubwayGraphs() {
-        this.subwayGraphs = new ArrayList<>();
+        this.sections = new ArrayList<>();
     }
 }

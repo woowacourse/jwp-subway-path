@@ -8,11 +8,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class SubwayGraph {
+public class Sections {
     private final DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
     private final Line line;
 
-    public SubwayGraph(final Line line) {
+    public Sections(final Line line) {
         this.line = line;
     }
 
