@@ -2,6 +2,7 @@ package subway.infrastructure.persistence.dao;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -16,6 +17,7 @@ public class LineDao {
 
     private static final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) -> new LineEntity(
             rs.getLong("id"),
+            UUID.fromString(rs.getString("domain_id")),
             rs.getString("name")
     );
 
@@ -35,7 +37,7 @@ public class LineDao {
     }
 
     public void delete(final LineEntity entity) {
-        template.update("delete from line where line.id = ?", entity.id());
+        template.update("delete from line where line.domain_id = ?", entity.domainId());
     }
 
     public Optional<LineEntity> findById(final Long id) {

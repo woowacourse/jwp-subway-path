@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static subway.domain.fixture.SectionFixtures.createSection;
 import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
+import static subway.domain.fixture.StationFixture.역1;
+import static subway.domain.fixture.StationFixture.역2;
+import static subway.domain.fixture.StationFixture.역3;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -14,8 +16,8 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
 import subway.domain.LineRepository;
+import subway.domain.Section;
 import subway.domain.Sections;
-import subway.domain.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -29,13 +31,13 @@ class RemoveStationFromLineServiceTest {
     void 노선에서_역을_제거한다() {
         // given
         final Sections sections = new Sections(List.of(
-                createSection("역1", "역2", 10),
-                createSection("역2", "역3", 10))
+                new Section(역1, 역2, 10),
+                new Section(역2, 역3, 10))
         );
         final Line line = new Line("1호선", sections);
 
         // when
-        removeStation.remove(lineRepository, line, new Station("역2"));
+        removeStation.remove(lineRepository, line, 역2);
 
         // then
         verify(lineRepository, times(1)).update(line);
@@ -47,11 +49,11 @@ class RemoveStationFromLineServiceTest {
     @Test
     void 노션에_역이_두개일떄_노선에서_역_제거시_노선도_제거된다() {
         // given
-        final Sections sections = new Sections(createSection("역1", "역2", 10));
+        final Sections sections = new Sections(new Section(역1, 역2, 10));
         final Line line = new Line("1호선", sections);
 
         // when
-        removeStation.remove(lineRepository, line, new Station("역2"));
+        removeStation.remove(lineRepository, line, 역2);
 
         // then
         verify(lineRepository, times(0)).update(line);

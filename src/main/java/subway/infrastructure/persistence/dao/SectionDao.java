@@ -1,6 +1,7 @@
 package subway.infrastructure.persistence.dao;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -15,10 +16,10 @@ public class SectionDao {
 
     private static final RowMapper<SectionEntity> sectionRowMapper = (rs, rowNum) -> new SectionEntity(
             rs.getLong("id"),
-            rs.getLong("up_station_id"),
-            rs.getLong("down_station_id"),
+            UUID.fromString(rs.getString("up_station_domain_id")),
+            UUID.fromString(rs.getString("down_station_domain_id")),
             rs.getInt("distance"),
-            rs.getLong("line_id")
+            UUID.fromString(rs.getString("line_domain_id"))
     );
 
     private final JdbcTemplate template;
@@ -40,15 +41,15 @@ public class SectionDao {
     }
 
     public void deleteAllByLineName(final String name) {
-        final String sql = "DELETE FROM SECTIONS WHERE line_id = ("
-                + "SELECT id FROM LINE WHERE name = ?"
+        final String sql = "DELETE FROM SECTIONS WHERE line_domain_id = ("
+                + "SELECT domain_id FROM LINE WHERE name = ?"
                 + ");";
         template.update(sql, name);
     }
 
     public List<SectionEntity> findAllByLineName(final String name) {
         final String sql =
-                "SELECT * FROM sections JOIN line ON line.id = sections.line_id WHERE line.name = ?";
+                "SELECT * FROM sections JOIN line ON line.domain_id = sections.line_domain_id WHERE line.name = ?";
         return template.query(sql, sectionRowMapper, name);
     }
 }

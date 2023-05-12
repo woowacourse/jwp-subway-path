@@ -3,6 +3,7 @@ package subway.infrastructure.persistence.dao;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -19,6 +20,7 @@ public class StationDao {
 
     private static final RowMapper<StationEntity> stationRowMapper = (rs, rowNum) -> new StationEntity(
             rs.getLong("id"),
+            UUID.fromString(rs.getString("domain_id")),
             rs.getString("name")
     );
 
@@ -48,10 +50,10 @@ public class StationDao {
         }
     }
 
-    public List<StationEntity> findAllByIds(final Set<Long> ids) {
+    public List<StationEntity> findAllByDomainIds(final Set<UUID> domainIds) {
         final MapSqlParameterSource parameters = new MapSqlParameterSource();
-        parameters.addValue("ids", ids);
-        return namedParameterJdbcTemplate.query("SELECT * FROM station WHERE id IN (:ids)",
+        parameters.addValue("ids", domainIds);
+        return namedParameterJdbcTemplate.query("SELECT * FROM station WHERE domain_id IN (:ids)",
                 parameters,
                 stationRowMapper);
     }

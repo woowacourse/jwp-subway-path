@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
@@ -33,9 +34,10 @@ public class JdbcLineRepository implements LineRepository {
 
     @Override
     public Long save(final Line line) {
+        final LineEntity entity = LineEntity.from(line);
         final Long lineId = lineDao.save(LineEntity.from(line));
         final List<SectionEntity> entities = line.sections().stream()
-                .map(it -> SectionEntity.of(it, lineId))
+                .map(it -> SectionEntity.of(it, entity.domainId()))
                 .collect(Collectors.toList());
         sectionDao.batchSave(entities);
         return lineId;
@@ -70,10 +72,10 @@ public class JdbcLineRepository implements LineRepository {
 
     private List<Section> getSections(final String name) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineName(name);
-        final Set<Long> stationIds = getStationIds(sectionEntities);
-        final Map<Long, StationEntity> idStationEntityMap = stationDao.findAllByIds(stationIds)
+        final Set<UUID> stationIds = getStationIds(sectionEntities);
+        final Map<UUID, StationEntity> idStationEntityMap = stationDao.findAllByDomainIds(stationIds)
                 .stream()
-                .collect(Collectors.toMap(StationEntity::id, it -> it));
+                .collect(Collectors.toMap(StationEntity::domainId, it -> it));
         final List<Section> sections = new ArrayList<>();
         for (final SectionEntity sectionEntity : sectionEntities) {
             final Section section = mapToSection(idStationEntityMap, sectionEntity);
@@ -82,18 +84,18 @@ public class JdbcLineRepository implements LineRepository {
         return sections;
     }
 
-    private Set<Long> getStationIds(final List<SectionEntity> sectionEntities) {
-        final Set<Long> stationIds = sectionEntities.stream()
-                .map(SectionEntity::downStationId)
+    private Set<UUID> getStationIds(final List<SectionEntity> sectionEntities) {
+        final Set<UUID> stationIds = sectionEntities.stream()
+                .map(SectionEntity::downStationDomainId)
                 .collect(Collectors.toSet());
-        stationIds.add(sectionEntities.get(0).upStationId());
+        stationIds.add(sectionEntities.get(0).upStationDomainId());
         return stationIds;
     }
 
-    private Section mapToSection(final Map<Long, StationEntity> idStationEntityMap,
+    private Section mapToSection(final Map<UUID, StationEntity> idStationEntityMap,
                                  final SectionEntity sectionEntity) {
-        final Station up = idStationEntityMap.get(sectionEntity.upStationId()).toDomain();
-        final Station down = idStationEntityMap.get(sectionEntity.downStationId()).toDomain();
+        final Station up = idStationEntityMap.get(sectionEntity.upStationDomainId()).toDomain();
+        final Station down = idStationEntityMap.get(sectionEntity.downStationDomainId()).toDomain();
         final int distance = sectionEntity.distance();
         return new Section(up, down, distance);
     }

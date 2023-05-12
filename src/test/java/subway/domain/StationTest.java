@@ -13,10 +13,10 @@ import org.junit.jupiter.api.Test;
 class StationTest {
 
     @Test
-    void 이름이_같으면_동등하다() {
+    void UUID_가_같으면_동등하다() {
         // given
         final Station 잠실역1 = new Station("잠실역");
-        final Station 잠실역2 = new Station("잠실역");
+        final Station 잠실역2 = new Station(잠실역1.id(), "잠실역아님");
 
         // when & then
         assertThat(잠실역1).isEqualTo(잠실역2);

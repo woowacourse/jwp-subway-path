@@ -2,6 +2,11 @@ package subway.infrastructure.persistence.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
+import static subway.domain.fixture.StationFixture.역1;
+import static subway.domain.fixture.StationFixture.역2;
+import static subway.domain.fixture.StationFixture.역3;
+import static subway.domain.fixture.StationFixture.역4;
+import static subway.domain.fixture.StationFixture.역5;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,19 +35,13 @@ class JdbcLineRepositoryTest {
     @Autowired
     private StationRepository stationRepository;
 
-    private Station 역1;
-    private Station 역2;
-    private Station 역3;
-    private Station 역4;
-    private Station 역5;
-
     @BeforeEach
     void setUp() {
-        역1 = new Station(stationRepository.save(new Station("역1")), "역1");
-        역2 = new Station(stationRepository.save(new Station("역2")), "역2");
-        역3 = new Station(stationRepository.save(new Station("역3")), "역3");
-        역4 = new Station(stationRepository.save(new Station("역4")), "역4");
-        역5 = new Station(stationRepository.save(new Station("역5")), "역5");
+        stationRepository.save(역1);
+        stationRepository.save(역2);
+        stationRepository.save(역3);
+        stationRepository.save(역4);
+        stationRepository.save(역5);
     }
 
     @Test
@@ -67,7 +66,8 @@ class JdbcLineRepositoryTest {
     @Test
     void 노선을_업데이트_한다() {
         // given
-        final Station 역6 = new Station(stationRepository.save(new Station("역6")), "역6");
+        final Station 역6 = new Station("역6");
+        stationRepository.save(역6);
         final Sections sections = new Sections(List.of(
                 new Section(역1, 역2, 1),
                 new Section(역2, 역3, 2),

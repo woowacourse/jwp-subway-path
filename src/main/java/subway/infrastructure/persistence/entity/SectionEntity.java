@@ -1,56 +1,58 @@
 package subway.infrastructure.persistence.entity;
 
+import java.util.UUID;
 import subway.domain.Section;
 
 public class SectionEntity {
 
     private final Long id;
-    private final Long upStationId;
-    private final Long downStationId;
+    private final UUID upStationDomainId;
+    private final UUID downStationDomainId;
     private final int distance;
-    private final Long lineId;
+    private final UUID lineDomainId;
 
-    public SectionEntity(final Long upStationId, final Long downStationId, final int distance, final Long lineId) {
-        this(null, upStationId, downStationId, distance, lineId);
+    public SectionEntity(final UUID upStationId, final UUID downStationId, final int distance,
+                         final UUID lineDomainId) {
+        this(null, upStationId, downStationId, distance, lineDomainId);
     }
 
     public SectionEntity(final Long id,
-                         final Long upStationId,
-                         final Long downStationId,
+                         final UUID upStationId,
+                         final UUID downStationId,
                          final int distance,
-                         final Long lineId) {
+                         final UUID lineDomainId) {
         this.id = id;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
+        this.upStationDomainId = upStationId;
+        this.downStationDomainId = downStationId;
         this.distance = distance;
-        this.lineId = lineId;
+        this.lineDomainId = lineDomainId;
     }
 
-    public static SectionEntity of(final Section section, final Long lineId) {
+    public static SectionEntity of(final Section section, final UUID lineDomainId) {
         return new SectionEntity(
                 section.up().id(),
                 section.down().id(),
                 section.distance(),
-                lineId);
+                lineDomainId);
     }
 
     public Long id() {
         return id;
     }
 
-    public Long upStationId() {
-        return upStationId;
+    public UUID upStationDomainId() {
+        return upStationDomainId;
     }
 
-    public Long downStationId() {
-        return downStationId;
+    public UUID downStationDomainId() {
+        return downStationDomainId;
     }
 
     public int distance() {
         return distance;
     }
 
-    public Long lineId() {
-        return lineId;
+    public UUID lineDomainId() {
+        return lineDomainId;
     }
 }

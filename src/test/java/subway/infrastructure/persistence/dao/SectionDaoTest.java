@@ -3,12 +3,14 @@ package subway.infrastructure.persistence.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import subway.common.RepositoryTest;
+import subway.domain.Station;
 import subway.infrastructure.persistence.entity.LineEntity;
 import subway.infrastructure.persistence.entity.SectionEntity;
 import subway.infrastructure.persistence.entity.StationEntity;
@@ -31,19 +33,24 @@ class SectionDaoTest {
     @Test
     void 여러_구간을_저장한다() {
         // given
-        final Long 역1 = stationDao.save(new StationEntity("역1"));
-        final Long 역2 = stationDao.save(new StationEntity("역2"));
-        final Long 역3 = stationDao.save(new StationEntity("역3"));
-        final Long 역4 = stationDao.save(new StationEntity("역4"));
-        final Long 역5 = stationDao.save(new StationEntity("역5"));
-
-        final Long lineId = lineDao.save(new LineEntity("1호선"));
-
+        final StationEntity 역1 = StationEntity.from(new Station("역1"));
+        final StationEntity 역2 = StationEntity.from(new Station("역2"));
+        final StationEntity 역3 = StationEntity.from(new Station("역3"));
+        final StationEntity 역4 = StationEntity.from(new Station("역4"));
+        final StationEntity 역5 = StationEntity.from(new Station("역5"));
+        stationDao.save(역1);
+        stationDao.save(역2);
+        stationDao.save(역3);
+        stationDao.save(역4);
+        stationDao.save(역5);
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        lineDao.save(lineEntity);
+        final UUID lineId = lineEntity.domainId();
         final List<SectionEntity> sectionEntities = List.of(
-                new SectionEntity(역1, 역2, 1, lineId),
-                new SectionEntity(역2, 역3, 2, lineId),
-                new SectionEntity(역3, 역4, 3, lineId),
-                new SectionEntity(역4, 역5, 4, lineId)
+                new SectionEntity(역1.domainId(), 역2.domainId(), 1, lineId),
+                new SectionEntity(역2.domainId(), 역3.domainId(), 2, lineId),
+                new SectionEntity(역3.domainId(), 역4.domainId(), 3, lineId),
+                new SectionEntity(역4.domainId(), 역5.domainId(), 4, lineId)
         );
 
         // when
@@ -56,19 +63,26 @@ class SectionDaoTest {
     @Test
     void 노선에_속한_구간을_모두_제거한다() {
         // given
-        final Long 역1 = stationDao.save(new StationEntity("역1"));
-        final Long 역2 = stationDao.save(new StationEntity("역2"));
-        final Long 역3 = stationDao.save(new StationEntity("역3"));
-        final Long 역4 = stationDao.save(new StationEntity("역4"));
-        final Long 역5 = stationDao.save(new StationEntity("역5"));
+        final StationEntity 역1 = StationEntity.from(new Station("역1"));
+        final StationEntity 역2 = StationEntity.from(new Station("역2"));
+        final StationEntity 역3 = StationEntity.from(new Station("역3"));
+        final StationEntity 역4 = StationEntity.from(new Station("역4"));
+        final StationEntity 역5 = StationEntity.from(new Station("역5"));
+        stationDao.save(역1);
+        stationDao.save(역2);
+        stationDao.save(역3);
+        stationDao.save(역4);
+        stationDao.save(역5);
 
-        final Long lineId = lineDao.save(new LineEntity("1호선"));
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        lineDao.save(lineEntity);
+        final UUID lineId = lineEntity.domainId();
 
         final List<SectionEntity> sectionEntities = List.of(
-                new SectionEntity(역1, 역2, 1, lineId),
-                new SectionEntity(역2, 역3, 2, lineId),
-                new SectionEntity(역3, 역4, 3, lineId),
-                new SectionEntity(역4, 역5, 4, lineId)
+                new SectionEntity(역1.domainId(), 역2.domainId(), 1, lineId),
+                new SectionEntity(역2.domainId(), 역3.domainId(), 2, lineId),
+                new SectionEntity(역3.domainId(), 역4.domainId(), 3, lineId),
+                new SectionEntity(역4.domainId(), 역5.domainId(), 4, lineId)
         );
         sectionDao.batchSave(sectionEntities);
 
@@ -82,19 +96,26 @@ class SectionDaoTest {
     @Test
     void 노선에_속한_구간을_모두_조회한다() {
         // given
-        final Long 역1 = stationDao.save(new StationEntity("역1"));
-        final Long 역2 = stationDao.save(new StationEntity("역2"));
-        final Long 역3 = stationDao.save(new StationEntity("역3"));
-        final Long 역4 = stationDao.save(new StationEntity("역4"));
-        final Long 역5 = stationDao.save(new StationEntity("역5"));
+        final StationEntity 역1 = StationEntity.from(new Station("역1"));
+        final StationEntity 역2 = StationEntity.from(new Station("역2"));
+        final StationEntity 역3 = StationEntity.from(new Station("역3"));
+        final StationEntity 역4 = StationEntity.from(new Station("역4"));
+        final StationEntity 역5 = StationEntity.from(new Station("역5"));
+        stationDao.save(역1);
+        stationDao.save(역2);
+        stationDao.save(역3);
+        stationDao.save(역4);
+        stationDao.save(역5);
 
-        final Long lineId = lineDao.save(new LineEntity("1호선"));
+        final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
+        lineDao.save(lineEntity);
+        final UUID lineId = lineEntity.domainId();
 
         final List<SectionEntity> sectionEntities = List.of(
-                new SectionEntity(역1, 역2, 1, lineId),
-                new SectionEntity(역2, 역3, 2, lineId),
-                new SectionEntity(역3, 역4, 3, lineId),
-                new SectionEntity(역4, 역5, 4, lineId)
+                new SectionEntity(역1.domainId(), 역2.domainId(), 1, lineId),
+                new SectionEntity(역2.domainId(), 역3.domainId(), 2, lineId),
+                new SectionEntity(역3.domainId(), 역4.domainId(), 3, lineId),
+                new SectionEntity(역4.domainId(), 역5.domainId(), 4, lineId)
         );
         sectionDao.batchSave(sectionEntities);
 

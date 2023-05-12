@@ -3,7 +3,11 @@ package subway.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
-import static subway.domain.fixture.SectionFixtures.createSection;
+import static subway.domain.fixture.StationFixture.역1;
+import static subway.domain.fixture.StationFixture.역2;
+import static subway.domain.fixture.StationFixture.역3;
+import static subway.domain.fixture.StationFixture.역4;
+import static subway.domain.fixture.StationFixture.역5;
 
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +18,7 @@ import org.junit.jupiter.api.Test;
 import subway.application.dto.LineQueryResponse;
 import subway.domain.Line;
 import subway.domain.LineRepository;
+import subway.domain.Section;
 import subway.domain.Sections;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -28,9 +33,10 @@ class LineQueryServiceTest {
     void id_를_통해서_노선을_조회한다() {
         // given
         final Sections sections = new Sections(List.of(
-                createSection("역1", "역2", 10),
-                createSection("역2", "역3", 10),
-                createSection("역3", "역4", 10)));
+                new Section(역1, 역2, 10),
+                new Section(역2, 역3, 10),
+                new Section(역3, 역4, 10)
+        ));
         final Line line = new Line("1호선", sections);
         given(lineRepository.findById(1L))
                 .willReturn(Optional.of(line));
@@ -53,13 +59,15 @@ class LineQueryServiceTest {
     void 모든_노선을_조회한다() {
         // given
         final Sections sections1 = new Sections(List.of(
-                createSection("역1", "역2", 10),
-                createSection("역2", "역3", 10)));
+                new Section(역1, 역2, 10),
+                new Section(역2, 역3, 10)
+        ));
         final Line line1 = new Line("1호선", sections1);
 
         final Sections sections2 = new Sections(List.of(
-                createSection("역3", "역4", 10),
-                createSection("역4", "역5", 10)));
+                new Section(역3, 역4, 10),
+                new Section(역4, 역5, 10)
+        ));
         final Line line2 = new Line("2호선", sections2);
 
         given(lineRepository.findAll())

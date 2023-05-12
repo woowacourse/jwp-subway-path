@@ -1,17 +1,18 @@
 package subway.domain;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class Station {
 
-    private final Long id;
+    private final UUID id;
     private final String name;
 
     public Station(final String name) {
-        this(null, name);
+        this(UUID.randomUUID(), name);
     }
 
-    public Station(final Long id, final String name) {
+    public Station(final UUID id, final String name) {
         this.id = id;
         this.name = name;
     }
@@ -25,15 +26,15 @@ public class Station {
             return false;
         }
         final Station station = (Station) o;
-        return Objects.equals(id, station.id) && Objects.equals(name(), station.name());
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name());
+        return Objects.hash(id);
     }
 
-    public Long id() {
+    public UUID id() {
         return id;
     }
 

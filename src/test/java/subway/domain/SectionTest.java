@@ -3,7 +3,14 @@ package subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static subway.domain.fixture.SectionFixtures.createSection;
+import static subway.domain.fixture.StationFixture.건대입구;
+import static subway.domain.fixture.StationFixture.선릉;
+import static subway.domain.fixture.StationFixture.없는역;
+import static subway.domain.fixture.StationFixture.없는역2;
+import static subway.domain.fixture.StationFixture.잠실;
+import static subway.domain.fixture.StationFixture.잠실나루;
+import static subway.domain.fixture.StationFixture.종착역;
+import static subway.domain.fixture.StationFixture.홍대입구;
 import static subway.exception.line.LineExceptionType.NON_POSITIVE_DISTANCE;
 
 import org.junit.jupiter.api.DisplayName;
@@ -32,42 +39,11 @@ class SectionTest {
         assertThat(exceptionType).isEqualTo(NON_POSITIVE_DISTANCE);
     }
 
-    @Nested
-    class 두_구간의_합을_구할_때 {
-
-        @Test
-        void 합쳐진_구간의_길이는_두_구간의_길이의_합과_동일하다() {
-            // given
-            final Section up = createSection("잠실역", "마산역", 10);
-            final Section down = createSection("마산역", "슈퍼말랑역", 2);
-
-            // when
-            final Section addedSection = up.plus(down);
-            // then
-            assertThat(addedSection.distance()).isEqualTo(12);
-            assertThat(addedSection.up().name()).isEqualTo("잠실역");
-            assertThat(addedSection.down().name()).isEqualTo("슈퍼말랑역");
-        }
-
-        @Test
-        void 연속되지_않은_두_구간을_더할시_예외() {
-            // given
-            final Section up = createSection("잠실역", "마산역", 10);
-            final Section down = createSection("마산역", "슈퍼말랑역", 2);
-
-            // when & then
-            final String message = assertThrows(LineException.class, () ->
-                    down.plus(up)
-            ).getMessage();
-            assertThat(message).contains("연속되지 않은 두 구간을 더할 수 없습니다.");
-        }
-    }
-
     @Test
     void 상대적으로_상행_구간인지_알_수_있다() {
         // given
-        final Section up = createSection("잠실역", "마산역", 10);
-        final Section down = createSection("마산역", "슈퍼말랑역", 2);
+        final Section up = new Section(잠실, 선릉, 10);
+        final Section down = new Section(선릉, 종착역, 2);
 
         // when & then
         assertThat(up.isUpThan(down)).isTrue();
@@ -77,8 +53,8 @@ class SectionTest {
     @Test
     void 상대적으로_하행_구간인지_알_수_있다() {
         // given
-        final Section up = createSection("잠실역", "마산역", 10);
-        final Section down = createSection("마산역", "슈퍼말랑역", 2);
+        final Section up = new Section(잠실, 선릉, 10);
+        final Section down = new Section(선릉, 종착역, 2);
 
         // when & then
         assertThat(up.isDownThan(down)).isFalse();
@@ -88,9 +64,9 @@ class SectionTest {
     @Test
     void 상행역_혹은_하행역이_동일한지_판단한다() {
         // given
-        final Section section1 = createSection("잠실역", "마산역", 10);
-        final Section section2 = createSection("잠실역", "김포공항역", 18);
-        final Section section3 = createSection("김치역", "마산역", 12);
+        final Section section1 = new Section(잠실, 선릉, 10);
+        final Section section2 = new Section(잠실, 홍대입구, 18);
+        final Section section3 = new Section(건대입구, 선릉, 12);
 
         // when & then
         assertAll(
@@ -101,21 +77,52 @@ class SectionTest {
     }
 
     @Nested
+    class 두_구간의_합을_구할_때 {
+
+        @Test
+        void 합쳐진_구간의_길이는_두_구간의_길이의_합과_동일하다() {
+            // given
+            final Section up = new Section(잠실, 선릉, 10);
+            final Section down = new Section(선릉, 종착역, 2);
+
+            // when
+            final Section addedSection = up.plus(down);
+            // then
+            assertThat(addedSection.distance()).isEqualTo(12);
+            assertThat(addedSection.up().name()).isEqualTo("잠실");
+            assertThat(addedSection.down().name()).isEqualTo("종착역");
+        }
+
+        @Test
+        void 연속되지_않은_두_구간을_더할시_예외() {
+            // given
+            final Section up = new Section(잠실, 선릉, 10);
+            final Section down = new Section(선릉, 종착역, 2);
+
+            // when & then
+            final String message = assertThrows(LineException.class, () ->
+                    down.plus(up)
+            ).getMessage();
+            assertThat(message).contains("연속되지 않은 두 구간을 더할 수 없습니다.");
+        }
+    }
+
+    @Nested
     class 구간_사이의_차이를_구할_떄 {
 
         @Test
         void 큰_구간에서_작은_구간을_뺀_나머지를_구할_수_있다() {
             // given
-            final Section section1 = createSection("잠실역", "마산역", 10);
-            final Section section2 = createSection("잠실나루역", "마산역", 8);
+            final Section section1 = new Section(잠실, 선릉, 10);
+            final Section section2 = new Section(잠실나루, 선릉, 8);
 
             // when
             final Section remain = section1.minus(section2);
 
             // then
             assertAll(
-                    () -> assertThat(remain.up().name()).isEqualTo("잠실역"),
-                    () -> assertThat(remain.down().name()).isEqualTo("잠실나루역"),
+                    () -> assertThat(remain.up().name()).isEqualTo("잠실"),
+                    () -> assertThat(remain.down().name()).isEqualTo("잠실나루"),
                     () -> assertThat(remain.distance()).isEqualTo(2)
             );
         }
@@ -123,8 +130,8 @@ class SectionTest {
         @Test
         void 빼려는_구간의_크기가_더_크거나_동일하다면_예외() {
             // given
-            final Section section1 = createSection("잠실역", "마산역", 10);
-            final Section section2 = createSection("잠실나루역", "마산역", 10);
+            final Section section1 = new Section(잠실, 선릉, 10);
+            final Section section2 = new Section(잠실나루, 선릉, 10);
 
             // when & then
             final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
@@ -136,8 +143,8 @@ class SectionTest {
         @Test
         void 겹치는_역이_없어_뺼_수_없다면_예외() {
             // given
-            final Section section1 = createSection("잠실역", "마산역", 10);
-            final Section section2 = createSection("없는역", "없는역2", 1);
+            final Section section1 = new Section(잠실, 선릉, 10);
+            final Section section2 = new Section(없는역, 없는역2, 1);
 
             // when & then
             final String message = assertThrows(LineException.class, () ->

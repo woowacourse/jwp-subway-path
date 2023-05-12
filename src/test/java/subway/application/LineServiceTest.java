@@ -6,8 +6,13 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.times;
 import static org.mockito.BDDMockito.verify;
 import static org.mockito.Mockito.mock;
-import static subway.domain.fixture.SectionFixtures.createSection;
 import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
+import static subway.domain.fixture.StationFixture.선릉;
+import static subway.domain.fixture.StationFixture.역1;
+import static subway.domain.fixture.StationFixture.역2;
+import static subway.domain.fixture.StationFixture.역3;
+import static subway.domain.fixture.StationFixture.잠실;
+import static subway.domain.fixture.StationFixture.잠실나루;
 
 import java.util.List;
 import java.util.Optional;
@@ -42,15 +47,15 @@ class LineServiceTest {
         // given
         given(lineRepository.findByName("1호선"))
                 .willReturn(Optional.empty());
-        역을_저장한다("잠실역");
-        역을_저장한다("사당역");
+        역을_저장한다(잠실);
+        역을_저장한다(선릉);
         given(lineRepository.save(any()))
                 .willReturn(1L);
 
         final LineCreateCommand command = new LineCreateCommand(
                 "1호선",
-                "잠실역",
-                "사당역",
+                "잠실",
+                "선릉",
                 10);
 
         // when
@@ -63,19 +68,17 @@ class LineServiceTest {
     @Test
     void 노선에_역을_추가한다() {
         // given
-        final Station up = new Station("잠실역");
-        final Station down = new Station("역삼역");
-        역을_저장한다("잠실역");
-        역을_저장한다("사당역");
-
-        final Section section = new Section(up, down, 10);
+        역을_저장한다(잠실);
+        역을_저장한다(선릉);
+        역을_저장한다(잠실나루);
+        final Section section = new Section(잠실, 선릉, 10);
         final Line line = new Line("1호선", new Sections(section));
         given(lineRepository.findByName("1호선"))
                 .willReturn(Optional.of(line));
         final AddStationToLineCommand command = new AddStationToLineCommand(
                 "1호선",
-                "잠실역",
-                "사당역",
+                "잠실",
+                "잠실나루",
                 6);
 
         // when
@@ -90,13 +93,14 @@ class LineServiceTest {
     void 노선에서_역을_제거한다() {
         // given
         final Sections sections = new Sections(List.of(
-                createSection("역1", "역2", 10),
-                createSection("역2", "역3", 10)));
+                new Section(역1, 역2, 10),
+                new Section(역2, 역3, 10)
+        ));
         final DeleteStationFromLineCommand command = new DeleteStationFromLineCommand("1호선", "역2");
         final Line line = new Line("1호선", sections);
         given(lineRepository.findByName("1호선"))
                 .willReturn(Optional.of(line));
-        역을_저장한다("역2");
+        역을_저장한다(역2);
 
         // when
         lineService.removeStation(command);
@@ -110,12 +114,14 @@ class LineServiceTest {
     @Test
     void 노션에_역이_두개일떄_노선에서_역_제거시_노선도_제거된다() {
         // given
-        final Sections sections = new Sections(createSection("역1", "역2", 10));
+        final Sections sections = new Sections(
+                new Section(역1, 역2, 10)
+        );
         final DeleteStationFromLineCommand command = new DeleteStationFromLineCommand("1호선", "역2");
         final Line line = new Line("1호선", sections);
         given(lineRepository.findByName("1호선"))
                 .willReturn(Optional.of(line));
-        역을_저장한다("역2");
+        역을_저장한다(역2);
 
         // when
         lineService.removeStation(command);
@@ -126,8 +132,8 @@ class LineServiceTest {
         assertThat(line.sections()).hasSize(0);
     }
 
-    private void 역을_저장한다(final String name) {
-        given(stationRepository.findByName(name))
-                .willReturn(Optional.of(new Station(name)));
+    private void 역을_저장한다(final Station station) {
+        given(stationRepository.findByName(station.name()))
+                .willReturn(Optional.of(station));
     }
 }
