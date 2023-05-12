@@ -31,6 +31,10 @@ public class Line {
         return sections.totalDistance();
     }
 
+    public boolean contains(final Section section) {
+        return sections.contains(section);
+    }
+
     public boolean isEmpty() {
         return sections().isEmpty();
     }

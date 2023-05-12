@@ -255,6 +255,28 @@ class LineTest {
     }
 
     @Test
+    void 특정_구간의_포함_여부를_반환한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5)
+        ));
+        final Line line = new Line("1호선", sections);
+        final Section section1 = new Section(역1, 역2, 4);
+        final Section section2 = new Section(역2, 역3, 5);
+        final Section section4 = new Section(역2, 역1, 4);
+        final Section section3 = new Section(역1, 역2, 6);
+        final Section section5 = new Section(역1, 역3, 9);
+
+        // when & then
+        assertThat(line.contains(section1)).isTrue();
+        assertThat(line.contains(section2)).isTrue();
+        assertThat(line.contains(section3)).isFalse();
+        assertThat(line.contains(section4)).isFalse();
+        assertThat(line.contains(section5)).isFalse();
+    }
+
+    @Test
     void 노선의_총_거리를_구한다() {
         // given
         final Sections sections = new Sections(List.of(

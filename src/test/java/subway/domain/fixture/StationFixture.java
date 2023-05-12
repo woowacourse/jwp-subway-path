@@ -27,4 +27,6 @@ public class StationFixture {
     public static final Station 역4 = new Station("역4");
     public static final Station 역5 = new Station("역5");
     public static final Station 역6 = new Station("역6");
+    public static final Station 역7 = new Station("역7");
+    public static final Station 역8 = new Station("역8");
 }
