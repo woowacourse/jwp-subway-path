@@ -1,53 +1,85 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import static subway.exception.line.LineExceptionType.DUPLICATE_LINE_NAME;
+import static subway.exception.line.LineExceptionType.NOT_FOUND_LINE;
+import static subway.exception.station.StationExceptionType.NOT_FOUND_STATION;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.application.dto.AddStationToLineCommand;
+import subway.application.dto.DeleteStationFromLineCommand;
+import subway.application.dto.LineCreateCommand;
+import subway.domain.Line;
+import subway.domain.LineRepository;
+import subway.domain.LineValidator;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
+import subway.domain.StationRepository;
+import subway.domain.service.RemoveStationFromLineService;
+import subway.exception.line.LineException;
+import subway.exception.station.StationException;
 
 @Service
+@Transactional
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+    private final LineValidator lineValidator;
+    private final RemoveStationFromLineService removeStationFromLineService;
+
+    public LineService(final LineRepository lineRepository,
+                       final StationRepository stationRepository,
+                       final LineValidator lineValidator,
+                       final RemoveStationFromLineService removeStationFromLineService) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
+        this.lineValidator = lineValidator;
+        this.removeStationFromLineService = removeStationFromLineService;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    public UUID create(final LineCreateCommand command) {
+        validateDuplicateLineName(command);
+        final Station up = findStationByName(command.upTerminalName());
+        final Station down = findStationByName(command.downTerminalName());
+        final Section section = new Section(up, down, command.distance());
+        lineValidator.validateSectionConsistency(section);
+        final Line line = new Line(command.lineName(), new Sections(section));
+        lineRepository.save(line);
+        return line.id();
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    private void validateDuplicateLineName(final LineCreateCommand command) {
+        if (lineRepository.findByName(command.lineName()).isPresent()) {
+            throw new LineException(DUPLICATE_LINE_NAME);
+        }
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    private Station findStationByName(final String name) {
+        return stationRepository.findByName(name)
+                .orElseThrow(() -> new StationException(NOT_FOUND_STATION));
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    public void addStation(final AddStationToLineCommand command) {
+        final Line line = findLineByName(command.lineName());
+        final Station up = findStationByName(command.upStationName());
+        final Station down = findStationByName(command.downStationName());
+        final Section section = new Section(up, down, command.distance());
+        lineValidator.validateSectionConsistency(section);
+        line.addSection(section);
+        lineRepository.update(line);
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+    public void removeStation(final DeleteStationFromLineCommand command) {
+        final Line line = findLineByName(command.lineName());
+        final Station station = findStationByName(command.deleteStationName());
+        removeStationFromLineService.remove(line, station);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    private Line findLineByName(final String name) {
+        return lineRepository.findByName(name)
+                .orElseThrow(() -> new LineException(NOT_FOUND_LINE));
     }
-
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
-    }
-
 }

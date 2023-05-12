@@ -1,48 +1,45 @@
 package subway.domain;
 
-import java.util.Objects;
+import java.util.List;
+import java.util.UUID;
 
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
 
-    public Line() {
+    private final UUID id;
+    private final String name;
+    private final Sections sections;
+
+    public Line(final String name, final Sections sections) {
+        this(UUID.randomUUID(), name, sections);
     }
 
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(Long id, String name, String color) {
+    public Line(final UUID id, final String name, final Sections sections) {
         this.id = id;
         this.name = name;
-        this.color = color;
+        this.sections = sections;
     }
 
-    public Long getId() {
+    public void addSection(final Section section) {
+        sections.addSection(section);
+    }
+
+    public void removeStation(final Station station) {
+        sections.removeStation(station);
+    }
+
+    public UUID id() {
         return id;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
-    public String getColor() {
-        return color;
+    public List<Section> sections() {
+        return sections.sections();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
+    public boolean isEmpty() {
+        return sections().isEmpty();
     }
 }
