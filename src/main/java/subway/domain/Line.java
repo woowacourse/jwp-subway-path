@@ -6,19 +6,36 @@ public final class Line {
     private Long id;
     private final String name;
     private final String color;
-    private final Paths paths;
+    private Paths paths;
 
-    public Line(final String name, final String color, final Paths paths) {
+    public Line(final Long id, final String name, final String color, final Paths paths) {
+        this.id = id;
         this.name = name;
         this.color = color;
         this.paths = paths;
     }
 
+    public Line(final String name, final String color, final Paths paths) {
+        this(null, name, color, paths);
+    }
+
     public Line(final Long id, final String name, final String color) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
-        this.paths = new Paths();
+        this(id, name, color, new Paths());
+    }
+
+    public Line(final String name, final String color) {
+        this(null, name, color, new Paths());
+    }
+
+    public Line(final Line line) {
+        this(line.id, line.name, line.color, line.paths);
+    }
+
+    public Line addPath(final Path path) {
+        final Line line = new Line(this);
+        line.paths = paths.addPath(path);
+
+        return line;
     }
 
     public Long getId() {
@@ -31,6 +48,10 @@ public final class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public int getPathsSize() {
+        return paths.getPaths().size();
     }
 
     @Override
