@@ -1,7 +1,8 @@
 package subway.domain;
 
-import subway.exception.SectionInvalidException;
+import subway.exception.SectionDuplicatedException;
 import subway.exception.SectionNotFoundException;
+import subway.exception.SectionSeparatedException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,19 +16,17 @@ public class Sections {
     }
 
     public void addSection(final Section section) {
-        Station upStation = section.getUpStation();
-        Station downStation = section.getDownStation();
+        boolean isExistUpStation = isExistStation(section.getUpStation());
+        boolean isExistDownStation = isExistStation(section.getDownStation());
 
-        boolean isExistUpStation = isExistStation(upStation);
-        boolean isExistDownStation = isExistStation(downStation);
         validateSection(isExistUpStation, isExistDownStation);
 
-        handleInsertCase(SectionCase.findInsertCase(isExistUpStation, isExistDownStation), section);
+        insertSectionByExistingStationCase(isExistUpStation, isExistDownStation, section);
     }
 
     public boolean isExistStation(final Station station) {
         return sections.stream()
-                .anyMatch(nowStation -> nowStation.isExistStation(station));
+                .anyMatch(section -> section.isExistStation(station));
     }
 
     public void validateSection(final boolean isExistUpStation, final boolean isExistDownStation) {
@@ -37,31 +36,31 @@ public class Sections {
 
     private void validateSeparatedSection(final boolean isExistUpStation, final boolean isExistDownStation) {
         if (!isExistUpStation && !isExistDownStation && !sections.isEmpty()) {
-            throw new SectionInvalidException();
+            throw new SectionSeparatedException();
         }
     }
 
     private static void validateDuplicatedSection(final boolean isExistUpStation, final boolean isExistDownStation) {
         if (isExistUpStation && isExistDownStation) {
-            throw new SectionInvalidException();
+            throw new SectionDuplicatedException();
         }
     }
 
-    private void handleInsertCase(final SectionCase sectionCase, final Section section) {
-        if (sectionCase == SectionCase.EMPTY_SECTIONS) {
+    private void insertSectionByExistingStationCase(final boolean isExistUpStation, final boolean isExistDownStation, final Section section) {
+        if (!isExistUpStation && !isExistDownStation) {
             sections.add(section);
+            return;
         }
 
-        if (sectionCase == SectionCase.EXIST_ONLY_UP_STATION) {
-            handleExistOnlyUpStation(section);
+        if (isExistUpStation) {
+            insertSectionWhenBeingOnlyUpStation(section);
+            return;
         }
 
-        if (sectionCase == SectionCase.EXIST_ONLY_DOWN_STATION) {
-            handleExistOnlyDownStation(section);
-        }
+        insertSectionWhenBeingOnlyDownStation(section);
     }
 
-    private void handleExistOnlyUpStation(final Section section) {
+    private void insertSectionWhenBeingOnlyUpStation(final Section section) {
         Station station = section.getUpStation();
         if (isExistAsUpStation(station)) {
             Section sectionWithUpStation = findSectionWithUpStation(station);
@@ -83,8 +82,9 @@ public class Sections {
     }
 
 
-    private void handleExistOnlyDownStation(final Section section) {
+    private void insertSectionWhenBeingOnlyDownStation(final Section section) {
         Station station = section.getDownStation();
+
         if (isExistAsUpStation(station)) {
             sections.add(section);
             return;
@@ -110,18 +110,13 @@ public class Sections {
     }
 
     public void deleteSectionByStation(final Station station) {
-        SectionCase deleteCase = SectionCase.findDeleteCase(getNearStationCount(station));
-        handleDeleteCase(deleteCase, station);
+        deleteSectionByDeleteCase(station);
     }
 
-    private int getNearStationCount(final Station station) {
-        return (int) sections.stream()
-                .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
-                .count();
-    }
+    private void deleteSectionByDeleteCase(final Station station) {
+        int nearStationCount = getNearStationCount(station);
 
-    private void handleDeleteCase(final SectionCase deleteCase, final Station station) {
-        if (deleteCase == SectionCase.END_POINT_STATION) {
+        if (nearStationCount == 1) {
             Section targetSection = sections.stream()
                     .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
                     .findAny()
@@ -130,7 +125,7 @@ public class Sections {
             sections.remove(targetSection);
         }
 
-        if (deleteCase == SectionCase.MIDDLE_POINT_STATION) {
+        if (nearStationCount == 2) {
             List<Section> targetSections = sections.stream()
                     .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
                     .collect(Collectors.toList());
@@ -149,6 +144,12 @@ public class Sections {
             sections.remove(downStationTargetSection);
             sections.add(new Section(downStationTargetSection.getUpStation(), upStationTargetSection.getDownStation(), upStationTargetSection.getDistance() + downStationTargetSection.getDistance()));
         }
+    }
+
+    private int getNearStationCount(final Station station) {
+        return (int) sections.stream()
+                .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
+                .count();
     }
 
     public List<Section> getSections() {

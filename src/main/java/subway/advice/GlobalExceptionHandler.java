@@ -6,12 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.client.HttpServerErrorException;
 import subway.dto.exception.ExceptionResponse;
-import subway.exception.DistanceInvalidException;
-import subway.exception.SectionInvalidException;
-import subway.exception.SectionNotFoundException;
-import subway.exception.UpStationNotFoundException;
+import subway.exception.*;
 
 import java.util.stream.Collectors;
 
@@ -38,6 +34,18 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse.from(message, HttpStatus.BAD_REQUEST.value()));
+    }
+
+    @ExceptionHandler(SectionDuplicatedException.class)
+    public ResponseEntity<ExceptionResponse> sectionDuplicatedExceptionHandler(final SectionDuplicatedException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
+    }
+
+    @ExceptionHandler(SectionSeparatedException.class)
+    public ResponseEntity<ExceptionResponse> sectionSeparatedExceptionHandler(final SectionSeparatedException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 
     @ExceptionHandler(SectionNotFoundException.class)
