@@ -10,7 +10,7 @@ import subway.ui.dto.StationResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/line")
+@RequestMapping("/lines")
 public class SectionController {
     private final SectionService sectionService;
 

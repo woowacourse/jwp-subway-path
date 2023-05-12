@@ -6,22 +6,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StationResponse {
-    private Long id;
     private String name;
 
-    public StationResponse(Long id, String name) {
-        this.id = id;
+    public StationResponse() {
+    }
+
+    public StationResponse(String name) {
         this.name = name;
     }
 
     public static List<StationResponse> of(List<Station> stations) {
         return stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(station -> new StationResponse(station.getName()))
                 .collect(Collectors.toList());
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getName() {
