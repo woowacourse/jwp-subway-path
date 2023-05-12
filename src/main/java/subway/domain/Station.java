@@ -65,12 +65,21 @@ public class Station {
         return adjustPath.findByStation(target);
     }
 
+    public List<Station> findAdjustStation() {
+        return adjustPath.findAllStation();
+    }
+
+    public void changeEndStatus(final Station sourceStation) {
+        this.status = sourceStation.status;
+        sourceStation.status = StationStatus.MID;
+    }
+
     public boolean isEnd(final StationStatus status) {
         return this.status.isEqual(status);
     }
 
-    public List<Station> findAdjustStation() {
-        return adjustPath.findAllStation();
+    public boolean isConnect(final Station newDownStation) {
+        return adjustPath.contains(newDownStation);
     }
 
     public Long getId() {
@@ -85,11 +94,6 @@ public class Station {
         return status;
     }
 
-    public void changeEndStatus(final Station sourceStation) {
-        this.status = sourceStation.status;
-        sourceStation.status = StationStatus.MID;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
@@ -101,9 +105,5 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public boolean isConnect(final Station newDownStation) {
-        return adjustPath.contains(newDownStation);
     }
 }

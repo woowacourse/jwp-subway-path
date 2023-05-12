@@ -121,31 +121,6 @@ public class Line {
         target.addPath(newDownStation, originDistance.minus(distance));
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Line line = (Line) o;
-        return Objects.equals(id, line.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
-    }
-
     public List<Station> getAllStation() {
         final Queue<Station> queue = new LinkedList<>();
         final Set<Station> visited = new LinkedHashSet<>();
@@ -175,5 +150,30 @@ public class Line {
         }
 
         throw new IllegalArgumentException("아직 노선이 생성되지 않았습니다");
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
