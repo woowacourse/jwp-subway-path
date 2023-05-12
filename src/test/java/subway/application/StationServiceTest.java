@@ -41,12 +41,10 @@ class StationServiceTest {
 
 
         final SubwayMap subwayMap = new SubwayMap(new HashMap<>(Collections.emptyMap()), new HashMap<>(Fixture.tempLineMap));
-        when(subwayMapRepository.find()).thenReturn(subwayMap);
         when(lineService.findLineByName(line.getName())).thenReturn(line);
 
         // when & then
         assertDoesNotThrow(() -> stationService.saveStation(List.of(stationRequestUp, stationRequestDown)));
-        verify(subwayMapRepository, times(1)).save(any());
     }
 
     @Test
