@@ -8,6 +8,8 @@ import subway.domain.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 @Repository
 public class SubwayMapRepository {
@@ -26,13 +28,12 @@ public class SubwayMapRepository {
         final List<Station> stations = stationDao.findAll();
         final List<SectionEntity> sectionEntities = sectionDao.findAll();
         final List<LineEntity> lineEntities = lineDao.findAll();
+
         final Map<Line, Station> lineMap = lineEntities.stream()
                 .collect(Collectors.toMap(LineEntity::toLine,
-                        entity -> stations.stream()
-                                .filter(station -> station.getId().equals(entity.getUpEndpointId()))
-                                .findFirst()
-                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 종점역입니다."))
-                ));
+                        entity -> stationDao.findById(entity.getUpEndpointId())
+                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 종점역입니다.")))
+                );
         return generateMap(stations, sectionEntities, new HashMap<>(lineMap));
     }
 
@@ -45,29 +46,24 @@ public class SubwayMapRepository {
     }
 
     private List<Section> mapToSection(final List<SectionEntity> sectionEntities, final Station station) {
-        System.out.println(sectionEntities.get(0).getLineId());
         return sectionEntities.stream()
-                .filter(entity -> entity.getDepartureId() == station.getId())
+                .filter(entity -> entity.getDepartureId().equals(station.getId()))
                 .map(entity -> new Section(entity.getDistance(),
-                        station, stationDao.findById(entity.getArrivalId()),
+                        station,
+                        stationDao.findById(entity.getArrivalId())
+                                .orElseThrow(() -> new IllegalArgumentException("도착역이 존재하지 않습니다.")),
                         lineDao.findById(entity.getLineId()))
                 ).collect(Collectors.toList());
     }
 
     public void save(final SubwayMap subwayMap) {
-        // 있으면 update 없으면 save
         stationDao.deleteAll();
         sectionDao.deleteAll();
         lineDao.deleteAll();
 
         final Map<Station, Sections> subwayMap1 = subwayMap.getSubwayMap();
 
-        List<Station> stations = new ArrayList<>();
-        for (Station station : subwayMap1.keySet()) {
-            Station insert = stationDao.insert(station);
-            station.setId(insert);
-            stations.add(insert);
-        }
+        subwayMap1.keySet().forEach(stationDao::insert);
 
         final List<Section> sections = mapToSections(subwayMap1);
         sections.forEach(sectionDao::insertSection);
