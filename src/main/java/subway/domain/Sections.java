@@ -4,10 +4,14 @@ import subway.exception.SectionDuplicatedException;
 import subway.exception.SectionNotFoundException;
 import subway.exception.SectionSeparatedException;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Sections {
+
+    private static final int END_POINT_STATION = 1;
 
     private final List<Section> sections;
 
@@ -24,12 +28,12 @@ public class Sections {
         insertSectionByExistingStationCase(isExistUpStation, isExistDownStation, section);
     }
 
-    public boolean isExistStation(final Station station) {
+    private boolean isExistStation(final Station station) {
         return sections.stream()
                 .anyMatch(section -> section.isExistStation(station));
     }
 
-    public void validateSection(final boolean isExistUpStation, final boolean isExistDownStation) {
+    private void validateSection(final boolean isExistUpStation, final boolean isExistDownStation) {
         validateSeparatedSection(isExistUpStation, isExistDownStation);
         validateDuplicatedSection(isExistUpStation, isExistDownStation);
     }
@@ -40,7 +44,7 @@ public class Sections {
         }
     }
 
-    private static void validateDuplicatedSection(final boolean isExistUpStation, final boolean isExistDownStation) {
+    private void validateDuplicatedSection(final boolean isExistUpStation, final boolean isExistDownStation) {
         if (isExistUpStation && isExistDownStation) {
             throw new SectionDuplicatedException();
         }
@@ -62,9 +66,13 @@ public class Sections {
 
     private void insertSectionWhenBeingOnlyUpStation(final Section section) {
         Station station = section.getUpStation();
-        if (isExistAsUpStation(station)) {
-            Section sectionWithUpStation = findSectionWithUpStation(station);
+
+        if (findSectionWithUpStation(station).isPresent()) {
+            Section sectionWithUpStation = findSectionWithUpStation(station)
+                    .orElseThrow(SectionNotFoundException::new);
+
             sectionWithUpStation.validateDistance(section.getDistance());
+
             sections.remove(sectionWithUpStation);
             sections.add(section);
             sections.add(new Section(section.getDownStation(), sectionWithUpStation.getDownStation(), sectionWithUpStation.getDistance() - section.getDistance()));
@@ -74,35 +82,29 @@ public class Sections {
         sections.add(section);
     }
 
-    public Section findSectionWithUpStation(final Station station) {
+    private Optional<Section> findSectionWithUpStation(final Station station) {
         return sections.stream()
                 .filter(nowSection -> nowSection.getUpStation().equals(station))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .findAny();
     }
-
 
     private void insertSectionWhenBeingOnlyDownStation(final Section section) {
         Station station = section.getDownStation();
 
-        if (isExistAsUpStation(station)) {
+        if (findSectionWithUpStation(station).isPresent()) {
             sections.add(section);
             return;
         }
 
         Section sectionWithDownStation = findSectionWithDownStation(section.getDownStation());
         sectionWithDownStation.validateDistance(section.getDistance());
+
         sections.remove(sectionWithDownStation);
         sections.add(section);
         sections.add(new Section(sectionWithDownStation.getUpStation(), section.getUpStation(), sectionWithDownStation.getDistance() - section.getDistance()));
     }
 
-    public boolean isExistAsUpStation(final Station station) {
-        return sections.stream()
-                .anyMatch(nowSection -> nowSection.getUpStation().equals(station));
-    }
-
-    public Section findSectionWithDownStation(final Station station) {
+    private Section findSectionWithDownStation(final Station station) {
         return sections.stream()
                 .filter(nowSection -> nowSection.getDownStation().equals(station))
                 .findAny()
@@ -110,40 +112,14 @@ public class Sections {
     }
 
     public void deleteSectionByStation(final Station station) {
-        deleteSectionByDeleteCase(station);
-    }
-
-    private void deleteSectionByDeleteCase(final Station station) {
         int nearStationCount = getNearStationCount(station);
 
-        if (nearStationCount == 1) {
-            Section targetSection = sections.stream()
-                    .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
-                    .findAny()
-                    .orElseThrow(SectionNotFoundException::new);
-
-            sections.remove(targetSection);
+        if (nearStationCount == END_POINT_STATION) {
+            deleteSectionWhenStationIsEndPoint(station);
+            return;
         }
 
-        if (nearStationCount == 2) {
-            List<Section> targetSections = sections.stream()
-                    .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
-                    .collect(Collectors.toList());
-
-            Section upStationTargetSection = targetSections.stream()
-                    .filter(section -> section.getUpStation().equals(station))
-                    .findAny()
-                    .orElseThrow(SectionNotFoundException::new);
-
-            Section downStationTargetSection = targetSections.stream()
-                    .filter(section -> section.getDownStation().equals(station))
-                    .findAny()
-                    .orElseThrow(SectionNotFoundException::new);
-
-            sections.remove(upStationTargetSection);
-            sections.remove(downStationTargetSection);
-            sections.add(new Section(downStationTargetSection.getUpStation(), upStationTargetSection.getDownStation(), upStationTargetSection.getDistance() + downStationTargetSection.getDistance()));
-        }
+        deleteSectionWhenStationIsMiddlePoint(station);
     }
 
     private int getNearStationCount(final Station station) {
@@ -152,7 +128,47 @@ public class Sections {
                 .count();
     }
 
+    private void deleteSectionWhenStationIsEndPoint(final Station station) {
+        Section targetSection = sections.stream()
+                .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
+                .findAny()
+                .orElseThrow(SectionNotFoundException::new);
+
+        sections.remove(targetSection);
+    }
+
+    private void deleteSectionWhenStationIsMiddlePoint(final Station station) {
+        List<Section> targetSections = getTargetSections(station);
+
+        Section sectionOfUpStation = getTargetSectionOfUpStation(station, targetSections);
+        Section sectionOfDownStation = getTargetSectionOfDownStation(station, targetSections);
+
+        sections.remove(sectionOfUpStation);
+        sections.remove(sectionOfDownStation);
+        sections.add(new Section(sectionOfDownStation.getUpStation(), sectionOfUpStation.getDownStation(), sectionOfUpStation.getDistance() + sectionOfDownStation.getDistance()));
+    }
+
+    private List<Section> getTargetSections(final Station station) {
+        return sections.stream()
+                .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
+                .collect(Collectors.toList());
+    }
+
+    private Section getTargetSectionOfUpStation(final Station station, final List<Section> targetSections) {
+        return targetSections.stream()
+                .filter(section -> section.getUpStation().equals(station))
+                .findAny()
+                .orElseThrow(SectionNotFoundException::new);
+    }
+
+    private Section getTargetSectionOfDownStation(final Station station, final List<Section> targetSections) {
+        return targetSections.stream()
+                .filter(section -> section.getDownStation().equals(station))
+                .findAny()
+                .orElseThrow(SectionNotFoundException::new);
+    }
+
     public List<Section> getSections() {
-        return sections;
+        return Collections.unmodifiableList(sections);
     }
 }
