@@ -1,17 +1,16 @@
 package subway.controller.section;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import subway.controller.section.dto.LineStationDeleteRequest;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import subway.controller.section.dto.SectionCreateControllerRequest;
 import subway.service.section.SectionService;
 import subway.service.section.dto.SectionCreateRequest;
 
-@Controller
+@RestController
+@RequestMapping("/sections")
 public class SectionController {
 
     private final SectionService sectionService;
@@ -20,7 +19,7 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @PostMapping("/sections")
+    @PostMapping
     public ResponseEntity<Void> createSection(@RequestBody SectionCreateControllerRequest sectionCreateControllerRequest) {
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(
                 sectionCreateControllerRequest.getUpStationId(),
@@ -29,13 +28,5 @@ public class SectionController {
                 sectionCreateControllerRequest.getLineId());
         sectionService.insert(sectionCreateRequest);
         return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/lines/{lineId}/sections/{stationId}")
-    public ResponseEntity<Void> deleteStation(@PathVariable long stationId) {
-        LineStationDeleteRequest lineStationDeleteRequest = new LineStationDeleteRequest(stationId);
-        sectionService.delete(lineStationDeleteRequest);
-
-        return ResponseEntity.noContent().build();
     }
 }
