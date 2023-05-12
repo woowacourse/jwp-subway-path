@@ -2,14 +2,8 @@ package subway.domain;
 
 public enum Direction {
 
-    UP(true),
-    DOWN(false);
-
-    private final boolean value;
-
-    Direction(final boolean value) {
-        this.value = value;
-    }
+    UP,
+    DOWN;
 
     public static Direction from(final boolean value) {
         if (value) {
