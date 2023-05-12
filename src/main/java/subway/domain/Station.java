@@ -26,6 +26,10 @@ public class Station {
         return name;
     }
 
+    public boolean isSame(Station anotherStation) {
+        return this.name.equals(anotherStation.name);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -37,5 +41,13 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

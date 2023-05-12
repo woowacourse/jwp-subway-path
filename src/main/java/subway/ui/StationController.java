@@ -2,9 +2,11 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import subway.application.station.StationService;
+import subway.application.station.dto.StationCreateResponse;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.application.StationService;
+import subway.ui.dto.StationCreateRequest;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -20,8 +22,9 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        StationResponse station = stationService.saveStation(stationRequest);
+    public ResponseEntity<StationCreateResponse> createStation(@RequestBody StationRequest stationRequest) {
+        StationCreateRequest stationCreateRequest = new StationCreateRequest(stationRequest.getName());
+        StationCreateResponse station = stationService.saveStation(stationCreateRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
 
@@ -31,8 +34,8 @@ public class StationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
+    public ResponseEntity<StationCreateResponse> showStation(@PathVariable Long id) {
+        return ResponseEntity.ok().body(stationService.findStationById(id));
     }
 
     @PutMapping("/{id}")
