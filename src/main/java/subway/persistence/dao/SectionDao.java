@@ -1,14 +1,14 @@
 package subway.persistence.dao;
 
-import java.util.List;
-import java.util.Optional;
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import subway.persistence.entity.SectionEntity;
+
+import javax.sql.DataSource;
+import java.util.List;
 
 @Component
 public class SectionDao {
@@ -75,12 +75,13 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public Optional<SectionEntity> findById(final Long id) {
+    public SectionEntity findById(final Long id) {
         final String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
-                .findAny();
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 관계입니다."));
     }
 
     public List<SectionEntity> findAllByStationId(final Long stationId) {

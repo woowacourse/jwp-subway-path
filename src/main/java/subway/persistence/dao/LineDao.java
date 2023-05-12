@@ -5,14 +5,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
 import subway.persistence.entity.LineEntity;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Repository
 public class LineDao {
@@ -47,11 +43,12 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<LineEntity> findById(final Long id) {
+    public LineEntity findById(final Long id) {
         final String sql = "SELECT id, name, color FROM LINE WHERE id = ?";
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
-                .findAny();
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
     }
 
     public int deleteById(final Long id) {
