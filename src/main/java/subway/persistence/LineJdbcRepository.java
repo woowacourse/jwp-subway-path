@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class LineRepositoryImpl implements LineRepository {
+public class LineJdbcRepository implements LineRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insert;
@@ -23,7 +23,7 @@ public class LineRepositoryImpl implements LineRepository {
                     rs.getString("name")
             );
 
-    public LineRepositoryImpl(final JdbcTemplate jdbcTemplate) {
+    public LineJdbcRepository(final JdbcTemplate jdbcTemplate) {
         this.insert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
