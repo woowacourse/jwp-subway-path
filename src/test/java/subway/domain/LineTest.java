@@ -8,6 +8,10 @@ import static subway.domain.fixture.StationFixture.경유역2;
 import static subway.domain.fixture.StationFixture.선릉;
 import static subway.domain.fixture.StationFixture.없는역;
 import static subway.domain.fixture.StationFixture.없는역2;
+import static subway.domain.fixture.StationFixture.역1;
+import static subway.domain.fixture.StationFixture.역2;
+import static subway.domain.fixture.StationFixture.역3;
+import static subway.domain.fixture.StationFixture.역4;
 import static subway.domain.fixture.StationFixture.잠실;
 import static subway.domain.fixture.StationFixture.잠실나루;
 import static subway.domain.fixture.StationFixture.종착역;
@@ -248,5 +252,19 @@ class LineTest {
             // then
             assertThat(line.sections()).isEmpty();
         }
+    }
+
+    @Test
+    void 노선의_총_거리를_구한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        ));
+        final Line line = new Line("1호선", sections);
+
+        // when & then
+        assertThat(line.totalDistance()).isEqualTo(209);
     }
 }

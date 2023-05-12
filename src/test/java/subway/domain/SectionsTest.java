@@ -10,6 +10,10 @@ import static subway.domain.fixture.StationFixture.경유역2;
 import static subway.domain.fixture.StationFixture.낙성대;
 import static subway.domain.fixture.StationFixture.없는역;
 import static subway.domain.fixture.StationFixture.없는역2;
+import static subway.domain.fixture.StationFixture.역1;
+import static subway.domain.fixture.StationFixture.역2;
+import static subway.domain.fixture.StationFixture.역3;
+import static subway.domain.fixture.StationFixture.역4;
 import static subway.domain.fixture.StationFixture.잠실;
 import static subway.domain.fixture.StationFixture.잠실나루;
 import static subway.domain.fixture.StationFixture.잠실새내;
@@ -274,5 +278,39 @@ class SectionsTest {
             // then
             assertThat(sections.sections()).isEmpty();
         }
+    }
+
+    @Test
+    void 특정_구간의_포함_여부를_반환한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5)
+        ));
+        final Section section1 = new Section(역1, 역2, 4);
+        final Section section2 = new Section(역2, 역3, 5);
+        final Section section4 = new Section(역2, 역1, 4);
+        final Section section3 = new Section(역1, 역2, 6);
+        final Section section5 = new Section(역1, 역3, 9);
+
+        // when & then
+        assertThat(sections.contains(section1)).isTrue();
+        assertThat(sections.contains(section2)).isTrue();
+        assertThat(sections.contains(section3)).isFalse();
+        assertThat(sections.contains(section4)).isFalse();
+        assertThat(sections.contains(section5)).isFalse();
+    }
+
+    @Test
+    void 구간들의_총_거리를_구한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        ));
+
+        // when & then
+        assertThat(sections.totalDistance()).isEqualTo(209);
     }
 }

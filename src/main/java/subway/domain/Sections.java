@@ -154,21 +154,27 @@ public class Sections {
     }
 
     private boolean removedFromUpTerminal(final Station removedStation) {
-        final Station upTerminal = firstSection().up();
+        final Station upTerminal = upTerminal();
         if (upTerminal.equals(removedStation)) {
-            sections.remove(firstSection());
-            return true;
+            return sections.remove(firstSection());
         }
         return false;
     }
 
+    private Station upTerminal() {
+        return firstSection().up();
+    }
+
     private boolean removedFromDownTerminal(final Station removedStation) {
-        final Station downTerminal = lastSection().down();
+        final Station downTerminal = downTerminal();
         if (downTerminal.equals(removedStation)) {
-            sections.remove(lastSection());
-            return true;
+            return sections.remove(lastSection());
         }
         return false;
+    }
+
+    private Station downTerminal() {
+        return lastSection().down();
     }
 
     private void removeFromMiddle(final Station removedStation) {
@@ -180,6 +186,17 @@ public class Sections {
                 return;
             }
         }
+    }
+
+    public boolean contains(final Section section) {
+        return sections.stream()
+                .anyMatch(section::equals);
+    }
+
+    public int totalDistance() {
+        return sections.stream()
+                .mapToInt(Section::distance)
+                .sum();
     }
 
     public List<Station> stations() {

@@ -27,19 +27,23 @@ public class Line {
         sections.removeStation(station);
     }
 
-    public UUID id() {
-        return id;
+    public int totalDistance() {
+        return sections.totalDistance();
     }
 
-    public String name() {
-        return name;
+    public boolean isEmpty() {
+        return sections().isEmpty();
     }
 
     public List<Section> sections() {
         return sections.sections();
     }
 
-    public boolean isEmpty() {
-        return sections().isEmpty();
+    public UUID id() {
+        return id;
+    }
+
+    public String name() {
+        return name;
     }
 }
