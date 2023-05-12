@@ -16,10 +16,6 @@ public class Station {
         this(null, name);
     }
 
-    public Station() {
-        this(null, null);
-    }
-
     public Long getId() {
         return id;
     }
@@ -37,11 +33,14 @@ public class Station {
             return false;
         }
         final Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        if (getId() == null || station.id == null) {
+            return Objects.equals(getName(), station.getName());
+        }
+        return Objects.equals(getId(), station.getId()) && Objects.equals(getName(), station.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(getId(), getName());
     }
 }

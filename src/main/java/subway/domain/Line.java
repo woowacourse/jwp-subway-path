@@ -30,13 +30,32 @@ public class Line {
     }
 
     public void addTopStation(final Station station) {
+        checkSectionsEmpty();
+        final Station currentTopStation = sections.findTopStation();
+        final Section section = new Section(station, currentTopStation);
+        sections.addTop(section);
+    }
+
+    public void addBottomStation(final Station station) {
+        checkSectionsEmpty();
+        final Station currentBottomStation = sections.findBottomStation();
+        final Section section = new Section(currentBottomStation, station);
+        sections.addBottom(section);
+    }
+
+    public void addBetweenStation(final Station addStation, final Station upStation, final Station downStation) {
+        checkSectionsEmpty();
+        final Section existedSection = sections.findSection(upStation, downStation);
+        sections.remove(existedSection);
+        final Section upSection = new Section(existedSection.getUpStation(), addStation);
+        final Section downSection = new Section(addStation, existedSection.getDownStation());
+        sections.addAll(upSection, downSection);
+    }
+
+    private void checkSectionsEmpty() {
         if (sections.isEmpty()) {
             throw new BusinessException("호선에 최소 2개의 역이 필요합니다.");
         }
-        final Section currentTopSection = sections.getFirstSection();
-        final Station currentTopStation = currentTopSection.getUpStation();
-        final Section section = new Section(station, currentTopStation);
-        sections.addTop(section);
     }
 
     @Override
@@ -48,12 +67,15 @@ public class Line {
             return false;
         }
         final Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+        if (getId() == null || line.id == null) {
+            return Objects.equals(getName(), line.getName());
+        }
+        return Objects.equals(getId(), line.getId()) && Objects.equals(getName(), line.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(getId(), getName());
     }
 
     public int getStationsSize() {
@@ -70,5 +92,9 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 }

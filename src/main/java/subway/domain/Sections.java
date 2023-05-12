@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.Collections;
 import java.util.List;
 import subway.domain.exception.BusinessException;
 
@@ -9,6 +10,7 @@ public class Sections {
 
     public Sections(final List<Section> value) {
         this.value = value;
+        sort();
     }
 
     public void sort() {
@@ -69,8 +71,8 @@ public class Sections {
         return value.isEmpty();
     }
 
-    public void add(final Section section) {
-        value.add(section);
+    public boolean isNotEmpty() {
+        return !value.isEmpty();
     }
 
     public int size() {
@@ -85,28 +87,54 @@ public class Sections {
         value.add(section);
     }
 
-    public int getStationsSize() {
-        if (size() == 0) {
-            return 0;
-        }
-        return size() + 1;
+    public Section findSection(final Station upStation, final Station downStation) {
+        return value.stream()
+            .filter(section -> section.bothStationsEquals(upStation, downStation))
+            .findAny()
+            .orElseThrow(() -> new BusinessException("찾을 수 없습니다."));
     }
 
-    public Section getSection(final int index) {
+    public void remove(final Section section) {
+        value.remove(section);
+    }
+
+    public void addAll(final Section... sections) {
+        Collections.addAll(value, sections);
+        sort();
+    }
+
+    public Section findSection(final int index) {
         return value.get(index);
     }
 
-    public Station getTopStation() {
+    public Station findTopStation() {
         if (isEmpty()) {
             throw new BusinessException("빈 구간 목록입니다.");
         }
         return value.get(0).getUpStation();
     }
 
-    public Station getBottomStation() {
+    public Station findBottomStation() {
         if (isEmpty()) {
             throw new BusinessException("빈 구간 목록입니다.");
         }
         return value.get(value.size() - 1).getDownStation();
+    }
+
+    public Station findStation(final int index) {
+        if (index == 0) {
+            return findTopStation();
+        }
+        if (index == value.size() - 1) {
+            return findBottomStation();
+        }
+        return value.get(index - 1).getDownStation();
+    }
+
+    public int getStationsSize() {
+        if (size() == 0) {
+            return 0;
+        }
+        return size() + 1;
     }
 }
