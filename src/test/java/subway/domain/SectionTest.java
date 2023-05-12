@@ -1,16 +1,18 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static subway.domain.fixture.SectionFixtures.createSection;
+import static subway.exception.line.LineExceptionType.NON_POSITIVE_DISTANCE;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import subway.exception.BaseExceptionType;
+import subway.exception.line.LineException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -24,9 +26,10 @@ class SectionTest {
         final Station 종착역 = new Station("종착역");
 
         // when & then
-        assertThatThrownBy(() ->
+        final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
                 new Section(출발역, 종착역, 0)
-        ).isInstanceOf(IllegalArgumentException.class);
+        ).exceptionType();
+        assertThat(exceptionType).isEqualTo(NON_POSITIVE_DISTANCE);
     }
 
     @Nested
@@ -53,10 +56,10 @@ class SectionTest {
             final Section down = createSection("마산역", "슈퍼말랑역", 2);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final String message = assertThrows(LineException.class, () ->
                     down.plus(up)
             ).getMessage();
-            assertThat(message).isEqualTo("연속되지 않은 두 구간을 더할 수 없습니다.");
+            assertThat(message).contains("연속되지 않은 두 구간을 더할 수 없습니다.");
         }
     }
 
@@ -124,10 +127,10 @@ class SectionTest {
             final Section section2 = createSection("잠실나루역", "마산역", 10);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
                     section1.minus(section2)
-            ).getMessage();
-            assertThat(message).isEqualTo("현재 구간이 더 작아 차이를 구할 수 없습니다.");
+            ).exceptionType();
+            assertThat(exceptionType).isEqualTo(NON_POSITIVE_DISTANCE);
         }
 
         @Test
@@ -137,10 +140,10 @@ class SectionTest {
             final Section section2 = createSection("없는역", "없는역2", 1);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final String message = assertThrows(LineException.class, () ->
                     section1.minus(section2)
             ).getMessage();
-            assertThat(message).isEqualTo("두 구간은 뺄 수 없는 관계입니다.");
+            assertThat(message).contains("두 구간은 뺄 수 없는 관계입니다.");
         }
     }
 }

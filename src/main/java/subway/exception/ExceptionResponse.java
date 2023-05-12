@@ -10,6 +10,15 @@ public class ExceptionResponse {
         this.message = message;
     }
 
+    public static ExceptionResponse from(final BaseException e) {
+        final BaseExceptionType type = e.exceptionType();
+        return new ExceptionResponse(String.valueOf(type.errorCode()), type.errorMessage());
+    }
+
+    public static ExceptionResponse internalServerError(final String code) {
+        return new ExceptionResponse(code, "예상하지 못한 서버의 예외 발생!");
+    }
+
     public String getCode() {
         return code;
     }

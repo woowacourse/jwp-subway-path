@@ -1,5 +1,9 @@
 package subway.domain;
 
+import static subway.exception.line.LineExceptionType.NON_POSITIVE_DISTANCE;
+
+import subway.exception.line.LineException;
+
 public class Section {
 
     private final Station up;
@@ -7,15 +11,15 @@ public class Section {
     private final int distance;
 
     public Section(final Station up, final Station down, final int distance) {
-        validateDistance(distance, "역간 거리는 양수여야 합니다.");
+        validateDistance(distance);
         this.up = up;
         this.down = down;
         this.distance = distance;
     }
 
-    private void validateDistance(final int distance, final String exceptionMessage) {
+    private void validateDistance(final int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException(exceptionMessage);
+            throw new LineException(NON_POSITIVE_DISTANCE);
         }
     }
 
@@ -26,7 +30,7 @@ public class Section {
 
     private void validateIsLinked(final Section section) {
         if (!isUpThan(section)) {
-            throw new IllegalArgumentException("연속되지 않은 두 구간을 더할 수 없습니다.");
+            throw new LineException("연속되지 않은 두 구간을 더할 수 없습니다.");
         }
     }
 
@@ -41,14 +45,14 @@ public class Section {
     public Section minus(final Section section) {
         final int interval = interval(section);
         if (!hasSameUpOrDownStation(section)) {
-            throw new IllegalArgumentException("두 구간은 뺄 수 없는 관계입니다.");
+            throw new LineException("두 구간은 뺄 수 없는 관계입니다.");
         }
         return remainSection(section, interval);
     }
 
     private int interval(final Section section) {
         final int interval = this.distance - section.distance;
-        validateDistance(interval, "현재 구간이 더 작아 차이를 구할 수 없습니다.");
+        validateDistance(interval);
         return interval;
     }
 

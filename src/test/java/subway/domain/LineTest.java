@@ -4,6 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static subway.domain.fixture.SectionFixtures.createSection;
 import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
+import static subway.exception.line.LineExceptionType.ADDED_SECTION_NOT_SMALLER_THAN_ORIGIN;
+import static subway.exception.line.LineExceptionType.ALREADY_EXIST_STATIONS;
+import static subway.exception.line.LineExceptionType.DELETED_STATION_NOT_EXIST;
+import static subway.exception.line.LineExceptionType.NO_RELATION_WITH_ADDED_SECTION;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +15,8 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import subway.exception.BaseExceptionType;
+import subway.exception.line.LineException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -100,11 +106,11 @@ class LineTest {
             line.addSection(middle2);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
                     line.addSection(
                             createSection("출발역", "종착역", 1)
-                    )).getMessage();
-            assertThat(message).isEqualTo("추가하려는 두 역이 이미 포함되어 있습니다.");
+                    )).exceptionType();
+            assertThat(exceptionType).isEqualTo(ALREADY_EXIST_STATIONS);
         }
 
         @Test
@@ -118,11 +124,11 @@ class LineTest {
             line.addSection(middle2);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
                     line.addSection(
                             createSection("없는역", "없는역2", 15)
-                    )).getMessage();
-            assertThat(message).isEqualTo("두 구간이 연관관계가 없어 뺄 수 없습니다.");
+                    )).exceptionType();
+            assertThat(exceptionType).isEqualTo(NO_RELATION_WITH_ADDED_SECTION);
         }
 
         @Test
@@ -137,11 +143,11 @@ class LineTest {
             line.addSection(middle1);
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
                     line.addSection(
                             createSection("경유역 1", "경유역 2", 6)
-                    )).getMessage();
-            assertThat(message).isEqualTo("현재 구간이 더 작아 차이를 구할 수 없습니다.");
+                    )).exceptionType();
+            assertThat(exceptionType).isEqualTo(ADDED_SECTION_NOT_SMALLER_THAN_ORIGIN);
         }
     }
 
@@ -212,10 +218,10 @@ class LineTest {
                     new Sections(createSection("출발역", "종착역", 10)));
 
             // when & then
-            final String message = assertThrows(IllegalArgumentException.class, () ->
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
                     line.removeStation(new Station("없는역"))
-            ).getMessage();
-            assertThat(message).isEqualTo("없는 역은 제거할 수 없습니다.");
+            ).exceptionType();
+            assertThat(exceptionType).isEqualTo(DELETED_STATION_NOT_EXIST);
         }
 
         @Test

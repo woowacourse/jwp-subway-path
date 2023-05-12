@@ -1,9 +1,15 @@
 package subway.domain;
 
+import static subway.exception.line.LineExceptionType.ADDED_SECTION_NOT_SMALLER_THAN_ORIGIN;
+import static subway.exception.line.LineExceptionType.ALREADY_EXIST_STATIONS;
+import static subway.exception.line.LineExceptionType.DELETED_STATION_NOT_EXIST;
+import static subway.exception.line.LineExceptionType.NO_RELATION_WITH_ADDED_SECTION;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
+import subway.exception.line.LineException;
 
 public class Sections {
 
@@ -21,7 +27,7 @@ public class Sections {
 
     private void validateEmpty(final List<Section> sections) {
         if (sections.isEmpty()) {
-            throw new IllegalArgumentException("구간은 최소 한개 이상 있어야 합니다.");
+            throw new LineException("구간은 최소 한개 이상 있어야 합니다.");
         }
     }
 
@@ -37,7 +43,7 @@ public class Sections {
 
     private void validateSectionIsLinked(final Section currentSection, final Section nextSection) {
         if (!currentSection.down().equals(nextSection.up())) {
-            throw new IllegalArgumentException("각 구간의 연결 상태가 올바르지 않습니다.");
+            throw new LineException("각 구간의 연결 상태가 올바르지 않습니다.");
         }
     }
 
@@ -53,7 +59,7 @@ public class Sections {
         final List<Station> stations = stations();
         if (stations.contains(addedSection.up())
                 && stations.contains(addedSection.down())) {
-            throw new IllegalArgumentException("추가하려는 두 역이 이미 포함되어 있습니다.");
+            throw new LineException(ALREADY_EXIST_STATIONS);
         }
     }
 
@@ -89,18 +95,26 @@ public class Sections {
     }
 
     private void addInMiddle(final Section addedSection) {
-        final int removedIdx = sections.indexOf(findRemovedSection(addedSection));
+        final Section removedCandidate = findRemovedSection(addedSection);
+        validateAddSectionInMiddle(addedSection, removedCandidate);
+        final int removedIdx = sections.indexOf(removedCandidate);
         final Section removedSection = sections.remove(removedIdx);
         final Section remain = removedSection.minus(addedSection);
         sections.add(removedIdx, judgeUpSection(remain, addedSection));
         sections.add(removedIdx + 1, judgeDownSection(remain, addedSection));
     }
 
+    private void validateAddSectionInMiddle(final Section addedSection, final Section removedCandidate) {
+        if (addedSection.distance() >= removedCandidate.distance()) {
+            throw new LineException(ADDED_SECTION_NOT_SMALLER_THAN_ORIGIN);
+        }
+    }
+
     private Section findRemovedSection(final Section addedSection) {
         return sections.stream()
                 .filter(addedSection::hasSameUpOrDownStation)
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("두 구간이 연관관계가 없어 뺄 수 없습니다."));
+                .orElseThrow(() -> new LineException(NO_RELATION_WITH_ADDED_SECTION));
     }
 
     private Section judgeUpSection(final Section section1, final Section section2) {
@@ -128,7 +142,7 @@ public class Sections {
     private void validateStationIsExist(final Station removedStation) {
         final List<Station> stations = stations();
         if (!stations.contains(removedStation)) {
-            throw new IllegalArgumentException("없는 역은 제거할 수 없습니다.");
+            throw new LineException(DELETED_STATION_NOT_EXIST);
         }
     }
 
