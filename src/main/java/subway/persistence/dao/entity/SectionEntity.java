@@ -1,5 +1,7 @@
 package subway.persistence.dao.entity;
 
+import java.util.Objects;
+
 public class SectionEntity {
     private final Long id;
     private final long upStationId;
@@ -37,6 +39,19 @@ public class SectionEntity {
 
     public long getLindId() {
         return lindId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SectionEntity that = (SectionEntity) o;
+        return upStationId == that.upStationId && downStationId == that.downStationId && distance == that.distance && lindId == that.lindId && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, upStationId, downStationId, distance, lindId);
     }
 
     @Override

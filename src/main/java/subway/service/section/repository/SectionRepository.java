@@ -1,6 +1,7 @@
 package subway.service.section.repository;
 
 import org.springframework.stereotype.Repository;
+import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
@@ -12,6 +13,7 @@ import subway.service.section.domain.Sections;
 import subway.service.station.domain.Station;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,10 +25,12 @@ public class SectionRepository {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
-    public SectionRepository(SectionDao sectionDao, StationDao stationDao) {
+    public SectionRepository(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     public Section insertSection(Section section, Line line) {
@@ -59,9 +63,34 @@ public class SectionRepository {
         return new Sections(sections);
     }
 
+    public Map<Line, Sections> findSectionsByStation(Station station) {
+        List<SectionEntity> sectionEntities = sectionDao.findSectionsByStation(station.getId());
+        if (sectionEntities.isEmpty()) {
+            return new HashMap<>();
+        }
+
+        Map<Long, List<SectionEntity>> sectionEntitiesPerLineId = sectionEntities.stream()
+                .collect(Collectors.groupingBy(SectionEntity::getLindId));
+
+        Map<Line, Sections> sectionsPerLine = new HashMap<>();
+        for (Long lineId : sectionEntitiesPerLineId.keySet()) {
+            Line line = lineDao.findById(lineId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+            List<SectionEntity> entities = sectionEntitiesPerLineId.get(lineId);
+            Set<Long> uniqueStationIds = makeUniqueStationIds(entities);
+
+            Map<Long, StationEntity> stationEntityMap = stationDao.findStationsById(uniqueStationIds).stream()
+                    .collect(Collectors.toMap(StationEntity::getStationId, stationEntity -> stationEntity));
+            Sections sections = new Sections(makeSections(entities, stationEntityMap));
+            sectionsPerLine.put(line, sections);
+        }
+
+        return sectionsPerLine;
+    }
+
     public void deleteSection(Section section) {
         sectionDao.delete(section.getId());
     }
+
 
     private ArrayList<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {
         ArrayList<Section> sections = new ArrayList<>();

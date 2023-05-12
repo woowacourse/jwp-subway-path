@@ -36,6 +36,9 @@ public class Sections {
     }
 
     public DeleteResult deleteSection(Station station) {
+        if (sections.size() == 1) {
+            return new DeleteResult(List.of(), sections);
+        }
         List<Section> sectionsOfContainDeleteStation = sections.stream()
                 .filter(section -> section.contains(station))
                 .collect(Collectors.toList());

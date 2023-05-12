@@ -276,7 +276,8 @@ class SectionsTest {
         void 노선에_존재하지_않는_역_삭제_시_예외() {
 
             Section jamsilSeonleungSection = new Section(JAMSIL, SEONLEUNG, new Distance(10));
-            Sections sections = new Sections(List.of(jamsilSeonleungSection));
+            Section gangnamToSeonleung = new Section(SEONLEUNG, GANGNAM, new Distance(20));
+            Sections sections = new Sections(List.of(jamsilSeonleungSection, gangnamToSeonleung));
 
             assertThatThrownBy(() -> sections.deleteSection(YUKSAM))
                     .isInstanceOf(IllegalArgumentException.class)

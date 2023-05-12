@@ -10,6 +10,7 @@ import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
 import subway.service.section.domain.Sections;
 import subway.service.section.dto.AddResult;
+import subway.service.section.dto.DeleteResult;
 import subway.service.section.dto.SectionCreateRequest;
 import subway.service.section.dto.SectionCreateResponse;
 import subway.service.section.dto.SectionResponse;
@@ -18,6 +19,7 @@ import subway.service.station.domain.Station;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -47,9 +49,9 @@ public class SectionService {
             addedSectionResponses.add(SectionResponse.of(savedSection));
         }
 
-//        for (Section deletedResult : addResult.getDeletedResults()) {
-//            1
-//        }
+        for (Section section : addResult.getDeletedResults()) {
+            sectionRepository.deleteSection(section);
+        }
 
         return new SectionCreateResponse(sectionCreateRequest.getLineId(), addedSectionResponses, List.of());
 
@@ -57,10 +59,31 @@ public class SectionService {
 
     public void delete(LineStationDeleteRequest lineStationDeleteRequest) {
         Line line = lineDao.findById(lineStationDeleteRequest.getLineId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
-        Sections sections = sectionRepository.findSectionsByLine(line);
         Station station = findStationById(lineStationDeleteRequest.getStationId());
+        Map<Line, Sections> sectionsPerLine = sectionRepository.findSectionsByStation(station);
 
-        sections.deleteSection(station);
+        for (Line perLine : sectionsPerLine.keySet()) {
+            Sections sections = sectionsPerLine.get(perLine);
+            DeleteResult deleteResult = sections.deleteSection(station);
+
+            for (Section addedSection : deleteResult.getAddedSections()) {
+                sectionRepository.insertSection(addedSection, line);
+            }
+
+            for (Section deletedSection : deleteResult.getDeletedSections()) {
+                sectionRepository.deleteSection(deletedSection);
+            }
+        }
+
+        stationDao.deleteById(lineStationDeleteRequest.getStationId());
+//        DeleteResult deleteResult = sections.deleteSection(station);
+//        for (Section addedSection : deleteResult.getAddedSections()) {
+//            sectionRepository.insertSection(addedSection, line);
+//        }
+//
+//        for (Section deletedSection : deleteResult.getDeletedSections()) {
+//            sectionRepository.deleteSection(deletedSection);
+//        }
     }
 
     private Station findStationById(long id) {

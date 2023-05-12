@@ -14,7 +14,7 @@ import subway.service.section.dto.SectionCreateRequest;
 import subway.service.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.LineFixture.FIRST_LINE_NO_ID;
+import static subway.domain.LineFixture.EIGHT_LINE_NO_ID;
 import static subway.domain.StationFixture.GANGNAM;
 import static subway.domain.StationFixture.JAMSIL;
 import static subway.domain.StationFixture.SEONLEUNG;
@@ -48,7 +48,7 @@ class SectionServiceTest {
 
     @Test
     void 노선에_존재하는_역_2개를_추가하면_예외() {
-        Line savedLine = lineDao.insert(FIRST_LINE_NO_ID);
+        Line savedLine = lineDao.insert(EIGHT_LINE_NO_ID);
         Station savedJamsil = stationDao.insert(JAMSIL);
         Station savedGangnam = stationDao.insert(GANGNAM);
         SectionEntity sectionEntity = new SectionEntity(savedJamsil.getId(), savedGangnam.getId(), 10, savedLine.getId());
@@ -64,7 +64,7 @@ class SectionServiceTest {
 
     @Test
     void 동일한_역_2개를_추가하면_예외() {
-        Line savedLine = lineDao.insert(FIRST_LINE_NO_ID);
+        Line savedLine = lineDao.insert(EIGHT_LINE_NO_ID);
         Station savedJamsil = stationDao.insert(JAMSIL);
         Station savedGangnam = stationDao.insert(GANGNAM);
         SectionEntity sectionEntity = new SectionEntity(savedJamsil.getId(), savedGangnam.getId(), 10, savedLine.getId());
@@ -80,7 +80,7 @@ class SectionServiceTest {
 
     @Test
     void 노선에_역이_존재할_때_새로운_역_2개를_추가하면_예외() {
-        Line savedLine = lineDao.insert(FIRST_LINE_NO_ID);
+        Line savedLine = lineDao.insert(EIGHT_LINE_NO_ID);
         Station savedJamsil = stationDao.insert(JAMSIL);
         Station savedGangnam = stationDao.insert(GANGNAM);
         SectionEntity sectionEntity = new SectionEntity(savedJamsil.getId(), savedGangnam.getId(), 10, savedLine.getId());

@@ -63,4 +63,10 @@ public class SectionDao {
 
         jdbcTemplate.update(sql, sectionId);
     }
+
+    public List<SectionEntity> findSectionsByStation(Long stationId) {
+        String sql = "SELECT * FROM section WHERE up_station_id = ? OR down_station_id = ?";
+
+        return jdbcTemplate.query(sql, rowMapper, stationId, stationId);
+    }
 }
