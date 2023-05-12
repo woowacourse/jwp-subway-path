@@ -154,6 +154,9 @@ public class Line {
 
         upStation.addPath(downStation, distance, Direction.DOWN);
         downStation.addPath(upStation, distance, Direction.UP);
+        upStation.deletePath(targetStation);
+        downStation.deletePath(targetStation);
+        stations.remove(newTargetStation);
     }
 
     private void validateStation(final Station targetStation) {
