@@ -6,14 +6,15 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("NonAsciiCharacters")
-class StationNameTest {
+class StationTest {
     @Test
     void 역_이름_정상_입력() {
         // expect
         assertThatNoException()
-                .isThrownBy(() -> new StationName("강남역"));
+                .isThrownBy(() -> new Station("강남역"));
     }
     
     @ParameterizedTest(name = "{displayName} : name = {0}")
@@ -21,6 +22,6 @@ class StationNameTest {
     void 역_이름이_비어있으면_예외(final String name) {
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> new StationName(name));
+                .isThrownBy(() -> new Station(name));
     }
 }

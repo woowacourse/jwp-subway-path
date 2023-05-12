@@ -1,39 +1,25 @@
 package subway.station.domain;
 
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
 import java.util.Objects;
 
+@Getter
+@ToString
+@EqualsAndHashCode
 public class StationName {
     private final String name;
-
+    
     public StationName(final String name) {
-        validate(name);
+        validateNullOrEmpty(name);
         this.name = name;
     }
-
-    private void validate(final String name) {
-        if (name.isBlank()) {
-            throw new IllegalArgumentException();
+    
+    private void validateNullOrEmpty(final String name) {
+        if (Objects.isNull(name) || name.isBlank()) {
+            throw new IllegalArgumentException("[ERROR] 역 이름이 비어있습니다. name : " + name);
         }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final StationName that = (StationName) o;
-        return Objects.equals(getName(), that.getName());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(getName());
     }
 }
