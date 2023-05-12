@@ -14,6 +14,10 @@ public class Path {
         return this.distance <= distance;
     }
 
+    public int sumDistance(final Path path) {
+        return distance + path.distance;
+    }
+
     public Station getNext() {
         return next;
     }

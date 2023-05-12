@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -79,4 +80,27 @@ class LineTest {
         assertThat(stationAfterNew).isEqualTo(stationA);
     }
 
+    @DisplayName("역을 삭제한다.")
+    @Test
+    void removeStationTest() {
+        //given
+        final Station stationA = new Station(1L, "A");
+        final Station stationB = new Station(3L, "B");
+        final Station stationC = new Station(2L, "C");
+        final Line line = new Line(1L, "1호선", "파랑",
+                new HashMap<>(Map.of(
+                        stationA, new Path(stationB, 5)
+                        , stationB, new Path(stationC, 10)
+                ))
+        );
+
+        //when
+        line.removeStation(stationB);
+
+        //then
+        Assertions.assertAll(
+                () -> assertThat(line.getPaths().get(stationA).getDistance()).isEqualTo(15),
+                () -> assertThat(line.getPaths().get(stationA).getNext()).isEqualTo(stationC)
+        );
+    }
 }

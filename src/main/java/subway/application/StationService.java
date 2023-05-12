@@ -1,6 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
@@ -9,6 +10,7 @@ import subway.persistence.dao.StationDao;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class StationService {
     private final StationDao stationDao;
