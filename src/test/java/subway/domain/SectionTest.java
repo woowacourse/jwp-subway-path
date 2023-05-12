@@ -94,6 +94,19 @@ class SectionTest {
     }
 
     @Test
+    void 특정_역을_포함하는지_확인한다() {
+        // given
+        final Section section = new Section(역1, 역2, 10);
+
+        // when & then
+        assertAll(
+                () -> assertThat(section.contain(역1)).isTrue(),
+                () -> assertThat(section.contain(역2)).isTrue(),
+                () -> assertThat(section.contain(역3)).isFalse()
+        );
+    }
+
+    @Test
     void 두_구간의_역이_모두_동일한지_확인한다() {
         // given
         final Section section1 = new Section(역1, 역2, 10);
@@ -106,6 +119,22 @@ class SectionTest {
                 () -> assertThat(section2.containsAllStation(section1)).isTrue(),
                 () -> assertThat(section1.containsAllStation(section3)).isFalse(),
                 () -> assertThat(section2.containsAllStation(section3)).isFalse()
+        );
+    }
+
+    @Test
+    void 순서를_뒤바꾼다() {
+        // given
+        final Section section = new Section(역1, 역2, 10);
+
+        // when
+        final Section reverse = section.reverse();
+
+        // then
+        assertAll(
+                () -> assertThat(reverse.up()).isEqualTo(역2),
+                () -> assertThat(reverse.down()).isEqualTo(역1),
+                () -> assertThat(reverse.distance()).isEqualTo(10)
         );
     }
 

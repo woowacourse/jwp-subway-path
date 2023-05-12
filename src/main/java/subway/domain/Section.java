@@ -2,10 +2,7 @@ package subway.domain;
 
 import static subway.exception.line.LineExceptionType.NON_POSITIVE_DISTANCE;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import subway.exception.line.LineException;
 
 public class Section {
@@ -64,11 +61,12 @@ public class Section {
         return this.up.equals(section.up) || this.down.equals(section.down);
     }
 
+    public boolean contain(final Station station) {
+        return up.equals(station) || down.equals(station);
+    }
+
     public boolean containsAllStation(final Section section) {
-        final Set<Station> distinct = new HashSet<>(
-                List.of(up, down, section.up, section.down)
-        );
-        return distinct.size() == 2;
+        return contain(section.up) && contain(section.down);
     }
 
     private Section remainSection(final Section section, final int dist) {
@@ -76,6 +74,10 @@ public class Section {
             return new Section(section.down, this.down, dist);
         }
         return new Section(this.up, section.up, dist);
+    }
+
+    public Section reverse() {
+        return new Section(down, up, distance);
     }
 
     @Override

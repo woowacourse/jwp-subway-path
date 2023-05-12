@@ -6,6 +6,7 @@ import static subway.exception.line.LineExceptionType.DELETED_STATION_NOT_EXIST;
 import static subway.exception.line.LineExceptionType.NO_RELATION_WITH_ADDED_SECTION;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -161,7 +162,7 @@ public class Sections {
         return false;
     }
 
-    private Station upTerminal() {
+    public Station upTerminal() {
         return firstSection().up();
     }
 
@@ -173,7 +174,7 @@ public class Sections {
         return false;
     }
 
-    private Station downTerminal() {
+    public Station downTerminal() {
         return lastSection().down();
     }
 
@@ -199,6 +200,16 @@ public class Sections {
                 .sum();
     }
 
+    public Sections reverse() {
+        final List<Section> reverse = new ArrayList<>(sections);
+        Collections.reverse(reverse);
+        final List<Section> reversed = new ArrayList<>();
+        for (final Section section : reverse) {
+            reversed.add(section.reverse());
+        }
+        return new Sections(reversed);
+    }
+
     public List<Station> stations() {
         final List<Station> stations = new ArrayList<>();
         stations.add(sections.get(0).up());
@@ -210,6 +221,6 @@ public class Sections {
     }
 
     public List<Section> sections() {
-        return sections;
+        return new ArrayList<>(sections);
     }
 }

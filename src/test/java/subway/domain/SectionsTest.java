@@ -313,4 +313,50 @@ class SectionsTest {
         // when & then
         assertThat(sections.totalDistance()).isEqualTo(209);
     }
+
+    @Test
+    void 상행_종점을_구한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        ));
+
+        // when & then
+        assertThat(sections.upTerminal()).isEqualTo(역1);
+    }
+
+    @Test
+    void 하행_종점을_구한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        ));
+
+        // when & then
+        assertThat(sections.downTerminal()).isEqualTo(역4);
+    }
+
+    @Test
+    void 구간들을_뒤집는다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        ));
+
+        // when
+        final Sections reverse = sections.reverse();
+
+        // then
+        assertThat(reverse.sections()).containsExactly(
+                new Section(역4, 역3, 200),
+                new Section(역3, 역2, 5),
+                new Section(역2, 역1, 4)
+        );
+    }
 }

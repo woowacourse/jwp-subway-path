@@ -31,16 +31,24 @@ public class Line {
         return sections.totalDistance();
     }
 
-    public boolean contains(final Section section) {
-        return sections.contains(section);
+    public Line reverse() {
+        return new Line(name, sections.reverse());
+    }
+
+    public Station upTerminal() {
+        return sections.upTerminal();
+    }
+
+    public Station downTerminal() {
+        return sections.downTerminal();
     }
 
     public boolean isEmpty() {
         return sections().isEmpty();
     }
 
-    public List<Section> sections() {
-        return sections.sections();
+    public boolean contains(final Section section) {
+        return sections.contains(section);
     }
 
     public UUID id() {
@@ -49,5 +57,9 @@ public class Line {
 
     public String name() {
         return name;
+    }
+
+    public List<Section> sections() {
+        return sections.sections();
     }
 }
