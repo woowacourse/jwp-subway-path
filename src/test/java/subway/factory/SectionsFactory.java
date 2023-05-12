@@ -1,6 +1,6 @@
 package subway.factory;
 
-import subway.domain.Sections;
+import subway.domain.subway.Sections;
 
 import java.util.List;
 

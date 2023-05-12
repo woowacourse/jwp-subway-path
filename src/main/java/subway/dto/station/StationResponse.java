@@ -1,6 +1,6 @@
 package subway.dto.station;
 
-import subway.domain.Station;
+import subway.domain.subway.Station;
 
 public class StationResponse {
 

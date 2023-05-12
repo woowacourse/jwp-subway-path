@@ -1,7 +1,7 @@
 package subway.factory;
 
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.subway.Section;
+import subway.domain.subway.Station;
 
 public class SectionFactory {
 

@@ -1,8 +1,10 @@
-package subway.domain;
+package subway.domain.subway;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.exception.DistanceInvalidException;
+import subway.domain.subway.Section;
+import subway.domain.subway.Station;
+import subway.exception.DistanceForkedException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -32,6 +34,6 @@ class SectionTest {
 
         // when & then
         assertThatThrownBy(() -> section.validateDistance(requestDistance))
-                .isInstanceOf(DistanceInvalidException.class);
+                .isInstanceOf(DistanceForkedException.class);
     }
 }

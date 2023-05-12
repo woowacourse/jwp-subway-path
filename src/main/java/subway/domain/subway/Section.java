@@ -1,6 +1,6 @@
-package subway.domain;
+package subway.domain.subway;
 
-import subway.exception.DistanceInvalidException;
+import subway.domain.common.Distance;
 
 import java.util.Objects;
 
@@ -8,12 +8,12 @@ public class Section {
 
     private final Station upStation;
     private final Station downStation;
-    private final Long distance;
+    private final Distance distance;
 
     public Section(final Station upStation, final Station downStation, final Long distance) {
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public boolean isExistStation(final Station station) {
@@ -21,9 +21,7 @@ public class Section {
     }
 
     public void validateDistance(final Long requestDistance) {
-        if (this.distance <= requestDistance) {
-            throw new DistanceInvalidException();
-        }
+        distance.validateSectionDistance(requestDistance);
     }
 
     public Station getUpStation() {
@@ -35,7 +33,7 @@ public class Section {
     }
 
     public Long getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 
     @Override
