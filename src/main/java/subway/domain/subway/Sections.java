@@ -1,5 +1,6 @@
 package subway.domain.subway;
 
+import subway.exception.LineNotMatchedException;
 import subway.exception.SectionDuplicatedException;
 import subway.exception.SectionNotFoundException;
 import subway.exception.SectionSeparatedException;
@@ -34,13 +35,13 @@ public class Sections {
     }
 
     private void validateSection(final boolean isExistUpStation, final boolean isExistDownStation) {
-        validateSeparatedSection(isExistUpStation, isExistDownStation);
+        validateLine(isExistUpStation, isExistDownStation);
         validateDuplicatedSection(isExistUpStation, isExistDownStation);
     }
 
-    private void validateSeparatedSection(final boolean isExistUpStation, final boolean isExistDownStation) {
+    private void validateLine(final boolean isExistUpStation, final boolean isExistDownStation) {
         if (!isExistUpStation && !isExistDownStation && !sections.isEmpty()) {
-            throw new SectionSeparatedException();
+            throw new LineNotMatchedException();
         }
     }
 

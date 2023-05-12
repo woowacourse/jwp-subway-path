@@ -84,6 +84,12 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
 
+    @ExceptionHandler(LineNotMatchedException.class)
+    public ResponseEntity<ExceptionResponse> lineNotMatchedExceptionHandler(final LineNotMatchedException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> internalServerErrorHandler(final Exception exception) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
