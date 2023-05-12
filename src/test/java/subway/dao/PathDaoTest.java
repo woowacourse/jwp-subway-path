@@ -13,7 +13,6 @@ import subway.domain.Station;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.test.jdbc.JdbcTestUtils.countRowsInTable;
 
 @JdbcTest
@@ -65,7 +64,7 @@ class PathDaoTest {
         assertThat(persisted.getOrderedPaths()).hasSize(1);
     }
 
-    @DisplayName("해당 역이 속한 모든 노선의 경로들을 가져올 수 있다")
+    @DisplayName("해당 역이 속한 모든 노선의 id들을 가져올 수 있다")
     @Test
     void findAllPathsByStationId() {
         //given
@@ -83,12 +82,9 @@ class PathDaoTest {
         pathDao.save(paths2, 2L);
 
         //when
-        final List<Paths> result = pathDao.findAllPathsByStationId(commonStation.getId());
+        final List<Long> lineIds = pathDao.findAllLineIdsByStationId(commonStation.getId());
 
         //then
-        assertAll(
-                () -> assertThat(result).hasSize(2),
-                () -> assertThat(result).map(Paths::getOrderedPaths)
-                        .allMatch(paths -> paths.get(0).contains(commonStation)));
+        assertThat(lineIds).containsExactlyInAnyOrder(1L, 2L);
     }
 }

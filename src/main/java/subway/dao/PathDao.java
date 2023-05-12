@@ -9,7 +9,6 @@ import subway.domain.Paths;
 import subway.domain.Station;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class PathDao {
@@ -41,13 +40,10 @@ public class PathDao {
         return new Paths(paths);
     }
 
-    public List<Paths> findAllPathsByStationId(final Long stationId) {
+    public List<Long> findAllLineIdsByStationId(final Long stationId) {
         final String sql = "SELECT DISTINCT line_id FROM path WHERE up_station_id = ? OR down_station_id = ?";
 
-        final List<Long> lineIds = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("line_id"), stationId, stationId);
-        return lineIds.stream()
-                .map(this::findByLineId)
-                .collect(Collectors.toList());
+        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("line_id"), stationId, stationId);
     }
 
     public void save(final Paths paths, final Long lineId) {
