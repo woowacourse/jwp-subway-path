@@ -3,8 +3,6 @@ package subway.domain.section;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 
-import java.util.Objects;
-
 public class Section {
 
     private final Long id;
@@ -50,19 +48,6 @@ public class Section {
 
     public Distance getDistance() {
         return distance;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects.equals(nearbyStations, section.nearbyStations) && Objects.equals(line, section.line) && Objects.equals(distance, section.distance);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, nearbyStations, line, distance);
     }
 
     @Override

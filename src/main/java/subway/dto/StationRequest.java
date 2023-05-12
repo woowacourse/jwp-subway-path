@@ -1,7 +1,5 @@
 package subway.dto;
 
-import java.util.Objects;
-
 public class StationRequest {
     private String upStationName;
     private String downStationName;
@@ -35,19 +33,12 @@ public class StationRequest {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        StationRequest that = (StationRequest) o;
-        return distance == that.distance && Objects.equals(upStationName, that.upStationName) && Objects.equals(downStationName, that.downStationName) && Objects.equals(lineName, that.lineName);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(upStationName, downStationName, distance, lineName);
+    public String toString() {
+        return "StationRequest{" +
+                "upStationName='" + upStationName + '\'' +
+                ", downStationName='" + downStationName + '\'' +
+                ", distance=" + distance +
+                ", lineName='" + lineName + '\'' +
+                '}';
     }
 }
