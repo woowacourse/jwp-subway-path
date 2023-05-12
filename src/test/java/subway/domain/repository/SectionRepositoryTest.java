@@ -66,7 +66,6 @@ class SectionRepositoryTest {
         Station savedGangnam = stationDao.insert(GANGNAM_NO_ID);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
-        Line savedFirstLine = lineDao.insert(FIRST_LINE_NO_ID);
 
         SectionEntity seonleungJamsilSectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
         SectionEntity gangnamJamsilSectionEntity = new SectionEntity(savedSeonleung.getId(), savedGangnam.getId(), 3, savedSecondLine.getId());
@@ -89,6 +88,41 @@ class SectionRepositoryTest {
                 () -> assertThat(sectionsByLine.getSections()).hasSize(2),
                 () -> assertThat(findSeonleungJamsilSection.getDistance()).isEqualTo(new Distance(10)),
                 () -> assertThat(findSeonleungGangnamSection.getDistance()).isEqualTo(new Distance(3))
+        );
+
+    }
+
+    @Test
+    void 섹션_삭제() {
+        // given
+        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedGangnam = stationDao.insert(GANGNAM_NO_ID);
+
+        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedFirstLine = lineDao.insert(FIRST_LINE_NO_ID);
+
+        Section seonleungToJamsilSection = new Section(savedJamsil, savedSeonleung, new Distance(10));
+        Section gangnamToSeonleungSection = new Section(savedSeonleung, savedGangnam, new Distance(5));
+
+        Section firstLineSection = new Section(savedJamsil, savedGangnam, new Distance(7));
+
+        Section savedSectionInFirstLine = sectionRepository.insertSection(firstLineSection, savedFirstLine);
+
+        Section savedSeonleungToJamsilSection = sectionRepository.insertSection(seonleungToJamsilSection, savedSecondLine);
+        Section savedGangnamToSeonleungSection = sectionRepository.insertSection(gangnamToSeonleungSection, savedSecondLine);
+
+        //when
+        sectionRepository.deleteSection(savedSeonleungToJamsilSection);
+
+        Sections sectionsByLine = sectionRepository.findSectionsByLine(savedSecondLine);
+        
+        //then
+        assertAll(
+                () -> assertThat(sectionsByLine.getSections()).doesNotContain(savedSectionInFirstLine),
+                () -> assertThat(sectionsByLine.getSections()).doesNotContain(savedSeonleungToJamsilSection),
+                () -> assertThat(sectionsByLine.getSections()).contains(savedGangnamToSeonleungSection),
+                () -> assertThat(sectionsByLine.getSections()).hasSize(1)
         );
 
     }

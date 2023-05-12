@@ -59,6 +59,10 @@ public class SectionRepository {
         return new Sections(sections);
     }
 
+    public void deleteSection(Section section) {
+        sectionDao.delete(section.getId());
+    }
+
     private ArrayList<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {
         ArrayList<Section> sections = new ArrayList<>();
         for (SectionEntity sectionEntity : sectionEntities) {
