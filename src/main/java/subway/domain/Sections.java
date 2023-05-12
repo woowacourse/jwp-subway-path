@@ -5,14 +5,14 @@ import subway.domain.exception.BusinessException;
 
 public class Sections {
 
-    private final List<Section> sections;
+    private final List<Section> value;
 
-    public Sections(final List<Section> sections) {
-        this.sections = sections;
+    public Sections(final List<Section> value) {
+        this.value = value;
     }
 
     public void sort() {
-        if (sections.isEmpty()) {
+        if (value.isEmpty()) {
             return;
         }
         makeTop();
@@ -20,7 +20,7 @@ public class Sections {
     }
 
     private void makeTop() {
-        for (final Section section : sections) {
+        for (final Section section : value) {
             if (isTopSection(section)) {
                 changeIndex(section, 0);
                 break;
@@ -29,29 +29,29 @@ public class Sections {
     }
 
     private void changeIndex(final Section section, int targetIndex) {
-        final int currentIndex = sections.indexOf(section);
+        final int currentIndex = value.indexOf(section);
         if (currentIndex >= 0 && currentIndex != targetIndex) {
-            sections.remove(currentIndex);
+            value.remove(currentIndex);
             if (targetIndex > currentIndex) {
                 targetIndex--;
             }
-            sections.add(targetIndex, section);
+            value.add(targetIndex, section);
         }
     }
 
     private boolean isTopSection(final Section section) {
         final Station upStation = section.getUpStation();
-        return sections.stream()
+        return value.stream()
             .noneMatch(otherSection -> otherSection.getDownStation().equals(upStation));
     }
 
     private void tailBite(int index) {
-        final Section current = sections.get(index);
+        final Section current = value.get(index);
         if (isBottomSection(current)) {
             return;
         }
         final Station currentDownStation = current.getDownStation();
-        for (final Section section : sections) {
+        for (final Section section : value) {
             if (section.getUpStation().equals(currentDownStation)) {
                 changeIndex(section, ++index);
                 tailBite(index);
@@ -61,26 +61,41 @@ public class Sections {
 
     private boolean isBottomSection(final Section section) {
         final Station downStation = section.getDownStation();
-        return sections.stream()
+        return value.stream()
             .noneMatch(otherSection -> otherSection.getUpStation().equals(downStation));
     }
 
     public boolean isEmpty() {
-        return sections.isEmpty();
+        return value.isEmpty();
     }
 
     public void add(final Section section) {
-        sections.add(section);
+        value.add(section);
+    }
+
+    public int size() {
+        return value.size();
+    }
+
+    public void addTop(final Section section) {
+        value.add(0, section);
+    }
+
+    public int getStationsSize() {
+        if (size() == 0) {
+            return 0;
+        }
+        return size() + 1;
     }
 
     public Section getSection(final int index) {
-        return sections.get(index);
+        return value.get(index);
     }
 
     public Section getFirstSection() {
         if (isEmpty()) {
             throw new BusinessException("빈 구간 목록입니다.");
         }
-        return sections.get(0);
+        return value.get(0);
     }
 }
