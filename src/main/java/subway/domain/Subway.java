@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
-public class SubwayGraphs {
+public class Subway {
     private final List<Sections> sections;
 
-    public SubwayGraphs() {
+    public Subway() {
         this.sections = new ArrayList<>();
     }
 }
