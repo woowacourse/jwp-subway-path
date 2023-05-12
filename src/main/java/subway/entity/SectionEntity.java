@@ -5,12 +5,12 @@ import java.util.Objects;
 public class SectionEntity {
 
     private final Long sectionId;
-    private final Long lineId;
-    private final Long upStationId;
-    private final Long downStationId;
-    private final Long distance;
+    private final long lineId;
+    private final long upStationId;
+    private final long downStationId;
+    private final long distance;
 
-    public SectionEntity(final Long sectionId, final Long lineId, final Long upStationId, final Long downStationId, final Long distance) {
+    public SectionEntity(final Long sectionId, final long lineId, final long upStationId, final long downStationId, final long distance) {
         this.sectionId = sectionId;
         this.lineId = lineId;
         this.upStationId = upStationId;
@@ -22,19 +22,19 @@ public class SectionEntity {
         return sectionId;
     }
 
-    public Long getLineId() {
+    public long getLineId() {
         return lineId;
     }
 
-    public Long getUpStationId() {
+    public long getUpStationId() {
         return upStationId;
     }
 
-    public Long getDownStationId() {
+    public long getDownStationId() {
         return downStationId;
     }
 
-    public Long getDistance() {
+    public long getDistance() {
         return distance;
     }
 

@@ -4,15 +4,15 @@ import java.util.Objects;
 
 public class StationEntity {
 
-    private final Long stationId;
+    private final long stationId;
     private final String name;
 
-    public StationEntity(final Long stationId, final String name) {
+    public StationEntity(final long stationId, final String name) {
         this.stationId = stationId;
         this.name = name;
     }
 
-    public Long getStationId() {
+    public long getStationId() {
         return stationId;
     }
 
