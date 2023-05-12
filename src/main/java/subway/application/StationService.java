@@ -1,44 +1,37 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-
 import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.dao.SectionDao;
+import subway.dao.SectionEntity;
+import subway.dao.StationDao;
 
+@Transactional(readOnly = true)
 @Service
 public class StationService {
+
+    private final SectionDao sectionDao;
     private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(SectionDao sectionDao, StationDao stationDao) {
+        this.sectionDao = sectionDao;
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
-    }
+    @Transactional
+    public void deleteStation(Long stationId) {
+        List<SectionEntity> sectionEntities = sectionDao.findAll();
+        long startStationCount = sectionEntities.stream()
+                .filter(it -> it.getStartStationId() == stationId)
+                .count();
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
-    }
+        long endStationCount = sectionEntities.stream()
+                .filter(it -> it.getStartStationId() == stationId)
+                .count();
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
-    }
-
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        if (startStationCount == 0 || endStationCount == 0) {
+            stationDao.deleteById(stationId);
+        }
     }
 }

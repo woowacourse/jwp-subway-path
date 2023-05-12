@@ -3,23 +3,21 @@ package subway.domain;
 import java.util.Objects;
 import subway.exception.GlobalException;
 
-public class Station {
+public class LineInfo {
+    private static final int NAME_MIN_LENGTH = 1;
     private static final int NAME_MAX_LENGTH = 10;
+
     private final String name;
 
-    public Station(String name) {
-        validate(name);
+    public LineInfo(String name) {
+        validateName(name);
         this.name = name;
     }
 
-    private void validate(String name) {
-        if (name.isBlank() || name.length() > NAME_MAX_LENGTH) {
-            throw new GlobalException("역 이름은 1글자 이상, 10글자 이하여야 합니다.");
+    private void validateName(String name) {
+        if (name == null || name.length() < NAME_MIN_LENGTH || NAME_MAX_LENGTH < name.length()) {
+            throw new GlobalException("호선은 이름은 1글자 이상, 10글자 이하여야 한다.");
         }
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -30,8 +28,8 @@ public class Station {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Station station = (Station) o;
-        return Objects.equals(name, station.name);
+        LineInfo lineInfo = (LineInfo) o;
+        return Objects.equals(name, lineInfo.name);
     }
 
     @Override

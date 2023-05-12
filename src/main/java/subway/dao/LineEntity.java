@@ -1,10 +1,15 @@
-package subway.dto;
+package subway.dao;
 
-public class StationResponse {
+public class LineEntity {
+
     private final Long id;
     private final String name;
 
-    public StationResponse(Long id, String name) {
+    public LineEntity(String name) {
+        this(null, name);
+    }
+
+    public LineEntity(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -16,4 +21,5 @@ public class StationResponse {
     public String getName() {
         return name;
     }
+
 }
