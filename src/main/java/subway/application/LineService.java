@@ -1,5 +1,6 @@
 package subway.application;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -50,10 +51,6 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        return null;
-    }
-
     public StationsResponse getStationsByLineId(Long lineId) {
         Line line = lineRepository.findById(lineId);
         return StationsResponse.from(line.getStations());
@@ -69,29 +66,52 @@ public class LineService {
 
     public StationResponse addStation(Long lineId, StationSaveRequest stationRequest) {
         Subway subway = new Subway(lineRepository.findAllLine());
-        LineEntity byId = lineDao.findById(lineId);
-        Line lineByName = subway.findLineByName(byId.getName());
-        Optional<Station> newStation = lineByName.getStations()
-                .stream()
-                .filter(station ->
-                        !station.isSameName(new Station(stationRequest.getSourceStation())) &&
-                                !station.isSameName(new Station(stationRequest.getTargetStation())))
-                .findFirst();
+        LineEntity lineEntity = lineDao.findById(lineId);
+        Line lineByName = subway.findLineByName(lineEntity.getName());
 
-        String newStationName = newStation.get().getName();
+        List<Optional<String>> requestStations = extractNullableStation(stationRequest, lineByName);
+        final String newStationName = requestStations.stream()
+                .filter(Optional::isPresent)
+                .flatMap(Optional::stream)
+                .findFirst()
+                .get();
+
         stationRepository.save(new StationEntity(newStationName));
 
-        subway.addStation(byId.getName(), stationRequest.getSourceStation(), stationRequest.getTargetStation(),
+        subway.addStation(lineEntity.getName(),
+                stationRequest.getSourceStation(),
+                stationRequest.getTargetStation(),
                 stationRequest.getDistance());
-        saveUpdatedLine(subway, byId.getName(), lineId);
+        saveUpdatedLine(subway, lineEntity.getName(), lineId);
         return StationResponse.of(new StationEntity(newStationName));
+    }
+
+    private List<Optional<String>> extractNullableStation(final StationSaveRequest stationRequest, final Line lineByName) {
+        final List<Station> stations = lineByName.getStations();
+        List<Optional<String>> requestStations = new ArrayList<>();
+        requestStations.add(filterNonExistStation(stations, stationRequest.getSourceStation()));
+        requestStations.add(filterNonExistStation(stations, stationRequest.getTargetStation()));
+        return requestStations;
+    }
+
+    private Optional<String> filterNonExistStation(List<Station> stations, String requestStationName) {
+        if (noneMatchStationName(stations, requestStationName)) {
+            return Optional.ofNullable(requestStationName);
+        }
+
+        return Optional.empty();
+    }
+
+    private boolean noneMatchStationName(final List<Station> stations, final String requestStationName) {
+        return stations.stream()
+                .noneMatch(station -> station.getName().equals(requestStationName));
     }
 
     private void saveUpdatedLine(Subway subway, String lineName, Long lineId) {
         Line updatedLine = subway.getLines().stream()
                 .filter(line -> line.isSameName(lineName))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException());
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 Line 이름입니다."));
         lineRepository.updateLine(lineId, updatedLine);
     }
 }
