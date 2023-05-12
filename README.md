@@ -30,8 +30,8 @@
     - [x] 삭제 DELETE "/lines/{id}"
 - [x] 지하철 + 노선 (노선에 역)
     - [x] 등록 POST "/lines/{line_id}/stations/"
-        - RequestBody "upBoundStationsName" : ~
-          "downBoundStationsName" : ~
+        - RequestBody "upBoundStationId" : ~
+          "downBoundStationId" : ~
           "distance" : ~
     - [x] 제거 DELETE "/lines/{line_id}"/stations/{station_id}
 
