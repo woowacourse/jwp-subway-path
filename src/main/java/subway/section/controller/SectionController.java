@@ -1,6 +1,5 @@
 package subway.section.controller;
 
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,11 +13,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/sections")
 public class SectionController {
 
     private final SectionService sectionService;
+
+    public SectionController(final SectionService sectionService) {
+        this.sectionService = sectionService;
+    }
 
     @PostMapping
     public ResponseEntity<List<SectionResponse>> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {

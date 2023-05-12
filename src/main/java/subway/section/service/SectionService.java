@@ -1,6 +1,5 @@
 package subway.section.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.section.dao.SectionDao;
@@ -11,10 +10,13 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@AllArgsConstructor
 public class SectionService {
 
     private final SectionDao sectionDao;
+
+    public SectionService(final SectionDao sectionDao) {
+        this.sectionDao = sectionDao;
+    }
 
     @Transactional
     public List<SectionEntity> createSection(

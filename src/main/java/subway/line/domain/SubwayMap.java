@@ -1,15 +1,17 @@
 package subway.line.domain;
 
-import lombok.AllArgsConstructor;
 import subway.section.domain.Section;
 import subway.station.domain.Station;
 
 import java.util.*;
 
-@AllArgsConstructor
 public class SubwayMap {
 
     private final Map<Station, List<Section>> subwayMap;
+
+    public SubwayMap(final Map<Station, List<Section>> subwayMap) {
+        this.subwayMap = subwayMap;
+    }
 
     public static SubwayMap of(final List<Section> sections) {
         final SubwayMap subwayMap = new SubwayMap(new HashMap<>());

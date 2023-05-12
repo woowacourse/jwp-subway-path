@@ -1,6 +1,5 @@
 package subway.line.service;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import subway.line.dao.LineDao;
 import subway.line.domain.Line;
@@ -15,11 +14,16 @@ import subway.station.domain.Station;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@AllArgsConstructor
 @Service
 public class LineService {
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
+
+    public LineService(final LineDao lineDao, final SectionDao sectionDao) {
+        this.lineDao = lineDao;
+        this.sectionDao = sectionDao;
+    }
 
     public LineResponse saveLine(final LineRequest request) {
         final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
