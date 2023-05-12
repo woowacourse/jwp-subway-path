@@ -28,31 +28,6 @@
                 - C의 노선이 있을 경우
                     - 등록한다.
 
-```mermaid
-sequenceDiagram
-
-participant Station as 역
-participant Line as 노선
-
-Station ->> Line: 역 등록
-Line ->> Station: 기존 노선 여부 확인
-alt 기존 노선이 없음
-  Line ->> Station: A, B와 함께 새로운 노선 등록
-else 기존 노선이 있음
-  alt 새로운 역 C 등록
-    Line ->> Station: C가 기존 노선인지 확인
-    alt C가 기존 노선이 아님
-      Line ->> Station: C의 노선이 있는지 확인
-      alt C의 노선이 없음
-        Line ->> Station: 새로운 노선 생성 및 등록
-      else C의 노선이 있음
-        Line ->> Station: 등록
-    else C가 기존 노선임
-      Station ->> Line: 등록
-  end
-end
-```
-
 
 # 요구사항 분석
 > `지하철`은 `노선`으로 이루어져 있다.
