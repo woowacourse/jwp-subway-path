@@ -1,11 +1,5 @@
 package subway.dao;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -20,6 +14,12 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.fixture.StationFixture.GangnamStation;
 import subway.fixture.StationFixture.JamsilStation;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -128,8 +128,8 @@ class StationDaoTest {
         sectionDao.insert(section2);
 
         // when
-        final Station upTerminalStation = stationDao.findUpTerminalStation(lineId1);
-        final Station downTerminalStation = stationDao.findDownTerminalStation(lineId1);
+        final Station upTerminalStation = stationDao.findFinalUpStation(lineId1);
+        final Station downTerminalStation = stationDao.findFinalDownStation(lineId1);
 
         // then
         assertThat(upTerminalStation.getName()).isEqualTo("강남역");

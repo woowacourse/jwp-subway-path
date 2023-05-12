@@ -1,40 +1,52 @@
-package subway.application;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.doReturn;
-import static org.mockito.Mockito.verify;
-
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.StationDao;
-
-@SuppressWarnings("NonAsciiCharacters")
-@DisplayNameGeneration(ReplaceUnderscores.class)
-@ExtendWith(MockitoExtension.class)
-class StationServiceTest {
-
-    @InjectMocks
-    private StationService stationService;
-
-    @Mock
-    private StationDao stationDao;
-
-////    @Test
-////    void saveRequest를_받아서_역을_저장한다() {
-////        // given
-////        StationSaveRequest request = new StationSaveRequest("잠실역", "강남역");
-////        final Station station1 = request.getUpStationEntity();
-////        final Station station2 = request.getDownStationEntity();
-////        when(stationDao.insert(station1)).thenReturn(1L);
-////        when(stationDao.insert(station2)).thenReturn(2L);
-////
-////        // when, then
-////        assertThat(stationService.saveStation(request)).isEqualTo(1L);
-////    }
+//package subway.application;
+//
+//import static org.assertj.core.api.Assertions.assertThat;
+//import static org.mockito.Mockito.doReturn;
+//import static org.mockito.Mockito.times;
+//import static org.mockito.Mockito.verify;
+//import static org.mockito.Mockito.when;
+//
+//import org.junit.jupiter.api.DisplayNameGeneration;
+//import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+//import org.junit.jupiter.api.Test;
+//import org.junit.jupiter.api.extension.ExtendWith;
+//import org.mockito.InjectMocks;
+//import org.mockito.Mock;
+//import org.mockito.junit.jupiter.MockitoExtension;
+//import subway.dao.StationDao;
+//import subway.domain.Station;
+//import subway.dto.StationDeleteRequest;
+//import subway.dto.StationResponse;
+//import subway.dto.StationSaveRequest;
+//
+//import java.util.List;
+//
+//@SuppressWarnings("NonAsciiCharacters")
+//@DisplayNameGeneration(ReplaceUnderscores.class)
+//@ExtendWith(MockitoExtension.class)
+//class StationServiceTest {
+//
+//    @InjectMocks
+//    private StationService stationService;
+//
+//    @Mock
+//    private StationDao stationDao;
+//
+//    @Mock
+//    private SectionService sectionService;
+//
+//    @Test
+//    void saveRequest를_받아서_역을_저장한다() {
+//        // given
+//        StationSaveRequest request = new StationSaveRequest("잠실역", "강남역", 10);
+//        final Station station1 = request.getUpStationEntity();
+//        final Station station2 = request.getDownStationEntity();
+//        when(stationDao.insert(station1)).thenReturn(1L);
+//        when(stationDao.insert(station2)).thenReturn(2L);
+//
+//        // when, then
+//        verify(sectionService, times(1)).
+//    }
 //
 //    @Test
 //    void id_를_받아_해당_역을_조회한다() {
@@ -97,4 +109,4 @@ class StationServiceTest {
 //        // then
 //        verify(stationDao, times(1)).deleteById(request.getStationId());
 //    }
-}
+//}

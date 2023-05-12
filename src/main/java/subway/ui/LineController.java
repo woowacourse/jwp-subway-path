@@ -1,7 +1,5 @@
 package subway.ui;
 
-import java.net.URI;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,21 +14,18 @@ import subway.application.SectionService;
 import subway.application.StationService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationResponse;
+
+import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
-    private final StationService stationService;
-    private final SectionService sectionService;
 
-    public LineController(final LineService lineService, final StationService stationService,
-                          final SectionService sectionService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
-        this.stationService = stationService;
-        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -59,11 +54,6 @@ public class LineController {
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/{id}/sections")
-    public ResponseEntity<List<StationResponse>> findAllStationOrderBySection(){
-        return ResponseEntity.ok(stationService.findAllStationOrderBySection());
     }
 
 }

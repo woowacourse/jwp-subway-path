@@ -1,8 +1,5 @@
 package subway.dao;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -11,6 +8,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -73,7 +74,7 @@ public class StationDao {
         }
     }
 
-    public Station findUpTerminalStation(Long lineId) {
+    public Station findFinalUpStation(Long lineId) {
         String sql = "SELECT st.* "
                 + "FROM STATIONS st "
                 + "WHERE ( "
@@ -87,7 +88,7 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, lineId, lineId);
     }
 
-    public Station findDownTerminalStation(Long lineId) {
+    public Station findFinalDownStation(Long lineId) {
         String sql = "SELECT st.* "
                 + "FROM STATIONS st "
                 + "WHERE ( "

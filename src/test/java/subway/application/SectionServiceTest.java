@@ -1,8 +1,5 @@
 package subway.application;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -12,6 +9,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.SectionDao;
 import subway.domain.Section;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -24,10 +24,6 @@ class SectionServiceTest {
     @Mock
     private SectionDao sectionDao;
 
-    /*
-      기존:
-      후: a-b
-    * */
     @Test
     void 노선에_역은_존재하지만_아무_구간이_없을_때_새로운_구간을_추가한다() {
         // given

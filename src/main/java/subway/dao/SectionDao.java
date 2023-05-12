@@ -1,15 +1,15 @@
 package subway.dao;
 
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Section;
-import subway.domain.Station;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class SectionDao {
@@ -50,11 +50,6 @@ public class SectionDao {
     public void deleteById(final Long id) {
         String sql = "DELETE FROM SECTIONS WHERE id=?";
         jdbcTemplate.update(sql, id);
-    }
-
-    public Section findByDownStationId(final Long downStationId) {
-        String sql = "select * from SECTIONS where down_station_id = ?";
-        return jdbcTemplate.queryForObject(sql, sectionRowMapper, downStationId);
     }
 
     public List<Section> findAll() {
