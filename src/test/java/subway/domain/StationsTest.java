@@ -1,78 +1,87 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import subway.exception.IllegalStationAddException;
+import subway.exception.StationAlreadyExistException;
 import java.util.LinkedList;
 import java.util.List;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 class StationsTest {
 
-    private Station station1 = new Station(1L, "1");
-    private Station station2 = new Station(2L, "2");
+    private Stations stations;
 
-    @DisplayName("특정 역 앞에 역을 추가한다")
-    @Test
-    void addBeforeAt_success() {
-        //given
-        Stations stations = new Stations(new LinkedList<>(List.of(station1)));
-
-        //when
-        stations.addBeforeAt(station1, station2);
-
-        //then
-        assertThat(stations.getStations()).containsExactly(station2, station1);
+    @BeforeEach
+    void setUp() {
+        this.stations = Stations.emptyStations();
     }
 
-    @DisplayName("3개 이상의 역이 있을 때, 특정 역 앞에 역을 추가한다")
+    private final Station station1 = new Station(1L, "1");
+    private final Station station2 = new Station(2L, "2");
+    private final Station station3 = new Station(3L, "3");
+
     @Test
-    void addBeforeAt_success_many() {
-        //given
-        Station station3 = new Station(3L, "3");
-        Stations stations = new Stations(new LinkedList<>(List.of(station1, station2, station3)));
-        Station station4 = new Station(4L, "4");
+    void 두_개의_역을_함께_추가한다() {
+        stations.addTwoStation(station1, station2);
 
-        //when
-        stations.addBeforeAt(station2, station4);
-
-        //then
-        assertThat(stations.getStations()).containsExactly(station1, station4, station2, station3);
-    }
-
-    @DisplayName("이미 존재하는 역을 넣을 경우 예외가 발생한다.")
-    @Test
-    void addBeforeAt_fail() {
-        //given
-        Stations stations = new Stations(new LinkedList<>(List.of(station1, station2)));
-
-        //then
-        Assertions.assertThatThrownBy(() -> stations.addBeforeAt(station1, station2))
-            .isInstanceOf(IllegalStateException.class);
-    }
-
-    @DisplayName("마지막에 역을 추가한다")
-    @Test
-    void addLast_success() {
-        //given
-        Stations stations = new Stations(new LinkedList<>(List.of(station1)));
-
-        //when
-        stations.addLast(station2);
-
-        //then
         assertThat(stations.getStations()).containsExactly(station1, station2);
     }
 
-    @DisplayName("이미 존재하는 역을 넣을 경우 예외가 발생한다.")
     @Test
-    void addLast_fail() {
-        //given
+    void 특정_역_앞에_역을_추가한다() {
+        stations.addTwoStation(station1, station2);
+
+        stations.addBeforeAt(station2, station3);
+
+        assertThat(stations.getStations()).containsExactly(station1, station3, station2);
+    }
+
+    @Test
+    void 둘_이상의_역이_존재할_때_특정_역_앞에_새로운_역을_추가한다() {
+        stations.addTwoStation(station1, station2);
+
+        stations.addBeforeAt(station2, station3);
+
+        assertThat(stations.getStations()).containsExactly(station1, station3, station2);
+    }
+
+    @Test
+    void 특정_역_앞에_추가할_때_이미_존재하는_역을_넣을_경우_예외가_발생한다() {
         Stations stations = new Stations(new LinkedList<>(List.of(station1, station2)));
 
-        //then
-        Assertions.assertThatThrownBy(() -> stations.addLast(station1))
-            .isInstanceOf(IllegalStateException.class);
+        assertThatThrownBy(() -> stations.addBeforeAt(station1, station2))
+                .isInstanceOf(StationAlreadyExistException.class);
+    }
+
+    @Test
+    void 역이_2개_이하_존재할_때_역을_중간에_하나_추가하면_예외가_발생한다() {
+        assertThatThrownBy(() -> stations.addBeforeAt(station1, station2))
+                .isInstanceOf(IllegalStationAddException.class);
+    }
+
+    @Test
+    void 마지막에_역을_추가한다() {
+        stations.addTwoStation(station1, station2);
+
+        stations.addLast(station3);
+
+        assertThat(stations.getStations()).containsExactly(station1, station2, station3);
+    }
+
+    @Test
+    void 역이_2개_이하_존재할_때_역을_마지막에_추가하면_예외가_발생한다() {
+        assertThatThrownBy(() -> stations.addLast(station1))
+                .isInstanceOf(IllegalStationAddException.class);
+    }
+
+    @Test
+    void 마지막에_역을_추가할_때_이미_존재하는_역을_넣을_경우_예외가_발생한다() {
+        Stations stations = new Stations(new LinkedList<>(List.of(station1, station2)));
+
+        assertThatThrownBy(() -> stations.addLast(station1))
+            .isInstanceOf(StationAlreadyExistException.class);
     }
 }
