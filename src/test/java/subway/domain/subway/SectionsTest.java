@@ -1,86 +1,99 @@
-//package subway.domain;
-//
-//import org.junit.jupiter.api.DisplayName;
-//import org.junit.jupiter.api.Test;
-//import org.junit.jupiter.params.ParameterizedTest;
-//import org.junit.jupiter.params.provider.CsvSource;
-//import subway.domain.subway.Section;
-//import subway.domain.subway.Sections;
-//import subway.domain.subway.Station;
-//import subway.exception.SectionInvalidException;
-//
-//import java.util.List;
-//
-//import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-//import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-//import static subway.factory.SectionFactory.createSection;
-//import static subway.factory.SectionsFactory.createSections;
-//
-//class SectionsTest {
-//
-//    @Test
-//    @DisplayName("역이 존재하는지 확인한다.")
-//    void returns_is_exist_station() {
-//        // given
-//        Sections sections = createSections();
-//
-//        // when
-//        boolean existStation = sections.isExistStation(new Station("매봉역"));
-//
-//        // then
-//        assertThat(existStation).isFalse();
-//    }
-//
-//    @ParameterizedTest
-//    @CsvSource({"false, false", "true, true"})
-//    @DisplayName("역이 모두 존재하거나, 역이 모두 존재하지 않으면서 Sections가 비어있지 않을 경우 예외를 던진다.")
-//    void throws_exception_when_invalid_stations(final boolean isExistUpStation, final boolean isExistDownStation) {
-//        // given
-//        Sections sections = new Sections(List.of(createSection()));
-//
-//        // when & then
-//        assertThatThrownBy(() -> sections.validateSection(isExistUpStation, isExistDownStation))
-//                .isInstanceOf(SectionInvalidException.class);
-//    }
-//
-//    @Test
-//    @DisplayName("역이 Sections 내부에 상행으로서 존재하는지 확인한다.")
-//    void returns_is_exist_as_up_station() {
-//        // given
-//        Sections sections = createSections();
-//
-//        // when
-//        boolean result = sections.isExistAsUpStation(new Station("잠실역"));
-//
-//        // then
-//        assertThat(result).isTrue();
-//    }
-//
-//    @Test
-//    @DisplayName("상행으로 존재하는 section을 반환한다.")
-//    void returns_section_when_section_with_up_station() {
-//        // given
-//        Sections sections = createSections();
-//        Station station = new Station("잠실역");
-//
-//        // when
-//        Section result = sections.findSectionWithUpStation(station);
-//
-//        // then
-//        assertThat(result.getUpStation()).isEqualTo(station);
-//    }
-//
-//    @Test
-//    @DisplayName("하행으로 존재하는 section을 반환한다.")
-//    void returns_section_when_section_with_down_station() {
-//        // given
-//        Sections sections = createSections();
-//        Station station = new Station("잠실새내역");
-//
-//        // when
-//        Section result = sections.findSectionWithDownStation(station);
-//
-//        // then
-//        assertThat(result.getDownStation()).isEqualTo(station);
-//    }
-//}
+package subway.domain.subway;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import subway.exception.DistanceForkedException;
+import subway.exception.LineNotMatchedException;
+import subway.exception.SectionDuplicatedException;
+import subway.exception.SectionNotFoundException;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.factory.SectionFactory.createSection;
+import static subway.factory.SectionsFactory.createSections;
+
+class SectionsTest {
+
+    @Test
+    @DisplayName("선로를 추가시킨다.")
+    void add_section_success() {
+        // given
+        Sections sections = createSections();
+        Section section = createSection(new Station("종합운동장역"), new Station("삼성역"));
+
+        // when
+        sections.addSection(section);
+
+        // then
+        assertAll(
+                () -> assertThat(sections.getSections().size()).isEqualTo(3),
+                () -> assertThat(sections.getSections().get(2).getUpStation()).isEqualTo(section.getUpStation())
+        );
+    }
+
+    @Test
+    @DisplayName("라인에 해당하는 선로가 없다면 예외를 발생시킨다.")
+    void throws_exception_when_line_not_matched() {
+        // given
+        Sections sections = createSections();
+        Section section = new Section(new Station("매봉역"), new Station("선릉역"), 10L);
+
+        // when & then
+        assertThatThrownBy(() -> sections.addSection(section))
+                .isInstanceOf(LineNotMatchedException.class);
+    }
+
+    @Test
+    @DisplayName("중복된 선로라면 예외를 발생시킨다.")
+    void throws_exception_when_section_duplicated() {
+        // given
+        Sections sections = createSections();
+        Section section = new Section(new Station("잠실역"), new Station("잠실새내역"), 10L);
+
+        // when & then
+        assertThatThrownBy(() -> sections.addSection(section))
+                .isInstanceOf(SectionDuplicatedException.class);
+    }
+
+    @Test
+    @DisplayName("갈래길이면 예외를 발생시킨다.")
+    void throws_exception_when_forked_road() {
+        // given
+        Sections sections = createSections();
+        Section section = new Section(new Station("잠실새내역"), new Station("선릉역"), 10L);
+
+        // when & then
+        assertThatThrownBy(() -> sections.addSection(section))
+                .isInstanceOf(DistanceForkedException.class);
+    }
+
+    @Test
+    @DisplayName("선로를 제거한다.")
+    void delete_section_success() {
+        // given
+        Sections sections = createSections();
+        Station targetStation = new Station("잠실새내역");
+
+        // when
+        sections.deleteSectionByStation(targetStation);
+
+        // then
+        assertAll(
+                () -> assertThat(sections.getSections().size()).isEqualTo(1),
+                () -> assertThat(sections.getSections().get(0).getUpStation().getName()).isEqualTo("잠실역")
+        );
+    }
+
+    @Test
+    @DisplayName("제거하고자 하는 선로가 없다면 예외를 발생시킨다.")
+    void throws_exception_when_section_not_found() {
+        // given
+        Sections sections = createSections();
+        Station targetStation = new Station("매봉역");
+
+        // when & then
+        assertThatThrownBy(() -> sections.deleteSectionByStation(targetStation))
+                .isInstanceOf(SectionNotFoundException.class);
+    }
+}
