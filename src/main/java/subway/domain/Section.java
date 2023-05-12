@@ -75,10 +75,6 @@ public class Section {
         distance -= newSection.distance;
     }
 
-    public boolean validateDistance(final Section newSection) {
-        return this.distance <= newSection.distance;
-    }
-
     public boolean hasStation(final Station station) {
         return upStation.equals(station) || downStation.equals(station);
     }

@@ -37,7 +37,7 @@ public class Sections {
 		Section originSection = getOriginSection(newSection);
 		sections.remove(originSection);
 
-		if (originSection.validateDistance(newSection)) {
+		if (validateDistance(originSection,newSection)) {
 			throw new IllegalArgumentException("새로운 역을 등록할 경우 기존 역 사이 길이보다 크거나 같을 수 없습니다.");
 		}
 
@@ -45,6 +45,11 @@ public class Sections {
 		sections.add(originSection);
 		sections.add(newSection);
 	}
+
+	private boolean validateDistance(final Section originSection, final Section newSection) {
+		return originSection.getDistance() <= newSection.getDistance();
+	}
+
 
 	private Station findUpEndPoint() {
 		List<Station> upStations = new ArrayList<>();
