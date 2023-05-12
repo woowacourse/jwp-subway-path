@@ -77,8 +77,6 @@ CREATE TABLE IF NOT EXISTS section
 - 역 (`/stations`)
   - 역 등록 `POST / 201 Location/stations/{id}`
   - 역 단일 조회 `GET /{id} 200`
-  - 역 전체 조회 `GET / 200`
-  - 역 수정 `PATCH /{id} 200`
   - 역 삭제 `DELETE / 204`
 - 노선 (`/lines`)
   - 노선 등록 `POST / 201 Location/stations/{id}`
@@ -87,7 +85,9 @@ CREATE TABLE IF NOT EXISTS section
   - 노선 수정 `PATCH /{id} 200`
   - 노선 삭제 `DELETE / 204`
 - 노선 - 역 등록 (`/lines/{lineId}/stations`)
-  - 처음 역 등록 `POST /regist/new/{upStationId}/{downStationId} 201 /`
-  - 역 상행/하행 등록 `POST /regist/end/{originStationId}/{newStationId} 201 /`
-  - 역 중간 등록 `POST /regist/middle/{upStationId}/{downStationId}/{newStationId} 201 /`
-  - 역 삭제 `DELETE /{stationId} 204`
+  - 처음 역 등록 `POST /init 201 /`
+  - 역 상행/하행 등록 `POST /end 201 /`
+  - 중간 역 등록 `POST /middle 201 /`
+  - 역 전체 삭제 `DELETE /all 204`
+  - 역 종점 삭제 `DELETE /end 204`
+  - 중간 역 삭제 `DELETE /middle 204`

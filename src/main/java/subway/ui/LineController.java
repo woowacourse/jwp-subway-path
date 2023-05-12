@@ -28,19 +28,19 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<CreationLineResponse> createLine(@RequestBody final CreationLineRequest lineRequest) {
-        final CreationLineDto lineDto = lineService.saveLine(lineRequest);
+    public ResponseEntity<CreationLineResponse> createLine(@RequestBody final CreationLineRequest request) {
+        final CreationLineDto lineDto = lineService.saveLine(request);
         return ResponseEntity.created(URI.create("/lines/" + lineDto.getId())).body(CreationLineResponse.from(lineDto));
     }
 
     @GetMapping
     public ResponseEntity<List<ReadLineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+        return ResponseEntity.ok(lineService.findAllLine());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReadLineResponse> findLineById(@PathVariable final Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
+        return ResponseEntity.ok(lineService.findLineById(id));
     }
 
     @DeleteMapping("/{id}")

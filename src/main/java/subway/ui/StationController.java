@@ -15,7 +15,6 @@ import subway.ui.dto.response.CreationStationResponse;
 import subway.ui.dto.response.ReadStationResponse;
 
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/stations")
@@ -27,20 +26,15 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<CreationStationResponse> createStation(@RequestBody final CreationStationRequest requestDto) {
-        final CreationStationDto stationDto = stationService.saveStation(requestDto.getName());
+    public ResponseEntity<CreationStationResponse> createStation(@RequestBody final CreationStationRequest request) {
+        final CreationStationDto stationDto = stationService.saveStation(request.getName());
         final CreationStationResponse response = CreationStationResponse.from(stationDto);
         return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<ReadStationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<ReadStationResponse> showStation(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
+        return ResponseEntity.ok().body(stationService.findStationById(id));
     }
 
     @DeleteMapping("/{id}")
