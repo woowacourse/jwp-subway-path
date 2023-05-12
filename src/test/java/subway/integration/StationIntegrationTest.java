@@ -3,7 +3,6 @@ package subway.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -107,9 +106,7 @@ class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final List<Long> resultStationIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
+        final List<Long> resultStationIds = response.jsonPath().getList("id", Long.class);
         assertThat(resultStationIds).containsExactly(stationId1, stationId2);
     }
 
