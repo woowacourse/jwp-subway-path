@@ -73,10 +73,16 @@ public class LineDao {
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        int changeCount = jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        if (changeCount == 0) {
+            throw new NotFoundException("해당하는 라인이 존재하지 않습니다.");
+        }
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        int changeCount = jdbcTemplate.update("delete from Line where id = ?", id);
+        if (changeCount == 0) {
+            throw new NotFoundException("해당하는 라인이 존재하지 않습니다.");
+        }
     }
 }
