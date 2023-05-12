@@ -47,7 +47,7 @@ class PathDaoTest {
         assertThat(countRowsInTable(jdbcTemplate, "path")).isOne();
     }
 
-    @DisplayName("해당 노선의 경로들을 가져오면 DB의 해당 노선 경로들은 제거된다")
+    @DisplayName("해당 노선의 경로들을 가져올 수 있다")
     @Test
     void findByLineId() {
         //given
@@ -62,8 +62,33 @@ class PathDaoTest {
         final Paths persisted = pathDao.findByLineId(1L);
 
         //then
+        assertThat(persisted.getOrderedPaths()).hasSize(1);
+    }
+
+    @DisplayName("해당 역이 속한 모든 노선의 경로들을 가져올 수 있다")
+    @Test
+    void findAllPathsByStationId() {
+        //given
+        final Station station1 = stationDao.insert(new Station("서면역"));
+        final Station station2 = stationDao.insert(new Station("부산역"));
+        final Station commonStation = stationDao.insert(new Station("해운대역"));
+
+        final Path path1 = new Path(station1, commonStation, 4);
+        final Path path2 = new Path(commonStation, station2, 4);
+
+        final Paths paths1 = new Paths(List.of(path1));
+        final Paths paths2 = new Paths(List.of(path2));
+
+        pathDao.save(paths1, 1L);
+        pathDao.save(paths2, 2L);
+
+        //when
+        final List<Paths> result = pathDao.findAllPathsByStationId(commonStation.getId());
+
+        //then
         assertAll(
-                () -> assertThat(countRowsInTable(jdbcTemplate, "path")).isZero(),
-                () -> assertThat(persisted.getOrderedPaths()).hasSize(1));
+                () -> assertThat(result).hasSize(2),
+                () -> assertThat(result).map(Paths::getOrderedPaths)
+                        .allMatch(paths -> paths.get(0).contains(commonStation)));
     }
 }

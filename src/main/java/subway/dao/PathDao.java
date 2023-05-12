@@ -9,6 +9,7 @@ import subway.domain.Paths;
 import subway.domain.Station;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class PathDao {
@@ -25,6 +26,7 @@ public class PathDao {
     private RowMapper<Path> rowMapper = (rs, rowNum) -> {
         final Station upStation = new Station(rs.getLong("up_station_id"), rs.getString("upName"));
         final Station downStation = new Station(rs.getLong("down_station_id"), rs.getString("downName"));
+
         return new Path(rs.getLong("id"), upStation, downStation, rs.getInt("distance"));
     };
 
@@ -36,14 +38,22 @@ public class PathDao {
                 "WHERE p.line_id = ?;";
 
         final List<Path> paths = jdbcTemplate.query(sql, rowMapper, lineId);
-
-        final String deleteLineSql = "DELETE FROM path WHERE line_id = ?";
-        jdbcTemplate.update(deleteLineSql, lineId);
-
         return new Paths(paths);
     }
 
+    public List<Paths> findAllPathsByStationId(final Long stationId) {
+        final String sql = "SELECT DISTINCT line_id FROM path WHERE up_station_id = ? OR down_station_id = ?";
+
+        final List<Long> lineIds = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("line_id"), stationId, stationId);
+        return lineIds.stream()
+                .map(this::findByLineId)
+                .collect(Collectors.toList());
+    }
+
     public void save(final Paths paths, final Long lineId) {
+        final String deleteLineSql = "DELETE FROM path WHERE line_id = ?";
+        jdbcTemplate.update(deleteLineSql, lineId);
+
         final List<Path> pathList = paths.getOrderedPaths();
         final String sql = "INSERT INTO path (line_id, up_station_id, distance, down_station_id) VALUES (?, ?, ?, ?)";
 
