@@ -25,11 +25,6 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public boolean isExistLineByName(final String lineName) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM line WHERE name = ?)";
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, lineName));
-    }
-
     public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
