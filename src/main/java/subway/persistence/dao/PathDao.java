@@ -28,4 +28,9 @@ public class PathDao {
         final String sql = "SELECT * FROM paths WHERE line_id = ?";
         return jdbcTemplate.query(sql, mapper, lineId);
     }
+
+    public List<PathEntity> findAll() {
+        final String sql = "SELECT * FROM paths";
+        return jdbcTemplate.query(sql, mapper);
+    }
 }

@@ -9,10 +9,11 @@ import subway.persistence.dao.PathDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.PathEntity;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toMap;
 
 @Repository
@@ -32,8 +33,13 @@ public class SubwayRepository {
         final Line line = lineDao.findById(lineId);
         final List<PathEntity> pathEntities = pathDao.findAllByLineId(lineId);
         final List<Station> stations = stationDao.findAll();
-        final Map<Long, String> mapper = new HashMap<>();
-        stations.forEach(station -> mapper.put(station.getId(), station.getName()));
+        final Map<Long, String> mapper = stations.stream()
+                .collect(toMap(Station::getId, Station::getName));
+        final Map<Station, Path> paths = entitiesToPath(pathEntities, mapper);
+        return line.setPath(paths);
+    }
+
+    private Map<Station, Path> entitiesToPath(final List<PathEntity> pathEntities, final Map<Long, String> mapper) {
         final Map<Station, Path> paths = pathEntities.stream()
                 .collect(
                         toMap(pathEntity -> new Station(pathEntity.getUpStationId(), mapper.get(pathEntity.getUpStationId())),
@@ -41,6 +47,23 @@ public class SubwayRepository {
                                         new Station(pathEntity.getDownStationId(), mapper.get(pathEntity.getDownStationId())),
                                         pathEntity.getDistance()))
                 );
-        return line.setPath(paths);
+        return paths;
+    }
+
+    public List<Line> findLines() {
+        final List<Line> lines = lineDao.findAll();
+        final List<PathEntity> pathEntities = pathDao.findAll();
+        final List<Station> stations = stationDao.findAll();
+        final Map<Long, String> mapper = stations.stream()
+                .collect(toMap(Station::getId, Station::getName));
+
+        final Map<Long, List<PathEntity>> pathEntitiesByLineId = pathEntities.stream()
+                .collect(groupingBy(PathEntity::getLineId));
+
+        return lines.stream()
+                .map(line -> line.setPath(
+                        entitiesToPath(pathEntitiesByLineId.get(line.getId()), mapper))
+                )
+                .collect(Collectors.toList());
     }
 }

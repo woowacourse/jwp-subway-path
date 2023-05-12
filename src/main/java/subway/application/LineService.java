@@ -2,6 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.domain.Line;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineWithStationResponse;
@@ -37,15 +38,6 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
@@ -54,8 +46,17 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public LineWithStationResponse findLineWithStation(final Long id) {
+    public LineWithStationResponse findLineById(final Long id) {
         final Line line = subwayRepository.findLine(id);
-        return LineWithStationResponse.of(line);
+        final List<Station> stations = line.sortStations();
+        return LineWithStationResponse.from(line, stations);
     }
+
+    public List<LineWithStationResponse> findAllLines() {
+        final List<Line> lines = subwayRepository.findLines();
+        return lines.stream()
+                .map(line -> LineWithStationResponse.from(line, line.sortStations()))
+                .collect(Collectors.toList());
+    }
+
 }

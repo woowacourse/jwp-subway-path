@@ -23,8 +23,7 @@ public class LineWithStationResponse {
         this.stations = stations;
     }
 
-    public static LineWithStationResponse of(final Line line) {
-        final List<Station> stations = line.sortStations();
+    public static LineWithStationResponse from(final Line line, final List<Station> stations) {
         return new LineWithStationResponse(line.getId(), line.getName(), line.getColor(), StationResponse.of(stations));
     }
 
