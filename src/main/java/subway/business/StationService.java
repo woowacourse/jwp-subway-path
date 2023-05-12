@@ -25,7 +25,7 @@ public class StationService {
         return StationEntityRequestResponseConverter.toResponse(insertedStationEntity);
     }
 
-    public StationResponse findById(final Long id) {
+    public StationResponse findById(final long id) {
         final StationEntity stationEntity = stationDao.findById(id);
         return StationEntityRequestResponseConverter.toResponse(stationEntity);
     }
