@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
+import subway.dao.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -16,7 +16,7 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
-    private final RowMapper<Section> rowMapper = (rs, num) -> new Section(
+    private final RowMapper<SectionEntity> rowMapper = (rs, num) -> new SectionEntity(
             rs.getLong("id"),
             rs.getInt("distance"),
             rs.getLong("up_station_id"),
@@ -31,17 +31,17 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(Section section) {
+    public Long insert(SectionEntity section) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(section);
         return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
-    public List<Section> findAllByLineId(Long lineId) {
+    public List<SectionEntity> findAllByLineId(Long lineId) {
         final String sql = "SELECT * FROM section where line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public void update(Section updateSection) {
+    public void update(SectionEntity updateSection) {
         final String sql = "UPDATE section SET distance = ?, up_station_id = ?, down_station_id = ?";
         jdbcTemplate.update(sql, updateSection.getDistance(), updateSection.getUpStationId(), updateSection.getDownStationId());
     }

@@ -12,8 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
-import subway.domain.Section;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
@@ -33,7 +33,7 @@ class SectionIntegrationTest extends IntegrationTest {
     @BeforeEach
     void init() {
         이호선 = lineDao.insert(new Line("2호선", "초록색"));
-        sectionDao.insert(new Section(10, 1L, 2L, 이호선));
+        sectionDao.insert(new SectionEntity(10, 1L, 2L, 이호선));
     }
 
     @Test

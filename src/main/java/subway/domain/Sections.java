@@ -83,10 +83,12 @@ public class Sections {
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
-    public List<Section> findIncludeTargetSection(Long stationId){
-        return sections.stream()
+    public Sections findIncludeTargetSection(Long stationId){
+        final List<Section> sections = this.sections.stream()
                 .filter(section -> Objects.equals(section.getUpStationId(), stationId) || Objects.equals(section.getDownStationId(), stationId))
                 .collect(Collectors.toList());
+
+        return new Sections(sections);
     }
 
     public boolean isInitialState() {
@@ -99,6 +101,12 @@ public class Sections {
 
     public Long findLastSectionId() {
         return sections.get(sections.size() - 1).getId();
+    }
+
+    public Distance calculateTotalDistance() {
+        return sections.stream()
+                .map(Section::getDistance)
+                .reduce(Distance.zero(), Distance::plus);
     }
 
     public List<Section> getSections() {

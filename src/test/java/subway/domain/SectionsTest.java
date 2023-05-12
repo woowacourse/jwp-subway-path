@@ -70,9 +70,10 @@ class SectionsTest {
     @Test
     void 역을_포함한_구간들을_찾아온다() {
         // when
-        final List<Section> result = sections.findIncludeTargetSection(2L);
+        final Sections sections = this.sections.findIncludeTargetSection(2L);
 
         // then
+        final List<Section> result = sections.getSections();
         assertAll(
                 () -> assertThat(result).hasSize(2),
                 () -> assertThat(result.get(0).getUpStationId()).isEqualTo(1L),

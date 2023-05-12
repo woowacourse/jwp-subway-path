@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import subway.domain.Section;
+import subway.dao.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -35,18 +35,18 @@ class SectionDaoTest {
     }
 
     private void save() {
-        sectionDao.insert(new Section(3, 1L, 2L, 1L));
-        sectionDao.insert(new Section(3, 3L, 4L, 1L));
-        sectionDao.insert(new Section(3, 5L, 6L, 2L));
+        sectionDao.insert(new SectionEntity(3, 1L, 2L, 1L));
+        sectionDao.insert(new SectionEntity(3, 3L, 4L, 1L));
+        sectionDao.insert(new SectionEntity(3, 5L, 6L, 2L));
     }
 
     @Test
     void 구간을_저장한다() {
         // given
-        final Section section = new Section(3, 1L, 2L, 1L);
+        final SectionEntity sectionEntity = new SectionEntity(3, 1L, 2L, 1L);
 
         // when
-        final Long id = sectionDao.insert(section);
+        final Long id = sectionDao.insert(sectionEntity);
 
         // then
         assertThat(id).isNotNull();
@@ -55,7 +55,7 @@ class SectionDaoTest {
     @Test
     void LineId로_구간을_조회한다() {
         // when
-        final List<Section> sections = sectionDao.findAllByLineId(1L);
+        final List<SectionEntity> sections = sectionDao.findAllByLineId(1L);
 
         // then
         assertThat(sections).hasSize(2);
@@ -64,8 +64,8 @@ class SectionDaoTest {
     @Test
     void 구간을_수정한다() {
         // given
-        final Long targetId = sectionDao.insert(new Section(1, 7L, 6L, 1L));
-        final Section newSection = new Section(targetId, 3, 10L, 9L, 1L);
+        final Long targetId = sectionDao.insert(new SectionEntity(1, 7L, 6L, 1L));
+        final SectionEntity newSection = new SectionEntity(targetId, 3, 10L, 9L, 1L);
 
         // when
         sectionDao.update(newSection);
@@ -80,7 +80,7 @@ class SectionDaoTest {
     @Test
     void 같은_구간이_존재하면_예외가_발생한다() {
         // given
-        sectionDao.insert(new Section(3, 1L, 3L, 1L));
+        sectionDao.insert(new SectionEntity(3, 1L, 3L, 1L));
 
         // when, then
         assertAll(
@@ -92,7 +92,7 @@ class SectionDaoTest {
     @Test
     void 구간을_삭제한다() {
         // given
-        final Long id = sectionDao.insert(new Section(3, 3L, 11L, 1L));
+        final Long id = sectionDao.insert(new SectionEntity(3, 3L, 11L, 1L));
 
         // when
         sectionDao.delete(id);
@@ -102,10 +102,10 @@ class SectionDaoTest {
                 .isInstanceOf(EmptyResultDataAccessException.class);
     }
 
-    private Section findById(Long sectionId) {
+    private SectionEntity findById(Long sectionId) {
         final String sql = "SELECT * FROM section where id = ?";
 
-        final RowMapper<Section> rowMapper = (rs, num) -> new Section(
+        final RowMapper<SectionEntity> rowMapper = (rs, num) -> new SectionEntity(
                 rs.getLong("id"),
                 rs.getInt("distance"),
                 rs.getLong("up_station_id"),

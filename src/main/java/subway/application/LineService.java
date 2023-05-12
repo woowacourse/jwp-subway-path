@@ -17,14 +17,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final SectionMapper sectionMapper;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao, SectionMapper sectionMapper) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.sectionMapper = sectionMapper;
     }
 
     public Long saveLine(LineRequest request) {
@@ -32,7 +35,7 @@ public class LineService {
         final Long lineId = lineDao.insert(line);
 
         final Section section = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), lineId);
-        sectionDao.insert(section);
+        sectionDao.insert(sectionMapper.mapToEntity(section));
 
         return lineId;
     }
@@ -50,7 +53,7 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        final List<Section> sections = sectionDao.findAllByLineId(id);
+        final List<Section> sections = sectionMapper.mapFrom(sectionDao.findAllByLineId(id));
         List<Section> sortedSections = Sections.from(sections).getSections();
 
         final List<Long> stationsIds = sortedSections.stream()

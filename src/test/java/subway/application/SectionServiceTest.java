@@ -8,8 +8,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
-import subway.domain.Section;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
@@ -20,33 +20,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+@SuppressWarnings("NonAsciiCharacters")
 @Sql("classpath:/remove-section-line.sql")
 @JdbcTest
 class SectionServiceTest {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    @Autowired
     private DataSource dataSource;
 
-    private SectionService sectionService;
-    private SectionDao sectionDao;
     private LineDao lineDao;
+    private SectionDao sectionDao;
+    private SectionService sectionService;
 
     // 1 -> 2 -> 3
     @BeforeEach
     void init() {
-        sectionDao = new SectionDao(jdbcTemplate, dataSource);
-        lineDao = new LineDao(jdbcTemplate, dataSource);
-        sectionService = new SectionService(sectionDao, lineDao);
+        sectionDao = new SectionDao(new JdbcTemplate(dataSource), dataSource);
+        lineDao = new LineDao(new JdbcTemplate(dataSource), dataSource);
+        sectionService = new SectionService(sectionDao, lineDao, new SectionMapper());
         initialSection();
     }
 
     private void initialSection() {
         lineDao.insert(new Line("2호선", "초록색"));
-        sectionDao.insert(new Section(10, 1L, 2L, 1L));
-        sectionDao.insert(new Section(20, 2L, 3L, 1L));
+        sectionDao.insert(new SectionEntity(10, 1L, 2L, 1L));
+        sectionDao.insert(new SectionEntity(20, 2L, 3L, 1L));
     }
 
     @Test
@@ -139,7 +137,7 @@ class SectionServiceTest {
     void 구간이_한개이면_구간과_노선이_모두_삭제된다() {
         //given
         final Long lineId = lineDao.insert(new Line("3호선", "노란색"));
-        sectionDao.insert(new Section(10, 1L, 2L, lineId));
+        sectionDao.insert(new SectionEntity(10, 1L, 2L, lineId));
 
         //when
         sectionService.deleteStation(1L, new SectionDeleteRequest(lineId));
@@ -166,7 +164,7 @@ class SectionServiceTest {
         sectionService.deleteStation(2L, new SectionDeleteRequest(1L));
 
         //then
-        final List<Section> sections = sectionDao.findAllByLineId(1L);
+        final List<SectionEntity> sections = sectionDao.findAllByLineId(1L);
         assertAll(() -> assertThat(sections).hasSize(1),
                 () -> assertThat(sections.get(0).getUpStationId()).isEqualTo(1L),
                 () -> assertThat(sections.get(0).getDownStationId()).isEqualTo(3L),

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.dto.SectionDeleteRequest;
@@ -18,18 +19,21 @@ import java.util.stream.Stream;
 @Service
 @Transactional
 public class SectionService {
+
     private final SectionDao sectionDao;
     private final LineDao lineDao;
+    private final SectionMapper sectionMapper;
 
-    public SectionService(SectionDao sectionDao, LineDao lineDao) {
+    public SectionService(SectionDao sectionDao, LineDao lineDao, SectionMapper sectionMapper) {
         this.sectionDao = sectionDao;
         this.lineDao = lineDao;
+        this.sectionMapper = sectionMapper;
     }
 
     public Long insertSection(SectionRequest request) {
         validateInput(request);
 
-        final List<Section> sections = sectionDao.findAllByLineId(request.getLineId());
+        final List<Section> sections = sectionMapper.mapFrom(sectionDao.findAllByLineId(request.getLineId()));
         final Sections sortedSections = Sections.from(sections);
 
         checkCanInsert(request, sortedSections);
@@ -71,43 +75,45 @@ public class SectionService {
 
     private Long insertToEndPoint(SectionRequest request) {
         final Section section = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), request.getLineId());
-        return sectionDao.insert(section);
+        return sectionDao.insert(sectionMapper.mapToEntity(section));
     }
 
     private Long insertToMiddleSection(SectionRequest request, Sections sortedSections) {
 
+        final Distance distance = new Distance(request.getDistance());
+
         if (sortedSections.isUpStationPoint(request.getUpStationId())) {
             final Section targetSection = sortedSections.getTargtUpStationSection(request.getUpStationId());
 
-            validateDistance(targetSection.getDistance(), request.getDistance());
+            validateDistance(targetSection.getDistance(), distance);
 
-            final Section updateSection = new Section(request.getDistance(), targetSection.getUpStationId(), request.getDownStationId(), targetSection.getLineId());
-            final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), request.getDownStationId(), targetSection.getDownStationId(), targetSection.getLineId());
+            final Section updateSection = new Section(distance, targetSection.getUpStationId(), request.getDownStationId(), targetSection.getLineId());
+            final Section newSection = new Section(targetSection.getDistance().minus(distance), request.getDownStationId(), targetSection.getDownStationId(), targetSection.getLineId());
             return insert(updateSection, newSection);
         }
 
         final Section targetSection = sortedSections.getTargtDownStationSection(request.getDownStationId());
 
-        validateDistance(targetSection.getDistance(), request.getDistance());
+        validateDistance(targetSection.getDistance(), distance);
 
-        final Section updateSection = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), targetSection.getLineId());
-        final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), targetSection.getUpStationId(), request.getUpStationId(), targetSection.getLineId());
+        final Section updateSection = new Section(distance, request.getUpStationId(), request.getDownStationId(), targetSection.getLineId());
+        final Section newSection = new Section(targetSection.getDistance().minus(distance), targetSection.getUpStationId(), request.getUpStationId(), targetSection.getLineId());
         return insert(updateSection, newSection);
     }
 
-    private static void validateDistance(int targetDistance, Integer distance) {
-        if (targetDistance <= distance) {
+    private static void validateDistance(Distance targetDistance, Distance distance) {
+        if (targetDistance.isShorterThan(distance)) {
             throw new IllegalArgumentException("거리는 기존 구간 거리보다 클 수 없습니다.");
         }
     }
 
     private Long insert(Section updateSection, Section insertSection) {
-        sectionDao.update(updateSection);
-        return sectionDao.insert(insertSection);
+        sectionDao.update(sectionMapper.mapToEntity(updateSection));
+        return sectionDao.insert(sectionMapper.mapToEntity(insertSection));
     }
 
     public void deleteStation(Long stationId, SectionDeleteRequest request) {
-        final List<Section> sections = sectionDao.findAllByLineId(request.getLineId());
+        final List<Section> sections = sectionMapper.mapFrom(sectionDao.findAllByLineId(request.getLineId()));
         final Sections sortedSections = Sections.from(sections);
 
         if (sortedSections.isInitialState()) {
@@ -126,16 +132,15 @@ public class SectionService {
             return;
         }
 
-        final List<Section> includeTargetSection = sortedSections.findIncludeTargetSection(stationId);
-        final int newDistance = includeTargetSection.stream()
-                .mapToInt(Section::getDistance)
-                .sum();
+        final Sections includeTargetSection = sortedSections.findIncludeTargetSection(stationId);
+        final Distance newDistance = includeTargetSection.calculateTotalDistance();
 
-        final Section forwardSection = includeTargetSection.get(0);
-        final Section backwardSection = includeTargetSection.get(1);
+        final Section forwardSection = includeTargetSection.getSections().get(0);
+        final Section backwardSection = includeTargetSection.getSections().get(1);
 
-        sectionDao.insert(new Section(newDistance, forwardSection.getUpStationId(), backwardSection.getDownStationId(), request.getLineId()));
-        for (Section section : includeTargetSection) {
+        final Section newSection = new Section(newDistance, forwardSection.getUpStationId(), backwardSection.getDownStationId(), request.getLineId());
+        sectionDao.insert(sectionMapper.mapToEntity(newSection));
+        for (Section section : includeTargetSection.getSections()) {
             sectionDao.delete(section.getId());
         }
     }
