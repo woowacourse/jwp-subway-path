@@ -13,4 +13,16 @@ public final class PathRequest {
         this.downStationID = downStationID;
         this.distance = distance;
     }
+
+    public Long getUpStationId() {
+        return upStationId;
+    }
+
+    public Long getDownStationID() {
+        return downStationID;
+    }
+
+    public Integer getDistance() {
+        return distance;
+    }
 }

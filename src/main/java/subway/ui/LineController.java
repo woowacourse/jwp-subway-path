@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.PathRequest;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -45,6 +46,20 @@ public class LineController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/{id}/paths")
+    public ResponseEntity<Void> addPathToLine(@PathVariable final Long id, @RequestBody final PathRequest pathRequest) {
+        lineService.addPathToLine(id, pathRequest);
+
+        return ResponseEntity.created(URI.create("/lines/" + id)).build();
+    }
+
+    @DeleteMapping("/{id}/paths/stations/{station-id}")
+    public ResponseEntity<Void> deletePathFromLine(@PathVariable final Long id, @PathVariable("station-id") final Long stationId) {
+        lineService.deletePathByStationId(id, stationId);
+
         return ResponseEntity.noContent().build();
     }
 

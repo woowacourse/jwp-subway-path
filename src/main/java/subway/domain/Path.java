@@ -4,15 +4,21 @@ import java.util.List;
 import java.util.Objects;
 
 public final class Path {
+    private final Long id;
     private final Station up;
     private final Station down;
     private final int distance;
 
-    public Path(final Station up, final Station down, final int distance) {
+    public Path(final Long id, final Station up, final Station down, final int distance) {
         validate(distance);
+        this.id = id;
         this.up = up;
         this.down = down;
         this.distance = distance;
+    }
+
+    public Path(final Station up, final Station down, final int distance) {
+        this(null, up, down, distance);
     }
 
     private void validate(final int distance) {

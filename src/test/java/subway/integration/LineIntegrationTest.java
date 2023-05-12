@@ -229,8 +229,55 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/lines/{id}/stations", lineId)
+                .when().post("/lines/{id}/paths", lineId)
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
+    }
+
+    @DisplayName("노선에서 역을 제거한다.")
+    @Test
+    void removeStation() {
+        //given
+        ExtractableResponse<Response> lineResponse = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when().post("/lines")
+                .then()
+                .extract();
+
+        ExtractableResponse<Response> stationResponse = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(Map.of("name", "강남역"))
+                .when().post("/stations")
+                .then()
+                .extract();
+
+        ExtractableResponse<Response> stationResponse2 = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(Map.of("name", "부산역"))
+                .when().post("/stations")
+                .then()
+                .extract();
+
+        Long lineId = Long.parseLong(lineResponse.header("Location").split("/")[2]);
+        Long stationId = Long.parseLong(stationResponse.header("Location").split("/")[2]);
+        Long stationId2 = Long.parseLong(stationResponse2.header("Location").split("/")[2]);
+        final PathRequest request = new PathRequest(stationId, stationId2, 10);
+
+        RestAssured.given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/lines/{id}/paths", lineId)
+                .then()
+                .statusCode(HttpStatus.CREATED.value());
+
+        //when, then
+        RestAssured.given()
+                .when().delete("/lines/{id}/paths/stations/{station-id}", lineId, stationId)
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }
