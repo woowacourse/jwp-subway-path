@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public final class Paths {
@@ -65,6 +66,28 @@ public final class Paths {
                 .filter(path -> path.isUpStationEquals(newPath) || path.isDownStationEquals(newPath))
                 .findAny()
                 .isEmpty();
+    }
+
+    public Paths removePath(final Station station) {
+        final List<Path> affectedPaths = findAffectedPaths(station);
+
+        final List<Path> newPaths = new ArrayList<>(paths);
+        newPaths.removeAll(affectedPaths);
+
+        if (affectedPaths.size() == 1) {
+            return new Paths(newPaths);
+        }
+
+        final Path path1 = affectedPaths.get(0);
+        final Path path2 = affectedPaths.get(1);
+        newPaths.add(path1.merge(path2));
+        return new Paths(newPaths);
+    }
+
+    private List<Path> findAffectedPaths(final Station station) {
+        return this.paths.stream()
+                .filter(path -> path.contains(station))
+                .collect(Collectors.toList());
     }
 
     public List<Path> getPaths() {

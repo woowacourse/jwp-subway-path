@@ -7,6 +7,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PathsTest {
 
@@ -67,5 +68,24 @@ class PathsTest {
 
         //then
         assertThat(paths.getPaths()).hasSize(2);
+    }
+
+    @DisplayName("경로를 제거할 수 있다")
+    @Test
+    void removePath() {
+        //given
+        final Path path = new Path(station, station2, 3);
+        Paths paths = new Paths(List.of(path));
+
+        final int before = paths.getPaths().size();
+
+        //when
+        paths = paths.removePath(path.getDown());
+        final int after = paths.getPaths().size();
+
+        //then
+        assertAll(
+                () -> assertThat(before).isOne(),
+                () -> assertThat(after).isZero());
     }
 }

@@ -29,6 +29,10 @@ public final class Path {
         return down.equals(another.down);
     }
 
+    public boolean contains(final Station station) {
+        return up.equals(station) || down.equals(station);
+    }
+
     public List<Path> divideBy(final Path middle) {
         if (distance <= middle.distance) {
             throw new IllegalArgumentException("기존의 거리보다 길 수 없습니다.");
@@ -42,6 +46,14 @@ public final class Path {
 
         final Path newPath = new Path(up, middle.up, newDistance);
         return List.of(middle, newPath);
+    }
+
+    public Path merge(final Path another) {
+        if (down.equals(another.up)) {
+            return new Path(up, another.down, distance + another.distance);
+        }
+
+        return new Path(another.up, down, distance + another.distance);
     }
 
     public Station getUp() {

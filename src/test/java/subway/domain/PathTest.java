@@ -122,4 +122,21 @@ class PathTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("기존의 거리보다 길 수 없습니다.");
     }
+
+    @DisplayName("이어진 두 경로를 합칠 수 있다")
+    @Test
+    void merge() {
+        //given
+        final Station station1 = new Station("서면역");
+        final Station station2 = new Station("부산역");
+        final Station station3 = new Station("센텀역");
+        final Path path = new Path(station1, station2, 10);
+        final Path path2 = new Path(station2, station3, 10);
+
+        //when
+        final Path merged = path.merge(path2);
+
+        //then
+        assertThat(merged.getDistance()).isEqualTo(path.getDistance() + path2.getDistance());
+    }
 }
