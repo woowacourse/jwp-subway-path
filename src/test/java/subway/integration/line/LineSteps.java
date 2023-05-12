@@ -8,6 +8,7 @@ import static subway.integration.common.JsonMapper.toJson;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.UUID;
 import org.springframework.core.ParameterizedTypeReference;
 import subway.application.dto.LineQueryResponse;
 import subway.application.dto.LineQueryResponse.SectionQueryResponse;
@@ -38,7 +39,7 @@ public class LineSteps {
                 .extract();
     }
 
-    public static Long 노선_생성하고_아이디_반환(
+    public static UUID 노선_생성하고_아이디_반환(
             final String lineName,
             final String upTerminalName,
             final String downTerminalName,
@@ -49,13 +50,13 @@ public class LineSteps {
         return 응답_헤더에_담긴_노선_아이디(response);
     }
 
-    public static Long 응답_헤더에_담긴_노선_아이디(final ExtractableResponse<Response> response) {
+    public static UUID 응답_헤더에_담긴_노선_아이디(final ExtractableResponse<Response> response) {
         final String location = response.header("location");
         final String id = location.substring(location.lastIndexOf("/") + 1);
-        return Long.parseLong(id);
+        return UUID.fromString(id);
     }
 
-    public static ExtractableResponse<Response> 노선_조회_요청(final Long id) {
+    public static ExtractableResponse<Response> 노선_조회_요청(final UUID id) {
         return given().log().all()
                 .when()
                 .get("/lines/{id}", id)

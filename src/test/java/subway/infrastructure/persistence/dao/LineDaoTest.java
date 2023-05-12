@@ -46,10 +46,10 @@ class LineDaoTest {
     void ID로_노선을_조회한다() {
         // given
         final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
-        final Long id = lineDao.save(lineEntity);
+        lineDao.save(lineEntity);
 
         // when & then
-        assertThat(lineDao.findById(id)).isPresent();
+        assertThat(lineDao.findById(lineEntity.domainId())).isPresent();
     }
 
     @Test
@@ -67,7 +67,7 @@ class LineDaoTest {
     void 노선을_제거한다() {
         // given
         final LineEntity lineEntity = new LineEntity(UUID.randomUUID(), "1호선");
-        final Long id = lineDao.save(lineEntity);
+        lineDao.save(lineEntity);
 
         // when
         lineDao.delete(new LineEntity(lineEntity.domainId(), lineEntity.name()));

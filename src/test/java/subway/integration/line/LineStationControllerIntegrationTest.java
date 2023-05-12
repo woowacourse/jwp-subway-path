@@ -15,6 +15,7 @@ import static subway.integration.station.StationSteps.역_생성_요청;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -50,7 +51,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("말랑역");
             역_생성_요청("경유역");
             역_생성_요청("오리역");
-            final Long 생성된_노선_아이디 = 노선_생성하고_아이디_반환("1호선", "말랑역", "오리역", 10);
+            final UUID 생성된_노선_아이디 = 노선_생성하고_아이디_반환("1호선", "말랑역", "오리역", 10);
 
             // when
             final ExtractableResponse<Response> response =
@@ -168,7 +169,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("역2");
             역_생성_요청("역3");
             노선_생성_요청("1호선", "역1", "역2", 2);
-            final Long 생성된_노선_아이디 = 노선_생성하고_아이디_반환("2호선", "역2", "역3", 10);
+            final UUID 생성된_노선_아이디 = 노선_생성하고_아이디_반환("2호선", "역2", "역3", 10);
 
             // when
             final ExtractableResponse<Response> response =
@@ -191,7 +192,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("잠실역");
             역_생성_요청("선릉역");
             역_생성_요청("사당역");
-            final Long 노선_아이디 = 노선_생성하고_아이디_반환("1호선", "잠실역", "선릉역", 10);
+            final UUID 노선_아이디 = 노선_생성하고_아이디_반환("1호선", "잠실역", "선릉역", 10);
             노선에_역_추가_요청("1호선", "선릉역", "사당역", 5);
 
             // when
@@ -209,7 +210,7 @@ public class LineStationControllerIntegrationTest {
             역_생성_요청("잠실역");
             역_생성_요청("선릉역");
             역_생성_요청("사당역");
-            final Long 노선_아이디 = 노선_생성하고_아이디_반환("1호선", "잠실역", "선릉역", 10);
+            final UUID 노선_아이디 = 노선_생성하고_아이디_반환("1호선", "잠실역", "선릉역", 10);
             노선에_역_추가_요청("1호선", "선릉역", "사당역", 5);
             노선에_역_제거_요청("1호선", "선릉역");
 

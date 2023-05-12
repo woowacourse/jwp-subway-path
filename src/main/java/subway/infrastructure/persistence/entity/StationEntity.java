@@ -5,16 +5,10 @@ import subway.domain.Station;
 
 public class StationEntity {
 
-    private final Long id;
     private final UUID domainId;
     private final String name;
 
     public StationEntity(final UUID domainId, final String name) {
-        this(null, domainId, name);
-    }
-
-    public StationEntity(final Long id, final UUID domainId, final String name) {
-        this.id = id;
         this.domainId = domainId;
         this.name = name;
     }
@@ -25,10 +19,6 @@ public class StationEntity {
 
     public Station toDomain() {
         return new Station(domainId, name);
-    }
-
-    public Long id() {
-        return id;
     }
 
     public UUID domainId() {

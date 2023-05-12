@@ -19,6 +19,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -52,7 +53,7 @@ public class LineControllerIntegrationTest {
         // given
         역_생성_요청("잠실역");
         역_생성_요청("사당역");
-        final Long 생성된_노선_아이디 =
+        final UUID 생성된_노선_아이디 =
                 노선_생성하고_아이디_반환("1호선", "잠실역", "사당역", 5);
 
         // when
@@ -118,7 +119,7 @@ public class LineControllerIntegrationTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(CREATED.value());
-            location_헤더를_검증한다(response, 1L);
+            location_헤더를_검증한다(response);
         }
 
         @Test
@@ -175,7 +176,7 @@ public class LineControllerIntegrationTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(CREATED.value());
-            location_헤더를_검증한다(response, 2L);
+            location_헤더를_검증한다(response);
         }
     }
 }

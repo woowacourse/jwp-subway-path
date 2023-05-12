@@ -38,11 +38,11 @@ class LineQueryServiceTest {
                 new Section(역3, 역4, 10)
         ));
         final Line line = new Line("1호선", sections);
-        given(lineRepository.findById(1L))
+        given(lineRepository.findById(line.id()))
                 .willReturn(Optional.of(line));
 
         // when
-        final LineQueryResponse response = lineQueryService.findById(1L);
+        final LineQueryResponse response = lineQueryService.findById(line.id());
 
         // then
         assertThat(response.getLineName()).isEqualTo("1호선");

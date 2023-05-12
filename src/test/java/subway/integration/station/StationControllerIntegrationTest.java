@@ -43,6 +43,6 @@ public class StationControllerIntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(201);
-        location_헤더를_검증한다(response, 1L);
+        location_헤더를_검증한다(response);
     }
 }

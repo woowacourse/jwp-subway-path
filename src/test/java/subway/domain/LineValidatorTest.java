@@ -18,6 +18,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import subway.exception.BaseExceptionType;
 import subway.exception.line.LineException;
 
@@ -76,7 +77,7 @@ class LineValidatorTest {
     @Test
     void 기존_구간과_거리와_상행역_하행역이_동일한_경우에만_예외가_아니다() {
         // give
-        given(lineRepository.save(any())).willReturn(3L);
+        BDDMockito.willDoNothing().given(lineRepository).save(any());
         final Line line1 = new Line("1호선", new Sections(List.of(
                 new Section(역1, 역2, 1),
                 new Section(역2, 역3, 2)

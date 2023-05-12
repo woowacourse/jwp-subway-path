@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static subway.exception.station.StationExceptionType.DUPLICATE_STATION_NAME;
 
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -29,14 +31,13 @@ class StationServiceTest {
     @Test
     void 역을_저장한다() {
         // given
-        given(stationRepository.save(any()))
-                .willReturn(1L);
+        willDoNothing().given(stationRepository).save(any());
 
         // when
-        final Long id = stationService.create(new StationCreateCommand("잠실역"));
+        final UUID uuid = stationService.create(new StationCreateCommand("잠실역"));
 
         // then
-        assertThat(id).isEqualTo(1);
+        assertThat(uuid).isNotNull();
     }
 
     @Test

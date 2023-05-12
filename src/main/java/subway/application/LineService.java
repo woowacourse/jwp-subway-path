@@ -4,6 +4,7 @@ import static subway.exception.line.LineExceptionType.DUPLICATE_LINE_NAME;
 import static subway.exception.line.LineExceptionType.NOT_FOUND_LINE;
 import static subway.exception.station.StationExceptionType.NOT_FOUND_STATION;
 
+import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.AddStationToLineCommand;
@@ -39,13 +40,15 @@ public class LineService {
         this.removeStationFromLineService = removeStationFromLineService;
     }
 
-    public Long create(final LineCreateCommand command) {
+    public UUID create(final LineCreateCommand command) {
         validateDuplicateLineName(command);
         final Station up = findStationByName(command.upTerminalName());
         final Station down = findStationByName(command.downTerminalName());
         final Section section = new Section(up, down, command.distance());
         lineValidator.validateSectionConsistency(section);
-        return lineRepository.save(new Line(command.lineName(), new Sections(section)));
+        final Line line = new Line(command.lineName(), new Sections(section));
+        lineRepository.save(line);
+        return line.id();
     }
 
     private void validateDuplicateLineName(final LineCreateCommand command) {

@@ -17,8 +17,8 @@ public class JdbcStationRepository implements StationRepository {
     }
 
     @Override
-    public Long save(final Station station) {
-        return stationDao.save(StationEntity.from(station));
+    public void save(final Station station) {
+        stationDao.save(StationEntity.from(station));
     }
 
     @Override

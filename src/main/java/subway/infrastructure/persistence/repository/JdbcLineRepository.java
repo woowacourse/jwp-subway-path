@@ -33,14 +33,13 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     @Override
-    public Long save(final Line line) {
+    public void save(final Line line) {
         final LineEntity entity = LineEntity.from(line);
-        final Long lineId = lineDao.save(LineEntity.from(line));
+        lineDao.save(LineEntity.from(line));
         final List<SectionEntity> entities = line.sections().stream()
                 .map(it -> SectionEntity.of(it, entity.domainId()))
                 .collect(Collectors.toList());
         sectionDao.batchSave(entities);
-        return lineId;
     }
 
     @Override
@@ -59,7 +58,7 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     @Override
-    public Optional<Line> findById(final Long id) {
+    public Optional<Line> findById(final UUID id) {
         return lineDao.findById(id)
                 .map(it -> it.toDomain(getSections(it.name())));
     }

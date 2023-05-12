@@ -2,6 +2,7 @@ package subway.presentation;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,14 +33,14 @@ public class LineController {
     public ResponseEntity<Void> create(
             @Valid @RequestBody final LineCreateRequest request
     ) {
-        final Long id = lineService.create(request.toCommand());
+        final UUID id = lineService.create(request.toCommand());
         final URI uri = UriUtil.build("/{id}", id);
         return ResponseEntity.created(uri).build();
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineQueryResponse> findById(
-            @PathVariable("id") final Long id
+            @PathVariable("id") final UUID id
     ) {
         return ResponseEntity.ok(lineQueryService.findById(id));
     }

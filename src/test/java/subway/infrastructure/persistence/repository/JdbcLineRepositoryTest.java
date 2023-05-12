@@ -101,10 +101,11 @@ class JdbcLineRepositoryTest {
                 new Section(역3, 역4, 3),
                 new Section(역4, 역5, 4)
         ));
-        final Long id = lineRepository.save(new Line("1호선", sections));
+        final Line line = new Line("1호선", sections);
+        lineRepository.save(line);
 
         // when
-        final List<Section> find = lineRepository.findById(id).get().sections();
+        final List<Section> find = lineRepository.findById(line.id()).get().sections();
 
         // then
         포함된_구간들을_검증한다(find,

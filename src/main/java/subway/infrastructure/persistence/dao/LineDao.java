@@ -16,7 +16,6 @@ import subway.infrastructure.persistence.entity.LineEntity;
 public class LineDao {
 
     private static final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) -> new LineEntity(
-            rs.getLong("id"),
             UUID.fromString(rs.getString("domain_id")),
             rs.getString("name")
     );
@@ -31,18 +30,18 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long save(final LineEntity entity) {
+    public void save(final LineEntity entity) {
         final SqlParameterSource source = new BeanPropertySqlParameterSource(entity);
-        return simpleJdbcInsert.executeAndReturnKey(source).longValue();
+        simpleJdbcInsert.execute(source);
     }
 
     public void delete(final LineEntity entity) {
         template.update("delete from line where line.domain_id = ?", entity.domainId());
     }
 
-    public Optional<LineEntity> findById(final Long id) {
+    public Optional<LineEntity> findById(final UUID id) {
         try {
-            final String sql = "select * from line where line.id = ?";
+            final String sql = "select * from line where line.domain_id = ?";
             return Optional.ofNullable(template.queryForObject(sql, lineRowMapper, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();

@@ -8,16 +8,10 @@ import subway.domain.Sections;
 
 public class LineEntity {
 
-    private final Long id;
     private final UUID domainId;
     private final String name;
 
     public LineEntity(final UUID domainId, final String name) {
-        this(null, domainId, name);
-    }
-
-    public LineEntity(final Long id, final UUID domainId, final String name) {
-        this.id = id;
         this.domainId = domainId;
         this.name = name;
     }
@@ -28,10 +22,6 @@ public class LineEntity {
 
     public Line toDomain(final List<Section> sections) {
         return new Line(domainId, name, new Sections(sections));
-    }
-
-    public Long id() {
-        return id;
     }
 
     public UUID domainId() {

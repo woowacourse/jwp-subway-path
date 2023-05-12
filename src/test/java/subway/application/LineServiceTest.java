@@ -20,11 +20,13 @@ import static subway.exception.line.LineExceptionType.INCONSISTENT_EXISTING_SECT
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import subway.application.dto.AddStationToLineCommand;
 import subway.application.dto.DeleteStationFromLineCommand;
 import subway.application.dto.LineCreateCommand;
@@ -67,8 +69,7 @@ class LineServiceTest {
             given(lineRepository.findByName("1호선")).willReturn(Optional.empty());
             역을_저장한다(잠실);
             역을_저장한다(선릉);
-            given(lineRepository.save(any()))
-                    .willReturn(1L);
+            BDDMockito.willDoNothing().given(lineRepository).save(any());
 
             final LineCreateCommand command = new LineCreateCommand(
                     "1호선",
@@ -77,10 +78,10 @@ class LineServiceTest {
                     10);
 
             // when
-            final Long id = lineService.create(command);
+            final UUID uuid = lineService.create(command);
 
             // then
-            assertThat(id).isEqualTo(1L);
+            assertThat(uuid).isNotNull();
         }
 
         @Test
@@ -106,7 +107,7 @@ class LineServiceTest {
             assertThat(exceptionType).isEqualTo(INCONSISTENT_EXISTING_SECTION);
         }
     }
-    
+
     @Nested
     class 노선에_역_추가_시 {
 

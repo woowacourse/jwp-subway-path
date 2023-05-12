@@ -19,7 +19,6 @@ import subway.infrastructure.persistence.entity.StationEntity;
 public class StationDao {
 
     private static final RowMapper<StationEntity> stationRowMapper = (rs, rowNum) -> new StationEntity(
-            rs.getLong("id"),
             UUID.fromString(rs.getString("domain_id")),
             rs.getString("name")
     );
@@ -36,9 +35,9 @@ public class StationDao {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(template);
     }
 
-    public Long save(final StationEntity stationEntity) {
+    public void save(final StationEntity stationEntity) {
         final SqlParameterSource source = new BeanPropertySqlParameterSource(stationEntity);
-        return simpleJdbcInsert.executeAndReturnKey(source).longValue();
+        simpleJdbcInsert.execute(source);
     }
 
     public Optional<StationEntity> findByName(final String name) {
