@@ -1,31 +1,30 @@
 package subway.dto.request;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
 public class LineStationRequest {
-    @NotBlank(message = "역 이름은 공백일 수 없습니다.")
-    private String upBoundStationName;
-    @NotBlank(message = "역 이름은 공백일 수 없습니다.")
-    private String downBoundStationName;
-    @Positive(message = "0이하일 수 없습니다.")
+    @Positive(message = "지하철 ID는 양수여야합니다.")
+    private Long upBoundStationId;
+    @Positive(message = "지하철 ID는 양수여야합니다.")
+    private Long downBoundStationId;
+    @Positive(message = "거리는 0이하일 수 없습니다.")
     private int distance;
 
     public LineStationRequest() {
     }
 
-    public LineStationRequest(String upBoundStationName, String downBoundStationName, int distance) {
-        this.upBoundStationName = upBoundStationName;
-        this.downBoundStationName = downBoundStationName;
+    public LineStationRequest(Long upBoundStationId, Long downBoundStationId, int distance) {
+        this.upBoundStationId = upBoundStationId;
+        this.downBoundStationId = downBoundStationId;
         this.distance = distance;
     }
 
-    public String getUpBoundStationName() {
-        return upBoundStationName;
+    public Long getUpBoundStationId() {
+        return upBoundStationId;
     }
 
-    public String getDownBoundStationName() {
-        return downBoundStationName;
+    public Long getDownBoundStationId() {
+        return downBoundStationId;
     }
 
     public int getDistance() {

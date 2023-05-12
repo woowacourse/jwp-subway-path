@@ -20,10 +20,10 @@ public class LineStationController {
 
     @PostMapping
     ResponseEntity<LineStationResponse> createLineStation(@PathVariable("line_id") Long lineId, @RequestBody @Valid LineStationRequest lineStationRequest) {
-        String upBoundStationName = lineStationRequest.getUpBoundStationName();
-        String downBoundStationName = lineStationRequest.getDownBoundStationName();
+        Long upBoundStationId = lineStationRequest.getUpBoundStationId();
+        Long downBoundStationId = lineStationRequest.getDownBoundStationId();
         int distance = lineStationRequest.getDistance();
-        LineStationResponse lineStationResponse = lineStationService.addStationToLine(upBoundStationName, downBoundStationName, distance, lineId);
+        LineStationResponse lineStationResponse = lineStationService.addStationToLine(upBoundStationId, downBoundStationId, distance, lineId);
         return ResponseEntity.status(HttpStatus.CREATED).body(lineStationResponse);
     }
 

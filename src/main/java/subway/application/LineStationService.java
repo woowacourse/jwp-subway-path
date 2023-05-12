@@ -6,7 +6,10 @@ import subway.dao.LineDao;
 import subway.dao.LineStationDao;
 import subway.dao.StationDao;
 import subway.domain.*;
-import subway.dto.*;
+import subway.dto.AddResult;
+import subway.dto.RemoveIds;
+import subway.dto.RemoveResult;
+import subway.dto.UpdateSections;
 import subway.dto.response.*;
 import subway.exceptions.customexceptions.InvalidDataException;
 
@@ -27,9 +30,9 @@ public class LineStationService {
         this.lineStationDao = lineStationDao;
     }
 
-    public LineStationResponse addStationToLine(String upBoundStationName, String downBoundStationName, Integer distance, Long lineId) {
-        Station upBoundStation = stationDao.findByName(upBoundStationName);
-        Station downBoundStation = stationDao.findByName(downBoundStationName);
+    public LineStationResponse addStationToLine(Long upBoundStationId, Long downBoundStationId, Integer distance, Long lineId) {
+        Station upBoundStation = stationDao.findById(upBoundStationId);
+        Station downBoundStation = stationDao.findById(downBoundStationId);
         if (upBoundStation.equals(downBoundStation)) {
             throw new InvalidDataException("같은 역을 등록할 수 없습니다.");
         }
