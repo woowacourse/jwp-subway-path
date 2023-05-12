@@ -52,7 +52,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        final CreationLineRequest lineRequest = CreationLineRequest.of("1호선", "bg-red-600");
+        final CreationLineRequest lineRequest = CreationLineRequest.of("경의중앙선", "bg-red-600");
 
         RestAssured
                 .given().log().all()

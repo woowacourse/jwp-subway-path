@@ -1,35 +1,16 @@
 package subway.persistence.dao;
 
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import subway.persistence.entity.StationEntity;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-@JdbcTest
-@AutoConfigureTestDatabase
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class StationDaoTest {
-
-    private StationDao stationDao;
-
-    @BeforeEach
-    void setUp(@Autowired JdbcTemplate jdbcTemplate,
-               @Autowired DataSource dataSource) {
-        stationDao = new StationDao(jdbcTemplate, dataSource);
-    }
+class StationDaoTest extends DaoTest {
 
     @Test
     void 역을_저장한다() {
