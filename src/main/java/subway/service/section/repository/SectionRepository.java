@@ -91,6 +91,10 @@ public class SectionRepository {
         sectionDao.delete(section.getId());
     }
 
+    public boolean isLastSectionInLine(Line line) {
+        List<SectionEntity> sectionsByLine = sectionDao.findSectionsByLine(line.getId());
+        return sectionsByLine.size() == 1;
+    }
 
     private ArrayList<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {
         ArrayList<Section> sections = new ArrayList<>();

@@ -26,6 +26,7 @@ import static subway.domain.StationFixture.GANGNAM_NO_ID;
 import static subway.domain.StationFixture.JAMSIL_NO_ID;
 import static subway.domain.StationFixture.SEOKCHON;
 import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
+import static subway.domain.StationFixture.YUKSAM_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest
@@ -192,5 +193,36 @@ class SectionRepositoryTest {
                 () -> assertThat(secondDistinctIds).containsExactlyInAnyOrder(savedJamsil.getId(), savedSeonleung.getId()),
                 () -> assertThat(eightDistinctIds).containsExactlyInAnyOrder(savedJamsil.getId(), savedSeokchon.getId())
         );
+    }
+
+    @Test
+    void 해당_라인의_구간이_하나_남아있으면_true() {
+        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+
+        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+
+        Distance seonleungJamsilDistance = new Distance(10);
+        Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
+
+        sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
+        assertThat(sectionRepository.isLastSectionInLine(savedSecondLine)).isTrue();
+    }
+
+    @Test
+    void 해당_라인의_구간이_둘_이상이면_false() {
+        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedYuksam = stationDao.insert(YUKSAM_NO_ID);
+
+        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+
+        Distance seonleungJamsilDistance = new Distance(10);
+        Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
+        Section seonleungYuksamSection = new Section(savedYuksam, savedSeonleung, new Distance(3));
+
+        sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
+        sectionRepository.insertSection(seonleungYuksamSection, savedSecondLine);
+        assertThat(sectionRepository.isLastSectionInLine(savedSecondLine)).isFalse();
     }
 }
