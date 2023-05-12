@@ -121,9 +121,6 @@ public class Line {
     }
 
     public void removeAllStation() {
-        if (stations.size() != 2) {
-            throw new IllegalArgumentException("역이 3개 이상 존재합니다.");
-        }
         stations.clear();
     }
 
