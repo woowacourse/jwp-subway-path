@@ -11,16 +11,16 @@ import subway.dao.StationDao;
 import subway.dao.StationsDao;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.domain.Stations;
+import subway.domain.Section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
-@Import({StationsService.class, StationsDao.class, LineDao.class, StationDao.class})
-class StationsServiceTest {
+@Import({SectionService.class, StationsDao.class, LineDao.class, StationDao.class})
+class SectionServiceTest {
     @Autowired
-    private StationsService stationsService;
+    private SectionService sectionService;
 
     @Autowired
     private StationsDao stationsDao;
@@ -42,7 +42,7 @@ class StationsServiceTest {
         stationS = stationDao.insert(new Station("송탄"));
         stationJ = stationDao.insert(new Station("진위"));
         stationO = stationDao.insert(new Station("오산"));
-        stationsDao.initialize(Stations.builder()
+        stationsDao.initialize(Section.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
@@ -61,7 +61,7 @@ class StationsServiceTest {
                 .isEqualTo(6);
 
         // when
-        stationsService.insert(line.getId(), stationO.getName(), stationJ.getName(), 2, true);
+        sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), 2, true);
 
         // then
         assertThat(stationsDao.findDistanceBetween(stationS, stationO, line))
@@ -84,7 +84,7 @@ class StationsServiceTest {
                 .isEqualTo(6);
 
         // when
-        stationsService.insert(line.getId(), stationO.getName(), stationS.getName(), 2, false);
+        sectionService.insert(line.getId(), stationO.getName(), stationS.getName(), 2, false);
 
         // then
         assertThat(stationsDao.findDistanceBetween(stationS, stationO, line))
@@ -102,7 +102,7 @@ class StationsServiceTest {
         // B-C역의 거리가 3km인 경우 B-D 거리는 3km보다 적어야 합니다.
         // B-C가 3km인데 B-D거리가 3km면 D-C거리는 0km가 되어야 하는데 거리는 양의 정수여야 하기 때문에 이 경우 등록이 불가능 해야합니다.
         // when
-        assertThatThrownBy(() -> stationsService.insert(line.getId(), stationO.getName(), stationJ.getName(), 6, true))
+        assertThatThrownBy(() -> sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), 6, true))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("노선의 역과 역 사이는 언제나 양의 정수를 유지해야 합니다.");
     }

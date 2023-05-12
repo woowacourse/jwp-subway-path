@@ -6,22 +6,24 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Import;
-import subway.application.StationsService;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
+import subway.application.SectionService;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.domain.Stations;
+import subway.domain.Section;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@JdbcTest
-@Import({StationsDao.class, LineDao.class, StationDao.class, StationsService.class})
-class StationsDaoTest {
+@SpringBootTest
+@Sql("/schema.sql")
+//@JdbcTest()
+//@Import({StationsDao.class, LineDao.class, StationDao.class, StationsService.class})
+class SectionDaoTest {
     @Autowired
-    private StationsService stationsService;
+    private SectionService sectionService;
 
     @Autowired
     private StationsDao stationsDao;
@@ -54,7 +56,7 @@ class StationsDaoTest {
                 .isEqualTo(0);
 
         // when
-        stationsDao.initialize(Stations.builder()
+        stationsDao.initialize(Section.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
@@ -70,7 +72,7 @@ class StationsDaoTest {
     @DisplayName("노선에 역이 등록될 때 거리 정보도 함께 포함됩니다. 그래서 이웃한 역의 거리정보를 조회할 수 있습니다.")
     void distanceSaving() {
         // given
-        stationsDao.initialize(Stations.builder()
+        stationsDao.initialize(Section.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
@@ -85,7 +87,7 @@ class StationsDaoTest {
     @DisplayName("거리를 조회할 두 역을 거꾸로 제공해도 거리를 계산할 수 있습니다.")
     void distanceSavingReverse() {
         // given
-        stationsDao.initialize(Stations.builder()
+        stationsDao.initialize(Section.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
@@ -100,7 +102,7 @@ class StationsDaoTest {
     @DisplayName("거리 정보는 양의 정수로 제한합니다.")
     void distanceFormat() {
         // when && then
-        assertThatThrownBy(() -> stationsDao.insert(Stations.builder()
+        assertThatThrownBy(() -> stationsDao.insert(Section.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
@@ -117,12 +119,12 @@ class StationsDaoTest {
         // given
         List<Station> stations = List.of(stationS, stationJ, stationO);
 
-        stationsDao.initialize(Stations.builder()
+        stationsDao.initialize(Section.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
                 .distance(6).build());
-        stationsDao.insert(Stations.builder()
+        stationsDao.insert(Section.builder()
                 .line(line)
                 .startingStation(stationO)
                 .after(stationJ)
@@ -130,7 +132,7 @@ class StationsDaoTest {
 
         // when & then
         Station stationY = stationDao.insert(new Station("양평"));
-        assertThatCode(() -> stationsDao.insert(Stations.builder()
+        assertThatCode(() -> stationsDao.insert(Section.builder()
                 .line(line)
                 .startingStation(stationY)
                 .after(stations.get(index))
@@ -143,14 +145,14 @@ class StationsDaoTest {
     void multipleSubwayMap() {
         // given
         Line line2 = lineDao.insert(new Line("2호선", "yellow"));
-        stationsDao.initialize(Stations.builder()
+        stationsDao.initialize(Section.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
                 .distance(6).build());
 
         // when
-        assertThatCode(() -> stationsDao.initialize(Stations.builder()
+        assertThatCode(() -> stationsDao.initialize(Section.builder()
                 .line(line2)
                 .startingStation(stationS)
                 .after(stationO)
@@ -163,8 +165,8 @@ class StationsDaoTest {
     @DisplayName("노선에서 역을 제거할 경우 정상 동작을 위해 재배치됩니다.")
     void delete() {
         // given
-        stationsService.insert(line.getId(), stationS.getName(), stationJ.getName(), 6, true);
-        stationsService.insert(line.getId(), stationO.getName(), stationJ.getName(), 3, true);
+        sectionService.insert(line.getId(), stationS.getName(), stationJ.getName(), 6, true);
+        sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), 3, true);
         assertThat(stationsDao.findByPreviousStation(stationS, line)
                 .get().getNextStation())
                 .as("원래 노선에 등록된 역은 3개고, 송탄역 다음은 오산역입니다.")
@@ -183,8 +185,8 @@ class StationsDaoTest {
     @DisplayName("노선에서 역이 제거될 경우 역과 역 사이의 거리가 재배정됩니다.")
     void deleteDistance() {
         // given
-        stationsService.insert(line.getId(), stationS.getName(), stationJ.getName(), 6, true);
-        stationsService.insert(line.getId(), stationO.getName(), stationJ.getName(), 3, true);
+        sectionService.insert(line.getId(), stationS.getName(), stationJ.getName(), 6, true);
+        sectionService.insert(line.getId(), stationO.getName(), stationJ.getName(), 3, true);
         assertThatThrownBy(() -> stationsDao.findDistanceBetween(stationS, stationJ, line))
                 .as("송탄역과 진위역은 이웃하지 않아 조회가 불가능합니다.")
                 .isInstanceOf(IllegalArgumentException.class);
@@ -202,7 +204,7 @@ class StationsDaoTest {
     @DisplayName("노선에 등록된 역이 2개인 경우 하나의 역을 제거할 때 두 역이 모두 제거됩니다.")
     void deleteAll() {
         // given
-        stationsService.insert(line.getId(), stationS.getName(), stationJ.getName(), 6, true);
+        sectionService.insert(line.getId(), stationS.getName(), stationJ.getName(), 6, true);
         assertThat(stationsDao.countStations(line))
                 .as("2개의 역만 등록되어 있습니다.")
                 .isEqualTo(2);
@@ -219,12 +221,12 @@ class StationsDaoTest {
     @Test
     @DisplayName("특정 노선에 등록된 역을 상행부터 순서대로 조회합니다.")
     void findAllOrderByUp() {
-        stationsDao.initialize(Stations.builder()
+        stationsDao.initialize(Section.builder()
                 .line(line)
                 .startingStation(stationS)
                 .before(stationJ)
                 .distance(5).build());
-        stationsService.insert(line.getId(), stationO.getName(), stationS.getName(), 6, true);
+        sectionService.insert(line.getId(), stationO.getName(), stationS.getName(), 6, true);
 
         assertThat(stationsDao.findAllOrderByUp(line))
                 .containsExactly(stationO, stationS, stationJ);

@@ -1,13 +1,13 @@
 package subway.domain;
 
-public class Stations {
+public class Section {
     private final Long id;
     private final Line line;
     private final Station previousStation;
     private final Station nextStation;
     private final int distance;
 
-    public Stations(Long id, Line line, Station previousStation, Station nextStation, int distance) {
+    public Section(Long id, Line line, Station previousStation, Station nextStation, int distance) {
         this.id = id;
         this.line = line;
         this.previousStation = previousStation;

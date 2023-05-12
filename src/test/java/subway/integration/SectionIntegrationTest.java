@@ -15,7 +15,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("특정 노선에서의 역 추가 및 삭제 테스트")
-public class StationsIntegrationTest extends IntegrationTest {
+public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선에 처음 두 역을 등록할 수 있다.")
     @Test
     void initialize() {

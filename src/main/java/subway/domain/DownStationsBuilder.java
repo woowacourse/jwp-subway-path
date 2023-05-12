@@ -38,7 +38,7 @@ public class DownStationsBuilder {
         return this;
     }
 
-    public Stations build() {
-        return new Stations(id, line, destinationStation, startingStation, distance);
+    public Section build() {
+        return new Section(id, line, destinationStation, startingStation, distance);
     }
 }
