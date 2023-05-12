@@ -1,20 +1,26 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import subway.dao.LineDao;
+import subway.dao.SectionDao;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Station;
+import subway.domain.Subway;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
+import subway.dto.StationResponse;
 
 @Service
 public class LineService {
     private final LineDao lineDao;
+    private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(LineDao lineDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
+        this.sectionDao = sectionDao;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -23,19 +29,30 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
+        List<Line> lines = lineDao.findAll();
+        return lines.stream()
+                .map(line -> LineResponse.of(line, createStationResponse(line)))
                 .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineDao.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        List<StationResponse> stationResponses = createStationResponse(persistLine);
+        return LineResponse.of(persistLine, stationResponses);
+    }
+
+    private List<StationResponse> createStationResponse(final Line persistLine) {
+        List<Section> sections = sectionDao.findByLineId(persistLine.getId());
+        return extractStationResponses(persistLine, sections);
+    }
+
+    private List<StationResponse> extractStationResponses(final Line persistLine, final List<Section> sections) {
+        Subway subway = Subway.of(persistLine, sections);
+        List<Station> orderedStations = subway.getOrderedStations();
+        List<StationResponse> stationResponses = orderedStations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+        return stationResponses;
     }
 
     public Line findLineById(Long id) {
