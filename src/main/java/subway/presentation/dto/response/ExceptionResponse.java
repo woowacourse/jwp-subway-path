@@ -1,10 +1,10 @@
-package subway.ui.dto.exception;
+package subway.presentation.dto.response;
 
-public class ExceptionDto {
+public class ExceptionResponse {
 
     private final String message;
 
-    public ExceptionDto(final String message) {
+    public ExceptionResponse(final String message) {
         this.message = message;
     }
 
