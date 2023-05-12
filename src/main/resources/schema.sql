@@ -22,3 +22,4 @@ CREATE TABLE IF NOT EXISTS section
     distance INT NOT NULL,
     PRIMARY KEY(id)
 );
+
