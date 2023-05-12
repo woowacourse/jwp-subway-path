@@ -1,42 +1,36 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.CreationStationDto;
-import subway.persistence.dao.StationDao;
 import subway.domain.Station;
-import subway.persistence.entity.StationEntity;
+import subway.persistence.repository.StationRepository;
 import subway.ui.dto.response.ReadStationResponse;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@Transactional
 @Service
 public class StationService {
 
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public StationService(final StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public CreationStationDto saveStation(final String stationName) {
-        //final Station station = stationDao.insert(Station.from(stationName));
-        return CreationStationDto.from(Station.from("잠실역"));
+    public CreationStationDto saveStation(final String name) {
+        final Station station = Station.of(name);
+        final Station persistStation = stationRepository.insert(station);
+
+        return CreationStationDto.from(persistStation);
     }
 
-    public ReadStationResponse findStationResponseById(final Long id) {
-        return ReadStationResponse.of(Station.from("잠실역"));
-    }
+    public ReadStationResponse findStationById(final Long id) {
+        final Station station = stationRepository.findById(id);
 
-    public List<ReadStationResponse> findAllStationResponses() {
-        final List<Station> stations = List.of(Station.from("잠실역"));
-
-        return stations.stream()
-                .map(ReadStationResponse::of)
-                .collect(Collectors.toList());
+        return ReadStationResponse.of(station);
     }
 
     public void deleteStationById(final Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteById(id);
     }
 }

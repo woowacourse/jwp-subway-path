@@ -1,53 +1,55 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.CreationLineDto;
-import subway.persistence.dao.LineDao;
 import subway.domain.Line;
+import subway.persistence.repository.LineRepository;
+import subway.persistence.repository.SectionRepository;
 import subway.ui.dto.request.CreationLineRequest;
 import subway.ui.dto.response.ReadLineResponse;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@Transactional
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(final LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
+
+    public LineService(final LineRepository lineRepository, final SectionRepository sectionRepository) {
+        this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     public CreationLineDto saveLine(final CreationLineRequest request) {
-        //final Line persistLine = lineDao.insert(Line.of(request.getName(), request.getColor()));
-        final Line persistLine = Line.of("1호선", "bg-red-500");
+        final Line line = Line.of(request.getName(), request.getColor());
+        final Line persistLine = lineRepository.insert(line);
+
         return CreationLineDto.from(persistLine);
     }
 
-    public List<ReadLineResponse> findLineResponses() {
-        final List<Line> persistLines = findLines();
+    public List<ReadLineResponse> findAllLine() {
+        final List<Line> persistLines = lineRepository.findAll();
+
+        for (Line persistLine : persistLines) {
+            sectionRepository.findAllByLine(persistLine);
+        }
+
         return persistLines.stream()
                 .map(ReadLineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        //return lineDao.findAll();
-        return List.of(Line.of("1호선", "bg-red-500"));
-    }
+    public ReadLineResponse findLineById(final Long id) {
+        final Line line = lineRepository.findById(id);
+        sectionRepository.findAllByLine(line);
 
-    public ReadLineResponse findLineResponseById(final Long id) {
-        final Line persistLine = findLineById(id);
-        return ReadLineResponse.of(persistLine);
-    }
-
-    public Line findLineById(final Long id) {
-        //return lineDao.findById(id);
-        return Line.of("1호선", "bg-red-500");
+        return ReadLineResponse.of(line);
     }
 
     public void deleteLineById(final Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
     }
-
 }
