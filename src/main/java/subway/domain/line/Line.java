@@ -57,13 +57,23 @@ public final class Line {
     }
 
     private static void loadSections(final Line line, final List<Section> sections) {
+        int numberOfInvalidSections = 0;
         while (!sections.isEmpty()) {
+            validateSections(sections, numberOfInvalidSections);
             final Section section = sections.remove(0);
             try {
                 line.addSection(section.getUpward(), section.getDownward(), section.getDistance());
+                numberOfInvalidSections = 0;
             } catch (InvalidSectionException e) {
                 sections.add(section);
+                numberOfInvalidSections++;
             }
+        }
+    }
+
+    private static void validateSections(final List<Section> sections, final int numberOfInvalidSections) {
+        if (numberOfInvalidSections == sections.size()) {
+            throw new InvalidSectionException("구간 정보가 올바르지 않습니다.");
         }
     }
 

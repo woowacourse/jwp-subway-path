@@ -34,29 +34,53 @@ class LineTest {
         line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
     }
 
-    @Test
-    @DisplayName("구간정보들을 바탕으로 노선을 생성한다.")
-    void of() {
-        //given
-        final LineEntity lineEntity = new LineEntity(1L, "2호선", "초록색");
-        final List<SectionEntity> sectionEntities = List.of(
-                new SectionEntity(1L, 1L, 1L, "잠실역", 2L, "잠실새내역", 10),
-                new SectionEntity(3L, 1L, 3L, "종합운동장역", 4L, "선릉역", 10),
-                new SectionEntity(2L, 1L, 2L, "잠실새내역", 3L, "종합운동장역", 10)
-        );
 
-        //when
-        final Line line = Line.of(lineEntity, sectionEntities);
+    @Nested
+    @DisplayName("구간 정보를 바탕으로 노선을 생성 시 ")
+    class Of {
 
-        //then
-        assertAll(
-                () -> assertThat(line.getId()).isEqualTo(lineEntity.getId()),
-                () -> assertThat(line.getName()).isEqualTo(lineEntity.getName()),
-                () -> assertThat(line.getColor()).isEqualTo(lineEntity.getColor()),
-                () -> assertThat(line.getStations()).extracting(Station::getName)
-                        .containsExactly("잠실역", "잠실새내역", "종합운동장역", "선릉역")
-        );
+        @Test
+        @DisplayName("유효한 구간 정보라면 정상적으로 생성한다.")
+        void of() {
+            //given
+            final LineEntity lineEntity = new LineEntity(1L, "2호선", "초록색");
+            final List<SectionEntity> sectionEntities = List.of(
+                    new SectionEntity(1L, 1L, 1L, "잠실역", 2L, "잠실새내역", 10),
+                    new SectionEntity(3L, 1L, 3L, "종합운동장역", 4L, "선릉역", 10),
+                    new SectionEntity(2L, 1L, 2L, "잠실새내역", 3L, "종합운동장역", 10)
+            );
+
+            //when
+            final Line line = Line.of(lineEntity, sectionEntities);
+
+            //then
+            assertAll(
+                    () -> assertThat(line.getId()).isEqualTo(lineEntity.getId()),
+                    () -> assertThat(line.getName()).isEqualTo(lineEntity.getName()),
+                    () -> assertThat(line.getColor()).isEqualTo(lineEntity.getColor()),
+                    () -> assertThat(line.getStations()).extracting(Station::getName)
+                            .containsExactly("잠실역", "잠실새내역", "종합운동장역", "선릉역")
+            );
+        }
+
+        @Test
+        @DisplayName("잘못된 구간 정보를 불러오는 경우 예외를 던진다.")
+        void makeLineWithInvalidSections() {
+            //given
+            final LineEntity lineEntity = new LineEntity(1L, "2호선", "초록색");
+            final List<SectionEntity> sectionEntities = List.of(
+                    new SectionEntity(1L, 1L, 1L, "잠실역", 2L, "잠실새내역", 10),
+                    new SectionEntity(3L, 1L, 5L, "사당역", 7L, "서울역", 10)
+            );
+
+            //when
+            //then
+            assertThatThrownBy(() -> Line.of(lineEntity, sectionEntities))
+                    .isInstanceOf(InvalidSectionException.class)
+                    .hasMessage("구간 정보가 올바르지 않습니다.");
+        }
     }
+
 
     @Nested
     @DisplayName("노선 역 추가 시 ")
