@@ -14,20 +14,20 @@ public class LineMap {
     private final Map<Station, Boolean> visited;
 
     public LineMap(final Sections sections) {
-        this.lineMap = initGraph(sections);
+        this.lineMap = initLineMap(sections);
         sections.getSections().forEach(this::addSection);
         this.visited = initVisited();
     }
 
-    private Map<Station, List<Station>> initGraph(final Sections sections) {
-        Map<Station, List<Station>> graph = new HashMap<>();
+    private Map<Station, List<Station>> initLineMap(final Sections sections) {
+        Map<Station, List<Station>> lineMap = new HashMap<>();
 
         for (Section section : sections.getSections()) {
-            graph.put(section.getUpStation(), new ArrayList<>());
-            graph.put(section.getDownStation(), new ArrayList<>());
+            lineMap.put(section.getUpStation(), new ArrayList<>());
+            lineMap.put(section.getDownStation(), new ArrayList<>());
         }
 
-        return graph;
+        return lineMap;
     }
 
     private Map<Station, Boolean> initVisited() {
@@ -76,7 +76,7 @@ public class LineMap {
     private void dfs(final List<Station> stations, final Station station) {
         visited.put(station, true);
         for (Station nextStation : lineMap.get(station)) {
-            if (visited.get(nextStation).equals(Boolean.FALSE)) {
+            if (!visited.get(nextStation)) {
                 stations.add(nextStation);
                 dfs(stations, nextStation);
             }
