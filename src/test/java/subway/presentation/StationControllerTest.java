@@ -119,7 +119,7 @@ public class StationControllerTest {
 
             // when, then
             final String responseBody = "{\"id\":1,\"name\":\"잠실\"}";
-            mockMvc.perform(get("/stations/1"))
+            mockMvc.perform(get("/stations/{id}", id))
                     .andExpect(status().isOk())
                     .andExpect(content().json(responseBody));
         }
@@ -132,7 +132,7 @@ public class StationControllerTest {
             given(stationService.findById(id)).willThrow(EmptyResultDataAccessException.class);
 
             // when, then
-            mockMvc.perform(get("/stations/10"))
+            mockMvc.perform(get("/stations/{id}", id))
                     .andExpect(status().isBadRequest());
         }
 
@@ -146,11 +146,12 @@ public class StationControllerTest {
         @DisplayName("성공")
         void success() throws Exception {
             // given
+            final long id = 1L;
             final StationRequest request = new StationRequest("잠실");
             final String requestBody = objectMapper.writeValueAsString(request);
 
             // when, then
-            mockMvc.perform(put("/stations/1")
+            mockMvc.perform(put("/stations/{id}", id)
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isOk());
@@ -168,7 +169,7 @@ public class StationControllerTest {
                     .update(eq(id), isA(StationRequest.class));
 
             // when, then
-            mockMvc.perform(put("/stations/10")
+            mockMvc.perform(put("/stations/{id}", id)
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
                     .andExpect(status().isBadRequest());
@@ -183,7 +184,11 @@ public class StationControllerTest {
         @Test
         @DisplayName("성공")
         void success() throws Exception {
-            mockMvc.perform(delete("/stations/1"))
+            // given
+            final long id = 1L;
+
+            // when, then
+            mockMvc.perform(delete("/stations/{id}", id))
                     .andExpect(status().isNoContent());
         }
 
@@ -197,7 +202,7 @@ public class StationControllerTest {
                     .delete(eq(id));
 
             // when, then
-            mockMvc.perform(delete("/stations/10"))
+            mockMvc.perform(delete("/stations/{id}", id))
                     .andExpect(status().isBadRequest());
         }
 

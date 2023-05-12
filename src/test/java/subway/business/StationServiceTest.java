@@ -30,11 +30,6 @@ public class StationServiceTest {
     @InjectMocks
     private StationService stationService;
 
-    @BeforeEach
-    void setUp() {
-        stationService = new StationService(stationDao);
-    }
-
     @Test
     @DisplayName("저장 성공")
     void save_success() {
