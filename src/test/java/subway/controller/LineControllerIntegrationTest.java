@@ -2,7 +2,6 @@ package subway.controller;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,11 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.line.LineRequest;
+import subway.dto.line.LineCreateRequest;
 import subway.dto.section.SectionCreateRequest;
-import subway.dto.station.StationRequest;
+import subway.dto.station.StationCreateRequest;
 import subway.entity.LineEntity;
 import subway.service.LineService;
 import subway.service.SectionService;
@@ -52,13 +50,13 @@ public class LineControllerIntegrationTest {
     @DisplayName("노선을 생성한다.")
     void create_line_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
         Long lineId = 1L;
 
         // when & then
         Response result = given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest)
+                .body(lineCreateRequest)
                 .when().post("/lines");
 
         result.
@@ -71,8 +69,8 @@ public class LineControllerIntegrationTest {
     @DisplayName("모든 노선을 조회한다.")
     void find_all_lines_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
-        lineService.saveLine(lineRequest);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        lineService.saveLine(lineCreateRequest);
 
         // when & then
         Response response = given()
@@ -91,18 +89,18 @@ public class LineControllerIntegrationTest {
     @DisplayName("노선을 조회한다.")
     void find_line_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
-        lineService.saveLine(lineRequest);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        lineService.saveLine(lineCreateRequest);
 
-        StationRequest stationRequest = new StationRequest("잠실역");
-        StationRequest stationRequest2 = new StationRequest("잠실새내역");
-        stationService.saveStation(stationRequest);
-        stationService.saveStation(stationRequest2);
+        StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
+        StationCreateRequest stationCreateRequest2 = new StationCreateRequest("잠실새내역");
+        stationService.saveStation(stationCreateRequest);
+        stationService.saveStation(stationCreateRequest2);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3L);
         sectionService.insertSection(sectionCreateRequest);
 
-        Long lineId = lineRequest.getLineNumber();
+        Long lineId = lineCreateRequest.getLineNumber();
 
         // when & then
         Response response = given()
@@ -121,8 +119,8 @@ public class LineControllerIntegrationTest {
     @DisplayName("노선을 삭제한다.")
     void delete_line_success() {
         // given
-        LineRequest lineRequest = new LineRequest("2호선", 2L, "초록색");
-        lineService.saveLine(lineRequest);
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        lineService.saveLine(lineCreateRequest);
 
         // when & then
         Response response = given()

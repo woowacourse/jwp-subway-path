@@ -2,15 +2,15 @@ package subway.dto.station;
 
 import javax.validation.constraints.NotBlank;
 
-public class StationRequest {
+public class StationCreateRequest {
 
     @NotBlank(message = "역 이름을 입력해주세요.")
     private String name;
 
-    public StationRequest() {
+    public StationCreateRequest() {
     }
 
-    public StationRequest(final String name) {
+    public StationCreateRequest(final String name) {
         this.name = name;
     }
 

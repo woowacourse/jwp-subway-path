@@ -2,7 +2,7 @@ package subway.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.dto.station.StationRequest;
+import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
 import subway.entity.StationEntity;
@@ -10,7 +10,6 @@ import subway.service.StationService;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/stations")
@@ -23,8 +22,8 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationEntity> createStation(@RequestBody @Valid final StationRequest stationRequest) {
-        Long id = stationService.saveStation(stationRequest);
+    public ResponseEntity<StationEntity> createStation(@RequestBody @Valid final StationCreateRequest stationCreateRequest) {
+        Long id = stationService.saveStation(stationCreateRequest);
         return ResponseEntity.created(URI.create("/stations/" + id)).build();
     }
 

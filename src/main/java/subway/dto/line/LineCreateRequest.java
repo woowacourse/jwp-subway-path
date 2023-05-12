@@ -3,7 +3,7 @@ package subway.dto.line;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
-public class LineRequest {
+public class LineCreateRequest {
 
     @NotBlank(message = "노선의 이름을 입력해주세요.")
     private String name;
@@ -14,10 +14,10 @@ public class LineRequest {
     @NotBlank(message = "노선의 색상을 입력해주세요.")
     private String color;
 
-    public LineRequest() {
+    public LineCreateRequest() {
     }
 
-    public LineRequest(final String name, final Long lineNumber, final String color) {
+    public LineCreateRequest(final String name, final Long lineNumber, final String color) {
         this.name = name;
         this.lineNumber = lineNumber;
         this.color = color;

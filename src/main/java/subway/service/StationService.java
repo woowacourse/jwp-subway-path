@@ -3,7 +3,7 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
-import subway.dto.station.StationRequest;
+import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
 import subway.repository.StationRepository;
@@ -21,8 +21,8 @@ public class StationService {
     }
 
     @Transactional
-    public Long saveStation(final StationRequest stationRequest) {
-        return stationRepository.insertStation(new Station(stationRequest.getName()));
+    public Long saveStation(final StationCreateRequest stationCreateRequest) {
+        return stationRepository.insertStation(new Station(stationCreateRequest.getName()));
     }
 
     @Transactional(readOnly = true)

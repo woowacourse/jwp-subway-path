@@ -2,7 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dto.line.LineRequest;
+import subway.dto.line.LineCreateRequest;
 import subway.entity.LineEntity;
 import subway.repository.LineRepository;
 
@@ -18,7 +18,7 @@ public class LineService {
     }
 
     @Transactional
-    public Long saveLine(final LineRequest request) {
+    public Long saveLine(final LineCreateRequest request) {
         return lineRepository.insertLine(new LineEntity(null, request.getLineNumber(), request.getName(), request.getColor()));
     }
 
