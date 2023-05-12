@@ -4,6 +4,7 @@
 
 - [ ] 노선에 역 등록 API
   - [ ] 노선에 역이 등록될 때 거리 정보도 함께 포함되어야 합니다.
+    - 두 역 사이에 역을 추가할 때, 
   - [ ] 노선에 역이 하나도 등록되지 않은 상황에서 최초 등록 시 두 역을 동시에 등록해야 합니다.
   - [ ] 노선은 갈래길을 가질 수 없습니다.
 
@@ -75,8 +76,11 @@ CREATED 201
 
 ```java
 public class StationAddRequest {
+    Long newStationId;
+    Long upStationId;
     Long nextStationId;
-    int distance;
+    int upStationDistance;
+    int downStationDistance;
 }
 ```
 
