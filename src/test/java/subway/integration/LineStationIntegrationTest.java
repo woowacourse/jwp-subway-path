@@ -8,47 +8,97 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import subway.domain.Station;
 import subway.dto.request.LineStationRequest;
+import subway.dto.response.LineStationResponse;
+import subway.dto.response.StationsResponse;
+
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("지하철 노선에 역 추가/삭제")
+@Sql("classpath:/testData.sql")
+@DisplayName("노선에 역 추가 / 삭제")
 public class LineStationIntegrationTest extends IntegrationTest {
 
-    @Sql("classpath:/testData.sql")
-    @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
+    @DisplayName("[노선에 역 추가][정상] 이미 역들이 있는 비어있지 않은 노선에 역을 추가한다.")
     @Test
-    void createLineStation() {
+    void createStationInNotEmptyLine() {
         // given
-        LineStationRequest lineStationRequest = new LineStationRequest("잠실새내", "종합운동장", 4);
+        Long upBoundStationId = 3L;
+        Long downBoundStationId = 4L;
+        Long lindId = 1L;
+        int distance = 4;
+
+        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(lineStationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/lines/1/stations")
+                .post("/lines/{line_id}/stations", lindId)
                 .then()
                 .log().all()
                 .extract();
 
+        LineStationResponse bodyResponse = response.body().as(LineStationResponse.class);
+
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(bodyResponse.getLine().getId()).isEqualTo(lindId);
+        assertThat(bodyResponse.getUpBoundStation().getId()).isEqualTo(upBoundStationId);
+        assertThat(bodyResponse.getDownBoundStation().getId()).isEqualTo(downBoundStationId);
     }
 
-    @Sql("classpath:/testData.sql")
-    @DisplayName("기존에 존재하지 않는 지하철역 이름으로 노선에 역을 추가하려하면 예외를 던진다.")
+    @DisplayName("[노선에 역 추가][정상] 역들이 없는 비어있는 노선에 새로운 역 두개를 추가한다.")
     @Test
-    void createLineStationWithNotExistingStation() {
+    void createTwoStationsInEmptyLine() {
         // given
-        LineStationRequest lineStationRequest = new LineStationRequest("강남", "종합운동장", 4);
+        Long upBoundStationId = 1L;
+        Long downBoundStationId = 5L;
+        Long lindId = 3L;
+        int distance = 30;
+
+        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .body(lineStationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/lines/1/stations")
+                .post("/lines/{line_id}/stations", lindId)
+                .then()
+                .log().all()
+                .extract();
+
+        LineStationResponse bodyResponse = response.body().as(LineStationResponse.class);
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(bodyResponse.getLine().getId()).isEqualTo(lindId);
+        assertThat(bodyResponse.getUpBoundStation().getId()).isEqualTo(upBoundStationId);
+        assertThat(bodyResponse.getDownBoundStation().getId()).isEqualTo(downBoundStationId);
+    }
+
+    @DisplayName("[노선에 역 추가][비정상] 원래의 노선길이보다 길거나 같은 역을 추가하면 상태코드가 BAD_REQUEST 이다.")
+    @Test
+    void createStationInNotEmptyLineWithInvalidDistance() {
+        // given
+        Long upBoundStationId = 1L;
+        Long downBoundStationId = 4L;
+        Long lindId = 1L;
+        int distance = 10;
+
+        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        ArrayList<Object> objects = new ArrayList<>();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(lineStationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/{line_id}/stations", lindId)
                 .then()
                 .log().all()
                 .extract();
@@ -57,15 +107,93 @@ public class LineStationIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @Sql("classpath:/testData.sql")
-    @DisplayName("기존에 존재하는 지하철역 Id로 지하철역을 삭제한다.")
+    @DisplayName("[노선에 역 추가][비정상] 이미 역들이 있는 비어있지 않은 노선에 새로운 두개의 역을 추가하려하면 상태코드가 BAD REQUEST 이다.")
     @Test
-    void removeLineStation() {
+    void createTwoStationsInNotEmptyLine() {
+        // given
+        Long upBoundStationId = 4L;
+        Long downBoundStationId = 5L;
+        Long lindId = 1L;
+        int distance = 4;
+
+        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(lineStationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/{line_id}/stations", lindId)
+                .then()
+                .log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("[노선에 역 추가][비정상] 등록되지 않는 노선에 역을 추가하려하면 상태코드가 BAD_REQUEST 이다.")
+    @Test
+    void createStationInNotExistingLine() {
+        // given
+        Long upBoundStationId = 3L;
+        Long downBoundStationId = 4L;
+        Long lindId = 20L;
+        int distance = 4;
+
+        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(lineStationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/{line_id}/stations", lindId)
+                .then()
+                .log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("[노선에 역 추가][비정상] 노선에 등록되지 않은 역을 추가하려하면 상태코드가 BAD_REQUEST 이다.")
+    @Test
+    void createNotExistingStationInLine() {
+        // given
+        Long upBoundStationId = 30L;
+        Long downBoundStationId = 2L;
+        Long lindId = 1L;
+        int distance = 4;
+
+        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(lineStationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/{line_id}/stations", lindId)
+                .then()
+                .log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("[노선에 역 제거][정상] 상행종점역을 노선에서 삭제한다.")
+    @Test
+    void removeUpEndPointStationInLine() {
+        // given
+        Long lindId = 1L;
+        Long stationId = 1L;
+
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .delete("/lines/1/stations/1")
+                .delete("/lines/{line_id}/stations/{station_id}", lindId, stationId)
                 .then()
                 .log().all()
                 .extract();
@@ -74,20 +202,186 @@ public class LineStationIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @Sql("classpath:/testData.sql")
-    @DisplayName("기존에 존재하지 않은 지하철역 Id로 지하철역을 삭제하면 예외를 던진다.")
+    @DisplayName("[노선에 역 제거][정상] 하행종점역을 노선에서 삭제한다.")
     @Test
-    void removeLineStationWithNotExisingId() {
+    void removeDownEndPointStationInLine() {
+        // given
+        Long lindId = 1L;
+        Long stationId = 3L;
+
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .delete("/lines/1/stations/4")
+                .delete("/lines/{line_id}/stations/{station_id}", lindId, stationId)
+                .then()
+                .log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("[노선에 역 제거][정상] 중간역을 노선에서 삭제한다.")
+    @Test
+    void removeMiddleStationInLine() {
+        // given
+        Long lindId = 1L;
+        Long stationId = 2L;
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/lines/{line_id}/stations/{station_id}", lindId, stationId)
+                .then()
+                .log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("[노선에 역 제거][비정상] 등록되어 있지 않은 역을 삭제하려하면 상태코드가 BAD_REQUEST 이다.")
+    @Test
+    void removeLineStationWithNotExisingId() {
+        // given
+        Long lindId = 1L;
+        Long stationId = 30L;
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .delete("/lines/{line_id}/stations/{station_id}", lindId, stationId)
                 .then()
                 .log().all()
                 .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Sql("classpath:/testData.sql")
+    @DisplayName("[노선에 역 추가 후 조회][정상] 상행종점에 역을 추가한 뒤 조회하면 추가된 역이 조회된다.")
+    @Test
+    void createStationToUpEndPointAndGetLine() {
+        // given
+        Station[] expectedStations = {
+                new Station(4L, "삼성"),
+                new Station(1L, "잠실"),
+                new Station(2L, "잠실새내"),
+                new Station(3L, "종합운동장")
+        };
+        Long upBoundStationId = 4L;
+        Long downBoundStationId = 1L;
+        Long lindId = 1L;
+        int distance = 30;
+
+        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+
+        // when
+        ExtractableResponse<Response> createStation = RestAssured.given().log().all()
+                .body(lineStationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/{line_id}/stations", lindId)
+                .then()
+                .log().all()
+                .extract();
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{line_id}", lindId)
+                .then().log().all()
+                .extract();
+
+        StationsResponse bodyResponse = response.as(StationsResponse.class);
+
+        // then
+        assertThat(bodyResponse.getStations()).containsExactly(expectedStations);
+    }
+
+    @Sql("classpath:/testData.sql")
+    @DisplayName("[노선에 역 추가 후 조회][정상] 하행종점에 역을 추가한 뒤 조회하면 추가된 역이 조회된다.")
+    @Test
+    void createStationToDownEndPointAndGetLine() {
+        // given
+        Station[] expectedStations = {
+                new Station(1L, "잠실"),
+                new Station(2L, "잠실새내"),
+                new Station(3L, "종합운동장"),
+                new Station(4L, "삼성")
+        };
+        Long upBoundStationId = 3L;
+        Long downBoundStationId = 4L;
+        Long lindId = 1L;
+        int distance = 30;
+
+        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+
+        // when
+        ExtractableResponse<Response> createStation = RestAssured.given().log().all()
+                .body(lineStationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/{line_id}/stations", lindId)
+                .then()
+                .log().all()
+                .extract();
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{line_id}", lindId)
+                .then().log().all()
+                .extract();
+
+        StationsResponse bodyResponse = response.as(StationsResponse.class);
+
+        // then
+        assertThat(bodyResponse.getStations()).containsExactly(expectedStations);
+    }
+
+    @Sql("classpath:/testData.sql")
+    @DisplayName("[노선에 역 추가 후 조회][정상] 두 역 사이에 역을 추가한 뒤 조회하면 추가된 역이 조회된다.")
+    @Test
+    void createStationMiddleAndGetLine() {
+        // given
+        Station[] expectedStations = {
+                new Station(1L, "잠실"),
+                new Station(4L, "삼성"),
+                new Station(2L, "잠실새내"),
+                new Station(3L, "종합운동장")
+        };
+        Long upBoundStationId = 1L;
+        Long downBoundStationId = 4L;
+        Long lindId = 1L;
+        int distance = 6;
+
+        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+
+        // when
+        ExtractableResponse<Response> createStation = RestAssured.given().log().all()
+                .body(lineStationRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/lines/{line_id}/stations", lindId)
+                .then()
+                .log().all()
+                .extract();
+
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{line_id}", lindId)
+                .then().log().all()
+                .extract();
+
+        StationsResponse bodyResponse = response.as(StationsResponse.class);
+
+        // then
+        assertThat(bodyResponse.getStations()).containsExactly(expectedStations);
     }
 }
