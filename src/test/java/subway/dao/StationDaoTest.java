@@ -4,14 +4,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Station;
 
 import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 class StationDaoTest {
@@ -52,7 +50,7 @@ class StationDaoTest {
     @Test
     void 단건_조회한다() {
         final Long id = stationDao.insert(new Station("잠실역")).getId();
-        assertThat(stationDao.findById(id).getId()).isEqualTo(id);
+        assertThat(stationDao.findById(id).get().getId()).isEqualTo(id);
     }
 
     @Test
@@ -62,7 +60,7 @@ class StationDaoTest {
 
         stationDao.update(update);
 
-        assertThat(stationDao.findById(id).getName()).isEqualTo("수정역");
+        assertThat(stationDao.findById(id).get().getName()).isEqualTo("수정역");
     }
 
     @Test
@@ -71,7 +69,6 @@ class StationDaoTest {
 
         stationDao.deleteById(id);
 
-        assertThatThrownBy(() -> stationDao.findById(id))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+        assertThat(stationDao.findById(id)).isNotPresent();
     }
 }

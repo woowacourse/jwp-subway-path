@@ -12,8 +12,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
+import subway.domain.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
@@ -27,19 +29,26 @@ class SectionIntegrationTest extends IntegrationTest {
     @Autowired
     private LineDao lineDao;
     @Autowired
+    private StationDao stationDao;
+    @Autowired
     private SectionDao sectionDao;
     private Long 이호선;
+    private Long 잠실역;
+    private Long 잠실새내역;
 
     @BeforeEach
     void init() {
         이호선 = lineDao.insert(new Line("2호선", "초록색"));
-        sectionDao.insert(new SectionEntity(10, 1L, 2L, 이호선));
+        잠실역 = stationDao.insert(new Station("잠실역")).getId();
+        잠실새내역 = stationDao.insert(new Station("잠실새내역")).getId();
+        sectionDao.insert(new SectionEntity(10, 잠실역, 잠실새내역, 이호선));
     }
 
     @Test
     void 구간을_추가한다() {
         // given
-        final SectionRequest request = new SectionRequest(10, 2L, 3L, 이호선);
+        final Long 삼성역 = stationDao.insert(new Station("삼성역")).getId();
+        final SectionRequest request = new SectionRequest(10, 잠실새내역, 삼성역, 이호선);
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()

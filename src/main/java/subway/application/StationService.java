@@ -7,6 +7,7 @@ import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -23,7 +24,12 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        return StationResponse.of(findById(id));
+    }
+
+    private Station findById(Long id) {
+        return stationDao.findById(id)
+                .orElseThrow(NoSuchElementException::new);
     }
 
     public List<StationResponse> findAllStationResponses() {

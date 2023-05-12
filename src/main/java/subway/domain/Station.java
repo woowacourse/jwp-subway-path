@@ -9,12 +9,20 @@ public class Station {
     private Station() {
     }
 
-    public Station(Long id, String name) {
-        this.id = id;
-        this.name = name;
+    /**
+     * insert를 할 떄
+     * TODO 삭제하기 -> insert문 두 개로
+     */
+    public Station(Long id) {
+        this(id, null);
     }
 
     public Station(String name) {
+        this(null, name);
+    }
+
+    public Station(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -26,7 +34,6 @@ public class Station {
         return name;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;

@@ -3,23 +3,27 @@ package subway.domain;
 public class Section {
     private final Long id;
     private final Distance distance;
-    private final Long upStationId;
-    private final Long downStationId;
+    private final Station upStation;
+    private final Station downStation;
     private final Long lineId;
 
-    public Section(int distance, Long upStationId, Long downStationId, Long lineId) {
-        this(null, new Distance(distance), upStationId, downStationId, lineId);
-    }
-
     public Section(Distance distance, Long upStationId, Long downStationId, Long lineId) {
-        this(null, distance, upStationId, downStationId, lineId);
+        this(null, distance, new Station(upStationId), new Station(downStationId), lineId);
     }
 
-    public Section(Long id, Distance distance, Long upStationId, Long downStationId, Long lineId) {
+    public Section(int distance, Station upStation, Station downStation, Long lineId) {
+        this(null, new Distance(distance), upStation, downStation, lineId);
+    }
+
+    public Section(Distance distance, Station upStation, Station downStation, Long lineId) {
+        this(null, distance, upStation, downStation, lineId);
+    }
+
+    public Section(Long id, Distance distance, Station upStation, Station downStation, Long lineId) {
         this.id = id;
         this.distance = distance;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
+        this.upStation = upStation;
+        this.downStation = downStation;
         this.lineId = lineId;
     }
 
@@ -31,12 +35,12 @@ public class Section {
         return distance;
     }
 
-    public Long getUpStationId() {
-        return upStationId;
+    public Station getUpStation() {
+        return upStation;
     }
 
-    public Long getDownStationId() {
-        return downStationId;
+    public Station getDownStation() {
+        return downStation;
     }
 
     public Long getLineId() {

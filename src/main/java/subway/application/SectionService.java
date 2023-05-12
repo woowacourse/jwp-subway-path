@@ -3,46 +3,46 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
-import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 
-import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @Transactional
 public class SectionService {
 
-    private final SectionDao sectionDao;
     private final LineDao lineDao;
-    private final SectionMapper sectionMapper;
+    private final StationDao stationDao;
+    private final SectionRepository sectionRepository;
 
-    public SectionService(SectionDao sectionDao, LineDao lineDao, SectionMapper sectionMapper) {
-        this.sectionDao = sectionDao;
+    public SectionService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository) {
         this.lineDao = lineDao;
-        this.sectionMapper = sectionMapper;
+        this.stationDao = stationDao;
+        this.sectionRepository = sectionRepository;
     }
 
     public Long insertSection(SectionRequest request) {
+        final Station upStation = stationDao.findById(request.getUpStationId()).orElseThrow(NoSuchElementException::new);
+        final Station downStation = stationDao.findById(request.getDownStationId()).orElseThrow(NoSuchElementException::new);
+
         validateInput(request);
 
-        final List<Section> sections = sectionMapper.mapFrom(sectionDao.findAllByLineId(request.getLineId()));
-        final Sections sortedSections = Sections.from(sections);
+        final Sections sections = sectionRepository.findAllByLineId(request.getLineId());
 
-        checkCanInsert(request, sortedSections);
+        checkCanInsert(upStation, downStation, sections);
 
-        if (sortedSections.isUpEndPoint(request.getDownStationId()) || sortedSections.isDownEndPoint(request.getUpStationId())) {
+        if (sections.isUpEndPoint(downStation) || sections.isDownEndPoint(upStation)) {
             return insertToEndPoint(request);
         }
 
-        return insertToMiddleSection(request, sortedSections);
+        return insertToMiddleSection(upStation, downStation, request, sections);
     }
 
     private void validateInput(SectionRequest request) {
@@ -54,50 +54,48 @@ public class SectionService {
             throw new IllegalArgumentException("같은 역을 구간으로 등록할 수 없습니다.");
         }
 
-        if (sectionDao.exists(request.getDownStationId(), request.getUpStationId())
-                || sectionDao.exists(request.getUpStationId(), request.getDownStationId())) {
+        if (sectionRepository.exists(request.getDownStationId(), request.getUpStationId())
+                || sectionRepository.exists(request.getUpStationId(), request.getDownStationId())) {
             throw new IllegalArgumentException("동일한 구간을 추가할 수 없습니다.");
         }
     }
 
-    private static void checkCanInsert(SectionRequest request, Sections sortedSections) {
-        final Set<Long> allStationIds = sortedSections.getSections().stream()
-                .flatMap(section -> Stream.of(section.getUpStationId(), section.getDownStationId()))
-                .collect(Collectors.toSet());
-
-        final boolean haveUpStation = allStationIds.contains(request.getUpStationId());
-        final boolean haveDownStation = allStationIds.contains(request.getDownStationId());
-
-        if (haveUpStation == haveDownStation) {
+    private static void checkCanInsert(Station upStation, Station downStation, Sections sortedSections) {
+        if (sortedSections.canInsert(upStation, downStation)) {
             throw new IllegalArgumentException("역이 존재하지 않으면 추가할 수 없습니다.");
         }
     }
 
     private Long insertToEndPoint(SectionRequest request) {
-        final Section section = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), request.getLineId());
-        return sectionDao.insert(sectionMapper.mapToEntity(section));
+        final Section section = new Section(
+                request.getDistance(),
+                new Station(request.getUpStationId()),
+                new Station(request.getDownStationId()),
+                request.getLineId()
+        );
+        return sectionRepository.insert(section);
     }
 
-    private Long insertToMiddleSection(SectionRequest request, Sections sortedSections) {
+    private Long insertToMiddleSection(Station upStation, Station downStation, SectionRequest request, Sections sortedSections) {
 
         final Distance distance = new Distance(request.getDistance());
 
-        if (sortedSections.isUpStationPoint(request.getUpStationId())) {
-            final Section targetSection = sortedSections.getTargtUpStationSection(request.getUpStationId());
+        if (sortedSections.isUpStationPoint(upStation)) {
+            final Section targetSection = sortedSections.getTargtUpStationSection(upStation);
 
             validateDistance(targetSection.getDistance(), distance);
 
-            final Section updateSection = new Section(distance, targetSection.getUpStationId(), request.getDownStationId(), targetSection.getLineId());
-            final Section newSection = new Section(targetSection.getDistance().minus(distance), request.getDownStationId(), targetSection.getDownStationId(), targetSection.getLineId());
+            final Section updateSection = new Section(distance, targetSection.getUpStation().getId(), request.getDownStationId(), targetSection.getLineId());
+            final Section newSection = new Section(targetSection.getDistance().minus(distance), request.getDownStationId(), targetSection.getDownStation().getId(), targetSection.getLineId());
             return insert(updateSection, newSection);
         }
 
-        final Section targetSection = sortedSections.getTargtDownStationSection(request.getDownStationId());
+        final Section targetSection = sortedSections.getTargtDownStationSection(downStation);
 
         validateDistance(targetSection.getDistance(), distance);
 
         final Section updateSection = new Section(distance, request.getUpStationId(), request.getDownStationId(), targetSection.getLineId());
-        final Section newSection = new Section(targetSection.getDistance().minus(distance), targetSection.getUpStationId(), request.getUpStationId(), targetSection.getLineId());
+        final Section newSection = new Section(targetSection.getDistance().minus(distance), targetSection.getUpStation().getId(), request.getUpStationId(), targetSection.getLineId());
         return insert(updateSection, newSection);
     }
 
@@ -108,40 +106,41 @@ public class SectionService {
     }
 
     private Long insert(Section updateSection, Section insertSection) {
-        sectionDao.update(sectionMapper.mapToEntity(updateSection));
-        return sectionDao.insert(sectionMapper.mapToEntity(insertSection));
+        sectionRepository.update(updateSection);
+        return sectionRepository.insert(insertSection);
     }
 
-    public void deleteStation(Long stationId, SectionDeleteRequest request) {
-        final List<Section> sections = sectionMapper.mapFrom(sectionDao.findAllByLineId(request.getLineId()));
-        final Sections sortedSections = Sections.from(sections);
+    public void deleteStation(Long targetId, SectionDeleteRequest request) {
+        final Station targetStation = stationDao.findById(targetId).orElseThrow(NoSuchElementException::new);
 
-        if (sortedSections.isInitialState()) {
-            sectionDao.delete(sortedSections.findFirstSectionId());
+        final Sections sections = sectionRepository.findAllByLineId(request.getLineId());
+
+        if (sections.isInitialState()) {
+            sectionRepository.delete(sections.findFirstSectionId());
             lineDao.deleteById(request.getLineId());
             return;
         }
 
-        if (sortedSections.isDownEndPoint(stationId)) {
-            sectionDao.delete(sortedSections.findFirstSectionId());
+        if (sections.isDownEndPoint(targetStation)) {
+            sectionRepository.delete(sections.findFirstSectionId());
             return;
         }
 
-        if (sortedSections.isUpEndPoint(stationId)) {
-            sectionDao.delete(sortedSections.findLastSectionId());
+        if (sections.isUpEndPoint(targetStation)) {
+            sectionRepository.delete(sections.findLastSectionId());
             return;
         }
 
-        final Sections includeTargetSection = sortedSections.findIncludeTargetSection(stationId);
+        final Sections includeTargetSection = sections.findIncludeTargetSection(targetStation);
         final Distance newDistance = includeTargetSection.calculateTotalDistance();
 
         final Section forwardSection = includeTargetSection.getSections().get(0);
         final Section backwardSection = includeTargetSection.getSections().get(1);
 
-        final Section newSection = new Section(newDistance, forwardSection.getUpStationId(), backwardSection.getDownStationId(), request.getLineId());
-        sectionDao.insert(sectionMapper.mapToEntity(newSection));
+        final Section newSection = new Section(newDistance, forwardSection.getUpStation(), backwardSection.getDownStation(), request.getLineId());
+        sectionRepository.insert(newSection);
         for (Section section : includeTargetSection.getSections()) {
-            sectionDao.delete(section.getId());
+            sectionRepository.delete(section.getId());
         }
     }
 }

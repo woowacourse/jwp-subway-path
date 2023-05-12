@@ -4,12 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toSet;
 
 public class Sections {
 
     private static final int INITIAL_SIZE = 1;
+
     private final List<Section> sections;
 
     private Sections(List<Section> sections) {
@@ -21,72 +24,72 @@ public class Sections {
     }
 
     private static List<Section> sortSections(List<Section> sections) {
-        final Long firstStationId = getFirstStations(sections);
+        final Station firstStation = getFirstStations(sections);
         List<Section> result = new ArrayList<>();
-        Long next = firstStationId;
+        Station next = firstStation;
         for (int i = 0; i < sections.size(); i++) {
             next = addNextSection(sections, result, next);
         }
         return result;
     }
 
-    private static Long getFirstStations(List<Section> sections) {
-        final Set<Long> allStationIds = sections.stream()
-                .flatMap(section -> Stream.of(section.getUpStationId(), section.getDownStationId()))
-                .collect(Collectors.toSet());
+    private static Station getFirstStations(List<Section> sections) {
+        final Set<Station> allStationIds = sections.stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .collect(toSet());
 
-        final Set<Long> downStationIds = sections.stream()
-                .map(Section::getDownStationId)
-                .collect(Collectors.toSet());
+        final Set<Station> downStationIds = sections.stream()
+                .map(Section::getDownStation)
+                .collect(toSet());
 
-        final List<Long> stationIds = new ArrayList<>(allStationIds);
-        stationIds.removeAll(downStationIds);
+        final List<Station> firstStation = new ArrayList<>(allStationIds);
+        firstStation.removeAll(downStationIds);
 
-        return stationIds.get(0);
+        return firstStation.get(0);
     }
 
-    private static Long addNextSection(List<Section> sections, List<Section> result, Long nextStationId) {
+    private static Station addNextSection(List<Section> sections, List<Section> result, Station nextStation) {
         for (Section section : sections) {
-            if (section.getUpStationId().equals(nextStationId)) {
-                nextStationId = section.getDownStationId();
+            if (section.getUpStation().equals(nextStation)) {
+                nextStation = section.getDownStation();
                 result.add(section);
                 break;
             }
         }
-        return nextStationId;
+        return nextStation;
     }
 
-    public boolean isDownEndPoint(Long upStationId) {
-        return Objects.equals(upStationId, sections.get(sections.size() - 1).getDownStationId());
+    public boolean isDownEndPoint(Station upStation) {
+        return Objects.equals(sections.get(sections.size() - 1).getDownStation(), upStation);
     }
 
-    public boolean isUpEndPoint(Long downStationId) {
-        return Objects.equals(downStationId, sections.get(0).getUpStationId());
+    public boolean isUpEndPoint(Station upStation) {
+        return Objects.equals(sections.get(0).getUpStation(), upStation);
     }
 
-    public boolean isUpStationPoint(Long upStationId) {
+    public boolean isUpStationPoint(Station upStation) {
         return sections.stream()
-                .anyMatch(section -> Objects.equals(section.getUpStationId(), upStationId));
+                .anyMatch(section -> Objects.equals(section.getUpStation(), upStation));
     }
 
-    public Section getTargtUpStationSection(Long upStationId) {
+    public Section getTargtUpStationSection(Station upStation) {
         return sections.stream()
-                .filter(section -> Objects.equals(section.getUpStationId(), upStationId))
+                .filter(section -> Objects.equals(section.getUpStation(), upStation))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
-    public Section getTargtDownStationSection(Long downStationId) {
+    public Section getTargtDownStationSection(Station downStation) {
         return sections.stream()
-                .filter(section -> Objects.equals(section.getDownStationId(), downStationId))
+                .filter(section -> Objects.equals(section.getDownStation(), downStation))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
-    public Sections findIncludeTargetSection(Long stationId){
+    public Sections findIncludeTargetSection(Station station) {
         final List<Section> sections = this.sections.stream()
-                .filter(section -> Objects.equals(section.getUpStationId(), stationId) || Objects.equals(section.getDownStationId(), stationId))
-                .collect(Collectors.toList());
+                .filter(section -> Objects.equals(section.getUpStation(), station) || Objects.equals(section.getDownStation(), station))
+                .collect(toList());
 
         return new Sections(sections);
     }
@@ -107,6 +110,17 @@ public class Sections {
         return sections.stream()
                 .map(Section::getDistance)
                 .reduce(Distance.zero(), Distance::plus);
+    }
+
+    public boolean canInsert(Station upStation, Station downStation) {
+        final Set<Station> allStations = findAllStations();
+        return allStations.contains(upStation) == allStations.contains(downStation);
+    }
+
+    private Set<Station> findAllStations() {
+        return sections.stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .collect(toSet());
     }
 
     public List<Section> getSections() {

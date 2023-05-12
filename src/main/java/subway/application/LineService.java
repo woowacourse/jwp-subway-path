@@ -2,7 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -13,29 +12,34 @@ import subway.dto.LineResponse;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class LineService {
 
     private final LineDao lineDao;
-    private final SectionDao sectionDao;
     private final StationDao stationDao;
-    private final SectionMapper sectionMapper;
+    private final SectionRepository sectionRepository;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao, SectionMapper sectionMapper) {
+    public LineService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
         this.stationDao = stationDao;
-        this.sectionMapper = sectionMapper;
+        this.sectionRepository = sectionRepository;
     }
 
     public Long saveLine(LineRequest request) {
         final Line line = new Line(request.getName(), request.getColor());
         final Long lineId = lineDao.insert(line);
 
-        final Section section = new Section(request.getDistance(), request.getUpStationId(), request.getDownStationId(), lineId);
-        sectionDao.insert(sectionMapper.mapToEntity(section));
+        final Section section = new Section(
+                request.getDistance(),
+                new Station(request.getUpStationId()),
+                new Station(request.getDownStationId()),
+                lineId
+        );
+        sectionRepository.insert(section);
 
         return lineId;
     }
@@ -45,7 +49,7 @@ public class LineService {
 
         return persistLines.stream()
                 .map(line -> findLineResponseById(line.getId()))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
     public List<Line> findLines() {
@@ -53,17 +57,11 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        final List<Section> sections = sectionMapper.mapFrom(sectionDao.findAllByLineId(id));
-        List<Section> sortedSections = Sections.from(sections).getSections();
+        final Sections sortedSections = sectionRepository.findAllByLineId(id);
 
-        final List<Long> stationsIds = sortedSections.stream()
-                .map(Section::getUpStationId)
-                .collect(Collectors.toList());
-        stationsIds.add(sortedSections.get(sortedSections.size() - 1).getDownStationId());
-
-        final List<Station> stations = stationsIds.stream()
-                .map(stationDao::findById)
-                .collect(Collectors.toList());
+        final List<Station> stations = sortedSections.getSections().stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .collect(toList());
 
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine, stations);
