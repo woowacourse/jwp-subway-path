@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(DistanceInvalidException.class)
-    public ResponseEntity<ExceptionResponse> distanceInvalidExceptionHandler(final DistanceInvalidException exception) {
+    @ExceptionHandler(DistanceForkedException.class)
+    public ResponseEntity<ExceptionResponse> distanceInvalidExceptionHandler(final DistanceForkedException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }
@@ -48,6 +48,24 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 
+    @ExceptionHandler(NameIsBlankException.class)
+    public ResponseEntity<ExceptionResponse> nameIsBlankExceptionHandler(final NameIsBlankException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
+    }
+
+    @ExceptionHandler(DistanceValueInvalidException.class)
+    public ResponseEntity<ExceptionResponse> distanceValueInvalidExceptionHandler(final DistanceValueInvalidException exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
+    }
+
+    @ExceptionHandler(LineNumberUnderMinimumNumber.class)
+    public ResponseEntity<ExceptionResponse> lineNumberUnderMinimumNumberHandler(final LineNumberUnderMinimumNumber exception) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
+    }
+
     @ExceptionHandler(SectionNotFoundException.class)
     public ResponseEntity<ExceptionResponse> sectionNotFoundExceptionHandler(final SectionNotFoundException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
@@ -56,6 +74,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UpStationNotFoundException.class)
     public ResponseEntity<ExceptionResponse> upStationNotFoundExceptionHandler(final UpStationNotFoundException exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
+    }
+
+    @ExceptionHandler(ColorNotBlankException.class)
+    public ResponseEntity<ExceptionResponse> colorNotBlankExceptionHandler(final ColorNotBlankException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
