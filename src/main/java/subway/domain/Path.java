@@ -39,6 +39,14 @@ public final class Path {
         return up.equals(station) || down.equals(station);
     }
 
+    public boolean isNextDown(final Path path) {
+        return down.equals(path.up);
+    }
+
+    public boolean isNextUp(final Path path) {
+        return up.equals(path.down);
+    }
+
     public List<Path> divideBy(final Path middle) {
         if (distance <= middle.distance) {
             throw new IllegalArgumentException("기존의 거리보다 길 수 없습니다.");

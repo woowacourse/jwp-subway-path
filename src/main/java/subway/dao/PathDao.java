@@ -44,7 +44,7 @@ public class PathDao {
     }
 
     public void save(final Paths paths, final Long lineId) {
-        final List<Path> pathList = paths.getPaths();
+        final List<Path> pathList = paths.getOrderedPaths();
         final String sql = "INSERT INTO path (line_id, up_station_id, distance, down_station_id) VALUES (?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql,

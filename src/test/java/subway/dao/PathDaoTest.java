@@ -64,6 +64,6 @@ class PathDaoTest {
         //then
         assertAll(
                 () -> assertThat(countRowsInTable(jdbcTemplate, "path")).isZero(),
-                () -> assertThat(persisted.getPaths()).hasSize(1));
+                () -> assertThat(persisted.getOrderedPaths()).hasSize(1));
     }
 }

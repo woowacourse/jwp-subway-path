@@ -2,8 +2,11 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 public final class Paths {
     private List<Path> paths;
@@ -87,10 +90,38 @@ public final class Paths {
     private List<Path> findAffectedPaths(final Station station) {
         return this.paths.stream()
                 .filter(path -> path.contains(station))
-                .collect(Collectors.toList());
+                .collect(toList());
     }
 
-    public List<Path> getPaths() {
-        return new ArrayList<>(paths);
+    public List<Path> getOrderedPaths() {
+        final Path start = findStartPath();
+
+        return Stream.iterate(start, findNextPath())
+                .limit(paths.size())
+                .collect(toUnmodifiableList());
+    }
+
+    private Path findStartPath() {
+        for (Path path : paths) {
+            if (notExistUpPath(path)) {
+                return path;
+            }
+        }
+
+        throw new IllegalStateException();
+    }
+
+    private boolean notExistUpPath(final Path path) {
+        return paths.stream()
+                .filter(path::isNextUp)
+                .findAny()
+                .isEmpty();
+    }
+
+    private UnaryOperator<Path> findNextPath() {
+        return before -> paths.stream()
+                .filter(before::isNextDown)
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 }

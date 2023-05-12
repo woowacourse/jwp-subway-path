@@ -51,7 +51,7 @@ public final class Line {
     }
 
     public int getPathsSize() {
-        return paths.getPaths().size();
+        return paths.getOrderedPaths().size();
     }
 
     @Override

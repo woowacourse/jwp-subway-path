@@ -26,7 +26,7 @@ class PathsTest {
         paths = paths.addPath(new Path(station, station2, 3));
 
         //then
-        assertThat(paths.getPaths()).hasSize(1);
+        assertThat(paths.getOrderedPaths()).hasSize(1);
     }
 
     @DisplayName("다른 경로가 있을 때 이어져있지 않은 경로를 추가하면 예외가 발생한다")
@@ -67,7 +67,7 @@ class PathsTest {
         paths = paths.addPath(path2);
 
         //then
-        assertThat(paths.getPaths()).hasSize(2);
+        assertThat(paths.getOrderedPaths()).hasSize(2);
     }
 
     @DisplayName("경로를 제거할 수 있다")
@@ -77,15 +77,31 @@ class PathsTest {
         final Path path = new Path(station, station2, 3);
         Paths paths = new Paths(List.of(path));
 
-        final int before = paths.getPaths().size();
+        final int before = paths.getOrderedPaths().size();
 
         //when
         paths = paths.removePath(path.getDown());
-        final int after = paths.getPaths().size();
+        final int after = paths.getOrderedPaths().size();
 
         //then
         assertAll(
                 () -> assertThat(before).isOne(),
                 () -> assertThat(after).isZero());
+    }
+
+    @DisplayName("순서대로 반환한다")
+    @Test
+    void getOrderedPaths() {
+        //given
+        final Path path1 = new Path(station, station2, 3);
+        final Path path2 = new Path(station2, station3, 3);
+        final Path path3 = new Path(station3, station4, 3);
+        final Paths paths = new Paths(List.of(path2, path3, path1));
+
+        //when
+        final List<Path> orderedPaths = paths.getOrderedPaths();
+
+        //then
+        assertThat(orderedPaths).containsExactly(path1, path2, path3);
     }
 }
