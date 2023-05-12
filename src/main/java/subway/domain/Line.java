@@ -7,54 +7,15 @@ public class Line {
     private final Long id;
     private final String name;
     private final String color;
-    private final Stations stations;
 
     public Line(String name, String color) {
         this(null, name, color);
     }
 
     public Line(Long id, String name, String color) {
-        this(id, name, color, Stations.emptyStations());
-    }
-
-    public Line(Long id, String name, String color, Stations stations) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.stations = stations;
-    }
-
-    public void initStations(Station previousStation, Station nextStation) {
-        if (stations.isEmpty()) {
-            stations.addLast(previousStation);
-            stations.addLast(nextStation);
-            return;
-        }
-        throw new IllegalStateException("비어있지 않은 노선에 역을 1개만 추가할 수 있습니다.");
-    }
-
-    public void addBeforeAt(Station beforeStation, Station station) {
-        validateEmpty();
-        stations.addBeforeAt(beforeStation, station);
-    }
-
-    private void validateEmpty() {
-        if (stations.isEmpty()) {
-            throw new IllegalStateException();
-        }
-    }
-
-    public void addLast(Station station) {
-        validateEmpty();
-        stations.addLast(station);
-    }
-
-    public boolean isInitState() {
-        return stations.isEmpty();
-    }
-
-    public boolean hasStation(Station station) {
-        return stations.contains(station);
     }
 
     @Override
@@ -80,9 +41,5 @@ public class Line {
 
     public String getColor() {
         return color;
-    }
-
-    public Stations getStations() {
-        return stations;
     }
 }
