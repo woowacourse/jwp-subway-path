@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.UnaryOperator;
 import java.util.stream.Stream;
@@ -94,8 +95,11 @@ public final class Paths {
     }
 
     public List<Path> getOrderedPaths() {
-        final Path start = findStartPath();
+        if (paths.isEmpty()) {
+            return Collections.emptyList();
+        }
 
+        final Path start = findStartPath();
         return Stream.iterate(start, findNextPath())
                 .limit(paths.size())
                 .collect(toUnmodifiableList());
@@ -113,15 +117,15 @@ public final class Paths {
 
     private boolean notExistUpPath(final Path path) {
         return paths.stream()
-                .filter(path::isNextUp)
+                .filter(path::isUpPath)
                 .findAny()
                 .isEmpty();
     }
 
     private UnaryOperator<Path> findNextPath() {
         return before -> paths.stream()
-                .filter(before::isNextDown)
+                .filter(before::isDownPath)
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(IllegalStateException::new);
     }
 }

@@ -39,11 +39,19 @@ public final class Path {
         return up.equals(station) || down.equals(station);
     }
 
-    public boolean isNextDown(final Path path) {
+    public boolean isDownPath(final Path path) {
+        if (this.equals(path)) {
+            return false;
+        }
+
         return down.equals(path.up);
     }
 
-    public boolean isNextUp(final Path path) {
+    public boolean isUpPath(final Path path) {
+        if (this.equals(path)) {
+            return false;
+        }
+
         return up.equals(path.down);
     }
 
@@ -91,6 +99,9 @@ public final class Path {
         if (this == o) return true;
         if (!(o instanceof Path)) return false;
         final Path path = (Path) o;
+        if (id != null) {
+            return id.equals(path.id);
+        }
         return Objects.equals(up, path.up) && Objects.equals(down, path.down);
     }
 
