@@ -20,12 +20,6 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 
-    @ExceptionHandler(SectionInvalidException.class)
-    public ResponseEntity<ExceptionResponse> sectionInvalidExceptionHandler(final SectionInvalidException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> methodArgumentNotValidExceptionHandler(final MethodArgumentNotValidException exception) {
         String message = exception.getFieldErrors().stream()
@@ -38,12 +32,6 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SectionDuplicatedException.class)
     public ResponseEntity<ExceptionResponse> sectionDuplicatedExceptionHandler(final SectionDuplicatedException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
-    }
-
-    @ExceptionHandler(SectionSeparatedException.class)
-    public ResponseEntity<ExceptionResponse> sectionSeparatedExceptionHandler(final SectionSeparatedException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }

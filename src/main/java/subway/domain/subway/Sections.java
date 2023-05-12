@@ -3,7 +3,6 @@ package subway.domain.subway;
 import subway.exception.LineNotMatchedException;
 import subway.exception.SectionDuplicatedException;
 import subway.exception.SectionNotFoundException;
-import subway.exception.SectionSeparatedException;
 
 import java.util.Collections;
 import java.util.List;
