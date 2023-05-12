@@ -1,0 +1,70 @@
+package subway.persistence;
+
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.stereotype.Repository;
+import subway.persistence.entity.StationEntity;
+import subway.exception.StationNotFoundException;
+import subway.persistence.rowmapper.util.RowMapperUtil;
+
+import javax.sql.DataSource;
+import java.util.List;
+
+import static subway.persistence.rowmapper.util.RowMapperUtil.stationEntityRowMapper;
+
+@Repository
+public class StationDao {
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
+
+    public StationDao(final DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.insertAction = new SimpleJdbcInsert(dataSource)
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
+    }
+
+    public StationEntity insert(final StationEntity stationEntity) {
+        final SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
+        final long id = insertAction.executeAndReturnKey(params).longValue();
+        return new StationEntity(id, stationEntity.getName());
+    }
+
+    public List<StationEntity> findAll() {
+        final String sql = "SELECT * FROM station";
+        return jdbcTemplate.query(sql, stationEntityRowMapper);
+    }
+
+    public StationEntity findById(final long id) {
+        final String sql = "SELECT * FROM station WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, id);
+    }
+
+    public StationEntity findByName(final String name) {
+        final String sql = "SELECT * FROM station WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, name);
+    }
+
+    public void update(final StationEntity newStationEntity) {
+        final String sql = "UPDATE station SET name = ? WHERE id = ?";
+        final int result = jdbcTemplate.update(sql, newStationEntity.getName(), newStationEntity.getId());
+        validateUpdateResult(result);
+    }
+
+    public void deleteById(final Long id) {
+        final String sql = "DELETE FROM station WHERE id = ?";
+        final int result = jdbcTemplate.update(sql, id);
+        validateUpdateResult(result);
+    }
+
+    private void validateUpdateResult(final int result) {
+        if (result == 0) {
+            throw new StationNotFoundException();
+        }
+    }
+
+}
