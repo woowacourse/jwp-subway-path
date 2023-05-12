@@ -3,6 +3,7 @@ package subway.domain;
 import subway.exception.IllegalStationAddException;
 import subway.exception.StationAlreadyExistException;
 import java.util.LinkedList;
+import java.util.List;
 
 public class Stations {
 
@@ -10,7 +11,7 @@ public class Stations {
 
     private final LinkedList<Station> stations;
 
-    public Stations(LinkedList<Station> stations) {
+    public Stations(List<Station> stations) {
         this.stations = new LinkedList<>(stations);
     }
 
@@ -60,7 +61,7 @@ public class Stations {
         return stations.contains(station);
     }
 
-    public LinkedList<Station> getStations() {
-        return new LinkedList<>(stations);
+    public List<Station> getStations() {
+        return List.copyOf(stations);
     }
 }
