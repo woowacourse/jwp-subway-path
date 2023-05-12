@@ -6,17 +6,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
-@Getter
-@ToString
-@EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class Station {
 
+    @EqualsAndHashCode.Include
     private Long id;
     private String name;
 
     public Station(final String name) {
-        this.name = name;
+        this(null, name);
     }
 }
