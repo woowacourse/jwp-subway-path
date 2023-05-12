@@ -10,6 +10,10 @@ public class Path {
         this.distance = distance;
     }
 
+    public boolean isShorterThan(final Integer distance) {
+        return this.distance <= distance;
+    }
+
     public Station getNext() {
         return next;
     }

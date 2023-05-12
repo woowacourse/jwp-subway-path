@@ -2,13 +2,12 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
+import java.util.stream.Collectors;
 
-import static java.util.stream.Collectors.toSet;
+import static subway.domain.Direction.UP;
 
 public class Line {
     private final Long id;
@@ -48,12 +47,55 @@ public class Line {
     }
 
     private Station computeStartStation() {
-        final Set<Station> ups = new HashSet<>(paths.keySet());
-        final Set<Station> downs = paths.values().stream()
+        final List<Station> ups = new ArrayList<>(paths.keySet());
+        final List<Station> downs = paths.values().stream()
                 .map(Path::getNext)
-                .collect(toSet());
+                .collect(Collectors.toList());
         ups.removeAll(downs);
-        return ups.stream().findAny().get();
+        return ups.get(0);
+    }
+
+    public void addPath(
+            final Station targetStation,
+            final Station addStation,
+            final Integer distance,
+            final Direction direction
+    ) {
+        final List<Station> stations = sortStations();
+        final int index = stations.indexOf(targetStation);
+        if (direction == UP) {
+            if (paths.isEmpty()) {
+                paths.put(addStation, new Path(targetStation, distance));
+            }
+            if (index == 0) {
+                paths.put(addStation, new Path(targetStation, distance));
+                return;
+            }
+            final Station stationBefore = stations.get(index - 1);
+            final Path path = paths.get(stationBefore);
+            validatePathDistance(distance, path);
+            paths.put(stationBefore, new Path(addStation, path.getDistance() - distance));
+            paths.put(addStation, new Path(targetStation, distance));
+        }
+
+        if (paths.isEmpty()) {
+            paths.put(targetStation, new Path(addStation, distance));
+        }
+        if (index == stations.size() - 1) {
+            paths.put(targetStation, new Path(addStation, distance));
+            return;
+        }
+        final Path path = paths.get(targetStation);
+        validatePathDistance(distance, path);
+        paths.put(targetStation, new Path(addStation, distance));
+        paths.put(addStation, new Path(path.getNext(), path.getDistance() - distance));
+
+    }
+
+    private void validatePathDistance(final Integer distance, final Path path) {
+        if (path.isShorterThan(distance)) {
+            throw new IllegalArgumentException("기존 경로보다 짧은 경로를 추가해야 합니다.");
+        }
     }
 
     public Long getId() {

@@ -71,5 +71,4 @@ class LineControllerTest {
                 .andExpect(jsonPath("$.[1].name", is("2호선")))
                 .andExpect(jsonPath("$.[1].stations.[1].name", is("수원")));
     }
-
 }

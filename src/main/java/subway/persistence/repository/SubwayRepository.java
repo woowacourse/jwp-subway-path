@@ -66,4 +66,13 @@ public class SubwayRepository {
                 )
                 .collect(Collectors.toList());
     }
+
+    public Station findStationById(final Long id) {
+        return stationDao.findById(id);
+    }
+
+    public void saveLine(final Line line) {
+        pathDao.clear(line.getId());
+        pathDao.addAll(line.getId(), line.getPaths(), line.sortStations());
+    }
 }
