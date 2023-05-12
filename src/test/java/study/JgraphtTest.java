@@ -175,4 +175,25 @@ public class JgraphtTest {
         assertThat(shortestPath.getPath("a1", "b1"))
                 .isNull();
     }
+
+    @Test
+    void 출발지와_목적지가_동일하다면() {
+        // given
+        final WeightedMultigraph<String, DefaultWeightedEdge> graph =
+                new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        graph.addVertex("a1");
+        graph.addVertex("a2");
+        graph.setEdgeWeight(graph.addEdge("a1", "a2"), 2);
+
+        final DijkstraShortestPath<String, DefaultWeightedEdge> shortestPath =
+                new DijkstraShortestPath<>(graph);
+
+        // when
+        final List<DefaultWeightedEdge> edgeList = shortestPath.getPath("a1", "a1").getEdgeList();
+        final List<String> vertexList = shortestPath.getPath("a1", "a1").getVertexList();
+
+        // then
+        assertThat(edgeList.size()).isEqualTo(0);
+        assertThat(vertexList.size()).isEqualTo(1);
+    }
 }

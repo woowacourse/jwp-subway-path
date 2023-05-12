@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static subway.exception.line.LineExceptionType.NON_POSITIVE_DISTANCE;
+import static subway.exception.line.LineExceptionType.UP_AND_DOWN_STATION_IS_SAME;
 
 import java.util.Objects;
 import subway.exception.line.LineException;
@@ -12,10 +13,17 @@ public class Section {
     private final int distance;
 
     public Section(final Station up, final Station down, final int distance) {
+        validateSameStation(up, down);
         validateDistance(distance);
         this.up = up;
         this.down = down;
         this.distance = distance;
+    }
+
+    private void validateSameStation(final Station up, final Station down) {
+        if (up.equals(down)) {
+            throw new LineException(UP_AND_DOWN_STATION_IS_SAME);
+        }
     }
 
     private void validateDistance(final int distance) {

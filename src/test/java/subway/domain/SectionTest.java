@@ -13,6 +13,7 @@ import static subway.domain.fixture.StationFixture.역3;
 import static subway.domain.fixture.StationFixture.잠실;
 import static subway.domain.fixture.StationFixture.잠실나루;
 import static subway.exception.line.LineExceptionType.NON_POSITIVE_DISTANCE;
+import static subway.exception.line.LineExceptionType.UP_AND_DOWN_STATION_IS_SAME;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -27,17 +28,33 @@ import subway.exception.line.LineException;
 @DisplayName("Section 은(는)")
 class SectionTest {
 
-    @Test
-    void 구간_거리가_양수가_아니면_예외() {
-        // given
-        final Station 출발역 = new Station("출발역");
-        final Station 종착역 = new Station("종착역");
+    @Nested
+    class 구간_생성_시 {
 
-        // when & then
-        final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
-                new Section(출발역, 종착역, 0)
-        ).exceptionType();
-        assertThat(exceptionType).isEqualTo(NON_POSITIVE_DISTANCE);
+        @Test
+        void 구간_거리가_양수가_아니면_예외() {
+            // given
+            final Station 출발역 = new Station("출발역");
+            final Station 종착역 = new Station("종착역");
+
+            // when & then
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
+                    new Section(출발역, 종착역, 0)
+            ).exceptionType();
+            assertThat(exceptionType).isEqualTo(NON_POSITIVE_DISTANCE);
+        }
+
+        @Test
+        void 시작점과_종점이_동일하면_예외() {
+            // given
+            final Station 출발역 = new Station("출발역");
+
+            // when & then
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
+                    new Section(출발역, 출발역, 1)
+            ).exceptionType();
+            assertThat(exceptionType).isEqualTo(UP_AND_DOWN_STATION_IS_SAME);
+        }
     }
 
     @Test
