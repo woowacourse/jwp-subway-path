@@ -69,11 +69,17 @@ public class StationDao {
 
     public void update(Station newStation) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        int changeCount = jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        if (changeCount == 0) {
+            throw new NotFoundException("해당하는 역이 존재하지 않습니다.");
+        }
     }
 
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        int changeCount = jdbcTemplate.update(sql, id);
+        if (changeCount == 0) {
+            throw new NotFoundException("해당하는 역이 존재하지 않습니다.");
+        }
     }
 }
