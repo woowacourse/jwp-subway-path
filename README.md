@@ -20,6 +20,7 @@ BODY
 ```json
 {
   "name": "2호선",
+  "color": "GREEN"
 }
 ```
 
@@ -30,6 +31,7 @@ BODY
 ```json
 {
   "id": 1,
-  "name": "2호선"
+  "name": "2호선",
+  "color": "GREEN"
 }
 ```
