@@ -5,12 +5,13 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@ToString
-@EqualsAndHashCode
-@Getter
 @AllArgsConstructor
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 public class Section {
 
+    @EqualsAndHashCode.Include
     private Long id;
     private Long lineId;
     private Station upStation;
