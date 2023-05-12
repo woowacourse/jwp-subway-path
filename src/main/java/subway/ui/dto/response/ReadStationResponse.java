@@ -3,10 +3,11 @@ package subway.ui.dto.response;
 import subway.domain.Station;
 
 public class ReadStationResponse {
-    private Long id;
-    private String name;
 
-    public ReadStationResponse(Long id, String name) {
+    private final Long id;
+    private final String name;
+
+    public ReadStationResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }

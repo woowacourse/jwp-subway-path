@@ -15,6 +15,8 @@ import subway.ui.dto.request.CreationMiddleSectionRequest;
 import subway.ui.dto.request.DeleteEndSectionRequest;
 import subway.ui.dto.request.DeleteMiddleSectionRequest;
 
+import java.net.URI;
+
 @RestController
 @RequestMapping("/lines/{lineId}/stations")
 public class SectionController {
@@ -33,7 +35,7 @@ public class SectionController {
         addSectionService.addInitialStations(
                 lineId, request.getUpStationId(), request.getDownStationId(), request.getDistance());
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
     @PostMapping("/end")
@@ -41,7 +43,7 @@ public class SectionController {
                                               @RequestBody CreationEndSectionRequest request) {
         addSectionService.addEndStation(lineId, request.getSourceStationId(), request.getTargetStationId(), request.getDistance());
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
     @PostMapping("/middle")
@@ -50,7 +52,7 @@ public class SectionController {
         addSectionService.addMiddleStation(
                 lineId, request.getUpStationId(), request.getDownStationId(), request.getTargetStationId(), request.getDistance());
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
     @DeleteMapping("/all")
