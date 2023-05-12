@@ -8,7 +8,10 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.StationResponse;
 import subway.dto.StationSaveRequest;
+import subway.exception.DistanceCantNegative;
+import subway.exception.StationsAlreadyExistException;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -16,8 +19,8 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
 
-    private final SectionService sectionService;
     private final StationDao stationDao;
+    private final SectionService sectionService;
 
     public StationService(final SectionService sectionService, final StationDao stationDao) {
         this.sectionService = sectionService;
@@ -68,8 +71,8 @@ public class StationService {
     }
 
     private FinalStation getFinalStation(final Long lineId) {
-        final String finalUpStationName = stationDao.findUpTerminalStation(lineId).getName();
-        final String finalDownStationName = stationDao.findDownTerminalStation(lineId).getName();
+        final String finalUpStationName = stationDao.findFinalUpStation(lineId).getName();
+        final String finalDownStationName = stationDao.findFinalDownStation(lineId).getName();
         return FinalStation.of(finalUpStationName, finalDownStationName);
     }
 
@@ -113,8 +116,8 @@ public class StationService {
     }
 
     private static void validateDistance(final int originDistance, final int newDistance) {
-        if (originDistance - newDistance < 0) {
-            throw new IllegalArgumentException("거리는 기존 구간의 길이보다 작아야합니다.");
+        if (originDistance - newDistance < 1) {
+            throw DistanceCantNegative.EXECUTE;
         }
     }
 
@@ -128,7 +131,7 @@ public class StationService {
                 return;
             }
         }
-        throw new IllegalArgumentException("입력한 역들이 모두 존재합니다.");
+        throw StationsAlreadyExistException.EXECUTE;
     }
 
     private boolean checkEmptyStations() {
@@ -141,10 +144,25 @@ public class StationService {
         return StationResponse.of(stationDao.findById(id));
     }
 
-    public List<StationResponse> getAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+    public List<StationResponse> getAllStationResponses(final Long lineId) {
+        List<Section> sections = sectionService.findAll();
+        Station finalUpStation = stationDao.findFinalUpStation(lineId);
+        List<Station> results = new ArrayList<>();
+        results.add(finalUpStation);
 
-        return stations.stream()
+        Long beforeStationId = finalUpStation.getId();
+
+        while(sections.size() + 1 != results.size()) {
+            for (Section section : sections) {
+                if (section.getUpStationId() == beforeStationId) {
+                    Station station = stationDao.findById(section.getDownStationId());
+                    results.add(station);
+                    beforeStationId = station.getId();
+                }
+            }
+        }
+
+        return results.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
