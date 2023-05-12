@@ -52,46 +52,6 @@ class LineServiceTest {
     private final LineService lineService =
             new LineService(lineRepository, stationRepository, lineValidator, removeStationFromLineService);
 
-    @Test
-    void 노선에서_역을_제거한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 10),
-                new Section(역2, 역3, 10)));
-        final DeleteStationFromLineCommand command = new DeleteStationFromLineCommand("1호선", "역2");
-        final Line line = new Line("1호선", sections);
-        given(lineRepository.findByName("1호선"))
-                .willReturn(Optional.of(line));
-        역을_저장한다(역2);
-
-        // when
-        lineService.removeStation(command);
-
-        // then
-        verify(lineRepository, times(1)).update(line);
-        assertThat(line.sections()).hasSize(1);
-        포함된_구간들을_검증한다(line.sections(), "역1-[20km]-역3");
-    }
-
-    @Test
-    void 노션에_역이_두개일떄_노선에서_역_제거시_노선도_제거된다() {
-        // given
-        final Sections sections = new Sections(new Section(역1, 역2, 10));
-        final DeleteStationFromLineCommand command = new DeleteStationFromLineCommand("1호선", "역2");
-        final Line line = new Line("1호선", sections);
-        given(lineRepository.findByName("1호선"))
-                .willReturn(Optional.of(line));
-        역을_저장한다(역2);
-
-        // when
-        lineService.removeStation(command);
-
-        // then
-        verify(lineRepository, times(0)).update(line);
-        verify(lineRepository, times(1)).delete(line);
-        assertThat(line.sections()).hasSize(0);
-    }
-
     private void 역을_저장한다(final Station station) {
         given(stationRepository.findByName(station.name()))
                 .willReturn(Optional.of(station));
@@ -146,7 +106,7 @@ class LineServiceTest {
             assertThat(exceptionType).isEqualTo(INCONSISTENT_EXISTING_SECTION);
         }
     }
-
+    
     @Nested
     class 노선에_역_추가_시 {
 
@@ -202,6 +162,50 @@ class LineServiceTest {
                     lineService.addStation(command)
             ).exceptionType();
             assertThat(exceptionType).isEqualTo(INCONSISTENT_EXISTING_SECTION);
+        }
+    }
+
+    @Nested
+    class 노선_에서_역_제거_시 {
+
+        @Test
+        void 노선에서_역을_제거한다() {
+            // given
+            final Sections sections = new Sections(List.of(
+                    new Section(역1, 역2, 10),
+                    new Section(역2, 역3, 10)));
+            final DeleteStationFromLineCommand command = new DeleteStationFromLineCommand("1호선", "역2");
+            final Line line = new Line("1호선", sections);
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.of(line));
+            역을_저장한다(역2);
+
+            // when
+            lineService.removeStation(command);
+
+            // then
+            verify(lineRepository, times(1)).update(line);
+            assertThat(line.sections()).hasSize(1);
+            포함된_구간들을_검증한다(line.sections(), "역1-[20km]-역3");
+        }
+
+        @Test
+        void 노션에_역이_두개일떄_노선에서_역_제거시_노선도_제거된다() {
+            // given
+            final Sections sections = new Sections(new Section(역1, 역2, 10));
+            final DeleteStationFromLineCommand command = new DeleteStationFromLineCommand("1호선", "역2");
+            final Line line = new Line("1호선", sections);
+            given(lineRepository.findByName("1호선"))
+                    .willReturn(Optional.of(line));
+            역을_저장한다(역2);
+
+            // when
+            lineService.removeStation(command);
+
+            // then
+            verify(lineRepository, times(0)).update(line);
+            verify(lineRepository, times(1)).delete(line);
+            assertThat(line.sections()).hasSize(0);
         }
     }
 }
