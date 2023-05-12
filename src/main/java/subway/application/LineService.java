@@ -1,10 +1,12 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LineWithStationResponse;
+import subway.persistence.dao.LineDao;
+import subway.persistence.repository.SubwayRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,9 +14,11 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
     private final LineDao lineDao;
+    private final SubwayRepository subwayRepository;
 
-    public LineService(LineDao lineDao) {
+    public LineService(final LineDao lineDao, final SubwayRepository subwayRepository) {
         this.lineDao = lineDao;
+        this.subwayRepository = subwayRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -50,4 +54,8 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
+    public LineWithStationResponse findLineWithStation(final Long id) {
+        final Line line = subwayRepository.findLine(id);
+        return LineWithStationResponse.of(line);
+    }
 }
