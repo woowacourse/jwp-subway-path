@@ -3,8 +3,8 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.controller.dto.StationRequest;
+import subway.controller.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -30,8 +30,8 @@ public class StationService {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {

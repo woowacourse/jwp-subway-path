@@ -1,8 +1,7 @@
 package subway.domain;
 
-import java.util.Objects;
-
 public class Station {
+
     private Long id;
     private String name;
 
@@ -18,6 +17,10 @@ public class Station {
         this.name = name;
     }
 
+    public boolean isSame(Station station) {
+        return name.equals(station.getName());
+    }
+
     public Long getId() {
         return id;
     }
@@ -27,15 +30,10 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+    public String toString() {
+        return "Station{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            '}';
     }
 }
