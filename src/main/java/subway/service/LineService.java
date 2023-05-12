@@ -71,7 +71,7 @@ public class LineService {
         lineDao.deleteLineById(lineId);
     }
 
-    public void registerLine(final RegisterLineRequest registerLineRequest) {
+    public Long registerLine(final RegisterLineRequest registerLineRequest) {
 
         final Long savedId = lineDao.save(new LineEntity(registerLineRequest.getLineName()));
 
@@ -81,5 +81,7 @@ public class LineService {
                 registerLineRequest.getDistance(),
                 savedId
         );
+
+        return savedId;
     }
 }
