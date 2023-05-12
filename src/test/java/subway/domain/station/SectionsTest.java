@@ -4,8 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
-import subway.domain.section.Section;
-import subway.domain.section.Sections;
+import subway.section.domain.Section;
+import subway.section.domain.Sections;
+import subway.station.domain.Station;
+import subway.station.domain.StationDistance;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SectionsTest {
@@ -145,7 +147,7 @@ class SectionsTest {
         sections.removeFirstStation(startStation);
 
         //then
-        assertThat(sections.getSections()).hasSize(0);
+        assertThat(sections.getSections()).isEmpty();
     }
 
 
@@ -162,7 +164,7 @@ class SectionsTest {
         sections.removeLastStation(endStation);
 
         //then
-        assertThat(sections.getSections()).hasSize(0);
+        assertThat(sections.getSections()).isEmpty();
     }
 
     @Test

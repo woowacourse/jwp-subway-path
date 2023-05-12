@@ -12,17 +12,17 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.application.station.service.AttachEndStationService;
-import subway.domain.line.Line;
-import subway.domain.line.LineColor;
-import subway.domain.line.LineName;
-import subway.domain.line.LineRepository;
-import subway.domain.section.Section;
-import subway.domain.section.SectionRepository;
-import subway.domain.section.Sections;
-import subway.domain.station.Station;
-import subway.domain.station.StationDistance;
-import subway.domain.station.StationRepository;
+import subway.station.application.AttachEndStationService;
+import subway.line.domain.Line;
+import subway.line.domain.LineColor;
+import subway.line.domain.LineName;
+import subway.line.application.port.output.LineRepository;
+import subway.section.domain.Section;
+import subway.section.application.port.output.SectionRepository;
+import subway.section.domain.Sections;
+import subway.station.domain.Station;
+import subway.station.domain.StationDistance;
+import subway.station.application.port.output.StationRepository;
 import subway.ui.dto.request.AttachStationRequest;
 
 @SuppressWarnings("NonAsciiCharacters")

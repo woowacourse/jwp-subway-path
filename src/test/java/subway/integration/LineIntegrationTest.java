@@ -13,12 +13,12 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("data")
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("지하철 노선 관련 기능")
-public class LineIntegrationTest extends IntegrationTest {
+class LineIntegrationTest extends IntegrationTest {
 
     @Test
     void 전체_노선_조회_테스트() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
                 .get("/lines")
                 .then().log().all()
@@ -31,7 +31,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void 단일_노선_조회_테스트() {
         // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
                 .get("/lines/{lineId}", 1L)
                 .then().log().all()
