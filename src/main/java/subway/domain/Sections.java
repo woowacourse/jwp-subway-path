@@ -81,6 +81,10 @@ public class Sections {
         value.add(0, section);
     }
 
+    public void addBottom(final Section section) {
+        value.add(section);
+    }
+
     public int getStationsSize() {
         if (size() == 0) {
             return 0;
@@ -92,10 +96,17 @@ public class Sections {
         return value.get(index);
     }
 
-    public Section getFirstSection() {
+    public Station getTopStation() {
         if (isEmpty()) {
             throw new BusinessException("빈 구간 목록입니다.");
         }
-        return value.get(0);
+        return value.get(0).getUpStation();
+    }
+
+    public Station getBottomStation() {
+        if (isEmpty()) {
+            throw new BusinessException("빈 구간 목록입니다.");
+        }
+        return value.get(value.size() - 1).getDownStation();
     }
 }
