@@ -1,12 +1,10 @@
 package subway.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import subway.dto.LineRequest;
+import org.springframework.web.bind.annotation.*;
+import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
+import subway.dto.StationCreateRequest;
 import subway.service.LineService;
 
 import javax.validation.Valid;
@@ -23,10 +21,23 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
-        LineResponse lineResponse = lineService.createLine(lineRequest);
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineCreateRequest request) {
+        LineResponse response = lineService.createLineWithoutStation(request);
+
         return ResponseEntity
-                .created(URI.create("/lines" + lineResponse.getId()))
-                .body(lineResponse);
+                .created(URI.create("/lines/" + response.getId()))
+                .body(response);
+    }
+
+    @PostMapping("/{id}/stations")
+    public ResponseEntity<LineResponse> createStationInLine(
+            @PathVariable("id") Long id,
+            @Valid @RequestBody StationCreateRequest request) {
+        LineResponse response = lineService.addStation(id, request);
+        final URI location = URI.create("/lines/" + response.getId());
+
+        return ResponseEntity
+                .created(location)
+                .body(response);
     }
 }

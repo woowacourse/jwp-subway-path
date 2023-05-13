@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.entity.LineEntity;
+
 public class Line {
     private final Long id;
     private final String name;
@@ -13,6 +15,17 @@ public class Line {
 
     public Line(final String name, final String color) {
         this(null, name, color);
+    }
+
+    public static Line from(final LineEntity lineEntity) {
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor());
+    }
+
+    public static Line of(final String name, final String color) {
+        return new Line(null, name, color);
     }
 
     public Long getId() {

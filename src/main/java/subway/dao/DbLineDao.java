@@ -2,7 +2,9 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import subway.entity.LineEntity;
@@ -36,9 +38,7 @@ public class DbLineDao implements LineDao {
         final String name = line.getName();
         final String color = line.getColor();
 
-        final Map<String, String> parameters = Map.of(
-                "name", name,
-                "color", color);
+        final SqlParameterSource parameters = new BeanPropertySqlParameterSource(line);
 
         final long id = insertLine.executeAndReturnKey(parameters).longValue();
         return new LineEntity(id, name, color);
