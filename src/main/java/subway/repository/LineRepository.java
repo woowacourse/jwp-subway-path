@@ -76,16 +76,15 @@ public class LineRepository {
         return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
     }
 
-    public Long findIdByName(final String name) {
-        return lineDao.findByName(name)
-                .orElseThrow(LineNotFoundException::new)
-                .getId();
+    public Optional<Long> findIdByName(final String name) {
+        return lineDao.findByName(name).map(LineEntity::getId);
     }
 
-    public Line findById(final Long id) {
-        final LineEntity lineEntity = lineDao.findById(id).orElseThrow(LineNotFoundException::new);
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
-        return toLine(lineEntity, sectionEntities);
+    public Optional<Line> findById(final Long id) {
+        return lineDao.findById(id).map(lineEntity -> {
+            final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
+            return toLine(lineEntity, sectionEntities);
+        });
     }
 
     public void updateNameAndColorById(final Long id, final String name, final String color) {
@@ -93,7 +92,6 @@ public class LineRepository {
     }
 
     public void deleteById(final Long id) {
-        lineDao.findById(id).orElseThrow(LineNotFoundException::new);
         sectionDao.deleteAll(id);
         stationDao.deleteByLineId(id);
         lineDao.deleteById(id);

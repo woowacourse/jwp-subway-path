@@ -66,7 +66,7 @@ class LineRepositoryTest {
                 new Section("C", "D", 4)
         ));
         final Line savedLine = lineRepository.save(line);
-        final Long id = lineRepository.findIdByName(savedLine.getName());
+        final Long id = lineRepository.findIdByName(savedLine.getName()).orElseThrow();
 
         // when
         lineRepository.deleteById(id);
@@ -87,7 +87,7 @@ class LineRepositoryTest {
         lineRepository.save(line);
 
         // when
-        final Long id = lineRepository.findIdByName("2호선");
+        final Long id = lineRepository.findIdByName("2호선").orElseThrow();
 
         // then
         assertThat(id).isPositive();
@@ -103,10 +103,10 @@ class LineRepositoryTest {
                 new Section("C", "D", 4)
         ));
         lineRepository.save(line);
-        final Long id = lineRepository.findIdByName(line.getName());
+        final Long id = lineRepository.findIdByName(line.getName()).orElseThrow();
 
         // when
-        final Line result = lineRepository.findById(id);
+        final Line result = lineRepository.findById(id).orElseThrow();
 
         // then
         assertThat(result).usingRecursiveComparison().isEqualTo(line);

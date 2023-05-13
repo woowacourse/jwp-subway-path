@@ -69,7 +69,7 @@ public class LineControllerTest {
         lineRepository.save(new Line("1호선", "RED", List.of(
                 new Section("A", "B", 2)
         )));
-        final Long id = lineRepository.findIdByName("1호선");
+        final Long id = lineRepository.findIdByName("1호선").orElseThrow();
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -126,7 +126,7 @@ public class LineControllerTest {
         lineRepository.save(new Line("1호선", "RED", List.of(
                 new Section("A", "B", 2)
         )));
-        final Long id = lineRepository.findIdByName("1호선");
+        final Long id = lineRepository.findIdByName("1호선").orElseThrow();
         final LineUpdateRequest request = new LineUpdateRequest("2호선", "BLUE");
 
         // when
@@ -139,7 +139,7 @@ public class LineControllerTest {
                 .extract();
 
         // then
-        final Line line = lineRepository.findById(id);
+        final Line line = lineRepository.findById(id).orElseThrow();
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
                 () -> assertThat(line.getName()).isEqualTo("2호선"),
@@ -153,7 +153,7 @@ public class LineControllerTest {
         lineRepository.save(new Line("1호선", "RED", List.of(
                 new Section("A", "B", 2)
         )));
-        final Long id = lineRepository.findIdByName("1호선");
+        final Long id = lineRepository.findIdByName("1호선").orElseThrow();
 
         // when
         ExtractableResponse<Response> response = RestAssured

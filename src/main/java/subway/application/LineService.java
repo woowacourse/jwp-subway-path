@@ -10,6 +10,7 @@ import subway.domain.Line;
 import subway.dto.LineResponse;
 import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
+import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
 
 @Transactional
@@ -23,22 +24,27 @@ public class LineService {
     }
 
     public Long save(final LineSaveRequest request) {
-        final Line line = new Line(request.getName(), request.getColor(), Collections.emptyList());
-        lineRepository.save(line);
-        return lineRepository.findIdByName(request.getName());
+        lineRepository.save(new Line(request.getName(), request.getColor(), Collections.emptyList()));
+        return lineRepository.findIdByName(request.getName())
+                .orElseThrow(LineNotFoundException::new);
     }
 
     public void delete(final Long id) {
+        lineRepository.findById(id)
+                .orElseThrow(LineNotFoundException::new);
         lineRepository.deleteById(id);
     }
 
     public void update(final Long id, final LineUpdateRequest request) {
+        lineRepository.findById(id)
+                .orElseThrow(LineNotFoundException::new);
         lineRepository.updateNameAndColorById(id, request.getName(), request.getColor());
     }
 
     @Transactional(readOnly = true)
     public LineResponse findById(final Long id) {
-        final Line line = lineRepository.findById(id);
+        final Line line = lineRepository.findById(id)
+                .orElseThrow(LineNotFoundException::new);
         return LineResponse.from(line);
     }
 
