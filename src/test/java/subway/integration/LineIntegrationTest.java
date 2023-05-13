@@ -23,6 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 노선 관련 기능")
+@Sql({"/station_test_data.sql", "/section_truncate_test.sql", "/line_truncate_test.sql"})
 public class LineIntegrationTest extends IntegrationTest {
 
     private LineRequest lineRequest1;
@@ -32,8 +33,8 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("5호선", "bg-purple-600", 10, "대림", "온수");
-        lineRequest2 = new LineRequest("6호선", "bg-brown-600", 4, "온수", "구로디지털단지");
+        lineRequest1 = new LineRequest("5호선", "bg-purple-600", 10, "잠실새내", "송파");
+        lineRequest2 = new LineRequest("6호선", "bg-brown-600", 4, "종합운동장", "석촌");
     }
 
     @Test
@@ -82,7 +83,6 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("지하철 노선 목록을 조회한다.")
-    @Sql({"/line_truncate_test.sql", "/section_truncate_test.sql"})
     void getLines() {
         // given
         final ExtractableResponse<Response> createResponse1 = RestAssured
@@ -127,8 +127,8 @@ public class LineIntegrationTest extends IntegrationTest {
                 () -> assertThat((String) documentContext.read("$[0]['name']")).isEqualTo("5호선"),
                 () -> assertThat((String) documentContext.read("$[0]['color']")).isEqualTo("bg-purple-600"),
                 () -> assertThat((int) documentContext.read("$[0]['stations'].size()")).isEqualTo(2),
-                () -> assertThat((String) documentContext.read("$[0]['stations'][0]['name']")).isEqualTo("대림"),
-                () -> assertThat((String) documentContext.read("$[0]['stations'][1]['name']")).isEqualTo("온수")
+                () -> assertThat((String) documentContext.read("$[0]['stations'][0]['name']")).isEqualTo("잠실새내"),
+                () -> assertThat((String) documentContext.read("$[0]['stations'][1]['name']")).isEqualTo("송파")
         );
     }
 
