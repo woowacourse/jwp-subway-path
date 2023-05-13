@@ -63,7 +63,7 @@ public class Line {
         }
     }
 
-    public void initialStations(final Station upStation, final Station downStation, final Distance distance) {
+    public void addInitialStations(final Station upStation, final Station downStation, final Distance distance) {
         validateStation(upStation);
         validateStation(downStation);
         final Station newUpStation = Station.of(upStation);

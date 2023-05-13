@@ -101,7 +101,7 @@ class LineTest {
             final Distance distanceOneTwo = Distance.from(10);
 
             SoftAssertions.assertSoftly(softAssertions -> {
-                assertDoesNotThrow(() -> line.initialStations(stationOne, stationTwo, distanceOneTwo));
+                assertDoesNotThrow(() -> line.addInitialStations(stationOne, stationTwo, distanceOneTwo));
                 final Station findStationOne = line.findStation(stationOne);
                 final Distance actual = findStationOne.findDistanceByStation(stationTwo);
                 assertThat(actual.getDistance()).isEqualTo(distanceOneTwo.getDistance());
@@ -110,7 +110,7 @@ class LineTest {
 
         @Test
         void 성공적으로_종점을_추가한다() {
-            line.initialStations(stationOne, stationTwo, distanceOneTwo);
+            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
 
             final Station station = Station.from("서울역");
             final Distance distance = Distance.from(5);
@@ -128,7 +128,7 @@ class LineTest {
 
         @Test
         void 종점이_아닌_역에_종점_추가를_진행할_경우_예외가_발생한다() {
-            line.initialStations(stationOne, stationTwo, distanceOneTwo);
+            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
             line.addEndStation(stationTwo, stationThree, distanceTwoThree);
 
             final Station station = Station.from("서울역");
@@ -141,7 +141,7 @@ class LineTest {
 
         @Test
         void 역과_역_사이에_새로운_역을_추가한다() {
-            line.initialStations(stationOne, stationTwo, distanceOneTwo);
+            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
 
             final Station station = Station.from("서울역");
             final Distance distance = Distance.from(3);
@@ -160,7 +160,7 @@ class LineTest {
 
         @Test
         void 역과_역_사이에_새로운_역을_추가할_때_역이_서로_연결되어_있지_않으면_예외가_발생한다() {
-            line.initialStations(stationOne, stationTwo, distanceOneTwo);
+            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
             line.addEndStation(stationTwo, stationThree, distanceTwoThree);
 
             final Station station = Station.from("서울역");
@@ -173,7 +173,7 @@ class LineTest {
 
         @Test
         void 역과_역_사이에_새로운_역을_추가할_때_원래_역_사이의_거리_이상의_거리를_추가할_경우_예외가_발생한다() {
-            line.initialStations(stationOne, stationTwo, distanceOneTwo);
+            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
 
             final Station station = Station.from("서울역");
             final Distance distance = Distance.from(15);
@@ -203,7 +203,7 @@ class LineTest {
             final Station stationFive = Station.from("신논현역");
             final Distance distanceFourFive = Distance.from(5);
 
-            line.initialStations(stationOne, stationTwo, distanceOneTwo);
+            line.addInitialStations(stationOne, stationTwo, distanceOneTwo);
             line.addEndStation(stationTwo, stationThree, distanceTwoThree);
             line.addEndStation(stationThree, stationFour, distanceThreeFour);
             line.addEndStation(stationFour, stationFive, distanceFourFive);
