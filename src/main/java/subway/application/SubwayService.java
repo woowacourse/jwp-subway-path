@@ -65,15 +65,15 @@ public class SubwayService {
 
     public Long addLine(AddLineRequest addLineRequest) {
         LineNames lineNames = subwayRepository.getLineNames();
-        lineNames.validateLineNotExist(addLineRequest.getName());
+        lineNames.validateLineNotExist(addLineRequest.getLineName());
 
         Station upstream = Station.from(addLineRequest.getUpstreamName());
         Station downstream = Station.from(addLineRequest.getDownstreamName());
         Section section = new Section(upstream, downstream, addLineRequest.getDistance());
-        Line line = new Line(addLineRequest.getName(), List.of(section));
+        Line line = new Line(addLineRequest.getLineName(), List.of(section));
 
         registerStationIfNotExist(upstream, downstream);
-        subwayRepository.addLine(addLineRequest.getName());
+        subwayRepository.addLine(addLineRequest.getLineName());
 
         return subwayRepository.updateLine(line);
     }

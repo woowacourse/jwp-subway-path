@@ -1,16 +1,18 @@
 package subway.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import javax.validation.constraints.NotNull;
 
-@Getter
-@EqualsAndHashCode
 public class AddStationRequest {
 
+    @NotNull
     private String addStationName;
+    @NotNull
     private String lineName;
+    @NotNull
     private String upstreamName;
+    @NotNull
     private String downstreamName;
+    @NotNull
     private int distanceToUpstream;
 
     public AddStationRequest(String addStationName, String lineName, String upstreamName, String downstreamName, int distanceToUpstream) {
@@ -19,5 +21,25 @@ public class AddStationRequest {
         this.upstreamName = upstreamName;
         this.downstreamName = downstreamName;
         this.distanceToUpstream = distanceToUpstream;
+    }
+
+    public String getAddStationName() {
+        return addStationName;
+    }
+
+    public String getLineName() {
+        return lineName;
+    }
+
+    public String getUpstreamName() {
+        return upstreamName;
+    }
+
+    public String getDownstreamName() {
+        return downstreamName;
+    }
+
+    public int getDistanceToUpstream() {
+        return distanceToUpstream;
     }
 }

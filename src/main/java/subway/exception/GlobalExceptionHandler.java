@@ -1,6 +1,7 @@
 package subway.exception;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,7 +16,8 @@ public class GlobalExceptionHandler {
             SectionNotFoundException.class,
             StationNotFoundException.class,
             LineNotFoundException.class,
-            DuplicateLineNameException.class
+            DuplicateLineNameException.class,
+            MethodArgumentNotValidException.class
     })
     public ResponseEntity<String> handleException(RuntimeException runtimeException) {
         return ResponseEntity.badRequest().body(runtimeException.getMessage());

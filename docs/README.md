@@ -6,47 +6,49 @@
 
 - Request
   - POST /line/stations 
-      - station-name
-      - line-name
-      - upstream-name(상행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
-      - downstream-name(하행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
-      - distance-to-upstream
+      - addStationName
+      - lineName
+      - upstreamName(상행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
+      - downstreamName(하행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
+      - distanceToUpstream
 
 - Response
   - 400 BAD REQUEST
-    - (station-name < 2 || station-name > 15) ->
-    - (line-name < 2 || line-name > 15) ->
-    - (line-name이 존재하지 않는 경우)
-    - (upstream-name, downstream-name이 Section으로 존재하지 않는 경우)
-    - (distance-to-upstream >= distance(upstream, downstream)인 경우)
-    - (station-name이 이미 Line에 존재하는 경우)
+    - (stationName < 2 || stationName > 15) ->
+    - (lineName < 2 || lineName > 15) ->
+    - (lineName이 존재하지 않는 경우)
+    - (upstreamName, downstreamName이 Section으로 존재하지 않는 경우)
+    - (distanceToUpstream >= distance(upstream, downstream)인 경우)
+    - (stationName이 이미 Line에 존재하는 경우)
   - 201 CREATED
+
+### 노선 추가
 
 - Request
   - POST /lines
-      - line-name 
-      - upstream-name
-      - downstream-name
+      - lineName
+      - upstreamName
+      - downstreamName
       - distance
 
 - Response
   - 400 BAD REQUEST
-    - (upstream-name < 2 || upstream-name > 15) ->
-    - (downstream-name < 2 || downstream-name > 15) ->
-    - (line-name < 2 || line-name > 15) ->
+    - (upstreamName < 2 || upstreamName > 15) ->
+    - (downstreamName < 2 || downstreamName > 15) ->
+    - (lineName < 2 || lineName > 15) ->
     - (distance < 1인 경우)
-    - (line-name의 노선이 이미 존재하는 경우)
+    - (lineName의 노선이 이미 존재하는 경우)
   - 201 CREATED
 
 - Request
   - DELETE /line/stations
-      - line-name
-      - station-name
+      - lineName
+      - stationName
 
 - Response
   - 400 BAD REQUEST
-    - (line-name이 존재하지 않는 경우)
-    - (station-name이 Line에 존재하지 않는 경우)
+    - (lineName이 존재하지 않는 경우)
+    - (stationName이 Line에 존재하지 않는 경우)
   - 204 NO-CONTENT
 
 ### 노선 조회
@@ -57,7 +59,7 @@
 
 - Response
   - 400 BAD REQUEST
-    - (line-id가 존재하지 않는 경우)
+    - (lineId가 존재하지 않는 경우)
   - 200 OK
 
 - Request
@@ -77,7 +79,7 @@
   - [x] 하행역, 상행역에 해당하는 Station을 갖는다.
   - [x] 구간의 거리를 갖는다.
     - [x] 구간의 거리가 양의 정수가 아닌 경우 예외를 던진다.
-  - [x] upstream-name, downstream-name이 일치하는지 확인한다.
+  - [x] upstreamName, downstreamName이 일치하는지 확인한다.
   - [x] Station을 중간에 추가해서 새로운 Section들을 반환한다.
   - [x] 두 Section을 병합한다.
     - [x] 하나의 Downstream과 다른 하나의 Upstream이 같지 않은 경우 예외를 던진다.
