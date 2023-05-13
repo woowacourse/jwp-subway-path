@@ -1,5 +1,6 @@
 package subway.domain;
 
+import static subway.exception.line.LineExceptionType.DUPLICATE_LINE_NAME;
 import static subway.exception.line.LineExceptionType.INCONSISTENT_EXISTING_SECTION;
 
 import org.springframework.stereotype.Component;
@@ -12,6 +13,12 @@ public class LineValidator {
 
     public LineValidator(final LineRepository lineRepository) {
         this.lineRepository = lineRepository;
+    }
+
+    public void validateDuplicateLineName(final String lineName) {
+        if (lineRepository.findByName(lineName).isPresent()) {
+            throw new LineException(DUPLICATE_LINE_NAME);
+        }
     }
 
     public void validateSectionConsistency(final Section newSection) {

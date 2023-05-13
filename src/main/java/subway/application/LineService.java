@@ -1,6 +1,5 @@
 package subway.application;
 
-import static subway.exception.line.LineExceptionType.DUPLICATE_LINE_NAME;
 import static subway.exception.line.LineExceptionType.NOT_FOUND_LINE;
 import static subway.exception.station.StationExceptionType.NOT_FOUND_STATION;
 
@@ -41,7 +40,7 @@ public class LineService {
     }
 
     public UUID create(final LineCreateCommand command) {
-        validateDuplicateLineName(command);
+        lineValidator.validateDuplicateLineName(command.lineName());
         final Station up = findStationByName(command.upTerminalName());
         final Station down = findStationByName(command.downTerminalName());
         final Section section = new Section(up, down, command.distance());
@@ -49,12 +48,6 @@ public class LineService {
         final Line line = new Line(command.lineName(), new Sections(section));
         lineRepository.save(line);
         return line.id();
-    }
-
-    private void validateDuplicateLineName(final LineCreateCommand command) {
-        if (lineRepository.findByName(command.lineName()).isPresent()) {
-            throw new LineException(DUPLICATE_LINE_NAME);
-        }
     }
 
     private Station findStationByName(final String name) {

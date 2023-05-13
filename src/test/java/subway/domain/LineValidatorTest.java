@@ -12,9 +12,11 @@ import static subway.domain.fixture.StationFixture.역2;
 import static subway.domain.fixture.StationFixture.역3;
 import static subway.domain.fixture.StationFixture.역4;
 import static subway.domain.fixture.StationFixture.역5;
+import static subway.exception.line.LineExceptionType.DUPLICATE_LINE_NAME;
 import static subway.exception.line.LineExceptionType.INCONSISTENT_EXISTING_SECTION;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -29,6 +31,22 @@ class LineValidatorTest {
 
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final LineValidator validator = new LineValidator(lineRepository);
+
+    @Test
+    void 이미_동일한_이름을_가진_노선이_있다면_예외() {
+        // given
+        given(lineRepository.findByName("역1"))
+                .willReturn(Optional.of(new Line("1",
+                        new Section(역1, 역2, 2))));
+
+        // when
+        final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
+                validator.validateDuplicateLineName("역1")
+        ).exceptionType();
+
+        // then
+        assertThat(exceptionType).isEqualTo(DUPLICATE_LINE_NAME);
+    }
 
     @Test
     void 기존_구간과_거리가_동일하지_않다면_예외이다() {
