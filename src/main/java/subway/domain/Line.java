@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -20,7 +21,7 @@ public class Line {
     }
 
     private void validateIsLinked(List<Section> sections) {
-        if (sections.size() + 1 != getStations().size()) {
+        if (getStations().size() != 0 && sections.size() + 1 != getStations().size()) {
             throw new IllegalArgumentException("연결되지 않은 역이 있습니다");
         }
     }
@@ -118,8 +119,9 @@ public class Line {
     public List<Station> getStations() {
         Map<Station, Station> sourceToTarget = sections.stream()
                 .collect(Collectors.toMap(Section::getSource, Section::getTarget));
-        Station firstStation = findFirstStation(sourceToTarget);
-        return getSortedStations(sourceToTarget, firstStation);
+        return findFirstStation(sourceToTarget)
+                .map(station -> getSortedStations(sourceToTarget, station))
+                .orElse(Collections.emptyList());
     }
 
     private List<Station> getSortedStations(Map<Station, Station> sourceToTarget, Station firstStation) {
@@ -134,11 +136,11 @@ public class Line {
         return stations;
     }
 
-    private Station findFirstStation(Map<Station, Station> sourceToTarget) {
+    private Optional<Station> findFirstStation(Map<Station, Station> sourceToTarget) {
         Set<Station> sources = new HashSet<>(sourceToTarget.keySet());
         sources.removeAll(sourceToTarget.values());
         return sources.stream()
-                .findAny().orElseThrow(() -> new IllegalArgumentException("종점역을 찾지 못했습니다"));
+                .findAny();
     }
 
     public String getName() {

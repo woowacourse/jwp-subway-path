@@ -59,7 +59,7 @@ class SubwayTest {
     }
 
     @Test
-    void 노선에_역이_2개만_존재할_때_하나의_역을_삭제하면_노선_전체가_삭제되고_조회되지_않는다() {
+    void 노선에_역이_2개만_존재할_때_하나의_역을_삭제하면_역_전체가_삭제된다() {
         // given
         Subway subway = new Subway();
         Line line = new Line("2호선", List.of(new Section("교대역", "강남역", 10)));
@@ -69,9 +69,8 @@ class SubwayTest {
         subway.removeStation("2호선", "강남역");
 
         // then
-        assertThatThrownBy(() -> subway.findLineByName("2호선"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 노선입니다.");
+        assertThat(subway.getLines()).flatExtracting(Line::getStations)
+                .isEmpty();
     }
 
     @Test
