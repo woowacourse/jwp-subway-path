@@ -2,8 +2,6 @@ package subway.domain.subway;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.subway.Section;
-import subway.domain.subway.Station;
 import subway.exception.DistanceForkedException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -19,7 +17,7 @@ class SectionTest {
         Section section = createSection();
 
         // when
-        boolean result = section.isExistStation(new Station("삼성역"));
+        boolean result = section.hasStation(new Station("삼성역"));
 
         // then
         assertThat(result).isFalse();

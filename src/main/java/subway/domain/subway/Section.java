@@ -16,7 +16,7 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
-    public boolean isExistStation(final Station station) {
+    public boolean hasStation(final Station station) {
         return this.upStation.equals(station) || this.downStation.equals(station);
     }
 

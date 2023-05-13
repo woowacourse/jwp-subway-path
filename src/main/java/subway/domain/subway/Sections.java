@@ -30,7 +30,7 @@ public class Sections {
 
     private boolean isExistStation(final Station station) {
         return sections.stream()
-                .anyMatch(section -> section.isExistStation(station));
+                .anyMatch(section -> section.hasStation(station));
     }
 
     private void validateSection(final boolean isExistUpStation, final boolean isExistDownStation) {
