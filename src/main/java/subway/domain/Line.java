@@ -1,24 +1,127 @@
 package subway.domain;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
+
+import static subway.domain.Direction.UP;
 
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final Map<Station, Path> paths;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(Long id, String name, String color) {
+    public Line(final Long id, final String name, final String color, final Map<Station, Path> paths) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.paths = paths;
+    }
+
+    public Line(final String name, final String color) {
+        this(null, name, color, new HashMap<>());
+    }
+
+    public Line(final Long id, final String name, final String color) {
+        this(id, name, color, new HashMap<>());
+    }
+
+    public Line setPath(final Map<Station, Path> paths) {
+        return new Line(id, name, color, paths);
+    }
+
+    public List<Station> sortStations() {
+        final Station start = computeStartStation();
+        final List<Station> result = new ArrayList<>();
+        result.add(start);
+        Station current = start;
+        while (result.size() != paths.size() + 1) {
+            current = paths.get(current).getNext();
+            result.add(current);
+        }
+        return result;
+    }
+
+    private Station computeStartStation() {
+        final List<Station> ups = new ArrayList<>(paths.keySet());
+        final List<Station> downs = paths.values().stream()
+                .map(Path::getNext)
+                .collect(Collectors.toList());
+        ups.removeAll(downs);
+        return ups.get(0);
+    }
+
+    public void addPath(
+            final Station targetStation,
+            final Station addStation,
+            final Integer distance,
+            final Direction direction
+    ) {
+        final List<Station> stations = sortStations();
+        final int index = stations.indexOf(targetStation);
+        if (direction == UP) {
+            if (paths.isEmpty()) {
+                paths.put(addStation, new Path(targetStation, distance));
+            }
+            if (index == 0) {
+                paths.put(addStation, new Path(targetStation, distance));
+                return;
+            }
+            final Station stationBefore = stations.get(index - 1);
+            final Path path = paths.get(stationBefore);
+            validatePathDistance(distance, path);
+            paths.put(stationBefore, new Path(addStation, path.getDistance() - distance));
+            paths.put(addStation, new Path(targetStation, distance));
+        }
+
+        if (paths.isEmpty()) {
+            paths.put(targetStation, new Path(addStation, distance));
+        }
+        if (index == stations.size() - 1) {
+            paths.put(targetStation, new Path(addStation, distance));
+            return;
+        }
+        final Path path = paths.get(targetStation);
+        validatePathDistance(distance, path);
+        paths.put(targetStation, new Path(addStation, distance));
+        paths.put(addStation, new Path(path.getNext(), path.getDistance() - distance));
+
+    }
+
+    private void validatePathDistance(final Integer distance, final Path path) {
+        if (path.isShorterThan(distance)) {
+            throw new IllegalArgumentException("기존 경로보다 짧은 경로를 추가해야 합니다.");
+        }
+    }
+
+    public void removeStation(final Station station) {
+        final List<Station> stations = sortStations();
+        final int index = stations.indexOf(station);
+        if (index == -1) {
+            throw new IllegalArgumentException("삭제할 수 없는 역입니다.");
+        }
+        if (paths.size() == 1) {
+            paths.clear();
+            return;
+        }
+        if (index == 0) {
+            paths.remove(station);
+            return;
+        }
+        if (index == stations.size() - 1) {
+            paths.remove(stations.get(index - 1));
+            return;
+        }
+        final Station stationBefore = stations.get(index - 1);
+        final Path pathBefore = paths.get(stationBefore);
+        final Path path = paths.get(station);
+        final int distance = path.sumDistance(pathBefore);
+        paths.remove(station);
+        paths.put(stationBefore, new Path(path.getNext(), distance));
     }
 
     public Long getId() {
@@ -31,6 +134,10 @@ public class Line {
 
     public String getColor() {
         return color;
+    }
+
+    public Map<Station, Path> getPaths() {
+        return paths;
     }
 
     @Override

@@ -1,20 +1,27 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LineWithStationResponse;
+import subway.persistence.dao.LineDao;
+import subway.persistence.repository.SubwayRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class LineService {
     private final LineDao lineDao;
+    private final SubwayRepository subwayRepository;
 
-    public LineService(LineDao lineDao) {
+    public LineService(final LineDao lineDao, final SubwayRepository subwayRepository) {
         this.lineDao = lineDao;
+        this.subwayRepository = subwayRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -33,15 +40,6 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
@@ -50,4 +48,16 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
+    public LineWithStationResponse findLineById(final Long id) {
+        final Line line = subwayRepository.findLine(id);
+        final List<Station> stations = line.sortStations();
+        return LineWithStationResponse.from(line, stations);
+    }
+
+    public List<LineWithStationResponse> findAllLines() {
+        final List<Line> lines = subwayRepository.findLines();
+        return lines.stream()
+                .map(line -> LineWithStationResponse.from(line, line.sortStations()))
+                .collect(Collectors.toList());
+    }
 }
