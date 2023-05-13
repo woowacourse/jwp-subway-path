@@ -1,10 +1,8 @@
 package subway.section.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import subway.station.domain.Station;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SectionTest {
@@ -20,5 +18,19 @@ class SectionTest {
         
         // then
         assertThat(section).isNotNull();
+    }
+    
+    @Test
+    void 추가할_역이_왼쪽인_구간_생성() {
+        // given
+        final Section section = new Section("강남역", "역삼역", 3L);
+        final String leftAdditionalStation = "선릉역";
+        final long additionalDistance = 5L;
+        
+        // when
+        final Section createdLeftSection = section.createLeftSection(leftAdditionalStation, additionalDistance);
+        
+        // then
+        assertThat(createdLeftSection).isEqualTo(new Section("선릉역", "강남역", additionalDistance));
     }
 }
