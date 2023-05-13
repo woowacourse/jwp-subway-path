@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.config.ServiceTestConfig;
 import subway.dto.StationResponse;
-import subway.ui.v2.CreateStationRequest;
+import subway.application.request.CreateStationRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

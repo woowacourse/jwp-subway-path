@@ -3,6 +3,7 @@ package subway.ui.v2;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import subway.application.request.CreateStationRequest;
 import subway.application.v2.StationServiceV2;
 import subway.dto.StationResponse;
 

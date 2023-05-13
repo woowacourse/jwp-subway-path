@@ -3,6 +3,7 @@ package subway.dao.v2;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import subway.config.DaoTestConfig;
+import subway.dao.entity.StationEntity;
 import subway.domain.StationDomain;
 
 import java.util.Optional;
@@ -22,7 +23,7 @@ class StationDaoV2Test extends DaoTestConfig {
     @Test
     void 역_저장() {
         // when
-        final Long saveStationId = stationDao.insert("잠실");
+        final Long saveStationId = stationDao.insert(new StationEntity("잠실"));
 
         // expect
         assertThat(saveStationId)
@@ -33,12 +34,10 @@ class StationDaoV2Test extends DaoTestConfig {
     @Test
     void 역_조회() {
         // given
-        final Long saveStationId = stationDao.insert("잠실");
+        final Long saveStationId = stationDao.insert(new StationEntity("잠실"));
 
         // when
         final Optional<StationDomain> maybeStation = stationDao.findByStationId(saveStationId);
-
-        assertThat(maybeStation).isPresent();
 
         // expect
         assertAll(

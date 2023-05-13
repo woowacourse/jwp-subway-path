@@ -3,15 +3,16 @@ package subway.dao.v2;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.dao.entity.StationEntity;
 import subway.domain.StationDomain;
 
 import java.util.Optional;
 
-import static subway.dao.support.SqlHelper.*;
+import static subway.dao.support.SqlHelper.sqlHelper;
 
 @Repository
 public class StationDaoV2 {
@@ -32,9 +33,8 @@ public class StationDaoV2 {
                     rs.getString("name")
             );
 
-    public Long insert(final String stationName) {
-        final SqlParameterSource paramSource = new MapSqlParameterSource()
-                .addValue("name", stationName);
+    public Long insert(final StationEntity stationEntity) {
+        final SqlParameterSource paramSource = new BeanPropertySqlParameterSource(stationEntity);
 
         return insertAction.executeAndReturnKey(paramSource).longValue();
     }
