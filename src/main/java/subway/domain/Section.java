@@ -25,6 +25,10 @@ public class Section {
         }
     }
 
+    public boolean contains(final Station station) {
+        return upStation.equals(station) || downStation.equals(station);
+    }
+
     public Station getUpStation() {
         return upStation;
     }

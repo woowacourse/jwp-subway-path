@@ -1,9 +1,7 @@
 package subway.domain;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import subway.exception.invalid.SectionInvalidException;
-import subway.exception.notfound.SectionNotFoundException;
 
 public class Sections {
 
@@ -21,7 +19,8 @@ public class Sections {
         boolean isExistDownStation = isExistStation(downStation);
         validateSection(isExistUpStation, isExistDownStation);
 
-        handleInsertCase(SectionCase.findInsertCase(isExistUpStation, isExistDownStation), section);
+        final InsertCase insertCase = InsertCase.of(isExistUpStation, isExistDownStation);
+        insertCase.execute(this, section);
     }
 
     public boolean isExistStation(final Station station) {
@@ -29,7 +28,7 @@ public class Sections {
                 .anyMatch(nowStation -> nowStation.isExistStation(station));
     }
 
-    public void validateSection(final boolean isExistUpStation, final boolean isExistDownStation) {
+    private void validateSection(final boolean isExistUpStation, final boolean isExistDownStation) {
         validateSeparatedSection(isExistUpStation, isExistDownStation);
         validateDuplicatedSection(isExistUpStation, isExistDownStation);
     }
@@ -40,38 +39,23 @@ public class Sections {
         }
     }
 
-    private static void validateDuplicatedSection(final boolean isExistUpStation, final boolean isExistDownStation) {
+    private void validateDuplicatedSection(final boolean isExistUpStation, final boolean isExistDownStation) {
         if (isExistUpStation && isExistDownStation) {
             throw new SectionInvalidException();
         }
     }
 
-    private void handleInsertCase(final SectionCase sectionCase, final Section section) {
-        if (sectionCase == SectionCase.EMPTY_SECTIONS) {
-            sections.add(section);
-        }
+    public void deleteSectionByStation(final Station station) {
+        final int nearStationCount = getNearStationCount(station);
 
-        if (sectionCase == SectionCase.EXIST_ONLY_UP_STATION) {
-            handleExistOnlyUpStation(section);
-        }
-
-        if (sectionCase == SectionCase.EXIST_ONLY_DOWN_STATION) {
-            handleExistOnlyDownStation(section);
-        }
+        final DeleteCase deleteCase = DeleteCase.from(nearStationCount);
+        deleteCase.execute(this, station);
     }
 
-    private void handleExistOnlyUpStation(final Section section) {
-        Station station = section.getUpStation();
-        if (isExistAsUpStation(station)) {
-            Section sectionWithUpStation = findSectionWithUpStation(station);
-            sectionWithUpStation.validateDistance(section.getDistance());
-            sections.remove(sectionWithUpStation);
-            sections.add(section);
-            sections.add(new Section(section.getDownStation(), sectionWithUpStation.getDownStation(), sectionWithUpStation.getDistance() - section.getDistance()));
-            return;
-        }
-
-        sections.add(section);
+    private int getNearStationCount(final Station station) {
+        return (int) sections.stream()
+                .filter(section -> section.contains(station))
+                .count();
     }
 
     public Section findSectionWithUpStation(final Station station) {
@@ -79,21 +63,6 @@ public class Sections {
                 .filter(nowSection -> nowSection.getUpStation().equals(station))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-
-    private void handleExistOnlyDownStation(final Section section) {
-        Station station = section.getDownStation();
-        if (isExistAsUpStation(station)) {
-            sections.add(section);
-            return;
-        }
-
-        Section sectionWithDownStation = findSectionWithDownStation(section.getDownStation());
-        sectionWithDownStation.validateDistance(section.getDistance());
-        sections.remove(sectionWithDownStation);
-        sections.add(section);
-        sections.add(new Section(sectionWithDownStation.getUpStation(), section.getUpStation(), sectionWithDownStation.getDistance() - section.getDistance()));
     }
 
     public boolean isExistAsUpStation(final Station station) {
@@ -106,48 +75,6 @@ public class Sections {
                 .filter(nowSection -> nowSection.getDownStation().equals(station))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-    public void deleteSectionByStation(final Station station) {
-        SectionCase deleteCase = SectionCase.findDeleteCase(getNearStationCount(station));
-        handleDeleteCase(deleteCase, station);
-    }
-
-    private int getNearStationCount(final Station station) {
-        return (int) sections.stream()
-                .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
-                .count();
-    }
-
-    private void handleDeleteCase(final SectionCase deleteCase, final Station station) {
-        if (deleteCase == SectionCase.END_POINT_STATION) {
-            Section targetSection = sections.stream()
-                    .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
-                    .findAny()
-                    .orElseThrow(SectionNotFoundException::new);
-
-            sections.remove(targetSection);
-        }
-
-        if (deleteCase == SectionCase.MIDDLE_POINT_STATION) {
-            List<Section> targetSections = sections.stream()
-                    .filter(section -> section.getUpStation().equals(station) || section.getDownStation().equals(station))
-                    .collect(Collectors.toList());
-
-            Section upStationTargetSection = targetSections.stream()
-                    .filter(section -> section.getUpStation().equals(station))
-                    .findAny()
-                    .orElseThrow(SectionNotFoundException::new);
-
-            Section downStationTargetSection = targetSections.stream()
-                    .filter(section -> section.getDownStation().equals(station))
-                    .findAny()
-                    .orElseThrow(SectionNotFoundException::new);
-
-            sections.remove(upStationTargetSection);
-            sections.remove(downStationTargetSection);
-            sections.add(new Section(downStationTargetSection.getUpStation(), upStationTargetSection.getDownStation(), upStationTargetSection.getDistance() + downStationTargetSection.getDistance()));
-        }
     }
 
     public List<Section> getSections() {
