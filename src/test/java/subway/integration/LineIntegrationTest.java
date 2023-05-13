@@ -17,7 +17,8 @@ import org.springframework.http.MediaType;
 import subway.dto.ErrorResponse;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationsResponse;
+import subway.dto.StationResponse;
+import subway.dto.StationSaveRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -155,7 +156,6 @@ public class LineIntegrationTest extends IntegrationTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            StationsResponse resultResponse = response.as(StationsResponse.class);
         }
     }
 
@@ -218,4 +218,130 @@ public class LineIntegrationTest extends IntegrationTest {
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
         }
     }
+
+    @DisplayName("지하철 노선에 역 등록")
+    @Nested
+    class createStation extends IntegrationTest {
+
+        @DisplayName("역을 추가한다.")
+        @Test
+        void success() {
+            lineRequest1 = new LineRequest("2호선", "교대역", "강남역", 10);
+            // given
+            ExtractableResponse<Response> createResponse = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(lineRequest1)
+                    .when().post("/lines")
+                    .then().log().all().
+                    extract();
+
+            // when
+            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+            final StationSaveRequest stationSaveRequest = new StationSaveRequest("교대역", "민트역", 5);
+            ExtractableResponse<Response> response = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(stationSaveRequest)
+                    .when().post("/lines/{lineId}/stations", lineId)
+                    .then().log().all()
+                    .extract();
+            final StationResponse stationResponse = response.as(StationResponse.class);
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(stationResponse.getName()).isEqualTo("민트역");
+        }
+
+        @DisplayName("추가한 역이 기존의 노선과 연결되지 않는다면 예외가 발생한다.")
+        @Test
+        void notConnected_fail() {
+            lineRequest1 = new LineRequest("2호선", "교대역", "강남역", 10);
+            // given
+            ExtractableResponse<Response> createResponse = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(lineRequest1)
+                    .when().post("/lines")
+                    .then().log().all().
+                    extract();
+
+            // when
+            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+            final StationSaveRequest stationSaveRequest = new StationSaveRequest("역삼역", "선릉역", 5);
+            ExtractableResponse<Response> response = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(stationSaveRequest)
+                    .when().post("/lines/{lineId}/stations", lineId)
+                    .then().log().all()
+                    .extract();
+            final String errorMessage = response.jsonPath().getString("message");
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertThat(errorMessage).isEqualTo("연결되지 않은 역이 있습니다");
+        }
+
+        @DisplayName("기존 노선이 가지고 있는 구간과 완전히 겹치는 구간을 추가하면 예외가 발생한다.")
+        @Test
+        void sectionAlreadyExists_fail() {
+            lineRequest1 = new LineRequest("2호선", "교대역", "강남역", 10);
+            // given
+            ExtractableResponse<Response> createResponse = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(lineRequest1)
+                    .when().post("/lines")
+                    .then().log().all().
+                    extract();
+
+            // when
+            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+            final StationSaveRequest stationSaveRequest = new StationSaveRequest("교대역", "강남역", 5);
+            ExtractableResponse<Response> response = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(stationSaveRequest)
+                    .when().post("/lines/{lineId}/stations", lineId)
+                    .then().log().all()
+                    .extract();
+            final String errorMessage = response.jsonPath().getString("message");
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertThat(errorMessage).isEqualTo("추가하려는 역은 이미 노선에 존재합니다.");
+        }
+
+        @DisplayName("A-C 구간 사이로 들어간 B-C 구간의 길이가 A-C 구간의 길이보다 길다면 예외가 발생한다")
+        @Test
+        void invalidSectionDistance_fail() {
+            lineRequest1 = new LineRequest("2호선", "교대역", "역삼역", 20);
+            // given
+            ExtractableResponse<Response> createResponse = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(lineRequest1)
+                    .when().post("/lines")
+                    .then().log().all().
+                    extract();
+
+            // when
+            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+            final StationSaveRequest stationSaveRequest = new StationSaveRequest("강남역", "역삼역", 30);
+            ExtractableResponse<Response> response = RestAssured
+                    .given().log().all()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(stationSaveRequest)
+                    .when().post("/lines/{lineId}/stations", lineId)
+                    .then().log().all()
+                    .extract();
+            final String errorMessage = response.jsonPath().getString("message");
+
+            // then
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertThat(errorMessage).isEqualTo("거리는 음수가 될 수 없습니다.");
+        }
+    }
+
 }

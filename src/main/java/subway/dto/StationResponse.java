@@ -3,8 +3,12 @@ package subway.dto;
 import subway.entity.StationEntity;
 
 public class StationResponse {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
+
+    public StationResponse(final String name) {
+        this(null, name);
+    }
 
     public StationResponse(Long id, String name) {
         this.id = id;
