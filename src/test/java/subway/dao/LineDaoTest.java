@@ -193,9 +193,9 @@ public class LineDaoTest {
         final int deletedCount = lineDao.deleteById(저장된_이호선_엔티티_아이디);
 
         // then
-        final Optional<LineEntity> product = lineDao.findById(저장된_이호선_엔티티_아이디);
+        final Optional<LineEntity> lineEntity = lineDao.findById(저장된_이호선_엔티티_아이디);
 
-        assertThat(product).isEmpty();
+        assertThat(lineEntity).isEmpty();
         assertThat(deletedCount).isEqualTo(1);
     }
 

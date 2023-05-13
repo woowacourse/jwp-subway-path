@@ -3,27 +3,11 @@ package subway.domain.station;
 import java.util.Objects;
 
 public class Station {
-    private Long id;
-    private String name;
 
-    public Station() {
-    }
-
-    public Station(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    private final String name;
 
     public Station(String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -41,5 +25,9 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public String getName() {
+        return name;
     }
 }

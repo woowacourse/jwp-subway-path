@@ -6,6 +6,7 @@ import java.util.Objects;
 import subway.exception.GlobalException;
 
 public class StationName {
+
     private static final int MAX_NAME_LENGTH = 10;
     private static final int MIN_NAME_LENGTH = 3;
 
