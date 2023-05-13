@@ -10,13 +10,6 @@ import java.util.List;
 
 public class StationFixtures {
 
-    /**
-     * 노선 : 2호선
-     * 추가할 역 : B(가운데 역), D(상행 종점에 추가), E(하행 종점에 추가)
-     * 기존 : A - C (최초)
-     * 최종 : 'D' - A - 'B' - C - 'E'
-     */
-
     public static class STATION_A {
         public static final long ID = 1L;
         public static final String NAME = "A역";

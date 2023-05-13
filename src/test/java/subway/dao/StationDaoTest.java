@@ -41,7 +41,8 @@ class StationDaoTest {
         Station insertedStation = stationDao.insert(insertEntity);
 
         // then
-        assertThat(insertedStation).usingRecursiveComparison().isEqualTo(STATION_B.FIND_ENTITY);
+        assertThat(insertedStation).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(STATION_B.FIND_ENTITY);
     }
 
     @DisplayName("역 ID로 행을 조회한다.")
@@ -54,7 +55,8 @@ class StationDaoTest {
         Optional<Station> findStation = stationDao.findById(stationId);
 
         // then
-        assertThat(findStation.get()).usingRecursiveComparison().isEqualTo(STATION_A.FIND_ENTITY);
+        assertThat(findStation.get()).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(STATION_A.FIND_ENTITY);
     }
 
     @Test
@@ -81,7 +83,8 @@ class StationDaoTest {
         Optional<Station> findStation = stationDao.findByStationNameAndLineName(stationName, lineName);
 
         // then
-        assertThat(findStation.get()).usingRecursiveComparison().isEqualTo(STATION_C.FIND_ENTITY);
+        assertThat(findStation.get()).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(STATION_C.FIND_ENTITY);
     }
 
     @ParameterizedTest

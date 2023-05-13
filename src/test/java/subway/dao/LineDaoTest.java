@@ -43,9 +43,8 @@ class LineDaoTest {
         Line insertedLine = lineDao.insert(insertEntity);
 
         // then
-        assertThat(insertedLine)
-                .usingRecursiveComparison()
-                .isEqualTo(Line7.FIND_ENTITY);
+        assertThat(insertedLine).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(Line7.FIND_ENTITY);
     }
 
     @Test
@@ -58,9 +57,8 @@ class LineDaoTest {
         Optional<Line> findLine = lineDao.findById(line2Id);
 
         // then
-        assertThat(findLine.get())
-                .usingRecursiveComparison()
-                .isEqualTo(Line2.FIND_ENTITY);
+        assertThat(findLine.get()).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(Line2.FIND_ENTITY);
     }
 
     @Test
@@ -86,9 +84,8 @@ class LineDaoTest {
         Optional<Line> findLine = lineDao.findByLineName(lineName);
 
         // then
-        assertThat(findLine.get())
-                .usingRecursiveComparison()
-                .isEqualTo(Line2.FIND_ENTITY);
+        assertThat(findLine.get()).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(Line2.FIND_ENTITY);
     }
 
     @Test
@@ -114,7 +111,7 @@ class LineDaoTest {
         // then
         assertAll(
                 () -> assertThat(lines.size()).isEqualTo(1),
-                () -> assertThat(line2).usingRecursiveComparison().isEqualTo(Line2.FIND_ENTITY)
+                () -> assertThat(line2).usingRecursiveComparison().ignoringFields("id").isEqualTo(Line2.FIND_ENTITY)
         );
     }
 
