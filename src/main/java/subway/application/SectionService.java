@@ -32,17 +32,12 @@ public class SectionService {
     }
 
     public void saveSection(Long lineId, SectionCreateRequest sectionCreateRequest) {
-        String startStationName = sectionCreateRequest.getStartStationName();
-        String endStationName = sectionCreateRequest.getEndStationName();
-        validateStation(startStationName, endStationName);
-        addSection(lineId, new Section(new Station(startStationName), new Station(endStationName),
-                sectionCreateRequest.getDistance()));
-    }
-
-    private void validateStation(String startStationName, String endStationName) {
-        if (!stationDao.existsBy(startStationName) || !stationDao.existsBy(endStationName)) {
+        Optional<Station> startStation = stationDao.findByName(sectionCreateRequest.getStartStationName());
+        Optional<Station> endStation = stationDao.findByName(sectionCreateRequest.getEndStationName());
+        if (startStation.isEmpty() || endStation.isEmpty()) {
             throw new StationNotFoundException();
         }
+        addSection(lineId, new Section(startStation.get(), endStation.get(), sectionCreateRequest.getDistance()));
     }
 
     private void addSection(Long lineId, Section newSection) {
