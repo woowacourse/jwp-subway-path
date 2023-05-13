@@ -1,7 +1,6 @@
 package subway.domain;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +37,11 @@ public class AdjustPath {
     }
 
     public Direction findEndStationPathDirection() {
-        final Collection<PathInfo> pathInfos = path.values();
-
-        if (pathInfos.size() != 1) {
+        if (!isTerminalStation()) {
             throw new IllegalArgumentException("해당 역은 종점역이 아닙니다.");
         }
 
-        return pathInfos.stream()
+        return path.values().stream()
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 노선에 등록된 역이 없습니다."))
                 .getDirection();
@@ -54,14 +51,6 @@ public class AdjustPath {
         if (!isConnect(station)) {
             throw new IllegalArgumentException(NOT_CONNECTED_STATION_MESSAGE);
         }
-    }
-
-    public boolean isEnd() {
-        return path.keySet().size() == END_STATION_PATH_SIZE;
-    }
-
-    public boolean isConnect(final Station station) {
-        return path.containsKey(station);
     }
 
     public Station findStationByDirection(final Direction direction) {
@@ -74,5 +63,13 @@ public class AdjustPath {
 
     public List<Station> findAllStation() {
         return new ArrayList<>(path.keySet());
+    }
+
+    public boolean isTerminalStation() {
+        return path.keySet().size() == END_STATION_PATH_SIZE;
+    }
+
+    public boolean isConnect(final Station station) {
+        return path.containsKey(station);
     }
 }

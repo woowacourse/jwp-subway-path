@@ -68,6 +68,12 @@ public class Station {
                 .getDistance();
     }
 
+    public Distance calculateMiddleDistance(final Station targetStation, final Distance distance) {
+        final PathInfo pathInfo = adjustPath.findPathInfoByStation(targetStation);
+
+        return pathInfo.calculateMiddleDistance(distance);
+    }
+
     public List<Station> findAdjustStation() {
         return adjustPath.findAllStation();
     }
@@ -93,7 +99,7 @@ public class Station {
     }
 
     public boolean isEnd() {
-        return adjustPath.isEnd();
+        return adjustPath.isTerminalStation();
     }
 
     @Override
