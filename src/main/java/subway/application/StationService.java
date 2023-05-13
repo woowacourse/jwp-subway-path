@@ -1,12 +1,11 @@
 package subway.application;
 
+import java.util.ArrayList;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.Station;
 import subway.dto.StationResponse;
-import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
 import java.util.List;
@@ -25,16 +24,38 @@ public class StationService {
         this.lineDao = lineDao;
     }
 
-    private Line generateLine(Long lineId) {
-        LineEntity lineEntity = lineDao.findById(lineId);
-        Long headStationId = lineEntity.getHeadStation();
-        StationEntity headEntity = stationDao.findById(headStationId);
-        List<StationEntity> entities = stationDao.findByLineId(lineId);
-
-        Station headStation = Station.from(entities, headEntity);
-        Line line = Line.from(lineEntity, headStation);
-        return line;
+    public List<StationResponse> findLineStationResponsesById(Long lineId) {
+        List<StationEntity> rawStations = stationDao.findByLineId(lineId);
+        StationEntity currentStation = stationDao.findHeadStationByLineId(lineId);
+        return sortStations(rawStations, currentStation).stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
+
+    private static List<StationEntity> sortStations(List<StationEntity> rawStations,
+        StationEntity currentStation) {
+        List<StationEntity> sortedStations = new ArrayList<>(List.of(currentStation));
+        while (currentStation.getNext() != EMPTY_STATION_ID) {
+            StationEntity finalCurrentStation = currentStation;
+            currentStation = rawStations.stream()
+                .filter(entity -> Objects.equals(entity.getId(), finalCurrentStation.getNext()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("노선에 잘못된 역 정보가 포함되어 있습니다."));
+            sortedStations.add(currentStation);
+        }
+        return sortedStations;
+    }
+
+//    private Line generateLine(Long lineId) {
+//        LineEntity lineEntity = lineDao.findById(lineId);
+//        Long headStationId = lineEntity.getHeadStation();
+//        StationEntity headEntity = stationDao.findById(headStationId);
+//        List<StationEntity> entities = stationDao.findByLineId(lineId);
+//
+//        Station headStation = Station.from(entities, headEntity);
+//        Line line = Line.from(lineEntity, headStation);
+//        return line;
+//    }
 
 //    public StationResponse saveStation(StationRequest stationRequest) {
 //        StationEntity station = stationDao.insert(new Station(stationRequest.getName()));

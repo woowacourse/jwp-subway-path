@@ -5,12 +5,10 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
-import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.entity.StationEntity;
 
@@ -57,9 +55,9 @@ public class StationController {
 //        return ResponseEntity.ok().build();
 //    }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
-        stationService.deleteStationById(id);
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<List<StationResponse>> deleteStation(@RequestBody String name,@PathVariable Long lineId ) {
+        stationService.deleteStation(lineId, name);
         return ResponseEntity.noContent().build();
     }
 

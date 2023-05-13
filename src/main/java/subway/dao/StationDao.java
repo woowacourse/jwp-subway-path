@@ -17,13 +17,23 @@ import java.util.Map;
 public class StationDao {
 
     private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
-            new StationEntity(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getLong("next_station"),
-                    rs.getInt("distance"),
-                    rs.getLong("line_id")
-            );
+        new StationEntity(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getLong("next_station"),
+            rs.getInt("distance"),
+            rs.getLong("line_id")
+        );
+
+    private final RowMapper<StationEntity> rowMapperWithLine = (rs, rowNum) ->
+        new StationEntity(
+            rs.getLong("STATION.id"),
+            rs.getString("STATION.name"),
+            rs.getLong("STATION.next_station"),
+            rs.getInt("STATION.distance"),
+            rs.getLong("STATION.line_id")
+        );
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -88,6 +98,12 @@ public class StationDao {
         } catch (EmptyResultDataAccessException exception) {
             throw new IllegalArgumentException(String.format("노선에 %s이 존재하지 않습니다.", name));
         }
+    }
+    public StationEntity findHeadStationByLineId(Long lineId) {
+        String sql = "select * from STATION "
+            + "left outer join LINE on STATION.id = LINE.head_station "
+            + "where LINE.id = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapperWithLine, lineId);
     }
 
     public boolean isDownEndStation(Long lineId, String name) {
