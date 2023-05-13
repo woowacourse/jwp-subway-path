@@ -1,14 +1,13 @@
 package subway.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.domain.Station;
 import subway.dto.station.StationRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
 import subway.repository.StationRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {

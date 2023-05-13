@@ -16,8 +16,12 @@ public class Station {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Station)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Station)) {
+            return false;
+        }
         Station station = (Station) o;
         return Objects.equals(name, station.name);
     }

@@ -40,10 +40,15 @@ public class SectionEntity {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof SectionEntity)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof SectionEntity)) {
+            return false;
+        }
         SectionEntity that = (SectionEntity) o;
-        return Objects.equals(sectionId, that.sectionId) && Objects.equals(lineId, that.lineId) && Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId, that.downStationId) && Objects.equals(distance, that.distance);
+        return Objects.equals(sectionId, that.sectionId) && Objects.equals(lineId, that.lineId) && Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId, that.downStationId)
+                && Objects.equals(distance, that.distance);
     }
 
     @Override

@@ -1,5 +1,7 @@
 package subway.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.LineMap;
@@ -9,9 +11,6 @@ import subway.dto.station.LineMapResponse;
 import subway.dto.station.StationResponse;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SubwayMapService {

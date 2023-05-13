@@ -22,8 +22,12 @@ public class StationEntity {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof StationEntity)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof StationEntity)) {
+            return false;
+        }
         StationEntity that = (StationEntity) o;
         return Objects.equals(stationId, that.stationId) && Objects.equals(name, that.name);
     }

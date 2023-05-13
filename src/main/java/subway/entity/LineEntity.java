@@ -34,8 +34,12 @@ public class LineEntity {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof LineEntity)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof LineEntity)) {
+            return false;
+        }
         LineEntity that = (LineEntity) o;
         return Objects.equals(lineId, that.lineId) && Objects.equals(name, that.name) && Objects.equals(color, that.color);
     }

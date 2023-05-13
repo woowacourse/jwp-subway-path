@@ -1,8 +1,7 @@
 package subway.domain;
 
-import subway.exception.invalid.DistanceInvalidException;
-
 import java.util.Objects;
+import subway.exception.invalid.DistanceInvalidException;
 
 public class Section {
 
@@ -40,8 +39,12 @@ public class Section {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Section)) return false;
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Section)) {
+            return false;
+        }
         Section section = (Section) o;
         return Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance, section.distance);
     }
