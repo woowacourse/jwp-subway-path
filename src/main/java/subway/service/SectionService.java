@@ -2,46 +2,43 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
-import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 
 @Service
 public class SectionService {
 
-    private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
 
-    public SectionService(final LineRepository lineRepository, final SectionRepository sectionRepository) {
-        this.lineRepository = lineRepository;
+    public SectionService(final SectionRepository sectionRepository) {
         this.sectionRepository = sectionRepository;
     }
 
     @Transactional
     public void insertSection(final SectionCreateRequest request) {
-        Sections sections = sectionRepository.findSectionsByLineName(request.getLineName());
-        Line line = lineRepository.findByLineNameAndSections(request.getLineName(), sections);
+        final Long requestLineNumber = request.getLineNumber();
+        final Sections sections = sectionRepository.findSectionsByLineNumber(requestLineNumber);
 
-        Station requestUpStation = new Station(request.getUpStation());
-        Station requestDownStation = new Station(request.getDownStation());
-        Section section = new Section(requestUpStation, requestDownStation, request.getDistance());
-        line.addSection(section);
+        final Station requestUpStation = new Station(request.getUpStation());
+        final Station requestDownStation = new Station(request.getDownStation());
+        final Section requestSection = new Section(requestUpStation, requestDownStation, request.getDistance());
+        sections.addSection(requestSection);
 
-        lineRepository.updateLine(sections, line.getLineNumber());
+        sectionRepository.updateSectionsByLineNumber(sections, requestLineNumber);
     }
 
     @Transactional
     public void deleteSection(final SectionDeleteRequest request) {
-        Long lineNumber = request.getLineNumber();
-        Station station = new Station(request.getStation());
-        Sections sections = sectionRepository.findSectionsByLineNumber(lineNumber);
-        sections.deleteSectionByStation(station);
+        final Long requestLineNumber = request.getLineNumber();
+        final Station requestStation = new Station(request.getStation());
 
-        lineRepository.updateLine(sections, lineNumber);
+        final Sections sections = sectionRepository.findSectionsByLineNumber(requestLineNumber);
+        sections.deleteSectionByStation(requestStation);
+
+        sectionRepository.updateSectionsByLineNumber(sections, requestLineNumber);
     }
 }

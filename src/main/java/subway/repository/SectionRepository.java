@@ -1,5 +1,7 @@
 package subway.repository;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.line.LineDao;
 import subway.dao.section.SectionDao;
@@ -10,9 +12,6 @@ import subway.domain.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class SectionRepository {
@@ -28,19 +27,19 @@ public class SectionRepository {
     }
 
     public Sections findSectionsByLineNumber(final Long lineNumber) {
-        LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
+        final LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
         return getSections(lineEntity);
     }
 
     private Sections getSections(final LineEntity lineEntity) {
-        List<SectionEntity> sectionsByLineId = sectionDao.findSectionsByLineId(lineEntity.getLineId());
+        final List<SectionEntity> sectionsByLineId = sectionDao.findSectionsByLineId(lineEntity.getLineId());
 
-        List<Section> sections = sectionsByLineId.stream()
+        final List<Section> sections = sectionsByLineId.stream()
                 .map(sectionEntity -> {
-                    StationEntity upStationEntity = stationDao.findById(sectionEntity.getUpStationId());
-                    StationEntity downStationEntity = stationDao.findById(sectionEntity.getDownStationId());
-                    Station upStation = new Station(upStationEntity.getName());
-                    Station downStation = new Station(downStationEntity.getName());
+                    final StationEntity upStationEntity = stationDao.findById(sectionEntity.getUpStationId());
+                    final StationEntity downStationEntity = stationDao.findById(sectionEntity.getDownStationId());
+                    final Station upStation = new Station(upStationEntity.getName());
+                    final Station downStation = new Station(downStationEntity.getName());
 
                     return new Section(upStation, downStation, sectionEntity.getDistance());
                 })
@@ -49,8 +48,20 @@ public class SectionRepository {
         return new Sections(sections);
     }
 
-    public Sections findSectionsByLineName(final String lineName) {
-        LineEntity lineEntity = lineDao.findByName(lineName);
-        return getSections(lineEntity);
+    public void updateSectionsByLineNumber(final Sections sections, final Long lineNumber) {
+        final LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
+        final List<SectionEntity> sectionEntities = sections.getSections().stream()
+                .map(section -> {
+                    final Station upStation = section.getUpStation();
+                    final Station downStation = section.getDownStation();
+                    final StationEntity upStationEntity = stationDao.findByName(upStation.getName());
+                    final StationEntity downStationEntity = stationDao.findByName(downStation.getName());
+
+                    return new SectionEntity(null, lineEntity.getLineId(), upStationEntity.getStationId(), downStationEntity.getStationId(), section.getDistance());
+                })
+                .collect(Collectors.toList());
+
+        sectionDao.deleteAllByLineId(lineEntity.getLineId());
+        sectionDao.insertBatchSections(sectionEntities);
     }
 }
