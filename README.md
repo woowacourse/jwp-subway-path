@@ -52,14 +52,14 @@ Request {
 
 Response Headers {
     Status : 201
-    Location : /subway/lines/{line_id}
+    Location : /subway/lines/{lineId}
 }
 ```
 
 노선에 역 구간 등록
 
 ```text
-POST /subway/lines/{line_id}/sections
+POST /subway/lines/{lineId}/sections
 
 Request {
     startStation : "회기",
@@ -75,7 +75,7 @@ Response Headers {
 노선에 역 제거
 
 ```text
-DELETE /subway/lines/{lineId}/stations/{station_id}
+DELETE /subway/lines/{lineId}/stations/{stationId}
 
 Response Headers {
     Status : 204
@@ -85,7 +85,7 @@ Response Headers {
 노선 상세 조회
 
 ```text
-GET /subway/lines/{line_id}
+GET /subway/lines/{lineId}
 
 Response Headers {
     Status : 200
