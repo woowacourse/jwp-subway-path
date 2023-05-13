@@ -23,7 +23,11 @@ public class Section {
         this.distance = distance;
     }
     
-    public Section createLeftSection(final String leftAdditionalStation, final long additionalDistance) {
-        return new Section(leftAdditionalStation, leftStation.getName(), additionalDistance);
+    public Section createLeftSection(final String additionalStation, final long additionalDistance) {
+        return new Section(additionalStation, leftStation.getName(), additionalDistance);
+    }
+    
+    public Section createRightSection(final String additionalStation, final long additionalDistance) {
+        return new Section(rightStation.getName(), additionalStation, additionalDistance);
     }
 }

@@ -24,13 +24,27 @@ class SectionTest {
     void 추가할_역이_왼쪽인_구간_생성() {
         // given
         final Section section = new Section("강남역", "역삼역", 3L);
-        final String leftAdditionalStation = "선릉역";
+        final String additionalStation = "선릉역";
         final long additionalDistance = 5L;
         
         // when
-        final Section createdLeftSection = section.createLeftSection(leftAdditionalStation, additionalDistance);
+        final Section createdLeftSection = section.createLeftSection(additionalStation, additionalDistance);
         
         // then
-        assertThat(createdLeftSection).isEqualTo(new Section("선릉역", "강남역", additionalDistance));
+        assertThat(createdLeftSection).isEqualTo(new Section("선릉역", "강남역", 5L));
+    }
+    
+    @Test
+    void 추가할_역이_오른쪽인_구간_생성() {
+        // given
+        final Section section = new Section("강남역", "역삼역", 3L);
+        final String additionalStation = "선릉역";
+        final long additionalDistance = 5L;
+        
+        // when
+        final Section createdLeftSection = section.createRightSection(additionalStation, additionalDistance);
+        
+        // then
+        assertThat(createdLeftSection).isEqualTo(new Section("역삼역", "선릉역", 5L));
     }
 }
