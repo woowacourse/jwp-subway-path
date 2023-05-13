@@ -24,9 +24,16 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<SectionEntity> findAll() {
-        String sql = "select * from SECTION";
-        return jdbcTemplate.query(sql, rowMapper);
+    public List<SectionEntity> findByLineId(Long lineId) {
+        String sql = "select * from SECTION where line_id = ?";
+
+        return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
+
+    public void deleteAllById(Long lineId) {
+        String sql = "delete from SECTION where line_id = ?";
+
+        jdbcTemplate.update(sql, lineId);
     }
 
     public void insertAll(List<SectionEntity> sectionEntities) {
@@ -41,15 +48,8 @@ public class SectionDao {
                 });
     }
 
-    public void deleteAll() {
-        String sql = "delete from SECTION";
-
-        jdbcTemplate.update(sql);
-    }
-
-    public List<SectionEntity> findByLineId(Long lineId) {
-        String sql = "select * from SECTION where line_id = ?";
-
-        return jdbcTemplate.query(sql, rowMapper, lineId);
+    public List<SectionEntity> findAll() {
+        String sql = "select * from SECTION";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 }

@@ -30,4 +30,8 @@ public class Distance {
     public Distance subtract(Distance otherDistance) {
         return new Distance(this.distance - otherDistance.distance);
     }
+
+    public Distance sum(Distance otherDistance) {
+        return new Distance(this.distance + otherDistance.distance);
+    }
 }

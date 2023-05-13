@@ -22,20 +22,16 @@ public class Section {
         }
     }
 
-    public boolean isSameStartStation(Section otherSection) {
-        return this.isSameStartStation(otherSection.startStation);
-    }
-
     public boolean isSameStartStation(Station otherStation) {
         return this.startStation.equals(otherStation);
     }
 
-    public boolean isSameEndStation(Section otherSection) {
-        return this.isSameEndStation(otherSection.endStation);
-    }
-
     public boolean isSameEndStation(Station otherStation) {
         return this.endStation.equals(otherStation);
+    }
+
+    public Distance sumDistance(Section otherSection) {
+        return this.distance.sum(otherSection.distance);
     }
 
     public Distance subtractDistance(Section otherSection) {
@@ -54,6 +50,14 @@ public class Section {
         return distance;
     }
 
+    public boolean isGreaterThanOtherDistance(Section otherSection) {
+        return this.distance.isBiggerThanOtherDistance(otherSection.distance);
+    }
+
+    public boolean hasStation(Station otherStation) {
+        return isSameStartStation(otherStation) || isSameEndStation(otherStation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -70,13 +74,5 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(startStation, endStation);
-    }
-
-    public boolean isGreaterThanOtherDistance(Section otherSection) {
-        return this.distance.isBiggerThanOtherDistance(otherSection.distance);
-    }
-
-    public boolean hasStation(Station otherStation) {
-        return isSameStartStation(otherStation) || isSameEndStation(otherStation);
     }
 }
