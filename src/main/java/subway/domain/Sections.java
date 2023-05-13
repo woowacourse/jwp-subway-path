@@ -1,7 +1,7 @@
 package subway.domain;
 
-import subway.exception.SectionInvalidException;
-import subway.exception.SectionNotFoundException;
+import subway.exception.invalid.SectionInvalidException;
+import subway.exception.notfound.SectionNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;

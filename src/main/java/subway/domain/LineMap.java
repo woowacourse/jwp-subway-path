@@ -1,6 +1,6 @@
 package subway.domain;
 
-import subway.exception.UpStationNotFoundException;
+import subway.exception.notfound.UpStationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

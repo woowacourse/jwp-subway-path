@@ -1,4 +1,4 @@
-package subway.exception;
+package subway.exception.invalid;
 
 public class SectionInvalidException extends InvalidException {
 

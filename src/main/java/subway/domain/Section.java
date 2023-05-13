@@ -1,6 +1,6 @@
 package subway.domain;
 
-import subway.exception.DistanceInvalidException;
+import subway.exception.invalid.DistanceInvalidException;
 
 import java.util.Objects;
 

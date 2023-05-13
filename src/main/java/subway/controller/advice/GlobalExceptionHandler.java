@@ -8,8 +8,8 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.dto.exception.ExceptionResponse;
-import subway.exception.InvalidException;
-import subway.exception.NotFoundException;
+import subway.exception.invalid.InvalidException;
+import subway.exception.notfound.NotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {

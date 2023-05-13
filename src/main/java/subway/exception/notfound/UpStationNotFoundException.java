@@ -1,4 +1,4 @@
-package subway.exception;
+package subway.exception.notfound;
 
 public class UpStationNotFoundException extends NotFoundException {
 
