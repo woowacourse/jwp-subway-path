@@ -77,11 +77,11 @@ public class SectionRepository {
                 .orElseThrow(() -> new IllegalArgumentException("지정한 역은 해당 노선에 등록되어 있지 않습니다."));
     }
 
-    public void findAllByLine(final Line line) {
+    public Line findAllByLine(final Line line) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(line.getId());
 
         if (sectionEntities.isEmpty()) {
-            return ;
+            return line;
         }
         Set<Long> stationIds = new HashSet<>();
 
@@ -108,7 +108,7 @@ public class SectionRepository {
         }
 
         if (count == stationIds.size()) {
-            return ;
+            return line;
         }
 
         while (count++ < stationIds.size()) {
@@ -120,5 +120,6 @@ public class SectionRepository {
             line.addEndStation(upStation, downStation, Distance.from(targetSectionEntity.getDistance()));
             upStationId = targetSectionEntity.getDownStationId();
         }
+        return line;
     }
 }
