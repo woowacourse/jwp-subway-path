@@ -24,14 +24,15 @@ class LineRepositoryTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private StationDao stationDao;
     private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate);
-        lineRepository = new LineRepository(new SectionDao(jdbcTemplate), new LineDao(jdbcTemplate),
-                stationDao);
+        lineRepository = new LineRepository(
+                new SectionDao(jdbcTemplate),
+                new LineDao(jdbcTemplate),
+                new StationDao(jdbcTemplate)
+        );
     }
 
     @Test
@@ -65,7 +66,7 @@ class LineRepositoryTest {
         // then
         assertThat(lines).hasSize(2);
         assertThat(lines).flatExtracting(Line::getStations)
-                .contains(
+                .containsOnly(
                         new Station("서울역"),
                         new Station("명동역"),
                         new Station("광화문역"),
@@ -74,6 +75,76 @@ class LineRepositoryTest {
                         new Station("강남역"),
                         new Station("역삼역"),
                         new Station("박스터역")
+                );
+    }
+
+    @Test
+    void 노선을_삭제한다() {
+        // given
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        List<Section> secondSections = List.of(new Section("X", "A", 10), new Section("A", "Y", 5));
+        Line secondLine = new Line("2호선", secondSections);
+        Long firstLineId = lineRepository.save(firstLine);
+        lineRepository.save(secondLine);
+
+        // when
+        lineRepository.deleteById(firstLineId);
+
+        // then
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getStations)
+                .containsOnly(
+                        new Station("X"),
+                        new Station("Y"),
+                        new Station("A")
+                );
+    }
+
+    @Test
+    void 노선에_역을_추가한다() {
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        lineRepository.save(firstLine);
+        firstLine.addSection(new Section(new Station("B"), new Station("D"), 5));
+
+        lineRepository.save(firstLine);
+
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
+                .containsOnly(
+                        new Section("A", "B", 10),
+                        new Section("B", "D", 5),
+                        new Section("D", "C", 2)
+                );
+    }
+
+    @Test
+    void 노선에_역을_삭제한다() {
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        lineRepository.save(firstLine);
+        firstLine.removeStation(new Station("B"));
+
+        lineRepository.save(firstLine);
+
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
+                .containsOnly(
+                        new Section("A", "C", 17)
+                );
+    }
+
+    @Test
+    void 노선_ID로_조회한다() {
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        Long savedId = lineRepository.save(firstLine);
+
+        Line findLine = lineRepository.findById(savedId);
+
+        assertThat(findLine.getStations())
+                .containsOnly(
+                        new Station("A"),
+                        new Station("B"),
+                        new Station("C")
                 );
     }
 }
