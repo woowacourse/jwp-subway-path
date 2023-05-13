@@ -1,5 +1,7 @@
 package subway.advice;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,12 +16,6 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(DistanceForkedException.class)
-    public ResponseEntity<ExceptionResponse> distanceInvalidExceptionHandler(final DistanceForkedException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
-    }
-
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ExceptionResponse> methodArgumentNotValidExceptionHandler(final MethodArgumentNotValidException exception) {
         String message = exception.getFieldErrors().stream()
@@ -30,57 +26,68 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse.from(message, HttpStatus.BAD_REQUEST.value()));
     }
 
-    @ExceptionHandler(SectionDuplicatedException.class)
-    public ResponseEntity<ExceptionResponse> sectionDuplicatedExceptionHandler(final SectionDuplicatedException exception) {
+    private static ResponseEntity<ExceptionResponse> getResponseOfBadRequest(final RuntimeException exception) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
+    }
+
+    @ExceptionHandler(DistanceForkedException.class)
+    public ResponseEntity<ExceptionResponse> distanceInvalidExceptionHandler(final DistanceForkedException exception) {
+        return getResponseOfBadRequest(exception);
+    }
+
+    @ExceptionHandler(SectionDuplicatedException.class)
+    public ResponseEntity<ExceptionResponse> sectionDuplicatedExceptionHandler(final SectionDuplicatedException exception) {
+        return getResponseOfBadRequest(exception);
     }
 
     @ExceptionHandler(NameIsBlankException.class)
     public ResponseEntity<ExceptionResponse> nameIsBlankExceptionHandler(final NameIsBlankException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        return getResponseOfBadRequest(exception);
     }
 
     @ExceptionHandler(DistanceValueInvalidException.class)
     public ResponseEntity<ExceptionResponse> distanceValueInvalidExceptionHandler(final DistanceValueInvalidException exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        return getResponseOfBadRequest(exception);
     }
 
     @ExceptionHandler(LineNumberUnderMinimumNumber.class)
     public ResponseEntity<ExceptionResponse> lineNumberUnderMinimumNumberHandler(final LineNumberUnderMinimumNumber exception) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
+        return getResponseOfBadRequest(exception);
     }
 
     @ExceptionHandler(SectionNotFoundException.class)
     public ResponseEntity<ExceptionResponse> sectionNotFoundExceptionHandler(final SectionNotFoundException exception) {
+        return getResponseOfNotFound(exception);
+    }
+
+    private static ResponseEntity<ExceptionResponse> getResponseOfNotFound(final RuntimeException exception) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
     }
 
     @ExceptionHandler(UpStationNotFoundException.class)
     public ResponseEntity<ExceptionResponse> upStationNotFoundExceptionHandler(final UpStationNotFoundException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
+        return getResponseOfNotFound(exception);
     }
 
     @ExceptionHandler(ColorNotBlankException.class)
     public ResponseEntity<ExceptionResponse> colorNotBlankExceptionHandler(final ColorNotBlankException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
+        return getResponseOfNotFound(exception);
     }
 
     @ExceptionHandler(LineNotMatchedException.class)
     public ResponseEntity<ExceptionResponse> lineNotMatchedExceptionHandler(final LineNotMatchedException exception) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.NOT_FOUND.value()));
+        return getResponseOfNotFound(exception);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> internalServerErrorHandler(final Exception exception) {
+        Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+        logger.error("Server error : " + exception.getMessage());
+
+        String internalServerErrorMessage = "내부 서버의 문제입니다. 관리자에게 문의해주세요.";
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR.value()));
+                .body(ExceptionResponse.from(internalServerErrorMessage, HttpStatus.INTERNAL_SERVER_ERROR.value()));
     }
 }
