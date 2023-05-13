@@ -1,26 +1,24 @@
 package subway.persistence.repository;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.domain.AdjustPath;
 import subway.domain.Direction;
 import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.PathInfo;
 import subway.domain.Station;
+import subway.domain.line.Line;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.SectionEntity;
-import subway.persistence.entity.SectionEntity.Builder;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import subway.persistence.entity.StationEntity;
 
 @Repository
 public class SectionRepository {
-
-    private static final String NOT_EXISTS_STATION = "존재하지 않는 역입니다.";
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -31,50 +29,30 @@ public class SectionRepository {
     }
 
     public void insert(final Line line) {
-        sectionDao.deleteByLineId(line.getId());
+        sectionDao.deleteAllByLineId(line.getId());
 
         final List<Station> stations = line.findStationsByOrdered();
         final List<SectionEntity> sectionEntities = new ArrayList<>();
 
         for (Station sourceStation : stations) {
-            sectionEntities.addAll(convert(sourceStation, line.getId()));
+            sectionEntities.addAll(mapToEntities(sourceStation, line.getId()));
         }
         sectionDao.insertAll(sectionEntities);
     }
 
-    private List<SectionEntity> convert(final Station sourceStation, final Long lineId) {
-        final List<SectionEntity> sectionEntities = new ArrayList<>();
+    private List<SectionEntity> mapToEntities(final Station sourceStation, final Long lineId) {
         final AdjustPath adjustPath = sourceStation.getAdjustPath();
-        final List<Station> relationStations = adjustPath.findAllStation();
+        final List<Station> sectionStations = adjustPath.findAllStation();
 
-        for (Station targetStation : relationStations) {
-            final PathInfo pathInfo = adjustPath.findPathInfoByStation(targetStation);
-
-            if (pathInfo.matchesByDirection(Direction.UP)) {
-                continue;
-            }
-
-            final SectionEntity sectionEntity = Builder.builder()
-                    .lineId(lineId)
-                    .upStationId(sourceStation.getId())
-                    .downStationId(targetStation.getId())
-                    .distance(pathInfo.getDistance().getDistance())
-                    .build();
-            sectionEntities.add(sectionEntity);
-        }
-        return sectionEntities;
-    }
-
-    private boolean isUpEnd(final List<SectionEntity> sectionEntities, final Long stationId) {
-        return sectionEntities.stream()
-                .noneMatch(sectionEntity -> sectionEntity.matchesDownStationId(stationId));
-    }
-
-    private SectionEntity findSectionEntityByUpStationId(final List<SectionEntity> sectionEntities, final Long upStationId) {
-        return sectionEntities.stream()
-                .filter(sectionEntity -> sectionEntity.matchesUpStationId(upStationId))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("지정한 역은 해당 노선에 등록되어 있지 않습니다."));
+        return sectionStations.stream()
+                .filter(station -> adjustPath.findPathInfoByStation(station).matchesByDirection(Direction.DOWN))
+                .map(station -> SectionEntity.Builder.builder()
+                        .lineId(lineId)
+                        .upStationId(sourceStation.getId())
+                        .downStationId(station.getId())
+                        .distance(adjustPath.findPathInfoByStation(station).distance())
+                        .build())
+                .collect(Collectors.toList());
     }
 
     public Line findAllByLine(final Line line) {
@@ -83,28 +61,23 @@ public class SectionRepository {
         if (sectionEntities.isEmpty()) {
             return line;
         }
-        Set<Long> stationIds = new HashSet<>();
 
-        for (SectionEntity sectionEntity : sectionEntities) {
-            stationIds.add(sectionEntity.getUpStationId());
-            stationIds.add(sectionEntity.getDownStationId());
-        }
+        final Set<Long> stationIds = mapToStationIds(sectionEntities);
+        final Map<Long, StationEntity> stations = stationDao.findAllByIds(stationIds)
+                .stream()
+                .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
 
-        Long upStationId = stationIds.stream()
-                .filter(id -> isUpEnd(sectionEntities, id))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("노선에 등록된 역이 없습니다."));
+        Long terminalStationId = findStartTerminalStationId(sectionEntities, stationIds);
 
         int count = 0;
 
         while (count++ < 1) {
-            final SectionEntity targetSectionEntity = findSectionEntityByUpStationId(sectionEntities, upStationId);
-            final Station upStation = stationDao.findById(targetSectionEntity.getUpStationId())
-                    .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION)).to();
-            final Station downStation = stationDao.findById(targetSectionEntity.getDownStationId())
-                    .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION)).to();
+            final SectionEntity targetSectionEntity = findEntityByUpStationId(sectionEntities, terminalStationId);
+            final Station upStation = stations.get(targetSectionEntity.getUpStationId()).to();
+            final Station downStation = stations.get(targetSectionEntity.getDownStationId()).to();
+
             line.addInitialStations(upStation, downStation, Distance.from(targetSectionEntity.getDistance()));
-            upStationId = targetSectionEntity.getDownStationId();
+            terminalStationId = targetSectionEntity.getDownStationId();
         }
 
         if (count == stationIds.size()) {
@@ -112,14 +85,42 @@ public class SectionRepository {
         }
 
         while (count++ < stationIds.size()) {
-            final SectionEntity targetSectionEntity = findSectionEntityByUpStationId(sectionEntities, upStationId);
-            final Station upStation = stationDao.findById(targetSectionEntity.getUpStationId())
-                    .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION)).to();
-            final Station downStation = stationDao.findById(targetSectionEntity.getDownStationId())
-                    .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION)).to();
+            final SectionEntity targetSectionEntity = findEntityByUpStationId(sectionEntities, terminalStationId);
+            final Station upStation = stations.get(targetSectionEntity.getUpStationId()).to();
+            final Station downStation = stations.get(targetSectionEntity.getDownStationId()).to();
+
             line.addEndStation(upStation, downStation, Distance.from(targetSectionEntity.getDistance()));
-            upStationId = targetSectionEntity.getDownStationId();
+            terminalStationId = targetSectionEntity.getDownStationId();
         }
         return line;
+    }
+
+    private SectionEntity findEntityByUpStationId(final List<SectionEntity> sectionEntities, final Long upStationId) {
+        return sectionEntities.stream()
+                .filter(sectionEntity -> sectionEntity.matchesUpStationId(upStationId))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("지정한 역은 해당 노선에 등록되어 있지 않습니다."));
+    }
+
+    private boolean isTerminalStation(final List<SectionEntity> sectionEntities, final Long stationId) {
+        return sectionEntities.stream()
+                .noneMatch(sectionEntity -> sectionEntity.matchesDownStationId(stationId));
+    }
+
+    private Long findStartTerminalStationId(final List<SectionEntity> sectionEntities, final Set<Long> stationIds) {
+        return stationIds.stream()
+                .filter(id -> isTerminalStation(sectionEntities, id))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("노선에 등록된 역이 없습니다."));
+    }
+
+    private Set<Long> mapToStationIds(final List<SectionEntity> sectionEntities) {
+        Set<Long> stationIds = new HashSet<>();
+
+        for (SectionEntity sectionEntity : sectionEntities) {
+            stationIds.add(sectionEntity.getUpStationId());
+            stationIds.add(sectionEntity.getDownStationId());
+        }
+        return stationIds;
     }
 }
