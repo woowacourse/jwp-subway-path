@@ -11,7 +11,21 @@ public class Section {
     public Section(final Station source, final Station target, final int distance) {
         this.source = source;
         this.target = target;
-        this.distance = new SectionDistance(distance);
+        this.distance = SectionDistance.create(distance);
+    }
+
+    public Section(final Station source, final Station target, final SectionDistance distance) {
+        this.source = source;
+        this.target = target;
+        this.distance = distance;
+    }
+
+    public boolean equalToSource(final Station newStation) {
+        return source.equals(newStation);
+    }
+
+    public boolean equalToTarget(final Station newStation) {
+        return target.equals(newStation);
     }
 
     public Station getSource() {
@@ -22,7 +36,7 @@ public class Section {
         return target;
     }
 
-    public int getDistance() {
-        return distance.getDistance();
+    public SectionDistance getDistance() {
+        return distance;
     }
 }

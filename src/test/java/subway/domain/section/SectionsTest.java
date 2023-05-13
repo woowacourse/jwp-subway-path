@@ -3,6 +3,7 @@ package subway.domain.section;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static subway.exception.ErrorCode.SECTION_ADD_STATION_NOT_EXISTS;
 import static subway.exception.ErrorCode.SECTION_ALREADY_ADD;
 import static subway.exception.ErrorCode.SECTION_TOO_FAR_DISTANCE;
@@ -25,36 +26,25 @@ import subway.exception.GlobalException;
 class SectionsTest {
 
     @Test
-    @DisplayName("비어있으면 true를 반환한다.")
-    void isEmpty_true_test() {
+    @DisplayName("노선에 아무 역도 존재하지 않으면 검증하지 않는다.")
+    void validateSections_empty() {
         // given
         final Sections sections = new Sections(new ArrayList<>());
+        final Section requestSection = new Section(신림역, 강남역, 10);
 
-        // expect
-        assertThat(sections.isEmpty()).isTrue();
-    }
-
-    @Test
-    @DisplayName("비어있지 않으면 false를 반환한다.")
-    void isEmpty_false_test() {
-        // given
-        final Section section = new Section(잠실역, 선릉역, 10);
-        final Sections sections = new Sections(List.of(section));
-
-        // expect
-        assertThat(sections.isEmpty()).isFalse();
+        // expected
+        assertDoesNotThrow(() -> sections.validateSections(requestSection));
     }
 
     @Test
     @DisplayName("추가 요청받은 역 모두 다 노선에 존재하지 않으면 예외가 발생한다.")
-    void validateSections_not_exist_test() {
+    void validateSections_not_exist() {
         // given
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
-
-        final Section requestSection = new Section(신림역, 강남역, 5);
+        final Section requestSection = new Section(신림역, 강남역, 10);
 
         // expected
         assertThatThrownBy(() -> sections.validateSections(requestSection))
@@ -65,7 +55,7 @@ class SectionsTest {
 
     @ParameterizedTest(name = "추가 요청받은 역 모두 다 노선에 존재하면 예외가 발생한다.")
     @CsvSource(value = {"잠실역:선릉역", "선릉역:잠실역"}, delimiter = ':')
-    void validateSections_exist_test(final String sourceStationName, final String targetStationName) {
+    void validateSections_exist(final String sourceStationName, final String targetStationName) {
         // given
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
@@ -74,7 +64,7 @@ class SectionsTest {
 
         final Station sourceStation = new Station(sourceStationName);
         final Station targetStation = new Station(targetStationName);
-        final Section requestSection = new Section(sourceStation, targetStation, 5);
+        final Section requestSection = new Section(sourceStation, targetStation, 10);
 
         // expected
         assertThatThrownBy(() -> sections.validateSections(requestSection))
@@ -83,39 +73,39 @@ class SectionsTest {
             .isEqualTo(SECTION_ALREADY_ADD);
     }
 
-    @ParameterizedTest(name = "요청받은 역이 상행 종점에 존재하는지 확인한다 name = {0} : {1}")
-    @CsvSource(value = {"잠실역:true", "산성역:false"}, delimiter = ':')
-    void isTargetUpward_test(final String stationName, final boolean expected) {
+    @Test
+    @DisplayName("노선에 존재하는 역이 없다면, 요청받은 구간은 새로운 구간으로 판단한다.")
+    void isNewSection_empty() {
         // given
-        final Section section = new Section(잠실역, 선릉역, 10);
-        final List<Section> savedSections = new ArrayList<>();
-        savedSections.add(section);
-        final Sections sections = new Sections(savedSections);
-
-        final Station station = new Station(stationName);
+        final Sections sections = new Sections(new ArrayList<>());
+        final Section requestSection = new Section(잠실역, 선릉역, 10);
 
         // expected
-        assertThat(sections.isTargetUpward(station)).isSameAs(expected);
+        assertThat(sections.isNewSection(requestSection))
+            .isTrue();
     }
 
-    @ParameterizedTest(name = "요청받은 역이 하행 종점에 존재하는지 확인한다 name = {0} : {1}")
-    @CsvSource(value = {"선릉역:true", "산성역:false"}, delimiter = ':')
-    void isTargetDownward_test(final String stationName, final boolean expected) {
+    @ParameterizedTest(name = "요청받은 출발역이 하행 종점이거나 도착역이 상행 종점이라면 새로운 구간으로 판단한다.")
+    @CsvSource(value = {"산성역:잠실역:true", "선릉역:산성역:true", "잠실역:산성역:false", "산성역:선릉역:false"}, delimiter = ':')
+    void isNewSection(final String sourceStationName, final String targetStationName, final boolean expected) {
         // given
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
         savedSections.add(section);
         final Sections sections = new Sections(savedSections);
 
-        final Station station = new Station(stationName);
+        final Station sourceStation = new Station(sourceStationName);
+        final Station targetStation = new Station(targetStationName);
+        final Section requestSection = new Section(sourceStation, targetStation, 10);
 
         // expected
-        assertThat(sections.isSourceDownward(station)).isSameAs(expected);
+        assertThat(sections.isNewSection(requestSection))
+            .isSameAs(expected);
     }
 
     @Test
     @DisplayName("요청받은 시작역이 노선 구간의 시작역에 없으면 빈 값을 반환한다.")
-    void getExistsSectionOfSource_empty_test() {
+    void getExistsSectionOfSource_empty() {
         // given
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
@@ -130,7 +120,7 @@ class SectionsTest {
 
     @ParameterizedTest(name = "요청받은 시작역이 노선 구간의 시작역에 있지만, 요청받은 거리가 노선 구간 사이의 거리보다 더 크거나 같다면 예외가 발생한다.")
     @ValueSource(ints = {10, 11})
-    void getExistsSectionOfSource_distance_exception_test(final int distance) {
+    void getExistsSectionOfSource_distance_exception(final int distance) {
         // given
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
@@ -148,7 +138,7 @@ class SectionsTest {
 
     @Test
     @DisplayName("요청받은 시작역이 노선 구간의 시작역에 있고, 요청받은 거리가 노선 구간 사이의 거리보다 작다면 해당 구간을 반환한다.")
-    void getExistsSectionOfSource_test() {
+    void getExistsSectionOfSource() {
         // given
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
@@ -164,7 +154,7 @@ class SectionsTest {
 
     @Test
     @DisplayName("요청받은 끝역이 노선 구간의 끝역에 없으면 빈 값을 반환한다.")
-    void getExistsSectionOfTarget_empty_test() {
+    void getExistsSectionOfTarget_empty() {
         // given
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
@@ -180,7 +170,7 @@ class SectionsTest {
 
     @ParameterizedTest(name = "요청받은 끝역이 노선 구간의 끝역에 있지만, 요청받은 거리가 노선 구간 사이의 거리보다 더 크거나 같다면 예외가 발생한다.")
     @ValueSource(ints = {10, 11})
-    void getExistsSectionOfTarget_distance_exception_test(final int distance) {
+    void getExistsSectionOfTarget_distance_exception(final int distance) {
         // given
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
@@ -198,7 +188,7 @@ class SectionsTest {
 
     @Test
     @DisplayName("요청받은 끝이 노선 구간의 끝역에 있고, 요청받은 거리가 노선 구간 사이의 거리보다 작다면 해당 구간을 반환한다.")
-    void getExistsSectionOfTarget_test() {
+    void getExistsSectionOfTarget() {
         // given
         final Section section = new Section(잠실역, 선릉역, 10);
         final List<Section> savedSections = new ArrayList<>();
@@ -268,7 +258,7 @@ class SectionsTest {
         assertAll(
             () -> assertThat(newSection.get().getSource().equals(잠실역)),
             () -> assertThat(newSection.get().getTarget().equals(강남역)),
-            () -> assertThat(newSection.get().getDistance() == 20)
+            () -> assertThat(newSection.get().getDistance().getDistance() == 20)
         );
     }
 }

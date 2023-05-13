@@ -10,12 +10,32 @@ public class SectionDistance {
 
     private final int distance;
 
-    public SectionDistance(final int distance) {
-        validateRange(distance);
+    private SectionDistance(final int distance) {
         this.distance = distance;
     }
 
-    private void validateRange(final int distance) {
+    public static SectionDistance create(final int distance) {
+        validateRange(distance);
+        return new SectionDistance(distance);
+    }
+
+    public static SectionDistance zero() {
+        return new SectionDistance(0);
+    }
+
+    public SectionDistance add(final SectionDistance distance) {
+        return new SectionDistance(this.distance + distance.distance);
+    }
+
+    public SectionDistance subtract(final SectionDistance distance) {
+        return new SectionDistance(this.distance - distance.distance);
+    }
+
+    public boolean isGreaterAndEqualsThan(final SectionDistance distance) {
+        return this.distance >= distance.distance;
+    }
+
+    private static void validateRange(final int distance) {
         if (distance < MIN_DISTANCE || distance > MAX_DISTANCE) {
             throw new GlobalException(ErrorCode.SECTION_DISTANCE);
         }

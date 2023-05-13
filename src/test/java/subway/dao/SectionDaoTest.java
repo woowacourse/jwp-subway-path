@@ -9,9 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.jdbc.core.JdbcTemplate;
+import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
-import subway.domain.line.Line;
-import subway.domain.station.Station;
+import subway.dao.entity.StationEntity;
 
 @JdbcTest
 @Import({SectionDao.class, LineDao.class, StationDao.class})
@@ -26,126 +27,94 @@ class SectionDaoTest {
     @Autowired
     private StationDao stationDao;
 
-    @Test
-    @DisplayName("노선의 아이디로 노선에 있는 역 리스트를 조회한다.")
-    void findByLineId() {
-        // given
-        final Line 이호선 = new Line("이호선", "bg-red-600");
-        final Line 저장된_이호선 = lineDao.insert(이호선);
-        final Long 저장된_이호선_아이디 = 저장된_이호선.getId();
-
-        final Station 잠실역 = new Station("잠실역");
-        final Station 선릉역 = new Station("선릉역");
-
-        final Station 저장된_잠실역 = stationDao.insert(잠실역);
-        final Station 저장된_선릉역 = stationDao.insert(선릉역);
-
-        final Long 저장된_시작역_아이디 = 저장된_잠실역.getId();
-        final Long 저장된_끝역_아이디 = 저장된_선릉역.getId();
-
-        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_이호선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10);
-        final long savedId = sectionDao.insert(잠실_선릉);
-
-        // when
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(잠실_선릉.getLineId());
-
-        // then
-        assertAll(
-            () -> assertThat(sectionEntities).hasSize(1),
-            () -> assertThat(sectionEntities.get(0))
-                .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance")
-                .containsExactly(savedId, 저장된_이호선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10));
-    }
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
     @Test
-    @DisplayName("노선에 역을 저장한다.")
+    @DisplayName("특정 노선에 대한 구간 정보를 저장한다.")
     void insert() {
         // given
-        final Line 이호선 = new Line("이호선", "bg-red-600");
-        final Line 저장된_이호선 = lineDao.insert(이호선);
-        final Long 저장된_이호선_아이디 = 저장된_이호선.getId();
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-red-600");
+        final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
 
-        final Station 잠실역 = new Station("잠실역");
-        final Station 선릉역 = new Station("선릉역");
-
-        final Station 저장된_잠실역 = stationDao.insert(잠실역);
-        final Station 저장된_선릉역 = stationDao.insert(선릉역);
-
-        final Long 저장된_시작역_아이디 = 저장된_잠실역.getId();
-        final Long 저장된_끝역_아이디 = 저장된_선릉역.getId();
-
-        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_이호선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10);
+        final StationEntity 잠실역_엔티티 = new StationEntity("잠실역");
+        final StationEntity 선릉역_엔티티 = new StationEntity("선릉역");
+        final Long 저장된_잠실역_엔티티_아이디 = stationDao.insert(잠실역_엔티티);
+        final Long 저장된_선릉역_엔티티_아이디 = stationDao.insert(선릉역_엔티티);
 
         // when
-        final long savedId = sectionDao.insert(잠실_선릉);
+        final SectionEntity 저장_요청_엔티티 = new SectionEntity(저장된_이호선_엔티티_아이디, 저장된_잠실역_엔티티_아이디, 저장된_선릉역_엔티티_아이디, 10);
+        final long 저장된_구간_아이디 = sectionDao.insert(저장_요청_엔티티);
 
         // then
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(1L);
+        final List<SectionEntity> findSections = getSectionEntities(저장된_구간_아이디);
+
         assertAll(
-            () -> assertThat(sectionEntities).hasSize(1),
-            () -> assertThat(sectionEntities.get(0))
-                .extracting("id", "lineId", "sourceStationId", "targetStationId", "distance")
-                .containsExactly(savedId, 저장된_이호선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10));
+            () -> assertThat(findSections).hasSize(1),
+            () -> assertThat(findSections.get(0))
+                .extracting(SectionEntity::getLineId, SectionEntity::getSourceStationId,
+                    SectionEntity::getTargetStationId, SectionEntity::getDistance)
+                .containsExactly(저장된_이호선_엔티티_아이디, 저장된_잠실역_엔티티_아이디, 저장된_선릉역_엔티티_아이디, 10));
     }
 
     @Test
-    @DisplayName("노선 아이디와 출발역 아이디를 받아 제거한다")
+    @DisplayName("특정 노선에 해당하는 특정 출발역 아이디를 기준으로 제거한다.")
     void deleteByLineIdAndSourceStationId() {
         // given
-        final Line 이호선 = new Line("이호선", "bg-red-600");
-        final Line 저장된_이호선 = lineDao.insert(이호선);
-        final Long 저장된_이호선_아이디 = 저장된_이호선.getId();
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-red-600");
+        final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
 
-        final Station 잠실역 = new Station("잠실역");
-        final Station 선릉역 = new Station("선릉역");
+        final StationEntity 잠실역_엔티티 = new StationEntity("잠실역");
+        final StationEntity 선릉역_엔티티 = new StationEntity("선릉역");
+        final Long 저장된_잠실역_엔티티_아이디 = stationDao.insert(잠실역_엔티티);
+        final Long 저장된_선릉역_엔티티_아이디 = stationDao.insert(선릉역_엔티티);
 
-        final Station 저장된_잠실역 = stationDao.insert(잠실역);
-        final Station 저장된_선릉역 = stationDao.insert(선릉역);
-
-        final Long 저장된_시작역_아이디 = 저장된_잠실역.getId();
-        final Long 저장된_끝역_아이디 = 저장된_선릉역.getId();
-
-        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_이호선_아이디, 저장된_시작역_아이디, 저장된_끝역_아이디, 10);
-        sectionDao.insert(잠실_선릉);
+        final SectionEntity 저장_요청_엔티티 = new SectionEntity(저장된_이호선_엔티티_아이디, 저장된_잠실역_엔티티_아이디, 저장된_선릉역_엔티티_아이디, 10);
+        final long 저장된_구간_아이디 = sectionDao.insert(저장_요청_엔티티);
 
         // when
-        sectionDao.deleteByLineIdAndSourceStationId(저장된_이호선_아이디, 저장된_시작역_아이디);
+        final int deletedCount = sectionDao.deleteByLineIdAndSourceStationId(저장된_이호선_엔티티_아이디, 저장된_잠실역_엔티티_아이디);
 
         // then
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(저장된_이호선_아이디);
-        assertThat(sectionEntities).isEmpty();
+        assertThat(deletedCount).isSameAs(1);
+        assertThat(getSectionEntities(저장된_구간_아이디)).isEmpty();
     }
-    
+
     @Test
-    @DisplayName("노선 아이디와 역 아이디로 구간 정보를 제거한다.")
+    @DisplayName("특정 노선에 존재하는 특정 역의 구간 정보 모두를 제거한다.")
     void deleteByLineIdAndStationId() {
         // given
-        final Line 이호선 = new Line("이호선", "bg-red-600");
-        final Line 저장된_이호선 = lineDao.insert(이호선);
-        final Long 저장된_이호선_아이디 = 저장된_이호선.getId();
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-red-600");
+        final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
 
-        final Station 잠실역 = new Station("잠실역");
-        final Station 선릉역 = new Station("선릉역");
-        final Station 강남역 = new Station("강남역");
+        final StationEntity 잠실역_엔티티 = new StationEntity("잠실역");
+        final StationEntity 선릉역_엔티티 = new StationEntity("선릉역");
+        final StationEntity 강남역_엔티티 = new StationEntity("강남역");
+        final Long 저장된_잠실역_엔티티_아이디 = stationDao.insert(잠실역_엔티티);
+        final Long 저장된_선릉역_엔티티_아이디 = stationDao.insert(선릉역_엔티티);
+        final Long 저장된_강남역_엔티티_아이디 = stationDao.insert(강남역_엔티티);
 
-        final Station 저장된_잠실역 = stationDao.insert(잠실역);
-        final Station 저장된_선릉역 = stationDao.insert(선릉역);
-        final Station 저장된_강남역 = stationDao.insert(강남역);
-
-        final Long 저장된_잠실역_아이디 = 저장된_잠실역.getId();
-        final Long 저장된_선릉역_아이디 = 저장된_선릉역.getId();
-        final Long 저장된_강남역_아이디 = 저장된_강남역.getId();
-
-        final SectionEntity 잠실_선릉 = new SectionEntity(저장된_이호선_아이디, 저장된_잠실역_아이디, 저장된_선릉역_아이디, 10);
-        final SectionEntity 선릉_강남 = new SectionEntity(저장된_이호선_아이디, 저장된_선릉역_아이디, 저장된_강남역_아이디, 10);
-        sectionDao.insert(잠실_선릉);
-        sectionDao.insert(선릉_강남);
+        final SectionEntity 잠실_선릉_엔티티 = new SectionEntity(저장된_이호선_엔티티_아이디, 저장된_잠실역_엔티티_아이디, 저장된_선릉역_엔티티_아이디, 10);
+        final SectionEntity 선릉_강남_엔티티 = new SectionEntity(저장된_이호선_엔티티_아이디, 저장된_선릉역_엔티티_아이디, 저장된_강남역_엔티티_아이디, 10);
+        final long 저장된_잠실_선릉_구간_아이디 = sectionDao.insert(잠실_선릉_엔티티);
+        final long 저장된_선릉_강남_구간_아이디 = sectionDao.insert(선릉_강남_엔티티);
 
         // when
-        sectionDao.deleteByLineIdAndStationId(저장된_이호선_아이디, 저장된_선릉역_아이디);
+        final int deletedCount = sectionDao.deleteByLineIdAndStationId(저장된_이호선_엔티티_아이디, 저장된_선릉역_엔티티_아이디);
 
         // then
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(저장된_이호선_아이디);
-        assertThat(sectionEntities).isEmpty();
+        assertThat(deletedCount).isSameAs(2);
+        assertThat(getSectionEntities(저장된_잠실_선릉_구간_아이디)).isEmpty();
+        assertThat(getSectionEntities(저장된_선릉_강남_구간_아이디)).isEmpty();
+    }
+
+    private List<SectionEntity> getSectionEntities(final long 저장된_구간_아이디) {
+        final String sql = "SELECT line_id, source_station_id, target_station_id, distance FROM section WHERE id = ?";
+        final List<SectionEntity> findSections = jdbcTemplate.query(sql, (result, count) -> new SectionEntity(
+            result.getLong("line_id"),
+            result.getLong("source_station_id"),
+            result.getLong("target_station_id"),
+            result.getInt("distance")), 저장된_구간_아이디);
+        return findSections;
     }
 }

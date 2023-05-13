@@ -16,83 +16,79 @@ import subway.exception.GlobalException;
 public class Sections {
 
     private final List<Section> sections;
-    private final List<Station> stations;
+    private final List<Station> sortedStations;
 
     public Sections(final List<Section> sections) {
         this.sections = sections;
-        this.stations = sort(sections);
+        this.sortedStations = sort(sections);
     }
 
-    public boolean isEmpty() {
-        return stations.isEmpty();
-    }
-
-    public void validateSections(final Section requestSection) {
-        final Station sourceRequest = requestSection.getSource();
-        final Station targetRequest = requestSection.getTarget();
-
-        if (!stations.contains(sourceRequest) && !stations.contains(targetRequest)) {
+    public void validateSections(final Section section) {
+        if (sortedStations.isEmpty()) {
+            return;
+        }
+        final Station sourceStation = section.getSource();
+        final Station targetStation = section.getTarget();
+        if (!sortedStations.contains(sourceStation) && !sortedStations.contains(targetStation)) {
             throw new GlobalException(SECTION_ADD_STATION_NOT_EXISTS);
         }
-
-        if (stations.contains(sourceRequest) && stations.contains(targetRequest)) {
+        if (sortedStations.contains(sourceStation) && sortedStations.contains(targetStation)) {
             throw new GlobalException(SECTION_ALREADY_ADD);
         }
     }
 
-    public boolean isTargetUpward(final Station targetStation) {
-        return stations.get(0).equals(targetStation);
-    }
-
-    public boolean isSourceDownward(final Station sourceStation) {
-        return stations.get(stations.size() - 1).equals(sourceStation);
+    public boolean isNewSection(final Section section) {
+        return sortedStations.isEmpty() || isTargetUpward(section.getTarget()) || isSourceDownward(section.getSource());
     }
 
     public Optional<Section> getExistsSectionOfSource(final Section requestSection) {
-        for (Section section : sections) {
-            if (section.getSource().equals(requestSection.getSource())) {
-                return validateDistance(requestSection, section);
-            }
-        }
-        return Optional.empty();
+        return sections.stream()
+            .filter(section -> section.getSource().equals(requestSection.getSource()))
+            .findFirst()
+            .map(section -> validateDistance(requestSection, section));
     }
 
     public Optional<Section> getExistsSectionOfTarget(final Section requestSection) {
-        for (Section section : sections) {
-            if (section.getTarget().equals(requestSection.getTarget())) {
-                return validateDistance(requestSection, section);
-            }
-        }
-        return Optional.empty();
+        return sections.stream()
+            .filter(section -> section.getTarget().equals(requestSection.getTarget()))
+            .findFirst()
+            .map(section -> validateDistance(requestSection, section));
     }
 
-    public Optional<Section> combineSection(final Station station) {
-        if (isTargetUpward(station) || isSourceDownward(station)) {
+    public Optional<Section> combineSection(final Station newStation) {
+        if (isTargetUpward(newStation) || isSourceDownward(newStation)) {
             return Optional.empty();
         }
-
         Station newSourceStation = null, newTargetStation = null;
-        int distance = 0;
+        SectionDistance newDistance = SectionDistance.zero();
         for (Section section : sections) {
-            if (section.getSource().equals(station)) {
-                distance += section.getDistance();
+            if (section.equalToSource(newStation)) {
+                newDistance = newDistance.add(section.getDistance());
                 newTargetStation = section.getTarget();
             }
-            if (section.getTarget().equals(station)) {
-                distance += section.getDistance();
+            if (section.equalToTarget(newStation)) {
+                newDistance = newDistance.add(section.getDistance());
                 newSourceStation = section.getSource();
             }
         }
-        return Optional.of(new Section(newSourceStation, newTargetStation, distance));
+        return Optional.of(new Section(newSourceStation, newTargetStation, newDistance));
     }
 
-    private Optional<Section> validateDistance(final Section requestSection, final Section section) {
-        final int distance = section.getDistance();
-        final int requestDistance = requestSection.getDistance();
-        if (requestDistance >= distance) {
+    private boolean isTargetUpward(final Station targetStation) {
+        return sortedStations.get(0).equals(targetStation);
+    }
+
+    private boolean isSourceDownward(final Station sourceStation) {
+        return sortedStations.get(sortedStations.size() - 1).equals(sourceStation);
+    }
+
+    private Section validateDistance(final Section requestSection, final Section targetSection) {
+        final SectionDistance requestDistance = requestSection.getDistance();
+        final SectionDistance targetDistance = targetSection.getDistance();
+        if (requestDistance.isGreaterAndEqualsThan(targetDistance)) {
             throw new GlobalException(SECTION_TOO_FAR_DISTANCE);
         }
-        return Optional.of(section);
+        return targetSection;
     }
 
     private List<Station> sort(final List<Section> sections) {
@@ -124,11 +120,7 @@ public class Sections {
             .findFirst();
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
-    public List<Station> getStations() {
-        return stations;
+    public List<Station> getSortedStations() {
+        return sortedStations;
     }
 }
