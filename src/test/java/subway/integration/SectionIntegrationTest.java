@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Station;
-import subway.dto.request.LineStationRequest;
+import subway.dto.request.SectionRequest;
 import subway.dto.response.SectionResponse;
 import subway.dto.response.StationsResponse;
 
@@ -30,11 +30,11 @@ public class SectionIntegrationTest extends IntegrationTest {
         Long lindId = 1L;
         int distance = 4;
 
-        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        SectionRequest sectionRequest = new SectionRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineStationRequest)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/{line_id}/stations", lindId)
@@ -60,11 +60,11 @@ public class SectionIntegrationTest extends IntegrationTest {
         Long lindId = 3L;
         int distance = 30;
 
-        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        SectionRequest sectionRequest = new SectionRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineStationRequest)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/{line_id}/stations", lindId)
@@ -90,12 +90,12 @@ public class SectionIntegrationTest extends IntegrationTest {
         Long lindId = 1L;
         int distance = 10;
 
-        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        SectionRequest sectionRequest = new SectionRequest(upBoundStationId, downBoundStationId, distance);
         ArrayList<Object> objects = new ArrayList<>();
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineStationRequest)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/{line_id}/stations", lindId)
@@ -116,11 +116,11 @@ public class SectionIntegrationTest extends IntegrationTest {
         Long lindId = 1L;
         int distance = 4;
 
-        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        SectionRequest sectionRequest = new SectionRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineStationRequest)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/{line_id}/stations", lindId)
@@ -141,11 +141,11 @@ public class SectionIntegrationTest extends IntegrationTest {
         Long lindId = 20L;
         int distance = 4;
 
-        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        SectionRequest sectionRequest = new SectionRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineStationRequest)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/{line_id}/stations", lindId)
@@ -166,11 +166,11 @@ public class SectionIntegrationTest extends IntegrationTest {
         Long lindId = 1L;
         int distance = 4;
 
-        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        SectionRequest sectionRequest = new SectionRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(lineStationRequest)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/{line_id}/stations", lindId)
@@ -278,11 +278,11 @@ public class SectionIntegrationTest extends IntegrationTest {
         Long lindId = 1L;
         int distance = 30;
 
-        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        SectionRequest sectionRequest = new SectionRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> createStation = RestAssured.given().log().all()
-                .body(lineStationRequest)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/{line_id}/stations", lindId)
@@ -319,11 +319,11 @@ public class SectionIntegrationTest extends IntegrationTest {
         Long lindId = 1L;
         int distance = 30;
 
-        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        SectionRequest sectionRequest = new SectionRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> createStation = RestAssured.given().log().all()
-                .body(lineStationRequest)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/{line_id}/stations", lindId)
@@ -360,11 +360,11 @@ public class SectionIntegrationTest extends IntegrationTest {
         Long lindId = 1L;
         int distance = 6;
 
-        LineStationRequest lineStationRequest = new LineStationRequest(upBoundStationId, downBoundStationId, distance);
+        SectionRequest sectionRequest = new SectionRequest(upBoundStationId, downBoundStationId, distance);
 
         // when
         ExtractableResponse<Response> createStation = RestAssured.given().log().all()
-                .body(lineStationRequest)
+                .body(sectionRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .post("/lines/{line_id}/stations", lindId)

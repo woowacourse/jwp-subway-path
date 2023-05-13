@@ -4,7 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.SectionService;
-import subway.dto.request.LineStationRequest;
+import subway.dto.request.SectionRequest;
 import subway.dto.response.SectionResponse;
 
 import javax.validation.Valid;
@@ -14,15 +14,15 @@ import javax.validation.Valid;
 public class SectionController {
     private final SectionService sectionService;
 
-    public SectionController(SectionService lineStationService) {
-        this.sectionService = lineStationService;
+    public SectionController(SectionService sectionService) {
+        this.sectionService = sectionService;
     }
 
     @PostMapping
-    ResponseEntity<SectionResponse> createSection(@PathVariable("line_id") Long lineId, @RequestBody @Valid LineStationRequest lineStationRequest) {
-        Long upBoundStationId = lineStationRequest.getUpBoundStationId();
-        Long downBoundStationId = lineStationRequest.getDownBoundStationId();
-        int distance = lineStationRequest.getDistance();
+    ResponseEntity<SectionResponse> createSection(@PathVariable("line_id") Long lineId, @RequestBody @Valid SectionRequest sectionRequest) {
+        Long upBoundStationId = sectionRequest.getUpBoundStationId();
+        Long downBoundStationId = sectionRequest.getDownBoundStationId();
+        int distance = sectionRequest.getDistance();
         SectionResponse lineStationResponse = sectionService.addStationToLine(upBoundStationId, downBoundStationId, distance, lineId);
         return ResponseEntity.status(HttpStatus.CREATED).body(lineStationResponse);
     }

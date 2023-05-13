@@ -21,9 +21,9 @@ public class LineController {
     private final LineService lineService;
     private final SectionService sectionService;
 
-    public LineController(LineService lineService, SectionService lineStationService) {
+    public LineController(LineService lineService, SectionService sectionService) {
         this.lineService = lineService;
-        this.sectionService = lineStationService;
+        this.sectionService = sectionService;
     }
 
     @PostMapping
