@@ -5,6 +5,9 @@ import subway.dao.LineEntity;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Station;
+import subway.domain.Stations;
 import subway.service.dto.SectionInLineResponse;
 
 import java.util.List;
@@ -67,5 +70,22 @@ public class SectionService {
                            it.getStations().getNext().getName(),
                            it.getStations().getDistance()))
                    .collect(Collectors.toList());
+    }
+
+    public List<Section> findSectionsByLineId(final Long lineId) {
+        return sectionDao.findSectionsByLineId(lineId)
+                         .stream()
+                         .map(this::mapToSectionFrom)
+                         .collect(Collectors.toList());
+    }
+
+    private Section mapToSectionFrom(final SectionEntity sectionEntity) {
+        final Stations stations = new Stations(
+                new Station(sectionEntity.getCurrentStationName()),
+                new Station(sectionEntity.getNextStationName()),
+                sectionEntity.getDistance()
+        );
+
+        return new Section(stations);
     }
 }

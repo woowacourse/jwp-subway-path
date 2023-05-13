@@ -16,17 +16,14 @@ import java.util.stream.Collectors;
 public class LineService {
 
     private final LineDao lineDao;
-    private final CommonService commonService;
     private final SectionService sectionService;
 
     public LineService(
             final LineDao lineDao,
-            final CommonService commonService,
             final SectionService sectionService
     ) {
 
         this.lineDao = lineDao;
-        this.commonService = commonService;
         this.sectionService = sectionService;
     }
 
@@ -45,7 +42,7 @@ public class LineService {
 
         return lineEntities.stream()
                            .map(lineEntity -> {
-                               Line line = commonService.mapToLineFrom(lineEntity.getName());
+                               Line line = findByLineName(lineEntity.getName());
 
                                List<SectionInLineResponse> sectionInLineResponses
                                        = sectionService.mapToSectionInLineResponseFrom(line);
@@ -59,7 +56,7 @@ public class LineService {
             final SearchAllSectionLineRequest searchAllSectionLineRequest
     ) {
         final String lineName = searchAllSectionLineRequest.getLineName();
-        final Line line = commonService.mapToLineFrom(lineName);
+        final Line line = findByLineName(lineName);
 
         final List<SectionInLineResponse> sectionInLineResponses =
                 sectionService.mapToSectionInLineResponseFrom(line);
@@ -83,5 +80,19 @@ public class LineService {
         );
 
         return savedId;
+    }
+
+    public Line findByLineName(final String lineName) {
+        final LineEntity lineEntity = getLineEntity(lineName);
+
+        return new Line(
+                lineEntity.getName(),
+                sectionService.findSectionsByLineId(lineEntity.getId())
+        );
+    }
+
+    public LineEntity getLineEntity(final String lineName) {
+        return lineDao.findLineByName(lineName)
+                      .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
     }
 }

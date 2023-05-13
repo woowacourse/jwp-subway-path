@@ -13,17 +13,13 @@ import subway.service.dto.StationRegisterRequest;
 public class StationService {
 
     private final SectionService sectionService;
-
-    private final CommonService commonService;
     private final LineService lineService;
 
     public StationService(
             final SectionService sectionService,
-            final CommonService commonService,
             final LineService lineService
     ) {
         this.sectionService = sectionService;
-        this.commonService = commonService;
         this.lineService = lineService;
     }
 
@@ -31,10 +27,10 @@ public class StationService {
 
         final String lineName = stationRegisterRequest.getLineName();
 
-        final Line line = commonService.mapToLineFrom(lineName);
+        final Line line = lineService.findByLineName(lineName);
         line.add(mapToSectionFrom(stationRegisterRequest));
 
-        sectionService.updateLine(commonService.getLineEntity(lineName), line);
+        sectionService.updateLine(lineService.getLineEntity(lineName), line);
     }
 
     private Section mapToSectionFrom(final StationRegisterRequest stationRegisterRequest) {
@@ -50,8 +46,8 @@ public class StationService {
     public void deleteStation(final StationDeleteRequest stationDeleteRequest) {
 
         final String lineName = stationDeleteRequest.getLineName();
-        final LineEntity lineEntity = commonService.getLineEntity(lineName);
-        final Line line = commonService.mapToLineFrom(lineName);
+        final LineEntity lineEntity = lineService.getLineEntity(lineName);
+        final Line line = lineService.findByLineName(lineName);
 
         line.delete(new Station(stationDeleteRequest.getStationName()));
 
