@@ -1,0 +1,48 @@
+package subway.dao.support;
+
+public class SqlHelper {
+    
+    private final StringBuilder sql;
+    
+    private SqlHelper(final StringBuilder sql) {
+        this.sql = sql;
+    }
+    
+    public static SqlHelper sqlHelper() {
+        return new SqlHelper(new StringBuilder());
+    }
+
+    public SqlHelper select() {
+        sql.append("SELECT");
+        return this;
+    }
+
+    public SqlHelper columns(final String columns) {
+        sql.append(" ").append(columns);
+        return this;
+    }
+
+    public SqlHelper from() {
+        sql.append(" FROM");
+        return this;
+    }
+
+    public SqlHelper table(String tables) {
+        sql.append(" ").append(tables);
+        return this;
+    }
+
+    public SqlHelper where() {
+        sql.append(" WHERE");
+        return this;
+    }
+
+    public SqlHelper condition(final String condition) {
+        sql.append(" ").append(condition);
+        return this;
+    }
+
+    public String toString() {
+        return sql.toString();
+    }
+}
