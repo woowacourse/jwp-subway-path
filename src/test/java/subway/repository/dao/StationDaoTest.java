@@ -60,7 +60,7 @@ class StationDaoTest {
     @Test
     void 이름으로_역을_조회한다() {
         // given
-        StationEntity first = stationDao.insert(new StationEntity("강남역"));
+        stationDao.insert(new StationEntity("강남역"));
 
         // when, then
         assertThat(stationDao.findByName("강남역")).isNotEmpty();
