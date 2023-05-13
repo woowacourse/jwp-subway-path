@@ -42,11 +42,11 @@ public class Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return Objects.equals(id, section.id) && Objects.equals(upBoundStation, section.upBoundStation) && Objects.equals(downBoundStation, section.downBoundStation) && Objects.equals(distance, section.distance);
+        return Objects.equals(id, section.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, upBoundStation, downBoundStation, distance);
+        return Objects.hash(id);
     }
 }

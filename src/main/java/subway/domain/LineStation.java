@@ -49,11 +49,11 @@ public class LineStation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LineStation that = (LineStation) o;
-        return Objects.equals(id, that.id) && Objects.equals(upBoundId, that.upBoundId) && Objects.equals(downBoundId, that.downBoundId) && Objects.equals(lineId, that.lineId) && Objects.equals(distance, that.distance);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, upBoundId, downBoundId, lineId, distance);
+        return Objects.hash(id);
     }
 }
