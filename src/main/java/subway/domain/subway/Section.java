@@ -20,7 +20,7 @@ public class Section {
         return this.upStation.equals(station) || this.downStation.equals(station);
     }
 
-    public void validateDistance(final Long requestDistance) {
+    public void validateDistance(final long requestDistance) {
         distance.validateSectionDistance(requestDistance);
     }
 
@@ -32,7 +32,7 @@ public class Section {
         return downStation;
     }
 
-    public Long getDistance() {
+    public long getDistance() {
         return distance.getDistance();
     }
 
