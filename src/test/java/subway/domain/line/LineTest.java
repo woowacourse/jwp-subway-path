@@ -151,7 +151,7 @@ class LineTest {
         }
 
         @Test
-        @DisplayName("역이 둘다 존재하지 않으면 예외를 던진다.")
+        @DisplayName("추가될 역의 거리가 추가될 위치의 두 역 사이보다 크거나 같으면 예외를 던진다.")
         void addSectionWithInvalidRangeDistance() {
             final Station additionStation = new Station(3L, "잠실새내역");
 
