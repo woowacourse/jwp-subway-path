@@ -12,7 +12,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Component;
 import subway.domain.Line;
-import subway.domain.LinkedRoute;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -24,13 +24,13 @@ import subway.exception.line.LineExceptionType;
 public class JgraphtShortestRoute implements ShortestRouteService {
 
     @Override
-    public LinkedRoute shortestRoute(final List<Line> lines, final Station start, final Station end) {
+    public Lines shortestRoute(final Lines lines, final Station start, final Station end) {
         validateSameStation(start, end);
         final List<Section> shortestSections = findPath(lines, start, end)
                 .stream()
                 .map(SectionAdapter::toSection)
                 .collect(Collectors.toList());
-        return toRoute(start, lines, shortestSections);
+        return toRoute(lines, shortestSections);
     }
 
     private void validateSameStation(final Station start, final Station end) {
@@ -40,7 +40,7 @@ public class JgraphtShortestRoute implements ShortestRouteService {
     }
 
     private List<SectionAdapter> findPath(
-            final List<Line> lines,
+            final Lines lines,
             final Station start,
             final Station end
     ) {
@@ -52,7 +52,7 @@ public class JgraphtShortestRoute implements ShortestRouteService {
     }
 
     private static GraphPath<Station, SectionAdapter> validPath(
-            final List<Line> lines,
+            final Lines lines,
             final Station start,
             final Station end
     ) {
@@ -65,23 +65,24 @@ public class JgraphtShortestRoute implements ShortestRouteService {
         }
     }
 
-    private LinkedRoute toRoute(final Station start, final List<Line> lines, final List<Section> shortestSections) {
+    private Lines toRoute(final Lines lines, final List<Section> shortestSections) {
         final List<Line> result = new ArrayList<>();
         final Deque<Section> deque = new ArrayDeque<>(shortestSections);
         while (!deque.isEmpty()) {
             result.add(getSectionContainsLine(lines, deque));
         }
-        return LinkedRoute.of(start, result);
+        return new Lines(result);
     }
 
-    private Line getSectionContainsLine(final List<Line> lines, final Deque<Section> sections) {
+    private Line getSectionContainsLine(final Lines lines, final Deque<Section> sections) {
         final Line sectionsContainLine = findSectionContainsLine(lines, sections);
         final List<Section> result = addSectionsToLine(sectionsContainLine, sections);
         return new Line(sectionsContainLine.id(), sectionsContainLine.name(), toSections(result));
     }
 
-    private Line findSectionContainsLine(final List<Line> lines, final Deque<Section> sections) {
-        return lines.stream()
+    private Line findSectionContainsLine(final Lines lines, final Deque<Section> sections) {
+        return lines.lines()
+                .stream()
                 .filter(it -> it.contains(sections.peekFirst()))
                 .findAny()
                 .orElseThrow(() -> new LineException("최단경로 구하는 중 문제 발생"));

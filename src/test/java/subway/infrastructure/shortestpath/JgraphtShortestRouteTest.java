@@ -23,7 +23,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
-import subway.domain.LinkedRoute;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.service.ShortestRouteService;
@@ -37,7 +37,7 @@ class JgraphtShortestRouteTest {
 
     private final ShortestRouteService shortestRouteService = new JgraphtShortestRoute();
 
-    private final List<Line> lines = List.of(
+    private final Lines lines = new Lines(
             new Line("1호선", new Sections(List.of(
                     new Section(역1, 역2, 10),
                     new Section(역2, 역3, 5),
@@ -60,27 +60,30 @@ class JgraphtShortestRouteTest {
     @Test
     void 주어진_노선들_속에서_출발역과_종점역_사이의_최단_경로를_구할_수_있다() {
         // when
-        final LinkedRoute shortestLinkedRoute = shortestRouteService.shortestRoute(lines, 역5, 역7);
+        // 정렬되지 않고, 단순히 간선들만 나온다
+        final Lines shortestLines = shortestRouteService.shortestRoute(lines, 역5, 역7);
 
         // then
-        assertThat(shortestLinkedRoute.lines())
+        assertThat(shortestLines.lines())
                 .flatMap(Line::sections)
                 .containsExactly(
-                        new Section(역5, 역3, 1),
-                        new Section(역3, 역2, 5),
-                        new Section(역2, 역1, 10),
+                        new Section(역3, 역5, 1),
+
+                        new Section(역1, 역2, 10),
+                        new Section(역2, 역3, 5),
+
                         new Section(역1, 역7, 10)
                 );
-        assertThat(shortestLinkedRoute.totalDistance()).isEqualTo(26);
+        assertThat(shortestLines.totalDistance()).isEqualTo(26);
     }
 
     @Test
     void 역은_모두_존재하나_경로가_없는경우_빈_list_반환() {
         // given
-        final LinkedRoute shortestLinkedRoute = shortestRouteService.shortestRoute(lines, 역5, 잠실);
+        final Lines shortestLines = shortestRouteService.shortestRoute(lines, 역5, 잠실);
 
         // when & then
-        assertThat(shortestLinkedRoute.isEmpty()).isTrue();
+        assertThat(shortestLines.isEmpty()).isTrue();
     }
 
     @Test

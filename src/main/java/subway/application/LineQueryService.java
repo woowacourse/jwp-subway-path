@@ -12,7 +12,7 @@ import subway.application.dto.LineQueryResponse;
 import subway.application.dto.ShortestRouteResponse;
 import subway.domain.Line;
 import subway.domain.LineRepository;
-import subway.domain.LinkedRoute;
+import subway.domain.Lines;
 import subway.domain.Station;
 import subway.domain.StationRepository;
 import subway.domain.service.ShortestRouteService;
@@ -50,8 +50,9 @@ public class LineQueryService {
     public ShortestRouteResponse findShortestRoute(final String startStationName, final String endStationName) {
         final Station start = findStationByName(startStationName);
         final Station end = findStationByName(endStationName);
-        final LinkedRoute result = shortestRouteService.shortestRoute(lineRepository.findAll(), start, end);
-        return ShortestRouteResponse.from(result);
+        final Lines lines = shortestRouteService.shortestRoute(new Lines(lineRepository.findAll()), start, end);
+        final Lines continousLines = lines.continuousLinesWithStartStation(start);
+        return ShortestRouteResponse.from(continousLines);
     }
 
     private Station findStationByName(final String stationName) {

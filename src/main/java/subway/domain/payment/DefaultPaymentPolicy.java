@@ -1,7 +1,7 @@
 package subway.domain.payment;
 
 import org.springframework.stereotype.Component;
-import subway.domain.LinkedRoute;
+import subway.domain.Lines;
 
 @Component
 public class DefaultPaymentPolicy implements PaymentPolicy {
@@ -16,7 +16,7 @@ public class DefaultPaymentPolicy implements PaymentPolicy {
     private static final int LONG_DISTANCE_SLICE = 8;
 
     @Override
-    public int calculatePayment(final LinkedRoute route) {
+    public int calculatePayment(final Lines route) {
         if (route.isEmpty() || route.totalDistance() == 0) {
             return 0;
         }

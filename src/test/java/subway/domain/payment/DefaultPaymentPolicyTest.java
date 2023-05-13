@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.domain.LinkedRoute;
+import subway.domain.Lines;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -19,7 +19,7 @@ import subway.domain.LinkedRoute;
 class DefaultPaymentPolicyTest {
 
     private final DefaultPaymentPolicy paymentPolicy = new DefaultPaymentPolicy();
-    private final LinkedRoute route = mock(LinkedRoute.class);
+    private final Lines route = mock(Lines.class);
 
     @Test
     void 거리가_없는경우_0원() {

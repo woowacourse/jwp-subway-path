@@ -1,8 +1,8 @@
 package subway.domain.payment;
 
-import subway.domain.LinkedRoute;
+import subway.domain.Lines;
 
 public interface PaymentPolicy {
 
-    int calculatePayment(final LinkedRoute route);
+    int calculatePayment(final Lines route);
 }

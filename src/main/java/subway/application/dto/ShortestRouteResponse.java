@@ -6,7 +6,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 import subway.domain.Line;
-import subway.domain.LinkedRoute;
+import subway.domain.Lines;
 import subway.domain.Section;
 
 public class ShortestRouteResponse {
@@ -25,22 +25,21 @@ public class ShortestRouteResponse {
         this.transferCount = transferStations.size();
     }
 
-    public static ShortestRouteResponse from(final LinkedRoute linkedRoute) {
-        if (linkedRoute.isEmpty()) {
+    public static ShortestRouteResponse from(final Lines lines) {
+        if (lines.isEmpty()) {
             return new ShortestRouteResponse(emptyList(), emptyList(), 0);
         }
-        final List<Line> lines = linkedRoute.lines();
-        final List<SectionInfo> sectionInfoList = lines.stream()
+        final List<SectionInfo> sectionInfoList = lines.lines().stream()
                 .flatMap(it -> SectionInfo.from(it).stream())
                 .collect(toList());
         return new ShortestRouteResponse(
                 sectionInfoList,
                 toTransferStations(lines),
-                linkedRoute.totalDistance());
+                lines.totalDistance());
     }
 
-    private static List<String> toTransferStations(final List<Line> lines) {
-        return lines.stream()
+    private static List<String> toTransferStations(final Lines lines) {
+        return lines.lines().stream()
                 .map(it -> it.downTerminal().name())
                 .limit(lines.size() - 1)
                 .collect(toList());

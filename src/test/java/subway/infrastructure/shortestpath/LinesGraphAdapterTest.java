@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.domain.Section;
 import subway.domain.Sections;
 
@@ -31,7 +32,7 @@ class LinesGraphAdapterTest {
      *      |   /
      *     역8
      */
-    private final List<Line> lines = List.of(
+    private final Lines lines = new Lines(
             new Line("1호선", new Sections(List.of(
                     new Section(역1, 역2, 10),
                     new Section(역2, 역3, 5),
