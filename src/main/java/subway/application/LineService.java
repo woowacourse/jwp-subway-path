@@ -1,16 +1,16 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class LineService {
+
     private final LineDao lineDao;
 
     public LineService(LineDao lineDao) {
@@ -25,8 +25,8 @@ public class LineService {
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+            .map(LineResponse::of)
+            .collect(Collectors.toList());
     }
 
     public List<Line> findLines() {

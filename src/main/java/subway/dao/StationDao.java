@@ -1,5 +1,7 @@
 package subway.dao;
 
+import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,26 +10,24 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 
-import javax.sql.DataSource;
-import java.util.List;
-
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
+        new Station(
+            rs.getLong("id"),
+            rs.getString("name")
+        );
 
 
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("station")
+            .usingGeneratedKeyColumns("id");
     }
 
     public Station insert(Station station) {

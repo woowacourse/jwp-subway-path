@@ -3,6 +3,7 @@ package subway.dto;
 import subway.domain.Line;
 
 public class LineResponse {
+
     private Long id;
     private String name;
     private String color;
