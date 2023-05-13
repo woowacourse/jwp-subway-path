@@ -86,6 +86,19 @@ public class SectionService {
                 sectionEntity.getDistance()
         );
 
-        return new Section(stations);
+        return new Section(sectionEntity.getId(), stations);
+    }
+
+    public void updateSection(final Section section, final Long lineId) {
+
+        final SectionEntity sectionEntity = new SectionEntity(
+                section.getId(),
+                section.getStations().getCurrent().getName(),
+                section.getStations().getNext().getName(),
+                section.getStations().getDistance(),
+                lineId
+        );
+
+        sectionDao.update(sectionEntity);
     }
 }

@@ -16,6 +16,10 @@ public class Station {
         name = station.name;
     }
 
+    public Station cloneStation() {
+        return new Station(name);
+    }
+
     public String getName() {
         return name;
     }

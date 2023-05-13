@@ -2,12 +2,18 @@ package subway.domain;
 
 public class Section {
 
-    private Stations stations;
+    private final Long id;
+    private final Stations stations;
     private Section to;
 
-    public Section(final Stations stations) {
+    public Section(final Long id, final Stations stations) {
+        this.id = id;
         this.stations = stations;
         to = null;
+    }
+
+    public Section(final Stations stations) {
+        this(null, stations);
     }
 
     public Section findPreSectionOnAdd(final Section newSection) {
@@ -89,12 +95,24 @@ public class Section {
         return stations.isSameCurrent(station);
     }
 
+    public boolean isSame(final Section section) {
+        return stations.isSame(section.stations);
+    }
+
     public void disconnectNextSection() {
         updateNextSection(null);
     }
 
     public void updateNextSection(final Section section) {
         to = section;
+    }
+
+    public Section cloneSection() {
+        return new Section(id, stations.cloneStations());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Stations getStations() {

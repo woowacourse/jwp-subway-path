@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineEntity;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -9,7 +10,11 @@ import subway.domain.Stations;
 import subway.service.dto.StationDeleteRequest;
 import subway.service.dto.StationRegisterRequest;
 
+import java.util.List;
+import java.util.Objects;
+
 @Service
+@Transactional
 public class StationService {
 
     private final SectionService sectionService;
@@ -28,9 +33,27 @@ public class StationService {
         final String lineName = stationRegisterRequest.getLineName();
 
         final Line line = lineService.findByLineName(lineName);
-        line.add(mapToSectionFrom(stationRegisterRequest));
+        final LineEntity lineEntity = lineService.getLineEntity(lineName);
 
-        sectionService.updateLine(lineService.getLineEntity(lineName), line);
+        final List<Section> originSection = line.getSections();
+        final Section newSection = mapToSectionFrom(stationRegisterRequest);
+
+        line.add(newSection);
+
+        sectionService.registerSection(
+                stationRegisterRequest.getCurrentStationName(),
+                stationRegisterRequest.getNextStationName(),
+                stationRegisterRequest.getDistance(),
+                lineEntity.getId()
+        );
+
+        final List<Section> updatedSection = line.getSections();
+
+        updatedSection.stream()
+                      .filter(it -> originSection.stream().noneMatch(it::isSame))
+                      .filter(it -> Objects.nonNull(it.getId()))
+                      .findFirst()
+                      .ifPresent(it -> sectionService.updateSection(it, lineEntity.getId()));
     }
 
     private Section mapToSectionFrom(final StationRegisterRequest stationRegisterRequest) {

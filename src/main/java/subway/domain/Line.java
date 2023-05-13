@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Line {
 
-    private String name;
+    private final String name;
     private Section starter;
 
     public Line(final String name, final Collection<Section> sections) {
@@ -15,7 +15,28 @@ public class Line {
     }
 
     private void initialLine(final Collection<Section> sections) {
+        List<Section> retrySection = new ArrayList<>();
+
         for (final Section section : sections) {
+            addUnorderedSection(retrySection, section);
+        }
+
+        retryUnorderedSection(retrySection);
+    }
+
+    private void addUnorderedSection(
+            final List<Section> retrySection,
+            final Section section
+    ) {
+        try {
+            add(section);
+        } catch (IllegalArgumentException exception) {
+            retrySection.add(section);
+        }
+    }
+
+    private void retryUnorderedSection(final Collection<Section> retrySection) {
+        for (final Section section : retrySection) {
             add(section);
         }
     }
@@ -65,8 +86,8 @@ public class Line {
         }
 
         if (canExchangeTail(target)) {
-            Section newLastSection = findPreSection(target);
-            newLastSection.disconnectNextSection();
+            Section newTailSection = findPreSection(target);
+            newTailSection.disconnectNextSection();
             return;
         }
 
@@ -90,10 +111,17 @@ public class Line {
     private Section findPreSection(Section targetSection) {
         Section current = starter;
 
-        while (current.getTo() != targetSection) {
+        while (isNotTail(targetSection, current)) {
             current = current.getTo();
         }
         return current;
+    }
+
+    private boolean isNotTail(
+            final Section targetSection,
+            final Section current
+    ) {
+        return current.getTo() != targetSection;
     }
 
     public boolean isDeleted() {
@@ -106,8 +134,7 @@ public class Line {
         List<Section> sections = new ArrayList<>();
 
         while (current != null) {
-            sections.add(current);
-
+            sections.add(current.cloneSection());
             current = current.getTo();
         }
 

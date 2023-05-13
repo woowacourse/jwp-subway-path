@@ -49,4 +49,19 @@ public class SectionDao {
 
         jdbcTemplate.update(sql, lineId);
     }
+
+    public void update(final SectionEntity sectionEntity) {
+        final String sql = "UPDATE SECTION S SET S.current_station_name = ?, "
+                + "S.next_station_name = ?,"
+                + "S.distance = ? "
+                + "WHERE S.id = ?";
+
+        jdbcTemplate.update(
+                sql,
+                sectionEntity.getCurrentStationName(),
+                sectionEntity.getNextStationName(),
+                sectionEntity.getDistance(),
+                sectionEntity.getId()
+        );
+    }
 }

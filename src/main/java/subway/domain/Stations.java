@@ -2,8 +2,8 @@ package subway.domain;
 
 public class Stations {
 
-    private Station current;
-    private Station next;
+    private final Station current;
+    private final Station next;
     private Distance distance;
 
     public Stations(final Station current, final Station next, final int distance) {
@@ -28,6 +28,11 @@ public class Stations {
         return distance.isShorterThan(other.distance);
     }
 
+    public boolean isSame(final Stations stations) {
+        return current.isSame(stations.current)
+                && next.isSame(stations.next);
+    }
+
     public void updateStationOnAdd(final Stations newStations) {
         current.updateStationName(newStations.next);
         distance = distance.minus(newStations.distance);
@@ -36,6 +41,14 @@ public class Stations {
     public void updateStationOnDelete(final Stations deleteStations) {
         next.updateStationName(deleteStations.next);
         distance = distance.plus(deleteStations.distance);
+    }
+
+    public Stations cloneStations() {
+        return new Stations(
+                current.cloneStation(),
+                next.cloneStation(),
+                distance.getValue()
+        );
     }
 
     public int getDistance() {
