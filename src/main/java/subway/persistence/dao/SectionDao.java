@@ -90,13 +90,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, stationId, stationId);
     }
 
-    public int deleteById(final Long id) {
-        final String sql = "DELETE FROM section WHERE id = ?";
-
-        return jdbcTemplate.update(sql, id);
-    }
-
-    public int deleteByLineId(final Long lineId) {
+    public int deleteAllByLineId(final Long lineId) {
         final String sql = "DELETE FROM section WHERE line_id = ?";
 
         return jdbcTemplate.update(sql, lineId);
