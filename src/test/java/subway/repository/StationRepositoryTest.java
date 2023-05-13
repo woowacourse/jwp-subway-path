@@ -31,6 +31,19 @@ class StationRepositoryTest {
         stationRepository = new StationRepository(stationDao);
     }
 
+    @Test
+    @DisplayName("역을 저장한다.")
+    void save() {
+        final Station station = new Station("잠실역");
+
+        final Station result = stationRepository.save(station);
+
+        assertAll(
+                () -> assertThat(result.getId()).isNotNull(),
+                () -> assertThat(result.getName()).isEqualTo(station.getName())
+        );
+    }
+
     @Nested
     @DisplayName("역을 조회 시 ")
     class FindById {
