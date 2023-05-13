@@ -63,7 +63,7 @@ public class Sections {
                 .filter(section -> section.hasStation(base))
                 .map(section -> section.getAdditionalSectionsWithOneself(base, direction, additionalStation, distance))
                 .max(Comparator.comparingInt(Set::size))
-                .orElseThrow(() -> new IllegalArgumentException("추가할 Section이 만들어지지 않았습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("기준역인 " + base + "이 해당 노선에 존재하지 않습니다."));
     }
     
     private boolean isBetweenCase(final Set<Section> additionalWithOneself) {

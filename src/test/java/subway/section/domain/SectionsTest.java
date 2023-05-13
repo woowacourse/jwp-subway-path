@@ -224,11 +224,22 @@ class SectionsTest {
     @Test
     void 최초_등록_시_구간이_하나라도_존재하면_예외_발생() {
         // given
-        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 3L));
+        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L));
         final Sections sections = new Sections(new HashSet<>(initSections));
         
         // when, then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> sections.initAddStation("선릉역", "강남역", 5L));
+                .isThrownBy(() -> sections.initAddStation("선릉역", "강남역", 3L));
+    }
+    
+    @Test
+    void 기준역이_존재하지_않으면_예외_발생() {
+        // given
+        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L));
+        final Sections sections = new Sections(new HashSet<>(initSections));
+        
+        // when, then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> sections.addStation("선릉역", Direction.RIGHT, "가양역", 3L));
     }
 }
