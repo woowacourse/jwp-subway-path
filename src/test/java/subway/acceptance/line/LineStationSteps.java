@@ -1,8 +1,8 @@
-package subway.integration.line;
+package subway.acceptance.line;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
-import static subway.integration.common.JsonMapper.toJson;
+import static subway.acceptance.common.JsonMapper.toJson;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

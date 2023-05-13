@@ -1,16 +1,16 @@
-package subway.integration.line;
+package subway.acceptance.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.http.HttpStatus.BAD_REQUEST;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.OK;
-import static subway.integration.line.LineStationSteps.노선에_역_제거_요청;
-import static subway.integration.line.LineStationSteps.노선에_역_추가_요청;
-import static subway.integration.line.LineSteps.노선_생성_요청;
-import static subway.integration.line.LineSteps.노선_생성하고_아이디_반환;
-import static subway.integration.line.LineSteps.노선_조회_요청;
-import static subway.integration.line.LineSteps.노선에_포함된_N번째_구간을_검증한다;
-import static subway.integration.station.StationSteps.역_생성_요청;
+import static subway.acceptance.line.LineStationSteps.노선에_역_제거_요청;
+import static subway.acceptance.line.LineStationSteps.노선에_역_추가_요청;
+import static subway.acceptance.line.LineSteps.노선_생성_요청;
+import static subway.acceptance.line.LineSteps.노선_생성하고_아이디_반환;
+import static subway.acceptance.line.LineSteps.노선_조회_요청;
+import static subway.acceptance.line.LineSteps.노선에_포함된_N번째_구간을_검증한다;
+import static subway.acceptance.station.StationSteps.역_생성_요청;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

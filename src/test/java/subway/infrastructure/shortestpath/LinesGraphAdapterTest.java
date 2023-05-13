@@ -10,7 +10,6 @@ import static subway.domain.fixture.StationFixture.역6;
 import static subway.domain.fixture.StationFixture.역7;
 import static subway.domain.fixture.StationFixture.역8;
 
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -18,7 +17,6 @@ import org.junit.jupiter.api.Test;
 import subway.domain.Line;
 import subway.domain.Lines;
 import subway.domain.Section;
-import subway.domain.Sections;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -33,19 +31,19 @@ class LinesGraphAdapterTest {
      *     역8
      */
     private final Lines lines = new Lines(
-            new Line("1호선", new Sections(List.of(
+            new Line("1호선",
                     new Section(역1, 역2, 10),
                     new Section(역2, 역3, 5),
                     new Section(역3, 역4, 7)
-            ))),
-            new Line("2호선", new Sections(List.of(
+            ),
+            new Line("2호선",
                     new Section(역6, 역3, 7),
                     new Section(역3, 역5, 1)
-            ))),
-            new Line("3호선", new Sections(List.of(
+            ),
+            new Line("3호선",
                     new Section(역1, 역7, 10),
                     new Section(역7, 역8, 5)
-            )))
+            )
     );
 
     @Test

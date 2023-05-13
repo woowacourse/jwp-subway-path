@@ -36,6 +36,24 @@ class LinesTest {
             )))
     );
 
+    @Test
+    void 각_노선들의_길이의_총합을_구할_수_있다() {
+        // when
+        final int totalDistance = lines.totalDistance();
+
+        // then
+        assertThat(totalDistance).isEqualTo(33);
+    }
+
+    @Test
+    void 비었는지_확인한다() {
+        // given
+        final Lines lines = new Lines();
+
+        // when & then
+        assertThat(lines.isEmpty()).isTrue();
+    }
+
     @Nested
     class 주어진_역으로_시작해서_목적지까지_연속적인_노선들을_구할_때 {
 
@@ -80,23 +98,5 @@ class LinesTest {
             // then
             assertThat(message).contains("노선들이 연결될 수 없습니다");
         }
-    }
-
-    @Test
-    void 각_노선들의_길이의_총합을_구할_수_있다() {
-        // when
-        final int totalDistance = lines.totalDistance();
-
-        // then
-        assertThat(totalDistance).isEqualTo(33);
-    }
-
-    @Test
-    void 비었는지_확인한다() {
-        // given
-        final Lines lines = new Lines();
-
-        // when & then
-        assertThat(lines.isEmpty()).isTrue();
     }
 }

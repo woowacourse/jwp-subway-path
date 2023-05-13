@@ -34,7 +34,6 @@ import subway.application.dto.ShortestRouteResponse;
 import subway.domain.Line;
 import subway.domain.LineRepository;
 import subway.domain.Section;
-import subway.domain.Sections;
 import subway.domain.StationRepository;
 import subway.domain.payment.PaymentPolicy;
 import subway.domain.service.ShortestRouteService;
@@ -58,12 +57,11 @@ class LineQueryServiceTest {
     @Test
     void id_를_통해서_노선을_조회한다() {
         // given
-        final Sections sections = new Sections(List.of(
+        final Line line = new Line("1호선",
                 new Section(역1, 역2, 10),
                 new Section(역2, 역3, 10),
                 new Section(역3, 역4, 10)
-        ));
-        final Line line = new Line("1호선", sections);
+        );
         given(lineRepository.findById(line.id()))
                 .willReturn(Optional.of(line));
 
@@ -84,18 +82,14 @@ class LineQueryServiceTest {
     @Test
     void 모든_노선을_조회한다() {
         // given
-        final Sections sections1 = new Sections(List.of(
+        final Line line1 = new Line("1호선",
                 new Section(역1, 역2, 10),
                 new Section(역2, 역3, 10)
-        ));
-        final Line line1 = new Line("1호선", sections1);
-
-        final Sections sections2 = new Sections(List.of(
+        );
+        final Line line2 = new Line("2호선",
                 new Section(역3, 역4, 10),
                 new Section(역4, 역5, 10)
-        ));
-        final Line line2 = new Line("2호선", sections2);
-
+        );
         given(lineRepository.findAll())
                 .willReturn(List.of(line1, line2));
 
@@ -132,23 +126,23 @@ class LineQueryServiceTest {
          *     잠실 - 선릉
          */
         private final List<Line> lines = List.of(
-                new Line("1호선", new Sections(List.of(
+                new Line("1호선",
                         new Section(역1, 역2, 10),
                         new Section(역2, 역3, 5),
                         new Section(역3, 역4, 7)
-                ))),
-                new Line("2호선", new Sections(List.of(
+                ),
+                new Line("2호선",
                         new Section(역6, 역3, 7),
                         new Section(역3, 역5, 1)
-                ))),
-                new Line("3호선", new Sections(List.of(
+                ),
+                new Line("3호선",
                         new Section(역1, 역7, 10),
                         new Section(역7, 역8, 5),
                         new Section(역8, 역6, 51)
-                ))),
-                new Line("4호선", new Sections(List.of(
+                ),
+                new Line("4호선",
                         new Section(잠실, 선릉, 10)
-                )))
+                )
         );
 
         @BeforeEach
@@ -185,9 +179,10 @@ class LineQueryServiceTest {
             // then
             assertThat(shortestRoute.getTotalDistance()).isEqualTo(26);
             assertThat(shortestRoute.getSectionInfos())
-                    .extracting(it -> it.getLine() + ": " + it.getFromStation() + "-[" + it.getDistance() + "km]-"
-                            + it.getToStation())
-                    .containsExactly(
+                    .extracting(it ->
+                            it.getLine() + ": " +
+                                    it.getFromStation() + "-[" + it.getDistance() + "km]-" + it.getToStation()
+                    ).containsExactly(
                             "2호선: 역5-[1km]-역3",
                             "1호선: 역3-[5km]-역2",
                             "1호선: 역2-[10km]-역1",

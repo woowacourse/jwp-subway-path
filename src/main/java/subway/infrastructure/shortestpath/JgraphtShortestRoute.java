@@ -30,7 +30,7 @@ public class JgraphtShortestRoute implements ShortestRouteService {
                 .stream()
                 .map(SectionAdapter::toSection)
                 .collect(Collectors.toList());
-        return toRoute(lines, shortestSections);
+        return makeShortestLines(lines, shortestSections);
     }
 
     private void validateSameStation(final Station start, final Station end) {
@@ -39,48 +39,43 @@ public class JgraphtShortestRoute implements ShortestRouteService {
         }
     }
 
-    private List<SectionAdapter> findPath(
-            final Lines lines,
-            final Station start,
-            final Station end
-    ) {
-        final GraphPath<Station, SectionAdapter> path = validPath(lines, start, end);
+    private List<SectionAdapter> findPath(final Lines lines, final Station start, final Station end) {
+        final LinesGraphAdapter graph = LinesGraphAdapter.adapt(lines);
+        final GraphPath<Station, SectionAdapter> path = validPath(graph, start, end);
         if (path == null) {
             return Collections.emptyList();
         }
         return path.getEdgeList();
     }
 
-    private static GraphPath<Station, SectionAdapter> validPath(
-            final Lines lines,
+    private GraphPath<Station, SectionAdapter> validPath(
+            final LinesGraphAdapter graph,
             final Station start,
             final Station end
     ) {
-        final LinesGraphAdapter graph = LinesGraphAdapter.adapt(lines);
-        final DijkstraShortestPath<Station, SectionAdapter> shortestPath = new DijkstraShortestPath<>(graph);
         try {
-            return shortestPath.getPath(start, end);
+            return new DijkstraShortestPath<>(graph).getPath(start, end);
         } catch (final IllegalArgumentException e) {
             throw new LineException(NOT_EXIST_STATION_IN_LINES);
         }
     }
 
-    private Lines toRoute(final Lines lines, final List<Section> shortestSections) {
+    private Lines makeShortestLines(final Lines lines, final List<Section> shortestSections) {
         final List<Line> result = new ArrayList<>();
         final Deque<Section> deque = new ArrayDeque<>(shortestSections);
         while (!deque.isEmpty()) {
-            result.add(getSectionContainsLine(lines, deque));
+            result.add(sectionOwner(lines, deque));
         }
         return new Lines(result);
     }
 
-    private Line getSectionContainsLine(final Lines lines, final Deque<Section> sections) {
-        final Line sectionsContainLine = findSectionContainsLine(lines, sections);
-        final List<Section> result = addSectionsToLine(sectionsContainLine, sections);
-        return new Line(sectionsContainLine.id(), sectionsContainLine.name(), toSections(result));
+    private Line sectionOwner(final Lines lines, final Deque<Section> sections) {
+        final Line sectionOwner = findSectionOwner(lines, sections);
+        final List<Section> result = addSectionsToLine(sectionOwner, sections);
+        return new Line(sectionOwner.id(), sectionOwner.name(), toSections(result));
     }
 
-    private Line findSectionContainsLine(final Lines lines, final Deque<Section> sections) {
+    private Line findSectionOwner(final Lines lines, final Deque<Section> sections) {
         return lines.lines()
                 .stream()
                 .filter(it -> it.contains(sections.peekFirst()))
@@ -90,13 +85,13 @@ public class JgraphtShortestRoute implements ShortestRouteService {
 
     private List<Section> addSectionsToLine(final Line sectionsContainLine, final Deque<Section> sections) {
         final List<Section> result = new ArrayList<>();
-        while (isLineContainsSection(sectionsContainLine, sections)) {
+        while (isSectionsOwner(sectionsContainLine, sections)) {
             result.add(sections.pollFirst());
         }
         return result;
     }
 
-    private boolean isLineContainsSection(final Line sectionsContainLine, final Deque<Section> sections) {
+    private boolean isSectionsOwner(final Line sectionsContainLine, final Deque<Section> sections) {
         return !sections.isEmpty() && sectionsContainLine.contains(sections.peekFirst());
     }
 

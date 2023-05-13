@@ -1,4 +1,4 @@
-package subway.integration.common;
+package subway.acceptance.common;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

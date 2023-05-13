@@ -9,6 +9,10 @@ public class Line {
     private final String name;
     private final Sections sections;
 
+    public Line(final String name, final Section... sections) {
+        this(UUID.randomUUID(), name, new Sections(sections));
+    }
+
     public Line(final String name, final Sections sections) {
         this(UUID.randomUUID(), name, sections);
     }

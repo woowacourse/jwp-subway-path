@@ -28,35 +28,6 @@ import subway.exception.line.LineException;
 @DisplayName("Section 은(는)")
 class SectionTest {
 
-    @Nested
-    class 구간_생성_시 {
-
-        @Test
-        void 구간_거리가_양수가_아니면_예외() {
-            // given
-            final Station 출발역 = new Station("출발역");
-            final Station 종착역 = new Station("종착역");
-
-            // when & then
-            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
-                    new Section(출발역, 종착역, 0)
-            ).exceptionType();
-            assertThat(exceptionType).isEqualTo(NON_POSITIVE_DISTANCE);
-        }
-
-        @Test
-        void 시작점과_종점이_동일하면_예외() {
-            // given
-            final Station 출발역 = new Station("출발역");
-
-            // when & then
-            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
-                    new Section(출발역, 출발역, 1)
-            ).exceptionType();
-            assertThat(exceptionType).isEqualTo(UP_AND_DOWN_STATION_IS_SAME);
-        }
-    }
-
     @Test
     void 정보가_같은_두_역은_동등하다() {
         // given
@@ -153,6 +124,35 @@ class SectionTest {
                 () -> assertThat(reverse.down()).isEqualTo(역1),
                 () -> assertThat(reverse.distance()).isEqualTo(10)
         );
+    }
+
+    @Nested
+    class 구간_생성_시 {
+
+        @Test
+        void 구간_거리가_양수가_아니면_예외() {
+            // given
+            final Station 출발역 = new Station("출발역");
+            final Station 종착역 = new Station("종착역");
+
+            // when & then
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
+                    new Section(출발역, 종착역, 0)
+            ).exceptionType();
+            assertThat(exceptionType).isEqualTo(NON_POSITIVE_DISTANCE);
+        }
+
+        @Test
+        void 시작점과_종점이_동일하면_예외() {
+            // given
+            final Station 출발역 = new Station("출발역");
+
+            // when & then
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
+                    new Section(출발역, 출발역, 1)
+            ).exceptionType();
+            assertThat(exceptionType).isEqualTo(UP_AND_DOWN_STATION_IS_SAME);
+        }
     }
 
     @Nested

@@ -34,6 +34,10 @@ public class Lines {
         return linkLines(start);
     }
 
+    public boolean isEmpty() {
+        return lines.isEmpty();
+    }
+
     private void validateStartStation(final Station start) {
         if (!firstLine().upTerminal().equals(start) && !firstLine().downTerminal().equals(start)) {
             throw new LineException("경로가 주어진 역으로 시작할 수 없습니다.");
@@ -66,10 +70,6 @@ public class Lines {
         if (!line.downTerminal().equals(start) && !line.upTerminal().equals(start)) {
             throw new LineException("노선들이 연결될 수 없습니다");
         }
-    }
-
-    public boolean isEmpty() {
-        return lines.isEmpty();
     }
 
     public int size() {

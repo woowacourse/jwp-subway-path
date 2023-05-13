@@ -1,23 +1,24 @@
 package subway.domain;
 
+import static java.util.stream.Collectors.toList;
 import static subway.exception.line.LineExceptionType.ADDED_SECTION_NOT_SMALLER_THAN_ORIGIN;
 import static subway.exception.line.LineExceptionType.ALREADY_EXIST_STATIONS;
 import static subway.exception.line.LineExceptionType.DELETED_STATION_NOT_EXIST;
 import static subway.exception.line.LineExceptionType.NO_RELATION_WITH_ADDED_SECTION;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.Collectors;
 import subway.exception.line.LineException;
 
 public class Sections {
 
     private final List<Section> sections = new ArrayList<>();
 
-    public Sections(final Section section) {
-        sections.add(section);
+    public Sections(final Section... sections) {
+        this(Arrays.asList(sections));
     }
 
     public Sections(final List<Section> sections) {
@@ -62,6 +63,16 @@ public class Sections {
                 && stations.contains(addedSection.down())) {
             throw new LineException(ALREADY_EXIST_STATIONS);
         }
+    }
+
+    public List<Station> stations() {
+        final List<Station> stations = new ArrayList<>();
+        stations.add(sections.get(0).up());
+        final List<Station> collect = sections.stream()
+                .map(Section::down)
+                .collect(toList());
+        stations.addAll(collect);
+        return stations;
     }
 
     private boolean isAddedToTerminal(final Section addedSection) {
@@ -208,16 +219,6 @@ public class Sections {
             reversed.add(section.reverse());
         }
         return new Sections(reversed);
-    }
-
-    public List<Station> stations() {
-        final List<Station> stations = new ArrayList<>();
-        stations.add(sections.get(0).up());
-        final List<Station> collect = sections.stream()
-                .map(Section::down)
-                .collect(Collectors.toList());
-        stations.addAll(collect);
-        return stations;
     }
 
     public List<Section> sections() {

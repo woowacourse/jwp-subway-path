@@ -1,8 +1,8 @@
-package subway.integration.station;
+package subway.acceptance.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.integration.common.LocationAsserter.location_헤더를_검증한다;
-import static subway.integration.station.StationSteps.역_생성_요청;
+import static subway.acceptance.common.LocationAsserter.location_헤더를_검증한다;
+import static subway.acceptance.station.StationSteps.역_생성_요청;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;

@@ -39,6 +39,86 @@ import subway.exception.line.LineException;
 @DisplayName("Sections 은(는)")
 class SectionsTest {
 
+    @Test
+    void 특정_구간의_포함_여부를_반환한다() {
+        // given
+        final Sections sections = new Sections(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5)
+        );
+        final Section section1 = new Section(역1, 역2, 4);
+        final Section section2 = new Section(역2, 역3, 5);
+        final Section section4 = new Section(역2, 역1, 4);
+        final Section section3 = new Section(역1, 역2, 6);
+        final Section section5 = new Section(역1, 역3, 9);
+
+        // when & then
+        assertThat(sections.contains(section1)).isTrue();
+        assertThat(sections.contains(section2)).isTrue();
+        assertThat(sections.contains(section3)).isFalse();
+        assertThat(sections.contains(section4)).isFalse();
+        assertThat(sections.contains(section5)).isFalse();
+    }
+
+    @Test
+    void 구간들의_총_거리를_구한다() {
+        // given
+        final Sections sections = new Sections(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        );
+
+        // when & then
+        assertThat(sections.totalDistance()).isEqualTo(209);
+    }
+
+    @Test
+    void 상행_종점을_구한다() {
+        // given
+        final Sections sections = new Sections(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        );
+
+        // when & then
+        assertThat(sections.upTerminal()).isEqualTo(역1);
+    }
+
+    @Test
+    void 하행_종점을_구한다() {
+        // given
+        final Sections sections = new Sections(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        );
+
+        // when & then
+        assertThat(sections.downTerminal()).isEqualTo(역4);
+    }
+
+    @Test
+    void 구간들을_뒤집는다() {
+        // given
+        final Sections sections = new Sections(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        );
+
+        // when
+        final Sections reverse = sections.reverse();
+
+        // then
+        assertThat(reverse.sections()).containsExactly(
+                new Section(역4, 역3, 200),
+                new Section(역3, 역2, 5),
+                new Section(역2, 역1, 4)
+        );
+    }
+
     @Nested
     class 구간_생성시 {
 
@@ -201,11 +281,11 @@ class SectionsTest {
         @Test
         void 역을_제거하고_구간들을_재조정한다() {
             // given
-            final Sections sections = new Sections(List.of(
+            final Sections sections = new Sections(
                     new Section(출발역, 잠실, 10),
                     new Section(잠실, 잠실나루, 5),
                     new Section(잠실나루, 종착역, 7)
-            ));
+            );
 
             // when
             sections.removeStation(잠실);
@@ -220,11 +300,11 @@ class SectionsTest {
         @Test
         void 상행_종점_제거_가능() {
             // given
-            final Sections sections = new Sections(List.of(
+            final Sections sections = new Sections(
                     new Section(출발역, 잠실, 10),
                     new Section(잠실, 잠실나루, 5),
                     new Section(잠실나루, 종착역, 7)
-            ));
+            );
 
             // when
             sections.removeStation(출발역);
@@ -239,11 +319,11 @@ class SectionsTest {
         @Test
         void 하행_종점_제거_가능() {
             // given
-            final Sections sections = new Sections(List.of(
+            final Sections sections = new Sections(
                     new Section(출발역, 잠실, 10),
                     new Section(잠실, 잠실나루, 5),
                     new Section(잠실나루, 종착역, 7)
-            ));
+            );
 
             // when
             sections.removeStation(종착역);
@@ -278,85 +358,5 @@ class SectionsTest {
             // then
             assertThat(sections.sections()).isEmpty();
         }
-    }
-
-    @Test
-    void 특정_구간의_포함_여부를_반환한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5)
-        ));
-        final Section section1 = new Section(역1, 역2, 4);
-        final Section section2 = new Section(역2, 역3, 5);
-        final Section section4 = new Section(역2, 역1, 4);
-        final Section section3 = new Section(역1, 역2, 6);
-        final Section section5 = new Section(역1, 역3, 9);
-
-        // when & then
-        assertThat(sections.contains(section1)).isTrue();
-        assertThat(sections.contains(section2)).isTrue();
-        assertThat(sections.contains(section3)).isFalse();
-        assertThat(sections.contains(section4)).isFalse();
-        assertThat(sections.contains(section5)).isFalse();
-    }
-
-    @Test
-    void 구간들의_총_거리를_구한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-
-        // when & then
-        assertThat(sections.totalDistance()).isEqualTo(209);
-    }
-
-    @Test
-    void 상행_종점을_구한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-
-        // when & then
-        assertThat(sections.upTerminal()).isEqualTo(역1);
-    }
-
-    @Test
-    void 하행_종점을_구한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-
-        // when & then
-        assertThat(sections.downTerminal()).isEqualTo(역4);
-    }
-
-    @Test
-    void 구간들을_뒤집는다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-
-        // when
-        final Sections reverse = sections.reverse();
-
-        // then
-        assertThat(reverse.sections()).containsExactly(
-                new Section(역4, 역3, 200),
-                new Section(역3, 역2, 5),
-                new Section(역2, 역1, 4)
-        );
     }
 }

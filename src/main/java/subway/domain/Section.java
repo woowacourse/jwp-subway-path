@@ -69,14 +69,6 @@ public class Section {
         return this.up.equals(section.up) || this.down.equals(section.down);
     }
 
-    public boolean contain(final Station station) {
-        return up.equals(station) || down.equals(station);
-    }
-
-    public boolean containsAllStation(final Section section) {
-        return contain(section.up) && contain(section.down);
-    }
-
     private Section remainSection(final Section section, final int dist) {
         if (this.up.equals(section.up)) {
             return new Section(section.down, this.down, dist);
@@ -86,6 +78,14 @@ public class Section {
 
     public Section reverse() {
         return new Section(down, up, distance);
+    }
+
+    public boolean contain(final Station station) {
+        return up.equals(station) || down.equals(station);
+    }
+
+    public boolean containsAllStation(final Section section) {
+        return contain(section.up) && contain(section.down);
     }
 
     @Override

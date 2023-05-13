@@ -63,12 +63,6 @@ public class JdbcLineRepository implements LineRepository {
                 .map(it -> it.toDomain(getSections(it.name())));
     }
 
-    @Override
-    public Optional<Line> findByName(final String name) {
-        return lineDao.findByName(name)
-                .map(it -> it.toDomain(getSections(name)));
-    }
-
     private List<Section> getSections(final String name) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineName(name);
         final Set<UUID> stationIds = getStationIds(sectionEntities);
@@ -97,6 +91,12 @@ public class JdbcLineRepository implements LineRepository {
         final Station down = idStationEntityMap.get(sectionEntity.downStationDomainId()).toDomain();
         final int distance = sectionEntity.distance();
         return new Section(up, down, distance);
+    }
+
+    @Override
+    public Optional<Line> findByName(final String name) {
+        return lineDao.findByName(name)
+                .map(it -> it.toDomain(getSections(name)));
     }
 
     @Override

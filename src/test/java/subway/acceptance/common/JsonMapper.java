@@ -1,4 +1,4 @@
-package subway.integration.common;
+package subway.acceptance.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

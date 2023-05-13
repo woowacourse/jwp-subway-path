@@ -39,6 +39,102 @@ class LineTest {
         포함된_구간들을_검증한다(line.sections(), sectionStrings);
     }
 
+    @Test
+    void 구간_없이_생성되면_예외() {
+        // when
+        final String message = assertThrows(LineException.class, () ->
+                new Line("1호선")
+        ).getMessage();
+
+        // then
+        assertThat(message).contains("구간은 최소 한개 이상 있어야 합니다.");
+    }
+
+    @Test
+    void 특정_구간의_포함_여부를_반환한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5)
+        ));
+        final Line line = new Line("1호선", sections);
+        final Section section1 = new Section(역1, 역2, 4);
+        final Section section2 = new Section(역2, 역3, 5);
+        final Section section4 = new Section(역2, 역1, 4);
+        final Section section3 = new Section(역1, 역2, 6);
+        final Section section5 = new Section(역1, 역3, 9);
+
+        // when & then
+        assertThat(line.contains(section1)).isTrue();
+        assertThat(line.contains(section2)).isTrue();
+        assertThat(line.contains(section3)).isFalse();
+        assertThat(line.contains(section4)).isFalse();
+        assertThat(line.contains(section5)).isFalse();
+    }
+
+    @Test
+    void 노선의_총_거리를_구한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        ));
+        final Line line = new Line("1호선", sections);
+
+        // when & then
+        assertThat(line.totalDistance()).isEqualTo(209);
+    }
+
+    @Test
+    void 상행_종점을_구한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        ));
+        final Line line = new Line("1호선", sections);
+
+        // when & then
+        assertThat(line.upTerminal()).isEqualTo(역1);
+    }
+
+    @Test
+    void 하행_종점을_구한다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        ));
+        final Line line = new Line("1호선", sections);
+
+        // when & then
+        assertThat(line.downTerminal()).isEqualTo(역4);
+    }
+
+    @Test
+    void 구간들을_뒤집는다() {
+        // given
+        final Sections sections = new Sections(List.of(
+                new Section(역1, 역2, 4),
+                new Section(역2, 역3, 5),
+                new Section(역3, 역4, 200)
+        ));
+        final Line line = new Line("1호선", sections);
+
+        // when
+        final Line reverse = line.reverse();
+
+        // then
+        assertThat(reverse.sections()).containsExactly(
+                new Section(역4, 역3, 200),
+                new Section(역3, 역2, 5),
+                new Section(역2, 역1, 4)
+        );
+    }
+
     @Nested
     class 노선에_구간_추가시 {
 
@@ -47,7 +143,8 @@ class LineTest {
             // given
             // 출발역 -[10km]- 종착역
             final Line line = new Line("1호선",
-                    new Sections(new Section(출발역, 종착역, 10)));
+                    new Section(출발역, 종착역, 10)
+            );
             // 출발역 -[6km]- 경유역2 -[4km]- 종착역
             final Section middle1 = new Section(경유역2, 종착역, 4);
             // 출발역 -[1km]- 경유역1 -[5km]- 경유역2 -[4km]- 종착역
@@ -69,8 +166,7 @@ class LineTest {
         void 상행_종점에_추가할_수_있다() {
             // given
             // 잠실 -[10km]- 종착역
-            final Line line = new Line("1호선",
-                    new Sections(new Section(잠실, 종착역, 10)));
+            final Line line = new Line("1호선", new Section(잠실, 종착역, 10));
             // 선릉 - [7km] - 잠실 -[10km]- 종착역
             final Section middle = new Section(선릉, 잠실, 7);
             // 출발역 - [1km] - 선릉 - [7km] - 잠실 -[10km]- 종착역
@@ -252,90 +348,5 @@ class LineTest {
             // then
             assertThat(line.sections()).isEmpty();
         }
-    }
-
-    @Test
-    void 특정_구간의_포함_여부를_반환한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5)
-        ));
-        final Line line = new Line("1호선", sections);
-        final Section section1 = new Section(역1, 역2, 4);
-        final Section section2 = new Section(역2, 역3, 5);
-        final Section section4 = new Section(역2, 역1, 4);
-        final Section section3 = new Section(역1, 역2, 6);
-        final Section section5 = new Section(역1, 역3, 9);
-
-        // when & then
-        assertThat(line.contains(section1)).isTrue();
-        assertThat(line.contains(section2)).isTrue();
-        assertThat(line.contains(section3)).isFalse();
-        assertThat(line.contains(section4)).isFalse();
-        assertThat(line.contains(section5)).isFalse();
-    }
-
-    @Test
-    void 노선의_총_거리를_구한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", sections);
-
-        // when & then
-        assertThat(line.totalDistance()).isEqualTo(209);
-    }
-
-    @Test
-    void 상행_종점을_구한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", sections);
-
-        // when & then
-        assertThat(line.upTerminal()).isEqualTo(역1);
-    }
-
-    @Test
-    void 하행_종점을_구한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", sections);
-
-        // when & then
-        assertThat(line.downTerminal()).isEqualTo(역4);
-    }
-
-    @Test
-    void 구간들을_뒤집는다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", sections);
-
-        // when
-        final Line reverse = line.reverse();
-
-        // then
-        assertThat(reverse.sections()).containsExactly(
-                new Section(역4, 역3, 200),
-                new Section(역3, 역2, 5),
-                new Section(역2, 역1, 4)
-        );
     }
 }
