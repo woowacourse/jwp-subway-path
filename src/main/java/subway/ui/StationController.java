@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import subway.application.StationSaveService;
 import subway.application.StationService;
 import subway.dto.StationResponse;
 import subway.dto.StationSaveRequest;
@@ -18,18 +19,21 @@ import java.util.List;
 @RestController
 @RequestMapping("/stations")
 public class StationController {
+
+    private final StationSaveService stationSaveService;
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationController(final StationSaveService stationSaveService, final StationService stationService) {
+        this.stationSaveService = stationSaveService;
         this.stationService = stationService;
     }
 
     @PostMapping("/{lineId}")
-    public ResponseEntity<Void> createStation(
+    public ResponseEntity<Void> registerStation(
             @PathVariable Long lineId,
             @RequestBody StationSaveRequest stationSaveRequest
     ) {
-        stationService.saveStation(lineId, stationSaveRequest);
+        stationSaveService.saveStation(lineId, stationSaveRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
