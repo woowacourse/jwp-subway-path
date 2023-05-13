@@ -3,18 +3,20 @@ package subway.domain;
 import java.util.Objects;
 
 public class Station {
-    private Long id;
-    private String name;
+
+    private final Long id;
+    private final String name;
 
     public Station() {
+        this(null, null);
+    }
+
+    public Station(String name) {
+        this(null, name);
     }
 
     public Station(Long id, String name) {
         this.id = id;
-        this.name = name;
-    }
-
-    public Station(String name) {
         this.name = name;
     }
 
@@ -38,5 +40,4 @@ public class Station {
     public int hashCode() {
         return Objects.hash(id, name);
     }
-
 }

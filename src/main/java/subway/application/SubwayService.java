@@ -33,8 +33,8 @@ public class SubwayService {
     public void enrollStation(Long lineId, StationEnrollRequest request) {
         Line line = subwayDao.findById(lineId);
         Section section = new Section(
-                stationDao.findById(request.getFromStation()),
-                stationDao.findById(request.getToStation()),
+                stationDao.findById(request.getUpStation()),
+                stationDao.findById(request.getDownStation()),
                 new Distance(request.getDistance())
         );
         line.addSection(section);

@@ -1,6 +1,7 @@
 package subway.entity;
 
 public class LineEntity {
+
     private final Long id;
     private final String name;
     private final String color;

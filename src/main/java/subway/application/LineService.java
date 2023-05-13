@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 public class LineService {
+
     private final LineDao lineDao;
 
     public LineService(LineDao lineDao) {
@@ -51,5 +52,4 @@ public class LineService {
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }
-
 }

@@ -15,6 +15,7 @@ import java.util.Optional;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 

@@ -13,7 +13,7 @@ public class SectionEntity {
     }
 
     public SectionEntity(Long id, Long lineId, String left, String right, Integer distance) {
-         this.id = id;
+        this.id = id;
         this.lineId = lineId;
         this.left = left;
         this.right = right;

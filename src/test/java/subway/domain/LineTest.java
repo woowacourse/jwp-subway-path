@@ -50,8 +50,8 @@ class LineTest {
         ));
 
         line.addSection(new Section(
-                new Station("테오"),
-                new Station("제이온"),
+                new Station(1L, "테오"),
+                new Station(2L, "제이온"),
                 new Distance(1)
         ));
 

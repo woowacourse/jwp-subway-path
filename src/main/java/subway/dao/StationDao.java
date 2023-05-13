@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
