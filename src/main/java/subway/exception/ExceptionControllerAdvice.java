@@ -25,7 +25,7 @@ public class ExceptionControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleAll(final Exception e) {
-        log.error("Ex : ", e);
+        log.error("[ERROR] 예상치 못한 예외 발생", e);
         return internalServerError()
                 .body(ExceptionResponse.internalServerError(UNEXPECTED_EXCEPTION_CODE));
     }
