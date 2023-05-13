@@ -41,7 +41,7 @@ public class LineController {
     }
 
     @PostMapping("/{id}/stations")
-    public ResponseEntity<LineResponse> createStationInLine(
+    public ResponseEntity<LineResponse> addStationInLine(
             @PathVariable("id") Long id,
             @Valid @RequestBody SectionCreateRequest request) {
         LineResponse response = lineService.addStation(id, request);
@@ -50,5 +50,15 @@ public class LineController {
         return ResponseEntity
                 .created(location)
                 .body(response);
+    }
+
+    @DeleteMapping("/{lineId}/stations/{stationId}")
+    public ResponseEntity<Void> deleteStationInLine(
+            @PathVariable("lineId") Long lineId,
+            @PathVariable("stationId") Long stationId) {
+        lineService.deleteStation(lineId, stationId);
+        return ResponseEntity
+                .noContent()
+                .build();
     }
 }

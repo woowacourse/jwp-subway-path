@@ -1,10 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.domain.Subway;
+import subway.domain.*;
 import subway.dto.*;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
@@ -90,6 +87,26 @@ public class LineServiceImpl implements LineService {
         final List<StationResponse> stationResponse = mapToStationResponse(line);
 
         return LineResponse.of(line, stationResponse);
+    }
+
+    @Override
+    public void deleteStation(final Long lineId, final Long stationId) {
+        final Line line = lineRepository.findById(lineId);
+        final Station station = stationRepository.findById(stationId);
+
+        final Sections sections = subway.findSectionsOf(line);
+
+        final Station previousStation = subway.findStationBefore(line, station);
+        final Station nextStation = subway.findStationAfter(line, station);
+
+        if (previousStation != null) {
+            sectionRepository.deleteSection(lineId, previousStation, stationId);
+        }
+        if (nextStation != null) {
+            sectionRepository.deleteSection(lineId, stationId, nextStation);
+        }
+
+        sections.deleteStation(station);
     }
 
     private List<StationResponse> mapToStationResponse(final Line line) {

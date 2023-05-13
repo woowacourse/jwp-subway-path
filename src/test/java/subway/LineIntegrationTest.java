@@ -15,6 +15,7 @@ import subway.dto.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static subway.fixture.StationFixture.EXPRESS_BUS_TERMINAL_STATION;
 import static subway.fixture.StationFixture.SAPYEONG_STATION;
@@ -81,6 +82,7 @@ class LineIntegrationTest {
 
         assertThat(response.statusCode()).isEqualTo(CREATED.value());
     }
+
     @Test
     void createStationInLineTest() {
         final StationResponse stationResponse1 = createNewStation(EXPRESS_BUS_TERMINAL_REQUEST);
@@ -95,12 +97,46 @@ class LineIntegrationTest {
 
         createNewSection(lineResponse, initialSectionCreateRequest);
 
-        final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(
-                stationResponse1.getId(),
-                newStationResponse.getId(),
-                3);
+        final ExtractableResponse<Response> response = addStationInLine(stationResponse1, newStationResponse, lineResponse);
+
+        assertThat(response.statusCode()).isEqualTo(CREATED.value());
+    }
+
+    @Test
+    void deleteStationInLineTest() {
+        final StationResponse stationResponse1 = createNewStation(EXPRESS_BUS_TERMINAL_REQUEST);
+        final StationResponse stationResponse2 = createNewStation(SAPYEONG_STATION_REQUEST);
+        final StationResponse newStationResponse = createNewStation(NEW_STATION_REQUEST);
+
+        final LineResponse lineResponse = createNewLine(LINE_NINE_CREATE_REQUEST).as(LineResponse.class);
+
+        final InitialSectionCreateRequest initialSectionCreateRequest = new InitialSectionCreateRequest(
+                lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId(), 5
+        );
+
+        createNewSection(lineResponse, initialSectionCreateRequest);
+        addStationInLine(stationResponse1, newStationResponse, lineResponse);
 
         final ExtractableResponse<Response> response = RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+
+                .when()
+                .delete("/lines/" + lineResponse.getId() + "/stations/" + newStationResponse.getId())
+
+                .then()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(NO_CONTENT.value());
+    }
+
+    private ExtractableResponse<Response> addStationInLine(final StationResponse stationResponse1, final StationResponse stationResponse2, final LineResponse lineResponse) {
+        final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(
+                stationResponse1.getId(),
+                stationResponse2.getId(),
+                3);
+
+        return RestAssured
                 .given()
                 .contentType(APPLICATION_JSON_VALUE)
                 .body(sectionCreateRequest)
@@ -110,8 +146,6 @@ class LineIntegrationTest {
 
                 .then()
                 .extract();
-
-        assertThat(response.statusCode()).isEqualTo(CREATED.value());
     }
 
     private void createNewSection(final LineResponse lineResponse, final InitialSectionCreateRequest initialSectionCreateRequest) {
@@ -122,19 +156,6 @@ class LineIntegrationTest {
 
                 .when()
                 .post("/lines/" + lineResponse.getId() + "/stations/initial")
-
-                .then()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> createSection(final LineResponse lineResponse, final SectionCreateRequest sectionCreateRequest) {
-        return RestAssured
-                .given()
-                .contentType(APPLICATION_JSON_VALUE)
-                .body(sectionCreateRequest)
-
-                .when()
-                .post("/lines/" + lineResponse.getId() + "/stations")
 
                 .then()
                 .extract();

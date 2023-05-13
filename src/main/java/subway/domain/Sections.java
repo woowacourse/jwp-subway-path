@@ -207,12 +207,12 @@ public class Sections {
         graph.setEdgeWeight(graph.addEdge(newStation, upLineNextStation), distanceBetweenNewStationAndUpLineNextStation);
     }
 
-    public void remove(Station station) {
+    public void deleteStation(Station station) {
         List<DefaultWeightedEdge> adjacentEdges = new ArrayList<>(graph.edgesOf(station));
 
         // 양쪽 연결된 경우
         if (adjacentEdges.size() == 2) {
-            removeMiddleStation(station);
+            deleteMiddleStation(station);
         }
 
         // 한 쪽만 연결된 경우
@@ -224,7 +224,7 @@ public class Sections {
         graph.removeVertex(station);
     }
 
-    private void removeMiddleStation(Station station) {
+    private void deleteMiddleStation(Station station) {
         Set<DefaultWeightedEdge> edgesToRemove = new HashSet<>();
         Station upLineStation = null;
         Station downLineStation = null;
@@ -258,10 +258,25 @@ public class Sections {
         return graph.vertexSet().contains(station);
     }
 
-    @Override
-    public String toString() {
-        return "Sections{" +
-                "line=" + line +
-                '}';
+    public Station findStationBefore(final Station station) {
+        Station previousStation = null;
+        DefaultWeightedEdge previousEdge = null;
+        Set<DefaultWeightedEdge> incomingEdges = graph.incomingEdgesOf(station);
+        if (!incomingEdges.isEmpty()) {
+            previousEdge = incomingEdges.iterator().next();
+            previousStation = graph.getEdgeSource(previousEdge);
+        }
+        return previousStation;
+    }
+
+    public Station findStationAfter(final Station station) {
+        Station nextStation = null;
+        DefaultWeightedEdge nextEdge = null;
+        Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(station);
+        if (!outgoingEdges.isEmpty()) {
+            nextEdge = outgoingEdges.iterator().next();
+            nextStation = graph.getEdgeTarget(nextEdge);
+        }
+        return nextStation;
     }
 }

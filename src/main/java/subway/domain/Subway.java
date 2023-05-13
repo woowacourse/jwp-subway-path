@@ -58,4 +58,14 @@ public class Subway {
         }
         return sections.findDistanceBetween(upStation, downStation);
     }
+
+    public Station findStationBefore(final Line line, final Station station) {
+        final Sections sections = findSectionsOf(line);
+        return sections.findStationBefore(station);
+    }
+
+    public Station findStationAfter(final Line line, final Station station) {
+        final Sections sections = findSectionsOf(line);
+        return sections.findStationAfter(station);
+    }
 }

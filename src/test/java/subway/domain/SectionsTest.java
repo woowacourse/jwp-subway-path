@@ -224,7 +224,7 @@ class SectionsTest {
         sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
         // 고속터미널 -> 새 역 -> 사평역
 
-        sections.remove(SAPYEONG_STATION);
+        sections.deleteStation(SAPYEONG_STATION);
         // 고속터미널 -> 새 역
 
         assertThat(sections.findAllStationsInOrder()).containsExactly(
@@ -238,7 +238,7 @@ class SectionsTest {
         sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
         // 고속터미널 -> (3) 새 역 -> (2) 사평역
 
-        sections.remove(NEW_STATION);
+        sections.deleteStation(NEW_STATION);
         // 고속터미널 -> (5) 사평역
 
         assertThat(sections.findAllStationsInOrder()).containsExactly(
