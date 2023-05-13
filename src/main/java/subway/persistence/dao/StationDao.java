@@ -1,5 +1,6 @@
 package subway.persistence.dao;
 
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -41,13 +42,12 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findById(final Long id) {
+    public Optional<StationEntity> findById(final Long id) {
         final String sql = "SELECT id, name FROM station WHERE id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .findAny();
     }
 
     public int deleteById(final Long id) {

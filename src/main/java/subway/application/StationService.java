@@ -11,6 +11,8 @@ import subway.ui.dto.response.ReadStationResponse;
 @Service
 public class StationService {
 
+    private static final String NOT_EXISTS_STATION = "존재하지 않는 역입니다.";
+
     private final StationRepository stationRepository;
 
     public StationService(final StationRepository stationRepository) {
@@ -25,7 +27,8 @@ public class StationService {
     }
 
     public ReadStationResponse findStationById(final Long id) {
-        final Station station = stationRepository.findById(id);
+        final Station station = stationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION));
 
         return ReadStationResponse.of(station);
     }

@@ -16,6 +16,8 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
 
+    private static final String NOT_EXISTS_LINE = "존재하지 않는 노선입니다.";
+
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
 
@@ -44,7 +46,8 @@ public class LineService {
     }
 
     public ReadLineResponse findLineById(final Long id) {
-        final Line line = lineRepository.findById(id);
+        final Line line = lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_LINE));
         sectionRepository.findAllByLine(line);
 
         return ReadLineResponse.of(line);

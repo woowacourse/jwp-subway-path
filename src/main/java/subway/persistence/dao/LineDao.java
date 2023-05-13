@@ -1,5 +1,6 @@
 package subway.persistence.dao;
 
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -43,12 +44,11 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public LineEntity findById(final Long id) {
+    public Optional<LineEntity> findById(final Long id) {
         final String sql = "SELECT id, name, color FROM LINE WHERE id = ?";
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .findAny();
     }
 
     public int deleteById(final Long id) {

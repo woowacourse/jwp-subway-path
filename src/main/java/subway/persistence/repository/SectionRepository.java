@@ -20,6 +20,8 @@ import java.util.Set;
 @Repository
 public class SectionRepository {
 
+    private static final String NOT_EXISTS_STATION = "존재하지 않는 역입니다.";
+
     private final SectionDao sectionDao;
     private final StationDao stationDao;
 
@@ -72,14 +74,14 @@ public class SectionRepository {
         return sectionEntities.stream()
                 .filter(sectionEntity -> sectionEntity.matchesUpStationId(upStationId))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 관계입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("지정한 역은 해당 노선에 등록되어 있지 않습니다."));
     }
 
     public void findAllByLine(final Line line) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(line.getId());
 
         if (sectionEntities.isEmpty()) {
-            return;
+            return ;
         }
         Set<Long> stationIds = new HashSet<>();
 
@@ -97,20 +99,24 @@ public class SectionRepository {
 
         while (count++ < 1) {
             final SectionEntity targetSectionEntity = findSectionEntityByUpStationId(sectionEntities, upStationId);
-            final Station upStation = stationDao.findById(targetSectionEntity.getUpStationId()).to();
-            final Station downStation = stationDao.findById(targetSectionEntity.getDownStationId()).to();
+            final Station upStation = stationDao.findById(targetSectionEntity.getUpStationId())
+                    .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION)).to();
+            final Station downStation = stationDao.findById(targetSectionEntity.getDownStationId())
+                    .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION)).to();
             line.addInitialStations(upStation, downStation, Distance.from(targetSectionEntity.getDistance()));
             upStationId = targetSectionEntity.getDownStationId();
         }
 
         if (count == stationIds.size()) {
-            return;
+            return ;
         }
 
         while (count++ < stationIds.size()) {
             final SectionEntity targetSectionEntity = findSectionEntityByUpStationId(sectionEntities, upStationId);
-            final Station upStation = stationDao.findById(targetSectionEntity.getUpStationId()).to();
-            final Station downStation = stationDao.findById(targetSectionEntity.getDownStationId()).to();
+            final Station upStation = stationDao.findById(targetSectionEntity.getUpStationId())
+                    .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION)).to();
+            final Station downStation = stationDao.findById(targetSectionEntity.getDownStationId())
+                    .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION)).to();
             line.addEndStation(upStation, downStation, Distance.from(targetSectionEntity.getDistance()));
             upStationId = targetSectionEntity.getDownStationId();
         }

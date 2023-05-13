@@ -1,13 +1,13 @@
 package subway.persistence.repository;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.entity.LineEntity;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Repository
 public class LineRepository {
@@ -27,9 +27,9 @@ public class LineRepository {
         return Line.of(insertedLineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
-    public Line findById(final Long id) {
+    public Optional<Line> findById(final Long id) {
         return lineDao.findById(id)
-                .to();
+                .map(LineEntity::to);
     }
 
     public List<Line> findAll() {
