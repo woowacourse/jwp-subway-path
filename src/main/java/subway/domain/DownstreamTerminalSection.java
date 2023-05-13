@@ -3,13 +3,13 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DownTerminalSection extends AbstractSection {
+public class DownstreamTerminalSection extends AbstractSection {
 
-    public DownTerminalSection(Station upstream) {
+    public DownstreamTerminalSection(Station upstream) {
         super(upstream, DummyTerminalStation.getInstance());
     }
 
-    public DownTerminalSection(DownTerminalSection otherSection) {
+    public DownstreamTerminalSection(DownstreamTerminalSection otherSection) {
         this(otherSection.getUpstream());
     }
 
@@ -17,11 +17,11 @@ public class DownTerminalSection extends AbstractSection {
     public List<AbstractSection> insertInTheMiddle(Station stationToAdd, int distance) {
         try {
             final AbstractSection firstSection = new MiddleSection(getUpstream(), stationToAdd, distance);
-            final AbstractSection secondSection = new DownTerminalSection(stationToAdd);
+            final AbstractSection secondSection = new DownstreamTerminalSection(stationToAdd);
 
             return new ArrayList<>(List.of(firstSection, secondSection));
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("DownTerminalSection::insertInTheMiddle", e);
+            throw new IllegalArgumentException("DownstreamTerminalSection::insertInTheMiddle", e);
         }
     }
 
@@ -30,6 +30,6 @@ public class DownTerminalSection extends AbstractSection {
         validateNotTerminalSection(sectionToMerge);
         validateSectionLinked(sectionToMerge);
 
-        return new DownTerminalSection(sectionToMerge.getUpstream());
+        return new DownstreamTerminalSection(sectionToMerge.getUpstream());
     }
 }

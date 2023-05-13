@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.exception.InvalidDistanceException;
+import subway.exception.InvalidStationNameException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +25,10 @@ public class MiddleSection extends AbstractSection {
     }
 
     private void validateNotDummyTerminalStation(Station upstream, Station downstream) {
-        final Station endPointDummyStation = DummyTerminalStation.getInstance();
-        if (upstream.equals(endPointDummyStation) || downstream.equals(endPointDummyStation)) {
-            throw new IllegalArgumentException(String.format(
-                    "디버깅: MiddleSection의 upstream: %s, downstream: %s",
-                    upstream,
-                    downstream
-            ));
+        final Station duummyTerminalStation = DummyTerminalStation.getInstance();
+
+        if (upstream.equals(duummyTerminalStation) || downstream.equals(duummyTerminalStation)) {
+            throw new InvalidStationNameException("역 이름은 공백이 될 수 없습니다");
         }
     }
 
