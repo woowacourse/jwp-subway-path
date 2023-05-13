@@ -2,6 +2,7 @@ package subway.domain.interstation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static subway.domain.station.StationFixture.누누_역_id_2;
 import static subway.domain.station.StationFixture.두둠_역_id_3;
 import static subway.domain.station.StationFixture.코다_역_id_1;
@@ -9,6 +10,7 @@ import static subway.domain.station.StationFixture.코다_역_id_1;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.exception.interstation.InterStationException;
 
@@ -41,5 +43,33 @@ class InterStationTest {
         final InterStation interStation2 = new InterStation(1L, 코다_역_id_1, 두둠_역_id_3, 1L);
 
         assertThat(interStation1).isEqualTo(interStation2);
+    }
+
+    @Nested
+    @DisplayName("contains 메서드는")
+    class Context_contains {
+
+        @Test
+        void 구간에_역이_포함되어_있으면_true_를_반환한다() {
+            final InterStation interStation = new InterStation(1L, 코다_역_id_1, 누누_역_id_2, 1L);
+
+            assertSoftly(
+                softly -> {
+                    softly.assertThat(interStation.contains(코다_역_id_1)).isTrue();
+                    softly.assertThat(interStation.contains(누누_역_id_2)).isTrue();
+                }
+            );
+        }
+
+        @Test
+        void 구간에_역이_포함되어_있지_않으면_false_를_반환한다() {
+            final InterStation interStation = new InterStation(1L, 코다_역_id_1, 누누_역_id_2, 1L);
+
+            assertSoftly(
+                softly -> {
+                    softly.assertThat(interStation.contains(두둠_역_id_3)).isFalse();
+                }
+            );
+        }
     }
 }
