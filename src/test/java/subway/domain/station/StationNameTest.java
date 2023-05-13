@@ -15,6 +15,14 @@ import subway.exception.station.StationNameException;
 @DisplayName("역 이름은")
 class StationNameTest {
 
+    @Test
+    void 정상적으로_생성된다() {
+        final String input = "강남역";
+
+        assertThatCode(() -> new StationName(input))
+            .doesNotThrowAnyException();
+    }
+
     @ParameterizedTest(name = "입력값: {0}")
     @NullAndEmptySource
     @ValueSource(strings = {" "})
@@ -31,13 +39,5 @@ class StationNameTest {
         assertThatCode(() -> new StationName(input))
             .isInstanceOf(StationNameException.class)
             .hasMessage("역 이름이 20글자를 초과했습니다");
-    }
-
-    @Test
-    void 정상적으로_생성된다() {
-        final String input = "강남역";
-
-        assertThatCode(() -> new StationName(input))
-            .doesNotThrowAnyException();
     }
 }
