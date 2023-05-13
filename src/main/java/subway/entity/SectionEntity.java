@@ -9,17 +9,23 @@ public class SectionEntity {
     private final Long id;
     private final Long upStationId;
     private final Long downStationId;
-    private final Long lineId;
     private final Distance distance;
+    private final Long lineId;
 
-    public SectionEntity(Long id, Long upStationId,
-                         Long downStationId, Long lineId,
-                         int distance) {
+    public SectionEntity(Long id, Long upStationId, Long downStationId, Distance distance, Long lineId) {
         this.id = id;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
+        this.distance = distance;
         this.lineId = lineId;
+    }
+
+    public SectionEntity(Long id, Long upStationId, Long downStationId, int distance, Long lineId) {
+        this.id = id;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
         this.distance = new Distance(distance);
+        this.lineId = lineId;
     }
 
     public Long getId() {
@@ -34,12 +40,12 @@ public class SectionEntity {
         return downStationId;
     }
 
-    public Long getLineId() {
-        return lineId;
-    }
-
     public int getDistance() {
         return distance.getDistance();
+    }
+
+    public Long getLineId() {
+        return lineId;
     }
 
     @Override
@@ -51,12 +57,12 @@ public class SectionEntity {
             return false;
         }
         SectionEntity that = (SectionEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId, that.downStationId) && Objects.equals(lineId, that.lineId) && Objects.equals(distance, that.distance);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, upStationId, downStationId, lineId, distance);
+        return Objects.hash(id);
     }
 
     @Override
@@ -65,8 +71,8 @@ public class SectionEntity {
                 "id=" + id +
                 ", upStationId=" + upStationId +
                 ", downStationId=" + downStationId +
-                ", lineId=" + lineId +
                 ", distance=" + distance +
+                ", lineId=" + lineId +
                 '}';
     }
 }

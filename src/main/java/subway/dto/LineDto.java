@@ -1,15 +1,21 @@
-package subway.domain.line;
+package subway.dto;
+
+import subway.domain.line.Line;
 
 import java.util.Objects;
 
-public class Line {
+public class LineDto {
 
     private final Long id;
-    private final LineName name;
+    private final String name;
 
-    public Line(Long id, String name) {
+    private LineDto(Long id, String name) {
         this.id = id;
-        this.name = new LineName(name);
+        this.name = name;
+    }
+
+    public static LineDto from(Line line) {
+        return new LineDto(line.getId(), line.getName());
     }
 
     public Long getId() {
@@ -17,7 +23,7 @@ public class Line {
     }
 
     public String getName() {
-        return name.getLineName();
+        return name;
     }
 
     @Override
@@ -28,8 +34,8 @@ public class Line {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Line that = (Line) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        LineDto lineDto = (LineDto) o;
+        return Objects.equals(id, lineDto.id) && Objects.equals(name, lineDto.name);
     }
 
     @Override
@@ -39,9 +45,9 @@ public class Line {
 
     @Override
     public String toString() {
-        return "LineEntity{" +
+        return "LineDto{" +
                 "id=" + id +
-                ", name=" + name +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

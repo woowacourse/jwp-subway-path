@@ -15,49 +15,45 @@ import java.util.Optional;
 public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<StationEntity> stationEntityRowMapper =
+            (rs, rowNum) -> new StationEntity(
+                    rs.getLong("id"),
+                    rs.getString("name"),
+                    rs.getLong("line_id"));
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long insert(StationEntity stationEntity) {
+    public StationEntity insert(StationEntity stationEntity) {
         String sql = "INSERT INTO station (name, line_id) VALUES (?, ?)";
+        String stationName = stationEntity.getStationName();
+        Long lineId = stationEntity.getLineId();
+
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"id"});
-            preparedStatement.setString(1, stationEntity.getName());
-            preparedStatement.setLong(2, stationEntity.getLineId());
+            preparedStatement.setString(1, stationName);
+            preparedStatement.setLong(2, lineId);
             return preparedStatement;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        long insertedId = keyHolder.getKey().longValue();
+        return new StationEntity(insertedId, stationName, lineId);
     }
 
     public Optional<StationEntity> findById(Long id) {
         String sql = "select id, name, line_id from STATION where id = ?";
-        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationEntityRowMapper(), id));
+        List<StationEntity> findStationEntity = jdbcTemplate.query(sql, stationEntityRowMapper, id);
+        return findStationEntity.stream().findAny();
     }
 
-    public Optional<StationEntity> findByStationNameAndLineName(String stationName, String lineName) {
-        String sql = "SELECT station.id, station.name, line.id FROM LINE " +
-                "INNER JOIN STATION " +
-                "ON line.id = station.line_id " +
-                "WHERE station.name = ? AND line.name = ?";
+    public Optional<StationEntity> findByStationIdAndLineId(Long stationId, Long lineId) {
+        String sql = "SELECT id, name, line_id FROM STATION " +
+                "WHERE id = ? AND line_id = ?";
 
-        List<StationEntity> stationEntities = jdbcTemplate.query(sql,
-                stationEntityRowMapper(),
-                stationName, lineName);
-        return stationEntities.stream()
-                .findAny();
-    }
-
-    private RowMapper<StationEntity> stationEntityRowMapper() {
-        return (rs, rowNum) -> {
-            long findStationId = rs.getLong("station.id");
-            String findStationName = rs.getString("name");
-            long findLineId = rs.getLong("line.id");
-            return new StationEntity(findStationId, findStationName, findLineId);
-        };
+        List<StationEntity> station = jdbcTemplate.query(sql, stationEntityRowMapper, stationId, lineId);
+        return station.stream().findAny();
     }
 
     public void deleteById(Long id) {

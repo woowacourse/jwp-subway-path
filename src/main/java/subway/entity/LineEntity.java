@@ -7,19 +7,24 @@ import java.util.Objects;
 public class LineEntity {
 
     private final Long id;
-    private final LineName name;
+    private final LineName lineName;
 
-    public LineEntity(Long id, String name) {
+    public LineEntity(Long id, LineName lineName) {
         this.id = id;
-        this.name = new LineName(name);
+        this.lineName = lineName;
+    }
+
+    public LineEntity(Long id, String lineName) {
+        this.id = id;
+        this.lineName = new LineName(lineName);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name.getLineName();
+    public String getLineName() {
+        return lineName.getLineName();
     }
 
     @Override
@@ -31,19 +36,19 @@ public class LineEntity {
             return false;
         }
         LineEntity that = (LineEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "LineEntity{" +
                 "id=" + id +
-                ", name=" + name +
+                ", lineName=" + lineName +
                 '}';
     }
 }

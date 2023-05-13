@@ -32,25 +32,25 @@ class LineDaoTest {
     @DisplayName("Line을 저장한다.")
     void insertTest() {
         // given
-        LineEntity insertEntity = LINE7_INSERT_ENTITY;
+        LineEntity entityToInsert = LINE7_INSERT_ENTITY;
 
         // when
-        Long insertedLineId = lineDao.insert(insertEntity);
+        LineEntity insertedLineEntity = lineDao.insert(entityToInsert);
 
         // then
-        assertThat(insertedLineId).isEqualTo(2L);
+        assertThat(insertedLineEntity).isEqualTo(LINE7_FIND_ENTITY);
     }
 
     @Test
     @DisplayName("노선 이름에 해당하는 행을 조회한다.")
     void findByLineNameTest() {
         // given
-        String lineName = DUMMY_LINE2_NAME;
+        String lineName = LINE2_NAME;
 
         // when
-        Optional<LineEntity> findLine = lineDao.findByLineName(lineName);
+        Optional<LineEntity> findLineEntity = lineDao.findByLineName(lineName);
 
         // then
-        assertThat(findLine.get()).isEqualTo(LINE2_FIND_ENTITY);
+        assertThat(findLineEntity).contains(LINE2_FIND_ENTITY);
     }
 }

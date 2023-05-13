@@ -5,27 +5,30 @@ import java.util.Objects;
 
 public class StationSaveResponse {
 
-    private final Long lineId;
-    private final List<Long> savedStationIds;
-    private final List<Long> savedSectionIds;
+    private final LineDto line;
+    private final List<StationDto> savedStations;
+    private final List<SectionDto> savedSections;
 
-    public StationSaveResponse(Long lineId, List<Long> savedStationIds,
-                               List<Long> savedSectionIds) {
-        this.lineId = lineId;
-        this.savedStationIds = savedStationIds;
-        this.savedSectionIds = savedSectionIds;
+    public StationSaveResponse(LineDto line, List<StationDto> savedStations, List<SectionDto> savedSections) {
+        this.line = line;
+        this.savedStations = savedStations;
+        this.savedSections = savedSections;
+    }
+
+    public LineDto getLine() {
+        return line;
     }
 
     public Long getLineId() {
-        return lineId;
+        return line.getId();
     }
 
-    public List<Long> getSavedStationIds() {
-        return savedStationIds;
+    public List<StationDto> getSavedStations() {
+        return savedStations;
     }
 
-    public List<Long> getSavedSectionIds() {
-        return savedSectionIds;
+    public List<SectionDto> getSavedSections() {
+        return savedSections;
     }
 
     @Override
@@ -37,20 +40,20 @@ public class StationSaveResponse {
             return false;
         }
         StationSaveResponse that = (StationSaveResponse) o;
-        return Objects.equals(lineId, that.lineId) && Objects.equals(savedStationIds, that.savedStationIds) && Objects.equals(savedSectionIds, that.savedSectionIds);
+        return Objects.equals(line, that.line) && Objects.equals(savedStations, that.savedStations) && Objects.equals(savedSections, that.savedSections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineId, savedStationIds, savedSectionIds);
+        return Objects.hash(line, savedStations, savedSections);
     }
 
     @Override
     public String toString() {
         return "StationSaveResponse{" +
-                "lineId=" + lineId +
-                ", savedStationIds=" + savedStationIds +
-                ", savedSectionIds=" + savedSectionIds +
+                "line=" + line +
+                ", savedStations=" + savedStations +
+                ", savedSections=" + savedSections +
                 '}';
     }
 }

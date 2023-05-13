@@ -12,8 +12,8 @@ import subway.application.StationService;
 import subway.dto.StationRequest;
 import subway.dto.StationSaveResponse;
 
-import static fixtures.StationFixtures.SAVE_INITIAL_STATIONS_잠실_TO_건대_RESPONSE;
-import static fixtures.StationFixtures.잠실_TO_건대_REQUEST;
+import static fixtures.StationFixtures.REQUEST_잠실역_TO_건대역;
+import static fixtures.StationFixtures.RESPONSE_SAVE_INITIAL_STATIONS_잠실역_TO_건대역;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -36,8 +36,8 @@ class StationControllerTest {
     @DisplayName("POST /stations uri로 요청하면 201을 반환한다.")
     void createStationTest() throws Exception {
         // given
-        StationRequest request = 잠실_TO_건대_REQUEST;
-        StationSaveResponse response = SAVE_INITIAL_STATIONS_잠실_TO_건대_RESPONSE;
+        StationRequest request = REQUEST_잠실역_TO_건대역;
+        StationSaveResponse response = RESPONSE_SAVE_INITIAL_STATIONS_잠실역_TO_건대역;
         when(stationService.saveStation(request))
                 .thenReturn(response);
 

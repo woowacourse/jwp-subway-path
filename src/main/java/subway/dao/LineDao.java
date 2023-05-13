@@ -15,51 +15,46 @@ import java.util.Optional;
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<LineEntity> lineEntityRowMapper =
+            (rs, rowNum) -> new LineEntity(rs.getLong("id"), rs.getString("name"));
+
 
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public Long insert(LineEntity lineEntity) {
+    public LineEntity insert(LineEntity lineEntity) {
         String sql = "INSERT INTO line (name) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"id"});
-            preparedStatement.setString(1, lineEntity.getName());
+            preparedStatement.setString(1, lineEntity.getLineName());
             return preparedStatement;
         }, keyHolder);
 
-        return keyHolder.getKey().longValue();
+        long insertedId = keyHolder.getKey().longValue();
+        return new LineEntity(insertedId, lineEntity.getLineName());
+    }
 
+    public List<LineEntity> findAll() {
+        String sql = "SELECT id, name FROM line";
+        return jdbcTemplate.query(sql, lineEntityRowMapper);
     }
 
     public LineEntity findById(Long id) {
-        String sql = "select id, line_name from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, lineEntityRowMapper(), id);
-    }
-
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        String sql = "SELECT id, line_name from LINE WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, lineEntityRowMapper, id);
     }
 
     public Optional<LineEntity> findByLineName(String lineName) {
         String sql = "SELECT id, name FROM line WHERE name = ?";
         List<LineEntity> lineEntities = jdbcTemplate.query(sql,
-                lineEntityRowMapper(), lineName
+                lineEntityRowMapper, lineName
         );
         return lineEntities.stream().findAny();
     }
 
-    private RowMapper<LineEntity> lineEntityRowMapper() {
-        return (rs, rowNum) ->
-                new LineEntity(
-                        rs.getLong("id"),
-                        rs.getString("name")
-                );
-    }
-
-    public List<LineEntity> findAll() {
-        String sql = "SELECT id, name FROM line";
-        return jdbcTemplate.query(sql, lineEntityRowMapper());
+    public void deleteById(Long id) {
+        jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }

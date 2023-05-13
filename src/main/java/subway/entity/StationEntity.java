@@ -7,12 +7,18 @@ import java.util.Objects;
 public class StationEntity {
 
     private final Long id;
-    private final StationName name;
+    private final StationName stationName;
     private final Long lineId;
 
-    public StationEntity(Long id, String name, Long lineId) {
+    public StationEntity(Long id, StationName stationName, Long lineId) {
         this.id = id;
-        this.name = new StationName(name);
+        this.stationName = stationName;
+        this.lineId = lineId;
+    }
+
+    public StationEntity(Long id, String stationName, Long lineId) {
+        this.id = id;
+        this.stationName = new StationName(stationName);
         this.lineId = lineId;
     }
 
@@ -20,8 +26,8 @@ public class StationEntity {
         return id;
     }
 
-    public String getName() {
-        return name.getStationName();
+    public String getStationName() {
+        return stationName.getStationName();
     }
 
     public Long getLineId() {
@@ -37,19 +43,19 @@ public class StationEntity {
             return false;
         }
         StationEntity that = (StationEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(lineId, that.lineId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, lineId);
+        return Objects.hash(id);
     }
 
     @Override
     public String toString() {
         return "StationEntity{" +
                 "id=" + id +
-                ", name=" + name +
+                ", name=" + stationName +
                 ", lineId=" + lineId +
                 '}';
     }

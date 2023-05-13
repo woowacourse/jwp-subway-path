@@ -32,26 +32,26 @@ class StationDaoTest {
     @DisplayName("Station을 저장한다.")
     void insertTest() {
         // given
-        StationEntity insertEntity = 강변_INSERT_ENTITY;
+        StationEntity entityToInsert = ENTITY_강변역_INSERT;
 
         // when
-        Long insertedStationId = stationDao.insert(insertEntity);
+        StationEntity insertedStationEntity = stationDao.insert(entityToInsert);
 
         // then
-        assertThat(insertedStationId).isEqualTo(3L);
+        assertThat(insertedStationEntity).isEqualTo(ENTITY_강변역_FIND);
     }
 
     @Test
     @DisplayName("받은 역 이름과 노선 이름에 해당하는 행을 조회한다.")
     void findByStationNameAndLineNameTest() {
         // given
-        String stationName = DUMMY_STATION_건대역_NAME;
-        String lineName = DUMMY_LINE2_NAME;
+        Long stationId = STATION_건대역_ID;
+        Long lineId = LINE2_ID;
 
         // when
-        Optional<StationEntity> findStation = stationDao.findByStationNameAndLineName(stationName, lineName);
+        Optional<StationEntity> findStationEntity = stationDao.findByStationIdAndLineId(stationId, lineId);
 
         // then
-        assertThat(findStation.get()).isEqualTo(건대_FIND_ENTITY);
+        assertThat(findStationEntity).contains(ENTITY_건대역_FIND);
     }
 }
