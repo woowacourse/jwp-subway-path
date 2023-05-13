@@ -10,10 +10,12 @@ import io.restassured.response.Response;
 import java.util.List;
 import subway.dto.request.LineCreateRequest;
 import subway.dto.response.LineQueryResponse;
-import subway.dto.response.LineQueryResponse.SectionQueryResponse;
+import subway.dto.response.SectionQueryResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineSteps {
+
+    private static final String API_URL = "/lines";
 
     public static ExtractableResponse<Response> 노선_생성_요청(
             final String lineName,
@@ -31,7 +33,7 @@ public class LineSteps {
                 .contentType(JSON)
                 .body(body)
                 .when()
-                .post("/lines")
+                .post(API_URL)
                 .then()
                 .log().all()
                 .extract();
@@ -57,7 +59,7 @@ public class LineSteps {
     public static ExtractableResponse<Response> 노선_조회_요청(final Long id) {
         return given().log().all()
                 .when()
-                .get("/lines/{id}", id)
+                .get(API_URL + "/{id}", id)
                 .then()
                 .log().all()
                 .extract();
@@ -67,7 +69,7 @@ public class LineSteps {
     public static ExtractableResponse<Response> 노선_전체_조회_요청() {
         return given().log().all()
                 .when()
-                .get("/lines")
+                .get(API_URL)
                 .then()
                 .log().all()
                 .extract();

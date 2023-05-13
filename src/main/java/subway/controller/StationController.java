@@ -25,6 +25,7 @@ public class StationController {
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody @Valid final StationCreateRequest stationCreateRequest) {
         final Long id = stationService.create(new StationCreateRequest(stationCreateRequest.getName()));
+        System.out.println("id = " + id);
         final URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
                 .path("/{id}")

@@ -11,6 +11,8 @@ import subway.dto.request.StationCreateRequest;
 @SuppressWarnings("NonAsciiCharacters")
 public class StationSteps {
 
+    private static final String API_URL = "/stations";
+
     public static ExtractableResponse<Response> 역_생성_요청(final String stationName) {
         final StationCreateRequest request = new StationCreateRequest(stationName);
         return 역_생성_요청(request);
@@ -22,7 +24,7 @@ public class StationSteps {
                 .contentType(JSON)
                 .body(body)
                 .when()
-                .post("/stations")
+                .post(API_URL)
                 .then()
                 .log().all()
                 .extract();

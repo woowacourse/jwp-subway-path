@@ -6,11 +6,14 @@ import static subway.integration.common.JsonMapper.toJson;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.mockito.BDDMockito;
 import subway.dto.request.AddStationToLineRequest;
 import subway.dto.request.DeleteStationFromLineRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineStationSteps {
+
+    private static final String API_URL = "/lines/stations";
 
     public static ExtractableResponse<Response> 노선에_역_추가_요청(
             final String lineName,
@@ -29,7 +32,7 @@ public class LineStationSteps {
                 .contentType(JSON)
                 .body(body)
                 .when()
-                .post("/lines/stations")
+                .post(API_URL)
                 .then()
                 .log().all()
                 .extract();
@@ -49,7 +52,7 @@ public class LineStationSteps {
                 .contentType(JSON)
                 .body(body)
                 .when()
-                .delete("/lines/stations")
+                .delete(API_URL)
                 .then()
                 .log().all()
                 .extract();
