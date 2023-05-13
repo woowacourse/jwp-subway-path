@@ -5,13 +5,20 @@ import javax.validation.constraints.NotNull;
 public class AddStationRequest {
 
     @NotNull
-    private String lineName;
+    private final String lineName;
     @NotNull
-    private String sourceStation;
+    private final String sourceStation;
     @NotNull
-    private String targetStation;
+    private final String targetStation;
     @NotNull
-    private Integer distance;
+    private final Integer distance;
+
+    public AddStationRequest(String lineName, String sourceStation, String targetStation, Integer distance) {
+        this.lineName = lineName;
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
+        this.distance = distance;
+    }
 
     public String getLineName() {
         return lineName;
