@@ -5,9 +5,7 @@ import javax.validation.constraints.NotNull;
 public class AddStationRequest {
 
     @NotNull
-    private String addStationName;
-    @NotNull
-    private String lineName;
+    private String stationToAddName;
     @NotNull
     private String upstreamName;
     @NotNull
@@ -15,20 +13,15 @@ public class AddStationRequest {
     @NotNull
     private int distanceToUpstream;
 
-    public AddStationRequest(String addStationName, String lineName, String upstreamName, String downstreamName, int distanceToUpstream) {
-        this.addStationName = addStationName;
-        this.lineName = lineName;
+    public AddStationRequest(String stationToAddName, String upstreamName, String downstreamName, int distanceToUpstream) {
+        this.stationToAddName = stationToAddName;
         this.upstreamName = upstreamName;
         this.downstreamName = downstreamName;
         this.distanceToUpstream = distanceToUpstream;
     }
 
-    public String getAddStationName() {
-        return addStationName;
-    }
-
-    public String getLineName() {
-        return lineName;
+    public String getStationToAddName() {
+        return stationToAddName;
     }
 
     public String getUpstreamName() {

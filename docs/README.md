@@ -1,25 +1,24 @@
 # 기능 목록
 
+
 ## API 설계
 
 ### 역 추가
 
 - Request
-  - POST /line/stations 
-      - addStationName
-      - lineName
+  - POST /lines/{lineId}/stations 
+      - stationToAddName
       - upstreamName(상행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
       - downstreamName(하행 종점으로 역을 추가하고 싶으면 ""을 넣는다)
       - distanceToUpstream
 
 - Response
   - 400 BAD REQUEST
-    - (stationName < 2 || stationName > 15) ->
-    - (lineName < 2 || lineName > 15) ->
-    - (lineName이 존재하지 않는 경우)
+    - (stationToAddName < 2 || stationToAddName > 15)
     - (upstreamName, downstreamName이 Section으로 존재하지 않는 경우)
     - (distanceToUpstream >= distance(upstream, downstream)인 경우)
-    - (stationName이 이미 Line에 존재하는 경우)
+    - (stationToAddName이 이미 Line에 존재하는 경우)
+    - (lineId에 해당하는 Line이 존재하지 않는 경우)
   - 201 CREATED
 
 ### 노선 추가
@@ -33,41 +32,43 @@
 
 - Response
   - 400 BAD REQUEST
-    - (upstreamName < 2 || upstreamName > 15) ->
-    - (downstreamName < 2 || downstreamName > 15) ->
-    - (lineName < 2 || lineName > 15) ->
+    - (upstreamName < 2 || upstreamName > 15) 
+    - (downstreamName < 2 || downstreamName > 15) 
+    - (lineName < 2 || lineName > 15)
     - (distance < 1인 경우)
     - (lineName의 노선이 이미 존재하는 경우)
   - 201 CREATED
 
+### 역 삭제 
+
 - Request
-  - DELETE /line/stations
-      - lineName
-      - stationName
+  - DELETE /lines/{lineId}/stations/{stationId}
 
 - Response
   - 400 BAD REQUEST
-    - (lineName이 존재하지 않는 경우)
-    - (stationName이 Line에 존재하지 않는 경우)
+    - (lineId가 존재하지 않는 경우)
+    - (stationId가 Line에 존재하지 않는 경우)
   - 204 NO-CONTENT
 
 ### 노선 조회
 
 - Request
   - GET /lines/{lineId}
-      - Path Variable: 노선 아이디
 
 - Response
   - 400 BAD REQUEST
     - (lineId가 존재하지 않는 경우)
   - 200 OK
 
+### 모든 노선 조회
+
 - Request
   - GET /lines
 
 - Response
   - 200 OK
-  
+
+
 
 ## 도메인
 
