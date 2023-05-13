@@ -22,10 +22,7 @@ public class Section {
     }
 
     public boolean hasStation(Station station) {
-        if (upwardStation.equals(station) || downwardStation.equals(station)) {
-            return true;
-        }
-        return false;
+        return upwardStation.equals(station) || downwardStation.equals(station);
     }
 
     public boolean isUpwardStation(Station station) {
