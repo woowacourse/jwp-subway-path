@@ -75,10 +75,7 @@ public class Sections {
         sections.removeAll(new HashSet<>(sectionsContainedStation));
         
         if (isMiddleStationCase(sectionsContainedStation)) {
-            final Section firstSection = sectionsContainedStation.get(0);
-            final Section secondSection = sectionsContainedStation.get(1);
-            final Section combinedSection = firstSection.combine(secondSection);
-            sections.add(combinedSection);
+            addCombinedSection(sectionsContainedStation);
         }
     }
     
@@ -90,5 +87,12 @@ public class Sections {
     
     private boolean isMiddleStationCase(final List<Section> sectionsOfContainStation) {
         return sectionsOfContainStation.size() >= NUMBER_OF_CONTAIN_MIDDLE_STATION;
+    }
+    
+    private void addCombinedSection(final List<Section> sectionsContainedStation) {
+        final Section firstSection = sectionsContainedStation.get(0);
+        final Section secondSection = sectionsContainedStation.get(1);
+        final Section combinedSection = firstSection.combine(secondSection);
+        sections.add(combinedSection);
     }
 }

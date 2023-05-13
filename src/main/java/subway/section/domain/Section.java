@@ -53,17 +53,17 @@ public class Section {
         return createDividedSections(additional, distance);
     }
     
-    public Set<Section> createLeftSection(final String leftAdditional, final long additionalDistance) {
+    private Set<Section> createLeftSection(final String leftAdditional, final long additionalDistance) {
         final Section additionalRightSection = new Section(leftAdditional, left.getName(), additionalDistance);
         return Set.of(additionalRightSection);
     }
     
-    public Set<Section> createRightSection(final String rightAdditional, final long additionalDistance) {
+    private Set<Section> createRightSection(final String rightAdditional, final long additionalDistance) {
         final Section additionalLeftSection = new Section(right.getName(), rightAdditional, additionalDistance);
         return Set.of(additionalLeftSection);
     }
     
-    public Set<Section> createDividedSections(final String betweenAdditional, final long additionalDistance) {
+    private Set<Section> createDividedSections(final String betweenAdditional, final long additionalDistance) {
         final Section additionalLeftSection = new Section(left.getName(), betweenAdditional, additionalDistance);
         final Section additionalRightSection = new Section(betweenAdditional, right.getName(), this.distance.subtract(additionalDistance));
         return Set.of(additionalLeftSection, additionalRightSection);
