@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import subway.domain.Line;
 
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AddLineResponse {
 
     private Long id;
