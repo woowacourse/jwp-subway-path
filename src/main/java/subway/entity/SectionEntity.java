@@ -1,6 +1,7 @@
 package subway.entity;
 
 import java.util.Objects;
+import subway.domain.section.Section;
 
 public class SectionEntity {
 
@@ -32,6 +33,15 @@ public class SectionEntity {
         this.downwardStationId = downwardStationId;
         this.downwardStation = downwardStation;
         this.distance = distance;
+    }
+
+    public static SectionEntity of(final Long lineId, final Section section) {
+        return new SectionEntity(
+                lineId,
+                section.getUpward().getId(),
+                section.getDownward().getId(),
+                section.getDistance()
+        );
     }
 
     public Long getId() {

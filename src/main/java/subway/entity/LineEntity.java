@@ -1,6 +1,7 @@
 package subway.entity;
 
 import java.util.Objects;
+import subway.domain.line.Line;
 
 public class LineEntity {
 
@@ -16,6 +17,10 @@ public class LineEntity {
         this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public static LineEntity from(final Line line) {
+        return new LineEntity(line.getId(), line.getName(), line.getColor());
     }
 
     public Long getId() {

@@ -17,13 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import subway.controller.dto.request.StationCreateRequest;
-import subway.dao.StationDao;
-import subway.entity.StationEntity;
+import subway.domain.station.Station;
+import subway.repository.StationRepository;
 
 class StationControllerIntegrationTest extends IntegrationTest {
 
     @Autowired
-    private StationDao stationDao;
+    private StationRepository stationRepository;
 
     @Nested
     @DisplayName("역 추가 요청시 ")
@@ -60,21 +60,21 @@ class StationControllerIntegrationTest extends IntegrationTest {
     @DisplayName("역 정보 조회 시 ")
     class FindStation {
 
-        private StationEntity stationEntity;
+        private Station station;
 
         @BeforeEach
         void setUp() {
-            stationEntity = stationDao.save(new StationEntity("잠실역"));
+            station = stationRepository.save(new Station("잠실역"));
         }
 
         @Test
         @DisplayName("유효한 ID라면 역 정보를 조회한다.")
         void findStation() throws Exception {
-            mockMvc.perform(get("/stations/{id}", stationEntity.getId()))
+            mockMvc.perform(get("/stations/{id}", station.getId()))
                     .andDo(print())
                     .andExpect(status().isOk())
-                    .andExpect(jsonPath("$.id").value(stationEntity.getId()))
-                    .andExpect(jsonPath("$.name").value(stationEntity.getName()));
+                    .andExpect(jsonPath("$.id").value(station.getId()))
+                    .andExpect(jsonPath("$.name").value(station.getName()));
         }
 
         @Test

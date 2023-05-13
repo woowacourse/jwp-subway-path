@@ -23,9 +23,9 @@ import subway.controller.dto.request.SectionCreateRequest;
 import subway.dao.StationDao;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
-import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 import subway.repository.LineRepository;
+import subway.repository.StationRepository;
 
 public class LineControllerIntegrationTest extends IntegrationTest {
 
@@ -35,28 +35,29 @@ public class LineControllerIntegrationTest extends IntegrationTest {
     @Autowired
     private LineRepository lineRepository;
 
+    @Autowired
+    private StationRepository stationRepository;
+
     private Line lineTwo;
-    private StationEntity upward;
-    private StationEntity downward;
+    private Station upward;
+    private Station downward;
 
     @BeforeEach
     void setUp() {
-        final LineEntity lineEntity = new LineEntity("2호선", "초록색");
-        lineTwo = lineRepository.save(Line.from(lineEntity));
-        upward = stationDao.save(new StationEntity("잠실역"));
-        downward = stationDao.save(new StationEntity("잠실새내역"));
-        lineTwo.addSection(Station.from(upward), Station.from(downward), 10);
+        lineTwo = lineRepository.save(new Line("2호선", "초록색"));
+        upward = stationRepository.save(new Station("잠실역"));
+        downward = stationRepository.save(new Station("잠실새내역"));
+        lineTwo.addSection(upward, downward, 10);
         lineRepository.update(lineTwo);
     }
 
     @Test
     @DisplayName("노선 목록을 조회한다.")
     void findLines() throws Exception {
-        final LineEntity lineEntity = new LineEntity("4호선", "하늘색");
-        final Line lineFour = lineRepository.save(Line.from(lineEntity));
-        final StationEntity lineFourUpward = stationDao.save(new StationEntity("이수역"));
-        final StationEntity lineFourDownward = stationDao.save(new StationEntity("서울역"));
-        lineFour.addSection(Station.from(lineFourUpward), Station.from(lineFourDownward), 10);
+        final Line lineFour = lineRepository.save(new Line("4호선", "하늘색"));
+        final Station lineFourUpward = stationRepository.save(new Station("이수역"));
+        final Station lineFourDownward = stationRepository.save(new Station("서울역"));
+        lineFour.addSection(lineFourUpward, lineFourDownward, 10);
         lineRepository.update(lineFour);
 
         mockMvc.perform(get("/lines"))

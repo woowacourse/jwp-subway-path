@@ -12,8 +12,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
 import subway.exception.InvalidDistanceException;
 import subway.exception.InvalidSectionException;
 
@@ -32,27 +30,6 @@ class LineTest {
                 new Section(downward, Station.TERMINAL, 0)
         );
         line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
-    }
-
-    @Test
-    @DisplayName("구간정보들을 바탕으로 노선을 생성한다.")
-    void of() {
-        final LineEntity lineEntity = new LineEntity(1L, "2호선", "초록색");
-        final List<SectionEntity> sectionEntities = List.of(
-                new SectionEntity(1L, 1L, 1L, "잠실역", 2L, "잠실새내역", 10),
-                new SectionEntity(3L, 1L, 3L, "종합운동장역", 4L, "선릉역", 10),
-                new SectionEntity(2L, 1L, 2L, "잠실새내역", 3L, "종합운동장역", 10)
-        );
-
-        final Line line = Line.of(lineEntity, sectionEntities);
-
-        assertAll(
-                () -> assertThat(line.getId()).isEqualTo(lineEntity.getId()),
-                () -> assertThat(line.getName()).isEqualTo(lineEntity.getName()),
-                () -> assertThat(line.getColor()).isEqualTo(lineEntity.getColor()),
-                () -> assertThat(line.getStations()).extracting(Station::getName)
-                        .containsExactly("잠실역", "잠실새내역", "종합운동장역", "선릉역")
-        );
     }
 
     @Nested

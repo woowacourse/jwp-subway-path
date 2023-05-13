@@ -2,12 +2,9 @@ package subway.domain.line;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
 import subway.exception.InvalidDistanceException;
 import subway.exception.InvalidSectionException;
 
@@ -34,37 +31,6 @@ public final class Line {
         this.name = new Name(name);
         this.color = new Color(color);
         this.sections = new Sections(sections);
-    }
-
-    public static Line from(final LineEntity lineEntity) {
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
-    }
-
-    public static Line of(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
-        final Line line = new Line(
-                lineEntity.getId(),
-                lineEntity.getName(),
-                lineEntity.getColor()
-        );
-        loadSections(line, generateSections(sectionEntities));
-        return line;
-    }
-
-    private static List<Section> generateSections(final List<SectionEntity> sectionEntities) {
-        return sectionEntities.stream()
-                .map(Section::from)
-                .collect(Collectors.toList());
-    }
-
-    private static void loadSections(final Line line, final List<Section> sections) {
-        while (!sections.isEmpty()) {
-            final Section section = sections.remove(0);
-            try {
-                line.addSection(section.getUpward(), section.getDownward(), section.getDistance());
-            } catch (InvalidSectionException e) {
-                sections.add(section);
-            }
-        }
     }
 
     public void addSection(final Station upward, final Station downward, final int distance) {

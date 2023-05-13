@@ -16,13 +16,13 @@ public class StationRepository {
     }
 
     public Station save(final Station station) {
-        final StationEntity stationEntity = stationDao.save(new StationEntity(station.getName()));
+        final StationEntity stationEntity = stationDao.save(StationEntity.from(station));
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
     public Station findById(final Long stationId) {
-        final StationEntity entity = stationDao.findById(stationId)
+        final StationEntity stationEntity = stationDao.findById(stationId)
                 .orElseThrow(() -> new InvalidStationException("존재하지 않은 역 ID입니다."));
-        return Station.from(entity);
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 }

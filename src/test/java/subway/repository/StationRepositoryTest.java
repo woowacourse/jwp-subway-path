@@ -13,7 +13,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.StationDao;
 import subway.domain.station.Station;
-import subway.entity.StationEntity;
 import subway.exception.InvalidStationException;
 
 @JdbcTest
@@ -22,12 +21,11 @@ class StationRepositoryTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private StationDao stationDao;
     private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate);
+        final StationDao stationDao = new StationDao(jdbcTemplate);
         stationRepository = new StationRepository(stationDao);
     }
 
@@ -51,13 +49,13 @@ class StationRepositoryTest {
         @Test
         @DisplayName("존재하는 역이라면 역 정보를 반환한다.")
         void findById() {
-            final StationEntity stationEntity = stationDao.save(new StationEntity("잠실역"));
+            final Station station = stationRepository.save(new Station("잠실역"));
 
-            final Station result = stationRepository.findById(stationEntity.getId());
+            final Station result = stationRepository.findById(station.getId());
 
             assertAll(
-                    () -> assertThat(result.getId()).isEqualTo(stationEntity.getId()),
-                    () -> assertThat(result.getName()).isEqualTo(stationEntity.getName())
+                    () -> assertThat(result.getId()).isEqualTo(station.getId()),
+                    () -> assertThat(result.getName()).isEqualTo(station.getName())
             );
         }
 

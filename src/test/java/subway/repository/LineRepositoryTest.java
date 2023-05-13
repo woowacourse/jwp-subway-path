@@ -18,9 +18,6 @@ import subway.dao.StationDao;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
 import subway.exception.InvalidLineException;
 
 @JdbcTest
@@ -29,17 +26,16 @@ class LineRepositoryTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationDao stationDao;
     private LineRepository lineRepository;
+    private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate);
-        lineDao = new LineDao(jdbcTemplate);
-        sectionDao = new SectionDao(jdbcTemplate);
+        final StationDao stationDao = new StationDao(jdbcTemplate);
+        final LineDao lineDao = new LineDao(jdbcTemplate);
+        final SectionDao sectionDao = new SectionDao(jdbcTemplate);
         lineRepository = new LineRepository(lineDao, sectionDao);
+        stationRepository = new StationRepository(stationDao);
     }
 
     @Test
@@ -60,26 +56,27 @@ class LineRepositoryTest {
     @DisplayName("노선 조회 시 ")
     class FindById {
 
-        private LineEntity lineEntity;
+        private Line line;
 
         @BeforeEach
         void setUp() {
-            lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
-            final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
-            final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
-            sectionDao.save(new SectionEntity(lineEntity.getId(), upward.getId(), downward.getId(), 10));
+            line = lineRepository.save(new Line("2호선", "초록색"));
+            final Station upward = stationRepository.save(new Station("잠실역"));
+            final Station downward = stationRepository.save(new Station("잠실새내역"));
+            line.addSection(upward, downward, 10);
+            lineRepository.update(line);
         }
 
         @Test
         @DisplayName("ID로 조회할 때 존재하는 노선이라면 노선 정보를 반환한다.")
         void findById() {
-            final Line result = lineRepository.findById(lineEntity.getId());
+            final Line result = lineRepository.findById(line.getId());
 
             final List<Section> sections = result.getSections();
             assertAll(
-                    () -> assertThat(result.getId()).isEqualTo(lineEntity.getId()),
-                    () -> assertThat(result.getName()).isEqualTo(lineEntity.getName()),
-                    () -> assertThat(result.getColor()).isEqualTo(lineEntity.getColor()),
+                    () -> assertThat(result.getId()).isEqualTo(line.getId()),
+                    () -> assertThat(result.getName()).isEqualTo(line.getName()),
+                    () -> assertThat(result.getColor()).isEqualTo(line.getColor()),
                     () -> assertThat(sections).hasSize(2),
                     () -> assertThat(sections.get(0).getUpward().getName()).isEqualTo("잠실역"),
                     () -> assertThat(sections.get(0).getDownward().getName()).isEqualTo("잠실새내역"),
@@ -126,24 +123,17 @@ class LineRepositoryTest {
         @Test
         @DisplayName("섹션이 추가 됐을 때 노선 정보를 업데이트한다.")
         void updateWhenStationAdded() {
-            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
-            final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
-            final StationEntity middle = stationDao.save(new StationEntity("종합운동장역"));
-            final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
-            final SectionEntity sectionEntity = sectionDao.save(
-                    new SectionEntity(
-                            lineEntity.getId(),
-                            upward.getId(),
-                            downward.getId(),
-                            10
-                    )
-            );
-            final Line line = Line.of(lineEntity, List.of(sectionEntity));
-            line.addSection(Station.from(upward), Station.from(middle), 3);
-
+            final Line line = lineRepository.save(new Line("2호선", "초록색"));
+            final Station upward = stationRepository.save(new Station("잠실역"));
+            final Station middle = stationRepository.save(new Station("종합운동장역"));
+            final Station downward = stationRepository.save(new Station("잠실새내역"));
+            line.addSection(upward, downward, 10);
             lineRepository.update(line);
 
-            final Line result = lineRepository.findById(lineEntity.getId());
+            line.addSection(upward, middle, 3);
+            lineRepository.update(line);
+
+            final Line result = lineRepository.findById(line.getId());
             final List<Station> stations = result.getStations();
             assertAll(
                     () -> assertThat(stations).hasSize(3),
@@ -159,23 +149,16 @@ class LineRepositoryTest {
         @Test
         @DisplayName("섹션이 삭제 됐을 때 노선 정보를 업데이트한다.")
         void updateWhenStationDeleted() {
-            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
-            final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
-            final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
-            final SectionEntity sectionEntity = sectionDao.save(
-                    new SectionEntity(
-                            lineEntity.getId(),
-                            upward.getId(),
-                            downward.getId(),
-                            10
-                    )
-            );
-            final Line line = Line.of(lineEntity, List.of(sectionEntity));
-            line.deleteStation(Station.from(upward));
-
+            final Line line = lineRepository.save(new Line("2호선", "초록색"));
+            final Station upward = stationRepository.save(new Station("잠실역"));
+            final Station downward = stationRepository.save(new Station("잠실새내역"));
+            line.addSection(upward, downward, 10);
             lineRepository.update(line);
 
-            final Line result = lineRepository.findById(lineEntity.getId());
+            line.deleteStation(upward);
+            lineRepository.update(line);
+
+            final Line result = lineRepository.findById(line.getId());
             final List<Station> stations = result.getStations();
             assertThat(stations).isEmpty();
         }
