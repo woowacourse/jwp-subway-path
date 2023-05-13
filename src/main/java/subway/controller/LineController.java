@@ -21,7 +21,7 @@ public class LineController {
     }
 
     @GetMapping("/lines")
-    public List<LineResponse> searchAllSectionInLines(
+    public List<LineResponse> searchLines(
             @RequestBody(required = false) SearchAllSectionLineRequest searchAllSectionLineRequest
     ) {
         return lineService.searchAllSectionInLines(searchAllSectionLineRequest);
