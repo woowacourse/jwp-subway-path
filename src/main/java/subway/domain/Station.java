@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class Station {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public Station(final Long id, final String name) {
         this.id = id;

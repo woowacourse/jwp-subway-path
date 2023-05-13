@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationCreateRequest;
+import subway.dto.SectionCreateRequest;
 import subway.service.LineService;
 
 import javax.validation.Valid;
@@ -21,8 +21,8 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineCreateRequest request) {
-        LineResponse response = lineService.createLineWithoutStation(request);
+    public ResponseEntity<LineResponse> createNewLine(@Valid @RequestBody LineCreateRequest request) {
+        LineResponse response = lineService.createNewLine(request);
 
         return ResponseEntity
                 .created(URI.create("/lines/" + response.getId()))
@@ -32,7 +32,7 @@ public class LineController {
     @PostMapping("/{id}/stations")
     public ResponseEntity<LineResponse> createStationInLine(
             @PathVariable("id") Long id,
-            @Valid @RequestBody StationCreateRequest request) {
+            @Valid @RequestBody SectionCreateRequest request) {
         LineResponse response = lineService.addStation(id, request);
         final URI location = URI.create("/lines/" + response.getId());
 

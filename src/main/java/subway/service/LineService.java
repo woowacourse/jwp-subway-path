@@ -2,10 +2,10 @@ package subway.service;
 
 import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationCreateRequest;
+import subway.dto.SectionCreateRequest;
 
 public interface LineService {
-    LineResponse createLineWithoutStation(LineCreateRequest request);
+    LineResponse createNewLine(LineCreateRequest request);
 
-    LineResponse addStation(Long id, StationCreateRequest request);
+    LineResponse addStation(Long id, SectionCreateRequest request);
 }

@@ -5,7 +5,9 @@ import subway.domain.Station;
 public interface StationRepository {
     Station save(Station station);
 
-    Station findByName(Long id);
+    Station findById(Long id);
 
     Station findByName(Station station);
+
+    Station findByIdOrNull(Long id);
 }

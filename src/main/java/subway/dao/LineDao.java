@@ -15,4 +15,6 @@ public interface LineDao {
     void update(LineEntity newLine);
 
     void deleteById(Long id);
+
+    LineEntity findByName(String name);
 }

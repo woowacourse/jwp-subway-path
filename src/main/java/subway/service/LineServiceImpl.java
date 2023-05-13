@@ -7,7 +7,7 @@ import subway.domain.Station;
 import subway.domain.Subway;
 import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationCreateRequest;
+import subway.dto.SectionCreateRequest;
 import subway.dto.StationResponse;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
@@ -36,17 +36,22 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
-    public LineResponse createLineWithoutStation(final LineCreateRequest request) {
+    public LineResponse createNewLine(final LineCreateRequest request) {
+        // TODO: 이미 존재하는 노선을 추가로 생성하는 경우 예외 처리
         final Line line = lineRepository.save(Line.of(request.getName(), request.getColor()));
         return LineResponse.of(line);
     }
 
     @Override
-    public LineResponse addStation(final Long id, final StationCreateRequest request) {
+    public LineResponse addStation(final Long id, final SectionCreateRequest request) {
         final Line line = lineRepository.findById(id);
 
-        final Station upStation = stationRepository.findByName(request.getUpStationId());
-        final Station downStation = stationRepository.findByName(request.getDownStationId());
+        final Station upStation = stationRepository.findByIdOrNull(request.getUpStationId());
+        final Station downStation = stationRepository.findByIdOrNull(request.getDownStationId());
+
+        if (upStation == null || downStation == null) {
+            throw new IllegalArgumentException("존재하는 역의 id를 입력해 주세요.");
+        }
 
         final int currentDistance = subway.findDistanceBetween(line, upStation, downStation); // upStation ~ downStation
         final int distance = request.getDistance(); // upStation ~ newStation
