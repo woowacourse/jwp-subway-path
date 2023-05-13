@@ -4,20 +4,23 @@ import java.util.Objects;
 
 public class Section {
     private Long id;
-    private Station upBoundStation;
-    private Station downBoundStation;
+    private Long upBoundStationId;
+    private Long downBoundStationId;
+    private Long lineId;
     private Integer distance;
 
-    public Section(Station upBoundStation, Station downBoundStation, Integer distance) {
-        this.upBoundStation = upBoundStation;
-        this.downBoundStation = downBoundStation;
+    public Section(Long upBoundStationId, Long downBoundStationId, Long lineId, Integer distance) {
+        this.upBoundStationId = upBoundStationId;
+        this.downBoundStationId = downBoundStationId;
+        this.lineId = lineId;
         this.distance = distance;
     }
 
-    public Section(Long id, Station upBoundStation, Station downBoundStation, Integer distance) {
+    public Section(Long id, Long upBoundStationId, Long downBoundStationId, Long lineId, Integer distance) {
         this.id = id;
-        this.upBoundStation = upBoundStation;
-        this.downBoundStation = downBoundStation;
+        this.upBoundStationId = upBoundStationId;
+        this.downBoundStationId = downBoundStationId;
+        this.lineId = lineId;
         this.distance = distance;
     }
 
@@ -25,12 +28,16 @@ public class Section {
         return id;
     }
 
-    public Station getUpBoundStation() {
-        return upBoundStation;
+    public Long getUpBoundStationId() {
+        return upBoundStationId;
     }
 
-    public Station getDownBoundStation() {
-        return downBoundStation;
+    public Long getDownBoundStationId() {
+        return downBoundStationId;
+    }
+
+    public Long getLineId() {
+        return lineId;
     }
 
     public Integer getDistance() {
@@ -41,8 +48,8 @@ public class Section {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Section section = (Section) o;
-        return Objects.equals(id, section.id);
+        Section that = (Section) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
