@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -20,9 +22,13 @@ class StationDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private StationDao stationDao;
+    private SectionDao sectionDao;
+    private LineDao lineDao;
 
     @BeforeEach
     void setUp() {
+        lineDao = new LineDao(jdbcTemplate);
+        sectionDao = new SectionDao(jdbcTemplate);
         stationDao = new StationDao(jdbcTemplate);
     }
 
@@ -36,5 +42,59 @@ class StationDaoTest {
 
         // then
         assertThat(stationDao.findAll()).hasSize(2);
+    }
+
+    @Test
+    void 저장된_역의_id들로_삭제한다() {
+        // given
+        StationEntity first = stationDao.insert(new StationEntity("강남역"));
+        StationEntity second = stationDao.insert(new StationEntity("역삼역"));
+
+        // when
+        stationDao.deleteByIds(List.of(first.getId(), second.getId()));
+
+        // then
+        assertThat(stationDao.findAll()).hasSize(0);
+    }
+
+    @Test
+    void 이름으로_역을_조회한다() {
+        // given
+        StationEntity first = stationDao.insert(new StationEntity("강남역"));
+
+        // when, then
+        assertThat(stationDao.findByName("강남역")).isNotEmpty();
+    }
+
+    @Test
+    void 구간에_저장되어_있는_역을_조회한다() {
+        // given
+        StationEntity first = stationDao.insert(new StationEntity("강남역"));
+        StationEntity second = stationDao.insert(new StationEntity("역삼역"));
+        LineEntity lineEntity = lineDao.insert(new LineEntity("2호선"));
+        sectionDao.insert(new SectionEntity(first.getId(), second.getId(), lineEntity.getId(), 10));
+
+        stationDao.insert(new StationEntity("잠실역"));
+
+        //when
+        List<StationEntity> stationsBySections = stationDao.findAllBySections();
+
+        assertThat(stationsBySections).containsOnly(first, second);
+    }
+
+    @Test
+    void 노선_ID로_구간에_저장되어_있는_역을_조회한다() {
+        // given
+        StationEntity first = stationDao.insert(new StationEntity("강남역"));
+        StationEntity second = stationDao.insert(new StationEntity("역삼역"));
+        LineEntity lineEntity = lineDao.insert(new LineEntity("2호선"));
+        sectionDao.insert(new SectionEntity(first.getId(), second.getId(), lineEntity.getId(), 10));
+
+        stationDao.insert(new StationEntity("잠실역"));
+
+        //when
+        List<StationEntity> stationsByLineId = stationDao.findByLineId(lineEntity.getId());
+
+        assertThat(stationsByLineId).containsOnly(first, second);
     }
 }
