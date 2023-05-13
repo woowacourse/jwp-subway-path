@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 public class Line {
@@ -8,8 +9,15 @@ public class Line {
     private String name;
     private Section starter;
 
-    public Line(final String name) {
+    public Line(final String name, final Collection<Section> sections) {
         this.name = name;
+        initialLine(sections);
+    }
+
+    private void initialLine(final Collection<Section> sections) {
+        for (final Section section : sections) {
+            add(section);
+        }
     }
 
     public void add(Section newSection) {

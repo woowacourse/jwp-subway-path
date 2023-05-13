@@ -1,6 +1,5 @@
 package subway.service;
 
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
@@ -12,6 +11,7 @@ import subway.domain.Station;
 import subway.domain.Stations;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CommonService {
@@ -29,20 +29,24 @@ public class CommonService {
                 lineDao.findLineByName(lineName)
                        .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
 
-        final Line line = new Line(lineEntity.getName());
-
         final List<SectionEntity> sectionEntities = sectionDao.findSectionsByLineId(lineEntity.getId());
 
-        for (final SectionEntity sectionEntity : sectionEntities) {
-            final Stations stations = new Stations(
-                    new Station(sectionEntity.getCurrentStationName()),
-                    new Station(sectionEntity.getNextStationName()),
-                    sectionEntity.getDistance()
-            );
-            line.add(new Section(stations));
-        }
+        final List<Section> sections =
+                sectionEntities.stream()
+                               .map(this::mapToSectionFrom)
+                               .collect(Collectors.toList());
 
-        return line;
+        return new Line(lineEntity.getName(), sections);
+    }
+
+    private Section mapToSectionFrom(final SectionEntity sectionEntity) {
+        final Stations stations = new Stations(
+                new Station(sectionEntity.getCurrentStationName()),
+                new Station(sectionEntity.getNextStationName()),
+                sectionEntity.getDistance()
+        );
+
+        return new Section(stations);
     }
 
     public LineEntity getLineEntity(final String lineName) {

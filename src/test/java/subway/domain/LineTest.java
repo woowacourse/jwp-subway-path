@@ -3,6 +3,8 @@ package subway.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -24,9 +26,7 @@ class LineTest {
         final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
 
         Section 출발_섹션 = new Section(stations1);
-        final Line line = new Line("2호선");
-
-        line.add(출발_섹션);
+        final Line line = new Line("2호선", List.of(출발_섹션));
 
         final Section newSection = new Section(stations2);
 
@@ -56,18 +56,11 @@ class LineTest {
 
         Section 헤드_섹션 = new Section(stations1);
 
-        final Line line = new Line("2호선");
-
-        line.add(헤드_섹션);
-
         final Section section2 = new Section(stations2);
-        line.add(section2);
-
         final Section section3 = new Section(stations3);
-        line.add(section3);
-
         final Section section4 = new Section(stations4);
-        line.add(section4);
+
+        final Line line = new Line("2호선", List.of(헤드_섹션, section2, section3, section4));
 
         final Station current = new Station("D");
         final Station next = new Station("F");
@@ -97,12 +90,9 @@ class LineTest {
         final Stations stations3 = new Stations(new Station("Z"), new Station("A"), 4);
 
         Section 스타터_바뀔_예정_섹션 = new Section(stations1);
-        final Line line = new Line("2호선");
-
-        line.add(스타터_바뀔_예정_섹션);
-
         final Section section2 = new Section(stations2);
-        line.add(section2);
+
+        final Line line = new Line("2호선", List.of(스타터_바뀔_예정_섹션, section2));
 
         final Section 새로운_섹션 = new Section(stations3);
 
@@ -125,12 +115,9 @@ class LineTest {
         final Stations stations3 = new Stations(new Station("B"), new Station("A"), 4);
 
         Section 스타터_바뀔_예정_섹션 = new Section(stations1);
-        final Line line = new Line("2호선");
-
-        line.add(스타터_바뀔_예정_섹션);
-
         final Section section2 = new Section(stations2);
-        line.add(section2);
+
+        final Line line = new Line("2호선", List.of(스타터_바뀔_예정_섹션, section2));
 
         final Section 새로운_섹션 = new Section(stations3);
 
@@ -153,16 +140,11 @@ class LineTest {
         final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
         final Stations stations3 = new Stations(new Station("C"), new Station("D"), 3);
 
-        Section starter = new Section(stations1);
-        final Line line = new Line("2호선");
-
-        line.add(starter);
-
+        final Section starter = new Section(stations1);
         final Section section2 = new Section(stations2);
-        line.add(section2);
-
         final Section section3 = new Section(stations3);
-        line.add(section3);
+
+        final Line line = new Line("2호선", List.of(starter, section2, section3));
 
         //when
         line.delete(new Station("B"));
@@ -190,16 +172,11 @@ class LineTest {
         final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
         final Stations stations3 = new Stations(new Station("C"), new Station("D"), 3);
 
-        Section starter = new Section(stations1);
-        final Line line = new Line("2호선");
-
-        line.add(starter);
-
+        final Section starter = new Section(stations1);
         final Section section2 = new Section(stations2);
-        line.add(section2);
-
         final Section section3 = new Section(stations3);
-        line.add(section3);
+
+        final Line line = new Line("2호선", List.of(starter, section2, section3));
 
         //when
         line.delete(new Station("A"));
@@ -225,16 +202,11 @@ class LineTest {
         final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
         final Stations stations3 = new Stations(new Station("C"), new Station("D"), 3);
 
-        Section starter = new Section(stations1);
-        final Line line = new Line("2호선");
-
-        line.add(starter);
-
+        final Section starter = new Section(stations1);
         final Section section2 = new Section(stations2);
-        line.add(section2);
-
         final Section section3 = new Section(stations3);
-        line.add(section3);
+
+        final Line line = new Line("2호선", List.of(starter, section2, section3));
 
         //when
         line.delete(new Station("D"));
@@ -253,9 +225,7 @@ class LineTest {
     void test_delete_line() throws Exception {
         //given
         final Stations stations = new Stations(new Station("A"), new Station("B"), 5);
-        final Line line = new Line("2호선");
-
-        line.add(new Section(stations));
+        final Line line = new Line("2호선", List.of(new Section(stations)));
 
         //when
         line.delete(new Station("B"));
