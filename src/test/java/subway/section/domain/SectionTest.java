@@ -33,7 +33,7 @@ class SectionTest {
         final Section createdLeftSection = section.createLeftSection(additionalStation, additionalDistance);
         
         // then
-        assertThat(createdLeftSection).isEqualTo(new Section("선릉역", "강남역", 5L));
+        assertThat(createdLeftSection).isEqualTo(new Section(additionalStation, "강남역", 5L));
     }
     
     @Test
@@ -47,7 +47,7 @@ class SectionTest {
         final Section createdLeftSection = section.createRightSection(additionalStation, additionalDistance);
         
         // then
-        assertThat(createdLeftSection).isEqualTo(new Section("역삼역", "선릉역", 5L));
+        assertThat(createdLeftSection).isEqualTo(new Section("역삼역", additionalStation, 5L));
     }
     
     @Test
