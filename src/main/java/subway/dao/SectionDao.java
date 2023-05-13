@@ -2,6 +2,7 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
@@ -31,6 +32,10 @@ public class SectionDao {
 
     public void batchSave(final List<SectionEntity> sectionEntities) {
         simpleJdbcInsert.executeBatch(SqlParameterSourceUtils.createBatch(sectionEntities));
+    }
+
+    public void save(final SectionEntity sectionEntity) {
+        simpleJdbcInsert.execute(new BeanPropertySqlParameterSource(sectionEntity));
     }
 
     public List<SectionEntity> findSectionsByLineId(final Long lineId) {

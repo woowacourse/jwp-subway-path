@@ -56,7 +56,7 @@ public class SectionService {
                 lineId
         );
 
-        sectionDao.batchSave(List.of(sectionEntity));
+        sectionDao.save(sectionEntity);
     }
 
     public List<SectionInLineResponse> mapToSectionInLineResponseFrom(final Line line) {
