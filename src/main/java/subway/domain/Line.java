@@ -25,73 +25,68 @@ public class Line {
             return;
         }
         validate(section);
-        add(section);
+        connectSection(section);
     }
 
     private void validate(Section section) {
         validateConnectivity(section);
-        validateDuplication(section);
+        validateExistence(section);
         validateDistance(section);
     }
 
-    private void add(Section target) {
-        findSectionOf(section -> section.includeSection(target))
-                .ifPresentOrElse((section) -> connectNewSection(section, target),
-                        () -> sections.add(target));
-    }
-
-    private void connectNewSection(Section originSection, Section newSection) {
-        if (originSection.containLeftStationOf(newSection)) {
-            sections.add(originSection.makeLeftSectionTo(newSection));
-        }
-        if (originSection.containRightStationOf(newSection)) {
-            sections.add(originSection.makeRightSectionTo(newSection));
-        }
-        sections.add(newSection);
-        sections.remove(originSection);
-    }
-
     private void validateConnectivity(Section target) {
-        findSectionOf(section -> section.hasSameStationWith(target))
+        findSectionOf(section -> section.hasAnySameStationWith(target))
                 .orElseThrow(() -> new IllegalStateException("노선과 연결되지 않는 역입니다."));
     }
 
-    private void validateDuplication(Section target) {
-        boolean existLeftStation = sections.stream().anyMatch(section -> section.containLeftStationOf(target));
-        boolean existRightStation = sections.stream().anyMatch(section -> section.containRightStationOf(target));
-        if (existLeftStation && existRightStation) {
+    private void validateExistence(Section target) {
+        boolean downStationExists = sections.stream().anyMatch(section -> section.containsUpStationOf(target));
+        boolean upStationExists = sections.stream().anyMatch(section -> section.containsDownStationOf(target));
+
+        if (downStationExists && upStationExists) {
             throw new IllegalStateException("이미 노선에 등록된 역입니다.");
         }
     }
 
     private void validateDistance(Section target) {
-        findSectionOf(section -> section.includeSection(target))
-                .filter(section -> !section.isDistanceBiggerThan(target))
+        findSectionOf(section -> section.overlaps(target))
+                .filter(target::isDistanceBiggerOrEqualThan)
                 .ifPresent((ignored) -> {
                     throw new IllegalStateException(" 신규로 등록된 역이 기존 노선의 거리 범위를 벗어날 수 없습니다.");
                 });
     }
 
+    private void connectSection(Section target) {
+        findSectionOf(section -> section.overlaps(target))
+                .ifPresentOrElse((section) -> connectTwoSection(section, target),
+                        () -> sections.add(target));
+    }
+
+    private void connectTwoSection(Section originSection, Section newSection) {
+        sections.add(originSection.makeConnectionTo(newSection));
+        sections.add(newSection);
+        sections.remove(originSection);
+    }
+
     public void deleteStation(Station station) {
-        Optional<Section> leftSection = findSectionOf(section -> section.hasRightStation(station));
-        Optional<Section> rightSection = findSectionOf(section -> section.hasLeftStation(station));
+        validateStationExistence(station);
+        Optional<Section> upStation = findSectionOf(section -> section.hasDownStation(station));
+        Optional<Section> downStation = findSectionOf(section -> section.hasUpStation(station));
 
-        if (leftSection.isEmpty() && rightSection.isEmpty()) {
-            throw new IllegalStateException("존재하지 않는 역에 대해 삭제할 수 없습니다.");
-        }
-
-        if (leftSection.isPresent() && rightSection.isPresent()) {
-            Section newSection = leftSection.get().merge(rightSection.get());
-            sections.add(newSection);
+        if (upStation.isPresent() && downStation.isPresent()) {
+            sections.add(upStation.get().merge(downStation.get()));
         }
         deleteOldSections(station);
     }
 
+    private void validateStationExistence(Station station) {
+        findSectionOf(section -> section.hasUpStation(station) || section.hasDownStation(station))
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 역에 대해 삭제할 수 없습니다."));
+    }
+
     private void deleteOldSections(Station station) {
-        findSectionOf(section -> section.hasRightStation(station))
-                .ifPresent(section -> sections.remove(section));
-        findSectionOf(section -> section.hasLeftStation(station))
-                .ifPresent(section -> sections.remove(section));
+        findSectionOf(section -> section.hasDownStation(station) || section.hasUpStation(station))
+                .ifPresent(sections::remove);
     }
 
     private Optional<Section> findSectionOf(Predicate<Section> predicate) {
@@ -125,11 +120,11 @@ public class Line {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+        return Objects.equals(id, line.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(id);
     }
 }

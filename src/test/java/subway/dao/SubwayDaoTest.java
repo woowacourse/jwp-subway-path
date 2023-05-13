@@ -136,12 +136,12 @@ class SubwayDaoTest {
                 () -> assertThat(actualLine.getName()).isEqualTo("2호선"),
                 () -> assertThat(actualLine.getColor()).isEqualTo("red"),
                 () -> assertThat(sections).hasSize(3),
-                () -> assertThat(sections).anyMatch(section -> section.getLeft().getName().equals("푸우") &&
-                        section.getRight().getName().equals("테오") && section.getDistance().getDistance() == 1),
-                () -> assertThat(sections).anyMatch(section -> section.getLeft().getName().equals("테오") &&
-                        section.getRight().getName().equals("제이온") && section.getDistance().getDistance() == 2),
-                () -> assertThat(sections).anyMatch(section -> section.getLeft().getName().equals("제이온") &&
-                        section.getRight().getName().equals("시카") && section.getDistance().getDistance() == 3)
+                () -> assertThat(sections).anyMatch(section -> section.getUpStation().getName().equals("푸우") &&
+                        section.getDownStation().getName().equals("테오") && section.getDistance().value() == 1),
+                () -> assertThat(sections).anyMatch(section -> section.getUpStation().getName().equals("테오") &&
+                        section.getDownStation().getName().equals("제이온") && section.getDistance().value() == 2),
+                () -> assertThat(sections).anyMatch(section -> section.getUpStation().getName().equals("제이온") &&
+                        section.getDownStation().getName().equals("시카") && section.getDistance().value() == 3)
         );
     }
 }

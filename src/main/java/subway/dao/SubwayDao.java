@@ -93,9 +93,9 @@ public class SubwayDao {
         List<SectionEntity> sections = line.getSections()
                 .stream().map(section -> new SectionEntity(
                         line.getId(),
-                        section.getLeft().getName(),
-                        section.getRight().getName(),
-                        section.getDistance().getDistance()
+                        section.getUpStation().getName(),
+                        section.getDownStation().getName(),
+                        section.getDistance().value()
                 )).collect(Collectors.toList());
 
         jdbcTemplate.batchUpdate(insertSql, sections, 50,

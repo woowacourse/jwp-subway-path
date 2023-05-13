@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.Objects;
+
 public class Distance {
 
     private final int distance;
@@ -15,10 +17,6 @@ public class Distance {
         }
     }
 
-    public boolean isBiggerThan(Distance targetDistance) {
-        return distance > targetDistance.distance;
-    }
-
     public Distance add(Distance targetDistance) {
         return new Distance(distance + targetDistance.distance);
     }
@@ -27,7 +25,24 @@ public class Distance {
         return new Distance(distance - targetDistance.distance);
     }
 
-    public int getDistance() {
+    public boolean isBiggerThan(Distance target) {
+        return distance > target.distance;
+    }
+
+    public int value() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Distance other = (Distance) o;
+        return distance == other.distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
     }
 }

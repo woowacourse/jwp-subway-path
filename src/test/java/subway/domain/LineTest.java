@@ -101,7 +101,6 @@ class LineTest {
                 new Distance(1)
         );
 
-        //when, then
         assertThatCode(() -> line.addSection(newSection))
                 .doesNotThrowAnyException();
     }
