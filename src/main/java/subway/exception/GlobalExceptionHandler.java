@@ -4,6 +4,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -28,6 +29,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ExceptionResponse> handleSubwayException(final SubwayException e) {
         logger.warn(e.getMessage());
         return ResponseEntity.badRequest()
+                .body(new ExceptionResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler(LineNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> handleLineNotFoundException(final LineNotFoundException e) {
+        logger.warn(e.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ExceptionResponse(e.getMessage()));
     }
 

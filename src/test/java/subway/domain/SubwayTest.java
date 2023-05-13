@@ -9,9 +9,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import subway.exception.InvalidLineNameException;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
+import subway.exception.LineNotFoundException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -43,8 +43,8 @@ class SubwayTest {
 
         // expect
         assertThatThrownBy(() -> subway.add("1호선", "B", "Y", 5, LEFT))
-                .isInstanceOf(InvalidLineNameException.class)
-                .hasMessage("존재하지 않는 노선 이름입니다.");
+                .isInstanceOf(LineNotFoundException.class)
+                .hasMessage("노선을 찾을 수 없습니다.");
     }
 
     @Test
@@ -81,8 +81,8 @@ class SubwayTest {
 
         // expect
         assertThatThrownBy(() -> subway.remove("1호선", "B"))
-                .isInstanceOf(InvalidLineNameException.class)
-                .hasMessage("존재하지 않는 노선 이름입니다.");
+                .isInstanceOf(LineNotFoundException.class)
+                .hasMessage("노선을 찾을 수 없습니다.");
     }
 
     @Test
@@ -146,5 +146,33 @@ class SubwayTest {
         assertThatThrownBy(() -> subway.initialAdd("2호선", "A", "A", 4))
                 .isInstanceOf(InvalidSectionException.class)
                 .hasMessage("동일한 이름을 가진 역을 구간에 추가할 수 없습니다.");
+    }
+
+    @Test
+    void 노선의_이름을_입력받아_해당_이름에_해당되는_노선을_반환한다() {
+        // given
+        final Subway subway = new Subway(List.of(
+                new Line("1호선", "RED", Collections.emptyList()),
+                new Line("2호선", "BLUE", Collections.emptyList())
+        ));
+
+        // when
+        final Line line = subway.findLineByName("1호선");
+
+        // expect
+        assertThat(line.getName()).isEqualTo("1호선");
+    }
+
+    @Test
+    void 노선의_이름을_입력받아_해당_이름에_해당되는_노선이_존재하지_않는다면_예외를_던진다() {
+        // given
+        final Subway subway = new Subway(List.of(
+                new Line("2호선", "BLUE", Collections.emptyList())
+        ));
+
+        // expect
+        assertThatThrownBy(() -> subway.findLineByName("1호선"))
+                .isInstanceOf(LineNotFoundException.class)
+                .hasMessage("노선을 찾을 수 없습니다.");
     }
 }
