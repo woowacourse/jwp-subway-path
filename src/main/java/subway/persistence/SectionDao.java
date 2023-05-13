@@ -98,7 +98,7 @@ public class SectionDao {
                 "FROM section se " +
                 "JOIN station pst ON se.previous_station_id = pst.id " +
                 "JOIN station nst ON se.next_station_id = nst.id " +
-                "JOIN line " +
+                "JOIN line WHERE se.line_id = line.id " +
                 "WHERE se.line_id = ?";
 
         return jdbcTemplate.query(sql, sectionDetailRowMapper, lineId);

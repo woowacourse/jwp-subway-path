@@ -1,6 +1,5 @@
 package subway.presentation;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -13,12 +12,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.business.LineService;
 import subway.exception.DuplicatedLineNameException;
 import subway.presentation.dto.request.LineRequest;
+import subway.presentation.dto.response.LineDetailResponse;
+import subway.presentation.dto.response.StationResponse;
+
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(LineController.class)
 class LineControllerTest {
@@ -68,5 +71,39 @@ class LineControllerTest {
         }
     }
 
+    @Nested
+    @DisplayName("노선 목록 조회 - GET /lines")
+    class ReadAll {
 
+        @Test
+        @DisplayName("성공")
+        void success() throws Exception {
+            // given
+            final List<LineDetailResponse> lineDetailResponses = List.of(
+                    new LineDetailResponse(1L, "신분당선", "bg-red-600", List.of(
+                            new StationResponse(1L, "정자"), new StationResponse(2L, "판교")
+                    )),
+                    new LineDetailResponse(2L, "분당선", "bg-yellow-600", List.of(
+                            new StationResponse(1L, "정자"), new StationResponse(3L, "수내")
+                    ))
+            );
+            given(lineService.findAll()).willReturn(lineDetailResponses);
+
+            // when, then
+            final String responseBody =
+                    "[" +
+                            "{\"id\":1,\"name\":\"신분당선\",\"color\":\"bg-red-600\",\"stations\": [" +
+                            "   {\"id\":1,\"name\":\"정자\"}," +
+                            "   {\"id\":2,\"name\":\"판교\"}" +
+                            "]}," +
+                            "{\"id\":2,\"name\":\"분당선\",\"color\":\"bg-yellow-600\",\"stations\": [" +
+                            "   {\"id\":1,\"name\":\"정자\"}," +
+                            "   {\"id\":3,\"name\":\"수내\"}" +
+                            "]}" +
+                            "]";
+            mockMvc.perform(get("/lines"))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(responseBody));
+        }
+    }
 }

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.presentation.dto.request.LineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 
@@ -81,6 +82,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("지하철 노선 목록을 조회한다.")
+    @Sql({"/line_truncate_test.sql", "/section_truncate_test.sql"})
     void getLines() {
         // given
         final ExtractableResponse<Response> createResponse1 = RestAssured
@@ -118,14 +120,13 @@ public class LineIntegrationTest extends IntegrationTest {
         final Configuration conf = Configuration.defaultConfiguration();
         final DocumentContext documentContext = JsonPath.using(conf).parse(response.asString());
 
-
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(resultIds).containsAll(expectedLineIds),
                 () -> assertThat((int) documentContext.read("$.size()")).isEqualTo(2),
                 () -> assertThat((String) documentContext.read("$[0]['name']")).isEqualTo("5호선"),
                 () -> assertThat((String) documentContext.read("$[0]['color']")).isEqualTo("bg-purple-600"),
-                () -> assertThat((String) documentContext.read("$[0]['stations']")).hasSize(2),
+                () -> assertThat((int) documentContext.read("$[0]['stations'].size()")).isEqualTo(2),
                 () -> assertThat((String) documentContext.read("$[0]['stations'][0]['name']")).isEqualTo("대림"),
                 () -> assertThat((String) documentContext.read("$[0]['stations'][1]['name']")).isEqualTo("온수")
         );
