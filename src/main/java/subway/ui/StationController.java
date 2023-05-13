@@ -5,12 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationInitialSaveRequest;
 import subway.dto.StationSaveRequest;
 
+@RequestMapping("/stations")
 @RestController
 public class StationController {
 
@@ -20,19 +22,19 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @PostMapping("/stations")
+    @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid final StationSaveRequest request) {
         stationService.save(request);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/stations")
+    @DeleteMapping
     public ResponseEntity<Void> delete(@RequestBody @Valid final StationDeleteRequest request) {
         stationService.delete(request);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/stations/init")
+    @PostMapping("/init")
     public ResponseEntity<Void> initialSave(@RequestBody @Valid final StationInitialSaveRequest request) {
         stationService.initialSave(request);
         return ResponseEntity.ok().build();
