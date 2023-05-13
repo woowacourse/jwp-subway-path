@@ -1,10 +1,5 @@
 package subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
@@ -17,6 +12,12 @@ import subway.fixture.StationFixture.건대역;
 import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.역삼역;
 import subway.fixture.StationFixture.잠실역;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -88,7 +89,7 @@ class SectionsTest {
 
                         assertThatThrownBy(() -> sections.add(new Section(삼성역.STATION, 잠실역.STATION, distance)))
                                 .isInstanceOf(ApiIllegalArgumentException.class)
-                                .hasMessage("거리는 기존 구간보다 짧아야합니다.");
+                                .hasMessage("구간의 거리는 1 이상이여야합니다.");
                     }
 
                     @Test
@@ -102,6 +103,7 @@ class SectionsTest {
                         assertThat(sections.getSections())
                                 .usingRecursiveComparison()
                                 .ignoringFields("id")
+                                .ignoringCollectionOrder()
                                 .isEqualTo(List.of(new Section(삼성역.STATION, 잠실역.STATION, 2),
                                         new Section(잠실역.STATION, 건대역.STATION, 3)));
                     }
@@ -135,7 +137,7 @@ class SectionsTest {
 
                         assertThatThrownBy(() -> sections.add(new Section(잠실역.STATION, 건대역.STATION, distance)))
                                 .isInstanceOf(ApiIllegalArgumentException.class)
-                                .hasMessage("거리는 기존 구간보다 짧아야합니다.");
+                                .hasMessage("구간의 거리는 1 이상이여야합니다.");
                     }
 
                     @Test

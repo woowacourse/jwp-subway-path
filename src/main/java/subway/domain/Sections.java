@@ -21,79 +21,67 @@ public class Sections {
     }
 
     public void add(final Section section) {
-
         if (sections.isEmpty()) {
             sections.add(section);
             return;
         }
 
-        Map<Station, Station> upToDown = getStationUpToDown();
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
 
-        boolean isUpExists = isExists(upToDown, section.getUpStation());
-        boolean isDownExists = isExists(upToDown, section.getDownStation());
+        boolean isUpExists = sections.stream().anyMatch(it -> it.contains(upStation));
+        boolean isDownExists = sections.stream().anyMatch(it -> it.contains(downStation));
+
+        validateSection(isUpExists, isDownExists);
+
+        if (isUpExists && !isUpEndPoint(upStation)) {
+            replaceSection(upStation, section);
+        }
+
+        if (isDownExists && !isDownEndPoint(downStation)) {
+            replaceSection(downStation, section);
+        }
+
+        sections.add(section);
+    }
+
+    private boolean isUpEndPoint(final Station upStation) {
+        return sections.stream()
+                .noneMatch((section -> section.getUpStation().equals(upStation)));
+    }
+
+    private boolean isDownEndPoint(final Station downStation) {
+        return sections.stream()
+                .noneMatch((section -> section.getDownStation().equals(downStation)));
+    }
+
+    private void validateSection(boolean isUpExists, boolean isDownExists) {
         if (isUpExists && isDownExists) {
             throw new ApiIllegalArgumentException("이미 존재하는 구간입니다.");
         }
+
         if (!isUpExists && !isDownExists) {
             throw new ApiIllegalArgumentException("하나의 역은 반드시 노선에 존재해야합니다.");
         }
-
-        if (isUpExists) {
-            Station existStation = section.getUpStation();
-
-            if (!upToDown.containsKey(existStation)) {
-                sections.add(section);
-                return;
-            }
-
-            Section originSection = sections.stream()
-                    .filter(it -> it.getUpStation().equals(existStation))
-                    .findAny()
-                    .orElseThrow(IllegalStateException::new);
-
-            int oldDistance = originSection.getDistance();
-            int newDistance = section.getDistance();
-
-            if (oldDistance <= newDistance) {
-                throw new ApiIllegalArgumentException("거리는 기존 구간보다 짧아야합니다.");
-            }
-
-            sections.add(section);
-            sections.add(
-                    new Section(section.getDownStation(), originSection.getDownStation(), oldDistance - newDistance));
-            sections.remove(originSection);
-
-        }
-
-        if (isDownExists) {
-            Station existStation = section.getDownStation();
-
-            if (!upToDown.containsValue(existStation)) {
-                sections.add(section);
-                return;
-            }
-
-            Section originSection = sections.stream()
-                    .filter(it -> it.getDownStation().equals(existStation))
-                    .findAny()
-                    .orElseThrow(IllegalStateException::new);
-
-            int oldDistance = originSection.getDistance();
-            int newDistance = section.getDistance();
-
-            if (oldDistance <= newDistance) {
-                throw new ApiIllegalArgumentException("거리는 기존 구간보다 짧아야합니다.");
-            }
-
-            sections.add(section);
-            sections.add(new Section(originSection.getUpStation(), section.getUpStation(), oldDistance - newDistance));
-            sections.remove(originSection);
-
-        }
     }
+    
+    private void replaceSection(final Station station, final Section section) {
+        Section originSection = sections.stream()
+                .filter(it -> it.contains(station))
+                .findAny()
+                .orElseThrow(IllegalStateException::new);
 
-    private boolean isExists(final Map<Station, Station> upToDown, final Station station) {
-        return upToDown.containsKey(station) || upToDown.containsValue(station);
+        int oldDistance = originSection.getDistance();
+        int newDistance = section.getDistance();
+
+        sections.remove(originSection);
+
+        if (originSection.getDownStation().equals(section.getDownStation())) {
+            sections.add(new Section(originSection.getUpStation(), section.getUpStation(), oldDistance - newDistance));
+            return;
+        }
+
+        sections.add(new Section(section.getDownStation(), originSection.getDownStation(), oldDistance - newDistance));
     }
 
     public void remove(final Station station) {
