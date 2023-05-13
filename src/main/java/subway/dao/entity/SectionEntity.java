@@ -1,21 +1,23 @@
-package subway.dao.dto;
+package subway.dao.entity;
 
 public class SectionEntity {
 
     private final Long id;
-    private final Long upStationId;
-    private final Long downStationId;
-    private final Long lineId;
     private final Integer distance;
     private final Boolean isStart;
+    private final Long upStationId;
+    private final Long downStationId;
 
-    public SectionEntity(final Long id, final Long upStationId, final Long downStationId, final Long lineId, final Integer distance, final Boolean isStart) {
+    public SectionEntity(final Integer distance, final Boolean isStart, final Long upStationId, final Long downStationId) {
+        this(null, distance, isStart, upStationId, downStationId);
+    }
+
+    public SectionEntity(final Long id, final Integer distance, final Boolean isStart, final Long upStationId, final Long downStationId) {
         this.id = id;
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
-        this.lineId = lineId;
         this.distance = distance;
         this.isStart = isStart;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
     }
 
     public Long getId() {
@@ -28,10 +30,6 @@ public class SectionEntity {
 
     public Long getDownStationId() {
         return downStationId;
-    }
-
-    public Long getLineId() {
-        return lineId;
     }
 
     public Integer getDistance() {

@@ -5,32 +5,32 @@ import java.util.Objects;
 public class SectionDomain {
 
     private final Long id;
-    private final StationDomain upStation;
-    private final StationDomain downStation;
     private final Distance distance;
     private final boolean isStart;
+    private final StationDomain upStation;
+    private final StationDomain downStation;
 
-    protected SectionDomain(final StationDomain upStation, final StationDomain downStation, final Distance distance, final boolean isStart) {
-        this(null, upStation, downStation, distance, isStart);
+    private SectionDomain(final Distance distance, final boolean isStart, final StationDomain upStation, final StationDomain downStation) {
+        this(null, distance, isStart, upStation, downStation);
     }
 
-    protected SectionDomain(final Long id, final StationDomain upStation, final StationDomain downStation, final Distance distance, final boolean isStart) {
+    private SectionDomain(final Long id, final Distance distance, final boolean isStart, final StationDomain upStation, final StationDomain downStation) {
         validate(upStation, downStation, distance);
         this.id = id;
-        this.upStation = upStation;
-        this.downStation = downStation;
         this.distance = distance;
         this.isStart = isStart;
+        this.upStation = upStation;
+        this.downStation = downStation;
     }
 
     public static SectionDomain from(
             final Long id,
-            final StationDomain upStation,
-            final StationDomain downStation,
             final Distance distance,
-            final boolean isStart
+            final boolean isStart,
+            final StationDomain upStation,
+            final StationDomain downStation
     ) {
-        return new SectionDomain(id, upStation, downStation, distance, isStart);
+        return new SectionDomain(id, distance, isStart, upStation, downStation);
     }
 
     public static SectionDomain notStartFrom(
@@ -38,7 +38,7 @@ public class SectionDomain {
             final StationDomain downStation,
             final Distance distance
     ) {
-        return new SectionDomain(upStation, downStation, distance, false);
+        return new SectionDomain(distance, false, upStation, downStation);
     }
 
     public static SectionDomain startFrom(
@@ -46,7 +46,7 @@ public class SectionDomain {
             final StationDomain downStation,
             final Distance distance
     ) {
-        return new SectionDomain(upStation, downStation, distance, true);
+        return new SectionDomain(distance, false, upStation, downStation);
     }
 
 
@@ -87,11 +87,11 @@ public class SectionDomain {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final SectionDomain that = (SectionDomain) o;
-        return isStart == that.isStart && Objects.equals(id, that.id) && Objects.equals(upStation, that.upStation) && Objects.equals(downStation, that.downStation) && Objects.equals(distance, that.distance);
+        return isStart == that.isStart && Objects.equals(id, that.id) && Objects.equals(distance, that.distance) && Objects.equals(upStation, that.upStation) && Objects.equals(downStation, that.downStation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, upStation, downStation, distance, isStart);
+        return Objects.hash(id, distance, isStart, upStation, downStation);
     }
 }
