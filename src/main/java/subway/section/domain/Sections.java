@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Getter
 @ToString
@@ -65,5 +66,12 @@ public class Sections {
         
         sections.removeAll(sectionsOfRemoveIntersection);
         additionalWithOneself.removeAll(sectionsOfRemoveIntersection);
+    }
+    
+    public void removeStation(final String station) {
+        final HashSet<Section> copySections = new HashSet<>(sections);
+        copySections.stream()
+                .filter(section -> section.hasStation(station))
+                .forEach(sections::remove);
     }
 }

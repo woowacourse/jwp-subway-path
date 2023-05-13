@@ -130,4 +130,23 @@ class SectionsTest {
         final Section additionalSecondSection = new Section(additionalStation, third, distance - additionalDistance);
         assertThat(sections.getSections()).contains(firstSection, thirdSection, additionalFirstSection, additionalSecondSection);
     }
+    
+    @Test
+    void 역이_2개만_존재하는_경우_모두_삭제한다() {
+        // given
+        final String first = "잠실역";
+        final String second = "가양역";
+        final long distance = 5L;
+        
+        final Section firstSection = new Section(first, second, distance);
+        
+        final Set<Section> initSections = Set.of(firstSection);
+        final Sections sections = new Sections(new HashSet<>(initSections));
+        
+        // when
+        sections.removeStation(second);
+        
+        // then
+        assertThat(sections.getSections()).isEmpty();
+    }
 }
