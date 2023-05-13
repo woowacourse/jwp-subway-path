@@ -15,7 +15,7 @@ public class Station {
     private final AdjustPath adjustPath;
 
     private Station(final Long id, final String name, final AdjustPath adjustPath) {
-        validate(name);
+        validateName(name);
 
         this.id = id;
         this.name = name;
@@ -38,7 +38,7 @@ public class Station {
         return new Station(station.id, station.name, AdjustPath.create());
     }
 
-    private void validate(final String name) {
+    private void validateName(final String name) {
         validateFormat(name);
         validateLength(name);
     }
@@ -98,14 +98,18 @@ public class Station {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final Station station = (Station) o;
-        return Objects.equals(name, station.name);
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(getId());
     }
 }
