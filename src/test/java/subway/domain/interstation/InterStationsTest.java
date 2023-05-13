@@ -16,7 +16,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.exception.interstation.InterStationsException;
+import subway.domain.interstation.exception.InterStationsException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("구간들은")

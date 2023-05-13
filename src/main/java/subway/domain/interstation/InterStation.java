@@ -3,8 +3,8 @@ package subway.domain.interstation;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import subway.domain.interstation.exception.InterStationException;
 import subway.domain.station.Station;
-import subway.exception.interstation.InterStationException;
 
 @Getter
 @ToString

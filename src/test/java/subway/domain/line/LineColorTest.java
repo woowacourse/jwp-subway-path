@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.line.LineColorException;
+import subway.domain.line.exception.LineColorException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("노선 색상은")

@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.station.StationNameException;
+import subway.domain.station.exception.StationNameException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("역 이름은")

@@ -5,7 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.StringUtils;
-import subway.exception.station.StationNameException;
+import subway.domain.station.exception.StationNameException;
 
 @Getter
 @ToString

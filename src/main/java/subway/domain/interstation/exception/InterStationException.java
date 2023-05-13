@@ -1,4 +1,4 @@
-package subway.exception.interstation;
+package subway.domain.interstation.exception;
 
 import subway.exception.BusinessException;
 

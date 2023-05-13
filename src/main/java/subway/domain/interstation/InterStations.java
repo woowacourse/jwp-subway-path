@@ -7,8 +7,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.ToString;
+import subway.domain.interstation.exception.InterStationsException;
 import subway.domain.station.Station;
-import subway.exception.interstation.InterStationsException;
 
 /**
  * 구간들은 상행선부터, 하행선까지 순서대로 정렬되어있다.

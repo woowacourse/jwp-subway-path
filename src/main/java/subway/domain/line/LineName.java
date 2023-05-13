@@ -4,7 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.util.StringUtils;
-import subway.exception.line.LineNameException;
+import subway.domain.line.exception.LineNameException;
 
 @Getter
 @ToString

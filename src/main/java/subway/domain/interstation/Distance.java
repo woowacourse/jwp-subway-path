@@ -3,7 +3,7 @@ package subway.domain.interstation;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import subway.exception.interstation.DistanceException;
+import subway.domain.interstation.exception.DistanceException;
 
 @Getter
 @ToString
