@@ -349,4 +349,14 @@ class LineTest {
             assertThat(line.sections()).isEmpty();
         }
     }
+
+    @Test
+    void id만_같으면_동일하다() {
+        // given
+        final Line line1 = new Line("1호선", new Section(역1, 역2, 20));
+        final Line line2 = new Line(line1.id(), "2호남선", new Sections(new Section(역3, 역4, 10)));
+
+        // when & then
+        assertThat(line1).isEqualTo(line2);
+    }
 }
