@@ -1,15 +1,13 @@
 package subway.domain;
 
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class Sections {
-    private final DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+    private final DefaultDirectedGraph<Station, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
     private final Line line;
 
     public Sections(final Line line) {
@@ -38,6 +36,13 @@ public class Sections {
                 .orElse(null);
     }
 
+    public Station findDownEndStation() {
+        return graph.vertexSet().stream()
+                .filter(vertex -> this.graph.outgoingEdgesOf(vertex).isEmpty())
+                .findFirst()
+                .orElse(null);
+    }
+
     public List<Station> findAllStationsInOrder() {
         List<Station> allStationsInOrder = new ArrayList<>();
         Station startStation = findUpEndStation();
@@ -51,6 +56,27 @@ public class Sections {
             }
         }
         return allStationsInOrder;
+    }
+
+    public Map<List<Station>, Integer> findAllSectionsInOrder() {
+        final Map<List<Station>, Integer> sections = new LinkedHashMap<>();
+
+        Station currentStation = findUpEndStation();
+
+        while (currentStation != null) {
+            Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(currentStation);
+            if (outgoingEdges.isEmpty()) {
+                currentStation = null;
+            } else {
+                final DefaultWeightedEdge edge = outgoingEdges.iterator().next();
+                final Station nextStation = graph.getEdgeTarget(edge);
+                final int distance = (int) graph.getEdgeWeight(edge);
+                sections.put(List.of(currentStation, nextStation), distance);
+                currentStation = graph.getEdgeTarget(edge);
+            }
+        }
+
+        return sections;
     }
 
     public int findDistanceBetween(Station upLineStation, Station downLineStation) {

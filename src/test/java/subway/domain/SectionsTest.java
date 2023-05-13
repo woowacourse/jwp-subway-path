@@ -7,6 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,7 +18,7 @@ import static subway.fixture.StationFixture.*;
 
 class SectionsTest {
 
-    private Sections createSubwayGraph() {
+    private Sections createSections() {
         final Sections sections = new Sections(LINE_999);
         sections.createNewLine(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
         return sections;
@@ -39,7 +40,7 @@ class SectionsTest {
         @Test
         @DisplayName("하행 종점 아래")
         void name() {
-            final Sections sections = createSubwayGraph();
+            final Sections sections = createSections();
 
             sections.addStation(SAPYEONG_STATION, NEW_STATION, 3);
             // 고속터미널 -> 사평역 -> 새 역
@@ -50,7 +51,7 @@ class SectionsTest {
         @Test
         @DisplayName("두 역 사이에 하행 방향")
         void name2() {
-            final Sections sections = createSubwayGraph();
+            final Sections sections = createSections();
 
             sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
             // 고속터미널 -> (3) 새 역 -> (2) 사평역
@@ -68,7 +69,7 @@ class SectionsTest {
         @Test
         @DisplayName("상행 종점 위")
         void name3() {
-            final Sections sections = createSubwayGraph();
+            final Sections sections = createSections();
 
             sections.addStation(NEW_STATION, EXPRESS_BUS_TERMINAL_STATION, 2);
             // 새 역 -> 고속터미널 -> 사평역
@@ -79,7 +80,7 @@ class SectionsTest {
         @Test
         @DisplayName("두 역 사이에 상행 방향")
         void name4() {
-            final Sections sections = createSubwayGraph();
+            final Sections sections = createSections();
 
             sections.addStation(NEW_STATION, SAPYEONG_STATION, 2);
             // 고속터미널 -> 새 역 -> 사평역
@@ -91,7 +92,7 @@ class SectionsTest {
     @Test
     @DisplayName("노선의 상행 종점을 찾을 수 있다.")
     void findUpEndStationTest() {
-        final Sections sections = createSubwayGraph();
+        final Sections sections = createSections();
 
         sections.addStation(NEW_STATION, EXPRESS_BUS_TERMINAL_STATION, 2);
 
@@ -103,7 +104,7 @@ class SectionsTest {
     @Test
     @DisplayName("노선을 상행 종점부터 순서대로 조회할 수 있다.")
     void findAllStationsInOrder() {
-        final Sections sections = createSubwayGraph();
+        final Sections sections = createSections();
 
         sections.addStation(NEW_STATION, EXPRESS_BUS_TERMINAL_STATION, 2);
 
@@ -120,7 +121,7 @@ class SectionsTest {
         @DisplayName("두 역 사이의 거리보다 짧은 거리로 하행 방향에 새로운 역을 추가할 수 있다.")
         @ValueSource(ints = {1, 2, 3, 4})
         void addStationToDownLineTest(int distance) {
-            final Sections sections = createSubwayGraph();
+            final Sections sections = createSections();
             assertDoesNotThrow(() -> sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance));
         }
 
@@ -128,7 +129,7 @@ class SectionsTest {
         @DisplayName("두 역 사이의 거리보다 추가되는 하행 방향의 역과의 거리가 길면 예외가 발생한다.")
         @ValueSource(ints = {5, 6, 7, 8})
         void addStationToDownLineExceptionTest(int distance) {
-            final Sections sections = createSubwayGraph();
+            final Sections sections = createSections();
 
             assertThatThrownBy(
                     () -> sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance))
@@ -140,7 +141,7 @@ class SectionsTest {
         @DisplayName("두 역 사이의 거리보다 짧은 거리로 상행 방향에 새로운 역을 추가할 수 있다.")
         @ValueSource(ints = {1, 2, 3, 4})
         void addStationToUpLineTest(int distance) {
-            final Sections sections = createSubwayGraph();
+            final Sections sections = createSections();
             assertDoesNotThrow(() -> sections.addStation(NEW_STATION, SAPYEONG_STATION, distance));
         }
 
@@ -148,7 +149,7 @@ class SectionsTest {
         @DisplayName("두 역 사이의 거리보다 추가되는 상행 방향의 역과의 거리가 길면 에외가 발생한다.")
         @ValueSource(ints = {5, 6, 7, 8})
         void addStationToUpLineExceptionTest(int distance) {
-            final Sections sections = createSubwayGraph();
+            final Sections sections = createSections();
 
             assertThatThrownBy(
                     () -> sections.addStation(NEW_STATION, SAPYEONG_STATION, distance))
@@ -208,7 +209,7 @@ class SectionsTest {
         @DisplayName("역 사이의 거리는 양의 정수이다.")
         @ValueSource(ints = {0, -1})
         void addStationDistanceNegativeTest(int distance) {
-            final Sections sections = createSubwayGraph();
+            final Sections sections = createSections();
             assertThatThrownBy(
                     () -> sections.createNewLine(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -219,7 +220,7 @@ class SectionsTest {
     @Test
     @DisplayName("하나의 역과 연결된 역을 제거할 수 있다.")
     void removeStationAtEnd() {
-        Sections sections = createSubwayGraph();
+        Sections sections = createSections();
         sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
         // 고속터미널 -> 새 역 -> 사평역
 
@@ -233,7 +234,7 @@ class SectionsTest {
     @Test
     @DisplayName("하나의 역과 연결된 역을 제거할 수 있다.")
     void removeStationInMiddle() {
-        Sections sections = createSubwayGraph();
+        Sections sections = createSections();
         sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
         // 고속터미널 -> (3) 새 역 -> (2) 사평역
 
@@ -245,5 +246,24 @@ class SectionsTest {
 
         assertThat(sections.findDistanceBetween(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION))
                 .isEqualTo(5);
+    }
+
+    @Test
+    @DisplayName("저장된 역과 그 거리를 구할 수 있다.")
+    void findAllSectionsInOrderTest() {
+        final Sections sections = createSections();
+        sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
+
+        final Map<List<Station>, Integer> sectionsInOrder = sections.findAllSectionsInOrder();
+
+        assertAll(
+                () -> assertThat(sectionsInOrder.keySet())
+                        .containsExactly(
+                                List.of(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION),
+                                List.of(NEW_STATION, SAPYEONG_STATION)
+                        ),
+                () -> assertThat(sectionsInOrder.values())
+                        .containsExactly(3, 2)
+        );
     }
 }
