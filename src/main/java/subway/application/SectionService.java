@@ -103,14 +103,14 @@ public class SectionService {
     public void deleteSection(Long lineId, SectionDeleteRequest sectionDeleteRequest) {
         String stationName = sectionDeleteRequest.getStationName();
         validateStationInLine(lineId, stationName);
-        Optional<SectionEntity> startSection = sectionDao.findByEndStationNameAndLineId(stationName, lineId);
-        Optional<SectionEntity> endSection = sectionDao.findByStartStationNameAndLineId(stationName, lineId);
-        if (startSection.isPresent() && endSection.isPresent()) {
-            mergeSection(startSection.get(), endSection.get());
+        Optional<SectionEntity> leftSection = sectionDao.findByEndStationNameAndLineId(stationName, lineId);
+        Optional<SectionEntity> rightSection = sectionDao.findByStartStationNameAndLineId(stationName, lineId);
+        if (leftSection.isPresent() && rightSection.isPresent()) {
+            mergeSection(leftSection.get(), rightSection.get());
             return;
         }
-        endSection.ifPresent(sectionDao::deleteBy);
-        startSection.ifPresent(sectionDao::deleteBy);
+        rightSection.ifPresent(sectionDao::deleteBy);
+        leftSection.ifPresent(sectionDao::deleteBy);
     }
 
     private void validateStationInLine(Long lineId, String stationName) {
@@ -119,10 +119,10 @@ public class SectionService {
         }
     }
 
-    private void mergeSection(SectionEntity startSection, SectionEntity endSection) {
-        sectionDao.deleteBy(startSection);
-        sectionDao.update(endSection.getId(), new Section(startSection.getStartStation(), endSection.getEndStation(),
-                startSection.getDistance() + endSection.getDistance()));
+    private void mergeSection(SectionEntity leftSection, SectionEntity rightSection) {
+        sectionDao.deleteBy(leftSection);
+        sectionDao.update(rightSection.getId(), new Section(leftSection.getStartStation(), rightSection.getEndStation(),
+                leftSection.getDistance() + rightSection.getDistance()));
     }
 
     @Transactional(readOnly = true)
