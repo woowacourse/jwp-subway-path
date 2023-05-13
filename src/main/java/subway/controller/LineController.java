@@ -14,9 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.controller.dto.request.LineCreateRequest;
+import subway.controller.dto.request.SectionCreateRequest;
 import subway.controller.dto.response.LineResponse;
 import subway.controller.dto.response.LinesResponse;
-import subway.controller.dto.request.SectionCreateRequest;
 import subway.service.LineService;
 
 @Tag(name = "Line", description = "노선 API Document")

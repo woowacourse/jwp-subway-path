@@ -27,9 +27,9 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.dto.request.LineCreateRequest;
+import subway.controller.dto.request.SectionCreateRequest;
 import subway.controller.dto.response.LineResponse;
 import subway.controller.dto.response.LinesResponse;
-import subway.controller.dto.request.SectionCreateRequest;
 import subway.controller.dto.response.StationResponse;
 import subway.service.LineService;
 
