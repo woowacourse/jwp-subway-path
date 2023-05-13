@@ -105,17 +105,17 @@ public class Sections {
         sections.add(removedIdx + 1, judgeDownSection(remain, addedSection));
     }
 
-    private void validateAddSectionInMiddle(final Section addedSection, final Section removedCandidate) {
-        if (addedSection.distance() >= removedCandidate.distance()) {
-            throw new LineException(ADDED_SECTION_NOT_SMALLER_THAN_ORIGIN);
-        }
-    }
-
     private Section findRemovedSection(final Section addedSection) {
         return sections.stream()
                 .filter(addedSection::hasSameUpOrDownStation)
                 .findAny()
                 .orElseThrow(() -> new LineException(NO_RELATION_WITH_ADDED_SECTION));
+    }
+
+    private void validateAddSectionInMiddle(final Section addedSection, final Section removedCandidate) {
+        if (addedSection.distance() >= removedCandidate.distance()) {
+            throw new LineException(ADDED_SECTION_NOT_SMALLER_THAN_ORIGIN);
+        }
     }
 
     private Section judgeUpSection(final Section section1, final Section section2) {
