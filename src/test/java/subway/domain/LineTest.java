@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.GlobalException;
+import subway.exception.InValidLineNameException;
 
 import java.util.Collections;
 
@@ -28,7 +28,7 @@ public class LineTest {
         @NullSource
         void createLineInfoFailTestByNameLength(String name) {
             assertThatThrownBy(() -> new Line(name, new Sections(Collections.emptyList())))
-                    .isInstanceOf(GlobalException.class);
+                    .isInstanceOf(InValidLineNameException.class);
         }
     }
 }

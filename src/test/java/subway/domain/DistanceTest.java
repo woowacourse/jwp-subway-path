@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.GlobalException;
+import subway.exception.InValidDistanceException;
 
 class DistanceTest {
     @ParameterizedTest(name = "두 역 사이 거리는 10km 이하 양의 정수만 가능하다.")
@@ -18,6 +18,6 @@ class DistanceTest {
     @ValueSource(ints = {-1, 0, 11})
     void createDistanceFailTestByRange(int distance) {
         assertThatThrownBy(() -> new Distance(distance))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(InValidDistanceException.class);
     }
 }

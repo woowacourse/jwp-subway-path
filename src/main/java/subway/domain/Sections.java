@@ -1,6 +1,6 @@
 package subway.domain;
 
-import subway.exception.GlobalException;
+import subway.exception.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +25,7 @@ public class Sections {
                 .count();
 
         if (sections.size() != distinctSize) {
-            throw new GlobalException("구간은 중복될 수 없습니다.");
+            throw new DuplicateSectionException();
         }
     }
 
@@ -36,7 +36,7 @@ public class Sections {
                 .collect(Collectors.toList());
 
         if (sectionsContainStation.isEmpty()) {
-            throw new GlobalException("존재하지 않는 구간입니다.");
+            throw new InvalidSectionException();
         }
 
         if (sections.size() == 1) {
@@ -87,7 +87,7 @@ public class Sections {
             return;
         }
         if (sections.contains(newSection)) {
-            throw new GlobalException("이미 존재하는 구간입니다.");
+            throw new DuplicateSectionAddException();
         }
         validateConnection(newSection);
 
@@ -130,11 +130,11 @@ public class Sections {
                 .anyMatch(it -> it.isSameEndStation(section.getStartStation()) || it.isSameEndStation(section.getEndStation()));
 
         if (isPresentSameStartStation && isPresentSameEndStation) {
-            throw new GlobalException("이미 연결되어 있는 구간입니다.");
+            throw new NotConnectSectionException("이미 연결되어 있는 구간입니다.");
         }
 
         if (!isPresentSameStartStation && !isPresentSameEndStation) {
-            throw new GlobalException("연결되어 있지 않은 구간입니다.");
+            throw new NotConnectSectionException("연결되어 있지 않은 구간입니다.");
         }
     }
 
@@ -143,7 +143,7 @@ public class Sections {
                 .filter(it -> it.isSameStartStation(newSection.getStartStation()) || it.isSameEndStation(newSection.getEndStation()))
                 .filter(it -> it.isGreaterThanOtherDistance(newSection))
                 .findAny()
-                .orElseThrow(() -> new GlobalException("구간 길이로 인해 연결할 수 없습니다."));
+                .orElseThrow(() -> new NotConnectSectionException("구간 길이로 인해 연결할 수 없습니다."));
     }
 
     public List<Station> getSortedStations() {
@@ -163,7 +163,7 @@ public class Sections {
         return sections.stream()
                 .filter(it -> it.isSameStartStation(startStation))
                 .findFirst()
-                .orElseThrow(() -> new GlobalException("해당 역을 출발 역으로 갖는 구간이 없습니다."));
+                .orElseThrow(() -> new NotExistSectionException("해당 역을 출발 역으로 갖는 구간이 없습니다."));
     }
 
     public Station getUpStation() {
@@ -172,7 +172,7 @@ public class Sections {
                 .filter(it -> sections.stream()
                         .noneMatch(section -> !section.getStartStation().equals(it) && section.getEndStation().equals(it)))
                 .findFirst()
-                .orElseThrow(() -> new GlobalException("상행 종점이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotExistSectionException("상행 종점이 존재하지 않습니다."));
     }
 
     public Station getDownStation() {
@@ -181,7 +181,7 @@ public class Sections {
                 .filter(it -> sections.stream()
                         .noneMatch(section -> !section.getEndStation().equals(it) && section.getStartStation().equals(it)))
                 .findFirst()
-                .orElseThrow(() -> new GlobalException("하행 종점이 존재하지 않습니다."));
+                .orElseThrow(() -> new NotExistSectionException("하행 종점이 존재하지 않습니다."));
     }
 
     public List<Section> getSections() {

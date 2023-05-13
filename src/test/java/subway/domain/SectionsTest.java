@@ -8,7 +8,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.exception.GlobalException;
+import subway.exception.*;
 
 class SectionsTest {
 
@@ -25,7 +25,7 @@ class SectionsTest {
             List<Section> sections = List.of(section1, section2);
 
             assertThatThrownBy(() -> new Sections(sections))
-                    .isInstanceOf(GlobalException.class);
+                    .isInstanceOf(DuplicateSectionException.class);
         }
 
         @DisplayName("중복된 Section이 없는 리스트는 Sections를 만들 수 있다")
@@ -51,7 +51,7 @@ class SectionsTest {
             Sections sections = new Sections(List.of(section));
 
             assertThatThrownBy(() -> sections.add(section))
-                    .isInstanceOf(GlobalException.class);
+                    .isInstanceOf(DuplicateSectionAddException.class);
         }
 
         @DisplayName("중복된 Section은 추가할 수 없다.")
@@ -67,7 +67,7 @@ class SectionsTest {
             Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(10));
 
             assertThatThrownBy(() -> sections.add(sectionForAdd))
-                    .isInstanceOf(GlobalException.class);
+                    .isInstanceOf(NotConnectSectionException.class);
         }
 
         @DisplayName("연결되지 않는 Section은 추가할 수 없다.")
@@ -83,7 +83,7 @@ class SectionsTest {
             Section sectionForAdd = new Section(잠실나루, 건대, new Distance(10));
 
             assertThatThrownBy(() -> sections.add(sectionForAdd))
-                    .isInstanceOf(GlobalException.class);
+                    .isInstanceOf(NotConnectSectionException.class);
         }
 
         @DisplayName("상행 종점에 Section을 연결할 수 있다.")
@@ -154,7 +154,7 @@ class SectionsTest {
             Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(6));
 
             assertThatThrownBy(() -> sections.add(sectionForAdd))
-                    .isInstanceOf(GlobalException.class);
+                    .isInstanceOf(NotConnectSectionException.class);
         }
 
         @DisplayName("구간 사이에 Section 거리가 해당 구간보다 거리가 클 경우 연결할 수 없다.")
@@ -169,7 +169,7 @@ class SectionsTest {
             Section sectionForAdd = new Section(잠실나루, 잠실새내, new Distance(6));
 
             assertThatThrownBy(() -> sections.add(sectionForAdd))
-                    .isInstanceOf(GlobalException.class);
+                    .isInstanceOf(NotConnectSectionException.class);
         }
     }
 
@@ -187,7 +187,7 @@ class SectionsTest {
             Sections sections = new Sections(List.of(section));
 
             assertThatThrownBy(() -> sections.remove(잠실나루))
-                    .isInstanceOf(GlobalException.class);
+                    .isInstanceOf(InvalidSectionException.class);
         }
 
         @DisplayName("역이 단 두 개일때 삭제시, 모든 구간이 삭제된다.")
