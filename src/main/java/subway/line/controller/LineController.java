@@ -8,7 +8,6 @@ import subway.line.dto.LineSearchResponse;
 import subway.line.service.LineService;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -29,13 +28,14 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineSearchResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+        List<LineSearchResponse> lineResponses = lineService.findLineResponses();
+        return ResponseEntity.ok(lineResponses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LineSearchResponse> findLineById(@PathVariable final Long id) {
-        return ResponseEntity.ok(lineService.findLineResponseById(id));
-    }
+        LineSearchResponse lineSearchResponse = lineService.findLineResponseById(id);
+        return ResponseEntity.ok(lineSearchResponse);    }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable final Long id, @RequestBody final LineRequest lineUpdateRequest) {
@@ -47,10 +47,5 @@ public class LineController {
     public ResponseEntity<Void> deleteLine(@PathVariable final Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }
