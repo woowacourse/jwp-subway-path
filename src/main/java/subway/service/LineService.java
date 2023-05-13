@@ -3,11 +3,13 @@ package subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.dto.line.LineRequest;
 import subway.dto.line.LineResponse;
 import subway.repository.LineRepository;
 
+@Transactional
 @Service
 public class LineService {
 
@@ -22,6 +24,7 @@ public class LineService {
         return lineRepository.save(line);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findAll() {
         return lineRepository.findAll().stream()
                 .map(line -> {

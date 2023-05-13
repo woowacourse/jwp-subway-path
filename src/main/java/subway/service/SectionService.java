@@ -9,6 +9,7 @@ import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 import subway.repository.SectionRepository;
 
+@Transactional
 @Service
 public class SectionService {
 
@@ -18,7 +19,6 @@ public class SectionService {
         this.sectionRepository = sectionRepository;
     }
 
-    @Transactional
     public void insertSection(final SectionCreateRequest request) {
         final Long requestLineNumber = request.getLineNumber();
         final Sections sections = sectionRepository.findByLineNumber(requestLineNumber);
@@ -31,7 +31,6 @@ public class SectionService {
         sectionRepository.updateByLineNumber(sections, requestLineNumber);
     }
 
-    @Transactional
     public void deleteSection(final SectionDeleteRequest request) {
         final Long requestLineNumber = request.getLineNumber();
         final Station requestStation = new Station(request.getStation());

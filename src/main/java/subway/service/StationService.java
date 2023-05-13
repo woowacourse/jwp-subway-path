@@ -3,12 +3,14 @@ package subway.service;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
 import subway.dto.station.StationRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
 import subway.repository.StationRepository;
 
+@Transactional
 @Service
 public class StationService {
 
@@ -22,11 +24,13 @@ public class StationService {
         return stationRepository.save(new Station(stationRequest.getName()));
     }
 
+    @Transactional(readOnly = true)
     public StationResponse findStationEntityById(final Long id) {
         Station station = stationRepository.findByStationId(id);
         return StationResponse.from(id, station);
     }
 
+    @Transactional(readOnly = true)
     public StationsResponse findAllStationResponses() {
         List<StationResponse> stations = stationRepository.findAll().stream()
                 .map(station -> {
