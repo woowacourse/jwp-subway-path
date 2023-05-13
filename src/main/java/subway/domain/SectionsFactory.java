@@ -7,18 +7,13 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SectionSorter {
+public final class SectionsFactory {
 
-	private static final SectionSorter instance = new SectionSorter();
-
-	private SectionSorter() {
+	public static Sections create(List<Section> sections) {
+		return new Sections(sortSections(sections));
 	}
 
-	public static SectionSorter getInstance() {
-		return instance;
-	}
-
-	public List<Section> sortSections(List<Section> sections) {
+	private static List<Section> sortSections(List<Section> sections) {
 		Map<Station, Section> departureToSection = createDepartureToSection(sections);
 		Station currentStation = getFirstStationFromSections(departureToSection);
 
@@ -33,7 +28,7 @@ public class SectionSorter {
 		return sortedSections;
 	}
 
-	private Station getFirstStationFromSections(Map<Station, Section> sectionsMap) {
+	private static Station getFirstStationFromSections(Map<Station, Section> sectionsMap) {
 		Set<Station> arrivalStations = sectionsMap.values().stream()
 			.map(Section::getArrival)
 			.collect(Collectors.toSet());
@@ -44,9 +39,8 @@ public class SectionSorter {
 			.orElseThrow(() -> new IllegalArgumentException("해당 노선에 시작역이 존재하지 않습니다."));
 	}
 
-	private Map<Station, Section> createDepartureToSection(List<Section> sections) {
+	private static Map<Station, Section> createDepartureToSection(List<Section> sections) {
 		return sections.stream()
 			.collect(Collectors.toMap(Section::getDeparture, Function.identity()));
 	}
-
 }

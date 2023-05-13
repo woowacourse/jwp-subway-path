@@ -1,16 +1,16 @@
 package subway.ui.dto;
 
 public class StationRequest {
-    private String name;
+	private String name;
 
-    public StationRequest() {
-    }
+	public StationRequest() {
+	}
 
-    public StationRequest(String name) {
-        this.name = name;
-    }
+	public StationRequest(String name) {
+		this.name = name;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 }

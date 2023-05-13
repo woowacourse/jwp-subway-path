@@ -10,7 +10,8 @@ import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
-class StationSorterTest {
+class SectionsFactoryTest {
+
 	@Test
 	void sortingTest() {
 		// given
@@ -20,11 +21,10 @@ class StationSorterTest {
 		Collections.shuffle(sections);
 
 		// when
-		final SectionSorter sectionSorter = SectionSorter.getInstance();
-		List<Section> sortedSections = sectionSorter.sortSections(sections);
+		final Sections result = SectionsFactory.create(sections);
 
 		// then
-		assertThat(sortedSections).isEqualTo(expectedSections);
+		assertThat(result.getSections()).isEqualTo(expectedSections);
 	}
 
 	private List<Section> createSections() {

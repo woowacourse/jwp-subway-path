@@ -2,20 +2,13 @@ package subway.domain;
 
 import java.util.Objects;
 
-public class LineInfo {
-	private Long id;
-	private String name;
-	private String color;
+public final class LineInfo {
 
-	public LineInfo() {
-	}
+	private final Long id;
+	private final String name;
+	private final String color;
 
-	public LineInfo(String name, String color) {
-		this.name = name;
-		this.color = color;
-	}
-
-	public LineInfo(Long id, String name, String color) {
+	public LineInfo(final Long id, final String name, final String color) {
 		this.id = id;
 		this.name = name;
 		this.color = color;
@@ -34,13 +27,14 @@ public class LineInfo {
 	}
 
 	@Override
-	public boolean equals(Object o) {
+	public boolean equals(final Object o) {
 		if (this == o)
 			return true;
 		if (o == null || getClass() != o.getClass())
 			return false;
-		LineInfo line = (LineInfo)o;
-		return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+		final LineInfo lineInfo = (LineInfo)o;
+		return Objects.equals(id, lineInfo.id) && Objects.equals(name, lineInfo.name)
+			&& Objects.equals(color, lineInfo.color);
 	}
 
 	@Override

@@ -1,15 +1,11 @@
 package subway.ui.dto;
 
-import subway.domain.LineInfo;
+import subway.persistence.entity.LineEntity;
 
 public class LineResponse {
 	private Long id;
 	private String name;
 	private String color;
-
-	public LineResponse(LineInfo lineInfo) {
-		this(lineInfo.getId(), lineInfo.getName(), lineInfo.getColor());
-	}
 
 	public LineResponse(Long id, String name, String color) {
 		this.id = id;
@@ -17,7 +13,7 @@ public class LineResponse {
 		this.color = color;
 	}
 
-	public static LineResponse of(LineInfo line) {
+	public static LineResponse of(LineEntity line) {
 		return new LineResponse(line.getId(), line.getName(), line.getColor());
 	}
 

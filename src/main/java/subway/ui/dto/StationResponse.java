@@ -1,6 +1,6 @@
 package subway.ui.dto;
 
-import subway.domain.Station;
+import subway.persistence.entity.StationEntity;
 
 public class StationResponse {
     private Long id;
@@ -11,7 +11,7 @@ public class StationResponse {
         this.name = name;
     }
 
-    public static StationResponse of(Station station) {
+    public static StationResponse of(StationEntity station) {
         return new StationResponse(station.getId(), station.getName());
     }
 
