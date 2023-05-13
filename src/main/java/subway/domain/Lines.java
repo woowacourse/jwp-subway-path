@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Deque;
 import java.util.List;
+import java.util.Objects;
 import subway.exception.line.LineException;
 
 public class Lines {
@@ -74,6 +75,23 @@ public class Lines {
 
     public int size() {
         return lines.size();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Lines)) {
+            return false;
+        }
+        final Lines lines1 = (Lines) o;
+        return Objects.equals(lines, lines1.lines);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lines);
     }
 
     public List<Line> lines() {
