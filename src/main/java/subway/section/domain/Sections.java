@@ -4,7 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Getter
@@ -62,7 +64,7 @@ public class Sections {
     }
     
     private void removeIntersection(final Set<Section> additionalWithOneself) {
-        final HashSet<Section> sectionsOfRemoveIntersection = new HashSet<>(sections);
+        final Set<Section> sectionsOfRemoveIntersection = new HashSet<>(sections);
         sectionsOfRemoveIntersection.retainAll(additionalWithOneself);
         
         sections.removeAll(sectionsOfRemoveIntersection);
@@ -70,29 +72,27 @@ public class Sections {
     }
     
     public void removeStation(final String station) {
-        final HashSet<Section> copySections = new HashSet<>(sections);
-        final List<Section> sectionsContainedStation = getSectionsOfContainStation(station, copySections);
-        sections.removeAll(new HashSet<>(sectionsContainedStation));
+        final Set<Section> sectionsContainedStation = getSectionsOfContainStation(station);
+        sections.removeAll(sectionsContainedStation);
         
         if (isMiddleStationCase(sectionsContainedStation)) {
-            addCombinedSection(sectionsContainedStation);
+            sections.add(getCombinedSection(sectionsContainedStation));
         }
     }
     
-    private List<Section> getSectionsOfContainStation(final String station, final Set<Section> copySections) {
-        return copySections.stream()
+    private Set<Section> getSectionsOfContainStation(final String station) {
+        return sections.stream()
                 .filter(section -> section.hasStation(station))
-                .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toUnmodifiableSet());
     }
     
-    private boolean isMiddleStationCase(final List<Section> sectionsOfContainStation) {
+    private boolean isMiddleStationCase(final Set<Section> sectionsOfContainStation) {
         return sectionsOfContainStation.size() >= NUMBER_OF_CONTAIN_MIDDLE_STATION;
     }
     
-    private void addCombinedSection(final List<Section> sectionsContainedStation) {
-        final Section firstSection = sectionsContainedStation.get(0);
-        final Section secondSection = sectionsContainedStation.get(1);
-        final Section combinedSection = firstSection.combine(secondSection);
-        sections.add(combinedSection);
+    private Section getCombinedSection(final Set<Section> sectionsContainedStation) {
+        return sectionsContainedStation.stream()
+                .reduce(Section::combine)
+                .orElseThrow(() -> new IllegalArgumentException("삭제할 역이 해당 노선에 존재하지 않습니다."));
     }
 }

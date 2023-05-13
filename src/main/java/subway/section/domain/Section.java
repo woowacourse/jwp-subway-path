@@ -41,7 +41,12 @@ public class Section {
         return additionalSectionsWithOneself;
     }
     
-    private Set<Section> getAdditionalSections(final String base, final Direction direction, final String additional, final long distance) {
+    private Set<Section> getAdditionalSections(
+            final String base,
+            final Direction direction,
+            final String additional,
+            final long distance
+    ) {
         if (direction.isLeft() && left.equals(new Station(base))) {
             return createLeftSection(additional, distance);
         }
