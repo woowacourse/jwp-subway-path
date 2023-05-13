@@ -41,15 +41,6 @@ public class LineController {
     }
 
     /**
-     * 노선을 여러개 생성한다.
-     * @return 생성한 노선들의 Id 목록
-     */
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
-    }
-
-    /**
      * 한 노선의 정보를 조회한다.
      * @param lineId
      * @return StationsResponse - 노선 내에 존재하는 모든 역의 이름 목록
@@ -57,6 +48,28 @@ public class LineController {
     @GetMapping("/{lineId}")
     public ResponseEntity<StationsResponse> findLineById(@PathVariable Long lineId) {
         return ResponseEntity.ok(lineService.getStationsByLineId(lineId));
+    }
+
+    /**
+     * 노선에 역을 추가한다.
+     * @param lineId
+     * @param stationSaveRequest (SourceStation, TargetStation, Distance)
+     * @return StationResponse 추가한 역의 이름
+     */
+    @PostMapping("/{lineId}/stations")
+    public ResponseEntity<StationResponse> createStation(@PathVariable Long lineId,
+                                                         @RequestBody StationSaveRequest stationSaveRequest) {
+        StationResponse response = lineService.addStation(lineId, stationSaveRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    /**
+     * 노선을 여러개 생성한다.
+     * @return 생성한 노선들의 Id 목록
+     */
+    @GetMapping
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findLineResponses());
     }
 
     /**
@@ -78,18 +91,5 @@ public class LineController {
     public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
         lineService.deleteLineById(lineId);
         return ResponseEntity.noContent().build();
-    }
-
-    /**
-     * 노선에 역을 추가한다.
-     * @param lineId
-     * @param stationSaveRequest (SourceStation, TargetStation, Distance)
-     * @return StationResponse 추가한 역의 이름
-     */
-    @PostMapping("/{lineId}/stations")
-    public ResponseEntity<StationResponse> createStation(@PathVariable Long lineId,
-                                                         @RequestBody StationSaveRequest stationSaveRequest) {
-        StationResponse response = lineService.addStation(lineId, stationSaveRequest);
-        return ResponseEntity.ok(response);
     }
 }
