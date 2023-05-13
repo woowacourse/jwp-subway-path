@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -38,5 +39,20 @@ class DistanceTest {
         final Distance distance2 = new Distance(1L);
 
         assertThat(distance1).isEqualTo(distance2);
+    }
+
+    @Nested
+    @DisplayName("add 메서드는")
+    class Context_add {
+
+        @Test
+        void 두_거리를_더한_값을_반환한다() {
+            final Distance distance1 = new Distance(1L);
+            final Distance distance2 = new Distance(2L);
+
+            final Distance actual = distance1.add(distance2);
+
+            assertThat(actual).isEqualTo(new Distance(3L));
+        }
     }
 }

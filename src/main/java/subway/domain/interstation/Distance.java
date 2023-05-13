@@ -22,4 +22,8 @@ public class Distance {
             throw new DistanceException("거리는 양수이어야 합니다.");
         }
     }
+
+    public Distance add(final Distance distance) {
+        return new Distance(value + distance.value);
+    }
 }
