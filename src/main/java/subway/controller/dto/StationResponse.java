@@ -2,7 +2,7 @@ package subway.controller.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 @Getter
 @AllArgsConstructor

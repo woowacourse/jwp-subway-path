@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 @Getter
 @RequiredArgsConstructor

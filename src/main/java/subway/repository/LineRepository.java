@@ -2,7 +2,7 @@ package subway.repository;
 
 import java.util.List;
 import java.util.Optional;
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 public interface LineRepository {
 

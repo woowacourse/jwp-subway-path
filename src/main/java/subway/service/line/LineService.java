@@ -1,4 +1,4 @@
-package subway.service;
+package subway.service.line;
 
 import java.util.List;
 import java.util.Optional;
@@ -11,8 +11,8 @@ import subway.controller.dto.AddStationRequest;
 import subway.controller.dto.AddStationResponse;
 import subway.controller.dto.LineResponse;
 import subway.controller.dto.RemoveStationRequest;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 import subway.exception.BusinessException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;

@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 @Getter
 @AllArgsConstructor

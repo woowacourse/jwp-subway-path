@@ -1,7 +1,7 @@
 package subway.repository;
 
 import java.util.Optional;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public interface StationRepository {
 

@@ -1,4 +1,4 @@
-package subway.controller;
+package subway.controller.line;
 
 import java.net.URI;
 import java.util.List;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.controller.dto.AddLineRequest;
 import subway.controller.dto.AddLineResponse;
 import subway.controller.dto.LineResponse;
-import subway.service.LineService;
+import subway.service.line.LineService;
 
 @RequiredArgsConstructor
 @RestController

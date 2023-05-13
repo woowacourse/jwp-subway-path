@@ -3,7 +3,7 @@ package subway.entity;
 import java.util.Objects;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 @Getter
 @RequiredArgsConstructor

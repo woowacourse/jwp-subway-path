@@ -4,7 +4,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.entity.StationEntity;
 
 @RequiredArgsConstructor

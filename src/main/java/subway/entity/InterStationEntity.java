@@ -2,7 +2,7 @@ package subway.entity;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import subway.domain.InterStation;
+import subway.domain.interstation.InterStation;
 
 @Getter
 @RequiredArgsConstructor

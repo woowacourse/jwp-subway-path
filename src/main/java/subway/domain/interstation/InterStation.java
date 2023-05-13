@@ -1,6 +1,7 @@
-package subway.domain;
+package subway.domain.interstation;
 
 import lombok.Getter;
+import subway.domain.station.Station;
 import subway.exception.BusinessException;
 
 @Getter

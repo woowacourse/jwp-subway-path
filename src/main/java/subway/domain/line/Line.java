@@ -1,10 +1,12 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import subway.domain.interstation.InterStation;
+import subway.domain.station.Station;
 import subway.exception.BusinessException;
 
 @Getter

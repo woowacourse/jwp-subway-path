@@ -1,4 +1,4 @@
-package subway.controller;
+package subway.controller.station;
 
 import java.net.URI;
 import javax.validation.Valid;
@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.controller.dto.AddStationRequest;
 import subway.controller.dto.AddStationResponse;
 import subway.controller.dto.RemoveStationRequest;
-import subway.service.LineService;
+import subway.service.line.LineService;
 
 
 @RequiredArgsConstructor
