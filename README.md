@@ -48,6 +48,8 @@ POST /subway/lines
 
 Request {
     lineName : "1호선"
+    startStation : "회기",
+    endStation : "청량리"
 }
 
 Response Headers {
