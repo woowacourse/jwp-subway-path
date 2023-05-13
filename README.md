@@ -4,7 +4,7 @@
 
 <table>
     <tr>
-        <td align="center"><img src="https://avatars.githubusercontent.com/u/79090478?v=4" width=500></td>
+        <td 제align="center"><img src="https://avatars.githubusercontent.com/u/79090478?v=4" width=500></td>
         <td align="center"><img src="https://avatars.githubusercontent.com/u/82203978?v=4" width=500></td>
     </tr>
     <tr>
@@ -30,20 +30,21 @@
 ## 도메인
 
 ### 역
-- [ ] 역은 지하철이 지나갈 수 있는 지점을 의미한다.
-  - [ ] 역은 `이름`을 갖는다.
-    - [ ] 이름은 지하철에서 유일해야 한다.
-    - [ ] 이름은 10글자 이내로 한다.
+- [x] 역은 지하철이 지나갈 수 있는 지점을 의미한다.
+  - [x] 역은 `이름`을 갖는다.
+    - [x] 이름은 지하철에서 유일해야 한다.
+    - [x] 이름은 10글자 이내로 한다.
 
 ###  구간
-- [ ] 구간은 역과 역을 사이의 길을 의미한다.
-  - [ ] 구간은 `상행역`과 `하행역`을 갖는다.
-  - [ ] 구간은 `거리`를 갖는다.
-- [ ] 구간의 `상행역`과 `하행역`을 `반환`한다.
-- [ ] 구간에 `중간역을 추가할 수 있는지 판단`한다.
-- [ ] `두 구간을 병합`한다.
-  - [ ] 붙어 있는 구간을 입력 받아 병합한 결과를 반환한다.
-  - [ ] 붙어 있는 역이 아니면 예외를 발생한다.
+- [x] 구간은 역과 역을 사이의 길을 의미한다.
+  - [x] 구간은 `상행역`과 `하행역`을 갖는다.
+  - [x] 구간은 `거리`를 갖는다.
+- [x] 구간의 `상행역`과 `하행역`을 `반환`한다.
+- [x] 구간에 `중간역을 추가할 수 있는지 판단`한다.
+    - [x] 두 구간을 입력 받아 병합한 결과를 반환한다.
+- [x] `두 구간을 병합`한다.
+  - [x] 붙어 있는 구간을 입력 받아 병합한 결과를 반환한다.
+  - [x] 붙어 있는 역이 아니면 예외를 발생한다.
 
 ### 노선
 - [ ] 노선은 구간들로 이루어진 역들의 모임이다.
@@ -60,6 +61,8 @@
   - [ ] 역 삭제 시, `해당역`의 정보를 입력 받는다.
   - [ ] 노선에 역이 존재하지 않으면 예외를 발생한다.
 - [ ] 노선에 대한 역 정보를 `상행종점~하행종점` 순서대로 반환한다.
+
+
 ## 시나리오
 
 - 역 등록
@@ -96,7 +99,7 @@ Content-Type: application/json
       "lineName" : "2",
       "upStationName" : "잠실나루",
       "downStationName" : "잠실새내",
-    },
+    }, 
     {
       "lineName" : "8",
       "upStationName" : "몽촌토성",
@@ -116,15 +119,17 @@ Content-Type: application/json
   "postion" : [
     {
       "lineId" : 1 (2호선),
-      "upStationId" : 1 (잠실나루),
-      "downStationId" : 2 (잠실새내),
-      "distance" : 5
+      "upStationId" : 1 (잠실나루), (null 허용)
+      "upDistance" : 5, (null 허용)
+      "downStationId" : 2 (잠실새내), (null 허용)
+      "downDistance" : 5 (null 허용)
     },
     {
       "lineId" : 2 (8호선),
-      "upStationId" : 3 (몽촌토성),
-      "downStationId" : 4 (석촌),
-      "distance" : 5
+      "upStationId" : 3 (몽촌토성), (null 허용)
+      "upDistance" : 5, (null 허용)
+      "downStationId" : 4 (석촌), (null 허용)
+      "downDistance" : 5 (null 허용)
     }
   ]
 }

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DistanceTest {
 
@@ -20,6 +21,18 @@ public class DistanceTest {
     @Test
     void throwExceptionWithZeroValue() {
         assertThatThrownBy(() -> new Distance(0)).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("두 거리의 합을 계산한다.")
+    @Test
+    void sum() {
+        //given
+        Distance distance1 = new Distance(10);
+        Distance distance2 = new Distance(5);
+        //when
+        Distance sum = distance1.sum(distance2);
+        //then
+        assertThat(sum).isEqualTo(new Distance(15));
     }
 
     @DisplayName("두 거리를 입력 받아 합이 자기와 같으면 true를 반환한다.")

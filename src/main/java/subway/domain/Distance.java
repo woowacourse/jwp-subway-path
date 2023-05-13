@@ -17,6 +17,10 @@ public class Distance {
         }
     }
 
+    public Distance sum(final Distance other) {
+        return new Distance(this.value + other.value);
+    }
+
     public boolean equalToSumOf(final Distance upDistance, final Distance downDistance) {
         return this.value == upDistance.value + downDistance.value;
     }
