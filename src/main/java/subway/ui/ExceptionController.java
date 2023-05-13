@@ -6,15 +6,20 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import subway.ui.dto.response.ExceptionResponse;
 
-import java.sql.SQLException;
-
 @RestControllerAdvice
 public class ExceptionController extends ResponseEntityExceptionHandler {
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<ExceptionResponse> handleSQLException(SQLException ex) {
-        logger.error("SQLException : ", ex);
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleException(final Exception ex) {
+        logger.error("Exception : ", ex);
 
-        return ResponseEntity.badRequest().body(new ExceptionResponse("중복된 이름이 존재합니다."));
+        return ResponseEntity.internalServerError().body(new ExceptionResponse("예상치 못한 예외가 발생했습니다."));
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ExceptionResponse> handleIllegalArgumentException(final IllegalArgumentException ex) {
+        logger.error("IllegalArgumentException : ", ex);
+
+        return ResponseEntity.badRequest().body(new ExceptionResponse(ex.getMessage()));
     }
 }
