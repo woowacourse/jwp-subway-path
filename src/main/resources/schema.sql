@@ -28,5 +28,6 @@ create table if not exists sections
     is_start        boolean not null,
     up_station_id   bigint  not null,
     down_station_id bigint  not null,
+    line_id         bigint  not null,
     primary key (id)
 );

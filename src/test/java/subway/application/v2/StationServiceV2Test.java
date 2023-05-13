@@ -15,7 +15,7 @@ class StationServiceV2Test extends ServiceTestConfig {
 
     @BeforeEach
     void setUp() {
-        stationService = new StationServiceV2(stationDaoV2);
+        stationService = new StationServiceV2(stationRepository);
     }
 
     @DisplayName("역을 등록한다.")

@@ -8,9 +8,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.StationEntity;
-import subway.domain.StationDomain;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static subway.dao.support.SqlHelper.sqlHelper;
 
@@ -27,8 +28,8 @@ public class StationDaoV2 {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private final RowMapper<StationDomain> rowMapper = (rs, rowNum) ->
-            new StationDomain(
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
@@ -39,7 +40,7 @@ public class StationDaoV2 {
         return insertAction.executeAndReturnKey(paramSource).longValue();
     }
 
-    public Optional<StationDomain> findByStationId(final Long stationId) {
+    public Optional<StationEntity> findByStationId(final Long stationId) {
         final String sql = sqlHelper()
                 .select()
                         .columns("id, name")
@@ -54,5 +55,19 @@ public class StationDaoV2 {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public List<StationEntity> findInStationIds(final List<Long> stationIds) {
+        final String ids = stationIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        final String sql = sqlHelper()
+                .select().columns("id, name")
+                .from().table("STATIONS")
+                .where().in("id", ids)
+                .toString();
+
+        return jdbcTemplate.query(sql, rowMapper);
     }
 }
