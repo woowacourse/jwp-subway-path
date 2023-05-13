@@ -26,11 +26,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.controller.dto.LineCreateRequest;
-import subway.controller.dto.LineResponse;
-import subway.controller.dto.LinesResponse;
-import subway.controller.dto.SectionCreateRequest;
-import subway.controller.dto.StationResponse;
+import subway.controller.dto.request.LineCreateRequest;
+import subway.controller.dto.response.LineResponse;
+import subway.controller.dto.response.LinesResponse;
+import subway.controller.dto.request.SectionCreateRequest;
+import subway.controller.dto.response.StationResponse;
 import subway.service.LineService;
 
 @WebMvcTest(LineController.class)

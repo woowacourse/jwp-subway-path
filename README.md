@@ -1,5 +1,11 @@
 # jwp-subway-path
 
+## API 문서
+
+```text
+http://localhost:8080/swagger-ui/index.html#/
+```
+
 ## 기능 요구사항
 
 ### 역

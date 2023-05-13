@@ -1,10 +1,14 @@
-package subway.controller.dto;
+package subway.controller.dto.response;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import subway.domain.station.Station;
 
 public class StationResponse {
 
+    @Schema(description = "역 ID")
     private Long id;
+
+    @Schema(description = "역 이름")
     private String name;
 
     public StationResponse() {

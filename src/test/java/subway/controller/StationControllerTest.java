@@ -21,8 +21,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.controller.dto.StationCreateRequest;
-import subway.controller.dto.StationResponse;
+import subway.controller.dto.request.StationCreateRequest;
+import subway.controller.dto.response.StationResponse;
 import subway.service.StationService;
 
 @WebMvcTest(StationController.class)

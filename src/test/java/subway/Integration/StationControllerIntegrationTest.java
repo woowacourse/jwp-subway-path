@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import subway.controller.dto.StationCreateRequest;
+import subway.controller.dto.request.StationCreateRequest;
 import subway.dao.StationDao;
 import subway.entity.StationEntity;
 
