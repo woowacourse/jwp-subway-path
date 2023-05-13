@@ -16,11 +16,18 @@ public class Section {
 
     public Section(final Long id, final Station upStation, final Station downStation,
                    final int distance) {
+        validateDistance(distance);
         validateStations(upStation, downStation);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    private void validateDistance(int distance) {
+        if (distance <= 0) {
+            throw new ApiIllegalArgumentException("구간의 거리는 1 이상이여야합니다.");
+        }
     }
 
     private void validateStations(final Station upStation, final Station downStation) {
