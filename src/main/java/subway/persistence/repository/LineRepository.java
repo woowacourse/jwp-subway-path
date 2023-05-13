@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.entity.LineEntity;
@@ -41,6 +41,6 @@ public class LineRepository {
 
     public void deleteById(final Long id) {
         lineDao.deleteById(id);
-        sectionDao.deleteByLineId(id);
+        sectionDao.deleteAllByLineId(id);
     }
 }

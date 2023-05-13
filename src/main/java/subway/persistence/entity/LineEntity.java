@@ -1,6 +1,6 @@
 package subway.persistence.entity;
 
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 public class LineEntity {
 

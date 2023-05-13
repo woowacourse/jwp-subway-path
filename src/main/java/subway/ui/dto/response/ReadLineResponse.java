@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.domain.Station;
 
 @JsonInclude(Include.NON_EMPTY)

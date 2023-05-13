@@ -1,6 +1,6 @@
 package subway.application.dto;
 
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 public class CreationLineDto {
 
