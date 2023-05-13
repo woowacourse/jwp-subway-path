@@ -11,10 +11,6 @@ public class StationResponse {
     @Schema(description = "역 이름")
     private String name;
 
-    public StationResponse() {
-
-    }
-
     public StationResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;

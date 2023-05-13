@@ -19,7 +19,7 @@ public class SectionCreateRequest {
     @Positive(message = "역 간의 거리는 0보다 커야합니다.")
     private Integer distance;
 
-    public SectionCreateRequest() {
+    private SectionCreateRequest() {
     }
 
     public SectionCreateRequest(final Long upwardStationId, final Long downwardStationId, final Integer distance) {
