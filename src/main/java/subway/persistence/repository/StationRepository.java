@@ -1,13 +1,13 @@
 package subway.persistence.repository;
 
-import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
+
+import java.util.List;
 
 @Repository
 public class StationRepository {
@@ -27,8 +27,8 @@ public class StationRepository {
         return Station.of(insertedStationEntity.getId(), insertedStationEntity.getName());
     }
 
-    public Optional<Station> findById(final Long id) {
-        return stationDao.findById(id).map(StationEntity::to);
+    public Station findById(final Long id) {
+        return stationDao.findById(id).to();
     }
 
     public void deleteById(final Long id) {

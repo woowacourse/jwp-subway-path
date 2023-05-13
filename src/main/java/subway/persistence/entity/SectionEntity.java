@@ -58,20 +58,12 @@ public class SectionEntity {
         }
     }
 
-    public boolean containsStationId(Long stationId) {
-        return upStationId.equals(stationId) || downStationId.equals(stationId);
-    }
-
-    public boolean containsDownStationId(Long stationId) {
+    public boolean matchesDownStationId(Long stationId) {
         return downStationId.equals(stationId);
     }
 
-    public boolean containsUpStationId(Long stationId) {
+    public boolean matchesUpStationId(Long stationId) {
         return upStationId.equals(stationId);
-    }
-
-    public boolean matchesByUpAndDownStationId(Long upStationId, Long downStationId) {
-        return upStationId.equals(upStationId) && downStationId.equals(downStationId);
     }
 
     public Long getId() {
