@@ -1,6 +1,6 @@
 package subway.dao;
 
-import static fixtures.LineFixtures.Line2;
+import static fixtures.LineFixtures.INITIAL_Line2;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -35,38 +35,38 @@ class StationDaoTest {
     @DisplayName("역을 저장한다.")
     void insertTest() {
         // given
-        Station insertEntity = STATION_B.INSERT_ENTITY;
+        Station stationToInsert = STATION_B.createStationToInsert(INITIAL_Line2.FIND_LINE);
 
         // when
-        Station insertedStation = stationDao.insert(insertEntity);
+        Station insertedStation = stationDao.insert(stationToInsert);
 
         // then
         assertThat(insertedStation).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(STATION_B.FIND_ENTITY);
+                .ignoringFields("id").isEqualTo(stationToInsert);
     }
 
     @DisplayName("역 ID로 행을 조회한다.")
     @Test
     void findById() {
         // given
-        long stationId = STATION_A.ID;
+        long stationId = INITIAL_STATION_A.ID;
 
         // when
         Optional<Station> findStation = stationDao.findById(stationId);
 
         // then
         assertThat(findStation.get()).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(STATION_A.FIND_ENTITY);
+                .ignoringFields("id").isEqualTo(INITIAL_STATION_A.FIND_STATION);
     }
 
     @Test
     @DisplayName("역 ID에 해당하는 행이 없으면 빈 Optional을 반환한다.")
     void findByIdEmptyOptional() {
         // given
-        long stationId = STATION_B.ID;
+        long dummyId = -1L;
 
         // when
-        Optional<Station> findStation = stationDao.findById(stationId);
+        Optional<Station> findStation = stationDao.findById(dummyId);
 
         // then
         assertThat(findStation.isEmpty()).isTrue();
@@ -76,15 +76,15 @@ class StationDaoTest {
     @DisplayName("역 이름과 노선 이름에 해당하는 행을 조회한다.")
     void findByStationNameAndLineNameTest() {
         // given
-        String stationName = STATION_C.NAME;
-        String lineName = Line2.NAME;
+        String stationName = INITIAL_STATION_C.NAME;
+        String lineName = INITIAL_Line2.NAME;
 
         // when
         Optional<Station> findStation = stationDao.findByStationNameAndLineName(stationName, lineName);
 
         // then
         assertThat(findStation.get()).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(STATION_C.FIND_ENTITY);
+                .ignoringFields("id").isEqualTo(INITIAL_STATION_C.FIND_STATION);
     }
 
     @ParameterizedTest
@@ -113,7 +113,7 @@ class StationDaoTest {
     @DisplayName("역 ID에 해당하는 행을 삭제한다.")
     void deleteById() {
         // given
-        long stationId = STATION_A.ID;
+        long stationId = INITIAL_STATION_A.ID;
 
         // when
         stationDao.deleteById(stationId);

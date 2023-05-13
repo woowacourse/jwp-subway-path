@@ -1,6 +1,6 @@
 package subway.dao;
 
-import static fixtures.LineFixtures.Line2;
+import static fixtures.LineFixtures.INITIAL_Line2;
 import static fixtures.LineFixtures.Line7;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -44,31 +44,31 @@ class LineDaoTest {
 
         // then
         assertThat(insertedLine).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(Line7.FIND_ENTITY);
+                .ignoringFields("id").isEqualTo(insertEntity);
     }
 
     @Test
     @DisplayName("노선 ID에 해당하는 행을 조회한다.")
     void findByIdTest() {
         // given
-        long line2Id = Line2.ID;
+        long line2Id = INITIAL_Line2.ID;
 
         // when
         Optional<Line> findLine = lineDao.findById(line2Id);
 
         // then
         assertThat(findLine.get()).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(Line2.FIND_ENTITY);
+                .ignoringFields("id").isEqualTo(INITIAL_Line2.FIND_LINE);
     }
 
     @Test
     @DisplayName("노선 ID에 해당하는 행이 없으면 빈 Optional이 반환된다.")
     void findByIdEmptyOptional() {
         // given
-        long line7Id = Line7.ID;
+        long dummyId = -1L;
 
         // when
-        Optional<Line> findNullableLine = lineDao.findById(line7Id);
+        Optional<Line> findNullableLine = lineDao.findById(dummyId);
 
         // then
         assertThat(findNullableLine.isEmpty()).isTrue();
@@ -78,14 +78,14 @@ class LineDaoTest {
     @DisplayName("노선 이름에 해당하는 행을 조회한다.")
     void findByLineNameTest() {
         // given
-        String lineName = Line2.NAME;
+        String lineName = INITIAL_Line2.NAME;
 
         // when
         Optional<Line> findLine = lineDao.findByLineName(lineName);
 
         // then
         assertThat(findLine.get()).usingRecursiveComparison()
-                .ignoringFields("id").isEqualTo(Line2.FIND_ENTITY);
+                .ignoringFields("id").isEqualTo(INITIAL_Line2.FIND_LINE);
     }
 
     @Test
@@ -105,13 +105,13 @@ class LineDaoTest {
     @Test
     void findAll() {
         // when
+        Line insertedLine7 = lineDao.insert(Line7.INSERT_ENTITY);
         List<Line> lines = lineDao.findAll();
-        Line line2 = lines.get(0);
 
         // then
         assertAll(
-                () -> assertThat(lines.size()).isEqualTo(1),
-                () -> assertThat(line2).usingRecursiveComparison().ignoringFields("id").isEqualTo(Line2.FIND_ENTITY)
+                () -> assertThat(lines.size()).isEqualTo(2),
+                () -> assertThat(lines).usingRecursiveFieldByFieldElementComparator().contains(insertedLine7, INITIAL_Line2.FIND_LINE)
         );
     }
 
@@ -130,7 +130,7 @@ class LineDaoTest {
     @Test
     void deleteById() {
         // given
-        long line2Id = Line2.ID;
+        long line2Id = INITIAL_Line2.ID;
 
         // when
         lineDao.deleteById(line2Id);

@@ -1,19 +1,26 @@
 package subway.dao;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.jdbc.Sql;
-import subway.entity.SectionEntity;
+import static fixtures.LineFixtures.INITIAL_Line2;
+import static fixtures.SectionFixtures.*;
+import static fixtures.StationFixtures.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.Optional;
 
-import static fixtures.StationFixtures.*;
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
+import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 
 @JdbcTest
 @Sql({"/test-schema.sql", "/test-data.sql"})
@@ -23,76 +30,127 @@ class SectionDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     private SectionDao sectionDao;
+    private StationDao stationDao;
 
     @BeforeEach
     void setUp() {
         this.sectionDao = new SectionDao(jdbcTemplate);
+        this.stationDao = new StationDao(jdbcTemplate);
     }
 
     @Test
     @DisplayName("Section을 저장한다.")
     void insertTest() {
         // given
-        SectionEntity insertEntity = 강변_TO_건대_INSERT_SECTION_ENTITY;
+        Line line2 = INITIAL_Line2.FIND_LINE;
+        Station insertedStationB = stationDao.insert(STATION_B.createStationToInsert(line2));
+        Station stationC = INITIAL_STATION_C.FIND_STATION;
+
+        Section sectionToInsert = SECTION_B_TO_C.createSectionToInsert(insertedStationB, stationC, line2);
 
         // when
-        Long insertedSectionId = sectionDao.insert(insertEntity);
+        Section insertedSectionBtoC = sectionDao.insert(sectionToInsert);
 
         // then
-        assertThat(insertedSectionId).isEqualTo(2L);
+        assertThat(insertedSectionBtoC).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(sectionToInsert);
     }
 
     @Test
-    @DisplayName("상행역의 id와 노선 id에 해당하는 행을 조회한다.")
-    void findByUpStationIdAndLindIdTest() {
+    @DisplayName("상행역의 이름와 노선 이름에 해당하는 행을 조회한다.")
+    void findByUpStationNameAndLindNameTest() {
         // given
-        Long upStationId = DUMMY_잠실_INSERTED_ID;
-        Long lineId = DUMMY_LINE2_ID;
+        String upStationName = INITIAL_STATION_A.NAME;
+        String lineName = INITIAL_Line2.NAME;
 
         // when
-        Optional<SectionEntity> findSection = sectionDao.findByUpStationIdAndLindId(upStationId, lineId);
+        Optional<Section> findSection = sectionDao.findByUpStationNameAndLineName(upStationName, lineName);
 
         // then
-        assertThat(findSection.get()).isEqualTo(잠실_TO_건대_FIND_SECTION_ENTITY);
+        assertThat(findSection.get()).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(INITIAL_SECTION_A_TO_C.FIND_SECTION);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"B역:2호선", "A역:1호선"}, delimiter = ':')
+    @DisplayName("상행역의 이름와 노선 이름에 해당하는 행이 없으면 빈 Optional을 반환한다.")
+    void findByUpStationNameAndLindNameEmptyOptional(String upStationName, String lineName) {
+        // when
+        Optional<Section> findSection = sectionDao.findByUpStationNameAndLineName(upStationName, lineName);
+
+        // then
+        assertThat(findSection.isEmpty()).isTrue();
     }
 
     @Test
-    @DisplayName("상행역의 id와 노선 id에 해당하는 행을 조회한다.")
-    void findByDownStationIdAndLindIdTest() {
+    @DisplayName("하행역의 이름와 노선 이름에 해당하는 행을 조회한다.")
+    void findByDownStationNameAndLindNameTest() {
         // given
-        Long downStationId = DUMMY_건대_INSERTED_ID;
-        Long lineId = DUMMY_LINE2_ID;
+        String downStationName = INITIAL_STATION_C.NAME;
+        String lineName = INITIAL_Line2.NAME;
 
         // when
-        Optional<SectionEntity> findSection = sectionDao.findByDownStationIdAndLindId(downStationId, lineId);
+        Optional<Section> findSection = sectionDao.findByDownStationNameAndLineName(downStationName, lineName);
 
         // then
-        assertThat(findSection.get()).isEqualTo(잠실_TO_건대_FIND_SECTION_ENTITY);
+        assertThat(findSection.get()).usingRecursiveComparison()
+                .ignoringFields("id").isEqualTo(INITIAL_SECTION_A_TO_C.FIND_SECTION);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"A역:2호선", "B역:1호선"}, delimiter = ':')
+    @DisplayName("하행역의 이름와 노선 이름에 해당하는 행이 없으면 빈 Optional을 반환한다.")
+    void findByDownStationNameAndLindNameEmptyOptional(String downStationName, String lineName) {
+        // when
+        Optional<Section> findSection = sectionDao.findByDownStationNameAndLineName(downStationName, lineName);
+
+        // then
+        assertThat(findSection.isEmpty()).isTrue();
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"1:False", "2:True"}, delimiter = ':')
+    @DisplayName("구간 ID에 해당하는 행이 있으면 False, 없으면 True를 반환한다.")
+    void isNotExistById(String id, Boolean expected) {
+        // given
+        Long parsedId = Long.parseLong(id);
+
+        // when, then
+        assertThat(sectionDao.isNotExistById(parsedId)).isEqualTo(expected);
     }
 
     @Test
     @DisplayName("노선 id에 해당하는 모든 행을 조회한다.")
     void findSectionsByLineIdTest() {
         // given
-        Long lineId = DUMMY_LINE2_ID;
+        Line line2 = INITIAL_Line2.FIND_LINE;
+        Station stationToInsert = STATION_B.createStationToInsert(line2);
+
+        Station insertedStationB = stationDao.insert(stationToInsert);
+        Section insertedSectionAtoB =
+                sectionDao.insert(SECTION_A_TO_B.createSectionToInsert(INITIAL_STATION_A.FIND_STATION, insertedStationB, line2));
 
         // when
-        List<SectionEntity> findSections = sectionDao.findSectionsByLineId(lineId);
+        List<Section> findSections = sectionDao.findAllSectionByLineId(line2.getId());
 
         // then
-        assertThat(findSections).isEqualTo(List.of(잠실_TO_건대_FIND_SECTION_ENTITY));
+        assertAll(
+                () -> assertThat(findSections.size()).isEqualTo(2),
+                () -> assertThat(findSections).usingRecursiveFieldByFieldElementComparator()
+                        .contains(INITIAL_SECTION_A_TO_C.FIND_SECTION, insertedSectionAtoB)
+        );
     }
 
     @Test
-    @DisplayName("sectionId에 해당하는 행을 삭제한다.")
+    @DisplayName("구간 ID에 해당하는 행을 삭제한다.")
     void deleteBySectionIdTest() {
         // given
-        Long sectionIdToDelete = DUMMY_SECTION_잠실_TO_건대_ID;
+        Long sectionIdToDelete = INITIAL_SECTION_A_TO_C.ID;
 
         // when
-        sectionDao.deleteBySectionId(sectionIdToDelete);
+        sectionDao.deleteById(sectionIdToDelete);
 
         // then
-        assertThat(sectionDao.findSectionsByLineId(DUMMY_LINE2_ID)).hasSize(0);
+        assertThat(sectionDao.findAllSectionByLineId(INITIAL_Line2.ID)).hasSize(0);
     }
 }
