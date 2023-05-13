@@ -78,11 +78,6 @@ public class SectionDao {
                 section.getId());
     }
 
-    public boolean hasStation(Station station, Line line) {
-        String sql = "select exists(select 1 from SUBWAY_MAP where current_station_id = ? and line_id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, station.getId(), line.getId());
-    }
-
     public Optional<Section> findByPreviousStation(Station previousStation, Line line) {
         String sql = "select " +
                 "MAP.id as id, " +
@@ -146,35 +141,6 @@ public class SectionDao {
                     .distance(distance).build());
         }
         return Optional.empty();
-    }
-
-    public List<Section> findAll() {
-        String sql = "select " +
-                "MAP.id as id, " +
-                "PS.id as PS_ID, " +
-                "PS.name as PS_NAME, " +
-                "NS.id as NS_ID, " +
-                "NS.name as NS_NAME, " +
-                "L.id as L_ID, " +
-                "L.name as L_NAME, " +
-                "L.color as L_COLOR, " +
-                "MAP.distance as distance " +
-                "from subway_map MAP " +
-                "inner join STATION PS " +
-                "on MAP.current_station_id = PS.id " +
-                "left outer join STATION NS " +
-                "on MAP.next_station_id = NS.id " +
-                "inner join LINE L " +
-                "on MAP.line_id = L.id;";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            var distance = rs.getInt("DISTANCE") == 0 ? Distance.emptyDistance() : Distance.of(rs.getInt("DISTANCE"));
-            return Section.builder()
-                    .id(rs.getLong("ID"))
-                    .line(new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")))
-                    .startingStation(new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")))
-                    .before(new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME")))
-                    .distance(distance).build();
-        });
     }
 
     public void deleteStation(Station station, Line line) {
