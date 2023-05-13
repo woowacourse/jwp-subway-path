@@ -4,6 +4,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 
@@ -13,7 +15,7 @@ class LineTest {
 
     @BeforeEach
     void setting() {
-        line = new Line("name", "red");
+        line = new Line(null, "name", "red", new ArrayList<>());
     }
 
     @Test

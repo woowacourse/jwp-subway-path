@@ -1,7 +1,5 @@
 package subway.domain;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -9,19 +7,10 @@ import java.util.function.Predicate;
 
 public class Line {
 
-    private Long id;
-    private String name;
-    private String color;
-
-    private List<Section> sections;
-
-    public Line(String name, String color) {
-        this(null, name, color, new ArrayList<>());
-    }
-
-    public Line(Long id, String name, String color) {
-        this(id, name, color,new ArrayList<>());
-    }
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final List<Section> sections;
 
     public Line(Long id, String name, String color, List<Section> sections) {
         this.id = id;

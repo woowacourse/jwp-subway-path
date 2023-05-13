@@ -22,7 +22,8 @@ public class LineDao {
             new Line(
                     rs.getLong("id"),
                     rs.getString("name"),
-                    rs.getString("color")
+                    rs.getString("color"),
+                    null
             );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -39,7 +40,7 @@ public class LineDao {
         params.put("color", line.getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor(), null);
     }
 
     public List<Line> findAll() {
