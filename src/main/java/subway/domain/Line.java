@@ -152,8 +152,11 @@ public class Line {
         final Distance downStationDistance = downStation.findDistanceByStation(newTargetStation);
         final Distance distance = upStationDistance.add(downStationDistance);
 
+        upStation.deletePath(newTargetStation);
+        downStation.deletePath(newTargetStation);
         upStation.addPath(downStation, distance, Direction.DOWN);
         downStation.addPath(upStation, distance, Direction.UP);
+        stations.remove(newTargetStation);
     }
 
     private void validateStation(final Station targetStation) {
