@@ -11,6 +11,7 @@ import subway.domain.Station;
 import subway.domain.Section;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,12 +24,14 @@ public class SectionDao {
     public static final String ID = "id";
     private final SimpleJdbcInsert simpleJdbcInsert;
     private final JdbcTemplate jdbcTemplate;
+    private final LineDao lineDao;
 
-    public SectionDao(DataSource dataSource) {
+    public SectionDao(LineDao lineDao, DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
                 .withTableName("SUBWAY_MAP")
                 .usingGeneratedKeyColumns("ID");
         this.jdbcTemplate = new JdbcTemplate(dataSource);
+        this.lineDao = lineDao;
     }
 
     public int countStations(Line line) {
@@ -191,14 +194,18 @@ public class SectionDao {
     }
 
     public List<Station> findAllStationsOrderByUp(Line line) {
-        String sql = "SELECT s.name as name, s.id as id " +
-                "FROM SUBWAY_MAP t1 " +
-                "LEFT OUTER JOIN SUBWAY_MAP t2 ON t1.next_station_id = t2.current_station_id " +
-                "JOIN STATION s ON t1.current_station_id = s.id " +
-                "WHERE t1.line_id = ?" +
-                "ORDER BY t1.current_station_id DESC, t2.current_station_id DESC;";
-        return jdbcTemplate.query(sql,
-                (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")),
-                line.getId());
+        final var stations = new ArrayList<Station>();
+
+        var station = lineDao.findHeadStation(line);
+        while (true) {
+            final var previousSectionOptional = findByPreviousStation(station, line);
+            if (previousSectionOptional.isPresent()) {
+                final var previousSection = previousSectionOptional.get();
+                stations.add(previousSection.getPreviousStation());
+                station = previousSection.getNextStation();
+                continue;
+            }
+            return stations;
+        }
     }
 }

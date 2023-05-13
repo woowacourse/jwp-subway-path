@@ -125,7 +125,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
     private static void saveStations(String requestUri, String previousStationName, String nextStationName) {
         StationsSavingRequest stationsSavingRequest
-                = new StationsSavingRequest(previousStationName, nextStationName, 5, false);
+                = new StationsSavingRequest(previousStationName, nextStationName, 5, true);
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

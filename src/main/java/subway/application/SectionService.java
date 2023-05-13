@@ -126,10 +126,10 @@ public class SectionService {
 
         sectionDao.insert(Section.builder()
                 .line(line)
-                .nextStationEmpty(nextStation)
+                .nextStationEmpty(previousStation)
                 .build());
 
-        lineDao.updateHeadStation(line, previousStation);
+        lineDao.updateHeadStation(line, nextStation);
         return saveId;
     }
 

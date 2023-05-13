@@ -1,6 +1,6 @@
 DROP TABLE if exists SUBWAY_MAP;
-DROP TABLE if exists STATION;
 DROP TABLE if exists LINE;
+DROP TABLE if exists STATION;
 
 create table if not exists STATION
 (
