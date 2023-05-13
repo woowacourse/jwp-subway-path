@@ -1,11 +1,11 @@
-package subway.dto;
+package subway.ui.dto;
 
 import javax.validation.constraints.NotNull;
 
-public class AddStationRequest {
+public class StationAdditionRequest {
 
     @NotNull
-    private String stationToAddName;
+    private String stationName;
     @NotNull
     private String upstreamName;
     @NotNull
@@ -13,15 +13,15 @@ public class AddStationRequest {
     @NotNull
     private int distanceToUpstream;
 
-    public AddStationRequest(String stationToAddName, String upstreamName, String downstreamName, int distanceToUpstream) {
-        this.stationToAddName = stationToAddName;
+    public StationAdditionRequest(String stationName, String upstreamName, String downstreamName, int distanceToUpstream) {
+        this.stationName = stationName;
         this.upstreamName = upstreamName;
         this.downstreamName = downstreamName;
         this.distanceToUpstream = distanceToUpstream;
     }
 
-    public String getStationToAddName() {
-        return stationToAddName;
+    public String getStationName() {
+        return stationName;
     }
 
     public String getUpstreamName() {

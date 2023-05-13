@@ -1,13 +1,13 @@
-package subway.dto;
+package subway.ui.dto;
 
 import java.util.List;
 
-public class LineResponse {
+public class LineDto {
 
     private final List<String> stationNames;
     private final String lineName;
 
-    public LineResponse(List<String> stationNames, String lineName) {
+    public LineDto(List<String> stationNames, String lineName) {
         this.stationNames = stationNames;
         this.lineName = lineName;
     }

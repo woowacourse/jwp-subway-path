@@ -1,19 +1,13 @@
-package subway.dto;
+package subway.application.dto;
 
-import javax.validation.constraints.NotNull;
+public class LineCreationDto {
 
-public class AddLineRequest {
+    private final String lineName;
+    private final String upstreamName;
+    private final String downstreamName;
+    private final int distance;
 
-    @NotNull
-    private String lineName;
-    @NotNull
-    private String upstreamName;
-    @NotNull
-    private String downstreamName;
-    @NotNull
-    private int distance;
-
-    public AddLineRequest(String lineName, String upstreamName, String downstreamName, int distance) {
+    public LineCreationDto(String lineName, String upstreamName, String downstreamName, int distance) {
         this.lineName = lineName;
         this.upstreamName = upstreamName;
         this.downstreamName = downstreamName;
