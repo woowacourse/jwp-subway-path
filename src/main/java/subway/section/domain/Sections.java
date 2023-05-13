@@ -43,6 +43,8 @@ public class Sections {
             final String additionalStation,
             final long distance
     ) {
+        validateExistStation(additionalStation);
+        
         final Set<Section> additionalWithOneself =
                 getAdditionalSectionsWithOneself(base, direction, additionalStation, distance);
         
@@ -51,6 +53,17 @@ public class Sections {
         }
         
         sections.addAll(additionalWithOneself);
+    }
+    
+    private void validateExistStation(final String additionalStation) {
+        if (isExistStation(additionalStation)) {
+            throw new IllegalArgumentException(additionalStation + "은 이미 해당 노선에 존재하는 역입니다.");
+        }
+    }
+    
+    private boolean isExistStation(final String additionalStation) {
+        return sections.stream()
+                .anyMatch(section -> section.hasStation(additionalStation));
     }
     
     private Set<Section> getAdditionalSectionsWithOneself(
