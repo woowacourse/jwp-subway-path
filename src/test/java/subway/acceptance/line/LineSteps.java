@@ -4,6 +4,7 @@ import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.acceptance.common.JsonMapper.toJson;
+import static subway.exception.line.LineExceptionType.NO_PATH;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -13,6 +14,7 @@ import org.springframework.core.ParameterizedTypeReference;
 import subway.application.dto.LineQueryResponse;
 import subway.application.dto.LineQueryResponse.SectionQueryResponse;
 import subway.application.dto.ShortestRouteResponse;
+import subway.exception.ExceptionResponse;
 import subway.presentation.request.LineCreateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -151,10 +153,8 @@ public class LineSteps {
         assertThat(response.getTotalFee()).isEqualTo(fee);
     }
 
-    public static void 경로가_없다(final ShortestRouteResponse response) {
-        최단경로의_총_길이는(response, 0);
-        최단경로의_환승역은(response);
-        최단경로의_각_구간은(response);
-        최단경로의_요금은(response, 0);
+    public static void 경로가_없다(final ExceptionResponse response) {
+        assertThat(response.getCode()).isEqualTo(String.valueOf(NO_PATH.errorCode()));
+        assertThat(response.getMessage()).isEqualTo(NO_PATH.errorMessage());
     }
 }

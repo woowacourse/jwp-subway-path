@@ -2,7 +2,6 @@ package subway.application;
 
 import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -18,6 +17,7 @@ import static subway.domain.fixture.StationFixture.역6;
 import static subway.domain.fixture.StationFixture.역7;
 import static subway.domain.fixture.StationFixture.역8;
 import static subway.domain.fixture.StationFixture.잠실;
+import static subway.exception.line.LineExceptionType.NO_PATH;
 import static subway.exception.line.LineExceptionType.START_AND_END_STATIONS_IS_SAME;
 import static subway.exception.station.StationExceptionType.NOT_FOUND_STATION;
 
@@ -195,21 +195,18 @@ class LineQueryServiceTest {
         }
 
         @Test
-        void 경로가_없는_경우_빈_값을_반환한다() {
+        void 경로가_없는_경우_예외이다() {
             // given
             given(stationRepository.findByName(역5.name())).willReturn(Optional.of(역5));
             given(stationRepository.findByName(잠실.name())).willReturn(Optional.of(잠실));
 
             // when
-            final ShortestRouteResponse shortestRoute = lineQueryService.findShortestRoute(역5.name(), 잠실.name());
+            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
+                    lineQueryService.findShortestRoute(역5.name(), 잠실.name())
+            ).exceptionType();
 
             // then
-            assertAll(
-                    () -> assertThat(shortestRoute.getTransferStations()).isEmpty(),
-                    () -> assertThat(shortestRoute.getTransferCount()).isEqualTo(0),
-                    () -> assertThat(shortestRoute.getSectionInfos()).isEmpty(),
-                    () -> assertThat(shortestRoute.getTotalDistance()).isEqualTo(0)
-            );
+            assertThat(exceptionType).isEqualTo(NO_PATH);
         }
 
         @Test

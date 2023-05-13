@@ -60,7 +60,11 @@ public enum LineExceptionType implements BaseExceptionType {
             HttpStatus.BAD_REQUEST,
             "경로를 구할 때에는 출발역과 종착역을 다르게 설정해주세요"
     ),
-
+    NO_PATH(
+            211,
+            HttpStatus.BAD_REQUEST,
+            "출발역에서 종착역으로 이어지는 경로가 없습니다"
+    ),
     ABNORMAL_EXCEPTION(
             299,
             HttpStatus.INTERNAL_SERVER_ERROR,

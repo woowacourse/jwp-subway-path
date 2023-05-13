@@ -1,6 +1,7 @@
 package subway.infrastructure.shortestpath;
 
 import static subway.exception.line.LineExceptionType.NOT_EXIST_STATION_IN_LINES;
+import static subway.exception.line.LineExceptionType.NO_PATH;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class JgraphtShortestRoute implements ShortestRouteService {
         final LinesGraphAdapter graph = LinesGraphAdapter.adapt(lines);
         final GraphPath<Station, SectionAdapter> path = validPath(graph, start, end);
         if (path == null) {
-            return Collections.emptyList();
+            throw new LineException(NO_PATH);
         }
         return path.getEdgeList();
     }

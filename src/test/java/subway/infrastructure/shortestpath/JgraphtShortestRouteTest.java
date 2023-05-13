@@ -15,6 +15,7 @@ import static subway.domain.fixture.StationFixture.역8;
 import static subway.domain.fixture.StationFixture.잠실;
 import static subway.domain.fixture.StationFixture.홍대입구;
 import static subway.exception.line.LineExceptionType.NOT_EXIST_STATION_IN_LINES;
+import static subway.exception.line.LineExceptionType.NO_PATH;
 import static subway.exception.line.LineExceptionType.START_AND_END_STATIONS_IS_SAME;
 
 import java.util.List;
@@ -78,12 +79,12 @@ class JgraphtShortestRouteTest {
     }
 
     @Test
-    void 역은_모두_존재하나_경로가_없는경우_빈_list_반환() {
-        // given
-        final Lines shortestLines = shortestRouteService.shortestRoute(lines, 역5, 잠실);
-
+    void 역은_모두_존재하나_경로가_없는경우_예외() {
         // when & then
-        assertThat(shortestLines.isEmpty()).isTrue();
+        final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
+                shortestRouteService.shortestRoute(lines, 역5, 잠실)
+        ).exceptionType();
+        assertThat(exceptionType).isEqualTo(NO_PATH);
     }
 
     @Test

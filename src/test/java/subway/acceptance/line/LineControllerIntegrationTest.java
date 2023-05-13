@@ -40,6 +40,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
 import subway.application.dto.LineQueryResponse;
 import subway.application.dto.ShortestRouteResponse;
+import subway.exception.ExceptionResponse;
 import subway.presentation.request.LineCreateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -162,7 +163,7 @@ public class LineControllerIntegrationTest {
             final ExtractableResponse<Response> 장암역에서_잠실역_최단경로_응답 = 최단경로_조회_요청("장암", "잠실");
 
             // then
-            final ShortestRouteResponse 장암역에서_잠실역_최단경로_정보 = 장암역에서_잠실역_최단경로_응답.as(ShortestRouteResponse.class);
+            final ExceptionResponse 장암역에서_잠실역_최단경로_정보 = 장암역에서_잠실역_최단경로_응답.as(ExceptionResponse.class);
             경로가_없다(장암역에서_잠실역_최단경로_정보);
         }
     }
