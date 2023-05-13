@@ -1,0 +1,46 @@
+package subway.dto;
+
+import subway.domain.Section;
+
+public class SectionResponse {
+    
+    long id;
+    long lineId;
+    long upStationId;
+    long downStationId;
+    int distance;
+    
+    public SectionResponse(final long id, final long lineId, final long upStationId, final long downStationId,
+            final int distance) {
+        this.id = id;
+        this.lineId = lineId;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+    }
+    
+    public static SectionResponse of(final Section section) {
+        return new SectionResponse(section.getId(), section.getLineId(), section.getUpStationId(),
+                section.getDownStationId(), section.getDistance());
+    }
+    
+    public long getId() {
+        return this.id;
+    }
+    
+    public long getLineId() {
+        return this.lineId;
+    }
+    
+    public long getUpStationId() {
+        return this.upStationId;
+    }
+    
+    public long getDownStationId() {
+        return this.downStationId;
+    }
+    
+    public int getDistance() {
+        return this.distance;
+    }
+}

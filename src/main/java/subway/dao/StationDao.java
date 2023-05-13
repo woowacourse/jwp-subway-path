@@ -1,5 +1,7 @@
 package subway.dao;
 
+import java.util.List;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,51 +10,55 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 
-import javax.sql.DataSource;
-import java.util.List;
-
 @Repository
 public class StationDao {
+    
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong("id"),
                     rs.getString("name")
             );
-
-
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    
+    
+    public StationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
-
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
+    
+    public Station insert(final Station station) {
+        final SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+        final Long id = this.insertAction.executeAndReturnKey(params).longValue();
         return new Station(id, station.getName());
     }
-
+    
     public List<Station> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+        final String sql = "select * from STATION";
+        return this.jdbcTemplate.query(sql, this.rowMapper);
     }
-
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    
+    public Station findById(final Long id) {
+        final String sql = "select * from STATION where id = ?";
+        return this.jdbcTemplate.queryForObject(sql, this.rowMapper, id);
     }
-
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+    
+    public void update(final Station newStation) {
+        final String sql = "update STATION set name = ? where id = ?";
+        this.jdbcTemplate.update(sql, newStation.getName(), newStation.getId());
     }
-
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+    
+    public void deleteById(final Long id) {
+        final String sql = "delete from STATION where id = ?";
+        this.jdbcTemplate.update(sql, id);
+    }
+    
+    public boolean hasStations(final long baseStationId, final long newStationId) {
+        final String sql = "select count(*) from STATION where id = ? or id = ?";
+        final Integer count = this.jdbcTemplate.queryForObject(sql, Integer.class, baseStationId, newStationId);
+        return count == 2;
     }
 }
