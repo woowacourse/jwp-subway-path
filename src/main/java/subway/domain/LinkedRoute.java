@@ -11,7 +11,7 @@ public class LinkedRoute {
     private final List<Line> lines;
 
     private LinkedRoute(final List<Line> lines) {
-        this.lines = new ArrayList<>(lines);
+        this.lines = lines;
     }
 
     public static LinkedRoute of(final Station start, final List<Line> lines) {
@@ -19,7 +19,7 @@ public class LinkedRoute {
             return new LinkedRoute(new ArrayList<>());
         }
         validateStartStation(start, lines.get(0));
-        return new LinkedRoute(linkLines(start, lines));
+        return new LinkedRoute(linkLines(start, new ArrayList<>(lines)));
     }
 
     private static void validateStartStation(final Station start, final Line firstLine) {
