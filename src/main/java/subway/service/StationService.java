@@ -19,7 +19,7 @@ public class StationService {
     }
 
     public Long saveStation(final StationRequest stationRequest) {
-        return stationRepository.insertStation(new Station(stationRequest.getName()));
+        return stationRepository.save(new Station(stationRequest.getName()));
     }
 
     public StationResponse findStationEntityById(final Long id) {
@@ -39,6 +39,6 @@ public class StationService {
     }
 
     public void deleteStationById(final Long id) {
-        stationRepository.deleteById(id);
+        stationRepository.deleteByStationId(id);
     }
 }

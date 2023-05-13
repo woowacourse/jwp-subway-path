@@ -21,14 +21,14 @@ public class SectionService {
     @Transactional
     public void insertSection(final SectionCreateRequest request) {
         final Long requestLineNumber = request.getLineNumber();
-        final Sections sections = sectionRepository.findSectionsByLineNumber(requestLineNumber);
+        final Sections sections = sectionRepository.findByLineNumber(requestLineNumber);
 
         final Station requestUpStation = new Station(request.getUpStation());
         final Station requestDownStation = new Station(request.getDownStation());
         final Section requestSection = new Section(requestUpStation, requestDownStation, request.getDistance());
         sections.addSection(requestSection);
 
-        sectionRepository.updateSectionsByLineNumber(sections, requestLineNumber);
+        sectionRepository.updateByLineNumber(sections, requestLineNumber);
     }
 
     @Transactional
@@ -36,9 +36,9 @@ public class SectionService {
         final Long requestLineNumber = request.getLineNumber();
         final Station requestStation = new Station(request.getStation());
 
-        final Sections sections = sectionRepository.findSectionsByLineNumber(requestLineNumber);
+        final Sections sections = sectionRepository.findByLineNumber(requestLineNumber);
         sections.deleteSectionByStation(requestStation);
 
-        sectionRepository.updateSectionsByLineNumber(sections, requestLineNumber);
+        sectionRepository.updateByLineNumber(sections, requestLineNumber);
     }
 }

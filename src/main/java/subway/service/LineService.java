@@ -19,7 +19,7 @@ public class LineService {
 
     public Long saveLine(final LineRequest request) {
         final Line line = new Line(request.getLineNumber(), request.getName(), request.getColor());
-        return lineRepository.insertLine(line);
+        return lineRepository.save(line);
     }
 
     public List<LineResponse> findAll() {
@@ -32,6 +32,6 @@ public class LineService {
     }
 
     public void deleteLineById(final Long id) {
-        lineRepository.deleteLineById(id);
+        lineRepository.deleteByLineId(id);
     }
 }

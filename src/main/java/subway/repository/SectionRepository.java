@@ -26,18 +26,18 @@ public class SectionRepository {
         this.lineDao = lineDao;
     }
 
-    public Sections findSectionsByLineNumber(final Long lineNumber) {
+    public Sections findByLineNumber(final Long lineNumber) {
         final LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
         return getSections(lineEntity);
     }
 
     private Sections getSections(final LineEntity lineEntity) {
-        final List<SectionEntity> sectionsByLineId = sectionDao.findSectionsByLineId(lineEntity.getLineId());
+        final List<SectionEntity> sectionsByLineId = sectionDao.findAllByLineId(lineEntity.getLineId());
 
         final List<Section> sections = sectionsByLineId.stream()
                 .map(sectionEntity -> {
-                    final StationEntity upStationEntity = stationDao.findById(sectionEntity.getUpStationId());
-                    final StationEntity downStationEntity = stationDao.findById(sectionEntity.getDownStationId());
+                    final StationEntity upStationEntity = stationDao.findByStationId(sectionEntity.getUpStationId());
+                    final StationEntity downStationEntity = stationDao.findByStationId(sectionEntity.getDownStationId());
                     final Station upStation = new Station(upStationEntity.getName());
                     final Station downStation = new Station(downStationEntity.getName());
 
@@ -48,7 +48,7 @@ public class SectionRepository {
         return new Sections(sections);
     }
 
-    public void updateSectionsByLineNumber(final Sections sections, final Long lineNumber) {
+    public void updateByLineNumber(final Sections sections, final Long lineNumber) {
         final LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
         final List<SectionEntity> sectionEntities = sections.getSections().stream()
                 .map(section -> {
@@ -62,6 +62,6 @@ public class SectionRepository {
                 .collect(Collectors.toList());
 
         sectionDao.deleteAllByLineId(lineEntity.getLineId());
-        sectionDao.insertBatchSections(sectionEntities);
+        sectionDao.batchSave(sectionEntities);
     }
 }

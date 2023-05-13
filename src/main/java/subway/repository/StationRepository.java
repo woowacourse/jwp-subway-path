@@ -16,23 +16,18 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public Long insertStation(final Station station) {
-        return stationDao.insert(station);
+    public Long save(final Station station) {
+        return stationDao.save(new StationEntity(station.getName()));
     }
 
     public Station findByStationId(final Long stationId) {
-        StationEntity stationEntity = stationDao.findById(stationId);
+        StationEntity stationEntity = stationDao.findByStationId(stationId);
         return new Station(stationEntity.getName());
     }
 
     public Long findStationIdByStationName(final String stationName) {
         StationEntity stationEntity = stationDao.findByName(stationName);
         return stationEntity.getStationId();
-    }
-
-    public Station findByStationName(final String stationName) {
-        StationEntity stationEntity = stationDao.findByName(stationName);
-        return new Station(stationEntity.getName());
     }
 
     public List<Station> findAll() {
@@ -43,7 +38,7 @@ public class StationRepository {
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(final Long stationId) {
-        stationDao.deleteById(stationId);
+    public void deleteByStationId(final Long stationId) {
+        stationDao.deleteByStationId(stationId);
     }
 }

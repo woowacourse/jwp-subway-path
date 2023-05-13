@@ -24,11 +24,6 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public boolean isExistLineByName(final String lineName) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM line WHERE name = ?)";
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, lineName));
-    }
-
     public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
@@ -36,7 +31,7 @@ public class LineDao {
                 .usingGeneratedKeyColumns("line_id");
     }
 
-    public Long insert(final LineEntity lineEntity) {
+    public Long save(final LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getName());
         params.put("line_number", lineEntity.getLineNumber());
@@ -45,22 +40,17 @@ public class LineDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
+    public LineEntity findByLineNumber(final Long lineNumber) {
+        String sql = "SELECT line_id, line_number, name, color FROM line WHERE line_number = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, lineNumber);
+    }
+
     public List<LineEntity> findAll() {
         String sql = "SELECT line_id, line_number, name, color FROM line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public LineEntity findByName(final String name) {
-        String sql = "SELECT line_id, line_number, name, color FROM line WHERE name = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, name);
-    }
-
-    public void deleteById(final Long id) {
-        jdbcTemplate.update("DELETE FROM line WHERE line_id = ?", id);
-    }
-
-    public LineEntity findByLineNumber(final Long lineNumber) {
-        String sql = "SELECT line_id, line_number, name, color FROM line WHERE line_number = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, lineNumber);
+    public void deleteByLineId(final Long lineId) {
+        jdbcTemplate.update("DELETE FROM line WHERE line_id = ?", lineId);
     }
 }

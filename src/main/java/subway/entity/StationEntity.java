@@ -12,6 +12,10 @@ public class StationEntity {
         this.name = name;
     }
 
+    public StationEntity(final String name) {
+        this(null, name);
+    }
+
     public Long getStationId() {
         return stationId;
     }

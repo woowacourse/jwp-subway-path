@@ -25,7 +25,7 @@ public class SubwayMapService {
 
     @Transactional(readOnly = true)
     public LineMapResponse showLineMap(final Long lineNumber) {
-        Sections sections = sectionRepository.findSectionsByLineNumber(lineNumber);
+        Sections sections = sectionRepository.findByLineNumber(lineNumber);
         LineMap lineMap = new LineMap(sections);
 
         List<Station> orderedStations = lineMap.getOrderedStations(sections);

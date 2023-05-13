@@ -1,14 +1,13 @@
 package subway.dao;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
 import subway.entity.StationEntity;
 
 @Repository
@@ -30,13 +29,9 @@ public class StationDao {
                 .usingGeneratedKeyColumns("station_id");
     }
 
-    public boolean isExistStationByName(final String stationName) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE name = ?)";
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationName));
-    }
-
-    public Long insert(final Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+    public Long save(final StationEntity stationEntity) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", stationEntity.getName());
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
@@ -45,9 +40,9 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findById(final Long id) {
+    public StationEntity findByStationId(final Long stationId) {
         String sql = "SELECT station_id, name FROM station WHERE station_id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.queryForObject(sql, rowMapper, stationId);
     }
 
     public StationEntity findByName(final String name) {
@@ -55,8 +50,8 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    public void deleteById(final Long id) {
+    public void deleteByStationId(final Long stationId) {
         String sql = "DELETE FROM station WHERE station_id = ?";
-        jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(sql, stationId);
     }
 }

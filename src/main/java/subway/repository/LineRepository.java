@@ -16,9 +16,9 @@ public class LineRepository {
         this.lineDao = lineDao;
     }
 
-    public Long insertLine(final Line line) {
+    public Long save(final Line line) {
         final LineEntity lineEntity = lineDao.findByLineNumber(line.getLineNumber());
-        return lineDao.insert(lineEntity);
+        return lineDao.save(lineEntity);
     }
 
     public Long findLineIdByLine(final Line line) {
@@ -32,7 +32,7 @@ public class LineRepository {
                 .collect(Collectors.toList());
     }
 
-    public void deleteLineById(final Long id) {
-        lineDao.deleteById(id);
+    public void deleteByLineId(final Long lineId) {
+        lineDao.deleteByLineId(lineId);
     }
 }
