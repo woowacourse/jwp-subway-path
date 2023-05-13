@@ -12,7 +12,6 @@ public class GlobalExceptionHandler {
             DuplicateStationInLineException.class,
             InvalidDistanceException.class,
             NameLengthException.class,
-            SectionMergeException.class,
             SectionNotFoundException.class,
             StationNotFoundException.class,
             LineNotFoundException.class,
