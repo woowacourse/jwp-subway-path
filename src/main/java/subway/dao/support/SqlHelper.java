@@ -17,6 +17,11 @@ public class SqlHelper {
         return this;
     }
 
+    public SqlHelper delete() {
+        sql.append("DELETE");
+        return this;
+    }
+
     public SqlHelper columns(final String columns) {
         sql.append(" ").append(columns);
         return this;
@@ -39,6 +44,16 @@ public class SqlHelper {
 
     public SqlHelper condition(final String condition) {
         sql.append(" ").append(condition);
+        return this;
+    }
+
+    public SqlHelper join(final String table) {
+        sql.append(" JOIN ").append(table);
+        return this;
+    }
+
+    public SqlHelper on(final String condition) {
+        sql.append(" ON ").append(condition);
         return this;
     }
 
