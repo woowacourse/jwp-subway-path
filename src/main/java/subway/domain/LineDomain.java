@@ -10,18 +10,17 @@ public class LineDomain {
     private final Long id;
     private final String name;
     private final String color;
-    private final List<StationDomain> stations;
+    private final SectionsDomain sections;
 
-    public LineDomain(final String name, final String color, final List<StationDomain> stations) {
-        this(null, name, color, stations);
+    public LineDomain(final String name, final String color, final SectionsDomain sections) {
+        this(null, name, color, sections);
     }
 
-    public LineDomain(final Long id, final String name, final String color, final List<StationDomain> stations) {
-        validate(name, color, stations);
+    public LineDomain(final Long id, final String name, final String color, final SectionsDomain sections) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.stations = stations;
+        this.sections = sections;
     }
 
     private void validate(final String name, final String color, final List<StationDomain> stations) {
@@ -35,8 +34,16 @@ public class LineDomain {
             throw new IllegalArgumentException("노선 색상은 null일 수 없습니다.");
         }
         if (Objects.isNull(stations)) {
-            throw new IllegalArgumentException("노선이 가지는 지하철은 null일 수 없습니다.");
+            throw new IllegalArgumentException("노선의 구간 목록은 null일 수 없습니다.");
         }
+    }
+
+    public void addSection(final SectionDomain section) {
+        sections.addSection(section);
+    }
+
+    public List<StationDomain> getAllStations() {
+        return sections.collectAllStations();
     }
 
     public Long getId() {
@@ -51,8 +58,8 @@ public class LineDomain {
         return color;
     }
 
-    public List<StationDomain> getStations() {
-        return stations;
+    public SectionsDomain getSections() {
+        return sections;
     }
 
     @Override
@@ -60,21 +67,11 @@ public class LineDomain {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final LineDomain that = (LineDomain) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(color, that.color) && Objects.equals(stations, that.stations);
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(color, that.color) && Objects.equals(sections, that.sections);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color, stations);
-    }
-
-    @Override
-    public String toString() {
-        return "LineDomain{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", color='" + color + '\'' +
-                ", stations=" + stations +
-                '}';
+        return Objects.hash(id, name, color, sections);
     }
 }

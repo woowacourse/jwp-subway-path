@@ -3,15 +3,17 @@ package subway.repository;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
+import subway.dao.entity.StationEntity;
 import subway.dao.v2.LineDaoV2;
 import subway.dao.v2.SectionDaoV2;
 import subway.dao.v2.StationDaoV2;
 import subway.domain.LineDomain;
-import subway.domain.StationDomain;
+import subway.domain.SectionDomain;
+import subway.domain.SectionsDomain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Repository
 public class LineRepository {
@@ -31,39 +33,29 @@ public class LineRepository {
     }
 
     public LineDomain findByLineId(final Long lineId) {
-        final LineEntity lineEntity = lineDao.findByLineId(lineId)
+        final LineEntity lineEntity = getLineEntityOrThrowException(lineId);
+        final SectionsDomain sections = collectSectionsByLineId(lineId);
+
+        return lineEntity.toDomain(sections);
+    }
+
+    private LineEntity getLineEntityOrThrowException(final Long lineId) {
+        return lineDao.findByLineId(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 노선 식별자값은 존재하지 않는 노선의 식별자값입니다."));
-
-        final List<StationDomain> stations = getLineStationsByLineId(lineId);
-
-        return new LineDomain(
-                lineEntity.getId(),
-                lineEntity.getName(),
-                lineEntity.getColor(),
-                stations
-        );
     }
 
-    private List<StationDomain> getLineStationsByLineId(final Long lineId) {
+    private SectionsDomain collectSectionsByLineId(final Long lineId) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
-        final List<Long> distinctStationIds = collectDistinctStationIds(sectionEntities);
+        final List<StationEntity> upStationEntities = stationDao.findInStationIds(collectUpStationIds(sectionEntities));
+        final List<StationEntity> downStationEntities = stationDao.findInStationIds(collectDownStationIds(sectionEntities));
 
-        return stationDao.findInStationIds(distinctStationIds)
-                .stream()
-                .map(stationEntity -> new StationDomain(
-                        stationEntity.getId(),
-                        stationEntity.getName()
+        final List<SectionDomain> sections = IntStream.range(0, sectionEntities.size())
+                .mapToObj(index -> sectionEntities.get(index).toDomain(
+                        upStationEntities.get(index).toDomain(),
+                        downStationEntities.get(index).toDomain()
                 )).collect(Collectors.toList());
-    }
 
-    private List<Long> collectDistinctStationIds(final List<SectionEntity> sectionEntities) {
-        final List<Long> stationIds = new ArrayList<>();
-        stationIds.addAll(collectUpStationIds(sectionEntities));
-        stationIds.addAll(collectDownStationIds(sectionEntities));
-
-        return stationIds.stream()
-                .distinct()
-                .collect(Collectors.toList());
+        return new SectionsDomain(sections);
     }
 
     private List<Long> collectUpStationIds(final List<SectionEntity> sectionEntities) {
@@ -85,7 +77,7 @@ public class LineRepository {
                         lineEntity.getId(),
                         lineEntity.getName(),
                         lineEntity.getColor(),
-                        getLineStationsByLineId(lineEntity.getId())
+                        collectSectionsByLineId(lineEntity.getId())
                 )).collect(Collectors.toList());
     }
 }

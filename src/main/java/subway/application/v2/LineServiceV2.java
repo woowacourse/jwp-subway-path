@@ -28,13 +28,16 @@ public class LineServiceV2 {
 
     public LineResponse findByLineId(final Long lineId) {
         final LineDomain line = lineRepository.findByLineId(lineId);
+        final List<StationResponse> stationResponses = collectStationResponses(line);
 
-        final List<StationResponse> stationResponses = line.getStations()
+        return LineResponse.of(line, stationResponses);
+    }
+
+    private List<StationResponse> collectStationResponses(final LineDomain line) {
+        return line.getAllStations()
                 .stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-
-        return LineResponse.of(line, stationResponses);
     }
 
     public List<LineResponse> findAll() {
@@ -46,12 +49,5 @@ public class LineServiceV2 {
                         lineDomain.getColor(),
                         collectStationResponses(lineDomain)
                 )).collect(Collectors.toList());
-    }
-
-    private List<StationResponse> collectStationResponses(final LineDomain lineDomain) {
-        return lineDomain.getStations()
-                .stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
-                .collect(Collectors.toList());
     }
 }

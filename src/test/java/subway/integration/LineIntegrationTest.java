@@ -30,7 +30,7 @@ class LineIntegrationTest extends ControllerTestConfig {
                 .response().toBody(Long.class);
 
         SectionAssured
-                .request().구간을_등록한다(구간_요청(잠실역_식별자값, 잠실나루역_식별자값, 노선_식별자값, 10))
+                .request().구간을_등록한다(구간_요청("잠실", "잠실나루", 노선_식별자값, 10))
                 .response().toBody(Long.class);
 
         final StationResponse 잠실역 = StationAssured

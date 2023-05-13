@@ -20,14 +20,14 @@ public class SectionRepository {
         this.stationDao = stationDao;
     }
 
-    public Long save(
-            final Long upStationId,
-            final Long downStationId,
-            final Long lineId,
-            final Boolean isStart,
-            final Integer distance
-    ) {
-        return sectionDao.insert(upStationId, downStationId, lineId, isStart, distance);
+    public Long save(final SectionEntity sectionEntity) {
+        return sectionDao.insert(
+                sectionEntity.getUpStationId(),
+                sectionEntity.getDownStationId(),
+                sectionEntity.getLineId(),
+                sectionEntity.getStart(),
+                sectionEntity.getDistance()
+        );
     }
 
     public SectionDomain findBySectionId(final Long sectionId) {
