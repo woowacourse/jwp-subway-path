@@ -9,7 +9,7 @@ insert into line (id, name, color) values(1, '2호선', 'green');
 insert into line (id, name, color) values(2, '8호선', 'red');
 insert into line (id, name, color) values(3, '1호선', 'blue');
 
-insert into line_station (id, up_bound_id, down_bound_id, line_id, distance) values (1, 1, 2, 1, 10);
-insert into line_station (id, up_bound_id, down_bound_id, line_id, distance) values (2, 2, 3, 1, 10);
+insert into section (id, up_bound_station_id, down_bound_station_id, line_id, distance) values (1, 1, 2, 1, 10);
+insert into section (id, up_bound_station_id, down_bound_station_id, line_id, distance) values (2, 2, 3, 1, 10);
 
-insert into line_station (id, up_bound_id, down_bound_id, line_id, distance) values (3, 5, 1, 2, 10);
+insert into section (id, up_bound_station_id, down_bound_station_id, line_id, distance) values (3, 5, 1, 2, 10);
