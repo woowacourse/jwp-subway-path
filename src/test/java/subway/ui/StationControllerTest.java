@@ -9,17 +9,11 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Collections;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
+import subway.common.IntegrationTest;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.dto.StationDeleteRequest;
@@ -27,22 +21,11 @@ import subway.dto.StationInitialSaveRequest;
 import subway.dto.StationSaveRequest;
 import subway.repository.LineRepository;
 
-@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-@Sql(value = "/deleteAll.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
-public class StationControllerTest {
-
-    @LocalServerPort
-    int port;
+public class StationControllerTest extends IntegrationTest {
 
     @Autowired
     private LineRepository lineRepository;
-
-    @BeforeEach
-    public void setUp() {
-        RestAssured.port = port;
-    }
 
     @Test
     void 역을_추가한다() {
