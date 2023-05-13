@@ -1,23 +1,20 @@
 package subway.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 public class Station {
 
-    private Long id;
-    private String name;
-    private List<Section> sections;
+    private final Long id;
+    private final String name;
 
-    public Station(final String name, final List<Section> sections) {
-        this(null, name, sections);
+    public Station(final String name) {
+        this(null, name);
     }
 
-    public Station(final Long id, final String name, final List<Section> sections) {
+    public Station(final Long id, final String name) {
         validate(name);
         this.id = id;
         this.name = name;
-        this.sections = sections;
     }
 
     private void validate(final String name) {
@@ -37,10 +34,6 @@ public class Station {
         return name;
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -50,12 +43,12 @@ public class Station {
             return false;
         }
         final Station station = (Station) o;
-        return Objects.equals(id, station.id) && Objects.equals(name, station.name) && Objects.equals(sections, station.sections);
+        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, sections);
+        return Objects.hash(id, name);
     }
 
     @Override
@@ -63,7 +56,6 @@ public class Station {
         return "Station{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", sections=" + sections +
                 '}';
     }
 }

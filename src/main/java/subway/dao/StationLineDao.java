@@ -28,8 +28,7 @@ public class StationLineDao {
     private final RowMapper<StationLine> joinLineRowMapper = (rs, rowNum) -> new StationLine(
             new Station(
                     rs.getLong("station_id"),
-                    rs.getString("station_name"),
-                    Collections.emptyList()
+                    rs.getString("station_name")
             ),
             new Line(
                     rs.getLong("line_id"),

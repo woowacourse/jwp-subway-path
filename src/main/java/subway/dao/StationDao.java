@@ -28,8 +28,7 @@ public class StationDao {
     private RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong("id"),
-                    rs.getString("name"),
-                    Collections.emptyList()
+                    rs.getString("name")
             );
 
 
