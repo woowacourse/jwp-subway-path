@@ -30,7 +30,7 @@ public class StationService {
         return StationMapper.toResponse(station);
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponse> findAll() {
         List<Station> stations = stationRepository.findAll();
 
         return stations.stream()

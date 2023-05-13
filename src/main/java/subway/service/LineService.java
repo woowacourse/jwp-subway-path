@@ -19,21 +19,21 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line line = LineMapper.toLine(request);
-        Line saved = lineRepository.insert(line);
-        return LineMapper.toResponse(saved);
+    public LineResponse findLineById(Long id) {
+        Line line = lineRepository.findById(id);
+        return LineMapper.toResponse(line);
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<LineResponse> findAllLine() {
         return lineRepository.findAll().stream()
                 .map(LineMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line line = lineRepository.findById(id);
-        return LineMapper.toResponse(line);
+    public LineResponse saveLine(LineRequest request) {
+        Line line = LineMapper.toLine(request);
+        Line saved = lineRepository.insert(line);
+        return LineMapper.toResponse(saved);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

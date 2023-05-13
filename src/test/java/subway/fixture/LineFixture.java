@@ -1,9 +1,10 @@
 package subway.fixture;
 
-import java.util.ArrayList;
 import subway.domain.Line;
 import subway.dto.request.LineRequest;
 import subway.entity.LineEntity;
+
+import java.util.ArrayList;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineFixture {
