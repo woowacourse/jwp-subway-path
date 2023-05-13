@@ -31,11 +31,6 @@ public class InterStation {
         }
     }
 
-    public boolean containsAll(final Station frontStation, final Station backStation) {
-        return firstStation.equals(frontStation) && secondStation.equals(backStation)
-                || firstStation.equals(backStation) && secondStation.equals(firstStation);
-    }
-
     public boolean contains(final Station station) {
         if (station == null) {
             return false;
