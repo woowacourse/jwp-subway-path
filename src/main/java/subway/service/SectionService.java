@@ -1,7 +1,6 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -12,7 +11,6 @@ import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
 @Service
-@Transactional
 public class SectionService {
 
     private final LineRepository lineRepository;
