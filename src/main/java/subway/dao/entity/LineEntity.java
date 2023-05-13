@@ -1,6 +1,9 @@
 package subway.dao.entity;
 
 import subway.domain.Line;
+import subway.domain.Station;
+
+import java.util.Optional;
 
 public class LineEntity {
     private final Long id;
@@ -16,6 +19,13 @@ public class LineEntity {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.upEndpointId = upEndpointId;
+    }
+
+    public LineEntity(Line line, Long upEndpointId) {
+        this.id = line.getId();
+        this.name = line.getName();
+        this.color = line.getColor();
         this.upEndpointId = upEndpointId;
     }
 

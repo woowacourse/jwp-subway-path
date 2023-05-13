@@ -6,7 +6,7 @@ public class Section {
     private final int distance;
     private final Station departure;
     private final Station arrival;
-    private final Line line;
+    private Line line;
 
     public Section(int distance, Station departure, Station arrival, Line line) {
         this.distance = distance;
@@ -45,6 +45,10 @@ public class Section {
 
     public Line getLine() {
         return line;
+    }
+
+    public void setLineId(Long id) {
+        line.setId(id);
     }
 
     @Override

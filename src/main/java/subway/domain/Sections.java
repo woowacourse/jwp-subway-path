@@ -2,11 +2,17 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class Sections {
     private final List<Section> sections;
+
+    public Sections() {
+        this.sections = new ArrayList<>();
+    }
 
     public Sections(final List<Section> sections) {
         this.sections = new ArrayList<>(sections);
@@ -29,9 +35,15 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("같은라인에 arrival에 해당하는 section이 없습니다"));
     }
 
-    public void validateDistanceBetween(final Station arrival, final Section s1, final Section s2) {
-        final Section section = getSectionTo(arrival);
-        if (section.getDistance() != s1.getDistance() + s2.getDistance()) {
+    public int thisToNextDistance(final Station next, final Section thisToPrev) {
+        final Section prevToNext = getSectionTo(next);
+        validateDistanceBetween(prevToNext, thisToPrev);
+
+        return prevToNext.getDistance() - thisToPrev.getDistance();
+    }
+
+    private void validateDistanceBetween(final Section prevToNext, final Section thisToNext) {
+        if (prevToNext.getDistance() - thisToNext.getDistance() < 2) {
             throw new IllegalArgumentException("요청의 이전역과 다음역 사이의 거리가 잘못되었습니다.");
         }
     }
@@ -94,9 +106,47 @@ public class Sections {
         final Section section = removed.stream()
                 .filter(s -> s.isArrival(station))
                 .findAny()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("section의 도착역이 아닙니다"));
         removed.remove(section);
         return new Sections(removed);
     }
 
+    public Map<Station, Sections> mapToArrivalAndReverseSections() {
+        return sections.stream()
+                .collect(Collectors.toMap(
+                        Section::getArrival,
+                        section -> reverseAll().removeArrival(section.getArrival())
+                ));
+
+    }
+
+
+    public Sections reverseAll() {
+        return new Sections(sections.stream()
+                .map(Section::getReverse)
+                .collect(Collectors.toList())
+        );
+    }
+
+    public Map<Station, Section> reverseMap() {
+        return sections.stream()
+                .map(Section::getReverse)
+                .collect(Collectors.toMap(
+                        Section::getDeparture,
+                        Function.identity()
+                )
+        );
+    }
+
+    public List<Station> getArrivals() {
+        return sections.stream()
+                .map(Section::getArrival)
+                .collect(Collectors.toList());
+    }
+
+    public Sections remove(Section section) {
+        ArrayList<Section> sections1 = new ArrayList<>(sections);
+        sections1.remove(section);
+        return new Sections(sections1);
+    }
 }

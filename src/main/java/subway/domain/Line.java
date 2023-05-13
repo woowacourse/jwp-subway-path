@@ -33,6 +33,10 @@ public class Line {
         return color;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color);
@@ -48,4 +52,5 @@ public class Line {
         }
         return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
     }
+
 }

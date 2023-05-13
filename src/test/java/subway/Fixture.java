@@ -5,6 +5,7 @@ import subway.domain.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Fixture {
     public static final Line line = new Line(1L, "2호선", "green");
@@ -15,14 +16,13 @@ public class Fixture {
     public static final Section sectionBA = new Section(2, stationB, stationA, line);
     public static final Section sectionBC = new Section(1, stationB, stationC, line);
     public static final Section sectionCB = new Section(1, stationC, stationB, line);
-    public static final Map<Station, Sections> tempSubwayMap = new HashMap<Station, Sections>() {{
+    public static final Map<Station, Sections> tempSubwayMap = new HashMap<>() {{
         put(stationA, new Sections(List.of(sectionAB)));
         put(stationB, new Sections(List.of(sectionBA, sectionBC)));
         put(stationC, new Sections(List.of(sectionCB)));
     }};
-    public static final Map<Line, Station> tempLineMap = new HashMap<Line, Station>() {{
-        put(line, stationA);
+    public static final Map<Line, Optional<Station>> tempLineMap = new HashMap<>() {{
+        put(line, Optional.of(stationA));
     }};
     public static final SubwayMap subwayMap = new SubwayMap(tempSubwayMap, tempLineMap);
-
 }

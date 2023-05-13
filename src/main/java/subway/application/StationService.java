@@ -10,6 +10,7 @@ import subway.domain.Station;
 import subway.domain.SubwayMap;
 import subway.dto.CreateType;
 import subway.dto.StationRequest;
+import subway.dto.LineStationRequest;
 import subway.dto.StationResponse;
 
 import java.util.List;
@@ -39,76 +40,13 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void saveStation(final List<StationRequest> stationRequests) {
-        final CreateType type = CreateType.valueOf(stationRequests.get(0).getCreateType());
-        final Line line = lineService.findLineByName(stationRequests.get(0).getLine());
+    public StationResponse saveStation(final StationRequest stationRequest) {
+        final SubwayMap subwayMap = subwayMapRepository.find();
+        Station station = subwayMap.addStation(new Station(stationRequest.getName()));
+        subwayMapRepository.save(subwayMap);
 
-        if (type == CreateType.INIT) {
-            final StationRequest requestUp = stationRequests.get(0);
-            final StationRequest requestDown = stationRequests.get(1);
-
-            final SubwayMap subwayMap = new SubwayMap();
-            final Station upStation = new Station(requestUp.getName());
-            final Station downStation = new Station(requestDown.getName());
-            final Section upToDown = new Section(requestUp.getNextDistance(), upStation, downStation, line);
-            final Section downToUp = new Section(requestUp.getNextDistance(), downStation, upStation, line);
-
-            subwayMap.addInitialStations(upToDown, downToUp);
-
-            subwayMapRepository.save(subwayMap);
-            return;
-        }
-        final StationRequest request = stationRequests.get(0);
-        if (type == CreateType.UP) {
-            final SubwayMap subwayMap = subwayMapRepository.find();
-
-            final Station thisStation = new Station(request.getName());
-            final Station nextStation = new Station(request.getNextStation());
-            final Section thisToNext = new Section(request.getNextDistance(), thisStation, nextStation, line);
-
-            subwayMap.addUpEndPoint(thisToNext);
-
-            subwayMapRepository.save(subwayMap);
-            return;
-        }
-        if (type == CreateType.DOWN) {
-            final SubwayMap subwayMap = subwayMapRepository.find();
-
-            final Station thisStation = new Station(request.getName());
-            final Station prevStation = new Station(request.getPreviousStation());
-            final Section thisToPrev = new Section(request.getPreviousDistance(), thisStation, prevStation, line);
-
-            subwayMap.addDownEndPoint(thisToPrev);
-
-            subwayMapRepository.save(subwayMap);
-            return;
-        }
-        if (type == CreateType.MID) {
-            validateRequestMid(request);
-
-            final SubwayMap subwayMap = subwayMapRepository.find();
-
-            final Station prevStation = new Station(request.getPreviousStation());
-            final Station thisStation = new Station(request.getName());
-            final Station nextStation = new Station(request.getNextStation());
-            final Section thisToPrev = new Section(request.getPreviousDistance(), thisStation, prevStation, line);
-            final Section thisToNext = new Section(request.getNextDistance(), thisStation, nextStation, line);
-
-            subwayMap.addIntermediateStation(thisToPrev, thisToNext);
-
-            subwayMapRepository.save(subwayMap);
-            return;
-        }
-        throw new IllegalArgumentException("잘못된 타입입니다.");
-    }
-
-    private void validateRequestMid(final StationRequest request) {
-        if (request.getNextStation() == null || request.getNextDistance() == null) {
-            throw new IllegalArgumentException("잘못된 중간역을 등록했습니다: 다음 역 오류");
-        }
-        if (request.getPreviousStation() == null || request.getPreviousDistance() == null) {
-            throw new IllegalArgumentException("잘못된 중간역을 등록했습니다: 이전 역 오류");
-        }
+        SubwayMap found = subwayMapRepository.find();
+        return StationResponse.of(found.findStationByName(station.getName()));
     }
 
     public StationResponse findStationResponseById(final Long id) {
@@ -117,7 +55,9 @@ public class StationService {
     }
 
     public List<StationResponse> findAllStationResponses() {
-        final List<Station> stations = stationDao.findAll();
+        final SubwayMap subwayMap = subwayMapRepository.find();
+
+        List<Station> stations = subwayMap.getStationsOrderById();
 
         return stations.stream()
                 .map(StationResponse::of)

@@ -6,6 +6,7 @@ import subway.application.StationService;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -17,10 +18,11 @@ public class StationController {
         this.stationService = stationService;
     }
 
+
     @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody final List<StationRequest> stationRequests) {
-        stationService.saveStation(stationRequests);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest stationRequest) {
+        StationResponse stationResponse = stationService.saveStation(stationRequest);
+        return ResponseEntity.created(URI.create("/stations/" + stationResponse.getId())).build();
     }
 
     @GetMapping

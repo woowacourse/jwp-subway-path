@@ -1,98 +1,100 @@
-
-### 한 노선에서 첫 등록인 경우 (역이 두개 입력), type: 'init'
-POST http://localhost:8080/stations/
+###
+POST http://localhost:8080/stations
 Content-Type: application/json
 
-[
-  {
-    "name": "잠실역",
-    "create_type": "INIT",
-    "line": "2호선",
-    "up_endpoint": true,
-    "down_endpoint": false,
-    "previous_station": null,
-    "previous_distance": null,
-    "next_station": "잠실나루역",
-    "next_distance": 1
-  },
-  {
-    "name": "잠실나루역",
-    "create_type": "INIT",
-    "line": "2호선",
-    "up_endpoint": false,
-    "down_endpoint": true,
-    "previous_station": "잠실역",
-    "previous_distance": 1,
-    "next_station": null,
-    "next_distance": null
-  }
-]
+{
+  "name": "강남역"
+}
 
-
-### 상행 종점인 경우
-POST http://localhost:8080/stations/
-Content-Type: application/json
-
-[
-  {
-    "name": "잠실역",
-    "create_type": "UP",
-    "line": "2호선",
-    "up_endpoint": true,
-    "down_endpoint": false,
-    "previous_station": null,
-    "previous_distance": null,
-    "next_station": "잠실나루역",
-    "next_distance": 1
-  }
-]
-
-
-### 중간 역인 경우
-POST http://localhost:8080/stations/
-Content-Type: application/json
-
-[
-  {
-    "name": "잠실역",
-    "create_type": "MID",
-    "line": "2호선",
-    "up_endpoint": false,
-    "down_endpoint": false,
-    "previous_station": "잠실새내역",
-    "previous_distance": 1,
-    "next_station": "잠실나루역",
-    "next_distance": 1
-  }
-]
-
-
-### 하행 종점인 경우
-POST http://localhost:8080/stations/
-Content-Type: application/json
-
-[
-  {
-    "name": "잠실역",
-    "create_type": "DOWN",
-    "line": "2호선",
-    "up_endpoint": false,
-    "down_endpoint": true,
-    "previous_station": "잠실새내역",
-    "previous_distance": 1,
-    "next_station": null,
-    "next_distance": null
-  }
-]
-
-
-#########################
 
 ###
-DELETE http://localhost:8080/stations/{id}
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "잠실역"
+}
+
 
 ###
-GET http://localhost:8080/stations/
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "선릉역"
+}
 
 ###
-GET http://localhost:8080/stations/lines/{id}
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "건대입구역"
+}
+
+###
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "구의역"
+}
+
+### 초기 두 역 등록
+PATCH http://localhost:8080/lines/3/stations/2?type=init
+Content-Type: application/json
+
+{
+  "nextStationId": "3",
+  "distance": "3"
+}
+
+### 초기 두 역 등록
+PATCH http://localhost:8080/lines/3/stations/2?type=init
+Content-Type: application/json
+
+{
+  "nextStationId": "3",
+  "distance": ""
+}
+
+### 상행 종점 등록
+PATCH http://localhost:8080/lines/5/stations/8?type=up
+Content-Type: application/json
+
+{
+  "nextStationId": "6",
+  "distance": "1"
+}
+
+### 초기 두 역 등록
+PATCH http://localhost:8080/lines/9/stations/13?type=init
+Content-Type: application/json
+
+{
+  "nextStationId": "16",
+  "distance": "3"
+}
+
+### 중간역 등록
+PATCH http://localhost:8080/lines/7/stations/15?type=mid
+Content-Type: application/json
+
+{
+  "nextStationId": "13",
+  "distance": "1",
+  "prevStationId": "12"
+}
+
+### 하행 종점 등록
+PATCH http://localhost:8080/lines/8/stations/14?type=down
+Content-Type: application/json
+
+{
+  "prevStationId": "16",
+  "distance": "1"
+}
+
+
+### 역 삭제
+DELETE http://localhost:8080/stations/4

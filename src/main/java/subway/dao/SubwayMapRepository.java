@@ -5,7 +5,10 @@ import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.domain.*;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,23 +27,18 @@ public class SubwayMapRepository {
 
     public SubwayMap find() {
         final List<Station> stations = stationDao.findAll();
-
-        for (int i = 0; i < stations.size(); i++) {
-            stations.get(i).setId((long) i + 1);
-        }
-
         final List<SectionEntity> sectionEntities = sectionDao.findAll();
         final List<LineEntity> lineEntities = lineDao.findAll();
 
-        final Map<Line, Station> lineMap = lineEntities.stream()
+        final Map<Line, Optional<Station>> lineMap = lineEntities.stream()
                 .collect(Collectors.toMap(LineEntity::toLine,
-                        entity -> stationDao.findById(entity.getUpEndpointId())
-                                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 종점역입니다.")))
+                        entity -> stationDao.findById(entity.getUpEndpointId()))
                 );
+
         return generateMap(stations, sectionEntities, new HashMap<>(lineMap));
     }
 
-    private SubwayMap generateMap(final List<Station> stations, final List<SectionEntity> sectionEntities, final Map<Line, Station> lineMap) {
+    private SubwayMap generateMap(final List<Station> stations, final List<SectionEntity> sectionEntities, final Map<Line, Optional<Station>> lineMap) {
         return new SubwayMap(stations.stream()
                 .collect(Collectors.toMap(
                         Function.identity(),
@@ -53,7 +51,7 @@ public class SubwayMapRepository {
                 .filter(entity -> entity.getDepartureId().equals(station.getId()))
                 .map(entity -> new Section(entity.getDistance(),
                         station,
-                        stationDao.findById(entity.getArrivalId())
+                        stationDao.findById(entity.getArrivalId())  // TODO stations에서 직접 byId로 꺼내와도 됨
                                 .orElseThrow(() -> new IllegalArgumentException("도착역이 존재하지 않습니다.")),
                         lineDao.findById(entity.getLineId()))
                 ).collect(Collectors.toList());
@@ -70,16 +68,49 @@ public class SubwayMapRepository {
                 .map(stationDao::insert)
                 .collect(Collectors.toList());
 
+        var endpointMap = subwayMap.getEndpointMap();
+
+        setEndpointIdFromInserted(insertedStations, endpointMap);
+
+        List<LineEntity> lineEntities = endpointMap.keySet().stream()
+                .map(line -> new LineEntity(line, endpointMap.get(line)
+                        .map(Station::getId)
+                        .orElse(null)))
+                .collect(Collectors.toList());
+
+        List<Line> insertedLines = lineEntities.stream()
+                .map(lineDao::insert)
+                .collect(Collectors.toList());
+
         final List<Section> sections = mapToSections(subwayMap1);
         setStationIdFromInserted(sections, insertedStations);
+        setLineIdFromInserted(sections, insertedLines);
 
         sections.forEach(sectionDao::insertSection);
+    }
 
-        final Set<Line> lines = new HashSet<>(mapToLines(sections));
-        final List<LineEntity> lineEntities = lines.stream()
-                .map(line -> new LineEntity(line.getId(), line.getName(), line.getColor(), subwayMap.getEndpointMap().get(line).getId()))
-                .collect(Collectors.toList());
-        lineEntities.forEach(lineDao::insert);
+    private void setEndpointIdFromInserted(List<Station> insertedStations, Map<Line, Optional<Station>> endpointMap) {
+        for (Line line : endpointMap.keySet()) {
+            for (Station station : insertedStations) {
+                endpointMap.get(line).ifPresent(
+                        s -> {
+                            if (s.getName().equals(station.getName())) {
+                                s.setId(station.getId());
+                            }
+                        }
+                );
+            }
+        }
+    }
+
+    private void setLineIdFromInserted(List<Section> sections, List<Line> insertedLines) {
+        for (Section section : sections) {
+            for (Line line : insertedLines) {
+                if (section.getLine().getName().equals(line.getName())) {
+                    section.setLineId(line.getId());
+                }
+            }
+        }
     }
 
     private void setStationIdFromInserted(List<Section> sections, List<Station> stations) {
