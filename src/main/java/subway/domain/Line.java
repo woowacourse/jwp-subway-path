@@ -2,23 +2,40 @@ package subway.domain;
 
 import java.util.Objects;
 
-public class Line {
+public final class Line {
     private Long id;
-    private String name;
-    private String color;
+    private final String name;
+    private final String color;
+    private Paths paths;
 
-    public Line() {
-    }
-
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(Long id, String name, String color) {
+    public Line(final Long id, final String name, final String color, final Paths paths) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.paths = paths;
+    }
+
+    public Line(final String name, final String color, final Paths paths) {
+        this(null, name, color, paths);
+    }
+
+    public Line(final Long id, final String name, final String color) {
+        this(id, name, color, new Paths());
+    }
+
+    public Line(final String name, final String color) {
+        this(null, name, color, new Paths());
+    }
+
+    public Line(final Line line) {
+        this(line.id, line.name, line.color, line.paths);
+    }
+
+    public Line addPath(final Path path) {
+        final Line line = new Line(this);
+        line.paths = paths.addPath(path);
+
+        return line;
     }
 
     public Long getId() {
@@ -33,8 +50,12 @@ public class Line {
         return color;
     }
 
+    public int getPathsSize() {
+        return paths.getOrderedPaths().size();
+    }
+
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
