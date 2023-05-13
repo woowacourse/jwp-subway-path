@@ -12,6 +12,7 @@ import subway.section.domain.Section;
 import subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,8 +27,12 @@ public class LineService {
     }
 
     public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+        Optional<Line> line = lineDao.findByName(request.getName());
+        if(line.isPresent()){
+            throw new IllegalArgumentException("노선 이름이 이미 존재합니다. 유일한 노선 이름을 사용해주세요.");
+        }
+        final Line findLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        return LineResponse.of(findLine);
     }
 
     public List<LineSearchResponse> findLineResponses() {

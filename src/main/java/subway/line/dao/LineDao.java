@@ -1,5 +1,6 @@
 package subway.line.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -10,6 +11,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class LineDao {
@@ -48,6 +50,15 @@ public class LineDao {
     public Line findById(final Long id) {
         final String sql = "select id, name, color from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Optional<Line> findByName(final String name) {
+        try {
+            final String sql = "select id, name, color from LINE WHERE name = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public void update(final Line newLine) {

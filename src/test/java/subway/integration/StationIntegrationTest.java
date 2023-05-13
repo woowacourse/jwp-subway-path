@@ -45,14 +45,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void createStationWithDuplicateName() {
         // given
         final Map<String, String> params = new HashMap<>();
-        params.put("name", "잠실역");
-        RestAssured.given().log().all()
-                .body(params)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+        params.put("name", "선릉역");
 
         // when
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
