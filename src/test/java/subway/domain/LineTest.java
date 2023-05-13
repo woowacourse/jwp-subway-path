@@ -34,13 +34,6 @@ class LineTest {
                 .isInstanceOf(NameLengthException.class);
     }
 
-    @Test
-    @DisplayName("구간이 MiddleSection이 아니면 예외를 던진다")
-    void LineFail2() {
-        assertThatThrownBy(() -> new Line("2호선", List.of(new UpstreamTerminalSection(JAMSIL_STATION))))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
     /**
      * LINE_NUMBER_TWO
      * 선릉 --(거리: 5)--> 잠실 --(거리: 5)--> 잠실나루

@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.exception.InvalidStationNameException;
 
 import java.util.List;
 
@@ -36,8 +37,7 @@ class DownstreamTerminalSectionTest {
         final DownstreamTerminalSection givenSection = new DownstreamTerminalSection(JAMSIL_TO_TERMINAL);
 
         assertThatThrownBy(() -> givenSection.insertInTheMiddle(DummyTerminalStation.getInstance(), DISTANCE))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("insertInTheMiddle");
+                .isInstanceOf(InvalidStationNameException.class);
     }
 
     @Test

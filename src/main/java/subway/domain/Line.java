@@ -6,6 +6,7 @@ import subway.exception.StationNotFoundException;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Line {
@@ -13,27 +14,15 @@ public class Line {
     private final LineName name;
     private final LinkedList<AbstractSection> sections;
 
-    public Line(String name, List<AbstractSection> sections) {
-        validateOnlyMiddleSections(sections);
+    public Line(String name, List<MiddleSection> sections) {
         this.name = new LineName(name);
         this.sections = new LinkedList<>(sections);
         addTerminalSections();
     }
 
-    private void validateOnlyMiddleSections(List<AbstractSection> sections) {
-        if (isNonMiddleSectionExist(sections)) {
-            throw new IllegalArgumentException("디버깅: middleSection이 아닌 Section이 Line에 인자로 들어왔습니다.");
-        }
-    }
-
-    private boolean isNonMiddleSectionExist(List<AbstractSection> sections) {
-        return sections.stream().anyMatch(section -> section.getClass() != MiddleSection.class);
-    }
-
     public Line(Line otherLine) {
         this(otherLine.getName(), otherLine.getSections());
     }
-
 
     private void addTerminalSections() {
         sections.addFirst(new UpstreamTerminalSection(getUpstreamTerminal()));
@@ -119,11 +108,31 @@ public class Line {
         return name.getName();
     }
 
-    public List<AbstractSection> getSections() {
-        return new LinkedList<>(sections.subList(1, sections.size() - 1));
+    public List<MiddleSection> getSections() {
+        return sections.subList(1, sections.size() - 1)
+                       .stream()
+                       .map(section -> (MiddleSection) section)
+                       .collect(Collectors.toList());
     }
 
-    public List<String> getStationNamesInOrder() {
-        return null;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Line line = (Line) o;
+        return Objects.equals(name, line.name) && Objects.equals(sections, line.sections);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, sections);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "name=" + name +
+                ", sections=" + sections +
+                '}';
     }
 }

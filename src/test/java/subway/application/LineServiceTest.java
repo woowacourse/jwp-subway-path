@@ -45,7 +45,7 @@ class LineServiceTest {
         final Line line = new Line(LINE_NUMBER_TWO);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
-        doReturn(1L).when(stationService).createStationIfNotExist(newStation);
+        doReturn(1L).when(stationService).createStationIfNotExist(newStation.getName());
         doReturn(JAMSIL_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getUpstreamName());
         doReturn(JAMSIL_NARU_STATION).when(stationService)
                                      .findStationByName(stationAdditionToLineDto.getDownstreamName());
@@ -70,7 +70,7 @@ class LineServiceTest {
         final Line line = new Line(LINE_NUMBER_TWO);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
-        doReturn(1L).when(stationService).createStationIfNotExist(newStation);
+        doReturn(1L).when(stationService).createStationIfNotExist(newStation.getName());
         doReturn(SULLEUNG_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getDownstreamName());
 
         final LineService lineService = new LineService(lineRepository, stationService);
@@ -93,7 +93,7 @@ class LineServiceTest {
         final Line line = new Line(LINE_NUMBER_TWO);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
-        doReturn(1L).when(stationService).createStationIfNotExist(newStation);
+        doReturn(1L).when(stationService).createStationIfNotExist(newStation.getName());
         doReturn(JAMSIL_NARU_STATION).when(stationService)
                                      .findStationByName(stationAdditionToLineDto.getUpstreamName());
 
@@ -169,8 +169,8 @@ class LineServiceTest {
         final Station downstream = new Station("잠실나루");
         final LineCreationDto lineCreationDto = new LineCreationDto("2호선", upstream.getName(), downstream.getName(), DISTANCE);
 
-        doReturn(1L).when(stationService).createStationIfNotExist(upstream);
-        doReturn(2L).when(stationService).createStationIfNotExist(downstream);
+        doReturn(1L).when(stationService).createStationIfNotExist(upstream.getName());
+        doReturn(2L).when(stationService).createStationIfNotExist(downstream.getName());
         doReturn(new Lines(new ArrayList<>())).when(lineRepository).findAllLines();
 
         final LineService lineService = new LineService(lineRepository, stationService);

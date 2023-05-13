@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.InvalidDistanceException;
+import subway.exception.InvalidStationNameException;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -16,7 +17,7 @@ class MiddleSectionTest {
     @DisplayName("MiddleSection은 DummyTerminalStation을 인자로 받으면 예외를 발생시킨다")
     void MiddleSectionFail1() {
         assertThatThrownBy(() -> new MiddleSection(DummyTerminalStation.getInstance(), JAMSIL_NARU_STATION, 5))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidStationNameException.class);
     }
 
     @ParameterizedTest(name = "구간의 거리가 양의정수가 아니면 예외를 던진다")
@@ -79,7 +80,7 @@ class MiddleSectionTest {
         Station dummyStation = DummyTerminalStation.getInstance();
 
         assertThatThrownBy(() -> middleSection.insertInTheMiddle(dummyStation, 5))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidStationNameException.class);
     }
 
     @Test

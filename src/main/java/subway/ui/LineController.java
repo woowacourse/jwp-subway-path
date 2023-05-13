@@ -37,12 +37,12 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<List<LineDto>> getAllLines() {
-        return ResponseEntity.ok(lineService.getAllLines());
+        return ResponseEntity.ok(lineService.findAllLines());
     }
 
     @GetMapping("/{lineId}")
     public ResponseEntity<LineDto> findLineById(@PathVariable @NotNull Long lineId) {
-        return ResponseEntity.ok(lineService.getLineById(lineId));
+        return ResponseEntity.ok(lineService.findLineById(lineId));
     }
 
     @PostMapping("/{lineId}/stations")
