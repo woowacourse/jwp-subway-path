@@ -8,8 +8,6 @@ import subway.domain.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.LongStream;
 
 @Repository
 public class SubwayMapRepository {
@@ -26,6 +24,11 @@ public class SubwayMapRepository {
 
     public SubwayMap find() {
         final List<Station> stations = stationDao.findAll();
+
+        for (int i = 0; i < stations.size(); i++) {
+            stations.get(i).setId((long) i + 1);
+        }
+
         final List<SectionEntity> sectionEntities = sectionDao.findAll();
         final List<LineEntity> lineEntities = lineDao.findAll();
 
@@ -63,9 +66,13 @@ public class SubwayMapRepository {
 
         final Map<Station, Sections> subwayMap1 = subwayMap.getSubwayMap();
 
-        subwayMap1.keySet().forEach(stationDao::insert);
+        List<Station> insertedStations = subwayMap1.keySet().stream()
+                .map(stationDao::insert)
+                .collect(Collectors.toList());
 
         final List<Section> sections = mapToSections(subwayMap1);
+        setStationIdFromInserted(sections, insertedStations);
+
         sections.forEach(sectionDao::insertSection);
 
         final Set<Line> lines = new HashSet<>(mapToLines(sections));
@@ -73,6 +80,20 @@ public class SubwayMapRepository {
                 .map(line -> new LineEntity(line.getId(), line.getName(), line.getColor(), subwayMap.getEndpointMap().get(line).getId()))
                 .collect(Collectors.toList());
         lineEntities.forEach(lineDao::insert);
+    }
+
+    private void setStationIdFromInserted(List<Section> sections, List<Station> stations) {
+        for (Section section : sections) {
+            for (Station station : stations) {
+                if (section.getDeparture().getName().equals(station.getName())) {
+                    section.getDeparture().setId(station.getId());
+                }
+
+                if (section.getArrival().getName().equals(station.getName())) {
+                    section.getArrival().setId(station.getId());
+                }
+            }
+        }
     }
 
     private List<Section> mapToSections(final Map<Station, Sections> subwayMap1) {
