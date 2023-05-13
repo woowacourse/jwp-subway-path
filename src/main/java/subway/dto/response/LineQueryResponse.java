@@ -3,7 +3,6 @@ package subway.dto.response;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.domain.Line;
-import subway.domain.Section;
 
 public class LineQueryResponse {
 
@@ -32,40 +31,5 @@ public class LineQueryResponse {
                 .map(SectionQueryResponse::from)
                 .collect(Collectors.toList());
         return new LineQueryResponse(line.getName(), sectionQueryResponses);
-    }
-
-    public static class SectionQueryResponse {
-
-        private String upStationName;
-        private String downStationName;
-        private int distance;
-
-        private SectionQueryResponse() {
-        }
-
-        public SectionQueryResponse(final String upStationName, final String downStationName, final int distance) {
-            this.upStationName = upStationName;
-            this.downStationName = downStationName;
-            this.distance = distance;
-        }
-
-        public static SectionQueryResponse from(final Section section) {
-            return new SectionQueryResponse(
-                    section.getUp().getName(),
-                    section.getDown().getName(),
-                    section.getDistance());
-        }
-
-        public String getUpStationName() {
-            return upStationName;
-        }
-
-        public String getDownStationName() {
-            return downStationName;
-        }
-
-        public int getDistance() {
-            return distance;
-        }
     }
 }
