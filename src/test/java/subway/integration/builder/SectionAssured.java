@@ -15,12 +15,12 @@ public class SectionAssured {
     }
 
     public static CreateSectionRequest 구간_요청(
-            final Long upStationId,
-            final Long downStationId,
+            final String upStationName,
+            final String downStationName,
             final Long lineId,
             final Integer distance
     ) {
-        return new CreateSectionRequest(upStationId, downStationId, lineId, distance);
+        return new CreateSectionRequest(upStationName, downStationName, lineId, distance);
     }
 
     public static SectionRequestBuilder request() {

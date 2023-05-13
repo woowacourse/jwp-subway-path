@@ -10,7 +10,7 @@ public class SectionDomain {
     private final StationDomain upStation;
     private final StationDomain downStation;
 
-    private SectionDomain(final Distance distance, final boolean isStart, final StationDomain upStation, final StationDomain downStation) {
+    public SectionDomain(final Distance distance, final boolean isStart, final StationDomain upStation, final StationDomain downStation) {
         this(null, distance, isStart, upStation, downStation);
     }
 
@@ -60,6 +60,13 @@ public class SectionDomain {
         if (Objects.isNull(distance)) {
             throw new IllegalArgumentException("거리는 null 일 수 없습니다.");
         }
+    }
+
+    public boolean isBaseStationExists(final SectionDomain otherSection) {
+        return upStation.equals(otherSection.upStation)
+                || upStation.equals(otherSection.downStation)
+                || downStation.equals(otherSection.upStation)
+                || downStation.equals(otherSection.downStation);
     }
 
     public Long getId() {

@@ -21,7 +21,7 @@ class SectionIntegrationTest extends ControllerTestConfig {
                 .response().toBody(Long.class);
 
         final Long 구간_식별자값 = SectionAssured
-                .request().구간을_등록한다(구간_요청(잠실역_식별자값, 잠실나루_식별자값, 1L, 10))
+                .request().구간을_등록한다(구간_요청("잠실", "잠실나루", 1L, 10))
                 .response().toBody(Long.class);
 
         SectionAssured

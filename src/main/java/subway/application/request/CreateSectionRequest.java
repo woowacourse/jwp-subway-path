@@ -1,27 +1,27 @@
 package subway.application.request;
 
 public class CreateSectionRequest {
-    private Long upStationId;
-    private Long downStationId;
+    private String upStationName;
+    private String downStationName;
     private Long lineId;
     private Integer distance;
 
     public CreateSectionRequest() {
     }
 
-    public CreateSectionRequest(final Long upStationId, final Long downStationId, final Long lineId, final Integer distance) {
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
+    public CreateSectionRequest(final String upStationName, final String downStationName, final Long lineId, final Integer distance) {
+        this.upStationName = upStationName;
+        this.downStationName = downStationName;
         this.lineId = lineId;
         this.distance = distance;
     }
 
-    public Long getUpStationId() {
-        return upStationId;
+    public String getUpStationName() {
+        return upStationName;
     }
 
-    public Long getDownStationId() {
-        return downStationId;
+    public String getDownStationName() {
+        return downStationName;
     }
 
     public Long getLineId() {

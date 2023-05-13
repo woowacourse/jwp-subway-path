@@ -22,7 +22,7 @@ class SectionServiceV2Test extends ServiceTestConfig {
     @Test
     void 구간을_저장한다() {
         // given
-        final CreateSectionRequest request = new CreateSectionRequest(1L, 1L, 1L, 10);
+        final CreateSectionRequest request = new CreateSectionRequest("잠실", "잠실새내", 1L, 10);
 
         // when
         final Long saveSectionId = sectionService.saveSection(request);
@@ -39,7 +39,7 @@ class SectionServiceV2Test extends ServiceTestConfig {
         final Long upStationId = stationDaoV2.insert(new StationEntity("루카"));
         final Long downStationId = stationDaoV2.insert(new StationEntity("헤나"));
 
-        final CreateSectionRequest request = new CreateSectionRequest(upStationId, downStationId, 0L, 10);
+        final CreateSectionRequest request = new CreateSectionRequest("잠실", "잠실새내", 0L, 10);
         final Long saveSectionId = sectionService.saveSection(request);
 
         // when

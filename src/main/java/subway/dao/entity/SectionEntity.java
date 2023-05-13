@@ -1,5 +1,9 @@
 package subway.dao.entity;
 
+import subway.domain.Distance;
+import subway.domain.SectionDomain;
+import subway.domain.StationDomain;
+
 public class SectionEntity {
 
     private final Long id;
@@ -20,6 +24,10 @@ public class SectionEntity {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.lineId = lineId;
+    }
+
+    public SectionDomain toDomain(final StationDomain upStation, final StationDomain downStation) {
+        return SectionDomain.from(id, new Distance(distance), isStart, upStation, downStation);
     }
 
     public Long getId() {
