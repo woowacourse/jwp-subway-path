@@ -8,7 +8,7 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -31,14 +31,14 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Lines lines = new Lines();
         lineDao.findAll().stream()
-                .map(it -> lines.addNewLine(it.getName(),new Sections(toSections(sectionDao.findAll()))));
+                .map(it -> lines.addNewLine(it.getName(), new Sections(toSections(sectionDao.findAll()))));
 
         Line line = lines.addNewLine(request.getLineName(), new Sections(
                 List.of(new Section(new Station(request.getUpStation()), new Station(request.getDownStation()), new Distance(request.getDistance())))
         ));
 
         Long savedId = lineDao.insert(new LineEntity(line.getName()));
-        sectionDao.insertAll(toSectionEntities(savedId,line.getSections().getSections()));
+        sectionDao.insertAll(toSectionEntities(savedId, line.getSections().getSections()));
 
         List<StationResponse> stationsResponses = makeStationResponses(line.getSections().getSortedStations());
         return new LineResponse(savedId, request.getLineName(), stationsResponses);
@@ -64,6 +64,7 @@ public class LineService {
     private List<StationResponse> makeStationResponses(List<Station> sortedStations) {
         List<StationResponse> stationsResponses = sortedStations.stream()
                 .map(it -> {
+                    //TODO : 여러번 db조회보다 한번에 조회
                     Long findStationId = stationDao.findIdByName(it.getName());
                     return new StationResponse(findStationId, it.getName());
                 })
@@ -76,8 +77,8 @@ public class LineService {
 
         Line line = new Line(entities.getName(), new Sections(existSections));
 
-        if (line.getSections().getSections().isEmpty()){
-            return new LineResponse(entities.getId(), entities.getName(), new ArrayList<>());
+        if (line.getSections().getSections().isEmpty()) {
+            return new LineResponse(entities.getId(), entities.getName(), Collections.emptyList());
         }
 
         return getSortedLineResponse(entities, line.getSections());
@@ -94,10 +95,10 @@ public class LineService {
     private List<SectionEntity> toSectionEntities(Long lineId, List<Section> sections) {
         return sections.stream()
                 .map(it -> {
-                    addStationOfSection(new Station(it.getStartStation().getName()),new Station(it.getEndStation().getName()));
+                    //TODO : 여러번 db조회보다 한번에 조회
+                    addStationOfSection(new Station(it.getStartStation().getName()), new Station(it.getEndStation().getName()));
                     Long startStationId = stationDao.findIdByName(it.getStartStation().getName());
                     Long endStationId = stationDao.findIdByName(it.getEndStation().getName());
-
                     return new SectionEntity(lineId, startStationId, endStationId, it.getDistance().getDistance());
                 })
                 .collect(Collectors.toList());
@@ -121,6 +122,7 @@ public class LineService {
     }
 
     private Section toSection(SectionEntity sectionEntity) {
+        //TODO : 여러번 db조회보다 한번에 조회
         Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
         Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
         Distance distance = new Distance(sectionEntity.getDistance());

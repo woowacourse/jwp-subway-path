@@ -3,6 +3,7 @@ package subway.domain;
 import subway.exception.GlobalException;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Lines {

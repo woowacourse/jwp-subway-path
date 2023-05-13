@@ -42,7 +42,7 @@ public class SectionService {
         addStationOfSection(requestSection.getStartStation(), requestSection.getEndStation());
 
         sectionDao.deleteAllById(lineId);
-        sectionDao.insertAll(toEntityList(lineId, sections.getSections()));
+        sectionDao.insertAll(toSectionEntities(lineId, sections.getSections()));
     }
 
     private void addStationOfSection(Station requestStartStation, Station requestEndStation) {
@@ -69,7 +69,7 @@ public class SectionService {
         sections.remove(removedStation);
 
         sectionDao.deleteAllById(lineId);
-        sectionDao.insertAll(toEntityList(lineId, sections.getSections()));
+        sectionDao.insertAll(toSectionEntities(lineId, sections.getSections()));
 
         deleteStation(stationId);
     }
@@ -88,7 +88,7 @@ public class SectionService {
     }
 
 
-    private List<SectionEntity> toEntityList(Long lineId, List<Section> sections) {
+    private List<SectionEntity> toSectionEntities(Long lineId, List<Section> sections) {
         return sections.stream()
                 .map(it -> {
                     Long startStationId = stationDao.findIdByName(it.getStartStation().getName());
