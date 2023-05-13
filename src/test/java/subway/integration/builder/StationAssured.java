@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.dto.StationResponse;
 import subway.integration.support.RestAssuredFixture;
-import subway.ui.v2.CreateStationRequest;
+import subway.application.request.CreateStationRequest;
 
 import java.util.List;
 
@@ -60,6 +60,7 @@ public class StationAssured {
 
         public void 등록된_역이_조회된다(final Long stationId, final String stationName) {
             final StationResponse response = toBody(StationResponse.class);
+
             assertThat(response)
                     .usingRecursiveComparison()
                     .isEqualTo(new StationResponse(stationId, stationName));

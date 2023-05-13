@@ -6,12 +6,12 @@ import subway.dao.v2.StationDaoV2;
 
 public abstract class RepositoryTestConfig extends DaoTestConfig {
 
-    protected StationDaoV2 stationDao;
-    protected SectionDaoV2 sectionDao;
+    protected StationDaoV2 stationDaoV2;
+    protected SectionDaoV2 sectionDaoV2;
 
     @BeforeEach
     void daoSetUp() {
-        stationDao = new StationDaoV2(jdbcTemplate);
-        sectionDao = new SectionDaoV2(jdbcTemplate);
+        stationDaoV2 = new StationDaoV2(jdbcTemplate);
+        sectionDaoV2 = new SectionDaoV2(jdbcTemplate);
     }
 }

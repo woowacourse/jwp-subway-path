@@ -2,50 +2,26 @@ package subway.integration;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import subway.config.ControllerTestConfig;
+import subway.integration.builder.StationAssured;
 
-import static io.restassured.RestAssured.given;
+import static subway.integration.builder.StationAssured.역_요청;
 
-@DisplayName("지하철역 관련 기능")
-class StationIntegrationTest extends IntegrationTest {
+class StationIntegrationTest extends ControllerTestConfig {
 
-    @DisplayName("역을 저장한다.")
+    @DisplayName("새로운 역을 등록하고 조회한다.")
     @Test
     void createStation() {
-        given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body("{\n" +
-                        "    \"upStationName\":\"헤나\",\n" +
-                        "    \"downStationName\":\"지토\",\n" +
-                        "    \"lineName\":\"1\",\n" +
-                        "    \"lineColor\":\"파랑\",\n" +
-                        "    \"distance\":5\n" +
-                        "}")
+        final Long saveStationId = StationAssured
+                .request()
+                        .역을_등록한다(역_요청("잠실"))
+                .response()
+                        .toBody(Long.class);
 
-        .when()
-                .post("/stations")
-
-        .then()
-                .statusCode(HttpStatus.CREATED.value());
-    }
-
-    @DisplayName("역을 삭제한다.")
-    @Test
-    void deleteStationByName() {
-        given()
-                .log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body("{\n" +
-                        "    \"stationName\": \"헤나\",\n" +
-                        "    \"lineName\" : \"1\"\n" +
-                        "}")
-
-        .when()
-                .delete("/stations")
-
-        .then()
-                .statusCode(HttpStatus.NO_CONTENT.value());
+        StationAssured
+        .request()
+                .역을_조회한다(saveStationId)
+        .response()
+                .등록된_역이_조회된다(saveStationId, "잠실");
     }
 }
