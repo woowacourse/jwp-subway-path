@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
 public class LineMap {
 
     private final Map<Station, List<Station>> lineMap;
-    private final Map<Station, Boolean> visited;
+    private Map<Station, Boolean> visited;
 
     public LineMap(final Sections sections) {
         this.lineMap = initLineMap(sections);
@@ -50,11 +50,14 @@ public class LineMap {
     }
 
     public List<Station> getOrderedStations(final Sections sections) {
+        this.visited = initVisited();
+
         List<Station> endPointStations = getEndPointStations();
         Station upStationEndPoint = getUpStationEndPoint(sections, endPointStations);
 
         List<Station> stations = new ArrayList<>();
         stations.add(upStationEndPoint);
+
         dfs(stations, upStationEndPoint);
         return stations;
     }
