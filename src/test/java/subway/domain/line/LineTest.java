@@ -37,7 +37,6 @@ class LineTest {
     @Test
     @DisplayName("구간정보들을 바탕으로 노선을 생성한다.")
     void of() {
-        //given
         final LineEntity lineEntity = new LineEntity(1L, "2호선", "초록색");
         final List<SectionEntity> sectionEntities = List.of(
                 new SectionEntity(1L, 1L, 1L, "잠실역", 2L, "잠실새내역", 10),
@@ -45,10 +44,8 @@ class LineTest {
                 new SectionEntity(2L, 1L, 2L, "잠실새내역", 3L, "종합운동장역", 10)
         );
 
-        //when
         final Line line = Line.of(lineEntity, sectionEntities);
 
-        //then
         assertAll(
                 () -> assertThat(line.getId()).isEqualTo(lineEntity.getId()),
                 () -> assertThat(line.getName()).isEqualTo(lineEntity.getName()),
@@ -65,16 +62,12 @@ class LineTest {
         @Test
         @DisplayName("노선에 역을 최초 추가한다.")
         void addFirstSection() {
-            //given
             final Station upward = new Station(1L, "잠실역");
             final Station downward = new Station(2L, "종합운동장역");
-
             final Line line = new Line(1L, "2호선", "초록색");
 
-            //when
             line.addSection(upward, downward, 10);
 
-            //then
             final List<Station> result = line.getStations();
             assertAll(
                     () -> assertThat(result).containsExactly(upward, downward),
@@ -85,13 +78,10 @@ class LineTest {
         @Test
         @DisplayName("중간에 상행역을 추가한다.")
         void addUpwardSection() {
-            //given
             final Station additionStation = new Station(3L, "잠실새내역");
 
-            //when
             line.addSection(additionStation, downward, 5);
 
-            //then
             final List<Station> result = line.getStations();
             assertAll(
                     () -> assertThat(result).containsExactly(upward, additionStation, downward),
@@ -102,13 +92,10 @@ class LineTest {
         @Test
         @DisplayName("중간에 하행역을 추가한다.")
         void addDownwardSection() {
-            //given
             final Station additionStation = new Station(3L, "잠실새내역");
 
-            //when
             line.addSection(upward, additionStation, 5);
 
-            //then
             final List<Station> result = line.getStations();
             assertAll(
                     () -> assertThat(result).containsExactly(upward, additionStation, downward),
@@ -119,13 +106,10 @@ class LineTest {
         @Test
         @DisplayName("맨 앞에 역을 추가한다.")
         void addSectionAtFirst() {
-            //given
             final Station additionStation = new Station(3L, "잠실새내역");
 
-            //when
             line.addSection(additionStation, upward, 5);
 
-            //then
             final List<Station> result = line.getStations();
             assertAll(
                     () -> assertThat(result).containsExactly(additionStation, upward, downward),
@@ -136,13 +120,10 @@ class LineTest {
         @Test
         @DisplayName("맨 뒤에 역을 추가한다.")
         void addSectionAtLast() {
-            //given
             final Station additionStation = new Station(3L, "잠실새내역");
 
-            //when
             line.addSection(downward, additionStation, 5);
 
-            //then
             final List<Station> result = line.getStations();
             assertAll(
                     () -> assertThat(result).containsExactly(upward, downward, additionStation),
@@ -153,9 +134,6 @@ class LineTest {
         @Test
         @DisplayName("역이 둘다 존재한다면 예외를 던진다.")
         void addSectionWithExistStations() {
-            //given
-            //when
-            //then
             assertThatThrownBy(() -> line.addSection(upward, downward, 5))
                     .isInstanceOf(InvalidSectionException.class)
                     .hasMessage("두 역이 이미 노선에 존재합니다.");
@@ -164,12 +142,9 @@ class LineTest {
         @Test
         @DisplayName("역이 둘다 존재하지 않으면 예외를 던진다.")
         void addSectionWithoutExistStations() {
-            //given
             final Station newUpward = new Station(3L, "잠실새내역");
             final Station newDownward = new Station(4L, "사당역");
 
-            //when
-            //then
             assertThatThrownBy(() -> line.addSection(newUpward, newDownward, 5))
                     .isInstanceOf(InvalidSectionException.class)
                     .hasMessage("연결할 역 정보가 없습니다.");
@@ -178,11 +153,8 @@ class LineTest {
         @Test
         @DisplayName("역이 둘다 존재하지 않으면 예외를 던진다.")
         void addSectionWithInvalidRangeDistance() {
-            //given
             final Station additionStation = new Station(3L, "잠실새내역");
 
-            //when
-            //then
             assertThatThrownBy(() -> line.addSection(upward, additionStation, 10))
                     .isInstanceOf(InvalidDistanceException.class)
                     .hasMessage("추가될 역의 거리는 추가될 위치의 두 역사이의 거리보다 작아야합니다.");
@@ -196,11 +168,8 @@ class LineTest {
         @Test
         @DisplayName("역이 2개일 때 역을 제거한다.")
         void deleteStationAtInitialState() {
-            //given
-            //when
             line.deleteStation(upward);
 
-            //then
             final List<Station> result = line.getStations();
             assertThat(result).isEmpty();
         }
@@ -208,14 +177,11 @@ class LineTest {
         @Test
         @DisplayName("역이 2개가 아닐 때 맨 앞의 역을 제거한다.")
         void deleteStationAtFirst() {
-            //given
             final Station additionStation = new Station(3L, "잠실새내역");
             line.addSection(upward, additionStation, 3);
 
-            //when
             line.deleteStation(upward);
 
-            //then
             final List<Station> result = line.getStations();
             assertAll(
                     () -> assertThat(result).containsExactly(additionStation, downward),
@@ -226,14 +192,11 @@ class LineTest {
         @Test
         @DisplayName("역이 2개가 아닐 때 중간의 역을 제거한다.")
         void deleteStationBetweenStations() {
-            //given
             final Station additionStation = new Station(3L, "잠실새내역");
             line.addSection(upward, additionStation, 3);
 
-            //when
             line.deleteStation(additionStation);
 
-            //then
             final List<Station> result = line.getStations();
             assertAll(
                     () -> assertThat(result).containsExactly(upward, downward),
@@ -244,9 +207,6 @@ class LineTest {
         @Test
         @DisplayName("역이 존재하지 않을 때 예외를 던진다.")
         void deleteStationWithNotExistStation() {
-            //given
-            //when
-            //then
             assertThatThrownBy(() -> line.deleteStation(new Station(3L, "잠실새내역")))
                     .isInstanceOf(InvalidSectionException.class)
                     .hasMessage("노선에 해당 역이 존재하지 않습니다.");

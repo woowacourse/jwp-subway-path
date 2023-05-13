@@ -45,6 +45,46 @@ class LineControllerTest {
     @MockBean
     private LineService lineService;
 
+    @Test
+    @DisplayName("노선 목록을 조회한다.")
+    void findLines() throws Exception {
+        final List<StationResponse> stationsOfLineTwo = List.of(
+                new StationResponse(1L, "잠실역"),
+                new StationResponse(2L, "잠실새내역")
+        );
+        final List<StationResponse> stationsOfLineFour = List.of(
+                new StationResponse(3L, "이수역"),
+                new StationResponse(4L, "서울역")
+        );
+        final List<LineResponse> lines = List.of(
+                new LineResponse(1L, "2호선", "초록색", stationsOfLineTwo),
+                new LineResponse(2L, "4호선", "하늘색", stationsOfLineFour));
+        final LinesResponse response = new LinesResponse(lines);
+
+        given(lineService.findLines()).willReturn(response);
+
+        mockMvc.perform(get("/lines"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.lines", hasSize(2)))
+                .andExpect(jsonPath("$.lines[0].id").value(1))
+                .andExpect(jsonPath("$.lines[0].name").value("2호선"))
+                .andExpect(jsonPath("$.lines[0].color").value("초록색"))
+                .andExpect(jsonPath("$.lines[0].stations", hasSize(2)))
+                .andExpect(jsonPath("$.lines[0].stations[0].id").value(1))
+                .andExpect(jsonPath("$.lines[0].stations[0].name").value("잠실역"))
+                .andExpect(jsonPath("$.lines[0].stations[1].id").value(2))
+                .andExpect(jsonPath("$.lines[0].stations[1].name").value("잠실새내역"))
+                .andExpect(jsonPath("$.lines[1].id").value(2))
+                .andExpect(jsonPath("$.lines[1].name").value("4호선"))
+                .andExpect(jsonPath("$.lines[1].color").value("하늘색"))
+                .andExpect(jsonPath("$.lines[1].stations", hasSize(2)))
+                .andExpect(jsonPath("$.lines[1].stations[0].id").value(3))
+                .andExpect(jsonPath("$.lines[1].stations[0].name").value("이수역"))
+                .andExpect(jsonPath("$.lines[1].stations[1].id").value(4))
+                .andExpect(jsonPath("$.lines[1].stations[1].name").value("서울역"));
+    }
+
     @Nested
     @DisplayName("노선 생성 요청시 ")
     class CreateLine {
@@ -126,49 +166,6 @@ class LineControllerTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest());
         }
-    }
-
-    @Test
-    @DisplayName("노선 목록을 조회한다.")
-    void findLines() throws Exception {
-
-        final List<StationResponse> stationsOfLineTwo = List.of(
-                new StationResponse(1L, "잠실역"),
-                new StationResponse(2L, "잠실새내역")
-        );
-
-        final List<StationResponse> stationsOfLineFour = List.of(
-                new StationResponse(3L, "이수역"),
-                new StationResponse(4L, "서울역")
-        );
-
-        final List<LineResponse> lines = List.of(
-                new LineResponse(1L, "2호선", "초록색", stationsOfLineTwo),
-                new LineResponse(2L, "4호선", "하늘색", stationsOfLineFour));
-        final LinesResponse response = new LinesResponse(lines);
-
-        given(lineService.findLines()).willReturn(response);
-
-        mockMvc.perform(get("/lines"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lines", hasSize(2)))
-                .andExpect(jsonPath("$.lines[0].id").value(1))
-                .andExpect(jsonPath("$.lines[0].name").value("2호선"))
-                .andExpect(jsonPath("$.lines[0].color").value("초록색"))
-                .andExpect(jsonPath("$.lines[0].stations", hasSize(2)))
-                .andExpect(jsonPath("$.lines[0].stations[0].id").value(1))
-                .andExpect(jsonPath("$.lines[0].stations[0].name").value("잠실역"))
-                .andExpect(jsonPath("$.lines[0].stations[1].id").value(2))
-                .andExpect(jsonPath("$.lines[0].stations[1].name").value("잠실새내역"))
-                .andExpect(jsonPath("$.lines[1].id").value(2))
-                .andExpect(jsonPath("$.lines[1].name").value("4호선"))
-                .andExpect(jsonPath("$.lines[1].color").value("하늘색"))
-                .andExpect(jsonPath("$.lines[1].stations", hasSize(2)))
-                .andExpect(jsonPath("$.lines[1].stations[0].id").value(3))
-                .andExpect(jsonPath("$.lines[1].stations[0].name").value("이수역"))
-                .andExpect(jsonPath("$.lines[1].stations[1].id").value(4))
-                .andExpect(jsonPath("$.lines[1].stations[1].name").value("서울역"));
     }
 
     @Nested

@@ -53,7 +53,8 @@ public class SectionDao {
     }
 
     public void saveAll(final List<SectionEntity> sectionEntities) {
-        final String sql = "INSERT INTO section (line_id, upward_station_id, downward_station_id, distance) VALUES (:lineId, :upwardStationId, :downwardStationId, :distance)";
+        final String sql = "INSERT INTO section (line_id, upward_station_id, downward_station_id, distance)"
+                + " VALUES (:lineId, :upwardStationId, :downwardStationId, :distance)";
         jdbcTemplate.batchUpdate(sql, SqlParameterSourceUtils.createBatch(sectionEntities));
     }
 

@@ -34,24 +34,20 @@ class SectionDaoTest {
     @Test
     @DisplayName("해당 노선의 모든 구간 정보를 조회한다.")
     void findAllByLineId() {
-        //given
         final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
         final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
         final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
         final SectionEntity entity = new SectionEntity(lineEntity.getId(), upward.getId(), downward.getId(), 10);
         final SectionEntity savedEntity = sectionDao.save(entity);
 
-        //when
         final List<SectionEntity> sections = sectionDao.findAllByLineId(savedEntity.getLineId());
 
-        //then
         assertThat(sections).containsExactly(savedEntity);
     }
 
     @Test
     @DisplayName("모든 구간 정보를 저장한다.")
     void saveAll() {
-        //given
         final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
         final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
         final StationEntity middle = stationDao.save(new StationEntity("잠실새내역"));
@@ -61,10 +57,8 @@ class SectionDaoTest {
                 new SectionEntity(lineEntity.getId(), middle.getId(), downward.getId(), 10)
         );
 
-        //when
         sectionDao.saveAll(sections);
 
-        //then
         final List<SectionEntity> result = sectionDao.findAllByLineId(lineEntity.getId());
         assertAll(
                 () -> assertThat(result).hasSize(2),
@@ -86,17 +80,14 @@ class SectionDaoTest {
     @Test
     @DisplayName("노선의 구간 정보를 삭제한다.")
     void deleteAllByLineId() {
-        //given
         final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
         final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
         final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
         final SectionEntity entity = new SectionEntity(lineEntity.getId(), upward.getId(), downward.getId(), 10);
         final SectionEntity savedEntity = sectionDao.save(entity);
 
-        //when
         sectionDao.deleteAllByLineId(savedEntity.getLineId());
 
-        //then
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(savedEntity.getLineId());
         assertThat(sectionEntities).isEmpty();
     }

@@ -99,12 +99,10 @@ public final class Line {
     }
 
     private void validateForAddSection(final int upwardPosition, final int downwardPosition) {
-        if (upwardPosition != Sections.NOT_EXIST_INDEX
-                && downwardPosition != Sections.NOT_EXIST_INDEX) {
+        if (upwardPosition != Sections.NOT_EXIST_INDEX && downwardPosition != Sections.NOT_EXIST_INDEX) {
             throw new InvalidSectionException("두 역이 이미 노선에 존재합니다.");
         }
-        if (upwardPosition == Sections.NOT_EXIST_INDEX
-                && downwardPosition == Sections.NOT_EXIST_INDEX) {
+        if (upwardPosition == Sections.NOT_EXIST_INDEX && downwardPosition == Sections.NOT_EXIST_INDEX) {
             throw new InvalidSectionException("연결할 역 정보가 없습니다.");
         }
     }
@@ -117,8 +115,12 @@ public final class Line {
         return position == 0;
     }
 
-    private void addUpwardSectionBetweenStations(final Station upward, final Station downward, final int distance,
-                                                 final int downwardPosition) {
+    private void addUpwardSectionBetweenStations(
+            final Station upward,
+            final Station downward,
+            final int distance,
+            final int downwardPosition
+    ) {
         final int targetPosition = downwardPosition - 1;
         final Section section = sections.findSectionByPosition(targetPosition);
         sections.deleteByPosition(targetPosition);
@@ -137,8 +139,12 @@ public final class Line {
         sections.add(sections.size(), new Section(downward, Station.TERMINAL, 0));
     }
 
-    private void addDownwardSectionBetweenStations(final Station upward, final Station downward, final int distance,
-                                                   final int position) {
+    private void addDownwardSectionBetweenStations(
+            final Station upward,
+            final Station downward,
+            final int distance,
+            final int position
+    ) {
         final Section section = sections.findSectionByPosition(position);
         sections.deleteByPosition(position);
         validateDistance(section.getDistance(), distance);
@@ -174,9 +180,14 @@ public final class Line {
         sections.deleteByPosition(position - 1);
         sections.deleteByPosition(position - 1);
 
-        sections.add(position - 1,
-                new Section(previousSection.getUpward(), targetSection.getDownward(),
-                        targetSection.getDistance() + previousSection.getDistance()));
+        sections.add(
+                position - 1,
+                new Section(
+                        previousSection.getUpward(),
+                        targetSection.getDownward(),
+                        targetSection.getDistance() + previousSection.getDistance()
+                )
+        );
     }
 
     public Long getId() {

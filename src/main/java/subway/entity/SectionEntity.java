@@ -12,14 +12,19 @@ public class SectionEntity {
     private final String downwardStation;
     private final Integer distance;
 
-    public SectionEntity(final Long lineId, final Long upwardStationId, final Long downwardStationId,
-                         final Integer distance) {
+    public SectionEntity(
+            final Long lineId,
+            final Long upwardStationId,
+            final Long downwardStationId,
+            final Integer distance
+    ) {
         this(null, lineId, upwardStationId, null, downwardStationId, null, distance);
     }
 
-    public SectionEntity(final Long id, final Long lineId, final Long upwardStationId, final String upwardStation,
-                         final Long downwardStationId,
-                         final String downwardStation, final Integer distance) {
+    public SectionEntity(
+            final Long id, final Long lineId, final Long upwardStationId, final String upwardStation,
+            final Long downwardStationId, final String downwardStation, final Integer distance
+    ) {
         this.id = id;
         this.lineId = lineId;
         this.upwardStationId = upwardStationId;

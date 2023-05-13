@@ -38,13 +38,10 @@ class StationRepositoryTest {
         @Test
         @DisplayName("존재하는 역이라면 역 정보를 반환한다.")
         void findById() {
-            //given
             final StationEntity stationEntity = stationDao.save(new StationEntity("잠실역"));
 
-            //when
             final Station result = stationRepository.findById(stationEntity.getId());
 
-            //then
             assertAll(
                     () -> assertThat(result.getId()).isEqualTo(stationEntity.getId()),
                     () -> assertThat(result.getName()).isEqualTo(stationEntity.getName())
@@ -54,9 +51,6 @@ class StationRepositoryTest {
         @Test
         @DisplayName("존재하지 않는 역이라면 예외를 던진다.")
         void findByInvalidId() {
-            //given
-            //when
-            //then
             assertThatThrownBy(() -> stationRepository.findById(-2L))
                     .isInstanceOf(InvalidStationException.class)
                     .hasMessage("존재하지 않은 역 ID입니다.");

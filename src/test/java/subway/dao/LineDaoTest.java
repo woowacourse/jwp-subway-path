@@ -27,50 +27,14 @@ class LineDaoTest {
         lineDao = new LineDao(jdbcTemplate);
     }
 
-    @Nested
-    @DisplayName("아이디로 조회시 ")
-    class FindById {
-
-        @Test
-        @DisplayName("존재하는 ID라면 노선 정보를 반환한다.")
-        void findById() {
-            //given
-            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
-
-            //when
-            final Optional<LineEntity> line = lineDao.findById(lineEntity.getId());
-
-            //then
-            assertAll(
-                    () -> assertThat(line.get().getId()).isEqualTo(lineEntity.getId()),
-                    () -> assertThat(line.get().getName()).isEqualTo(lineEntity.getName()),
-                    () -> assertThat(line.get().getColor()).isEqualTo(lineEntity.getColor())
-            );
-        }
-
-        @Test
-        @DisplayName("존재하지 않는 ID라면 빈 값을 반환한다.")
-        void findByWithInvalidId() {
-            //given
-            //when
-            final Optional<LineEntity> line = lineDao.findById(-3L);
-
-            //then
-            assertThat(line).isEmpty();
-        }
-    }
-
     @Test
     @DisplayName("모든 노선을 조회한다.")
     void findAll() {
-        //given
         final LineEntity lineTwo = lineDao.save(new LineEntity("2호선", "초록색"));
         final LineEntity lineFour = lineDao.save(new LineEntity("4호선", "하늘색"));
 
-        //when
         final List<LineEntity> lines = lineDao.findAll();
 
-        //then
         assertAll(
                 () -> assertThat(lines).hasSize(2),
                 () -> assertThat(lines.get(0).getId()).isEqualTo(lineTwo.getId()),
@@ -83,19 +47,43 @@ class LineDaoTest {
     }
 
     @Nested
+    @DisplayName("아이디로 조회시 ")
+    class FindById {
+
+        @Test
+        @DisplayName("존재하는 ID라면 노선 정보를 반환한다.")
+        void findById() {
+            final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
+
+            final Optional<LineEntity> line = lineDao.findById(lineEntity.getId());
+
+            assertAll(
+                    () -> assertThat(line.get().getId()).isEqualTo(lineEntity.getId()),
+                    () -> assertThat(line.get().getName()).isEqualTo(lineEntity.getName()),
+                    () -> assertThat(line.get().getColor()).isEqualTo(lineEntity.getColor())
+            );
+        }
+
+        @Test
+        @DisplayName("존재하지 않는 ID라면 빈 값을 반환한다.")
+        void findByWithInvalidId() {
+            final Optional<LineEntity> line = lineDao.findById(-3L);
+
+            assertThat(line).isEmpty();
+        }
+    }
+
+    @Nested
     @DisplayName("노선 정보 업데이트시 ")
     class Update {
 
         @Test
         @DisplayName("존재하는 노선이라면 정보를 업데이트한다.")
         void update() {
-            //given
             final LineEntity line = lineDao.save(new LineEntity("2호선", "초록색"));
 
-            //when
             final int numberOfUpdatedRow = lineDao.update(new LineEntity(line.getId(), "4호선", "하늘색"));
 
-            //then
             final LineEntity updatedLine = lineDao.findById(line.getId()).get();
             assertAll(
                     () -> assertThat(numberOfUpdatedRow).isEqualTo(1),
@@ -107,11 +95,8 @@ class LineDaoTest {
         @Test
         @DisplayName("존재하지 않는 노선이라면 0을 반환한다.")
         void updateWithNotExistLine() {
-            //given
-            //when
             final int numberOfUpdatedRow = lineDao.update(new LineEntity(1L, "4호선", "하늘색"));
 
-            //then
             assertThat(numberOfUpdatedRow).isEqualTo(0);
         }
     }

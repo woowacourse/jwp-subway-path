@@ -49,6 +49,38 @@ public class LineControllerIntegrationTest extends IntegrationTest {
         lineRepository.update(lineTwo);
     }
 
+    @Test
+    @DisplayName("노선 목록을 조회한다.")
+    void findLines() throws Exception {
+        final LineEntity lineEntity = new LineEntity("4호선", "하늘색");
+        final Line lineFour = lineRepository.save(Line.from(lineEntity));
+        final StationEntity lineFourUpward = stationDao.save(new StationEntity("이수역"));
+        final StationEntity lineFourDownward = stationDao.save(new StationEntity("서울역"));
+        lineFour.addSection(Station.from(lineFourUpward), Station.from(lineFourDownward), 10);
+        lineRepository.update(lineFour);
+
+        mockMvc.perform(get("/lines"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.lines", hasSize(2)))
+                .andExpect(jsonPath("$.lines[0].id").value(lineTwo.getId()))
+                .andExpect(jsonPath("$.lines[0].name").value("2호선"))
+                .andExpect(jsonPath("$.lines[0].color").value("초록색"))
+                .andExpect(jsonPath("$.lines[0].stations", hasSize(2)))
+                .andExpect(jsonPath("$.lines[0].stations[0].id").value(upward.getId()))
+                .andExpect(jsonPath("$.lines[0].stations[0].name").value("잠실역"))
+                .andExpect(jsonPath("$.lines[0].stations[1].id").value(downward.getId()))
+                .andExpect(jsonPath("$.lines[0].stations[1].name").value("잠실새내역"))
+                .andExpect(jsonPath("$.lines[1].id").value(lineFour.getId()))
+                .andExpect(jsonPath("$.lines[1].name").value("4호선"))
+                .andExpect(jsonPath("$.lines[1].color").value("하늘색"))
+                .andExpect(jsonPath("$.lines[1].stations", hasSize(2)))
+                .andExpect(jsonPath("$.lines[1].stations[0].id").value(lineFourUpward.getId()))
+                .andExpect(jsonPath("$.lines[1].stations[0].name").value("이수역"))
+                .andExpect(jsonPath("$.lines[1].stations[1].id").value(lineFourDownward.getId()))
+                .andExpect(jsonPath("$.lines[1].stations[1].name").value("서울역"));
+    }
+
     @Nested
     @DisplayName("노선 생성 요청시 ")
     class CreateLine {
@@ -120,38 +152,6 @@ public class LineControllerIntegrationTest extends IntegrationTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest());
         }
-    }
-
-    @Test
-    @DisplayName("노선 목록을 조회한다.")
-    void findLines() throws Exception {
-        final LineEntity lineEntity = new LineEntity("4호선", "하늘색");
-        final Line lineFour = lineRepository.save(Line.from(lineEntity));
-        final StationEntity lineFourUpward = stationDao.save(new StationEntity("이수역"));
-        final StationEntity lineFourDownward = stationDao.save(new StationEntity("서울역"));
-        lineFour.addSection(Station.from(lineFourUpward), Station.from(lineFourDownward), 10);
-        lineRepository.update(lineFour);
-
-        mockMvc.perform(get("/lines"))
-                .andDo(print())
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.lines", hasSize(2)))
-                .andExpect(jsonPath("$.lines[0].id").value(lineTwo.getId()))
-                .andExpect(jsonPath("$.lines[0].name").value("2호선"))
-                .andExpect(jsonPath("$.lines[0].color").value("초록색"))
-                .andExpect(jsonPath("$.lines[0].stations", hasSize(2)))
-                .andExpect(jsonPath("$.lines[0].stations[0].id").value(upward.getId()))
-                .andExpect(jsonPath("$.lines[0].stations[0].name").value("잠실역"))
-                .andExpect(jsonPath("$.lines[0].stations[1].id").value(downward.getId()))
-                .andExpect(jsonPath("$.lines[0].stations[1].name").value("잠실새내역"))
-                .andExpect(jsonPath("$.lines[1].id").value(lineFour.getId()))
-                .andExpect(jsonPath("$.lines[1].name").value("4호선"))
-                .andExpect(jsonPath("$.lines[1].color").value("하늘색"))
-                .andExpect(jsonPath("$.lines[1].stations", hasSize(2)))
-                .andExpect(jsonPath("$.lines[1].stations[0].id").value(lineFourUpward.getId()))
-                .andExpect(jsonPath("$.lines[1].stations[0].name").value("이수역"))
-                .andExpect(jsonPath("$.lines[1].stations[1].id").value(lineFourDownward.getId()))
-                .andExpect(jsonPath("$.lines[1].stations[1].name").value("서울역"));
     }
 
     @Nested

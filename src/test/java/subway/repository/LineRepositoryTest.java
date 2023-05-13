@@ -45,13 +45,10 @@ class LineRepositoryTest {
     @Test
     @DisplayName("노선을 저장한다.")
     void save() {
-        //given
         final Line line = new Line("2호선", "초록색");
 
-        //when
         final Line result = lineRepository.save(line);
 
-        //then
         assertAll(
                 () -> assertThat(result.getId()).isNotNull(),
                 () -> assertThat(result.getName()).isEqualTo("2호선"),
@@ -76,11 +73,8 @@ class LineRepositoryTest {
         @Test
         @DisplayName("ID로 조회할 때 존재하는 노선이라면 노선 정보를 반환한다.")
         void findById() {
-            //given
-            //when
             final Line result = lineRepository.findById(lineEntity.getId());
 
-            //then
             final List<Section> sections = result.getSections();
             assertAll(
                     () -> assertThat(result.getId()).isEqualTo(lineEntity.getId()),
@@ -99,9 +93,6 @@ class LineRepositoryTest {
         @Test
         @DisplayName("ID로 조회할 때 존재하지 않는 노선이라면 예외를 던진다.")
         void findByInvalidId() {
-            //given
-            //when
-            //then
             assertThatThrownBy(() -> lineRepository.findById(-2L))
                     .isInstanceOf(InvalidLineException.class)
                     .hasMessage("존재하지 않는 노선 ID 입니다.");
@@ -110,11 +101,8 @@ class LineRepositoryTest {
         @Test
         @DisplayName("모든 노선 정보를 조회한다.")
         void findAll() {
-            //given
-            //when
             final List<Line> lines = lineRepository.findAll();
 
-            //then
             final List<Section> sections = lines.get(0).getSections();
             assertAll(
                     () -> assertThat(lines).hasSize(1),
@@ -138,7 +126,6 @@ class LineRepositoryTest {
         @Test
         @DisplayName("섹션이 추가 됐을 때 노선 정보를 업데이트한다.")
         void updateWhenStationAdded() {
-            //given
             final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
             final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
             final StationEntity middle = stationDao.save(new StationEntity("종합운동장역"));
@@ -154,10 +141,8 @@ class LineRepositoryTest {
             final Line line = Line.of(lineEntity, List.of(sectionEntity));
             line.addSection(Station.from(upward), Station.from(middle), 3);
 
-            //when
             lineRepository.update(line);
 
-            //then
             final Line result = lineRepository.findById(lineEntity.getId());
             final List<Station> stations = result.getStations();
             assertAll(
@@ -174,7 +159,6 @@ class LineRepositoryTest {
         @Test
         @DisplayName("섹션이 삭제 됐을 때 노선 정보를 업데이트한다.")
         void updateWhenStationDeleted() {
-            //given
             final LineEntity lineEntity = lineDao.save(new LineEntity("2호선", "초록색"));
             final StationEntity upward = stationDao.save(new StationEntity("잠실역"));
             final StationEntity downward = stationDao.save(new StationEntity("잠실새내역"));
@@ -189,10 +173,8 @@ class LineRepositoryTest {
             final Line line = Line.of(lineEntity, List.of(sectionEntity));
             line.deleteStation(Station.from(upward));
 
-            //when
             lineRepository.update(line);
 
-            //then
             final Line result = lineRepository.findById(lineEntity.getId());
             final List<Station> stations = result.getStations();
             assertThat(stations).isEmpty();

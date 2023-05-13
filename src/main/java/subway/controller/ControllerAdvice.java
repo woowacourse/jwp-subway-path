@@ -26,7 +26,9 @@ public class ControllerAdvice {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<String> handleException(final MethodArgumentNotValidException exception) {
-        final String message = exception.getBindingResult().getFieldErrors().stream()
+        final String message = exception.getBindingResult()
+                .getFieldErrors()
+                .stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(System.lineSeparator()));
         LOGGER.warn(message);
