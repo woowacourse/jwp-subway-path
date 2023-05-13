@@ -27,7 +27,14 @@ public class Sections {
     }
     
     public void initAddStation(final String leftAdditional, final String rightAdditional, final long distance) {
+        validateInitAddCase();
         sections.add(new Section(leftAdditional, rightAdditional, distance));
+    }
+    
+    private void validateInitAddCase() {
+        if (!sections.isEmpty()) {
+            throw new IllegalArgumentException("해당 노선의 구간이 없을때만 최초 등록이 가능합니다.");
+        }
     }
     
     public void addStation(
