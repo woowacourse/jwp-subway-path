@@ -53,7 +53,7 @@ public class LineController {
         return ResponseEntity.ok(lineQueryService.findAll());
     }
 
-    @GetMapping("/shortest")
+    @GetMapping("/shortest-path")
     ResponseEntity<ShortestRouteResponse> findShortestPath(
             @Valid @ModelAttribute final QueryShortestPathRequest request
     ) {

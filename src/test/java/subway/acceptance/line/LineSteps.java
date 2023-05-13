@@ -124,7 +124,7 @@ public class LineSteps {
                 .param("startStationName", startStationName)
                 .param("endStationName", endStationName)
                 .when()
-                .get("/lines/shortest")
+                .get("/lines/shortest-path")
                 .then()
                 .log().all()
                 .extract();
