@@ -1,54 +1,45 @@
 package subway.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
+import subway.application.dto.CreationStationDto;
+import subway.ui.dto.request.CreationStationRequest;
+import subway.ui.dto.response.CreationStationResponse;
+import subway.ui.dto.response.ReadStationResponse;
 
 import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/stations")
 public class StationController {
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationController(final StationService stationService) {
         this.stationService = stationService;
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
-    }
-
-    @GetMapping
-    public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
+    public ResponseEntity<CreationStationResponse> createStation(@RequestBody final CreationStationRequest request) {
+        final CreationStationDto stationDto = stationService.saveStation(request.getName());
+        final CreationStationResponse response = CreationStationResponse.from(stationDto);
+        return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
-        stationService.updateStation(id, stationRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ReadStationResponse> showStation(@PathVariable final Long id) {
+        return ResponseEntity.ok().body(stationService.findStationById(id));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }
