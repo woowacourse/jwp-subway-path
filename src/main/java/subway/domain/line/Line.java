@@ -40,13 +40,13 @@ public class Line {
     public void addStationEnd(final Station exist, final Station station, final long distance) {
         validateNotEmpty();
         final InterStation firstInterStation = interStations.get(0);
-        final Station firstStation = firstInterStation.getFirstStation();
+        final Station firstStation = firstInterStation.getUpStation();
         if (firstStation.equals(exist)) {
             interStations.add(0, new InterStation(station, firstStation, distance));
             return;
         }
         final InterStation lastInterStation = interStations.get(interStations.size() - 1);
-        final Station lastStation = lastInterStation.getSecondStation();
+        final Station lastStation = lastInterStation.getDownStation();
         if (lastStation.equals(exist)) {
             interStations.add(new InterStation(exist, station, distance));
             return;
@@ -55,19 +55,19 @@ public class Line {
     }
 
     public void addStationBetween(final Station first, final Station second, final Station between,
-            final long distance) {
+                                  final long distance) {
         validateNotEmpty();
         final InterStation targetInterStation = interStations.stream()
-                .filter(it -> it.getFirstStation().equals(first))
-                .filter(it -> it.getSecondStation().equals(second))
-                .findAny()
-                .orElseThrow(() -> new BusinessException("존재하지 않는 구간입니다"));
+            .filter(it -> it.getUpStation().equals(first))
+            .filter(it -> it.getDownStation().equals(second))
+            .findAny()
+            .orElseThrow(() -> new BusinessException("존재하지 않는 구간입니다"));
         final int targetIndex = interStations.indexOf(targetInterStation);
-        final Station firstStation = targetInterStation.getFirstStation();
-        final Station secondStation = targetInterStation.getSecondStation();
+        final Station firstStation = targetInterStation.getUpStation();
+        final Station secondStation = targetInterStation.getDownStation();
         interStations.remove(targetIndex);
         interStations.add(targetIndex,
-                new InterStation(between, secondStation, targetInterStation.getDistance() - distance));
+            new InterStation(between, secondStation, targetInterStation.getDistance().getValue() - distance));
         interStations.add(targetIndex, new InterStation(firstStation, between, distance));
     }
 
@@ -82,17 +82,17 @@ public class Line {
     }
 
     public void deleteStation(final Station existStation) {
-        if (interStations.get(0).getFirstStation().equals(existStation)) {
+        if (interStations.get(0).getUpStation().equals(existStation)) {
             interStations.remove(0);
             return;
         }
-        if (interStations.get(interStations.size() - 1).getSecondStation().equals(existStation)) {
+        if (interStations.get(interStations.size() - 1).getDownStation().equals(existStation)) {
             interStations.remove(interStations.size() - 1);
             return;
         }
         final Optional<InterStation> optionalInterStation = interStations.stream()
-                .filter(it -> it.contains(existStation))
-                .findFirst();
+            .filter(it -> it.contains(existStation))
+            .findFirst();
         if (optionalInterStation.isEmpty()) {
             return;
         }
@@ -101,12 +101,12 @@ public class Line {
         final InterStation nextInterStation = interStations.get(index + 1);
         interStations.remove(index);
         interStations.remove(index + 1);
-        final long distance = interStation.getDistance() + nextInterStation.getDistance();
+        final long distance = interStation.getDistance().getValue() + nextInterStation.getDistance().getValue();
         if (distance <= 0) {
             throw new BusinessException("구간의 길이가 0보다 작습니다");
         }
-        interStations.add(index, new InterStation(interStation.getFirstStation(), nextInterStation.getSecondStation(),
-                distance));
+        interStations.add(index, new InterStation(interStation.getUpStation(), nextInterStation.getDownStation(),
+            distance));
     }
 
     public boolean isEmpty() {
@@ -116,9 +116,9 @@ public class Line {
     public List<Station> getStations() {
         final List<Station> stations = new ArrayList<>();
         for (final InterStation interStation : interStations) {
-            stations.add(interStation.getFirstStation());
+            stations.add(interStation.getUpStation());
         }
-        stations.add(interStations.get(interStations.size() - 1).getSecondStation());
+        stations.add(interStations.get(interStations.size() - 1).getDownStation());
         return stations;
     }
 }

@@ -17,7 +17,7 @@ public class InterStationResponse {
     private long distance;
 
     public static InterStationResponse from(final InterStation interStation) {
-        return new InterStationResponse(interStation.getId(), interStation.getFirstStation().getId(),
-                interStation.getSecondStation().getId(), interStation.getDistance());
+        return new InterStationResponse(interStation.getId(), interStation.getUpStation().getId(),
+            interStation.getDownStation().getId(), interStation.getDistance().getValue());
     }
 }

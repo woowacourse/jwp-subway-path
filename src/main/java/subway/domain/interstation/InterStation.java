@@ -1,33 +1,43 @@
 package subway.domain.interstation;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import subway.domain.station.Station;
-import subway.exception.BusinessException;
+import subway.exception.interstation.InterStationException;
 
 @Getter
+@ToString
+@EqualsAndHashCode(of = "id")
 public class InterStation {
 
     private final Long id;
-    private final Station firstStation;
-    private final Station secondStation;
-    private final long distance;
+    private final Station upStation;
+    private final Station downStation;
+    private final Distance distance;
 
-    public InterStation(final Long id, final Station firstStation, final Station secondStation,
-            final long distance) {
-        validateDistance(distance);
+    public InterStation(final Long id,
+                        final Station upStation,
+                        final Station downStation,
+                        final Distance distance) {
+        validateStations(upStation, downStation);
         this.id = id;
-        this.firstStation = firstStation;
-        this.secondStation = secondStation;
+        this.upStation = upStation;
+        this.downStation = downStation;
         this.distance = distance;
     }
 
-    public InterStation(final Station firstStation, final Station secondStation, final long distance) {
-        this(null, firstStation, secondStation, distance);
+    public InterStation(final Long id, final Station upStation, final Station downStation, final long distance) {
+        this(id, upStation, downStation, new Distance(distance));
     }
 
-    private void validateDistance(final long distance) {
-        if (distance < 0) {
-            throw new BusinessException("거리는 양수이어야 합니다.");
+    public InterStation(final Station upStation, final Station downStation, final long distance) {
+        this(null, upStation, downStation, distance);
+    }
+
+    private void validateStations(final Station firstStation, final Station secondStation) {
+        if (firstStation.equals(secondStation)) {
+            throw new InterStationException("상행역과 하행역이 같습니다.");
         }
     }
 
@@ -35,6 +45,6 @@ public class InterStation {
         if (station == null) {
             return false;
         }
-        return firstStation.equals(station) || secondStation.equals(station);
+        return upStation.equals(station) || downStation.equals(station);
     }
 }

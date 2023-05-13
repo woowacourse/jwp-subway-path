@@ -16,9 +16,9 @@ public class InterStationEntity {
 
     public static InterStationEntity of(final InterStation interStation, final Long lineId) {
         return new InterStationEntity(interStation.getId(),
-                lineId,
-                interStation.getFirstStation().getId(),
-                interStation.getSecondStation().getId(),
-                interStation.getDistance());
+            lineId,
+            interStation.getUpStation().getId(),
+            interStation.getDownStation().getId(),
+            interStation.getDistance().getValue());
     }
 }
