@@ -27,7 +27,7 @@ class DefaultPaymentPolicyTest {
         given(route.totalDistance()).willReturn(0);
 
         // when
-        final int payment = paymentPolicy.calculatePayment(route);
+        final int payment = paymentPolicy.calculateFee(route);
 
         // then
         assertThat(payment).isEqualTo(0);
@@ -40,7 +40,7 @@ class DefaultPaymentPolicyTest {
         given(route.totalDistance()).willReturn(distance);
 
         // when
-        final int payment = paymentPolicy.calculatePayment(route);
+        final int payment = paymentPolicy.calculateFee(route);
 
         // then
         assertThat(payment).isEqualTo(1250);
@@ -67,7 +67,7 @@ class DefaultPaymentPolicyTest {
         given(route.totalDistance()).willReturn(distance);
 
         // when
-        final int payment = paymentPolicy.calculatePayment(route);
+        final int payment = paymentPolicy.calculateFee(route);
 
         // then
         assertThat(payment).isEqualTo(expected);
@@ -88,7 +88,7 @@ class DefaultPaymentPolicyTest {
         given(route.totalDistance()).willReturn(distance);
 
         // when
-        final int payment = paymentPolicy.calculatePayment(route);
+        final int payment = paymentPolicy.calculateFee(route);
 
         // then
         assertThat(payment).isEqualTo(expected);

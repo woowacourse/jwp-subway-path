@@ -147,9 +147,14 @@ public class LineSteps {
                 .containsExactly(sectionInfos);
     }
 
+    public static void 최단경로의_요금은(final ShortestRouteResponse response, final int fee) {
+        assertThat(response.getTotalFee()).isEqualTo(fee);
+    }
+
     public static void 경로가_없다(final ShortestRouteResponse response) {
         최단경로의_총_길이는(response, 0);
         최단경로의_환승역은(response);
         최단경로의_각_구간은(response);
+        최단경로의_요금은(response, 0);
     }
 }

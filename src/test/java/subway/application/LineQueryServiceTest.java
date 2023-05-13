@@ -4,6 +4,7 @@ import static java.util.Optional.empty;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 import static subway.domain.fixture.StationFixture.건대입구;
@@ -35,6 +36,7 @@ import subway.domain.LineRepository;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.StationRepository;
+import subway.domain.payment.PaymentPolicy;
 import subway.domain.service.ShortestRouteService;
 import subway.exception.BaseExceptionType;
 import subway.exception.line.LineException;
@@ -48,9 +50,10 @@ class LineQueryServiceTest {
 
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final StationRepository stationRepository = mock(StationRepository.class);
+    private final PaymentPolicy paymentPolicy = mock(PaymentPolicy.class);
     private final ShortestRouteService shortestRouteService = new JgraphtShortestRoute();
     private final LineQueryService lineQueryService =
-            new LineQueryService(lineRepository, stationRepository, shortestRouteService);
+            new LineQueryService(lineRepository, stationRepository, shortestRouteService, paymentPolicy);
 
     @Test
     void id_를_통해서_노선을_조회한다() {
@@ -174,6 +177,7 @@ class LineQueryServiceTest {
             // given
             given(stationRepository.findByName(역5.name())).willReturn(Optional.of(역5));
             given(stationRepository.findByName(역7.name())).willReturn(Optional.of(역7));
+            given(paymentPolicy.calculateFee(any())).willReturn(2000);
 
             // when
             final ShortestRouteResponse shortestRoute = lineQueryService.findShortestRoute(역5.name(), 역7.name());
@@ -190,6 +194,7 @@ class LineQueryServiceTest {
                             "3호선: 역1-[10km]-역7"
                     );
             assertThat(shortestRoute.getTransferCount()).isEqualTo(2);
+            assertThat(shortestRoute.getTotalFee()).isEqualTo(2000);
             assertThat(shortestRoute.getTransferStations())
                     .containsExactly("역3", "역1");
         }

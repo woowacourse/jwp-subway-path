@@ -8,6 +8,7 @@ import java.util.List;
 import subway.domain.Line;
 import subway.domain.Lines;
 import subway.domain.Section;
+import subway.domain.payment.PaymentLines;
 
 public class ShortestRouteResponse {
 
@@ -15,19 +16,31 @@ public class ShortestRouteResponse {
     private final List<String> transferStations;
     private final int transferCount;
     private final int totalDistance;
+    private final int totalFee;
 
     public ShortestRouteResponse(final List<SectionInfo> sectionInfos,
                                  final List<String> transferStations,
-                                 final int totalDistance) {
+                                 final int totalDistance,
+                                 final int totalFee) {
         this.sectionInfos = new ArrayList<>(sectionInfos);
         this.transferStations = new ArrayList<>(transferStations);
         this.totalDistance = totalDistance;
         this.transferCount = transferStations.size();
+        this.totalFee = totalFee;
     }
 
-    public static ShortestRouteResponse from(final Lines lines) {
+    public static ShortestRouteResponse empty() {
+        return new ShortestRouteResponse(
+                emptyList(),
+                emptyList(),
+                0,
+                0);
+    }
+
+    public static ShortestRouteResponse from(final PaymentLines paymentLines) {
+        final Lines lines = paymentLines.lines();
         if (lines.isEmpty()) {
-            return new ShortestRouteResponse(emptyList(), emptyList(), 0);
+            return empty();
         }
         final List<SectionInfo> sectionInfoList = lines.lines().stream()
                 .flatMap(it -> SectionInfo.from(it).stream())
@@ -35,7 +48,8 @@ public class ShortestRouteResponse {
         return new ShortestRouteResponse(
                 sectionInfoList,
                 toTransferStations(lines),
-                lines.totalDistance());
+                lines.totalDistance(),
+                paymentLines.calculateFee());
     }
 
     private static List<String> toTransferStations(final Lines lines) {
@@ -43,6 +57,10 @@ public class ShortestRouteResponse {
                 .map(it -> it.downTerminal().name())
                 .limit(lines.size() - 1)
                 .collect(toList());
+    }
+
+    public List<SectionInfo> getSectionInfos() {
+        return sectionInfos;
     }
 
     public List<String> getTransferStations() {
@@ -53,12 +71,12 @@ public class ShortestRouteResponse {
         return transferCount;
     }
 
-    public List<SectionInfo> getSectionInfos() {
-        return sectionInfos;
-    }
-
     public int getTotalDistance() {
         return totalDistance;
+    }
+
+    public int getTotalFee() {
+        return totalFee;
     }
 
     public static class SectionInfo {

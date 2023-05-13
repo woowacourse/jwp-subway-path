@@ -6,7 +6,7 @@ import subway.domain.Lines;
 @Component
 public class DefaultPaymentPolicy implements PaymentPolicy {
 
-    private static final int BASIC_PAYMENT = 1250;
+    private static final int BASIC_FEE = 1250;
     private static final int BASIC_LIMIT_DISTANCE = 10;
     private static final int INCREASE_AMOUNT = 100;
 
@@ -16,24 +16,24 @@ public class DefaultPaymentPolicy implements PaymentPolicy {
     private static final int LONG_DISTANCE_SLICE = 8;
 
     @Override
-    public int calculatePayment(final Lines route) {
-        if (route.isEmpty() || route.totalDistance() == 0) {
+    public int calculateFee(final Lines lines) {
+        if (lines.isEmpty() || lines.totalDistance() == 0) {
             return 0;
         }
 
-        final int totalDistance = route.totalDistance();
+        final int totalDistance = lines.totalDistance();
         if (totalDistance <= BASIC_LIMIT_DISTANCE) {
-            return BASIC_PAYMENT;
+            return BASIC_FEE;
         }
 
         final int remainBasic = totalDistance - BASIC_LIMIT_DISTANCE;
         if (remainBasic <= MIDDLE_LIMIT_DISTANCE) {
-            return BASIC_PAYMENT + calculateSurcharge(remainBasic, MIDDLE_LENGTH_UNIT);
+            return BASIC_FEE + calculateSurcharge(remainBasic, MIDDLE_LENGTH_UNIT);
         }
 
         final int remainMiddle = remainBasic - MIDDLE_LIMIT_DISTANCE;
 
-        return BASIC_PAYMENT
+        return BASIC_FEE
                 + calculateSurcharge(MIDDLE_LIMIT_DISTANCE, MIDDLE_LENGTH_UNIT)
                 + calculateSurcharge(remainMiddle, LONG_DISTANCE_SLICE);
     }

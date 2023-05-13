@@ -15,6 +15,8 @@ import subway.domain.LineRepository;
 import subway.domain.Lines;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.domain.payment.PaymentLines;
+import subway.domain.payment.PaymentPolicy;
 import subway.domain.service.ShortestRouteService;
 import subway.exception.line.LineException;
 import subway.exception.station.StationException;
@@ -26,13 +28,16 @@ public class LineQueryService {
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
     private final ShortestRouteService shortestRouteService;
+    private final PaymentPolicy paymentPolicy;
 
     public LineQueryService(final LineRepository lineRepository,
                             final StationRepository stationRepository,
-                            final ShortestRouteService shortestRouteService) {
+                            final ShortestRouteService shortestRouteService,
+                            final PaymentPolicy paymentPolicy) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
         this.shortestRouteService = shortestRouteService;
+        this.paymentPolicy = paymentPolicy;
     }
 
     public LineQueryResponse findById(final UUID id) {
@@ -52,7 +57,8 @@ public class LineQueryService {
         final Station end = findStationByName(endStationName);
         final Lines lines = shortestRouteService.shortestRoute(new Lines(lineRepository.findAll()), start, end);
         final Lines continousLines = lines.continuousLinesWithStartStation(start);
-        return ShortestRouteResponse.from(continousLines);
+        final PaymentLines paymentLines = new PaymentLines(continousLines, paymentPolicy);
+        return ShortestRouteResponse.from(paymentLines);
     }
 
     private Station findStationByName(final String stationName) {
