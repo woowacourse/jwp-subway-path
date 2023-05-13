@@ -28,7 +28,6 @@ public class AddStationRequest {
     @NotBlank
     private String stationName;
 
-    @NotNull
     @Positive
     private Long distance;
 }
