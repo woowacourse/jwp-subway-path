@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS LINE
 (
     id    BIGINT AUTO_INCREMENT NOT NULL,
-    name  VARCHAR(255)          NOT NULL,
+    name  VARCHAR(255) UNIQUE   NOT NULL,
     color VARCHAR(20)           NOT NULL,
     PRIMARY KEY (id)
 );
