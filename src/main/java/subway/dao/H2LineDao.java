@@ -10,6 +10,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class H2LineDao implements LineDao {
@@ -39,6 +40,7 @@ public class H2LineDao implements LineDao {
         params.put("color", lineEntity.getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
+
         return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
     }
 
@@ -49,9 +51,9 @@ public class H2LineDao implements LineDao {
     }
 
     @Override
-    public LineEntity findById(final Long id) {
+    public Optional<LineEntity> findById(final Long id) {
         String sql = "SELECT id, name, color FROM line WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
     @Override

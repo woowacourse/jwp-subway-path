@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import subway.entity.LineEntity;
+import subway.exception.NoSuchLineException;
 import subway.fixture.LineFixture.이호선;
 
 import java.util.HashMap;
@@ -73,7 +74,8 @@ class LineEntityDaoTest {
 
         Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        LineEntity lineEntity = lineDao.findById(lineId);
+        LineEntity lineEntity = lineDao.findById(lineId)
+                .orElseThrow(() -> new NoSuchLineException(lineId));
 
         assertAll(
                 () -> assertThat(lineEntity.getName()).isEqualTo("2호선"),

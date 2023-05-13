@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import subway.entity.StationEntity;
+import subway.exception.NoSuchStationException;
 import subway.fixture.StationFixture.삼성역;
 
 import java.util.HashMap;
@@ -71,7 +72,8 @@ class StationEntityDaoTest {
 
         Long stationId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        StationEntity stationEntity = stationDao.findById(stationId);
+        StationEntity stationEntity = stationDao.findById(stationId)
+                .orElseThrow(() -> new NoSuchStationException(stationId));
 
         assertThat(stationEntity.getName()).isEqualTo("삼성역");
     }

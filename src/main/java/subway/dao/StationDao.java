@@ -3,14 +3,15 @@ package subway.dao;
 import subway.entity.StationEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StationDao {
 
-    StationEntity insert(StationEntity stationEntity);
+    Optional<StationEntity> findById(Long id);
 
     List<StationEntity> findAll();
 
-    StationEntity findById(Long id);
+    StationEntity insert(StationEntity stationEntity);
 
     void update(StationEntity newStationEntity);
 

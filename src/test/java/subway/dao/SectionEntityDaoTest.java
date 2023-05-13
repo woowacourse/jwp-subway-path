@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import subway.entity.SectionEntity;
+import subway.exception.NoSuchSectionException;
 import subway.fixture.LineFixture.이호선;
 import subway.fixture.SectionFixture.이호선_삼성_잠실_2;
 import subway.fixture.SectionFixture.이호선_역삼_삼성_3;
@@ -85,7 +86,8 @@ class SectionEntityDaoTest {
 
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        SectionEntity sectionEntity = sectionDao.findById(sectionId);
+        SectionEntity sectionEntity = sectionDao.findById(sectionId)
+                .orElseThrow(() -> new NoSuchSectionException(sectionId));
 
         assertThat(sectionEntity)
                 .usingRecursiveComparison()
@@ -105,7 +107,7 @@ class SectionEntityDaoTest {
 
         simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
 
         assertThat(sectionEntities)
                 .usingRecursiveComparison()

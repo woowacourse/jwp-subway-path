@@ -1,6 +1,8 @@
 package subway.repository;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -20,6 +22,8 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 class LineRepositoryTest {
 
@@ -84,7 +88,7 @@ class LineRepositoryTest {
                 List.of(new Section(new Station(station1.getId(), station1.getName()),
                         new Station(station3.getId(), station3.getName()), 12))));
 
-        List<SectionEntity> sections = sectionDao.findByLineId(line.getId());
+        List<SectionEntity> sections = sectionDao.findAllByLineId(line.getId());
         assertThat(sections)
                 .usingRecursiveComparison()
                 .ignoringFields("id")

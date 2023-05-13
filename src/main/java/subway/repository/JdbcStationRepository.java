@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.entity.StationEntity;
+import subway.exception.NoSuchStationException;
 import subway.mapper.StationMapper;
 
 import java.util.List;
@@ -20,7 +21,8 @@ public class JdbcStationRepository implements StationRepository {
 
     @Override
     public Station findById(final Long id) {
-        StationEntity entity = stationDao.findById(id);
+        StationEntity entity = stationDao.findById(id)
+                .orElseThrow(() -> new NoSuchStationException(id));
         return StationMapper.toStation(entity);
     }
 

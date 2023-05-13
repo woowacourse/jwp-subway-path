@@ -10,6 +10,7 @@ import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class H2StationDao implements StationDao {
@@ -44,9 +45,9 @@ public class H2StationDao implements StationDao {
     }
 
     @Override
-    public StationEntity findById(final Long id) {
+    public Optional<StationEntity> findById(final Long id) {
         String sql = "SELECT * FROM station WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
     @Override
@@ -57,7 +58,7 @@ public class H2StationDao implements StationDao {
 
     @Override
     public void deleteById(final Long id) {
-        String sql = "DELETE FROM STATION WHERE id = ?";
+        String sql = "DELETE FROM station WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 }

@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class H2SectionDao implements SectionDao {
@@ -70,13 +71,13 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public SectionEntity findById(final Long id) {
+    public Optional<SectionEntity> findById(final Long id) {
         String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
     @Override
-    public List<SectionEntity> findByLineId(final long lineId) {
+    public List<SectionEntity> findAllByLineId(final long lineId) {
         String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }

@@ -10,6 +10,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.exception.NoSuchLineException;
 import subway.mapper.LineMapper;
 import subway.mapper.SectionMapper;
 
@@ -39,7 +40,8 @@ public class JdbcLineRepository implements LineRepository {
 
     @Override
     public Line findById(final long lineId) {
-        LineEntity lineEntity = lineDao.findById(lineId);
+        LineEntity lineEntity = lineDao.findById(lineId)
+                .orElseThrow(() -> new NoSuchLineException(lineId));
 
         String sql = "SELECT section.id, up.id, up.name, down.id, down.name, section.distance FROM section "
                 + "INNER JOIN station up ON section.up_station_id = up.id "
