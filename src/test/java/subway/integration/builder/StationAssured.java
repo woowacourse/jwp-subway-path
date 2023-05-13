@@ -46,16 +46,16 @@ public class StationAssured {
     public static class StationResponseBuilder {
         private ExtractableResponse<Response> response;
 
+        public StationResponseBuilder(final ExtractableResponse<Response> response) {
+            this.response = response;
+        }
+
         public <T> T toBody(Class<T> cls) {
             return response.as(cls);
         }
 
         public <T> List<T> toBodies(Class<T> cls) {
             return response.jsonPath().getList("", cls);
-        }
-
-        public StationResponseBuilder(final ExtractableResponse<Response> response) {
-            this.response = response;
         }
 
         public void 등록된_역이_조회된다(final Long stationId, final String stationName) {

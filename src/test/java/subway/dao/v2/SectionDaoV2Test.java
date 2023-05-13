@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import subway.config.DaoTestConfig;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.domain.Distance;
 
 import java.util.Optional;
 
@@ -46,7 +45,7 @@ class SectionDaoV2Test extends DaoTestConfig {
         final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
         final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
 
-        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, true, new Distance(10));
+        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, true, 10);
 
         // when
         final Optional<SectionEntity> maybeSectionEntity = sectionDao.findBySectionId(saveSectionId);
@@ -66,7 +65,7 @@ class SectionDaoV2Test extends DaoTestConfig {
         final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
         final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
 
-        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, true, new Distance(10));
+        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, true, 10);
 
         // when
         sectionDao.delete(saveSectionId);
