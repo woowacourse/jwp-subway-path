@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
-import subway.domain.StationDomain;
 
+import java.util.List;
 import java.util.Optional;
 
 import static subway.dao.support.SqlHelper.sqlHelper;
@@ -31,18 +31,21 @@ public class SectionDaoV2 {
             rs.getInt("distance"),
             rs.getBoolean("is_start"),
             rs.getLong("up_station_id"),
-            rs.getLong("down_station_id")
+            rs.getLong("down_station_id"),
+            rs.getLong("line_id")
     );
 
     public Long insert(
             final Long upStationId,
             final Long downStationId,
+            final Long lineId,
             final boolean isStart,
             final Integer distance
     ) {
         return simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource()
                 .addValue("up_station_id", upStationId)
                 .addValue("down_station_id", downStationId)
+                .addValue("line_id", lineId)
                 .addValue("is_start", isStart)
                 .addValue("distance", distance)
         ).longValue();
@@ -52,6 +55,7 @@ public class SectionDaoV2 {
         return simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource()
                 .addValue("up_station_id", sectionEntity.getUpStationId())
                 .addValue("down_station_id", sectionEntity.getDownStationId())
+                .addValue("line_id", sectionEntity.getLineId())
                 .addValue("is_start", sectionEntity.getStart())
                 .addValue("distance", sectionEntity.getDistance())
         ).longValue();
@@ -59,12 +63,9 @@ public class SectionDaoV2 {
 
     public Optional<SectionEntity> findBySectionId(final Long sectionId) {
         final String sql = sqlHelper()
-                .select()
-                .columns("id, distance, is_start, up_station_id, down_station_id")
-                .from()
-                .table("SECTIONS")
-                .where()
-                .condition("id = ?")
+                .select().columns("id, distance, is_start, up_station_id, down_station_id, line_id")
+                .from().table("SECTIONS")
+                .where().condition("id = ?")
                 .toString();
 
         try {
@@ -74,11 +75,15 @@ public class SectionDaoV2 {
         }
     }
 
-    private final RowMapper<StationDomain> stationRowMapper = (rs, rowNum) ->
-            new StationDomain(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
+    public List<SectionEntity> findAllByLineId(final Long lineId) {
+        final String sql = sqlHelper()
+                .select().columns("id, distance, is_start, up_station_id, down_station_id, line_id")
+                .from().table("SECTIONS")
+                .where().condition("line_id = ?")
+                .toString();
+
+        return jdbcTemplate.query(sql, sectionRowMapper, lineId);
+    }
 
     public void delete(final Long sectionId) {
         final String sql = sqlHelper()

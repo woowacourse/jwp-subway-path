@@ -20,7 +20,7 @@ public class SectionServiceV2 {
 
     @Transactional
     public Long saveSection(final CreateSectionRequest request) {
-        return sectionRepository.save(request.getUpStationId(), request.getDownStationId(), false, request.getDistance());
+        return sectionRepository.save(request.getUpStationId(), request.getDownStationId(), request.getLineId(), false, request.getDistance());
     }
 
     public SectionResponse findBySectionId(final Long sectionId) {

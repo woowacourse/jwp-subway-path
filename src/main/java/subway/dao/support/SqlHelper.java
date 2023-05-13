@@ -47,6 +47,11 @@ public class SqlHelper {
         return this;
     }
 
+    public SqlHelper in(final String columnName, final String values) {
+        sql.append(" ").append(columnName).append(" IN (").append(values).append(")");
+        return this;
+    }
+
     public SqlHelper join(final String table) {
         sql.append(" JOIN ").append(table);
         return this;

@@ -25,7 +25,9 @@ class SectionRepositoryTest extends RepositoryTestConfig {
         // given
         final Long upStationId = stationDaoV2.insert(new StationEntity("루카"));
         final Long downStationId = stationDaoV2.insert(new StationEntity("헤나"));
-        final SectionEntity sectionEntity = new SectionEntity(0L, 10, true, upStationId, downStationId);
+        final Long lineId = lineDaoV2.insert("2", "초록");
+
+        final SectionEntity sectionEntity = new SectionEntity(0L, 10, true, upStationId, downStationId, lineId);
 
         final Long saveSectionId = sectionDaoV2.insert(sectionEntity);
 

@@ -15,11 +15,13 @@ class SectionDaoV2Test extends DaoTestConfig {
 
     SectionDaoV2 sectionDao;
     StationDaoV2 stationDao;
+    LineDaoV2 lineDao;
 
     @BeforeEach
     void setUp() {
         sectionDao = new SectionDaoV2(jdbcTemplate);
         stationDao = new StationDaoV2(jdbcTemplate);
+        lineDao = new LineDaoV2(jdbcTemplate);
     }
 
     @Test
@@ -28,9 +30,11 @@ class SectionDaoV2Test extends DaoTestConfig {
         final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
         final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
 
+        final Long saveLineId = lineDao.insert("2", "초록");
+
         // when
-        final SectionEntity sectionEntity = new SectionEntity(10, true, saveUpStationId, saveDownStationId);
-//        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, false, new Distance(10));
+        final SectionEntity sectionEntity = new SectionEntity(10, true, saveUpStationId, saveDownStationId, saveLineId);
+
         final Long saveSectionId = sectionDao.insert(sectionEntity);
 
         // then
@@ -45,7 +49,9 @@ class SectionDaoV2Test extends DaoTestConfig {
         final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
         final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
 
-        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, true, 10);
+        final Long saveLineId = lineDao.insert("2", "초록");
+
+        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, saveLineId, true, 10);
 
         // when
         final Optional<SectionEntity> maybeSectionEntity = sectionDao.findBySectionId(saveSectionId);
@@ -55,8 +61,13 @@ class SectionDaoV2Test extends DaoTestConfig {
                 () -> assertThat(maybeSectionEntity).isPresent(),
                 () -> assertThat(maybeSectionEntity.get())
                         .usingRecursiveComparison()
-                        .isEqualTo(new SectionEntity(saveSectionId, 10, true, saveUpStationId, saveDownStationId))
+                        .isEqualTo(new SectionEntity(saveSectionId, 10, true, saveUpStationId, saveDownStationId, saveLineId))
         );
+    }
+
+    @Test
+    void 노선_식별자값에_해당하는_구간들을_모두_조회한다() {
+
     }
 
     @Test
@@ -65,7 +76,9 @@ class SectionDaoV2Test extends DaoTestConfig {
         final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
         final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
 
-        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, true, 10);
+        final Long saveLineId = lineDao.insert("2", "초록");
+
+        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, saveLineId, true, 10);
 
         // when
         sectionDao.delete(saveSectionId);

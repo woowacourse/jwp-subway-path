@@ -5,7 +5,9 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.StationLineDao;
+import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 public class ServiceTestConfig extends RepositoryTestConfig {
 
@@ -15,6 +17,8 @@ public class ServiceTestConfig extends RepositoryTestConfig {
     protected StationLineDao stationLineDao;
 
     protected SectionRepository sectionRepository;
+    protected StationRepository stationRepository;
+    protected LineRepository lineRepository;
 
     @BeforeEach
     void serviceInit() {
@@ -24,5 +28,7 @@ public class ServiceTestConfig extends RepositoryTestConfig {
         stationLineDao = new StationLineDao(jdbcTemplate);
 
         sectionRepository = new SectionRepository(sectionDaoV2, stationDaoV2);
+        stationRepository = new StationRepository(stationDaoV2);
+        lineRepository = new LineRepository(lineDaoV2, sectionDaoV2, stationDaoV2);
     }
 }
