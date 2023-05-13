@@ -39,7 +39,9 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest request) {
-        lineDao.updateById(id, Line.of(request.getName(), request.getColor()));
+        Line line = lineDao.findById(id);
+        line.updateInfo(request.getName(), request.getColor());
+        lineDao.updateById(id, line);
     }
 
     @Transactional
