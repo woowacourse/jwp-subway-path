@@ -2,8 +2,8 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.domain.Line;
+import subway.dao.LinePropertyDao;
+import subway.domain.LineProperty;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -14,42 +14,39 @@ import java.util.stream.Collectors;
 @Transactional
 public class LineService {
 
-    private final LineDao lineDao;
+    private final LinePropertyDao linePropertyDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineService(LinePropertyDao linePropertyDao) {
+        this.linePropertyDao = linePropertyDao;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(null, request.getName(), request.getColor(), null));
-        return LineResponse.of(persistLine);
+        LineProperty lineProperty = linePropertyDao.insert(
+                new LineProperty(null, request.getName(), request.getColor()));
+        return LineResponse.of(lineProperty);
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
+        List<LineProperty> allLineProperties = findLines();
+        return allLineProperties.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    public List<LineProperty> findLines() {
+        return linePropertyDao.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        LineProperty lineProperty = linePropertyDao.findById(id);
+        return LineResponse.of(lineProperty);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor(), null));
+        linePropertyDao.update(new LineProperty(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        linePropertyDao.deleteById(id);
     }
 }

@@ -15,7 +15,7 @@ class LineTest {
 
     @BeforeEach
     void setting() {
-        line = new Line(null, "name", "red", new ArrayList<>());
+        line = new Line(new LineProperty(null, "name", "red"), new ArrayList<>());
     }
 
     @Test

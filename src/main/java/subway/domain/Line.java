@@ -7,15 +7,11 @@ import java.util.function.Predicate;
 
 public class Line {
 
-    private final Long id;
-    private final String name;
-    private final String color;
+    private final LineProperty lineProperty;
     private final List<Section> sections;
 
-    public Line(Long id, String name, String color, List<Section> sections) {
-        this.id = id;
-        this.name = name;
-        this.color = color;
+    public Line(LineProperty lineProperty, List<Section> sections) {
+        this.lineProperty = lineProperty;
         this.sections = sections;
     }
 
@@ -100,15 +96,15 @@ public class Line {
     }
 
     public Long getId() {
-        return id;
+        return lineProperty.getId();
     }
 
     public String getName() {
-        return name;
+        return lineProperty.getName();
     }
 
     public String getColor() {
-        return color;
+        return lineProperty.getColor();
     }
 
     public List<Section> getSections() {
@@ -120,11 +116,11 @@ public class Line {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
-        return Objects.equals(id, line.id);
+        return Objects.equals(lineProperty, line.lineProperty);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(lineProperty);
     }
 }

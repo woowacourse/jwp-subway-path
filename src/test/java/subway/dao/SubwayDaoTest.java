@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import subway.domain.Distance;
 import subway.domain.Line;
+import subway.domain.LineProperty;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.entity.SectionEntity;
@@ -28,7 +29,7 @@ class SubwayDaoTest {
     private JdbcTemplate jdbcTemplate;
     private StationDao stationDao;
     private SubwayDao subwayDao;
-    private LineDao lineDao;
+    private LinePropertyDao linePropertyDao;
 
     private final RowMapper<SectionEntity> sectionMapper = (rs, cn) -> new SectionEntity(
             rs.getLong("id"),
@@ -43,23 +44,27 @@ class SubwayDaoTest {
     void setting() {
         jdbcTemplate = new JdbcTemplate(dataSource);
         subwayDao = new SubwayDao(jdbcTemplate);
-        lineDao = new LineDao(jdbcTemplate, dataSource);
+        linePropertyDao = new LinePropertyDao(jdbcTemplate, dataSource);
         stationDao = new StationDao(jdbcTemplate, dataSource);
     }
 
     @Test
-    @DisplayName("Line은 처음에 저장될 수 있다")
+    @DisplayName("Line은 저장될 수 있다")
     void test_saveFirst() {
         //given
         String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
+        LineProperty lineProperty = new LineProperty(1L, "2호선", "red");
 
-        Line line = new Line(1L, "2호선", "red", List.of(
+        Line line = new Line(new LineProperty(1L, "2호선", "red"), List.of(
                 new Section(new Station("푸우"), new Station("테오"), new Distance(1)),
                 new Section(new Station("테오"), new Station("제이온"), new Distance(2)),
                 new Section(new Station("제이온"), new Station("시카"), new Distance(3))
         ));
-        subwayDao.save(line);
 
+        // when
+
+        linePropertyDao.insert(lineProperty);
+        subwayDao.save(line);
 
         List<SectionEntity> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
 
@@ -76,48 +81,15 @@ class SubwayDaoTest {
     }
 
     @Test
-    @DisplayName("Line은 저장될 때마다 기존 정보를 덮어씌운다")
-    void test_save() {
-        //given
-        String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
-
-        Line firstLine = new Line(1L, "2호선", "red", List.of(
-                new Section(new Station("푸우"), new Station("테오"), new Distance(1)),
-                new Section(new Station("테오"), new Station("제이온"), new Distance(2)),
-                new Section(new Station("제이온"), new Station("시카"), new Distance(3))
-        ));
-        Line secondLine = new Line(1L, "1호선", "blue", List.of(
-                new Section(new Station("잠실"), new Station("신림"), new Distance(4)),
-                new Section(new Station("신림"), new Station("수원"), new Distance(5)),
-                new Section(new Station("수원"), new Station("창원"), new Distance(6))
-        ));
-        subwayDao.save(firstLine);
-        subwayDao.save(secondLine);
-
-        List<SectionEntity> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
-
-        //then
-        assertAll(
-                () -> assertThat(actual).hasSize(3),
-                () -> assertThat(actual).anyMatch(sectionEntity -> sectionEntity.getLeft().equals("잠실") &&
-                        sectionEntity.getRight().equals("신림") && sectionEntity.getDistance() == 4),
-                () -> assertThat(actual).anyMatch(sectionEntity -> sectionEntity.getLeft().equals("신림") &&
-                        sectionEntity.getRight().equals("수원") && sectionEntity.getDistance() == 5),
-                () -> assertThat(actual).anyMatch(sectionEntity -> sectionEntity.getLeft().equals("수원") &&
-                        sectionEntity.getRight().equals("창원") && sectionEntity.getDistance() == 6)
-        );
-    }
-
-    @Test
     @DisplayName("id를 통해 해당하는 Line을 찾을 수 있다")
     void test_find() {
         //given
-        Line line = new Line(1L, "2호선", "red", List.of(
+        LineProperty lineProperty = new LineProperty(1L, "2호선", "red");
+        Line line = new Line(lineProperty, List.of(
                 new Section(new Station("푸우"), new Station("테오"), new Distance(1)),
                 new Section(new Station("테오"), new Station("제이온"), new Distance(2)),
                 new Section(new Station("제이온"), new Station("시카"), new Distance(3))
         ));
-
 
         //when
         stationDao.insert(new Station("푸우"));
@@ -125,8 +97,10 @@ class SubwayDaoTest {
         stationDao.insert(new Station("제이온"));
         stationDao.insert(new Station("시카"));
 
-        lineDao.insert(line);
+        linePropertyDao.insert(lineProperty);
+
         subwayDao.save(line);
+
         Line actualLine = subwayDao.findById(1L);
         List<Section> sections = actualLine.getSections();
 

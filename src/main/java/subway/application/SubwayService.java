@@ -2,7 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
+import subway.dao.LinePropertyDao;
 import subway.dao.StationDao;
 import subway.dao.SubwayDao;
 import subway.domain.Distance;
@@ -21,12 +21,12 @@ import java.util.stream.Collectors;
 public class SubwayService {
 
     private final SubwayDao subwayDao;
-    private final LineDao lineDao;
+    private final LinePropertyDao linePropertyDao;
     private final StationDao stationDao;
 
-    public SubwayService(SubwayDao subwayDao, LineDao lineDao, StationDao stationDao) {
+    public SubwayService(SubwayDao subwayDao, LinePropertyDao linePropertyDao, StationDao stationDao) {
         this.subwayDao = subwayDao;
-        this.lineDao = lineDao;
+        this.linePropertyDao = linePropertyDao;
         this.stationDao = stationDao;
     }
 
@@ -38,6 +38,7 @@ public class SubwayService {
                 new Distance(request.getDistance())
         );
         line.addSection(section);
+        subwayDao.removeSections(lineId);
         subwayDao.save(line);
     }
 
@@ -45,6 +46,7 @@ public class SubwayService {
         Line line = subwayDao.findById(lineId);
 
         line.deleteStation(stationDao.findById(stationId));
+        subwayDao.removeSections(lineId);
         subwayDao.save(line);
     }
 
@@ -60,7 +62,7 @@ public class SubwayService {
     }
 
     public Map<String, List<StationResponse>> findAllRouteMap() {
-        List<Line> allLines = lineDao.findAll().stream()
+        List<Line> allLines = linePropertyDao.findAll().stream()
                 .map(line -> subwayDao.findById(line.getId()))
                 .collect(Collectors.toList());
         Map<String, List<StationResponse>> allRouteMap = new HashMap<>();
