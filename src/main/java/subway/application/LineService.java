@@ -74,7 +74,7 @@ public class LineService {
                 .filter(Optional::isPresent)
                 .flatMap(Optional::stream)
                 .findFirst()
-                .get();
+                .orElseThrow(() -> new IllegalArgumentException("추가하려는 역은 이미 노선에 존재합니다."));
 
         stationRepository.save(new StationEntity(newStationName));
 
