@@ -2,10 +2,7 @@ package subway.domain.subway;
 
 import subway.exception.UpStationNotFoundException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class LineMap {
@@ -55,10 +52,25 @@ public class LineMap {
         List<Station> endPointStations = getEndPointStations();
         Station upStationEndPoint = getUpStationEndPoint(sections, endPointStations);
 
-        List<Station> stations = new ArrayList<>();
-        stations.add(upStationEndPoint);
+        return bfs(upStationEndPoint);
+    }
 
-        dfs(stations, upStationEndPoint);
+    private List<Station> bfs(final Station upStationEndPoint) {
+        List<Station> stations = new ArrayList<>();
+
+        Queue<Station> queue = new LinkedList<>();
+        queue.add(upStationEndPoint);
+
+        while (!queue.isEmpty()) {
+            Station station = queue.poll();
+            stations.add(station);
+            visited.put(station, true);
+            for (Station nextStation : lineMap.get(station)) {
+                if (!visited.get(nextStation)) {
+                    queue.add(nextStation);
+                }
+            }
+        }
         return stations;
     }
 
@@ -74,15 +86,5 @@ public class LineMap {
                         .filter(station -> station.equals(section.getUpStation())))
                 .findFirst()
                 .orElseThrow(UpStationNotFoundException::new);
-    }
-
-    private void dfs(final List<Station> stations, final Station station) {
-        visited.put(station, true);
-        for (Station nextStation : lineMap.get(station)) {
-            if (!visited.get(nextStation)) {
-                stations.add(nextStation);
-                dfs(stations, nextStation);
-            }
-        }
     }
 }
