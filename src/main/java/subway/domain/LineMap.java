@@ -13,31 +13,23 @@ public class LineMap {
     private final Map<Station, Boolean> visited;
 
     public LineMap(final Sections sections) {
-        this.lineMap = initGraph(sections);
-        sections.getSections().forEach(this::addSection);
+        this.lineMap = initLineMap(sections);
+        sections.getSections().forEach(this::addUndirectedEdgeBySection);
         this.visited = initVisited();
     }
 
-    private Map<Station, List<Station>> initGraph(final Sections sections) {
-        Map<Station, List<Station>> graph = new HashMap<>();
+    private Map<Station, List<Station>> initLineMap(final Sections sections) {
+        Map<Station, List<Station>> lineMap = new HashMap<>();
 
         for (Section section : sections.getSections()) {
-            graph.put(section.getUpStation(), new ArrayList<>());
-            graph.put(section.getDownStation(), new ArrayList<>());
+            lineMap.put(section.getUpStation(), new ArrayList<>());
+            lineMap.put(section.getDownStation(), new ArrayList<>());
         }
 
-        return graph;
+        return lineMap;
     }
 
-    private Map<Station, Boolean> initVisited() {
-        Map<Station, Boolean> visited = new HashMap<>();
-        for (Station station : lineMap.keySet()) {
-            visited.put(station, false);
-        }
-        return visited;
-    }
-
-    public void addSection(final Section section) {
+    private void addUndirectedEdgeBySection(final Section section) {
         Station upStation = section.getUpStation();
         Station downStation = section.getDownStation();
 
@@ -46,6 +38,14 @@ public class LineMap {
 
         upStationList.add(downStation);
         downStationList.add(upStation);
+    }
+
+    private Map<Station, Boolean> initVisited() {
+        Map<Station, Boolean> visited = new HashMap<>();
+        for (Station station : lineMap.keySet()) {
+            visited.put(station, false);
+        }
+        return visited;
     }
 
     public List<Station> getOrderedStations(final Sections sections) {
