@@ -42,12 +42,9 @@ public class StationDaoV2 {
 
     public Optional<StationEntity> findByStationId(final Long stationId) {
         final String sql = sqlHelper()
-                .select()
-                        .columns("id, name")
-                .from()
-                        .table("STATIONS")
-                .where()
-                        .condition("id = ?")
+                .select().columns("id, name")
+                .from().table("STATIONS")
+                .where().condition("id = ?")
                 .toString();
 
         try {
@@ -69,5 +66,19 @@ public class StationDaoV2 {
                 .toString();
 
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public Optional<StationEntity> findByStationName(final String stationName) {
+        final String sql = sqlHelper()
+                .select().columns("id, name")
+                .from().columns("STATIONS")
+                .where().condition("name = ?")
+                .toString();
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationName));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }

@@ -68,4 +68,20 @@ class StationDaoV2Test extends DaoTestConfig {
                         new StationEntity(saveStationId3, "잠실새내")
                 );
     }
+
+    @Test
+    void 역_이름으로_역을_조회한다() {
+        // given
+        final Long saveStationId = stationDao.insert(new StationEntity("잠실"));
+
+        // when
+        final Optional<StationEntity> maybeStationEntity = stationDao.findByStationName("잠실");
+
+        // then
+        assertAll(
+                () -> assertThat(maybeStationEntity).isPresent(),
+                () -> assertThat(maybeStationEntity.get())
+                        .isEqualTo(new StationEntity(saveStationId, "잠실"))
+        );
+    }
 }
