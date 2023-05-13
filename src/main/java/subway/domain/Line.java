@@ -7,12 +7,11 @@ public class Line {
     private String name;
     private String color;
 
-    public Line() {
+    private Line() {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this(null, name, color);
     }
 
     public Line(Long id, String name, String color) {
