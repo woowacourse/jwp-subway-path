@@ -6,8 +6,8 @@ import javax.validation.constraints.NotNull;
 
 public class SectionCreateRequest {
 
-    @NotBlank(message = "노선 이름을 입력해주세요.")
-    private String lineName;
+    @NotBlank(message = "노선 번호를 입력해주세요.")
+    private Long lineNumber;
 
     @NotBlank(message = "상행 역을 입력해주세요.")
     private String upStation;
@@ -22,15 +22,15 @@ public class SectionCreateRequest {
     private SectionCreateRequest() {
     }
 
-    public SectionCreateRequest(final String lineName, final String upStation, final String downStation, final Long distance) {
-        this.lineName = lineName;
+    public SectionCreateRequest(final Long lineNumber, final String upStation, final String downStation, final Long distance) {
+        this.lineNumber = lineNumber;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public String getLineName() {
-        return lineName;
+    public Long getLineNumber() {
+        return lineNumber;
     }
 
     public String getUpStation() {
