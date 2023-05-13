@@ -10,7 +10,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
-import subway.exception.HttpException;
+import subway.exception.SubwayException;
 
 @RestControllerAdvice
 public class ControllerAdvice {
@@ -49,8 +49,8 @@ public class ControllerAdvice {
         return ResponseEntity.badRequest().body(message);
     }
 
-    @ExceptionHandler(HttpException.class)
-    public ResponseEntity<String> handleException(final HttpException exception) {
+    @ExceptionHandler(SubwayException.class)
+    public ResponseEntity<String> handleException(final SubwayException exception) {
         final String message = exception.getMessage();
         LOGGER.warn(message);
         return ResponseEntity.badRequest().body(message);
