@@ -17,12 +17,12 @@ public class SectionCreateRequest {
 
     @Min(value = 1, message = "역 간의 최소 거리는 1입니다.")
     @NotNull(message = "거리를 입력해주세요.")
-    private Long distance;
+    private long distance;
 
     private SectionCreateRequest() {
     }
 
-    public SectionCreateRequest(final String lineName, final String upStation, final String downStation, final Long distance) {
+    public SectionCreateRequest(final String lineName, final String upStation, final String downStation, final long distance) {
         this.lineName = lineName;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -41,7 +41,7 @@ public class SectionCreateRequest {
         return downStation;
     }
 
-    public Long getDistance() {
+    public long getDistance() {
         return distance;
     }
 }

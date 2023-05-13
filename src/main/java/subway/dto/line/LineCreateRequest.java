@@ -9,7 +9,7 @@ public class LineCreateRequest {
     private String name;
 
     @NotNull(message = "노선의 번호를 입력해주세요.")
-    private Long lineNumber;
+    private long lineNumber;
 
     @NotBlank(message = "노선의 색상을 입력해주세요.")
     private String color;
@@ -17,13 +17,13 @@ public class LineCreateRequest {
     public LineCreateRequest() {
     }
 
-    public LineCreateRequest(final String name, final Long lineNumber, final String color) {
+    public LineCreateRequest(final String name, final long lineNumber, final String color) {
         this.name = name;
         this.lineNumber = lineNumber;
         this.color = color;
     }
 
-    public Long getLineNumber() {
+    public long getLineNumber() {
         return lineNumber;
     }
 

@@ -36,20 +36,20 @@ class SubwayMapServiceMockTest {
     @DisplayName("지하철역의 역 정보를 순서대로 보여준다.")
     void show_ordered_station_map_success() {
         // given
-        Long lineNumber = 2L;
+        long lineNumber = 2;
         Sections sections = new Sections(
                 List.of(
                         new Section(
                                 new Station("잠실역"),
                                 new Station("잠실새내역"),
-                                3L)
+                                3)
                 )
         );
         given(sectionRepository.findSectionsByLineNumber(lineNumber)).willReturn(sections);
         given(stationRepository.findStationIdByStationName(any())).willReturn(anyLong());
 
         // when
-        subwayMapService.showLineMap(2L);
+        subwayMapService.showLineMap(2);
 
         // then
         assertThat(sections.getSections().size()).isEqualTo(1);

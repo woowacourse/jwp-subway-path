@@ -25,7 +25,7 @@ public class SubwayMapService {
     }
 
     @Transactional(readOnly = true)
-    public LineMapResponse showLineMap(final Long lineNumber) {
+    public LineMapResponse showLineMap(final long lineNumber) {
         Sections sections = sectionRepository.findSectionsByLineNumber(lineNumber);
         LineMap lineMap = new LineMap(sections);
 

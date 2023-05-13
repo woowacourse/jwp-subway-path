@@ -39,15 +39,15 @@ public class SectionServiceIntegrationTest {
     @DisplayName("구간을 삽입한다.")
     void save_section_success() {
         // given
-        SectionCreateRequest req = new SectionCreateRequest("2호선", "종합운동장역", "삼성역", 3L);
+        SectionCreateRequest req = new SectionCreateRequest("2호선", "종합운동장역", "삼성역", 3);
 
         stationRepository.insertStation(new Station("잠실역"));
         stationRepository.insertStation(new Station("잠실새내역"));
         stationRepository.insertStation(new Station("종합운동장역"));
         stationRepository.insertStation(new Station("삼성역"));
 
-        lineRepository.insertLine(new LineEntity(1L, 2L, "2호선", "초록색"));
-        lineRepository.updateLine(createSections(), 2L);
+        lineRepository.insertLine(new LineEntity(1L, 2, "2호선", "초록색"));
+        lineRepository.updateLine(createSections(), 2);
 
         // when
         sectionService.insertSection(req);
@@ -65,14 +65,14 @@ public class SectionServiceIntegrationTest {
     @DisplayName("구간을 삭제한다.")
     void delete_section_success() {
         // given
-        SectionDeleteRequest req = new SectionDeleteRequest(2L, "종합운동장역");
+        SectionDeleteRequest req = new SectionDeleteRequest(2, "종합운동장역");
 
         stationRepository.insertStation(new Station("잠실역"));
         stationRepository.insertStation(new Station("잠실새내역"));
         stationRepository.insertStation(new Station("종합운동장역"));
 
-        lineRepository.insertLine(new LineEntity(1L, 2L, "2호선", "초록색"));
-        lineRepository.updateLine(createSections(), 2L);
+        lineRepository.insertLine(new LineEntity(1L, 2, "2호선", "초록색"));
+        lineRepository.updateLine(createSections(), 2);
 
         // when
         sectionService.deleteSection(req);

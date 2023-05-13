@@ -13,7 +13,7 @@ class LineNumberTest {
     @DisplayName("lineNumber가 0보다 작으면 예외를 발생시킨다.")
     void throws_exception_when_line_number_invalid() {
         // when & then
-        assertThatThrownBy(() -> new LineNumber(-1L))
+        assertThatThrownBy(() -> new LineNumber(-1))
                 .isInstanceOf(LineNumberUnderMinimumNumber.class);
     }
 
@@ -21,7 +21,7 @@ class LineNumberTest {
     @DisplayName("lineNumber를 생성한다.")
     void create_line_number_success() {
         // given
-        Long givenLineNumber = 3L;
+        long givenLineNumber = 3;
 
         // when
         LineNumber lineNumber = new LineNumber(givenLineNumber);

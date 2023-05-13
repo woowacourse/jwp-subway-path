@@ -10,7 +10,7 @@ public class Section {
     private final Station downStation;
     private final Distance distance;
 
-    public Section(final Station upStation, final Station downStation, final Long distance) {
+    public Section(final Station upStation, final Station downStation, final long distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = new Distance(distance);

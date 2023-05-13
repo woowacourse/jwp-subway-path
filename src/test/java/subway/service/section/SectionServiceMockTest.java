@@ -34,9 +34,9 @@ public class SectionServiceMockTest {
     @DisplayName("구간을 삽입한다.")
     void save_section_success() {
         // given
-        SectionCreateRequest req = new SectionCreateRequest("2호선", "종합운동장역", "삼성역", 3L);
+        SectionCreateRequest req = new SectionCreateRequest("2호선", "종합운동장역", "삼성역", 3);
         Sections sections = createSections();
-        Line line = new Line(sections, 2L, "2호선", "green");
+        Line line = new Line(sections, 2, "2호선", "green");
 
         given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
         given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
@@ -52,7 +52,7 @@ public class SectionServiceMockTest {
     @DisplayName("구간을 삭제한다.")
     void delete_section_success() {
         // given
-        SectionDeleteRequest req = new SectionDeleteRequest(2L, "종합운동장역");
+        SectionDeleteRequest req = new SectionDeleteRequest(2, "종합운동장역");
         Sections sections = createSections();
         given(sectionRepository.findSectionsByLineNumber(req.getLineNumber())).willReturn(sections);
 

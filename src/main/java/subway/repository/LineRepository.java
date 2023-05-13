@@ -44,7 +44,7 @@ public class LineRepository {
         return new Line(sections, lineEntity.getLineNumber(), lineEntity.getName(), lineEntity.getColor());
     }
 
-    public void updateLine(final Sections sections, final Long lineNumber) {
+    public void updateLine(final Sections sections, final long lineNumber) {
         LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
         List<SectionEntity> sectionEntities = sections.getSections().stream()
                 .map(section -> {

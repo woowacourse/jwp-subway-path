@@ -1,5 +1,7 @@
 package subway.service.subway;
 
+import io.restassured.RestAssured;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,11 @@ class SubwayMapServiceIntegrationTest {
     @Autowired
     private LineRepository lineRepository;
 
+    @BeforeEach
+    void setUp() {
+        RestAssured.port = this.port;
+    }
+
     @Test
     @DisplayName("지하철역의 역 정보를 순서대로 보여준다.")
     void show_ordered_station_map_success() {
@@ -41,11 +48,11 @@ class SubwayMapServiceIntegrationTest {
         stationRepository.insertStation(new Station("잠실새내역"));
         stationRepository.insertStation(new Station("종합운동장역"));
 
-        lineRepository.insertLine(new LineEntity(1L, 2L, "2호선", "초록색"));
-        lineRepository.updateLine(createSections(), 2L);
+        lineRepository.insertLine(new LineEntity(1L, 2, "2호선", "초록색"));
+        lineRepository.updateLine(createSections(), 2);
 
         // when
-        LineMapResponse result = subwayMapService.showLineMap(2L);
+        LineMapResponse result = subwayMapService.showLineMap(2);
 
         // then
         assertAll(

@@ -11,14 +11,14 @@ public class Line {
     private final Name name;
     private final Color color;
 
-    public Line(final Sections sections, final Long lineNumber, final String name, final String color) {
+    public Line(final Sections sections, final long lineNumber, final String name, final String color) {
         this.sections = sections;
         this.lineNumber = new LineNumber(lineNumber);
         this.name = new Name(name);
         this.color = new Color(color);
     }
 
-    public Long getLineNumber() {
+    public long getLineNumber() {
         return lineNumber.getLineNumber();
     }
 
@@ -28,9 +28,5 @@ public class Line {
 
     public String getName() {
         return name.getName();
-    }
-
-    public String getColor() {
-        return color.getColor();
     }
 }

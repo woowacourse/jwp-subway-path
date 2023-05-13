@@ -36,7 +36,7 @@ public class LineServiceIntegrationTest {
     @DisplayName("노선을 저장한다.")
     void save_line_success() {
         // given
-        LineCreateRequest req = new LineCreateRequest("잠실역", 2L, "green");
+        LineCreateRequest req = new LineCreateRequest("잠실역", 2, "green");
 
         // when
         lineService.saveLine(req);
@@ -50,10 +50,10 @@ public class LineServiceIntegrationTest {
     @DisplayName("모든 노선을 조회한다.")
     void find_all_lines_success() {
         // given
-        LineCreateRequest green = new LineCreateRequest("2호선", 2L, "green");
+        LineCreateRequest green = new LineCreateRequest("2호선", 2, "green");
         lineService.saveLine(green);
 
-        LineCreateRequest red = new LineCreateRequest("8호선", 8L, "red");
+        LineCreateRequest red = new LineCreateRequest("8호선", 8, "red");
         lineService.saveLine(red);
 
         // when
@@ -71,7 +71,7 @@ public class LineServiceIntegrationTest {
     @DisplayName("노선을 삭제한다.")
     void delete_line_success() {
         // given
-        LineCreateRequest green = new LineCreateRequest("2호선", 2L, "green");
+        LineCreateRequest green = new LineCreateRequest("2호선", 2, "green");
         Long id = lineService.saveLine(green);
 
         // when

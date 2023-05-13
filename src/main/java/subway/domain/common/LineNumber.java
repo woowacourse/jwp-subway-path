@@ -8,20 +8,20 @@ public class LineNumber {
 
     private static final int MINIMUM_NUMBER = 0;
 
-    private final Long lineNumber;
+    private final long lineNumber;
 
-    public LineNumber(final Long lineNumber) {
+    public LineNumber(final long lineNumber) {
         validateLineNumber(lineNumber);
         this.lineNumber = lineNumber;
     }
 
-    private void validateLineNumber(final Long lineNumber) {
+    private void validateLineNumber(final long lineNumber) {
         if (lineNumber < MINIMUM_NUMBER) {
             throw new LineNumberUnderMinimumNumber();
         }
     }
 
-    public Long getLineNumber() {
+    public long getLineNumber() {
         return lineNumber;
     }
 

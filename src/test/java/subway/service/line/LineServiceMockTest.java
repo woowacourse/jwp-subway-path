@@ -34,7 +34,7 @@ class LineServiceMockTest {
     @DisplayName("노선을 저장한다.")
     void save_line_success() {
         // given
-        LineCreateRequest req = new LineCreateRequest("잠실역", 2L, "green");
+        LineCreateRequest req = new LineCreateRequest("잠실역", 2, "green");
 
         // when
         lineService.saveLine(req);
@@ -56,8 +56,8 @@ class LineServiceMockTest {
         // then
         assertAll(
                 () -> assertThat(result.size()).isEqualTo(2),
-                () -> assertThat(result.get(0).getLineNumber()).isEqualTo(2L),
-                () -> assertThat(result.get(1).getLineNumber()).isEqualTo(8L)
+                () -> assertThat(result.get(0).getLineNumber()).isEqualTo(2),
+                () -> assertThat(result.get(1).getLineNumber()).isEqualTo(8)
         );
     }
 

@@ -9,26 +9,26 @@ public class Distance {
 
     private static final int MINIMUM_DISTANCE = 1;
 
-    private final Long distance;
+    private final long distance;
 
-    public Distance(final Long distance) {
+    public Distance(final long distance) {
         validateDistance(distance);
         this.distance = distance;
     }
 
-    private void validateDistance(final Long distance) {
+    private void validateDistance(final long distance) {
         if (distance < MINIMUM_DISTANCE) {
             throw new DistanceValueInvalidException();
         }
     }
 
-    public void validateSectionDistance(final Long requestDistance) {
+    public void validateSectionDistance(final long requestDistance) {
         if (distance <= requestDistance) {
             throw new DistanceForkedException();
         }
     }
 
-    public Long getDistance() {
+    public long getDistance() {
         return distance;
     }
 
@@ -37,7 +37,7 @@ public class Distance {
         if (this == o) return true;
         if (!(o instanceof Distance)) return false;
         Distance distance1 = (Distance) o;
-        return Objects.equals(distance, distance1.distance);
+        return distance == distance1.distance;
     }
 
     @Override
