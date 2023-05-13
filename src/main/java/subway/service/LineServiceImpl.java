@@ -5,10 +5,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.Subway;
-import subway.dto.LineCreateRequest;
-import subway.dto.LineResponse;
-import subway.dto.SectionCreateRequest;
-import subway.dto.StationResponse;
+import subway.dto.*;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
@@ -43,11 +40,36 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
+    public LineResponse initialCreateSection(final Long id, final InitialSectionCreateRequest request) {
+        final Line line = lineRepository.findById(id);
+        System.out.println("line = " + line);
+
+        final Station upStation = stationRepository.findById(request.getUpStationId());
+        System.out.println("upStation = " + upStation);
+        final Station downStation = stationRepository.findById(request.getDownStationId());
+        System.out.println("downStation = " + downStation);
+
+        if (upStation == null || downStation == null) {
+            throw new IllegalArgumentException("존재하는 역의 id를 입력해 주세요.");
+        }
+
+        final int distance = request.getDistance();
+
+        System.out.println("distance = " + distance);
+        subway.createNewSections(line, upStation, downStation, distance);
+
+        final Section section = new Section(upStation, downStation, distance);
+        sectionRepository.save(line.getId(), section);
+
+        return LineResponse.of(line, mapToStationResponse(line));
+    }
+
+    @Override
     public LineResponse addStation(final Long id, final SectionCreateRequest request) {
         final Line line = lineRepository.findById(id);
 
-        final Station upStation = stationRepository.findByIdOrNull(request.getUpStationId());
-        final Station downStation = stationRepository.findByIdOrNull(request.getDownStationId());
+        final Station upStation = stationRepository.findById(request.getUpStationId());
+        final Station downStation = stationRepository.findById(request.getDownStationId());
 
         if (upStation == null || downStation == null) {
             throw new IllegalArgumentException("존재하는 역의 id를 입력해 주세요.");
@@ -70,13 +92,18 @@ public class LineServiceImpl implements LineService {
         sectionRepository.delete(new Section(upStation, downStation, currentDistance));
 
         // query stations in order to create line response
+        final List<StationResponse> stationResponse = mapToStationResponse(line);
+
+        return LineResponse.of(line, stationResponse);
+    }
+
+    private List<StationResponse> mapToStationResponse(final Line line) {
         final List<Station> stationsInOrder = subway.findStationsInOrderOf(line);
 
         final List<StationResponse> stationResponse = stationsInOrder.stream()
                 .map(stationRepository::findByName)
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-
-        return LineResponse.of(line, stationResponse);
+        return stationResponse;
     }
 }

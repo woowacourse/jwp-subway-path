@@ -10,16 +10,21 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.dto.LineCreateRequest;
+import subway.dto.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static subway.fixture.StationFixture.EXPRESS_BUS_TERMINAL_STATION;
+import static subway.fixture.StationFixture.SAPYEONG_STATION;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LineIntegrationTest {
-    public static final LineCreateRequest LINE_ONE_CREATE_REQUEST = new LineCreateRequest("1호선", "BLUE");
+    public static final LineCreateRequest LINE_NINE_CREATE_REQUEST = new LineCreateRequest("9호선", "BROWN");
+    public static final StationCreateRequest EXPRESS_BUS_TERMINAL_REQUEST = new StationCreateRequest(EXPRESS_BUS_TERMINAL_STATION.getName());
+    public static final StationCreateRequest SAPYEONG_STATION_REQUEST = new StationCreateRequest(SAPYEONG_STATION.getName());
+    public static final StationCreateRequest NEW_STATION_REQUEST = new StationCreateRequest("새 역");
 
     @LocalServerPort
     int port;
@@ -41,7 +46,7 @@ class LineIntegrationTest {
 
     @Test
     void createNewLineTest() {
-        final LineCreateRequest lineCreateRequest = LINE_ONE_CREATE_REQUEST;
+        final LineCreateRequest lineCreateRequest = LINE_NINE_CREATE_REQUEST;
         final ExtractableResponse<Response> response = createNewLine(lineCreateRequest);
 
         assertAll(
@@ -52,10 +57,61 @@ class LineIntegrationTest {
         );
     }
 
+    @Test
+    void createInitialStationInLineTest() {
+        final StationResponse stationResponse1 = createNewStation(EXPRESS_BUS_TERMINAL_REQUEST);
+        final StationResponse stationResponse2 = createNewStation(SAPYEONG_STATION_REQUEST);
+
+        final LineResponse lineResponse = createNewLine(LINE_NINE_CREATE_REQUEST).as(LineResponse.class);
+
+        final InitialSectionCreateRequest initialSectionCreateRequest = new InitialSectionCreateRequest(
+                lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId(), 5
+        );
+
+        final ExtractableResponse<Response> response = RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .body(initialSectionCreateRequest)
+
+                .when()
+                .post("/lines/" + lineResponse.getId() + "/stations/initial")
+
+                .then()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(CREATED.value());
+    }
+
+    private static ExtractableResponse<Response> createSection(final LineResponse lineResponse, final SectionCreateRequest sectionCreateRequest) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .body(sectionCreateRequest)
+
+                .when()
+                .post("/lines/" + lineResponse.getId() + "/stations")
+
+                .then()
+                .extract();
+    }
+
+    private static StationResponse createNewStation(final StationCreateRequest stationCreateRequest) {
+        return RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .body(stationCreateRequest)
+
+                .when()
+                .post("/stations")
+
+                .then()
+                .extract()
+                .as(StationResponse.class);
+    }
+
     private static ExtractableResponse<Response> createNewLine(final LineCreateRequest lineCreateRequest) {
         return RestAssured
                 .given()
-                .log().all()
                 .contentType(APPLICATION_JSON_VALUE)
                 .body(lineCreateRequest)
 
@@ -63,7 +119,6 @@ class LineIntegrationTest {
                 .post("/lines")
 
                 .then()
-                .log().all()
                 .extract();
     }
 }

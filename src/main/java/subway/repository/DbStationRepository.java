@@ -1,6 +1,5 @@
 package subway.repository;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.domain.Station;
@@ -28,14 +27,5 @@ public class DbStationRepository implements StationRepository {
     @Override
     public Station findByName(final Station station) {
         return Station.from(stationDao.findBy(station.getName()));
-    }
-
-    @Override
-    public Station findByIdOrNull(final Long id) {
-        try {
-            return findById(id);
-        } catch (EmptyResultDataAccessException exception) {
-            return null;
-        }
     }
 }

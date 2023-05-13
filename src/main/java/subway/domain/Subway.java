@@ -15,6 +15,12 @@ public class Subway {
         this.sections = new ArrayList<>();
     }
 
+    public void createNewSections(final Line line, final Station upStation, final Station downStation, final int distance) {
+        final Sections newSections = new Sections(line);
+        sections.add(newSections);
+        newSections.createNewLine(upStation, downStation, distance);
+    }
+
     public Station addStation(final Line line, final Station upStation, final Station downStation, final int distance) {
         final Sections sections = findSectionsOf(line);
         return sections.addStation(upStation, downStation, distance);

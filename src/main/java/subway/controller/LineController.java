@@ -2,6 +2,7 @@ package subway.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import subway.dto.InitialSectionCreateRequest;
 import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionCreateRequest;
@@ -27,6 +28,16 @@ public class LineController {
         return ResponseEntity
                 .created(URI.create("/lines/" + response.getId()))
                 .body(response);
+    }
+
+    @PostMapping("/{id}/stations/initial")
+    public ResponseEntity<LineResponse> createInitialStationInLine(
+            @PathVariable("id") Long id,
+            @RequestBody InitialSectionCreateRequest request) {
+        final LineResponse lineResponse = lineService.initialCreateSection(id, request);
+        return ResponseEntity
+                .created(URI.create("/" + lineResponse.getId() + "/stations"))
+                .body(lineResponse);
     }
 
     @PostMapping("/{id}/stations")

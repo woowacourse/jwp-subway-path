@@ -8,6 +8,4 @@ public interface StationRepository {
     Station findById(Long id);
 
     Station findByName(Station station);
-
-    Station findByIdOrNull(Long id);
 }
