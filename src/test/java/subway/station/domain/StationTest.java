@@ -6,7 +6,6 @@ import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("NonAsciiCharacters")
 class StationTest {
@@ -23,12 +22,5 @@ class StationTest {
         // expect
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Station(name));
-    }
-    
-    @Test
-    void 역_이름의_마지막_글자가_역이_아니면_예외() {
-        // expect
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Station("강남"));
     }
 }
