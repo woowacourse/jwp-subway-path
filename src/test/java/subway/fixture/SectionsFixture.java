@@ -1,4 +1,4 @@
-package subway.factory;
+package subway.fixture;
 
 import subway.domain.subway.Section;
 import subway.domain.subway.Sections;
@@ -6,10 +6,10 @@ import subway.domain.subway.Sections;
 import java.util.ArrayList;
 import java.util.List;
 
-import static subway.factory.SectionFactory.createSection;
-import static subway.factory.SectionFactory.createSection2;
+import static subway.fixture.SectionFixture.createSection;
+import static subway.fixture.SectionFixture.createSection2;
 
-public class SectionsFactory {
+public class SectionsFixture {
 
     public static Sections createSections() {
         List<Section> sections = new ArrayList<>();

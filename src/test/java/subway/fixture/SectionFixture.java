@@ -1,9 +1,9 @@
-package subway.factory;
+package subway.fixture;
 
 import subway.domain.subway.Section;
 import subway.domain.subway.Station;
 
-public class SectionFactory {
+public class SectionFixture {
 
     public static Section createSection() {
         return new Section(new Station("잠실역"), new Station("잠실새내역"), 3);

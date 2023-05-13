@@ -16,7 +16,7 @@ import subway.service.SectionService;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static subway.factory.SectionsFactory.createSections;
+import static subway.fixture.SectionsFixture.createSections;
 
 @ExtendWith(MockitoExtension.class)
 public class SectionServiceMockTest {

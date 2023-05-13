@@ -7,7 +7,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.factory.SectionsFactory.createSections;
+import static subway.fixture.SectionsFixture.createSections;
 
 class LineMapTest {
 

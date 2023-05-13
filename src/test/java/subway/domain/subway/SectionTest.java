@@ -6,7 +6,7 @@ import subway.exception.DistanceForkedException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static subway.factory.SectionFactory.createSection;
+import static subway.fixture.SectionFixture.createSection;
 
 class SectionTest {
 
