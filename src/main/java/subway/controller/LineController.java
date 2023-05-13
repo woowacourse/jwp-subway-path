@@ -10,6 +10,7 @@ import subway.service.LineService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
@@ -19,6 +20,12 @@ public class LineController {
 
     public LineController(final LineService lineService) {
         this.lineService = lineService;
+    }
+
+    @GetMapping
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        final List<LineResponse> response = lineService.findAll();
+        return ResponseEntity.ok().body(response);
     }
 
     @PostMapping

@@ -6,7 +6,12 @@ import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionCreateRequest;
 
+import java.util.List;
+
 public interface LineService {
+
+    @Transactional
+    List<LineResponse> findAll();
 
     @Transactional
     LineResponse createNewLine(LineCreateRequest request);

@@ -279,4 +279,8 @@ public class Sections {
         }
         return nextStation;
     }
+
+    public Line getLine() {
+        return line;
+    }
 }

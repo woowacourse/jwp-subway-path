@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Component
 public class Subway {
@@ -13,6 +14,20 @@ public class Subway {
 
     public Subway() {
         this.sections = new ArrayList<>();
+    }
+
+    public Map<Line, List<Station>> findAll() {
+        return sections.stream()
+                .collect(Collectors.toMap(
+                        Sections::getLine,
+                        Sections::findAllStationsInOrder));
+    }
+
+    public List<Line> findAllLines() {
+        return sections.stream()
+                .map(Sections::getLine)
+                .distinct() // TODO: 왜 중복이 발생하지?
+                .collect(Collectors.toList());
     }
 
     public void createSectionsOf(final Line line) {

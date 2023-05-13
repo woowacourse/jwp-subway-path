@@ -30,6 +30,16 @@ public class LineServiceImpl implements LineService {
     }
 
     @Override
+    public List<LineResponse> findAll() {
+        List<Line> lines = subway.findAllLines();
+        return lines.stream()
+                .map(line -> LineResponse.of(
+                        line,
+                        mapToStationResponse(line)))
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public LineResponse createNewLine(final LineCreateRequest request) {
         // TODO: 이미 존재하는 노선을 추가로 생성하는 경우 예외 처리
         final Line line = lineRepository.save(Line.of(request.getName(), request.getColor()));
