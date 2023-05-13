@@ -23,4 +23,11 @@ class StationNameTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new StationName(name));
     }
+    
+    @Test
+    void 역_이름의_마지막_글자가_역이_아니면_예외() {
+        // expect
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new StationName("강남"));
+    }
 }
