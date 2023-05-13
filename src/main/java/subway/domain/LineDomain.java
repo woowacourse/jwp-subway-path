@@ -10,13 +10,13 @@ public class LineDomain {
     private final Long id;
     private final String name;
     private final String color;
-    private final List<Station> stations;
+    private final List<StationDomain> stations;
 
-    public LineDomain(final String name, final String color, final List<Station> stations) {
+    public LineDomain(final String name, final String color, final List<StationDomain> stations) {
         this(null, name, color, stations);
     }
 
-    public LineDomain(final Long id, final String name, final String color, final List<Station> stations) {
+    public LineDomain(final Long id, final String name, final String color, final List<StationDomain> stations) {
         validate(name, color, stations);
         this.id = id;
         this.name = name;
@@ -24,7 +24,7 @@ public class LineDomain {
         this.stations = stations;
     }
 
-    private void validate(final String name, final String color, final List<Station> stations) {
+    private void validate(final String name, final String color, final List<StationDomain> stations) {
         if (Objects.isNull(name)) {
             throw new IllegalArgumentException("노선 이름을 null일 수 없습니다.");
         }
@@ -51,7 +51,7 @@ public class LineDomain {
         return color;
     }
 
-    public List<Station> getStations() {
+    public List<StationDomain> getStations() {
         return stations;
     }
 
@@ -66,5 +66,15 @@ public class LineDomain {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color, stations);
+    }
+
+    @Override
+    public String toString() {
+        return "LineDomain{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", stations=" + stations +
+                '}';
     }
 }
