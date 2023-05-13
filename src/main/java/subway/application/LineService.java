@@ -30,11 +30,12 @@ public class LineService {
     @Transactional
     public LineResponse saveLine(LineRequest request) {
         Lines lines = new Lines();
-        lineDao.findAll().stream()
-                .map(it -> lines.addNewLine(it.getName(), new Sections(toSections(sectionDao.findAll()))));
+        lineDao.findAll()
+                .stream()
+                .forEach(it -> lines.addNewLine(it.getName(), new Sections(toSections(sectionDao.findAll()))));
 
         Line line = lines.addNewLine(request.getLineName(), new Sections(
-                List.of(new Section(new Station(request.getUpStation()), new Station(request.getDownStation()), new Distance(request.getDistance())))
+                List.of(new Section(new Station(request.getStartStation()), new Station(request.getEndStation()), new Distance(request.getDistance())))
         ));
 
         Long savedId = lineDao.insert(new LineEntity(line.getName()));

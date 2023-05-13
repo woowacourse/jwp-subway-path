@@ -6,8 +6,10 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -18,6 +20,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
+@AutoConfigureTestDatabase
 public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
@@ -134,5 +137,26 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         LineResponse resultResponse = response.as(LineResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineId);
+    }
+
+    @Test
+    @DisplayName("하나의 역에 여러 지하철 노선을 추가한다.")
+    void createSectionStationForLines() {
+        ExtractableResponse<Response> lineResponse1 = RestAssured.given().log().uri()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when().post("/subway/lines")
+                .then().log().all()
+                .extract();
+
+        ExtractableResponse<Response> lineResponse2 = RestAssured.given().log().uri()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest2)
+                .when().post("/subway/lines")
+                .then().log().all()
+                .extract();
+
+        assertThat(lineResponse1.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(lineResponse2.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }

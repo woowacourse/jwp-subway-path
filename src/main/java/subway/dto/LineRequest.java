@@ -3,17 +3,17 @@ package subway.dto;
 public class LineRequest {
     private String lineName;
 
-    private String upStation;
-    private String downStation;
+    private String startStation;
+    private String endStation;
     private Integer distance;
 
     public LineRequest() {
     }
 
-    public LineRequest(String lineName, String upStation, String downStation, Integer distance) {
+    public LineRequest(String lineName, String startStation, String endStation, Integer distance) {
         this.lineName = lineName;
-        this.upStation = upStation;
-        this.downStation = downStation;
+        this.startStation = startStation;
+        this.endStation = endStation;
         this.distance = distance;
     }
 
@@ -21,12 +21,12 @@ public class LineRequest {
         return lineName;
     }
 
-    public String getUpStation() {
-        return upStation;
+    public String getStartStation() {
+        return startStation;
     }
 
-    public String getDownStation() {
-        return downStation;
+    public String getEndStation() {
+        return endStation;
     }
 
     public Integer getDistance() {
