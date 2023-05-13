@@ -46,8 +46,8 @@ public class GlobalExceptionHandler {
         return getResponseOfBadRequest(exception);
     }
 
-    @ExceptionHandler(DistanceValueInvalidException.class)
-    public ResponseEntity<ExceptionResponse> distanceValueInvalidExceptionHandler(final DistanceValueInvalidException exception) {
+    @ExceptionHandler(InvalidDistanceException.class)
+    public ResponseEntity<ExceptionResponse> invalidDistanceExceptionHandler(final InvalidDistanceException exception) {
         return getResponseOfBadRequest(exception);
     }
 

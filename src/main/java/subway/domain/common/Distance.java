@@ -1,7 +1,7 @@
 package subway.domain.common;
 
 import subway.exception.DistanceForkedException;
-import subway.exception.DistanceValueInvalidException;
+import subway.exception.InvalidDistanceException;
 
 import java.util.Objects;
 
@@ -18,7 +18,7 @@ public class Distance {
 
     private void validateDistance(final long distance) {
         if (distance < MINIMUM_DISTANCE) {
-            throw new DistanceValueInvalidException();
+            throw new InvalidDistanceException();
         }
     }
 
