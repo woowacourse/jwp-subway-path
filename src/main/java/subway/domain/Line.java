@@ -35,14 +35,6 @@ public class Line {
         return name.equals(other.getName());
     }
 
-    public boolean isSameName(String otherName) {
-        return name.equals(otherName);
-    }
-
-    public void addSections(List<Section> saveSections) {
-        sections.addAll(saveSections);
-    }
-
     public void addSection(Section newSection) {
         validateDuplicatedName(newSection);
 
