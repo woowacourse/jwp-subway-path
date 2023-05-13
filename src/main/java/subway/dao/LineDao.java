@@ -7,14 +7,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
 
-@Component
+@Repository
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
+    private final SimpleJdbcInsert jdbcInsert;
     private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
@@ -22,16 +22,16 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public LineDao(JdbcTemplate jdbcTemplate) {
+    public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+        this.jdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public LineEntity insert(LineEntity line) {
+    public LineEntity insert(final LineEntity line) {
         final BeanPropertySqlParameterSource parameterSource = new BeanPropertySqlParameterSource(line);
-        Long lineId = insertAction.executeAndReturnKey(parameterSource).longValue();
+        Long lineId = jdbcInsert.executeAndReturnKey(parameterSource).longValue();
         return new LineEntity(lineId, line.getName(), line.getColor());
     }
 
@@ -60,7 +60,7 @@ public class LineDao {
 
     public void update(final LineEntity newLine) {
         String sql = "UPDATE LINE SET name = ?, color = ? WHERE id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
     }
 
     public void deleteById(final Long id) {

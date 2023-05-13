@@ -3,10 +3,10 @@ package subway.dao;
 import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
 
-@Component
+@Repository
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
