@@ -1,5 +1,7 @@
 package subway.entity;
 
+import java.util.Objects;
+
 public class SectionEntity {
 
     private final Long id;
@@ -47,5 +49,18 @@ public class SectionEntity {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final SectionEntity that = (SectionEntity) o;
+        return distance == that.distance && Objects.equals(id, that.id) && Objects.equals(lineId, that.lineId) && Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId, that.downStationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, lineId, upStationId, downStationId, distance);
     }
 }
