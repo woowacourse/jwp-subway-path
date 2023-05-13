@@ -11,6 +11,7 @@ import subway.domain.Line;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
+import subway.exception.DuplicateLineException;
 
 @Service
 @Transactional
@@ -22,6 +23,9 @@ public class LineService {
     }
 
     public long saveLine(LineCreateRequest request) {
+        if (lineDao.existsByName(request.getLineName())) {
+            throw new DuplicateLineException();
+        }
         return lineDao.insert(new Line(request.getLineName(), request.getColor()));
     }
 

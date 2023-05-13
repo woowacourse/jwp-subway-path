@@ -53,4 +53,9 @@ public class LineDao {
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from LINE where id = ?", id);
     }
+
+    public boolean existsByName(String lineName) {
+        String sql = "SELECT COUNT(*) FROM LINE WHERE name = ? LIMIT 1";
+        return jdbcTemplate.queryForObject(sql, Long.class, lineName) > 0;
+    }
 }

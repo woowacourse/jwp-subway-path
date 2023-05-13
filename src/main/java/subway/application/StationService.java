@@ -9,6 +9,7 @@ import subway.domain.Station;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationUpdateRequest;
+import subway.exception.DuplicateStationException;
 
 @Service
 @Transactional
@@ -20,6 +21,9 @@ public class StationService {
     }
 
     public void saveStation(StationCreateRequest stationCreateRequest) {
+        if (stationDao.existsBy(stationCreateRequest.getStationName())) {
+            throw new DuplicateStationException();
+        }
         stationDao.insert(new Station(stationCreateRequest.getStationName()));
     }
 
