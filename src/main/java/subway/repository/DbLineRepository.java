@@ -20,11 +20,6 @@ public class DbLineRepository implements LineRepository {
     }
 
     @Override
-    public Line findByName(final String name) {
-        return Line.from(lineDao.findByName(name));
-    }
-
-    @Override
     public Line save(final Line line) {
         final LineEntity lineEntity = new LineEntity(line.getName(), line.getColor());
         return Line.from(lineDao.save(lineEntity));

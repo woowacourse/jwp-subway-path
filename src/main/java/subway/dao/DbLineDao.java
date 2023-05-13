@@ -58,15 +58,6 @@ public class DbLineDao implements LineDao {
     }
 
     @Override
-    public void update(final LineEntity newLine) {
-
-    }
-
-    @Override
-    public void deleteById(final Long id) {
-    }
-
-    @Override
     public LineEntity findByName(final String name) {
         final String sql = "SELECT * FROM line WHERE name = :name";
         final Map<String, String> parameter = Map.of("name", name);

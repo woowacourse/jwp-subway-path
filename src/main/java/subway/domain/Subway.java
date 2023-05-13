@@ -57,14 +57,8 @@ public class Subway {
         return sections.findAllStationsInOrder();
     }
 
-    public Map<List<Station>, Integer> findAllSectionsInOrder(final Line line) {
-        final Sections sections = findSectionsOf(line);
-        return sections.findAllSectionsInOrder();
-    }
-
     public int findDistanceBetween(final Line line, final Station upStation, final Station downStation) {
         final Sections sections = findSectionsOf(line);
-        System.out.println("sections = " + sections);
 
         if (!sections.containsStation(upStation) || !sections.containsStation(downStation)) {
             System.out.println(sections.containsStation(upStation));

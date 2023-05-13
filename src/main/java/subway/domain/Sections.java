@@ -25,11 +25,6 @@ public class Sections {
         validateStations(upLineStation, downLineStation);
         validateDistance(distance);
 
-        System.out.println("graph.vertexSet() = " + graph.vertexSet());
-
-        System.out.println("graph.containsVertex(upLineStation) = " + graph.containsVertex(upLineStation));
-        System.out.println("graph.containsVertex(downLineStation) = " + graph.containsVertex(downLineStation));
-
         // 기존 역: upLineStation, 새로운 역: downLineStation
         if (graph.containsVertex(upLineStation)) {
 
@@ -64,12 +59,14 @@ public class Sections {
                 addStationToUpLine(upLineStation, downLineStation, distance);
                 return upLineStation;
             }
+
             // 기존 상행 역 -> upLineStation (새 역) -> downLineStation
             final Set<DefaultWeightedEdge> defaultWeightedEdges = graph.incomingEdgesOf(downLineStation);
             final Station previousStation = findPreviousStation(defaultWeightedEdges);
             addStationToUpLine(previousStation, upLineStation, downLineStation, distance);
             return upLineStation;
         }
+
         throw new IllegalArgumentException("부적절한 입력입니다.");
     }
 
@@ -135,10 +132,6 @@ public class Sections {
         if (upLineStation.equals(downLineStation)) {
             throw new IllegalArgumentException("서로 다른 역을 입력해 주세요.");
         }
-
-//        if (graph.containsVertex(upLineStation) && graph.containsVertex(downLineStation)) {
-//            throw new IllegalArgumentException("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
-//        }
     }
 
     private Station findPreviousStation(final Set<DefaultWeightedEdge> defaultWeightedEdges) {
