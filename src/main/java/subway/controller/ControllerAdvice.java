@@ -20,7 +20,7 @@ public class ControllerAdvice {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleException(final Exception exception) {
         final String message = exception.getMessage();
-        LOGGER.warn(message);
+        LOGGER.error(message);
         return ResponseEntity.internalServerError().body("알 수 없는 서버 에러가 발생했습니다.");
     }
 
