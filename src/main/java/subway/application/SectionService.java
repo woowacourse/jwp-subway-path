@@ -9,7 +9,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.SectionChange;
+import subway.domain.SectionChange;
 import subway.dto.response.LineResponse;
 import subway.dto.response.SectionResponse;
 import subway.dto.response.StationsInLineResponse;

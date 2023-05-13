@@ -3,7 +3,6 @@ package subway.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.dto.SectionChange;
 import subway.exceptions.customexceptions.InvalidDataException;
 
 import java.util.ArrayList;

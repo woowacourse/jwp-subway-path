@@ -1,6 +1,5 @@
 package subway.domain;
 
-import subway.dto.SectionChange;
 import subway.exceptions.customexceptions.InvalidDataException;
 import subway.exceptions.customexceptions.NotFoundException;
 
