@@ -3,6 +3,7 @@ package subway.repository;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.Line;
@@ -18,6 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
+@Transactional
 public class JdbcLineRepository implements LineRepository {
 
     private final JdbcTemplate jdbcTemplate;
@@ -39,6 +41,7 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Line findById(final long lineId) {
         LineEntity lineEntity = lineDao.findById(lineId)
                 .orElseThrow(() -> new NoSuchLineException(lineId));
@@ -66,6 +69,7 @@ public class JdbcLineRepository implements LineRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<Line> findAll() {
 
         List<LineEntity> lines = lineDao.findAll();
