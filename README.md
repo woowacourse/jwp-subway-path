@@ -3,28 +3,20 @@
 1. API 기능 요구사항 명세
 
 - [x] 노선에 역 등록 API 신규 구현
-    - [x] 해당 노선에 역을 추가한다.
-        - [x] POST `/lines/{lineId}/section`
-            - 하나의 역을 등록할 때 : 노선 id, 등록할 역 id, 이전역 id, 다음역 id, 이전역과의 거리 정보, 다음역과의 거리 정보
-        - [x] POST `/lines/{lineId}/init-sections`
-            - 처음 노선에 두개의 역을 등록할 때 : 노선 id, 첫번째 역 id, 두번째 역 id, 역 사이 거리정보
-        - [x] POST `/lines/{lineId}/end-section`
-            - 종착역 옆에 역을 등록할 때 : 노선 id, 등록할 역 id, 기존 종착역 id, 역 사이 거리정보
+    - [x] 노선에 구간을 등록한다.
+      - [ ] POST `/lines/{lineId}/sections`
+      - [ ] 노선 id, 구간 거리, 구간의 상행 방향 역 id, 구간의 하행 방향 역 id
 - [x] 노선에 역 제거 API 신규 구현
     - [x] 해당 노선에서 역을 제거한다.
-        - [x] DELETE `/lines/{lineId}/section?station-id={stationId}`
-            - 하나의 역을 제거할 때 : 노선 id, 삭제할 역의 id
-        - [x] DELETE `/lines/{lineId}/end-section?station-id={stationId}`
-            - 하나의 종착역을 제거할 때 : 노선 id, 삭제할 종착역의 id
-        - [x] DELETE `/lines/{lineId}/last-sections?upward-id={upwardId}&downward-id={downwardId}`
-            - 노선에 남은 마지막 두개의 역을 제거할 때: 노선 id, 삭제할 구간의 상행 종착역 id, 삭제할 구간의 하행 종착역 id
+      - [ ] DELETE `/lines/{lineId}/stations/{stationId}`
+      - [ ] 노선 id, 삭제할 역의 id
 - [x] 노선 조회 API 기능 구현
-    - [x] GET `/line-stations/{lineId}`
+    - [ ] GET `/lines/{lineId}`
     - [x] 노선에 포함된 역을 순서대로 보여주도록 응답을 개선한다.
         - [x] 역을 추가할 때는 이전역 다음역 정보를 같이 저장함으로써 순서를 표시한다.
         - [x] 이전역, 다음역 정보를 이용해서 도메인을 순서에 맞게 조립한다.
 - [x] 노선 목록 조회 API 기능 구현
-    - [x] GET `/line-stations`
+    - [ ] GET `/lines`
     - [x] 노선에 포함된 역을 순서대로 보여주도록 응답을 개선한다.
 
 2. 도메인 기능 명세
