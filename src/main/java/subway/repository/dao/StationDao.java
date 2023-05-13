@@ -17,7 +17,7 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<StationEntity> rowMapper = (rs, rowNum) -> new StationEntity(
+    private static final RowMapper<StationEntity> rowMapper = (rs, rowNum) -> new StationEntity(
             rs.getLong("id"),
             rs.getString("name")
     );
@@ -52,9 +52,7 @@ public class StationDao {
 
     public void insertAll(List<StationEntity> stations) {
         String sql = "INSERT INTO station(name) VALUES  (?)";
-        jdbcTemplate.batchUpdate(sql, stations, stations.size(), ((ps, station) -> {
-            ps.setString(1, station.getName());
-        }));
+        jdbcTemplate.batchUpdate(sql, stations, stations.size(), ((ps, station) -> ps.setString(1, station.getName())));
     }
 
     public void deleteByIds(List<Long> ids) {
@@ -65,13 +63,13 @@ public class StationDao {
     }
 
     public List<StationEntity> findAllBySections() {
-        String sql = "SELECT sta.id, sta.name FROM station sta "
+        String sql = "SELECT DISTINCT sta.id, sta.name FROM station sta "
                 + "JOIN section sec ON sta.id = sec.source_station_id OR sta.id = sec.target_station_id";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public List<StationEntity> findByLineId(Long id) {
-        String sql = "SELECT sta.id, sta.name FROM station sta "
+        String sql = "SELECT DISTINCT sta.id, sta.name FROM station sta "
                 + "JOIN section sec ON sta.id = sec.source_station_id OR sta.id = sec.target_station_id"
                 + " WHERE sec.line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, id);
