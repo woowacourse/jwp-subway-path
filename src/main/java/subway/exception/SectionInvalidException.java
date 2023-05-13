@@ -1,8 +1,8 @@
 package subway.exception;
 
-public class SectionInvalidException extends RuntimeException {
+public class SectionInvalidException extends InvalidException {
 
     public SectionInvalidException() {
-        super("잘못된 Section이 들어왔습니다. 역의 정보를 다시 확인해주세요.");
+        super("유효하지 않은 역 구간 정보입니다.");
     }
 }
