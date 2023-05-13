@@ -17,6 +17,7 @@ import subway.domain.Section;
 import subway.dto.LineResponse;
 import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
+import subway.exception.LineAlreadyExistsException;
 import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
 
@@ -45,6 +46,18 @@ class LineServiceTest {
                 () -> assertThat(lineRepository.findAll()).hasSize(1),
                 () -> assertThat(id).isPositive()
         );
+    }
+
+    @Test
+    void 라인을_저장할_때_이미_라인이_존재하는_경우_예외를_던진다() {
+        // given
+        final LineSaveRequest request = new LineSaveRequest("1호선", "RED");
+        lineService.save(request);
+
+        // expect
+        assertThatThrownBy(() -> lineService.save(request))
+                .isInstanceOf(LineAlreadyExistsException.class)
+                .hasMessage("노선이 이미 존재합니다.");
     }
 
     @Test

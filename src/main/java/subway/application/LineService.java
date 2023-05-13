@@ -4,12 +4,14 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.dto.LineResponse;
 import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
+import subway.exception.LineAlreadyExistsException;
 import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
 
@@ -24,6 +26,10 @@ public class LineService {
     }
 
     public Long save(final LineSaveRequest request) {
+        final Optional<Long> lineId = lineRepository.findIdByName(request.getName());
+        if (lineId.isPresent()) {
+            throw new LineAlreadyExistsException();
+        }
         lineRepository.save(new Line(request.getName(), request.getColor(), Collections.emptyList()));
         return lineRepository.findIdByName(request.getName())
                 .orElseThrow(LineNotFoundException::new);
