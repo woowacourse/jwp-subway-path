@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.dao.SectionDao;
@@ -12,7 +13,7 @@ import subway.domain.Stations;
 
 import java.util.List;
 
-@Component
+@Service
 public class CommonService {
 
     private final SectionDao sectionDao;
