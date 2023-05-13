@@ -7,8 +7,6 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.request.CreateSectionRequest;
 import subway.dto.response.LineResponse;
-import subway.exception.NoSuchLineException;
-import subway.exception.NoSuchStationException;
 import subway.mapper.LineMapper;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -28,15 +26,9 @@ public class SectionService {
 
     public LineResponse createSection(final long lineId, final CreateSectionRequest request) {
         Line line = lineRepository.findById(lineId);
-        if (line == null) {
-            throw new NoSuchLineException();
-        }
 
         Station upStation = stationRepository.findById(request.getUpStation());
         Station downStation = stationRepository.findById(request.getDownStation());
-        if (upStation == null || downStation == null) {
-            throw new NoSuchStationException();
-        }
 
         line.addSection(new Section(upStation, downStation, request.getDistance()));
 
@@ -47,14 +39,8 @@ public class SectionService {
 
     public void deleteSection(final long lineId, final long stationId) {
         Line line = lineRepository.findById(lineId);
-        if (line == null) {
-            throw new NoSuchLineException();
-        }
 
         Station station = stationRepository.findById(stationId);
-        if (station == null) {
-            throw new NoSuchStationException();
-        }
 
         line.removeStation(station);
 
