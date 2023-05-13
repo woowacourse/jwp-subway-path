@@ -61,6 +61,15 @@ public class SectionService {
         }
     }
 
+    private void validateHasStation(boolean hasStartStation, boolean hasEndStation) {
+        if (hasStartStation && hasEndStation) {
+            throw new IllegalSectionException("노선에 이미 해당 역이 존재합니다.");
+        }
+        if (!hasStartStation && !hasEndStation) {
+            throw new IllegalSectionException("노선에 기준이 되는 역을 찾을 수 없습니다.");
+        }
+    }
+
     private void addEndSection(Long lineId, Section newSection) {
         sectionDao.findByStartStationNameAndLineId(newSection.getStartStationName(), lineId)
             .ifPresentOrElse(section -> {
@@ -88,15 +97,6 @@ public class SectionService {
     private void validateDistance(int distance, int newDistance) {
         if (distance <= newDistance) {
             throw new IllegalDistanceException("새로운 구간의 길이는 기존 구간의 길이보다 작아야 합니다.");
-        }
-    }
-
-    private void validateHasStation(boolean hasStartStation, boolean hasEndStation) {
-        if (hasStartStation && hasEndStation) {
-            throw new IllegalSectionException("이미 노선에 추가할 역이 존재합니다.");
-        }
-        if (!hasStartStation && !hasEndStation) {
-            throw new IllegalSectionException("노선에 기준이 되는 역을 찾을 수 없습니다.");
         }
     }
 
