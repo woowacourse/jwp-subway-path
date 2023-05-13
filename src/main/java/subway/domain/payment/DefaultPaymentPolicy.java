@@ -2,6 +2,7 @@ package subway.domain.payment;
 
 import org.springframework.stereotype.Component;
 import subway.domain.Lines;
+import subway.exception.line.LineException;
 
 @Component
 public class DefaultPaymentPolicy implements PaymentPolicy {
@@ -21,10 +22,14 @@ public class DefaultPaymentPolicy implements PaymentPolicy {
 
     @Override
     public int calculateFee(final Lines lines) {
-        if (lines.totalDistance() == 0) {
-            return 0;
-        }
+        validateLinesDistance(lines);
         return calculateByDistance(lines.totalDistance());
+    }
+
+    private void validateLinesDistance(final Lines lines) {
+        if (lines.totalDistance() == 0) {
+            throw new LineException("경로의 거리는 0일 수 없습니다");
+        }
     }
 
     private int calculateByDistance(final int totalDistance) {

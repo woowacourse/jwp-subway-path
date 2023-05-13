@@ -1,6 +1,7 @@
 package subway.domain.payment;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
 
@@ -12,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.Lines;
+import subway.exception.line.LineException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -22,15 +24,17 @@ class DefaultPaymentPolicyTest {
     private final Lines route = mock(Lines.class);
 
     @Test
-    void 거리가_없는경우_0원() {
+    void 거리가_없는경우_예외() {
         // given
         given(route.totalDistance()).willReturn(0);
 
         // when
-        final int payment = paymentPolicy.calculateFee(route);
+        final String message = assertThrows(LineException.class, () ->
+                paymentPolicy.calculateFee(route)
+        ).getMessage();
 
         // then
-        assertThat(payment).isEqualTo(0);
+        assertThat(message).contains("경로의 거리는 0일 수 없습니다");
     }
 
     @ParameterizedTest(name = "기본운임(10km 이내)인 경우 1250원이다. - {0}km")
