@@ -41,24 +41,18 @@ public class Line {
     }
 
     public void deleteStation(String stationName) {
-        Station stationToDelete = new Station(stationName);
-        validateNotExist(stationToDelete);
+        Station station = new Station(stationName);
+        validateNotExist(station);
         validateOnlyTwoStations();
 
-        if (isUpwardTerminus(stationToDelete)) {
-            sections.remove(0);
+        if (isTerminus(station)) {
+            deleteStationWhenIsTerminus(station);
             return;
         }
-
-        if (isDownwardTerminus(stationToDelete)) {
-            sections.remove(sections.size() - 1);
-            return;
-        }
-
-        deleteStationIfNotTerminus(stationToDelete);
+        deleteStationWhenIsNotTerminus(station);
     }
 
-    private void deleteStationIfNotTerminus(Station stationToDelete) {
+    private void deleteStationWhenIsNotTerminus(Station stationToDelete) {
         Section downwardSection = getSectionDownwardSameWith(stationToDelete);
         Section upwardSection = getSectionUpwardSameWith(stationToDelete);
 
@@ -94,12 +88,12 @@ public class Line {
         return sections.get(sections.size() - 1);
     }
 
-    private boolean isUpwardTerminus(Station station) {
+    private boolean isTerminus(Station station) {
         Section upwardEndSection = sections.get(0);
-        return upwardEndSection.getUpwardStation().equals(station);
-    }
+        if (upwardEndSection.getUpwardStation().equals(station)) {
+            return true;
+        }
 
-    private boolean isDownwardTerminus(Station station) {
         Section downwardEndSection = getDownwardEndSection();
         return downwardEndSection.getDownwardStation().equals(station);
     }
@@ -184,6 +178,26 @@ public class Line {
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("추가하려는 역의 이웃 역이 존재하지 않습니다. " +
                                 "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name, neighborhoodStation.getName())));
+    }
+
+    private void deleteStationWhenIsTerminus(Station station) {
+        if (isUpwardTerminus(station)) {
+            sections.remove(0);
+            return;
+        }
+        if (isDownwardTerminus(station)) {
+            sections.remove(sections.size() - 1);
+        }
+    }
+
+    private boolean isUpwardTerminus(Station station) {
+        Section upwardEndSection = sections.get(0);
+        return upwardEndSection.getUpwardStation().equals(station);
+    }
+
+    private boolean isDownwardTerminus(Station station) {
+        Section downwardEndSection = getDownwardEndSection();
+        return downwardEndSection.getDownwardStation().equals(station);
     }
 
     private void validateAlreadyExist(Station station) {

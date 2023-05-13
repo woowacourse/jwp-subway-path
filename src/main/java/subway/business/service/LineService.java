@@ -7,10 +7,8 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.business.domain.Direction;
 import subway.business.domain.Line;
 import subway.business.domain.LineRepository;
-import subway.business.domain.Section;
 import subway.business.service.dto.LineResponse;
 import subway.business.service.dto.LineSaveRequest;
-import subway.business.service.dto.LineStationsResponse;
 import subway.business.service.dto.StationAddToLineRequest;
 
 @Transactional
@@ -41,17 +39,16 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineStationsResponse> findLineResponses() {
+    public List<LineResponse> findLineResponses() {
         List<Line> lines = lineRepository.findAll();
         return lines.stream()
-                .map(this::getLineStationsResponseFrom)
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public LineStationsResponse findLineResponseById(Long id) {
-        Line line = lineRepository.findById(id);
-        return getLineStationsResponseFrom(line);
+    public LineResponse findLineResponseById(Long id) {
+        return LineResponse.from(lineRepository.findById(id));
     }
 
     public LineResponse createLine(LineSaveRequest lineSaveRequest) {
@@ -61,19 +58,7 @@ public class LineService {
                 lineSaveRequest.getDownwardTerminus(),
                 lineSaveRequest.getDistance()
         );
-        return new LineResponse(lineRepository.create(line), line.getName());
-    }
-
-    private LineStationsResponse getLineStationsResponseFrom(Line line) {
-        List<Section> sections = line.getSections();
-        List<String> stationNames = sections.stream()
-                .map(section -> section.getUpwardStation().getName())
-                .collect(Collectors.toList());
-        stationNames.add(getDownwardTerminusName(sections));
-        return new LineStationsResponse(line.getName(), stationNames);
-    }
-
-    private String getDownwardTerminusName(List<Section> sections) {
-        return sections.get(sections.size() - 1).getDownwardStation().getName();
+        long savedLineId = lineRepository.create(line);
+        return LineResponse.from(lineRepository.findById(savedLineId));
     }
 }

@@ -1,6 +1,5 @@
 package subway.ui;
 
-import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 
 import io.restassured.RestAssured;
@@ -126,7 +125,8 @@ public class LineControllerIntegratedTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
                 .body("name", is("2호선"))
-                .body("stations", hasItems("잠실역", "몽촌토성역"));
+                .body("sections[0].upwardStation", is("잠실역"))
+                .body("sections[0].downwardStation", is("몽촌토성역"));
     }
 
     @DisplayName("모든 노선의 이름과 포함된 모든 역을 조회한다.")
@@ -154,8 +154,10 @@ public class LineControllerIntegratedTest {
                 .statusCode(HttpStatus.OK.value())
                 .contentType(ContentType.JSON)
                 .body("[0].name", is("2호선"))
-                .body("[0].stations", hasItems("잠실역", "몽촌토성역"))
+                .body("[0].sections[0].upwardStation", is("잠실역"))
+                .body("[0].sections[0].downwardStation", is("몽촌토성역"))
                 .body("[1].name", is("3호선"))
-                .body("[1].stations", hasItems("매봉역", "교대역"));
+                .body("[1].sections[0].upwardStation", is("매봉역"))
+                .body("[1].sections[0].downwardStation", is("교대역"));
     }
 }

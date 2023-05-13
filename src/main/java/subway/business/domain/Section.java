@@ -33,6 +33,10 @@ public class Section {
         return this.downwardStation.equals(station);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public Station getUpwardStation() {
         return upwardStation;
     }

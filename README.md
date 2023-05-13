@@ -135,7 +135,7 @@ Content-Type: application/json
 ```
 
 ### ✅ GET /lines/{line_id}
-- 특정 노선의 이름과 포함된 모든 역을 조회합니다.
+- 특정 노선의 모든 구간을 포함한 정보를 조회합니다.
 
 #### Request example
 ```text
@@ -151,14 +151,29 @@ Content-Type: application/json
 ```
 ```json
 {
-    "name" : "2호선",
-    "stations": ["몽촌토성역", "잠실역"]
+    "id": 6,
+    "name": "2호선",
+    "sections": [
+        {
+            "id": 11,
+            "upwardStation": "잠실역",
+            "downwardStation": "몽촌토성역",
+            "distance": 5
+        },
+        {
+          "id": 12,
+          "upwardStation": "몽촌토성역",
+          "downwardStation": "신천",
+          "distance": 3
+        }
+    ]
 }
+
 ```
 
 ### ✅ GET /lines
 - 모든 노선의 정보를 조회합니다.
-  - 노선의 정보는 노선의 이름과 포함된 모든 역의 이름을 가지고 있습니다.
+  - 노선의 정보는 노선의 이름과 포함된 모든 구간 정보를 포함합니다.
 
 #### Request example
 ```text
@@ -176,16 +191,28 @@ Content-Type: application/json
 ```json
 [
     {
-        "name" : "2호선",
-        "stations": ["몽촌토성역", "잠실역"]
+        "id": 3,
+        "name": "2호선",
+        "sections": [
+            {
+                "id": 6,
+                "upwardStation": "잠실역",
+                "downwardStation": "몽촌토성역",
+                "distance": 5
+            }
+        ]
     },
     {
-        "name" : "3호선",
-        "stations": ["수서역", "양재역, 잠실역"]
-    },
-    {
-        "name" : "4호선",
-        "stations": ["사당역", "삼각지역"]
+        "id": 4,
+        "name": "3호선",
+        "sections": [
+            {
+                "id": 7,
+                "upwardStation": "매봉역",
+                "downwardStation": "교대역",
+                "distance": 5
+            }
+        ]
     }
 ]
 ```
