@@ -59,14 +59,27 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
+    public Long findHeadIdById(Long lineId) {
+        String sql = "select head_station from LINE WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("head_station"), lineId);
+    }
+
+    public boolean isUpEndStation(Long lineId, String name) {
+        String sql = "select exists(select * from LINE "
+            + "left outer join STATION on STATION.id = LINE.head_station "
+            + "where LINE.id = ? and STATION.name = ?) as is_up_end_station";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+            rs.getBoolean("IS_UP_END_STATION"), lineId, name));
+    }
+
 //    public void update(Line newLine) {
 //        String sql = "update LINE set name = ?, color = ? where id = ?";
 //        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
 //    }
 
-    public void updateHeadStation(Line line, Long headStation) {
+    public void updateHeadStation(Long lineId, Long headStation) {
         String sql = "update LINE set head_station = ? where id = ?";
-        jdbcTemplate.update(sql, headStation, line.getId());
+        jdbcTemplate.update(sql, headStation, lineId);
     }
 
     public void deleteById(Long id) {

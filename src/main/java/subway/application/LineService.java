@@ -2,6 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
+import subway.dao.StationDao;
 import subway.dto.LineResponse;
 import subway.entity.LineEntity;
 
@@ -10,9 +11,12 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+
+    private final StationDao stationDao;
     private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(StationDao stationDao, LineDao lineDao) {
+        this.stationDao = stationDao;
         this.lineDao = lineDao;
     }
 
@@ -22,30 +26,23 @@ public class LineService {
 //    }
 
     public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
+        List<LineEntity> persistLines = lineDao.findAll();
         return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public List<LineEntity> findLines() {
-        return lineDao.findAll();
+            .map(LineResponse::of)
+            .collect(Collectors.toList());
     }
 
     public LineResponse findLineResponseById(Long id) {
-        LineEntity persistLine = findLineById(id);
+        LineEntity persistLine = lineDao.findById(id);
         return LineResponse.of(persistLine);
     }
 
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-//
 //    public void updateLine(Long id, LineRequest lineUpdateRequest) {
 //        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
 //    }
 
     public void deleteLineById(Long id) {
+        stationDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
 
