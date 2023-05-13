@@ -7,15 +7,26 @@ public class Distance {
     private final int value;
 
     public Distance(final int value) {
+        validate(value);
         this.value = value;
     }
 
-    public int getValue() {
-        return value;
+    private void validate(final int value) {
+        if (value <= 0) {
+            throw new IllegalArgumentException("거리는 0 이하일 수 없습니다.");
+        }
+    }
+
+    public boolean equalToSumOf(final Distance upDistance, final Distance downDistance) {
+        return this.value == upDistance.value + downDistance.value;
     }
 
     public boolean isSameOrOver(final Distance other) {
         return this.value >= other.value;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     @Override
