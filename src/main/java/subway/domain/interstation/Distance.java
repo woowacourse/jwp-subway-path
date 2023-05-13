@@ -1,0 +1,25 @@
+package subway.domain.interstation;
+
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+import subway.exception.interstation.DistanceException;
+
+@Getter
+@ToString
+@EqualsAndHashCode(of = "value")
+public class Distance {
+
+    private final long value;
+
+    public Distance(final long value) {
+        validate(value);
+        this.value = value;
+    }
+
+    private void validate(final long value) {
+        if (value <= 0) {
+            throw new DistanceException("거리는 양수이어야 합니다.");
+        }
+    }
+}
