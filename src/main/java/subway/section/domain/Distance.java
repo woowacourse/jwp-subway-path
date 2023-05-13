@@ -35,4 +35,8 @@ public class Distance {
             throw new IllegalArgumentException("최소 거리는 1입니다.");
         }
     }
+    
+    public Long subtract(final long otherDistance) {
+        return this.distance - otherDistance;
+    }
 }
