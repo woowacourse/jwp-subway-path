@@ -16,5 +16,35 @@ public class Line {
     public Line() {
     }
 
+    public Line(final Long id, final Name name, final Color color, final Sections sections) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+    }
 
+    public Line(final String name, final String color) {
+        this(
+            null,
+            new Name(name),
+            new Color(color),
+            new Sections(List.of())
+        );
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name.getName();
+    }
+
+    public String getColor() {
+        return color.getColor();
+    }
+
+    public Sections getSections() {
+        return sections;
+    }
 }

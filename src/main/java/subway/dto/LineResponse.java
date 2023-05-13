@@ -1,6 +1,7 @@
 package subway.dto;
 
 import java.util.List;
+import subway.domain.line.Line;
 import subway.entity.LineEntity;
 
 public class LineResponse {
@@ -17,8 +18,12 @@ public class LineResponse {
         this.stationResponses = stationResponses;
     }
 
-    public static LineResponse of(LineEntity lineEntity) {
-        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), List.of());
+    public static LineResponse of(Line line) {
+        return new LineResponse(
+            line.getId(),
+            line.getName(),
+            line.getColor(),
+            List.of());
     }
 
     public Long getId() {
