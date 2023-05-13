@@ -3,6 +3,7 @@ package subway.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.line.LineRequest;
+import subway.dto.line.LineResponse;
 import subway.dto.station.LineMapResponse;
 import subway.entity.LineEntity;
 import subway.service.LineService;
@@ -31,7 +32,7 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineEntity>> findAllLines() {
+    public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findAll());
     }
 

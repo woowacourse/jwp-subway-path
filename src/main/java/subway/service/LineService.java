@@ -1,11 +1,12 @@
 package subway.service;
 
-import org.springframework.stereotype.Service;
-import subway.dto.line.LineRequest;
-import subway.entity.LineEntity;
-import subway.repository.LineRepository;
-
 import java.util.List;
+import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import subway.domain.Line;
+import subway.dto.line.LineRequest;
+import subway.dto.line.LineResponse;
+import subway.repository.LineRepository;
 
 @Service
 public class LineService {
@@ -17,11 +18,17 @@ public class LineService {
     }
 
     public Long saveLine(final LineRequest request) {
-        return lineRepository.insertLine(new LineEntity(null, request.getLineNumber(), request.getName(), request.getColor()));
+        final Line line = new Line(request.getLineNumber(), request.getName(), request.getColor());
+        return lineRepository.insertLine(line);
     }
 
-    public List<LineEntity> findAll() {
-        return lineRepository.findAll();
+    public List<LineResponse> findAll() {
+        return lineRepository.findAll().stream()
+                .map(line -> {
+                    final Long id = lineRepository.findLineIdByLine(line);
+                    return new LineResponse(id, line.getName(), line.getColor());
+                })
+                .collect(Collectors.toList());
     }
 
     public void deleteLineById(final Long id) {

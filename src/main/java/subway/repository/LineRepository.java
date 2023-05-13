@@ -1,8 +1,10 @@
 package subway.repository;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.line.LineDao;
+import subway.domain.Line;
 import subway.entity.LineEntity;
 
 @Repository
@@ -14,12 +16,20 @@ public class LineRepository {
         this.lineDao = lineDao;
     }
 
-    public Long insertLine(final LineEntity lineEntity) {
+    public Long insertLine(final Line line) {
+        final LineEntity lineEntity = lineDao.findByLineNumber(line.getLineNumber());
         return lineDao.insert(lineEntity);
     }
 
-    public List<LineEntity> findAll() {
-        return lineDao.findAll();
+    public Long findLineIdByLine(final Line line) {
+        final LineEntity lineEntity = lineDao.findByLineNumber(line.getLineNumber());
+        return lineEntity.getLineId();
+    }
+
+    public List<Line> findAll() {
+        return lineDao.findAll().stream()
+                .map(lineEntity -> new Line(lineEntity.getLineNumber(), lineEntity.getName(), lineEntity.getColor()))
+                .collect(Collectors.toList());
     }
 
     public void deleteLineById(final Long id) {
