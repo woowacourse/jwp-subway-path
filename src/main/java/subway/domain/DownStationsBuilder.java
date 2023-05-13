@@ -3,15 +3,15 @@ package subway.domain;
 public class DownStationsBuilder {
     private Long id;
     private Line line;
-    private Station startingStation;
-    private Station destinationStation;
-    private int distance;
+    private Station previousStation;
+    private Station nextStation;
+    private Distance distance;
 
-    protected DownStationsBuilder(Long id, Line line, Station startingStation, Station destinationStation, int distance) {
+    protected DownStationsBuilder(Long id, Line line, Station previousStation, Station nextStation, Distance distance) {
         this.id = id;
         this.line = line;
-        this.startingStation = startingStation;
-        this.destinationStation = destinationStation;
+        this.previousStation = previousStation;
+        this.nextStation = nextStation;
         this.distance = distance;
     }
 
@@ -26,19 +26,16 @@ public class DownStationsBuilder {
     }
 
     public DownStationsBuilder station(Station station) {
-        this.startingStation = station;
+        this.previousStation = station;
         return this;
     }
 
-    public DownStationsBuilder distance(int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("거리 정보는 양의 정수로 제한합니다.");
-        }
+    public DownStationsBuilder distance(Distance distance) {
         this.distance = distance;
         return this;
     }
 
     public Section build() {
-        return new Section(id, line, destinationStation, startingStation, distance);
+        return new Section(id, line, nextStation, previousStation, distance);
     }
 }

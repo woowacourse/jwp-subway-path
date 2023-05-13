@@ -5,9 +5,9 @@ public class UpStationsBuilder {
     private Line line;
     private Station previousStation;
     private Station nextStation;
-    private int distance;
+    private Distance distance;
 
-    protected UpStationsBuilder(Long id, Line line, Station previousStation, Station nextStation, int distance) {
+    protected UpStationsBuilder(Long id, Line line, Station previousStation, Station nextStation, Distance distance) {
         this.id = id;
         this.line = line;
         this.previousStation = previousStation;
@@ -30,10 +30,7 @@ public class UpStationsBuilder {
         return this;
     }
 
-    public UpStationsBuilder distance(int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("노선의 역과 역 사이는 언제나 양의 정수를 유지해야 합니다.");
-        }
+    public UpStationsBuilder distance(Distance distance) {
         this.distance = distance;
         return this;
     }

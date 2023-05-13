@@ -5,7 +5,7 @@ public class StationsBuilder {
     private Line line;
     private Station previousStation;
     private Station nextStation;
-    private int distance;
+    private Distance distance;
 
     public StationsBuilder id(Long id) {
         this.id = id;
@@ -22,6 +22,14 @@ public class StationsBuilder {
         return this;
     }
 
+    /**
+     * 현재 station을 등록하고, next station을 비워두고 싶을 때 사용합니다.
+     * 주로 노선의 하행 종점 역을 등록할 때 사용합니다.
+     */
+    public UpStationsBuilder nextStationEmpty(Station station) {
+        return new UpStationsBuilder(id, line, station, new EmptyStation(), Distance.emptyDistance());
+    }
+
     public UpStationsBuilder before(Station station) {
         this.nextStation = station;
         return new UpStationsBuilder(id, line, previousStation, station, distance);
@@ -32,10 +40,7 @@ public class StationsBuilder {
         return new DownStationsBuilder(id, line, previousStation, station, distance);
     }
 
-    public StationsBuilder distance(int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("거리 정보는 양의 정수로 제한합니다.");
-        }
+    public StationsBuilder distance(Distance distance) {
         this.distance = distance;
         return this;
     }

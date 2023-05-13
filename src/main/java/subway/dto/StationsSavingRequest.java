@@ -1,9 +1,11 @@
 package subway.dto;
 
+import subway.domain.Distance;
+
 public class StationsSavingRequest {
     String previousStationName;
     String nextStationName;
-    int distance;
+    Distance distance;
     boolean isDown;
 
     public StationsSavingRequest() {
@@ -12,7 +14,7 @@ public class StationsSavingRequest {
     public StationsSavingRequest(String previousStationName, String nextStationName, int distance, boolean isDown) {
         this.previousStationName = previousStationName;
         this.nextStationName = nextStationName;
-        this.distance = distance;
+        this.distance = Distance.of(distance);
         this.isDown = isDown;
     }
 
@@ -24,7 +26,7 @@ public class StationsSavingRequest {
         return nextStationName;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 

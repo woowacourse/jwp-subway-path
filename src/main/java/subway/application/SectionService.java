@@ -4,9 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dao.SectionDao;
-import subway.domain.Line;
-import subway.domain.Station;
-import subway.domain.Section;
+import subway.domain.*;
 
 import java.util.Optional;
 
@@ -22,11 +20,11 @@ public class SectionService {
         this.lineDao = lineDao;
     }
 
-    public long insert(long lineId, String previousStationName, String nextStationName, int distance, boolean isDown) {
+    public long insert(long lineId, String previousStationName, String nextStationName, Distance distance, boolean isDown) {
         Line line = lineDao.findById(lineId);
         Station previousStation = stationDao.findByName(previousStationName);
         Station nextStation = stationDao.findByName(nextStationName);
-        if (sectionDao.countStations(line) == 0) {
+        if (sectionDao.isLineEmpty(line)) {
             return initialize(line, previousStation, nextStation, distance, isDown);
         }
 
@@ -56,10 +54,14 @@ public class SectionService {
         // 2. 등록할 역이 연결할 역에 하행방향으로 달려있는 경우
         Optional<Section> previousStations = sectionDao.findByPreviousStation(section.getPreviousStation(), section.getLine());
         if (previousStations.isPresent()) {
+            if (previousStations.get().isNextStationEmpty()) {
+                // 3. 등록할 역이 맨 뒤인 경우
+                return insertLowestStation(section);
+            }
             return insertDownStations(section, previousStations.get());
         }
 
-        // 3. 등록할 역이 맨 앞인 경우
+        // 4. 등록할 역이 맨 앞인 경우
         if (sectionDao.isHighestStationOfLine(section.getNextStation(), section.getLine())) {
             return insertHighestStation(section);
         }
@@ -67,54 +69,76 @@ public class SectionService {
         throw new IllegalArgumentException("등록하는 역과 연결되는 기존의 역 정보가 노선상에 존재하지 않습니다.");
     }
 
+    private long insertLowestStation(Section section) {
+        Optional<Section> previousLowestSection = sectionDao.findByPreviousStation(section.getPreviousStation(), section.getLine());
+        if (previousLowestSection.isEmpty()) {
+            throw new IllegalArgumentException("원래 하행 종점역의 정보를 찾을 수 없습니다.");
+        }
+
+        Section newSection = sectionDao.insert(Section.builder()
+                .line(section.getLine())
+                .nextStationEmpty(section.getNextStation())
+                .build());
+
+        sectionDao.update(Section.builder()
+                .id(previousLowestSection.get().getId())
+                .line(section.getLine())
+                .nextStationEmpty(section.getPreviousStation())
+                .build());
+
+        return newSection.getId();
+    }
+
     private long insertHighestStation(Section section) {
         return sectionDao.insert(section).getId();
     }
 
-    private long initialize(Line line, Station previousStation, Station nextStation, int distance, boolean isDown) {
+    private long initialize(Line line, Station previousStation, Station nextStation, Distance distance, boolean isDown) {
+        if (!sectionDao.isLineEmpty(line)) {
+            throw new IllegalArgumentException("이미 초기 설정이 완료된 노선입니다.");
+        }
+
         if (isDown) {
-            return sectionDao.initialize(Section.builder()
+            Long savedId = sectionDao.insert(Section.builder()
                     .line(line)
                     .startingStation(previousStation)
                     .before(nextStation)
                     .distance(distance)
+                    .build()).getId();
+
+            sectionDao.insert(Section.builder()
+                    .line(line)
+                    .nextStationEmpty(nextStation)
                     .build());
+
+            return savedId;
         }
-        return sectionDao.initialize(Section.builder()
+
+        Long saveId = sectionDao.insert(Section.builder()
                 .line(line)
                 .startingStation(previousStation)
                 .after(nextStation)
                 .distance(distance)
+                .build()).getId();
+
+        sectionDao.insert(Section.builder()
+                .line(line)
+                .nextStationEmpty(nextStation)
                 .build());
+
+        return saveId;
     }
 
     private Long insertDownStations(Section newSection, Section originalSection) {
-        Section savedSection = sectionDao.insert(Section.builder()
-                .line(newSection.getLine())
-                .startingStation(newSection.getNextStation())
-                .before(originalSection.getNextStation())
-                .distance(originalSection.getDistance() - newSection.getDistance())
-                .build());
-        sectionDao.update(Section.builder()
-                .id(originalSection.getId())
-                .line(originalSection.getLine())
-                .startingStation(originalSection.getPreviousStation())
-                .before(savedSection.getPreviousStation())
-                .distance(newSection.getDistance())
-                .build());
+        // 새로운 역 :
+        Section savedSection = sectionDao.insert(Section.makeSectionToInsertDownDirection(newSection, originalSection));
+        sectionDao.update(Section.makeSectionToUpdateDownDirection(newSection, originalSection));
         return savedSection.getId();
     }
 
     private Long insertUpStations(Section newSection, Section originalSection) {
         Section savedSection = sectionDao.insert(newSection);
-        sectionDao.update(Section.builder()
-                .id(originalSection.getId())
-                .line(newSection.getLine())
-                .startingStation(originalSection.getPreviousStation())
-                .before(newSection.getPreviousStation())
-                .distance(originalSection.getDistance() - newSection.getDistance())
-                .build()
-        );
+        sectionDao.update(Section.makeSectionToUpdateUpDirection(newSection, originalSection));
         return savedSection.getId();
     }
 
@@ -129,18 +153,13 @@ public class SectionService {
             Section sectionToDelete = stationsToDeleteOptional.get();
             Section sectionLeft = stationsLeftOptional.get();
 
-            sectionDao.update(Section.builder()
-                    .id(sectionLeft.getId())
-                    .startingStation(sectionLeft.getPreviousStation())
-                    .before(sectionToDelete.getNextStation())
-                    .distance(sectionToDelete.getDistance() + sectionLeft.getDistance())
-                    .build());
+            sectionDao.update(Section.makeSectionToUpdateAfterDeletion(sectionLeft, sectionToDelete));
         }
 
         sectionDao.deleteStation(station, line);
     }
 
-    public int findDistanceBetween(Station stationA, Station stationB, Line line) {
+    public Distance findDistanceBetween(Station stationA, Station stationB, Line line) {
         // 두 역이 current, next 나란히 있는 경우
         Optional<Section> subwayMapOptional = sectionDao.findByPreviousStation(stationA, line);
         if (subwayMapOptional.isPresent() && subwayMapOptional.get().getNextStation().equals(stationB)) {
