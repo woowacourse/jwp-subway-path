@@ -5,14 +5,14 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.persistence.rowmapper.SectionDetail;
+import subway.persistence.entity.SectionDetail;
 import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-import static subway.persistence.rowmapper.util.RowMapperUtil.*;
+import static subway.persistence.entity.RowMapperUtil.*;
 
 @Repository
 public class SectionDao {
@@ -27,18 +27,10 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    // TODO: 없는 호선이나 역을 입력한 경우 예외 처리 해야함
     public SectionEntity insert(final SectionEntity sectionEntity) {
         final SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-
-        return new SectionEntity.Builder()
-                .id(id)
-                .lineId(sectionEntity.getLineId())
-                .previousStationId(sectionEntity.getPreviousStationId())
-                .nextStationId(sectionEntity.getNextStationId())
-                .distance(sectionEntity.getDistance())
-                .build();
+        return SectionEntity.of(id, sectionEntity);
     }
 
     public List<SectionEntity> findByLineIdAndPreviousStationId(final Long lineId, final Long previousStationId) {

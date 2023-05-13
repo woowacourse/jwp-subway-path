@@ -3,22 +3,22 @@ package subway.persistence.entity;
 import java.util.Objects;
 
 public class LineEntity {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
 
-    public LineEntity() {
-    }
-
-    public LineEntity(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public LineEntity(Long id, String name, String color) {
+    LineEntity(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
+    }
+
+    public LineEntity(String name, String color) {
+        this(null, name, color);
+    }
+
+    public static LineEntity of(Long id, LineEntity lineEntity) {
+        return new LineEntity(id, lineEntity.name, lineEntity.color);
     }
 
     public Long getId() {

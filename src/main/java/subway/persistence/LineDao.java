@@ -1,20 +1,23 @@
 package subway.persistence;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.exception.DuplicatedLineNameException;
 import subway.persistence.entity.LineEntity;
 import subway.exception.LineNotFoundException;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import static subway.persistence.rowmapper.util.RowMapperUtil.lineEntityRowMapper;
+import static subway.persistence.entity.RowMapperUtil.lineEntityRowMapper;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -25,12 +28,14 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(final LineEntity line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-
-        return insertAction.executeAndReturnKey(params).longValue();
+    public LineEntity insert(final LineEntity lineEntity) {
+        final SqlParameterSource params = new BeanPropertySqlParameterSource(lineEntity);
+        try {
+            final long id = insertAction.executeAndReturnKey(params).longValue();
+            return LineEntity.of(id, lineEntity);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedLineNameException();
+        }
     }
 
     public List<LineEntity> findAll() {

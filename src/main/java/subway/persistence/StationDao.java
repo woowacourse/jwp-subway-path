@@ -1,19 +1,20 @@
 package subway.persistence;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.exception.DuplicatedStationNameException;
 import subway.persistence.entity.StationEntity;
 import subway.exception.StationNotFoundException;
-import subway.persistence.rowmapper.util.RowMapperUtil;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-import static subway.persistence.rowmapper.util.RowMapperUtil.stationEntityRowMapper;
+import static subway.persistence.entity.RowMapperUtil.stationEntityRowMapper;
 
 @Repository
 public class StationDao {
@@ -41,18 +42,30 @@ public class StationDao {
 
     public StationEntity findById(final long id) {
         final String sql = "SELECT * FROM station WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, id);
+        try {
+            return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new StationNotFoundException();
+        }
     }
 
     public StationEntity findByName(final String name) {
         final String sql = "SELECT * FROM station WHERE name = ?";
-        return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, name);
+        try {
+            return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, name);
+        } catch (EmptyResultDataAccessException e) {
+            throw new StationNotFoundException();
+        }
     }
 
     public void update(final StationEntity newStationEntity) {
         final String sql = "UPDATE station SET name = ? WHERE id = ?";
-        final int result = jdbcTemplate.update(sql, newStationEntity.getName(), newStationEntity.getId());
-        validateUpdateResult(result);
+        try {
+            final int result = jdbcTemplate.update(sql, newStationEntity.getName(), newStationEntity.getId());
+            validateUpdateResult(result);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedStationNameException();
+        }
     }
 
     public void deleteById(final Long id) {

@@ -3,25 +3,25 @@ package subway.business.dto;
 public class SectionCreateDto {
 
     private final Integer distance;
-    private final String previousStation;
-    private final String nextStation;
+    private final String firstStation;
+    private final String lastStation;
 
-    public SectionCreateDto(final Integer distance, final String previousStation, final String nextStation) {
+    public SectionCreateDto(final Integer distance, final String firstStation, final String lastStation) {
         this.distance = distance;
-        this.previousStation = previousStation;
-        this.nextStation = nextStation;
+        this.firstStation = firstStation;
+        this.lastStation = lastStation;
     }
 
     public Integer getDistance() {
         return distance;
     }
 
-    public String getPreviousStation() {
-        return previousStation;
+    public String getFirstStation() {
+        return firstStation;
     }
 
-    public String getNextStation() {
-        return nextStation;
+    public String getLastStation() {
+        return lastStation;
     }
 
 }

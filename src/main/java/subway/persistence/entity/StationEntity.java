@@ -3,19 +3,16 @@ package subway.persistence.entity;
 import java.util.Objects;
 
 public class StationEntity {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
-    public StationEntity() {
-    }
-
-    public StationEntity(Long id, String name) {
+    public StationEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public StationEntity(String name) {
-        this.name = name;
+    public StationEntity(final String name) {
+        this(null, name);
     }
 
     public Long getId() {

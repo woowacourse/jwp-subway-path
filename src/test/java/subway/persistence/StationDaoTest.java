@@ -10,6 +10,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.exception.DuplicatedStationNameException;
 import subway.exception.StationNotFoundException;
 import subway.persistence.entity.StationEntity;
 
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.persistence.rowmapper.util.RowMapperUtil.stationEntityRowMapper;
+import static subway.persistence.entity.RowMapperUtil.stationEntityRowMapper;
 
 @JdbcTest
 @DisplayName("Station Dao")
@@ -103,7 +104,7 @@ class StationDaoTest {
 
         // when, then
         assertThatThrownBy(() -> stationDao.findById(id))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+                .isInstanceOf(StationNotFoundException.class);
     }
 
     @Test
@@ -130,7 +131,7 @@ class StationDaoTest {
 
         // when, then
         assertThatThrownBy(() -> stationDao.findByName(name))
-                .isInstanceOf(EmptyResultDataAccessException.class);
+                .isInstanceOf(StationNotFoundException.class);
     }
 
     @Test
@@ -151,6 +152,19 @@ class StationDaoTest {
                 () -> assertThat(stationEntity.getId()).isEqualTo(foundStationEntity.getId()),
                 () -> assertThat(stationEntity.getName()).isEqualTo(foundStationEntity.getName())
         );
+    }
+
+    @Test
+    @DisplayName("수정 실패 - 중복되는 이름으로 수정")
+    void update_fail_duplicated_station_name() {
+        // given
+        final long id = 1L;
+        final String name = "잠실새내";
+        final StationEntity stationEntity = new StationEntity(id, name);
+
+        // when, then
+        assertThatThrownBy(() -> stationDao.update(stationEntity))
+                .isInstanceOf(DuplicatedStationNameException.class);
     }
 
     @Test

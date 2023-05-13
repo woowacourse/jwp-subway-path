@@ -3,7 +3,7 @@ package subway.business.converter;
 import subway.business.domain.Line;
 import subway.business.domain.Section;
 import subway.business.domain.Station;
-import subway.persistence.rowmapper.SectionDetail;
+import subway.persistence.entity.SectionDetail;
 import subway.presentation.dto.response.SectionResponse;
 
 import java.util.List;

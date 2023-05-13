@@ -128,12 +128,7 @@ public class SectionService {
     }
 
     private SectionEntity insertSectionEntity(final long lineId, final long previousStationId, final long nextStationId, final int distance) {
-        return sectionDao.insert(new SectionEntity.Builder()
-                .lineId(lineId)
-                .previousStationId(previousStationId)
-                .nextStationId(nextStationId)
-                .distance(distance)
-                .build());
+        return sectionDao.insert(new SectionEntity(lineId, distance, previousStationId, nextStationId));
     }
 
     private Section sectionEntityToSection(final SectionEntity sectionEntity, final LineEntity lineEntity, StationEntity previousStationEntity, StationEntity nextStationEntity, final int distance) {

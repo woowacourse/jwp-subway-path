@@ -2,22 +2,22 @@ package subway.business;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.business.converter.LineEntityRequestConverter;
 import subway.business.converter.SectionConverter;
 import subway.business.domain.Section;
 import subway.business.domain.Station;
 import subway.business.domain.Stations;
+import subway.business.dto.LineDto;
+import subway.business.dto.SectionCreateDto;
 import subway.persistence.LineDao;
 import subway.persistence.SectionDao;
 import subway.persistence.StationDao;
-import subway.persistence.rowmapper.SectionDetail;
+import subway.persistence.entity.LineEntity;
+import subway.persistence.entity.SectionDetail;
 import subway.persistence.entity.SectionEntity;
-import subway.business.converter.LineConverter;
-import subway.business.dto.LineDto;
-import subway.business.dto.SectionCreateDto;
 import subway.persistence.entity.StationEntity;
 import subway.presentation.dto.request.LineRequest;
 import subway.presentation.dto.response.LineResponse;
-import subway.persistence.entity.LineEntity;
 import subway.presentation.dto.response.SingleLineDetailResponse;
 import subway.presentation.query_option.SubwayDirection;
 
@@ -46,16 +46,14 @@ public class LineService {
 
     @Transactional
     public long save(final LineDto lineDto, final SectionCreateDto sectionCreateDto) {
-        final Long lineId = lineDao.insert(LineConverter.toEntity(lineDto));
-        final StationEntity previousStation = stationDao.findByName(sectionCreateDto.getPreviousStation());
-        final StationEntity nextStation = stationDao.findByName(sectionCreateDto.getNextStation());
-        sectionDao.insert(new SectionEntity.Builder()
-                .lineId(lineId)
-                .distance(sectionCreateDto.getDistance())
-                .previousStationId(previousStation.getId())
-                .nextStationId(nextStation.getId())
-                .build());
-        return lineId;
+        final LineEntity lineEntity = lineDao.insert(new LineEntity(lineDto.getName(), lineDto.getColor()));
+        final StationEntity previousStation = stationDao.findByName(sectionCreateDto.getFirstStation());
+        final StationEntity nextStation = stationDao.findByName(sectionCreateDto.getLastStation());
+        sectionDao.insert(new SectionEntity(
+                lineEntity.getId(), sectionCreateDto.getDistance(),
+                previousStation.getId(), nextStation.getId())
+        );
+        return lineEntity.getId();
     }
 
     public List<SingleLineDetailResponse> getAllLine() {
@@ -144,7 +142,8 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new LineEntity(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        final LineEntity lineEntity = LineEntityRequestConverter.toEntity(lineUpdateRequest);
+        lineDao.update(LineEntity.of(id, lineEntity));
     }
 
     public void deleteLineById(Long id) {

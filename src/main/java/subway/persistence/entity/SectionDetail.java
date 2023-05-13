@@ -1,4 +1,4 @@
-package subway.persistence.rowmapper;
+package subway.persistence.entity;
 
 public class SectionDetail {
 

@@ -8,7 +8,7 @@ public class SectionEntity {
     private final Long previousStationId;
     private final Long nextStationId;
 
-    public SectionEntity(final Long id, final Long lineId, final Integer distance,
+    SectionEntity(final Long id, final Long lineId, final Integer distance,
                          final Long previousStationId, final Long nextStationId) {
         this.id = id;
         this.lineId = lineId;
@@ -17,42 +17,15 @@ public class SectionEntity {
         this.nextStationId = nextStationId;
     }
 
-    public static class Builder {
-        private Long id;
-        private Long lineId;
-        private Integer distance;
-        private Long previousStationId;
-        private Long nextStationId;
+    public SectionEntity(final Long lineId, final Integer distance,
+                         final Long previousStationId, final Long nextStationId) {
+        this(null, lineId, distance, previousStationId, nextStationId);
+    }
 
-        public Builder id(final Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public Builder lineId(final Long lineId) {
-            this.lineId = lineId;
-            return this;
-        }
-
-        public Builder distance(final Integer distance) {
-            this.distance = distance;
-            return this;
-        }
-
-        public Builder previousStationId(final Long previousStationId) {
-            this.previousStationId = previousStationId;
-            return this;
-        }
-
-        public Builder nextStationId(final Long nextStationId) {
-            this.nextStationId = nextStationId;
-            return this;
-        }
-
-        public SectionEntity build() {
-            return new SectionEntity(id, lineId, distance, previousStationId, nextStationId);
-        }
-
+    public static SectionEntity of(final Long id, final SectionEntity sectionEntity) {
+        return new SectionEntity(id,
+                sectionEntity.lineId, sectionEntity.distance,
+                sectionEntity.previousStationId, sectionEntity.nextStationId);
     }
 
     public Long getId() {

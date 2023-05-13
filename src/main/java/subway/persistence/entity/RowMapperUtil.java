@@ -1,10 +1,6 @@
-package subway.persistence.rowmapper.util;
+package subway.persistence.entity;
 
 import org.springframework.jdbc.core.RowMapper;
-import subway.persistence.rowmapper.SectionDetail;
-import subway.persistence.entity.LineEntity;
-import subway.persistence.entity.SectionEntity;
-import subway.persistence.entity.StationEntity;
 
 public class RowMapperUtil {
 
