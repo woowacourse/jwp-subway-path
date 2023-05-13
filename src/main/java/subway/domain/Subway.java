@@ -34,9 +34,9 @@ public class Subway {
         return lines;
     }
 
-    public void removeStation(String lineName, Station station) {
+    public void removeStation(String lineName, String station) {
         Line line = findLineByName(lineName);
-        line.removeStation(station);
+        line.removeStation(new Station(station));
         if (line.isEmpty()) {
             lines.remove(line);
         }

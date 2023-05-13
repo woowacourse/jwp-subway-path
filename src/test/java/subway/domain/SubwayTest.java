@@ -51,7 +51,7 @@ class SubwayTest {
         subway.addLine(line);
 
         // when
-        subway.removeStation("2호선", new Station("역삼역"));
+        subway.removeStation("2호선", "역삼역");
         Line findLine = subway.findLineByName("2호선");
 
         // then
@@ -66,7 +66,7 @@ class SubwayTest {
         subway.addLine(line);
 
         // when
-        subway.removeStation("2호선", new Station("강남역"));
+        subway.removeStation("2호선", "강남역");
 
         // then
         assertThatThrownBy(() -> subway.findLineByName("2호선"))
@@ -82,7 +82,7 @@ class SubwayTest {
         subway.addLine(line);
 
         // when, then
-        assertThatThrownBy(() -> subway.removeStation("1호선", new Station("강남역")))
+        assertThatThrownBy(() -> subway.removeStation("1호선", "강남역"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 노선입니다.");
     }
@@ -95,7 +95,7 @@ class SubwayTest {
         subway.addLine(line);
 
         // when, then
-        assertThatThrownBy(() -> subway.removeStation("2호선", new Station("역삼역")))
+        assertThatThrownBy(() -> subway.removeStation("2호선", "역삼역"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
     }
@@ -145,7 +145,7 @@ class SubwayTest {
         subway.addLine(secondLine);
 
         // when
-        subway.removeStation("1호선", new Station("강남역"));
+        subway.removeStation("1호선", "강남역");
         Line findFirstLine = subway.findLineByName("1호선");
         Line findSecondLine = subway.findLineByName("2호선");
 
