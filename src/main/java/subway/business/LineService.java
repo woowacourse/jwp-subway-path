@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.business.converter.LineEntityRequestConverter;
 import subway.business.converter.SectionConverter;
+import subway.business.converter.StationDomainResponseConverter;
 import subway.business.domain.Section;
 import subway.business.domain.Station;
 import subway.business.domain.Stations;
@@ -17,8 +18,8 @@ import subway.persistence.entity.SectionDetail;
 import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
 import subway.presentation.dto.request.LineRequest;
+import subway.presentation.dto.response.LineDetailResponse;
 import subway.presentation.dto.response.LineResponse;
-import subway.presentation.dto.response.SingleLineDetailResponse;
 import subway.presentation.query_option.SubwayDirection;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class LineService {
         return lineEntity.getId();
     }
 
-    public List<SingleLineDetailResponse> getAllLine() {
+    public List<LineDetailResponse> findAll() {
         return sectionDao.findSectionDetail().stream()
                 .collect(Collectors.groupingBy(SectionDetail::getLineId))
                 .values().stream()
@@ -64,12 +65,12 @@ public class LineService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public SingleLineDetailResponse getLine(final Long lineId) {
+    public LineDetailResponse getLine(final Long lineId) {
         return convert(sectionDao.findSectionDetailByLineId(lineId));
     }
 
     // TODO: 리팩토링
-    private SingleLineDetailResponse convert(final List<SectionDetail> sectionDetails) {
+    private LineDetailResponse convert(final List<SectionDetail> sectionDetails) {
         if (sectionDetails.isEmpty()) {
             throw new IllegalArgumentException("존재하지 않는 노선입니다.");
         }
@@ -91,8 +92,9 @@ public class LineService {
         Deque<Station> deque = new LinkedList<>();
         Set<Station> visited = new HashSet<>();
         moveStation(sections.get(0).getPreviousStation(), deque, map, visited, SubwayDirection.UP);
+        Stations stations = new Stations(new ArrayList<>(deque));
 
-        return new SingleLineDetailResponse(sectionDetails.get(0).getLineId(), sections.get(0).getLine().getName(), sections.get(0).getLine().getColor(), new Stations(new ArrayList<>(deque)));
+        return new LineDetailResponse(sectionDetails.get(0).getLineId(), sections.get(0).getLine().getName(), sections.get(0).getLine().getColor(), StationDomainResponseConverter.toResponses(stations));
     }
 
     public void moveStation(Station station, Deque<Station> deque, Map<Station, List<Object[]>> map, Set<Station> visited, SubwayDirection direction) {
@@ -130,15 +132,6 @@ public class LineService {
 
     public List<LineEntity> findLines() {
         return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(Long id) {
-        LineEntity persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

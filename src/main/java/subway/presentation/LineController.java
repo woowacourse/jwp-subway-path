@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.business.LineService;
-import subway.presentation.dto.response.SingleLineDetailResponse;
 import subway.business.dto.LineDto;
 import subway.business.dto.SectionCreateDto;
 import subway.presentation.dto.request.LineRequest;
+import subway.presentation.dto.response.LineDetailResponse;
 
 import java.net.URI;
 import java.util.List;
@@ -38,12 +38,12 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<SingleLineDetailResponse>> readAllLine() {
-        return ResponseEntity.ok(lineService.getAllLine());
+    public ResponseEntity<List<LineDetailResponse>> readAllLine() {
+        return ResponseEntity.ok(lineService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SingleLineDetailResponse> findLineById(@PathVariable Long id) {
+    public ResponseEntity<LineDetailResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.getLine(id));
     }
 

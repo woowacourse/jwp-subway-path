@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.presentation.dto.request.LineRequest;
-import subway.presentation.dto.response.LineReadResponse;
+import subway.presentation.dto.response.LineDetailResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -111,8 +111,8 @@ public class LineIntegrationTest extends IntegrationTest {
         final List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
-        final List<Long> resultIds = response.jsonPath().getList(".", LineReadResponse.class).stream()
-                .map(LineReadResponse::getId)
+        final List<Long> resultIds = response.jsonPath().getList(".", LineDetailResponse.class).stream()
+                .map(LineDetailResponse::getId)
                 .collect(Collectors.toList());
 
         final Configuration conf = Configuration.defaultConfiguration();
