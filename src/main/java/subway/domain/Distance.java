@@ -1,5 +1,8 @@
 package subway.domain;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonValue;
+
 import java.util.Objects;
 
 public class Distance {
@@ -30,6 +33,8 @@ public class Distance {
     public Distance add(Distance distance) {
         return Distance.of(this.value + distance.value);
     }
+
+    @JsonValue
     public int getValue() {
         return value;
     }

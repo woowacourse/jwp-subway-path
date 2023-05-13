@@ -8,9 +8,6 @@ public class StationsSavingRequest {
     Distance distance;
     boolean isDown;
 
-    public StationsSavingRequest() {
-    }
-
     public StationsSavingRequest(String previousStationName, String nextStationName, int distance, boolean isDown) {
         this.previousStationName = previousStationName;
         this.nextStationName = nextStationName;

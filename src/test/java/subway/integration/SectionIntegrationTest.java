@@ -125,12 +125,16 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .post("/stations")
                 .then().log().all();
 
-        StationsSavingRequest stationsSavingRequest
-                = new StationsSavingRequest("개룡역", "거여역", -1, false);
+        String json = "{\n" +
+                "    \"previousStationName\": \"개룡역\",\n" +
+                "    \"nextStationName\": \"거여역\",\n" +
+                "    \"distance\": -3,\n" +
+                "    \"down\": false\n" +
+                "}";
         ExtractableResponse<Response> response2 = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest)
+                .body(json)
                 .when().post(requestUri + "/stations")
                 .then().log().all()
                 .extract();
