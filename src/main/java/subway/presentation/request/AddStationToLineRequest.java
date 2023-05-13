@@ -1,12 +1,21 @@
 package subway.presentation.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import subway.application.dto.AddStationToLineCommand;
 
 public class AddStationToLineRequest {
 
+    @NotBlank(message = "노선 이름을 입력해야 합니다")
     private String lineName;
+
+    @NotBlank(message = "상행역 이름을 입력해야 합니다")
     private String upStationName;
+
+    @NotBlank(message = "하행역 이름을 입력해야 합니다")
     private String downStationName;
+
+    @NotNull(message = "거리 정보가 있어야 합니다")
     private Integer distance;
 
     private AddStationToLineRequest() {

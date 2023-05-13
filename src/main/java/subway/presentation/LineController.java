@@ -33,7 +33,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(
+    ResponseEntity<Void> create(
             @Valid @RequestBody final LineCreateRequest request
     ) {
         final UUID id = lineService.create(request.toCommand());
@@ -42,20 +42,20 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineQueryResponse> findById(
+    ResponseEntity<LineQueryResponse> findById(
             @PathVariable("id") final UUID id
     ) {
         return ResponseEntity.ok(lineQueryService.findById(id));
     }
 
     @GetMapping
-    public ResponseEntity<List<LineQueryResponse>> findAll() {
+    ResponseEntity<List<LineQueryResponse>> findAll() {
         return ResponseEntity.ok(lineQueryService.findAll());
     }
 
     @GetMapping("/shortest")
-    public ResponseEntity<ShortestRouteResponse> findShortestPath(
-            @ModelAttribute final QueryShortestPathRequest request
+    ResponseEntity<ShortestRouteResponse> findShortestPath(
+            @Valid @ModelAttribute final QueryShortestPathRequest request
     ) {
         final String startStationName = request.getStartStationName();
         final String endStationName = request.getEndStationName();

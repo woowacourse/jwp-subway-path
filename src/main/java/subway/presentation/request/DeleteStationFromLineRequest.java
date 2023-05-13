@@ -1,10 +1,14 @@
 package subway.presentation.request;
 
+import javax.validation.constraints.NotBlank;
 import subway.application.dto.DeleteStationFromLineCommand;
 
 public class DeleteStationFromLineRequest {
 
+    @NotBlank(message = "노선 이름을 입력해야 합니다")
     private String lineName;
+
+    @NotBlank(message = "제거할 역 이름을 입력해야 합니다")
     private String deleteStationName;
 
     private DeleteStationFromLineRequest() {

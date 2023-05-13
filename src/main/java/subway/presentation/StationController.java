@@ -2,6 +2,7 @@ package subway.presentation;
 
 import java.net.URI;
 import java.util.UUID;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,7 +24,9 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@RequestBody final StationCreateRequest stationCreateRequest) {
+    ResponseEntity<Void> create(
+            @Valid @RequestBody final StationCreateRequest stationCreateRequest
+    ) {
         final UUID id = stationService.create(new StationCreateCommand(stationCreateRequest.getName()));
         final URI uri = UriUtil.build("/{id}", id);
         return ResponseEntity.created(uri).build();
