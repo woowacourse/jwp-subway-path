@@ -31,11 +31,6 @@ public class StationDao {
                 .usingGeneratedKeyColumns("station_id");
     }
 
-    public boolean isExistStationByName(final String stationName) {
-        String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE name = ?)";
-        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationName));
-    }
-
     public Long insert(final Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         return insertAction.executeAndReturnKey(params).longValue();
