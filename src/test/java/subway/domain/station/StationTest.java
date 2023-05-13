@@ -2,6 +2,8 @@ package subway.domain.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static subway.domain.station.StationFixture.누누_역_id_2;
+import static subway.domain.station.StationFixture.코다_역_id_1;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -22,17 +24,13 @@ class StationTest {
 
     @Test
     void id가_같으면_같은_객체이다() {
-        final Station station1 = new Station(1L, "코다");
         final Station station2 = new Station(1L, "누누");
 
-        assertThat(station1).isEqualTo(station2);
+        assertThat(station2).isEqualTo(코다_역_id_1);
     }
 
     @Test
     void id가_다르면_다른_객체이다() {
-        final Station station1 = new Station(1L, "코다");
-        final Station station2 = new Station(2L, "누누");
-
-        assertThat(station1).isNotEqualTo(station2);
+        assertThat(코다_역_id_1).isNotEqualTo(누누_역_id_2);
     }
 }
