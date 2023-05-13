@@ -39,7 +39,7 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        final String sql = "select id, name, color from LINE";
+        final String sql = "SELECT * FROM line";
         return jdbcTemplate.query(sql, lineEntityRowMapper);
     }
 

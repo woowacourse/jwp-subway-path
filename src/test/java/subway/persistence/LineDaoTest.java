@@ -11,8 +11,12 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.LineNotFoundException;
 import subway.persistence.entity.LineEntity;
+import subway.persistence.entity.StationEntity;
 
 import javax.sql.DataSource;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -70,6 +74,28 @@ class LineDaoTest {
         // when, then
         assertThatThrownBy(() -> lineDao.insert(lineEntity))
                 .isInstanceOf(DuplicatedLineNameException.class);
+    }
+
+    @Test
+    @DisplayName("전체 조회 성공")
+    void findAll_success() {
+        // given, when
+        final List<LineEntity> lineEntities = lineDao.findAll();
+
+        // then
+        assertAll(
+                () -> assertThat(lineEntities).hasSize(2),
+                () -> assertThat(lineEntities
+                        .stream()
+                        .map(LineEntity::getName)
+                        .collect(Collectors.toUnmodifiableList()))
+                        .containsAll(List.of("2호선", "8호선")),
+                () -> assertThat(lineEntities
+                        .stream()
+                        .map(LineEntity::getColor)
+                        .collect(Collectors.toUnmodifiableList()))
+                        .containsAll(List.of("bg-green-600", "bg-pink-600"))
+        );
     }
 
     @Test
