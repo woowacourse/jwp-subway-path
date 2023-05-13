@@ -201,8 +201,4 @@ public class SectionDao {
                 (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")),
                 line.getId());
     }
-
-    public boolean isHighestStationOfLine(Station station, Line line) {
-        return hasStation(station, line) && findByNextStation(station, line).isEmpty();
-    }
 }

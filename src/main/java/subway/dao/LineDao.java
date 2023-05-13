@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -50,9 +51,21 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
+    public Station findHeadStation(Line line) {
+        final var sql = "select S.id as id, S.name as name from LINE L " +
+                "inner join STATION S on L.head_station_id = S.id " +
+                "where L.id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")), line.getId());
+    }
+
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    }
+
+    public void updateHeadStation(Line line, Station station) {
+        final var sql = "update LINE set head_station_id = ? where id = ?";
+        jdbcTemplate.update(sql, station.getId(), line.getId());
     }
 
     public void deleteById(Long id) {

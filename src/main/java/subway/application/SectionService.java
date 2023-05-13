@@ -62,7 +62,7 @@ public class SectionService {
         }
 
         // 4. 등록할 역이 맨 앞인 경우
-        if (sectionDao.isHighestStationOfLine(section.getNextStation(), section.getLine())) {
+        if (lineDao.findHeadStation(section.getLine()).equals(section.getNextStation())) {
             return insertHighestStation(section);
         }
 
@@ -90,7 +90,9 @@ public class SectionService {
     }
 
     private long insertHighestStation(Section section) {
-        return sectionDao.insert(section).getId();
+        final var sectionId = sectionDao.insert(section).getId();
+        lineDao.updateHeadStation(section.getLine(), section.getPreviousStation());
+        return sectionId;
     }
 
     private long initialize(Line line, Station previousStation, Station nextStation, Distance distance, boolean isDown) {
@@ -111,6 +113,7 @@ public class SectionService {
                     .nextStationEmpty(nextStation)
                     .build());
 
+            lineDao.updateHeadStation(line, previousStation);
             return savedId;
         }
 
@@ -126,6 +129,7 @@ public class SectionService {
                 .nextStationEmpty(nextStation)
                 .build());
 
+        lineDao.updateHeadStation(line, previousStation);
         return saveId;
     }
 
