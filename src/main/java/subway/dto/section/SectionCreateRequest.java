@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 
 public class SectionCreateRequest {
 
-    @NotBlank(message = "노선 번호를 입력해주세요.")
+    @NotNull(message = "노선 번호를 입력해주세요.")
     private Long lineNumber;
 
     @NotBlank(message = "상행 역을 입력해주세요.")
