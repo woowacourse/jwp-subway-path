@@ -28,7 +28,7 @@ class SectionsTest {
         // then
         assertAll(
                 () -> assertThat(sections.getSections().size()).isEqualTo(3),
-                () -> assertThat(sections.getSections().get(2).getUpStation()).isEqualTo(section.getUpStation())
+                () -> assertThat(sections.getSections().get(2).getUpStation().getName()).isEqualTo(section.getUpStation().getName())
         );
     }
 

@@ -25,7 +25,7 @@ public class Sections {
 
         validateSection(hasUpStation, hasDownStation);
 
-        insertSectionByExistingStationCase(hasUpStation, hasDownStation, section);
+        insertSection(hasUpStation, hasDownStation, section);
     }
 
     private boolean hasStation(final Station station) {
@@ -50,37 +50,49 @@ public class Sections {
         }
     }
 
-    private void insertSectionByExistingStationCase(final boolean hasUpStation, final boolean hasDownStation, final Section section) {
+    private void insertSection(final boolean hasUpStation, final boolean hasDownStation, final Section section) {
         if (!hasUpStation && !hasDownStation) {
             sections.add(section);
             return;
         }
 
-        if (hasUpStation) {
-            insertSectionWhenBeingOnlyUpStation(section);
+        insertSectionAtMiddle(section);
+    }
+
+    private void insertSectionAtMiddle(final Section section) {
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+
+        Optional<Section> sectionWithUpStation = findSectionWithUpStation(upStation);
+        Optional<Section> sectionWithDownStation = findSectionWithDownStation(downStation);
+
+        if (sectionWithUpStation.isPresent()) {
+            insertSectionBetweenWithUpStation(section, sectionWithUpStation.get());
             return;
         }
 
-        insertSectionWhenBeingOnlyDownStation(section);
-    }
-
-    private void insertSectionWhenBeingOnlyUpStation(final Section section) {
-        Station station = section.getUpStation();
-
-        if (findSectionWithUpStation(station).isPresent()) {
-            Section sectionWithUpStation = findSectionWithUpStation(station)
-                    .orElseThrow(SectionNotFoundException::new);
-
-            sectionWithUpStation.validateDistance(section.getDistance());
-
-            sections.remove(sectionWithUpStation);
-            sections.add(section);
-            sections.add(new Section(section.getDownStation(), sectionWithUpStation.getDownStation(), sectionWithUpStation.getDistance() - section.getDistance()));
+        if (sectionWithDownStation.isPresent()) {
+            insertSectionBetweenWithDownStation(section, sectionWithDownStation.get());
             return;
         }
 
         sections.add(section);
     }
+
+    private void insertSectionBetweenWithUpStation(Section section, Section sectionWithUpStation) {
+        sectionWithUpStation.validateDistance(section.getDistance());
+        sections.remove(sectionWithUpStation);
+        sections.add(section);
+        sections.add(new Section(section.getDownStation(), sectionWithUpStation.getDownStation(), sectionWithUpStation.getDistance() - section.getDistance()));
+    }
+
+    private void insertSectionBetweenWithDownStation(Section section, Section sectionWithDownStation) {
+        sectionWithDownStation.validateDistance(section.getDistance());
+        sections.remove(sectionWithDownStation);
+        sections.add(section);
+        sections.add(new Section(sectionWithDownStation.getUpStation(), section.getUpStation(), sectionWithDownStation.getDistance() - section.getDistance()));
+    }
+
 
     private Optional<Section> findSectionWithUpStation(final Station station) {
         return sections.stream()
@@ -88,27 +100,10 @@ public class Sections {
                 .findAny();
     }
 
-    private void insertSectionWhenBeingOnlyDownStation(final Section section) {
-        Station station = section.getDownStation();
-
-        if (findSectionWithUpStation(station).isPresent()) {
-            sections.add(section);
-            return;
-        }
-
-        Section sectionWithDownStation = findSectionWithDownStation(section.getDownStation());
-        sectionWithDownStation.validateDistance(section.getDistance());
-
-        sections.remove(sectionWithDownStation);
-        sections.add(section);
-        sections.add(new Section(sectionWithDownStation.getUpStation(), section.getUpStation(), sectionWithDownStation.getDistance() - section.getDistance()));
-    }
-
-    private Section findSectionWithDownStation(final Station station) {
+    private Optional<Section> findSectionWithDownStation(final Station station) {
         return sections.stream()
                 .filter(nowSection -> nowSection.getDownStation().equals(station))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .findAny();
     }
 
     public void deleteSectionByStation(final Station station) {
