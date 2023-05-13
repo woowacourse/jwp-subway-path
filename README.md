@@ -32,5 +32,4 @@
 - [x] 테이블 설계
   - [x] station
   - [x] line
-  - [x] line_station(line과 station의 연결정보)
-  - [x] edge(station과 station의 연결정보)
+  - [x] section(station과 station의 매핑 테이블)
