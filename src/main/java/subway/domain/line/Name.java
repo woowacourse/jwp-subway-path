@@ -16,7 +16,7 @@ final class Name {
     }
 
     private void validate(final String value) {
-        if (Objects.isNull(value)) {
+        if (Objects.isNull(value) || value.isBlank()) {
             throw new InvalidLineNameException("노선 이름은 존재해야 합니다.");
         }
         if (!PATTERN.matcher(value).matches()) {

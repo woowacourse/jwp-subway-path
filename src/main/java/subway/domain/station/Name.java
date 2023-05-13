@@ -6,10 +6,8 @@ import subway.exception.InvalidStationNameException;
 
 final class Name {
 
-    private static final int MINIMUM_LENGTH = 2;
     private static final int MAXIMUM_LENGTH = 11;
-    private static final String SUFFIX = "역";
-    private static final Pattern PATTERN = Pattern.compile("^[가-힣0-9]+$");
+    private static final Pattern PATTERN = Pattern.compile("^[가-힣0-9]+역$");
 
     private final String value;
 
@@ -22,14 +20,11 @@ final class Name {
         if (Objects.isNull(value) || value.isBlank()) {
             throw new InvalidStationNameException("역 이름은 공백일 수 없습니다.");
         }
-        if (MINIMUM_LENGTH > value.length() || value.length() > MAXIMUM_LENGTH) {
-            throw new InvalidStationNameException("역 이름은 2글자에서 11글자까지 가능합니다.");
-        }
-        if (!value.endsWith(SUFFIX)) {
-            throw new InvalidStationNameException("역 이름은 '역'으로 끝나야 합니다.");
+        if (value.length() > MAXIMUM_LENGTH) {
+            throw new InvalidStationNameException("역 이름은 " + MAXIMUM_LENGTH + "글자까지 가능합니다.");
         }
         if (!PATTERN.matcher(value).matches()) {
-            throw new InvalidStationNameException("역 이름은 한글, 숫자만 가능합니다.");
+            throw new InvalidStationNameException("역 이름은 한글, 숫자만 가능하고, '역'으로 끝나야 합니다.");
         }
     }
 
