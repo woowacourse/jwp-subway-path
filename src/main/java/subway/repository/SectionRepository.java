@@ -19,6 +19,10 @@ public class SectionRepository {
         this.stationDao = stationDao;
     }
 
+    public Long save(final Long upStationId, final Long downStationId, final Boolean isStart, final Integer distance) {
+        return sectionDao.insert(upStationId, downStationId, isStart, distance);
+    }
+
     public SectionDomain findBySectionId(final Long sectionId) {
         final SectionEntity section = sectionDao.findBySectionId(sectionId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 구간_식별자값으로 구간을 조회하지 못했습니다."));

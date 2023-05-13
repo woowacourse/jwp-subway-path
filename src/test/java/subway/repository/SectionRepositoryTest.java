@@ -17,17 +17,17 @@ class SectionRepositoryTest extends RepositoryTestConfig {
 
     @BeforeEach
     void setUp() {
-        sectionRepository = new SectionRepository(sectionDao, stationDao);
+        sectionRepository = new SectionRepository(sectionDaoV2, stationDaoV2);
     }
 
     @Test
     void 구간_식별자값으로_구간을_검색하여_도메인_객체를_반환한다() {
         // given
-        final Long upStationId = stationDao.insert(new StationEntity("루카"));
-        final Long downStationId = stationDao.insert(new StationEntity("헤나"));
+        final Long upStationId = stationDaoV2.insert(new StationEntity("루카"));
+        final Long downStationId = stationDaoV2.insert(new StationEntity("헤나"));
         final SectionEntity sectionEntity = new SectionEntity(0L, 10, true, upStationId, downStationId);
 
-        final Long saveSectionId = sectionDao.insert(sectionEntity);
+        final Long saveSectionId = sectionDaoV2.insert(sectionEntity);
 
         // when
         final SectionDomain section = sectionRepository.findBySectionId(saveSectionId);

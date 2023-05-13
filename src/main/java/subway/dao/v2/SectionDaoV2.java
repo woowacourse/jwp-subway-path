@@ -7,7 +7,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Distance;
 import subway.domain.StationDomain;
 
 import java.util.Optional;
@@ -39,13 +38,13 @@ public class SectionDaoV2 {
             final Long upStationId,
             final Long downStationId,
             final boolean isStart,
-            final Distance distance
+            final Integer distance
     ) {
         return simpleJdbcInsert.executeAndReturnKey(new MapSqlParameterSource()
                 .addValue("up_station_id", upStationId)
                 .addValue("down_station_id", downStationId)
                 .addValue("is_start", isStart)
-                .addValue("distance", distance.getValue())
+                .addValue("distance", distance)
         ).longValue();
     }
 
