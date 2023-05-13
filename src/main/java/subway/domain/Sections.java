@@ -1,7 +1,6 @@
 package subway.domain;
 
-import subway.dto.AddResult;
-import subway.dto.RemoveResult;
+import subway.dto.SectionChange;
 import subway.exceptions.customexceptions.InvalidDataException;
 import subway.exceptions.customexceptions.NotFoundException;
 
@@ -38,41 +37,45 @@ public class Sections {
     }
 
     private Section findUpEndPointSection() {
-        List<Station> upBoundStations = sections.stream()
-                .map(Section::getUpBoundStation)
+        List<Long> upBoundStationsId = sections.stream()
+                .mapToLong(Section::getUpBoundStationId)
+                .boxed()
                 .collect(Collectors.toList());
-        List<Station> downBoundStations = sections.stream()
-                .map(Section::getDownBoundStation)
+        List<Long> downBoundStationsId = sections.stream()
+                .mapToLong(Section::getDownBoundStationId)
+                .boxed()
                 .collect(Collectors.toList());
-        upBoundStations.removeAll(downBoundStations);
+        upBoundStationsId.removeAll(downBoundStationsId);
         return sections.stream()
-                .filter(section -> section.getUpBoundStation().equals(upBoundStations.get(0)))
+                .filter(section -> section.getUpBoundStationId().equals(upBoundStationsId.get(0)))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException("상행 종점을 찾을 수 없습니다."));
     }
 
     private Section findDownEndPointSection() {
-        List<Station> upBoundStations = sections.stream()
-                .map(Section::getUpBoundStation)
+        List<Long> upBoundStationsId = sections.stream()
+                .mapToLong(Section::getUpBoundStationId)
+                .boxed()
                 .collect(Collectors.toList());
-        List<Station> downBoundStations = sections.stream()
-                .map(Section::getDownBoundStation)
+        List<Long> downBoundStationsId = sections.stream()
+                .mapToLong(Section::getDownBoundStationId)
+                .boxed()
                 .collect(Collectors.toList());
-        downBoundStations.removeAll(upBoundStations);
+        downBoundStationsId.removeAll(upBoundStationsId);
         return sections.stream()
-                .filter(section -> section.getDownBoundStation().equals(downBoundStations.get(0)))
+                .filter(section -> section.getDownBoundStationId().equals(downBoundStationsId.get(0)))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException("하행 종점을 찾을 수 없습니다."));
     }
 
     private Section findNextSection(Section currentSection) {
         return sections.stream()
-                .filter(section -> currentSection.getDownBoundStation().equals(section.getUpBoundStation()))
+                .filter(section -> currentSection.getDownBoundStationId().equals(section.getUpBoundStationId()))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException("다음 역 간 연결 정보를 찾을 수 없습니다."));
     }
 
-    public AddResult addSection(Section newSection) {
+    public SectionChange addSection(Section newSection) {
         if (sections.isEmpty()) {
             return addSectionFirst(newSection);
         }
@@ -88,10 +91,10 @@ public class Sections {
         throw new InvalidDataException("노선에 이미 역들이 존재해 두개의 역을 추가할 수 없습니다.");
     }
 
-    private AddResult addSectionFirst(Section newSection) {
-        AddResult addResult = new AddResult();
-        addResult.insertSectionToAddSections(newSection);
-        return addResult;
+    private SectionChange addSectionFirst(Section newSection) {
+        SectionChange sectionChange = new SectionChange();
+        sectionChange.addNewSection(newSection);
+        return sectionChange;
     }
 
     private boolean existBothStationAlready(Section newSection) {
@@ -99,74 +102,74 @@ public class Sections {
     }
 
     private boolean existUpBoundStation(Section newSection) {
-        Station newUpBoundStation = newSection.getUpBoundStation();
+        Long upBoundStationId = newSection.getUpBoundStationId();
         return sections.stream()
-                .anyMatch(section -> section.getUpBoundStation().equals(newUpBoundStation) ||
-                        section.getDownBoundStation().equals(newUpBoundStation));
+                .anyMatch(section -> section.getUpBoundStationId().equals(upBoundStationId) ||
+                        section.getDownBoundStationId().equals(upBoundStationId));
     }
 
     private boolean existDownBoundStation(Section newSection) {
-        Station newDownBoundStation = newSection.getDownBoundStation();
+        Long downBoundStationId = newSection.getDownBoundStationId();
         return sections.stream()
-                .anyMatch(section -> section.getUpBoundStation().equals(newDownBoundStation) ||
-                        section.getDownBoundStation().equals(newDownBoundStation));
+                .anyMatch(section -> section.getUpBoundStationId().equals(downBoundStationId) ||
+                        section.getDownBoundStationId().equals(downBoundStationId));
     }
 
-    private AddResult addSectionToUp(Section newSection) {
-        Station existStation = newSection.getDownBoundStation();
+    private SectionChange addSectionToUp(Section newSection) {
+        Long existStationId = newSection.getDownBoundStationId();
         Section upEndPointSection = findUpEndPointSection();
+        SectionChange sectionChange = new SectionChange();
 
-        if (existStation.equals(upEndPointSection.getUpBoundStation())) {
-            AddResult addResult = new AddResult();
-            addResult.insertSectionToAddSections(newSection);
-            return addResult;
+        if (existStationId.equals(upEndPointSection.getUpBoundStationId())) {
+            sectionChange.addNewSection(newSection);
+            return sectionChange;
         }
-        Section upBoundSection = findUpBoundSection(existStation);
+        Section upBoundSection = findUpBoundSection(existStationId);
         validateDistance(upBoundSection.getDistance(), newSection.getDistance());
 
         Section updatedSection = new Section(upBoundSection.getId(),
-                upBoundSection.getUpBoundStation(),
-                newSection.getUpBoundStation(),
+                upBoundSection.getUpBoundStationId(),
+                newSection.getUpBoundStationId(),
+                upBoundSection.getLineId(),
                 upBoundSection.getDistance() - newSection.getDistance()
         );
-        AddResult addResult = new AddResult();
-        addResult.insertSectionToAddSections(newSection);
-        addResult.insertSectionToUpdateSections(updatedSection);
-        return addResult;
+        sectionChange.addNewSection(newSection);
+        sectionChange.addUpdatedSection(updatedSection);
+        return sectionChange;
     }
 
-    private AddResult addSectionToDown(Section newSection) {
-        Station existStation = newSection.getUpBoundStation();
+    private SectionChange addSectionToDown(Section newSection) {
+        Long existStationId = newSection.getUpBoundStationId();
         Section downEndPointSection = findDownEndPointSection();
+        SectionChange sectionChange = new SectionChange();
 
-        if (existStation.equals(downEndPointSection.getDownBoundStation())) {
-            AddResult addResult = new AddResult();
-            addResult.insertSectionToAddSections(newSection);
-            return addResult;
+        if (existStationId.equals(downEndPointSection.getDownBoundStationId())) {
+            sectionChange.addNewSection(newSection);
+            return sectionChange;
         }
-        Section downBoundSection = findDownBoundSection(existStation);
+        Section downBoundSection = findDownBoundSection(existStationId);
         validateDistance(downBoundSection.getDistance(), newSection.getDistance());
 
         Section updatedSection = new Section(downBoundSection.getId(),
-                newSection.getDownBoundStation(),
-                downBoundSection.getDownBoundStation(),
+                newSection.getDownBoundStationId(),
+                downBoundSection.getDownBoundStationId(),
+                downBoundSection.getLineId(),
                 downBoundSection.getDistance() - newSection.getDistance());
-        AddResult addResult = new AddResult();
-        addResult.insertSectionToAddSections(newSection);
-        addResult.insertSectionToUpdateSections(updatedSection);
-        return addResult;
+        sectionChange.addNewSection(newSection);
+        sectionChange.addUpdatedSection(updatedSection);
+        return sectionChange;
     }
 
-    private Section findUpBoundSection(Station station) {
+    private Section findUpBoundSection(Long downBoundStationId) {
         return sections.stream()
-                .filter(section -> section.getDownBoundStation().equals(station))
+                .filter(section -> section.getDownBoundStationId().equals(downBoundStationId))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException("올바른 역을 찾을 수 없습니다."));
     }
 
-    private Section findDownBoundSection(Station station) {
+    private Section findDownBoundSection(Long upBoundStationId) {
         return sections.stream()
-                .filter(section -> section.getUpBoundStation().equals(station))
+                .filter(section -> section.getUpBoundStationId().equals(upBoundStationId))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException("올바른 역을 찾을 수 없습니다."));
     }
@@ -177,65 +180,65 @@ public class Sections {
         }
     }
 
-    public RemoveResult removeStation(Station station) {
+    public SectionChange removeStation(Long stationId) {
         if (sections.isEmpty()) {
             throw new InvalidDataException("노선에 아무 역도 존재하지 않습니다.");
         }
 
-        if (notExistInLine(station)) {
+        if (notExistInLine(stationId)) {
             throw new InvalidDataException("해당 역이 노선에 존재하지 않습니다.");
         }
 
         Section upEndPointSection = findUpEndPointSection();
         Section downEndPointSection = findDownEndPointSection();
 
-        if (upEndPointSection.getUpBoundStation().equals(station)) {
-            RemoveResult removeResult = new RemoveResult();
-            removeResult.insertIdToRemoveIds(upEndPointSection.getId());
-            return removeResult;
+        if (upEndPointSection.getUpBoundStationId().equals(stationId)) {
+            SectionChange sectionChange = new SectionChange();
+            sectionChange.addDeletedSection(upEndPointSection);
+            return sectionChange;
         }
-        if (downEndPointSection.getDownBoundStation().equals(station)) {
-            RemoveResult removeResult = new RemoveResult();
-            removeResult.insertIdToRemoveIds(downEndPointSection.getId());
-            return removeResult;
+        if (downEndPointSection.getDownBoundStationId().equals(stationId)) {
+            SectionChange sectionChange = new SectionChange();
+            sectionChange.addDeletedSection(downEndPointSection);
+            return sectionChange;
         }
-        return removeMiddleStation(station);
+        return removeMiddleStation(stationId);
     }
 
-    private boolean notExistInLine(Station station) {
+    private boolean notExistInLine(Long stationId) {
         return sections.stream()
-                .noneMatch(section -> section.getUpBoundStation().equals(station) ||
-                        section.getDownBoundStation().equals(station));
+                .noneMatch(section -> section.getUpBoundStationId().equals(stationId) ||
+                        section.getDownBoundStationId().equals(stationId));
     }
 
-    private RemoveResult removeMiddleStation(Station station) {
-        Section upBoundSection = findUpBoundSection(station);
-        Section downBoundSection = findDownBoundSection(station);
+    private SectionChange removeMiddleStation(Long stationId) {
+        Section upBoundSection = findUpBoundSection(stationId);
+        Section downBoundSection = findDownBoundSection(stationId);
 
-        RemoveResult removeResult = new RemoveResult();
+        SectionChange sectionChange = new SectionChange();
 
         int newDistance = upBoundSection.getDistance() + downBoundSection.getDistance();
         Section updatedSection = new Section(upBoundSection.getId(),
-                upBoundSection.getUpBoundStation(),
-                downBoundSection.getDownBoundStation(),
+                upBoundSection.getUpBoundStationId(),
+                downBoundSection.getDownBoundStationId(),
                 newDistance);
 
-        removeResult.insertSectionToUpdateSections(updatedSection);
-        removeResult.insertIdToRemoveIds(downBoundSection.getId());
-        return removeResult;
+        sectionChange.addUpdatedSection(updatedSection);
+        sectionChange.addDeletedSection(downBoundSection);
+        return sectionChange;
     }
 
-    public List<Station> getStationsWithUpToDownDirection() {
+    public List<Long> getStationsWithUpToDownDirection() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
 
-        List<Station> stations = new ArrayList<>();
+        List<Long> stations = new ArrayList<>();
         for (Section section : sections) {
-            stations.add(section.getUpBoundStation());
+            stations.add(section.getUpBoundStationId());
         }
         Section lastSection = sections.get(sections.size() - 1);
-        stations.add(lastSection.getDownBoundStation());
+        stations.add(lastSection.getDownBoundStationId());
         return stations;
     }
 }
