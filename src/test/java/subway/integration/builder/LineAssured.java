@@ -3,7 +3,7 @@ package subway.integration.builder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.application.request.CreateLineRequest;
-import subway.dto.LineResponse;
+import subway.application.response.LineResponse;
 import subway.dto.StationResponse;
 import subway.integration.support.RestAssuredFixture;
 
@@ -63,7 +63,7 @@ public class LineAssured {
                     () -> assertThat(response.getId()).isEqualTo(lineId),
                     () -> assertThat(response.getName()).isEqualTo(lineName),
                     () -> assertThat(response.getColor()).isEqualTo(lineColor),
-                    () -> assertThat(response.getStationResponses()).isNotNull()
+                    () -> assertThat(response.getStations()).isNotNull()
             );
         }
     }
