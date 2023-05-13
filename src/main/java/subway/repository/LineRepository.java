@@ -33,21 +33,23 @@ public class LineRepository {
 
     public Line save(final Line line) {
         final Optional<LineEntity> lineEntity = lineDao.findByName(line.getName());
-        if (lineEntity.isPresent()) {
-            deleteAllByLineId(lineEntity.get().getId());
+        if (lineEntity.isEmpty()) {
+            final LineEntity newLineEntity = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
+            return saveLine(line, newLineEntity);
         }
-        final LineEntity newLineEntity = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
-        final List<StationEntity> stations = StationEntity.of(line, newLineEntity.getId());
-        stationDao.insertAll(stations);
-        final List<SectionEntity> sections = SectionEntity.of(line, newLineEntity.getId());
-        sectionDao.insertAll(sections);
-        return line;
+        final LineEntity updateLineEntity = lineEntity.orElseThrow(LineNotFoundException::new);
+        sectionDao.deleteAll(updateLineEntity.getId());
+        stationDao.deleteByLineId(updateLineEntity.getId());
+        lineDao.update(updateLineEntity);
+        return saveLine(line, updateLineEntity);
     }
 
-    private void deleteAllByLineId(final Long id) {
-        sectionDao.deleteAll(id);
-        stationDao.deleteByLineId(id);
-        lineDao.deleteById(id);
+    private Line saveLine(final Line line, final LineEntity lineEntity) {
+        final List<StationEntity> stations = StationEntity.of(line, lineEntity.getId());
+        stationDao.insertAll(stations);
+        final List<SectionEntity> sections = SectionEntity.of(line, lineEntity.getId());
+        sectionDao.insertAll(sections);
+        return line;
     }
 
     public List<Line> findAll() {
@@ -74,24 +76,26 @@ public class LineRepository {
         return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
     }
 
-    public void deleteById(final Long id) {
-        lineDao.findById(id).orElseThrow(LineNotFoundException::new);
-        deleteAllByLineId(id);
-    }
-
     public Long findIdByName(final String name) {
         return lineDao.findByName(name)
                 .orElseThrow(LineNotFoundException::new)
                 .getId();
     }
 
-    public void updateNameAndColorById(final Long id, final String name, final String color) {
-        lineDao.update(new LineEntity(id, name, color));
-    }
-
     public Line findById(final Long id) {
         final LineEntity lineEntity = lineDao.findById(id).orElseThrow(LineNotFoundException::new);
         final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
         return toLine(lineEntity, sectionEntities);
+    }
+
+    public void updateNameAndColorById(final Long id, final String name, final String color) {
+        lineDao.update(new LineEntity(id, name, color));
+    }
+
+    public void deleteById(final Long id) {
+        lineDao.findById(id).orElseThrow(LineNotFoundException::new);
+        sectionDao.deleteAll(id);
+        stationDao.deleteByLineId(id);
+        lineDao.deleteById(id);
     }
 }
