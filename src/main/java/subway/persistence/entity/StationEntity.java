@@ -27,7 +27,6 @@ public class StationEntity {
     public Station to() {
         return Station.of(id, name);
     }
-
     public Long getId() {
         return id;
     }

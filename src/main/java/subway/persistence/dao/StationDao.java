@@ -1,23 +1,20 @@
 package subway.persistence.dao;
 
-import java.util.List;
-import java.util.Optional;
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import subway.persistence.entity.StationEntity;
 
-@Component
+import javax.sql.DataSource;
+import java.util.List;
+
+@Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             StationEntity.of(
@@ -31,7 +28,6 @@ public class StationDao {
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
-        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
     public StationEntity insert(final StationEntity stationEntity) {
@@ -45,19 +41,13 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public List<StationEntity> findAllByIds(List<Long> ids) {
-        final String sql = "SELECT id, name FROM station WHERE id IN (:ids)";
-        final SqlParameterSource parameters = new MapSqlParameterSource("ids", ids);
-
-        return namedParameterJdbcTemplate.query(sql, parameters, rowMapper);
-    }
-
-    public Optional<StationEntity> findById(final Long id) {
+    public StationEntity findById(final Long id) {
         final String sql = "SELECT id, name FROM station WHERE id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
-                .findAny();
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
     }
 
     public int deleteById(final Long id) {

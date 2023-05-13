@@ -1,5 +1,10 @@
 package subway.persistence.dao;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+
+import java.util.List;
+import javax.sql.DataSource;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -11,13 +16,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.persistence.entity.StationEntity;
 
-import javax.sql.DataSource;
-import java.util.List;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 @JdbcTest
 @AutoConfigureTestDatabase
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -28,7 +26,7 @@ class StationDaoTest {
 
     @BeforeEach
     void setUp(@Autowired JdbcTemplate jdbcTemplate,
-               @Autowired DataSource dataSource) {
+            @Autowired DataSource dataSource) {
         stationDao = new StationDao(jdbcTemplate, dataSource);
     }
 
@@ -38,8 +36,8 @@ class StationDaoTest {
         final StationEntity actual = stationDao.insert(stationEntity);
 
         SoftAssertions.assertSoftly(softAssertions -> {
-           softAssertions.assertThat(actual.getId()).isPositive();
-           softAssertions.assertThat(actual.getName()).isEqualTo("잠실역");
+            softAssertions.assertThat(actual.getId()).isPositive();
+            softAssertions.assertThat(actual.getName()).isEqualTo("잠실역");
         });
     }
 
@@ -62,20 +60,12 @@ class StationDaoTest {
         final StationEntity stationEntity = StationEntity.from("잠실역");
         final StationEntity insertedStationEntity = stationDao.insert(stationEntity);
 
-        final Optional<StationEntity> actual = stationDao.findById(insertedStationEntity.getId());
+        final StationEntity actual = stationDao.findById(insertedStationEntity.getId());
 
         SoftAssertions.assertSoftly(softAssertions -> {
-            softAssertions.assertThat(actual).isPresent();
-            softAssertions.assertThat(actual.get().getId()).isPositive();
-            softAssertions.assertThat(actual.get().getName()).isEqualTo("잠실역");
+            softAssertions.assertThat(actual.getId()).isPositive();
+            softAssertions.assertThat(actual.getName()).isEqualTo("잠실역");
         });
-    }
-
-    @Test
-    void 존재하지_않는_역을_조회하면_null을_반환한다() {
-        final Optional<StationEntity> actual = stationDao.findById(-999L);
-
-        assertThat(actual).isEmpty();
     }
 
     @Test
