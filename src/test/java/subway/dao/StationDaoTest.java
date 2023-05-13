@@ -5,13 +5,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Station;
-import subway.exceptions.customexceptions.InvalidDataException;
-import subway.exceptions.customexceptions.NotFoundException;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,7 +53,7 @@ class StationDaoTest {
         Station insertedStation = stationDao.insert(station);
 
         // when, then
-        assertThatThrownBy(() -> stationDao.insert(station)).isInstanceOf(InvalidDataException.class);
+        assertThatThrownBy(() -> stationDao.insert(station)).isInstanceOf(DataAccessException.class);
     }
 
     @DisplayName("전체 조회를 한다.")
@@ -80,14 +80,14 @@ class StationDaoTest {
         Station first = stationDao.insert(firstStation);
 
         // when, then
-        assertThat(stationDao.findById(first.getId())).isEqualTo(first);
+        assertThat(stationDao.findById(first.getId()).get()).isEqualTo(first);
     }
 
-    @DisplayName("없는 아이디로 조회하면 예외를 던진다.")
+    @DisplayName("없는 아이디로 조회하면 빈 옵셔널을 반환한다.")
     @Test
     void findByNotExistId() {
         // when, then
-        assertThatThrownBy(() -> stationDao.findById(10L)).isInstanceOf(NotFoundException.class);
+        assertThat(stationDao.findById(10L)).isEqualTo(Optional.empty());
     }
 
     @DisplayName("이름으로 조회한다.")
@@ -98,14 +98,14 @@ class StationDaoTest {
         Station first = stationDao.insert(firstStation);
 
         // when, then
-        assertThat(stationDao.findByName(first.getName())).isEqualTo(first);
+        assertThat(stationDao.findByName(first.getName()).get()).isEqualTo(first);
     }
 
-    @DisplayName("없는 이름으로 조회하면 예외를 던진다.")
+    @DisplayName("없는 이름으로 조회하면 빈 옵셔널을 반환한다.")
     @Test
     void findByNotExistName() {
         // when, then
-        assertThatThrownBy(() -> stationDao.findByName("hardy")).isInstanceOf(NotFoundException.class);
+        assertThat(stationDao.findByName("hardy")).isEqualTo(Optional.empty());
     }
 
     @DisplayName("업데이트를 한다.")
@@ -119,7 +119,7 @@ class StationDaoTest {
         stationDao.update(new Station(originStation.getId(), "잠실나루"));
 
         // then
-        assertThat(stationDao.findById(originStation.getId()).getName()).isNotEqualTo(station.getName());
+        assertThat(stationDao.findById(originStation.getId()).get().getName()).isNotEqualTo(station.getName());
     }
 
     @DisplayName("삭제를 한다.")

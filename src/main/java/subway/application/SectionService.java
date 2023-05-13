@@ -5,16 +5,13 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
-import subway.domain.SectionChange;
+import subway.domain.*;
 import subway.dto.response.LineResponse;
 import subway.dto.response.SectionResponse;
 import subway.dto.response.StationsInLineResponse;
 import subway.dto.response.StationsResponse;
 import subway.exceptions.customexceptions.InvalidDataException;
+import subway.exceptions.customexceptions.NotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +31,12 @@ public class SectionService {
     }
 
     public SectionResponse addStationToLine(Long upBoundStationId, Long downBoundStationId, Integer distance, Long lineId) {
-        Station upBoundStation = stationDao.findById(upBoundStationId);
-        Station downBoundStation = stationDao.findById(downBoundStationId);
-        Line line = lineDao.findById(lineId);
+        stationDao.findById(upBoundStationId)
+                .orElseThrow(() -> new NotFoundException("해당하는 역이 존재하지 않습니다."));
+        stationDao.findById(downBoundStationId)
+                .orElseThrow(() -> new NotFoundException("해당하는 역이 존재하지 않습니다."));
+        lineDao.findById(lineId)
+                .orElseThrow(() -> new NotFoundException("해당하는 라인이 존재하지 않습니다."));
 
         if (upBoundStationId.equals(downBoundStationId)) {
             throw new InvalidDataException("같은 역을 등록할 수 없습니다.");
@@ -53,7 +53,10 @@ public class SectionService {
     }
 
     public void removeStationFromLine(Long stationId, Long lineId) {
-        Station deleteStation = stationDao.findById(stationId);
+        stationDao.findById(stationId)
+                .orElseThrow(() -> new NotFoundException("해당하는 역이 존재하지 않습니다."));
+        lineDao.findById(lineId)
+                .orElseThrow(() -> new NotFoundException("해당하는 라인이 존재하지 않습니다."));
 
         Sections sections = new Sections(sectionDao.findByLineId(lineId));
         SectionChange sectionChange = sections.removeStation(stationId);
@@ -75,12 +78,16 @@ public class SectionService {
 
     @Transactional(readOnly = true)
     public StationsResponse findStationsByLineId(Long lineId) {
+        lineDao.findById(lineId)
+                .orElseThrow(() -> new NotFoundException("해당하는 라인이 존재하지 않습니다."));
+
         Sections sections = new Sections(sectionDao.findByLineId(lineId));
         List<Station> stations = new ArrayList<>();
         List<Long> stationsId = sections.getStationsWithUpToDownDirection();
 
         for (Long stationId : stationsId) {
-            stations.add(stationDao.findById(stationId));
+            stations.add(stationDao.findById(stationId)
+                    .orElseThrow(() -> new NotFoundException("해당하는 역이 존재하지 않습니다.")));
         }
         return new StationsResponse(stations);
     }

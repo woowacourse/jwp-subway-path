@@ -6,6 +6,8 @@ import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
+import subway.exceptions.customexceptions.InvalidDataException;
+import subway.exceptions.customexceptions.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,13 +22,19 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        if(stationDao.findByName(stationRequest.getName()).isPresent()) {
+            throw new InvalidDataException("이미 존재하는 역입니다.");
+        }
+
         Station station = stationDao.insert(new Station(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
     @Transactional(readOnly = true)
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        Station station = stationDao.findById(id)
+                .orElseThrow(() -> new NotFoundException("해당하는 역이 존재하지 않습니다."));
+        return StationResponse.of(station);
     }
 
     @Transactional(readOnly = true)
@@ -39,10 +47,14 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
+        stationDao.findById(id)
+                .orElseThrow(() -> new NotFoundException("해당하는 역이 존재하지 않습니다."));
         stationDao.update(new Station(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {
+        stationDao.findById(id)
+                .orElseThrow(() -> new NotFoundException("해당하는 역이 존재하지 않습니다."));
         stationDao.deleteById(id);
     }
 }

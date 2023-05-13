@@ -6,6 +6,8 @@ import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
+import subway.exceptions.customexceptions.InvalidDataException;
+import subway.exceptions.customexceptions.NotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +22,9 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        if (lineDao.findByName(request.getName()).isPresent()) {
+            throw new InvalidDataException("이미 존재하는 라인입니다.");
+        }
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }
@@ -45,15 +50,17 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        return lineDao.findById(id)
+                .orElseThrow(() -> new NotFoundException("해당하는 라인이 존재하지 않습니다."));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        findLineById(id);
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
+        findLineById(id);
         lineDao.deleteById(id);
     }
-
 }

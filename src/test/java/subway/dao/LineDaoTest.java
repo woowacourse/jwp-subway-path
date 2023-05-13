@@ -5,13 +5,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Line;
-import subway.exceptions.customexceptions.InvalidDataException;
-import subway.exceptions.customexceptions.NotFoundException;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -56,7 +56,7 @@ class LineDaoTest {
         Line insertedLine = lineDao.insert(line);
 
         // then
-        assertThatThrownBy(() -> lineDao.insert(line)).isInstanceOf(InvalidDataException.class);
+        assertThatThrownBy(() -> lineDao.insert(line)).isInstanceOf(DataAccessException.class);
         assertThat(insertedLine.getColor()).isEqualTo(line.getColor());
     }
 
@@ -87,14 +87,14 @@ class LineDaoTest {
         Line first = lineDao.insert(firstLine);
 
         // then
-        assertThat(lineDao.findById(first.getId())).isEqualTo(first);
+        assertThat(lineDao.findById(first.getId()).get()).isEqualTo(first);
     }
 
-    @DisplayName("없는 아이디로 조회하면 예외를 던진다.")
+    @DisplayName("없는 아이디로 조회하면 빈 옵셔널을 반환한다.")
     @Test
     void findByNotExistId() {
         // when, then
-        assertThatThrownBy(() -> lineDao.findById(10L)).isInstanceOf(NotFoundException.class);
+        assertThat(lineDao.findById(10L)).isEqualTo(Optional.empty());
     }
 
     @DisplayName("이름으로 조회한다.")
@@ -107,14 +107,14 @@ class LineDaoTest {
         Line first = lineDao.insert(firstLine);
 
         // then
-        assertThat(lineDao.findByName(first.getName())).isEqualTo(first);
+        assertThat(lineDao.findByName(first.getName()).get()).isEqualTo(first);
     }
 
-    @DisplayName("없는 이름으로 조회하면 예외를 던진다.")
+    @DisplayName("없는 이름으로 조회하면 빈 옵셔널을 반환한다.")
     @Test
     void findByNotExistName() {
         // when, then
-        assertThatThrownBy(() -> lineDao.findByName("hardy")).isInstanceOf(NotFoundException.class);
+        assertThat(lineDao.findByName("hardy")).isEqualTo(Optional.empty());
     }
 
 
@@ -129,8 +129,8 @@ class LineDaoTest {
         lineDao.update(new Line(originLine.getId(), "2", "green"));
 
         // then
-        assertThat(lineDao.findById(originLine.getId()).getName()).isNotEqualTo(originLine.getName());
-        assertThat(lineDao.findById(originLine.getId()).getColor()).isNotEqualTo(originLine.getColor());
+        assertThat(lineDao.findById(originLine.getId()).get().getName()).isNotEqualTo(originLine.getName());
+        assertThat(lineDao.findById(originLine.getId()).get().getColor()).isNotEqualTo(originLine.getColor());
     }
 
     @DisplayName("삭제를 한다.")

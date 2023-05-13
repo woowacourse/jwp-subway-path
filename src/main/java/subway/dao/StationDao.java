@@ -1,7 +1,6 @@
 package subway.dao;
 
 import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -9,11 +8,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
-import subway.exceptions.customexceptions.InvalidDataException;
-import subway.exceptions.customexceptions.NotFoundException;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -36,12 +34,8 @@ public class StationDao {
 
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        try {
-            Long id = insertAction.executeAndReturnKey(params).longValue();
-            return new Station(id, station.getName());
-        } catch (DataIntegrityViolationException e) {
-            throw new InvalidDataException("이미 존재하는 역입니다.");
-        }
+        Long id = insertAction.executeAndReturnKey(params).longValue();
+        return new Station(id, station.getName());
     }
 
     public List<Station> findAll() {
@@ -49,37 +43,31 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (DataAccessException e) {
-            throw new NotFoundException("해당하는 역이 존재하지 않습니다.");
+            return Optional.empty();
         }
     }
 
-    public Station findByName(String name) {
+    public Optional<Station> findByName(String name) {
         String sql = "select * from STATION where name = ?";
         try {
-            return jdbcTemplate.queryForObject(sql, rowMapper, name);
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
         } catch (DataAccessException e) {
-            throw new NotFoundException("해당하는 역이 존재하지 않습니다.");
+            return Optional.empty();
         }
     }
 
     public void update(Station newStation) {
         String sql = "update STATION set name = ? where id = ?";
-        int changeCount = jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
-        if (changeCount == 0) {
-            throw new NotFoundException("해당하는 역이 존재하지 않습니다.");
-        }
+        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
 
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
-        int changeCount = jdbcTemplate.update(sql, id);
-        if (changeCount == 0) {
-            throw new NotFoundException("해당하는 역이 존재하지 않습니다.");
-        }
+        jdbcTemplate.update(sql, id);
     }
 }
