@@ -1,13 +1,19 @@
 package subway.dto;
 
-public class StationRequest {
-    private String name;
 
-    public StationRequest() {
+import javax.validation.constraints.NotBlank;
+
+public class StationRequest {
+
+    @NotBlank
+    private final String name;
+
+    public StationRequest(final String name) {
+        this.name = name;
     }
 
-    public StationRequest(String name) {
-        this.name = name;
+    private StationRequest() {
+        this(null);
     }
 
     public String getName() {

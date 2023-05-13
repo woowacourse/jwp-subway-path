@@ -1,23 +1,20 @@
 package subway.dto;
 
-public class LineRequest {
-    private String name;
-    private String color;
+import javax.validation.constraints.NotBlank;
 
-    public LineRequest() {
+public class LineRequest {
+    @NotBlank
+    private final String name;
+
+    public LineRequest(final String name) {
+        this.name = name;
     }
 
-    public LineRequest(String name, String color) {
-        this.name = name;
-        this.color = color;
+    private LineRequest() {
+        this(null);
     }
 
     public String getName() {
         return name;
     }
-
-    public String getColor() {
-        return color;
-    }
-
 }

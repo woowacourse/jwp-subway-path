@@ -1,20 +1,38 @@
 package subway.dto;
 
 import subway.domain.Line;
+import subway.domain.Section;
+
+import java.util.LinkedList;
+import java.util.List;
 
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
 
-    public LineResponse(Long id, String name, String color) {
+    private final Long id;
+    private final String name;
+    private final List<StationResponse> stations;
+
+    public LineResponse(final Long id, final String name, final List<StationResponse> stations) {
         this.id = id;
         this.name = name;
-        this.color = color;
+        this.stations = stations;
     }
 
-    public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+    private LineResponse() {
+        this(null, null, null);
+    }
+
+    public static LineResponse from(final Line line) {
+        if (line.getSections().getSections().isEmpty()) {
+            return new LineResponse(line.getId(), line.getName().getValue(), new LinkedList<>());
+        }
+        final List<StationResponse> stationResponses = new LinkedList<>();
+        final List<Section> sections = line.getSections().getSections();
+        for (final Section section : sections) {
+            stationResponses.add(StationResponse.of(section.getBeforeStation()));
+        }
+        stationResponses.add(StationResponse.of(sections.get(sections.size() - 1).getNextStation()));
+        return new LineResponse(line.getId(), line.getName().getValue(), stationResponses);
     }
 
     public Long getId() {
@@ -25,7 +43,7 @@ public class LineResponse {
         return name;
     }
 
-    public String getColor() {
-        return color;
+    public List<StationResponse> getStations() {
+        return stations;
     }
 }
