@@ -32,4 +32,12 @@ class LineNameTest {
             .isInstanceOf(LineNameException.class)
             .hasMessage("노선 이름이 255글자를 초과했습니다");
     }
+
+    @Test
+    void 정상적으로_생성된다() {
+        final String input = "강남역";
+
+        assertThatCode(() -> new LineName(input))
+            .doesNotThrowAnyException();
+    }
 }
