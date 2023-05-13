@@ -1,4 +1,4 @@
-package subway.line.domain;
+package subway.subwayMap.domain;
 
 import subway.section.domain.Section;
 import subway.station.domain.Station;

@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.section.dao.SectionDao;
 import subway.section.domain.Direction;
+import subway.section.domain.Section;
 import subway.section.entity.SectionEntity;
 
 import java.util.List;
@@ -16,6 +17,10 @@ public class SectionService {
 
     public SectionService(final SectionDao sectionDao) {
         this.sectionDao = sectionDao;
+    }
+
+    public List<Section> findSectionsByLineId(final Long id){
+        return sectionDao.findSectionsByLineId(id);
     }
 
     @Transactional

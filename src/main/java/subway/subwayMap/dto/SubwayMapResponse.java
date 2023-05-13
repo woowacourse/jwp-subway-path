@@ -1,20 +1,20 @@
-package subway.line.dto;
+package subway.subwayMap.dto;
 
 import subway.station.domain.Station;
 
 import java.util.List;
 
-public class LineSearchResponse {
+public class SubwayMapResponse {
 
     private Long id;
     private String name;
     private String color;
     private List<Station> stations;
 
-    private LineSearchResponse() {
+    private SubwayMapResponse() {
     }
 
-    public LineSearchResponse(final Long id, final String name, final String color, final List<Station> stations) {
+    public SubwayMapResponse(final Long id, final String name, final String color, final List<Station> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
