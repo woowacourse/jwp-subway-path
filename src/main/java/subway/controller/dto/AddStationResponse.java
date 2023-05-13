@@ -15,6 +15,6 @@ public class AddStationResponse {
     private String stationName;
 
     public static AddStationResponse from(final Station station) {
-        return new AddStationResponse(station.getId(), station.getName());
+        return new AddStationResponse(station.getId(), station.getName().getValue());
     }
 }

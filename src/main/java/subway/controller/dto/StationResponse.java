@@ -12,6 +12,6 @@ public class StationResponse {
     private final String name;
 
     public static StationResponse from(final Station station) {
-        return new StationResponse(station.getId(), station.getName());
+        return new StationResponse(station.getId(), station.getName().getValue());
     }
 }

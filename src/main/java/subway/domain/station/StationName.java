@@ -25,7 +25,7 @@ public class StationName {
         }
     }
 
-    public String getName() {
+    public String getValue() {
         return value;
     }
 

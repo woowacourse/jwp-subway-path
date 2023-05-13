@@ -17,7 +17,7 @@ public class StationEntity {
     }
 
     public static StationEntity from(final Station station) {
-        return new StationEntity(station.getName());
+        return new StationEntity(station.getName().getValue());
     }
 
     public Station toStation() {
