@@ -43,21 +43,21 @@ public class DefaultPaymentPolicy implements PaymentPolicy {
         return totalDistance <= BASIC_LIMIT_DISTANCE;
     }
 
-    private int additionalFee(final int remainBasic) {
-        if (isMidDistance(remainBasic)) {
-            return BASIC_FEE + calculateSurcharge(remainBasic, MID_DISTANCE_UNIT);
+    private int additionalFee(final int remainBasicDistance) {
+        if (isMidDistance(remainBasicDistance)) {
+            return BASIC_FEE + calculateSurcharge(remainBasicDistance, MID_DISTANCE_UNIT);
         }
-        return longDistanceFee(remainBasic);
+        return longDistanceFee(remainBasicDistance);
     }
 
-    private int longDistanceFee(final int remainBasic) {
-        final int remainMiddle = remainBasic - MID_LIMIT_DISTANCE;
+    private int longDistanceFee(final int remainMidDistance) {
+        final int remainMiddle = remainMidDistance - MID_LIMIT_DISTANCE;
         return BASIC_FEE
                 + calculateSurcharge(MID_LIMIT_DISTANCE, MID_DISTANCE_UNIT)
                 + calculateSurcharge(remainMiddle, LONG_DISTANCE_UNIT);
     }
 
-    private int calculateSurcharge(final int remainBasic, final int unit) {
-        return (((remainBasic - 1) / unit) + 1) * INCREASE_AMOUNT;
+    private int calculateSurcharge(final int distance, final int unit) {
+        return (((distance - 1) / unit) + 1) * INCREASE_AMOUNT;
     }
 }

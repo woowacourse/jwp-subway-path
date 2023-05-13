@@ -22,7 +22,7 @@ public class LinesGraphAdapter extends WeightedMultigraph<Station, SectionAdapte
     public void addSection(final Section section) {
         addVertex(section.up());
         addVertex(section.down());
-        final SectionAdapter sectionAdapter1 = addEdge(section.up(), section.down());
-        setEdgeWeight(sectionAdapter1, section.distance());
+        final SectionAdapter sectionAdapter = addEdge(section.up(), section.down());
+        setEdgeWeight(sectionAdapter, section.distance());
     }
 }
