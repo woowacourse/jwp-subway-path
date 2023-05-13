@@ -37,9 +37,11 @@ public class SectionDaoTest {
     void 구간을_전체_저장한다() {
         // given
         final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        stationDao.insert(new StationEntity("A", line.getId()));
-        stationDao.insert(new StationEntity("B", line.getId()));
-        stationDao.insert(new StationEntity("C", line.getId()));
+        stationDao.insertAll(List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId()),
+                new StationEntity("C", line.getId())
+        ));
 
         final List<SectionEntity> sections = List.of(
                 new SectionEntity("A", "B", 3, line.getId()),
@@ -58,9 +60,11 @@ public class SectionDaoTest {
     void 구간을_전체_조회한다() {
         // given
         final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        stationDao.insert(new StationEntity("A", line.getId()));
-        stationDao.insert(new StationEntity("B", line.getId()));
-        stationDao.insert(new StationEntity("C", line.getId()));
+        stationDao.insertAll(List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId()),
+                new StationEntity("C", line.getId())
+        ));
 
         final List<SectionEntity> sections = List.of(
                 new SectionEntity("A", "B", 3, line.getId()),
@@ -79,9 +83,11 @@ public class SectionDaoTest {
     void 입력받은_노선_id에_해당하는_구간을_전체_삭제한다() {
         // given
         final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        stationDao.insert(new StationEntity("A", line.getId()));
-        stationDao.insert(new StationEntity("B", line.getId()));
-        stationDao.insert(new StationEntity("C", line.getId()));
+        stationDao.insertAll(List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId()),
+                new StationEntity("C", line.getId())
+        ));
 
         final List<SectionEntity> sections = List.of(
                 new SectionEntity("A", "B", 3, line.getId()),
@@ -100,9 +106,11 @@ public class SectionDaoTest {
     void 라인_id를_받아_구간을_조회한다() {
         // given
         final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        stationDao.insert(new StationEntity("A", line.getId()));
-        stationDao.insert(new StationEntity("B", line.getId()));
-        stationDao.insert(new StationEntity("C", line.getId()));
+        stationDao.insertAll(List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId()),
+                new StationEntity("C", line.getId())
+        ));
 
         final List<SectionEntity> sections = List.of(
                 new SectionEntity("A", "B", 3, line.getId()),

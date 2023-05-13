@@ -31,77 +31,32 @@ class StationDaoTest {
     }
 
     @Test
-    void 역을_추가한다() {
-        // given
-        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        final StationEntity station = new StationEntity("A", line.getId());
-
-        // when
-        final StationEntity savedStation = stationDao.insert(station);
-
-        // then
-        assertThat(stationDao.findById(savedStation.getId())).isEqualTo(savedStation);
-    }
-
-    @Test
-    void 역을_수정한다() {
-        // given
-        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        final StationEntity savedStation = stationDao.insert(new StationEntity("A", line.getId()));
-        final StationEntity newStation = new StationEntity(savedStation.getId(), "B", line.getId());
-
-        // when
-        stationDao.update(newStation);
-
-        // then
-        assertThat(stationDao.findById(savedStation.getId())).isEqualTo(newStation);
-    }
-
-    @Test
-    void 역을_삭제한다() {
-        // given
-        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        final StationEntity savedStation = stationDao.insert(new StationEntity("A", line.getId()));
-
-        // when
-        stationDao.deleteById(savedStation.getId());
-
-        // then
-        assertThat(stationDao.findAll()).hasSize(0);
-    }
-
-    @Test
     void 역을_전체_조회한다() {
         // given
         final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        final StationEntity savedStation1 = stationDao.insert(new StationEntity("A", line.getId()));
-        final StationEntity savedStation2 = stationDao.insert(new StationEntity("B", line.getId()));
+        stationDao.insertAll(List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId())
+        ));
 
         // when
         final List<StationEntity> result = stationDao.findAll();
 
         // then
-        assertThat(result).containsExactly(savedStation1, savedStation2);
-    }
-
-    @Test
-    void 역을_id로_조회한다() {
-        // given
-        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        final StationEntity savedStation = stationDao.insert(new StationEntity("A", line.getId()));
-
-        // when
-        final StationEntity result = stationDao.findById(savedStation.getId());
-
-        // then
-        assertThat(result).isEqualTo(savedStation);
+        assertThat(result).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId())
+        ));
     }
 
     @Test
     void 노선id를_입력받아_역을_전체_삭제한다() {
         // given
         final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
-        stationDao.insert(new StationEntity("A", line.getId()));
+        stationDao.insertAll(List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId())
+        ));
 
         // when
         stationDao.deleteByLineId(line.getId());

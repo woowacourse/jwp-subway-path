@@ -1,6 +1,7 @@
 package subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import java.util.Optional;
@@ -37,7 +38,11 @@ class LineDaoTest {
         final LineEntity result = lineDao.insert(line);
 
         // then
-        assertThat(lineDao.findById(result.getId()).get()).isEqualTo(result);
+        final LineEntity findLine = lineDao.findById(result.getId()).get();
+        assertAll(
+                () -> assertThat(findLine.getName()).isEqualTo(result.getName()),
+                () -> assertThat(findLine.getColor()).isEqualTo(result.getColor())
+        );
     }
 
     @Test
@@ -51,7 +56,11 @@ class LineDaoTest {
         lineDao.update(newLine);
 
         // then
-        assertThat(lineDao.findById(newLine.getId()).get()).isEqualTo(newLine);
+        final LineEntity result = lineDao.findById(newLine.getId()).get();
+        assertAll(
+                () -> assertThat(result.getName()).isEqualTo(newLine.getName()),
+                () -> assertThat(result.getColor()).isEqualTo(newLine.getColor())
+        );
     }
 
     @Test
@@ -79,7 +88,7 @@ class LineDaoTest {
         final List<LineEntity> result = lineDao.findAll();
 
         // then
-        assertThat(result).containsExactly(insertLine1, insertLine2);
+        assertThat(result).usingRecursiveComparison().isEqualTo(List.of(insertLine1, insertLine2));
     }
 
     @Test

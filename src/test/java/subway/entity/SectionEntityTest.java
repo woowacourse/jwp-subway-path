@@ -27,7 +27,7 @@ class SectionEntityTest {
         List<SectionEntity> result = SectionEntity.of(line, 1L);
 
         // then
-        assertThat(result).containsAll(List.of(
+        assertThat(result).usingRecursiveComparison().isEqualTo(List.of(
                 new SectionEntity("B", "C", 3, 1L),
                 new SectionEntity("A", "B", 2, 1L),
                 new SectionEntity("D", "E", 5, 1L),

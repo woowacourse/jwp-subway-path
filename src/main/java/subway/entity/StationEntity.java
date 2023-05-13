@@ -3,7 +3,6 @@ package subway.entity;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.Objects;
 import subway.domain.Line;
 
 public class StationEntity {
@@ -25,23 +24,6 @@ public class StationEntity {
         return line.findAllStation().stream()
                 .map(station -> new StationEntity(station.getName(), lineId))
                 .collect(toList());
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        StationEntity station = (StationEntity) o;
-        return id.equals(station.id) && name.equals(station.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
     }
 
     public Long getId() {
