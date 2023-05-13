@@ -1,10 +1,15 @@
 package subway.domain.station;
 
 
-import java.util.Objects;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
 import org.springframework.util.StringUtils;
 import subway.exception.station.StationNameException;
 
+@Getter
+@ToString
+@EqualsAndHashCode(of = "value")
 public class StationName {
 
     private static final int MAX_STATION_NAME_LENGTH = 20;
@@ -23,33 +28,5 @@ public class StationName {
         if (value.length() > MAX_STATION_NAME_LENGTH) {
             throw new StationNameException("역 이름이 " + MAX_STATION_NAME_LENGTH + "글자를 초과했습니다");
         }
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        final StationName that = (StationName) o;
-        return Objects.equals(value, that.value);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(value);
-    }
-
-    @Override
-    public String toString() {
-        return "StationName{" +
-            "value='" + value + '\'' +
-            '}';
     }
 }
