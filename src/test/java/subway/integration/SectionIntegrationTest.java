@@ -10,7 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Station;
 import subway.dto.request.LineStationRequest;
-import subway.dto.response.LineStationResponse;
+import subway.dto.response.SectionResponse;
 import subway.dto.response.StationsResponse;
 
 import java.util.ArrayList;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @Sql("classpath:/testData.sql")
 @DisplayName("노선에 역 추가 / 삭제")
-public class LineStationIntegrationTest extends IntegrationTest {
+public class SectionIntegrationTest extends IntegrationTest {
 
     @DisplayName("[노선에 역 추가][정상] 이미 역들이 있는 비어있지 않은 노선에 역을 추가한다.")
     @Test
@@ -42,13 +42,13 @@ public class LineStationIntegrationTest extends IntegrationTest {
                 .log().all()
                 .extract();
 
-        LineStationResponse bodyResponse = response.body().as(LineStationResponse.class);
+        SectionResponse bodyResponse = response.body().as(SectionResponse.class);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(bodyResponse.getLine().getId()).isEqualTo(lindId);
-        assertThat(bodyResponse.getUpBoundStation().getId()).isEqualTo(upBoundStationId);
-        assertThat(bodyResponse.getDownBoundStation().getId()).isEqualTo(downBoundStationId);
+        assertThat(bodyResponse.getLineId()).isEqualTo(lindId);
+        assertThat(bodyResponse.getUpBoundStationId()).isEqualTo(upBoundStationId);
+        assertThat(bodyResponse.getDownBoundStationId()).isEqualTo(downBoundStationId);
     }
 
     @DisplayName("[노선에 역 추가][정상] 역들이 없는 비어있는 노선에 새로운 역 두개를 추가한다.")
@@ -72,13 +72,13 @@ public class LineStationIntegrationTest extends IntegrationTest {
                 .log().all()
                 .extract();
 
-        LineStationResponse bodyResponse = response.body().as(LineStationResponse.class);
+        SectionResponse bodyResponse = response.body().as(SectionResponse.class);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(bodyResponse.getLine().getId()).isEqualTo(lindId);
-        assertThat(bodyResponse.getUpBoundStation().getId()).isEqualTo(upBoundStationId);
-        assertThat(bodyResponse.getDownBoundStation().getId()).isEqualTo(downBoundStationId);
+        assertThat(bodyResponse.getLineId()).isEqualTo(lindId);
+        assertThat(bodyResponse.getUpBoundStationId()).isEqualTo(upBoundStationId);
+        assertThat(bodyResponse.getDownBoundStationId()).isEqualTo(downBoundStationId);
     }
 
     @DisplayName("[노선에 역 추가][비정상] 원래의 노선길이보다 길거나 같은 역을 추가하면 상태코드가 BAD_REQUEST 이다.")
