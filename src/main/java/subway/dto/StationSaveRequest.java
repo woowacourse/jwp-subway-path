@@ -6,12 +6,9 @@ import java.util.Objects;
 
 public class StationSaveRequest {
 
-    private String upStation;
-    private String downStation;
-    private int distance;
-
-    public StationSaveRequest() {
-    }
+    private final String upStation;
+    private final String downStation;
+    private final int distance;
 
     public StationSaveRequest(final String upStation, final String downStation, final int distance) {
         this.upStation = upStation;

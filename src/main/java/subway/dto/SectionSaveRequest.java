@@ -2,13 +2,10 @@ package subway.dto;
 
 public class SectionSaveRequest {
 
-    private Long lineId;
-    private Long upStationId;
-    private Long downStationId;
-    private int distance;
-
-    public SectionSaveRequest() {
-    }
+    private final Long lineId;
+    private final Long upStationId;
+    private final Long downStationId;
+    private final int distance;
 
     public SectionSaveRequest(
             final Long lineId,

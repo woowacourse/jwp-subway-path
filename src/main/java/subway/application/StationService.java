@@ -174,12 +174,6 @@ public class StationService {
     }
 
 
-    public List<StationResponse> findAllStationOrderBySection() {
-        return stationDao.findAll().stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
     @Transactional
     public void deleteStationById(final Long lineId, final Long stationId) {
         Station station = stationDao.findById(stationId);

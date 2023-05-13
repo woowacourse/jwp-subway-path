@@ -26,24 +26,15 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
+        List<Line> allLines = lineDao.findAll();
+        return allLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
-
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+        Line line = lineDao.findById(id);
+        return LineResponse.of(line);
     }
 
     @Transactional
@@ -55,4 +46,5 @@ public class LineService {
     public void deleteLineById(Long id) {
         lineDao.deleteById(id);
     }
+
 }

@@ -2,11 +2,8 @@ package subway.dto;
 
 public class StationDeleteRequest {
 
-    private Long lineId;
-    private Long stationId;
-
-    public StationDeleteRequest() {
-    }
+    private final Long lineId;
+    private final Long stationId;
 
     public StationDeleteRequest(final Long lineId, final Long stationId) {
         this.lineId = lineId;
