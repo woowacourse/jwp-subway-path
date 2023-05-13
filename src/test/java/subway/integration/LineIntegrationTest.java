@@ -1,5 +1,8 @@
 package subway.integration;
 
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -9,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.presentation.dto.request.LineRequest;
+import subway.presentation.dto.response.LineReadResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,12 +31,12 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("5호선", "bg-red-600", 10, "대림", "온수");
-        lineRequest2 = new LineRequest("6호선", "bg-olive-600", 4, "온수", "구로디지털단지");
+        lineRequest1 = new LineRequest("5호선", "bg-purple-600", 10, "대림", "온수");
+        lineRequest2 = new LineRequest("6호선", "bg-brown-600", 4, "온수", "구로디지털단지");
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
     @Test
+    @DisplayName("지하철 노선을 생성한다.")
     void createLine() {
         // given, when
         final ExtractableResponse<Response> response = RestAssured
@@ -50,8 +54,8 @@ public class LineIntegrationTest extends IntegrationTest {
         );
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
+    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     void createLineWithDuplicateName() {
         // given
         RestAssured
@@ -75,43 +79,56 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
+    @DisplayName("지하철 노선 목록을 조회한다.")
     void getLines() {
         // given
-        ExtractableResponse<Response> createResponse1 = RestAssured
-                .given().log().all()
+        final ExtractableResponse<Response> createResponse1 = RestAssured
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then()
+                .extract();
 
-        ExtractableResponse<Response> createResponse2 = RestAssured
-                .given().log().all()
+        final ExtractableResponse<Response> createResponse2 = RestAssured
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest2)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then()
+                .extract();
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+        final ExtractableResponse<Response> response = RestAssured
+                .given()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines")
-                .then().log().all()
+                .then()
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
+        final List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
-//        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-//                .map(LineResponse::getId)
-//                .collect(Collectors.toList());
-//        assertThat(resultLineIds).containsAll(expectedLineIds);
+        final List<Long> resultIds = response.jsonPath().getList(".", LineReadResponse.class).stream()
+                .map(LineReadResponse::getId)
+                .collect(Collectors.toList());
+
+        final Configuration conf = Configuration.defaultConfiguration();
+        final DocumentContext documentContext = JsonPath.using(conf).parse(response.asString());
+
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(resultIds).containsAll(expectedLineIds),
+                () -> assertThat((int) documentContext.read("$.size()")).isEqualTo(2),
+                () -> assertThat((String) documentContext.read("$[0]['name']")).isEqualTo("5호선"),
+                () -> assertThat((String) documentContext.read("$[0]['color']")).isEqualTo("bg-purple-600"),
+                () -> assertThat((String) documentContext.read("$[0]['stations']")).hasSize(2),
+                () -> assertThat((String) documentContext.read("$[0]['stations'][0]['name']")).isEqualTo("대림"),
+                () -> assertThat((String) documentContext.read("$[0]['stations'][1]['name']")).isEqualTo("온수")
+        );
     }
 
     @DisplayName("지하철 노선을 조회한다.")
