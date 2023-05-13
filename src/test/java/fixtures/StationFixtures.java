@@ -1,68 +1,120 @@
 package fixtures;
 
-import subway.dto.StationRequest;
-import subway.dto.StationSaveResponse;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
+import static fixtures.LineFixtures.*;
+import static fixtures.SectionFixtures.*;
+
+import subway.domain.station.Station;
+import subway.dto.*;
 
 import java.util.List;
 
 public class StationFixtures {
-    /**
-     * Dummy 데이터
-     */
-    public static final String DUMMY_LINE2_NAME = "2호선";
-    public static final String DUMMY_LINE7_NAME = "7호선";
-    public static final String DUMMY_STATION_잠실역_NAME = "잠실역";
-    public static final String DUMMY_STATION_건대역_NAME = "건대역";
-    public static final String DUMMY_STATION_강변역_NAME = "강변역";
-    public static final long DUMMY_LINE2_ID = 1L;
-    public static final long DUMMY_잠실_INSERTED_ID = 1L;
-    public static final long DUMMY_건대_INSERTED_ID = 2L;
-    public static final long DUMMY_강변_INSERTED_ID = 3L;
 
     /**
-     * 잠실 - 건대
-     * 잠실 - 강변 - 건대
+     * 노선 : 2호선
+     * 추가할 역 : B(가운데 역), D(상행 종점에 추가), E(하행 종점에 추가)
+     * 기존 : A - C (최초)
+     * 최종 : 'D' - A - 'B' - C - 'E'
      */
-    public static final long DUMMY_SECTION_잠실_TO_건대_ID = 1L;
-    public static final long DUMMY_SECTION_잠실_TO_강변_ID = 2L;
-    public static final long DUMMY_SECTION_강변_TO_건대_ID = 3L;
 
-    public static final int DUMMY_DISTANCE_잠실_TO_건대 = 10;
-    public static final int DUMMY_DISTANCE_잠실_TO_강변 = 3;
-    public static final int DUMMY_DISTANCE_강변_TO_건대 = 7;
+    public static class STATION_A {
+        public static final long ID = 1L;
+        public static final String NAME = "A역";
+        public static final Station INSERT_ENTITY = new Station(null, NAME, Line2.FIND_ENTITY);
+        public static final Station FIND_ENTITY = new Station(ID, NAME, Line2.FIND_ENTITY);
+    }
 
+    public static class STATION_C {
+        public static final long ID = 2L;
+        public static final String NAME = "C역";
+        public static final Station INSERT_ENTITY = new Station(null, NAME, Line2.FIND_ENTITY);
+        public static final Station FIND_ENTITY = new Station(ID, NAME, Line2.FIND_ENTITY);
+    }
+
+    public static class STATION_B {
+        public static final long ID = 3L;
+        public static final String NAME = "B역";
+        public static final Station INSERT_ENTITY = new Station(null, NAME, Line2.FIND_ENTITY);
+        public static final Station FIND_ENTITY = new Station(ID, NAME, Line2.FIND_ENTITY);
+    }
+
+    public static class STATION_D {
+        public static final long ID = 4L;
+        public static final String NAME = "D역";
+        public static final Station INSERT_ENTITY = new Station(null, NAME, Line2.FIND_ENTITY);
+        public static final Station FIND_ENTITY = new Station(ID, NAME, Line2.FIND_ENTITY);
+    }
+
+    public static class STATION_E {
+        public static final long ID = 5L;
+        public static final String NAME = "E역";
+        public static final Station INSERT_ENTITY = new Station(null, NAME, Line2.FIND_ENTITY);
+        public static final Station FIND_ENTITY = new Station(ID, NAME, Line2.FIND_ENTITY);
+    }
 
     /**
-     * request
+     * Request
      */
-    public static final StationRequest 잠실_TO_건대_REQUEST = new StationRequest(DUMMY_STATION_잠실역_NAME, DUMMY_STATION_건대역_NAME, DUMMY_DISTANCE_잠실_TO_건대, DUMMY_LINE2_NAME);
-    public static final StationRequest 잠실_TO_강변_REQUEST = new StationRequest(DUMMY_STATION_잠실역_NAME, DUMMY_STATION_강변역_NAME, DUMMY_DISTANCE_잠실_TO_강변, DUMMY_LINE2_NAME);
-    public static final StationRequest 강변_TO_건대_REQUEST = new StationRequest(DUMMY_STATION_강변역_NAME, DUMMY_STATION_건대역_NAME, DUMMY_DISTANCE_강변_TO_건대, DUMMY_LINE2_NAME);
+    public static class INITIAL_STATION_REQUEST_A_TO_C {
+        public static final StationRequest REQUEST = new StationRequest(STATION_A.NAME, STATION_C.NAME, SECTION_A_TO_C.DISTANCE.getDistance(), Line2.NAME);
+    }
 
-    /**
-     * entity
-     */
-    public static final LineEntity LINE2_INSERT_ENTITY = new LineEntity(null, DUMMY_LINE2_NAME);
-    public static final LineEntity LINE7_INSERT_ENTITY = new LineEntity(null, DUMMY_LINE7_NAME);
-    public static final LineEntity LINE2_FIND_ENTITY = new LineEntity(DUMMY_LINE2_ID, DUMMY_LINE2_NAME);
-    public static final StationEntity 잠실_INSERT_ENTITY = new StationEntity(null, DUMMY_STATION_잠실역_NAME, DUMMY_LINE2_ID);
-    public static final StationEntity 잠실_FIND_ENTITY = new StationEntity(DUMMY_잠실_INSERTED_ID, DUMMY_STATION_잠실역_NAME, DUMMY_LINE2_ID);
-    public static final StationEntity 건대_INSERT_ENTITY = new StationEntity(null, DUMMY_STATION_건대역_NAME, DUMMY_LINE2_ID);
-    public static final StationEntity 건대_FIND_ENTITY = new StationEntity(DUMMY_건대_INSERTED_ID, DUMMY_STATION_건대역_NAME, DUMMY_LINE2_ID);
-    public static final StationEntity 강변_INSERT_ENTITY = new StationEntity(null, DUMMY_STATION_강변역_NAME, DUMMY_LINE2_ID);
-    public static final StationEntity 강변_FIND_ENTITY = new StationEntity(DUMMY_강변_INSERTED_ID, DUMMY_STATION_강변역_NAME, DUMMY_LINE2_ID);
-    public static final SectionEntity 잠실_TO_건대_INSERT_SECTION_ENTITY = new SectionEntity(null, DUMMY_잠실_INSERTED_ID, DUMMY_건대_INSERTED_ID, DUMMY_LINE2_ID, DUMMY_DISTANCE_잠실_TO_건대);
-    public static final SectionEntity 잠실_TO_건대_FIND_SECTION_ENTITY = new SectionEntity(DUMMY_SECTION_잠실_TO_건대_ID, DUMMY_잠실_INSERTED_ID, DUMMY_건대_INSERTED_ID, DUMMY_LINE2_ID, DUMMY_DISTANCE_잠실_TO_건대);
-    public static final SectionEntity 잠실_TO_강변_INSERT_SECTION_ENTITY = new SectionEntity(null, DUMMY_잠실_INSERTED_ID, DUMMY_강변_INSERTED_ID, DUMMY_LINE2_ID, DUMMY_DISTANCE_잠실_TO_강변);
-    public static final SectionEntity 강변_TO_건대_INSERT_SECTION_ENTITY = new SectionEntity(null, DUMMY_강변_INSERTED_ID, DUMMY_건대_INSERTED_ID, DUMMY_LINE2_ID, DUMMY_DISTANCE_강변_TO_건대);
+    public static class DOWN_MIDDLE_STATION_REQUEST_A_TO_B {
+        public static final StationRequest REQUEST = new StationRequest(STATION_A.NAME, STATION_B.NAME, SECTION_A_TO_B.DISTANCE.getDistance(), Line2.NAME);
+    }
+
+    public static class UP_MIDDLE_STATION_REQUEST_B_TO_C {
+        public static final StationRequest REQUEST = new StationRequest(STATION_B.NAME, STATION_C.NAME, SECTION_B_TO_C.DISTANCE.getDistance(), Line2.NAME);
+    }
+
+    public static class UP_END_STATION_REQUEST_D_TO_A {
+        public static final StationRequest REQUEST = new StationRequest(STATION_D.NAME, STATION_A.NAME, SECTION_D_TO_A.DISTANCE.getDistance(), Line2.NAME);
+    }
+
+    public static class DOWN_END_STATION_REQUEST_C_TO_E {
+        public static final StationRequest REQUEST = new StationRequest(STATION_C.NAME, STATION_E.NAME, SECTION_C_TO_E.DISTANCE.getDistance(), Line2.NAME);
+    }
 
     /**
      * response
      */
-    public static final StationSaveResponse SAVE_INITIAL_STATIONS_잠실_TO_건대_RESPONSE = new StationSaveResponse(DUMMY_LINE2_ID, List.of(DUMMY_잠실_INSERTED_ID, DUMMY_건대_INSERTED_ID), List.of(DUMMY_SECTION_잠실_TO_건대_ID));
-    public static final StationSaveResponse SAVE_NEW_STATION_잠실_TO_강변_RESPONSE = new StationSaveResponse(DUMMY_LINE2_ID, List.of(DUMMY_강변_INSERTED_ID), List.of(DUMMY_SECTION_잠실_TO_강변_ID, DUMMY_SECTION_강변_TO_건대_ID));
-    public static final StationSaveResponse SAVE_NEW_STATION_강변_TO_건대_RESPONSE = new StationSaveResponse(DUMMY_LINE2_ID, List.of(DUMMY_강변_INSERTED_ID), List.of(DUMMY_SECTION_잠실_TO_강변_ID, DUMMY_SECTION_강변_TO_건대_ID));
+    public static class INITIAL_STATIONS_SAVE_RESPONSE_A_TO_C {
+        public static final StationSaveResponse RESPONSE = new StationSaveResponse(
+                LineDto.from(Line2.FIND_ENTITY),
+                List.of(StationDto.from(STATION_A.FIND_ENTITY), StationDto.from(STATION_C.FIND_ENTITY)),
+                List.of(SectionDto.from(SECTION_A_TO_C.FIND_ENTITY))
+        );
+    }
+
+    public static class DOWN_MIDDLE_STATION_SAVE_RESPONSE_A_TO_B {
+        public static final StationSaveResponse RESPONSE = new StationSaveResponse(
+                LineDto.from(Line2.FIND_ENTITY),
+                List.of(StationDto.from(STATION_A.FIND_ENTITY), StationDto.from(STATION_B.FIND_ENTITY)),
+                List.of(SectionDto.from(SECTION_A_TO_B.FIND_ENTITY))
+        );
+    }
+
+    public static class UP_MIDDLE_STATION_SAVE_RESPONSE_B_TO_C {
+        public static final StationSaveResponse RESPONSE = new StationSaveResponse(
+                LineDto.from(Line2.FIND_ENTITY),
+                List.of(StationDto.from(STATION_B.FIND_ENTITY), StationDto.from(STATION_C.FIND_ENTITY)),
+                List.of(SectionDto.from(SECTION_B_TO_C.FIND_ENTITY))
+        );
+    }
+
+    public static class UP_END_STATION_SAVE_RESPONSE_D_TO_A {
+        public static final StationSaveResponse RESPONSE = new StationSaveResponse(
+                LineDto.from(Line2.FIND_ENTITY),
+                List.of(StationDto.from(STATION_D.FIND_ENTITY), StationDto.from(STATION_A.FIND_ENTITY)),
+                List.of(SectionDto.from(SECTION_D_TO_A.FIND_ENTITY))
+        );
+    }
+
+    public static class DOWN_END_STATION_SAVE_RESPONSE_C_TO_E {
+        public static final StationSaveResponse RESPONSE = new StationSaveResponse(
+                LineDto.from(Line2.FIND_ENTITY),
+                List.of(StationDto.from(STATION_C.FIND_ENTITY), StationDto.from(STATION_E.FIND_ENTITY)),
+                List.of(SectionDto.from(SECTION_C_TO_E.FIND_ENTITY))
+        );
+    }
 }
