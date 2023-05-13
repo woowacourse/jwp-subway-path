@@ -13,7 +13,7 @@ public class SectionTest {
     void shouldReturnRemainingDistanceWhenInputDistance() {
         Station upwardStation = new Station("잠실역");
         Station downwardStation = new Station("몽촌토성역");
-        Section section = new Section(upwardStation, downwardStation, 5);
+        Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         int remainingDistance = section.calculateRemainingDistance(3);
         assertThat(remainingDistance).isEqualTo(2);
@@ -24,7 +24,7 @@ public class SectionTest {
     void shouldReturnTrueWhenAlreadyHasStation() {
         Station upwardStation = new Station("잠실역");
         Station downwardStation = new Station("몽촌토성역");
-        Section section = new Section(upwardStation, downwardStation, 5);
+        Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         assertThat(section.hasStation(upwardStation)).isTrue();
     }
@@ -34,7 +34,7 @@ public class SectionTest {
     void shouldReturnFalseWhenDoesNotHaveStation() {
         Station upwardStation = new Station("잠실역");
         Station downwardStation = new Station("몽촌토성역");
-        Section section = new Section(upwardStation, downwardStation, 5);
+        Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         Station station = new Station("강남역");
         assertThat(section.hasStation(station)).isFalse();
@@ -45,7 +45,7 @@ public class SectionTest {
     void shouldReturnTrueWhenInputStationIsSameWithUpwardStation() {
         Station upwardStation = new Station("잠실역");
         Station downwardStation = new Station("몽촌토성역");
-        Section section = new Section(upwardStation, downwardStation, 5);
+        Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         assertThat(section.isUpwardStation(upwardStation)).isTrue();
     }
@@ -55,7 +55,7 @@ public class SectionTest {
     void shouldReturnFalseWhenInputStationIsDifferentWithUpwardStation() {
         Station upwardStation = new Station("잠실역");
         Station downwardStation = new Station("몽촌토성역");
-        Section section = new Section(upwardStation, downwardStation, 5);
+        Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         assertThat(section.isUpwardStation(new Station("강남역"))).isFalse();
     }
@@ -65,7 +65,7 @@ public class SectionTest {
     void shouldReturnTrueWhenInputStationIsSameWithDownwardStation() {
         Station upwardStation = new Station("잠실역");
         Station downwardStation = new Station("몽촌토성역");
-        Section section = new Section(upwardStation, downwardStation, 5);
+        Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         assertThat(section.isDownwardStation(downwardStation)).isTrue();
     }
@@ -75,7 +75,7 @@ public class SectionTest {
     void shouldReturnFalseWhenInputStationIsDifferentWithDownwardStation() {
         Station upwardStation = new Station("잠실역");
         Station downwardStation = new Station("몽촌토성역");
-        Section section = new Section(upwardStation, downwardStation, 5);
+        Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         assertThat(section.isDownwardStation(new Station("강남역"))).isFalse();
     }

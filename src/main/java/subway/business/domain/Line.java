@@ -19,11 +19,11 @@ public class Line {
         this.sections = sections;
     }
 
-    public static Line of(String name, String upwardStationName, String downwardStationName, int distance) {
+    public static Line createToSave(String name, String upwardStationName, String downwardStationName, int distance) {
         Station upwardStation = new Station(upwardStationName);
         Station downwardStation = new Station(downwardStationName);
         List<Section> sections = new LinkedList<>();
-        sections.add(new Section(upwardStation, downwardStation, distance));
+        sections.add(Section.createToSave(upwardStation, downwardStation, distance));
         return new Line(name, sections);
     }
 
@@ -66,7 +66,7 @@ public class Line {
         Station downwardStation = upwardSection.getDownwardStation();
 
         int newDistance = upwardSection.getDistance() + downwardSection.getDistance();
-        Section newSection = new Section(upwardStation, downwardStation, newDistance);
+        Section newSection = new Section(id, upwardStation, downwardStation, newDistance);
 
         sections.add(sections.indexOf(downwardSection), newSection);
         sections.remove(downwardSection);
@@ -114,13 +114,13 @@ public class Line {
 
     private void addUpwardTerminus(Station station, Station neighborhoodStation, int distance) {
         Section sectionToModify = getSectionUpwardSameWith(neighborhoodStation);
-        Section sectionToSave = new Section(station, sectionToModify.getUpwardStation(), distance);
+        Section sectionToSave = new Section(id, station, sectionToModify.getUpwardStation(), distance);
         sections.add(0, sectionToSave);
     }
 
     private void addDownwardTerminus(Station station, Station neighborhoodStation, int distance) {
         Section sectionToModify = getSectionDownwardSameWith(neighborhoodStation);
-        Section sectionToSave = new Section(sectionToModify.getDownwardStation(), station, distance);
+        Section sectionToSave = new Section(id, sectionToModify.getDownwardStation(), station, distance);
         sections.add(sectionToSave);
     }
 
@@ -138,10 +138,10 @@ public class Line {
         Section sectionToModify = getSectionDownwardSameWith(neighborhoodStation);
         validateDistance(distance, sectionToModify.getDistance());
 
-        Section downwardSectionToSave = new Section(station, neighborhoodStation, distance);
+        Section downwardSectionToSave = new Section(id, station, neighborhoodStation, distance);
         Station otherNeighborhoodStation = sectionToModify.getUpwardStation();
         int upwardDistance = sectionToModify.calculateRemainingDistance(distance);
-        Section upwardSectionToSave = new Section(otherNeighborhoodStation, station, upwardDistance);
+        Section upwardSectionToSave = new Section(id, otherNeighborhoodStation, station, upwardDistance);
 
         int nextSectionIndex = getNextIndexOf(sectionToModify);
         sections.add(nextSectionIndex, downwardSectionToSave);
@@ -157,10 +157,10 @@ public class Line {
         Section sectionToModify = getSectionUpwardSameWith(neighborhoodStation);
         validateDistance(distance, sectionToModify.getDistance());
 
-        Section upwardSectionToSave = new Section(neighborhoodStation, station, distance);
+        Section upwardSectionToSave = new Section(id, neighborhoodStation, station, distance);
         Station otherNeighborhoodStation = sectionToModify.getDownwardStation();
         int downwardDistance = sectionToModify.calculateRemainingDistance(distance);
-        Section downwardSectionToSave = new Section(station, otherNeighborhoodStation, downwardDistance);
+        Section downwardSectionToSave = new Section(id, station, otherNeighborhoodStation, downwardDistance);
 
         int nextSectionIndex = getNextIndexOf(sectionToModify);
         sections.add(nextSectionIndex, downwardSectionToSave);

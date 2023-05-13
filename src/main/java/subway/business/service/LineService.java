@@ -55,7 +55,7 @@ public class LineService {
     }
 
     public LineResponse createLine(LineSaveRequest lineSaveRequest) {
-        Line line = Line.of(
+        Line line = Line.createToSave(
                 lineSaveRequest.getName(),
                 lineSaveRequest.getUpwardTerminus(),
                 lineSaveRequest.getDownwardTerminus(),

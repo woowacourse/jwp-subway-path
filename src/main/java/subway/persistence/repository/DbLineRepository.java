@@ -88,6 +88,7 @@ public class DbLineRepository implements LineRepository {
     private List<Section> mapSectionEntitiesToSections(List<SectionEntity> sectionEntities) {
         return sectionEntities.stream()
                 .map(sectionEntity -> new Section(
+                        sectionEntity.getId(),
                         new Station(sectionEntity.getUpwardStation()),
                         new Station(sectionEntity.getDownwardStation()),
                         sectionEntity.getDistance()))
