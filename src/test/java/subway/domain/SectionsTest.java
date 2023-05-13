@@ -20,7 +20,7 @@ class SectionsTest {
 
     private Sections createSections() {
         final Sections sections = new Sections(LINE_999);
-        sections.createNewLine(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
+        sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
         return sections;
     }
 
@@ -28,7 +28,7 @@ class SectionsTest {
     @DisplayName("새로운 노선(2개의 역)을 등록한다")
     void createNewLine() {
         final Sections sections = new Sections(LINE_999);
-        sections.createNewLine(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
+        sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
 
         assertThat(sections.findAllStationsInOrder()).containsExactly(
                 EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION);
@@ -166,7 +166,7 @@ class SectionsTest {
         @DisplayName("입력한 두 역이 같은 역이면 예외가 발생한다.")
         void sameStations() {
             final Sections sections = new Sections(LINE_999);
-            sections.createNewLine(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
+            sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
             assertThatThrownBy(
                     () -> sections.addStation(SAPYEONG_STATION, SAPYEONG_STATION, 2))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -177,7 +177,7 @@ class SectionsTest {
         @DisplayName("입력한 두 역이 모두 새로운 역이면 예외가 발생한다.")
         void onlyNewStations() {
             final Sections sections = new Sections(LINE_999);
-            sections.createNewLine(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
+            sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
             assertThatThrownBy(
                     () -> sections.addStation(SAPYEONG_STATION, SINNONHYEON_STATION, 2))
                     .isInstanceOf(IllegalArgumentException.class)
@@ -188,7 +188,7 @@ class SectionsTest {
         @DisplayName("입력한 두 역이 모두 이미 존재하는 역이면 예외가 발생한다.")
         void onlyExistingStations() {
             final Sections sections = new Sections(LINE_999);
-            sections.createNewLine(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
+            sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
             assertThatThrownBy(
                     () -> sections.addStation(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 2)).isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
@@ -200,7 +200,7 @@ class SectionsTest {
         void createNewLineDistanceNegativeTest(int distance) {
             final Sections sections = new Sections(LINE_999);
             assertThatThrownBy(
-                    () -> sections.createNewLine(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, distance))
+                    () -> sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, distance))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("역 사이 거리는 양의 정수로 입력해 주세요.");
         }
@@ -211,7 +211,7 @@ class SectionsTest {
         void addStationDistanceNegativeTest(int distance) {
             final Sections sections = createSections();
             assertThatThrownBy(
-                    () -> sections.createNewLine(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance))
+                    () -> sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("역 사이 거리는 양의 정수로 입력해 주세요.");
         }

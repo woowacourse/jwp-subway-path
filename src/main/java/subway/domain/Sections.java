@@ -14,31 +14,72 @@ public class Sections {
         this.line = line;
     }
 
-    public void createNewLine(Station upLineStation, Station downLineStation, int distance) {
+    public void createInitialSection(Station upLineStation, Station downLineStation, int distance) {
         validateDistance(distance);
         graph.addVertex(upLineStation);
         graph.addVertex(downLineStation);
         graph.setEdgeWeight(graph.addEdge(upLineStation, downLineStation), distance);
     }
 
-    public boolean isSameLine(Line line) {
-        return this.line.equals(line);
+    public Station addStation(Station upLineStation, Station downLineStation, int distance) {
+        validateStations(upLineStation, downLineStation);
+        validateDistance(distance);
+
+        System.out.println("graph.vertexSet() = " + graph.vertexSet());
+
+        System.out.println("graph.containsVertex(upLineStation) = " + graph.containsVertex(upLineStation));
+        System.out.println("graph.containsVertex(downLineStation) = " + graph.containsVertex(downLineStation));
+
+        // 기존 역: upLineStation, 새로운 역: downLineStation
+        if (graph.containsVertex(upLineStation)) {
+
+            // upLineStation[하행종점] -> downLineStation (새 역) -> nothing!
+            int inDegree = graph.inDegreeOf(upLineStation);
+            int outDegree = graph.outDegreeOf(upLineStation);
+
+            final boolean isDownLastStation = inDegree == 1 && outDegree == 0;
+
+            if (isDownLastStation) {
+                addStationToDownLine(upLineStation, downLineStation, distance);
+                return downLineStation;
+            }
+
+            // upLineStation -> downLineStation (새 역) -> 기존 다음 역
+            final Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(upLineStation);
+            addStationToDownLine(upLineStation, downLineStation, findNextStation(outgoingEdges), distance);
+            return downLineStation;
+        }
+
+        // 기존 역: downLineStation, 새로운 역: upLineStation
+        if (graph.containsVertex(downLineStation)) {
+            graph.addVertex(upLineStation);
+
+            // nothing -> upLineStation (새 역) -> downLineStation
+            int inDegree = graph.inDegreeOf(downLineStation);
+            int outDegree = graph.outDegreeOf(downLineStation);
+
+            final boolean isUpFirstStation = inDegree == 0 && outDegree == 1;
+
+            if (isUpFirstStation) {
+                addStationToUpLine(upLineStation, downLineStation, distance);
+                return upLineStation;
+            }
+            // 기존 상행 역 -> upLineStation (새 역) -> downLineStation
+            final Set<DefaultWeightedEdge> defaultWeightedEdges = graph.incomingEdgesOf(downLineStation);
+            final Station previousStation = findPreviousStation(defaultWeightedEdges);
+            addStationToUpLine(previousStation, upLineStation, downLineStation, distance);
+            return upLineStation;
+        }
+        throw new IllegalArgumentException("부적절한 입력입니다.");
     }
 
-    public int findOrderOf(final Station station) {
-        return findAllStationsInOrder().indexOf(station);
+    public boolean isSameLine(Line line) {
+        return this.line.equals(line);
     }
 
     public Station findUpEndStation() {
         return graph.vertexSet().stream()
                 .filter(vertex -> this.graph.incomingEdgesOf(vertex).isEmpty())
-                .findFirst()
-                .orElse(null);
-    }
-
-    public Station findDownEndStation() {
-        return graph.vertexSet().stream()
-                .filter(vertex -> this.graph.outgoingEdgesOf(vertex).isEmpty())
                 .findFirst()
                 .orElse(null);
     }
@@ -84,53 +125,6 @@ public class Sections {
         return (int) graph.getEdgeWeight(edge);
     }
 
-    public Station addStation(Station upLineStation, Station downLineStation, int distance) {
-        validateStations(upLineStation, downLineStation);
-        validateDistance(distance);
-
-        // 기존 역: upLineStation, 새로운 역: downLineStation
-        if (graph.containsVertex(upLineStation)) {
-
-            // upLineStation[하행종점] -> downLineStation (새 역) -> nothing!
-            int inDegree = graph.inDegreeOf(upLineStation);
-            int outDegree = graph.outDegreeOf(upLineStation);
-
-            final boolean isDownLastStation = inDegree == 1 && outDegree == 0;
-
-            if (isDownLastStation) {
-                addStationToDownLine(upLineStation, downLineStation, distance);
-                return downLineStation;
-            }
-
-            // upLineStation -> downLineStation (새 역) -> 기존 다음 역
-            final Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(upLineStation);
-            addStationToDownLine(upLineStation, downLineStation, findNextStation(outgoingEdges), distance);
-            return downLineStation;
-        }
-
-        // 기존 역: downLineStation, 새로운 역: upLineStation
-        if (graph.containsVertex(downLineStation)) {
-            graph.addVertex(upLineStation);
-
-            // nothing -> upLineStation (새 역) -> downLineStation
-            int inDegree = graph.inDegreeOf(downLineStation);
-            int outDegree = graph.outDegreeOf(downLineStation);
-
-            final boolean isUpFirstStation = inDegree == 0 && outDegree == 1;
-
-            if (isUpFirstStation) {
-                addStationToUpLine(upLineStation, downLineStation, distance);
-                return upLineStation;
-            }
-            // 기존 상행 역 -> upLineStation (새 역) -> downLineStation
-            final Set<DefaultWeightedEdge> defaultWeightedEdges = graph.incomingEdgesOf(downLineStation);
-            final Station previousStation = findPreviousStation(defaultWeightedEdges);
-            addStationToUpLine(previousStation, upLineStation, downLineStation, distance);
-            return upLineStation;
-        }
-        throw new IllegalArgumentException("부적절한 입력입니다.");
-    }
-
     private static void validateDistance(final int distance) {
         if (distance <= 0) {
             throw new IllegalArgumentException("역 사이 거리는 양의 정수로 입력해 주세요.");
@@ -142,13 +136,9 @@ public class Sections {
             throw new IllegalArgumentException("서로 다른 역을 입력해 주세요.");
         }
 
-        if (!graph.containsVertex(upLineStation) && !graph.containsVertex(downLineStation)) {
-            throw new IllegalArgumentException("모두 새로운 역입니다. 새로운 역과 기존 역을 입력해 주세요.");
-        }
-
-        if (graph.containsVertex(upLineStation) && graph.containsVertex(downLineStation)) {
-            throw new IllegalArgumentException("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
-        }
+//        if (graph.containsVertex(upLineStation) && graph.containsVertex(downLineStation)) {
+//            throw new IllegalArgumentException("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
+//        }
     }
 
     private Station findPreviousStation(final Set<DefaultWeightedEdge> defaultWeightedEdges) {
@@ -262,5 +252,16 @@ public class Sections {
         // 지우기
         graph.removeAllEdges(edgesToRemove);
         graph.removeVertex(station);
+    }
+
+    public boolean containsStation(final Station station) {
+        return graph.vertexSet().contains(station);
+    }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "line=" + line +
+                '}';
     }
 }

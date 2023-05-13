@@ -31,10 +31,10 @@ public class LineController {
     }
 
     @PostMapping("/{id}/stations/initial")
-    public ResponseEntity<LineResponse> createInitialStationInLine(
+    public ResponseEntity<LineResponse> createInitialSectionInLine(
             @PathVariable("id") Long id,
             @RequestBody InitialSectionCreateRequest request) {
-        final LineResponse lineResponse = lineService.initialCreateSection(id, request);
+        final LineResponse lineResponse = lineService.createInitialSection(id, request);
         return ResponseEntity
                 .created(URI.create("/" + lineResponse.getId() + "/stations"))
                 .body(lineResponse);

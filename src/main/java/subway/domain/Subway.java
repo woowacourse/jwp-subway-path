@@ -15,10 +15,15 @@ public class Subway {
         this.sections = new ArrayList<>();
     }
 
-    public void createNewSections(final Line line, final Station upStation, final Station downStation, final int distance) {
+    public void createSectionsOf(final Line line) {
         final Sections newSections = new Sections(line);
         sections.add(newSections);
-        newSections.createNewLine(upStation, downStation, distance);
+    }
+
+    public void createNewSection(final Line line, final Station upStation, final Station downStation, final int distance) {
+        final Sections newSections = findSectionsOf(line);
+        sections.add(newSections);
+        newSections.createInitialSection(upStation, downStation, distance);
     }
 
     public Station addStation(final Line line, final Station upStation, final Station downStation, final int distance) {
@@ -44,6 +49,13 @@ public class Subway {
 
     public int findDistanceBetween(final Line line, final Station upStation, final Station downStation) {
         final Sections sections = findSectionsOf(line);
+        System.out.println("sections = " + sections);
+
+        if (!sections.containsStation(upStation) || !sections.containsStation(downStation)) {
+            System.out.println(sections.containsStation(upStation));
+            System.out.println(sections.containsStation(downStation));
+            throw new IllegalArgumentException("존재하지 않는 역입니다!");
+        }
         return sections.findDistanceBetween(upStation, downStation);
     }
 }

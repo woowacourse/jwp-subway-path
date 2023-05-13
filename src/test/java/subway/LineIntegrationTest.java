@@ -58,7 +58,7 @@ class LineIntegrationTest {
     }
 
     @Test
-    void createInitialStationInLineTest() {
+    void createInitialSectionTest() {
         final StationResponse stationResponse1 = createNewStation(EXPRESS_BUS_TERMINAL_REQUEST);
         final StationResponse stationResponse2 = createNewStation(SAPYEONG_STATION_REQUEST);
 
@@ -81,8 +81,53 @@ class LineIntegrationTest {
 
         assertThat(response.statusCode()).isEqualTo(CREATED.value());
     }
+    @Test
+    void createStationInLineTest() {
+        final StationResponse stationResponse1 = createNewStation(EXPRESS_BUS_TERMINAL_REQUEST);
+        final StationResponse stationResponse2 = createNewStation(SAPYEONG_STATION_REQUEST);
+        final StationResponse newStationResponse = createNewStation(NEW_STATION_REQUEST);
 
-    private static ExtractableResponse<Response> createSection(final LineResponse lineResponse, final SectionCreateRequest sectionCreateRequest) {
+        final LineResponse lineResponse = createNewLine(LINE_NINE_CREATE_REQUEST).as(LineResponse.class);
+
+        final InitialSectionCreateRequest initialSectionCreateRequest = new InitialSectionCreateRequest(
+                lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId(), 5
+        );
+
+        createNewSection(lineResponse, initialSectionCreateRequest);
+
+        final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(
+                stationResponse1.getId(),
+                newStationResponse.getId(),
+                3);
+
+        final ExtractableResponse<Response> response = RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .body(sectionCreateRequest)
+
+                .when()
+                .post("/lines/" + lineResponse.getId() + "/stations")
+
+                .then()
+                .extract();
+
+        assertThat(response.statusCode()).isEqualTo(CREATED.value());
+    }
+
+    private void createNewSection(final LineResponse lineResponse, final InitialSectionCreateRequest initialSectionCreateRequest) {
+        RestAssured
+                .given()
+                .contentType(APPLICATION_JSON_VALUE)
+                .body(initialSectionCreateRequest)
+
+                .when()
+                .post("/lines/" + lineResponse.getId() + "/stations/initial")
+
+                .then()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> createSection(final LineResponse lineResponse, final SectionCreateRequest sectionCreateRequest) {
         return RestAssured
                 .given()
                 .contentType(APPLICATION_JSON_VALUE)
@@ -95,7 +140,7 @@ class LineIntegrationTest {
                 .extract();
     }
 
-    private static StationResponse createNewStation(final StationCreateRequest stationCreateRequest) {
+    private StationResponse createNewStation(final StationCreateRequest stationCreateRequest) {
         return RestAssured
                 .given()
                 .contentType(APPLICATION_JSON_VALUE)
@@ -109,7 +154,7 @@ class LineIntegrationTest {
                 .as(StationResponse.class);
     }
 
-    private static ExtractableResponse<Response> createNewLine(final LineCreateRequest lineCreateRequest) {
+    private ExtractableResponse<Response> createNewLine(final LineCreateRequest lineCreateRequest) {
         return RestAssured
                 .given()
                 .contentType(APPLICATION_JSON_VALUE)
