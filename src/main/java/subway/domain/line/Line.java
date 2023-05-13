@@ -1,29 +1,26 @@
 package subway.domain.line;
 
-import java.util.Objects;
+import java.util.Collections;
+import subway.domain.section.Sections;
 
 public class Line {
 
-    private Long id;
-    private LineName name;
-    private String color;
+    private final LineName name;
+    private final String color;
+    private Sections sections;
 
-    public Line() {
+    public Line(final String name, final String color) {
+        this(name, color, new Sections(Collections.emptyList()));
     }
 
-    public Line(String name, String color) {
+    public Line(final String name, final String color, final Sections sections) {
         this.name = new LineName(name);
         this.color = color;
+        this.sections = sections;
     }
 
-    public Line(Long id, String name, String color) {
-        this.id = id;
-        this.name = new LineName(name);
-        this.color = color;
-    }
-
-    public Long getId() {
-        return id;
+    public void updateSections(final Sections sections) {
+        this.sections = sections;
     }
 
     public String getName() {
@@ -34,16 +31,7 @@ public class Line {
         return color;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
+    public Sections getSections() {
+        return sections;
     }
 }
