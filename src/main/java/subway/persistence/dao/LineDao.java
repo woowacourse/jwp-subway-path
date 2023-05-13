@@ -1,16 +1,16 @@
 package subway.persistence.dao;
 
-import java.util.List;
-import java.util.Optional;
-import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import subway.persistence.entity.LineEntity;
 
-@Component
+import javax.sql.DataSource;
+import java.util.List;
+
+@Repository
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
@@ -43,15 +43,16 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<LineEntity> findById(final Long id) {
+    public LineEntity findById(final Long id) {
         final String sql = "SELECT id, name, color FROM LINE WHERE id = ?";
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
-                .findAny();
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
     }
 
     public int deleteById(final Long id) {
-        final String sql = "DELETE FROM line WHERE id = ?";
+        final String sql = "DELETE FROM Line WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }
 }

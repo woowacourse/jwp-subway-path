@@ -10,7 +10,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.persistence.dao.LineStationDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 
@@ -24,9 +23,8 @@ class SectionRepositoryTest {
     void setUp(@Autowired JdbcTemplate jdbcTemplate, @Autowired DataSource dataSource) {
         final SectionDao sectionDao = new SectionDao(jdbcTemplate, dataSource);
         final StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
-        final LineStationDao lineStationDao = new LineStationDao(jdbcTemplate, dataSource);
 
-        sectionRepository = new SectionRepository(sectionDao, stationDao, lineStationDao);
+        sectionRepository = new SectionRepository(sectionDao, stationDao);
     }
 
     @Test
@@ -41,7 +39,7 @@ class SectionRepositoryTest {
 
         final Distance distance = Distance.from(3);
 
-        line.initialStations(first, second, distance);
+        line.addInitialStations(first, second, distance);
         line.addEndStation(second, third, distance);
         line.addEndStation(third, fourth, distance);
         line.addEndStation(fourth, fifth, distance);

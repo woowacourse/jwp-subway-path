@@ -1,9 +1,5 @@
 package subway.persistence.repository;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.springframework.stereotype.Repository;
 import subway.domain.AdjustPath;
 import subway.domain.Direction;
@@ -15,6 +11,11 @@ import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.SectionEntity.Builder;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Repository
 public class SectionRepository {
@@ -48,7 +49,7 @@ public class SectionRepository {
             final PathInfo pathInfo = adjustPath.findPathInfoByStation(targetStation);
 
             if (pathInfo.matchesByDirection(Direction.UP)) {
-                continue ;
+                continue;
             }
 
             final SectionEntity sectionEntity = Builder.builder()
@@ -69,14 +70,16 @@ public class SectionRepository {
 
     private SectionEntity findSectionEntityByUpStationId(final List<SectionEntity> sectionEntities, final Long upStationId) {
         return sectionEntities.stream()
-                .filter(sectionEntity -> sectionEntity.matchesUpStationId(upStationId)).findAny().orElseThrow();
+                .filter(sectionEntity -> sectionEntity.matchesUpStationId(upStationId))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 관계입니다."));
     }
 
     public void findAllByLine(final Line line) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(line.getId());
 
         if (sectionEntities.isEmpty()) {
-            return ;
+            return;
         }
         Set<Long> stationIds = new HashSet<>();
 
@@ -88,7 +91,7 @@ public class SectionRepository {
         Long upStationId = stationIds.stream()
                 .filter(id -> isUpEnd(sectionEntities, id))
                 .findAny()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("노선에 등록된 역이 없습니다."));
 
         int count = 0;
 
@@ -96,7 +99,7 @@ public class SectionRepository {
             final SectionEntity targetSectionEntity = findSectionEntityByUpStationId(sectionEntities, upStationId);
             final Station upStation = stationDao.findById(targetSectionEntity.getUpStationId()).to();
             final Station downStation = stationDao.findById(targetSectionEntity.getDownStationId()).to();
-            line.initialStations(upStation, downStation, Distance.from(targetSectionEntity.getDistance()));
+            line.addInitialStations(upStation, downStation, Distance.from(targetSectionEntity.getDistance()));
             upStationId = targetSectionEntity.getDownStationId();
         }
 
