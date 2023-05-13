@@ -76,8 +76,8 @@ public class GlobalExceptionHandler {
         return getResponseOfNotFound(exception);
     }
 
-    @ExceptionHandler(LineNotMatchedException.class)
-    public ResponseEntity<ExceptionResponse> lineNotMatchedExceptionHandler(final LineNotMatchedException exception) {
+    @ExceptionHandler(SectionNotConnectException.class)
+    public ResponseEntity<ExceptionResponse> sectionNotConnectExceptionHandler(final SectionNotConnectException exception) {
         return getResponseOfNotFound(exception);
     }
 

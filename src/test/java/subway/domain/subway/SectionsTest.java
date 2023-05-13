@@ -3,7 +3,7 @@ package subway.domain.subway;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.exception.DistanceForkedException;
-import subway.exception.LineNotMatchedException;
+import subway.exception.SectionNotConnectException;
 import subway.exception.SectionDuplicatedException;
 import subway.exception.SectionNotFoundException;
 
@@ -41,7 +41,7 @@ class SectionsTest {
 
         // when & then
         assertThatThrownBy(() -> sections.addSection(section))
-                .isInstanceOf(LineNotMatchedException.class);
+                .isInstanceOf(SectionNotConnectException.class);
     }
 
     @Test

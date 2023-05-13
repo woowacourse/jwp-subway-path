@@ -1,7 +1,7 @@
 package subway.domain.subway;
 
-import subway.exception.LineNotMatchedException;
 import subway.exception.SectionDuplicatedException;
+import subway.exception.SectionNotConnectException;
 import subway.exception.SectionNotFoundException;
 
 import java.util.Collections;
@@ -20,43 +20,43 @@ public class Sections {
     }
 
     public void addSection(final Section section) {
-        boolean isExistUpStation = isExistStation(section.getUpStation());
-        boolean isExistDownStation = isExistStation(section.getDownStation());
+        boolean hasUpStation = hasStation(section.getUpStation());
+        boolean hasDownStation = hasStation(section.getDownStation());
 
-        validateSection(isExistUpStation, isExistDownStation);
+        validateSection(hasUpStation, hasDownStation);
 
-        insertSectionByExistingStationCase(isExistUpStation, isExistDownStation, section);
+        insertSectionByExistingStationCase(hasUpStation, hasDownStation, section);
     }
 
-    private boolean isExistStation(final Station station) {
+    private boolean hasStation(final Station station) {
         return sections.stream()
                 .anyMatch(section -> section.hasStation(station));
     }
 
-    private void validateSection(final boolean isExistUpStation, final boolean isExistDownStation) {
-        validateLine(isExistUpStation, isExistDownStation);
-        validateDuplicatedSection(isExistUpStation, isExistDownStation);
+    private void validateSection(final boolean hasUpStation, final boolean hasDownStation) {
+        validateConnectSection(hasUpStation, hasDownStation);
+        validateDuplicatedSection(hasUpStation, hasDownStation);
     }
 
-    private void validateLine(final boolean isExistUpStation, final boolean isExistDownStation) {
-        if (!isExistUpStation && !isExistDownStation && !sections.isEmpty()) {
-            throw new LineNotMatchedException();
+    private void validateConnectSection(final boolean hasUpStation, final boolean hasDownStation) {
+        if (!hasUpStation && !hasDownStation && !sections.isEmpty()) {
+            throw new SectionNotConnectException();
         }
     }
 
-    private void validateDuplicatedSection(final boolean isExistUpStation, final boolean isExistDownStation) {
-        if (isExistUpStation && isExistDownStation) {
+    private void validateDuplicatedSection(final boolean hasUpStation, final boolean hasDownStation) {
+        if (hasUpStation && hasDownStation) {
             throw new SectionDuplicatedException();
         }
     }
 
-    private void insertSectionByExistingStationCase(final boolean isExistUpStation, final boolean isExistDownStation, final Section section) {
-        if (!isExistUpStation && !isExistDownStation) {
+    private void insertSectionByExistingStationCase(final boolean hasUpStation, final boolean hasDownStation, final Section section) {
+        if (!hasUpStation && !hasDownStation) {
             sections.add(section);
             return;
         }
 
-        if (isExistUpStation) {
+        if (hasUpStation) {
             insertSectionWhenBeingOnlyUpStation(section);
             return;
         }
