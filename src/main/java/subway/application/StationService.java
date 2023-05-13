@@ -1,11 +1,13 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.CreationStationDto;
 import subway.domain.Station;
 import subway.persistence.repository.StationRepository;
 import subway.ui.dto.response.ReadStationResponse;
 
+@Transactional
 @Service
 public class StationService {
 
@@ -23,7 +25,7 @@ public class StationService {
     }
 
     public ReadStationResponse findStationById(final Long id) {
-        final Station station = stationRepository.findById(id).orElseThrow();
+        final Station station = stationRepository.findById(id);
 
         return ReadStationResponse.of(station);
     }
