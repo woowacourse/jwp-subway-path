@@ -1,4 +1,4 @@
-package subway.dao.section;
+package subway.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;

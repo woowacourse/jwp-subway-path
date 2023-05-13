@@ -1,4 +1,4 @@
-package subway.dao.station;
+package subway.dao;
 
 import java.util.List;
 import javax.sql.DataSource;

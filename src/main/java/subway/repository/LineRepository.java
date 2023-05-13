@@ -3,7 +3,7 @@ package subway.repository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
-import subway.dao.line.LineDao;
+import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.entity.LineEntity;
 

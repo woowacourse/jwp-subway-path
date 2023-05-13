@@ -1,4 +1,4 @@
-package subway.dao.line;
+package subway.dao;
 
 import java.util.HashMap;
 import java.util.List;
