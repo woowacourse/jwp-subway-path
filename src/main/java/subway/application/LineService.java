@@ -39,7 +39,7 @@ public class LineService {
         lineRepository.save(line);
     }
 
-    public void delete(DeleteStationRequest request) {
+    public void deleteStation(DeleteStationRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
         subway.removeStation(request.getLineName(), request.getStationName());
         Line line = subway.findLineByName(request.getLineName());
