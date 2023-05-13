@@ -1,8 +1,10 @@
 package subway.mapper;
 
 import subway.domain.Line;
+import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.dto.response.StationResponse;
+import subway.entity.LineEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,5 +19,13 @@ public class LineMapper {
                 .map(StationMapper::toResponse)
                 .collect(Collectors.toList());
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+    }
+
+    public static Line toLine(LineRequest request) {
+        return new Line(request.getName(), request.getColor());
+    }
+
+    public static LineEntity toEntity(Line line) {
+        return new LineEntity(line.getId(), line.getName(), line.getColor());
     }
 }

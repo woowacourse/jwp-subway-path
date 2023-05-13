@@ -10,6 +10,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.mapper.LineMapper;
 import subway.mapper.SectionMapper;
 
 import java.util.List;
@@ -70,5 +71,23 @@ public class JdbcLineRepository implements LineRepository {
         return lines.stream()
                 .map(entity -> findById(entity.getId()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Line insert(Line line) {
+        LineEntity lineEntity = LineMapper.toEntity(line);
+        LineEntity saved = lineDao.insert(lineEntity);
+        return findById(saved.getId());
+    }
+
+    @Override
+    public void update(Long id, Line line) {
+        LineEntity lineEntity = new LineEntity(id, line.getName(), line.getColor());
+        lineDao.update(lineEntity);
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        lineDao.deleteById(id);
     }
 }

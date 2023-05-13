@@ -1,10 +1,11 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
+import subway.domain.Station;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
-import subway.entity.StationEntity;
+import subway.mapper.StationMapper;
+import subway.repository.StationRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,34 +13,37 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
 
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        StationEntity stationEntity = stationDao.insert(new StationEntity(stationRequest.getName()));
-        return StationResponse.of(stationEntity);
+        Station station = StationMapper.toStation(stationRequest);
+        Station saved = stationRepository.insert(station);
+        return StationMapper.toResponse(saved);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public StationResponse findById(Long id) {
+        Station station = stationRepository.findById(id);
+        return StationMapper.toResponse(station);
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<StationEntity> stationEntities = stationDao.findAll();
+        List<Station> stations = stationRepository.findAll();
 
-        return stationEntities.stream()
-                .map(StationResponse::of)
+        return stations.stream()
+                .map(StationMapper::toResponse)
                 .collect(Collectors.toList());
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new StationEntity(id, stationRequest.getName()));
+        Station station = StationMapper.toStation(stationRequest);
+        stationRepository.update(id, station);
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteById(id);
     }
 }

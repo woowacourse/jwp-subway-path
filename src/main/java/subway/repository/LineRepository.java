@@ -11,4 +11,10 @@ public interface LineRepository {
     void updateSections(Line line);
 
     List<Line> findAll();
+
+    Line insert(Line line);
+
+    void update(Long id, Line line);
+
+    void deleteById(Long id);
 }
