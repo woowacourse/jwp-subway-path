@@ -29,23 +29,14 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> lines = findLines();
-        return lines.stream()
+        return lineRepository.findAll().stream()
                 .map(LineMapper::toResponse)
                 .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineRepository.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
         Line line = lineRepository.findById(id);
         return LineMapper.toResponse(line);
-    }
-
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
