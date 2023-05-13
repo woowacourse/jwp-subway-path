@@ -39,9 +39,10 @@ public class LineService {
         return new LineResponse(savedId, request.getLineName(), null);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
-        return persistLines.stream()
+    public List<LineResponse> findAllLines() {
+        List<LineEntity> existsLines = lineDao.findAll();
+
+        return existsLines.stream()
                 .map(entities -> {
                     Long lineId = entities.getId();
                     return getLineResponse(entities, lineId);
@@ -51,16 +52,20 @@ public class LineService {
 
     private LineResponse getLineResponse(LineEntity entities, Long lineId) {
         List<SectionEntity> findSections = sectionDao.findByLineId(lineId);
-        List<Section> collect = findSections.stream()
+
+        List<Section> existSections = findSections.stream()
                 .map(this::toSection)
                 .collect(Collectors.toList());
 
-        if (collect.isEmpty()) {
-            return new LineResponse(entities.getId(), entities.getName(), new ArrayList<StationResponse>());
+        if (existSections.isEmpty()) {
+            return new LineResponse(entities.getId(), entities.getName(), new ArrayList<>());
         }
 
-        Sections sections = new Sections(collect);
+        return getSortedLineResponse(entities, existSections);
+    }
 
+    private LineResponse getSortedLineResponse(LineEntity entities, List<Section> existSections) {
+        Sections sections = new Sections(existSections);
         List<Station> sortedStations = sections.getSortedStations();
 
         List<StationResponse> stationsResponses = sortedStations.stream()
@@ -73,29 +78,21 @@ public class LineService {
         return new LineResponse(entities.getId(), entities.getName(), stationsResponses);
     }
 
-    private Section toSection(SectionEntity sectionEntity) {
-        Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
-        Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
-        Distance distance = new Distance(sectionEntity.getDistance());
-
-        return new Section(startStation, endStation, distance);
+    public LineResponse findLineResponseById(Long id) {
+        LineEntity findEntity = lineDao.findById(id);
+        return getLineResponse(findEntity, id);
     }
 
     private Station toStation(StationEntity stationEntity) {
         return new Station(stationEntity.getName());
     }
 
-    private List<LineEntity> findLines() {
-        return lineDao.findAll();
-    }
+    private Section toSection(SectionEntity sectionEntity) {
+        Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
+        Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
+        Distance distance = new Distance(sectionEntity.getDistance());
 
-    public LineResponse findLineResponseById(Long id) {
-        LineEntity findEntity = findLineById(id);
-        return getLineResponse(findEntity, id);
-    }
-
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
+        return new Section(startStation, endStation, distance);
     }
 
 }
