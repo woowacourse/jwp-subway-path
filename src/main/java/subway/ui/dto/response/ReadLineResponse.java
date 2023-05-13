@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.domain.line.Line;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 @JsonInclude(Include.NON_EMPTY)
 public class ReadLineResponse {

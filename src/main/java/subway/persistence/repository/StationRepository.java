@@ -3,7 +3,7 @@ package subway.persistence.repository;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.SectionEntity;

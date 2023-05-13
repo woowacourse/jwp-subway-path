@@ -3,7 +3,7 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.CreationStationDto;
-import subway.domain.Station;
+import subway.domain.station.Station;
 import subway.persistence.repository.StationRepository;
 import subway.ui.dto.response.ReadStationResponse;
 

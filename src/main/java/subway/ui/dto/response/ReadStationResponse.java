@@ -1,11 +1,11 @@
 package subway.ui.dto.response;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class ReadStationResponse {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public ReadStationResponse(Long id, String name) {
         this.id = id;

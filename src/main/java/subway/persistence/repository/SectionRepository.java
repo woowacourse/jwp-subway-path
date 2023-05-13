@@ -7,11 +7,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
-import subway.domain.AdjustPath;
 import subway.domain.Direction;
 import subway.domain.Distance;
-import subway.domain.Station;
 import subway.domain.line.Line;
+import subway.domain.station.Station;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.SectionEntity;
@@ -41,16 +40,15 @@ public class SectionRepository {
     }
 
     private List<SectionEntity> mapToEntities(final Station sourceStation, final Long lineId) {
-        final AdjustPath adjustPath = sourceStation.getAdjustPath();
-        final List<Station> sectionStations = adjustPath.findAllStation();
+        final List<Station> adjustPathStations = sourceStation.findAllAdjustPathStation();
 
-        return sectionStations.stream()
-                .filter(station -> adjustPath.findPathInfoByStation(station).matchesByDirection(Direction.DOWN))
+        return adjustPathStations.stream()
+                .filter(station -> sourceStation.findDirectionByAdjustPathStation(station).matches(Direction.DOWN))
                 .map(station -> SectionEntity.Builder.builder()
                         .lineId(lineId)
                         .upStationId(sourceStation.getId())
                         .downStationId(station.getId())
-                        .distance(adjustPath.findPathInfoByStation(station).distance())
+                        .distance(sourceStation.findDistanceByStation(station).getDistance())
                         .build())
                 .collect(Collectors.toList());
     }

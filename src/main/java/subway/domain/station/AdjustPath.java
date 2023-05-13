@@ -1,9 +1,11 @@
-package subway.domain;
+package subway.domain.station;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import subway.domain.Direction;
+import subway.domain.Distance;
 
 public class AdjustPath {
 
@@ -28,6 +30,13 @@ public class AdjustPath {
         validateConnectStation(station);
 
         path.remove(station);
+    }
+
+    public Direction findDirectionByStation(final Station station) {
+        validateConnectStation(station);
+
+        return path.get(station)
+                .getDirection();
     }
 
     public PathInfo findPathInfoByStation(final Station station) {

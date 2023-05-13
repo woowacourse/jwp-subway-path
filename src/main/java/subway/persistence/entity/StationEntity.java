@@ -1,6 +1,6 @@
 package subway.persistence.entity;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationEntity {
 

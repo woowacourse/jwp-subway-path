@@ -1,4 +1,7 @@
-package subway.domain;
+package subway.domain.station;
+
+import subway.domain.Direction;
+import subway.domain.Distance;
 
 public class PathInfo {
 
@@ -28,6 +31,10 @@ public class PathInfo {
 
     public int distance() {
         return distance.getDistance();
+    }
+
+    public Direction direction() {
+        return direction;
     }
 
     public Distance getDistance() {

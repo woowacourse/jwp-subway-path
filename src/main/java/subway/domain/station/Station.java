@@ -1,24 +1,19 @@
-package subway.domain;
+package subway.domain.station;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.regex.Pattern;
+import subway.domain.Direction;
+import subway.domain.Distance;
 
 public class Station {
 
-    private static final Pattern PATTERN = Pattern.compile("^[가-힣0-9]*$");
-    private static final int MINIMUM_LENGTH = 2;
-    private static final int MAXIMUM_LENGTH = 9;
-
     private final Long id;
-    private final String name;
+    private final StationName name;
     private final AdjustPath adjustPath;
 
     private Station(final Long id, final String name, final AdjustPath adjustPath) {
-        validateName(name);
-
         this.id = id;
-        this.name = name;
+        this.name = StationName.from(name);
         this.adjustPath = adjustPath;
     }
 
@@ -35,24 +30,7 @@ public class Station {
     }
 
     public static Station of(final Station station) {
-        return new Station(station.id, station.name, AdjustPath.create());
-    }
-
-    private void validateName(final String name) {
-        validateFormat(name);
-        validateLength(name);
-    }
-
-    private void validateLength(final String name) {
-        if (!(MINIMUM_LENGTH <= name.length() && name.length() <= MAXIMUM_LENGTH)) {
-            throw new IllegalArgumentException("역 이름은 2글자 ~ 9글자만 가능합니다.");
-        }
-    }
-
-    private void validateFormat(final String name) {
-        if (!PATTERN.matcher(name).matches()) {
-            throw new IllegalArgumentException("역 이름은 한글과 숫자만 가능합니다.");
-        }
+        return new Station(station.id, station.name.getName(), AdjustPath.create());
     }
 
     public void addPath(final Station station, final Distance distance, final Direction direction) {
@@ -78,8 +56,24 @@ public class Station {
         return adjustPath.findAllStation();
     }
 
-    public AdjustPath getAdjustPath() {
-        return adjustPath;
+    public List<Station> findAllAdjustPathStation() {
+        return adjustPath.findAllStation();
+    }
+
+    public Direction findEndStationPathDirection() {
+        return adjustPath.findEndStationPathDirection();
+    }
+
+    public boolean isTerminalStation() {
+        return adjustPath.isTerminalStation();
+    }
+
+    public Direction findDirectionByAdjustPathStation(final Station otherStation) {
+        return adjustPath.findDirectionByStation(otherStation);
+    }
+
+    public Station findStationByDirection(final Direction direction) {
+        return adjustPath.findStationByDirection(direction);
     }
 
     public Long getId() {
@@ -87,19 +81,7 @@ public class Station {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public boolean isConnect(final Station newDownStation) {
-        return adjustPath.isConnect(newDownStation);
-    }
-
-    public Direction findEndStationPathDirection() {
-        return adjustPath.findEndStationPathDirection();
-    }
-
-    public boolean isEnd() {
-        return adjustPath.isTerminalStation();
+        return name.getName();
     }
 
     @Override

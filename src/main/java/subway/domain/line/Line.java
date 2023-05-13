@@ -8,10 +8,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
 import java.util.Set;
-import subway.domain.AdjustPath;
 import subway.domain.Direction;
 import subway.domain.Distance;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class Line {
 
@@ -101,7 +100,7 @@ public class Line {
     public void removeEndStation(final Station targetStation) {
         final Station findTargetStation = findStation(targetStation);
 
-        if (!findTargetStation.isEnd()) {
+        if (!findTargetStation.isTerminalStation()) {
             throw new IllegalArgumentException("삭제하려는 역이 종점역이 아닙니다");
         }
 
@@ -115,14 +114,17 @@ public class Line {
 
     public void removeMiddleStation(final Station targetStation) {
         final Station findTargetStation = findStation(targetStation);
-        final AdjustPath adjustPath = findTargetStation.getAdjustPath();
-        final Station upStation = adjustPath.findStationByDirection(Direction.UP);
-        final Station downStation = adjustPath.findStationByDirection(Direction.DOWN);
+        final Station upStation = findTargetStation.findStationByDirection(Direction.UP);
+        final Station downStation = findTargetStation.findStationByDirection(Direction.DOWN);
 
-        extracted(findTargetStation, upStation, downStation);
+        processRemoveMiddleStation(findTargetStation, upStation, downStation);
     }
 
-    private void extracted(final Station findTargetStation, final Station upStation, final Station downStation) {
+    private void processRemoveMiddleStation(
+            final Station findTargetStation,
+            final Station upStation,
+            final Station downStation
+    ) {
         final Distance upStationDistance = upStation.findDistanceByStation(findTargetStation);
         final Distance downStationDistance = downStation.findDistanceByStation(findTargetStation);
         final Distance distance = upStationDistance.add(downStationDistance);
@@ -168,7 +170,7 @@ public class Line {
 
     private Station findStartStation() {
         return stations.stream()
-                .filter(Station::isEnd)
+                .filter(Station::isTerminalStation)
                 .filter(station -> station.findEndStationPathDirection().matches(Direction.DOWN))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("아직 노선에 역이 등록되지 않았습니다."));
