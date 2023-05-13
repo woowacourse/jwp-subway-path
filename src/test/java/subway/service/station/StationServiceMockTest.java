@@ -10,12 +10,14 @@ import subway.domain.subway.Station;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
+import subway.exception.NameIsBlankException;
 import subway.repository.StationRepository;
 import subway.service.StationService;
 
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -40,6 +42,17 @@ public class StationServiceMockTest {
 
         // then
         verify(stationRepository).insertStation(new Station(stationCreateRequest.getName()));
+    }
+
+    @Test
+    @DisplayName("역의 이름이 공백이면 예외를 발생시킨다.")
+    void throws_exception_when_station_name_is_blank() {
+        // given
+        StationCreateRequest stationCreateRequest = new StationCreateRequest("");
+
+        // when & then
+        assertThatThrownBy(() -> stationService.saveStation(stationCreateRequest))
+                .isInstanceOf(NameIsBlankException.class);
     }
 
     @Test
