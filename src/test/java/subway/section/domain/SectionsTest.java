@@ -149,4 +149,74 @@ class SectionsTest {
         // then
         assertThat(sections.getSections()).isEmpty();
     }
+    
+    @Test
+    void 가장_오른쪽_역을_삭제한다() {
+        // given
+        final String first = "잠실역";
+        final String second = "가양역";
+        final String third = "종합운동장";
+        final String fourth = "선릉역";
+        final long distance = 5L;
+        
+        final Section firstSection = new Section(first, second, distance);
+        final Section secondSection = new Section(second, third, distance);
+        final Section thirdSection = new Section(third, fourth, distance);
+        
+        final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
+        final Sections sections = new Sections(new HashSet<>(initSections));
+        
+        // when
+        sections.removeStation(fourth);
+        
+        // then
+        assertThat(sections.getSections()).contains(firstSection, secondSection);
+    }
+    
+    @Test
+    void 가장_왼쪽_역을_삭제한다() {
+        // given
+        final String first = "잠실역";
+        final String second = "가양역";
+        final String third = "종합운동장";
+        final String fourth = "선릉역";
+        final long distance = 5L;
+        
+        final Section firstSection = new Section(first, second, distance);
+        final Section secondSection = new Section(second, third, distance);
+        final Section thirdSection = new Section(third, fourth, distance);
+        
+        final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
+        final Sections sections = new Sections(new HashSet<>(initSections));
+        
+        // when
+        sections.removeStation(first);
+        
+        // then
+        assertThat(sections.getSections()).contains(secondSection, thirdSection);
+    }
+    
+    @Test
+    void 중간_역을_삭제한다() {
+        // given
+        final String first = "잠실역";
+        final String second = "가양역";
+        final String third = "종합운동장";
+        final String fourth = "선릉역";
+        final long distance = 5L;
+        
+        final Section firstSection = new Section(first, second, distance);
+        final Section secondSection = new Section(second, third, distance);
+        final Section thirdSection = new Section(third, fourth, distance);
+        
+        final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
+        final Sections sections = new Sections(new HashSet<>(initSections));
+        
+        // when
+        sections.removeStation(second);
+        
+        // then
+        final Section combinedSection = new Section(first, third, distance + distance);
+        assertThat(sections.getSections()).contains(thirdSection, combinedSection);
+    }
 }

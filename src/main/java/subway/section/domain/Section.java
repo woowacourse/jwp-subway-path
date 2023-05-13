@@ -68,4 +68,13 @@ public class Section {
         final Section additionalRightSection = new Section(betweenAdditional, right.getName(), this.distance.subtract(additionalDistance));
         return Set.of(additionalLeftSection, additionalRightSection);
     }
+    
+    public Section combine(final Section otherSection) {
+        final Distance combineDistance = new Distance(this.distance.add(otherSection.distance));
+        if (this.right.equals(otherSection.left)) {
+            return new Section(this.left, otherSection.right, combineDistance);
+        }
+        
+        return new Section(otherSection.left, this.right, combineDistance);
+    }
 }

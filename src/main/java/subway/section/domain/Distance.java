@@ -39,4 +39,8 @@ public class Distance {
     public Long subtract(final long otherDistance) {
         return this.distance - otherDistance;
     }
+    
+    public Long add(final Distance otherDistance) {
+        return this.distance + otherDistance.distance;
+    }
 }

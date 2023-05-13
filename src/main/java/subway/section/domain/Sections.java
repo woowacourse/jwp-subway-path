@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 @EqualsAndHashCode
 public class Sections {
     private static final int ADDITIONAL_SECTIONS_NUMBER_OF_BETWEEN_CASE = 3;
+    private static final int NUMBER_OF_CONTAIN_MIDDLE_STATION = 2;
     
     private final Set<Section> sections;
     
@@ -70,8 +71,24 @@ public class Sections {
     
     public void removeStation(final String station) {
         final HashSet<Section> copySections = new HashSet<>(sections);
-        copySections.stream()
+        final List<Section> sectionsContainedStation = getSectionsOfContainStation(station, copySections);
+        sections.removeAll(new HashSet<>(sectionsContainedStation));
+        
+        if (isMiddleStationCase(sectionsContainedStation)) {
+            final Section firstSection = sectionsContainedStation.get(0);
+            final Section secondSection = sectionsContainedStation.get(1);
+            final Section combinedSection = firstSection.combine(secondSection);
+            sections.add(combinedSection);
+        }
+    }
+    
+    private List<Section> getSectionsOfContainStation(final String station, final Set<Section> copySections) {
+        return copySections.stream()
                 .filter(section -> section.hasStation(station))
-                .forEach(sections::remove);
+                .collect(Collectors.toUnmodifiableList());
+    }
+    
+    private boolean isMiddleStationCase(final List<Section> sectionsOfContainStation) {
+        return sectionsOfContainStation.size() >= NUMBER_OF_CONTAIN_MIDDLE_STATION;
     }
 }
