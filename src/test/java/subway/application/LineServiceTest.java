@@ -1,6 +1,8 @@
 package subway.application;
 
+import static java.lang.Long.MAX_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
@@ -15,6 +17,7 @@ import subway.domain.Section;
 import subway.dto.LineResponse;
 import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
+import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -58,6 +61,14 @@ class LineServiceTest {
     }
 
     @Test
+    void 라인id를_받아서_라인을_삭제할_때_라인이_존재하지_않는_경우_예외를_던진다() {
+        // expect
+        assertThatThrownBy(() -> lineService.delete(MAX_VALUE))
+                .isInstanceOf(LineNotFoundException.class)
+                .hasMessage("노선을 찾을 수 없습니다.");
+    }
+
+    @Test
     void 라인을_수정한다() {
         // given
         final Long id = lineService.save(new LineSaveRequest("1호선", "RED"));
@@ -75,6 +86,17 @@ class LineServiceTest {
     }
 
     @Test
+    void 라인id를_받아서_라인을_수정할_때_라인이_존재하지_않는_경우_예외를_던진다() {
+        // given
+        final LineUpdateRequest request = new LineUpdateRequest("2호선", "BLACK");
+
+        // expect
+        assertThatThrownBy(() -> lineService.update(MAX_VALUE, request))
+                .isInstanceOf(LineNotFoundException.class)
+                .hasMessage("노선을 찾을 수 없습니다.");
+    }
+
+    @Test
     void 라인id로_라인을_조회한다() {
         // given
         final Long id = lineService.save(new LineSaveRequest("1호선", "RED"));
@@ -88,6 +110,14 @@ class LineServiceTest {
                 () -> assertThat(result.getColor()).isEqualTo("RED"),
                 () -> assertThat(result.getStations()).isEmpty()
         );
+    }
+
+    @Test
+    void 라인id로_라인을_조회할_때_라인이_존재하지_않는_경우_예외를_던진다() {
+        // expect
+        assertThatThrownBy(() -> lineService.findById(MAX_VALUE))
+                .isInstanceOf(LineNotFoundException.class)
+                .hasMessage("노선을 찾을 수 없습니다.");
     }
 
     @Test
