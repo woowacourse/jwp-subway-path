@@ -66,3 +66,27 @@
 ## DB
 
 ![지하철 ERD](https://github.com/woowacourse-precourse/java-menu/assets/96688810/d33cfc2a-1fe9-4eb5-852d-1e586bffef8e)
+
+### 테스트 시 DB Situation
+```java
+* Default Situation
+- 테스트 실행 시test-data.sql에서 '2호선 / A역 & C역 / A-C 구간'이 등록된다.
+- 이후 Case들은 TestFixtures를 이용하여 테스트한다.
+        
+Case 1 (가운데 역 등록) : A-B 등록 요청으로 B역이 등록된다.
+    - B역 삽입 
+    - A - C 구간 삭제
+    - A - B 구간 삽입 
+    - B - C 구간 삽입
+    - 최종 구간 : A - B - C
+        
+Case 2 (상행 좀점 역 등록) : D-A 등록 요청으로 D역이 등록된다.
+    - D역 삽입
+    - D - A 구간 삽입 
+    - 최종 구간 : D - A - C
+
+Case 3 (하행 종점 역 등록) : C-E 등록 요청으로 E역이 등록된다.
+    - E역 삽입 
+    - C - E 구간 삽입 
+    - 최종 구간 : A - C - E
+```
