@@ -6,10 +6,21 @@ import java.util.Objects;
 
 public class Station {
 
+    private final long id;
     private final Name name;
 
     public Station(final String name) {
+        this.id = 0;
         this.name = new Name(name);
+    }
+
+    public Station(final long id, final String name) {
+        this.id = id;
+        this.name = new Name(name);
+    }
+
+    public long getId() {
+        return id;
     }
 
     public String getName() {

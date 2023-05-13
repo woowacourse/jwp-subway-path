@@ -39,8 +39,8 @@ public class SectionRepository {
                 .map(sectionEntity -> {
                     StationEntity upStationEntity = stationDao.findById(sectionEntity.getUpStationId());
                     StationEntity downStationEntity = stationDao.findById(sectionEntity.getDownStationId());
-                    Station upStation = new Station(upStationEntity.getName());
-                    Station downStation = new Station(downStationEntity.getName());
+                    Station upStation = new Station(upStationEntity.getStationId(), upStationEntity.getName());
+                    Station downStation = new Station(downStationEntity.getStationId(), downStationEntity.getName());
 
                     return new Section(upStation, downStation, sectionEntity.getDistance());
                 })

@@ -27,9 +27,6 @@ class SubwayMapServiceMockTest {
     private SubwayMapService subwayMapService;
 
     @Mock
-    private StationRepository stationRepository;
-
-    @Mock
     private SectionRepository sectionRepository;
 
     @Test
@@ -46,7 +43,6 @@ class SubwayMapServiceMockTest {
                 )
         );
         given(sectionRepository.findSectionsByLineNumber(lineNumber)).willReturn(sections);
-        given(stationRepository.findStationIdByStationName(any())).willReturn(anyLong());
 
         // when
         subwayMapService.showLineMap(2);

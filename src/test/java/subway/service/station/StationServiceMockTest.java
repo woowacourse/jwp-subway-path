@@ -63,7 +63,6 @@ public class StationServiceMockTest {
         // given
         List<Station> stations = List.of(new Station("잠실역"));
         when(stationRepository.findAll()).thenReturn(stations);
-        when(stationRepository.findStationIdByStationName("잠실역")).thenReturn(1L);
 
         // when
         StationsResponse result = stationService.findAllStationResponses();

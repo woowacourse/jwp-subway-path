@@ -8,7 +8,6 @@ import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
 import subway.repository.StationRepository;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,26 +20,21 @@ public class StationService {
     }
 
     @Transactional
-    public Long saveStation(final StationCreateRequest stationCreateRequest) {
+    public long saveStation(final StationCreateRequest stationCreateRequest) {
         return stationRepository.insertStation(new Station(stationCreateRequest.getName()));
     }
 
     @Transactional(readOnly = true)
     public StationResponse findStationEntityById(final Long id) {
         Station station = stationRepository.findByStationId(id);
-        return StationResponse.from(id, station);
+        return StationResponse.from(station);
     }
 
     @Transactional(readOnly = true)
     public StationsResponse findAllStationResponses() {
-        List<StationResponse> stations = stationRepository.findAll().stream()
-                .map(station -> {
-                    Long id = stationRepository.findStationIdByStationName(station.getName());
-                    return StationResponse.from(id, station);
-                })
-                .collect(Collectors.toList());
-
-        return StationsResponse.from(stations);
+        return stationRepository.findAll().stream()
+                .map(StationResponse::from)
+                .collect(Collectors.collectingAndThen(Collectors.toList(), StationsResponse::from));
     }
 
     @Transactional

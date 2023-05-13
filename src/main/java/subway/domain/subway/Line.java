@@ -29,4 +29,9 @@ public class Line {
     public String getName() {
         return name.getName();
     }
+
+    public Color getColor() {
+        // 추후에 사용할 것 같아서 일단 지우지 않겠습니다!
+        return color;
+    }
 }

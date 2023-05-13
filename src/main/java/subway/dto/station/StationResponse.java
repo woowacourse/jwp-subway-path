@@ -4,19 +4,19 @@ import subway.domain.subway.Station;
 
 public class StationResponse {
 
-    private final Long id;
+    private final long id;
     private final String name;
 
-    private StationResponse(final Long id, final String name) {
+    private StationResponse(final long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationResponse from(final Long id, final Station station) {
-        return new StationResponse(id, station.getName());
+    public static StationResponse from(final Station station) {
+        return new StationResponse(station.getId(), station.getName());
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

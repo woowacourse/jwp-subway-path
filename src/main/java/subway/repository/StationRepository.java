@@ -17,34 +17,29 @@ public class StationRepository {
         this.stationDao = stationDao;
     }
 
-    public Long insertStation(final Station station) {
+    public long insertStation(final Station station) {
         return stationDao.insert(station);
     }
 
-    public Station findByStationId(final Long stationId) {
+    public Station findByStationId(final long stationId) {
         StationEntity stationEntity = stationDao.findById(stationId);
-        return new Station(stationEntity.getName());
+        return new Station(stationEntity.getStationId(), stationEntity.getName());
     }
 
-    public Long findStationIdByStationName(final String stationName) {
+    public long findStationIdByStationName(final String stationName) {
         StationEntity stationEntity = stationDao.findByName(stationName);
         return stationEntity.getStationId();
-    }
-
-    public Station findByStationName(final String stationName) {
-        StationEntity stationEntity = stationDao.findByName(stationName);
-        return new Station(stationEntity.getName());
     }
 
     public List<Station> findAll() {
         List<StationEntity> stationEntities = stationDao.findAll();
 
         return stationEntities.stream()
-                .map(station -> new Station(station.getName()))
+                .map(station -> new Station(station.getStationId(), station.getName()))
                 .collect(Collectors.toList());
     }
 
-    public void deleteById(final Long stationId) {
+    public void deleteById(final long stationId) {
         stationDao.deleteById(stationId);
     }
 }

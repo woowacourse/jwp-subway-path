@@ -37,7 +37,7 @@ public class SectionService {
 
     @Transactional
     public void deleteSection(final SectionDeleteRequest request) {
-        Long lineNumber = request.getLineNumber();
+        long lineNumber = request.getLineNumber();
         Station station = new Station(request.getStation());
         Sections sections = sectionRepository.findSectionsByLineNumber(lineNumber);
         sections.deleteSectionByStation(station);
