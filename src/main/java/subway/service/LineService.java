@@ -29,7 +29,7 @@ public class LineService {
         return lineRepository.findAll().stream()
                 .map(line -> {
                     final Long id = lineRepository.findLineIdByLine(line);
-                    return new LineResponse(id, line.getName(), line.getColor());
+                    return new LineResponse(id, line.getLineNumber(), line.getName(), line.getColor());
                 })
                 .collect(Collectors.toList());
     }
