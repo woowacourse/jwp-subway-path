@@ -6,6 +6,7 @@ import subway.application.LineService;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,9 +20,10 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createLine(@RequestBody LineRequest lineRequest) {
-        lineService.createLine(lineRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+        final LineResponse lineResponse = lineService.createLine(lineRequest);
+
+        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).body(lineResponse);
     }
 
     @GetMapping

@@ -12,6 +12,14 @@ public class LineResponse {
     public LineResponse() {
     }
 
+    public LineResponse(final Line line) {
+        this(line.getId(), line.getName());
+    }
+
+    public LineResponse(final Long line) {
+        this(line, null);
+    }
+
     public LineResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;

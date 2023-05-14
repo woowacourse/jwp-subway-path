@@ -16,10 +16,11 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    public void createLine(final LineRequest lineRequest) {
+    public LineResponse createLine(final LineRequest lineRequest) {
         final Line line = new Line(lineRequest.getName());
+        final Line createLine = lineRepository.createLine(line);
 
-        lineRepository.createLine(line);
+        return new LineResponse(createLine);
     }
 
     public void deleteLine(final Long lineIdRequest) {
