@@ -46,4 +46,21 @@ public class IntegrationTestFixture {
                 .collect(Collectors.toList());
         return new LineResponse(lineName, stations);
     }
+
+    public static ExtractableResponse<Response> 전체_노선_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines")
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 노선_전체_조회_결과를_확인한다(ExtractableResponse<Response> response, LineResponse... lineResponses) {
+        List<LineResponse> 전체_노선_정보 = Arrays.stream(lineResponses)
+                .collect(Collectors.toList());
+        assertThat(response.jsonPath().getList(".", LineResponse.class))
+                .usingRecursiveComparison()
+                .isEqualTo(전체_노선_정보);
+    }
 }

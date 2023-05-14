@@ -2,9 +2,11 @@ package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.integration.IntegrationTestFixture.노선_생성_요청;
+import static subway.integration.IntegrationTestFixture.노선_전체_조회_결과를_확인한다;
 import static subway.integration.IntegrationTestFixture.노선_정보;
 import static subway.integration.IntegrationTestFixture.노선_조회_결과;
 import static subway.integration.IntegrationTestFixture.단일_노선_조회_요청;
+import static subway.integration.IntegrationTestFixture.전체_노선_조회_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -53,4 +55,17 @@ public class LineIntegrationTest extends IntegrationTest {
         }
     }
 
+    @Nested
+    public class 전체_노선을_조회할_떄 {
+
+        @Test
+        void 노선별로_상행부터_하행까지의_역을_정렬하여_반환한다() {
+            노선_생성_요청("1호선", "서울역", "시청역", 10);
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
+
+            ExtractableResponse<Response> response = 전체_노선_조회_요청();
+
+            노선_전체_조회_결과를_확인한다(response, 노선_정보("1호선", "서울역", "시청역"), 노선_정보("2호선", "강남역", "역삼역"));
+        }
+    }
 }

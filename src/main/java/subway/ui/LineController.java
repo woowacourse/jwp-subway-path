@@ -1,6 +1,7 @@
 package subway.ui;
 
 import java.net.URI;
+import java.util.List;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,5 +36,10 @@ public class LineController {
         LineResponse response = lineService.findLineById(lineId);
         return ResponseEntity.ok(response);
     }
-
+    
+    @GetMapping
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        List<LineResponse> lines = lineService.findAllLines();
+        return ResponseEntity.ok(lines);
+    }
 }
