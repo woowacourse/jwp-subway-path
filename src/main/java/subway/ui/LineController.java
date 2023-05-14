@@ -36,17 +36,16 @@ public class LineController {
     @PostMapping
     public ResponseEntity<Void> createLine(@RequestBody LineCreateRequest createRequest) {
         final Line newLine = lineService.createNewLine(createRequest);
+
         return ResponseEntity.created(URI.create("/lines/" + newLine.getId())).build();
     }
 
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<AddStationToLineResponse> addStationToLine(@PathVariable Long lineId,
                                                                      @RequestBody AddStationToLineRequest addStationToLineRequest) {
-        Line line = lineService.addStationToExistLine(lineId, addStationToLineRequest);
-        List<Long> stationIds = line.getStations().stream()
-                .map(Station::getId)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new AddStationToLineResponse(line.getId(), line.getName(), stationIds));
+        Line line = lineService.addStationToLine(lineId, addStationToLineRequest);
+
+        return ResponseEntity.created(URI.create("/lines/" + line.getId())).build();
     }
 
     @GetMapping("/{lineId}")

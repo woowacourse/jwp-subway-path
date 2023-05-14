@@ -39,7 +39,7 @@ public class EdgeDao {
         return new Edge(id, edge.getUpStation(), edge.getDownStation(), edge.getDistance());
     }
 
-    public List<Edge> findEdgesByLineId(final Long lineId) {
+    public List<Edge> findAllByLineId(final Long lineId) {
         final String sql =
                 "SELECT e.id,"
                         + "s1.id AS upstation_id, s1.name AS upstation_name, "

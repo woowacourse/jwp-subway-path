@@ -1,22 +1,31 @@
 package subway.domain.line.dto;
 
+import subway.domain.line.Direction;
+
 public class AddStationToLineRequest {
-    private final Long upStationId;
-    private final Long downStationId;
+
+    private final Long existStationId;
+    private final String newStationName;
+    private final Direction direction;
     private final Integer distance;
 
-    public AddStationToLineRequest(Long upStationId, Long downStationId, Integer distance) {
-        this.upStationId = upStationId;
-        this.downStationId = downStationId;
+    public AddStationToLineRequest(final Long existStationId, final String newStationName, final Direction direction, final Integer distance) {
+        this.existStationId = existStationId;
+        this.newStationName = newStationName;
+        this.direction = direction;
         this.distance = distance;
     }
 
-    public Long getUpStationId() {
-        return upStationId;
+    public Long getExistStationId() {
+        return existStationId;
     }
 
-    public Long getDownStationId() {
-        return downStationId;
+    public String getNewStationName() {
+        return newStationName;
+    }
+
+    public Direction getDirection() {
+        return direction;
     }
 
     public Integer getDistance() {

@@ -1,15 +1,15 @@
 package subway.domain.line.dto;
 
 public class StationDto {
-    private final long stationId;
+    private final Long stationId;
     private final String stationName;
 
-    public StationDto(long stationId, String stationName) {
+    public StationDto(Long stationId, String stationName) {
         this.stationId = stationId;
         this.stationName = stationName;
     }
 
-    public long getStationId() {
+    public Long getStationId() {
         return stationId;
     }
 

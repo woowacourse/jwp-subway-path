@@ -15,6 +15,7 @@ import subway.domain.station.Station;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -36,36 +37,36 @@ public class LineService {
     }
 
     @Transactional
-    public Line createNewLine(final LineCreateRequest createRequest) {
-        final Station upStation = stationDao.insert(new Station(createRequest.getUpStation()));
-        final Station downStation = stationDao.insert(new Station(createRequest.getDownStation()));
-//        final Line updatedLine = lines.addNewLine(createRequest.getLineName(), upStation, downStation, createRequest.getDistance());
+    public Line createNewLine(final LineCreateRequest request) {
+        final Station upStation = stationDao.insert(new Station(request.getUpStation()));
+        final Station downStation = stationDao.insert(new Station(request.getDownStation()));
 
-        final Line line = new Line(createRequest.getLineName());
+        final Line line = new Line(request.getLineName());
         if (lineDao.findLineByName(line).isPresent()) {
             throw new IllegalArgumentException();
         }
         final Line createdLine = lineDao.insert(line);
 
-        final Edge edge = new Edge(upStation, downStation, createRequest.getDistance());
+        final Edge edge = new Edge(upStation, downStation, request.getDistance());
         edgeDao.insert(createdLine.getId(), edge);
 
         return createdLine;
     }
 
     @Transactional
-    public Line addStationToExistLine(Long lineId, AddStationToLineRequest addStationToLineRequest) {
-        Station upStation = stationDao.findById(addStationToLineRequest.getUpStationId())
+    public Line addStationToLine(Long lineId, AddStationToLineRequest request) {
+        final Station existStation = stationDao.findById(request.getExistStationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Station downStation = stationDao.findById(addStationToLineRequest.getDownStationId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Line line = assembleLine(lineId);
+        final Station newStation = stationDao.insert(new Station(request.getNewStationName()));
+        final Line findLine = lineDao.findById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
 
-        Line updatedLine = lines.addStationToLine(line, upStation, downStation, addStationToLineRequest.getDistance());
-        edgeDao.deleteAllByLineId(updatedLine.getId());
-        edgeDao.insertAllByLineId(updatedLine.getId(), updatedLine.getEdges());
+        final Edges originalEdges = new Edges(edgeDao.findAllByLineId(lineId));
+        final Edges newEdges = originalEdges.add(existStation, newStation, request.getDirection(), request.getDistance());
+        edgeDao.deleteAllByLineId(lineId);
+        edgeDao.insertAllByLineId(lineId, newEdges.getEdges());
 
-        return assembleLine(updatedLine.getId());
+        return findLine;
     }
 
     public Line getLine(final Long lineId) {
@@ -95,7 +96,7 @@ public class LineService {
         Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
 
-        List<Edge> edges = edgeDao.findEdgesByLineId(line.getId());
+        List<Edge> edges = edgeDao.findAllByLineId(line.getId());
         return new Line(line.getId(), line.getName(), edges);
     }
 
@@ -107,7 +108,7 @@ public class LineService {
         final Map<Line, List<Station>> result = new HashMap<>();
         final List<Line> allLine = lineDao.findAll();
         for (Line line : allLine) {
-            final Edges edges = new Edges(edgeDao.findEdgesByLineId(line.getId()));
+            final Edges edges = new Edges(new LinkedList<>(edgeDao.findAllByLineId(line.getId())));
             result.putIfAbsent(line, new ArrayList<>());
             result.put(line, edges.getStations());
         }

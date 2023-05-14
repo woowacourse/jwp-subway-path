@@ -21,25 +21,19 @@ request
 ```JSON
   {
     "lineName" : "2호선",
-    "upStationId" : 1,
-    "downStationId" : 2,
+    "upStationId" : "잠실",
+    "downStationId" : "잠실새내",
     "distance" : 10
    }
-```
-response
-```JSON
-  {
-      "lineId" : 1,
-      "lineName" : "2호선"
-  }
 ```
 
 - [x] 노선에 역 등록 API 신규 구현 (post - "/lines/{lineId}/stations")
 request
 ```JSON
   {
-    "upStationId" : 3,
-    "downStationId" : 1,
+    "existStationId" : 1,
+    "newStationName" : "잠실나루",
+    "direction" : "UP",
     "distance" : 5
   }
 ```
