@@ -8,7 +8,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import subway.domain.Station;
 import subway.dto.LineCreateRequest;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,8 +28,16 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
-    void createLine() {
+    void createLineTest() {
         // when
+        ExtractableResponse<Response> response = createLine();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
+    }
+
+    private ExtractableResponse<Response> createLine() {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -34,9 +45,25 @@ public class LineIntegrationTest extends IntegrationTest {
                 .when().post("/lines")
                 .then().log().all().
                 extract();
+        return response;
+    }
+
+    @DisplayName("지하철 노선을 조회한다.")
+    @Test
+    void findLine() {
+
+        ExtractableResponse<Response> createResponse = createLine();
+        Long id = createResponse.response().jsonPath().getLong("id");
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineCreateRequest)
+                .when().get("/lines/" + id)
+                .then().log().all().
+                extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }

@@ -15,6 +15,7 @@ import subway.entity.EdgeEntity;
 import subway.entity.LineEntity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
@@ -65,5 +66,16 @@ public class LineService {
         edgeDao.deleteAllEdgesOf(lineId);
         dbLineDao.deleteLine(lineId);
         return line.getName();
+    }
+
+    public LineResponse findLine(Long lineId) {
+        Line line = dbLineDao.findById(lineId).toDomain();
+        List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
+
+        List<StationResponse> stationResponses = allStationsInOrder.stream()
+                .map(station -> StationResponse.of(station))
+                .collect(Collectors.toList());
+
+        return LineResponse.of(line, stationResponses);
     }
 }
