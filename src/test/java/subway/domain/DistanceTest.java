@@ -19,6 +19,23 @@ class DistanceTest {
 			.hasMessage("거리는 항상 양의 정수여야 합니다.");
 	}
 
+	@Test
+	@DisplayName("두 거리의 합인 Distance 객체를 반환한다.")
+	void addDistanceTest() {
+		//given
+		final int baseNumber = 10;
+		final int comparisonNumber = 9;
+
+		final Distance distance = new Distance(baseNumber);
+		final Distance comparison = new Distance(comparisonNumber);
+
+		//when
+		final Distance actual = distance.addDistance(comparison);
+
+		//then
+		assertThat(actual.getValue()).isEqualTo(baseNumber + comparisonNumber);
+	}
+
 	@Nested
 	@DisplayName("두 거리의 차를 구할 때, 거리의 차가")
 	class subtractDistance {

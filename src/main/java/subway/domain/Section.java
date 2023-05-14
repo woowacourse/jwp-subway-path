@@ -44,6 +44,10 @@ public final class Section {
 		return this.arrival.equals(section.arrival);
 	}
 
+	public Distance addDistance(final Section newSection) {
+		return this.distance.addDistance(newSection.distance);
+	}
+
 	public Distance subtractDistance(final Section newSection) {
 		return this.distance.subtractDistance(newSection.distance);
 	}

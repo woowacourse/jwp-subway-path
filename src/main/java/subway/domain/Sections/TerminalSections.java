@@ -4,7 +4,7 @@ import java.util.List;
 
 import subway.domain.Section;
 
-public final class TerminalSections extends FilledSections implements StationAddable {
+public final class TerminalSections extends FilledSections implements StationAddable, StationRemovable {
 
 	TerminalSections(final List<Section> sections) {
 		super(sections);
@@ -17,17 +17,16 @@ public final class TerminalSections extends FilledSections implements StationAdd
 		return List.of(newSection);
 	}
 
+	@Override
+	public List<Section> removeStation() {
+		final Section removeSection = sections.get(0);
+		return List.of(removeSection);
+	}
+
 	private void validateCrossConnected(final Section newSection) {
 		if (newSection.isCrossConnected(upLineTerminal(), downLineTerminal())) {
 			throw new IllegalArgumentException("순환 노선입니다.");
 		}
 	}
 
-	private Section upLineTerminal() {
-		return sections.get(0);
-	}
-
-	private Section downLineTerminal() {
-		return sections.get(sections.size() - 1);
-	}
 }

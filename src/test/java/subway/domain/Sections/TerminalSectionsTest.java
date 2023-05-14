@@ -41,4 +41,19 @@ class TerminalSectionsTest {
 		assertThat(actual).hasSize(1);
 		assertThat(actual.get(0)).isEqualTo(addSection);
 	}
+
+	@Test
+	@DisplayName("기존 역 제거 시, 역이 포함된 구간을 리스트로 감싸서 반환한다.")
+	void removeStationTest() {
+		// given
+		final Section removeSection = Fixture.NEW_SECTION;
+		final StationRemovable sections = SectionsFactory.createForRemove(List.of(removeSection));
+
+		// when
+		final List<Section> actual = sections.removeStation();
+
+		// then
+		assertThat(actual).hasSize(1);
+		assertThat(actual.get(0)).isEqualTo(removeSection);
+	}
 }

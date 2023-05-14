@@ -53,4 +53,11 @@ public class FilledSections extends Sections {
 			.collect(toMap(Section::getDeparture, Function.identity()));
 	}
 
+	protected Section upLineTerminal() {
+		return sections.get(0);
+	}
+
+	protected Section downLineTerminal() {
+		return sections.get(sections.size() - 1);
+	}
 }

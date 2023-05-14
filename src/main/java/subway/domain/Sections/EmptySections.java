@@ -5,7 +5,7 @@ import java.util.List;
 
 import subway.domain.Section;
 
-public final class EmptySections extends Sections implements StationAddable {
+public final class EmptySections extends Sections implements StationAddable, StationRemovable {
 
 	EmptySections() {
 		super(Collections.emptyList());
@@ -16,4 +16,8 @@ public final class EmptySections extends Sections implements StationAddable {
 		return List.of(newSection);
 	}
 
+	@Override
+	public List<Section> removeStation() {
+		throw new IllegalArgumentException("해당하는 역이 없습니다.");
+	}
 }

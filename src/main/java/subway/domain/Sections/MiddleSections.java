@@ -1,11 +1,12 @@
 package subway.domain.Sections;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import subway.domain.Distance;
 import subway.domain.Section;
 
-public final class MiddleSections extends FilledSections implements StationAddable {
+public final class MiddleSections extends FilledSections implements StationAddable, StationRemovable {
 	MiddleSections(final List<Section> sections) {
 		super(sections);
 	}
@@ -18,6 +19,15 @@ public final class MiddleSections extends FilledSections implements StationAddab
 		final Distance newDistance = targetSection.subtractDistance(newSection);
 
 		return addStationSections(newSection, targetSection, newDistance);
+	}
+
+	@Override
+	public List<Section> removeStation() {
+		final Distance distance = upLineTerminal().addDistance(downLineTerminal());
+		final Section newSection = new Section(null, upLineTerminal().getDeparture(), downLineTerminal().getArrival(),
+			distance);
+
+		return removeStationSections(newSection);
 	}
 
 	private void validateExistedSection(final Section newSection) {
@@ -49,5 +59,11 @@ public final class MiddleSections extends FilledSections implements StationAddab
 			newDistance);
 
 		return List.of(upLineSection, newSection, targetSection);
+	}
+
+	private List<Section> removeStationSections(final Section newSection) {
+		final List<Section> sections = new ArrayList<>(this.sections);
+		sections.add(newSection);
+		return sections;
 	}
 }

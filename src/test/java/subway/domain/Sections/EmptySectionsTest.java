@@ -14,17 +14,30 @@ import subway.domain.Section;
 class EmptySectionsTest {
 
 	@Test
-	@DisplayName("새로운 구간을 추가 시, 리스트로 감싸서 반환한다")
-	void givenNewSection_thenReturnNewSectionList() {
-		//given
-		final Sections sections = SectionsFactory.createForFind(Collections.emptyList());
+	@DisplayName("새로운 역 추가 시, 리스트로 감싸서 반환한다")
+	void addStationTest() {
+		// given
+		final Section addSection = Fixture.NEW_SECTION;
+		final StationAddable sections = SectionsFactory.createForAdd(Collections.emptyList(), addSection);
 
-		//when
-		final EmptySections emptySections = (EmptySections)sections;
-		final List<Section> actual = emptySections.addStation(Fixture.NEW_SECTION);
+		// when
+		final List<Section> actual = sections.addStation(addSection);
 
-		//then
+		// then
 		assertThat(actual).hasSize(1);
-		assertThat(actual.get(0)).isEqualTo(Fixture.NEW_SECTION);
+		assertThat(actual.get(0)).isEqualTo(addSection);
 	}
+
+	@Test
+	@DisplayName("기존 역 제거 시, 역이 포함된 구간이 없어서 예외가 발생한다.")
+	void removeStationTest() {
+		// given
+		final StationRemovable sections = SectionsFactory.createForRemove(Collections.emptyList());
+
+		// when & then
+		assertThatThrownBy(sections::removeStation)
+			.isInstanceOf(IllegalArgumentException.class)
+			.hasMessage("해당하는 역이 없습니다.");
+	}
+
 }

@@ -145,6 +145,20 @@ public class SectionTest {
 
 	}
 
+	@Test
+	@DisplayName("두 거리의 합인 Distance 객체를 반환한다")
+	void addDistanceTest() {
+		// given
+		final Distance shorterDistance = new Distance(5);
+		final Section comparison = new Section(2L, DEPARTURE, ARRIVAL, shorterDistance);
+
+		// when
+		final Distance actual = NEW_SECTION.addDistance(comparison);
+
+		//then
+		assertThat(actual).isEqualTo(new Distance(15));
+	}
+
 	@Nested
 	@DisplayName("두 거리의 차를 구할 때, 거리의 차가")
 	class SubtractDistanceTest {

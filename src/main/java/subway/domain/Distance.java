@@ -11,6 +11,12 @@ public final class Distance {
 		this.distance = distance;
 	}
 
+	public Distance addDistance(final Distance distance) {
+		final int result = this.distance + distance.distance;
+
+		return new Distance(result);
+	}
+
 	public Distance subtractDistance(final Distance distance) {
 		final int result = this.distance - distance.distance;
 
