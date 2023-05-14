@@ -2,13 +2,14 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.dao.DbEdgeDao;
-import subway.dao.DbLine2Dao;
+import subway.dao.DbLineDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.SubwayGraphs;
 import subway.dto.LineCreateDto;
 import subway.dto.LineDto;
+import subway.entity.LineEntity;
 
 import java.util.List;
 
@@ -17,13 +18,13 @@ public class LineCreateServiceImpl implements LineCreateService {
 
     private final SubwayGraphs subwayGraphs;
 
-    private final DbLine2Dao dbLine2Dao;
+    private final DbLineDao dbLineDao;
     private final StationDao stationDao;
     private final DbEdgeDao edgeDao;
 
-    public LineCreateServiceImpl(final SubwayGraphs subwayGraphs, final DbLine2Dao dbLine2Dao, final StationDao stationDao, final DbEdgeDao edgeDao) {
+    public LineCreateServiceImpl(final SubwayGraphs subwayGraphs, final DbLineDao dbLineDao, final StationDao stationDao, final DbEdgeDao edgeDao) {
         this.subwayGraphs = subwayGraphs;
-        this.dbLine2Dao = dbLine2Dao;
+        this.dbLineDao = dbLineDao;
         this.stationDao = stationDao;
         this.edgeDao = edgeDao;
     }
@@ -35,10 +36,10 @@ public class LineCreateServiceImpl implements LineCreateService {
         final Station downLineStation = new Station(lineCreateDto.getDownLineStationName());
         final int distance = (int) lineCreateDto.getDistance();
 
-        final Station savedUpLineStation = stationDao.saveStation(upLineStation);
-        final Station savedDownLineStation = stationDao.saveStation(downLineStation);
+        final Station savedUpLineStation = stationDao.saveStation(upLineStation.toEntity()).toDomain();
+        final Station savedDownLineStation = stationDao.saveStation(downLineStation.toEntity()).toDomain();
 
-        final Line savedLine = dbLine2Dao.saveLine(line);
+        final Line savedLine = dbLineDao.saveLine(line.toEntity()).toDomain();
 
         final LineDto lineDto = subwayGraphs.createLine(line, savedUpLineStation, savedDownLineStation, distance);
         final List<Station> allStationsInOrder = lineDto.getAllStationsInOrder();

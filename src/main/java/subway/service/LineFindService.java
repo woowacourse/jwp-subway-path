@@ -1,7 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
+import subway.dao.DbLineDao;
 import subway.dao.StationDao;
 import subway.domain.SubwayGraphs;
 
@@ -10,12 +10,12 @@ public class LineFindService {
 
     private final SubwayGraphs subwayGraphs;
 
-    private final LineDao lineDao;
+    private final DbLineDao dbLineDao;
     private final StationDao stationDao;
 
-    public LineFindService(final SubwayGraphs subwayGraphs, final LineDao lineDao, final StationDao stationDao) {
+    public LineFindService(final SubwayGraphs subwayGraphs, final DbLineDao dblineDao, final StationDao stationDao) {
         this.subwayGraphs = subwayGraphs;
-        this.lineDao = lineDao;
+        this.dbLineDao = dblineDao;
         this.stationDao = stationDao;
     }
 }

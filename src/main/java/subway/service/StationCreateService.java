@@ -2,7 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.dao.DbEdgeDao;
-import subway.dao.DbLine2Dao;
+import subway.dao.DbLineDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Station;
@@ -17,19 +17,19 @@ public class StationCreateService {
 //이거 사용
 
     private final SubwayGraphs subwayGraphs;
-    private final DbLine2Dao dbLine2Dao;
+    private final DbLineDao dbLineDao;
     private final StationDao stationDao;
     private final DbEdgeDao edgeDao;
 
-    public StationCreateService(final SubwayGraphs subwayGraphs, final DbLine2Dao dbLine2Dao, final StationDao stationDao, final DbEdgeDao edgeDao) {
+    public StationCreateService(final SubwayGraphs subwayGraphs, final DbLineDao dbLineDao, final StationDao stationDao, final DbEdgeDao edgeDao) {
         this.subwayGraphs = subwayGraphs;
-        this.dbLine2Dao = dbLine2Dao;
+        this.dbLineDao = dbLineDao;
         this.stationDao = stationDao;
         this.edgeDao = edgeDao;
     }
 
     public StationResponse createStation(final StationAddRequest stationRequest) {
-        final Line line = dbLine2Dao.findByName(stationRequest.getLine());
+        final Line line = dbLineDao.findByName(stationRequest.getLine()).toDomain();
 
         final Station upLineStation = new Station(stationRequest.getUpLineStation());
         final Station downLineStation = new Station(stationRequest.getDownLineStation());
@@ -37,7 +37,7 @@ public class StationCreateService {
 
         final Station createdStation = subwayGraphs.createStation(line, upLineStation, downLineStation, distance);
 
-        final Station savedStation = stationDao.saveStation(createdStation);
+        final Station savedStation = stationDao.saveStation(createdStation.toEntity()).toDomain();
 
         final List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 
