@@ -1,5 +1,10 @@
 package subway.application.domain;
 
+import subway.application.exception.StationAlreadyExistsException;
+import subway.application.exception.StationConnectException;
+import subway.application.exception.StationNotExistsException;
+import subway.application.exception.StationTooFarException;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -32,7 +37,7 @@ public class Line {
 
     private void validateConnectivity(Section target) {
         findSectionOf(section -> section.hasAnySameStationWith(target))
-                .orElseThrow(() -> new IllegalStateException("노선과 연결되지 않는 역입니다."));
+                .orElseThrow(StationConnectException::new);
     }
 
     private void validateExistence(Section target) {
@@ -40,7 +45,7 @@ public class Line {
         boolean upBoundsExists = sections.stream().anyMatch(section -> section.containsDownBoundOf(target));
 
         if (downBoundsExists && upBoundsExists) {
-            throw new IllegalStateException("이미 노선에 등록된 역입니다.");
+            throw new StationAlreadyExistsException();
         }
     }
 
@@ -48,7 +53,7 @@ public class Line {
         findSectionOf(section -> section.overlaps(target))
                 .filter(target::isDistanceBiggerOrEqualThan)
                 .ifPresent((ignored) -> {
-                    throw new IllegalStateException(" 신규로 등록된 역이 기존 노선의 거리 범위를 벗어날 수 없습니다.");
+                    throw new StationTooFarException();
                 });
     }
 
@@ -77,7 +82,7 @@ public class Line {
 
     private void validateStationExistence(Station station) {
         findSectionOf(section -> section.hasUpBound(station) || section.hasDownBound(station))
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 역에 대해 삭제할 수 없습니다."));
+                .orElseThrow(StationNotExistsException::new);
     }
 
     private void deleteOldSections(Station station) {

@@ -1,5 +1,7 @@
 package subway.application.domain;
 
+import subway.application.exception.DistanceExceedException;
+
 import java.util.Objects;
 
 public class Distance {
@@ -13,7 +15,7 @@ public class Distance {
 
     private void validate(int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("역 간의 거리는 양수여야 합니다.");
+            throw new DistanceExceedException();
         }
     }
 

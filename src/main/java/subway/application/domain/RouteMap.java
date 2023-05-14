@@ -1,5 +1,8 @@
 package subway.application.domain;
 
+import subway.application.exception.CircularRouteException;
+import subway.application.exception.RouteNotConnectedException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -13,8 +16,8 @@ public class RouteMap {
         this.routeMap = routeOf(sections);
     }
 
-    private List<Station> routeOf(List<Section> sections){
-        if(sections.isEmpty()){
+    private List<Station> routeOf(List<Section> sections) {
+        if (sections.isEmpty()) {
             return Collections.emptyList();
         }
         return linkStations(sections);
@@ -44,7 +47,7 @@ public class RouteMap {
 
         return allUpBounds.stream()
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("순환노선은 등록할 수 없습니다."));
+                .orElseThrow(CircularRouteException::new);
     }
 
     private boolean hasNextStation(List<Section> sections, Station targetStation) {
@@ -68,10 +71,10 @@ public class RouteMap {
     private void validate(List<Section> sections, List<Station> stations) {
         int maxStationSize = sections.size() + 1;
         if (maxStationSize < stations.size()) {
-            throw new IllegalArgumentException("순환노선은 등록할 수 없습니다.");
+            throw new CircularRouteException();
         }
         if (maxStationSize > stations.size()) {
-            throw new IllegalArgumentException("모든 노선이 이어지지 않았습니다.");
+            throw new RouteNotConnectedException();
         }
     }
 

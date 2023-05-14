@@ -1,5 +1,7 @@
 package subway.application.domain;
 
+import subway.application.exception.SectionConnectException;
+
 import java.util.Objects;
 
 public class Section {
@@ -55,7 +57,7 @@ public class Section {
 
     public Section merge(Section target) {
         if (!downBound.equals(target.upBound)) {
-            throw new IllegalStateException("두 섹션은 접합부가 달라 연결될 수 없습니다.");
+            throw new SectionConnectException();
         }
 
         return new Section(upBound, target.downBound, distance.add(target.distance));
