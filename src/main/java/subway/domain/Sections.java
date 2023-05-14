@@ -46,16 +46,15 @@ public class Sections {
     public void addIntermediate(Station station, Station prevStation, Distance distance) {
         validateHasSize();
 
-        Section prevSection = findSectionByDown(prevStation);
-        Section section = prevSection.connectToDown(station, distance);
-
-        int index = getIndex(prevSection);
-
-        Section prevToNext = sections.get(index + 1);
+        Section prevToNext = findSectionByUp(prevStation);
+        Section prevToThis = prevToNext.connectIntermediate(station, distance);
         Section thisToNext = new Section(station, prevToNext.getDown(), prevToNext.subDistance(distance)); // 42
-        sections.remove(index + 1);
-        sections.add(index + 1, thisToNext);
-        sections.add(index + 1, section);
+
+        int index = getIndex(prevToNext);
+
+        sections.remove(index);
+        sections.add(index, thisToNext);
+        sections.add(index, prevToThis);
     }
 
     private void validateHasSize() {
@@ -64,9 +63,9 @@ public class Sections {
         }
     }
 
-    private Section findSectionByDown(Station prevStation) {
+    private Section findSectionByUp(Station prevStation) {
         return sections.stream()
-                .filter(section -> section.getDown().equals(prevStation))
+                .filter(section -> section.getUp().equals(prevStation))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 이전역입니다."));
     }

@@ -21,6 +21,10 @@ public class Section {
         return new Section(down, station, distance);
     }
 
+    public Section connectIntermediate(Station station, Distance distance) {
+        return new Section(up, station, distance);
+    }
+
     public Distance subDistance(Distance distance) {
         return this.distance.sub(distance);
     }
@@ -49,5 +53,4 @@ public class Section {
     public Distance getDistance() {
         return distance;
     }
-
 }

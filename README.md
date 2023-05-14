@@ -42,28 +42,28 @@
 
 ### DB
 
-- Line
+**station** :
 
-| column         | type         |                    |
-|----------------|--------------|--------------------|
-| id             | BIGINT       | PK, AUTO INCREMENT |
-| name           | VARCHAR(255) | UNIQUE             |
-| color          | VARCHAR(20)  |                    |
-| up_endpoint_id | BIGINT       |                    |
+| Column        | Type                  | Constraints      |
+| ------------- | --------------------- |------------------|
+| station_id    | BIGINT AUTO_INCREMENT | NOT NULL, PK     |
+| name          | VARCHAR(255)          | NOT NULL, UNIQUE |
 
-- Station
+**line** :
 
-| column | type         |                    |
-|--------|--------------|--------------------|
-| id     | BIGINT       | PK, AUTO INCREMENT |
-| name   | VARCHAR(255) | UNIQUE             |
+| Column        | Type                  | Constraints      |
+| ------------- | --------------------- |------------------|
+| line_id       | BIGINT AUTO_INCREMENT | NOT NULL, PK     |
+| name          | VARCHAR(255)          | NOT NULL, UNIQUE |
+| color         | VARCHAR(20)           | NOT NULL         |
 
-- Section
+**section** :
 
-| column       | type   |                    |
-|--------------|--------|--------------------|
-| id           | BIGINT | PK, AUTO INCREMENT |
-| departure_id | BIGINT | NOT NULL           |
-| arrival_id   | BIGINT | NOT NULL           |
-| distance     | INT    | NOT NULL           |
-| line_id      | BIGINT | NOT NULL           |
+| Column         | Type                  | Constraints  |
+| -------------- | --------------------- |--------------|
+| section_id     | BIGINT AUTO_INCREMENT | NOT NULL, PK |
+| up_station_id  | BIGINT                | NOT NULL     |
+| down_station_id| BIGINT                | NOT NULL     |
+| distance       | INT                   | NOT NULL     |
+| line_id        | BIGINT                | NOT NULL     |
+| list_order     | INT                   | NOT NULL     |
