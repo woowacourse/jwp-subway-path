@@ -19,6 +19,7 @@ import subway.exception.StationNotFoundException;
 @Service
 @Transactional
 public class SectionService {
+    public static final int LAST_REMAIN = 1;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
 
@@ -74,7 +75,7 @@ public class SectionService {
         removeMiddleStation(stationId, sections);
     }
 
-    private static void validateAddAvailable(SectionDirection newSectionDirection) {
+    private void validateAddAvailable(SectionDirection newSectionDirection) {
         if (newSectionDirection == SectionDirection.NONE) {
             throw new SectionNotFoundException();
         }
@@ -137,22 +138,18 @@ public class SectionService {
         sectionDao.deleteById(innerRight.getId());
     }
 
-    private static boolean isUpEnd(long stationId, Sections sections) {
+    private boolean isUpEnd(long stationId, Sections sections) {
         return sections.getUpEndSection().isSameUpStationId(stationId);
     }
 
-    private static boolean isLastSection(Sections sections) {
-        return sections.size() == 1;
+    private boolean isLastSection(Sections sections) {
+        return sections.size() == LAST_REMAIN;
     }
 
-    private static void validateStationExist(long stationId, Sections sections) {
+    private void validateStationExist(long stationId, Sections sections) {
         if (sections.isNotExistStation(stationId)) {
             throw new StationNotFoundException();
         }
-    }
-
-    public Sections findAllByLindId(long lineId) {
-         return sectionDao.findSectionsByLineId(lineId);
     }
 
     @Transactional(readOnly = true)
