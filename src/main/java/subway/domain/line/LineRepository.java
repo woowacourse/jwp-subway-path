@@ -1,7 +1,6 @@
 package subway.domain.line;
 
 import java.util.List;
-import subway.domain.line.dto.LineWithSectionRes;
 
 public interface LineRepository {
 

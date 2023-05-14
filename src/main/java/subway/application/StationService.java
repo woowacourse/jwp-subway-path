@@ -9,8 +9,8 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
 import subway.domain.station.dto.StationRes;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.application.dto.StationRequest;
+import subway.application.dto.StationResponse;
 import subway.exception.BadRequestException;
 
 @Service

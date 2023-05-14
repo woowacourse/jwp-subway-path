@@ -11,7 +11,7 @@ import java.util.List;
 import subway.dao.dto.LineWithSection;
 import subway.dao.entity.LineEntity;
 import subway.domain.line.Line;
-import subway.domain.line.dto.LineWithSectionRes;
+import subway.domain.line.LineWithSectionRes;
 
 public final class LineFixture {
 

@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.line.Line;
 import subway.domain.line.LineName;
-import subway.domain.line.dto.LineWithSectionRes;
+import subway.domain.line.LineWithSectionRes;
 import subway.exception.DBException;
 import subway.exception.NotFoundException;
 
