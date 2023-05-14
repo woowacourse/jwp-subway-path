@@ -5,7 +5,7 @@ import subway.application.port.in.station.dto.command.UpdateStationCommand;
 
 public class UpdateStationRequest {
 
-    @NotNull
+    @NotNull(message = "이름 정보가 없습니다.")
     private String name;
 
     public UpdateStationRequest() {

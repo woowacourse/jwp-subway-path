@@ -20,7 +20,7 @@ public class AddStationToLineController {
     }
 
     @PostMapping("/lines/{lineId}/stations")
-    public ResponseEntity<LineQueryResponse> addStation(@PathVariable @NotNull Long lineId,
+    public ResponseEntity<LineQueryResponse> addStation(@PathVariable @NotNull(message = "노선 id가 없습니다.") Long lineId,
             @RequestBody AddStationToLineRequest request) {
         addStationToLineUseCase.addStation(request.toCommand(lineId));
         return ResponseEntity.ok().build();

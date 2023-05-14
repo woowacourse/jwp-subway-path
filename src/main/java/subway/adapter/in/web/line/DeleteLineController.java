@@ -16,9 +16,9 @@ public class DeleteLineController {
         this.deleteLineUseCase = deleteLineUseCase;
     }
 
-    @DeleteMapping("/lines/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable @NotNull Long id) {
-        deleteLineUseCase.deleteLine(id);
+    @DeleteMapping("/lines/{lineId}")
+    public ResponseEntity<Void> deleteLine(@PathVariable @NotNull(message = "노선 id가 없습니다.") Long lineId) {
+        deleteLineUseCase.deleteLine(lineId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,6 +1,7 @@
 package subway.adapter.in.web.line;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -18,10 +19,10 @@ public class UpdateLineInfoController {
         this.updateLineInfoUseCase = updateLineInfoUseCase;
     }
 
-    @PutMapping("/lines/{id}")
-    public ResponseEntity<Void> updateLineInfo(@PathVariable Long id,
+    @PutMapping("/lines/{lineId}")
+    public ResponseEntity<Void> updateLineInfo(@PathVariable @NotNull(message = "노선 id가 없습니다.") Long lineId,
             @RequestBody @Valid UpdateLineRequest request) {
-        updateLineInfoUseCase.updateLineInfo(request.toCommand(id));
+        updateLineInfoUseCase.updateLineInfo(request.toCommand(lineId));
         return ResponseEntity.ok().build();
     }
 }

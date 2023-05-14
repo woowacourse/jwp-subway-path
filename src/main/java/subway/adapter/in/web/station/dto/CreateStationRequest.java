@@ -5,7 +5,7 @@ import subway.application.port.in.station.dto.command.CreateStationCommand;
 
 public class CreateStationRequest {
 
-    @NotNull
+    @NotNull(message = "이름 정보가 없습니다.")
     private String name;
 
     public CreateStationRequest() {

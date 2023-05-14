@@ -19,8 +19,8 @@ public class RemoveStationFromLineController {
     }
 
     @DeleteMapping("/lines/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> deleteSection(@PathVariable @NotNull Long lineId,
-            @PathVariable @NotNull Long stationId) {
+    public ResponseEntity<Void> deleteSection(@PathVariable @NotNull(message = "노선 id가 없습니다.") Long lineId,
+            @PathVariable @NotNull(message = "역 id가 없습니다.") Long stationId) {
         removeStationFromLineUseCase.removeStation(new RemoveStationFromLineCommand(lineId, stationId));
         return ResponseEntity.noContent().build();
     }

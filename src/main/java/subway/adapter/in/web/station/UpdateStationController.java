@@ -19,10 +19,10 @@ public class UpdateStationController {
         this.updateStationUseCase = updateStationUseCase;
     }
 
-    @PutMapping("/stations/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable @NotNull Long id,
+    @PutMapping("/stations/{stationId}")
+    public ResponseEntity<Void> updateStation(@PathVariable @NotNull(message = "역 id가 없습니다.") Long stationId,
             @RequestBody @Valid UpdateStationRequest request) {
-        updateStationUseCase.updateStation(request.toCommand(id));
+        updateStationUseCase.updateStation(request.toCommand(stationId));
         return ResponseEntity.ok().build();
     }
 }

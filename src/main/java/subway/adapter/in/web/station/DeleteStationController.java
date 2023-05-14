@@ -16,9 +16,9 @@ public class DeleteStationController {
         this.deleteStationUseCase = deleteStationUseCase;
     }
 
-    @DeleteMapping("/stations/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable @NotNull Long id) {
-        deleteStationUseCase.deleteStation(id);
+    @DeleteMapping("/stations/{stationId}")
+    public ResponseEntity<Void> deleteStation(@PathVariable @NotNull(message = "역 id가 없습니다.") Long stationId) {
+        deleteStationUseCase.deleteStation(stationId);
         return ResponseEntity.noContent().build();
     }
 }

@@ -5,10 +5,10 @@ import subway.application.port.in.line.dto.command.CreateLineCommand;
 
 public class CreateLineRequest {
 
-    @NotNull
+    @NotNull(message = "이름 정보가 없습니다.")
     private String name;
 
-    @NotNull
+    @NotNull(message = "색상 정보가 없습니다.")
     private String color;
 
     public CreateLineRequest() {

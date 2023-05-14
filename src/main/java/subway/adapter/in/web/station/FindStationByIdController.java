@@ -17,8 +17,9 @@ public class FindStationByIdController {
         this.findStationByIdUseCase = findStationByIdUseCase;
     }
 
-    @GetMapping("/stations/{id}")
-    public ResponseEntity<StationQueryResponse> showStation(@PathVariable @NotNull Long id) {
-        return ResponseEntity.ok().body(findStationByIdUseCase.findStationById(id));
+    @GetMapping("/stations/{stationId}")
+    public ResponseEntity<StationQueryResponse> showStation(
+            @PathVariable @NotNull(message = "역 id가 없습니다.") Long stationId) {
+        return ResponseEntity.ok().body(findStationByIdUseCase.findStationById(stationId));
     }
 }

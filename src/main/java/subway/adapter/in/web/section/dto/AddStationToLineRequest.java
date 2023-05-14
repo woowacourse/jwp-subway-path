@@ -6,12 +6,13 @@ import subway.application.port.in.section.dto.command.AddStationToLineCommand;
 
 public class AddStationToLineRequest {
 
-    @NotNull
+    @NotNull(message = "상행역 id가 없습니다.")
     private Long upStationId;
 
-    @NotNull
+    @NotNull(message = "하행역 id가 없습니다.")
     private Long downStationId;
 
+    @NotNull(message = "거리 정보가 없습니다.")
     @Positive(message = "두 역간 거리는 양의 정수여야합니다.")
     private Integer distance;
 
