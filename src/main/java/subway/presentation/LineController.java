@@ -5,12 +5,11 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.application.dto.LineDto;
 import subway.application.dto.StationDto;
-import subway.presentation.dto.LineRequest;
-import subway.presentation.dto.LineResponse;
-import subway.presentation.dto.StationResponse;
+import subway.presentation.dto.request.LineRequest;
+import subway.presentation.dto.response.LineResponse;
+import subway.presentation.dto.response.StationResponse;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,10 +59,5 @@ public class LineController {
         LineDto lineDetails = lineService.findLineById(id);
 
         return ResponseEntity.ok(toLineResponse(lineDetails));
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }

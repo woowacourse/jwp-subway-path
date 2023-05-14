@@ -1,4 +1,4 @@
-package subway.presentation.dto;
+package subway.presentation.dto.request;
 
 public class SectionRequest {
     private String startStation;

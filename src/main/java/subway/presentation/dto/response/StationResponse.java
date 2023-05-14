@@ -1,4 +1,4 @@
-package subway.presentation.dto;
+package subway.presentation.dto.response;
 
 public class StationResponse {
     private final Long id;

@@ -12,8 +12,8 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.presentation.dto.LineRequest;
-import subway.presentation.dto.LineResponse;
+import subway.presentation.dto.request.LineRequest;
+import subway.presentation.dto.response.LineResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

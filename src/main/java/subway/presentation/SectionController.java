@@ -5,9 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.SectionService;
 import subway.application.dto.SectionDto;
-import subway.presentation.dto.SectionRequest;
-
-import java.sql.SQLException;
+import subway.presentation.dto.request.SectionRequest;
 
 @RestController
 @RequestMapping("/subway/lines")
@@ -35,11 +33,5 @@ public class SectionController {
         sectionService.deleteSection(lineId, stationId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException(SQLException e) {
-        e.printStackTrace();
-        return ResponseEntity.badRequest().build();
     }
 }
