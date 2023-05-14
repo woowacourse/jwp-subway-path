@@ -7,7 +7,7 @@ import subway.controller.dto.StationRequest;
 import subway.controller.dto.StationResponse;
 import subway.domain.Station;
 import subway.exception.BusinessException;
-import subway.repository.StationRepository;
+import subway.persistence.StationRepository;
 
 @Service
 public class StationService {

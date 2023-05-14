@@ -1,4 +1,4 @@
-package subway.repository;
+package subway.persistence;
 
 import java.util.List;
 import java.util.Optional;

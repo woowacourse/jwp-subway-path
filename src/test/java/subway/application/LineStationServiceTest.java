@@ -23,8 +23,8 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.exception.BusinessException;
-import subway.repository.LineRepository;
-import subway.repository.StationRepository;
+import subway.persistence.LineRepository;
+import subway.persistence.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
 class LineStationServiceTest {

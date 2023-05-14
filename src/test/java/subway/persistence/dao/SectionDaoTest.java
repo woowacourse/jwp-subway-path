@@ -1,4 +1,4 @@
-package subway.repository.dao;
+package subway.persistence.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

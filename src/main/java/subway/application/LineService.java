@@ -8,7 +8,7 @@ import subway.controller.dto.LineRequest;
 import subway.controller.dto.LineResponse;
 import subway.domain.Line;
 import subway.exception.BusinessException;
-import subway.repository.LineRepository;
+import subway.persistence.LineRepository;
 
 @Transactional(readOnly = true)
 @Service

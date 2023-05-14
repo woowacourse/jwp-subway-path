@@ -1,4 +1,4 @@
-package subway.repository;
+package subway.persistence;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.exception.BusinessException;
-import subway.repository.dao.LineSectionStationJoinDto;
+import subway.persistence.dao.LineSectionStationJoinDto;
 
 public class LineConverter {
 

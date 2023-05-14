@@ -1,4 +1,4 @@
-package subway.repository;
+package subway.persistence;
 
 import java.util.List;
 import java.util.Optional;
@@ -7,9 +7,9 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.exception.BusinessException;
-import subway.repository.dao.LineDao;
-import subway.repository.dao.LineSectionStationJoinDto;
-import subway.repository.dao.SectionDao;
+import subway.persistence.dao.LineDao;
+import subway.persistence.dao.LineSectionStationJoinDto;
+import subway.persistence.dao.SectionDao;
 
 @Repository
 public class LineRepositoryImpl implements LineRepository {

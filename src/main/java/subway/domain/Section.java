@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.exception.BusinessException;
 
 public class Section {
 
@@ -10,6 +11,9 @@ public class Section {
     private final long distance;
 
     public Section(final Long id, final Station upStation, final Station downStation, final long distance) {
+        if (distance <= 0) {
+            throw new BusinessException("거리는 1 이상이어야합니다.");
+        }
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;

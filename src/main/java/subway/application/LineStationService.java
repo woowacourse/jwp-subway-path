@@ -9,8 +9,8 @@ import subway.controller.dto.RemoveStationOnLineRequest;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.exception.BusinessException;
-import subway.repository.LineRepository;
-import subway.repository.StationRepository;
+import subway.persistence.LineRepository;
+import subway.persistence.StationRepository;
 
 @Service
 @Transactional

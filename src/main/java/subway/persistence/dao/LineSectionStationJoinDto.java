@@ -1,4 +1,4 @@
-package subway.repository.dao;
+package subway.persistence.dao;
 
 public class LineSectionStationJoinDto {
 

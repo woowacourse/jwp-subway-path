@@ -1,4 +1,4 @@
-package subway.repository;
+package subway.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,7 +10,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.repository.dao.LineSectionStationJoinDto;
+import subway.persistence.dao.LineSectionStationJoinDto;
 
 class LineConverterTest {
 

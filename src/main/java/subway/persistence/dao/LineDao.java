@@ -1,4 +1,4 @@
-package subway.repository.dao;
+package subway.persistence.dao;
 
 import java.util.ArrayList;
 import java.util.HashMap;

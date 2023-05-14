@@ -1,8 +1,8 @@
-package subway.repository;
+package subway.persistence;
 
 import org.springframework.stereotype.Repository;
 import subway.domain.Section;
-import subway.repository.dao.SectionDao;
+import subway.persistence.dao.SectionDao;
 
 @Repository
 public class SectionRepositoryImpl implements SectionRepository {
