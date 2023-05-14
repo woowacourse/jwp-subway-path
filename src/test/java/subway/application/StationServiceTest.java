@@ -4,11 +4,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import subway.application.request.CreateSectionRequest;
 import subway.application.request.CreateStationRequest;
+import subway.application.request.DeleteStationRequest;
 import subway.application.response.StationResponse;
 import subway.config.ServiceTestConfig;
 import subway.dao.entity.StationEntity;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Station;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -119,5 +124,62 @@ class StationServiceTest extends ServiceTestConfig {
                 .isEqualTo(new StationResponse(
                         잠실역_식별자값, "잠실"
                 ));
+    }
+
+    @Test
+    void 단_하나의_구간이_있을_때_역명과_노선명으로_역을_삭제한다() {
+        // given
+        final Long 노선1_식별자값 = lineDao.insert("1", "파랑");
+
+        final CreateSectionRequest 구간_요청
+                = new CreateSectionRequest("창동", "녹천", 노선1_식별자값, 10);
+        final DeleteStationRequest 역_삭제_요청 = new DeleteStationRequest("창동", "1");
+
+        stationService.saveSection(구간_요청);
+
+        // when
+        stationService.deleteByStationNameAndLineName(역_삭제_요청);
+
+        final Line 노선 = lineRepository.findByLineId(노선1_식별자값);
+        final List<Station> 전체_역_목록 = 노선.getAllStations();
+        final List<Section> 전체_구간_목록 = 노선.getSections();
+
+        // then
+        assertAll(
+                () -> assertThat(전체_역_목록).isEmpty(),
+                () -> assertThat(전체_구간_목록).isEmpty()
+        );
+    }
+
+    @Test
+    void 여러_구간이_있을_때_역명과_노선명으로_역을_삭제한다() {
+        // given
+        final Distance 거리20 = new Distance(20);
+        final Long 노선1_식별자값 = lineDao.insert("1", "파랑");
+
+        final CreateSectionRequest 방학_창동_요청
+                = new CreateSectionRequest("방학", "창동", 노선1_식별자값, 10);
+        final CreateSectionRequest 창동_녹천_요청
+                = new CreateSectionRequest("창동", "녹천", 노선1_식별자값, 10);
+
+        stationService.saveSection(방학_창동_요청);
+        stationService.saveSection(창동_녹천_요청);
+
+        final DeleteStationRequest 역_삭제_요청 = new DeleteStationRequest("창동", "1");
+
+        // when
+        stationService.deleteByStationNameAndLineName(역_삭제_요청);
+
+        final Line 노선 = lineRepository.findByLineId(노선1_식별자값);
+        final List<Station> 전체_역_목록 = 노선.getAllStations();
+        final List<Section> 전체_구간_목록 = 노선.getSections();
+
+        // then
+        assertAll(
+                () -> assertThat(전체_역_목록)
+                        .containsExactly(new Station("방학"), new Station("녹천")),
+                () -> assertThat(전체_구간_목록)
+                        .containsExactly(new Section(거리20, true, new Station("방학"), new Station("녹천")))
+        );
     }
 }

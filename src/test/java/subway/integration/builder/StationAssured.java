@@ -3,6 +3,7 @@ package subway.integration.builder;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.application.request.CreateSectionRequest;
+import subway.application.request.DeleteStationRequest;
 import subway.application.response.StationResponse;
 import subway.integration.support.RestAssuredFixture;
 
@@ -25,6 +26,13 @@ public class StationAssured {
         return new CreateSectionRequest(upStationName, downStationName, lineId, distance);
     }
 
+    public static DeleteStationRequest 역_삭제_요청(
+            final String stationName,
+            final String lineName
+    ) {
+        return new DeleteStationRequest(stationName, lineName);
+    }
+
     public static StationRequestBuilder request() {
         return new StationRequestBuilder();
     }
@@ -40,6 +48,11 @@ public class StationAssured {
 
         public StationRequestBuilder 역을_조회한다(final Long stationId) {
             response = RestAssuredFixture.get("/stations/" + stationId);
+            return this;
+        }
+
+        public StationRequestBuilder 역과_구간을_삭제한다(final DeleteStationRequest request) {
+            response = RestAssuredFixture.delete("/stations", request);
             return this;
         }
 
@@ -63,13 +76,15 @@ public class StationAssured {
             return response.jsonPath().getList("", cls);
         }
 
-        public void 등록된_역이_조회된다(final String stationName) {
+        public StationResponseBuilder 등록된_역이_조회된다(final String stationName) {
             final StationResponse response = toBody(StationResponse.class);
 
             assertThat(response)
                     .usingRecursiveComparison()
                     .ignoringFields("id")
                     .isEqualTo(new StationResponse(0L, stationName));
+
+            return this;
         }
     }
 }

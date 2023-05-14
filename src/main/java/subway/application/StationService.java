@@ -4,11 +4,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.request.CreateSectionRequest;
 import subway.application.request.CreateStationRequest;
-import subway.application.response.SectionResponse;
+import subway.application.request.DeleteStationRequest;
+import subway.application.response.StationResponse;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.domain.*;
-import subway.application.response.StationResponse;
+import subway.domain.Distance;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Station;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
@@ -48,11 +51,15 @@ public class StationService {
                 new Distance(request.getDistance()), false, upStation, downStation);
         line.addSection(section);
 
+        deleteAllThenSaveAllSections(line);
+
+        return line.getId();
+    }
+
+    private void deleteAllThenSaveAllSections(final Line line) {
         final List<SectionEntity> sectionEntities = collectSectionEntitiesBy(line);
         sectionRepository.deleteByLineId(line.getId());
         sectionRepository.saveAll(sectionEntities);
-
-        return line.getId();
     }
 
     private List<SectionEntity> collectSectionEntitiesBy(final Line line) {
@@ -72,20 +79,19 @@ public class StationService {
         return new Station(saveStationId, stationName);
     }
 
-    public SectionResponse findBySectionId(final Long sectionId) {
-        final Section section = sectionRepository.findBySectionId(sectionId);
-
-        return SectionResponse.from(
-                sectionId,
-                section.getDistance().getValue(),
-                StationResponse.from(section.getUpStation()),
-                StationResponse.from(section.getDownStation())
-        );
-    }
-
     public StationResponse findByStationId(final Long stationId) {
         final Station station = stationRepository.findByStationId(stationId);
 
         return StationResponse.from(station);
+    }
+
+    @Transactional
+    public void deleteByStationNameAndLineName(final DeleteStationRequest request) {
+        final Station station = stationRepository.findByStationName(request.getStationName())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역명입니다."));
+        final Line line = lineRepository.findByLineName(request.getLineName());
+        line.removeSection(station);
+
+        deleteAllThenSaveAllSections(line);
     }
 }

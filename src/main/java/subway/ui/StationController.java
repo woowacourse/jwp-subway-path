@@ -3,8 +3,9 @@ package subway.ui;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.request.CreateStationRequest;
 import subway.application.StationService;
+import subway.application.request.CreateSectionRequest;
+import subway.application.request.DeleteStationRequest;
 import subway.application.response.StationResponse;
 
 import java.net.URI;
@@ -20,13 +21,13 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Long> createStation(@RequestBody CreateStationRequest request) {
-        final Long saveStationId = stationService.saveStation(request);
+    public ResponseEntity<Long> createStation(@RequestBody CreateSectionRequest request) {
+        final Long lineId = stationService.saveSection(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .location(URI.create("/stations/" + saveStationId))
-                .body(saveStationId);
+                .location(URI.create("/lines/" + lineId))
+                .body(lineId);
     }
 
     @GetMapping("/{stationId}")
@@ -36,5 +37,14 @@ public class StationController {
         return ResponseEntity
                 .status(HttpStatus.OK)
                 .body(response);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteStation(@RequestBody DeleteStationRequest request) {
+        stationService.deleteByStationNameAndLineName(request);
+
+        return ResponseEntity
+                .status(HttpStatus.NO_CONTENT)
+                .build();
     }
 }

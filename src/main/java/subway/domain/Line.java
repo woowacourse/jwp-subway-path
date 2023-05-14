@@ -43,6 +43,10 @@ public class Line {
         sections.addSection(section);
     }
 
+    public void removeSection(final Station station) {
+        sections.removeStation(station);
+    }
+
     public List<Station> getAllStations() {
         return sections.collectAllStations();
     }
@@ -74,5 +78,15 @@ public class Line {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color, sections);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", sections=" + sections +
+                '}';
     }
 }
