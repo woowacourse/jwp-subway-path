@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.LineCreationDto;
 import subway.application.dto.StationAdditionToLineDto;
-import subway.application.dto.StationRemovalFromLineDto;
+import subway.application.dto.StationDeletionFromLineDto;
 import subway.domain.*;
 import subway.exception.LineNotFoundException;
 import subway.repository.LineRepository;
@@ -49,12 +49,16 @@ public class LineService {
         return stationService.findStationByName(stationName);
     }
 
-    public void removeStationFromLine(StationRemovalFromLineDto stationRemovalFromLineDto) {
-        Station stationToDelete = stationService.findStationById(stationRemovalFromLineDto.getStationId());
+    public void deleteStationFromLine(StationDeletionFromLineDto stationDeletionFromLineDto) {
+        Station stationToDelete = stationService.findStationById(stationDeletionFromLineDto.getStationId());
 
-        final Line line = findLineOrThrow(stationRemovalFromLineDto.getLineId());
+        final Line line = findLineOrThrow(stationDeletionFromLineDto.getLineId());
         line.deleteStation(stationToDelete);
-        lineRepository.updateLine(line);
+        if (line.isLineEmpty()) {
+            lineRepository.deleteLine(line);
+        } else {
+            lineRepository.updateLine(line);
+        }
     }
 
     public long createLine(LineCreationDto lineCreationDto) {

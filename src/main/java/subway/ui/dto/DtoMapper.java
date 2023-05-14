@@ -2,7 +2,7 @@ package subway.ui.dto;
 
 import subway.application.dto.LineCreationDto;
 import subway.application.dto.StationAdditionToLineDto;
-import subway.application.dto.StationRemovalFromLineDto;
+import subway.application.dto.StationDeletionFromLineDto;
 
 public class DtoMapper {
 
@@ -28,7 +28,7 @@ public class DtoMapper {
         );
     }
 
-    public static StationRemovalFromLineDto toStationRemovalFromLineDto(long lineId, long stationId) {
-        return new StationRemovalFromLineDto(lineId, stationId);
+    public static StationDeletionFromLineDto toStationRemovalFromLineDto(long lineId, long stationId) {
+        return new StationDeletionFromLineDto(lineId, stationId);
     }
 }

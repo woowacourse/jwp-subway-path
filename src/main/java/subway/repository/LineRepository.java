@@ -115,4 +115,8 @@ public class LineRepository {
         return stationRepository.findStationById(stationId)
                                 .orElseThrow(() -> new NoSuchElementException("디버깅: Section에 존재하지만 Station 테이블에 없는 id입니다. id: " + stationId));
     }
+
+    public void deleteLine(Line lineToDelete) {
+        lineDao.deleteLineByName(lineToDelete.getName());
+    }
 }

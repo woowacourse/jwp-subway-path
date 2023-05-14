@@ -69,6 +69,7 @@ public class Line {
     public void deleteStation(Station stationToDelete) {
         validateStationExist(stationToDelete);
 
+        deleteLineIfAllRemoved();
         List<AbstractSection> sectionsToMerge = findSectionsToMerge(stationToDelete);
         mergeSections(sectionsToMerge);
     }
@@ -76,6 +77,12 @@ public class Line {
     private void validateStationExist(Station stationToDelete) {
         if (!isStationExist(stationToDelete)) {
             throw new StationNotFoundException("노선에 존재하지 않는 역입니다.");
+        }
+    }
+
+    private void deleteLineIfAllRemoved() {
+        if (getSections().size() == 2) {
+            sections.removeIf(section -> section.getClass() == MiddleSection.class);
         }
     }
 
@@ -102,6 +109,10 @@ public class Line {
     private boolean isStationExist(Station station) {
         return sections.stream()
                        .anyMatch(section -> section.contains(station));
+    }
+
+    public boolean isLineEmpty() {
+        return getSections().size() == 0;
     }
 
     public String getName() {

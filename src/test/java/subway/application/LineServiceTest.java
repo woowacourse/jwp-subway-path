@@ -7,7 +7,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.dto.LineCreationDto;
 import subway.application.dto.StationAdditionToLineDto;
-import subway.application.dto.StationRemovalFromLineDto;
+import subway.application.dto.StationDeletionFromLineDto;
 import subway.domain.*;
 import subway.exception.NameLengthException;
 import subway.repository.LineRepository;
@@ -111,7 +111,7 @@ class LineServiceTest {
     @Test
     @DisplayName("노선에서 상행 종점을 제거할 수 있다")
     void removeStationFromLine1() {
-        final StationRemovalFromLineDto stationRemovalFromLineDto = new StationRemovalFromLineDto(1L, 1L);
+        final StationDeletionFromLineDto stationDeletionFromLineDto = new StationDeletionFromLineDto(1L, 1L);
         final Line line = new Line(LINE_NUMBER_TWO);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
@@ -119,7 +119,7 @@ class LineServiceTest {
 
         final LineService lineService = new LineService(lineRepository, stationService);
 
-        lineService.removeStationFromLine(stationRemovalFromLineDto);
+        lineService.deleteStationFromLine(stationDeletionFromLineDto);
 
         assertThat(line.getSections()).contains(
                 new MiddleSection(JAMSIL_STATION, JAMSIL_NARU_STATION, DISTANCE)
@@ -129,7 +129,7 @@ class LineServiceTest {
     @Test
     @DisplayName("노선에서 중간 역을 제거할 수 있다")
     void removeStationFromLine2() {
-        final StationRemovalFromLineDto stationRemovalFromLineDto = new StationRemovalFromLineDto(1L, 1L);
+        final StationDeletionFromLineDto stationDeletionFromLineDto = new StationDeletionFromLineDto(1L, 1L);
         final Line line = new Line(LINE_NUMBER_TWO);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
@@ -137,7 +137,7 @@ class LineServiceTest {
 
         final LineService lineService = new LineService(lineRepository, stationService);
 
-        lineService.removeStationFromLine(stationRemovalFromLineDto);
+        lineService.deleteStationFromLine(stationDeletionFromLineDto);
 
         assertThat(line.getSections()).contains(
                 new MiddleSection(SULLEUNG_STATION, JAMSIL_NARU_STATION, DISTANCE + DISTANCE)
@@ -147,7 +147,7 @@ class LineServiceTest {
     @Test
     @DisplayName("노선에서 하행 종점을 제거할 수 있다")
     void removeStationFromLine3() {
-        final StationRemovalFromLineDto stationRemovalFromLineDto = new StationRemovalFromLineDto(1L, 1L);
+        final StationDeletionFromLineDto stationDeletionFromLineDto = new StationDeletionFromLineDto(1L, 1L);
         final Line line = new Line(LINE_NUMBER_TWO);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
@@ -155,7 +155,7 @@ class LineServiceTest {
 
         final LineService lineService = new LineService(lineRepository, stationService);
 
-        lineService.removeStationFromLine(stationRemovalFromLineDto);
+        lineService.deleteStationFromLine(stationDeletionFromLineDto);
 
         assertThat(line.getSections()).contains(
                 new MiddleSection(SULLEUNG_STATION, JAMSIL_STATION, DISTANCE)

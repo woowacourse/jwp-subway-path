@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.application.dto.LineCreationDto;
 import subway.application.dto.StationAdditionToLineDto;
-import subway.application.dto.StationRemovalFromLineDto;
+import subway.application.dto.StationDeletionFromLineDto;
 import subway.ui.dto.DtoMapper;
 import subway.ui.dto.LineCreationRequest;
 import subway.ui.dto.LineDto;
@@ -54,9 +54,9 @@ public class LineController {
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> removeStationFromLine(@PathVariable @NotNull Long lineId, @PathVariable @NotNull Long stationId) {
-        final StationRemovalFromLineDto stationRemovalFromLineDto = DtoMapper.toStationRemovalFromLineDto(lineId, stationId);
-        lineService.removeStationFromLine(stationRemovalFromLineDto);
+    public ResponseEntity<Void> deleteStationFromLine(@PathVariable @NotNull Long lineId, @PathVariable @NotNull Long stationId) {
+        final StationDeletionFromLineDto stationDeletionFromLineDto = DtoMapper.toStationRemovalFromLineDto(lineId, stationId);
+        lineService.deleteStationFromLine(stationDeletionFromLineDto);
 
         return ResponseEntity.noContent().build();
     }

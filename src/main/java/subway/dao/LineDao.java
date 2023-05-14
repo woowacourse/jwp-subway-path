@@ -61,4 +61,9 @@ public class LineDao {
             return Optional.empty();
         }
     }
+
+    public void deleteLineByName(String lineName) {
+        String sql = "delete from LINE where name = ?";
+        jdbcTemplate.update(sql, lineName);
+    }
 }

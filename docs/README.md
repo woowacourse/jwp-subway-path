@@ -93,3 +93,4 @@
     - [x] Station을 추가할 때 Upstream과 Downstream이 Section으로 등록되지 않은 경우 예외를 던진다.
   - [x] Station을 삭제할 수 있다.
     - [x] Line에 존재하지 않는 Station을 삭제할 경우 예외를 던진다.
+  - [x] 역이 두개 뿐이면 한 역을 삭제하면 노선 자체를 삭제한다. 
