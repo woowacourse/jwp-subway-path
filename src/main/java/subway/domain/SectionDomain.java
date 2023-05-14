@@ -10,11 +10,22 @@ public class SectionDomain {
     private final StationDomain upStation;
     private final StationDomain downStation;
 
-    public SectionDomain(final Distance distance, final boolean isStart, final StationDomain upStation, final StationDomain downStation) {
+    public SectionDomain(
+            final Distance distance,
+            final boolean isStart,
+            final StationDomain upStation,
+            final StationDomain downStation
+    ) {
         this(null, distance, isStart, upStation, downStation);
     }
 
-    private SectionDomain(final Long id, final Distance distance, final boolean isStart, final StationDomain upStation, final StationDomain downStation) {
+    private SectionDomain(
+            final Long id,
+            final Distance distance,
+            final boolean isStart,
+            final StationDomain upStation,
+            final StationDomain downStation
+    ) {
         validate(upStation, downStation, distance);
         this.id = id;
         this.distance = distance;
@@ -46,9 +57,8 @@ public class SectionDomain {
             final StationDomain downStation,
             final Distance distance
     ) {
-        return new SectionDomain(distance, false, upStation, downStation);
+        return new SectionDomain(distance, true, upStation, downStation);
     }
-
 
     private void validate(final StationDomain upStation, final StationDomain downStation, final Distance distance) {
         if (Objects.isNull(upStation)) {
@@ -62,11 +72,23 @@ public class SectionDomain {
         }
     }
 
-    public boolean isBaseStationExists(final SectionDomain otherSection) {
+    public boolean isBaseStationExist(final SectionDomain otherSection) {
         return upStation.equals(otherSection.upStation)
                 || upStation.equals(otherSection.downStation)
                 || downStation.equals(otherSection.upStation)
                 || downStation.equals(otherSection.downStation);
+    }
+
+    public boolean isSameUpStationBy(final StationDomain otherStation) {
+        return Objects.equals(upStation, otherStation);
+    }
+
+    public boolean isSameDownStationBy(final StationDomain otherStation) {
+        return Objects.equals(downStation, otherStation);
+    }
+
+    public boolean isDistanceLessThan(final SectionDomain otherStation) {
+        return !distance.isOver(otherStation.distance);
     }
 
     public Long getId() {
@@ -100,5 +122,16 @@ public class SectionDomain {
     @Override
     public int hashCode() {
         return Objects.hash(id, distance, isStart, upStation, downStation);
+    }
+
+    @Override
+    public String toString() {
+        return "SectionDomain{" +
+                "id=" + id +
+                ", distance=" + distance +
+                ", isStart=" + isStart +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                '}';
     }
 }
