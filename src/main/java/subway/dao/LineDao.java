@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.LineInfo;
+import subway.domain.Line;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -15,8 +15,8 @@ import java.util.Map;
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-    private final RowMapper<LineInfo> lineRowMapper = (rs, rowNum) ->
-            new LineInfo(
+    private final RowMapper<Line> lineRowMapper = (rs, rowNum) ->
+            new Line(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
@@ -29,27 +29,27 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public LineInfo insert(LineInfo line) {
+    public Line insert(Line line) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", line.getId());
         params.put("name", line.getName());
         params.put("color", line.getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineInfo(lineId, line.getName(), line.getColor());
+        return new Line(lineId, line.getName(), line.getColor());
     }
 
-    public List<LineInfo> findAll() {
+    public List<Line> findAll() {
         String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, lineRowMapper);
     }
 
-    public LineInfo findById(Long id) {
+    public Line findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
     }
 
-    public void update(LineInfo newLine) {
+    public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
     }

@@ -6,7 +6,7 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.Distance;
-import subway.domain.LineInfo;
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.LineSection;
@@ -31,7 +31,7 @@ public class SectionDao {
 
     private final RowMapper<LineSection> lineSectionRowMapper = (rs, rowNum) ->
             new LineSection(
-                    new LineInfo(rs.getLong("section.line_id"),
+                    new Line(rs.getLong("section.line_id"),
                             rs.getString("line.name"),
                             rs.getString("line.color")
                     ),
@@ -66,7 +66,7 @@ public class SectionDao {
         return (long) Objects.requireNonNull(keyHolder.getKeys()).get("id");
     }
 
-    public Map<LineInfo, List<Section>> findSections() {
+    public Map<Line, List<Section>> findSections() {
         String sql =
                 "SELECT section.id, section.line_id, line.name, line.color,  departure_station.id, departure_station.name, arrival_station.id, arrival_station.name, section.distance "
                         + "FROM section "

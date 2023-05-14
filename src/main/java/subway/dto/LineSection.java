@@ -1,21 +1,21 @@
 package subway.dto;
 
-import subway.domain.LineInfo;
+import subway.domain.Line;
 import subway.domain.Section;
 
 public class LineSection {
 
-    private LineInfo lineInfo;
+    private Line line;
 
     private Section section;
 
-    public LineSection(final LineInfo lineInfo, final Section section) {
-        this.lineInfo = lineInfo;
+    public LineSection(final Line line, final Section section) {
+        this.line = line;
         this.section = section;
     }
 
-    public LineInfo getLineInfo() {
-        return lineInfo;
+    public Line getLineInfo() {
+        return line;
     }
 
     public Section getSection() {

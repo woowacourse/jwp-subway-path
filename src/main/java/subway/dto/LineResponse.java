@@ -1,14 +1,14 @@
 package subway.dto;
 
-import subway.domain.LineInfo;
+import subway.domain.Line;
 
 public class LineResponse {
     private Long id;
     private String name;
     private String color;
 
-    public LineResponse(LineInfo lineInfo) {
-        this(lineInfo.getId(), lineInfo.getName(), lineInfo.getColor());
+    public LineResponse(Line line) {
+        this(line.getId(), line.getName(), line.getColor());
     }
 
     public LineResponse(Long id, String name, String color) {
@@ -17,7 +17,7 @@ public class LineResponse {
         this.color = color;
     }
 
-    public static LineResponse of(LineInfo line) {
+    public static LineResponse of(Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor());
     }
 

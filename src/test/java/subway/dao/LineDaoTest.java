@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.LineInfo;
+import subway.domain.Line;
 
 import javax.sql.DataSource;
 
@@ -24,10 +24,10 @@ class LineDaoTest {
     @Test
     void insert() {
         //given
-        LineInfo input = new LineInfo("testName", "testColor");
+        Line input = new Line("testName", "testColor");
 
         //when
-        LineInfo actual = lineDao.insert(input);
+        Line actual = lineDao.insert(input);
 
         //then
         Assertions.assertThat(actual.getId()).isEqualTo(3l);
@@ -47,7 +47,7 @@ class LineDaoTest {
     @Test
     void update() {
         Assertions.assertThatNoException()
-                .isThrownBy(() -> lineDao.update(new LineInfo(1l, "testName1", "testColor1")));
+                .isThrownBy(() -> lineDao.update(new Line(1l, "testName1", "testColor1")));
     }
 
     @Test

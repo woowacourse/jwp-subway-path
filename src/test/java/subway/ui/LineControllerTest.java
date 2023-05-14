@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.Distance;
-import subway.domain.LineInfo;
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.AddStationRequest;
@@ -57,7 +57,7 @@ class LineControllerTest {
     @DisplayName("LineId로 노선을 찾는 테스트")
     void findLineById() {
         List<Section> sections = List.of(new Section(1l, new Station(1l, "a"), new Station(1l, "b"), new Distance(1)));
-        Mockito.lenient().when(lineDao.findById(1l)).thenReturn(new LineInfo(1l, "testName", "testColor"));
+        Mockito.lenient().when(lineDao.findById(1l)).thenReturn(new Line(1l, "testName", "testColor"));
         Mockito.lenient().when(sectionDao.findSectionsByLineId(1l)).thenReturn(sections);
         RestAssured.given()
                 .when().get("/lines/1")
@@ -148,13 +148,13 @@ class LineControllerTest {
         );
     }
 
-    private Map<LineInfo, List<Section>> setMockSectionsMap() {
+    private Map<Line, List<Section>> setMockSectionsMap() {
         List<Section> sections = setMockSectionList();
 
 
-        Map<LineInfo, List<Section>> mockSectionMap = new HashMap<>();
-        mockSectionMap.put(new LineInfo(1l, "1호선", "파랑"), sections);
-        mockSectionMap.put(new LineInfo(2l, "2호선", "초록"), sections);
+        Map<Line, List<Section>> mockSectionMap = new HashMap<>();
+        mockSectionMap.put(new Line(1l, "1호선", "파랑"), sections);
+        mockSectionMap.put(new Line(2l, "2호선", "초록"), sections);
         return mockSectionMap;
     }
 
