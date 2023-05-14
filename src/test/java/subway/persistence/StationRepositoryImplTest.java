@@ -3,6 +3,7 @@ package subway.persistence;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +21,21 @@ class StationRepositoryImplTest {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
+	Station jamsil;
+	Station samsung;
+
+	@BeforeEach
+	void setUp() {
+		jamsil = new Station("잠실");
+		samsung = new Station("삼성");
+		jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0");
+		jdbcTemplate.execute("TRUNCATE TABLE station RESTART IDENTITY");
+		jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1");
+	}
+
 	@DisplayName("역 생성 테스트")
 	@Test
 	void createStation() {
-		// given
-		final Station jamsil = new Station("잠실");
-
 		// when
 		final long jamsilId = repository.createStation(jamsil);
 
@@ -36,10 +46,6 @@ class StationRepositoryImplTest {
 	@DisplayName("역 전체 조회 테스트")
 	@Test
 	void findAll() {
-		// given
-		final Station jamsil = new Station("잠실");
-		final Station samsung = new Station("삼성");
-
 		// when
 		repository.createStation(jamsil);
 		repository.createStation(samsung);
@@ -52,10 +58,6 @@ class StationRepositoryImplTest {
 	@DisplayName("ID로 역 조회 테스트")
 	@Test
 	void findById() {
-		// given
-		final Station jamsil = new Station("잠실");
-
-
 		// when
 		final long stationId = repository.createStation(jamsil);
 		final Station station = repository.findById(stationId);
@@ -68,10 +70,7 @@ class StationRepositoryImplTest {
 	@Test
 	void updateStation() {
 		// given
-		final Station jamsil = new Station("잠실");
 		final long jamsilId = repository.createStation(jamsil);
-
-		final Station samsung = new Station("삼성");
 
 		// when
 		repository.updateStation(jamsilId, samsung);
@@ -85,7 +84,6 @@ class StationRepositoryImplTest {
 	@Test
 	void deleteById() {
 		// given
-		final Station jamsil = new Station("잠실");
 		final long jamsilId = repository.createStation(jamsil);
 
 		// when
