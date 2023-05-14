@@ -3,10 +3,9 @@ package subway.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LinesResponse;
 import subway.entity.LineEntity;
 import subway.repository.LineRepository;
-
-import java.util.List;
 
 @Service
 public class LineService {
@@ -23,8 +22,8 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineEntity> findAll() {
-        return lineRepository.findAll();
+    public LinesResponse findAll() {
+        return LinesResponse.from(lineRepository.findAll());
     }
 
     @Transactional

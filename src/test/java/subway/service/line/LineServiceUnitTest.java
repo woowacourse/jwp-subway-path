@@ -7,6 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LinesResponse;
 import subway.entity.LineEntity;
 import subway.repository.LineRepository;
 import subway.service.LineService;
@@ -47,17 +48,17 @@ class LineServiceUnitTest {
     @DisplayName("모든 노선을 조회한다.")
     void find_all_lines_success() {
         // given
-        List<LineEntity> expectedLines = List.of(createLineEntity(), createLineEntity2());
-        when(lineService.findAll()).thenReturn(expectedLines);
+        List<LineEntity> lineEntities = List.of(createLineEntity(), createLineEntity2());
+        when(lineRepository.findAll()).thenReturn(lineEntities);
 
         // when
-        List<LineEntity> result = lineService.findAll();
+        LinesResponse result = lineService.findAll();
 
         // then
         assertAll(
-                () -> assertThat(result.size()).isEqualTo(2),
-                () -> assertThat(result.get(0).getLineNumber()).isEqualTo(2),
-                () -> assertThat(result.get(1).getLineNumber()).isEqualTo(8)
+                () -> assertThat(result.getLines().size()).isEqualTo(2),
+                () -> assertThat(result.getLines().get(0).getLineNumber()).isEqualTo(2),
+                () -> assertThat(result.getLines().get(1).getLineNumber()).isEqualTo(8)
         );
     }
 

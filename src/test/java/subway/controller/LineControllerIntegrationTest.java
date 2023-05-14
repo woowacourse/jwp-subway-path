@@ -12,14 +12,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LinesResponse;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.station.StationCreateRequest;
-import subway.entity.LineEntity;
 import subway.service.LineService;
 import subway.service.SectionService;
 import subway.service.StationService;
-
-import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -79,10 +77,10 @@ public class LineControllerIntegrationTest {
         response
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("[0].lineId", equalTo(1))
-                .body("[0].lineNumber", equalTo(2))
-                .body("[0].name", equalTo("2호선"))
-                .body("[0].color", equalTo("초록색"));
+                .body("lines[0].lineId", equalTo(1))
+                .body("lines[0].lineNumber", equalTo(2))
+                .body("lines[0].name", equalTo("2호선"))
+                .body("lines[0].color", equalTo("초록색"));
     }
 
     @Test
@@ -130,8 +128,8 @@ public class LineControllerIntegrationTest {
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
-        List<LineEntity> lineEntities = lineService.findAll();
-        assertThat(lineEntities.size()).isEqualTo(0);
+        LinesResponse lineEntities = lineService.findAll();
+        assertThat(lineEntities.getLines().size()).isEqualTo(0);
     }
 
 }

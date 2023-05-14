@@ -3,14 +3,13 @@ package subway.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LinesResponse;
 import subway.dto.station.LineMapResponse;
-import subway.entity.LineEntity;
 import subway.service.LineService;
 import subway.service.SubwayMapService;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
@@ -31,12 +30,12 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineEntity>> findAllLines() {
+    public ResponseEntity<LinesResponse> findAllLines() {
         return ResponseEntity.ok(lineService.findAll());
     }
 
     @GetMapping("/{lineNumber}")
-    public ResponseEntity<LineMapResponse> findLineById(@PathVariable final Long lineNumber) {
+    public ResponseEntity<LineMapResponse> findLineMapById(@PathVariable final Long lineNumber) {
         return ResponseEntity.ok().body(subwayMapService.showLineMap(lineNumber));
     }
 

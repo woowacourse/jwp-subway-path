@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
-import subway.entity.StationEntity;
 import subway.service.StationService;
 
 import javax.validation.Valid;
@@ -22,7 +21,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationEntity> createStation(@RequestBody @Valid final StationCreateRequest stationCreateRequest) {
+    public ResponseEntity<Void> createStation(@RequestBody @Valid final StationCreateRequest stationCreateRequest) {
         long id = stationService.saveStation(stationCreateRequest);
         return ResponseEntity.created(URI.create("/stations/" + id)).build();
     }

@@ -9,10 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.line.LineCreateRequest;
-import subway.entity.LineEntity;
+import subway.dto.line.LinesResponse;
 import subway.service.LineService;
-
-import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -42,8 +40,8 @@ public class LineServiceIntegrationTest {
         lineService.saveLine(req);
 
         // then
-        List<LineEntity> lineEntities = lineService.findAll();
-        assertThat(lineEntities.size()).isEqualTo(1);
+        LinesResponse lineEntities = lineService.findAll();
+        assertThat(lineEntities.getLines().size()).isEqualTo(1);
     }
 
     @Test
@@ -57,13 +55,13 @@ public class LineServiceIntegrationTest {
         lineService.saveLine(red);
 
         // when
-        List<LineEntity> result = lineService.findAll();
+        LinesResponse result = lineService.findAll();
 
         // then
         assertAll(
-                () -> assertThat(result.size()).isEqualTo(2),
-                () -> assertThat(result.get(0).getLineNumber()).isEqualTo(green.getLineNumber()),
-                () -> assertThat(result.get(1).getLineNumber()).isEqualTo(red.getLineNumber())
+                () -> assertThat(result.getLines().size()).isEqualTo(2),
+                () -> assertThat(result.getLines().get(0).getLineNumber()).isEqualTo(green.getLineNumber()),
+                () -> assertThat(result.getLines().get(1).getLineNumber()).isEqualTo(red.getLineNumber())
         );
     }
 
@@ -78,7 +76,7 @@ public class LineServiceIntegrationTest {
         lineService.deleteLineById(id);
 
         // then
-        List<LineEntity> result = lineService.findAll();
-        assertThat(result.size()).isEqualTo(0);
+        LinesResponse result = lineService.findAll();
+        assertThat(result.getLines().size()).isEqualTo(0);
     }
 }
