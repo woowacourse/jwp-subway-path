@@ -16,12 +16,10 @@ import subway.repository.LineRepository;
 public class SectionService {
 
     private final LineRepository lineRepository;
-    private final SectionDao sectionDao;
     private final StationDao stationDao;
 
-    public SectionService(final LineRepository lineRepository, final SectionDao sectionDao, final StationDao stationDao) {
+    public SectionService(final LineRepository lineRepository, final StationDao stationDao) {
         this.lineRepository = lineRepository;
-        this.sectionDao = sectionDao;
         this.stationDao = stationDao;
     }
 
@@ -30,12 +28,8 @@ public class SectionService {
         Station upwardStation = findStationByStationId(request.getUpwardStationId());
         Station downwardStation = findStationByStationId(request.getDownwardStationId());
 
-        //todo : 일부만 지우고 삽입하기
         line.addSection(upwardStation, downwardStation, request.getDistance());
-        sectionDao.deleteByLineId(line.getId());
-        for (Section section : line.getSections()) {
-            sectionDao.insert(section, line.getId());
-        }
+        lineRepository.update(line);
     }
 
     private Line findLineByLineId(final Long lineId) {
@@ -52,11 +46,7 @@ public class SectionService {
         Line line = findLineByLineId(lineId);
         Station station = findStationByStationId(stationId);
 
-        //todo : 일부만 지우고 삽입하기
         line.removeStation(station);
-        sectionDao.deleteByLineId(line.getId());
-        for (Section section : line.getSections()) {
-            sectionDao.insert(section, line.getId());
-        }
+        lineRepository.update(line);
     }
 }

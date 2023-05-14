@@ -52,6 +52,10 @@ public class LineRepository {
 
     public void update(final Line line) {
         lineDao.update(Line.toEntity(line));
+        sectionDao.deleteByLineId(line.getId());
+        for (Section section : line.getSections()) {
+            sectionDao.insert(section, line.getId());
+        }
     }
 
     public void deleteById(final long id) {
