@@ -1,4 +1,4 @@
-package subway.controller;
+package subway.controller.station;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import subway.controller.StationController;
 import subway.domain.subway.Station;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationEditRequest;

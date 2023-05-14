@@ -1,4 +1,4 @@
-package subway.controller;
+package subway.controller.line;
 
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
