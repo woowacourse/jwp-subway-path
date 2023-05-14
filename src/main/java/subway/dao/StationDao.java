@@ -1,14 +1,15 @@
 package subway.dao;
 
 import subway.domain.Station;
+import subway.entity.StationEntity;
 
 import java.util.List;
 
 public interface StationDao {
 
-    Station saveStation(Station station);
+    StationEntity saveStation(StationEntity stationEntity);
 
-    List<Station> findAll();
+    List<StationEntity> findAll();
 
-    Station findById(Long id);
+    StationEntity findById(Long id);
 }

@@ -8,48 +8,49 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
+import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
 public class DbStationDao implements StationDao {
 
-    public static final RowMapper<Station> STATION_ROW_MAPPER = (resultSet, rowNum) -> new Station(
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertStation;
+    public final RowMapper<StationEntity> rowMapper = (resultSet, rowNum) -> new StationEntity(
             resultSet.getLong("id"),
             resultSet.getString("name")
     );
-    private final JdbcTemplate jdbcTemplate;
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final SimpleJdbcInsert insertStation;
 
     public DbStationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
-        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         this.insertStation = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
 
     @Override
-    public Station saveStation(Station station) {
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(station);
-        final long newId = insertStation.executeAndReturnKey(parameters).longValue();
-        return new Station(newId, station.getName());
+    public StationEntity saveStation(StationEntity stationEntity) {
+        Map<String, Object> parameters = new HashMap<>(1);
+        parameters.put("name", stationEntity.getName());
+
+        final long id = insertStation.executeAndReturnKey(parameters).longValue();
+        return new StationEntity(id, stationEntity.getName());
     }
 
     @Override
-    public List<Station> findAll() {
+    public List<StationEntity> findAll() {
         final String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, STATION_ROW_MAPPER);
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     @Override
-    public Station findById(final Long id) {
-        final String sql = "select * from STATION WHERE id = :id";
-        final Map<String, Long> parameter = Map.of("id", id);
-        return namedParameterJdbcTemplate.queryForObject(sql, parameter, STATION_ROW_MAPPER);
+    public StationEntity findById(final Long id) {
+        final String sql = "select * from STATION WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 }
 
