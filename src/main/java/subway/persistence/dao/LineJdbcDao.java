@@ -53,7 +53,7 @@ public class LineJdbcDao implements LineDao {
 
     @Override
     public Optional<LineEntity> findById(final Long lineId) {
-        String sql = "select * from station where id = ?";
+        String sql = "select * from line where id = ?";
 
         try {
             LineEntity findByLine = jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
