@@ -3,52 +3,26 @@ package subway.domain;
 import java.util.Objects;
 
 public class Section {
-    private final int distance;
-    private final Station departure;
-    private final Station arrival;
-    private Line line;
+    private final Station up;
+    private final Station down;
+    private final Distance distance;
 
-    public Section(int distance, Station departure, Station arrival, Line line) {
+    public Section(Station up, Station down, Distance distance) {
         this.distance = distance;
-        this.departure = departure;
-        this.arrival = arrival;
-        this.line = line;
+        this.up = up;
+        this.down = down;
     }
 
-    public Section getReverse() {
-        return new Section(distance, arrival, departure, line);
+    public Section connectToUp(Station station, Distance distance) {
+        return new Section(station, up, distance);
     }
 
-    public boolean LineEquals(Section other) {
-        return line.equals(other.getLine());
+    public Section connectToDown(Station station, Distance distance) {
+        return new Section(down, station, distance);
     }
 
-    public boolean isDeparture(Station station) {
-        return departure.equals(station);
-    }
-
-    public boolean isArrival(Station station) {
-        return arrival.getName().equals(station.getName());
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public Station getDeparture() {
-        return departure;
-    }
-
-    public Station getArrival() {
-        return arrival;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public void setLineId(Long id) {
-        line.setId(id);
+    public Distance subDistance(Distance distance) {
+        return this.distance.sub(distance);
     }
 
     @Override
@@ -56,11 +30,24 @@ public class Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return distance == section.distance && Objects.equals(departure, section.departure) && Objects.equals(arrival, section.arrival) && Objects.equals(line, section.line);
+        return Objects.equals(distance, section.distance) && Objects.equals(up, section.up) && Objects.equals(down, section.down);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(distance, departure, arrival, line);
+        return Objects.hash(up, down, distance);
     }
+
+    public Station getUp() {
+        return up;
+    }
+
+    public Station getDown() {
+        return down;
+    }
+
+    public Distance getDistance() {
+        return distance;
+    }
+
 }

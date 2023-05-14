@@ -1,5 +1,7 @@
 package subway.dto;
 
+import java.util.Arrays;
+
 public enum CreateType {
     INIT("init"),
     UP("up"),
@@ -10,5 +12,12 @@ public enum CreateType {
 
     CreateType(String value) {
         this.value = value;
+    }
+
+    public static CreateType from(String type) {
+        return Arrays.stream(values())
+                .filter(createType -> createType.value.equals(type))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("잘못된 생성 타입입니다."));
     }
 }

@@ -1,9 +1,8 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.dao.entity.LineEntity;
 import subway.domain.Line;
+import subway.domain.LineRepository;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 
@@ -12,49 +11,50 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(final LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+
+    public LineService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    public LineResponse createLine(final LineRequest request) {
+        Line line = new Line(request);
+        Line savedLine = lineRepository.save(line);
+
+        return LineResponse.of(savedLine);
+    }
+
+    public void save(Line line) {
+        lineRepository.save(line);
+    }
+
+    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
+        Line line = findById(id);
+
+        line.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+
+        lineRepository.save(line);
+    }
+
+    public void deleteLineById(final Long id) {
+        lineRepository.findById(id).ifPresent(lineRepository::delete);
     }
 
     public List<LineResponse> findLineResponses() {
-        final List<Line> persistLines = findLines();
+        final List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll().stream()
-                .map(LineEntity::toLine)
-                .collect(Collectors.toList());
-    }
-
     public LineResponse findLineResponseById(final Long id) {
-        final Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.of(findById(id));
     }
 
-    public Line findLineById(final Long id) {
-        return lineDao.findById(id);
-    }
-
-    public Line findLineByName(final String name) {
-        return lineDao.findByName(name);
-    }
-
-    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        lineDao.update(id, new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(final Long id) {
-        lineDao.deleteById(id);
+    public Line findById(Long id) {
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 라인이 존재하지 않습니다."));
     }
 
 }

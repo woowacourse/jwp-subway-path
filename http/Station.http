@@ -41,60 +41,39 @@ Content-Type: application/json
 }
 
 ### 초기 두 역 등록
-PATCH http://localhost:8080/lines/3/stations/2?type=init
+PATCH http://localhost:8080/lines/1/stations/1?type=init
 Content-Type: application/json
 
 {
-  "nextStationId": "3",
+  "nextStationId": "2",
   "distance": "3"
-}
-
-### 초기 두 역 등록
-PATCH http://localhost:8080/lines/3/stations/2?type=init
-Content-Type: application/json
-
-{
-  "nextStationId": "3",
-  "distance": ""
 }
 
 ### 상행 종점 등록
-PATCH http://localhost:8080/lines/5/stations/8?type=up
+PATCH http://localhost:8080/lines/2/stations/3?type=up
 Content-Type: application/json
 
 {
-  "nextStationId": "6",
   "distance": "1"
 }
 
-### 초기 두 역 등록
-PATCH http://localhost:8080/lines/9/stations/13?type=init
+
+### 하행 종점 등록
+PATCH http://localhost:8080/lines/3/stations/4?type=down
 Content-Type: application/json
 
 {
-  "nextStationId": "16",
-  "distance": "3"
+  "distance": "1"
 }
 
 ### 중간역 등록
-PATCH http://localhost:8080/lines/7/stations/15?type=mid
+PATCH http://localhost:8080/lines/4/stations/5?type=mid
 Content-Type: application/json
 
 {
-  "nextStationId": "13",
   "distance": "1",
-  "prevStationId": "12"
+  "prevStationId": "1"
 }
-
-### 하행 종점 등록
-PATCH http://localhost:8080/lines/8/stations/14?type=down
-Content-Type: application/json
-
-{
-  "prevStationId": "16",
-  "distance": "1"
-}
-
 
 ### 역 삭제
-DELETE http://localhost:8080/stations/4
+DELETE http://localhost:8080/stations/5

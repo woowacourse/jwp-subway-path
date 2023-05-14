@@ -1,22 +1,47 @@
 package subway.domain;
 
-import java.util.Objects;
+import subway.dto.request.LineRequest;
 
 public class Line {
-    private Long id;
+    private final Long id;
     private String name;
     private String color;
+    private final Sections sections;
 
-    public Line() {
-    }
-
-    public Line(final String name, final String color) {
+    public Line(Long id, String name, String color, Sections sections) {
+        this.id = id;
         this.name = name;
         this.color = color;
+        this.sections = sections;
     }
 
-    public Line(final Long id, final String name, final String color) {
-        this.id = id;
+    public Line(LineRequest request) {
+        this(null, request.getName(), request.getColor(), new Sections());
+    }
+
+    public Line(Long id, String name, String color) {
+        this(id, name, color, new Sections());
+    }
+
+
+    public void addInitStations(Station up, Station down, int distance) {
+        sections.addInitStations(up, down, new Distance(distance));
+    }
+
+
+    public void addUpEndpoint(Station station, int distance) {
+        sections.addUpEndpoint(station, new Distance(distance));
+    }
+
+    public void addDownEndpoint(Station station, int distance) {
+        sections.addDownEndpoint(station, new Distance(distance));
+    }
+
+    public void addIntermediate(Station station, Station prevStation, int distance) {
+        sections.addIntermediate(station, prevStation, new Distance(distance));
+    }
+
+    public void update(String name, String color) {
         this.name = name;
         this.color = color;
     }
@@ -33,24 +58,7 @@ public class Line {
         return color;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Sections getSections() {
+        return sections;
     }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final Line line = (Line) o;
-        if (id == null || line.id == null) {
-            return Objects.equals(name, line.name) && Objects.equals(color, line.color);
-        }
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
-    }
-
 }

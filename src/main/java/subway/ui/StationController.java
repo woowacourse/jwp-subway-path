@@ -31,8 +31,8 @@ public class StationController {
     }
 
     @GetMapping("/lines/{id}")
-    public ResponseEntity<List<StationResponse>> showStationsByLineId(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(stationService.findStationsByLineId(id));
+    public ResponseEntity<StationResponse> showStationsByLineId(@PathVariable final Long id) {
+        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
     }
 
     @GetMapping("/{id}")
@@ -52,9 +52,4 @@ public class StationController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler
-    public ResponseEntity<Void> handleSQLException(Exception e) {
-        e.printStackTrace();
-        return ResponseEntity.badRequest().build();
-    }
 }

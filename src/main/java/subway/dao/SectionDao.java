@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Section;
 
 import java.util.List;
 
@@ -12,23 +11,25 @@ import java.util.List;
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
+
     private final RowMapper<SectionEntity> sectionEntityRowMapper = (rs, rowNum) -> {
-        Long id = rs.getLong("id");
+        Long sectionId = rs.getLong("section_id");
+        Long upStationId = rs.getLong("up_station_id");
+        Long downStationId = rs.getLong("down_station_id");
         int distance = rs.getInt("distance");
-        Long departure = rs.getLong("departure_id");
-        Long arrival = rs.getLong("arrival_id");
         Long lineId = rs.getLong("line_id");
-        return new SectionEntity(id, distance, departure, arrival, lineId);
+        int listOrder = rs.getInt("list_order");
+        return new SectionEntity(sectionId, upStationId, downStationId, distance, lineId, listOrder);
     };
 
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insertSection(final Section section) {
-        final String sql = "INSERT INTO section(departure_id, arrival_id, distance, line_id) VALUES (?, ?, ?, ?)";
+    public void insertSection(final SectionEntity entity) {
+        final String sql = "INSERT INTO section(up_station_id, down_station_id, distance, line_id, list_order) VALUES (?, ?, ?, ?, ?)";
 
-        jdbcTemplate.update(sql, section.getDeparture().getId(), section.getArrival().getId(), section.getDistance(), section.getLine().getId());
+        jdbcTemplate.update(sql, entity.getUpStationId(), entity.getDownStationId(), entity.getDistance(), entity.getLineId(), entity.getListOrder());
     }
 
     public List<SectionEntity> findByLineId(final Long lineId) {
@@ -37,27 +38,9 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
     }
 
-    public SectionEntity findByStationIds(final Long departureId, final Long arrivalId) {
-        final String sql = "SELECT * FROM section WHERE departure_id = ? AND arrival_id = ?";
+    public void deleteByLineId(Long lineId) {
+        String sql = "DELETE FROM section WHERE line_id = ?";
 
-        return jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, departureId, arrivalId);
-    }
-
-    public void update(final Section before, final Section after) {
-        final String sql = "UPDATE section SET distance = ?, departure_id = ?, arrival_id = ? WHERE departure_id = ? AND arrival_id = ?";
-
-        jdbcTemplate.update(sql, after.getDistance(), after.getDeparture().getId(), after.getArrival().getId(), before.getDeparture().getId(), before.getArrival().getId());
-    }
-
-    public List<SectionEntity> findAll() {
-        final String sql = "SELECT * FROM section";
-
-        return jdbcTemplate.query(sql, sectionEntityRowMapper);
-    }
-
-    public void deleteAll() {
-        String sql = "DELETE FROM section";
-
-        jdbcTemplate.update(sql);
+        jdbcTemplate.update(sql, lineId);
     }
 }

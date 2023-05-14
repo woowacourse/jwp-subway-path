@@ -19,16 +19,15 @@ public class StationDao {
 
     private final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
-                    rs.getLong("id"),
+                    rs.getLong("station_id"),
                     rs.getString("name")
             );
-
 
     public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+                .usingGeneratedKeyColumns("station_id");
     }
 
     public Station insert(final Station station) {
@@ -43,7 +42,7 @@ public class StationDao {
     }
 
     public Optional<Station> findById(final Long id) {
-        final String sql = "select * from STATION where id = ?";
+        final String sql = "select * from STATION where station_id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (EmptyResultDataAccessException e) {
@@ -52,22 +51,17 @@ public class StationDao {
     }
 
     public void update(final Station newStation) {
-        final String sql = "update STATION set name = ? where id = ?";
+        final String sql = "update STATION set name = ? where station_id = ?";
         jdbcTemplate.update(sql, newStation.getName(), newStation.getId());
     }
 
     public void deleteById(final Long id) {
-        final String sql = "delete from STATION where id = ?";
+        final String sql = "delete from STATION where station_id = ?";
         jdbcTemplate.update(sql, id);
     }
 
     public Station findByName(final String name) {
         final String sql = "select * from STATION where name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
-    }
-
-    public void deleteAll() {
-        final String sql = "delete from STATION";
-        jdbcTemplate.update(sql);
     }
 }
