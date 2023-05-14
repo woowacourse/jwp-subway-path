@@ -13,6 +13,7 @@ import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
 import subway.service.StationService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -26,7 +27,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@Valid @RequestBody StationRequest stationRequest) {
         StationResponse station = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
     }
@@ -37,18 +38,18 @@ public class StationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
+    public ResponseEntity<StationResponse> showStation(@PathVariable long id) {
         return ResponseEntity.ok().body(stationService.findStationResponseById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
+    public ResponseEntity<Void> updateStation(@PathVariable long id, @Valid @RequestBody StationRequest stationRequest) {
         stationService.updateStation(id, stationRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable long id) {
         stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }

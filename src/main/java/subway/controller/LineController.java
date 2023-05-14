@@ -13,6 +13,7 @@ import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 import subway.service.LineService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -38,18 +39,18 @@ public class LineController {
     }
 
     @GetMapping("/{lineId}")
-    public ResponseEntity<LineResponse> findLineById(@PathVariable Long lineId) {
+    public ResponseEntity<LineResponse> findLineById(@PathVariable long lineId) {
         return ResponseEntity.ok().body(lineService.findLineById(lineId));
     }
 
     @PutMapping("/{lineId}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long lineId, @RequestBody LineRequest lineUpdateRequest) {
+    public ResponseEntity<Void> updateLine(@PathVariable long lineId, @Valid @RequestBody LineRequest lineUpdateRequest) {
         lineService.updateLine(lineId, lineUpdateRequest);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{lineId}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
+    public ResponseEntity<Void> deleteLine(@PathVariable long lineId) {
         lineService.deleteLineById(lineId);
         return ResponseEntity.noContent().build();
     }

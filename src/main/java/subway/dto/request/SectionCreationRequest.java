@@ -1,13 +1,18 @@
 package subway.dto.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class SectionCreationRequest {
 
+    @NotNull(message = "노선의 id를 입력해야 합니다.")
     private Long lineId;
+    @NotNull(message = "상행 방향 역의 id를 입력해야 합니다.")
     private Long upwardStationId;
+    @NotNull(message = "하행 방향 역의 id를 입력해야 합니다.")
     private Long downwardStationId;
-    @Positive
+    @Positive(message = "두 역 사이의 거리는 양의 정수여야 합니다.")
     private Integer distance;
 
     private SectionCreationRequest() {

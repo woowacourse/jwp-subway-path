@@ -4,7 +4,6 @@ import java.util.Objects;
 
 public class Distance {
 
-    //todo :  null - 종점역 과 같은 경우에는 distance를 null로 해야하나 0으로 해야하나
     private final Integer distance;
 
     private Distance(Integer distance) {
