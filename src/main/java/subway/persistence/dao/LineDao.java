@@ -30,9 +30,10 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public long insert(LineEntity lineEntity) {
+    public LineEntity insert(LineEntity lineEntity) {
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(lineEntity);
-        return simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
+        long savedId = simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
+        return findById(savedId);
     }
 
     public LineEntity findById(Long id) {
@@ -52,7 +53,7 @@ public class LineDao {
         return namedParameterJdbcTemplate.query(sql, rowMapper);
     }
 
-    public void update(LineEntity lineEntity) {
+    public LineEntity update(LineEntity lineEntity) {
         String sql = "UPDATE line SET name=:name, upward_terminus=:upwardTerminus, downward_terminus=:downwardTerminus WHERE id=:id";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
                 .addValue("name", lineEntity.getName())
@@ -60,5 +61,6 @@ public class LineDao {
                 .addValue("downwardTerminus", lineEntity.getDownwardTerminus())
                 .addValue("id", lineEntity.getId());
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
+        return findById(lineEntity.getId());
     }
 }

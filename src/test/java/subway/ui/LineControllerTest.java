@@ -55,9 +55,12 @@ public class LineControllerTest {
         String jsonRequest = objectMapper.writeValueAsString(lineSaveRequest);
 
         mockMvc.perform(post("/lines")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonRequest)
-        ).andExpect(status().isCreated());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(jsonPath("$.name").value("2호선"))
+                .andExpect(jsonPath("$.sections[0].upwardStation").value("잠실역"))
+                .andExpect(jsonPath("$.sections[0].downwardStation").value("몽촌토성역"))
+                .andExpect(status().isCreated());
     }
 
     @DisplayName("노선에 역 한개를 등록한다.")
@@ -72,9 +75,9 @@ public class LineControllerTest {
         String jsonRequest = objectMapper.writeValueAsString(stationAddToLineRequest);
 
         mockMvc.perform(post("/lines/1/station")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonRequest)
-        ).andExpect(status().isOk());
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
+                .andExpect(status().isOk());
     }
 
     @DisplayName("노선에 포함된 역 한 개를 제외한다.")

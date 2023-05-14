@@ -85,6 +85,20 @@ HTTP/1.1 201 CREATED
 Content-Type: application/json
 Location: /lines/1
 ```
+```json
+{
+    "id": 5,
+    "name": "2호선",
+    "sections": [
+        {
+            "id": 9,
+            "upwardStation": "잠실역",
+            "downwardStation": "몽촌토성역",
+            "distance": 5
+        }
+    ]
+}
+```
 
 ### ✅ POST /lines/{line_id}/station
 - 노선에 역 한 개를 등록합니다.
@@ -99,7 +113,7 @@ Host: localhost:8080
 ```
 ```json
 {
-    "station": "잠실역",
+    "station": "강남역",
     "adjacent_station": "몽촌토성역",
     "add_direction": "상행", // "상행" 또는 "하행" 입력
     "distance": 3
@@ -110,6 +124,26 @@ Host: localhost:8080
 ```text
 HTTP/1.1 200 OK
 Content-Type: application/json
+```
+```json
+{
+    "id": 5,
+    "name": "2호선",
+    "sections": [
+        {
+            "id": 9,
+            "upwardStation": "잠실역",
+            "downwardStation": "강남역",
+            "distance": 2
+        },
+        {
+            "id": 10,
+            "upwardStation": "강남역",
+            "downwardStation": "몽촌토성역",
+            "distance": 3
+        }
+    ]
+}
 ```
 
 ### ✅ Delete /lines/{line_id}/station

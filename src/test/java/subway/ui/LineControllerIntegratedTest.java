@@ -51,6 +51,9 @@ public class LineControllerIntegratedTest {
                 .body(lineSaveRequest)
                 .when().post("/lines")
                 .then().log().all()
+                .body("name", is("2호선"))
+                .body("sections[0].upwardStation", is("잠실역"))
+                .body("sections[0].downwardStation", is("몽촌토성역"))
                 .statusCode(HttpStatus.CREATED.value());
     }
 
@@ -76,6 +79,11 @@ public class LineControllerIntegratedTest {
                 .body(stationAddToLineRequest)
                 .when().post("/lines/" + lineResponse.getId() + "/station")
                 .then().log().all()
+                .body("name", is("2호선"))
+                .body("sections[0].upwardStation", is("잠실역"))
+                .body("sections[0].downwardStation", is("강남역"))
+                .body("sections[1].upwardStation", is("강남역"))
+                .body("sections[1].downwardStation", is("몽촌토성역"))
                 .statusCode(HttpStatus.OK.value());
     }
 

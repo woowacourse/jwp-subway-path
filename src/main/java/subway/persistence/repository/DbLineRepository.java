@@ -25,17 +25,17 @@ public class DbLineRepository implements LineRepository {
     }
 
     @Override
-    public long create(Line line) {
+    public Line create(Line line) {
         LineEntity lineEntityToSave = new LineEntity(
                 line.getName(),
                 line.getUpwardTerminus().getName(),
                 line.getDownwardTerminus().getName()
         );
-        long lineId = lineDao.insert(lineEntityToSave);
+        LineEntity lineEntityAfterSave = lineDao.insert(lineEntityToSave);
 
         Section section = line.getSections().get(0);
-        createSection(lineId, section);
-        return lineId;
+        createSection(lineEntityAfterSave.getId(), section);
+        return findById(lineEntityAfterSave.getId());
     }
 
     @Override
@@ -59,20 +59,21 @@ public class DbLineRepository implements LineRepository {
     }
 
     @Override
-    public void update(Line line) {
+    public Line update(Line line) {
         LineEntity lineEntityToUpdate = new LineEntity(
                 line.getId(),
                 line.getName(),
                 line.getUpwardTerminus().getName(),
                 line.getDownwardTerminus().getName()
         );
-        lineDao.update(lineEntityToUpdate);
+        LineEntity lineEntityAfterUpdate = lineDao.update(lineEntityToUpdate);
 
-        sectionDao.deleteAllByLineId(line.getId());
+        sectionDao.deleteAllByLineId(lineEntityAfterUpdate.getId());
 
         for (Section section : line.getSections()) {
             createSection(line.getId(), section);
         }
+        return findById(lineEntityAfterUpdate.getId());
     }
 
     private void createSection(long lineId, Section section) {

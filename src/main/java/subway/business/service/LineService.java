@@ -21,7 +21,18 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    public void addStationToLine(long lineId, StationAddToLineRequest stationAddToLineRequest) {
+    public LineResponse createLine(LineSaveRequest lineSaveRequest) {
+        Line line = Line.createToSave(
+                lineSaveRequest.getName(),
+                lineSaveRequest.getUpwardTerminus(),
+                lineSaveRequest.getDownwardTerminus(),
+                lineSaveRequest.getDistance()
+        );
+        Line savedLine = lineRepository.create(line);
+        return LineResponse.from(savedLine);
+    }
+
+    public LineResponse addStationToLine(long lineId, StationAddToLineRequest stationAddToLineRequest) {
         Line line = lineRepository.findById(lineId);
         line.addStation(
                 stationAddToLineRequest.getStation(),
@@ -29,7 +40,7 @@ public class LineService {
                 Direction.from(stationAddToLineRequest.getAddDirection()),
                 stationAddToLineRequest.getDistance()
         );
-        lineRepository.update(line);
+        return LineResponse.from(lineRepository.update(line));
     }
 
     public void deleteStation(Long lineId, String stationName) {
@@ -39,26 +50,15 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
+    public LineResponse findLineResponseById(Long id) {
+        return LineResponse.from(lineRepository.findById(id));
+    }
+
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
         List<Line> lines = lineRepository.findAll();
         return lines.stream()
                 .map(LineResponse::from)
                 .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public LineResponse findLineResponseById(Long id) {
-        return LineResponse.from(lineRepository.findById(id));
-    }
-
-    public LineResponse createLine(LineSaveRequest lineSaveRequest) {
-        Line line = Line.createToSave(
-                lineSaveRequest.getName(),
-                lineSaveRequest.getUpwardTerminus(),
-                lineSaveRequest.getDownwardTerminus(),
-                lineSaveRequest.getDistance()
-        );
-        long savedLineId = lineRepository.create(line);
-        return LineResponse.from(lineRepository.findById(savedLineId));
     }
 }

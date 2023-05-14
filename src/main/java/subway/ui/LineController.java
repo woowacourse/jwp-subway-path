@@ -28,16 +28,20 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody LineSaveRequest lineSaveRequest) {
+    public ResponseEntity<LineResponse> createLine(@RequestBody LineSaveRequest lineSaveRequest) {
         LineResponse lineResponse = lineService.createLine(lineSaveRequest);
-        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).build();
+        return ResponseEntity
+                .created(URI.create("/lines/" + lineResponse.getId()))
+                .body(lineResponse);
     }
 
     @PostMapping("/{lineId}/station")
-    public ResponseEntity<Void> addStationToLine(@NonNull @PathVariable Long lineId,
-                                                 @RequestBody StationAddToLineRequest stationAddToLineRequest) {
-        lineService.addStationToLine(lineId, stationAddToLineRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<LineResponse> addStationToLine(
+            @NonNull @PathVariable Long lineId,
+            @RequestBody StationAddToLineRequest stationAddToLineRequest
+    ) {
+        LineResponse lineResponse = lineService.addStationToLine(lineId, stationAddToLineRequest);
+        return ResponseEntity.ok(lineResponse);
     }
 
     @DeleteMapping("/{lineId}/station")
