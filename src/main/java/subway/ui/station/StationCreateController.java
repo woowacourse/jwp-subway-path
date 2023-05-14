@@ -1,5 +1,6 @@
 package subway.ui.station;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.net.URI;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import subway.ui.station.dto.in.StationCreateRequest;
 import subway.ui.station.dto.out.StationInfoResponse;
 
 @RequiredArgsConstructor
+@Tag(name = "지하철역")
 @RestController
 @RequestMapping("/stations")
 public class StationCreateController {

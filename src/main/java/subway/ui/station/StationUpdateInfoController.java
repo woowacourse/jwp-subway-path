@@ -1,5 +1,6 @@
 package subway.ui.station;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import subway.ui.station.dto.in.StationUpdateInfoRequest;
 
 @RequiredArgsConstructor
 @RestController
+@Tag(name = "지하철역")
 @RequestMapping("/stations")
 public class StationUpdateInfoController {
 
