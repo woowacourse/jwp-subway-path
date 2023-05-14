@@ -5,9 +5,12 @@ import java.util.stream.Collectors;
 import subway.application.line.port.in.InterStationResponseDto;
 import subway.application.line.port.in.LineCreateRequestDto;
 import subway.application.line.port.in.LineResponseDto;
-import subway.ui.line.dto.InterStationResponse;
-import subway.ui.line.dto.LineCreateRequest;
-import subway.ui.line.dto.LineResponse;
+import subway.application.line.port.in.LineUpdateRequestDto;
+import subway.ui.line.dto.in.InterStationResponse;
+import subway.ui.line.dto.in.LineCreateRequest;
+import subway.ui.line.dto.in.LineResponse;
+import subway.ui.line.dto.in.LineUpdateInfoRequest;
+import subway.ui.line.dto.in.LinesResponse;
 
 public class LineAssembler {
 
@@ -46,6 +49,22 @@ public class LineAssembler {
             responseDto.getUpStationId(),
             responseDto.getDownStationId(),
             responseDto.getDistance()
+        );
+    }
+
+    public static LinesResponse toLinesResponse(final List<LineResponseDto> resultDtos) {
+        return new LinesResponse(
+            resultDtos.stream()
+                .map(LineAssembler::toLineResponse)
+                .collect(Collectors.toList())
+        );
+    }
+
+    public static LineUpdateRequestDto toLineUpdateInfoRequestDto(final Long id, final LineUpdateInfoRequest request) {
+        return new LineUpdateRequestDto(
+            id,
+            request.getName(),
+            request.getColor()
         );
     }
 }

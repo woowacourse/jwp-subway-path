@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import subway.domain.line.Line;
-import subway.ui.line.dto.InterStationResponse;
+import subway.ui.line.dto.in.InterStationResponse;
 
 @Getter
 @AllArgsConstructor

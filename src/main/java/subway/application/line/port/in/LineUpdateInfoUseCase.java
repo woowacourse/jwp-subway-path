@@ -1,6 +1,6 @@
 package subway.application.line.port.in;
 
-public interface LineUpdateUseCase {
+public interface LineUpdateInfoUseCase {
 
     void updateLine(LineUpdateRequestDto lineUpdateRequestDto);
 }

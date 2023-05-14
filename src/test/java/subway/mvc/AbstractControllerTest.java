@@ -6,6 +6,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.line.port.in.LineCreateUseCase;
+import subway.application.line.port.in.LineDeleteUseCase;
+import subway.application.line.port.in.LineFindAllUseCase;
+import subway.application.line.port.in.LineFindByIdUseCase;
+import subway.application.line.port.in.LineUpdateInfoUseCase;
 import subway.application.station.port.in.StationCreateUseCase;
 import subway.application.station.port.in.StationDeleteUseCase;
 import subway.application.station.port.in.StationFindAllUseCase;
@@ -38,4 +42,16 @@ public abstract class AbstractControllerTest {
 
     @MockBean
     protected LineCreateUseCase lineCreateUseCase;
+
+    @MockBean
+    protected LineUpdateInfoUseCase lineUpdateInfoUseCase;
+
+    @MockBean
+    protected LineDeleteUseCase lineDeleteUseCase;
+
+    @MockBean
+    protected LineFindAllUseCase lineFindAllUseCase;
+
+    @MockBean
+    protected LineFindByIdUseCase lineFindByIdUseCase;
 }

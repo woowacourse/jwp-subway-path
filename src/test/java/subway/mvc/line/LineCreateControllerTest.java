@@ -17,8 +17,8 @@ import subway.application.line.port.in.InterStationResponseDto;
 import subway.application.line.port.in.LineCreateRequestDto;
 import subway.application.line.port.in.LineResponseDto;
 import subway.mvc.AbstractControllerTest;
-import subway.ui.line.dto.InterStationResponse;
-import subway.ui.line.dto.LineResponse;
+import subway.ui.line.dto.in.InterStationResponse;
+import subway.ui.line.dto.in.LineResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철 노선을 생성하는 기능 mvc 테스트")

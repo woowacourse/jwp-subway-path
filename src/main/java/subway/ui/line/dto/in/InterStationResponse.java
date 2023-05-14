@@ -1,4 +1,4 @@
-package subway.ui.line.dto;
+package subway.ui.line.dto.in;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

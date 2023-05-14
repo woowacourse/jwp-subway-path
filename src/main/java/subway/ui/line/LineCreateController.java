@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.line.port.in.LineCreateRequestDto;
 import subway.application.line.port.in.LineCreateUseCase;
 import subway.application.line.port.in.LineResponseDto;
-import subway.ui.line.dto.LineCreateRequest;
-import subway.ui.line.dto.LineResponse;
+import subway.ui.line.dto.in.LineCreateRequest;
+import subway.ui.line.dto.in.LineResponse;
 
 @RequiredArgsConstructor
 @Tag(name = "노선")

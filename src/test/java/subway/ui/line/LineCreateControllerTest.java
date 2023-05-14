@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import subway.application.line.port.MockLineCreateUseCase;
-import subway.ui.line.dto.LineCreateRequest;
-import subway.ui.line.dto.LineResponse;
+import subway.ui.line.dto.in.LineCreateRequest;
+import subway.ui.line.dto.in.LineResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철 노선을 생성하는 기능")
