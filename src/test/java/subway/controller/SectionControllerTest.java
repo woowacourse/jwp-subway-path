@@ -212,7 +212,7 @@ class SectionControllerTest {
                     .body(initRequest)
                     .when().post("/lines/" + 이_호선 + "/stations")
                     .then()
-                    .statusCode(HttpStatus.NO_CONTENT.value());
+                    .statusCode(HttpStatus.CREATED.value());
             //then
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
