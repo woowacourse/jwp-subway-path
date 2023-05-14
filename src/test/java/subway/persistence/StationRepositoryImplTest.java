@@ -49,8 +49,19 @@ class StationRepositoryImplTest {
 		Assertions.assertThat(2).isEqualTo(stations.size());
 	}
 
+	@DisplayName("ID로 역 조회 테스트")
 	@Test
 	void findById() {
+		// given
+		final Station jamsil = new Station("잠실");
+
+
+		// when
+		final long stationId = repository.createStation(jamsil);
+		final Station station = repository.findById(stationId);
+
+		// then
+		Assertions.assertThat(jamsil).isEqualTo(station);
 	}
 
 	@Test
