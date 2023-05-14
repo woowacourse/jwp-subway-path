@@ -9,11 +9,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineEditRequest;
+import subway.dto.line.LineResponse;
 import subway.dto.line.LinesResponse;
+import subway.exception.LineNotFoundException;
 import subway.service.LineService;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.ArgumentMatchers.any;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/data.sql")
@@ -63,6 +68,34 @@ public class LineServiceIntegrationTest {
                 () -> assertThat(result.getLines().get(0).getLineNumber()).isEqualTo(green.getLineNumber()),
                 () -> assertThat(result.getLines().get(1).getLineNumber()).isEqualTo(red.getLineNumber())
         );
+    }
+
+    @Test
+    @DisplayName("노선을 수정한다.")
+    void edit_line_success() {
+        // given
+        LineCreateRequest line = new LineCreateRequest("2호선", 2, "green");
+        Long id = lineService.saveLine(line);
+
+        LineEditRequest lineEditRequest = new LineEditRequest("2호선", 2, "blue");
+
+        // when
+        lineService.editLineById(id, lineEditRequest);
+
+        // then
+        LineResponse lineEntity = lineService.findAll().getLines().get(0);
+        assertThat(lineEntity.getColor()).isEqualTo(lineEditRequest.getColor());
+    }
+
+    @Test
+    @DisplayName("노선을 못 찾는다면 예외를 발생시킨다.")
+    void throws_exception_when_line_not_found() {
+        // given
+        Long id = 1L;
+
+        // when & then
+        assertThatThrownBy(() -> lineService.editLineById(id, any()))
+                .isInstanceOf(LineNotFoundException.class);
     }
 
     @Test

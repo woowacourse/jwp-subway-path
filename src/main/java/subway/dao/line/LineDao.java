@@ -2,6 +2,8 @@ package subway.dao.line;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
@@ -10,12 +12,14 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
@@ -25,11 +29,12 @@ public class LineDao {
                     rs.getString("color")
             );
 
-    public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource, final NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("line_id");
+        this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
     }
 
     public long insert(final LineEntity lineEntity) {
@@ -58,5 +63,16 @@ public class LineDao {
     public LineEntity findByLineNumber(final Long lineNumber) {
         String sql = "SELECT line_id, line_number, name, color FROM line WHERE line_number = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, lineNumber);
+    }
+
+    public Optional<LineEntity> findById(final Long id) {
+        String sql = "SELECT line_id, line_number, name, color FROM line WHERE line_id = :line_id";
+        return namedParameterJdbcTemplate.query(sql, new MapSqlParameterSource("line_id", id), rowMapper).stream()
+                .findAny();
+    }
+
+    public void updateLine(final long lineId, final LineEntity lineEntity) {
+        String sql = "UPDATE line SET line_number = ?, name = ?, color = ? WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineEntity.getLineNumber(), lineEntity.getName(), lineEntity.getColor(), lineId);
     }
 }

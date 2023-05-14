@@ -81,6 +81,11 @@ public class GlobalExceptionHandler {
         return getResponseOfNotFound(exception);
     }
 
+    @ExceptionHandler(LineNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> lineNotFoundExceptionHandler(final LineNotFoundException exception) {
+        return getResponseOfNotFound(exception);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> internalServerErrorHandler(final Exception exception) {
         Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);

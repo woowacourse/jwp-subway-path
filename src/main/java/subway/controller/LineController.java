@@ -3,6 +3,7 @@ package subway.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineEditRequest;
 import subway.dto.line.LinesResponse;
 import subway.dto.station.LineMapResponse;
 import subway.service.LineService;
@@ -39,8 +40,14 @@ public class LineController {
         return ResponseEntity.ok().body(subwayMapService.showLineMapByLineNumber(lineNumber));
     }
 
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> editLineById(@PathVariable final Long id, @RequestBody final LineEditRequest lineEditRequest) {
+        lineService.editLineById(id, lineEditRequest);
+        return ResponseEntity.noContent().build();
+    }
+
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable final Long id) {
+    public ResponseEntity<Void> deleteLineById(@PathVariable final Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }

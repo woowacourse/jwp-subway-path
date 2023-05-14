@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineEditRequest;
 import subway.dto.line.LinesResponse;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.station.StationCreateRequest;
@@ -104,13 +105,31 @@ public class LineControllerIntegrationTest {
         Response response = given()
                 .when().get("/lines/" + lineId);
 
-        response
-                .then()
+        response.then()
                 .statusCode(HttpStatus.OK.value())
                 .body("stations[0].id", equalTo(1))
                 .body("stations[0].name", equalTo("잠실역"))
                 .body("stations[1].id", equalTo(2))
                 .body("stations[1].name", equalTo("잠실새내역"));
+    }
+
+    @Test
+    @DisplayName("노선을 수정한다.")
+    void edit_line_success() {
+        // given
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
+        lineService.saveLine(lineCreateRequest);
+
+        LineEditRequest lineEditRequest = new LineEditRequest("8호선", 2L, "초록색");
+
+        // when & then
+        Response response = given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineEditRequest)
+                .when().patch("/lines/1");
+
+        response.then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
     }
 
     @Test
@@ -124,8 +143,7 @@ public class LineControllerIntegrationTest {
         Response response = given()
                 .when().delete("/lines/1");
 
-        response
-                .then()
+        response.then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
 
         LinesResponse lineEntities = lineService.findAll();

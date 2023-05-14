@@ -5,12 +5,18 @@ import java.util.Objects;
 public class LineEntity {
 
     private final Long lineId;
-    private final long lineNumber;
-    private final String name;
-    private final String color;
+    private long lineNumber;
+    private String name;
+    private String color;
 
     public LineEntity(final Long lineId, final long lineNumber, final String name, final String color) {
         this.lineId = lineId;
+        this.lineNumber = lineNumber;
+        this.name = name;
+        this.color = color;
+    }
+
+    public void update(final long lineNumber, final String name, final String color) {
         this.lineNumber = lineNumber;
         this.name = name;
         this.color = color;

@@ -12,6 +12,7 @@ import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -36,7 +37,12 @@ public class LineRepository {
     }
 
     public void deleteLineById(final Long id) {
+        sectionDao.deleteAllByLineId(id);
         lineDao.deleteById(id);
+    }
+
+    public Optional<LineEntity> findById(final Long id) {
+        return lineDao.findById(id);
     }
 
     public Line findByLineNameAndSections(final String lineName, final Sections sections) {
@@ -44,7 +50,7 @@ public class LineRepository {
         return new Line(sections, lineEntity.getLineNumber(), lineEntity.getName(), lineEntity.getColor());
     }
 
-    public void updateLine(final Sections sections, final long lineNumber) {
+    public void insertSectionInLine(final Sections sections, final long lineNumber) {
         LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
         List<SectionEntity> sectionEntities = sections.getSections().stream()
                 .map(section -> {
@@ -59,5 +65,9 @@ public class LineRepository {
 
         sectionDao.deleteAllByLineId(lineEntity.getLineId());
         sectionDao.insertBatchSections(sectionEntities);
+    }
+
+    public void updateLine(final long lineId, final LineEntity lineEntity) {
+        lineDao.updateLine(lineId, lineEntity);
     }
 }
