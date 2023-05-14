@@ -219,6 +219,60 @@ class SectionsTest {
     }
 
     @Test
+    void 상행종점역을_삭제한다() {
+        // given
+        final Station 잠실역 = new Station("잠실");
+        final Station 잠실새내역 = new Station("잠실새내");
+        final Station 창동역 = new Station("창동");
+        final Station 녹천역 = new Station("녹천");
+
+        final Section 잠실역_잠실새내역_구간 = new Section(거리10, true, 잠실역, 잠실새내역);
+        final Section 잠실새내역_창동역_구간 = new Section(거리10, false, 잠실새내역, 창동역);
+        final Section 창동역_녹천역_구간 = new Section(거리10, false, 창동역, 녹천역);
+
+        final Sections 구간_목록 = Sections.from(List.of(잠실역_잠실새내역_구간, 잠실새내역_창동역_구간, 창동역_녹천역_구간));
+
+        // when
+        구간_목록.removeStation(잠실역);
+
+        final List<Section> 구간_목록들 = 구간_목록.getSections();
+
+        // then
+        assertThat(구간_목록들)
+                .containsExactly(
+                        new Section(거리10, true, 잠실새내역, 창동역),
+                        new Section(거리10, false, 창동역, 녹천역)
+                );
+    }
+
+    @Test
+    void 중간역을_삭제한다() {
+        // given
+        final Station 잠실역 = new Station("잠실");
+        final Station 잠실새내역 = new Station("잠실새내");
+        final Station 창동역 = new Station("창동");
+        final Station 녹천역 = new Station("녹천");
+
+        final Section 잠실역_잠실새내역_구간 = new Section(거리10, true, 잠실역, 잠실새내역);
+        final Section 잠실새내역_창동역_구간 = new Section(거리10, false, 잠실새내역, 창동역);
+        final Section 창동역_녹천역_구간 = new Section(거리10, false, 창동역, 녹천역);
+
+        final Sections 구간_목록 = Sections.from(List.of(잠실역_잠실새내역_구간, 잠실새내역_창동역_구간, 창동역_녹천역_구간));
+
+        // when
+        구간_목록.removeStation(잠실새내역);
+
+        final List<Section> 구간_목록들 = 구간_목록.getSections();
+
+        // then
+        assertThat(구간_목록들)
+                .containsExactly(
+                        new Section(거리20, true, 잠실역, 창동역),
+                        new Section(거리10, false, 창동역, 녹천역)
+                );
+    }
+
+    @Test
     void 구간을_구성하는_역을_모은다() {
         // given
         final Station 잠실역 = new Station("잠실");
@@ -226,7 +280,6 @@ class SectionsTest {
         final Station 창동역 = new Station("창동");
         final Station 녹천역 = new Station("녹천");
 
-        final Distance 거리10 = new Distance(10);
         final Section 잠실역_잠실새내역_구간 = new Section(거리10, true, 잠실역, 잠실새내역);
         final Section 잠실새내역_창동역_구간 = new Section(거리10, false, 잠실새내역, 창동역);
         final Section 창동역_녹천역_구간 = new Section(거리10, false, 창동역, 녹천역);

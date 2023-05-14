@@ -119,6 +119,67 @@ public class Sections {
         return false;
     }
 
+    public void removeStation(final Station removeStation) {
+        final List<Section> removeSections = collectRemoveSections(removeStation);
+        if (isRemoveSectionBetween(removeSections)) {
+            collapseLeftRightSection(removeSections);
+        }
+        if (isRemoveSectionIsStart(removeSections)) {
+            removeFirstSection(removeSections);
+        }
+
+        sections.removeAll(removeSections);
+    }
+
+    private List<Section> collectRemoveSections(final Station removeStation) {
+        return sections.stream()
+                .filter(section -> section.isSameUpStationBy(removeStation) || section.isSameDownStationBy(removeStation))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isRemoveSectionBetween(final List<Section> removeSections) {
+        return removeSections.size() == 2;
+    }
+
+    private void collapseLeftRightSection(final List<Section> removeSections) {
+        final Section leftSection = removeSections.get(0);
+        final Section rightSection = removeSections.get(1);
+        final Section newSection = new Section(
+                sumSectionsDistance(removeSections),
+                leftSection.getStart(),
+                leftSection.getUpStation(),
+                rightSection.getDownStation());
+
+        sections.add(sections.indexOf(leftSection), newSection);
+    }
+
+    private boolean isRemoveSectionIsStart(final List<Section> removeSections) {
+        return removeSections.size() == 1 && sections.size() > 1;
+    }
+
+    private void removeFirstSection(final List<Section> removeSections) {
+        final Section firstSection = removeSections.get(0);
+        final Section secondSection = sections.get(1);
+        final Section newSection = new Section(
+                secondSection.getDistance(),
+                firstSection.getStart(),
+                secondSection.getUpStation(),
+                secondSection.getDownStation());
+
+        sections.remove(secondSection);
+        sections.add(0, newSection);
+    }
+
+    private Distance sumSectionsDistance(final List<Section> sections) {
+        final Integer sum = sections.stream()
+                .map(Section::getDistance)
+                .map(Distance::getValue)
+                .reduce(Integer::sum)
+                .orElseThrow(() -> new IllegalStateException("구간의 거리 합을 구하던 도중 오류가 발생하였습니다."));
+
+        return new Distance(sum);
+    }
+
     public List<Station> collectAllStations() {
         final List<Station> stations = new ArrayList<>();
 
