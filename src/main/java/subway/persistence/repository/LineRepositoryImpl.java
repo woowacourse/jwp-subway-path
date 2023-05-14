@@ -6,7 +6,11 @@ import subway.domain.repository.LineRepository;
 import subway.persistence.dao.LineDao;
 import subway.persistence.entity.LineEntity;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class LineRepositoryImpl implements LineRepository {
@@ -18,26 +22,41 @@ public class LineRepositoryImpl implements LineRepository {
     }
 
     @Override
-    public Line createLine(final Line line) {
+    public Long createLine(final Line line) {
         final LineEntity lineEntity = new LineEntity(line.getName());
 
-        final Long lineId = lineDao.createLine(lineEntity);
-
-        return new Line(lineId, lineEntity.getName());
+        return lineDao.createLine(lineEntity);
     }
 
     @Override
     public void deleteById(final Long lineIdRequest) {
-
+        lineDao.deleteById(lineIdRequest);
     }
 
     @Override
     public List<Line> findAll() {
-        return null;
+        List<LineEntity> lineEntities = lineDao.findAll();
+
+        return lineEntities.stream()
+                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getName()))
+                .collect(Collectors.toList());
     }
 
     @Override
     public Line findById(final Long lineIdRequest) {
-        return null;
+        final LineEntity lineEntity = lineDao.findById(lineIdRequest)
+                .orElseThrow(() -> new IllegalArgumentException("원하는 노선이 없습니다."));
+
+        return new Line(lineEntity.getId(), lineEntity.getName());
+    }
+
+    @Override
+    public Optional<Line> findByName(final Line line) {
+        final Set<LineEntity> lines = new HashSet<>(lineDao.findAll());
+
+        return lines.stream()
+                .filter(lineEntity -> lineEntity.getName().equals(line.getName()))
+                .map(lineEntity -> new Line(lineEntity.getId(), lineEntity.getName()))
+                .findFirst();
     }
 }
