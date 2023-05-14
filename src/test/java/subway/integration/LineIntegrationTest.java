@@ -133,7 +133,7 @@ public class LineIntegrationTest extends StationIntegrationTest {
                 .log().all()
                 .when().get(LINE_URL + "/0")
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test

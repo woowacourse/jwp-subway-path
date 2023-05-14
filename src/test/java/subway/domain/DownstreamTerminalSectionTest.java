@@ -17,8 +17,7 @@ class DownstreamTerminalSectionTest {
     @DisplayName("상행역으로 DummyTerminalStation을 둘 수 없다")
     void DownTerminalSectionFail() {
         assertThatThrownBy(() -> new DownstreamTerminalSection(DummyTerminalStation.getInstance()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("upstream");
+                .isInstanceOf(DuplicateStationInLineException.class);
     }
 
     @Test

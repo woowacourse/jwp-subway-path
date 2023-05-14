@@ -111,7 +111,7 @@ public class StationIntegrationTest {
                 .post("/lines/" + 0 + "/stations")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -125,7 +125,7 @@ public class StationIntegrationTest {
                 .post("/lines/" + lineId + "/stations")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -139,7 +139,7 @@ public class StationIntegrationTest {
                 .post("/lines/" + lineId + "/stations")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
@@ -173,7 +173,7 @@ public class StationIntegrationTest {
                 .post("/lines/" + lineId + "/stations")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
                 .extract();
 
         ExtractableResponse<Response> midToEndSection = given()
@@ -184,12 +184,12 @@ public class StationIntegrationTest {
                 .post("/lines/" + lineId + "/stations")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .statusCode(HttpStatus.NOT_FOUND.value())
                 .extract();
 
         assertSoftly(softly -> {
-            assertThat(notConnectedSection.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-            assertThat(midToEndSection.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            assertThat(notConnectedSection.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+            assertThat(midToEndSection.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         });
     }
 
@@ -236,25 +236,25 @@ public class StationIntegrationTest {
     }
 
     @Test
-    @DisplayName("역 id가 없는 경우 BAD REQUEST 반환한다")
+    @DisplayName("역 id가 없는 경우 NOT_FOUND 반환한다")
     void deleteStationFail1() {
         given()
                 .log().all()
                 .when()
                 .delete("/lines/" + lineId + "/stations/" + 0)
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
     }
 
     @Test
-    @DisplayName("노선 id가 없는 경우 BAD REQUEST 반환한다")
+    @DisplayName("노선 id가 없는 경우 NOT_FOUND 반환한다")
     void deleteStationFail2() {
         given()
                 .log().all()
                 .when()
                 .delete("/lines/" + 0 + "/stations/" + upstreamId)
                 .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
+                .statusCode(HttpStatus.NOT_FOUND.value());
 
         assertThat(lineRepository.findLineById(lineId)).isPresent();
     }

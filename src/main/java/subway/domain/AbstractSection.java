@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exception.DuplicateStationInLineException;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -20,11 +22,7 @@ public abstract class AbstractSection {
 
     private void validateNotEqualStations(Station upstream, Station downstream) {
         if (upstream.equals(downstream)) {
-            throw new IllegalArgumentException(String.format(
-                    "디버깅: 구간에 같은 상행역과 하행역이 들어왔습니다. upstream: %s, downstream: %s",
-                    upstream.getName(),
-                    downstream.getName()
-            ));
+            throw new DuplicateStationInLineException("상행역과 하행역에 같은 역이 입력되었습니다");
         }
     }
 

@@ -11,12 +11,12 @@ import static subway.utils.SectionFixture.*;
 import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
 
 class UpstreamTerminalSectionTest {
+
     @Test
     @DisplayName("상행역으로 DummyTerminalStation을 둘 수 없다")
     void UpTerminalSectionFail() {
         assertThatThrownBy(() -> new UpstreamTerminalSection(DummyTerminalStation.getInstance()))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("downstream");
+                .isInstanceOf(DuplicateStationInLineException.class);
     }
 
     @Test
@@ -35,8 +35,7 @@ class UpstreamTerminalSectionTest {
         final UpstreamTerminalSection givenSection = new UpstreamTerminalSection(TERMINAL_TO_JAMSIL);
 
         assertThatThrownBy(() -> givenSection.insertInTheMiddle(DummyTerminalStation.getInstance(), DISTANCE))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("insertInTheMiddle");
+                .isInstanceOf(DuplicateStationInLineException.class);
     }
 
     @Test
