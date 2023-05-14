@@ -130,7 +130,9 @@ public class Sections {
                 .map(Section::getDownStation)
                 .collect(Collectors.toList()));
 
-        return stations;
+        return stations.stream()
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public List<Section> getSections() {
