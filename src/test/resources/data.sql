@@ -13,14 +13,14 @@ insert into station(name) values ('강남역');
 insert into station(name) values ('역삼역');
 insert into station(name) values ('선릉역');
 
-insert into section(line_id, up_station_id, down_station_id, distance) values (1L,1L,2L,1);
-insert into section(line_id, up_station_id, down_station_id, distance) values (1L,2L,3L,1);
-insert into section(line_id, up_station_id, down_station_id, distance) values (1L,3L,4L,1);
-insert into section(line_id, up_station_id, down_station_id, distance) values (1L,4L,5L,1);
-insert into section(line_id, up_station_id, down_station_id, distance) values (1L,5L,6L,1);
-insert into section(line_id, up_station_id, down_station_id, distance) values (1L,6L,7L,1);
+insert into section(line_id, up_station_id, down_station_id, distance) values (1L,1L,2L,5);
+insert into section(line_id, up_station_id, down_station_id, distance) values (1L,2L,3L,5);
+insert into section(line_id, up_station_id, down_station_id, distance) values (1L,3L,4L,5);
+insert into section(line_id, up_station_id, down_station_id, distance) values (1L,4L,5L,5);
+insert into section(line_id, up_station_id, down_station_id, distance) values (1L,5L,6L,5);
+insert into section(line_id, up_station_id, down_station_id, distance) values (1L,6L,7L,5);
 
-insert into section(line_id, up_station_id, down_station_id, distance) values (2L,8L,9L,2);
-insert into section(line_id, up_station_id, down_station_id, distance) values (2L,9L,4L,2);
-insert into section(line_id, up_station_id, down_station_id, distance) values (2L,4L,10L,2);
-insert into section(line_id, up_station_id, down_station_id, distance) values (2L,10L,11L,2);
+insert into section(line_id, up_station_id, down_station_id, distance) values (2L,8L,9L,10);
+insert into section(line_id, up_station_id, down_station_id, distance) values (2L,9L,4L,10);
+insert into section(line_id, up_station_id, down_station_id, distance) values (2L,4L,10L,10);
+insert into section(line_id, up_station_id, down_station_id, distance) values (2L,10L,11L,10);
