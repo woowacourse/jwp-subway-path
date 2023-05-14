@@ -17,8 +17,8 @@ public class Distance {
         }
     }
 
-    public int getValue() {
-        return value;
+    public Distance minus(final Distance otherDistance) {
+        return new Distance(this.value - otherDistance.value);
     }
 
     public boolean isSameOrOver(final Distance other) {
@@ -27,6 +27,10 @@ public class Distance {
 
     public boolean isOver(final Distance other) {
         return this.value > other.value;
+    }
+
+    public int getValue() {
+        return value;
     }
 
     @Override

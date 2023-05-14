@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.List;
 import java.util.Objects;
 
 public class SectionDomain {
@@ -19,7 +20,7 @@ public class SectionDomain {
         this(null, distance, isStart, upStation, downStation);
     }
 
-    private SectionDomain(
+    public SectionDomain(
             final Long id,
             final Distance distance,
             final boolean isStart,
@@ -34,32 +35,6 @@ public class SectionDomain {
         this.downStation = downStation;
     }
 
-    public static SectionDomain from(
-            final Long id,
-            final Distance distance,
-            final boolean isStart,
-            final StationDomain upStation,
-            final StationDomain downStation
-    ) {
-        return new SectionDomain(id, distance, isStart, upStation, downStation);
-    }
-
-    public static SectionDomain notStartFrom(
-            final StationDomain upStation,
-            final StationDomain downStation,
-            final Distance distance
-    ) {
-        return new SectionDomain(distance, false, upStation, downStation);
-    }
-
-    public static SectionDomain startFrom(
-            final StationDomain upStation,
-            final StationDomain downStation,
-            final Distance distance
-    ) {
-        return new SectionDomain(distance, true, upStation, downStation);
-    }
-
     private void validate(final StationDomain upStation, final StationDomain downStation, final Distance distance) {
         if (Objects.isNull(upStation)) {
             throw new IllegalArgumentException("상행역은 null 일 수 없습니다.");
@@ -70,6 +45,62 @@ public class SectionDomain {
         if (Objects.isNull(distance)) {
             throw new IllegalArgumentException("거리는 null 일 수 없습니다.");
         }
+    }
+
+    public List<SectionDomain> separateBy(final SectionDomain newSection) {
+        if (isSameUpStationBy(newSection.upStation)) {
+            return createInnerSectionBaseIsUpStation(newSection);
+        }
+        if (isSameDownStationBy(newSection.downStation)) {
+            return createInnerSectionBaseIsDownStation(newSection);
+        }
+        if (isSameUpStationBy(newSection.downStation)) {
+            return createOuterSectionBaseIsUpStation(newSection);
+        }
+        return createOuterSectionBaseIsDownStation(newSection);
+    }
+
+    private List<SectionDomain> createInnerSectionBaseIsUpStation(final SectionDomain newSection) {
+        final Distance oldUpToNewDownDistance = newSection.distance;
+        final Distance oldDownToNewUpDistance = this.distance.minus(oldUpToNewDownDistance);
+
+        final SectionDomain oldUpToNewDownSection
+                = new SectionDomain(oldUpToNewDownDistance, this.isStart, this.upStation, newSection.downStation);
+        final SectionDomain oldDownToNewUpSection
+                = new SectionDomain(oldDownToNewUpDistance, false, newSection.downStation, this.downStation);
+
+        return List.of(oldUpToNewDownSection, oldDownToNewUpSection);
+    }
+
+    private List<SectionDomain> createInnerSectionBaseIsDownStation(final SectionDomain newSection) {
+        final Distance oldDownToNewUpDistance = newSection.distance;
+        final Distance oldUpToNewDownDistance = this.distance.minus(oldDownToNewUpDistance);
+
+        final SectionDomain oldUpToNewDownSection
+                = new SectionDomain(oldUpToNewDownDistance, this.isStart, this.upStation, newSection.upStation);
+        final SectionDomain oldDownToNewUpSection
+                = new SectionDomain(oldDownToNewUpDistance, false, newSection.upStation, this.downStation);
+
+        return List.of(oldUpToNewDownSection, oldDownToNewUpSection);
+    }
+
+    private List<SectionDomain> createOuterSectionBaseIsUpStation(final SectionDomain newSection) {
+        if (this.isStart) {
+            return List.of(newSection.toStart(), this.toNotStart());
+        }
+        return List.of(newSection.toNotStart(), this.toNotStart());
+    }
+
+    private SectionDomain toNotStart() {
+        return new SectionDomain(this.id, this.distance, false, this.upStation, this.downStation);
+    }
+
+    private SectionDomain toStart() {
+        return new SectionDomain(this.id, this.distance, true, this.upStation, this.downStation);
+    }
+
+    private List<SectionDomain> createOuterSectionBaseIsDownStation(final SectionDomain newSection) {
+        return List.of(this, newSection.toNotStart());
     }
 
     public boolean isBaseStationExist(final SectionDomain otherSection) {
@@ -85,10 +116,6 @@ public class SectionDomain {
 
     public boolean isSameDownStationBy(final StationDomain otherStation) {
         return Objects.equals(downStation, otherStation);
-    }
-
-    public boolean isDistanceLessThan(final SectionDomain otherStation) {
-        return !distance.isOver(otherStation.distance);
     }
 
     public Long getId() {
@@ -107,7 +134,7 @@ public class SectionDomain {
         return distance;
     }
 
-    public boolean isStart() {
+    public boolean getStart() {
         return isStart;
     }
 
@@ -122,16 +149,5 @@ public class SectionDomain {
     @Override
     public int hashCode() {
         return Objects.hash(id, distance, isStart, upStation, downStation);
-    }
-
-    @Override
-    public String toString() {
-        return "SectionDomain{" +
-                "id=" + id +
-                ", distance=" + distance +
-                ", isStart=" + isStart +
-                ", upStation=" + upStation +
-                ", downStation=" + downStation +
-                '}';
     }
 }
