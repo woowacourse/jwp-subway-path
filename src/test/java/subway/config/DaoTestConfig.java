@@ -20,6 +20,5 @@ public abstract class DaoTestConfig {
         jdbcTemplate.update("TRUNCATE TABLE STATIONS");
         jdbcTemplate.update("TRUNCATE TABLE SECTIONS");
         jdbcTemplate.update("TRUNCATE TABLE LINES");
-        jdbcTemplate.update("TRUNCATE TABLE STATIONS_LINES");
     }
 }

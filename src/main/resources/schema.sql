@@ -13,14 +13,6 @@ create table if not exists lines
     primary key (id)
 );
 
-create table if not exists stations_lines
-(
-    id         bigint not null auto_increment,
-    station_id bigint not null,
-    line_id    bigint not null,
-    primary key (id)
-);
-
 create table if not exists sections
 (
     id              bigint  not null auto_increment,
