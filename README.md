@@ -1,13 +1,21 @@
 # jwp-subway-path
 
+## API 기능 요구 사항
+- [ ] 노선에 역 등록 API 신규 구현
+- [ ] 노선에 역 제거 API 신규 구현
+- [ ] 노선 조회 API 수정
+  - 노선에 포함된 역을 순서대로 보여주도록 응답 개선
+- [ ] 노선 목록 조회 API 수정
+  - 노선에 포함된 역을 순서대로 보여주도록 응답 개선
+
 ## API 명세
 
 > section
-- 노선에 역 등록 API: POST /sections
-  - BODY: 역 이름, 노선 ID, 상행역 ID
-- 노선에 역 제거 API: DELETE /sections?lineId={lineId}&stationId={stationId}
-- 노선 조회 API: GET /lines/{id}
-- 모든 노선 조회 API: GET /lines
+- 노선에 역 등록 API: POST /lines/{lineId}/stations/{stationId}
+  - BODY: upStationId, distance
+- 노선에 역 제거 API: DELETE /lines/{lineId}/stations/{stationId}
+- 노선 조회 API: GET /lines/{lineId}/stations
+- 모든 노선 조회 API: GET /lines/stations
 
 ## 비즈니스 규칙
 
@@ -49,9 +57,6 @@
   - 거리
 
 - Distance
-- LineName
-- LineColor
-- StationName
 
 ## 엔티티
 - Station

@@ -1,0 +1,72 @@
+### 노선에 역 등록 API: POST /lines/{lineId}/stations/{stationId}
+Request:
+POST /lines/1/stations/3
+
+{
+  "upStationId": 2,
+  "distance": 5
+}
+
+Response:
+Status: 201 Created
+
+### 노선에 역 제거 API: DELETE /lines/{lineId}/stations/{stationId}
+Request:
+DELETE /lines/1/stations/3
+
+Response:
+Status: 204 No Content
+
+### 노선 조회 API: GET /lines/{lineId}/stations
+Request:
+GET /lines/1/stations
+
+Response:
+Status: 200 OK
+
+[
+  {
+    "stationId": 2,
+    "upStationId": 1,
+    "distance": 3
+  },
+  {
+    "stationId": 3,
+    "upStationId": 2,
+    "distance": 5
+  },
+  ...
+]
+
+### 모든 노선 조회 API: GET /lines/stations
+Request:
+GET /lines/stations
+
+Response:
+Status: 200 OK
+
+[
+  {
+    "lineId": 1,
+    "stations": [
+      {
+        "stationId": 2,
+        "upStationId": 1,
+        "distance": 3
+      },
+      {
+        "stationId": 3,
+        "upStationId": 2,
+        "distance": 5
+      },
+      ...
+    ]
+  },
+  {
+    "lineId": 2,
+    "stations": [
+      ...
+    ]
+  },
+  ...
+]
