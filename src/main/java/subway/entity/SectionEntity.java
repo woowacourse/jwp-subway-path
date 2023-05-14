@@ -1,8 +1,7 @@
 package subway.entity;
 
-import lombok.Getter;
+import java.util.Objects;
 
-@Getter
 public class SectionEntity {
 
     private final Long id;
@@ -17,6 +16,50 @@ public class SectionEntity {
         this.downstreamId = downstreamId;
         this.lineId = lineId;
         this.distance = distance;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUpstreamId() {
+        return upstreamId;
+    }
+
+    public Long getDownstreamId() {
+        return downstreamId;
+    }
+
+    public Long getLineId() {
+        return lineId;
+    }
+
+    public Integer getDistance() {
+        return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SectionEntity that = (SectionEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(upstreamId, that.upstreamId) && Objects.equals(downstreamId, that.downstreamId) && Objects.equals(lineId, that.lineId) && Objects.equals(distance, that.distance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, upstreamId, downstreamId, lineId, distance);
+    }
+
+    @Override
+    public String toString() {
+        return "SectionEntity{" +
+                "id=" + id +
+                ", upstreamId=" + upstreamId +
+                ", downstreamId=" + downstreamId +
+                ", lineId=" + lineId +
+                ", distance=" + distance +
+                '}';
     }
 
     public static class Builder {

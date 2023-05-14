@@ -68,6 +68,14 @@ public abstract class AbstractSection {
         return downstream;
     }
 
+    public String getUpstreamName() {
+        return upstream.getName();
+    }
+
+    public String getDownstreamName() {
+        return downstream.getName();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

@@ -96,8 +96,8 @@ public class LineService {
     private List<SectionDto> toSectionDtos(List<MiddleSection> sections) {
         return sections.stream()
                        .map(section -> new SectionDto(
-                               section.getUpstream().getName(),
-                               section.getDownstream().getName(),
+                               section.getUpstreamName(),
+                               section.getDownstreamName(),
                                section.getDistance())
                        )
                        .collect(Collectors.toUnmodifiableList());
