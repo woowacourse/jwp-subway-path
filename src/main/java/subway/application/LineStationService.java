@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.SubwayMapRepository;
 import subway.domain.SubwayMap;
 import subway.dto.*;
+import subway.dto.request.ConnectRequest;
 
 @Service
 public class LineStationService {

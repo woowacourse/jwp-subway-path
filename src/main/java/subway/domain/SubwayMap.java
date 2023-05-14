@@ -1,7 +1,6 @@
 package subway.domain;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SubwayMap {
@@ -20,20 +19,11 @@ public class SubwayMap {
     }
 
     public List<Station> getStationsOrderById() {
-        return subwayMap.keySet().stream()
-                .sorted(Comparator.comparingLong(Station::getId))
-                .collect(Collectors.toList());
-    }
-
-    public Map<Line, List<Station>> getAllStationsGroupByLine() {
-        return endpointMap.keySet().stream()
-                .collect(Collectors.toMap(Function.identity(),
-                        this::stationsInLine));
+        return subwayMap.keySet().stream().sorted(Comparator.comparingLong(Station::getId)).collect(Collectors.toList());
     }
 
     public List<Station> stationsInLine(final Line line) {
-        final Station upEndpoint = endpointMap.get(line)
-                .orElseThrow(() -> new IllegalArgumentException("라인에 역이 없습니다."));
+        final Station upEndpoint = endpointMap.get(line).orElseThrow(() -> new IllegalArgumentException("라인에 역이 없습니다."));
         final List<Station> stations = new ArrayList<>();
 
         Optional<Section> currentSection = getNextSection(line, upEndpoint, null);
@@ -57,9 +47,7 @@ public class SubwayMap {
             return Optional.of(sameLineSections.get(0));
         }
         if (length == 2) {
-            return sameLineSections.stream().
-                    filter(s -> !s.isArrival(visited))
-                    .findAny();
+            return sameLineSections.stream().filter(s -> !s.isArrival(visited)).findAny();
         }
         throw new IllegalArgumentException("한 라인에 갈림길이 존재할 수 없습니다.");
     }
@@ -74,49 +62,10 @@ public class SubwayMap {
         subwayMap.put(nextStation, updatedNextSections);
     }
 
-    private boolean lineHasStation(final Section other) {
-        return subwayMap.values().stream()
-                .anyMatch(sections -> sections.hasSameLine(other));
-    }
-
-    private void validateIsEndpoint(final Section thisToEnd, final Station endPoint) {
-        final Sections sections = subwayMap.get(endPoint);
-        if (sections.countSameLine(thisToEnd) != 1) {
-            throw new IllegalArgumentException("도착지로 선택한 역이 종점이 아닙니다.");
-        }
-    }
-
-    private void addSectionToEndpoint(final Station station, final Section section) {
-        final Sections sections = subwayMap.get(station);
-        if (sections == null) {
-            throw new IllegalArgumentException("역이 존재하지 않습니다.");
-        }
-        final Sections addedSections = sections.addSection(section);
-        subwayMap.put(station, addedSections);
-    }
-
-    public void deleteStation2(final Long id) {
-        final Station station = getStationById(id);
-        // BA, BC
-        final Sections sectionsByStation = findSectionByStation(station);
-        // 역 별 삭제되어야 하는 section
-        // A : AB, C : CB
-        Map<Station, Section> stationSectionMap = sectionsByStation.reverseMap();
-
-        // 현재 AB, CB 삭제되는데 AB -> AC로, CB -> CA로 바뀌도록 수정해야함
-        for (Station station1 : stationSectionMap.keySet()) {
-            Sections remove = subwayMap.get(station1).remove(stationSectionMap.get(station1));
-            subwayMap.replace(station1, remove);
-        }
-
-        subwayMap.remove(station);
-    }
-
     public void deleteStation(final Long id) {
         final Station station = getStationById(id);
-        final Sections sectionsByStation = findSectionByStation(station);
+        final Sections sectionsByStation = subwayMap.get(station);
 
-        // sections에서 line을 뽑아서 set으로 중복 제거함.
         Set<Line> includingLines = sectionsByStation.getLinesIncludingStation();
 
 
@@ -162,19 +111,13 @@ public class SubwayMap {
                 .orElseThrow(() -> new IllegalArgumentException("삭제하려는 역이 존재하지 않습니다."));
     }
 
-    public Sections findSectionByStation(final Station station) {
-        return subwayMap.get(station);
-    }
-
     private boolean isLastTwoStations(final Line line) {
         final long countSectionsInLine = countSectionsInLine(line);
         return countSectionsInLine == 2;
     }
 
     private boolean isUpEndpoint(final Station station, final Line line) {
-        return station.getId().equals(endpointMap.get(line)
-                .orElseThrow(() -> new IllegalArgumentException("라인에 역이 없습니다"))
-                .getId());
+        return station.getId().equals(endpointMap.get(line).orElseThrow(() -> new IllegalArgumentException("라인에 역이 없습니다")).getId());
     }
 
     private void replaceEndSection(final Station station, final Station arrival) {
@@ -188,25 +131,14 @@ public class SubwayMap {
     }
 
     private void replaceSection(final Station station, final Line line, final int distanceSum, final Station prevStation, final Station nextStation) {
-        final Sections prevSections = findSectionByStation(prevStation);
+        final Sections prevSections = subwayMap.get(prevStation);
         final Sections removedSections = prevSections.removeArrival(station);
         final Sections addedSections = removedSections.addSection(new Section(distanceSum, prevStation, nextStation, line));
         subwayMap.replace(prevStation, addedSections);
     }
 
     private long countSectionsInLine(final Line line) {
-        return subwayMap.values().stream()
-                .flatMap(sections -> sections.getSections().stream())
-                .filter(section -> section.getLine().equals(line))
-                .count();
-    }
-
-    public Map<Station, Sections> getSubwayMap() {
-        return new HashMap<>(subwayMap);
-    }
-
-    public Map<Line, Optional<Station>> getEndpointMap() {
-        return new HashMap<>(endpointMap);
+        return subwayMap.values().stream().flatMap(sections -> sections.getSections().stream()).filter(section -> section.getLine().equals(line)).count();
     }
 
     public Station addStation(Station station) {
@@ -241,7 +173,7 @@ public class SubwayMap {
 
     private Station findStationById(Long upStationId) {
         return subwayMap.keySet().stream()
-                .filter(station -> station.getId().equals(upStationId))
+                .filter(station -> station.equalsId(upStationId))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 역이 없습니다."));
     }
@@ -249,8 +181,7 @@ public class SubwayMap {
     public void connectUpEndpoint(Long lineId, Long stationId, int distance) {
         final Station thisStation = findStationById(stationId);
         Line line = findLineById(lineId);
-        Station upEndpointStation = endpointMap.get(line)
-                .orElseThrow(() -> new IllegalArgumentException("라인에 역이 없습니다"));
+        Station upEndpointStation = endpointMap.get(line).orElseThrow(() -> new IllegalArgumentException("라인에 역이 없습니다"));
 
         Section thisToUp = new Section(distance, thisStation, upEndpointStation, line);
 
@@ -281,9 +212,8 @@ public class SubwayMap {
 
     private Station findDownEndpoint(Line line) {
         List<Station> stations = stationsInLine(line);
-        return stations.get(stations.size()-1);
+        return stations.get(stations.size() - 1);
     }
-
 
     public void connectMidStation(Long lineId, Long stationId, Long prevStationId, Long nextStationId, int prevDistance) {
         final Station thisStation = findStationById(stationId);
@@ -303,9 +233,15 @@ public class SubwayMap {
     }
 
     public Station findStationByName(String name) {
-        return subwayMap.keySet().stream()
-                .filter(station -> station.getName().equals(name))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("역 삽입후 삽입된 역의 이름을 찾지 못했습니다."));
+        return subwayMap.keySet().stream().filter(station -> station.getName().equals(name)).findAny().orElseThrow(() -> new IllegalArgumentException("역 삽입후 삽입된 역의 이름을 찾지 못했습니다."));
     }
+
+    public Map<Station, Sections> getSubwayMap() {
+        return new HashMap<>(subwayMap);
+    }
+
+    public Map<Line, Optional<Station>> getEndpointMap() {
+        return new HashMap<>(endpointMap);
+    }
+
 }

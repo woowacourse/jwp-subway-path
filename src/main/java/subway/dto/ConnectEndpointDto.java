@@ -1,5 +1,7 @@
 package subway.dto;
 
+import subway.dto.request.ConnectRequest;
+
 public class ConnectEndpointDto {
     private final Long lineId;
     private final Long stationId;

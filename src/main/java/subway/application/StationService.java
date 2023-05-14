@@ -5,13 +5,10 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.dao.SubwayMapRepository;
 import subway.domain.Line;
-import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.SubwayMap;
-import subway.dto.CreateType;
-import subway.dto.StationRequest;
-import subway.dto.LineStationRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.StationRequest;
+import subway.dto.response.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

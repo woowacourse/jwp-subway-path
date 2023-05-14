@@ -14,25 +14,8 @@ public class Station {
         this.name = name;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
     public Station(final String name) {
         this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Station other) {
-        this.id = other.id;
-        this.name = other.name;
-    }
-
-    public String getName() {
-        return name;
     }
 
     @Override
@@ -45,7 +28,26 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final Station station = (Station) o;
-
-        return name.equals(station.name);
+        if (this.id == null || station.getId() == null) {
+            return name.equals(station.name);
+        }
+        return id.equals(station.id)&& name.equals(station.name);
     }
+
+    public boolean equalsId(Long id) {
+        return this.id.equals(id);
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
 }

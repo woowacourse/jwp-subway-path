@@ -9,17 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.annotation.Transactional;
 import subway.Fixture;
 import subway.dao.SubwayMapRepository;
-import subway.domain.Line;
-import subway.domain.SubwayMap;
-import subway.dto.LineStationRequest;
-import subway.dto.StationRequest;
-
-import java.util.Collections;
-import java.util.HashMap;
+import subway.dto.request.StationRequest;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @Transactional
 @ExtendWith(MockitoExtension.class)

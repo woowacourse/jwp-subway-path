@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineStationService;
 import subway.dto.ConnectEndpointDto;
-import subway.dto.ConnectRequest;
+import subway.dto.request.ConnectRequest;
 import subway.dto.InitConnectDto;
 
 @RestController
