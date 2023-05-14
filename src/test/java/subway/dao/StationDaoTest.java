@@ -1,5 +1,7 @@
 package subway.dao;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,6 +34,26 @@ class StationDaoTest {
         stationDao = new StationDao(jdbcTemplate, dataSource);
 
         lineId = 1L;
+    }
+
+    @Test
+    @DisplayName("insert()를 호출하면 입력받은 역을 추가한다.")
+    void insert() {
+        // given
+        String newStationName = "성수역";
+        StationEntity stationEntity = new StationEntity(newStationName, 4L, 4, lineId);
+        int beforeSize = stationDao.findByLineId(lineId).size();
+
+        // when
+        stationDao.insert(stationEntity);
+        int afterSize = stationDao.findByLineId(lineId).size();
+
+        // then
+        assertAll(
+            () -> assertThatCode(() -> stationDao.findByLineIdAndName(lineId, newStationName))
+                .doesNotThrowAnyException(),
+            () -> assertThat(afterSize).isEqualTo(beforeSize + 1)
+        );
     }
 
     @Test
@@ -171,7 +193,7 @@ class StationDaoTest {
             () -> Assertions.assertThat(before).isNotEqualTo(after),
             () -> Assertions.assertThat(after).isEqualTo(newDistance)
         );
-     }
+    }
 
     @ParameterizedTest
     @ValueSource(ints = {-1, 0})
@@ -202,14 +224,14 @@ class StationDaoTest {
         // then
         Assertions.assertThatThrownBy(() -> stationDao.findByLineIdAndName(lineId, stationName))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage(String.format("노선에 %s이 존재하지 않습니다.",stationName));
+            .hasMessage(String.format("노선에 %s이 존재하지 않습니다.", stationName));
     }
 
     @Test
     @DisplayName("deleteByLineId()를 호출하면 입력받은 노선에 포함된 역들을 모두 제거한다.")
     void deleteByLineId() {
         // given
-        int expected=0;
+        int expected = 0;
 
         // when
         stationDao.deleteByLineId(lineId);

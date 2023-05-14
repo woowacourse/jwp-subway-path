@@ -3,9 +3,12 @@ package subway.dao;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
+import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
@@ -45,27 +48,13 @@ public class StationDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public StationEntity insert(Station station, Long lineId) {
-
-//        KeyHolder keyHolder = new GeneratedKeyHolder();
-//        jdbcTemplate.update(connection -> {
-//            PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
-//            ps.setString(1, product.getName());
-//            ps.setString(2, product.getUrl());
-//            ps.setInt(3, product.getPrice());
-//            return ps;
-//        }, keyHolder);
-
-        Map<String, Object> params = new HashMap<>();
-        params.put("name", station.getName());
-        params.put("next", station.getNext().getId());
-        params.put("distance", station.getDistance().getValue());
-        params.put("lind_id", lineId);
-
-        //SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new StationEntity(id, station.getName(), station.getNext().getId()
-            , station.getDistance().getValue(), lineId);
+    public Long insert(StationEntity entity) {
+        SqlParameterSource params = new MapSqlParameterSource()
+            .addValue("name", entity.getName())
+            .addValue("next", entity.getNext())
+            .addValue("distance", entity.getDistance())
+            .addValue("line_id", entity.getLineId());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
 //    public List<StationEntity> findAll() {
@@ -85,7 +74,6 @@ public class StationDao {
 //        return jdbcTemplate.queryForObject(sql, rowMapper, id);
 //    }
 
-    //전 역을 찾는 메서드
     public StationEntity findByNextStationId(Long lineId, Long nextStationId) {
         try {
             String sql = "select * from STATION where line_id = ? AND next_station = ?";
