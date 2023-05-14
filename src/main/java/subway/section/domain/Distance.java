@@ -43,4 +43,8 @@ public class Distance {
     public Long add(final Distance otherDistance) {
         return this.distance + otherDistance.distance;
     }
+    
+    public boolean lessThanOrEqualTo(final long additionalDistance) {
+        return this.distance <= additionalDistance;
+    }
 }

@@ -69,9 +69,17 @@ public class Section {
     }
     
     private Set<Section> createDividedSections(final String betweenAdditional, final long additionalDistance) {
+        validateLength(additionalDistance);
+        
         final Section additionalLeftSection = new Section(left.getName(), betweenAdditional, additionalDistance);
         final Section additionalRightSection = new Section(betweenAdditional, right.getName(), this.distance.subtract(additionalDistance));
         return Set.of(additionalLeftSection, additionalRightSection);
+    }
+    
+    private void validateLength(final long additionalDistance) {
+        if (this.distance.lessThanOrEqualTo(additionalDistance)) {
+            throw new IllegalArgumentException("분리될 Section은 추가될 Section의 거리보다 길어야합니다.");
+        }
     }
     
     public Section combine(final Section otherSection) {
