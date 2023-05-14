@@ -20,7 +20,9 @@ import static org.hamcrest.Matchers.is;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineCreateRequest createRequest;
+
+    private final LineCreateRequest createRequest =
+            new LineCreateRequest("3호선", "경복궁", "안국", 10);
     private Station initialUpStation;
     private Station initialDownStation;
 
@@ -36,51 +38,36 @@ public class LineIntegrationTest extends IntegrationTest {
 
         initialUpStation = stationDao.insert(new Station("경복궁"));
         initialDownStation = stationDao.insert(new Station("안국"));
-
-        createRequest = new LineCreateRequest("3호선", "경복궁", "안국", 10);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
-    void createLine() {
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+    void createLine_success() {
+        RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(createRequest)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
-        // TODO : 반환값 body제대로 확인
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", "/lines/1");
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("기존에 존재하는 지하철 노선 이름으로 노선을 생성하려 하면 BAD_REQUEST가 발생한다.")
     @Test
-    void createLineWithDuplicateName() {
+    void createLine_fail() {
         // given
-        RestAssured
-                .given().log().all()
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(createRequest)
+                .when().post("/lines");
+
+        // when, then
+        RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(createRequest)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createRequest)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("기존 노선에 역을 추가한다.")
