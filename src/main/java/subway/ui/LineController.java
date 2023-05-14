@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.SectionService;
+import subway.dto.response.Response;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineDetailResponse;
 import subway.dto.line.LineResponse;
@@ -34,42 +35,58 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody @Valid LineCreateRequest lineRequest) {
+    public ResponseEntity<Response> createLine(@RequestBody @Valid LineCreateRequest lineRequest) {
         long lineId = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
+        return Response.created(URI.create("/lines/" + lineId))
+                .message("노선이 생성되었습니다.")
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<Response> findAllLines() {
+        List<LineResponse> lines = lineService.findLineResponses();
+        return Response.ok()
+                .message(lines.size() + "개의 노선이 조회되었습니다.")
+                .result(lines)
+                .build();
     }
 
     @GetMapping("/detail")
-    public ResponseEntity<List<LineDetailResponse>> findAllDetailLines() {
-        List<LineDetailResponse> lineDetailResponses = lineService.findLineResponses()
+    public ResponseEntity<Response> findAllDetailLines() {
+        List<LineDetailResponse> detailLines = lineService.findLineResponses()
                 .stream()
                 .map(line -> new LineDetailResponse(line, sectionService.findSectionsByLineId(line.getLineId())))
                 .collect(toList());
-        return ResponseEntity.ok(lineDetailResponses);
+        return Response.ok()
+                .message(detailLines.size() + "개의 상세 노선이 조회되었습니다.")
+                .result(detailLines)
+                .build();
     }
 
     @GetMapping("/{lineId}")
-    public ResponseEntity<LineDetailResponse> findLineDetailById(@PathVariable Long lineId) {
+    public ResponseEntity<Response> findLineDetailById(@PathVariable Long lineId) {
         LineResponse lineResponse = lineService.findLineResponseById(lineId);
         List<SectionResponse> sectionResponses = sectionService.findSectionsByLineId(lineId);
-        return ResponseEntity.ok(new LineDetailResponse(lineResponse, sectionResponses));
+        return Response.ok()
+                .message("상세 노선이 조회되었습니다.")
+                .result(new LineDetailResponse(lineResponse, sectionResponses))
+                .build();
     }
 
     @PutMapping("/{lineId}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long lineId,
-                                           @RequestBody @Valid LineUpdateRequest lineUpdateRequest) {
+    public ResponseEntity<Response> updateLine(@PathVariable Long lineId,
+                                               @RequestBody @Valid LineUpdateRequest lineUpdateRequest) {
         lineService.updateLine(lineId, lineUpdateRequest);
-        return ResponseEntity.ok().build();
+        return Response.ok()
+                .message("노선이 수정되었습니다.")
+                .build();
     }
 
     @DeleteMapping("/{lineId}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
+    public ResponseEntity<Response> deleteLine(@PathVariable Long lineId) {
         lineService.deleteLineById(lineId);
-        return ResponseEntity.noContent().build();
+        return Response.ok()
+                .message("노선이 삭제되었습니다.")
+                .build();
     }
 }

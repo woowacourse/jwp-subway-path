@@ -5,6 +5,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -43,11 +44,12 @@ class SectionControllerTest {
         mockMvc.perform(post("/sections/{lineId}", lineId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("구간이 생성되었습니다."));
     }
 
     @Test
-    @DisplayName("/sections/{lineId}로 DELETE 요청과 함께 station의 정보를 보내면, HTTP 204 코드와 응답이 반환 되어야 한다.")
+    @DisplayName("/sections/{lineId}로 DELETE 요청과 함께 station의 정보를 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void deleteSection_success() throws Exception {
         // given
         Long lineId = 1L;
@@ -57,6 +59,7 @@ class SectionControllerTest {
         mockMvc.perform(delete("/sections/{lineId}", lineId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("구간이 삭제되었습니다."));
     }
 }

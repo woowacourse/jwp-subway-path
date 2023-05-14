@@ -1,14 +1,13 @@
 package subway.ui;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import subway.dto.response.Response;
+import subway.exception.DuplicateStationException;
 import subway.exception.IllegalDistanceException;
 import subway.exception.IllegalSectionException;
 import subway.exception.StationNotFoundException;
@@ -16,34 +15,54 @@ import subway.exception.StationNotFoundException;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private static final String BAD_REQUEST_MESSAGE = "잘못된 요청입니다.";
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleRuntimeException(RuntimeException e) {
+    public ResponseEntity<Response> handleRuntimeException(RuntimeException e) {
         log.info(e.getMessage(), e);
-        return ResponseEntity.internalServerError().body("서버에 오류가 발생했습니다.");
+        return Response.internalServerError()
+                .message("서버에 오류가 발생했습니다.")
+                .build();
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        Map<String, String> validation = new HashMap<>();
-        for (FieldError fieldError : e.getFieldErrors()) {
-            validation.put(fieldError.getField(), fieldError.getDefaultMessage());
-        }
-        return ResponseEntity.badRequest().body(validation);
+    public ResponseEntity<Response> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return Response.badRequest()
+                .message(BAD_REQUEST_MESSAGE)
+                .validation(e)
+                .build();
     }
 
     @ExceptionHandler(IllegalSectionException.class)
-    public ResponseEntity<String> handleIllegalSectionException(IllegalSectionException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    public ResponseEntity<Response> handleIllegalSectionException(IllegalSectionException e) {
+        return Response.badRequest()
+                .message(BAD_REQUEST_MESSAGE)
+                .validation("upBoundStationName", e.getMessage())
+                .validation("downBoundStationName", e.getMessage())
+                .build();
     }
 
     @ExceptionHandler(IllegalDistanceException.class)
-    public ResponseEntity<String> handleIllegalDistanceSectionException(IllegalDistanceException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    public ResponseEntity<Response> handleIllegalDistanceSectionException(IllegalDistanceException e) {
+        return Response.badRequest()
+                .message(BAD_REQUEST_MESSAGE)
+                .validation("distance", e.getMessage())
+                .build();
     }
 
     @ExceptionHandler(StationNotFoundException.class)
-    public ResponseEntity<String> handleStationNotFoundException(StationNotFoundException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+    public ResponseEntity<Response> handleStationNotFoundException(StationNotFoundException e) {
+        return Response.badRequest()
+                .message(BAD_REQUEST_MESSAGE)
+                .validation("stationName", e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(DuplicateStationException.class)
+    public ResponseEntity<Response> handleDuplicateStationException(DuplicateStationException e) {
+        return Response.badRequest()
+                .message(BAD_REQUEST_MESSAGE)
+                .validation("stationName", e.getMessage())
+                .build();
     }
 }

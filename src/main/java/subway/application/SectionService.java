@@ -35,7 +35,7 @@ public class SectionService {
         Optional<Station> upBoundStation = stationDao.findByName(request.getUpBoundStationName());
         Optional<Station> downBoundStation = stationDao.findByName(request.getDownBoundStationName());
         if (upBoundStation.isEmpty() || downBoundStation.isEmpty()) {
-            throw new StationNotFoundException();
+            throw new IllegalSectionException("추가하려는 역이 존재하지 않습니다.");
         }
         addSection(lineId, new Section(upBoundStation.get(), downBoundStation.get(), request.getDistance()));
     }

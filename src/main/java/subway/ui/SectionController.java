@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
+import subway.dto.response.Response;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 import subway.dto.section.SectionResponse;
@@ -25,21 +26,29 @@ public class SectionController {
     }
 
     @GetMapping("/{lindId}")
-    public ResponseEntity<List<SectionResponse>> findAllSectionsByLineId(@PathVariable Long lindId) {
-        return ResponseEntity.ok(sectionService.findSectionsByLineId(lindId));
+    public ResponseEntity<Response> findAllSectionsByLineId(@PathVariable Long lindId) {
+        List<SectionResponse> sections = sectionService.findSectionsByLineId(lindId);
+        return Response.ok()
+                .message(sections.size() + "개의 구간이 조회되었습니다.")
+                .result(sections)
+                .build();
     }
 
     @PostMapping("/{lineId}")
-    public ResponseEntity<Void> createSection(@PathVariable Long lineId,
-                                              @RequestBody @Valid SectionCreateRequest sectionCreateRequest) {
+    public ResponseEntity<Response> createSection(@PathVariable Long lineId,
+                                                  @RequestBody @Valid SectionCreateRequest sectionCreateRequest) {
         sectionService.saveSection(lineId, sectionCreateRequest);
-        return ResponseEntity.ok().build();
+        return Response.ok()
+                .message("구간이 생성되었습니다.")
+                .build();
     }
 
     @DeleteMapping("/{lineId}")
-    public ResponseEntity<Void> deleteSection(@PathVariable Long lineId,
-                                              @RequestBody @Valid SectionDeleteRequest sectionDeleteRequest) {
+    public ResponseEntity<Response> deleteSection(@PathVariable Long lineId,
+                                                  @RequestBody @Valid SectionDeleteRequest sectionDeleteRequest) {
         sectionService.deleteSection(lineId, sectionDeleteRequest);
-        return ResponseEntity.noContent().build();
+        return Response.ok()
+                .message("구간이 삭제되었습니다.")
+                .build();
     }
 }

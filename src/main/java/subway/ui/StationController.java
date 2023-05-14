@@ -1,5 +1,6 @@
 package subway.ui;
 
+import java.net.URI;
 import java.util.List;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
+import subway.dto.response.Response;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationUpdateRequest;
@@ -26,26 +28,36 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
+    public ResponseEntity<Response> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
         stationService.saveStation(stationCreateRequest);
-        return ResponseEntity.ok().build();
+        return Response.created(URI.create("/stations/" + stationCreateRequest.getStationName()))
+                .message("역이 생성되었습니다.")
+                .build();
     }
 
     @GetMapping
-    public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
+    public ResponseEntity<Response> showStations() {
+        List<StationResponse> stations = stationService.findAllStationResponses();
+        return Response.ok()
+                .message(stations.size() + "개의 역이 조회되었습니다.")
+                .result(stations)
+                .build();
     }
 
     @PutMapping("/{stationName}")
-    public ResponseEntity<Void> updateStation(@PathVariable String stationName,
-                                              @RequestBody @Valid StationUpdateRequest stationUpdateRequest) {
+    public ResponseEntity<Response> updateStation(@PathVariable String stationName,
+                                                  @RequestBody @Valid StationUpdateRequest stationUpdateRequest) {
         stationService.updateStation(stationName, stationUpdateRequest);
-        return ResponseEntity.ok().build();
+        return Response.ok()
+                .message("역이 수정되었습니다.")
+                .build();
     }
 
     @DeleteMapping("/{stationName}")
-    public ResponseEntity<Void> deleteStation(@PathVariable String stationName) {
+    public ResponseEntity<Response> deleteStation(@PathVariable String stationName) {
         stationService.deleteStationByName(stationName);
-        return ResponseEntity.noContent().build();
+        return Response.ok()
+                .message("역이 삭제되었습니다.")
+                .build();
     }
 }
