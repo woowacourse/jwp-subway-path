@@ -84,5 +84,14 @@ class StationRepositoryImplTest {
 
 	@Test
 	void deleteById() {
+		// given
+		final Station jamsil = new Station("잠실");
+		final long jamsilId = repository.createStation(jamsil);
+
+		// when
+		final boolean isDelete = repository.deleteById(jamsilId);
+
+		//then
+		Assertions.assertThat(isDelete).isTrue();
 	}
 }

@@ -15,6 +15,7 @@ import subway.domain.repository.StationRepository;
 @Repository
 public class StationRepositoryImpl implements StationRepository {
 	private static final int UPDATED_COUNT = 1;
+	private static final int DELETED_COUNT = 1;
 	private final JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert insert;
 
@@ -59,8 +60,10 @@ public class StationRepositoryImpl implements StationRepository {
 	}
 
 	@Override
-	public void deleteById(final Long stationIdRequest) {
+	public boolean deleteById(final Long stationIdRequest) {
 		String sql = "delete from station where id = ?";
-		jdbcTemplate.update(sql, stationIdRequest);
+		final int deleteCount = jdbcTemplate.update(sql, stationIdRequest);
+
+		return deleteCount == DELETED_COUNT;
 	}
 }

@@ -13,5 +13,5 @@ public interface StationRepository {
 
 	void updateStation(long stationId, Station station);
 
-	void deleteById(Long stationIdRequest);
+	boolean deleteById(Long stationIdRequest);
 }

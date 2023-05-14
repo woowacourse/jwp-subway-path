@@ -47,6 +47,10 @@ public class StationService {
 	}
 
 	public void deleteById(final Long stationIdRequest) {
-		stationRepository.deleteById(stationIdRequest);
+		final boolean isDelete = stationRepository.deleteById(stationIdRequest);
+
+		if(!isDelete){
+			throw new IllegalStateException("역 삭제에 실패했습니다");
+		}
 	}
 }
