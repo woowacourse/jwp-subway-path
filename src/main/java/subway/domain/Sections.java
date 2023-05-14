@@ -5,9 +5,11 @@ import subway.exception.InvalidSectionLengthException;
 import subway.exception.SectionNotFoundException;
 
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class Sections {
+    public static final int DOWN_END_ID = 0;
     private final long lineId;
     private final List<Section> sections;
 
@@ -16,13 +18,13 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public Section getIncludeSection(Section section) {
+    public Section getIncludeSection(Section newSection) {
         Section includeSection = sections.stream()
-                .filter(section1 -> section1.hasIntersection(section))
+                .filter(existingSection -> existingSection.hasIntersection(newSection))
                 .findFirst()
-                .orElseThrow(InvalidSectionLengthException::new);
+                .orElseThrow(SectionNotFoundException::new);
 
-        if (includeSection.isDistanceSmallOrSame(section)) {
+        if (includeSection.isDistanceSmallOrSame(newSection)) {
             throw new InvalidSectionLengthException();
         }
         return includeSection;
@@ -42,16 +44,24 @@ public class Sections {
     }
 
     public Section getDownEndSection() {
-        return sections.stream().filter(section1 -> section1.getNextSectionId() == 0)
+        return sections.stream()
+                .filter(existingSection -> existingSection.getNextSectionId() == 0)
                 .findFirst().orElseThrow(EndStationNotExistException::new);
     }
 
     public Section getUpEndSection() {
-        List<Long> downSectionIds = sections.stream().map(Section::getNextSectionId)
+        List<Long> downSectionIds = sections.stream()
+                .map(Section::getNextSectionId)
                 .collect(Collectors.toList());
 
-        return sections.stream().filter(section1 -> !downSectionIds.contains(section1.getId()))
-                .findFirst().orElseThrow(EndStationNotExistException::new);
+        return sections.stream()
+                .filter(isUpEndSection(downSectionIds))
+                .findFirst()
+                .orElseThrow(EndStationNotExistException::new);
+    }
+
+    private static Predicate<Section> isUpEndSection(List<Long> downSectionIds) {
+        return existingSection -> !downSectionIds.contains(existingSection.getId());
     }
 
     public boolean isInitialSave() {
@@ -89,37 +99,40 @@ public class Sections {
                 .noneMatch(section -> section.containsStation(stationId));
     }
 
+
+    public List<Station> getStationsInOrder() {
+        List<Section> sortedSections = this.getSorted();
+
+        if (sortedSections.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<Station> sortedStations = new ArrayList<>();
+        sortedStations.add(sortedSections.get(0).getUpStation());
+        for (Section section : sortedSections) {
+            sortedStations.add(section.getDownStation());
+        }
+        return sortedStations;
+    }
+
     private List<Section> getSorted() {
-        Map<Long, Section> sectionIdMapping = new HashMap<>();
+        Map<Long, Section> sectionIdMappings = new HashMap<>();
+        sections.forEach(section -> sectionIdMappings.put(section.getId(), section));
 
-        sections.forEach(section -> sectionIdMapping.put(section.getId(), section));
+        return sortSections(sectionIdMappings);
+    }
+
+    private List<Section> sortSections(Map<Long, Section> sectionIdMapping) {
         Section upEndSection = getUpEndSection();
-        Section currentSection = upEndSection;
         List<Section> result = new ArrayList<>();
-
         result.add(upEndSection);
-        while (currentSection.getNextSectionId() != 0) {
+        Section currentSection = upEndSection;
+        while (currentSection.getNextSectionId() != DOWN_END_ID) {
             Section nextSection = sectionIdMapping.get(currentSection.getNextSectionId());
             result.add(nextSection);
             currentSection = nextSection;
         }
-
         return result;
-    }
-
-    public List<Station> getStationsInOrder() {
-        List<Section> sorted = this.getSorted();
-
-        if (sorted.size() == 0) {
-            return Collections.emptyList();
-        }
-        List<Station> stations = new ArrayList<>();
-
-        stations.add(sorted.get(0).getUpStation());
-        for (Section section : sorted) {
-            stations.add(section.getDownStation());
-        }
-        return stations;
     }
 
     @Override

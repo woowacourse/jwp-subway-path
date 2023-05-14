@@ -13,7 +13,7 @@ import subway.domain.Station;
 import subway.dto.SectionSaveRequest;
 import subway.dto.StationResponse;
 import subway.exception.SectionNotFoundException;
-import subway.exception.StationNotExistException;
+import subway.exception.StationNotFoundException;
 
 @Service
 public class SectionService {
@@ -146,7 +146,7 @@ public class SectionService {
 
     private static void validateStationExist(long stationId, Sections sections) {
         if (sections.isNotExistStation(stationId)) {
-            throw new StationNotExistException();
+            throw new StationNotFoundException();
         }
     }
 

@@ -1,11 +1,5 @@
 package subway.application;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +8,17 @@ import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.dto.SectionSaveRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.SectionSaveRequest;
+import subway.dto.response.StationResponse;
+import subway.exception.InvalidSectionLengthException;
+import subway.exception.StationNotFoundException;
 import subway.integration.IntegrationTest;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class SectionServiceTest extends IntegrationTest {
 
@@ -43,7 +45,7 @@ class SectionServiceTest extends IntegrationTest {
     @Test
     @DisplayName("최초로 구간을 등록한다.")
     void addInitialSection_success() {
-        long id = initInsert();
+        long id = insertInitialSection();
         assertThat(id).isEqualTo(1L);
     }
 
@@ -51,7 +53,7 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("하행종점에 구간을 등록한다.")
     void addDownEndSection_success() {
         //given
-        initInsert();
+        insertInitialSection();
 
         //when
         SectionSaveRequest endSectionRequest = new SectionSaveRequest(2L, 3L, 5);
@@ -64,7 +66,7 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("상행종점에 구간을 등록한다.")
     void addUpEndSection_success() {
         //given
-        initInsert();
+        insertInitialSection();
 
         //when
         SectionSaveRequest endSectionRequest = new SectionSaveRequest(3L, 1L, 5);
@@ -78,20 +80,20 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("구간 중간 - 새로운 길이가 더 큰 구간을 등록하려하면 실패한다.")
     void addMiddleSection_fail_distance_too_big() {
         //given
-        initInsert();
+        insertInitialSection();
 
         //when
         SectionSaveRequest middleSectionRequest = new SectionSaveRequest(3L, 2L, 10);
 
         assertThatThrownBy(() -> sectionService.addSection(1L, middleSectionRequest))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(InvalidSectionLengthException.class);
     }
 
     @Test
     @DisplayName("구간 중간 - 오른쪽에 새로운 구간을 등록한다.")
     void addMiddleSection_innerRight_success() {
         //given
-        initInsert();
+        insertInitialSection();
 
         //when
         SectionSaveRequest middleSectionRequest = new SectionSaveRequest(3L, 2L, 5);
@@ -105,7 +107,7 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("구간 중간 - 왼쪽에 새로운 구간을 등록한다.")
     void addMiddleSection_innerLeft_success() {
         //given
-        initInsert();
+        insertInitialSection();
 
         //when
         SectionSaveRequest middleSectionRequest = new SectionSaveRequest(1L, 3L, 5);
@@ -118,7 +120,7 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("구간 삭제 - 역이 2개일 경우 역 제거 시도 시 해당 노선의 모든 역을 삭제한다.")
     void deleteSection_when_only_2_station_success() {
         //given
-        initInsert();
+        insertInitialSection();
 
         //when
         sectionService.removeStation(1L, 1L);
@@ -129,7 +131,7 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("구간 삭제 - 상행 종점을 삭제한다.")
     void deleteEndSection_UpEnd_success() {
         //given
-        initInsert();
+        insertInitialSection();
         sectionService.addSection(1L, request2_3);
 
         //when
@@ -145,7 +147,7 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("구간 삭제 - 하행 종점을 삭제한다.")
     void deleteEndSection_downEnd_success() {
         //given
-        initInsert();
+        insertInitialSection();
         sectionService.addSection(1L, request2_3);
 
         //when
@@ -161,7 +163,7 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("구간 삭제 - 구간 중간의 역을 삭제한다.")
     void deleteSection_middle_success() {
         //given
-        initInsert();
+        insertInitialSection();
         sectionService.addSection(1L, request2_3);
 
         //when
@@ -177,19 +179,19 @@ class SectionServiceTest extends IntegrationTest {
     @DisplayName("구간 삭제 - 노선에 존재하지 않는 역을 삭제한다.")
     void deleteSection_when_not_exist() {
         //given
-        initInsert();
+        insertInitialSection();
         sectionService.addSection(1L, request2_3);
 
         //when
         assertThatThrownBy(() -> sectionService.removeStation(5L, 1L))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(StationNotFoundException.class);
     }
 
     @Test
     @DisplayName("특정 노선의 정렬된 역들을 반환한다.")
     void findSortedSections_success() {
         //given
-        initInsert();
+        insertInitialSection();
         sectionService.addSection(1L, request3_1);
 
         //when
@@ -203,7 +205,7 @@ class SectionServiceTest extends IntegrationTest {
         assertThat(sortedNames).isEqualTo(List.of("역3", "역1", "역2"));
     }
 
-    private long initInsert() {
+    private long insertInitialSection() {
         lineDao.insert(line1);
         stationDao.insert(station1);
         stationDao.insert(station2);

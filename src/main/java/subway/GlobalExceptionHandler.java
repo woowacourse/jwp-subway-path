@@ -4,17 +4,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.exception.EndStationNotExistException;
-import subway.exception.InvalidSectionLengthException;
-import subway.exception.SectionNotFoundException;
-import subway.exception.StationNotExistException;
+import subway.exception.*;
 import subway.ui.ErrorCode;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(StationNotExistException.class)
-    public ResponseEntity<String> stationNotExist(StationNotExistException e) {
+    @ExceptionHandler(StationNotFoundException.class)
+    public ResponseEntity<String> stationNotExist(StationNotFoundException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorCode.STATION_NOT_EXIST.getMessage());
     }
