@@ -23,7 +23,7 @@ public class SectionService {
     }
 
     public Long addStation(Long lineId, LineStationRequest lineStationRequest) {
-        Section section = lineStationRequest.toSection();
+        Section section = new Section(lineId, lineStationRequest.getPreStationId(), lineStationRequest.getStationId(), lineStationRequest.getDistance());
         Sections currentLineSections = getCurrentLineSections(lineId);
         Section modified = currentLineSections.add(section);
 

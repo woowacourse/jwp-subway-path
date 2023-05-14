@@ -1,23 +1,14 @@
 package subway.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import subway.domain.Station;
 
 import java.util.List;
 
+@Getter
+@AllArgsConstructor
 public class LineStationResponse {
     private Long lineId;
     private List<Station> stations;
-
-    public LineStationResponse(Long lineId, List<Station> stations) {
-        this.lineId = lineId;
-        this.stations = stations;
-    }
-
-    public Long getLineId() {
-        return lineId;
-    }
-
-    public List<Station> getStations() {
-        return stations;
-    }
 }

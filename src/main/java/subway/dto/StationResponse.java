@@ -1,25 +1,16 @@
 package subway.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import subway.entity.StationEntity;
 
+@Getter
+@AllArgsConstructor
 public class StationResponse {
     private Long id;
     private String name;
 
-    public StationResponse(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public static StationResponse of(StationEntity station) {
         return new StationResponse(station.getId(), station.getName());
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 }
