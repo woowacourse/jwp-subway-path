@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import subway.domain.Section;
 import subway.persistence.entity.SectionEntity;
 
 import java.util.List;
@@ -18,8 +17,9 @@ public class SectionJdbcDao implements SectionDao {
     private final RowMapper<SectionEntity> sectionRowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("id"),
-                    rs.getString("up_station"),
-                    rs.getString("down_station"),
+                    rs.getLong("line_id"),
+                    rs.getString("up_station_name"),
+                    rs.getString("down_station_name"),
                     rs.getLong("distance")
             );
 
@@ -31,8 +31,8 @@ public class SectionJdbcDao implements SectionDao {
     }
 
     @Override
-    public void saveSection(final List<SectionEntity> sectionEntities) {
-        jdbcTemplate.update("TRUNCATE TABLE section");
+    public void saveSection(final Long lineId, final List<SectionEntity> sectionEntities) {
+        jdbcTemplate.update("drop table section where line_id = ?", lineId);
 
         final BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
                 .map(BeanPropertySqlParameterSource::new)

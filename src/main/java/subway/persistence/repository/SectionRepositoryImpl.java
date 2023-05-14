@@ -21,7 +21,7 @@ public class SectionRepositoryImpl implements SectionRepository {
     @Override
     public void saveSection(final Long lineId, final List<Section> sections) {
         final List<SectionEntity> sectionEntities = SectionEntity.of(lineId, sections);
-        sectionDao.saveSection(sectionEntities);
+        sectionDao.saveSection(lineId,sectionEntities);
     }
 
     @Override
@@ -29,8 +29,8 @@ public class SectionRepositoryImpl implements SectionRepository {
         return sectionDao.findAllByLineId(lineId).stream()
                 .map(sectionEntity -> new Section(
                         sectionEntity.getLineId(),
-                        new Station(sectionEntity.getUpStation()),
-                        new Station(sectionEntity.getDownStation()),
+                        new Station(sectionEntity.getUpStationName()),
+                        new Station(sectionEntity.getDownStationName()),
                         sectionEntity.getDistance())
                 ).collect(Collectors.toList());
     }

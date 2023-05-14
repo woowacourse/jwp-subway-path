@@ -1,21 +1,26 @@
 package subway.persistence.entity;
 
 import subway.domain.Section;
-import subway.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SectionEntity {
+    private final Long id;
     private final Long lineId;
-    private final String upStation;
-    private final String downStation;
+    private final String upStationName;
+    private final String downStationName;
     private final Long distance;
 
-    public SectionEntity(final Long lineId, final String upStation, final String downStation, final Long distance) {
+    public SectionEntity(final Long lineId, final String upStationName, final String downStationName, final Long distance) {
+        this(null, lineId, upStationName, downStationName, distance);
+    }
+
+    public SectionEntity(final Long id, final Long lineId, final String upStationName, final String downStationName, final Long distance) {
+        this.id = id;
         this.lineId = lineId;
-        this.upStation = upStation;
-        this.downStation = downStation;
+        this.upStationName = upStationName;
+        this.downStationName = downStationName;
         this.distance = distance;
     }
 
@@ -30,17 +35,20 @@ public class SectionEntity {
                 .collect(Collectors.toList());
     }
 
+    public Long getId() {
+        return id;
+    }
 
     public Long getLineId() {
         return lineId;
     }
 
-    public String getUpStation() {
-        return upStation;
+    public String getUpStationName() {
+        return upStationName;
     }
 
-    public String getDownStation() {
-        return downStation;
+    public String getDownStationName() {
+        return downStationName;
     }
 
     public Long getDistance() {
