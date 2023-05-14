@@ -84,7 +84,7 @@ class StationRepositoryTest {
         doReturn(Optional.empty()).when(stationDao).findByName(JAMSIL_STATION.getName());
         doReturn(JAMSIL_STATION_ENTITY).when(stationDao).insert(NO_ID_JAMSIL_STATION_ENTITY);
 
-        assertThat(stationRepository.insert(JAMSIL_STATION)).isEqualTo(JAMSIL_STATION_ENTITY.getId());
+        assertThat(stationRepository.createStation(JAMSIL_STATION)).isEqualTo(JAMSIL_STATION_ENTITY.getId());
     }
 
     @Test
@@ -92,7 +92,7 @@ class StationRepositoryTest {
     void insertException() {
         doReturn(Optional.of(JAMSIL_STATION_ENTITY)).when(stationDao).findByName(JAMSIL_STATION.getName());
 
-        assertThatThrownBy(() -> stationRepository.insert(JAMSIL_STATION))
+        assertThatThrownBy(() -> stationRepository.createStation(JAMSIL_STATION))
                 .isInstanceOf(IllegalStateException.class);
     }
 }

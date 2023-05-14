@@ -20,7 +20,7 @@ create table if not exists SECTION
     line_id bigint not null,
     distance int not null,
     primary key(id),
-    foreign key(upstream_id) references STATION(id) DELETE ON CASCADE,
-    foreign key(downstream_id) references STATION(id) DELETE ON CASCADE,
-    foreign key(line_id) references LINE(id) DELETE ON CASCADE
+    foreign key(upstream_id) references STATION(id) ON DELETE CASCADE,
+    foreign key(downstream_id) references STATION(id) ON DELETE CASCADE,
+    foreign key(line_id) references LINE(id) ON DELETE CASCADE
 );

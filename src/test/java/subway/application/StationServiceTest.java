@@ -72,7 +72,7 @@ class StationServiceTest {
 
         stationService.createStationIfNotExist(JAMSIL_STATION.getName());
 
-        verify(stationRepository, times(1)).insert(JAMSIL_STATION);
+        verify(stationRepository, times(1)).createStation(JAMSIL_STATION);
     }
 
     @Test

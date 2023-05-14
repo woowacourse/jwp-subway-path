@@ -2,8 +2,9 @@ package subway.repository;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 
@@ -18,7 +19,7 @@ import static subway.utils.SectionEntityFixture.NO_ID_JAMSIL_TO_JAMSIL_NARU_SECT
 import static subway.utils.SectionEntityFixture.NO_ID_SULLEUNG_TO_JAMSIL_SECTION_ENTITY;
 import static subway.utils.StationEntityFixture.*;
 
-@WebMvcTest()
+@ExtendWith(MockitoExtension.class)
 class LineRepositoryTest {
 
     @Mock
@@ -41,9 +42,12 @@ class LineRepositoryTest {
     void createLine() {
         doReturn(Optional.empty()).when(lineDao).findIdByName(LINE_NUMBER_TWO_ENTITY.getName());
         doReturn(LINE_NUMBER_TWO_ENTITY.getId()).when(lineDao).insert(NO_ID_LINE_NUMBER_TWO_ENTITY);
-        doReturn(Optional.of(SULLEUNG_STATION_ENTITY.getId())).when(stationRepository).findIdByName(SULLEUNG_STATION_ENTITY.getName());
-        doReturn(Optional.of(JAMSIL_STATION_ENTITY.getId())).when(stationRepository).findIdByName(JAMSIL_STATION_ENTITY.getName());
-        doReturn(Optional.of(JAMSIL_NARU_STATION_ENTITY.getId())).when(stationRepository).findIdByName(JAMSIL_NARU_STATION_ENTITY.getName());
+        doReturn(Optional.of(SULLEUNG_STATION_ENTITY.getId())).when(stationRepository)
+                                                              .findIdByName(SULLEUNG_STATION_ENTITY.getName());
+        doReturn(Optional.of(JAMSIL_STATION_ENTITY.getId())).when(stationRepository)
+                                                            .findIdByName(JAMSIL_STATION_ENTITY.getName());
+        doReturn(Optional.of(JAMSIL_NARU_STATION_ENTITY.getId())).when(stationRepository)
+                                                                 .findIdByName(JAMSIL_NARU_STATION_ENTITY.getName());
 
         lineRepository.createLine(LINE_NUMBER_TWO);
 
