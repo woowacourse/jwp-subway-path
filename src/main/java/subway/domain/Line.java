@@ -2,8 +2,11 @@ package subway.domain;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Line {
 
@@ -123,6 +126,28 @@ public class Line {
         }
         upSectionOpt.ifPresent(sections::remove);
         downSectionOpt.ifPresent(sections::remove);
+    }
+
+    public List<Station> findAllStations() {
+        Station startStation = findFirstStation();
+        List<Station> stations = new LinkedList<>(List.of(startStation));
+        while (stations.size() <= sections.size()) {
+            sections.stream()
+                    .filter(section -> stations.get(stations.size() - 1).equals(section.getUpStation()))
+                    .findFirst()
+                    .ifPresent(section -> stations.add(section.getDownStation()));
+        }
+        return stations;
+    }
+
+    private Station findFirstStation() {
+        Map<Station, Station> upAndDownStation = sections.stream()
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+        Set<Station> stations = upAndDownStation.keySet();
+        stations.removeAll(upAndDownStation.values());
+        return stations.stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("상행 종점을 찾을 수 없습니다"));
     }
 
     @Override
