@@ -72,8 +72,6 @@ public class SectionDao {
                 .addValue("distance", section.getDistance().getDistance());
 
         long insertedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        System.out.println("call");
-        System.out.println("insertedId = " + insertedId);
         return new Section(insertedId, section.getNearbyStations(), section.getLine(), section.getDistance());
     }
 
