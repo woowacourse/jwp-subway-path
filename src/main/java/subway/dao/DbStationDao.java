@@ -52,5 +52,17 @@ public class DbStationDao implements StationDao {
         final String sql = "select * from STATION WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
+
+    @Override
+    public StationEntity findByName(String name) {
+        final String sql = "select * from STATION WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
+    }
+
+    @Override
+    public void delete(Long id) {
+        final String sql = "delete * from STATION WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }
 

@@ -77,4 +77,8 @@ public class SubwayGraphs {
         SubwayGraph subwayGraph = findSubwayGraphOf(line);
         subwayGraphs.remove(subwayGraph);
     }
+    public void deleteStation(Line line, Station station) {
+        SubwayGraph subwayGraph = findSubwayGraphOf(line);
+        subwayGraph.remove(station);
+    }
 }
