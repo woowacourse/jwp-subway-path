@@ -1,4 +1,4 @@
-package subway.controller.dto;
+package subway.ui.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

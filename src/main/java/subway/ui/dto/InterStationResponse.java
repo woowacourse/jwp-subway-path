@@ -1,4 +1,4 @@
-package subway.controller.dto;
+package subway.ui.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

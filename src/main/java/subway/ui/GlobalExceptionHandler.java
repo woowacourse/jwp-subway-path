@@ -1,4 +1,4 @@
-package subway.controller;
+package subway.ui;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -9,7 +9,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.controller.dto.ErrorResponse;
+import subway.ui.dto.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -24,7 +24,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     private ResponseEntity<ErrorResponse<String>> handleIllegalArgumentException(
-            final IllegalArgumentException exception) {
+        final IllegalArgumentException exception) {
         log.warn("잘못된 인자가 들어왔습니다", exception);
         return ResponseEntity.badRequest().body(new ErrorResponse<>(exception.getMessage()));
     }
@@ -33,8 +33,8 @@ public class GlobalExceptionHandler {
     protected ResponseEntity<Object> handleMethodArgumentNotValid(final MethodArgumentNotValidException exception) {
         log.warn("유효성 검사에 실패했습니다.", exception);
         final Map<String, String> body = exception.getFieldErrors()
-                .stream()
-                .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
+            .stream()
+            .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
         return ResponseEntity.badRequest().body(new ErrorResponse<>(body));
     }
 }

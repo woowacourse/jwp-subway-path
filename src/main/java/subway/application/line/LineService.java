@@ -1,21 +1,21 @@
-package subway.service.line;
+package subway.application.line;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import subway.controller.dto.AddLineRequest;
-import subway.controller.dto.AddLineResponse;
-import subway.controller.dto.AddStationRequest;
-import subway.controller.dto.AddStationResponse;
-import subway.controller.dto.LineResponse;
-import subway.controller.dto.RemoveStationRequest;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.exception.BusinessException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
+import subway.ui.dto.AddLineRequest;
+import subway.ui.dto.AddLineResponse;
+import subway.ui.dto.AddStationRequest;
+import subway.ui.dto.AddStationResponse;
+import subway.ui.dto.LineResponse;
+import subway.ui.dto.RemoveStationRequest;
 
 @RequiredArgsConstructor
 @Service
