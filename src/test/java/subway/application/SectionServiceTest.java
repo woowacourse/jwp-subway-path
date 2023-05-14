@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
+import subway.application.exception.InvalidDistanceException;
+import subway.application.exception.StationNotConnectedException;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -108,7 +110,7 @@ class SectionServiceTest {
         // B-C가 3km인데 B-D거리가 3km면 D-C거리는 0km가 되어야 하는데 거리는 양의 정수여야 하기 때문에 이 경우 등록이 불가능 해야합니다.
         // when
         assertThatThrownBy(() -> sectionService.insert(lineOne.getId(), stationO.getName(), stationJ.getName(), Distance.of(6), true))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidDistanceException.class)
                 .hasMessage("거리 정보는 양의 정수로 제한합니다.");
     }
 
@@ -152,7 +154,7 @@ class SectionServiceTest {
         sectionService.insert(lineOne.getId(), stationO.getName(), stationJ.getName(), Distance.of(3), true);
         assertThatThrownBy(() -> sectionService.findDistanceBetween(stationS, stationJ, lineOne))
                 .as("송탄역과 진위역은 이웃하지 않아 조회가 불가능합니다.")
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(StationNotConnectedException.class);
 
         // when
         sectionService.deleteStation(lineOne.getId(), stationO.getName());

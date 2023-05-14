@@ -1,17 +1,15 @@
 package subway.dao;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import subway.application.SectionService;
-import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Station;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
 @Import({StationDao.class, LineDao.class, SectionService.class, SectionDao.class})

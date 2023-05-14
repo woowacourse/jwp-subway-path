@@ -2,6 +2,7 @@ package subway.application.strategy.sectioninsertion;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
+import subway.application.exception.ExceptionMessages;
 import subway.dao.SectionDao;
 import subway.domain.Section;
 
@@ -23,7 +24,7 @@ public class DownDirectionInsertionStrategy implements SectionInsertionStrategy 
     @Override
     public long insert(Section section) {
         final var sectionToUpdate = sectionDao.findByPreviousStation(section.getPreviousStation(), section.getLine())
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow(() -> new IllegalStateException(ExceptionMessages.STRATEGY_MAPPING_FAILED));
 
         final var sectionId = sectionDao.insert(section.change()
                 .previousStation(section.getNextStation())

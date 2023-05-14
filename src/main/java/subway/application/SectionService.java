@@ -1,6 +1,9 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.application.exception.ExceptionMessages;
+import subway.application.exception.StationNotConnectedException;
+import subway.application.exception.StationNotRegisteredException;
 import subway.application.strategy.sectioninsertion.*;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -42,7 +45,7 @@ public class SectionService {
             }
         }
 
-        throw new IllegalArgumentException("등록하는 역과 연결되는 기존의 역 정보가 노선상에 존재하지 않습니다.");
+        throw new StationNotRegisteredException(ExceptionMessages.STATION_NOT_REGISTERED);
     }
 
     public void deleteStation(long lineId, String stationName) {
@@ -75,7 +78,7 @@ public class SectionService {
             return subwayMapOptional1.get().getDistance();
         }
 
-        throw new IllegalArgumentException("주어진 두 역이 이웃한 역이 아닙니다.");
+        throw new StationNotConnectedException(ExceptionMessages.STATION_NOT_CONNECTED);
         // TODO: 아직까지 이웃하지 않은 역의 거리를 조회하지는 않는다고 가정합니다.
     }
 }

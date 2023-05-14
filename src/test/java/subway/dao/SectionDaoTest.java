@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.SectionService;
+import subway.application.exception.InvalidDistanceException;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -54,7 +55,7 @@ class SectionDaoTest {
     void distanceFormat() {
         // when && then
         assertThatThrownBy(() -> sectionDao.insert(new Section(line, stationS, stationJ, Distance.of(-3))))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidDistanceException.class)
                 .hasMessage("거리 정보는 양의 정수로 제한합니다.");
     }
 

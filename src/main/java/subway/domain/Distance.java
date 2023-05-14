@@ -1,7 +1,8 @@
 package subway.domain;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import subway.application.exception.ExceptionMessages;
+import subway.application.exception.InvalidDistanceException;
 
 import java.util.Objects;
 
@@ -15,7 +16,7 @@ public class Distance {
 
     public static Distance of(int value) {
         if (value <= MIN_DISTANCE_VALUE) {
-            throw new IllegalArgumentException("거리 정보는 양의 정수로 제한합니다.");
+            throw new InvalidDistanceException(ExceptionMessages.INVALID_DISTANCE);
         }
         return new Distance(value);
     }
