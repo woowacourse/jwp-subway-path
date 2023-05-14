@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.LineService;
+import subway.application.service.LineService;
 import subway.dto.LineWithStationResponse;
 import subway.dto.StationResponse;
 

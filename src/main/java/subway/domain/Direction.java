@@ -1,5 +1,9 @@
 package subway.domain;
 
+import subway.domain.addpathstrategy.AddDownPath;
+import subway.domain.addpathstrategy.AddPathStrategy;
+import subway.domain.addpathstrategy.AddUpPath;
+
 import java.util.Arrays;
 
 public enum Direction {

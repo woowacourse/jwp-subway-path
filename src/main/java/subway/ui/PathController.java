@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.PathService;
+import subway.application.service.PathService;
 import subway.dto.AddPathRequest;
 
 @RequestMapping("/lines/{line-id}/stations")

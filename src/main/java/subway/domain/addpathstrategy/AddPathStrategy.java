@@ -1,4 +1,7 @@
-package subway.domain;
+package subway.domain.addpathstrategy;
+
+import subway.domain.Path;
+import subway.domain.Station;
 
 import java.util.List;
 import java.util.Map;

@@ -1,6 +1,7 @@
-package subway.application;
+package subway.application.service;
 
 import org.springframework.stereotype.Service;
+import subway.application.feepolicy.FeePolicy;
 import subway.domain.Line;
 import subway.domain.ShortestWayCalculator;
 import subway.domain.Station;
@@ -25,7 +26,7 @@ public class FeeService {
         final List<Line> lines = subwayRepository.findLines();
         final Station start = subwayRepository.findStationById(startStationId);
         final Station end = subwayRepository.findStationById(endStationId);
-        
+
         final ShortestWayCalculator calculator = ShortestWayCalculator.from(start, end, lines);
         final int fee = feePolicy.calculateFee(calculator.getDistance());
 
