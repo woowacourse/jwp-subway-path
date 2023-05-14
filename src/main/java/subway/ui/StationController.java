@@ -28,8 +28,10 @@ public class StationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
-        stationService.deleteStationById(id);
-        return ResponseEntity.noContent()
+        Long lineId = stationService.deleteStationById(id);
+        return ResponseEntity
+                .noContent()
+                .location(URI.create("/lines/" + lineId))
                 .build();
     }
 }

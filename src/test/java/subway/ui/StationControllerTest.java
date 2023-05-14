@@ -11,9 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.application.StationService;
 import subway.dto.StationRequest;
 
-import static fixtures.StationFixtures.LINE2_ID;
-import static fixtures.StationFixtures.REQUEST_잠실역_TO_건대역;
-import static org.mockito.Mockito.doNothing;
+import static fixtures.StationFixtures.*;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -52,11 +50,13 @@ class StationControllerTest {
     @DisplayName("DELETE /stations/{id} uri로 요청하면 반환이 noContent이다.")
     void deleteStationTest() throws Exception {
         // given
-        Long stationIdToDelete = 1L;
-        doNothing().when(stationService).deleteStationById(stationIdToDelete);
+        Long stationIdToDelete = STATION_강변역_ID;
+        Long response = LINE2_ID;
+        when(stationService.deleteStationById(stationIdToDelete)).thenReturn(response);
 
         // when, then
         mockMvc.perform(delete("/stations/" + stationIdToDelete))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isNoContent())
+                .andExpect(header().string("Location", "/lines/" + response));
     }
 }

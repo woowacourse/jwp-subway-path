@@ -7,13 +7,12 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.calculator.AddCalculator;
 import subway.domain.calculator.Changes;
+import subway.domain.calculator.RemoveCalculator;
 import subway.domain.line.Line;
 import subway.domain.line.LineStatus;
-import subway.domain.section.ContainingSections;
-import subway.domain.section.Distance;
-import subway.domain.section.Section;
-import subway.domain.section.SectionRepository;
+import subway.domain.section.*;
 import subway.domain.station.Station;
+import subway.domain.station.StationRepository;
 import subway.dto.StationRequest;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
@@ -30,12 +29,14 @@ public class StationService {
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
+    private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
-    public StationService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao, SectionRepository sectionRepository) {
+    public StationService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao, StationRepository stationRepository, SectionRepository sectionRepository) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
+        this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
     }
 
@@ -101,7 +102,16 @@ public class StationService {
         return changes.getChangedLineId();
     }
 
-    public void deleteStationById(Long id) {
-
+    public Long deleteStationById(Long id) {
+        Optional<Station> findNullableStation = stationRepository.findStationById(id);
+        if (findNullableStation.isEmpty()) {
+            throw new IllegalArgumentException("역 id에 해당하는 역 정보를 찾을 수 없습니다.");
+        }
+        Station stationToDelete = findNullableStation.get();
+        List<Section> sectionsByLineId = sectionRepository.findSectionsByLineId(stationToDelete.getLineId());
+        Sections sections = new Sections(sectionsByLineId);
+        RemoveCalculator removeCalculator = new RemoveCalculator(sections);
+        Changes changes = removeCalculator.calculate(stationToDelete);
+        return applyChanges(changes);
     }
 }
