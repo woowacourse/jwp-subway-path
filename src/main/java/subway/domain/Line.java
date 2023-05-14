@@ -117,7 +117,20 @@ public class Line {
     }
 
     public void delete(final Station station) {
-        deleteLastStation(findTargetSection(station), findSourceSection(station));
+        final Optional<Section> foundSourceSection = findSourceSection(station);
+        final Optional<Section> foundTargetSection = findTargetSection(station);
+        if (foundSourceSection.isPresent() && foundTargetSection.isPresent()) {
+            mergeSections(foundTargetSection, foundSourceSection);
+            return;
+        }
+        deleteLastStation(foundTargetSection, foundSourceSection);
+    }
+
+    private void mergeSections(final Optional<Section> foundTargetSection, final Optional<Section> foundSourceSection) {
+        final int newDistance = foundTargetSection.get().getDistance() + foundSourceSection.get().getDistance();
+        sections.add(new Section(foundTargetSection.get().getSource(), foundSourceSection.get().getTarget(), newDistance));
+        sections.remove(foundTargetSection.get());
+        sections.remove(foundSourceSection.get());
     }
 
     private void deleteLastStation(final Optional<Section> upSection, final Optional<Section> downSection) {
