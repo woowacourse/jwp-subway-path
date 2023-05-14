@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import subway.section.dao.SectionDao;
 import subway.section.entity.SectionEntity;
 
@@ -25,6 +26,8 @@ class SectionEntityServiceTest {
 
     @Mock
     private SectionDao sectionDao;
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
     @InjectMocks
     private SectionService sectionService;
 

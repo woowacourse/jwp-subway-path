@@ -4,6 +4,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import subway.section.dao.StubSectionDao;
 import subway.section.entity.SectionEntity;
 
@@ -11,16 +15,21 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
+@ExtendWith(MockitoExtension.class)
 public class SectionEntityDeleteServiceTest {
 
     private StubSectionDao stubSectionDao;
     private SectionService sectionService;
 
+    @Mock
+    private ApplicationEventPublisher publisher;
+
     @BeforeEach
     void setUp() {
         stubSectionDao = new StubSectionDao();
-        sectionService = new SectionService(stubSectionDao);
+        sectionService = new SectionService(stubSectionDao, publisher);
     }
 
     @DisplayName("위 아래 모두 구간이 존재하지않으면 예외를 발생시킨다.")
@@ -60,7 +69,7 @@ public class SectionEntityDeleteServiceTest {
         sectionService.deleteSection(1L, 3L);
 
         final Optional<SectionEntity> section = stubSectionDao.findNeighborUpSection(1L, 4L);
-        org.junit.jupiter.api.Assertions.assertAll(
+        assertAll(
                 () -> assertThat(section).isPresent(),
                 () -> assertThat(section.get().getId()).isPositive(),
                 () -> assertThat(section.get().getUpStationId()).isEqualTo(2L),

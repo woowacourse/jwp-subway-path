@@ -8,9 +8,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.integration.IntegrationTest;
+import subway.line.dto.LineResponse;
 import subway.station.domain.Station;
+import subway.subwayMap.dto.SubwayMapForLineResponse;
 import subway.subwayMap.dto.SubwayMapResponse;
-import subway.subwayMap.dto.SubwayMapResponses;
 
 import java.util.List;
 
@@ -18,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 지도 관련 기능")
-class SubwayMapControllerTest extends IntegrationTest {
+class SectionToStationConverterControllerTest extends IntegrationTest {
 
     @DisplayName("지하철 노선을 조회한다.")
     @Test
@@ -33,11 +34,9 @@ class SubwayMapControllerTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final SubwayMapResponse subwayMapResponse = response.as(SubwayMapResponse.class);
-        assertThat(subwayMapResponse.getId()).isEqualTo(1L);
-        assertThat(subwayMapResponse.getName()).isEqualTo("2호선");
-        assertThat(subwayMapResponse.getColor()).isEqualTo("초록색");
-        assertThat(subwayMapResponse.getStations()).containsExactly(
+        final SubwayMapForLineResponse subwayMapForLineResponse = response.as(SubwayMapForLineResponse.class);
+        assertThat(subwayMapForLineResponse.getLineResponse()).isEqualTo(new LineResponse(1L, "2호선", "초록색"));
+        assertThat(subwayMapForLineResponse.getStations()).containsExactly(
                 new Station(1L, "신림역"),
                 new Station(2L, "봉천역"),
                 new Station(3L, "서울대입구역"),
@@ -62,14 +61,12 @@ class SubwayMapControllerTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        final SubwayMapResponses subwayMapResponses = new SubwayMapResponses(response.jsonPath().getList("subwayMapResponses.", SubwayMapResponse.class));
+        final SubwayMapResponse subwayMapResponse = new SubwayMapResponse(response.jsonPath().getList("subwayMapResponses.", SubwayMapForLineResponse.class));
 
-        List<SubwayMapResponse> result = subwayMapResponses.getSubwayMapResponses();
+        List<SubwayMapForLineResponse> result = subwayMapResponse.getSubwayMapResponses();
 
         assertAll(
-                () -> assertThat(result.get(0).getId()).isEqualTo(1L),
-                () -> assertThat(result.get(0).getName()).isEqualTo("2호선"),
-                () -> assertThat(result.get(0).getColor()).isEqualTo("초록색"),
+                () -> assertThat(result.get(0).getLineResponse()).isEqualTo(new LineResponse(1L, "2호선", "초록색")),
                 () -> assertThat(result.get(0).getStations()).containsExactly(
                         new Station(1L, "신림역"),
                         new Station(2L, "봉천역"),
@@ -79,9 +76,7 @@ class SubwayMapControllerTest extends IntegrationTest {
                         new Station(6L, "방배역"),
                         new Station(7L, "서초역")
                 ),
-                () -> assertThat(result.get(1).getId()).isEqualTo(2L),
-                () -> assertThat(result.get(1).getName()).isEqualTo("3호선"),
-                () -> assertThat(result.get(1).getColor()).isEqualTo("파란색"),
+                () -> assertThat(result.get(1).getLineResponse()).isEqualTo(new LineResponse(2L, "3호선", "파란색")),
                 () -> assertThat(result.get(1).getStations()).containsExactly(
                         new Station(8L, "교대역"),
                         new Station(9L, "강남역"),

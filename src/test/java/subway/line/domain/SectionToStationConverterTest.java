@@ -4,13 +4,13 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.section.domain.Section;
 import subway.station.domain.Station;
-import subway.subwayMap.domain.SubwayMap;
+import subway.subwayMap.domain.SectionToStationConverter;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SubwayMapTest {
+class SectionToStationConverterTest {
 
     @DisplayName("노선의 경로 조회 테스트")
     @Test
@@ -32,8 +32,8 @@ class SubwayMapTest {
                 new Section(6L, 1L, station6, station7, 3)
         );
 
-        final SubwayMap subwayMap = SubwayMap.of(sections);
-        assertThat(subwayMap.getStations()).containsExactly(
+        final SectionToStationConverter sectionToStationConverter = SectionToStationConverter.of(sections);
+        assertThat(sectionToStationConverter.getSortedStation()).containsExactly(
                 station1,
                 station2,
                 station3,
@@ -64,8 +64,8 @@ class SubwayMapTest {
                 new Section(6L, 1L, station6, station7, 3)
         );
 
-        final SubwayMap subwayMap = SubwayMap.of(sections);
-        assertThat(subwayMap.getStations()).containsExactly(
+        final SectionToStationConverter sectionToStationConverter = SectionToStationConverter.of(sections);
+        assertThat(sectionToStationConverter.getSortedStation()).containsExactly(
                 station1,
                 station2,
                 station3,
