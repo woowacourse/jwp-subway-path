@@ -3,7 +3,7 @@ package subway.integration;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.dto.AddPathRequest;
+import subway.dto.request.AddPathRequest;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.service.FeeService;
-import subway.dto.ShortestWayResponse;
+import subway.dto.response.ShortestWayResponse;
 
 @RequestMapping("/fee")
 @RestController

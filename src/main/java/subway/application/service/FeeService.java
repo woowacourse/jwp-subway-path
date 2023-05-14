@@ -5,8 +5,8 @@ import subway.application.feepolicy.FeePolicy;
 import subway.domain.Line;
 import subway.domain.ShortestWayCalculator;
 import subway.domain.Station;
-import subway.dto.ShortestWayResponse;
-import subway.dto.StationResponse;
+import subway.dto.response.ShortestWayResponse;
+import subway.dto.response.StationResponse;
 import subway.persistence.repository.SubwayRepository;
 
 import java.util.List;

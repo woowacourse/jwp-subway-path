@@ -132,4 +132,25 @@ class LineTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("역을 추가할 때 거리를 초과하면 예외를 던진다.")
+    @Test
+    void addStationToPathException() {
+        //given
+        final Station stationA = new Station(1L, "A");
+        final Station stationB = new Station(3L, "B");
+        final Station stationC = new Station(2L, "C");
+        final Station stationD = new Station(4L, "D");
+        final Line line = new Line(1L, "1호선", "파랑",
+                new HashMap<>(Map.of(
+                        stationA, new Path(stationB, 5)
+                        , stationB, new Path(stationC, 10)
+                ))
+        );
+
+        //when,then
+        assertThatThrownBy(() -> line.addPath(stationA, stationD, 6, DOWN))
+                .isInstanceOf(IllegalArgumentException.class);
+
+    }
+
 }

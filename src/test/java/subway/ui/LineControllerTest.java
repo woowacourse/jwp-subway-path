@@ -8,8 +8,8 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.service.LineService;
-import subway.dto.LineWithStationResponse;
-import subway.dto.StationResponse;
+import subway.dto.response.LineWithStationResponse;
+import subway.dto.response.StationResponse;
 
 import java.util.List;
 
