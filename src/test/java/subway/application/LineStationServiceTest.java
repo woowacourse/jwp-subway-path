@@ -17,6 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.dto.AddStationToBetweenLineRequest;
 import subway.application.dto.AddStationToEndLineRequest;
 import subway.controller.dto.AddInitStationToLineRequest;
+import subway.controller.dto.RemoveStationOnLineRequest;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -232,5 +233,25 @@ class LineStationServiceTest {
 
         //then
         assertThat(line.getStationsSize()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("호선에서 역을 삭제한다.")
+    void testRemoveStationOnLine() {
+        //given
+        final Sections sections = new Sections(
+            new ArrayList<>(List.of(topSection, midSection, bottomSection)));
+        final Line line = new Line(1L, "name", "color", sections);
+        given(lineRepository.findByName(anyString()))
+            .willReturn(Optional.of(line));
+        given(stationRepository.findByName(anyString()))
+            .willReturn(Optional.of(midDownStation));
+        final RemoveStationOnLineRequest request = new RemoveStationOnLineRequest(line.getName(), "midDownStation");
+
+        //when
+        lineStationService.removeStationOnLine(request);
+
+        //then
+        assertThat(line.getStationsSize()).isEqualTo(3);
     }
 }
