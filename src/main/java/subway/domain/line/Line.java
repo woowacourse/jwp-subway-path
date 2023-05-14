@@ -49,7 +49,7 @@ public final class Line {
         }
     }
 
-    private static void validateSections(final List<Section> sections, final int numberOfInvalidSections) {
+    private void validateSections(final List<Section> sections, final int numberOfInvalidSections) {
         if (numberOfInvalidSections == sections.size()) {
             throw new InvalidSectionException("구간 정보가 올바르지 않습니다.");
         }
