@@ -87,4 +87,16 @@ class SubwayTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> subway.removeStation("2호선", "강남역"));
     }
+    
+    @Test
+    void 노선_삭제시_존재하지_않는_노선을_가리키면_예외_발생() {
+        // given
+        final Subway subway = new Subway();
+        subway.addLine("1호선", "파랑");
+        subway.addLine("2호선", "초록");
+        
+        // expect
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> subway.removeLine("3호선"));
+    }
 }

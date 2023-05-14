@@ -24,7 +24,7 @@ public class Subway {
     }
     
     public void removeLine(final String lineName) {
-        lines.removeIf(line -> line.isSameName(lineName));
+        lines.remove(getLineContainStation(lineName));
     }
     
     public void initAddStation(
