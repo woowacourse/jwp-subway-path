@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
@@ -16,6 +17,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 
 @Service
+@Transactional
 public class LineService {
 
     private final LineDao lineDao;
@@ -69,6 +71,15 @@ public class LineService {
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        int deletedSections = sectionDao.deleteAllByLineId(id);
+        validateDeletion(deletedSections);
+        int deletedLines = lineDao.deleteById(id);
+        validateDeletion(deletedLines);
+    }
+
+    private void validateDeletion(int affectedRows) {
+        if (affectedRows == 0) {
+            throw new IllegalArgumentException("노선이 삭제되지 않았습니다.");
+        }
     }
 }
