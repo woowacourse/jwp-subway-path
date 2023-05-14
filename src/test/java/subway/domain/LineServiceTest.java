@@ -1,9 +1,5 @@
 package subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
-
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -14,6 +10,11 @@ import subway.dao.StationDao;
 import subway.dto.AddStationToLineRequest;
 import subway.dto.LineCreateRequest;
 import subway.service.LineService;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SpringBootTest
 @Transactional
@@ -34,12 +35,10 @@ class LineServiceTest {
     @Test
     void createNewLine() {
         // given
-        Station upStation = stationDao.insert(new Station("안국"));
-        Station downStation = stationDao.insert(new Station("경복궁"));
         Line newLine = lineService.createNewLine(
-                new LineCreateRequest("3호선", upStation.getId(), downStation.getId(), 10));
+                new LineCreateRequest("3호선", "안국", "경복궁", 10));
         // when
-        List<Station> allStation = lineService.findAllStation(newLine.getId());
+        List<Station> allStation = lineService.getStations(newLine.getId());
 
         // then
         assertAll(
@@ -55,14 +54,14 @@ class LineServiceTest {
         Station upStation = stationDao.insert(new Station("안국"));
         Station downStation = stationDao.insert(new Station("경복궁"));
         Line line = lineService.createNewLine(
-                new LineCreateRequest("3호선", upStation.getId(), downStation.getId(), 10));
+                new LineCreateRequest("3호선", "안국", "경복궁", 10));
 
         Station newStation = stationDao.insert(new Station("충무로"));
         AddStationToLineRequest addRequest = new AddStationToLineRequest(downStation.getId(),
                 newStation.getId(), 5);
         Line newLine = lineService.addStationToExistLine(line.getId(), addRequest);
         // when
-        List<Station> allStation = lineService.findAllStation(newLine.getId());
+        List<Station> allStation = lineService.getStations(newLine.getId());
         // then
         assertAll(
                 () -> assertThat(allStation.get(0).getName()).isEqualTo("안국"),

@@ -1,8 +1,5 @@
 package subway.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.is;
-
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -17,6 +14,9 @@ import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.AddStationToLineRequest;
 import subway.dto.LineCreateRequest;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -37,7 +37,7 @@ public class LineIntegrationTest extends IntegrationTest {
         initialUpStation = stationDao.insert(new Station("경복궁"));
         initialDownStation = stationDao.insert(new Station("안국"));
 
-        createRequest = new LineCreateRequest("3호선", initialUpStation.getId(), initialDownStation.getId(), 10);
+        createRequest = new LineCreateRequest("3호선", "경복궁", "안국", 10);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -202,7 +202,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         Station upStation = stationDao.insert(new Station("잠실"));
         Station downStation = stationDao.insert(new Station("잠실새내"));
-        LineCreateRequest createRequest2 = new LineCreateRequest("2호선", upStation.getId(), downStation.getId(), 5);
+        LineCreateRequest createRequest2 = new LineCreateRequest("2호선", "잠실", "잠실새내", 5);
 
         RestAssured
                 .given().log().all()

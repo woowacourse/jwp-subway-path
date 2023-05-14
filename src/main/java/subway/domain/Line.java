@@ -14,7 +14,11 @@ public class Line {
     private String name;
     private List<Edge> edges;
 
-    public Line() {
+    private Line() {
+    }
+
+    public Line(final String name) {
+        this.name = name;
     }
 
     private Line(String name, List<Edge> edges) {

@@ -1,19 +1,25 @@
 package subway.service;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.EdgeDao;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Edge;
+import subway.domain.Edges;
 import subway.domain.Line;
 import subway.domain.Lines;
 import subway.domain.Station;
 import subway.dto.AddStationToLineRequest;
 import subway.dto.LineCreateRequest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 @Service
+@Transactional(readOnly = true)
 public class LineService {
 
     private final Lines lines;
@@ -30,21 +36,21 @@ public class LineService {
     }
 
     @Transactional
-    public Line createNewLine(LineCreateRequest createRequest) {
-        Station upStation = stationDao.findById(createRequest.getUpStationId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Station downStation = stationDao.findById(createRequest.getDownStationId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+    public Line createNewLine(final LineCreateRequest createRequest) {
+        final Station upStation = stationDao.insert(new Station(createRequest.getUpStation()));
+        final Station downStation = stationDao.insert(new Station(createRequest.getDownStation()));
+//        final Line updatedLine = lines.addNewLine(createRequest.getLineName(), upStation, downStation, createRequest.getDistance());
 
-        Line updatedLine = lines.addNewLine(createRequest.getLineName(), upStation, downStation,
-                createRequest.getDistance());
+        final Line line = new Line(createRequest.getLineName());
+        if (lineDao.findLineByName(line).isPresent()) {
+            throw new IllegalArgumentException();
+        }
+        final Line createdLine = lineDao.insert(line);
 
-        Line createdLine = lineDao.insert(updatedLine);
+        final Edge edge = new Edge(upStation, downStation, createRequest.getDistance());
+        edgeDao.insert(createdLine.getId(), edge);
 
-        edgeDao.insert(createdLine.getId(), updatedLine.getEdges().get(0));
-
-        Line findLine = assembleLine(createdLine.getId());
-        return lineDao.findById(createdLine.getId()).get();
+        return createdLine;
     }
 
     @Transactional
@@ -62,6 +68,11 @@ public class LineService {
         return assembleLine(updatedLine.getId());
     }
 
+    public Line getLine(final Long lineId) {
+        return lineDao.findById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("!"));
+    }
+
     @Transactional
     public Line deleteStationFromLine(Long lineId, Long stationId) {
         Station station = stationDao.findById(stationId)
@@ -75,7 +86,7 @@ public class LineService {
         return assembleLine(updatedLine.getId());
     }
 
-    public List<Station> findAllStation(Long lineId) {
+    public List<Station> getStations(Long lineId) {
         Line assembleLine = assembleLine(lineId);
         return lines.findAllStation(assembleLine);
     }
@@ -90,5 +101,17 @@ public class LineService {
 
     public List<Line> findAllLine() {
         return lineDao.findAll();
+    }
+
+    public Map<Line, List<Station>> findAllLine2() {
+        final Map<Line, List<Station>> result = new HashMap<>();
+        final List<Line> allLine = lineDao.findAll();
+        for (Line line : allLine) {
+            final Edges edges = new Edges(edgeDao.findEdgesByLineId(line.getId()));
+            result.putIfAbsent(line, new ArrayList<>());
+            result.put(line, edges.getStations());
+        }
+
+        return result;
     }
 }
