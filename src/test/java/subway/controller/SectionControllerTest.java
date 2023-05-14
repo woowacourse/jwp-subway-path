@@ -185,4 +185,50 @@ class SectionControllerTest {
                     .statusCode(HttpStatus.BAD_REQUEST.value());
         }
     }
+
+    @Nested
+    @DisplayName("노선에서 역을 삭제하는 deleteSection 메서드 테스트")
+    class DeleteSectionTest {
+
+        @BeforeEach
+        void setUp() {
+            RestAssured.port = port;
+            LineRequest request = new LineRequest("2호선", "초록색");
+            RestAssured.given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(request)
+                    .when().post("/lines")
+                    .then()
+                    .statusCode(HttpStatus.CREATED.value());
+        }
+
+        @DisplayName("노선에서 역을 삭제할 때, 정상 삭제가 되었다면 상태코드 204 NoContent 를 반환하는지 확인한다")
+        @Test
+        void successTest1() {
+            //given
+            SectionCreationRequest initRequest = new SectionCreationRequest(이_호선, 강변, 잠실, 10);
+            RestAssured.given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .body(initRequest)
+                    .when().post("/lines/" + 이_호선 + "/stations")
+                    .then()
+                    .statusCode(HttpStatus.NO_CONTENT.value());
+            //then
+            RestAssured.given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when().delete("/lines/" + 이_호선 + "/stations/" + 잠실)
+                    .then()
+                    .statusCode(HttpStatus.NO_CONTENT.value());
+        }
+
+        @DisplayName("노선에서 역을 삭제할 때, 없는 역을 삭제하려 하면 상태코드 400 BadRequest 를 반환하는지 확인한다")
+        @Test
+        void failTest1() {
+            RestAssured.given()
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when().delete("/lines/" + 이_호선 + "/stations/" + 잠실)
+                    .then()
+                    .statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+    }
 }
