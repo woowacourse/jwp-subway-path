@@ -19,6 +19,12 @@ public class Line {
 
     public void addStation(Station baseStation, Station newStation, Direction directionOfBase, Distance newDistance) {
         validateSectionToAdd(baseStation, newStation, directionOfBase, newDistance);
+        if (directionOfBase == Direction.LEFT) {
+            addNewStationToRight(baseStation, newStation, newDistance, directionOfBase);
+        }
+        if (directionOfBase == Direction.RIGHT) {
+            addNewStationToLeft(baseStation, newStation, newDistance, directionOfBase);
+        }
     }
 
     private void validateSectionToAdd(Station baseStation, Station newStation, Direction directionOfBase,
@@ -51,6 +57,31 @@ public class Line {
         return sections.stream()
                 .filter(section -> section.isStationOnDirection(baseStation, direction))
                 .findFirst();
+    }
+
+    private void addNewStationToRight(Station baseStation, Station newStation, Distance newDistance, Direction directionOfBase) {
+        Optional<Section> sectionToRevise = findSectionIncludingBaseStationOnDirection(baseStation, directionOfBase);
+        if (sectionToRevise.isPresent()) {
+            Section origin = sectionToRevise.get();
+            sections.remove(origin);
+            sections.add(new Section(newStation, origin.getDownStation(),
+                    origin.findGapBy(newDistance)));
+            sections.add(new Section(baseStation, newStation, newDistance));
+            return;
+        }
+        sections.add(new Section(baseStation, newStation, newDistance));
+    }
+
+    private void addNewStationToLeft(Station baseStation, Station newStation, Distance newDistance, Direction directionOfBase) {
+        Optional<Section> sectionToRevise = findSectionIncludingBaseStationOnDirection(baseStation, directionOfBase);
+        if (sectionToRevise.isPresent()) {
+            Section origin = sectionToRevise.get();
+            sections.remove(origin);
+            sections.add(new Section(origin.getUpStation(), newStation, origin.findGapBy(newDistance)));
+            sections.add(new Section(newStation, baseStation, newDistance));
+            return;
+        }
+        sections.add(new Section(newStation, baseStation, newDistance));
     }
 
     @Override
