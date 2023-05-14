@@ -1,15 +1,16 @@
 package subway.persistence;
 
+import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
 import subway.domain.Station;
 import subway.domain.repository.StationRepository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public class StationRepositoryImpl implements StationRepository {
@@ -30,12 +31,9 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
-    public void createStation(final Station station) {
-        final Map<String, Object> parameters = new HashMap<>();
-
-        parameters.put("name", station.getName());
-
-        insert.execute(parameters);
+    public long createStation(final Station station) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+        return insert.executeAndReturnKey(params).longValue();
     }
 
     @Override

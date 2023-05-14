@@ -17,7 +17,7 @@ public class StationService {
 		this.stationRepository = stationRepository;
 	}
 
-	public void createStation(final StationCreateRequest stationCreateRequest) {
+	public StationResponse createStation(final StationCreateRequest stationCreateRequest) {
 		final List<StationResponse> stations = findAll();
 		for (StationResponse station : stations) {
 			if (station.getName().equals(stationCreateRequest.getName())) {
@@ -26,7 +26,8 @@ public class StationService {
 		}
 		final Station station = new Station(stationCreateRequest.getName());
 
-		stationRepository.createStation(station);
+		final long stationId = stationRepository.createStation(station);
+		return new StationResponse(stationId, station.getName());
 	}
 
 	public List<StationResponse> findAll() {
