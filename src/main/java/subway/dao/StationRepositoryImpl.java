@@ -27,6 +27,7 @@ public class StationRepositoryImpl implements StationRepository {
         final StationEntity stationEntity = new StationEntity(station.getName());
         return stationDao.insert(stationEntity);
     }
+
     @Override
     public List<StationRes> findAll() {
         final List<StationEntity> stations = stationDao.findAll();

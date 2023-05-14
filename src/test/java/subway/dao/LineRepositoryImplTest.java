@@ -97,8 +97,8 @@ class LineRepositoryImplTest {
             .contains(
                 tuple(1L, "이호선", "bg-green-600", 1L, "잠실역", 2L, "선릉역", 10),
                 tuple(1L, "이호선", "bg-green-600", 2L, "선릉역", 3L, "강남역", 10),
-                tuple(2L, "팔호선", "bg-pink-600", 4L, "복정역", 5L, "남위례역", 10),
-                tuple(2L, "팔호선", "bg-pink-600", 5L, "남위례역", 6L, "산성역", 10)
+                tuple(2L, "팔호선", "bg-pink-600", 5L, "복정역", 6L, "남위례역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 6L, "남위례역", 7L, "산성역", 10)
             );
     }
 

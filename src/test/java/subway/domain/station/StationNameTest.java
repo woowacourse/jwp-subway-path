@@ -7,7 +7,6 @@ import static subway.exception.ErrorCode.STATION_NAME_LENGTH;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.domain.station.StationName;
 import subway.exception.GlobalException;
 
 class StationNameTest {

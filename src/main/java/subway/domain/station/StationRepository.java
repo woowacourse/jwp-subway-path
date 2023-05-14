@@ -11,7 +11,7 @@ public interface StationRepository {
 
     Station findById(final Long id);
 
-    void update(final Long id, final Station station);
+    void updateById(final Long id, final Station station);
 
     void deleteById(final Long id);
 

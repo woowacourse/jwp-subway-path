@@ -9,10 +9,6 @@ public class LineResponse {
     private final String color;
     private final List<StationResponse> stationResponses;
 
-    public LineResponse(final Long id, final String name, final String color) {
-        this(id, name, color, null);
-    }
-
     public LineResponse(final Long id, final String name, final String color,
                         final List<StationResponse> stationResponses) {
         this.id = id;
