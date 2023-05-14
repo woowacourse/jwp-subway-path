@@ -1,58 +1,38 @@
 package subway.persistence.repository;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
 import subway.domain.repository.StationRepository;
+import subway.persistence.dao.StationDao;
+import subway.persistence.entity.StationEntity;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 @Repository
 public class StationRepositoryImpl implements StationRepository {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insert;
 
-    private final RowMapper<Station> stationRowMapper = (rs, rowNum) ->
-            new Station(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );
+    private final StationDao stationDao;
 
-    public StationRepositoryImpl(final JdbcTemplate jdbcTemplate) {
-        this.insert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = jdbcTemplate;
+    public StationRepositoryImpl(final StationDao stationDao) {
+        this.stationDao = stationDao;
     }
 
     @Override
-    public void createStation(final Station station) {
-        final Map<String, Object> parameters = new HashMap<>();
+    public Long createStation(final Station station) {
+        final StationEntity stationEntity = new StationEntity(station.getName());
 
-        parameters.put("name", station.getName());
-
-        insert.execute(parameters);
+        return stationDao.createStation(stationEntity);
     }
 
     @Override
-    public List<Station> findAll() {
-        String sql = "select * from station";
-        return jdbcTemplate.query(sql, stationRowMapper);
-    }
+    public Optional<Station> findByName(final Station station) {
+        final Set<StationEntity> stations = new HashSet<>(stationDao.findAll());
 
-    @Override
-    public Station findById(final Long stationIdRequest) {
-        String sql = "select * from station where id = ?";
-        return jdbcTemplate.queryForObject(sql, stationRowMapper, stationIdRequest);
-    }
-
-    @Override
-    public void deleteById(final Long stationIdRequest) {
-        String sql = "delete from station where id = ?";
-        jdbcTemplate.update(sql, stationIdRequest);
+        return stations.stream()
+                .filter(stationEntity -> stationEntity.getName().equals(station.getName()))
+                .map(stationEntity -> new Station(stationEntity.getName()))
+                .findFirst();
     }
 }

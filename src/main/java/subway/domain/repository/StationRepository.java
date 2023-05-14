@@ -2,14 +2,10 @@ package subway.domain.repository;
 
 import subway.domain.Station;
 
-import java.util.List;
+import java.util.Optional;
 
 public interface StationRepository {
-    void createStation(final Station station);
+    Long createStation(final Station station);
 
-    List<Station> findAll();
-
-    Station findById(Long stationIdRequest);
-
-    void deleteById(Long stationIdRequest);
+    Optional<Station> findByName(Station station);
 }
