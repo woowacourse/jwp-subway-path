@@ -2,7 +2,6 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -33,7 +32,6 @@ public class StationService {
         final String lineName = stationRegisterRequest.getLineName();
 
         final Line line = lineService.findByLineName(lineName);
-        final LineEntity lineEntity = lineService.getLineEntity(lineName);
 
         final List<Section> originSection = line.getSections();
         final Section newSection = mapToSectionFrom(stationRegisterRequest);
@@ -44,7 +42,7 @@ public class StationService {
                 stationRegisterRequest.getCurrentStationName(),
                 stationRegisterRequest.getNextStationName(),
                 stationRegisterRequest.getDistance(),
-                lineEntity.getId()
+                line.getId()
         );
 
         final List<Section> updatedSection = line.getSections();
@@ -53,7 +51,7 @@ public class StationService {
                       .filter(it -> originSection.stream().noneMatch(it::isSame))
                       .filter(it -> Objects.nonNull(it.getId()))
                       .findFirst()
-                      .ifPresent(it -> sectionService.updateSection(it, lineEntity.getId()));
+                      .ifPresent(it -> sectionService.updateSection(it, line.getId()));
     }
 
     private Section mapToSectionFrom(final StationRegisterRequest stationRegisterRequest) {
@@ -69,7 +67,6 @@ public class StationService {
     public void deleteStation(final StationDeleteRequest stationDeleteRequest) {
 
         final String lineName = stationDeleteRequest.getLineName();
-        final LineEntity lineEntity = lineService.getLineEntity(lineName);
         final Line line = lineService.findByLineName(lineName);
 
         final List<Section> originSection = line.getSections();
@@ -83,14 +80,16 @@ public class StationService {
                       .findAny()
                       .ifPresentOrElse(
                               it -> {
-                                  sectionService.updateSection(it, lineEntity.getId());
+                                  sectionService.updateSection(it, line.getId());
 
                                   originSection.stream()
-                                               .filter(origin -> updatedSection.stream().noneMatch(it::isSame))
+                                               .filter(origin -> updatedSection.stream().noneMatch(origin::isSame))
                                                .filter(origin -> !origin.equals(it))
                                                .findFirst()
-                                               .ifPresent(origin -> sectionService.deleteSection(it.getId()));
+                                               .ifPresent(origin -> sectionService.deleteSection(origin.getId()));
+
                               },
+
                               () -> originSection.stream()
                                                  .filter(it -> updatedSection.stream().noneMatch(it::isSame))
                                                  .findFirst()
@@ -98,8 +97,8 @@ public class StationService {
                       );
 
         if (line.isDeleted()) {
-            sectionService.deleteAll(lineEntity.getId());
-            lineService.deleteLine(lineEntity.getId());
+            sectionService.deleteAll(line.getId());
+            lineService.deleteLine(line.getId());
         }
     }
 }

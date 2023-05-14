@@ -26,7 +26,7 @@ class LineTest {
         final Stations stations2 = new Stations(new Station("B"), new Station("C"), 4);
 
         Section 출발_섹션 = new Section(stations1);
-        final Line line = new Line("2호선", List.of(출발_섹션));
+        final Line line = new Line(1L, "2호선", List.of(출발_섹션));
 
         final Section newSection = new Section(stations2);
 
@@ -60,7 +60,7 @@ class LineTest {
         final Section section3 = new Section(stations3);
         final Section section4 = new Section(stations4);
 
-        final Line line = new Line("2호선", List.of(헤드_섹션, section2, section3, section4));
+        final Line line = new Line(1L, "2호선", List.of(헤드_섹션, section2, section3, section4));
 
         final Station current = new Station("D");
         final Station next = new Station("F");
@@ -92,7 +92,7 @@ class LineTest {
         Section 스타터_바뀔_예정_섹션 = new Section(stations1);
         final Section section2 = new Section(stations2);
 
-        final Line line = new Line("2호선", List.of(스타터_바뀔_예정_섹션, section2));
+        final Line line = new Line(1L, "2호선", List.of(스타터_바뀔_예정_섹션, section2));
 
         final Section 새로운_섹션 = new Section(stations3);
 
@@ -117,7 +117,7 @@ class LineTest {
         Section 스타터_바뀔_예정_섹션 = new Section(stations1);
         final Section section2 = new Section(stations2);
 
-        final Line line = new Line("2호선", List.of(스타터_바뀔_예정_섹션, section2));
+        final Line line = new Line(1L, "2호선", List.of(스타터_바뀔_예정_섹션, section2));
 
         final Section 새로운_섹션 = new Section(stations3);
 
@@ -144,7 +144,7 @@ class LineTest {
         final Section section2 = new Section(stations2);
         final Section section3 = new Section(stations3);
 
-        final Line line = new Line("2호선", List.of(starter, section2, section3));
+        final Line line = new Line(1L, "2호선", List.of(starter, section2, section3));
 
         //when
         line.delete(new Station("B"));
@@ -176,7 +176,7 @@ class LineTest {
         final Section section2 = new Section(stations2);
         final Section section3 = new Section(stations3);
 
-        final Line line = new Line("2호선", List.of(starter, section2, section3));
+        final Line line = new Line(1L, "2호선", List.of(starter, section2, section3));
 
         //when
         line.delete(new Station("A"));
@@ -206,7 +206,7 @@ class LineTest {
         final Section section2 = new Section(stations2);
         final Section section3 = new Section(stations3);
 
-        final Line line = new Line("2호선", List.of(starter, section2, section3));
+        final Line line = new Line(1L, "2호선", List.of(starter, section2, section3));
 
         //when
         line.delete(new Station("D"));
@@ -225,7 +225,7 @@ class LineTest {
     void test_delete_line() throws Exception {
         //given
         final Stations stations = new Stations(new Station("A"), new Station("B"), 5);
-        final Line line = new Line("2호선", List.of(new Section(stations)));
+        final Line line = new Line(1L, "2호선", List.of(new Section(stations)));
 
         //when
         line.delete(new Station("B"));

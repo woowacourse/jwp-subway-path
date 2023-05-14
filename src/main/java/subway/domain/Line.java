@@ -6,10 +6,16 @@ import java.util.List;
 
 public class Line {
 
+    private final Long id;
     private final String name;
     private Section starter;
 
-    public Line(final String name, final Collection<Section> sections) {
+    public Line(
+            final Long id,
+            final String name,
+            final Collection<Section> sections
+    ) {
+        this.id = id;
         this.name = name;
         initialLine(sections);
     }
@@ -139,6 +145,10 @@ public class Line {
         }
 
         return sections;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Section getStarter() {

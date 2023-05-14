@@ -83,16 +83,14 @@ public class LineService {
     }
 
     public Line findByLineName(final String lineName) {
-        final LineEntity lineEntity = getLineEntity(lineName);
+        final LineEntity lineEntity =
+                lineDao.findLineByName(lineName)
+                       .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
 
         return new Line(
+                lineEntity.getId(),
                 lineEntity.getName(),
                 sectionService.findSectionsByLineId(lineEntity.getId())
         );
-    }
-
-    public LineEntity getLineEntity(final String lineName) {
-        return lineDao.findLineByName(lineName)
-                      .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
     }
 }
