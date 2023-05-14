@@ -20,8 +20,8 @@ public class Section {
     }
 
 
-    private void validateDuplication(final Station nowStation, final Station nextStation) {
-        if (nowStation.equals(nextStation)) {
+    public void validateDuplication() {
+        if (this.upStation.equals(this.downStation)) {
             throw new IllegalArgumentException("중복된 이름입니다. 다른 이름을 입력해주세요.");
         }
     }
@@ -31,11 +31,6 @@ public class Section {
                 && this.upStation.equals(newSection.upStation) ||
                 this.upStation.equals(newSection.downStation)
                         && this.downStation.equals(newSection.upStation);
-    }
-
-    public boolean validateMatchOne(final Section section) {
-        return this.downStation.equals(section.downStation)
-                || this.upStation.equals(section.upStation);
     }
 
     public void changeSection(final Section newSection) {
