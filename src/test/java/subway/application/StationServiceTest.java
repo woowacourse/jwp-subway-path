@@ -8,8 +8,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.domain.section.SectionRepository;
 import subway.domain.station.StationRepository;
 import subway.dto.StationRequest;
@@ -31,10 +29,6 @@ class StationServiceTest {
 
     @Mock
     LineDao lineDao;
-    @Mock
-    StationDao stationDao;
-    @Mock
-    SectionDao sectionDao;
     @Mock
     SectionRepository sectionRepository;
     @Mock
