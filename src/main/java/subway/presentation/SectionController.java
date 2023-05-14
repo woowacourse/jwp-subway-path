@@ -7,6 +7,8 @@ import subway.application.SectionService;
 import subway.application.dto.SectionDto;
 import subway.presentation.dto.request.SectionRequest;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/subway/lines")
 public class SectionController {
@@ -17,7 +19,7 @@ public class SectionController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity<Void> createSection(@PathVariable Long lineId, @RequestBody SectionRequest request) {
+    public ResponseEntity<Void> createSection(@PathVariable Long lineId, @Valid @RequestBody SectionRequest request) {
         SectionDto sectionDto = new SectionDto(
                 request.getStartStation(),
                 request.getEndStation(),
