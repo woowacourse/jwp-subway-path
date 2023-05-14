@@ -124,4 +124,39 @@ class LineTest {
         assertThat(line.getStationsSize()).isEqualTo(4);
         assertThat(line.getSections().findStation(1)).isEqualTo(station);
     }
+
+    @Test
+    @DisplayName("빈 호선에 station을 초기화한다.")
+    void testAddInitStations() {
+        //given
+        final Station upStation = new Station("upStation");
+        final Station downStation = new Station("downStation");
+        final long distance = 10L;
+        final Sections sections = new Sections(new ArrayList<>());
+        final Line line = new Line("name", "color", sections);
+
+        //when
+        line.addInitStations(upStation, downStation, distance);
+
+        //then
+        assertThat(line.getStationsSize()).isEqualTo(2);
+        assertThat(line.getSections().findStation(0)).isEqualTo(upStation);
+    }
+
+    @Test
+    @DisplayName("비어있지 않은 호선에 station을 초기화한다.")
+    void testAddInitStationsWhenLineNotEmpty() {
+        //given
+        final Station upStation = new Station("upStation");
+        final Station downStation = new Station("downStation");
+        final long distance = 10L;
+        final Section section = new Section(upStation, downStation, distance);
+        final Sections sections = new Sections(new ArrayList<>(List.of(section)));
+        final Line line = new Line("name", "color", sections);
+
+        //when
+        //then
+        assertThatThrownBy(() -> line.addInitStations(upStation, downStation, distance))
+            .isInstanceOf(BusinessException.class);
+    }
 }

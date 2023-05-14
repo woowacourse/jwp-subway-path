@@ -29,6 +29,12 @@ public class Line {
         this(null, name, color, sections);
     }
 
+    public void addInitStations(final Station upStation, final Station downStation, final Long distance) {
+        checkSectionsNotEmpty();
+        final Section section = new Section(upStation, downStation, distance);
+        sections.addAll(section);
+    }
+
     public void addTopStation(final Station station, final long distance) {
         checkSectionsEmpty();
         final Station currentTopStation = sections.findTopStation();
@@ -57,6 +63,12 @@ public class Line {
     private void checkSectionsEmpty() {
         if (sections.isEmpty()) {
             throw new BusinessException("호선에 최소 2개의 역이 필요합니다.");
+        }
+    }
+
+    private void checkSectionsNotEmpty() {
+        if (!sections.isEmpty()) {
+            throw new BusinessException("빈 호선이 아닙니다.");
         }
     }
 
