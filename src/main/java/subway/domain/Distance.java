@@ -6,7 +6,7 @@ public class Distance {
 
     private final Integer distance;
 
-    private Distance(Integer distance) {
+    private Distance(final Integer distance) {
         validateDistance(distance);
         this.distance = distance;
     }
@@ -15,11 +15,11 @@ public class Distance {
         return new Distance(null);
     }
 
-    public static Distance from(Integer distance) {
+    public static Distance from(final Integer distance) {
         return new Distance(distance);
     }
 
-    private void validateDistance(Integer distance) {
+    private void validateDistance(final Integer distance) {
         if (distance == null) {
             return;
         }

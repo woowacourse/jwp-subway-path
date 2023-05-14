@@ -7,13 +7,13 @@ import java.util.Optional;
 
 public interface LineDao {
 
-    LineEntity insert(LineEntity lineEntity);
+    LineEntity insert(final LineEntity lineEntity);
 
     List<LineEntity> findAll();
 
-    Optional<LineEntity> findById(long id);
+    Optional<LineEntity> findById(final long id);
 
-    int update(LineEntity lineEntity);
+    int update(final LineEntity lineEntity);
 
-    int deleteById(long id);
+    int deleteById(final long id);
 }

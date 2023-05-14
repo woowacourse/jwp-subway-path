@@ -32,18 +32,18 @@ public class H2SectionDao implements SectionDao {
         );
     };
 
-    public H2SectionDao(JdbcTemplate jdbcTemplate) {
+    public H2SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    private Long convertToNullIfZero(long id) {
+    private Long convertToNullIfZero(final long id) {
         if (id == 0) {
             return null;
         }
         return id;
     }
 
-    private Integer convertToNullIfZero(int distance) {
+    private Integer convertToNullIfZero(final int distance) {
         if (distance == 0) {
             return null;
         }
@@ -51,7 +51,7 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public long insert(Section section, long lineId) {
+    public long insert(final Section section, final long lineId) {
         String sql = "INSERT INTO SECTION(upward_id, downward_id, distance, line_id) VALUES (?, ?, ?, ?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -75,7 +75,7 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public List<Section> selectSectionsByLineId(long lineId) {
+    public List<Section> selectSectionsByLineId(final long lineId) {
         String sql = "SELECT s.id AS id, distance, upward_id, us.name AS upward_name, downward_id, ds.name AS downward_name " +
                 "FROM SECTION AS s " +
                 "LEFT JOIN STATION AS us ON s.upward_id = us.id " +
@@ -85,13 +85,13 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public long deleteById(long id) {
+    public long deleteById(final long id) {
         String sql = "DELETE FROM section WHERE id = ?";
         return jdbcTemplate.update(sql, id);
     }
 
     @Override
-    public long deleteByLineId(long lineId) {
+    public long deleteByLineId(final long lineId) {
         String sql = "DELETE FROM section WHERE line_id = ?";
         return jdbcTemplate.update(sql, lineId);
     }

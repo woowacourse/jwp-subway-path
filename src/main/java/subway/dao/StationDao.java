@@ -7,15 +7,15 @@ import java.util.Optional;
 
 public interface StationDao {
 
-    Station insert(Station station);
+    Station insert(final Station station);
 
     List<Station> findAll();
 
-    Optional<Station> findById(Long id);
+    Optional<Station> findById(final Long id);
 
-    void update(Station newStation);
+    void update(final Station newStation);
 
-    void deleteById(Long id);
+    void deleteById(final Long id);
 
-    Station findByName(String name);
+    Station findByName(final String name);
 }

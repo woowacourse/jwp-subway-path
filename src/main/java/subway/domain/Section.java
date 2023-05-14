@@ -10,7 +10,7 @@ public class Section {
     private final Station downwardStation;
     private final Distance distance;
 
-    private Section(Long id, Station upwardStation, Station downwardStation, Distance distance) {
+    private Section(final Long id, final Station upwardStation, final Station downwardStation, final Distance distance) {
         validateSameStations(upwardStation, downwardStation);
         this.id = id;
         this.upwardStation = upwardStation;
@@ -22,15 +22,15 @@ public class Section {
         return new Section(null, Station.createEmpty(), Station.createEmpty(), Distance.createEmpty());
     }
 
-    public static Section of(Long id, Station upward, Station downward, Integer distance) {
+    public static Section of(final Long id, final Station upward, final Station downward, final Integer distance) {
         return new Section(id, upward, downward, Distance.from(distance));
     }
 
-    public static Section of(Station upward, Station downward, Integer distance) {
+    public static Section of(final Station upward, final Station downward, final Integer distance) {
         return new Section(null, upward, downward, Distance.from(distance));
     }
 
-    private void validateSameStations(Station upward, Station downward) {
+    private void validateSameStations(final Station upward, final Station downward) {
         if (upward.isEmpty() && downward.isEmpty()) {
             return;
         }
@@ -42,7 +42,7 @@ public class Section {
         }
     }
 
-    public List<Section> splitByStation(final Station middleStation, Integer upwardDistance, Integer downwardDistance) {
+    public List<Section> splitByStation(final Station middleStation, final Integer upwardDistance, final Integer downwardDistance) {
         if (!isEmptySection() && !isSameDistance(upwardDistance + downwardDistance)) {
             throw new IllegalArgumentException("[ERROR] 구간 거리가 보존되지 않습니다.");
         }
@@ -59,7 +59,7 @@ public class Section {
         return this.downwardStation.isEmpty() && this.distance.isEmpty();
     }
 
-    public boolean isSameDistance(int distance) {
+    public boolean isSameDistance(final int distance) {
         return this.distance.equals(Distance.from(distance));
     }
 
@@ -67,11 +67,11 @@ public class Section {
         return isEndOfUpward() || isEndOfDownward();
     }
 
-    public boolean isUpwardStation(Station station) {
+    public boolean isUpwardStation(final Station station) {
         return this.upwardStation.equals(station);
     }
 
-    public boolean isDownwardStation(Station station) {
+    public boolean isDownwardStation(final Station station) {
         return this.downwardStation.equals(station);
     }
 

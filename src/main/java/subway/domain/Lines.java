@@ -7,21 +7,21 @@ public class Lines {
 
     private final List<Line> lines;
 
-    private Lines(List<Line> lines) {
+    private Lines(final List<Line> lines) {
         this.lines = new ArrayList<>(lines);
     }
 
-    public static Lines from(List<Line> lines) {
+    public static Lines from(final List<Line> lines) {
         return new Lines(lines);
     }
 
-    public void add(Line line) {
+    public void add(final Line line) {
         validateDuplicatedName(line);
         validateDuplicatedColor(line);
         lines.add(line);
     }
 
-    private void validateDuplicatedName(Line line) {
+    private void validateDuplicatedName(final Line line) {
         boolean result = lines.stream()
                 .anyMatch(each -> each.isSameName(line));
         if (result) {
@@ -29,7 +29,7 @@ public class Lines {
         }
     }
 
-    private void validateDuplicatedColor(Line line) {
+    private void validateDuplicatedColor(final Line line) {
         boolean result = lines.stream()
                 .anyMatch(each -> each.isSameColor(line));
         if (result) {

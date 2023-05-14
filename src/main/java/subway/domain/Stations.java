@@ -7,20 +7,20 @@ public class Stations {
 
     private final List<Station> stations;
 
-    private Stations(List<Station> stations) {
+    private Stations(final List<Station> stations) {
         this.stations = new ArrayList<>(stations);
     }
 
-    public static Stations from(List<Station> stations) {
+    public static Stations from(final List<Station> stations) {
         return new Stations(stations);
     }
 
-    public void addStation(Station station) {
+    public void addStation(final Station station) {
         validateDuplication(station);
         stations.add(station);
     }
 
-    private void validateDuplication(Station station) {
+    private void validateDuplication(final Station station) {
         boolean result = stations.stream()
                 .anyMatch(each -> each.isSameName(station));
         if (result) {
@@ -28,7 +28,7 @@ public class Stations {
         }
     }
 
-    public boolean contains(Station station) {
+    public boolean contains(final Station station) {
         return stations.contains(station);
     }
 
@@ -39,7 +39,7 @@ public class Stations {
         stations.remove(station);
     }
 
-    public Station find(Station station) {
+    public Station find(final Station station) {
         return stations.stream()
                 .filter(each -> each.isSameName(station))
                 .findFirst()

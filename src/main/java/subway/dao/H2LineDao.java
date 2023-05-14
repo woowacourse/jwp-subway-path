@@ -26,7 +26,7 @@ public class H2LineDao implements LineDao {
 
             );
 
-    public H2LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public H2LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
@@ -34,7 +34,7 @@ public class H2LineDao implements LineDao {
     }
 
     @Override
-    public LineEntity insert(LineEntity lineEntity) {
+    public LineEntity insert(final LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", lineEntity.getId());
         params.put("name", lineEntity.getName());
@@ -51,7 +51,7 @@ public class H2LineDao implements LineDao {
     }
 
     @Override
-    public Optional<LineEntity> findById(long id) {
+    public Optional<LineEntity> findById(final long id) {
         try {
             String sql = "select id, name, color from LINE WHERE id = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -61,13 +61,13 @@ public class H2LineDao implements LineDao {
     }
 
     @Override
-    public int update(LineEntity lineEntity) {
+    public int update(final LineEntity lineEntity) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
         return jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
     }
 
     @Override
-    public int deleteById(long id) {
+    public int deleteById(final long id) {
         return jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }

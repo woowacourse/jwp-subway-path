@@ -6,19 +6,13 @@ import java.util.List;
 
 public interface SectionDao {
 
-    long insert(Section section, long lineId);
+    long insert(final Section section, final long lineId);
 
     List<Section> selectAll();
 
-    List<Section> selectSectionsByLineId(long lineId);
+    List<Section> selectSectionsByLineId(final long lineId);
 
-    long deleteById(long id);
+    long deleteById(final long id);
 
-    long deleteByLineId(long lineId);
-
-/*    Section selectByStationIdsAndLineId(long upwardId, long downwardId, long lineId);
-
-    Section selectEndSection(long stationId, long lineId);
-
-    List<Section> selectSectionsByStationIdAndLineId(long stationId, long lineId);*/
+    long deleteByLineId(final long lineId);
 }

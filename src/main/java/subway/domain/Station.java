@@ -6,7 +6,7 @@ public class Station {
     private final Long id;
     private final String name;
 
-    private Station(Long id, String name) {
+    private Station(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
@@ -15,11 +15,11 @@ public class Station {
         return new Station(null, null);
     }
 
-    public static Station from(String name) {
+    public static Station from(final String name) {
         return new Station(null, name);
     }
 
-    public static Station of(Long id, String name) {
+    public static Station of(final Long id, final String name) {
         return new Station(id, name);
     }
 
@@ -27,7 +27,7 @@ public class Station {
         return this.id == id;
     }
 
-    public boolean isSameName(Station other) {
+    public boolean isSameName(final Station other) {
         return this.name.equals(other.name);
     }
 

@@ -22,14 +22,14 @@ public class Line {
         this.sections = sections;
     }
 
-    public static Line of(String name, String color) {
+    public static Line of(final String name, final String color) {
         Section initialSection = Section.createEmpty();
         List<Section> emptySections = new LinkedList<>();
         emptySections.add(initialSection);
         return new Line(null, name, color, emptySections);
     }
 
-    public static Line of(long id, String name, String color, List<Section> sections) {
+    public static Line of(final long id, final String name, final String color, final List<Section> sections) {
         return new Line(id, name, color, sections);
     }
 
@@ -139,11 +139,11 @@ public class Line {
         return getStations().size() != 0;
     }
 
-    public boolean isSameName(Line line) {
+    public boolean isSameName(final Line line) {
         return this.name.equals(line.name);
     }
 
-    public boolean isSameColor(Line line) {
+    public boolean isSameColor(final Line line) {
         return this.color.equals(line.color);
     }
 
