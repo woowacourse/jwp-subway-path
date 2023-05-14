@@ -1,52 +1,73 @@
 package subway.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class SectionSorter {
+    private static List<Section> line;
+    private static List<Section> newLine;
+    private static Map<Station, Section> sectionsMap;
 
-    private static final SectionSorter instance = new SectionSorter();
-
-    private SectionSorter() {
-    }
-
-    public static SectionSorter getInstance() {
-        return instance;
-    }
-
-    public List<Section> sortSections(List<Section> sections) {
-        Map<Station, Section> departureToSection = createDepartureToSection(sections);
-        Station currentStation = getFirstStationFromSections(departureToSection);
-
-        List<Section> sortedSections = new ArrayList<>();
-
-        while (!departureToSection.isEmpty()) {
-            Section currentSection = departureToSection.remove(currentStation);
-            sortedSections.add(currentSection);
-            currentStation = currentSection.getArrival();
+    public static List<Section> sorting(List<Section> sections) {
+        sectionsMap = makeHashWith(sections);
+        Station now = getFirstKey(sectionsMap);
+        line = new ArrayList<>();
+        newLine = new ArrayList<>();
+        while (!sectionsMap.isEmpty()) {
+            newLine.add(sectionsMap.get(now));
+            now = setNow(now);
         }
-
-        return sortedSections;
+        line = merge(newLine, line);
+        return copy(line);
     }
 
-    private Station getFirstStationFromSections(Map<Station, Section> sectionsMap) {
-        Set<Station> arrivalStations = sectionsMap.values().stream()
-                .map(Section::getArrival)
-                .collect(Collectors.toSet());
-
-        return sectionsMap.keySet().stream()
-                .filter(departureStation -> !arrivalStations.contains(departureStation))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 노선에 시작역이 존재하지 않습니다."));
+    private static Station setNow(Station now) {
+        Station pre;
+        if (sectionsMap.containsKey(now)) {
+            pre = now;
+            now = sectionsMap.get(now).getArrival();
+            sectionsMap.remove(pre);
+            return now;
+        }
+        now = getFirstKey(sectionsMap);
+        line = merge(newLine, line);
+        newLine = new ArrayList<>();
+        return now;
     }
 
-    private Map<Station, Section> createDepartureToSection(List<Section> sections) {
-        return sections.stream()
-                .collect(Collectors.toMap(Section::getDeparture, Function.identity()));
+    private static Station getFirstKey(Map<Station, Section> sectionsMap) {
+        return (Station)sectionsMap.keySet().toArray()[0];
     }
 
+    private static Map<Station, Section> makeHashWith(List<Section> sections) {
+        Map<Station, Section> sectionMap = new HashMap<>();
+        for (Section section : sections) {
+            sectionMap.put(section.getDeparture(), section);
+        }
+        return sectionMap;
+    }
+
+    private static List<Section> merge(List<Section> src, List<Section> trg) {
+        if (trg == null) {
+            return src;
+        }
+        for (Section section : trg) {
+            src.add(section);
+        }
+        return src;
+    }
+    private static List<Section> copy(List<Section> input){
+        List<Section> newList = new ArrayList<>();
+        for(Section section : input){
+            addNonNullSection(newList, section);
+        }
+        return newList;
+    }
+
+    private static void addNonNullSection(List<Section> newList, Section section) {
+        if(section !=null){
+            newList.add(section);
+        }
+    }
 }

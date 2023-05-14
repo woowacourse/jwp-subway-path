@@ -20,8 +20,8 @@ class StationSorterTest {
         Collections.shuffle(sections);
 
         // when
-        final SectionSorter sectionSorter = SectionSorter.getInstance();
-        List<Section> sortedSections = sectionSorter.sortSections(sections);
+
+        List<Section> sortedSections = SectionSorter.sorting(sections);
 
         // then
         assertThat(sortedSections).isEqualTo(expectedSections);

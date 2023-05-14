@@ -32,23 +32,21 @@ public class SectionService {
     }
 
     public Map<Line, List<Section>> findSections() {
-        final SectionSorter sectionSorter = SectionSorter.getInstance();
 
         return sectionDao.findSections().entrySet().stream()
-                .collect(toMap(Map.Entry::getKey, entry -> sectionSorter.sortSections(entry.getValue())));
+                .collect(toMap(Map.Entry::getKey, entry -> SectionSorter.sorting(entry.getValue())));
     }
 
     public List<Section> findSectionsById(Long id) {
         final List<Section> sections = sectionDao.findSectionsByLineId(id);
-        final SectionSorter sectionSorter = SectionSorter.getInstance();
 
-        return sectionSorter.sortSections(sections);
+        return SectionSorter.sorting(sections);
     }
 
     public void deleteSectionByLineIdAndSectionId(Long lineId, Long sectionId) {
         final List<Section> sections = sectionDao.findSectionByLineIdAndStationId(lineId, sectionId);
-        final SectionSorter sectionSorter = SectionSorter.getInstance();
-        final List<Section> sortedSections = sectionSorter.sortSections(sections);
+
+        final List<Section> sortedSections = SectionSorter.sorting(sections);
         if (sections.size() == 0) {
             throw new IllegalArgumentException("해당하는 역이 없습니다.");
         }

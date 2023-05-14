@@ -17,8 +17,7 @@ public class ValidateCase extends SectionReader {
 
     @Override
     public List<AddStationResponse> read(long id, List<Section> allSections) throws IllegalAccessException {
-        final SectionSorter sectionSorter = SectionSorter.getInstance();
-        final List<Section> sortedSections = sectionSorter.sortSections(allSections);
+        final List<Section> sortedSections = SectionSorter.sorting(allSections);
 
 
         List<Section> departureSections = allSections.stream()
