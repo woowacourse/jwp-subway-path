@@ -28,13 +28,15 @@
 - [x] 노선별 조회
   - [x] GET, /lines?id=
 
-#### /lines/{line_id}/station
+#### /lines/{lineId}/stations
 - [x] 노선에 역 등록
-  - [x] POST, /lines/{line_id}/stations/
+  - [x] POST, /lines/{lineId}/stations
   - [x] 요청 포맷
     - [x] 노선 id, 상행 역 id, 하행 역 id, 거리 
-- [ ] 노선에서 역 삭제
-  - [ ] DELETE, /lines/{line_id}/stations/{station_id}
+- [x] 노선에서 역 삭제
+  - [x] DELETE, /lines/{lineId}/stations/{stationId}
+- [x] 노선별 역 조회
+  - [x] GET, /lines/{lineId}/stations
 
 
 ### Domain
