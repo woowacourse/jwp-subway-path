@@ -1,5 +1,8 @@
 package subway.business.domain;
 
+import static subway.business.domain.Direction.DOWNWARD;
+import static subway.business.domain.Direction.UPWARD;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -53,8 +56,8 @@ public class Line {
     }
 
     private void deleteStationWhenIsNotTerminus(Station stationToDelete) {
-        Section downwardSection = getSectionDownwardSameWith(stationToDelete);
-        Section upwardSection = getSectionUpwardSameWith(stationToDelete);
+        Section downwardSection = getSectionOfDirectionHasStation(stationToDelete, DOWNWARD);
+        Section upwardSection = getSectionOfDirectionHasStation(stationToDelete, UPWARD);
 
         Station upwardStation = downwardSection.getUpwardStation();
         Station downwardStation = upwardSection.getDownwardStation();
@@ -76,7 +79,7 @@ public class Line {
     }
 
     private boolean isTerminusOfDirection(Station station, Direction direction) {
-        if (direction.equals(Direction.UPWARD)) {
+        if (direction.equals(UPWARD)) {
             Section upwardEndSection = sections.get(0);
             return upwardEndSection.getUpwardStation().equals(station);
         }
@@ -99,7 +102,7 @@ public class Line {
     }
 
     private void addTerminus(Station station, Station neighborhoodStation, Direction direction, int distance) {
-        if (direction.equals(Direction.UPWARD)) {
+        if (direction.equals(UPWARD)) {
             addUpwardTerminus(station, neighborhoodStation, distance);
             return;
         }
@@ -107,21 +110,25 @@ public class Line {
     }
 
     private void addUpwardTerminus(Station station, Station neighborhoodStation, int distance) {
-        Section sectionToModify = getSectionUpwardSameWith(neighborhoodStation);
+        Section sectionToModify = getSectionOfDirectionHasStation(neighborhoodStation, UPWARD);
         Section sectionToSave = new Section(id, station, sectionToModify.getUpwardStation(), distance);
         sections.add(0, sectionToSave);
     }
 
     private void addDownwardTerminus(Station station, Station neighborhoodStation, int distance) {
-        Section sectionToModify = getSectionDownwardSameWith(neighborhoodStation);
+        Section sectionToModify = getSectionOfDirectionHasStation(neighborhoodStation, DOWNWARD);
         Section sectionToSave = new Section(id, sectionToModify.getDownwardStation(), station, distance);
         sections.add(sectionToSave);
+    }
+
+    private int getNextIndexOf(Section sectionToModify) {
+        return sections.indexOf(sectionToModify) + 1;
     }
 
     private void addStationOfDirection(
             Station station, Station neighborhoodStation, int distance, Direction direction
     ) {
-        if (direction.equals(Direction.UPWARD)) {
+        if (direction.equals(UPWARD)) {
             addStationUpward(station, neighborhoodStation, distance);
             return;
         }
@@ -129,13 +136,13 @@ public class Line {
     }
 
     private void addStationUpward(Station station, Station neighborhoodStation, int distance) {
-        Section sectionToModify = getSectionDownwardSameWith(neighborhoodStation);
+        Section sectionToModify = getSectionOfDirectionHasStation(neighborhoodStation, DOWNWARD);
         validateDistance(distance, sectionToModify.getDistance());
 
-        Section downwardSectionToSave = new Section(id, station, neighborhoodStation, distance);
+        Section downwardSectionToSave = Section.createToSave(station, neighborhoodStation, distance);
         Station otherNeighborhoodStation = sectionToModify.getUpwardStation();
         int upwardDistance = sectionToModify.calculateRemainingDistance(distance);
-        Section upwardSectionToSave = new Section(id, otherNeighborhoodStation, station, upwardDistance);
+        Section upwardSectionToSave = Section.createToSave(otherNeighborhoodStation, station, upwardDistance);
 
         int nextSectionIndex = getNextIndexOf(sectionToModify);
         sections.add(nextSectionIndex, downwardSectionToSave);
@@ -143,12 +150,8 @@ public class Line {
         sections.remove(sectionToModify);
     }
 
-    private int getNextIndexOf(Section sectionToModify) {
-        return sections.indexOf(sectionToModify) + 1;
-    }
-
     private void addStationDownward(Station station, Station neighborhoodStation, int distance) {
-        Section sectionToModify = getSectionUpwardSameWith(neighborhoodStation);
+        Section sectionToModify = getSectionOfDirectionHasStation(neighborhoodStation, UPWARD);
         validateDistance(distance, sectionToModify.getDistance());
 
         Section upwardSectionToSave = new Section(id, neighborhoodStation, station, distance);
@@ -162,22 +165,13 @@ public class Line {
         sections.remove(sectionToModify);
     }
 
-    private Section getSectionUpwardSameWith(Station neighborhoodStation) {
+    private Section getSectionOfDirectionHasStation(Station station, Direction direction) {
         return sections.stream()
-                .filter(section -> section.isUpwardStation(neighborhoodStation))
+                .filter(section -> section.hasStationOfDirection(station, direction))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("추가하려는 역의 이웃 역이 존재하지 않습니다. " +
-                                "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name, neighborhoodStation.getName())));
-    }
-
-    private Section getSectionDownwardSameWith(Station neighborhoodStation) {
-        return sections.stream()
-                .filter(section -> section.isDownwardStation(neighborhoodStation))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
-                        String.format("추가하려는 역의 이웃 역이 존재하지 않습니다. " +
-                                "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name, neighborhoodStation.getName())));
+                                "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name, station.getName())));
     }
 
     private void deleteStationWhenIsTerminus(Station station) {
