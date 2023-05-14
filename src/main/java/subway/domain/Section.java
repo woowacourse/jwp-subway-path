@@ -6,15 +6,25 @@ import java.util.Objects;
 
 public class Section {
 
+    private final Long id;
     private final Station start;
     private final Station end;
     private final Distance distance;
 
     public Section(final String start, final String end, final int distance) {
-        this(new Station(start), new Station(end), new Distance(distance));
+        this(null, new Station(start), new Station(end), new Distance(distance));
     }
 
     public Section(final Station start, final Station end, final Distance distance) {
+        this(null, start, end, distance);
+    }
+
+    public Section(final Long id, final String start, final String end, final int distance) {
+        this(id, new Station(start), new Station(end), new Distance(distance));
+    }
+
+    public Section(final Long id, final Station start, final Station end, final Distance distance) {
+        this.id = id;
         this.start = start;
         this.end = end;
         this.distance = distance;
@@ -69,10 +79,15 @@ public class Section {
     @Override
     public String toString() {
         return "Section{" +
-                "start=" + start +
+                "id=" + id +
+                ", start=" + start +
                 ", end=" + end +
                 ", distance=" + distance +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Station getStart() {

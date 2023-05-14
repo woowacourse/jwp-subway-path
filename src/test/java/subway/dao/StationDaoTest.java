@@ -1,6 +1,7 @@
 package subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -79,5 +80,21 @@ class StationDaoTest {
 
         // then
         assertThat(stationDao.findAll()).hasSize(2);
+    }
+
+    @Test
+    void 역을_추가한다() {
+        // given
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        final StationEntity station = new StationEntity("B", line.getId());
+
+        // when
+        final StationEntity result = stationDao.insert(station);
+
+        // then
+        assertAll(
+                () -> assertThat(result.getId()).isPositive(),
+                () -> assertThat(stationDao.findAll()).hasSize(1)
+        );
     }
 }

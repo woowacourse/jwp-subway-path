@@ -30,9 +30,8 @@ public class LineService {
         if (lineId.isPresent()) {
             throw new LineAlreadyExistsException();
         }
-        lineRepository.save(new Line(request.getName(), request.getColor(), Collections.emptyList()));
-        return lineRepository.findIdByName(request.getName())
-                .orElseThrow(LineNotFoundException::new);
+        return lineRepository.save(new Line(request.getName(), request.getColor(), Collections.emptyList()))
+                .getId();
     }
 
     public void delete(final Long id) {
@@ -42,9 +41,10 @@ public class LineService {
     }
 
     public void update(final Long id, final LineUpdateRequest request) {
-        lineRepository.findById(id)
+        final Line line = lineRepository.findById(id)
                 .orElseThrow(LineNotFoundException::new);
-        lineRepository.updateNameAndColorById(id, request.getName(), request.getColor());
+        line.changeNameAndColor(request.getName(), request.getColor());
+        lineRepository.save(line);
     }
 
     @Transactional(readOnly = true)

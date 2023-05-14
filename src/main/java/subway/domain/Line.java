@@ -11,17 +11,24 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
 import subway.exception.StationNotFoundException;
 
 public class Line {
 
-    private final String name;
-    private final String color;
+    private final Long id;
+    private String name;
+    private String color;
     private final List<Section> sections;
 
     public Line(final String name, final String color, final List<Section> sections) {
+        this(null, name, color, sections);
+    }
+
+    public Line(final Long id, final String name, final String color, final List<Section> sections) {
+        this.id = id;
         this.name = name;
         this.color = color;
         this.sections = new ArrayList<>(sections);
@@ -125,13 +132,31 @@ public class Line {
         sections.add(section);
     }
 
+    public void changeNameAndColor(final String name, final String color) {
+        this.name = name;
+        this.color = color;
+    }
+
+    public Station findStationByName(final String name) {
+        return sections.stream()
+                .flatMap(section -> Stream.of(section.getStart(), section.getEnd()))
+                .filter(station -> station.isSameName(name))
+                .findFirst()
+                .orElseThrow(StationNotFoundException::new);
+    }
+
     @Override
     public String toString() {
         return "Line{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
                 ", sections=" + sections +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

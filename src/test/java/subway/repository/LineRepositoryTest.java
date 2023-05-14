@@ -35,7 +35,7 @@ class LineRepositoryTest {
         final Line savedLine = lineRepository.save(line);
 
         // then
-        assertThat(savedLine).usingRecursiveComparison().isEqualTo(line);
+        assertThat(savedLine).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(line);
     }
 
     @Test
@@ -53,7 +53,7 @@ class LineRepositoryTest {
         final List<Line> result = lineRepository.findAll();
 
         // then
-        assertThat(result.get(0)).usingRecursiveComparison().isEqualTo(line);
+        assertThat(result.get(0)).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(line);
     }
 
     @Test
@@ -109,6 +109,6 @@ class LineRepositoryTest {
         final Line result = lineRepository.findById(id).orElseThrow();
 
         // then
-        assertThat(result).usingRecursiveComparison().isEqualTo(line);
+        assertThat(result).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(line);
     }
 }

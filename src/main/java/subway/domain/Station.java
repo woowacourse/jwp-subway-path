@@ -4,10 +4,20 @@ import java.util.Objects;
 
 public class Station {
 
+    private final Long id;
     private final String name;
 
     public Station(final String name) {
+        this(null, name);
+    }
+
+    public Station(final Long id, final String name) {
+        this.id = id;
         this.name = name;
+    }
+
+    public boolean isSameName(final String name) {
+        return this.name.equals(name);
     }
 
     @Override
@@ -30,8 +40,13 @@ public class Station {
     @Override
     public String toString() {
         return "Station{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

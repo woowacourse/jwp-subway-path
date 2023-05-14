@@ -34,6 +34,12 @@ public class StationDao {
         jdbcInsert.executeBatch(parameterSources);
     }
 
+    public StationEntity insert(final StationEntity stations) {
+        final BeanPropertySqlParameterSource parameterSources = new BeanPropertySqlParameterSource(stations);
+        Long id = jdbcInsert.executeAndReturnKey(parameterSources).longValue();
+        return new StationEntity(id, stations.getName(), stations.getLineId());
+    }
+
     public List<StationEntity> findAll() {
         String sql = "SELECT * FROM STATION";
         return jdbcTemplate.query(sql, rowMapper);
@@ -42,5 +48,15 @@ public class StationDao {
     public void deleteByLineId(final Long lineId) {
         String sql = "DELETE FROM STATION WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
+    }
+
+    public List<StationEntity> findByLineId(final Long lineId) {
+        String sql = "SELECT * FROM STATION where line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
+
+    public void deleteById(final Long id) {
+        String sql = "DELETE FROM STATION WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

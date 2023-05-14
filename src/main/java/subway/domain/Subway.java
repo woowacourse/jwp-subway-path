@@ -29,7 +29,8 @@ public class Subway {
         }
 
         final Line findLine = findLineByName(lineName);
-        findLine.add(base, additional, distance, direction);
+        final Station baseStation = findLine.findStationByName(baseStationName);
+        findLine.add(baseStation, additional, distance, direction);
     }
 
     public Line findLineByName(final String name) {
