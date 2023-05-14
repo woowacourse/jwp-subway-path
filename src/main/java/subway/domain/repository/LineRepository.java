@@ -5,7 +5,7 @@ import subway.domain.Line;
 import java.util.List;
 
 public interface LineRepository {
-    void createLine(Line line);
+    Line createLine(Line line);
 
     void deleteById(Long lineIdRequest);
 

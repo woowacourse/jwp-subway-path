@@ -1,4 +1,4 @@
-package subway.persistence;
+package subway.persistence.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.repository.SectionRepository;
+import subway.persistence.SectionEntity;
 
 import java.util.List;
 
