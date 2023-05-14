@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class Distance {
 
+    public static final int MIN_DISTANCE = 0;
     public static final int MAX_DISTANCE = 100;
     private final int distance;
 
@@ -13,8 +14,8 @@ public class Distance {
     }
 
     private void validate(int distance) {
-        if (distance > MAX_DISTANCE) {
-            throw new IllegalArgumentException("역 사이 거리는 100km 이하여야 합니다.");
+        if (distance < MIN_DISTANCE || distance > MAX_DISTANCE) {
+            throw new IllegalArgumentException("역 사이 거리는 0km이상 100km 이하여야 합니다.");
         }
     }
 

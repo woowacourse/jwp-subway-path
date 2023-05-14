@@ -55,7 +55,7 @@ public class Section {
     }
 
     public Line getLine() {
-        if (upStation.getLine() == downStation.getLine()) {
+        if (upStation.getLineName().equals(downStation.getLineName())) {
             return upStation.getLine();
         }
         throw new IllegalArgumentException("노선을 찾을 수 없습니다.");

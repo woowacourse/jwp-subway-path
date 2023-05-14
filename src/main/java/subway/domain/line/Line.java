@@ -28,8 +28,8 @@ public class Line {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Line that = (Line) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        Line line = (Line) o;
+        return Objects.equals(id, line.id) && Objects.equals(name, line.name);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class Line {
 
     @Override
     public String toString() {
-        return "LineEntity{" +
+        return "Line{" +
                 "id=" + id +
                 ", name=" + name +
                 '}';

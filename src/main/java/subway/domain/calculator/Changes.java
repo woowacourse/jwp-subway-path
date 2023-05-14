@@ -9,6 +9,7 @@ import java.util.Objects;
 
 public class Changes {
 
+    private final Long changedLineId;
     private final List<Line> lineToAdd;
     private final List<Line> lineToRemove;
     private final List<Station> stationsToAdd;
@@ -16,15 +17,20 @@ public class Changes {
     private final List<Section> sectionsToAdd;
     private final List<Section> sectionsToRemove;
 
-    public Changes(List<Line> lineToAdd, List<Line> lineToRemove,
+    public Changes(Long changedLineId, List<Line> lineToAdd, List<Line> lineToRemove,
                    List<Station> stationsToAdd, List<Station> stationsToRemove,
                    List<Section> sectionsToAdd, List<Section> sectionsToRemove) {
+        this.changedLineId = changedLineId;
         this.lineToAdd = lineToAdd;
         this.lineToRemove = lineToRemove;
         this.stationsToAdd = stationsToAdd;
         this.stationsToRemove = stationsToRemove;
         this.sectionsToAdd = sectionsToAdd;
         this.sectionsToRemove = sectionsToRemove;
+    }
+
+    public Long getChangedLineId() {
+        return changedLineId;
     }
 
     public List<Line> getLineToAdd() {
@@ -51,28 +57,6 @@ public class Changes {
         return sectionsToRemove;
     }
 
-    public Long getChangedLine() {
-        if (!lineToAdd.isEmpty()) {
-            return lineToAdd.get(0).getId();
-        }
-        if (!lineToRemove.isEmpty()) {
-            return lineToRemove.get(0).getId();
-        }
-        if (!stationsToAdd.isEmpty()) {
-            return stationsToAdd.get(0).getId();
-        }
-        if (!stationsToRemove.isEmpty()) {
-            return stationsToRemove.get(0).getId();
-        }
-        if (!sectionsToAdd.isEmpty()) {
-            return sectionsToAdd.get(0).getLineId();
-        }
-        if (!sectionsToRemove.isEmpty()) {
-            return sectionsToRemove.get(0).getLineId();
-        }
-        return null;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -82,18 +66,24 @@ public class Changes {
             return false;
         }
         Changes changes = (Changes) o;
-        return Objects.equals(lineToAdd, changes.lineToAdd) &&
-                Objects.equals(lineToRemove, changes.lineToRemove) &&
-                Objects.equals(stationsToAdd, changes.stationsToAdd) &&
-                Objects.equals(stationsToRemove, changes.stationsToRemove) &&
-                Objects.equals(sectionsToAdd, changes.sectionsToAdd) &&
-                Objects.equals(sectionsToRemove, changes.sectionsToRemove);
+        return Objects.equals(changedLineId, changes.changedLineId) && Objects.equals(lineToAdd, changes.lineToAdd) && Objects.equals(lineToRemove, changes.lineToRemove) && Objects.equals(stationsToAdd, changes.stationsToAdd) && Objects.equals(stationsToRemove, changes.stationsToRemove) && Objects.equals(sectionsToAdd, changes.sectionsToAdd) && Objects.equals(sectionsToRemove, changes.sectionsToRemove);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineToAdd, lineToRemove,
-                stationsToAdd, stationsToRemove,
-                sectionsToAdd, sectionsToRemove);
+        return Objects.hash(changedLineId, lineToAdd, lineToRemove, stationsToAdd, stationsToRemove, sectionsToAdd, sectionsToRemove);
+    }
+
+    @Override
+    public String toString() {
+        return "Changes{" +
+                "changedLineId=" + changedLineId +
+                ", lineToAdd=" + lineToAdd +
+                ", lineToRemove=" + lineToRemove +
+                ", stationsToAdd=" + stationsToAdd +
+                ", stationsToRemove=" + stationsToRemove +
+                ", sectionsToAdd=" + sectionsToAdd +
+                ", sectionsToRemove=" + sectionsToRemove +
+                '}';
     }
 }

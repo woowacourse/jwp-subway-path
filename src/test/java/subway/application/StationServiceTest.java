@@ -10,8 +10,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.section.SectionRepository;
+import subway.dto.StationRequest;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 import static fixtures.StationFixtures.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class StationServiceTest {
@@ -25,6 +34,8 @@ class StationServiceTest {
     StationDao stationDao;
     @Mock
     SectionDao sectionDao;
+    @Mock
+    SectionRepository sectionRepository;
 
     @Nested
     @DisplayName("역 등록 시 ")
@@ -39,13 +50,18 @@ class StationServiceTest {
             @DisplayName("상행역과 하행역, 노선, 구간 정보를 저장한다.")
             void saveInitialStationsTest() {
                 // given
-
+                StationRequest request = REQUEST_잠실역_TO_건대역;
+                when(lineDao.findByLineName(request.getLineName()))
+                        .thenReturn(Optional.empty());
+                when(lineDao.insert(LINE2_INSERT_ENTITY)).thenReturn(LINE2_FIND_ENTITY);
+                when(sectionRepository.findSectionsContaining(SECTION_TO_INSERT_잠실역_TO_건대역))
+                        .thenReturn(new ArrayList<>());
 
                 // when
-
+                Long changedLineId = stationService.saveSection(request);
 
                 // then
-
+                assertThat(changedLineId).isEqualTo(LINE2_ID);
             }
         }
 
@@ -57,49 +73,66 @@ class StationServiceTest {
             @DisplayName("두 역 모두 존재하지 않으면 예외가 발생한다.")
             void saveNewStationTest_fail_when_allNotSaved() {
                 // given
+                StationRequest request = REQUEST_대림역_TO_신림역;
+                when(lineDao.findByLineName(request.getLineName()))
+                        .thenReturn(Optional.of(LINE2_FIND_ENTITY));
+                when(sectionRepository.findSectionsContaining(SECTION_TO_INSERT_대림역_TO_신림역))
+                        .thenReturn(new ArrayList<>());
 
-
-                // when
-
-
-                // then
-
+                // when, then
+                assertThatThrownBy(() -> stationService.saveSection(request))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("현재 등록된 역 중에 하나를 포함해야합니다.");
             }
 
             @Test
             @DisplayName("두 역 모두 존재하면 예외가 발생한다.")
             void saveNewStationTest_fail_when_allAlreadySaved() {
                 // given
-
+                StationRequest request = REQUEST_잠실역_TO_건대역;
+                when(lineDao.findByLineName(request.getLineName()))
+                        .thenReturn(Optional.of(LINE2_FIND_ENTITY));
+                when(sectionRepository.findSectionsContaining(SECTION_TO_INSERT_잠실역_TO_건대역))
+                        .thenReturn(List.of(SECTION_잠실역_TO_건대역));
 
                 // when, then
-
+                assertThatThrownBy(() -> stationService.saveSection(request))
+                        .isInstanceOf(IllegalArgumentException.class)
+                        .hasMessage("이미 포함되어 있는 구간입니다.");
             }
 
             @Test
             @DisplayName("상행역이 이미 존재할 때, 노선 가운데에 역을 등록한다.")
             void saveNewStationTest_success_when_upStationExist() {
                 // given
-
+                StationRequest request = REQUEST_잠실역_TO_강변역;
+                when(lineDao.findByLineName(request.getLineName()))
+                        .thenReturn(Optional.of(LINE2_FIND_ENTITY));
+                when(sectionRepository.findSectionsContaining(SECTION_TO_INSERT_잠실역_TO_강변역))
+                        .thenReturn(List.of(SECTION_잠실역_TO_건대역));
 
                 // when
-
+                Long changedLineId = stationService.saveSection(request);
 
                 // then
-
+                assertThat(changedLineId).isEqualTo(LINE2_ID);
             }
 
             @Test
             @DisplayName("하행역이 이미 존재할 때, 노선 가운데에 역을 등록한다.")
             void saveNewStationTest_success_when_downStationExist() {
                 // given
-
+                StationRequest request = REQUEST_강변역_TO_건대역;
+                when(lineDao.findByLineName(request.getLineName()))
+                        .thenReturn(Optional.of(LINE2_FIND_ENTITY));
+                when(sectionRepository.findSectionsContaining(SECTION_TO_INSERT_강변역_TO_건대역))
+                        .thenReturn(List.of(SECTION_잠실역_TO_건대역));
 
                 // when
-
+                Long changedLineId = stationService.saveSection(request);
 
                 // then
-
+                assertThat(changedLineId).isEqualTo(LINE2_ID);
             }
         }
     }

@@ -4,11 +4,11 @@ import subway.domain.section.ContainingSections;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
 
-public class MiddleStationRemoveCalculator {
+public class RemoveCalculator {
 
     private final ContainingSections containingSections;
 
-    public MiddleStationRemoveCalculator(ContainingSections containingSections) {
+    public RemoveCalculator(ContainingSections containingSections) {
         this.containingSections = containingSections;
     }
 

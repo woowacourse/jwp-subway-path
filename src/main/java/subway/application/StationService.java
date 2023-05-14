@@ -8,6 +8,7 @@ import subway.dao.StationDao;
 import subway.domain.calculator.AddCalculator;
 import subway.domain.calculator.Changes;
 import subway.domain.line.Line;
+import subway.domain.line.LineStatus;
 import subway.domain.section.ContainingSections;
 import subway.domain.section.Distance;
 import subway.domain.section.Section;
@@ -39,27 +40,42 @@ public class StationService {
     }
 
     public Long saveSection(StationRequest stationRequest) {
-        Line lineFromRequest = new Line(null, stationRequest.getLineName());
-        Optional<LineEntity> findNullableLineEntity = lineDao.findByLineName(lineFromRequest.getName());
+        Optional<LineEntity> findNullableLineEntity = lineDao.findByLineName(stationRequest.getLineName());
+        LineStatus lineStatus = getLineStatus(findNullableLineEntity);
+        Line line = findOrCreateLine(findNullableLineEntity, stationRequest.getLineName());
+        Station upStation = new Station(null, stationRequest.getUpStationName(), line);
+        Station downStation = new Station(null, stationRequest.getDownStationName(), line);
+        Distance distance = new Distance(stationRequest.getDistance());
+        Section sectionToAdd = new Section(null, upStation, downStation, distance);
+
+        List<Section> containingSections = sectionRepository.findSectionsContaining(sectionToAdd);
+        AddCalculator addCalculator = new AddCalculator(new ContainingSections(containingSections));
+        Changes changes = addCalculator.addSection(lineStatus, sectionToAdd);
+        return applyChanges(changes);
+    }
+
+    private LineStatus getLineStatus(Optional<LineEntity> findNullableLineEntity) {
+        LineStatus lineStatus = null;
+        if (findNullableLineEntity.isEmpty()) {
+            lineStatus = LineStatus.INITIAL;
+        }
+        if (findNullableLineEntity.isPresent()) {
+            lineStatus = LineStatus.EXIST;
+        }
+        return lineStatus;
+    }
+
+    private Line findOrCreateLine(Optional<LineEntity> findNullableLineEntity, String lineName) {
         Line line = null;
         if (findNullableLineEntity.isEmpty()) {
-            LineEntity insertedLineEntity = lineDao.insert(new LineEntity(null, lineFromRequest.getName()));
+            LineEntity insertedLineEntity = lineDao.insert(new LineEntity(null, lineName));
             line = new Line(insertedLineEntity.getId(), insertedLineEntity.getLineName());
         }
         if (findNullableLineEntity.isPresent()) {
             LineEntity findLineEntity = findNullableLineEntity.get();
             line = new Line(findLineEntity.getId(), findLineEntity.getLineName());
         }
-        Station upStation = new Station(null, stationRequest.getUpStationName(), line);
-        Station downStation = new Station(null, stationRequest.getDownStationName(), line);
-        Distance distance = new Distance(stationRequest.getDistance());
-        Section sectionToAdd = new Section(null, upStation, downStation, distance);
-
-
-        List<Section> containingSections = sectionRepository.findSectionsContaining(sectionToAdd);
-        AddCalculator addCalculator = new AddCalculator(new ContainingSections(containingSections));
-        Changes changes = addCalculator.addSection(sectionToAdd);
-        return applyChanges(changes);
+        return line;
     }
 
     private Long applyChanges(Changes changes) {
@@ -82,7 +98,7 @@ public class StationService {
         for (Section section : changes.getSectionsToRemove()) {
             sectionDao.deleteBySectionId(section.getId());
         }
-        return changes.getChangedLine();
+        return changes.getChangedLineId();
     }
 
     public void deleteStationById(Long id) {
