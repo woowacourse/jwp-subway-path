@@ -12,4 +12,6 @@ public interface StationRepository {
     Station findById(Long stationIdRequest);
 
     void deleteById(Long stationIdRequest);
+
+    void updateStation(long stationId, Station station);
 }

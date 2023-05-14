@@ -42,4 +42,12 @@ public class StationController {
         stationService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<StationResponse> updateStation(
+        @PathVariable(name="id") long stationId,
+        @RequestBody StationCreateRequest request){
+        final StationResponse stationResponse = stationService.updateStation(stationId, request);
+        return ResponseEntity.ok(stationResponse);
+    }
 }
