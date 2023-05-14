@@ -17,7 +17,7 @@ public class AddLineResponse {
     private InterStationResponse interStation;
 
     public static AddLineResponse from(final Line line) {
-        return new AddLineResponse(line.getId(), line.getName(), line.getColor(),
-                InterStationResponse.from(line.getFirstInterStation()));
+        return new AddLineResponse(line.getId(), line.getName().getValue(), line.getColor().getValue(),
+            InterStationResponse.from(line.getFirstInterStation()));
     }
 }

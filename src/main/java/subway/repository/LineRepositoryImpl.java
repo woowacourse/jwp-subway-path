@@ -9,6 +9,7 @@ import subway.dao.InterStationDao;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.interstation.InterStation;
+import subway.domain.interstation.InterStations;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.entity.InterStationEntity;
@@ -29,20 +30,21 @@ public class LineRepositoryImpl implements LineRepository {
         final LineEntity lineEntity = lineDao.insert(LineEntity.from(line));
         final List<InterStationEntity> interStations = lineEntity.getInterStationEntities();
         interStationDao.insertAll(interStations);
-        return findByName(line.getName())
-                .orElseThrow(BusinessException::new);
+        return findByName(line.getName().getValue())
+            .orElseThrow(BusinessException::new);
     }
 
     @Override
     public Line update(final Line line) {
         interStationDao.deleteAllByLineId(line.getId());
         final List<InterStationEntity> interStationEntities = line.getInterStations()
-                .stream()
-                .map(interStation -> InterStationEntity.of(interStation, line.getId()))
-                .collect(Collectors.toUnmodifiableList());
+            .getInterStations()
+            .stream()
+            .map(interStation -> InterStationEntity.of(interStation, line.getId()))
+            .collect(Collectors.toUnmodifiableList());
         interStationDao.insertAll(interStationEntities);
-        return findByName(line.getName())
-                .orElseThrow(BusinessException::new);
+        return findByName(line.getName().getValue())
+            .orElseThrow(BusinessException::new);
     }
 
     @Override
@@ -50,7 +52,7 @@ public class LineRepositoryImpl implements LineRepository {
         final List<StationEntity> stationEntities = stationDao.findAll();
         final List<InterStationEntity> interStationEntities = interStationDao.findAll();
         return lineDao.findByName(name).map(
-                lineEntity -> makeLine(lineEntity, stationEntities, interStationEntities)
+            lineEntity -> makeLine(lineEntity, stationEntities, interStationEntities)
         );
     }
 
@@ -60,32 +62,34 @@ public class LineRepositoryImpl implements LineRepository {
         final List<StationEntity> stationEntities = stationDao.findAll();
         final List<InterStationEntity> interStationEntities = interStationDao.findAll();
         return lineEntities.stream()
-                .map(lineEntity -> makeLine(lineEntity, stationEntities, interStationEntities))
-                .collect(Collectors.toList());
+            .map(lineEntity -> makeLine(lineEntity, stationEntities, interStationEntities))
+            .collect(Collectors.toList());
     }
 
     private Line makeLine(final LineEntity lineEntity, final List<StationEntity> stationEntities,
-            final List<InterStationEntity> interStationEntities) {
+                          final List<InterStationEntity> interStationEntities) {
         final List<InterStation> interStations = interStationEntities.stream()
-                .filter(interStationEntity -> interStationEntity.getLineId().equals(lineEntity.getId()))
-                .map(interStationEntity -> makeInterStation(interStationEntity, stationEntities))
-                .collect(Collectors.toList());
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), interStations);
+            .filter(interStationEntity -> interStationEntity.getLineId().equals(lineEntity.getId()))
+            .map(interStationEntity -> makeInterStation(interStationEntity, stationEntities))
+            .collect(Collectors.toList());
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
+            new InterStations(interStations));
     }
 
-    private InterStation makeInterStation(final InterStationEntity interStationEntity, final List<StationEntity> stationEntities) {
+    private InterStation makeInterStation(final InterStationEntity interStationEntity,
+                                          final List<StationEntity> stationEntities) {
         return new InterStation(interStationEntity.getId(),
-                stationEntities.stream()
-                        .filter(stationEntity -> stationEntity.getId().equals(interStationEntity.getFrontStationId()))
-                        .map(this::makeStation)
-                        .findFirst()
-                        .orElseThrow(() -> new BusinessException("역이 존재하지 않습니다.")),
-                stationEntities.stream()
-                        .filter(stationEntity -> stationEntity.getId().equals(interStationEntity.getBackStationId()))
-                        .map(this::makeStation)
-                        .findFirst()
-                        .orElseThrow(() -> new BusinessException("역이 존재하지 않습니다.")),
-                interStationEntity.getDistance());
+            stationEntities.stream()
+                .filter(stationEntity -> stationEntity.getId().equals(interStationEntity.getFrontStationId()))
+                .map(this::makeStation)
+                .findFirst()
+                .orElseThrow(() -> new BusinessException("역이 존재하지 않습니다.")),
+            stationEntities.stream()
+                .filter(stationEntity -> stationEntity.getId().equals(interStationEntity.getBackStationId()))
+                .map(this::makeStation)
+                .findFirst()
+                .orElseThrow(() -> new BusinessException("역이 존재하지 않습니다.")),
+            interStationEntity.getDistance());
     }
 
     private Station makeStation(final StationEntity stationEntity) {

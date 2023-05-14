@@ -19,10 +19,12 @@ public class LineResponse {
     private List<StationResponse> stations;
 
     public static LineResponse from(final Line line) {
-        final List<StationResponse> stationResponses = line.getStations()
-                .stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
+        final List<StationResponse> stationResponses = line.getInterStations()
+            .getInterStations()
+            .stream()
+            .map(interStation -> interStation.getUpStation())
+            .map(StationResponse::from)
+            .collect(Collectors.toList());
+        return new LineResponse(line.getId(), line.getName().getValue(), line.getColor().getValue(), stationResponses);
     }
 }

@@ -28,15 +28,15 @@ public class LineService {
         validateEmptyLine(request);
         final Station firstStation = getStation(request.getFrontStationName());
         final Station secondStation = getStation(request.getBackStationName());
-        final Line line = new Line(request.getName(), request.getColor());
-        line.addInitialStation(firstStation, secondStation, request.getDistance());
+        final Line line = new Line(request.getName(), request.getColor(), firstStation, secondStation,
+            request.getDistance());
         final Line result = lineRepository.save(line);
         return AddLineResponse.from(result);
     }
 
     public Station getStation(final String name) {
         return stationRepository.findByName(name)
-                .orElseGet(() -> stationRepository.save(new Station(name)));
+            .orElseGet(() -> stationRepository.save(new Station(name)));
     }
 
     private void validateEmptyLine(final AddLineRequest request) {
@@ -48,16 +48,16 @@ public class LineService {
 
     public AddStationResponse addStation(final AddStationRequest request) {
         final Line line = lineRepository.findByName(request.getLineName())
-                .orElseThrow(() -> new BusinessException("이미 존재하는 라인입니다"));
+            .orElseThrow(() -> new BusinessException("이미 존재하는 라인입니다"));
         final Station firstStation = stationRepository.findByName(request.getFrontStation())
-                .orElseThrow(() -> new BusinessException("존재하지 않는 역입니다"));
+            .orElseThrow(() -> new BusinessException("존재하지 않는 역입니다"));
         final Station station = getStation(request.getStationName());
         if (request.getIsEnd()) {
-            line.addStationEnd(firstStation, station, request.getDistance());
+            line.addInterStation(firstStation, station, request.getDistance());
         } else {
             final Station secondStation = stationRepository.findByName(request.getBackStation())
-                    .orElseThrow(() -> new BusinessException("존재하지 않는 역입니다"));
-            line.addStationBetween(firstStation, secondStation, station, request.getDistance());
+                .orElseThrow(() -> new BusinessException("존재하지 않는 역입니다"));
+//            line.addStationBetween(firstStation, secondStation, station, request.getDistance());
         }
         lineRepository.update(line);
         return AddStationResponse.from(station);
@@ -65,7 +65,7 @@ public class LineService {
 
     public void removeStation(final RemoveStationRequest request) {
         final Station existStation = stationRepository.findByName(request.getStationName())
-                .orElseThrow(() -> new BusinessException("존재하지 않는 역입니다"));
+            .orElseThrow(() -> new BusinessException("존재하지 않는 역입니다"));
         final List<Line> lines = lineRepository.findAll();
         for (final Line line : lines) {
             line.deleteStation(existStation);
@@ -80,7 +80,7 @@ public class LineService {
     public List<LineResponse> getLines() {
         final List<Line> lines = lineRepository.findAll();
         return lines.stream()
-                .map(LineResponse::from)
-                .collect(Collectors.toList());
+            .map(LineResponse::from)
+            .collect(Collectors.toList());
     }
 }

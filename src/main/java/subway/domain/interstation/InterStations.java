@@ -122,4 +122,21 @@ public class InterStations {
         }
         throw new InterStationsException("역이 존재하지 않습니다.");
     }
+
+    public boolean isEmpty() {
+        return interStations.isEmpty();
+    }
+
+    public InterStation getFirstInterStation() {
+        return interStations.get(0);
+    }
+
+    public List<Station> getAllStations() {
+        final List<Station> stations = new ArrayList<>();
+        stations.add(interStations.get(0).getUpStation());
+        for (final InterStation interStation : interStations) {
+            stations.add(interStation.getDownStation());
+        }
+        return stations;
+    }
 }

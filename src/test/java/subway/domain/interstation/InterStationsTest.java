@@ -94,6 +94,22 @@ class InterStationsTest {
     }
 
     @Nested
+    @DisplayName("구간 목록을")
+    class Context_getStations {
+
+        @Test
+        void 상행선부터_하행선까지_순서대로_가져올_수_있다() {
+            final List<InterStation> given = List.of(코다에서_누누_구간_id_1, 누누에서_두둠_구간_id_2);
+            final InterStations interStations = new InterStations(given);
+
+            assertThat(interStations.getAllStations()).containsExactly(
+                코다_역_id_1,
+                누누_역_id_2,
+                두둠_역_id_3);
+        }
+    }
+
+    @Nested
     @DisplayName("구간을 추가하면")
     class Context_add {
 
@@ -195,6 +211,19 @@ class InterStationsTest {
             assertThatCode(() -> interStations.remove(처음보는_역_id_4))
                 .isInstanceOf(InterStationsException.class)
                 .hasMessage("역이 존재하지 않습니다.");
+        }
+    }
+
+    @Nested
+    @DisplayName("비어있는지 여부를")
+    class Context_empty {
+
+        @Test
+        void 확인할_수_있다() {
+            final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
+            final InterStations interStations = new InterStations(given);
+
+            assertThat(interStations.isEmpty()).isFalse();
         }
     }
 }
