@@ -52,7 +52,7 @@ class SubwayMapServiceIntegrationTest {
         lineRepository.updateLine(createSections(), 2);
 
         // when
-        LineMapResponse result = subwayMapService.showLineMap(2);
+        LineMapResponse result = subwayMapService.showLineMap(2L);
 
         // then
         assertAll(

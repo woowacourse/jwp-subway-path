@@ -21,7 +21,7 @@ public class StationRepository {
         return stationDao.insert(station);
     }
 
-    public Station findByStationId(final long stationId) {
+    public Station findByStationId(final Long stationId) {
         StationEntity stationEntity = stationDao.findById(stationId);
         return new Station(stationEntity.getStationId(), stationEntity.getName());
     }

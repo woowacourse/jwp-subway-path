@@ -27,7 +27,7 @@ public class SectionRepository {
         this.lineDao = lineDao;
     }
 
-    public Sections findSectionsByLineNumber(final long lineNumber) {
+    public Sections findSectionsByLineNumber(final Long lineNumber) {
         LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
         return getSections(lineEntity);
     }
