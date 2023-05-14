@@ -58,6 +58,17 @@ class StationServiceTest {
 
 	@Test
 	void findById() {
+		// given
+		final Station jamsil = new Station(1L, "잠실");
+		given(repository.findById(1L)).willReturn(jamsil);
+
+		// when
+		final StationResponse response = service.findById(1L);
+
+		// then
+		Assertions.assertThat(response)
+			.hasFieldOrPropertyWithValue("id", 1L)
+			.hasFieldOrPropertyWithValue("name", "잠실");
 	}
 
 	@Test
