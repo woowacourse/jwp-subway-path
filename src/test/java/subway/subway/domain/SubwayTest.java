@@ -89,6 +89,30 @@ class SubwayTest {
     }
     
     @Test
+    void 노선_추가시_이미_존재하는_노선의_이름이면_예외_발생() {
+        // given
+        final Subway subway = new Subway();
+        subway.addLine("1호선", "파랑");
+        subway.addLine("2호선", "초록");
+        
+        // expect
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> subway.addLine("2호선", "노랑"));
+    }
+    
+    @Test
+    void 노선_추가시_이미_존재하는_노선의_색상이면_예외_발생() {
+        // given
+        final Subway subway = new Subway();
+        subway.addLine("1호선", "파랑");
+        subway.addLine("2호선", "초록");
+        
+        // expect
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> subway.addLine("3호선", "초록"));
+    }
+    
+    @Test
     void 노선_삭제시_존재하지_않는_노선을_가리키면_예외_발생() {
         // given
         final Subway subway = new Subway();

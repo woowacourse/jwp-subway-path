@@ -19,12 +19,21 @@ public class Subway {
         this.lines = new HashSet<>();
     }
     
-    public void addLine(final String line, final String lineColor) {
-        lines.add(new Line(line, lineColor));
+    public void addLine(final String lineName, final String lineColor) {
+        if (isExistNameOrColor(lineName, lineColor)) {
+            throw new IllegalArgumentException("이미 존재하는 노선의 이름 또는 색상으로는 노선을 추가할 수 없습니다. " +
+                    "lineName : " + lineName + ", lineColor : " + lineColor);
+        }
+        lines.add(new Line(lineName, lineColor));
+    }
+    
+    private boolean isExistNameOrColor(final String lineName, final String lineColor) {
+        return lines.stream()
+                .anyMatch(line -> line.isSameName(lineName) || line.isSameColor(lineColor));
     }
     
     public void removeLine(final String lineName) {
-        lines.remove(getLineContainStation(lineName));
+        lines.remove(findLineByLineName(lineName));
     }
     
     public void initAddStation(
@@ -33,7 +42,7 @@ public class Subway {
             final String rightAdditional,
             final long distance
     ) {
-        getLineContainStation(line).initAddStation(leftAdditional, rightAdditional, distance);
+        findLineByLineName(line).initAddStation(leftAdditional, rightAdditional, distance);
     }
     
     public void addStation(
@@ -43,14 +52,14 @@ public class Subway {
             final String additionalStation,
             final long distance
     ) {
-        getLineContainStation(line).addStation(base, direction, additionalStation, distance);
+        findLineByLineName(line).addStation(base, direction, additionalStation, distance);
     }
     
     public void removeStation(final String line, final String station) {
-        getLineContainStation(line).removeStation(station);
+        findLineByLineName(line).removeStation(station);
     }
     
-    private Line getLineContainStation(final String lineName) {
+    private Line findLineByLineName(final String lineName) {
         return lines.stream()
                 .filter(line -> line.isSameName(lineName))
                 .findFirst()

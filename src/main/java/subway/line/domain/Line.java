@@ -54,4 +54,8 @@ public class Line {
     public boolean isSameName(final String targetLineName) {
         return this.name.equals(targetLineName);
     }
+    
+    public boolean isSameColor(final String lineColor) {
+        return this.color.equals(lineColor);
+    }
 }
