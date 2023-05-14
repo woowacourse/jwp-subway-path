@@ -37,7 +37,7 @@ class SectionRepositoryTest extends RepositoryTestConfig {
         // then
         assertThat(section)
                 .usingRecursiveComparison()
-                .isEqualTo(SectionDomain.from(
+                .isEqualTo(new SectionDomain(
                         saveSectionId,
                         new Distance(10),
                         true,

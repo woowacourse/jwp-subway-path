@@ -22,6 +22,16 @@ public class SqlHelper {
         return this;
     }
 
+    public SqlHelper insert() {
+        sql.append("INSERT INTO");
+        return this;
+    }
+
+    public SqlHelper values(final String columns) {
+        sql.append(" VALUES(").append(columns).append(")");
+        return this;
+    }
+
     public SqlHelper columns(final String columns) {
         sql.append(" ").append(columns);
         return this;

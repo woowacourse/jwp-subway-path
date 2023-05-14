@@ -61,6 +61,22 @@ public class SectionDaoV2 {
         ).longValue();
     }
 
+    public void insertBatch(final List<SectionEntity> sectionEntities) {
+        final String sql = sqlHelper()
+                .insert().table("SECTIONS(up_station_id, down_station_id, line_id, is_start, distance)")
+                .values("?, ?, ?, ?, ?")
+                .toString();
+
+        jdbcTemplate.batchUpdate(sql, sectionEntities, sectionEntities.size(),
+                (ps, section) -> {
+                    ps.setLong(1, section.getUpStationId());
+                    ps.setLong(2, section.getDownStationId());
+                    ps.setLong(3, section.getLineId());
+                    ps.setBoolean(4, section.getStart());
+                    ps.setInt(5, section.getDistance());
+                });
+    }
+
     public Optional<SectionEntity> findBySectionId(final Long sectionId) {
         final String sql = sqlHelper()
                 .select().columns("id, distance, is_start, up_station_id, down_station_id, line_id")
@@ -85,15 +101,23 @@ public class SectionDaoV2 {
         return jdbcTemplate.query(sql, sectionRowMapper, lineId);
     }
 
-    public void delete(final Long sectionId) {
+    public void deleteBySectionId(final Long sectionId) {
         final String sql = sqlHelper()
                 .delete()
-                .from()
-                .table("SECTIONS")
-                .where()
-                .condition("id = ?")
+                .from().table("SECTIONS")
+                .where().condition("id = ?")
                 .toString();
 
         jdbcTemplate.update(sql, sectionId);
+    }
+
+    public void deleteByLineId(final Long lineId) {
+        final String sql = sqlHelper()
+                .delete()
+                .from().table("SECTIONS")
+                .where().condition("line_id = ?")
+                .toString();
+
+        jdbcTemplate.update(sql, lineId);
     }
 }

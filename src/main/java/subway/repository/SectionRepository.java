@@ -9,6 +9,8 @@ import subway.domain.Distance;
 import subway.domain.SectionDomain;
 import subway.domain.StationDomain;
 
+import java.util.List;
+
 @Repository
 public class SectionRepository {
 
@@ -30,6 +32,10 @@ public class SectionRepository {
         );
     }
 
+    public void saveAll(final List<SectionEntity> sectionEntities) {
+        sectionDao.insertBatch(sectionEntities);
+    }
+
     public SectionDomain findBySectionId(final Long sectionId) {
         final SectionEntity section = sectionDao.findBySectionId(sectionId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 구간_식별자값으로 구간을 조회하지 못했습니다."));
@@ -46,6 +52,10 @@ public class SectionRepository {
         final Distance distance = new Distance(section.getDistance());
         final Boolean isStart = section.getStart();
 
-        return SectionDomain.from(sectionId, distance, isStart, upStation, downStation);
+        return new SectionDomain(sectionId, distance, isStart, upStation, downStation);
+    }
+
+    public void deleteByLineId(final Long lineId) {
+        sectionDao.deleteByLineId(lineId);
     }
 }
