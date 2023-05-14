@@ -36,13 +36,11 @@ public class SectionDao {
 
     public List<SectionEntity> findByLineIdAndPreviousStationId(final Long lineId, final Long previousStationId) {
         final String sql = "SELECT * FROM section WHERE line_id = ? AND previous_station_id = ?";
-
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, previousStationId);
     }
 
     public List<SectionEntity> findByLineIdAndNextStationId(final Long lineId, final Long nextStationId) {
         final String sql = "SELECT * FROM section WHERE line_id = ? AND next_station_id = ?";
-
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, nextStationId);
     }
 
@@ -68,14 +66,18 @@ public class SectionDao {
         }
     }
 
-    public List<StationEntity> findStationByLineId(final long lineId) {
-        final String sql = "SELECT DISTINCT station.id, station.name " +
-                "FROM section JOIN station " +
-                "ON section.previous_station_id = station.id " +
-                "OR section.next_station_id = station.id " +
-                "WHERE section.line_id = ?";
+    public List<SectionDetailEntity> findSectionDetail() {
+        final String sql = "SELECT se.id, se.distance, se.line_id, " +
+                "line.name line_name, line.color line_color, " +
+                "pst.id previous_station_id, pst.name previous_station_name, " +
+                "nst.id next_station_id, nst.name next_station_name " +
+                "FROM section se " +
+                "JOIN station pst ON se.previous_station_id = pst.id " +
+                "JOIN station nst ON se.next_station_id = nst.id " +
+                "JOIN line ON se.line_id = line.id " +
+                "WHERE line.id = se.line_id";
 
-        return jdbcTemplate.query(sql, stationEntityRowMapper, lineId);
+        return jdbcTemplate.query(sql, sectionDetailRowMapper);
     }
 
     public List<SectionDetailEntity> findSectionDetailByLineId(final long lineId) {
@@ -96,7 +98,7 @@ public class SectionDao {
         return result;
     }
 
-    public List<SectionDetailEntity> findSectionDetail() {
+    public List<SectionDetailEntity> findSectionDetailByLineName(final String lineName) {
         final String sql = "SELECT se.id, se.distance, se.line_id, " +
                 "line.name line_name, line.color line_color, " +
                 "pst.id previous_station_id, pst.name previous_station_name, " +
@@ -105,9 +107,13 @@ public class SectionDao {
                 "JOIN station pst ON se.previous_station_id = pst.id " +
                 "JOIN station nst ON se.next_station_id = nst.id " +
                 "JOIN line ON se.line_id = line.id " +
-                "WHERE line.id = se.line_id";
+                "WHERE line.name = ?";
 
-        return jdbcTemplate.query(sql, sectionDetailRowMapper);
+        final List<SectionDetailEntity> result = jdbcTemplate.query(sql, sectionDetailRowMapper, lineName);
+        if (result.isEmpty()) {
+            throw new LineNotFoundException();
+        }
+        return result;
     }
 
 }

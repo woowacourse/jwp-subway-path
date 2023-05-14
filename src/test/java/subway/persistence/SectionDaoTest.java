@@ -111,8 +111,41 @@ class SectionDaoTest {
     }
 
     @Test
+    @DisplayName("노선 이름에 해당하는 구간 조회 성공")
+    void findSectionDetailByLineName_success() {
+        // given
+        final String lineName = "2호선";
+
+        // when
+        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineName(lineName);
+
+        // then
+        assertAll(
+                () -> assertThat(sectionDetailEntities).hasSize(2),
+                () -> assertThat(sectionDetailEntities.get(0).getDistance()).isEqualTo(3),
+                () -> assertThat(sectionDetailEntities.get(0).getLineId()).isEqualTo(1L),
+                () -> assertThat(sectionDetailEntities.get(0).getLineName()).isEqualTo("2호선"),
+                () -> assertThat(sectionDetailEntities.get(0).getLineColor()).isEqualTo("bg-green-600"),
+                () -> assertThat(sectionDetailEntities.get(0).getPreviousStationId()).isEqualTo(1L),
+                () -> assertThat(sectionDetailEntities.get(0).getPreviousStationName()).isEqualTo("잠실"),
+                () -> assertThat(sectionDetailEntities.get(0).getNextStationId()).isEqualTo(2L),
+                () -> assertThat(sectionDetailEntities.get(0).getNextStationName()).isEqualTo("잠실새내")
+        );
+    }
+
+    @Test
+    @DisplayName("노선 이름에 해당하는 구간 조회 실패 - 존재하지 않는 노선 이름")
+    void findSectionDetailByLineName_fail_line_not_found() {
+        // given
+        final String lineName = "22호선";
+
+        // when, then
+        assertThatThrownBy(() -> sectionDao.findSectionDetailByLineName(lineName))
+                .isInstanceOf(LineNotFoundException.class);
+    }
+
+    @Test
     @DisplayName("line id 와 previous station id 로 구간 조회 성공")
-    @Sql("/section_test_data.sql")
     void findByLineIdAndPreviousStationId_success() {
         // given, when
         final List<SectionEntity> result = sectionDao.findByLineIdAndPreviousStationId(1L, 1L);

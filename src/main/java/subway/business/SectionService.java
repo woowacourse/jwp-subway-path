@@ -35,21 +35,22 @@ public class SectionService {
 
     @Transactional
     public List<SectionResponse> save(final SectionInsertDto sectionInsertDto) {
-        final LineEntity line = lineDao.findByName(sectionInsertDto.getLineName());
-        final StationEntity standardStation = stationDao.findByName(sectionInsertDto.getStandardStationName());
-        final StationEntity additionStation = stationDao.findByName(sectionInsertDto.getAdditionalStationName());
+        final LineEntity lineEntity = lineDao.findByName(sectionInsertDto.getLineName());
+        final StationEntity standardStationEntity = stationDao.findByName(sectionInsertDto.getStandardStationName());
+        final StationEntity additionalStationEntity = stationDao.findByName(sectionInsertDto.getAdditionalStationName());
 
+        // TODO: enum map 사용하는 것이 더 좋을까?
         if (sectionInsertDto.getDirection() == SubwayDirection.UP) {
-            return domainToResponseDtos(saveUpperSection(line, standardStation, additionStation, sectionInsertDto.getDistance()));
+            return domainToResponseDtos(saveUpperSection(lineEntity, standardStationEntity, additionalStationEntity, sectionInsertDto.getDistance()));
         }
 
-        return domainToResponseDtos(saveDownSection(line, standardStation, additionStation, sectionInsertDto.getDistance()));
+        return domainToResponseDtos(saveDownSection(lineEntity, standardStationEntity, additionalStationEntity, sectionInsertDto.getDistance()));
     }
 
     private List<Section> saveUpperSection(final LineEntity line,
-                                                 final StationEntity previousStation,
-                                                 final StationEntity additionalStation,
-                                                 final int distance) {
+                                           final StationEntity previousStation,
+                                           final StationEntity additionalStation,
+                                           final int distance) {
         final List<SectionEntity> sections = sectionDao.findByLineIdAndPreviousStationId(line.getId(), previousStation.getId());
 
         if (sections.isEmpty()) {
