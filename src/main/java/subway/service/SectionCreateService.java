@@ -26,29 +26,41 @@ public class SectionCreateService {
             final Boolean direction,
             final Integer distance
     ) {
-        if (sectionDao.findByLineId(lineId).isEmpty()) {
+        if (isEmptyLine(lineId)) {
             return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
         }
+        validateBaseStationExist(lineId, baseId);
 
+        return createSectionWhenBaseStationExist(lineId, baseId, addedId, direction, distance);
+    }
+
+    private boolean isEmptyLine(final Long lineId) {
+        return sectionDao.findByLineId(lineId).isEmpty();
+    }
+
+    private void validateBaseStationExist(final Long lineId, final Long baseId) {
         final Optional<SectionEntity> neighborUpSection = sectionDao.findNeighborUpSection(lineId, baseId);
         final Optional<SectionEntity> neighborDownSection = sectionDao.findNeighborDownSection(lineId, baseId);
         if (neighborUpSection.isEmpty() && neighborDownSection.isEmpty()) {
             throw new IllegalArgumentException("기준점이 되는 역은 이미 구간에 존재해야 합니다.");
         }
+    }
 
+    private List<SectionEntity> createSectionWhenBaseStationExist(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
         final Optional<SectionEntity> section = sectionDao.findNeighborSection(lineId, baseId, Direction.from(direction));
-
         if (section.isEmpty()) {
             return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
         }
-
         final SectionEntity existSectionEntity = section.get();
+        validateDistance(distance, existSectionEntity);
 
+        return divideSectionByAddedStation(lineId, addedId, direction, distance, existSectionEntity);
+    }
+
+    private void validateDistance(final Integer distance, final SectionEntity existSectionEntity) {
         if (existSectionEntity.getDistance() <= distance) {
             throw new IllegalArgumentException("새롭게 등록하는 구간의 거리는 기존에 존재하는 구간의 거리보다 작아야합니다.");
         }
-
-        return divideSectionByAddedStation(lineId, addedId, direction, distance, existSectionEntity);
     }
 
     private List<SectionEntity> createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
