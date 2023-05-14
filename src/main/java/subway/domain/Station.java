@@ -59,8 +59,4 @@ public class Station {
                 ", name='" + name + '\'' +
                 '}';
     }
-
-    public boolean isSameId(final long other) {
-        return this.id == other;
-    }
 }

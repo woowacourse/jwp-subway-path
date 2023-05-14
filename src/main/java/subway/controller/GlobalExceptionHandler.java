@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(IllegalStateException.class)
     public ResponseEntity<ErrorResponse> handleIllegalStateException(final IllegalStateException exception) {
         log.error(exception.getMessage(), exception);
-        return ResponseEntity.badRequest().body(new ErrorResponse(exception.getMessage()));
+        return ResponseEntity.internalServerError().build();
     }
 
     @ExceptionHandler(Exception.class)

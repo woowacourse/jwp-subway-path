@@ -23,7 +23,7 @@ public class Line {
     }
 
     public static Line of(String name, String color) {
-        Section initialSection = Section.ofEmpty();
+        Section initialSection = Section.createEmpty();
         List<Section> emptySections = new LinkedList<>();
         emptySections.add(initialSection);
         return new Line(null, name, color, emptySections);
@@ -37,41 +37,24 @@ public class Line {
         return LineEntity.of(line.id, line.name, line.color);
     }
 
-    public Optional<Section> findSectionContainsStationAsUpward(final Station upwardStation) {
-        return sections.stream()
-                .filter(section -> section.isUpward(upwardStation))
-                .findFirst();
-    }
-
-    public Optional<Section> findSectionContainsStationAsDownward(final Station downwardStation) {
-        return sections.stream()
-                .filter(section -> section.isDownward(downwardStation))
-                .findFirst();
-    }
-
     public void addSection(final Station upwardStation, final Station downwardStation, final int distance) {
-        Optional<Section> optionalUpward = findSectionContainsStationAsUpward(upwardStation);
-        Optional<Section> optionalDownward = findSectionContainsStationAsDownward(downwardStation);
-
-        if (optionalUpward.isPresent() && optionalDownward.isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 구간입니다.");
-        }
-
-        if (optionalUpward.isEmpty() && optionalDownward.isEmpty()) {
-            if (hasAnyStation()) {
-                throw new IllegalArgumentException("노선에 역을 1개씩 삽입해 주세요.");
-            }
+        if(!hasAnyStation()){
             Section emptySection = sections.get(0);
             addSection(emptySection, upwardStation, null, null);
-
-            Section originalSection = findSectionContainsStationAsUpward(upwardStation).orElseThrow(() -> new IllegalStateException());
+            Section originalSection = findSectionContainsStationAsUpward(upwardStation)
+                    .orElseThrow(() -> new IllegalStateException("노선에 방금 구간을 추가했는데 찾을 수 없는 이상한 상황입니다."));
             addSection(originalSection, downwardStation, distance, null);
             return;
         }
 
-        if (optionalUpward.isEmpty() && optionalDownward.isPresent()) {
-            Section section = optionalDownward.get();
-            System.out.println(section);
+        validateTwoStationsAlreadyExist(upwardStation, downwardStation);
+        validateTwoStationsNotExist(upwardStation, downwardStation);
+
+        Optional<Section> optionalUpwardSection = findSectionContainsStationAsUpward(upwardStation);
+        Optional<Section> optionalDownwardSection = findSectionContainsStationAsDownward(downwardStation);
+
+        if (optionalUpwardSection.isEmpty() && optionalDownwardSection.isPresent()) {
+            Section section = optionalDownwardSection.get();
             Integer originalDistance = section.getDistance();
             if (originalDistance == null) {
                 addSection(section, upwardStation, null, distance);
@@ -81,8 +64,8 @@ public class Line {
             return;
         }
 
-        if (optionalUpward.isPresent() && optionalDownward.isEmpty()) {
-            Section section = optionalUpward.get();
+        if (optionalUpwardSection.isPresent() && optionalDownwardSection.isEmpty()) {
+            Section section = optionalUpwardSection.get();
             Integer originalDistance = section.getDistance();
             if (originalDistance == null) {
                 addSection(section, downwardStation, distance, null);
@@ -92,7 +75,31 @@ public class Line {
             return;
         }
 
-        throw new UnsupportedOperationException();
+        throw new IllegalStateException();
+    }
+
+    private void validateTwoStationsNotExist(final Station upwardStation, final Station downwardStation) {
+        if(!hasStation(upwardStation) && !hasStation(downwardStation)){
+            throw new IllegalArgumentException("노선에 역을 1개씩 삽입해 주세요.");
+        }
+    }
+
+    private void validateTwoStationsAlreadyExist(final Station upwardStation, final Station downwardStation) {
+        if(hasStation(upwardStation) && hasStation(downwardStation)){
+            throw new IllegalArgumentException("노선에 두 개의 역 모두가 이미 존재합니다.");
+        }
+    }
+
+    private Optional<Section> findSectionContainsStationAsUpward(final Station upwardStation) {
+        return sections.stream()
+                .filter(section -> section.isUpwardStation(upwardStation))
+                .findFirst();
+    }
+
+    private Optional<Section> findSectionContainsStationAsDownward(final Station downwardStation) {
+        return sections.stream()
+                .filter(section -> section.isDownwardStation(downwardStation))
+                .findFirst();
     }
 
     public void addSection(final Section originalSection, final Station middleStation, final Integer upwardDistance, final Integer downwardDistance) {
@@ -102,34 +109,25 @@ public class Line {
     }
 
     public void removeStation(final Station station) {
-        Optional<Section> optionalDownward = findSectionContainsStationAsUpward(station);
-        Optional<Section> optionalUpward = findSectionContainsStationAsDownward(station);
-
-        if (optionalUpward.isEmpty() && optionalDownward.isEmpty()) {
+        if(!hasStation(station)){
             throw new IllegalArgumentException("노선에 해당 역이 존재하지 않습니다.");
         }
+        Section downwardSection = findSectionContainsStationAsUpward(station)
+                .orElseThrow(() -> new IllegalStateException("노선에 해당 역은 존재하지만 구간이 존재하지 않는 이상한 상황입니다."));
+        Section upwardSection = findSectionContainsStationAsDownward(station)
+                .orElseThrow(() -> new IllegalStateException("노선에 해당 역은 존재하지만 구간이 존재하지 않는 이상한 상황입니다."));
 
-        if (optionalUpward.isPresent() && optionalDownward.isPresent()) {
-            //두 구간을 하나로 합침
-            Section upward = optionalUpward.get();
-            Section downward = optionalDownward.get();
-
-            Integer newDistance = null;
-            if (!upward.isEmptySection() && !downward.isEmptySection()) {
-                newDistance = upward.getDistance() + downward.getDistance();
-            }
-            Section combinedSection = Section.of(upward.getUpward(), downward.getDownward(), newDistance);
-
-            sections.removeAll(List.of(upward, downward));
-            sections.add(combinedSection);
-
-            if (getStations().size() == 1) {
-                removeStation(getStations().get(0));
-            }
-            return;
+        Integer newDistance = null;
+        if (!upwardSection.isEmptySection() && !downwardSection.isEmptySection()) {
+            newDistance = upwardSection.getDistance() + downwardSection.getDistance();
         }
+        Section combinedSection = Section.of(upwardSection.getUpwardStation(), downwardSection.getDownwardStation(), newDistance);
+        sections.removeAll(List.of(upwardSection, downwardSection));
+        sections.add(combinedSection);
 
-        throw new UnsupportedOperationException("무언가 이상...");
+        if (getStations().size() == 1) {
+            removeStation(getStations().get(0));
+        }
     }
 
     public boolean hasStation(final Station other) {
@@ -156,12 +154,12 @@ public class Line {
         Section downwardEnd = getDownwardEndSection();
 
         Section section = upwardEnd;
-        addStationIfNotNull(stations, upwardEnd.getUpward());
-        Station station = upwardEnd.getDownward();
+        addStationIfNotNull(stations, upwardEnd.getUpwardStation());
+        Station station = upwardEnd.getDownwardStation();
         while (!section.equals(downwardEnd)) {
             addStationIfNotNull(stations, station);
             section = findNextSectionToDownward(section);
-            station = section.getDownward();
+            station = section.getDownwardStation();
         }
         return stations;
     }
@@ -174,21 +172,21 @@ public class Line {
 
     private Section getUpwardEndSection() {
         return sections.stream()
-                .filter(Section::isUpwardEmptySection)
+                .filter(Section::isEndOfUpward)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("상행 종점을 찾을 수 없습니다."));
     }
 
     private Section getDownwardEndSection() {
         return sections.stream()
-                .filter(Section::isDownwardEmptySection)
+                .filter(Section::isEndOfDownward)
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("하행 종점을 찾을 수 없습니다."));
     }
 
     private Section findNextSectionToDownward(final Section section) {
         return sections.stream()
-                .filter(next -> next.isUpward(section.getDownward()))
+                .filter(next -> next.isUpwardStation(section.getDownwardStation()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("다음 구간을 찾을 수 없습니다."));
     }
@@ -196,8 +194,8 @@ public class Line {
     public List<Station> getStations() {
         List<Station> stations = new ArrayList<>();
         for (Section section : sections) {
-            stations.add(section.getUpward());
-            stations.add(section.getDownward());
+            stations.add(section.getUpwardStation());
+            stations.add(section.getDownwardStation());
         }
         return stations.stream()
                 .distinct()

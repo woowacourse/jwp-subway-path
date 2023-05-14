@@ -15,7 +15,6 @@ public class Distance {
         return new Distance(null);
     }
 
-
     public static Distance from(Integer distance) {
         return new Distance(distance);
     }
@@ -27,6 +26,10 @@ public class Distance {
         if (distance <= 0) {
             throw new IllegalArgumentException("[ERROR] 거리는 양의 정수만 가능합니다.");
         }
+    }
+
+    public boolean isEmpty() {
+        return this.distance == null;
     }
 
     public Integer getDistance() {
@@ -44,9 +47,5 @@ public class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(distance);
-    }
-
-    public boolean isEmpty() {
-        return this.distance == null;
     }
 }

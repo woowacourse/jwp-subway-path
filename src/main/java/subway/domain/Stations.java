@@ -21,8 +21,8 @@ public class Stations {
     }
 
     private void validateDuplication(Station station) {
-        boolean result = stations.stream().anyMatch(each -> each.isSameName(station));
-
+        boolean result = stations.stream()
+                .anyMatch(each -> each.isSameName(station));
         if (result) {
             throw new IllegalArgumentException("[ERROR] 동일한 이름의 역을 중복으로 등록할 수 없습니다.");
         }

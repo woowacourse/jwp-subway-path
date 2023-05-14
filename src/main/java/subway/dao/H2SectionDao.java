@@ -56,8 +56,8 @@ public class H2SectionDao implements SectionDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-            pst.setObject(1, section.getUpward().getId(), Types.BIGINT);
-            pst.setObject(2, section.getDownward().getId(), Types.BIGINT);
+            pst.setObject(1, section.getUpwardStation().getId(), Types.BIGINT);
+            pst.setObject(2, section.getDownwardStation().getId(), Types.BIGINT);
             pst.setObject(3, section.getDistance(), Types.INTEGER);
             pst.setLong(4, lineId);
             return pst;
