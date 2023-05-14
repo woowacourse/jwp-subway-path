@@ -34,8 +34,8 @@ public class SectionController {
     public ResponseEntity<List<SectionResponse>> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
         final List<SectionEntity> sectionEntities = sectionCreateService.createSection(
                 sectionCreateRequest.getLineId(),
-                sectionCreateRequest.getBaseId(),
-                sectionCreateRequest.getAddedId(),
+                sectionCreateRequest.getBaseStationId(),
+                sectionCreateRequest.getAddedStationId(),
                 sectionCreateRequest.getDirection(),
                 sectionCreateRequest.getDistance()
         );

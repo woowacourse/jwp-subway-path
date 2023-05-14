@@ -3,15 +3,21 @@ package subway.dto;
 public class SectionCreateRequest {
 
     private final Long lineId;
-    private final Long baseId;
-    private final Long addedId;
+    private final Long baseStationId;
+    private final Long addedStationId;
     private final Boolean direction;
     private final Integer distance;
 
-    public SectionCreateRequest(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
+    public SectionCreateRequest(
+            final Long lineId,
+            final Long baseStationId,
+            final Long addedStationId,
+            final Boolean direction,
+            final Integer distance
+    ) {
         this.lineId = lineId;
-        this.baseId = baseId;
-        this.addedId = addedId;
+        this.baseStationId = baseStationId;
+        this.addedStationId = addedStationId;
         this.direction = direction;
         this.distance = distance;
     }
@@ -20,12 +26,12 @@ public class SectionCreateRequest {
         return lineId;
     }
 
-    public Long getBaseId() {
-        return baseId;
+    public Long getBaseStationId() {
+        return baseStationId;
     }
 
-    public Long getAddedId() {
-        return addedId;
+    public Long getAddedStationId() {
+        return addedStationId;
     }
 
     public Boolean getDirection() {
