@@ -1,62 +1,37 @@
 package subway.persistence.repository;
 
-import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.repository.SectionRepository;
-import subway.persistence.SectionEntity;
+import subway.persistence.dao.SectionDao;
+import subway.persistence.entity.SectionEntity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class SectionRepositoryImpl implements SectionRepository {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insert;
+    private final SectionDao sectionDao;
 
-    private final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
-            new Section(
-                    rs.getLong("id"),
-                    new Station(rs.getString("up_station")),
-                    new Station(rs.getString("down_station")),
-                    rs.getLong("distance")
-            );
-
-    public SectionRepositoryImpl(final JdbcTemplate jdbcTemplate) {
-        this.insert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("section")
-                .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = jdbcTemplate;
+    public SectionRepositoryImpl(final SectionDao sectionDao) {
+        this.sectionDao = sectionDao;
     }
 
     @Override
-    public List<Section> findAll() {
-        return null;
-    }
-
-    @Override
-    public void createSection(final Long lineId, final List<Section> sections) {
-        jdbcTemplate.update("TRUNCATE TABLE section");
-        List<SectionEntity> sectionEntities = SectionEntity.of(lineId, sections);
-
-        final BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
-                .map(BeanPropertySqlParameterSource::new)
-                .toArray(BeanPropertySqlParameterSource[]::new);
-        insert.executeBatch(parameterSources);
+    public void saveSection(final Long lineId, final List<Section> sections) {
+        final List<SectionEntity> sectionEntities = SectionEntity.of(lineId, sections);
+        sectionDao.saveSection(sectionEntities);
     }
 
     @Override
     public List<Section> findAllByLineId(final Long lineId) {
-        String sql = "select * from section where line_id = ?";
-        return jdbcTemplate.query(sql, sectionRowMapper, lineId);
-    }
-
-    @Override
-    public void deleteBySection(final Long lineId, final Section section) {
-        String sql = "delete from section where line_id = ? and up_station = ? or down_station = ?";
-        jdbcTemplate.update(sql, lineId, section.getUpStation(), section.getDownStation());
+        return sectionDao.findAllByLineId(lineId).stream()
+                .map(sectionEntity -> new Section(
+                        sectionEntity.getLineId(),
+                        new Station(sectionEntity.getUpStation()),
+                        new Station(sectionEntity.getDownStation()),
+                        sectionEntity.getDistance())
+                ).collect(Collectors.toList());
     }
 }
