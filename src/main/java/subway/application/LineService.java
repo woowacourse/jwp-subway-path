@@ -37,7 +37,7 @@ public class LineService {
     }
 
     public List<LineStationsResponse> findLineStationsResponses() {
-        List<Line> persistLines = findLines();
+        List<Line> persistLines = lineDao.findAll();
         List<Station> persistStations = stationDao.findAll();
         List<Section> persistSections = sectionDao.findAll();
 
@@ -54,15 +54,10 @@ public class LineService {
             .collect(Collectors.toUnmodifiableList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
-
     public LineStationsResponse findLineStationsResponseById(Long id) {
         List<Station> stations = stationDao.findAll();
         List<Section> allSections = sectionDao.findAllSectionByLineId(id);
-
-        Line persistLine = findLineById(id);
+        Line persistLine = lineDao.findById(id);
 
         Sections sections = new Sections(allSections);
         List<Station> orderedStations = getOrderedStations(stations, sections);
@@ -78,10 +73,6 @@ public class LineService {
             .stream()
             .map(idToStations::get)
             .collect(Collectors.toList());
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
