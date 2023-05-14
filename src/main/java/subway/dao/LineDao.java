@@ -1,18 +1,20 @@
 package subway.dao;
 
+import subway.Entity.LineEntity;
 import subway.domain.Line;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LineDao {
 
-    Line insert(Line line);
+    LineEntity insert(LineEntity lineEntity);
 
-    List<Line> findAll();
+    List<LineEntity> findAll();
 
-    Line findById(Long id);
+    Optional<LineEntity> findById(long id);
 
-    void update(Line newLine);
+    int update(LineEntity lineEntity);
 
-    void deleteById(Long id);
+    int deleteById(long id);
 }

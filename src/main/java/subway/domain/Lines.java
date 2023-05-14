@@ -34,4 +34,9 @@ public class Lines {
             throw new IllegalArgumentException("[ERROR] 중복되는 색상으로 노선을 생성할 수 없습니다.");
         }
     }
+
+    public boolean hasLine(final Line other) {
+        return lines.stream()
+                .anyMatch(line -> line.isSameName(other) && line.isSameColor(other));
+    }
 }

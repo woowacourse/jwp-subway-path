@@ -4,18 +4,30 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import subway.domain.Station;
 
-@JsonNaming(PropertyNamingStrategies.KebabCaseStrategy.class)
-public class StationResponse {
-    private Long id;
-    private String name;
+import java.util.List;
+import java.util.stream.Collectors;
 
-    public StationResponse(Long id, String name) {
+public class StationResponse {
+    private final Long id;
+    private final String name;
+
+    private StationResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationResponse of(Station station) {
+    public static StationResponse from(final Station station) {
         return new StationResponse(station.getId(), station.getName());
+    }
+
+    public static StationResponse of(final Long id, final String name) {
+        return new StationResponse(id, name);
+    }
+
+    public static List<StationResponse> from(final List<Station> orderedStations) {
+        return orderedStations.stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public Long getId() {

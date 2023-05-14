@@ -2,38 +2,38 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.Entity.SectionEntity;
+import subway.domain.Section;
+import subway.domain.Station;
 
-import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.List;
+import java.util.Objects;
 
 @Repository
 public class H2SectionDao implements SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
-    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) -> {
+    private final RowMapper<Section> rowMapper = (rs, rowNum) -> {
         Long upwardId = convertToNullIfZero(rs.getLong("upward_id"));
         Long downwardId = convertToNullIfZero(rs.getLong("downward_id"));
+        Station upward = Station.of(upwardId, rs.getString("upward_name"));
+        Station downward = Station.of(downwardId, rs.getString("downward_name"));
 
-        return new SectionEntity(
+        return Section.of(
                 rs.getLong("id"),
-                upwardId,
-                downwardId,
-                rs.getInt("distance"),
-                rs.getLong("line_id")
+                upward,
+                downward,
+                convertToNullIfZero(rs.getInt("distance"))
         );
     };
 
-    public H2SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public H2SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("section")
-                .usingGeneratedKeyColumns("id");
     }
 
     private Long convertToNullIfZero(long id) {
@@ -43,16 +43,45 @@ public class H2SectionDao implements SectionDao {
         return id;
     }
 
-    @Override
-    public long insert(SectionEntity sectionEntity) {
-        SqlParameterSource parameters = new BeanPropertySqlParameterSource(sectionEntity);
-        return insertAction.executeAndReturnKey(parameters).longValue();
+    private Integer convertToNullIfZero(int distance) {
+        if (distance == 0) {
+            return null;
+        }
+        return distance;
     }
 
     @Override
-    public List<SectionEntity> selectAll() {
-        String sql = "SELECT * FROM section";
+    public long insert(Section section, long lineId) {
+        String sql = "INSERT INTO SECTION(upward_id, downward_id, distance, line_id) VALUES (?, ?, ?, ?)";
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+        jdbcTemplate.update(connection -> {
+            PreparedStatement pst = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            pst.setObject(1, section.getUpward().getId(), Types.BIGINT);
+            pst.setObject(2, section.getDownward().getId(), Types.BIGINT);
+            pst.setObject(3, section.getDistance(), Types.INTEGER);
+            pst.setLong(4, lineId);
+            return pst;
+        }, keyHolder);
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
+    }
+
+    @Override
+    public List<Section> selectAll() {
+        String sql = "SELECT s.id AS id, distance, upward_id, us.name AS upward_name, downward_id, ds.name AS downward_name " +
+                "FROM SECTION AS s " +
+                "LEFT JOIN STATION AS us ON s.upward_id = us.id " +
+                "LEFT JOIN STATION AS ds ON s.downward_id = ds.id";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    @Override
+    public List<Section> selectSectionsByLineId(long lineId) {
+        String sql = "SELECT s.id AS id, distance, upward_id, us.name AS upward_name, downward_id, ds.name AS downward_name " +
+                "FROM SECTION AS s " +
+                "LEFT JOIN STATION AS us ON s.upward_id = us.id " +
+                "LEFT JOIN STATION AS ds ON s.downward_id = ds.id " +
+                "WHERE line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     @Override
@@ -62,27 +91,9 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public SectionEntity selectByStationIdsAndLineId(long upwardId, long downwardId, long lineId) {
-        String sql = "SELECT * FROM SECTION WHERE upward_id=? AND downward_id=? AND line_id=?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, upwardId, downwardId, lineId);
-    }
-
-    @Override
-    public SectionEntity selectEndSection(long stationId, long lineId) {
-        String sql = "SELECT * FROM SECTION WHERE (upward_id=? OR downward_id=?) AND line_id=? AND distance=?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, stationId, stationId, lineId, 0);
-    }
-
-    @Override
-    public List<SectionEntity> selectSectionsByStationIdAndLineId(long stationId, long lineId) {
-        String sql = "SELECT * FROM SECTION WHERE (upward_id=? OR downward_id=?) AND line_id=?";
-        return jdbcTemplate.query(sql, rowMapper, stationId, stationId, lineId);
-    }
-
-    @Override
-    public List<SectionEntity> selectSectionsByLineId(long lineId) {
-        String sql = "SELECT * FROM SECTION WHERE line_id=?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
+    public long deleteByLineId(long lineId){
+        String sql = "DELETE FROM section WHERE line_id = ?";
+        return jdbcTemplate.update(sql, lineId);
     }
 
 }

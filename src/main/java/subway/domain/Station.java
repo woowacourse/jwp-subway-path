@@ -11,11 +11,15 @@ public class Station {
         this.name = name;
     }
 
+    public static Station createEmpty() {
+        return new Station(null, null);
+    }
+
     public static Station from(String name) {
         return new Station(null, name);
     }
 
-    public static Station of(long id, String name) {
+    public static Station of(Long id, String name) {
         return new Station(id, name);
     }
 
@@ -23,6 +27,9 @@ public class Station {
         return this.name.equals(other.name);
     }
 
+    public boolean isEmpty(){
+        return this.name == null;
+    }
     public Long getId() {
         return id;
     }
@@ -32,11 +39,11 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return name.equals(station.name);
+        return Objects.equals(name, station.name);
     }
 
     @Override
@@ -50,5 +57,9 @@ public class Station {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public boolean isSameId(final long other) {
+        return this.id == other;
     }
 }

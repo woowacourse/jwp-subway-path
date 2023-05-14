@@ -1,22 +1,24 @@
 package subway.dao;
 
-import subway.Entity.SectionEntity;
+import subway.domain.Section;
 
 import java.util.List;
 
 public interface SectionDao {
 
-    long insert(SectionEntity sectionEntity);
+    long insert(Section section, long lineId);
 
-    List<SectionEntity> selectAll();
+    List<Section> selectAll();
+
+    List<Section> selectSectionsByLineId(long lineId);
 
     long deleteById(long id);
 
-    SectionEntity selectByStationIdsAndLineId(long upwardId, long downwardId, long lineId);
+    long deleteByLineId(long lineId);
 
-    SectionEntity selectEndSection(long stationId, long lineId);
+/*    Section selectByStationIdsAndLineId(long upwardId, long downwardId, long lineId);
 
-    List<SectionEntity> selectSectionsByStationIdAndLineId(long stationId, long lineId);
+    Section selectEndSection(long stationId, long lineId);
 
-    List<SectionEntity> selectSectionsByLineId(long lineId);
+    List<Section> selectSectionsByStationIdAndLineId(long stationId, long lineId);*/
 }

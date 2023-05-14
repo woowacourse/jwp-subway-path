@@ -1,53 +1,58 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.H2LineDao;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
+import subway.domain.Lines;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
+import subway.repository.LineRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class LineService {
-    private final H2LineDao lineDao;
 
-    public LineService(H2LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(Line.of(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    public LineResponse saveLine(final LineRequest request) {
+        Lines lines = Lines.from(lineRepository.findAll());
+        Line newLine = Line.of(request.getName(), request.getColor());
+        lines.add(newLine);
+        Line insertedLine = lineRepository.insert(newLine);
+        return LineResponse.from(insertedLine);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public List<LineResponse> findAllLines() {
+        List<Line> lines = lineRepository.findAll();
+        return lines.stream()
+                .map(LineResponse::from)
+                .collect(Collectors.toUnmodifiableList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    public LineResponse findLineById(final long id) {
+        Line line = lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+        return LineResponse.from(line);
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    //todo : line name, color 검증 후 DB 삽입하도록 수정
+    public void updateLine(final long id, final LineRequest request) {
+        Line line = lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+        lineRepository.update(Line.of(id, request.getName(), request.getColor(), line.getSections()));
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(Line.of(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+    public void deleteLineById(final long id) {
+        lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+        lineRepository.deleteById(id);
     }
 
 }

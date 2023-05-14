@@ -31,7 +31,7 @@ create table if not exists SECTION
 );
 
 INSERT INTO line(name, color) VALUES ('1호선', '남색');
-INSERT INTO line(name, color) VALUES ('2호선', '초록색');
+INSERT INTO section(upward_id, downward_id, distance, line_id) VALUES (null, null, null, 1);
 
 INSERT INTO station(name) VALUES ('잠실나루');
 INSERT INTO station(name) VALUES ('잠실');

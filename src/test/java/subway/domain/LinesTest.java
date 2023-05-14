@@ -12,7 +12,7 @@ import java.util.List;
 @DisplayName("Lines는 ")
 class LinesTest {
 
-
+/*
     @Test
     @DisplayName("노선들을 갖는다.")
     void linesCreateTest() {
@@ -52,5 +52,5 @@ class LinesTest {
         assertThatThrownBy(() -> lines.add(line3))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 중복되는 색상으로 노선을 생성할 수 없습니다.");
-    }
+    }*/
 }

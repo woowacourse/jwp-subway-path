@@ -1,23 +1,30 @@
 package subway.dto.response;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import subway.domain.Line;
+import subway.domain.Station;
 
-@JsonNaming(PropertyNamingStrategies.KebabCaseStrategy.class)
+import java.util.List;
+
 public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private List<StationResponse> stations;
 
-    public LineResponse(Long id, String name, String color) {
+    private LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.stations = stations;
     }
 
-    public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+    public static LineResponse from(final Line line){
+        List<Station> orderedStations = line.getStationsUpwardToDownward();
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), StationResponse.from(orderedStations));
+    }
+
+    public static LineResponse of(final Long id, final String name, final String color, final List<StationResponse> stations) {
+        return new LineResponse(id, name, color, stations);
     }
 
     public Long getId() {
@@ -30,5 +37,9 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    public List<StationResponse> getStations() {
+        return stations;
     }
 }
