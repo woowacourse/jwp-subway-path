@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.line.dto.LineCreateRequest;
+import subway.ui.line.dto.LineCreateRequest;
 
 public class LineCreateTest extends IntegrationTestSetUp {
 

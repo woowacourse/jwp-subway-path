@@ -1,4 +1,4 @@
-package subway.domain.line.dto;
+package subway.ui.line.dto;
 
 public class StationDto {
     private final Long stationId;

@@ -9,9 +9,9 @@ import subway.domain.edge.Edge;
 import subway.domain.edge.Edges;
 import subway.domain.line.Line;
 import subway.domain.line.Lines;
-import subway.domain.line.dto.AddStationToLineRequest;
-import subway.domain.line.dto.LineCreateRequest;
 import subway.domain.station.Station;
+import subway.ui.line.dto.AddStationToLineRequest;
+import subway.ui.line.dto.LineCreateRequest;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;

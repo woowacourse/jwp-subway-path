@@ -1,4 +1,4 @@
-package subway.domain.line.dto;
+package subway.ui.line.dto;
 
 import subway.domain.line.Line;
 import subway.domain.station.Station;

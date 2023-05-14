@@ -9,8 +9,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.StationDao;
 import subway.domain.line.Direction;
-import subway.domain.line.dto.AddStationToLineRequest;
-import subway.domain.line.dto.LineCreateRequest;
+import subway.ui.line.dto.AddStationToLineRequest;
+import subway.ui.line.dto.LineCreateRequest;
 
 import static org.hamcrest.Matchers.is;
 

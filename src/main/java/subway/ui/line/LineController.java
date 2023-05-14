@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.ui.line;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -9,14 +9,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.domain.line.Line;
-import subway.domain.line.dto.AddStationToLineRequest;
-import subway.domain.line.dto.AddStationToLineResponse;
-import subway.domain.line.dto.DeleteStationFromLineResponse;
-import subway.domain.line.dto.GetAllStationsInLineResponse;
-import subway.domain.line.dto.GetAllStationsInLineResponses;
-import subway.domain.line.dto.LineCreateRequest;
 import subway.domain.station.Station;
 import subway.service.LineService;
+import subway.ui.line.dto.AddStationToLineRequest;
+import subway.ui.line.dto.AddStationToLineResponse;
+import subway.ui.line.dto.DeleteStationFromLineResponse;
+import subway.ui.line.dto.GetAllStationsInLineResponse;
+import subway.ui.line.dto.GetAllStationsInLineResponses;
+import subway.ui.line.dto.LineCreateRequest;
 
 import java.net.URI;
 import java.util.List;
