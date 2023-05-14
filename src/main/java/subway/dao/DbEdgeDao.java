@@ -22,7 +22,8 @@ public class DbEdgeDao {
                     rs.getLong("id"),
                     rs.getLong("line_id"),
                     rs.getLong("station_id"),
-                    rs.getLong("station_order")
+                    rs.getInt("station_order"),
+                    rs.getInt("distance_to_next")
             );
 
     public DbEdgeDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -32,17 +33,18 @@ public class DbEdgeDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long save(Line line, Station station, Long stationOrder) {
+    public Long save(EdgeEntity edgeEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("line_id", line.getId());
-        params.put("station_id", station.getId());
-        params.put("station_order", stationOrder);
+        params.put("line_id", edgeEntity.getLineId());
+        params.put("station_id", edgeEntity.getStationId());
+        params.put("station_order", edgeEntity.getStationOrder());
+        params.put("distance_to_next", edgeEntity.getDistanceToNext());
 
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public void deleteEdgesIn(final Line line) {
-        String sql = "delete from edge where line_id = ? ";
-
-    }
+//    public EdgeEntity deleteEdgeOf(EdgeEntity edgeEntity) {
+//        String sql = "delete from edge where line_id = ? and station_id = ?";
+//        jdbcTemplate.update(sql, lineId, stationId);
+//    }
 }

@@ -1,31 +1,47 @@
 package subway.dto;
 
-public class LineCreateRequest {
-    private final String upLineStation;
-    private final String downLineStation;
-    private final String line;
-    private final double distance;
+import java.util.Objects;
 
-    public LineCreateRequest(final String upLineStation, final String downLineStation, final String line, final double distance) {
-        this.upLineStation = upLineStation;
-        this.downLineStation = downLineStation;
-        this.line = line;
+public class LineCreateRequest {
+    private final String lineName;
+    private final String upLineStationName;
+    private final String downLineStationName;
+    private final Integer distance;
+
+    public LineCreateRequest(String lineName, String upLineStationName, String downLineStationName, Integer distance) {
+        this.lineName = lineName;
+        this.upLineStationName = upLineStationName;
+        this.downLineStationName = downLineStationName;
         this.distance = distance;
     }
 
-    public String getUpLineStation() {
-        return upLineStation;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LineCreateRequest that = (LineCreateRequest) o;
+        return Objects.equals(lineName, that.lineName) && Objects.equals(upLineStationName, that.upLineStationName) && Objects.equals(downLineStationName, that.downLineStationName) && Objects.equals(distance, that.distance);
     }
 
-    public String getDownLineStation() {
-        return downLineStation;
+    @Override
+    public int hashCode() {
+        return Objects.hash(lineName, upLineStationName, downLineStationName, distance);
     }
 
-    public String getLine() {
-        return line;
+    public String getLineName() {
+        return lineName;
     }
 
-    public double getDistance() {
+    public String getUpLineStationName() {
+        return upLineStationName;
+    }
+
+    public String getDownLineStationName() {
+        return downLineStationName;
+    }
+
+    public Integer getDistance() {
         return distance;
     }
+
 }
