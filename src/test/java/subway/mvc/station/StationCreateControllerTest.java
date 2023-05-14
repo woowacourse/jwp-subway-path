@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import subway.application.station.port.in.StationInfoResponseDto;
 import subway.mvc.AbstractControllerTest;
 import subway.ui.station.dto.in.StationCreateRequest;
-import subway.ui.station.dto.out.StationInfoResponse;
+import subway.ui.station.dto.in.StationInfoResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 생성하는 mvc 테스트")

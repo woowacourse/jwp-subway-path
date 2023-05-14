@@ -15,6 +15,7 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import subway.application.line.port.in.LineNotFoundException;
+import subway.exception.BusinessException;
 import subway.ui.dto.ErrorResponse;
 
 @RestControllerAdvice
@@ -50,6 +51,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     private ResponseEntity<ErrorResponse<String>> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException exception) {
         log.warn("잘못된 인자가 들어왔습니다.", exception);
+        return ResponseEntity.badRequest().body(new ErrorResponse<>(exception.getMessage()));
+    }
+
+    @ExceptionHandler
+    private ResponseEntity<ErrorResponse<String>> handleBusinessException(final BusinessException exception) {
+        log.warn("비즈니스 예외가 발생했습니다.", exception);
         return ResponseEntity.badRequest().body(new ErrorResponse<>(exception.getMessage()));
     }
 

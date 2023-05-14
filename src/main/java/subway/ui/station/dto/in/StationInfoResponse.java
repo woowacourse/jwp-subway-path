@@ -1,4 +1,4 @@
-package subway.ui.station.dto.out;
+package subway.ui.station.dto.in;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

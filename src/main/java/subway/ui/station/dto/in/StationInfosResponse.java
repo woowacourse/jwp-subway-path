@@ -1,4 +1,4 @@
-package subway.ui.station.dto.out;
+package subway.ui.station.dto.in;
 
 import java.util.List;
 import lombok.Getter;

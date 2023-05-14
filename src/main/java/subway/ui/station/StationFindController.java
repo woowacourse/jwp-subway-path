@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.station.port.in.StationFindAllUseCase;
 import subway.application.station.port.in.StationInfoResponseDto;
-import subway.ui.station.dto.out.StationInfosResponse;
+import subway.ui.station.dto.in.StationInfosResponse;
 
 @RequiredArgsConstructor
 @RestController

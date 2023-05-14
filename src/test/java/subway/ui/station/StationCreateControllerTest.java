@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import subway.application.station.port.in.MockStationCreateUseCase;
 import subway.ui.station.dto.in.StationCreateRequest;
-import subway.ui.station.dto.out.StationInfoResponse;
+import subway.ui.station.dto.in.StationInfoResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 생성하는 기능")

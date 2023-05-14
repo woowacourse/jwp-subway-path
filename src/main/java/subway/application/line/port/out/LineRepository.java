@@ -15,5 +15,4 @@ public interface LineRepository {
     Optional<Line> findById(long id);
 
     void deleteById(long id);
-
 }

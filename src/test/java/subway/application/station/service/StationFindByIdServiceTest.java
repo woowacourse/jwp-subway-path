@@ -10,7 +10,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.adapter.station.out.FakeStationRepository;
 import subway.application.station.port.in.StationInfoResponseDto;
-import subway.ui.station.dto.out.StationInfoResponse;
+import subway.ui.station.dto.in.StationInfoResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 조회하는 서비스 테스트")

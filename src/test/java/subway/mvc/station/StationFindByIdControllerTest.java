@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.application.station.port.in.StationInfoResponseDto;
 import subway.mvc.AbstractControllerTest;
-import subway.ui.station.dto.out.StationInfoResponse;
+import subway.ui.station.dto.in.StationInfoResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 id를 통해 조회 mvc 테스트")

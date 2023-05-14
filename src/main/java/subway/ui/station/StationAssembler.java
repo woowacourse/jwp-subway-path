@@ -6,9 +6,9 @@ import subway.application.station.port.in.StationCreateRequestDto;
 import subway.application.station.port.in.StationInfoResponseDto;
 import subway.application.station.port.in.StationInfoUpdateRequestDto;
 import subway.ui.station.dto.in.StationCreateRequest;
+import subway.ui.station.dto.in.StationInfoResponse;
+import subway.ui.station.dto.in.StationInfosResponse;
 import subway.ui.station.dto.in.StationUpdateInfoRequest;
-import subway.ui.station.dto.out.StationInfoResponse;
-import subway.ui.station.dto.out.StationInfosResponse;
 
 public class StationAssembler {
 

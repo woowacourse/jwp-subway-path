@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import subway.application.station.port.in.MockStationFindAllUseCase;
-import subway.ui.station.dto.out.StationInfosResponse;
+import subway.ui.station.dto.in.StationInfosResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @DisplayName("지하철역을 전체 조회")

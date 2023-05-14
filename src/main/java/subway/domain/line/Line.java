@@ -44,10 +44,6 @@ public class Line {
         this(null, name, color, InterStations.of(upStationId, downStationId, distance));
     }
 
-    public InterStation getFirstInterStation() {
-        return interStations.getFirstInterStation();
-    }
-
     public void deleteStation(final long existStationId) {
         interStations.remove(existStationId);
     }

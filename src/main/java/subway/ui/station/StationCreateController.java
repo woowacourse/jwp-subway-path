@@ -13,7 +13,7 @@ import subway.application.station.port.in.StationCreateRequestDto;
 import subway.application.station.port.in.StationCreateUseCase;
 import subway.application.station.port.in.StationInfoResponseDto;
 import subway.ui.station.dto.in.StationCreateRequest;
-import subway.ui.station.dto.out.StationInfoResponse;
+import subway.ui.station.dto.in.StationInfoResponse;
 
 @RequiredArgsConstructor
 @Tag(name = "지하철역")
