@@ -37,7 +37,7 @@ class StationControllerIntegrationTest {
     void create_station_success() {
         // given
         StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
-        Long id = 1L;
+        long id = 1L;
 
         // when & then
         RestAssured

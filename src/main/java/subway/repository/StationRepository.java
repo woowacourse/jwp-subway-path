@@ -26,11 +26,6 @@ public class StationRepository {
         return new Station(stationEntity.getStationId(), stationEntity.getName());
     }
 
-    public long findStationIdByStationName(final String stationName) {
-        StationEntity stationEntity = stationDao.findByName(stationName);
-        return stationEntity.getStationId();
-    }
-
     public List<Station> findAll() {
         List<StationEntity> stationEntities = stationDao.findAll();
 

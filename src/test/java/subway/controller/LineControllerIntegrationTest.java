@@ -51,7 +51,7 @@ public class LineControllerIntegrationTest {
     void create_line_success() {
         // given
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2L, "초록색");
-        Long lineId = 1L;
+        long lineId = 1L;
 
         // when & then
         Response result = given()
@@ -100,7 +100,7 @@ public class LineControllerIntegrationTest {
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3L);
         sectionService.insertSection(sectionCreateRequest);
 
-        Long lineId = lineCreateRequest.getLineNumber();
+        long lineId = lineCreateRequest.getLineNumber();
 
         // when & then
         Response response = given()

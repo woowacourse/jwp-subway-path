@@ -59,7 +59,7 @@ public class StationServiceMockTest {
     @DisplayName("역을 찾는다.")
     void find_station_success() {
         // given
-        Long id = 1L;
+        long id = 1L;
         Station station = new Station("잠실역");
         when(stationRepository.findByStationId(id)).thenReturn(station);
 
@@ -87,3 +87,4 @@ public class StationServiceMockTest {
         );
     }
 }
+

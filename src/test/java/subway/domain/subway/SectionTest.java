@@ -28,7 +28,7 @@ class SectionTest {
     void throws_exception_when_invalid_distance() {
         // given
         Section section = createSection();
-        Long requestDistance = 10L;
+        long requestDistance = 10L;
 
         // when & then
         assertThatThrownBy(() -> section.validateDistance(requestDistance))

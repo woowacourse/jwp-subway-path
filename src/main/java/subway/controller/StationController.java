@@ -23,7 +23,7 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationEntity> createStation(@RequestBody @Valid final StationCreateRequest stationCreateRequest) {
-        Long id = stationService.saveStation(stationCreateRequest);
+        long id = stationService.saveStation(stationCreateRequest);
         return ResponseEntity.created(URI.create("/stations/" + id)).build();
     }
 
