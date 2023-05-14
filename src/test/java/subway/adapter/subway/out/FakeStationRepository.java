@@ -32,6 +32,10 @@ public class FakeStationRepository implements StationRepository {
 
     @Override
     public Station save(final Station station) {
+        if (station.getId() != null) {
+            stations.put(station.getId(), station);
+            return station;
+        }
         stations.put(id, new Station(id, station.getName().getValue()));
         return stations.get(id++);
     }
