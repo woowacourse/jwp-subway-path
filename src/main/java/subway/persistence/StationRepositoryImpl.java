@@ -14,6 +14,7 @@ import subway.domain.repository.StationRepository;
 
 @Repository
 public class StationRepositoryImpl implements StationRepository {
+	private static final int UPDATED_COUNT = 1;
 	private final JdbcTemplate jdbcTemplate;
 	private final SimpleJdbcInsert insert;
 
@@ -52,7 +53,7 @@ public class StationRepositoryImpl implements StationRepository {
 	public void updateStation(final long stationId, final Station station) {
 		final String sql = "UPDATE station SET name = ? WHERE id = ?";
 		final int updateCount = jdbcTemplate.update(sql, station.getName(), stationId);
-		if (updateCount != 1) {
+		if (updateCount != UPDATED_COUNT) {
 			throw new IllegalStateException(String.format("1개 이상의 상품이 수정되었습니다. 수정된 상품 수 : %d", updateCount));
 		}
 	}
