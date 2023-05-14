@@ -18,7 +18,7 @@ public class LineRepository {
     }
 
     public Long save(final Line line) {
-        final LineEntity lineEntity = lineDao.findByLineNumber(line.getLineNumber());
+        final LineEntity lineEntity = new LineEntity(line.getLineNumber(), line.getName(), line.getColor());
         return lineDao.save(lineEntity);
     }
 
