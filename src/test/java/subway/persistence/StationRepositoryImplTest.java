@@ -1,5 +1,7 @@
 package subway.persistence;
 
+import java.util.List;
+
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,8 +33,20 @@ class StationRepositoryImplTest {
 		Assertions.assertThat(1L).isEqualTo(jamsilId);
 	}
 
+	@DisplayName("역 전체 조회 테스트")
 	@Test
 	void findAll() {
+		// given
+		final Station jamsil = new Station("잠실");
+		final Station samsung = new Station("삼성");
+
+		// when
+		repository.createStation(jamsil);
+		repository.createStation(samsung);
+		final List<Station> stations = repository.findAll();
+
+		// then
+		Assertions.assertThat(2).isEqualTo(stations.size());
 	}
 
 	@Test
