@@ -83,6 +83,7 @@ public class StationFixtures {
     public static final Section SECTION_잠실역_TO_건대역 = new Section(SECTION_잠실역_TO_건대역_ID, STATION_잠실역, STATION_건대역, DISTANCE_잠실역_TO_건대역);
     public static final Section SECTION_AFTER_CALCULATE_잠실역_TO_건대역 = new Section(null, STATION_TO_INSERT_잠실역, STATION_TO_INSERT_건대역, DISTANCE_잠실역_TO_건대역);
     public static final Section SECTION_TO_INSERT_잠실역_TO_건대역 = new Section(null, STATION_TO_INSERT_잠실역, STATION_TO_INSERT_건대역, DISTANCE_잠실역_TO_건대역);
+    public static final Section SECTION_TO_INSERT_AFTER_DELETE_잠실역_TO_건대역 = new Section(null, STATION_잠실역, STATION_건대역, DISTANCE_잠실역_TO_건대역);
     public static final Section SECTION_잠실역_TO_강변역 = new Section(SECTION_잠실역_TO_강변역_ID, STATION_잠실역, STATION_강변역, DISTANCE_잠실역_TO_강변역);
     public static final Section SECTION_AFTER_CALCULATE_잠실역_TO_강변역 = new Section(null, STATION_잠실역, STATION_TO_INSERT_강변역, DISTANCE_잠실역_TO_강변역);
     public static final Section SECTION_TO_INSERT_잠실역_TO_강변역 = new Section(null, STATION_TO_INSERT_잠실역, STATION_TO_INSERT_강변역, DISTANCE_잠실역_TO_강변역);

@@ -45,7 +45,7 @@ public class RemoveCalculator {
         return new Changes(stationToDelete.getLineId(),
                 new ArrayList<>(), new ArrayList<>(),
                 new ArrayList<>(), List.of(stationToDelete),
-                new ArrayList<>(), List.of(newSection));
+                List.of(newSection), new ArrayList<>());
     }
 
     private boolean isEndStation(Optional<Section> nullableUpSection, Optional<Section> nullableDownSection) {
