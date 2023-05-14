@@ -19,8 +19,8 @@ public class Subway {
         this.lines = new HashSet<>();
     }
     
-    public void addLine(final String lineName, final String lineColor) {
-        lines.add(new Line(lineName, lineColor));
+    public void addLine(final String line, final String lineColor) {
+        lines.add(new Line(line, lineColor));
     }
     
     public void removeLine(final String lineName) {
@@ -28,22 +28,26 @@ public class Subway {
     }
     
     public void initAddStation(
-            final String lineName,
+            final String line,
             final String leftAdditional,
             final String rightAdditional,
             final long distance
     ) {
-        getLineContainStation(lineName).initAddStation(leftAdditional, rightAdditional, distance);
+        getLineContainStation(line).initAddStation(leftAdditional, rightAdditional, distance);
     }
     
     public void addStation(
-            final String lineName,
+            final String line,
             final String base,
             final Direction direction,
             final String additionalStation,
             final long distance
     ) {
-        getLineContainStation(lineName).addStation(base, direction, additionalStation, distance);
+        getLineContainStation(line).addStation(base, direction, additionalStation, distance);
+    }
+    
+    public void removeStation(final String line, final String station) {
+        getLineContainStation(line).removeStation(station);
     }
     
     private Line getLineContainStation(final String lineName) {

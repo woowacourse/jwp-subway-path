@@ -56,10 +56,10 @@ class SubwayTest {
     void 역_최초_등록시_존재하지_않는_노선을_가리키면_예외_발생() {
         // given
         final Subway subway = new Subway();
-        
-        // when
         subway.addLine("1호선", "파랑");
         subway.addLine("2호선", "초록");
+        
+        // expect
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> subway.initAddStation("3호선", "강남역", "역삼역", 3L));
     }
@@ -71,10 +71,20 @@ class SubwayTest {
         subway.addLine("1호선", "파랑");
         subway.initAddStation("1호선", "강남역", "선릉역", 3L);
         
-        // when
-        
-        
+        // expect
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> subway.addStation("2호선", "강남역", Direction.RIGHT, "역삼역", 2L));
+    }
+    
+    @Test
+    void 역_삭제시_존재하지_않는_노선을_가리키면_예외_발생() {
+        // given
+        final Subway subway = new Subway();
+        subway.addLine("1호선", "파랑");
+        subway.initAddStation("1호선", "강남역", "선릉역", 3L);
+        
+        // expect
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> subway.removeStation("2호선", "강남역"));
     }
 }
