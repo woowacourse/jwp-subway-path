@@ -111,42 +111,33 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(resultStationIds).containsAll(expectedStationIds);
     }
 
+	@DisplayName("지하철역을 조회한다")
+	@Test
+	void getStation() {
+	    /// given
+	    Map<String, String> params1 = new HashMap<>();
+	    params1.put("name", "강남역");
+	    ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
+	            .body(params1)
+	            .contentType(MediaType.APPLICATION_JSON_VALUE)
+	            .when()
+	            .post("/stations")
+	            .then().log().all()
+	            .extract();
 
-	// 	List<String> names = List.of("강남역", "역삼역");
-	// 	List<String> resultStationNames = response.jsonPath()
-	// 		.getList(".", StationResponse.class)
-	// 		.stream().map(StationResponse::getName).collect(Collectors.toList());
-	// 	assertThat(resultStationNames).containsAll(names);
-	//
-	// }
-	//
-	// @DisplayName("지하철역을 조회한다.")
-	// @Test
-	// void getStation() {
-	//     /// given
-	//     Map<String, String> params1 = new HashMap<>();
-	//     params1.put("name", "강남역");
-	//     ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-	//             .body(params1)
-	//             .contentType(MediaType.APPLICATION_JSON_VALUE)
-	//             .when()
-	//             .post("/stations")
-	//             .then().log().all()
-	//             .extract();
-	//
-	//     // when
-	//     Long stationId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-	//     ExtractableResponse<Response> response = RestAssured.given().log().all()
-	//             .when()
-	//             .get("/stations/{stationId}", stationId)
-	//             .then().log().all()
-	//             .extract();
-	//
-	//     // then
-	//     assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-	//     StationResponse stationResponse = response.as(StationResponse.class);
-	//     assertThat(stationResponse.getId()).isEqualTo(stationId);
-	// }
+	    // when
+	    Long stationId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+	    ExtractableResponse<Response> response = RestAssured.given().log().all()
+	            .when()
+	            .get("/stations/{stationId}", stationId)
+	            .then().log().all()
+	            .extract();
+
+	    // then
+	    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+	    StationResponse stationResponse = response.as(StationResponse.class);
+	    assertThat(stationResponse.getId()).isEqualTo(stationId);
+	}
 	//
 	// @DisplayName("지하철역을 수정한다.")
 	// @Test

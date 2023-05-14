@@ -27,7 +27,14 @@ public class StationController {
 
     @GetMapping
     public ResponseEntity<List<StationResponse>> findAllStations() {
-        return ResponseEntity.ok().body(stationService.findAll());
+        final List<StationResponse> stations = stationService.findAll();
+        return ResponseEntity.ok(stations);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<StationResponse> findStationById(@PathVariable(name = "id") long stationId){
+        final StationResponse stationResponse = stationService.findById(stationId);
+        return ResponseEntity.ok(stationResponse);
     }
 
     @DeleteMapping("/{id}")

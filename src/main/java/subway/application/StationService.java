@@ -34,8 +34,9 @@ public class StationService {
 		return StationResponse.of(stationRepository.findAll());
 	}
 
-	public Station findById(final Long stationIdRequest) {
-		return stationRepository.findById(stationIdRequest);
+	public StationResponse findById(final Long stationIdRequest) {
+		final Station station = stationRepository.findById(stationIdRequest);
+		return new StationResponse(stationIdRequest, station.getName());
 	}
 
 	public void deleteById(final Long stationIdRequest) {
