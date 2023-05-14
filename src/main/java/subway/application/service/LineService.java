@@ -11,7 +11,6 @@ import subway.application.repository.StationRepository;
 import subway.presentation.dto.StationEnrollRequest;
 import subway.presentation.dto.StationResponse;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,22 +52,17 @@ public class LineService {
 
     public List<StationResponse> findRouteMap(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        return line.routeMap().value()
-                .stream()
-                .map(station -> new StationResponse(
-                        station.getId(),
-                        station.getName()
-                )).collect(Collectors.toList());
+        return line.routeMap().value().stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
     }
 
     public Map<String, List<StationResponse>> findAllRouteMap() {
         List<Line> allLines = linePropertyRepository.findAll().stream()
                 .map(line -> lineRepository.findById(line.getId()))
                 .collect(Collectors.toList());
-        Map<String, List<StationResponse>> allRouteMap = new HashMap<>();
-        for (Line line : allLines) {
-            allRouteMap.put(line.getName(), findRouteMap(line.getId()));
-        }
-        return allRouteMap;
+
+        return allLines.stream()
+                .collect(Collectors.toMap(Line::getName, line -> findRouteMap(line.getId())));
     }
 }
