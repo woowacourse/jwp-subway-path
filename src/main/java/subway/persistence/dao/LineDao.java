@@ -1,9 +1,9 @@
 package subway.persistence.dao;
 
-import subway.domain.Line;
 import subway.persistence.entity.LineEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface LineDao {
     Long createLine(final LineEntity lineEntity);
@@ -12,5 +12,5 @@ public interface LineDao {
 
     List<LineEntity> findAll();
 
-    LineEntity findById(final Long lineIdRequest);
+    Optional<LineEntity> findById(final Long lineId);
 }

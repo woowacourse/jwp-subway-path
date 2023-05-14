@@ -1,5 +1,6 @@
 package subway.persistence.dao;
 
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -9,6 +10,7 @@ import subway.persistence.entity.LineEntity;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Component
 public class LineJdbcDao implements LineDao {
@@ -50,8 +52,14 @@ public class LineJdbcDao implements LineDao {
     }
 
     @Override
-    public LineEntity findById(final Long lineIdRequest) {
-        String sql = "select * from line where id = ?";
-        return jdbcTemplate.queryForObject(sql, lineRowMapper, lineIdRequest);
+    public Optional<LineEntity> findById(final Long lineId) {
+        String sql = "select * from station where id = ?";
+
+        try {
+            LineEntity findByLine = jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
+            return Optional.of(findByLine);
+        } catch (IncorrectResultSizeDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 }
