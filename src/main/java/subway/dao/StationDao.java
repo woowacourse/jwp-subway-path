@@ -1,5 +1,6 @@
 package subway.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -57,6 +58,12 @@ public class StationDao {
         String sql = STATION_LINE_JOIN_SQL + "WHERE station.name = ? AND line.name = ?";
 
         return jdbcTemplate.query(sql, rowMapper, stationName, lineName).stream().findAny();
+    }
+
+    public List<Station> selectAll() {
+        String sql = STATION_LINE_JOIN_SQL;
+
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Boolean isNotExistById(Long id) {

@@ -42,12 +42,6 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper, id).stream().findAny();
     }
 
-    public Optional<Line> selectByLineName(String lineName) {
-        String sql = "SELECT id, name FROM line WHERE name = ?";
-
-        return jdbcTemplate.query(sql, rowMapper, lineName).stream().findAny();
-    }
-
     public List<Line> selectAll() {
         String sql = "SELECT id, name FROM line";
         return jdbcTemplate.query(sql, rowMapper);

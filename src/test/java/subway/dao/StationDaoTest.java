@@ -4,6 +4,7 @@ import static fixtures.LineFixtures.INITIAL_Line2;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -85,6 +86,17 @@ class StationDaoTest {
         // then
         assertThat(findStation.get()).usingRecursiveComparison()
                 .ignoringFields("id").isEqualTo(INITIAL_STATION_C.FIND_STATION);
+    }
+
+    @Test
+    @DisplayName("모든 행을 조회한다.")
+    void selectAll() {
+        // when
+        List<Station> findStations = stationDao.selectAll();
+
+        // then
+        assertThat(findStations).usingRecursiveFieldByFieldElementComparator()
+                .contains(INITIAL_STATION_A.FIND_STATION, INITIAL_STATION_C.FIND_STATION);
     }
 
     @ParameterizedTest
