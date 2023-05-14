@@ -16,6 +16,8 @@ import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.SaveResponse;
+import subway.dto.StationResponse;
 import subway.repository.LineRepository;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -35,12 +37,12 @@ class LineServiceTest {
         LineRequest request = new LineRequest("2호선", "A", "B", 10);
 
         //when
-        LineResponse lineResponse = lineService.saveLine(request);
+        SaveResponse saveResponse = lineService.saveLine(request);
 
         //then
         assertAll(
                 () -> assertThat(lineRepository.findAll()).hasSize(1),
-                () -> assertThat(lineResponse.getId()).isPositive()
+                () -> assertThat(saveResponse.getId()).isPositive()
         );
     }
 
@@ -103,5 +105,48 @@ class LineServiceTest {
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getStations)
                 .hasSize(0);
+    }
+
+    @Test
+    void 전체_노선을_역과_함께_조회한다() {
+        //given
+        lineRepository.save(new Line("1호선", List.of(
+                new Section("A", "B", 2)
+        )));
+        lineRepository.save(new Line("2호선", List.of(
+                new Section("X", "B", 2),
+                new Section("B", "Y", 3)
+        )));
+
+        //when
+        List<LineResponse> lines = lineService.findAllLines();
+
+        //then
+        assertAll(
+                () -> assertThat(lines).hasSize(2),
+                () -> assertThat(lines).flatExtracting(LineResponse::getStations)
+                        .map(StationResponse::getName)
+                        .contains("A", "B", "X", "Y")
+        );
+    }
+
+    @Test
+    void 단일_노선을_조회한다() {
+        //given
+        lineRepository.save(new Line("1호선", List.of(
+                new Section("A", "B", 2)
+        )));
+        Long savedLineId = lineRepository.save(new Line("2호선", List.of(
+                new Section("X", "B", 2),
+                new Section("B", "Y", 3)
+        )));
+
+        //when
+        LineResponse line = lineService.findLineById(savedLineId);
+
+        //then
+        assertThat(line.getStations())
+                .map(StationResponse::getName)
+                .contains("B", "X", "Y");
     }
 }
