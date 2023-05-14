@@ -1,18 +1,16 @@
 package subway.line.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import subway.line.domain.Line;
 
 @Getter
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class LineSaveRequest {
-    private final String name;
-    private final String color;
+    private String name;
+    private String color;
     
     public Line toEntity() {
         return new Line(name, color);
