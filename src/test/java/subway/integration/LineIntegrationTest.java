@@ -44,12 +44,11 @@ public class LineIntegrationTest {
     @DisplayName("지하철 노선을 생성한다.")
     @Test
     void createLine() {
-        LineRequest lineRequest3 = new LineRequest("ㅁㄴㅇㄹ");
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest3)
+                .body(lineRequest1)
                 .when().post("/subway/lines")
                 .then().log().all().
                 extract();
