@@ -22,7 +22,6 @@ public class StationDao {
                     rs.getString("name")
             );
 
-
     public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
@@ -44,6 +43,11 @@ public class StationDao {
     public Station findById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public Station findByName(String name) {
+        String sql = "select * from STATION where name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
     public void update(Station newStation) {
