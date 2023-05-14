@@ -5,10 +5,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.StationEnrollRequest;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.presentation.dto.LineRequest;
+import subway.presentation.dto.StationEnrollRequest;
+import subway.presentation.dto.StationRequest;
+import subway.presentation.dto.StationResponse;
 
 import java.util.List;
 
@@ -190,7 +190,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .extract()
                 .body()
                 .jsonPath()
-                .getList(".", subway.dto.StationResponse.class);
+                .getList(".", StationResponse.class);
 
         assertAll(
                 () -> assertThat(routeMap).hasSize(2),

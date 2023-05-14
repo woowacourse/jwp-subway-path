@@ -2,6 +2,10 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.application.domain.Distance;
+import subway.application.domain.RouteMap;
+import subway.application.domain.Section;
+import subway.application.domain.Station;
 
 import java.util.Collections;
 import java.util.List;
