@@ -2,6 +2,7 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.Direction.LEFT;
 import static subway.domain.Direction.RIGHT;
 
@@ -316,6 +317,21 @@ class LineTest {
         assertThatThrownBy(() -> line.initialAdd(new Section("A", "B", 3)))
                 .isInstanceOf(LineNotEmptyException.class)
                 .hasMessage("노선이 비어있지 않습니다.");
+    }
+
+    @Test
+    void 이름과_색을_변경한다() {
+        // given
+        final Line line = new Line("2호선", "RED", Collections.emptyList());
+
+        // when
+        line.changeNameAndColor("3호선", "ORANGE");
+
+        // then
+        assertAll(
+                () -> assertThat(line.getName()).isEqualTo("3호선"),
+                () -> assertThat(line.getColor()).isEqualTo("ORANGE")
+        );
     }
 }
 
