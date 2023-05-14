@@ -33,15 +33,15 @@ public class SectionDao {
     public long insert(Long lineId, Section section) {
         return insertAction.executeAndReturnKey(Map.of(
                 "line_id", lineId,
-                "start_station_name", section.getStartStation().getName(),
-                "end_station_name", section.getEndStation().getName(),
+                "start_station_name", section.getUpBoundStation().getName(),
+                "end_station_name", section.getDownBoundStation().getName(),
                 "distance", section.getDistance()
         )).longValue();
     }
 
     public void update(Long sectionId, Section section) {
         String sql = "UPDATE SECTION SET start_station_name = ?, end_station_name = ?, distance = ? WHERE id = ?";
-        jdbcTemplate.update(sql, section.getStartStationName(), section.getEndStationName(),
+        jdbcTemplate.update(sql, section.getUpBoundStationName(), section.getDownBoundStationName(),
                 section.getDistance(), sectionId);
     }
 

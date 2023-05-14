@@ -31,13 +31,13 @@ public class SectionService {
         this.stationDao = stationDao;
     }
 
-    public void saveSection(Long lineId, SectionCreateRequest sectionCreateRequest) {
-        Optional<Station> startStation = stationDao.findByName(sectionCreateRequest.getStartStationName());
-        Optional<Station> endStation = stationDao.findByName(sectionCreateRequest.getEndStationName());
-        if (startStation.isEmpty() || endStation.isEmpty()) {
+    public void saveSection(Long lineId, SectionCreateRequest request) {
+        Optional<Station> upBoundStation = stationDao.findByName(request.getUpBoundStationName());
+        Optional<Station> downBoundStation = stationDao.findByName(request.getDownBoundStationName());
+        if (upBoundStation.isEmpty() || downBoundStation.isEmpty()) {
             throw new StationNotFoundException();
         }
-        addSection(lineId, new Section(startStation.get(), endStation.get(), sectionCreateRequest.getDistance()));
+        addSection(lineId, new Section(upBoundStation.get(), downBoundStation.get(), request.getDistance()));
     }
 
     private void addSection(Long lineId, Section newSection) {
@@ -45,47 +45,47 @@ public class SectionService {
             sectionDao.insert(lineId, newSection);
             return;
         }
-        boolean hasStartStation = sectionDao.isStationInLine(lineId, newSection.getStartStationName());
-        boolean hasEndStation = sectionDao.isStationInLine(lineId, newSection.getEndStationName());
-        validateHasStation(hasStartStation, hasEndStation);
-        if (hasStartStation) {
-            addEndSection(lineId, newSection);
+        boolean hasUpBoundStation = sectionDao.isStationInLine(lineId, newSection.getUpBoundStationName());
+        boolean hasDownBoundStation = sectionDao.isStationInLine(lineId, newSection.getDownBoundStationName());
+        validateHasStation(hasUpBoundStation, hasDownBoundStation);
+        if (hasUpBoundStation) {
+            addDownBoundSection(lineId, newSection);
         }
-        if (hasEndStation) {
-            addStartSection(lineId, newSection);
+        if (hasDownBoundStation) {
+            addUpBoundSection(lineId, newSection);
         }
     }
 
-    private void validateHasStation(boolean hasStartStation, boolean hasEndStation) {
-        if (hasStartStation && hasEndStation) {
+    private void validateHasStation(boolean hasUpBoundStation, boolean hasDownBoundStation) {
+        if (hasUpBoundStation && hasDownBoundStation) {
             throw new IllegalSectionException("노선에 이미 해당 역이 존재합니다.");
         }
-        if (!hasStartStation && !hasEndStation) {
+        if (!hasUpBoundStation && !hasDownBoundStation) {
             throw new IllegalSectionException("노선에 기준이 되는 역을 찾을 수 없습니다.");
         }
     }
 
-    private void addEndSection(Long lineId, Section newSection) {
-        sectionDao.findByStartStationNameAndLineId(newSection.getStartStationName(), lineId)
+    private void addDownBoundSection(Long lineId, Section newSection) {
+        sectionDao.findByStartStationNameAndLineId(newSection.getUpBoundStationName(), lineId)
             .ifPresentOrElse(section -> {
                 int distance = section.getDistance();
                 int newDistance = newSection.getDistance();
                 validateDistance(distance, newDistance);
-                Station newStation = newSection.getEndStation();
-                sectionDao.update(section.getId(), new Section(section.getStartStation(), newStation, newDistance));
-                sectionDao.insert(lineId, new Section(newStation, section.getEndStation(), distance - newDistance));
+                Station newStation = newSection.getDownBoundStation();
+                sectionDao.update(section.getId(), new Section(section.getUpBoundStation(), newStation, newDistance));
+                sectionDao.insert(lineId, new Section(newStation, section.getDownBoundStation(), distance - newDistance));
             }, () -> sectionDao.insert(lineId, newSection));
     }
 
-    private void addStartSection(Long lineId, Section newSection) {
-        sectionDao.findByEndStationNameAndLineId(newSection.getEndStationName(), lineId)
+    private void addUpBoundSection(Long lineId, Section newSection) {
+        sectionDao.findByEndStationNameAndLineId(newSection.getDownBoundStationName(), lineId)
                 .ifPresentOrElse(section -> {
                     int distance = section.getDistance();
                     int newDistance = newSection.getDistance();
                     validateDistance(distance, newDistance);
-                    Station newStation = newSection.getStartStation();
-                    sectionDao.update(section.getId(), new Section(newStation, section.getEndStation(), newDistance));
-                    sectionDao.insert(lineId, new Section(section.getStartStation(), newStation, distance - newDistance));
+                    Station newStation = newSection.getUpBoundStation();
+                    sectionDao.update(section.getId(), new Section(newStation, section.getDownBoundStation(), newDistance));
+                    sectionDao.insert(lineId, new Section(section.getUpBoundStation(), newStation, distance - newDistance));
                 }, () -> sectionDao.insert(lineId, newSection));
     }
 
@@ -116,7 +116,7 @@ public class SectionService {
 
     private void mergeSection(SectionEntity leftSection, SectionEntity rightSection) {
         sectionDao.deleteBy(leftSection);
-        sectionDao.update(rightSection.getId(), new Section(leftSection.getStartStation(), rightSection.getEndStation(),
+        sectionDao.update(rightSection.getId(), new Section(leftSection.getUpBoundStation(), rightSection.getDownBoundStation(),
                 leftSection.getDistance() + rightSection.getDistance()));
     }
 

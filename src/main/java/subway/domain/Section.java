@@ -4,14 +4,14 @@ import subway.dao.entity.SectionEntity;
 import subway.exception.IllegalDistanceException;
 
 public class Section {
-    private final Station startStation;
-    private final Station endStation;
+    private final Station upBoundStation;
+    private final Station downBoundStation;
     private final int distance;
 
-    public Section(Station startStation, Station endStation, int distance) {
+    public Section(Station upBoundStation, Station downBoundStation, int distance) {
         validateDistance(distance);
-        this.startStation = startStation;
-        this.endStation = endStation;
+        this.upBoundStation = upBoundStation;
+        this.downBoundStation = downBoundStation;
         this.distance = distance;
     }
 
@@ -22,23 +22,23 @@ public class Section {
     }
 
     public static Section fromEntity(SectionEntity sectionEntity) {
-        return new Section(sectionEntity.getStartStation(), sectionEntity.getEndStation(), sectionEntity.getDistance());
+        return new Section(sectionEntity.getUpBoundStation(), sectionEntity.getDownBoundStation(), sectionEntity.getDistance());
     }
 
-    public Station getStartStation() {
-        return startStation;
+    public Station getUpBoundStation() {
+        return upBoundStation;
     }
 
-    public String getStartStationName() {
-        return startStation.getName();
+    public String getUpBoundStationName() {
+        return upBoundStation.getName();
     }
 
-    public Station getEndStation() {
-        return endStation;
+    public Station getDownBoundStation() {
+        return downBoundStation;
     }
 
-    public String getEndStationName() {
-        return endStation.getName();
+    public String getDownBoundStationName() {
+        return downBoundStation.getName();
     }
 
     public int getDistance() {

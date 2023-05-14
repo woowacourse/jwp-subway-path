@@ -19,16 +19,16 @@ public class Sections {
 
     private List<Section> sortSections(List<Section> sections) {
         Map<Station, Section> stationToSection = sections.stream()
-                .collect(toMap(Section::getStartStation, section -> section));
+                .collect(toMap(Section::getUpBoundStation, section -> section));
         return findFirstStation(sections).map(firstStation -> getSortedSections(stationToSection, firstStation))
                 .orElse(Collections.emptyList());
     }
 
     private Optional<Station> findFirstStation(List<Section> sections) {
-        Map<Station, Station> stationToStation = sections.stream()
-                .collect(toMap(Section::getStartStation, Section::getEndStation));
-        Set<Station> startStations = new HashSet<>(stationToStation.keySet());
-        startStations.removeAll(stationToStation.values());
+        Map<Station, Station> upBoundToDownBound = sections.stream()
+                .collect(toMap(Section::getUpBoundStation, Section::getDownBoundStation));
+        Set<Station> startStations = new HashSet<>(upBoundToDownBound.keySet());
+        startStations.removeAll(upBoundToDownBound.values());
         return startStations.stream().findFirst();
     }
 
@@ -37,7 +37,7 @@ public class Sections {
         Section section = stationToSection.get(firstStation);
         sortedSection.add(section);
         while (stationToSection.size() != sortedSection.size()) {
-            section = stationToSection.get(section.getEndStation());
+            section = stationToSection.get(section.getDownBoundStation());
             sortedSection.add(section);
         }
         return sortedSection;

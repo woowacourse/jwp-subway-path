@@ -5,18 +5,15 @@ import subway.domain.Station;
 public class SectionEntity {
     private Long id;
     private Long lineId;
-    private Station startStation;
-    private Station endStation;
+    private Station upBoundStation;
+    private Station downBoundStation;
     private int distance;
 
-    public SectionEntity() {
-    }
-
-    public SectionEntity(Long id, Long lineId, Station startStation, Station endStation, int distance) {
+    public SectionEntity(Long id, Long lineId, Station upBoundStation, Station downBoundStation, int distance) {
         this.id = id;
         this.lineId = lineId;
-        this.startStation = startStation;
-        this.endStation = endStation;
+        this.upBoundStation = upBoundStation;
+        this.downBoundStation = downBoundStation;
         this.distance = distance;
     }
 
@@ -28,12 +25,12 @@ public class SectionEntity {
         return lineId;
     }
 
-    public Station getStartStation() {
-        return startStation;
+    public Station getUpBoundStation() {
+        return upBoundStation;
     }
 
-    public Station getEndStation() {
-        return endStation;
+    public Station getDownBoundStation() {
+        return downBoundStation;
     }
 
     public int getDistance() {

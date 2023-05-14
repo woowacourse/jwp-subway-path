@@ -5,10 +5,10 @@ import javax.validation.constraints.Positive;
 
 public class SectionCreateRequest {
     @NotBlank(message = "상행역은 비어있을 수 없습니다.")
-    private String startStationName;
+    private String upBoundStationName;
 
     @NotBlank(message = "하행역은 비어있을 수 없습니다.")
-    private String endStationName;
+    private String downBoundStationName;
 
     @Positive(message = "구간의 길이는 양수여야 합니다.")
     private int distance;
@@ -16,18 +16,18 @@ public class SectionCreateRequest {
     public SectionCreateRequest() {
     }
 
-    public SectionCreateRequest(String startStationName, String endStationName, int distance) {
-        this.startStationName = startStationName;
-        this.endStationName = endStationName;
+    public SectionCreateRequest(String upBoundStationName, String downBoundStationName, int distance) {
+        this.upBoundStationName = upBoundStationName;
+        this.downBoundStationName = downBoundStationName;
         this.distance = distance;
     }
 
-    public String getStartStationName() {
-        return startStationName;
+    public String getUpBoundStationName() {
+        return upBoundStationName;
     }
 
-    public String getEndStationName() {
-        return endStationName;
+    public String getDownBoundStationName() {
+        return downBoundStationName;
     }
 
     public int getDistance() {
