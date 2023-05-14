@@ -28,14 +28,14 @@ public class SectionDao {
 
     public SectionDao(LineDao lineDao, DataSource dataSource) {
         this.simpleJdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("SUBWAY_MAP")
+                .withTableName("SECTION")
                 .usingGeneratedKeyColumns("ID");
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.lineDao = lineDao;
     }
 
     public int countStations(Line line) {
-        String sql = "select count(*) from SUBWAY_MAP where line_id = ?";
+        String sql = "select count(*) from SECTION where line_id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, line.getId());
     }
 
@@ -67,7 +67,7 @@ public class SectionDao {
     }
 
     public void update(Section section) {
-        jdbcTemplate.update("update SUBWAY_MAP set next_station_id = ?, distance = ? where id = ?",
+        jdbcTemplate.update("update SECTION set next_station_id = ?, distance = ? where id = ?",
                 section.getNextStation().getId(),
                 section.getDistance().getValue(),
                 section.getId());
@@ -75,7 +75,7 @@ public class SectionDao {
 
     public Optional<Section> findByPreviousStation(Station previousStation, Line line) {
         String sql = "select " +
-                "MAP.id as id, " +
+                "SE.id as id, " +
                 "PS.id as PS_ID, " +
                 "PS.name as PS_NAME, " +
                 "NS.id as NS_ID, " +
@@ -83,15 +83,15 @@ public class SectionDao {
                 "L.id as L_ID, " +
                 "L.name as L_NAME, " +
                 "L.color as L_COLOR, " +
-                "MAP.distance as distance " +
-                "from subway_map MAP " +
+                "SE.distance as distance " +
+                "from SECTION SE " +
                 "inner join STATION PS " +
-                "on MAP.current_station_id = PS.id " +
+                "on SE.current_station_id = PS.id " +
                 "left outer join STATION NS " +
-                "on MAP.next_station_id = NS.id " +
+                "on SE.next_station_id = NS.id " +
                 "inner join LINE L " +
-                "on MAP.line_id = L.id " +
-                "where MAP.current_station_id = ? and MAP.line_id = ?;";
+                "on SE.line_id = L.id " +
+                "where SE.current_station_id = ? and SE.line_id = ?;";
 
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, previousStation.getId(), line.getId());
         if (rs.next()) {
@@ -110,7 +110,7 @@ public class SectionDao {
 
     public Optional<Section> findByNextStation(Station nextStation, Line line) {
         String sql = "select " +
-                "MAP.id as id, " +
+                "SE.id as id, " +
                 "PS.id as PS_ID, " +
                 "PS.name as PS_NAME, " +
                 "NS.id as NS_ID, " +
@@ -118,15 +118,15 @@ public class SectionDao {
                 "L.id as L_ID, " +
                 "L.name as L_NAME, " +
                 "L.color as L_COLOR, " +
-                "MAP.distance as distance " +
-                "from subway_map MAP " +
+                "SE.distance as distance " +
+                "from SECTION SE " +
                 "inner join STATION PS " +
-                "on MAP.current_station_id = PS.id " +
+                "on SE.current_station_id = PS.id " +
                 "left outer join STATION NS " +
-                "on MAP.next_station_id = NS.id " +
+                "on SE.next_station_id = NS.id " +
                 "inner join LINE L " +
-                "on MAP.line_id = L.id " +
-                "where MAP.next_station_id = ? and MAP.line_id = ?;";
+                "on SE.line_id = L.id " +
+                "where SE.next_station_id = ? and SE.line_id = ?;";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, nextStation.getId(), line.getId());
         if (rs.next()) {
             var distance = rs.getInt("DISTANCE") == 0 ? Distance.emptyDistance() : Distance.of(rs.getInt("DISTANCE"));
@@ -140,7 +140,7 @@ public class SectionDao {
     }
 
     public void deleteStation(Station station, Line line) {
-        String sql = "delete from SUBWAY_MAP where current_station_id = ? and line_id = ?";
+        String sql = "delete from SECTION where current_station_id = ? and line_id = ?";
 
         if (countStations(line) == 2) {
             clearStations(line);
@@ -151,7 +151,7 @@ public class SectionDao {
     }
 
     private void clearStations(Line line) {
-        String sql = "delete from SUBWAY_MAP where line_id = ?";
+        String sql = "delete from SECTION where line_id = ?";
         jdbcTemplate.update(sql, line.getId());
     }
 
@@ -169,5 +169,34 @@ public class SectionDao {
             }
             return stations;
         }
+    }
+
+    public List<Section> findAll() {
+        String sql = "select " +
+                "SE.id as id, " +
+                "PS.id as PS_ID, " +
+                "PS.name as PS_NAME, " +
+                "NS.id as NS_ID, " +
+                "NS.name as NS_NAME, " +
+                "L.id as L_ID, " +
+                "L.name as L_NAME, " +
+                "L.color as L_COLOR, " +
+                "SE.distance as distance " +
+                "from SECTION SE " +
+                "inner join STATION PS " +
+                "on SE.current_station_id = PS.id " +
+                "left outer join STATION NS " +
+                "on SE.next_station_id = NS.id " +
+                "inner join LINE L " +
+                "on SE.line_id = L.id;";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            var distance = rs.getInt("DISTANCE") == 0 ? Distance.emptyDistance() : Distance.of(rs.getInt("DISTANCE"));
+            return new Section((rs.getLong("ID")),
+                    new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")),
+                    new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")),
+                    new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME")),
+                    distance);
+        });
+
     }
 }

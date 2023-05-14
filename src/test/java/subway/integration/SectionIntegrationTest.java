@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
-import subway.dto.StationsSavingRequest;
+import subway.dto.SectionSavingRequest;
 
 import java.util.Map;
 
@@ -57,7 +57,7 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(json)
-                .when().post(requestUri + "/stations")
+                .when().post(requestUri + "/section")
                 .then().log().all()
                 .extract();
 
@@ -93,7 +93,7 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(Map.of("name", "용암역"))
-                .when().delete(requestUri + "/stations")
+                .when().delete(requestUri + "/section")
                 .then().log().all()
                 .extract();
 
@@ -101,13 +101,13 @@ public class SectionIntegrationTest extends IntegrationTest {
     }
 
     private static ExtractableResponse<Response> saveSection(String previousStationName, String nextStationName, int distance, String requestUri) {
-        StationsSavingRequest stationsSavingRequest
-                = new StationsSavingRequest(previousStationName, nextStationName, distance, false);
+        SectionSavingRequest sectionSavingRequest
+                = new SectionSavingRequest(previousStationName, nextStationName, distance, false);
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest)
-                .when().post(requestUri + "/stations")
+                .body(sectionSavingRequest)
+                .when().post(requestUri + "/section")
                 .then().log().all()
                 .extract();
     }

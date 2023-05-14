@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationsSavingRequest;
+import subway.dto.SectionSavingRequest;
 
 import java.util.List;
 import java.util.Map;
@@ -75,11 +75,11 @@ public class LineIntegrationTest extends IntegrationTest {
 
         saveStation("개룡역");
         saveStation("거여역");
-        saveStations(location1, "개룡역", "거여역");
+        saveSection(location1, "개룡역", "거여역");
 
         saveStation("용인역");
         saveStation("강릉역");
-        saveStations(location2, "용인역", "강릉역");
+        saveSection(location2, "용인역", "강릉역");
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -105,7 +105,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         saveStation("개룡역");
         saveStation("거여역");
-        saveStations(requestUri, "개룡역", "거여역");
+        saveSection(requestUri, "개룡역", "거여역");
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -121,26 +121,6 @@ public class LineIntegrationTest extends IntegrationTest {
         LineResponse resultResponse = response.as(LineResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineId);
         assertThat(resultResponse.getStations()).hasSize(2);
-    }
-
-    private static void saveStations(String requestUri, String previousStationName, String nextStationName) {
-        StationsSavingRequest stationsSavingRequest
-                = new StationsSavingRequest(previousStationName, nextStationName, 5, true);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest)
-                .when().post(requestUri + "/stations")
-                .then().log().all();
-    }
-
-    private static void saveStation(String name) {
-        RestAssured.given().log().all()
-                .body(Map.of("name", name))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -179,6 +159,26 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private static void saveSection(String requestUri, String previousStationName, String nextStationName) {
+        SectionSavingRequest sectionSavingRequest
+                = new SectionSavingRequest(previousStationName, nextStationName, 5, true);
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionSavingRequest)
+                .when().post(requestUri + "/section")
+                .then().log().all();
+    }
+
+    private static void saveStation(String name) {
+        RestAssured.given().log().all()
+                .body(Map.of("name", name))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all();
     }
 
     private String saveLine(LineRequest lineRequest) {

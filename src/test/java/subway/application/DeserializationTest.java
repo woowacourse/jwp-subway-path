@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.json.JsonTest;
 import subway.domain.Distance;
-import subway.dto.StationsSavingRequest;
+import subway.dto.SectionSavingRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +25,7 @@ public class DeserializationTest {
                 "    \"distance\": 5,\n" +
                 "    \"down\": false\n" +
                 "}";
-        StationsSavingRequest stationsSavingRequest = objectMapper.readValue(json, StationsSavingRequest.class);
-        assertThat(stationsSavingRequest.getDistance()).isEqualTo(Distance.of(5));
+        SectionSavingRequest sectionSavingRequest = objectMapper.readValue(json, SectionSavingRequest.class);
+        assertThat(sectionSavingRequest.getDistance()).isEqualTo(Distance.of(5));
     }
 }

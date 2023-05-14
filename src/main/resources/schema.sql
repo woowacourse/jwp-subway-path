@@ -1,4 +1,4 @@
-DROP TABLE if exists SUBWAY_MAP;
+DROP TABLE if exists SECTION;
 DROP TABLE if exists LINE;
 DROP TABLE if exists STATION;
 
@@ -19,7 +19,7 @@ create table if not exists LINE
     foreign key (head_station_id) references STATION (id)
 );
 
-create table if not exists SUBWAY_MAP
+create table if not exists SECTION
 (
     id                 bigint auto_increment not null,
     line_id            bigint                not null,

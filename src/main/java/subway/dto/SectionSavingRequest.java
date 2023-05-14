@@ -2,13 +2,13 @@ package subway.dto;
 
 import subway.domain.Distance;
 
-public class StationsSavingRequest {
+public class SectionSavingRequest {
     String previousStationName;
     String nextStationName;
     Distance distance;
     boolean isDown;
 
-    public StationsSavingRequest(String previousStationName, String nextStationName, int distance, boolean isDown) {
+    public SectionSavingRequest(String previousStationName, String nextStationName, int distance, boolean isDown) {
         this.previousStationName = previousStationName;
         this.nextStationName = nextStationName;
         this.distance = Distance.of(distance);
