@@ -7,6 +7,7 @@ import subway.entity.EdgeEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Component
 public class SubwayGraphs {
@@ -60,5 +61,15 @@ public class SubwayGraphs {
         final SubwayGraph subwayGraph = findSubwayGraphOf(line);
 
         return subwayGraph.addStation(upLineStation, downLineStation, distance);
+    }
+
+    public boolean isEmptyStation(Line line, Station station) {
+        return findSubwayGraphOf(line).isEmptyStation(station);
+    }
+
+    public Optional<Station> findStationByName(Line line, String name) {
+        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
+
+        return subwayGraph.findStationByName(name);
     }
 }

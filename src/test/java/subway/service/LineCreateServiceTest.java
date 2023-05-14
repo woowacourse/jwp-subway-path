@@ -47,7 +47,7 @@ class LineCreateServiceTest {
     @Test
     void createLine() {
         LineCreateRequest lineCreateRequest = new LineCreateRequest(
-                "잠실역", "잠실새내역", "2호선", 5);
+                "2호선", "잠실새내역", "잠실역", 5);
         LineEntity lineEntity = new LineEntity(1L, "2호선");
         StationEntity stationEntity1 = new StationEntity(1L, "잠실역");
         StationEntity stationEntity2 = new StationEntity(2L, "잠실새내역");

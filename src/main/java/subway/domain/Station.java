@@ -22,12 +22,12 @@ public class Station {
         return new StationEntity(id, name);
     }
 
-    public Long getId() {
-        return id;
+    public boolean isSameName(Station station) {
+        return this.name.equals(station.getName());
     }
 
-    public String getName() {
-        return name;
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
     }
 
     @Override
@@ -49,5 +49,13 @@ public class Station {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

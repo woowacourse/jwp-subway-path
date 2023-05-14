@@ -2,28 +2,28 @@ package subway.dto;
 
 public class StationAddRequest {
 
-    private final String line;
-    private final String upLineStation;
-    private final String downLineStation;
+    private final String lineName;
+    private final String upLineStationName;
+    private final String downLineStationName;
     private final int distance;
 
-    public StationAddRequest(final String line, final String upLineStation, final String downLineStation, final int distance) {
-        this.line = line;
-        this.upLineStation = upLineStation;
-        this.downLineStation = downLineStation;
+    public StationAddRequest(final String lineName, final String upLineStationName, final String downLineStationName, final int distance) {
+        this.lineName = lineName;
+        this.upLineStationName = upLineStationName;
+        this.downLineStationName = downLineStationName;
         this.distance = distance;
     }
 
-    public String getLine() {
-        return line;
+    public String getLineName() {
+        return lineName;
     }
 
-    public String getUpLineStation() {
-        return upLineStation;
+    public String getUpLineStationName() {
+        return upLineStationName;
     }
 
-    public String getDownLineStation() {
-        return downLineStation;
+    public String getDownLineStationName() {
+        return downLineStationName;
     }
 
     public int getDistance() {

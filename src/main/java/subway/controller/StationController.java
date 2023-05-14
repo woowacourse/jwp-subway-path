@@ -4,23 +4,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.StationAddRequest;
 import subway.dto.StationResponse;
-import subway.service.StationCreateService;
+import subway.service.StationAddService;
 
 import java.net.URI;
 
 @RestController
-@RequestMapping("/stations")
 public class StationController {
-    private final StationCreateService stationCreateService;
+    private final StationAddService stationAddService;
 
-    public StationController(StationCreateService stationCreateService) {
-        this.stationCreateService = stationCreateService;
+    public StationController(StationAddService stationAddService) {
+        this.stationAddService = stationAddService;
     }
 
-    @PostMapping
+    @PostMapping("/stations")
     public ResponseEntity<StationResponse> createStation(@RequestBody StationAddRequest stationRequest) {
-        StationResponse station = stationCreateService.createStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+        StationResponse station = stationAddService.addStation(stationRequest);
+        return ResponseEntity
+                .created(URI.create("/stations/" + station.getId()))
+                .body(station);
     }
 
 }

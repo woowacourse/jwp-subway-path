@@ -4,10 +4,7 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.entity.EdgeEntity;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SubwayGraph {
     private final DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
@@ -75,6 +72,13 @@ public class SubwayGraph {
     public int findDistanceBetween(Station upLineStation, Station downLineStation) {
         final DefaultWeightedEdge edge = graph.getEdge(upLineStation, downLineStation);
         return (int) graph.getEdgeWeight(edge);
+    }
+
+    public boolean isEmptyStation(Station station) {
+        return findAllStationsInOrder().stream()
+                .filter(s -> s.isSameName(station))
+                .findAny()
+                .isEmpty();
     }
 
     public Station addStation(Station upLineStation, Station downLineStation, int distance) {
@@ -255,5 +259,11 @@ public class SubwayGraph {
         // 지우기
         graph.removeAllEdges(edgesToRemove);
         graph.removeVertex(station);
+    }
+
+    public Optional<Station> findStationByName(String name) {
+        return graph.vertexSet().stream()
+                .filter(s -> s.isSameName(name))
+                .findAny();
     }
 }

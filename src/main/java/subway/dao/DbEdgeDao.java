@@ -43,8 +43,8 @@ public class DbEdgeDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-//    public EdgeEntity deleteEdgeOf(EdgeEntity edgeEntity) {
-//        String sql = "delete from edge where line_id = ? and station_id = ?";
-//        jdbcTemplate.update(sql, lineId, stationId);
-//    }
+    public void deleteAllEdgesOf(Long lineId) {
+        String sql = "delete from edge where line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
 }
