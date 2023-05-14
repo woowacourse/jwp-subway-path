@@ -13,9 +13,6 @@ public class SectionCreateRequest {
     @Positive(message = "구간의 길이는 양수여야 합니다.")
     private int distance;
 
-    public SectionCreateRequest() {
-    }
-
     public SectionCreateRequest(String upBoundStationName, String downBoundStationName, int distance) {
         this.upBoundStationName = upBoundStationName;
         this.downBoundStationName = downBoundStationName;

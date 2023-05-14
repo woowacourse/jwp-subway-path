@@ -6,9 +6,6 @@ public class StationCreateRequest {
     @NotBlank(message = "역 이름은 비어있을 수 없습니다.")
     private String stationName;
 
-    public StationCreateRequest() {
-    }
-
     public StationCreateRequest(String name) {
         this.stationName = name;
     }

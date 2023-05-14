@@ -11,12 +11,10 @@ import subway.domain.Station;
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
-
     private static final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getString("name")
             );
-
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

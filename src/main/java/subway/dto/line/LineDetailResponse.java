@@ -5,14 +5,11 @@ import java.util.List;
 import subway.dto.section.SectionResponse;
 
 public class LineDetailResponse {
-
     @JsonProperty("line")
     private LineResponse lineResponse;
+
     @JsonProperty("sections")
     private List<SectionResponse> sectionResponses;
-
-    public LineDetailResponse() {
-    }
 
     public LineDetailResponse(LineResponse lineResponse, List<SectionResponse> sectionResponses) {
         this.lineResponse = lineResponse;

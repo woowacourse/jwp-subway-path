@@ -18,7 +18,6 @@ import subway.dto.section.SectionResponse;
 @RestController
 @RequestMapping("/sections")
 public class SectionController {
-
     private final SectionService sectionService;
 
     public SectionController(SectionService sectionService) {

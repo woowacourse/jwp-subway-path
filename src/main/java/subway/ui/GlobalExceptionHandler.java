@@ -15,7 +15,6 @@ import subway.exception.StationNotFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
     private static final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(RuntimeException.class)
