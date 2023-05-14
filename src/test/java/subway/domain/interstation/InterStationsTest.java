@@ -154,6 +154,25 @@ class InterStationsTest {
                 누누에서_두둠_구간_id_2
             );
         }
+
+        @Test
+        void 중간에_추가되어도_정렬된_상태가_유지된다() {
+            final List<InterStation> given = List.of(
+                코다에서_누누_구간_id_1,
+                누누에서_두둠_구간_id_2
+            );
+            final InterStations interStations = new InterStations(given);
+            final List<InterStation> expected = List.of(
+                코다에서_누누_구간_id_1,
+                new InterStation(누누_역_id_2.getId(), 처음보는_역_id_4.getId(), 1L),
+                new InterStation(처음보는_역_id_4.getId(), 두둠_역_id_3.getId(), 9L)
+            );
+
+            interStations.add(new InterStation(누누_역_id_2.getId(), 처음보는_역_id_4.getId(), 1L));
+
+            assertThat(interStations.getInterStations()).usingRecursiveComparison()
+                .isEqualTo(expected);
+        }
     }
 
     @Nested

@@ -26,4 +26,8 @@ public class Distance {
     public Distance add(final Distance distance) {
         return new Distance(value + distance.value);
     }
+
+    public Distance minus(final Distance distance) {
+        return new Distance(value - distance.value);
+    }
 }

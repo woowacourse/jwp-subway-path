@@ -16,7 +16,7 @@ import subway.domain.interstation.exception.InterStationsException;
 @ToString
 public class InterStations {
 
-    private List<InterStation> interStations;
+    private final List<InterStation> interStations;
 
     public InterStations(final List<InterStation> interStations) {
         validate(interStations);
@@ -79,9 +79,63 @@ public class InterStations {
     }
 
     public void add(final InterStation interStation) {
+        validate(interStation);
+        if (isFirstStation(interStation)) {
+            addFirst(interStation);
+            return;
+        }
+        if (isLastStation(interStation)) {
+            addLast(interStation);
+            return;
+        }
+        addMiddle(interStation);
+    }
+
+    private void validate(final InterStation interStation) {
+        if (interStation == null) {
+            throw new InterStationsException("구간이 비어있습니다.");
+        }
+        if (interStations.contains(interStation)) {
+            throw new InterStationsException("구간이 중복되었습니다.");
+        }
+    }
+
+    private boolean isFirstStation(final InterStation interStation) {
+        return interStation.getUpStationId().equals(interStations.get(0).getUpStationId());
+    }
+
+    private void addFirst(final InterStation interStation) {
+        interStations.add(0, new InterStation(interStation.getDownStationId(),
+            interStation.getUpStationId(),
+            interStation.getDistance()));
+    }
+
+    private boolean isLastStation(final InterStation interStation) {
+        return interStation.getUpStationId().equals(interStations.get(interStations.size() - 1).getDownStationId());
+    }
+
+    private void addLast(final InterStation interStation) {
         interStations.add(interStation);
-        validate(interStations);
-        interStations = sort(interStations);
+    }
+
+    private void addMiddle(final InterStation interStation) {
+        final int index = findUpStationIndex(interStation.getUpStationId());
+        final InterStation removedInterStation = interStations.remove(index);
+        interStations.add(index, new InterStation(removedInterStation.getUpStationId(),
+            interStation.getDownStationId(),
+            interStation.getDistance()));
+        interStations.add(index + 1, new InterStation(interStation.getDownStationId(),
+            removedInterStation.getDownStationId(),
+            removedInterStation.getDistance().minus(interStation.getDistance())));
+    }
+
+    private int findUpStationIndex(final Long upStationId) {
+        for (int i = 0; i < interStations.size(); i++) {
+            if (interStations.get(i).getUpStationId().equals(upStationId)) {
+                return i;
+            }
+        }
+        throw new InterStationsException("구간이 연결되어있지 않습니다.");
     }
 
     public void remove(final long stationId) {
