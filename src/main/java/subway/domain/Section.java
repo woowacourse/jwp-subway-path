@@ -14,6 +14,24 @@ public class Section {
         this.distance = distance;
     }
 
+    public boolean hasStationInSection(Station station) {
+        if(station.equals(upStation) || station.equals(downStation)) {
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isLongerThan(Distance other) {
+        return distance.isLongerThan(other);
+    }
+
+    public boolean isStationOnDirection(Station baseStation, Direction direction) {
+        if(direction == Direction.LEFT) {
+            return upStation.equals(baseStation);
+        }
+        return downStation.equals(baseStation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -30,5 +48,13 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(upStation, downStation);
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
     }
 }
