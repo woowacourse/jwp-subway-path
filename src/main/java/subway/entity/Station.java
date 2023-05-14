@@ -3,6 +3,7 @@ package subway.entity;
 import java.util.Objects;
 
 public class Station {
+
     private Long id;
     private String name;
 
