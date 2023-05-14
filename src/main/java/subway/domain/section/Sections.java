@@ -2,6 +2,8 @@ package subway.domain.section;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
@@ -25,31 +27,11 @@ public class Sections {
             throw new IllegalStateException();
         }
 
+        addSection(section);
+    }
+
+    public void addSection(final Section section) {
         this.sections.add(section);
-    }
-
-    public void attachAtFirstStation(
-            final Station firstStation,
-            final Station additionStation,
-            final StationDistance stationDistance
-    ) {
-        validateDuplication(additionStation);
-        final Section firstSection = peekByFirstStationUnique(firstStation);
-        final Section attachedSection = firstSection.createFrontSection(additionStation, stationDistance);
-
-        sections.add(attachedSection);
-    }
-
-    public void attachAtLastStation(
-            final Station lastStation,
-            final Station additionStation,
-            final StationDistance stationDistance
-    ) {
-        validateDuplication(additionStation);
-        final Section lastSection = peekBySecondStationUnique(lastStation);
-        final Section attachedSection = lastSection.createBehindSection(additionStation, stationDistance);
-
-        sections.add(attachedSection);
     }
 
     public void insertBehindStation(
@@ -59,7 +41,7 @@ public class Sections {
     ) {
         validateDuplication(additionStation);
         final Section section = peekByFirstStationUnique(firstStation);
-        final List<Section> sections = section.separateByFirstStation(additionStation, stationDistance);
+        final List<Section> sections = section.separateByInsertionStation(additionStation, stationDistance);
 
         this.sections.remove(section);
         this.sections.addAll(sections);
@@ -138,6 +120,31 @@ public class Sections {
                 .filter(section -> section.contains(station))
                 .count();
     }
+
+    public Station getFrontStation() {
+        final Set<Station> sectionSet = sections.stream()
+                .map(Section::getSecondStation)
+                .collect(Collectors.toSet());
+
+        return sections.stream()
+                .map(Section::getFirstStation)
+                .filter(Predicate.not(sectionSet::contains))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public Station getEndStation() {
+        final Set<Station> sectionSet = sections.stream()
+                .map(Section::getFirstStation)
+                .collect(Collectors.toSet());
+
+        return sections.stream()
+                .map(Section::getSecondStation)
+                .filter(Predicate.not(sectionSet::contains))
+                .findFirst()
+                .orElseThrow();
+    }
+
 
     public List<Section> getSections() {
         return sections;

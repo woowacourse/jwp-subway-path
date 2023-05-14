@@ -44,45 +44,6 @@ class SectionsTest {
     }
 
     @Test
-    void 노선_앞에_역_추가_테스트() {
-        //given
-        final Sections sections = new Sections();
-        final Station startStation = new Station("start");
-        final Section section = new Section(startStation, new Station("to"), new StationDistance(5));
-
-        sections.addInitialStations(section);
-        final Station newStation = new Station("newStation");
-
-        //when
-        sections.attachAtFirstStation(startStation, newStation, new StationDistance(3));
-
-        //then
-        assertThat(sections.getSections()).hasSize(2);
-        assertThat(sections.peekByFirstStationUnique(newStation).getDistance())
-                .isEqualTo(new StationDistance(3));
-    }
-
-
-    @Test
-    void 노선_뒤에_역_추가_테스트() {
-        //given
-        final Sections sections = new Sections();
-        final Station endStation = new Station("end");
-        final Section section = new Section(new Station("from"), endStation, new StationDistance(5));
-
-        sections.addInitialStations(section);
-        final Station newStation = new Station("newStation");
-
-        //when
-        sections.attachAtLastStation(endStation, newStation, new StationDistance(3));
-
-        //then
-        assertThat(sections.getSections()).hasSize(2);
-        assertThat(sections.peekByFirstStationUnique(endStation).getDistance())
-                .isEqualTo(new StationDistance(3));
-    }
-
-    @Test
     void 노선_역과_역_사이에_역_추가_테스트() {
         //given
         final Sections sections = new Sections();
@@ -163,27 +124,5 @@ class SectionsTest {
 
         //then
         assertThat(sections.getSections()).hasSize(0);
-    }
-
-    @Test
-    void 노선내_역과_역사이의_역_제거_테스트() {
-        //given
-        final Sections sections = new Sections();
-        final Station endStation = new Station("end");
-        final Section sectionA = new Section(
-                new Station("from"), endStation, new StationDistance(5)
-        );
-        sections.addInitialStations(sectionA);
-        sections.attachAtLastStation(endStation, new Station("toB"), new StationDistance(3));
-
-        //when
-        sections.removeStation(endStation);
-
-        //then
-        assertThat(sections.getSections()).hasSize(1);
-        final Section section = sections.getSections().get(0);
-        assertThat(section.getFirstStation()).isEqualTo(new Station("from"));
-        assertThat(section.getSecondStation()).isEqualTo(new Station("toB"));
-        assertThat(section.getDistance()).isEqualTo(new StationDistance(8));
     }
 }

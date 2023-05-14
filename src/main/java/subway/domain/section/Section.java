@@ -33,8 +33,8 @@ public class Section {
         return new Section(secondStation, additionStation, stationDistance);
     }
 
-    public List<Section> separateByFirstStation(final Station additionStation,
-                                                final StationDistance stationDistance) {
+    public List<Section> separateByInsertionStation(final Station additionStation,
+                                                    final StationDistance stationDistance) {
         final Section firstSection = new Section(firstStation, additionStation, stationDistance);
         final Section secondSection = new Section(additionStation, secondStation, distance.subtract(stationDistance));
         return List.of(firstSection, secondSection);
@@ -48,7 +48,7 @@ public class Section {
         final StationDistance sumDistance = this.distance.sum(other.distance);
         return new Section(firstStation, other.secondStation, sumDistance);
     }
-    
+
     public Station getFirstStation() {
         return firstStation;
     }

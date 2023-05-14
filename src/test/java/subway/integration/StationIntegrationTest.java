@@ -7,87 +7,87 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
-import subway.ui.dto.request.AttachStationRequest;
+import org.springframework.test.context.jdbc.Sql;
+import subway.ui.dto.request.AddStationRequest;
 
-@ActiveProfiles("data")
-@DisplayName("지하철역 관련 기능")
+@Sql({"/data-initial.sql"})
+@SuppressWarnings("NonAsciiCharacters")
 public class StationIntegrationTest extends IntegrationTest {
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @DisplayName("지하철역 사이에 생성한다.")
     @Test
-    void createStationBetween() throws JsonProcessingException {
+    void 역과_역_사이에_새로운_역_등록_API_테스트() throws JsonProcessingException {
         // given
-        final AttachStationRequest request = new AttachStationRequest(
+        final AddStationRequest request = new AddStationRequest(
                 "강남",
-                "서초",
+                "역삼",
+                "잠실",
                 1
         );
 
         // when
-        final ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(objectMapper.writeValueAsBytes(request))
-                .when()
-                .post("/lines/{lineId}/station/between", 1L)
+                .when().post("/lines/{lineId}/station", 1L)
                 .then().log().all()
                 .extract();
 
         // then
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header(HttpHeaders.CONTENT_LOCATION)).isNotBlank();
     }
 
-    @DisplayName("지하철역 맨 앞에 생성한다.")
     @Test
-    void createStationFront() throws JsonProcessingException {
+    void 상행_종점에_역_추가_API_테스트() throws JsonProcessingException {
         // given
-        final AttachStationRequest request = new AttachStationRequest(
+        final AddStationRequest request = new AddStationRequest(
+                null,
                 "강남",
-                "서초",
-                1
+                "교대",
+                5
         );
 
         // when
-        final ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(objectMapper.writeValueAsBytes(request))
-                .when()
-                .post("/lines/{lineId}/station/front", 1L)
+                .when().post("/lines/{lineId}/station", 1L)
                 .then().log().all()
                 .extract();
 
         // then
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header(HttpHeaders.CONTENT_LOCATION)).isNotBlank();
     }
 
-    @DisplayName("지하철역 맨 뒤에 생성한다.")
     @Test
-    void createStationEnd() throws JsonProcessingException {
+    void 하행_종점에_역_추가_API_테스트() throws JsonProcessingException {
         // given
-        final AttachStationRequest request = new AttachStationRequest(
+        final AddStationRequest request = new AddStationRequest(
                 "선릉",
+                null,
                 "삼성",
-                1
+                3
         );
 
         // when
-        final ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(objectMapper.writeValueAsBytes(request))
-                .when()
-                .post("/lines/{lineId}/station/end", 1L)
+                .when().post("/lines/{lineId}/station", 1L)
                 .then().log().all()
                 .extract();
 
         // then
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header(HttpHeaders.CONTENT_LOCATION)).isNotBlank();
     }
 }

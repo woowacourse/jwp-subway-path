@@ -88,7 +88,7 @@ class SectionTest {
         //when
         final Station insertStation = new Station("between");
         final List<Section> separateSections =
-                section.separateByFirstStation(insertStation, new StationDistance(3));
+                section.separateByInsertionStation(insertStation, new StationDistance(3));
 
         //then
         assertThat(separateSections).hasSize(2);

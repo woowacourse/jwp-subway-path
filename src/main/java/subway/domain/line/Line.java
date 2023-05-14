@@ -1,6 +1,8 @@
 package subway.domain.line;
 
+import subway.domain.section.Section;
 import subway.domain.section.Sections;
+import subway.domain.station.Station;
 
 public class Line {
     private final Long id;
@@ -17,6 +19,18 @@ public class Line {
         this.sections = sections;
         this.lineName = lineName;
         this.lineColor = lineColor;
+    }
+
+    public Station getFrontStation() {
+        return sections.getFrontStation();
+    }
+
+    public Station getEndStation() {
+        return sections.getEndStation();
+    }
+
+    public void addSection(final Section section) {
+        sections.addSection(section);
     }
 
     public Long getId() {
