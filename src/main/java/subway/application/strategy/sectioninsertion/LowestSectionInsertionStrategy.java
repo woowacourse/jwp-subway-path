@@ -1,10 +1,14 @@
 package subway.application.strategy.sectioninsertion;
 
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import subway.dao.SectionDao;
 import subway.domain.Distance;
 import subway.domain.EmptyStation;
 import subway.domain.Section;
 
+@Component
+@Order(2)
 public class LowestSectionInsertionStrategy implements SectionInsertionStrategy {
     private final SectionDao sectionDao;
 

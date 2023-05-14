@@ -1,8 +1,12 @@
 package subway.application.strategy.sectioninsertion;
 
+import org.springframework.core.annotation.Order;
+import org.springframework.stereotype.Component;
 import subway.dao.SectionDao;
 import subway.domain.Section;
 
+@Component
+@Order(1)
 public class UpDirectionSectionInsertionStrategy implements SectionInsertionStrategy {
     private final SectionDao sectionDao;
 

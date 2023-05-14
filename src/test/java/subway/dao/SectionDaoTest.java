@@ -6,9 +6,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 import subway.application.SectionService;
 import subway.domain.Distance;
 import subway.domain.Line;
@@ -19,8 +20,9 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.*;
 
-@JdbcTest
-@Import({SectionDao.class, LineDao.class, StationDao.class, SectionService.class})
+@SpringBootTest
+@Transactional
+@AutoConfigureTestDatabase
 class SectionDaoTest {
     @Autowired
     private SectionService sectionService;

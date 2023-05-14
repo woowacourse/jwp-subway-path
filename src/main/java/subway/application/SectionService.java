@@ -18,11 +18,13 @@ public class SectionService {
     private final SectionDao sectionDao;
     private final StationDao stationDao;
     private final LineDao lineDao;
+    private final List<SectionInsertionStrategy> strategies;
 
-    public SectionService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
+    public SectionService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao, List<SectionInsertionStrategy> strategies) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.lineDao = lineDao;
+        this.strategies = strategies;
     }
 
     public long insert(long lineId, String previousStationName, String nextStationName, Distance distance, boolean isDown) {
@@ -33,14 +35,6 @@ public class SectionService {
         final var section = isDown ?
                 new Section(line, previousStation, nextStation, distance)
                 : new Section(line, nextStation, previousStation, distance);
-
-        final var strategies = List.of(
-                new InitializingSectionInsertionStrategy(sectionDao, lineDao),
-                new UpDirectionSectionInsertionStrategy(sectionDao),
-                new LowestSectionInsertionStrategy(sectionDao),
-                new DownDirectionInsertionStrategy(sectionDao),
-                new HighestSectionInsertionStrategy(sectionDao, lineDao)
-        );
 
         for (SectionInsertionStrategy strategy : strategies) {
             if (strategy.support(section)) {

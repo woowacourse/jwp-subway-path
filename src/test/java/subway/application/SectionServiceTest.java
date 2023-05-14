@@ -4,8 +4,9 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Import;
+import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -15,8 +16,9 @@ import subway.domain.Station;
 
 import static org.assertj.core.api.Assertions.*;
 
-@JdbcTest
-@Import({SectionService.class, SectionDao.class, LineDao.class, StationDao.class})
+@SpringBootTest
+@Transactional
+@AutoConfigureTestDatabase
 class SectionServiceTest {
     @Autowired
     private SectionService sectionService;
