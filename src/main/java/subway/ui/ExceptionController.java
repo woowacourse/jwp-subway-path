@@ -24,4 +24,9 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     public ResponseEntity<String> handleDuplicatedNameException(final DuplicatedNameException exception) {
         return ResponseEntity.badRequest().body(exception.getMessage());
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Void> handleException(final Exception exception) {
+        return ResponseEntity.internalServerError().build();
+    }
 }
