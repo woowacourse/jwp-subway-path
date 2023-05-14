@@ -1,6 +1,4 @@
-package subway.application.dto;
-
-import subway.controller.dto.AddStationToLineRequest;
+package subway.controller.dto;
 
 public class AddStationToEndLineRequest {
 

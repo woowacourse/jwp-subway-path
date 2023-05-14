@@ -10,7 +10,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.domain.exception.BusinessException;
+import subway.exception.BusinessException;
 import subway.repository.dao.LineSectionStationJoinDto;
 
 public class LineConverter {

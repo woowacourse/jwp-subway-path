@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 import subway.controller.dto.StationRequest;
 import subway.controller.dto.StationResponse;
 import subway.domain.Station;
-import subway.domain.exception.BusinessException;
+import subway.exception.BusinessException;
 import subway.repository.StationRepository;
 
 @Service

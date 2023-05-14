@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import subway.domain.exception.BusinessException;
+import subway.exception.BusinessException;
 
 public class Sections {
 

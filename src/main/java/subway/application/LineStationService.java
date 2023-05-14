@@ -2,13 +2,13 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.dto.AddStationToBetweenLineRequest;
-import subway.application.dto.AddStationToEndLineRequest;
 import subway.controller.dto.AddInitStationToLineRequest;
+import subway.controller.dto.AddStationToBetweenLineRequest;
+import subway.controller.dto.AddStationToEndLineRequest;
 import subway.controller.dto.RemoveStationOnLineRequest;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.domain.exception.BusinessException;
+import subway.exception.BusinessException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 

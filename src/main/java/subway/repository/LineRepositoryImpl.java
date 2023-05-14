@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
-import subway.domain.exception.BusinessException;
+import subway.exception.BusinessException;
 import subway.repository.dao.LineDao;
 import subway.repository.dao.LineSectionStationJoinDto;
 import subway.repository.dao.SectionDao;

@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.controller.dto.LineRequest;
 import subway.controller.dto.LineResponse;
 import subway.domain.Line;
-import subway.domain.exception.BusinessException;
+import subway.exception.BusinessException;
 import subway.repository.LineRepository;
 
 @Transactional(readOnly = true)

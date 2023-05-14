@@ -1,7 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.domain.exception.BusinessException;
+import subway.exception.BusinessException;
 
 public class Line {
 

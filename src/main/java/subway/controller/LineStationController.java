@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineStationService;
-import subway.application.dto.AddStationToBetweenLineRequest;
-import subway.application.dto.AddStationToEndLineRequest;
 import subway.controller.dto.AddInitStationToLineRequest;
 import subway.controller.dto.AddStationLocation;
+import subway.controller.dto.AddStationToBetweenLineRequest;
+import subway.controller.dto.AddStationToEndLineRequest;
 import subway.controller.dto.AddStationToLineRequest;
 import subway.controller.dto.RemoveStationOnLineRequest;
 
