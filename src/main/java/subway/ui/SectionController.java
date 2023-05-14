@@ -18,9 +18,9 @@ public class SectionController {
     }
 
     @GetMapping("lines/{lineId}/sections")
-    public ResponseEntity<List<StationResponse>> addSection(@PathVariable long lineId) {
-        sectionService.findStationsInOrder(lineId);
-        return ResponseEntity.status(HttpStatus.OK).build();
+    public ResponseEntity<List<StationResponse>> findStationsInLine(@PathVariable long lineId) {
+        List<StationResponse> stationsInOrder = sectionService.findStationsInOrder(lineId);
+        return ResponseEntity.status(HttpStatus.OK).body(stationsInOrder);
     }
 
     @PostMapping("lines/{lineId}/sections")
@@ -30,7 +30,7 @@ public class SectionController {
     }
 
     @DeleteMapping("lines/{lineId}/sections/{stationId}")
-    public ResponseEntity<Void> addSection(@PathVariable long lineId, @PathVariable long stationId) {
+    public ResponseEntity<Void> removeStationInLine(@PathVariable long lineId, @PathVariable long stationId) {
         sectionService.removeStation(stationId, lineId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
