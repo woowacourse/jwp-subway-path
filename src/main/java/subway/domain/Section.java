@@ -1,9 +1,7 @@
 package subway.domain;
 
-import java.util.List;
-
 public class Section {
-    private Long id;
+    private Long lineId;
     private Station upStation;
     private Station downStation;
     private Long distance;
@@ -14,21 +12,26 @@ public class Section {
         this.distance = distance;
     }
 
-    public Section(final Long id, final Station upStation, final Station downStation, final Long distance) {
-        this.id = id;
+    public Section(final Long lineId, final Station upStation, final Station downStation, final Long distance) {
+        this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
 
-    public static Section of(final String upStation, final String downStation, final Long distance) {
-        return new Section(null, new Station(upStation), new Station(downStation), distance);
+    public static Section of(final Long lineId, final String upStationName, final String downStationName, final Long distance) {
+        return new Section(lineId, new Station(upStationName), new Station(downStationName), distance);
     }
 
     public static Section of(final String upStation, final String downStation) {
         return new Section(null, new Station(upStation), new Station(downStation), null);
     }
+
+    public static Section of(final Long lineId, final String upStationName, final String downStationName) {
+        return new Section(lineId, new Station(upStationName), new Station(downStationName), null);
+    }
+
 
     public Long getDistance() {
         return distance;
