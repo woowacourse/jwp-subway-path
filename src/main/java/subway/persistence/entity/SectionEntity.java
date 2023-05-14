@@ -1,24 +1,22 @@
-package subway.dao;
+package subway.persistence.entity;
 
 public class SectionEntity {
-
     private final Long id;
     private final Long lineId;
     private final Long startStationId;
     private final Long endStationId;
     private final int distance;
 
-    public SectionEntity(Long lineId, Long startStationId, Long endStationId, int distance) {
-        this(null, lineId, startStationId, endStationId, distance);
-    }
-
-    public SectionEntity(Long id, Long lineId, Long startStationId, Long endStationId,
-                         int distance) {
+    public SectionEntity(Long id, Long lineId, Long startStationId, Long endStationId, int distance) {
         this.id = id;
         this.lineId = lineId;
         this.startStationId = startStationId;
         this.endStationId = endStationId;
         this.distance = distance;
+    }
+
+    public SectionEntity(Long lineId, Long startStationId, Long endStationId, int distance) {
+        this(null, lineId, startStationId, endStationId, distance);
     }
 
     public Long getId() {

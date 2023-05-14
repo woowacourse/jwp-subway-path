@@ -1,106 +1,67 @@
 package subway.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.SectionDao;
-import subway.dao.SectionEntity;
-import subway.dao.StationDao;
-import subway.dao.StationEntity;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
-import subway.dto.SectionRequest;
+import subway.application.dto.SectionDto;
+import subway.domain.*;
 
 @Transactional(readOnly = true)
 @Service
 public class SectionService {
+    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
 
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
-
-    public SectionService(SectionDao sectionDao, StationDao stationDao) {
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
+    public SectionService(SectionRepository sectionRepository, StationRepository stationRepository) {
+        this.sectionRepository = sectionRepository;
+        this.stationRepository = stationRepository;
     }
 
     @Transactional
-    public void saveSection(Long lineId, SectionRequest request) {
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
-        List<Section> savedSections = sectionEntities.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
+    public void saveSection(Long lineId, SectionDto sectionDto) {
+        Station startStation = new Station(sectionDto.getStartStation());
+        Station endStation = new Station(sectionDto.getEndStation());
+        Distance distance = new Distance(sectionDto.getDistance());
 
-        Sections sections = new Sections(savedSections);
+        saveStation(startStation);
+        saveStation(endStation);
 
-        Station requestStartStation = new Station(request.getStartStation());
-        Station requestEndStation = new Station(request.getEndStation());
-        if (!stationDao.isExistStationByName(requestStartStation.getName())) {
-            stationDao.insert(new StationEntity(requestStartStation.getName()));
-        }
+        Section targetSection = new Section(startStation, endStation, distance);
 
-        if (!stationDao.isExistStationByName(requestEndStation.getName())) {
-            stationDao.insert(new StationEntity(requestEndStation.getName()));
-        }
-        Distance requestDistance = new Distance(request.getDistance());
-        Section requestSection = new Section(requestStartStation, requestEndStation, requestDistance);
+        Sections sections = sectionRepository.findAllByLineId(lineId);
+        sections.add(targetSection);
 
-        sections.add(requestSection);
-
-        sectionDao.deleteAll();
-
-        List<SectionEntity> makeSectionEntitiesByAddedSections = makeSectionEntities(lineId, sections.getSections());
-
-        sectionDao.insertAll(makeSectionEntitiesByAddedSections);
+        updateSections(lineId, sections);
     }
 
-    private List<SectionEntity> makeSectionEntities(Long lineId, List<Section> sections) {
-        return sections.stream()
-                .map(it -> {
-                    Station startStation = it.getStartStation();
-                    Station endStation = it.getEndStation();
+    private void saveStation(Station station) {
+        if (stationRepository.isExistStation(station)) {
+            return;
+        }
 
-                    Long startStationId = stationDao.findIdByName(startStation.getName());
-                    Long endStationId = stationDao.findIdByName(endStation.getName());
-
-                    return new SectionEntity(lineId, startStationId, endStationId, it.getDistance().getDistance());
-                })
-                .collect(Collectors.toList());
+        stationRepository.save(station);
     }
 
-
-    private Section toSection(SectionEntity sectionEntity) {
-        Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
-        Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
-        Distance distance = new Distance(sectionEntity.getDistance());
-
-        return new Section(startStation, endStation, distance);
+    private void updateSections(Long lineId, Sections sections) {
+        sectionRepository.deleteAllByLineId(lineId);
+        sectionRepository.saveAll(lineId, sections);
     }
 
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
-        //특정 호선의 Sections를 가져옴
-        List<SectionEntity> sectionEntitiesOfLine = sectionDao.findByLineId(lineId);
+        Station targetStation = stationRepository.findById(stationId);
+        Sections sections = sectionRepository.findAllByLineId(lineId);
 
-        List<Section> sectionsOfLine = sectionEntitiesOfLine.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
-
-        Sections sections = new Sections(sectionsOfLine);
-
-        // 요청에 대한 station 을 찾음
-        Station targetStation = toStation(stationDao.findById(stationId));
-        // 해당 station 제거
         sections.remove(targetStation);
 
-        sectionDao.deleteAllByLineId(lineId);
-        List<SectionEntity> makeSectionEntitiesByAddedSections = makeSectionEntities(lineId, sections.getSections());
-        sectionDao.insertAll(makeSectionEntitiesByAddedSections);
+        updateSections(lineId, sections);
+        deleteStation(stationId);
     }
 
-    private Station toStation(StationEntity stationEntity) {
-        return new Station(stationEntity.getName());
+    private void deleteStation(Long stationId) {
+        if (sectionRepository.isExistSectionUsingStation(stationId)) {
+            return;
+        }
+
+        stationRepository.deleteById(stationId);
     }
 }

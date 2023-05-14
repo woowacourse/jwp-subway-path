@@ -1,11 +1,12 @@
 package subway.domain;
 
+import subway.exception.GlobalException;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import subway.exception.GlobalException;
 
 public class Sections {
     private final List<Section> sections;
@@ -36,8 +37,7 @@ public class Sections {
         }
 
         int totalDistance = sectionsContainStation.stream()
-                .map(Section::getDistance)
-                .mapToInt(Distance::getDistance)
+                .mapToInt(Section::getDistance)
                 .sum();
 
         Section firstSection = sectionsContainStation.get(0);
@@ -85,7 +85,7 @@ public class Sections {
         Section findSection = findForAddByDistance(newSection);
 
         if (findSection.isSameStartStation(newSection)) {
-            Distance subtractedDistance = findSection.subtractDistance(newSection);
+            Distance subtractedDistance = findSection.subtract(newSection);
             Section devidedSection = new Section(newSection.getEndStation(), findSection.getEndStation(),
                     subtractedDistance);
 
@@ -95,7 +95,7 @@ public class Sections {
             return;
         }
 
-        Distance subtractedDistance = findSection.subtractDistance(newSection);
+        Distance subtractedDistance = findSection.subtract(newSection);
         Section devidedSection = new Section(findSection.getStartStation(), newSection.getStartStation(),
                 subtractedDistance);
 
@@ -161,7 +161,7 @@ public class Sections {
         }
     }
 
-    public List<Station> getSortedStations() {
+    public List<Station> getOrderedStations() {
         List<Station> sortedStations = new ArrayList<>();
 
         Station startStation = getUpStation();
@@ -217,6 +217,10 @@ public class Sections {
             }
         }
         throw new GlobalException("상행 종점이 존재하지 않습니다.");
+    }
+
+    public boolean isEmpty(){
+        return sections.isEmpty();
     }
 
     public List<Section> getSections() {

@@ -1,7 +1,8 @@
 package subway.domain;
 
-import java.util.Objects;
 import subway.exception.GlobalException;
+
+import java.util.Objects;
 
 public class Section {
     private final Station startStation;
@@ -38,7 +39,15 @@ public class Section {
         return this.endStation.equals(otherStation);
     }
 
-    public Distance subtractDistance(Section otherSection) {
+    public boolean isGreaterThanOtherDistance(Section otherSection) {
+        return this.distance.isBiggerThanOtherDistance(otherSection.distance);
+    }
+
+    public boolean hasStation(Station otherStation) {
+        return isSameStartStation(otherStation) || isSameEndStation(otherStation);
+    }
+
+    public Distance subtract(Section otherSection) {
         return this.distance.subtract(otherSection.distance);
     }
 
@@ -50,8 +59,8 @@ public class Section {
         return endStation;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.getDistance();
     }
 
     @Override
@@ -70,13 +79,5 @@ public class Section {
     @Override
     public int hashCode() {
         return Objects.hash(startStation, endStation);
-    }
-
-    public boolean isGreaterThanOtherDistance(Section otherSection) {
-        return this.distance.isBiggerThanOtherDistance(otherSection.distance);
-    }
-
-    public boolean hasStation(Station otherStation) {
-        return isSameStartStation(otherStation) || isSameEndStation(otherStation);
     }
 }
