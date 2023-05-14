@@ -1,6 +1,6 @@
-package subway.persistence.entity;
+package subway.persistence.row;
 
-public class SectionEntity {
+public class SectionRow {
 
     private final Long id;
     private final Long lineId;
@@ -8,11 +8,11 @@ public class SectionEntity {
     private final String right;
     private final Integer distance;
 
-    public SectionEntity(Long lineId, String left, String right, Integer distance) {
+    public SectionRow(Long lineId, String left, String right, Integer distance) {
         this(null, lineId, left, right, distance);
     }
 
-    public SectionEntity(Long id, Long lineId, String left, String right, Integer distance) {
+    public SectionRow(Long id, Long lineId, String left, String right, Integer distance) {
         this.id = id;
         this.lineId = lineId;
         this.left = left;

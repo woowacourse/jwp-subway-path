@@ -12,7 +12,7 @@ import subway.application.domain.Line;
 import subway.application.domain.LineProperty;
 import subway.application.domain.Section;
 import subway.application.domain.Station;
-import subway.persistence.entity.SectionEntity;
+import subway.persistence.row.SectionRow;
 
 import javax.sql.DataSource;
 
@@ -31,7 +31,7 @@ class LineRepositoryTest {
     private H2LineRepository lineRepository;
     private H2LinePropertyRepository linePropertyRepository;
 
-    private final RowMapper<SectionEntity> sectionMapper = (rs, cn) -> new SectionEntity(
+    private final RowMapper<SectionRow> sectionMapper = (rs, cn) -> new SectionRow(
             rs.getLong("id"),
             rs.getLong("line_id"),
             rs.getString("up_bound"),
@@ -66,17 +66,17 @@ class LineRepositoryTest {
         linePropertyRepository.insert(lineProperty);
         lineRepository.save(line);
 
-        List<SectionEntity> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
+        List<SectionRow> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
 
         //then
         assertAll(
                 () -> assertThat(actual).hasSize(3),
-                () -> assertThat(actual).anyMatch(sectionEntity -> sectionEntity.getLeft().equals("푸우") &&
-                        sectionEntity.getRight().equals("테오") && sectionEntity.getDistance() == 1),
-                () -> assertThat(actual).anyMatch(sectionEntity -> sectionEntity.getLeft().equals("테오") &&
-                        sectionEntity.getRight().equals("제이온") && sectionEntity.getDistance() == 2),
-                () -> assertThat(actual).anyMatch(sectionEntity -> sectionEntity.getLeft().equals("제이온") &&
-                        sectionEntity.getRight().equals("시카") && sectionEntity.getDistance() == 3)
+                () -> assertThat(actual).anyMatch(sectionRow -> sectionRow.getLeft().equals("푸우") &&
+                        sectionRow.getRight().equals("테오") && sectionRow.getDistance() == 1),
+                () -> assertThat(actual).anyMatch(sectionRow -> sectionRow.getLeft().equals("테오") &&
+                        sectionRow.getRight().equals("제이온") && sectionRow.getDistance() == 2),
+                () -> assertThat(actual).anyMatch(sectionRow -> sectionRow.getLeft().equals("제이온") &&
+                        sectionRow.getRight().equals("시카") && sectionRow.getDistance() == 3)
         );
     }
 

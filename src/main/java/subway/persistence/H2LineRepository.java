@@ -9,7 +9,7 @@ import subway.application.domain.Line;
 import subway.application.domain.LineProperty;
 import subway.application.domain.Section;
 import subway.application.domain.Station;
-import subway.persistence.entity.SectionEntity;
+import subway.persistence.row.SectionRow;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class H2LineRepository implements LineRepository {
             rs.getString("color")
     );
 
-    private final RowMapper<SectionEntity> sectionMapper = (rs, cn) -> new SectionEntity(
+    private final RowMapper<SectionRow> sectionMapper = (rs, cn) -> new SectionRow(
             rs.getLong("id"),
             rs.getLong("line_id"),
             rs.getString("up_bound"),
@@ -48,22 +48,22 @@ public class H2LineRepository implements LineRepository {
         String linePropertySql = "select id, name, color from line_property where id = ?";
         String sectionSql = "select id, line_id, up_bound, down_bound, distance from section where line_id = ?";
 
-        List<SectionEntity> sectionEntities = jdbcTemplate.query(sectionSql, sectionMapper, linePropertyId);
+        List<SectionRow> sectionEntities = jdbcTemplate.query(sectionSql, sectionMapper, linePropertyId);
         LineProperty lineProperty = jdbcTemplate.queryForObject(linePropertySql, propertyRowMapper, linePropertyId);
 
         Map<String, Long> stationIds = getStationIdsOf(sectionEntities);
         List<Section> sections = sectionEntities.stream()
-                .map(sectionEntity -> new Section(
-                        new Station(stationIds.get(sectionEntity.getLeft()), sectionEntity.getLeft()),
-                        new Station(stationIds.get(sectionEntity.getRight()), sectionEntity.getRight()),
-                        new Distance(sectionEntity.getDistance())
+                .map(sectionRow -> new Section(
+                        new Station(stationIds.get(sectionRow.getLeft()), sectionRow.getLeft()),
+                        new Station(stationIds.get(sectionRow.getRight()), sectionRow.getRight()),
+                        new Distance(sectionRow.getDistance())
                 )).collect(Collectors.toList());
 
         return new Line(lineProperty, sections);
     }
 
 
-    private Map<String, Long> getStationIdsOf(List<SectionEntity> sectionEntities) {
+    private Map<String, Long> getStationIdsOf(List<SectionRow> sectionEntities) {
         String sql = "select id from station where name = ?";
         List<String> stationNames = getStationNames(sectionEntities);
         Map<String, Long> result = new HashMap<>();
@@ -74,11 +74,11 @@ public class H2LineRepository implements LineRepository {
         return result;
     }
 
-    private List<String> getStationNames(List<SectionEntity> sectionEntities) {
+    private List<String> getStationNames(List<SectionRow> sectionEntities) {
         Set<String> stationNames = new HashSet<>();
-        for (SectionEntity sectionEntity : sectionEntities) {
-            stationNames.add(sectionEntity.getLeft());
-            stationNames.add(sectionEntity.getRight());
+        for (SectionRow sectionRow : sectionEntities) {
+            stationNames.add(sectionRow.getLeft());
+            stationNames.add(sectionRow.getRight());
         }
         return new ArrayList<>(stationNames);
     }
@@ -91,8 +91,8 @@ public class H2LineRepository implements LineRepository {
     public void save(Line line) {
         String sectionSql = "insert into section (line_id, up_bound, down_bound, distance) values (?, ?, ?, ?)";
 
-        List<SectionEntity> sections = line.getSections().stream()
-                .map(section -> new SectionEntity(
+        List<SectionRow> sections = line.getSections().stream()
+                .map(section -> new SectionRow(
                         line.getId(),
                         section.getUpBound().getName(),
                         section.getDownBound().getName(),
