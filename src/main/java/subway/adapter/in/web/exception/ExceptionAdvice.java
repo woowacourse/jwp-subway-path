@@ -1,7 +1,5 @@
 package subway.adapter.in.web.exception;
 
-import subway.common.exception.ApiIllegalArgumentException;
-import subway.common.exception.ApiNoSuchResourceException;
 import java.sql.SQLException;
 import java.util.List;
 import org.slf4j.Logger;
@@ -13,15 +11,17 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import subway.common.exception.SubwayException;
+import subway.common.exception.SubwayNoSuchResourceException;
 
 @RestControllerAdvice
 public class ExceptionAdvice {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @ExceptionHandler(ApiIllegalArgumentException.class)
-    private ResponseEntity<ErrorResponse> handleApiIllegalArgumentException(ApiIllegalArgumentException exception) {
-        logger.warn("[ApiIllegalArgumentException]", exception);
+    @ExceptionHandler(SubwayException.class)
+    private ResponseEntity<ErrorResponse> handleApiIllegalArgumentException(SubwayException exception) {
+        logger.warn("[SubwayException]", exception);
 
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(exception.getMessage()));
@@ -42,9 +42,9 @@ public class ExceptionAdvice {
                 .body(new ErrorResponse(stringBuilder.toString()));
     }
 
-    @ExceptionHandler(ApiNoSuchResourceException.class)
-    private ResponseEntity<ErrorResponse> handleNoSuchResourceException(ApiNoSuchResourceException exception) {
-        logger.warn("[ApiNoSuchResourceException]", exception);
+    @ExceptionHandler(SubwayNoSuchResourceException.class)
+    private ResponseEntity<ErrorResponse> handleNoSuchResourceException(SubwayNoSuchResourceException exception) {
+        logger.warn("[SubwayNoSuchResourceException]", exception);
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(new ErrorResponse(exception.getMessage()));

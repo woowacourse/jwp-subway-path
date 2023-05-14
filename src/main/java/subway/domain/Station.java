@@ -1,6 +1,6 @@
 package subway.domain;
 
-import subway.common.exception.ApiIllegalArgumentException;
+import subway.common.exception.SubwayException;
 
 public class Station {
 
@@ -21,10 +21,10 @@ public class Station {
 
     private void validateName(final String name) {
         if (name == null || name.isBlank()) {
-            throw new ApiIllegalArgumentException("이름은 비어있을 수 없습니다.");
+            throw new SubwayException("이름은 비어있을 수 없습니다.");
         }
         if (name.strip().length() > MAX_NAME_LENGTH) {
-            throw new ApiIllegalArgumentException("이름은 " + MAX_NAME_LENGTH + "자 이하여야합니다.");
+            throw new SubwayException("이름은 " + MAX_NAME_LENGTH + "자 이하여야합니다.");
         }
     }
 

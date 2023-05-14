@@ -5,7 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import subway.common.exception.ApiIllegalArgumentException;
+import subway.common.exception.SubwayException;
 
 public class Sections {
 
@@ -33,10 +33,10 @@ public class Sections {
         boolean isUpExists = isExists(upToDown, section.getUpStation());
         boolean isDownExists = isExists(upToDown, section.getDownStation());
         if (isUpExists && isDownExists) {
-            throw new ApiIllegalArgumentException("이미 존재하는 구간입니다.");
+            throw new SubwayException("이미 존재하는 구간입니다.");
         }
         if (!isUpExists && !isDownExists) {
-            throw new ApiIllegalArgumentException("하나의 역은 반드시 노선에 존재해야합니다.");
+            throw new SubwayException("하나의 역은 반드시 노선에 존재해야합니다.");
         }
 
         // 상행역이 이미 노선에 존재할 경우
@@ -60,7 +60,7 @@ public class Sections {
             int newDistance = section.getDistance();
 
             if (oldDistance <= newDistance) {
-                throw new ApiIllegalArgumentException("거리는 기존 구간보다 짧아야합니다.");
+                throw new SubwayException("거리는 기존 구간보다 짧아야합니다.");
             }
 
             sections.add(section);
@@ -90,7 +90,7 @@ public class Sections {
             int newDistance = section.getDistance();
 
             if (oldDistance <= newDistance) {
-                throw new ApiIllegalArgumentException("거리는 기존 구간보다 짧아야합니다.");
+                throw new SubwayException("거리는 기존 구간보다 짧아야합니다.");
             }
 
             sections.add(section);
@@ -106,7 +106,7 @@ public class Sections {
 
     public void remove(final Station station) {
         if (sections.isEmpty()) {
-            throw new ApiIllegalArgumentException("해당 역이 노선에 존재하지 않습니다.");
+            throw new SubwayException("해당 역이 노선에 존재하지 않습니다.");
         }
 
         List<Section> stationSections = sections.stream()
@@ -114,7 +114,7 @@ public class Sections {
                 .collect(Collectors.toList());
 
         if (stationSections.isEmpty()) {
-            throw new ApiIllegalArgumentException("해당 역이 노선에 존재하지 않습니다.");
+            throw new SubwayException("해당 역이 노선에 존재하지 않습니다.");
         }
 
         if (stationSections.size() == 1) {
