@@ -73,12 +73,11 @@ public class StationControllerUnitTest {
         StationsResponse expected = StationsResponse.from(stations);
         given(stationService.findAllStationResponses()).willReturn(expected);
 
-        // when
+        // when & then
         mockMvc.perform(
                 get("/stations")
         ).andExpect(status().isOk());
 
-        // then
         verify(stationService).findAllStationResponses();
     }
 
@@ -90,12 +89,11 @@ public class StationControllerUnitTest {
         StationResponse stationResponse = StationResponse.from(new Station("잠실역"));
         given(stationService.findStationEntityById(id)).willReturn(stationResponse);
 
-        // when
+        // when & then
         mockMvc.perform(
                 get("/stations/" + id)
         ).andExpect(status().isOk());
 
-        // then
         verify(stationService).findStationEntityById(id);
     }
 
@@ -106,12 +104,11 @@ public class StationControllerUnitTest {
         Long id = 1L;
         given(stationService.findStationEntityById(id)).willThrow(StationNotFoundException.class);
 
-        // when
+        // when & then
         mockMvc.perform(
                 get("/stations/" + id)
         ).andExpect(status().isNotFound());
 
-        // then
         verify(stationService).findStationEntityById(id);
     }
 
@@ -122,14 +119,13 @@ public class StationControllerUnitTest {
         Long id = 1L;
         StationEditRequest stationEditRequest = new StationEditRequest("선릉역");
 
-        // when
+        // when & then
         mockMvc.perform(
                 patch("/stations/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(stationEditRequest))
         ).andExpect(status().isNoContent());
 
-        // then
         verify(stationService).editStation(eq(id), any(StationEditRequest.class));
     }
 }
