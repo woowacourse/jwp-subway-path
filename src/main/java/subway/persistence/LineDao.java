@@ -38,10 +38,9 @@ public class LineDao {
         }
     }
 
-    // TODO: 꼭 queryForList로 해야하나? 다른 방법 찾아보자. 옵셔널 말고.
     public LineEntity findByName(final String name) {
         final String sql = "SELECT * FROM line WHERE name = ?";
-        final List<LineEntity> result = jdbcTemplate.query(sql, lineEntityRowMapper, name);
+        final LineEntity result = jdbcTemplate.queryForObject(sql, lineEntityRowMapper, name);
 
         if (result.isEmpty()) {
             throw new LineNotFoundException();

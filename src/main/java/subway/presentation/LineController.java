@@ -1,7 +1,9 @@
 package subway.presentation;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +14,11 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.business.LineService;
 import subway.business.dto.LineDto;
 import subway.business.dto.SectionCreateDto;
+import subway.exception.DuplicatedLineNameException;
+import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 import subway.presentation.dto.request.LineRequest;
+import subway.presentation.dto.response.ExceptionResponse;
 import subway.presentation.dto.response.LineDetailResponse;
 
 import javax.validation.Valid;

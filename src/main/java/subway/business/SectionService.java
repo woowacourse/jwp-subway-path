@@ -2,6 +2,7 @@ package subway.business;
 
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.business.domain.Section;
 import subway.business.dto.SectionInsertDto;
 import subway.persistence.LineDao;
@@ -32,6 +33,7 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional
     public List<SectionResponse> save(final SectionInsertDto sectionInsertDto) {
         final LineEntity line = lineDao.findByName(sectionInsertDto.getLineName());
         final StationEntity standardStation = stationDao.findByName(sectionInsertDto.getStandardStationName());

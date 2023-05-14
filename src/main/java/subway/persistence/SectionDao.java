@@ -46,19 +46,6 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, nextStationId);
     }
 
-    public List<SectionEntity> findByLineId(final Long lineId) {
-        final String sql = "SELECT * " +
-                "FROM section WHERE line_id = ?";
-
-        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
-    }
-
-    public List<SectionEntity> findAll() {
-        final String sql = "SELECT * FROM section";
-
-        return jdbcTemplate.query(sql, sectionEntityRowMapper);
-    }
-
     public void delete(final SectionEntity sectionEntity) {
         final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.update(sql, sectionEntity.getId());

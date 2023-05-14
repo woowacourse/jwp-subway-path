@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.business.StationService;
+import subway.exception.DuplicatedLineNameException;
 import subway.exception.StationNotFoundException;
 import subway.presentation.dto.request.StationRequest;
 import subway.presentation.dto.response.ExceptionResponse;
@@ -59,16 +60,6 @@ public class StationController {
     public ResponseEntity<Void> delete(@PathVariable final Long id) {
         stationService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<ExceptionResponse> handleDataIntegrityViolationException() {
-        return ResponseEntity.badRequest().body(new ExceptionResponse("중복된 역이름입니다."));
-    }
-
-    @ExceptionHandler(StationNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleStationNotFoundException(StationNotFoundException e) {
-        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
 
 }
