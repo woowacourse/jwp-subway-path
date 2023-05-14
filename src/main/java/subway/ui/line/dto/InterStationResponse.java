@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.line.dto;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,8 @@ import subway.domain.interstation.InterStation;
 public class InterStationResponse {
 
     private Long id;
-    private Long frontStationId;
-    private Long backStationId;
+    private Long upStationId;
+    private Long downStationId;
     private long distance;
 
     public static InterStationResponse from(final InterStation interStation) {

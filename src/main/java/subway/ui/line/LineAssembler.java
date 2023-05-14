@@ -1,0 +1,51 @@
+package subway.ui.line;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import subway.application.line.port.in.InterStationResponseDto;
+import subway.application.line.port.in.LineCreateRequestDto;
+import subway.application.line.port.in.LineCreateResponseDto;
+import subway.ui.line.dto.InterStationResponse;
+import subway.ui.line.dto.LineCreateRequest;
+import subway.ui.line.dto.LineResponse;
+
+public class LineAssembler {
+
+    private LineAssembler() {
+    }
+
+    public static LineCreateRequestDto toLineCreateRequestDto(final LineCreateRequest request) {
+        return new LineCreateRequestDto(
+            request.getName(),
+            request.getColor(),
+            request.getUpStationId(),
+            request.getDownStationId(),
+            request.getDistance()
+        );
+    }
+
+    public static LineResponse toLineResponse(final LineCreateResponseDto responseDto) {
+        return new LineResponse(
+            responseDto.getId(),
+            responseDto.getName(),
+            responseDto.getColor(),
+            toInterStationResponses(responseDto.getInterStations())
+        );
+
+    }
+
+    private static List<InterStationResponse> toInterStationResponses(final List<InterStationResponseDto> responseDto) {
+        return responseDto.stream()
+            .map(LineAssembler::toInterStationResponse)
+            .collect(Collectors.toList());
+    }
+
+    private static InterStationResponse toInterStationResponse(final InterStationResponseDto responseDto) {
+        return new InterStationResponse(
+            responseDto.getId(),
+            responseDto.getUpStationId(),
+            responseDto.getDownStationId(),
+            responseDto.getDistance()
+        );
+    }
+}

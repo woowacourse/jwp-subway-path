@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
+import subway.application.line.port.in.LineCreateUseCase;
 import subway.application.station.port.in.StationCreateUseCase;
 import subway.application.station.port.in.StationDeleteUseCase;
 import subway.application.station.port.in.StationFindAllUseCase;
@@ -34,4 +35,7 @@ public abstract class AbstractControllerTest {
 
     @MockBean
     protected StationDeleteUseCase stationDeleteUseCase;
+
+    @MockBean
+    protected LineCreateUseCase lineCreateUseCase;
 }
