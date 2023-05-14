@@ -1,6 +1,7 @@
 package subway.ui;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -9,7 +10,6 @@ import subway.application.LineService;
 import subway.dto.LineResponse;
 
 import java.util.List;
-import subway.dto.StationResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -20,7 +20,6 @@ public class LineController {
     public LineController(LineService lineService) {
         this.lineService = lineService;
     }
-
 
 //    @PostMapping
 //    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
@@ -53,14 +52,10 @@ public class LineController {
 //        return ResponseEntity.ok().build();
 //    }
 //
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-//        lineService.deleteLineById(id);
-//        return ResponseEntity.noContent().build();
-//    }
-//
-//    @ExceptionHandler(SQLException.class)
-//    public ResponseEntity<Void> handleSQLException() {
-//        return ResponseEntity.badRequest().build();
-//    }
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
+        lineService.deleteLineById(lineId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

@@ -3,7 +3,9 @@ package subway.dto;
 public class LineRequest {
     private String name;
     private String color;
-    private Long head_station;
+    private String upStation;
+    private String downStation;
+    private int distance;
 
     public LineRequest() {
     }
@@ -21,4 +23,15 @@ public class LineRequest {
         return color;
     }
 
+    public String getUpStation() {
+        return upStation;
+    }
+
+    public String getDownStation() {
+        return downStation;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
 }
