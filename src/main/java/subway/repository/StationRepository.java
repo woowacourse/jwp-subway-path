@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.domain.Station;
+import subway.entity.StationEntity;
 
 import java.util.Optional;
 
@@ -19,18 +20,25 @@ public class StationRepository {
 
 
     public Optional<Station> findStationByName(String stationName) {
-        return Optional.empty();
+        return stationDao.findByName(stationName)
+                         .map(stationEntity -> new Station(stationEntity.getName()));
     }
 
-    public Optional<Station> findStationById(long id) {
-        return Optional.empty();
+    public Optional<Station> findStationById(long stationId) {
+        return stationDao.findById(stationId)
+                         .map(stationEntity -> new Station(stationEntity.getName()));
     }
 
-    public long insert(Station stationName) {
-        return 0L;
+    public long insert(Station stationToInsert) {
+        stationDao.findByName(stationToInsert.getName())
+                  .ifPresent(ignored -> {throw new IllegalStateException("디버깅: 추가하려는 역이 이미 존재합니다");});
+
+        final StationEntity stationEntity = new StationEntity.Builder().name(stationToInsert.getName()).build();
+        return stationDao.insert(stationEntity).getId();
+
     }
 
     public Optional<Long> findIdByName(String stationName) {
-        return Optional.empty();
+        return stationDao.findIdByName(stationName);
     }
 }
