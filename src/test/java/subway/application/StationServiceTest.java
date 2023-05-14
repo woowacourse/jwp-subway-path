@@ -1,19 +1,19 @@
 package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import subway.application.request.CreateSectionRequest;
 import subway.application.request.CreateStationRequest;
 import subway.application.response.StationResponse;
 import subway.config.ServiceTestConfig;
 import subway.dao.entity.StationEntity;
+import subway.domain.Line;
+import subway.domain.Section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-@DisplayNameGeneration(ReplaceUnderscores.class)
 class StationServiceTest extends ServiceTestConfig {
 
     StationService stationService;
@@ -40,19 +40,32 @@ class StationServiceTest extends ServiceTestConfig {
     @Test
     void 노선에_새로운_구간을_추가할_때_등록되지_않은_새로운_역일_경우_역을_저장한다() {
         // given
-        final Long 노선2_식별자값 = lineDao.insert("2", "초록");
-        final Long 잠실_식별자값 = stationDao.insert(new StationEntity("잠실"));
-        final Long 잠실새내_식별자값 = stationDao.insert(new StationEntity("잠실새내"));
+        final Long 노선1_식별자값 = lineDao.insert("1", "파랑");
 
-        sectionDao.insert(잠실_식별자값, 잠실새내_식별자값, 노선2_식별자값, false, 10);
+        final CreateSectionRequest 구간_요청
+                = new CreateSectionRequest("창동", "녹천", 노선1_식별자값, 10);
 
         // when
-        final CreateSectionRequest 구간_요청
-                = new CreateSectionRequest("창동", "녹천", 노선2_식별자값, 10);
+        stationService.saveSection(구간_요청);
+
+
+        final Line 노선 = lineRepository.findByLineId(노선1_식별자값);
+        final Section 구간 = 노선.getSections().get(0);
+
+        final String 노선명 = 노선.getName();
+        final String 노선_색상 = 노선.getColor();
+
+        final String 구간의_상행역 = 구간.getUpStation().getName();
+        final String 구간의_하행역 = 구간.getDownStation().getName();
 
         // then
-        assertThatThrownBy(() -> stationService.saveSection(구간_요청))
-                .isInstanceOf(IllegalArgumentException.class);
+
+        assertAll(
+                () -> assertThat(구간의_상행역).isEqualTo("창동"),
+                () -> assertThat(구간의_하행역).isEqualTo("녹천"),
+                () -> assertThat(노선명).isEqualTo("1"),
+                () -> assertThat(노선_색상).isEqualTo("파랑")
+        );
     }
 
     @Test
