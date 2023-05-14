@@ -75,11 +75,11 @@ public class LineRepositoryImpl implements LineRepository {
         }
         sectionDao.deleteAllByLineId(line.getId());
         lineDao.delete(line);
-        lineDao.insert(line);
+        final Line insertedLine = lineDao.insert(line);
         final Sections sections = line.getSections();
         for (int index = 0; index < sections.size(); index++) {
             final Section section = sections.findSection(index);
-            sectionDao.insert(section, line.getId());
+            sectionDao.insert(section, insertedLine.getId());
         }
     }
 

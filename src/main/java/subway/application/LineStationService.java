@@ -28,6 +28,7 @@ public class LineStationService {
         final Station upStation = getStation(request.getUpStationName());
         final Station downStation = getStation(request.getDownStationName());
         line.addInitStations(upStation, downStation, request.getDistance());
+        lineRepository.update(line);
     }
 
     public void addStationToTopLine(final AddStationToEndLineRequest request) {

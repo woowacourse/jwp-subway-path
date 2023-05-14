@@ -125,7 +125,7 @@ public class LineDao {
 
     public void delete(final Line line) {
         final String sql = "DELETE "
-            + "FROM SECTION "
+            + "FROM LINE "
             + "WHERE id = ?";
         jdbcTemplate.update(sql, line.getId());
     }
