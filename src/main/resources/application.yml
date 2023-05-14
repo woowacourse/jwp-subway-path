@@ -1,0 +1,28 @@
+spring:
+  h2:
+    console:
+      enabled: true
+
+  datasource:
+    url: jdbc:h2:mem:testdb;MODE=MySQL
+    driver-class-name: org.h2.Driver
+
+  sql:
+    init:
+      schema-locations: classpath:data.sql
+      data-locations: classpath:dummy.sql
+
+  springdoc:
+    packages-to-scan: subway
+    default-consumes-media-type: application/json;charset=UTF-8
+    default-produces-media-type: application/json;charset=UTF-8
+    swagger-ui:
+      path: subway.html
+      tags-sorter: alpha
+      operations-sorter: alpha
+    api-docs:
+      path: /subway-api-docs
+      groups:
+        enabled: true
+    cache:
+      disabled: true
