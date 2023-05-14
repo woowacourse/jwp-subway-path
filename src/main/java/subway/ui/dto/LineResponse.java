@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LineResponse {
-    private Long id;
+    private long id;
     private String name;
 
     public LineResponse() {
     }
 
-    public LineResponse(final Long id, final String name) {
+    public LineResponse(final long id, final String name) {
         this.id = id;
         this.name = name;
     }
@@ -23,7 +23,7 @@ public class LineResponse {
                 .collect(Collectors.toList());
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

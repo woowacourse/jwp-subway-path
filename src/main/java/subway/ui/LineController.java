@@ -20,15 +20,16 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<String> createLine(@RequestBody LineRequest lineRequest) {
-        final LineResponse lineId = lineService.createLine(lineRequest);
+    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+        final long lineId = lineService.createLine(lineRequest).getId();
         final URI uri = URI.create("/lines/" + lineId);
         return ResponseEntity.created(uri).build();
     }
 
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findAll());
+        final List<LineResponse> lines = lineService.findAll();
+        return ResponseEntity.ok(lines);
     }
 
 
