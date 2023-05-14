@@ -15,6 +15,7 @@ import subway.business.dto.SectionCreateDto;
 import subway.presentation.dto.request.LineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -29,21 +30,21 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody LineRequest request) {
+    public ResponseEntity<Void> create(@RequestBody @Valid final LineRequest request) {
         final LineDto lineDto = new LineDto(request.getName(), request.getColor());
-        SectionCreateDto sectionCreateDto = new SectionCreateDto(
+        final SectionCreateDto sectionCreateDto = new SectionCreateDto(
                 request.getDistance(), request.getFirstStation(), request.getSecondStation());
         final long id = lineService.save(lineDto, sectionCreateDto);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<LineDetailResponse>> readAllLine() {
+    public ResponseEntity<List<LineDetailResponse>> readAll() {
         return ResponseEntity.ok(lineService.findAll());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineDetailResponse> findLineById(@PathVariable Long id) {
+    public ResponseEntity<LineDetailResponse> read(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findById(id));
     }
 
@@ -59,8 +60,4 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-//    @ExceptionHandler(SQLException.class)
-//    public ResponseEntity<Void> handleSQLException() {
-//        return ResponseEntity.badRequest().build();
-//    }
 }

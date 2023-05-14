@@ -3,6 +3,7 @@ package subway.presentation;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,11 +59,6 @@ public class StationController {
     public ResponseEntity<Void> delete(@PathVariable final Long id) {
         stationService.delete(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(EmptyResultDataAccessException.class)
-    public ResponseEntity<ExceptionResponse> handleEmptyResultDataAccessException() {
-        return ResponseEntity.badRequest().body(new ExceptionResponse("존재하지 않는 역입니다."));
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
