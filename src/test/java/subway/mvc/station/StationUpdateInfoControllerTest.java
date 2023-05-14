@@ -38,13 +38,12 @@ class StationUpdateInfoControllerTest extends AbstractControllerTest {
 
     @Test
     void 변경에서_pathVariable_이_잘못되면_400_예외가_발생한다() throws Exception {
-        // given
         final String input = "asdf";
-        // when
-        // then
+
         mockMvc.perform(put("/stations/" + input)
                 .contentType(APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new StationUpdateInfoRequest("강남역"))))
+
             .andExpect(status().isBadRequest());
     }
 }
