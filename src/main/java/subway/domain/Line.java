@@ -69,20 +69,21 @@ public class Line {
     public void deleteStation(Station stationToDelete) {
         validateStationExist(stationToDelete);
 
-        deleteLineIfAllRemoved();
+        if (areOnlyTwoStationsInLine()) {
+            sections.removeIf(section -> section.getClass() == MiddleSection.class);
+            return;
+        }
         List<AbstractSection> sectionsToMerge = findSectionsToMerge(stationToDelete);
         mergeSections(sectionsToMerge);
+    }
+
+    private boolean areOnlyTwoStationsInLine() {
+        return getSections().size() == 1;
     }
 
     private void validateStationExist(Station stationToDelete) {
         if (!isStationExist(stationToDelete)) {
             throw new StationNotFoundException("노선에 존재하지 않는 역입니다.");
-        }
-    }
-
-    private void deleteLineIfAllRemoved() {
-        if (getSections().size() == 2) {
-            sections.removeIf(section -> section.getClass() == MiddleSection.class);
         }
     }
 
