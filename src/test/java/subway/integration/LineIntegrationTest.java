@@ -23,8 +23,9 @@ import org.springframework.http.HttpStatus;
 import subway.dto.ErrorResponse;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationResponse;
+import subway.dto.LineSelectResponse;
 import subway.dto.StationSaveRequest;
+import subway.dto.StationSelectResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -77,6 +78,30 @@ public class LineIntegrationTest extends IntegrationTest {
     @Nested
     class find extends IntegrationTest {
 
+//        @DisplayName("목록 전체를 조회한다.")
+//        @Test
+//        void getLines() {
+//            lineRequest1 = new LineRequest("2호선", "강남역", "역삼역", 5);
+//            lineRequest2 = new LineRequest("1호선", "서울역", "명동역", 7);
+//
+//            // given
+//            ExtractableResponse<Response> createResponse1 = 노선_생성_요청(lineRequest1);
+//            ExtractableResponse<Response> createResponse2 = 노선_생성_요청(lineRequest2);
+//
+//            // when
+//            ExtractableResponse<Response> response = 노선_전체_조회_요청();
+//
+//            // then
+//            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+//            List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
+//                    .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+//                    .collect(Collectors.toList());
+//            List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
+//                    .map(LineResponse::getId)
+//                    .collect(Collectors.toList());
+//            assertThat(resultLineIds).containsAll(expectedLineIds);
+//        }
+
         @DisplayName("목록 전체를 조회한다.")
         @Test
         void getLines() {
@@ -91,6 +116,9 @@ public class LineIntegrationTest extends IntegrationTest {
             ExtractableResponse<Response> response = 노선_전체_조회_요청();
 
             // then
+//            response.jsonPath().getList(".", LinesSelectResponse.class).stream()
+//                            .
+
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
             List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                     .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
@@ -104,17 +132,21 @@ public class LineIntegrationTest extends IntegrationTest {
         @DisplayName("하나를 조회한다.")
         @Test
         void getLine() {
-            lineRequest1 = new LineRequest("2호선", "강남역", "역삼역", 5);
+            lineRequest1 = new LineRequest("2호선", "교대역", "역삼역", 5);
 
             // given
             ExtractableResponse<Response> createResponse = 노선_생성_요청(lineRequest1);
+            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+            노선에_역_등록_요청(lineId, new StationSaveRequest("강남역", "역삼역", 2));
 
             // when
-            Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
             ExtractableResponse<Response> response = 노선_단건_조회_요청(lineId);
+            final LineSelectResponse lineSelectResponse = response.as(LineSelectResponse.class);
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+            assertThat(lineSelectResponse.getStations()).map(StationSelectResponse::getName)
+                    .containsExactly("교대역", "강남역", "역삼역");
         }
     }
 
@@ -171,11 +203,11 @@ public class LineIntegrationTest extends IntegrationTest {
             Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
             final StationSaveRequest stationSaveRequest = new StationSaveRequest("교대역", "민트역", 5);
             ExtractableResponse<Response> response = 노선에_역_등록_요청(lineId, stationSaveRequest);
-            final StationResponse stationResponse = response.as(StationResponse.class);
+            final StationSelectResponse stationSelectResponse = response.as(StationSelectResponse.class);
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            assertThat(stationResponse.getName()).isEqualTo("민트역");
+            assertThat(stationSelectResponse.getName()).isEqualTo("민트역");
         }
 
         @DisplayName("추가한 역이 기존의 노선과 연결되지 않는다면 예외가 발생한다.")

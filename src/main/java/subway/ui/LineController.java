@@ -15,9 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationResponse;
+import subway.dto.StationSelectResponse;
 import subway.dto.StationSaveRequest;
-import subway.dto.StationsResponse;
+import subway.dto.LineSelectResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -46,7 +46,7 @@ public class LineController {
      * @return StationsResponse - 노선 내에 존재하는 모든 역의 이름 목록
      */
     @GetMapping("/{lineId}")
-    public ResponseEntity<StationsResponse> findLineById(@PathVariable Long lineId) {
+    public ResponseEntity<LineSelectResponse> findLineById(@PathVariable Long lineId) {
         return ResponseEntity.ok(lineService.getStationsByLineId(lineId));
     }
 
@@ -57,9 +57,9 @@ public class LineController {
      * @return StationResponse 추가한 역의 이름
      */
     @PostMapping("/{lineId}/stations")
-    public ResponseEntity<StationResponse> createStation(@PathVariable Long lineId,
-                                                         @RequestBody StationSaveRequest stationSaveRequest) {
-        StationResponse response = lineService.addStation(lineId, stationSaveRequest);
+    public ResponseEntity<StationSelectResponse> createStation(@PathVariable Long lineId,
+                                                               @RequestBody StationSaveRequest stationSaveRequest) {
+        StationSelectResponse response = lineService.addStation(lineId, stationSaveRequest);
         return ResponseEntity.ok(response);
     }
 

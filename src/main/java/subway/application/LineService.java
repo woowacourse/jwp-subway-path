@@ -11,9 +11,9 @@ import subway.domain.Station;
 import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationResponse;
+import subway.dto.StationSelectResponse;
 import subway.dto.StationSaveRequest;
-import subway.dto.StationsResponse;
+import subway.dto.LineSelectResponse;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 import subway.repository.LineRepository;
@@ -51,9 +51,9 @@ public class LineService {
         return lineDao.findAll();
     }
 
-    public StationsResponse getStationsByLineId(Long lineId) {
+    public LineSelectResponse getStationsByLineId(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        return StationsResponse.from(line.getStations());
+        return LineSelectResponse.from(line.getStations());
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -64,7 +64,7 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public StationResponse addStation(Long lineId, StationSaveRequest stationRequest) {
+    public StationSelectResponse addStation(Long lineId, StationSaveRequest stationRequest) {
         Subway subway = new Subway(lineRepository.findAllLine());
         LineEntity lineEntity = lineDao.findById(lineId);
         Line lineByName = subway.findLineByName(lineEntity.getName());
@@ -83,7 +83,7 @@ public class LineService {
                 stationRequest.getTargetStation(),
                 stationRequest.getDistance());
         saveUpdatedLine(subway, lineEntity.getName(), lineId);
-        return StationResponse.of(new StationEntity(newStationName));
+        return StationSelectResponse.of(new StationEntity(newStationName));
     }
 
     private List<Optional<String>> extractNullableStation(final StationSaveRequest stationRequest, final Line lineByName) {

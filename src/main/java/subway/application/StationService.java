@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.dto.StationSelectResponse;
 import subway.entity.StationEntity;
 import subway.repository.dao.StationDao;
 
@@ -16,20 +16,20 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
+    public StationSelectResponse saveStation(StationRequest stationRequest) {
         StationEntity station = stationDao.insert(new StationEntity(stationRequest.getName()));
-        return StationResponse.of(station);
+        return StationSelectResponse.of(station);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id).get());
+    public StationSelectResponse findStationResponseById(Long id) {
+        return StationSelectResponse.of(stationDao.findById(id).get());
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationSelectResponse> findAllStationResponses() {
         List<StationEntity> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationSelectResponse::of)
                 .collect(Collectors.toList());
     }
 

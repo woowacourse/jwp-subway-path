@@ -7,9 +7,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.StationResponse;
+import subway.dto.StationSelectResponse;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,8 +104,8 @@ public class StationIntegrationTest extends IntegrationTest {
         List<Long> expectedStationIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
                 .collect(Collectors.toList());
-        List<Long> resultStationIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
+        List<Long> resultStationIds = response.jsonPath().getList(".", StationSelectResponse.class).stream()
+                .map(StationSelectResponse::getId)
                 .collect(Collectors.toList());
         assertThat(resultStationIds).containsAll(expectedStationIds);
     }
@@ -135,8 +134,8 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        StationResponse stationResponse = response.as(StationResponse.class);
-        assertThat(stationResponse.getId()).isEqualTo(stationId);
+        StationSelectResponse stationSelectResponse = response.as(StationSelectResponse.class);
+        assertThat(stationSelectResponse.getId()).isEqualTo(stationId);
     }
 
     @DisplayName("지하철역을 수정한다.")
