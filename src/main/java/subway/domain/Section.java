@@ -20,6 +20,10 @@ public class Section {
         this.distance = validate(distance);
     }
 
+    public Section(Long sourceStationId, Long targetStationId, Long lineId, Integer distance) {
+        this(null, sourceStationId, targetStationId, lineId, distance);
+    }
+
     private Integer validate(Integer distance) {
         if (distance < 1) {
             throw new DomainException(ExceptionType.INVALID_DISTANCE);

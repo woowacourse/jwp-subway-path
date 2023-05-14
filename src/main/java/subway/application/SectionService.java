@@ -36,7 +36,7 @@ public class SectionService {
             throw new DomainException(ExceptionType.LINE_HAS_STATION);
         }
 
-        Section section = new Section(null, firstStationId, secondStationId, lineId, distance);
+        Section section = new Section(firstStationId, secondStationId, lineId, distance);
         Long id = sectionDao.insert(section);
         return SectionAddResponse.from(id);
     }
@@ -97,7 +97,7 @@ public class SectionService {
             newTargetStationId = stationId;
         }
 
-        Long sectionId = sectionDao.insert(new Section(null, newSourceStationId, newTargetStationId, lineId, distance));
+        Long sectionId = sectionDao.insert(new Section(newSourceStationId, newTargetStationId, lineId, distance));
         return List.of(SectionAddResponse.from(sectionId));
     }
     private List<SectionAddResponse> addBetweenStations(SectionAddRequest sectionAddRequest,
@@ -130,8 +130,8 @@ public class SectionService {
             lastDistance = sectionAddRequest.getDistance();
         }
 
-        Section firstSection = new Section(null, sourceStationId, stationId, lineId, firstDistance);
-        Section lastSection = new Section(null, stationId, targetStationId, lineId, lastDistance);
+        Section firstSection = new Section(sourceStationId, stationId, lineId, firstDistance);
+        Section lastSection = new Section(stationId, targetStationId, lineId, lastDistance);
 
         Long firstSectionId = sectionDao.insert(firstSection);
         Long lastSectionId = sectionDao.insert(lastSection);
@@ -178,6 +178,6 @@ public class SectionService {
             .mapToInt(Section::getDistance)
             .sum();
 
-        sectionDao.insert(new Section(null, sourceStationId, targetStationId, lineId, distanceSum));
+        sectionDao.insert(new Section(sourceStationId, targetStationId, lineId, distanceSum));
     }
 }

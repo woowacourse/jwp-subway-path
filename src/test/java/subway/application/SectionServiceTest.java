@@ -41,7 +41,7 @@ class SectionServiceTest {
         Long station2Id = 2L;
         Long lineId = 1L;
         when(sectionDao.findAllSectionByLineId(1L)).thenReturn(new ArrayList<>());
-        when(sectionDao.insert(new Section(null, station1Id, station2Id, lineId, 2))).thenReturn(1L);
+        when(sectionDao.insert(new Section(station1Id, station2Id, lineId, 2))).thenReturn(1L);
 
         SectionAddResponse result = sectionService.addSection(new InitialSectionAddRequest(1L, 1L, 2L, 2));
 
