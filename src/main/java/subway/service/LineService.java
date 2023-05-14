@@ -14,7 +14,7 @@ import subway.domain.line.dto.LineCreateRequest;
 import subway.domain.station.Station;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +27,6 @@ public class LineService {
     private final StationDao stationDao;
     private final LineDao lineDao;
     private final EdgeDao edgeDao;
-
 
     public LineService(StationDao stationDao, LineDao lineDao, EdgeDao edgeDao) {
         this.lines = new Lines();
@@ -100,12 +99,8 @@ public class LineService {
         return new Line(line.getId(), line.getName(), edges);
     }
 
-    public List<Line> findAllLine() {
-        return lineDao.findAll();
-    }
-
-    public Map<Line, List<Station>> findAllLine2() {
-        final Map<Line, List<Station>> result = new HashMap<>();
+    public Map<Line, List<Station>> findAllLines() {
+        final Map<Line, List<Station>> result = new LinkedHashMap<>();
         final List<Line> allLine = lineDao.findAll();
         for (Line line : allLine) {
             final Edges edges = new Edges(new LinkedList<>(edgeDao.findAllByLineId(line.getId())));

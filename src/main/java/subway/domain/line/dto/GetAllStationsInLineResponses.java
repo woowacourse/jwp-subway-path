@@ -9,15 +9,15 @@ import java.util.stream.Collectors;
 
 public class GetAllStationsInLineResponses {
 
-    private final List<GetAllStationsInLineResponse> responses;
+    private final List<GetAllStationsInLineResponse> lines;
 
     public GetAllStationsInLineResponses(final Map<Line, List<Station>> result) {
-        responses = result.entrySet().stream()
+        lines = result.entrySet().stream()
                 .map(entry -> new GetAllStationsInLineResponse(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 
-    public List<GetAllStationsInLineResponse> getResponses() {
-        return responses;
+    public List<GetAllStationsInLineResponse> getLines() {
+        return lines;
     }
 }

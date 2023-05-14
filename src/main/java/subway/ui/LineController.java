@@ -59,7 +59,7 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<GetAllStationsInLineResponses> findAllLines() {
-        final Map<Line, List<Station>> result = lineService.findAllLine2();
+        final Map<Line, List<Station>> result = lineService.findAllLines();
 
         return ResponseEntity.ok(new GetAllStationsInLineResponses(result));
     }
