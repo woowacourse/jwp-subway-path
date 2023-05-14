@@ -15,13 +15,11 @@ public class Sections {
         this.sections = sections;
     }
 
-    public Optional<Station> findStationByName(String name) {
-        for (Section section : sections) {
-            if (section.hasGivenNamedStation(name)) {
-                return Optional.of(section.getStationWithGivenName(name));
-            }
-        }
-        return Optional.empty();
+    public Optional<Station> findStationById(Long id) {
+        return sections.stream()
+            .filter(section -> section.getStationWithGivenId(id).isPresent())
+            .findAny()
+            .flatMap(section -> section.getStationWithGivenId(id));
     }
 
     public ChangesByAddition getChangesWhenAdded(Station upStation, Station downStation, Line line, int distance) {
@@ -38,7 +36,6 @@ public class Sections {
     private void validateNotContainsBoth(Station station1, Station station2) {
         boolean station1Exist = hasStationWithGivenName(station1.getName());
         boolean station2Exist = hasStationWithGivenName(station2.getName());
-        System.out.println(station1Exist + " " + station2Exist);
         if (station1Exist == station2Exist) {
             throw new IllegalArgumentException("최초 등록이 아닌 경우 하나의 역은 이미 존재해야 합니다.");
         }
@@ -93,6 +90,15 @@ public class Sections {
         );
     }
 
+    public Section getAnySectionWithGivenStations(Station upStation, Station downStation) {
+        for (Section section : sections) {
+            if (section.isUpStationGiven(upStation) && section.isDownStationGiven(downStation)) {
+                return section;
+            }
+        }
+        throw new IllegalArgumentException("주어진 역으로 구성된 구간이 존재하지 않습니다.");
+    }
+
     private Section getAnySectionWithGivenUpStation(List<Section> sections, Station station) {
         for (Section section : sections) {
             if (section.isUpStationGiven(station)) {
@@ -115,5 +121,9 @@ public class Sections {
         return sections.stream()
             .filter(section -> section.hasGivenNamedStation(station.getName()))
             .collect(Collectors.toList());
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 }

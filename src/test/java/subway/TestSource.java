@@ -1,8 +1,13 @@
-package subway.domain;
+package subway;
 
 import java.util.List;
 
-class TestSource {
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
+
+public class TestSource {
 
     public static Station jamsil = new Station(1L, "잠실");
     public static Station jangji = new Station(2L, "장지");

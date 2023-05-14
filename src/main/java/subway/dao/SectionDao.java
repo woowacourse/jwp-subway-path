@@ -3,6 +3,7 @@ package subway.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -48,14 +49,14 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionRowMapper, lineId);
     }
 
-    public void insertAll(List<Section> sections) {
+    public List<Section> insertAll(List<Section> sections) {
         // TODO: bulk 처리로 수정
-        for (Section section : sections) {
-            insert(section);
-        }
+        return sections.stream()
+            .map(this::insert)
+            .collect(Collectors.toList());
     }
 
-    public void insert(Section section) {
+    public Section insert(Section section) {
         Map<String, Object> params = new HashMap<>();
         params.put("id", section.getId());
         params.put("up_station_id", section.getUpStation().getId());
@@ -63,7 +64,9 @@ public class SectionDao {
         params.put("line_id", section.getLine().getId());
         params.put("distance", section.getDistance());
 
-        insertAction.execute(params);
+        Long id = insertAction.executeAndReturnKey(params).longValue();
+        return new Section(id, section.getUpStation(), section.getDownStation(), section.getLine(),
+            section.getDistance());
     }
 
     public void deleteAll(List<Section> sections) {

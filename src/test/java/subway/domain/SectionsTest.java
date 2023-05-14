@@ -2,7 +2,7 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static subway.domain.TestSource.*;
+import static subway.TestSource.*;
 
 import java.util.List;
 
@@ -16,6 +16,46 @@ import subway.domain.dto.ChangesByAddition;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class SectionsTest {
+
+    @Test
+    void id로_역을_찾는다() {
+        // given
+        Station cheonho = new Station(1L, "천호");
+        Station jamsil = new Station(2L, "잠실");
+        Section cheonhoJamsil10 = new Section(cheonho, jamsil, new Line("8호선", "pink"), 10);
+
+        Sections sections = new Sections(List.of(cheonhoJamsil10));
+
+        // then
+        assertThat(sections.findStationById(1L)).isPresent();
+        assertThat(sections.findStationById(3L)).isEmpty();
+    }
+
+    @Test
+    void 두_역이_포함된_구간을_찾는다() {
+        // given
+        // 장지 - 10 - 잠실 - 10 - 천호
+        Sections line8 = line8source;
+        Station upStation = jamsil;
+        Station downStation = jangji;
+
+        // then
+        Section section = line8.getAnySectionWithGivenStations(jamsil, jangji);
+        assertThat(section.getUpStation()).isEqualTo(upStation);
+        assertThat(section.getDownStation()).isEqualTo(downStation);
+    }
+
+    @Test
+    void 두_역이_포함된_구간이_없으면_예외가_발생한다() {
+        // given
+        // 장지 - 10 - 잠실 - 10 - 천호
+        Sections line8 = line8source;
+
+        // then
+        assertThatThrownBy(() -> line8.getAnySectionWithGivenStations(cheonho, jangji))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("주어진 역으로 구성된 구간이 존재하지 않습니다.");
+    }
 
     @Nested
     class 역_추가_성공_테스트 {
@@ -60,7 +100,7 @@ public class SectionsTest {
             Section seokchonJangi9 = new Section(seokchon, jangji, pink, 9);
 
             assertThat(changes.getAddedSections()).containsExactlyInAnyOrder(jamsilSeokchon1, seokchonJangi9);
-            // assertThat(changes.getDeletedSections()).containsExactly(jamsilJangji10);
+            assertThat(changes.getDeletedSections()).containsExactly(jamsilJangji10);
         }
 
         @Test

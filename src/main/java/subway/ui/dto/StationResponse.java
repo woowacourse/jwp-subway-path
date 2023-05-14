@@ -1,8 +1,9 @@
-package subway.controller.dto;
+package subway.ui.dto;
 
 import subway.domain.Station;
 
 public class StationResponse {
+
     private final Long id;
     private final String name;
 

@@ -1,6 +1,7 @@
 package subway.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
@@ -42,9 +43,9 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
+    public Optional<Station> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
     }
 
     public Station findByName(String name) {

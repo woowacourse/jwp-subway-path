@@ -4,7 +4,8 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import subway.controller.dto.PostSectionRequest;
+import subway.ui.dto.SectionRequest;
+import subway.ui.dto.SectionResponse;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -27,25 +28,29 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public void saveSection(PostSectionRequest request) {
+    public SectionResponse saveSection(SectionRequest request) {
         List<Section> sectionList = sectionDao.findAllByLineId(request.getLineId());
         Sections sections = new Sections(sectionList);
 
-        String upStationName = request.getUpStationName();
-        String downStationName = request.getDownStationName();
-
-        Station upStation = getSavedOrNewStation(sections, upStationName);
-        Station downStation = getSavedOrNewStation(sections, downStationName);
+        Station upStation = getSavedStation(sections, request.getUpStationId());
+        Station downStation = getSavedStation(sections, request.getDownStationId());
         Line line = lineDao.findById(request.getLineId());
         int distance = request.getDistance();
 
         ChangesByAddition changes = sections.getChangesWhenAdded(upStation, downStation, line, distance);
-        sectionDao.insertAll(changes.getAddedSections());
+        List<Section> added = sectionDao.insertAll(changes.getAddedSections());
         sectionDao.deleteAll(changes.getDeletedSections());
+        return SectionResponse.of(findRequestedSection(added, upStation, downStation));
     }
 
-    private Station getSavedOrNewStation(Sections sections, String stationName) {
-        return sections.findStationByName(stationName)
-            .orElse(stationDao.insert(new Station(stationName)));
+    private Station getSavedStation(Sections sections, Long stationId) {
+        return sections.findStationById(stationId)
+            .orElse(stationDao.findById(stationId)
+                .orElseThrow(() -> new IllegalArgumentException("stationId = " + stationId + " 인 역이 존재하지 않습니다")));
+    }
+
+    private Section findRequestedSection(List<Section> addedSections, Station upStation, Station downStation) {
+        Sections sections = new Sections(addedSections);
+        return sections.getAnySectionWithGivenStations(upStation, downStation);
     }
 }

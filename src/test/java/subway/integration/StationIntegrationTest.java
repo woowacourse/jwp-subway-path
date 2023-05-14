@@ -17,7 +17,7 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.controller.dto.StationResponse;
+import subway.ui.dto.StationResponse;
 import subway.dao.LineDao;
 
 @DisplayName("지하철역 관련 기능")

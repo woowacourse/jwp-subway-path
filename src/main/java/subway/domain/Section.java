@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
+import java.util.Optional;
 
 public class Section {
 
@@ -26,14 +27,14 @@ public class Section {
         return upStation.getName().equals(name) || downStation.getName().equals(name);
     }
 
-    public Station getStationWithGivenName(String name) {
-        if (upStation.getName().equals(name)) {
-            return upStation;
+    public Optional<Station> getStationWithGivenId(Long id) {
+        if (Objects.equals(upStation.getId(), id)) {
+            return Optional.of(upStation);
         }
-        if (downStation.getName().equals(name)) {
-            return downStation;
+        if (Objects.equals(downStation.getId(), id)) {
+            return Optional.of(downStation);
         }
-        throw new IllegalArgumentException("주어진 이름을 가진 역이 없습니다.");
+        return Optional.empty();
     }
 
     public boolean isUpStationGiven(Station station) {

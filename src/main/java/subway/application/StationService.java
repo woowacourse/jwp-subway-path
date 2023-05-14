@@ -3,14 +3,15 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.controller.dto.StationRequest;
-import subway.controller.dto.StationResponse;
+import subway.ui.dto.StationRequest;
+import subway.ui.dto.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class StationService {
+
     private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
@@ -23,7 +24,9 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+         Station station = stationDao.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("해당하는 데이터가 없습니다."));
+        return StationResponse.of(station);
     }
 
     public List<StationResponse> findAllStationResponses() {
