@@ -33,19 +33,11 @@ public class RemoveCalculator {
         return getChangesWhenRemoveMiddleStation(stationToDelete, upSection, downSection);
     }
 
-    private Changes getChangesWhenRemoveMiddleStation(Station stationToDelete, Section upSection, Section downSection) {
-        int upDistance = upSection.getDistanceValue();
-        int downDistance = downSection.getDistanceValue();
-        int newDistance = upDistance + downDistance;
-
-        Station newUpStation = upSection.getUpStation();
-        Station newDownStation = downSection.getDownStation();
-
-        Section newSection = new Section(null, newUpStation, newDownStation, newDistance);
+    private Changes getChangesWhenRemoveLine(Station stationToDelete) {
         return new Changes(stationToDelete.getLineId(),
+                new ArrayList<>(), List.of(stationToDelete.getLine()),
                 new ArrayList<>(), new ArrayList<>(),
-                new ArrayList<>(), List.of(stationToDelete),
-                List.of(newSection), new ArrayList<>());
+                new ArrayList<>(), new ArrayList<>());
     }
 
     private boolean isEndStation(Optional<Section> nullableUpSection, Optional<Section> nullableDownSection) {
@@ -60,10 +52,18 @@ public class RemoveCalculator {
                 new ArrayList<>(), new ArrayList<>());
     }
 
-    private Changes getChangesWhenRemoveLine(Station stationToDelete) {
+    private Changes getChangesWhenRemoveMiddleStation(Station stationToDelete, Section upSection, Section downSection) {
+        int upDistance = upSection.getDistanceValue();
+        int downDistance = downSection.getDistanceValue();
+        int newDistance = upDistance + downDistance;
+
+        Station newUpStation = upSection.getUpStation();
+        Station newDownStation = downSection.getDownStation();
+
+        Section newSection = new Section(null, newUpStation, newDownStation, newDistance);
         return new Changes(stationToDelete.getLineId(),
-                new ArrayList<>(), List.of(stationToDelete.getLine()),
                 new ArrayList<>(), new ArrayList<>(),
-                new ArrayList<>(), new ArrayList<>());
+                new ArrayList<>(), List.of(stationToDelete),
+                List.of(newSection), new ArrayList<>());
     }
 }
