@@ -52,14 +52,19 @@ public class SectionCreateService {
     }
 
     private List<SectionEntity> createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
-        if (Direction.from(direction) == Direction.UP) {
-            final SectionEntity newSectionEntity = new SectionEntity(lineId, addedId, baseId, distance);
-            final SectionEntity savedSectionEntity = sectionDao.insert(newSectionEntity);
-            return List.of(savedSectionEntity);
-        }
-        final SectionEntity newSectionEntity = new SectionEntity(lineId, baseId, addedId, distance);
-        final SectionEntity savedSectionEntity = sectionDao.insert(newSectionEntity);
+        final SectionEntity sectionEntity = createSectionEntityByDirection(lineId, baseId, addedId, direction, distance);
+        final SectionEntity savedSectionEntity = sectionDao.insert(sectionEntity);
         return List.of(savedSectionEntity);
+    }
+
+    private SectionEntity createSectionEntityByDirection(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
+        if (Direction.from(direction) == Direction.UP) {
+            return new SectionEntity(lineId, addedId, baseId, distance);
+        }
+        if (Direction.from(direction) == Direction.DOWN) {
+            return new SectionEntity(lineId, baseId, addedId, distance);
+        }
+        throw new IllegalArgumentException("존재하지 않는 방향입니다.");
     }
 
     private List<SectionEntity> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSectionEntity) {
