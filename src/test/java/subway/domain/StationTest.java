@@ -36,10 +36,10 @@ class StationTest {
         final String name = "잠실역";
 
         // when
-        final Station station1 = new Station(name);
-        final Station station2 = new Station(name);
+        final Station firstStation = new Station(name);
+        final Station secondStation = new Station(name);
 
         // then
-        assertThat(station1).isEqualTo(station2);
+        assertThat(firstStation).isEqualTo(secondStation);
     }
 }

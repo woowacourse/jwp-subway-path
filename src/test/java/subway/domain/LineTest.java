@@ -97,9 +97,9 @@ class LineTest {
     @Test
     void 이미_존재하는_구간_사이에_역을_등록하는_경우_거리_정보가_갱신된다() {
         // given
-        final Section section1 = new Section("잠실역", "석촌역", 10);
-        final Section section2 = new Section("석촌역", "송파역", 10);
-        final Line line = new Line("8호선", "분홍색", List.of(section1, section2));
+        final Section firstSection = new Section("잠실역", "석촌역", 10);
+        final Section secondSection = new Section("석촌역", "송파역", 10);
+        final Line line = new Line("8호선", "분홍색", List.of(firstSection, secondSection));
 
         // when
         line.register(new Station("잠실역"), new Station("가락시장역"), 5);
@@ -147,9 +147,9 @@ class LineTest {
     @Test
     void 상행_종점을_제거한다() {
         // given
-        final Section section1 = new Section("잠실역", "석촌역", 10);
-        final Section section2 = new Section("석촌역", "송파역", 10);
-        final Line line = new Line("8호선", "분홍색", List.of(section1, section2));
+        final Section firstSection = new Section("잠실역", "석촌역", 10);
+        final Section secondSection = new Section("석촌역", "송파역", 10);
+        final Line line = new Line("8호선", "분홍색", List.of(firstSection, secondSection));
 
         // when
         line.delete(new Station("잠실역"));
@@ -161,9 +161,9 @@ class LineTest {
     @Test
     void 하행_종점을_제거한다() {
         // given
-        final Section section1 = new Section("잠실역", "석촌역", 10);
-        final Section section2 = new Section("석촌역", "송파역", 10);
-        final Line line = new Line("8호선", "분홍색", List.of(section1, section2));
+        final Section firstSection = new Section("잠실역", "석촌역", 10);
+        final Section secondSection = new Section("석촌역", "송파역", 10);
+        final Line line = new Line("8호선", "분홍색", List.of(firstSection, secondSection));
 
         // when
         line.delete(new Station("송파역"));
@@ -175,9 +175,9 @@ class LineTest {
     @Test
     void 중간에_존재하는_역_제거시_양옆_역이_새로운_구간이_된다() {
         // given
-        final Section section1 = new Section("잠실역", "석촌역", 10);
-        final Section section2 = new Section("석촌역", "송파역", 10);
-        final Line line = new Line("8호선", "분홍색", List.of(section1, section2));
+        final Section firstSection = new Section("잠실역", "석촌역", 10);
+        final Section secondSection = new Section("석촌역", "송파역", 10);
+        final Line line = new Line("8호선", "분홍색", List.of(firstSection, secondSection));
 
         // when
         line.delete(new Station("석촌역"));
@@ -209,5 +209,29 @@ class LineTest {
 
         // then
         assertThat(line.getSections()).isEmpty();
+    }
+
+    @Test
+    void 역을_순서대로_조회한다() {
+        // given
+        final Section firstSection = new Section("잠실역", "석촌역", 10);
+        final Section secondSection = new Section("석촌역", "송파역", 10);
+        final Section thirdSection = new Section("송파역", "가락시장역", 10);
+        final Section fourthSection = new Section("가락시장역", "문정역", 10);
+
+        final Line line = new Line("8호선", "분홍색", List.of(firstSection, secondSection, thirdSection, fourthSection));
+
+        // when
+        final List<Station> orderedStations = line.getOrderedStations();
+
+        // then
+        assertThat(orderedStations).containsAll(
+                List.of(
+                        new Station("잠실역"),
+                        new Station("석촌역"),
+                        new Station("송파역"),
+                        new Station("가락시장역"),
+                        new Station("문정역")
+                ));
     }
 }

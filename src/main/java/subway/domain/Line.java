@@ -1,8 +1,11 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class Line {
     private static final int MIN_NAME_LENGTH = 3;
@@ -149,6 +152,34 @@ public class Line {
         if (upSection.isPresent()) {
             sections.remove(upSection.get());
         }
+    }
+
+    public List<Station> getOrderedStations() {
+        final Map<Station, Station> stationsChain = sectionsToChain(sections);
+        final Optional<Station> firstStation = getFirstStation(stationsChain);
+        return firstStation.map(station -> getSortedStations(stationsChain, station))
+                .orElse(Collections.emptyList());
+    }
+
+    private Map<Station, Station> sectionsToChain(final List<Section> sections) {
+        return sections.stream()
+                .collect(Collectors.toMap(Section::getSource, Section::getTarget));
+    }
+
+    private Optional<Station> getFirstStation(final Map<Station, Station> stationsChain) {
+        return stationsChain.keySet().stream()
+                .filter(station -> !stationsChain.containsValue(station))
+                .findFirst();
+    }
+
+    private List<Station> getSortedStations(final Map<Station, Station> stationsChain, final Station startStation) {
+        final List<Station> sortedStations = new ArrayList<>();
+        Optional<Station> nextStation = Optional.ofNullable(startStation);
+        while (nextStation.isPresent()) {
+            sortedStations.add(nextStation.get());
+            nextStation = Optional.ofNullable(stationsChain.get(nextStation.get()));
+        }
+        return sortedStations;
     }
 
     public List<Section> getSections() {
