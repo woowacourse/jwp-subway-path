@@ -64,7 +64,7 @@ class SectionDaoTest {
         String lineName = INITIAL_Line2.NAME;
 
         // when
-        Optional<Section> findSection = sectionDao.findByUpStationNameAndLineName(upStationName, lineName);
+        Optional<Section> findSection = sectionDao.selectByUpStationNameAndLineName(upStationName, lineName);
 
         // then
         assertThat(findSection.get()).usingRecursiveComparison()
@@ -76,7 +76,7 @@ class SectionDaoTest {
     @DisplayName("상행역의 이름와 노선 이름에 해당하는 행이 없으면 빈 Optional을 반환한다.")
     void findByUpStationNameAndLindNameEmptyOptional(String upStationName, String lineName) {
         // when
-        Optional<Section> findSection = sectionDao.findByUpStationNameAndLineName(upStationName, lineName);
+        Optional<Section> findSection = sectionDao.selectByUpStationNameAndLineName(upStationName, lineName);
 
         // then
         assertThat(findSection.isEmpty()).isTrue();
@@ -90,7 +90,7 @@ class SectionDaoTest {
         String lineName = INITIAL_Line2.NAME;
 
         // when
-        Optional<Section> findSection = sectionDao.findByDownStationNameAndLineName(downStationName, lineName);
+        Optional<Section> findSection = sectionDao.selectByDownStationNameAndLineName(downStationName, lineName);
 
         // then
         assertThat(findSection.get()).usingRecursiveComparison()
@@ -102,7 +102,7 @@ class SectionDaoTest {
     @DisplayName("하행역의 이름와 노선 이름에 해당하는 행이 없으면 빈 Optional을 반환한다.")
     void findByDownStationNameAndLindNameEmptyOptional(String downStationName, String lineName) {
         // when
-        Optional<Section> findSection = sectionDao.findByDownStationNameAndLineName(downStationName, lineName);
+        Optional<Section> findSection = sectionDao.selectByDownStationNameAndLineName(downStationName, lineName);
 
         // then
         assertThat(findSection.isEmpty()).isTrue();
@@ -131,7 +131,7 @@ class SectionDaoTest {
                 sectionDao.insert(SECTION_A_TO_B.createSectionToInsert(INITIAL_STATION_A.FIND_STATION, insertedStationB, line2));
 
         // when
-        List<Section> findSections = sectionDao.findAllSectionByLineId(line2.getId());
+        List<Section> findSections = sectionDao.selectAllSectionByLineId(line2.getId());
 
         // then
         assertAll(
@@ -151,6 +151,6 @@ class SectionDaoTest {
         sectionDao.deleteById(sectionIdToDelete);
 
         // then
-        assertThat(sectionDao.findAllSectionByLineId(INITIAL_Line2.ID)).hasSize(0);
+        assertThat(sectionDao.selectAllSectionByLineId(INITIAL_Line2.ID)).hasSize(0);
     }
 }

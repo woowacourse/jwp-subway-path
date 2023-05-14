@@ -54,7 +54,7 @@ class LineDaoTest {
         long line2Id = INITIAL_Line2.ID;
 
         // when
-        Optional<Line> findLine = lineDao.findById(line2Id);
+        Optional<Line> findLine = lineDao.selectById(line2Id);
 
         // then
         assertThat(findLine.get()).usingRecursiveComparison()
@@ -68,7 +68,7 @@ class LineDaoTest {
         long dummyId = -1L;
 
         // when
-        Optional<Line> findNullableLine = lineDao.findById(dummyId);
+        Optional<Line> findNullableLine = lineDao.selectById(dummyId);
 
         // then
         assertThat(findNullableLine.isEmpty()).isTrue();
@@ -81,7 +81,7 @@ class LineDaoTest {
         String lineName = INITIAL_Line2.NAME;
 
         // when
-        Optional<Line> findLine = lineDao.findByLineName(lineName);
+        Optional<Line> findLine = lineDao.selectByLineName(lineName);
 
         // then
         assertThat(findLine.get()).usingRecursiveComparison()
@@ -95,7 +95,7 @@ class LineDaoTest {
         String line7Name = Line7.NAME;
 
         // when
-        Optional<Line> findNullableLine = lineDao.findByLineName(line7Name);
+        Optional<Line> findNullableLine = lineDao.selectByLineName(line7Name);
 
         // then
         assertThat(findNullableLine.isEmpty()).isTrue();
@@ -106,7 +106,7 @@ class LineDaoTest {
     void findAll() {
         // when
         Line insertedLine7 = lineDao.insert(Line7.INSERT_ENTITY);
-        List<Line> lines = lineDao.findAll();
+        List<Line> lines = lineDao.selectAll();
 
         // then
         assertAll(
@@ -134,7 +134,7 @@ class LineDaoTest {
 
         // when
         lineDao.deleteById(line2Id);
-        Optional<Line> findNullableLine = lineDao.findById(line2Id);
+        Optional<Line> findNullableLine = lineDao.selectById(line2Id);
 
         // then
         assertThat(findNullableLine.isEmpty()).isTrue();

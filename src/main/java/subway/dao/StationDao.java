@@ -48,12 +48,12 @@ public class StationDao {
         return new Station(insertedId, name, line);
     }
 
-    public Optional<Station> findById(Long id) {
+    public Optional<Station> selectById(Long id) {
         String sql = STATION_LINE_JOIN_SQL + "WHERE STATION.id = ?";
         return jdbcTemplate.query(sql, rowMapper, id).stream().findAny();
     }
 
-    public Optional<Station> findByStationNameAndLineName(String stationName, String lineName) {
+    public Optional<Station> selectByStationNameAndLineName(String stationName, String lineName) {
         String sql = STATION_LINE_JOIN_SQL + "WHERE station.name = ? AND line.name = ?";
 
         return jdbcTemplate.query(sql, rowMapper, stationName, lineName).stream().findAny();

@@ -52,7 +52,7 @@ class StationDaoTest {
         long stationId = INITIAL_STATION_A.ID;
 
         // when
-        Optional<Station> findStation = stationDao.findById(stationId);
+        Optional<Station> findStation = stationDao.selectById(stationId);
 
         // then
         assertThat(findStation.get()).usingRecursiveComparison()
@@ -66,7 +66,7 @@ class StationDaoTest {
         long dummyId = -1L;
 
         // when
-        Optional<Station> findStation = stationDao.findById(dummyId);
+        Optional<Station> findStation = stationDao.selectById(dummyId);
 
         // then
         assertThat(findStation.isEmpty()).isTrue();
@@ -80,7 +80,7 @@ class StationDaoTest {
         String lineName = INITIAL_Line2.NAME;
 
         // when
-        Optional<Station> findStation = stationDao.findByStationNameAndLineName(stationName, lineName);
+        Optional<Station> findStation = stationDao.selectByStationNameAndLineName(stationName, lineName);
 
         // then
         assertThat(findStation.get()).usingRecursiveComparison()
@@ -92,7 +92,7 @@ class StationDaoTest {
     @DisplayName("역 이름과 노선 이름에 해당하는 행이 없으면 빈 Optional을 반환한다.")
     void findByStationNameAndLineNameEmptyOptional(String stationName, String lineName) {
         // when
-        Optional<Station> findStation = stationDao.findByStationNameAndLineName(stationName, lineName);
+        Optional<Station> findStation = stationDao.selectByStationNameAndLineName(stationName, lineName);
 
         // then
         assertThat(findStation.isEmpty()).isTrue();
@@ -117,7 +117,7 @@ class StationDaoTest {
 
         // when
         stationDao.deleteById(stationId);
-        Optional<Station> findStation = stationDao.findById(stationId);
+        Optional<Station> findStation = stationDao.selectById(stationId);
 
         // then
         assertThat(findStation.isEmpty()).isTrue();
