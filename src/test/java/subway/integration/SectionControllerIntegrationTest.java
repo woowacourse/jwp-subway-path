@@ -24,7 +24,7 @@ import subway.dto.section.SectionDeleteRequest;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-@Sql("/section_initialize.sql")
+@Sql("/line_data_initialize.sql")
 class SectionControllerIntegrationTest {
 
     @Autowired

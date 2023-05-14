@@ -17,7 +17,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 
 @JdbcTest
-@Sql("/section_initialize.sql")
+@Sql("/line_data_initialize.sql")
 class SectionDaoTest {
 
     @Autowired

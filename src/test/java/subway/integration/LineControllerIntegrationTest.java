@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 @Transactional
 @AutoConfigureMockMvc
-@Sql("/line_initialize.sql")
+@Sql("/section_data_initialize.sql")
 class LineControllerIntegrationTest {
 
     @Autowired
@@ -43,7 +43,7 @@ class LineControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].line.lineId").value(1))
                 .andExpect(jsonPath("$[0].line.lineName").value("2호선"))
-                .andExpect(jsonPath("$[0].line.color").value("green"))
+                .andExpect(jsonPath("$[0].line.color").value("bg-green-300"))
                 .andExpect(jsonPath("$[0].sections[0].startStationName").value("잠실역"))
                 .andExpect(jsonPath("$[0].sections[0].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[0].sections[0].distance").value(10))
@@ -51,7 +51,7 @@ class LineControllerIntegrationTest {
 
                 .andExpect(jsonPath("$[1].line.lineId").value(2))
                 .andExpect(jsonPath("$[1].line.lineName").value("3호선"))
-                .andExpect(jsonPath("$[1].line.color").value("orange"))
+                .andExpect(jsonPath("$[1].line.color").value("bg-orange-300"))
                 .andExpect(jsonPath("$[1].sections[0].startStationName").value("잠실역"))
                 .andExpect(jsonPath("$[1].sections[0].endStationName").value("양재역"))
                 .andExpect(jsonPath("$[1].sections[0].distance").value(10))
@@ -59,7 +59,7 @@ class LineControllerIntegrationTest {
 
                 .andExpect(jsonPath("$[2].line.lineId").value(3))
                 .andExpect(jsonPath("$[2].line.lineName").value("4호선"))
-                .andExpect(jsonPath("$[2].line.color").value("blue"))
+                .andExpect(jsonPath("$[2].line.color").value("bg-blue-300"))
                 .andExpect(jsonPath("$[2].sections[0].startStationName").value("장승배기역"))
                 .andExpect(jsonPath("$[2].sections[0].endStationName").value("상도역"))
                 .andExpect(jsonPath("$[2].sections[0].distance").value(10))

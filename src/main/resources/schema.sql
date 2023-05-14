@@ -4,14 +4,15 @@ DROP TABLE IF EXISTS LINE;
 
 create table STATION
 (
-    name varchar(255) not null unique
+    name varchar(255) not null,
+    primary key (name)
 );
 
 create table LINE
 (
-    id                 bigint auto_increment not null,
-    name               varchar(255)          not null unique,
-    color              varchar(20)           not null,
+    id    bigint auto_increment not null,
+    name  varchar(255)          not null,
+    color varchar(20)           not null,
     primary key (id)
 );
 
@@ -23,13 +24,9 @@ create table SECTION
     end_station_name   varchar(255)          not null,
     distance           int                   not null,
     primary key (id),
-    foreign key (line_id) REFERENCES LINE (id)
+    foreign key (line_id) REFERENCES LINE (id),
+    foreign key (start_station_name) REFERENCES STATION (name)
+        ON UPDATE CASCADE,
+    foreign key (end_station_name) REFERENCES STATION (name)
+        ON UPDATE CASCADE
 );
-
-INSERT INTO STATION (name) VALUES ('잠실역');
-INSERT INTO STATION (name) VALUES ('용산역');
-INSERT INTO STATION (name) VALUES ('부산역');
-INSERT INTO STATION (name) VALUES ('대구역');
-INSERT INTO STATION (name) VALUES ('포항역');
-INSERT INTO STATION (name) VALUES ('삼성역');
-INSERT INTO LINE (name, color) VALUES ('2호선', 'green');
