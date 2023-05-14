@@ -75,14 +75,12 @@ public class SectionService {
     }
     private void deleteStation(Long stationId) {
         List<SectionEntity> sectionEntities = sectionDao.findAll();
-        long startStationCount = sectionEntities.stream()
-                .filter(it -> it.getStartStationId().equals(stationId))
-                .count();
-        long endStationCount = sectionEntities.stream()
-                .filter(it -> it.getStartStationId().equals(stationId))
-                .count();
+        boolean hasStartStation = sectionEntities.stream()
+                .noneMatch(it -> it.getStartStationId().equals(stationId));
+        boolean hasEndStation = sectionEntities.stream()
+                .noneMatch(it -> it.getEndStationId().equals(stationId));
 
-        if (startStationCount == 0 && endStationCount == 0) {
+        if (hasStartStation && hasEndStation) {
             stationDao.deleteById(stationId);
         }
     }

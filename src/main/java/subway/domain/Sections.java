@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Sections {
+    private static final int HAVE_ONLY_ONE_SECTION = 1;
     private final List<Section> sections;
 
     public Sections(List<Section> sections) {
@@ -39,7 +40,7 @@ public class Sections {
             throw new InvalidSectionException();
         }
 
-        if (sections.size() == 1) {
+        if (sections.size() == HAVE_ONLY_ONE_SECTION) {
             sections.clear();
             return;
         }
@@ -61,7 +62,7 @@ public class Sections {
     }
 
     private boolean removeOutsideStation(List<Section> sectionsContainStation) {
-        if (sectionsContainStation.size() == 1) {
+        if (sectionsContainStation.size() == HAVE_ONLY_ONE_SECTION) {
             Section findSection = sectionsContainStation.get(0);
             sections.remove(findSection);
             return true;
