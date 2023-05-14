@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.AddStationToBetweenLineRequest;
 import subway.application.dto.AddStationToEndLineRequest;
-import subway.controller.dto.AddInitStationToLine;
+import subway.controller.dto.AddInitStationToLineRequest;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.exception.BusinessException;
@@ -23,7 +23,7 @@ public class LineStationService {
         this.stationRepository = stationRepository;
     }
 
-    public void addInitStationToLine(final AddInitStationToLine request) {
+    public void addInitStationToLine(final AddInitStationToLineRequest request) {
         final Line line = getLine(request.getLineName());
         final Station upStation = getStation(request.getUpStationName());
         final Station downStation = getStation(request.getDownStationName());

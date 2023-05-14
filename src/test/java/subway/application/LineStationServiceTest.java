@@ -16,7 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.dto.AddStationToBetweenLineRequest;
 import subway.application.dto.AddStationToEndLineRequest;
-import subway.controller.dto.AddInitStationToLine;
+import subway.controller.dto.AddInitStationToLineRequest;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -223,7 +223,8 @@ class LineStationServiceTest {
             .willReturn(Optional.of(line));
         given(stationRepository.findByName(anyString()))
             .willReturn(Optional.of(midUpStation), Optional.of(midDownStation));
-        final AddInitStationToLine request = new AddInitStationToLine("lineName", "upStationName", "downStationName",
+        final AddInitStationToLineRequest request = new AddInitStationToLineRequest("lineName", "upStationName",
+            "downStationName",
             10L);
 
         //when

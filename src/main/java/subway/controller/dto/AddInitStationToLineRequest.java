@@ -1,16 +1,16 @@
 package subway.controller.dto;
 
-public class AddInitStationToLine {
+public class AddInitStationToLineRequest {
 
     private String lineName;
     private String upStationName;
     private String downStationName;
     private Long distance;
 
-    public AddInitStationToLine() {
+    public AddInitStationToLineRequest() {
     }
 
-    public AddInitStationToLine(final String lineName, final String upStationName, final String downStationName,
+    public AddInitStationToLineRequest(final String lineName, final String upStationName, final String downStationName,
         final Long distance) {
         this.lineName = lineName;
         this.upStationName = upStationName;
