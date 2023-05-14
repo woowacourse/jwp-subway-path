@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.entity.LineEntity;
+
 public class Line {
     private final Long id;
     private final String name;
@@ -11,6 +13,10 @@ public class Line {
 
     public Line(final String name) {
         this(null, name);
+    }
+
+    public LineEntity toEntity() {
+        return new LineEntity(id, name);
     }
 
     public Long getId() {

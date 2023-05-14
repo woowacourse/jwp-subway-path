@@ -1,22 +1,37 @@
 package subway.entity;
 
-public class LineEntity {
-    // unused
+import subway.domain.Line;
 
+import java.util.Objects;
+
+public class LineEntity {
     private final Long id;
     private final String name;
-    private final Long stationId;
-    private final Long stationOrder;
 
-    public LineEntity(final Long id, final String name, final Long stationId, final Long stationOrder) {
+    public LineEntity(Long id, String name) {
         this.id = id;
         this.name = name;
-        this.stationId = stationId;
-        this.stationOrder = stationOrder;
     }
 
-    public LineEntity(final String name, final Long stationId, final Long stationOrder) {
-        this(null, name, stationId, stationOrder);
+    public LineEntity(String name) {
+        this(null, name);
+    }
+
+    public Line toDomain() {
+        return new Line(id, name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LineEntity that = (LineEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     public Long getId() {
@@ -27,11 +42,4 @@ public class LineEntity {
         return name;
     }
 
-    public Long getStationId() {
-        return stationId;
-    }
-
-    public Long getStationOrder() {
-        return stationOrder;
-    }
 }

@@ -10,62 +10,43 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.entity.LineEntity;
 
-import java.util.ArrayList;
+import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 @Repository
-public class DbLineDao implements LineDao {
-
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
+public class DbLineDao {
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
+    public final RowMapper<LineEntity> rowMapper = (resultSet, rowNum) -> new LineEntity(
+            resultSet.getLong("id"),
+            resultSet.getString("name")
+    );
 
-    private RowMapper<LineEntity> lineEntityRowMapper = (resultSet, rowNum) ->
-            new LineEntity(
-                    resultSet.getLong("id"),
-                    resultSet.getString("name"),
-                    resultSet.getLong("station_id"),
-                    resultSet.getLong("station_order")
-            );
-
-    public DbLineDao(JdbcTemplate jdbcTemplate) {
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+    public DbLineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
-        this.jdbcTemplate = jdbcTemplate;
-        this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
-    @Override
-    public List<LineEntity> saveLineEntities(final List<LineEntity> lineEntities) {
-        List<LineEntity> savedLineEntities = new ArrayList<>();
-        for (final LineEntity lineEntity : lineEntities) {
-            final SqlParameterSource parameters = new BeanPropertySqlParameterSource(lineEntity);
-            final long id = simpleJdbcInsert.executeAndReturnKey(parameters).longValue();
-            final LineEntity savedLineEntity = new LineEntity(id, lineEntity.getName(), lineEntity.getStationId(), lineEntity.getStationOrder());
+    public LineEntity saveLine(LineEntity lineEntity) {
+        Map<String, Object> parameters = new HashMap<>(1);
+        parameters.put("name", lineEntity.getName());
+        final long id = insertAction.executeAndReturnKey(parameters).longValue();
+        return new LineEntity(id, lineEntity.getName());
 
-            savedLineEntities.add(savedLineEntity);
-        }
-
-        return savedLineEntities;
     }
 
-    @Override
-    public List<LineEntity> findLine(Line line) {
-        String sql = "select * from line where name = :name";
-        final Map<String, String> parameter = Map.of("name", line.getName());
-        return namedParameterJdbcTemplate.query(sql, parameter, lineEntityRowMapper);
+    public LineEntity findByName(final String name) {
+        final String sql = "SELECT * FROM line WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
-    @Override
-    public void deleteAllStationsOfLine(Line line) {
-        String sql = "delete from line where name = :name";
-        final Map<String, String> parameters = Map.of("name", line.getName());
-        namedParameterJdbcTemplate.update(sql, parameters);
+    public List<LineEntity> findAll() {
+        final String sql = "SELECT * FROM line";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
-    @Override
-    public void findAllLines() {
-    }
 }

@@ -1,19 +1,20 @@
 package subway.dao;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.domain.Line;
 import subway.entity.LineEntity;
+import subway.fixture.LineFixture;
 
 import javax.sql.DataSource;
-import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static subway.fixture.LineFixture.LINE_999;
-import static subway.fixture.StationFixture.EXPRESS_BUS_TERMINAL_STATION;
-import static subway.fixture.StationFixture.SAPYEONG_STATION;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
 class DbLineDaoTest {
@@ -24,52 +25,27 @@ class DbLineDaoTest {
     @Autowired
     private DataSource dataSource;
 
-    private LineDao lineDao;
-    private StationDao stationDao;
+    private DbLineDao dbLineDao;
 
     @BeforeEach
     void setUp() {
-        lineDao = new DbLineDao(jdbcTemplate);
-        stationDao = new DbStationDao(jdbcTemplate, dataSource);
+        dbLineDao = new DbLineDao(jdbcTemplate, dataSource);
     }
 
     @Test
-    void saveLineEntitiesTest() {
-        final LineEntity lineEntity = new LineEntity("1호선", 1L, 1L);
-        final LineEntity lineEntity2 = new LineEntity("1호선", 2L, 2L);
+    @DisplayName("노선 저장하기")
+    void save() {
+        dbLineDao.saveLine(new LineEntity("1호선"));
 
-        stationDao.saveStation(EXPRESS_BUS_TERMINAL_STATION);
-        stationDao.saveStation(SAPYEONG_STATION);
-
-        final List<LineEntity> lineEntities = lineDao.saveLineEntities(List.of(lineEntity, lineEntity2));
-        assertThat(lineEntities.size()).isEqualTo(2);
+        assertThat(dbLineDao.findAll().size()).isEqualTo(1);
     }
 
     @Test
-    void findAllStationsOfLine() {
-        final LineEntity lineEntity = new LineEntity(LINE_999.getName(), 1L, 1L);
-        final LineEntity lineEntity2 = new LineEntity(LINE_999.getName(), 2L, 2L);
-        stationDao.saveStation(EXPRESS_BUS_TERMINAL_STATION);
-        stationDao.saveStation(SAPYEONG_STATION);
+    @DisplayName("모든 노선 정보 조회하기")
+    void findAll() {
+        dbLineDao.saveLine(new LineEntity("1호선"));
+        dbLineDao.saveLine(new LineEntity("2호선"));
 
-        lineDao.saveLineEntities(List.of(lineEntity, lineEntity2));
-        final List<LineEntity> lineEntities = lineDao.findLine(LINE_999);
-
-        assertThat(lineEntities.size()).isEqualTo(2);
-    }
-
-    @Test
-    void deleteAllStationsOfLine() {
-        final LineEntity lineEntity = new LineEntity(LINE_999.getName(), 1L, 1L);
-        final LineEntity lineEntity2 = new LineEntity(LINE_999.getName(), 2L, 2L);
-
-        stationDao.saveStation(EXPRESS_BUS_TERMINAL_STATION);
-        stationDao.saveStation(SAPYEONG_STATION);
-
-        lineDao.saveLineEntities(List.of(lineEntity, lineEntity2));
-        lineDao.deleteAllStationsOfLine(LINE_999);
-
-        final List<LineEntity> lines = lineDao.findLine(LINE_999);
-        assertThat(lines.size()).isEqualTo(0);
+        assertThat(dbLineDao.findAll().size()).isEqualTo(2);
     }
 }
