@@ -6,6 +6,7 @@ import subway.application.StationService;
 import subway.ui.dto.StationCreateRequest;
 import subway.ui.dto.StationResponse;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -20,7 +21,7 @@ public class StationController {
     @PostMapping
     public ResponseEntity<String> createStation(@RequestBody StationCreateRequest stationCreateRequest) {
         stationService.createStation(stationCreateRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.created(URI.create("/")).build();
     }
 
     @GetMapping
