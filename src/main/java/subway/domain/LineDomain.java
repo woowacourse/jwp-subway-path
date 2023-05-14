@@ -17,13 +17,14 @@ public class LineDomain {
     }
 
     public LineDomain(final Long id, final String name, final String color, final SectionsDomain sections) {
+        validate(name, color, sections);
         this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
     }
 
-    private void validate(final String name, final String color, final List<StationDomain> stations) {
+    private void validate(final String name, final String color, final SectionsDomain sections) {
         if (Objects.isNull(name)) {
             throw new IllegalArgumentException("노선 이름을 null일 수 없습니다.");
         }
@@ -33,7 +34,7 @@ public class LineDomain {
         if (Objects.isNull(color)) {
             throw new IllegalArgumentException("노선 색상은 null일 수 없습니다.");
         }
-        if (Objects.isNull(stations)) {
+        if (Objects.isNull(sections)) {
             throw new IllegalArgumentException("노선의 구간 목록은 null일 수 없습니다.");
         }
     }
@@ -58,8 +59,8 @@ public class LineDomain {
         return color;
     }
 
-    public SectionsDomain getSections() {
-        return sections;
+    public List<SectionDomain> getSections() {
+        return sections.getSections();
     }
 
     @Override
