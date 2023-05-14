@@ -4,33 +4,50 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import subway.dto.response.ErrorResponse;
 import subway.exception.*;
 import subway.ui.ErrorCode;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResponse> sectionNotFound(Exception e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body(errorResponse);
+    }
+
     @ExceptionHandler(StationNotFoundException.class)
-    public ResponseEntity<String> stationNotExist(StationNotFoundException e) {
+    public ResponseEntity<ErrorResponse> stationNotExist(StationNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.STATION_NOT_EXIST.getMessage());
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorCode.STATION_NOT_EXIST.getMessage());
+                .body(errorResponse);
     }
 
     @ExceptionHandler(InvalidSectionLengthException.class)
-    public ResponseEntity<String> stationNotExist(InvalidSectionLengthException e) {
+    public ResponseEntity<ErrorResponse> stationNotExist(InvalidSectionLengthException e) {
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.INVALID_SECTION_LENGTH.getMessage());
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorCode.INVALID_SECTION_LENGTH.getMessage());
+                .body(errorResponse);
     }
 
     @ExceptionHandler(EndStationNotExistException.class)
-    public ResponseEntity<String> endStationNotFound(EndStationNotExistException e) {
+    public ResponseEntity<ErrorResponse> endStationNotFound(EndStationNotExistException e) {
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.NOT_FOUND_END_STATION.getMessage());
+
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorCode.NOT_FOUND_END_STATION.getMessage());
+                .body(errorResponse);
     }
 
     @ExceptionHandler(SectionNotFoundException.class)
-    public ResponseEntity<String> sectionNotFound(SectionNotFoundException e) {
+    public ResponseEntity<ErrorResponse> sectionNotFound(SectionNotFoundException e) {
+        ErrorResponse errorResponse = new ErrorResponse(ErrorCode.NOT_FOUND_SECTION.getMessage());
+
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorCode.NOT_FOUND_SECTION.getMessage());
+                .body(errorResponse);
     }
 }

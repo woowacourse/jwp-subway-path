@@ -10,8 +10,8 @@ import subway.domain.SectionDirection;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.SectionSaveRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.SectionSaveRequest;
+import subway.dto.response.StationResponse;
 import subway.exception.SectionNotFoundException;
 import subway.exception.StationNotFoundException;
 

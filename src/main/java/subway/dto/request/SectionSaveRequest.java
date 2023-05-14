@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.dto.request;
 
 public class SectionSaveRequest {
     private final long upStationId;

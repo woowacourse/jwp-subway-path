@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.SectionService;
-import subway.dto.SectionSaveRequest;
-import subway.dto.StationResponse;
+import subway.dto.request.SectionSaveRequest;
+import subway.dto.response.StationResponse;
 
 import java.util.List;
 
