@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 public class Sections {
     public static final int DOWN_END_ID = 0;
+    public static final int ONE_REMAINED = 1;
     private final long lineId;
     private final List<Section> sections;
 
@@ -100,6 +101,14 @@ public class Sections {
     }
 
 
+    public boolean isUpEnd(long stationId) {
+        return this.getUpEndSection().isSameUpStationId(stationId);
+    }
+
+    public boolean isDownEnd(long stationId) {
+        return this.getDownEndSection().isSameDownStationId(stationId);
+    }
+
     public List<Station> getStationsInOrder() {
         if (sections.isEmpty()) {
             return Collections.emptyList();
@@ -133,6 +142,11 @@ public class Sections {
             currentSection = nextSection;
         }
         return result;
+    }
+
+
+    public boolean isLastRemained() {
+        return sections.size() == ONE_REMAINED;
     }
 
     @Override

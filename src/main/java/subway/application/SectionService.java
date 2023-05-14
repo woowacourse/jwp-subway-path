@@ -57,17 +57,10 @@ public class SectionService {
 
         Section includeSection = sections.getIncludeSection(requestedSection);
         SectionDirection newSectionDirection = includeSection.checkNewSectionDirection(requestedSection);
-        validateAddAvailable(newSectionDirection);
         if (newSectionDirection == SectionDirection.INNER_LEFT) {
             return addInnerLeft(lineId, requestedSection, includeSection);
         }
         return addInnerRight(lineId, requestedSection, includeSection);
-    }
-
-    private void validateAddAvailable(SectionDirection newSectionDirection) {
-        if (newSectionDirection == SectionDirection.NONE) {
-            throw new SectionNotFoundException();
-        }
     }
 
     private long addInnerRight(long lineId, Section requestedSection, Section includeSection) {
@@ -113,19 +106,19 @@ public class SectionService {
 
     public void removeStation(long stationId, long lineId) {
         Sections sections = sectionDao.findSectionsByLineId(lineId);
-
         validateStationExist(stationId, sections);
-        if (isLastSection(sections)) {
+
+        if (sections.isLastRemained()) {
             sectionDao.deleteAllByLineId(lineId);
             return;
         }
 
-        if (isUpEnd(stationId, sections)) {
+        if (sections.isUpEnd(stationId)) {
             sectionDao.deleteSectionByUpStationId(stationId, lineId);
             return;
         }
 
-        if (sections.getDownEndSection().isSameDownStationId(stationId)) {
+        if (sections.isDownEnd(stationId)) {
             updateDownEndRemove(stationId, lineId, sections);
             return;
         }
@@ -152,13 +145,5 @@ public class SectionService {
                 innerRight.getNextSectionId());
         sectionDao.update(newSection);
         sectionDao.deleteById(innerRight.getId());
-    }
-
-    private boolean isUpEnd(long stationId, Sections sections) {
-        return sections.getUpEndSection().isSameUpStationId(stationId);
-    }
-
-    private boolean isLastSection(Sections sections) {
-        return sections.size() == LAST_REMAIN;
     }
 }

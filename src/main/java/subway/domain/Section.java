@@ -1,10 +1,10 @@
 package subway.domain;
 
 import subway.exception.InvalidSectionLengthException;
+import subway.exception.SectionNotFoundException;
 
-import static subway.domain.SectionDirection.INNER_RIGHT;
-import static subway.domain.SectionDirection.NONE;
 import static subway.domain.SectionDirection.INNER_LEFT;
+import static subway.domain.SectionDirection.INNER_RIGHT;
 
 public class Section {
     private final Long id;
@@ -52,11 +52,12 @@ public class Section {
     public boolean isSameUpStationId(long stationId) {
         return this.getUpStationId() == stationId;
     }
+
     public boolean isSameDownStationId(long stationId) {
         return this.getDownStationId() == stationId;
     }
 
-    public SectionDirection checkNewSectionDirection(Section newSection) {
+    public SectionDirection checkNewSectionDirection(Section newSection) throws SectionNotFoundException {
         if (this.upStation.equals(newSection.upStation)) {
             return INNER_LEFT;
         }
@@ -64,8 +65,7 @@ public class Section {
         if (this.downStation.equals(newSection.downStation)) {
             return INNER_RIGHT;
         }
-
-        return NONE;
+        throw new SectionNotFoundException();
     }
 
     public boolean hasIntersection(Section section) {
