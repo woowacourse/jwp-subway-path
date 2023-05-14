@@ -7,7 +7,7 @@ public class AddInitStationToLineRequest {
     private String downStationName;
     private Long distance;
 
-    public AddInitStationToLineRequest() {
+    private AddInitStationToLineRequest() {
     }
 
     public AddInitStationToLineRequest(final String lineName, final String upStationName, final String downStationName,

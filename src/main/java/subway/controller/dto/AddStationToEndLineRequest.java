@@ -6,7 +6,7 @@ public class AddStationToEndLineRequest {
     private String stationName;
     private Long distance;
 
-    public AddStationToEndLineRequest() {
+    private AddStationToEndLineRequest() {
     }
 
     public AddStationToEndLineRequest(final String lineName, final String stationName, final Long distance) {

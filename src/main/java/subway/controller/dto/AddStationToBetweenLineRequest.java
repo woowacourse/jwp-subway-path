@@ -8,7 +8,7 @@ public class AddStationToBetweenLineRequest {
     private String downStationName;
     private Long distance;
 
-    public AddStationToBetweenLineRequest() {
+    private AddStationToBetweenLineRequest() {
     }
 
     public AddStationToBetweenLineRequest(final String lineName, final String stationName, final String upStationName,

@@ -5,7 +5,7 @@ public class RemoveStationOnLineRequest {
     private String lineName;
     private String stationName;
 
-    public RemoveStationOnLineRequest() {
+    private RemoveStationOnLineRequest() {
     }
 
     public RemoveStationOnLineRequest(final String lineName, final String stationName) {

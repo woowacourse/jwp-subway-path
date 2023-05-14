@@ -15,7 +15,7 @@ public class AddStationToLineRequest {
     @NotBlank
     private Long distance;
 
-    public AddStationToLineRequest() {
+    private AddStationToLineRequest() {
     }
 
     public AddStationToLineRequest(final AddStationLocation addStationLocation, final String lineName,
