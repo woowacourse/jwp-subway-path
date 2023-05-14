@@ -2,19 +2,21 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.StationEntity;
 
-import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
+
     private final RowMapper<StationEntity> stationEntityRowMapper =
             (rs, rowNum) -> new StationEntity(
                     rs.getLong("id"),
@@ -23,22 +25,20 @@ public class StationDao {
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("station")
+                .usingGeneratedKeyColumns("id");
     }
 
     public StationEntity insert(StationEntity stationEntity) {
-        String sql = "INSERT INTO station (name, line_id) VALUES (?, ?)";
         String stationName = stationEntity.getStationName();
         Long lineId = stationEntity.getLineId();
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"id"});
-            preparedStatement.setString(1, stationName);
-            preparedStatement.setLong(2, lineId);
-            return preparedStatement;
-        }, keyHolder);
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", stationName);
+        params.put("line_id", lineId);
 
-        long insertedId = keyHolder.getKey().longValue();
+        long insertedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return new StationEntity(insertedId, stationName, lineId);
     }
 

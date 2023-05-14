@@ -2,25 +2,29 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
 
-import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
     private final RowMapper<LineEntity> lineEntityRowMapper =
             (rs, rowNum) -> new LineEntity(rs.getLong("id"), rs.getString("name"));
 
 
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("line")
+                .usingGeneratedKeyColumns("id");
     }
 
     public LineEntity insert(LineEntity lineEntity) {
@@ -28,15 +32,9 @@ public class LineDao {
         if (findLineEntity.isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 노선입니다.");
         }
-        String sql = "INSERT INTO line (name) VALUES (?)";
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"id"});
-            preparedStatement.setString(1, lineEntity.getLineName());
-            return preparedStatement;
-        }, keyHolder);
-
-        long insertedId = keyHolder.getKey().longValue();
+        Map<String, String> params = new HashMap<>();
+        params.put("name", lineEntity.getLineName());
+        Long insertedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return new LineEntity(insertedId, lineEntity.getLineName());
     }
 

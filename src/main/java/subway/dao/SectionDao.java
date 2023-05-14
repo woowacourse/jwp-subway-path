@@ -2,19 +2,20 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
 
-import java.sql.PreparedStatement;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert simpleJdbcInsert;
     private final RowMapper<SectionEntity> sectionEntityRowMapper =
             (rs, rowNum) -> new SectionEntity(
                     rs.getLong("id"),
@@ -25,27 +26,24 @@ public class SectionDao {
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("section")
+                .usingGeneratedKeyColumns("id");
     }
 
     public SectionEntity insert(SectionEntity sectionEntity) {
-        String sql = "INSERT INTO section (up_station_id, down_station_id, distance, line_id) VALUES (?, ?, ?, ?)";
         Long upStationId = sectionEntity.getUpStationId();
         Long downStationId = sectionEntity.getDownStationId();
-        Long lineId = sectionEntity.getLineId();
         int distance = sectionEntity.getDistance();
+        Long lineId = sectionEntity.getLineId();
 
-        KeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement preparedStatement = con.prepareStatement(sql, new String[]{"id"});
-            preparedStatement.setLong(1, upStationId);
-            preparedStatement.setLong(2, downStationId);
-            preparedStatement.setInt(3, distance);
-            preparedStatement.setLong(4, lineId);
+        Map<String, Object> params = new HashMap<>();
+        params.put("up_station_id", upStationId);
+        params.put("down_station_id", downStationId);
+        params.put("distance", distance);
+        params.put("line_id", lineId);
 
-            return preparedStatement;
-        }, keyHolder);
-
-        long insertedId = keyHolder.getKey().longValue();
+        Long insertedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return new SectionEntity(insertedId, upStationId, downStationId, distance, lineId);
     }
 
