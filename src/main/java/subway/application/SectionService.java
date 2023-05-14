@@ -1,10 +1,10 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.application.sectionReader.FirstSaveCase;
-import subway.application.sectionReader.SectionReader;
+import subway.application.sectionreader.FirstSaveCase;
+import subway.application.sectionreader.SectionReader;
 import subway.dao.SectionDao;
-import subway.domain.LineInfo;
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.SectionSorter;
 import subway.dto.AddStationRequest;
@@ -31,7 +31,7 @@ public class SectionService {
         return sectionReader.read(id, allSections);
     }
 
-    public Map<LineInfo, List<Section>> findSections() {
+    public Map<Line, List<Section>> findSections() {
         final SectionSorter sectionSorter = SectionSorter.getInstance();
 
         return sectionDao.findSections().entrySet().stream()

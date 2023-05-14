@@ -1,4 +1,4 @@
-package subway.application.sectionReader;
+package subway.application.sectionreader;
 
 import subway.dao.SectionDao;
 import subway.domain.Section;
