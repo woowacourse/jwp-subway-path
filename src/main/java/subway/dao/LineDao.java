@@ -41,11 +41,6 @@ public class LineDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-//    public Long findIdByName(String name) {
-//        String sql = "select id from LINE where name = ?";
-//        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("id"), name);
-//    }
-
     public List<LineEntity> findAll() {
         String sql = "select * from LINE";
         return jdbcTemplate.query(sql, rowMapper);
@@ -58,6 +53,12 @@ public class LineDao {
         } catch (EmptyResultDataAccessException exception) {
             throw new IllegalArgumentException("존재하지 않는 노선입니다.");
         }
+    }
+
+    public boolean isExist(String name) {
+        String sql = "select exists(select * from LINE where name = ?) as is_exist";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+            rs.getBoolean("is_exist"), name));
     }
 
 //    public Long findHeadIdById(Long lineId) {

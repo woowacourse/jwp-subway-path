@@ -10,9 +10,12 @@ public class LineRequest {
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color) {
+    public LineRequest(String name, String color, String upStation, String downStation, int distance) {
         this.name = name;
         this.color = color;
+        this.upStation=upStation;
+        this.downStation=downStation;
+        this.distance=distance;
     }
 
     public String getName() {

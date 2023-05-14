@@ -51,7 +51,7 @@ public class StationDao {
     public Long insert(StationEntity entity) {
         SqlParameterSource params = new MapSqlParameterSource()
             .addValue("name", entity.getName())
-            .addValue("next", entity.getNext())
+            .addValue("next_station", entity.getNext())
             .addValue("distance", entity.getDistance())
             .addValue("line_id", entity.getLineId());
         return insertAction.executeAndReturnKey(params).longValue();

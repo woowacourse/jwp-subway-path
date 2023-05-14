@@ -17,6 +17,13 @@ public class StationEntity {
         this.distance = distance;
         this.lineId = lineId;
     }
+    public StationEntity(String name, Long next, Integer distance, Long lineId) {
+        this.id = 0L;
+        this.name = name;
+        this.next = next;
+        this.distance = distance;
+        this.lineId = lineId;
+    }
 
     public Long getId() {
         return id;

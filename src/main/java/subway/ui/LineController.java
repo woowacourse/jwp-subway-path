@@ -1,12 +1,16 @@
 package subway.ui;
 
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
 import java.util.List;
@@ -21,11 +25,11 @@ public class LineController {
         this.lineService = lineService;
     }
 
-//    @PostMapping
-//    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-//        LineResponse line = lineService.saveLine(lineRequest);
-//        return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
-//    }
+    @PostMapping
+    public ResponseEntity<Long> createLine(@RequestBody LineRequest lineRequest) {
+        Long newLineId = lineService.saveLine(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + newLineId)).body(newLineId);
+    }
 
     /**
      * 노선도에 있는 모든 노선들의 정보를 조회

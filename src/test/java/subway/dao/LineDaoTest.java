@@ -15,7 +15,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.entity.LineEntity;
 
@@ -40,11 +39,11 @@ class LineDaoTest {
     @DisplayName("insert()를 호출할 때 유효한 LineEntity를 입력하면 정상적으로 노선이 추가된다.")
     void insert_success() {
         // given
-        LineEntity entity=new LineEntity("수인분당선","노란색",7L);
-        int beforeSize=lineDao.findAll().size();
+        LineEntity entity = new LineEntity("수인분당선", "노란색", 7L);
+        int beforeSize = lineDao.findAll().size();
 
         // when
-        Long newLineId=lineDao.insert(entity);
+        Long newLineId = lineDao.insert(entity);
         int afterSize = lineDao.findAll().size();
 
         // then
@@ -79,6 +78,27 @@ class LineDaoTest {
         Assertions.assertThat(actual).isEqualTo(expected);
     }
 
+    @Test
+    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 노선이 존재한다면 true를 반환한다")
+    void isExist_true() {
+        // given, when
+        String name = "1호선";
+        boolean isExistLine = lineDao.isExist(name);
+
+        // then
+        Assertions.assertThat(isExistLine).isTrue();
+    }
+
+    @Test
+    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 노선이 존재하지 않는다면 false를 반환한다")
+    void isExist_false() {
+        // given, when
+        String name = "10호선";
+        boolean isExistLine = lineDao.isExist(name);
+
+        // then
+        Assertions.assertThat(isExistLine).isFalse();
+    }
     @Test
     @DisplayName("isUpEndStation()를 호출할 때 입력받은 이름의 역이 노선의 상행종점이라면 true를 반환한다")
     void isUpEndStation_true() {
@@ -130,6 +150,7 @@ class LineDaoTest {
 
         // then
         Assertions.assertThatThrownBy(() -> lineDao.findById(lineId))
-            .isInstanceOf(EmptyResultDataAccessException.class);
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("존재하지 않는 노선입니다.");
     }
 }
