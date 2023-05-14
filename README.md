@@ -1,5 +1,60 @@
 # jwp-subway-path
 
+
+### 더미 데이터
+```sql
+INSERT INTO line(name, color) VALUES ('1호선', '남색');
+INSERT INTO section(upward_id, downward_id, distance, line_id) VALUES (null, null, null, 1);
+
+INSERT INTO station(name) VALUES ('강변');
+INSERT INTO station(name) VALUES ('잠실나루');
+INSERT INTO station(name) VALUES ('잠실');
+INSERT INTO station(name) VALUES ('잠실새내');
+INSERT INTO station(name) VALUES ('종합운동장');
+
+INSERT INTO station(name) VALUES ('노량진');
+INSERT INTO station(name) VALUES ('용산');
+INSERT INTO station(name) VALUES ('서울역');
+```
+
+### 요청과 응답
+#### Request POST /lines
+```json
+{
+    "name": "2호선",
+    "color": "초록색"
+}
+```
+#### Request POST /lines/{lineId}/stations
+```json
+{
+    "lineId": 2,
+    "upwardStationId": 1,
+    "downwardStationId": 3,
+    "distance": 10
+}
+```
+#### Response GET /lines/{lineId}
+```json
+{
+    "id": 2,
+    "name": "2호선",
+    "color": "초록색",
+    "stations": [
+        {
+            "id": 1,
+            "name": "강변"
+        },
+        {
+            "id": 3,
+            "name": "잠실"
+        }
+    ]
+}
+```
+
+### 기능 목록
+
 1. API 기능 요구사항 명세
 
 - [x] 노선에 역 등록 API 신규 구현
@@ -70,10 +125,6 @@
 
 ### 숙제 - 예외 상황 검증
 
-- `잠실` 역이 `잠실 - 잠실새내`라는 구간을 중복해서 가지면 안된다.
-- `성수 - 건대입구` 사이에 `성수`가 들어가면 안된다.
-- `잠실 - 성수가` 이미 있는데  `성수 - 건대입구` 사이에 `잠실`이 들어가면 안된다.
-    - 잠실을 추가하고 싶은 노선에 잠실이 이미 있는지 확인한다.
-
-- 노선의 역이 2개 초과로 남은 상황인데 2개의 역을 동시에 삭제 요청하는 경우 예외처리
-- 노선에 마지막 두개의 역만 남았을 때 하나의 역을 제거한다는 요청이 들어오면 예외처리한다.
+- [x] 잠실을 추가하고 싶은 노선에 잠실이 이미 있는지 확인한다.
+- [x] 노선의 역이 2개 초과로 남은 상황인데 2개의 역을 동시에 삭제 요청하는 경우 예외처리
+- [x] 노선에 마지막 두개의 역만 남았을 때 하나의 역을 제거한다는 요청이 들어오면 다 삭제
