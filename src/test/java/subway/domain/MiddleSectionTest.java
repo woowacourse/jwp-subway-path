@@ -4,8 +4,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.InvalidDistanceException;
-import subway.exception.InvalidStationNameException;
+import subway.line.domain.DummyTerminalStation;
+import subway.line.domain.MiddleSection;
+import subway.line.exception.InvalidDistanceException;
+import subway.line.exception.InvalidStationNameException;
+import subway.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;

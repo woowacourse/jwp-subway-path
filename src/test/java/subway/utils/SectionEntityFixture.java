@@ -1,6 +1,6 @@
 package subway.utils;
 
-import subway.entity.SectionEntity;
+import subway.line.entity.SectionEntity;
 
 import static subway.utils.LineEntityFixture.LINE_NUMBER_TWO_ENTITY;
 import static subway.utils.StationEntityFixture.*;

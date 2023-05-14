@@ -2,7 +2,8 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.exception.DuplicateLineNameException;
+import subway.line.domain.Lines;
+import subway.line.exception.DuplicateLineNameException;
 
 import java.util.Collections;
 import java.util.List;

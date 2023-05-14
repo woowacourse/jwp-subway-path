@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
+import subway.line.dao.LineDao;
+import subway.line.dao.SectionDao;
+import subway.line.repository.LineRepository;
+import subway.station.repository.StationRepository;
 
 import java.util.List;
 import java.util.Optional;

@@ -6,7 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.StationDao;
+import subway.station.dao.StationDao;
+import subway.station.repository.StationRepository;
 
 import java.util.Optional;
 

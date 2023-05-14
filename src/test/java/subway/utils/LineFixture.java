@@ -1,6 +1,6 @@
 package subway.utils;
 
-import subway.domain.Line;
+import subway.line.domain.Line;
 
 import java.util.LinkedList;
 import java.util.List;

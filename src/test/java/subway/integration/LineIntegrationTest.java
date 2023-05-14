@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
-import subway.ui.dto.LineCreationRequest;
+import subway.line.ui.dto.LineCreationRequest;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.*;

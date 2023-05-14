@@ -1,6 +1,6 @@
 package subway.utils;
 
-import subway.domain.Station;
+import subway.station.domain.Station;
 
 public class StationFixture {
 

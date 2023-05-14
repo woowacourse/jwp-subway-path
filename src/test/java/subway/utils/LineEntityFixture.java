@@ -1,6 +1,6 @@
 package subway.utils;
 
-import subway.entity.LineEntity;
+import subway.line.entity.LineEntity;
 
 public class LineEntityFixture {
 

@@ -2,7 +2,8 @@ package subway.domain;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.NameLengthException;
+import subway.station.domain.Station;
+import subway.station.exception.NameLengthException;
 
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

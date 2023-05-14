@@ -4,10 +4,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.DuplicateStationInLineException;
-import subway.exception.NameLengthException;
-import subway.exception.SectionNotFoundException;
-import subway.exception.StationNotFoundException;
+import subway.line.domain.DummyTerminalStation;
+import subway.line.domain.Line;
+import subway.line.domain.MiddleSection;
+import subway.line.exception.DuplicateStationInLineException;
+import subway.line.exception.SectionNotFoundException;
+import subway.station.domain.Station;
+import subway.station.exception.NameLengthException;
+import subway.station.exception.StationNotFoundException;
 
 import java.util.List;
 

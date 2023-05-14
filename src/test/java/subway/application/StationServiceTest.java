@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.exception.StationNotFoundException;
-import subway.repository.StationRepository;
+import subway.station.application.StationService;
+import subway.station.exception.StationNotFoundException;
+import subway.station.repository.StationRepository;
 
 import java.util.Optional;
 
