@@ -3,16 +3,11 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import subway.exception.ApiIllegalArgumentException;
 
 public class Line {
 
-    private static final int MAX_NAME_LENGTH = 50;
-    private static final int MAX_COLOR_LENGTH = 20;
-
     private final Long id;
-    private final String name;
-    private final String color;
+    private final LineInfo lineInfo;
     private final Sections sections;
 
     public Line(final String name, final String color) {
@@ -20,30 +15,9 @@ public class Line {
     }
 
     public Line(final Long id, final String name, final String color, final List<Section> sections) {
-        validateName(name);
-        validateColor(color);
         this.id = id;
-        this.name = name.strip();
-        this.color = color.strip();
+        this.lineInfo = new LineInfo(name, color);
         this.sections = new Sections(new ArrayList<>(sections));
-    }
-
-    private void validateName(final String name) {
-        if (name == null || name.isBlank()) {
-            throw new ApiIllegalArgumentException("이름은 비어있을 수 없습니다.");
-        }
-        if (name.strip().length() > MAX_NAME_LENGTH) {
-            throw new ApiIllegalArgumentException("이름은 " + MAX_NAME_LENGTH + "자 이하여야합니다.");
-        }
-    }
-
-    private void validateColor(final String color) {
-        if (color == null || color.isBlank()) {
-            throw new ApiIllegalArgumentException("색상은 비어있을 수 없습니다.");
-        }
-        if (color.strip().length() > MAX_COLOR_LENGTH) {
-            throw new ApiIllegalArgumentException("색상은 " + MAX_COLOR_LENGTH + "자 이하여야합니다.");
-        }
     }
 
     public void addSection(final Section section) {
@@ -63,13 +37,13 @@ public class Line {
     }
 
     public String getName() {
-        return name;
+        return lineInfo.getName();
     }
 
     public String getColor() {
-        return color;
+        return lineInfo.getColor();
     }
-
+    
     public List<Section> getSections() {
         return sections.getSections();
     }

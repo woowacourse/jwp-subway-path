@@ -1,9 +1,9 @@
 package subway.fixture;
 
 import java.util.ArrayList;
+import subway.adapter.in.web.line.dto.CreateLineRequest;
+import subway.adapter.out.persistence.entity.LineEntity;
 import subway.domain.Line;
-import subway.dto.request.LineRequest;
-import subway.entity.LineEntity;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineFixture {
@@ -16,7 +16,7 @@ public class LineFixture {
 
         public static final Line LINE = new Line(ID, NAME, COLOR, new ArrayList<>());
         public static final LineEntity ENTITY = new LineEntity(ID, NAME, COLOR);
-        public static final LineRequest REQUEST = new LineRequest(NAME, COLOR);
+        public static final CreateLineRequest REQUEST = new CreateLineRequest(NAME, COLOR);
     }
 
 }

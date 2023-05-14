@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import subway.exception.ApiIllegalArgumentException;
+import subway.common.exception.ApiIllegalArgumentException;
 import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.잠실역;
 

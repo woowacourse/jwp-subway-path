@@ -15,7 +15,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import subway.entity.StationEntity;
+import subway.adapter.out.persistence.dao.StationDao;
+import subway.adapter.out.persistence.entity.StationEntity;
 import subway.fixture.StationFixture.삼성역;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

@@ -1,11 +1,11 @@
 package subway.fixture;
 
+import subway.adapter.in.web.section.dto.AddStationToLineRequest;
+import subway.adapter.out.persistence.entity.LineEntity;
+import subway.adapter.out.persistence.entity.SectionEntity;
+import subway.adapter.out.persistence.entity.StationEntity;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.dto.request.CreateSectionRequest;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
 import subway.fixture.LineFixture.이호선;
 import subway.fixture.StationFixture.건대역;
 import subway.fixture.StationFixture.삼성역;
@@ -28,7 +28,7 @@ public class SectionFixture {
         public static final Section SECTION = new Section(ID, UP_STATION, DOWN_STATION, DISTANCE);
         public static final SectionEntity ENTITY = new SectionEntity(ID, LINE_ENTITY.getId(), UP_STATION_ENTITY.getId(),
                 DOWN_STATION_ENTITY.getId(), DISTANCE);
-        public static final CreateSectionRequest REQUEST = new CreateSectionRequest(UP_STATION.getId(),
+        public static final AddStationToLineRequest REQUEST = new AddStationToLineRequest(UP_STATION.getId(),
                 DOWN_STATION.getId(), DISTANCE);
     }
 
@@ -45,7 +45,7 @@ public class SectionFixture {
         public static final Section SECTION = new Section(ID, UP_STATION, DOWN_STATION, DISTANCE);
         public static final SectionEntity ENTITY = new SectionEntity(ID, LINE_ENTITY.getId(), UP_STATION_ENTITY.getId(),
                 DOWN_STATION_ENTITY.getId(), DISTANCE);
-        public static final CreateSectionRequest REQUEST = new CreateSectionRequest(UP_STATION.getId(),
+        public static final AddStationToLineRequest REQUEST = new AddStationToLineRequest(UP_STATION.getId(),
                 DOWN_STATION.getId(), DISTANCE);
     }
 
@@ -62,7 +62,7 @@ public class SectionFixture {
         public static final Section SECTION = new Section(ID, UP_STATION, DOWN_STATION, DISTANCE);
         public static final SectionEntity ENTITY = new SectionEntity(ID, LINE_ENTITY.getId(), UP_STATION_ENTITY.getId(),
                 DOWN_STATION_ENTITY.getId(), DISTANCE);
-        public static final CreateSectionRequest REQUEST = new CreateSectionRequest(UP_STATION.getId(),
+        public static final AddStationToLineRequest REQUEST = new AddStationToLineRequest(UP_STATION.getId(),
                 DOWN_STATION.getId(), DISTANCE);
     }
 }

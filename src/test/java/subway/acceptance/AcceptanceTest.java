@@ -15,11 +15,11 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dto.request.CreateSectionRequest;
-import subway.dto.request.LineRequest;
-import subway.dto.request.StationRequest;
-import subway.dto.response.LineResponse;
-import subway.dto.response.StationResponse;
+import subway.adapter.in.web.line.dto.CreateLineRequest;
+import subway.adapter.in.web.section.dto.AddStationToLineRequest;
+import subway.adapter.in.web.station.dto.CreateStationRequest;
+import subway.application.port.in.line.dto.response.LineQueryResponse;
+import subway.application.port.in.station.dto.response.StationQueryResponse;
 import subway.fixture.LineFixture.이호선;
 import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.역삼역;
@@ -52,24 +52,24 @@ public class AcceptanceTest {
     @Test
     void 노선에_역_등록_시나리오_테스트() {
         // 역을 등록한다.
-        StationResponse stationResponse1 = addStation(역삼역.REQUEST);
-        StationResponse stationResponse2 = addStation(삼성역.REQUEST);
-        StationResponse stationResponse3 = addStation(잠실역.REQUEST);
+        StationQueryResponse stationResponse1 = addStation(역삼역.REQUEST);
+        StationQueryResponse stationResponse2 = addStation(삼성역.REQUEST);
+        StationQueryResponse stationResponse3 = addStation(잠실역.REQUEST);
 
         // 노선을 등록한다.
-        LineResponse lineResponse = addLine(이호선.REQUEST);
+        LineQueryResponse lineResponse = addLine(이호선.REQUEST);
 
         // 노선에 역을 등록한다.
-        CreateSectionRequest createSectionRequest1 = new CreateSectionRequest(stationResponse1.getId(),
+        AddStationToLineRequest addStationToLineRequest1 = new AddStationToLineRequest(stationResponse1.getId(),
                 stationResponse3.getId(), 5);
-        CreateSectionRequest createSectionRequest2 = new CreateSectionRequest(stationResponse2.getId(),
+        AddStationToLineRequest addStationToLineRequest2 = new AddStationToLineRequest(stationResponse2.getId(),
                 stationResponse3.getId(), 2);
 
-        addSection(createSectionRequest1, lineResponse.getId());
-        addSection(createSectionRequest2, lineResponse.getId());
+        addSection(addStationToLineRequest1, lineResponse.getId());
+        addSection(addStationToLineRequest2, lineResponse.getId());
 
         // 노선을 조회한다.
-        LineResponse resultResponse = getLine(lineResponse.getId());
+        LineQueryResponse resultResponse = findLine(lineResponse.getId());
 
         assertThat(resultResponse.getStations())
                 .usingRecursiveComparison()
@@ -77,29 +77,29 @@ public class AcceptanceTest {
     }
 
     @Test
-    void 노선에_역_제거_시나리오_테스트() {
+    void 노선에서_역_제거_시나리오_테스트() {
         // 역을 등록한다.
-        StationResponse stationResponse1 = addStation(역삼역.REQUEST);
-        StationResponse stationResponse2 = addStation(삼성역.REQUEST);
-        StationResponse stationResponse3 = addStation(잠실역.REQUEST);
+        StationQueryResponse stationResponse1 = addStation(역삼역.REQUEST);
+        StationQueryResponse stationResponse2 = addStation(삼성역.REQUEST);
+        StationQueryResponse stationResponse3 = addStation(잠실역.REQUEST);
 
         // 노선을 등록한다.
-        LineResponse lineResponse = addLine(이호선.REQUEST);
+        LineQueryResponse lineQueryResponse = addLine(이호선.REQUEST);
 
         // 노선에 역을 등록한다.
-        CreateSectionRequest createSectionRequest1 = new CreateSectionRequest(stationResponse1.getId(),
+        AddStationToLineRequest addStationToLineRequest1 = new AddStationToLineRequest(stationResponse1.getId(),
                 stationResponse3.getId(), 5);
-        CreateSectionRequest createSectionRequest2 = new CreateSectionRequest(stationResponse2.getId(),
+        AddStationToLineRequest addStationToLineRequest2 = new AddStationToLineRequest(stationResponse2.getId(),
                 stationResponse3.getId(), 2);
 
-        addSection(createSectionRequest1, lineResponse.getId());
-        addSection(createSectionRequest2, lineResponse.getId());
+        addSection(addStationToLineRequest1, lineQueryResponse.getId());
+        addSection(addStationToLineRequest2, lineQueryResponse.getId());
 
         // 노선에 역을 제거한다.
-        deleteStationFromLine(lineResponse.getId(), stationResponse2.getId());
+        deleteStationFromLine(lineQueryResponse.getId(), stationResponse2.getId());
 
         // 노선을 조회한다.
-        LineResponse resultResponse = getLine(lineResponse.getId());
+        LineQueryResponse resultResponse = findLine(lineQueryResponse.getId());
 
         assertThat(resultResponse.getStations())
                 .usingRecursiveComparison()
@@ -109,48 +109,49 @@ public class AcceptanceTest {
     @Test
     void 노선에_역이_두개일_떄_역_제거_시나리오_테스트() {
         // 역을 등록한다.
-        StationResponse stationResponse1 = addStation(역삼역.REQUEST);
-        StationResponse stationResponse2 = addStation(삼성역.REQUEST);
+        StationQueryResponse stationResponse1 = addStation(역삼역.REQUEST);
+        StationQueryResponse stationResponse2 = addStation(삼성역.REQUEST);
 
         // 노선을 등록한다.
-        LineResponse lineResponse = addLine(이호선.REQUEST);
+        LineQueryResponse lineQueryResponse = addLine(이호선.REQUEST);
 
         // 노선에 역을 등록한다.
-        CreateSectionRequest createSectionRequest = new CreateSectionRequest(stationResponse1.getId(),
+        AddStationToLineRequest addStationToLineRequest = new AddStationToLineRequest(stationResponse1.getId(),
                 stationResponse2.getId(), 5);
 
-        addSection(createSectionRequest, lineResponse.getId());
+        addSection(addStationToLineRequest, lineQueryResponse.getId());
 
         // 노선에 역을 제거한다.
-        deleteStationFromLine(lineResponse.getId(), stationResponse2.getId());
+        deleteStationFromLine(lineQueryResponse.getId(), stationResponse2.getId());
 
         // 노선을 조회한다.
-        LineResponse resultResponse = getLine(lineResponse.getId());
+        LineQueryResponse resultResponse = findLine(lineQueryResponse.getId());
 
         assertThat(resultResponse.getStations()).isEmpty();
     }
 
-    private StationResponse addStation(final StationRequest request) {
-        return RestAssured
+    private StationQueryResponse addStation(final CreateStationRequest request) {
+        String uri = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/stations")
                 .then().log().all()
-                .extract().as(StationResponse.class);
+                .extract().header("location");
+
+        return findStationByUri(uri);
     }
 
-    private LineResponse addLine(final LineRequest request) {
+    private StationQueryResponse findStationByUri(final String uri) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post("/lines")
+                .when().get(uri)
                 .then().log().all()
-                .extract().as(LineResponse.class);
+                .extract().as(StationQueryResponse.class);
     }
 
-    private void addSection(final CreateSectionRequest request, final long lineId) {
+    private void addSection(final AddStationToLineRequest request, final long lineId) {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -159,13 +160,34 @@ public class AcceptanceTest {
                 .then().log().all();
     }
 
-    private LineResponse getLine(final long lineId) {
+    private LineQueryResponse addLine(final CreateLineRequest request) {
+        String uri = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/lines")
+                .then().log().all()
+                .extract().header("location");
+
+        return findLineByUri(uri);
+    }
+
+    private LineQueryResponse findLineByUri(final String uri) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(uri)
+                .then().log().all()
+                .extract().as(LineQueryResponse.class);
+    }
+
+    private LineQueryResponse findLine(final long lineId) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines/" + lineId)
                 .then().log().all()
-                .extract().as(LineResponse.class);
+                .extract().as(LineQueryResponse.class);
     }
 
     private void deleteStationFromLine(final long lineId, final long stationId) {

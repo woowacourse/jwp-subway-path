@@ -8,15 +8,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
+import subway.adapter.out.persistence.LineJdbcAdapter;
+import subway.adapter.out.persistence.dao.LineDao;
+import subway.adapter.out.persistence.dao.SectionDao;
+import subway.adapter.out.persistence.dao.StationDao;
+import subway.adapter.out.persistence.entity.LineEntity;
+import subway.adapter.out.persistence.entity.SectionEntity;
+import subway.adapter.out.persistence.entity.StationEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
-import subway.entity.StationEntity;
 import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.역삼역;
 import subway.fixture.StationFixture.잠실역;
@@ -30,14 +31,14 @@ class LineRepositoryTest {
     private LineDao lineDao;
     private StationDao stationDao;
     private SectionDao sectionDao;
-    private LineRepository lineRepository;
+    private LineJdbcAdapter lineRepository;
 
     @BeforeEach
     void setUp() {
         lineDao = new LineDao(jdbcTemplate, jdbcTemplate.getDataSource());
         sectionDao = new SectionDao(jdbcTemplate, jdbcTemplate.getDataSource());
         stationDao = new StationDao(jdbcTemplate, jdbcTemplate.getDataSource());
-        lineRepository = new JdbcLineRepository(jdbcTemplate, lineDao, sectionDao);
+        lineRepository = new LineJdbcAdapter(jdbcTemplate, lineDao, sectionDao);
     }
 
     @Test

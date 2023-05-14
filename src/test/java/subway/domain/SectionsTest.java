@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.ApiIllegalArgumentException;
+import subway.common.exception.ApiIllegalArgumentException;
 import subway.fixture.SectionFixture.이호선_역삼_삼성_3;
 import subway.fixture.StationFixture.건대역;
 import subway.fixture.StationFixture.삼성역;

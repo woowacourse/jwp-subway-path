@@ -1,6 +1,6 @@
 package subway.domain;
 
-import subway.exception.ApiIllegalArgumentException;
+import subway.common.exception.ApiIllegalArgumentException;
 
 public class Station {
 

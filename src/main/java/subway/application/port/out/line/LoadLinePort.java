@@ -1,0 +1,12 @@
+package subway.application.port.out.line;
+
+import java.util.List;
+import java.util.Optional;
+import subway.domain.Line;
+
+public interface LoadLinePort {
+
+    Optional<Line> findById(long lineId);
+
+    List<Line> findAll();
+}
