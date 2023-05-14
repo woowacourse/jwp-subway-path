@@ -39,14 +39,14 @@ public class StationService {
 		return new StationResponse(stationIdRequest, station.getName());
 	}
 
-	public void deleteById(final Long stationIdRequest) {
-		stationRepository.deleteById(stationIdRequest);
-	}
-
-	public StationResponse updateStation(final long stationId, final StationCreateRequest request){
+	public StationResponse updateStation(final long stationId, final StationCreateRequest request) {
 		final Station station = stationRepository.findById(stationId);
 		stationRepository.updateStation(stationId, new Station(request.getName()));
 
 		return new StationResponse(stationId, station.getName());
+	}
+
+	public void deleteById(final Long stationIdRequest) {
+		stationRepository.deleteById(stationIdRequest);
 	}
 }
