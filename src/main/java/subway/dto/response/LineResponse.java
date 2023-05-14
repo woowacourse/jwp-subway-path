@@ -11,7 +11,7 @@ public class LineResponse {
     private String color;
     private List<StationResponse> stations;
 
-    private LineResponse(){
+    private LineResponse() {
     }
 
     private LineResponse(final Long id, final String name, final String color, final List<StationResponse> stations) {
@@ -21,7 +21,7 @@ public class LineResponse {
         this.stations = stations;
     }
 
-    public static LineResponse from(final Line line){
+    public static LineResponse from(final Line line) {
         List<Station> orderedStations = line.getStationsUpwardToDownward();
         return new LineResponse(line.getId(), line.getName(), line.getColor(), StationResponse.from(orderedStations));
     }

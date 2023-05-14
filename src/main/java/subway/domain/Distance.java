@@ -22,7 +22,7 @@ public class Distance {
     }
 
     private void validateDistance(Integer distance) {
-        if(distance == null){
+        if (distance == null) {
             return;
         }
         if (distance <= 0) {

@@ -27,9 +27,10 @@ public class Station {
         return this.name.equals(other.name);
     }
 
-    public boolean isEmpty(){
+    public boolean isEmpty() {
         return this.name == null;
     }
+
     public Long getId() {
         return id;
     }

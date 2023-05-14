@@ -1,7 +1,6 @@
 package subway.dao;
 
 import subway.Entity.LineEntity;
-import subway.domain.Line;
 
 import java.util.List;
 import java.util.Optional;

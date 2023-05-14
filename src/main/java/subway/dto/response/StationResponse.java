@@ -1,7 +1,5 @@
 package subway.dto.response;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import subway.domain.Station;
 
 import java.util.List;
@@ -11,7 +9,7 @@ public class StationResponse {
     private Long id;
     private String name;
 
-    private StationResponse(){
+    private StationResponse() {
     }
 
     private StationResponse(final Long id, final String name) {

@@ -1,6 +1,5 @@
 package subway.domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,7 +31,7 @@ public class Section {
     }
 
     private void validateSameStations(Station upward, Station downward) {
-        if(upward.isEmpty() && downward.isEmpty()){
+        if (upward.isEmpty() && downward.isEmpty()) {
             return;
         }
         if (upward.equals(downward)) {
@@ -42,51 +41,10 @@ public class Section {
             throw new IllegalArgumentException("[ERROR] 구간을 구성하는 역은 동일한 역일 수 없습니다.");
         }
     }
-    public List<Section> splitByStation(final Station middleStation, Integer upwardDistance, Integer downwardDistance){
 
-        /*if(isEmptySection() && this.upward.isEmpty() && this.downward.isEmpty()){
-            Section upwardSection = Section.of(
-                    this.upward,
-                    middleStation,
-                    null
-            );
-            Section downwardSection = Section.of(
-                    middleStation,
-                    this.downward,
-                    null
-            );
-            return List.of(upwardSection, downwardSection);
-        }
+    public List<Section> splitByStation(final Station middleStation, Integer upwardDistance, Integer downwardDistance) {
 
-        if(isEmptySection() && !this.upward.isEmpty() && this.downward.isEmpty()){
-            Section upwardSection = Section.of(
-                    this.upward,
-                    middleStation,
-                    upwardDistance
-            );
-            Section downwardSection = Section.of(
-                    middleStation,
-                    this.downward,
-                    null
-            );
-            return List.of(upwardSection, downwardSection);
-        }
-
-        if(isEmptySection() && this.upward.isEmpty() && !this.downward.isEmpty()){
-            Section upwardSection = Section.of(
-                    this.upward,
-                    middleStation,
-                    null
-            );
-            Section downwardSection = Section.of(
-                    middleStation,
-                    this.downward,
-                    downwardDistance
-            );
-            return List.of(upwardSection, downwardSection);
-        }*/
-
-        if(!isEmptySection() && !isSameDistance(upwardDistance+downwardDistance)){
+        if (!isEmptySection() && !isSameDistance(upwardDistance + downwardDistance)) {
             throw new IllegalArgumentException("구간 거리가 보존되지 않습니다.");
         }
         Section upwardSection = Section.of(
@@ -118,7 +76,7 @@ public class Section {
         return this.distance.equals(Distance.from(distance));
     }
 
-    public boolean isEmptySection(){
+    public boolean isEmptySection() {
         return this.distance.equals(Distance.createEmpty());
     }
 

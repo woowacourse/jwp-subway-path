@@ -91,7 +91,7 @@ public class H2SectionDao implements SectionDao {
     }
 
     @Override
-    public long deleteByLineId(long lineId){
+    public long deleteByLineId(long lineId) {
         String sql = "DELETE FROM section WHERE line_id = ?";
         return jdbcTemplate.update(sql, lineId);
     }

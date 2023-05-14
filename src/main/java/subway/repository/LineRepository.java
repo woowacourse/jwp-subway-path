@@ -23,7 +23,7 @@ public class LineRepository {
 
     public Optional<Line> findById(long id) {
         Optional<LineEntity> optional = lineDao.findById(id);
-        if(optional.isEmpty()){
+        if (optional.isEmpty()) {
             return Optional.empty();
         }
         LineEntity lineEntity = optional.get();
@@ -34,17 +34,17 @@ public class LineRepository {
     public List<Line> findAll() {
         List<Line> lines = new ArrayList<>();
         List<LineEntity> lineEntities = lineDao.findAll();
-        for(LineEntity lineEntity: lineEntities){
+        for (LineEntity lineEntity : lineEntities) {
             List<Section> lineSections = sectionDao.selectSectionsByLineId(lineEntity.getId());
             lines.add(Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineSections));
         }
         return lines;
     }
 
-    public Line insert(final Line line){
+    public Line insert(final Line line) {
         LineEntity lineEntity = lineDao.insert(Line.toEntity(line));
         long lineId = lineEntity.getId();
-        for(Section section: line.getSections()){
+        for (Section section : line.getSections()) {
             sectionDao.insert(section, lineId);
         }
         return Line.of(lineId, line.getName(), line.getColor(), line.getSections());

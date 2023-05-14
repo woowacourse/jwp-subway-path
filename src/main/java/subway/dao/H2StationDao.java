@@ -44,10 +44,10 @@ public class H2StationDao implements StationDao {
     }
 
     public Optional<Station> findById(Long id) {
-        try{
+        try {
             String sql = "select * from STATION where id = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        }catch(EmptyResultDataAccessException exception){
+        } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
     }

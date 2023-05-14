@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.Entity.LineEntity;
-import subway.domain.Line;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -53,10 +52,10 @@ public class H2LineDao implements LineDao {
 
     @Override
     public Optional<LineEntity> findById(long id) {
-        try{
+        try {
             String sql = "select id, name, color from LINE WHERE id = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        }catch(EmptyResultDataAccessException exception){
+        } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
     }

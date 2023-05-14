@@ -11,9 +11,6 @@ import subway.domain.Station;
 import subway.dto.request.SectionCreationRequest;
 import subway.repository.LineRepository;
 
-import java.util.List;
-import java.util.Optional;
-
 @Service
 @Transactional
 public class SectionService {
@@ -36,7 +33,7 @@ public class SectionService {
         //todo : 일부만 지우고 삽입하기
         line.addSection(upwardStation, downwardStation, request.getDistance());
         sectionDao.deleteByLineId(line.getId());
-        for(Section section : line.getSections()){
+        for (Section section : line.getSections()) {
             sectionDao.insert(section, line.getId());
         }
     }
@@ -58,7 +55,7 @@ public class SectionService {
         //todo : 일부만 지우고 삽입하기
         line.removeStation(station);
         sectionDao.deleteByLineId(line.getId());
-        for(Section section : line.getSections()){
+        for (Section section : line.getSections()) {
             sectionDao.insert(section, line.getId());
         }
     }
