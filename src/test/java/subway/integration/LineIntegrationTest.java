@@ -11,8 +11,6 @@ import static subway.integration.line.LineSteps.노선에_역_등록_요청;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -22,8 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import subway.dto.ErrorResponse;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
 import subway.dto.LineSelectResponse;
+import subway.dto.LinesSelectResponse;
 import subway.dto.StationSaveRequest;
 import subway.dto.StationSelectResponse;
 
@@ -78,55 +76,30 @@ public class LineIntegrationTest extends IntegrationTest {
     @Nested
     class find extends IntegrationTest {
 
-//        @DisplayName("목록 전체를 조회한다.")
-//        @Test
-//        void getLines() {
-//            lineRequest1 = new LineRequest("2호선", "강남역", "역삼역", 5);
-//            lineRequest2 = new LineRequest("1호선", "서울역", "명동역", 7);
-//
-//            // given
-//            ExtractableResponse<Response> createResponse1 = 노선_생성_요청(lineRequest1);
-//            ExtractableResponse<Response> createResponse2 = 노선_생성_요청(lineRequest2);
-//
-//            // when
-//            ExtractableResponse<Response> response = 노선_전체_조회_요청();
-//
-//            // then
-//            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-//            List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-//                    .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-//                    .collect(Collectors.toList());
-//            List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-//                    .map(LineResponse::getId)
-//                    .collect(Collectors.toList());
-//            assertThat(resultLineIds).containsAll(expectedLineIds);
-//        }
-
         @DisplayName("목록 전체를 조회한다.")
         @Test
         void getLines() {
-            lineRequest1 = new LineRequest("2호선", "강남역", "역삼역", 5);
-            lineRequest2 = new LineRequest("1호선", "서울역", "명동역", 7);
-
             // given
-            ExtractableResponse<Response> createResponse1 = 노선_생성_요청(lineRequest1);
-            ExtractableResponse<Response> createResponse2 = 노선_생성_요청(lineRequest2);
+            lineRequest1 = new LineRequest("1호선", "서울역", "명동역", 7);
+            lineRequest2 = new LineRequest("2호선", "강남역", "역삼역", 5);
+            final ExtractableResponse<Response> createResponse1 = 노선_생성_요청(lineRequest1);
+            final ExtractableResponse<Response> createResponse2 = 노선_생성_요청(lineRequest2);
 
             // when
             ExtractableResponse<Response> response = 노선_전체_조회_요청();
+            final LinesSelectResponse linesSelectResponse = response.as(LinesSelectResponse.class);
+            final List<LineSelectResponse> lines = linesSelectResponse.getLines();
+            Long firstLineId = Long.parseLong(createResponse1.header("Location").split("/")[2]);
+            Long secondLineId = Long.parseLong(createResponse2.header("Location").split("/")[2]);
+            final LineSelectResponse firstLine = 노선_단건_조회_요청(firstLineId).as(LineSelectResponse.class);
+            final LineSelectResponse secondLine = 노선_단건_조회_요청(secondLineId).as(LineSelectResponse.class);
 
             // then
-//            response.jsonPath().getList(".", LinesSelectResponse.class).stream()
-//                            .
-
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-            List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-                    .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                    .collect(Collectors.toList());
-            List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                    .map(LineResponse::getId)
-                    .collect(Collectors.toList());
-            assertThat(resultLineIds).containsAll(expectedLineIds);
+            assertThat(lines).hasSize(2);
+            assertThat(firstLine.getStations()).map(StationSelectResponse::getName)
+                    .containsExactly("서울역", "명동역");
+            assertThat(secondLine.getStations()).map(StationSelectResponse::getName)
+                    .containsExactly("강남역", "역삼역");
         }
 
         @DisplayName("하나를 조회한다.")

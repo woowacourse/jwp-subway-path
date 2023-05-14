@@ -4,16 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.StationSelectResponse;
-import subway.dto.StationSaveRequest;
 import subway.dto.LineSelectResponse;
+import subway.dto.LinesSelectResponse;
+import subway.dto.StationSaveRequest;
+import subway.dto.StationSelectResponse;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 import subway.repository.LineRepository;
@@ -40,11 +40,10 @@ public class LineService {
         return new LineResponse(saveId);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+    public LinesSelectResponse findAllLine() {
+        final List<Line> lines = lineRepository.findAll();
+
+        return LinesSelectResponse.from(lines);
     }
 
     public List<LineEntity> findLines() {
@@ -53,7 +52,7 @@ public class LineService {
 
     public LineSelectResponse getStationsByLineId(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        return LineSelectResponse.from(line.getStations());
+        return LineSelectResponse.of(line.getName(), line.getStations());
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

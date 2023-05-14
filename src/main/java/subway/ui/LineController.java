@@ -1,7 +1,6 @@
 package subway.ui;
 
 import java.net.URI;
-import java.util.List;
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LinesSelectResponse;
 import subway.dto.StationSelectResponse;
 import subway.dto.StationSaveRequest;
 import subway.dto.LineSelectResponse;
@@ -68,8 +68,8 @@ public class LineController {
      * @return 생성한 노선들의 Id 목록
      */
     @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findLineResponses());
+    public ResponseEntity<LinesSelectResponse> findAllLines() {
+        return ResponseEntity.ok(lineService.findAllLine());
     }
 
     /**
