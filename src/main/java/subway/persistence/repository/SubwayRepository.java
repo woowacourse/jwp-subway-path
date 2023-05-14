@@ -1,9 +1,11 @@
 package subway.persistence.repository;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.Path;
 import subway.domain.Station;
+import subway.exception.DuplicatedNameException;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.PathDao;
 import subway.persistence.dao.StationDao;
@@ -83,5 +85,21 @@ public class SubwayRepository {
     public void deleteLineById(final Long id) {
         lineDao.deleteById(id);
         pathDao.deleteByLineId(id);
+    }
+
+    public Line addLine(final Line line) {
+        try {
+            return lineDao.insert(line);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedNameException();
+        }
+    }
+
+    public Station addStation(final Station station) {
+        try {
+            return stationDao.insert(station);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedNameException();
+        }
     }
 }

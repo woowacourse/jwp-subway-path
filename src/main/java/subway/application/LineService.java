@@ -25,7 +25,7 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        Line persistLine = subwayRepository.addLine(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }
 

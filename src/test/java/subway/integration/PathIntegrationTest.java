@@ -7,6 +7,7 @@ import subway.dto.AddPathRequest;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.empty;
@@ -72,5 +73,15 @@ public class PathIntegrationTest extends IntegrationTest {
                 .body("stations", hasSize(3))
                 .body("stations[2].name", is("선릉"));
 
+    }
+
+    @DisplayName("노선에 존재하지 않는 역을 삭제한다.")
+    @Test
+    void removeNonExistsStationException() {
+        given().log().all()
+                .when()
+                .delete("/lines/1/stations/3")
+                .then().log().all()
+                .statusCode(SC_BAD_REQUEST);
     }
 }

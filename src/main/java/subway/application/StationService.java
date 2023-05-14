@@ -6,6 +6,7 @@ import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 import subway.persistence.dao.StationDao;
+import subway.persistence.repository.SubwayRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,14 +15,16 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
     private final StationDao stationDao;
+    private final SubwayRepository subwayRepository;
 
-    public StationService(StationDao stationDao) {
+    public StationService(final StationDao stationDao, final SubwayRepository subwayRepository) {
         this.stationDao = stationDao;
+        this.subwayRepository = subwayRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        final Station persist = subwayRepository.addStation(new Station(stationRequest.getName()));
+        return StationResponse.of(persist);
     }
 
     public StationResponse findStationResponseById(Long id) {

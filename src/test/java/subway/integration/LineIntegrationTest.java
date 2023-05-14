@@ -7,6 +7,7 @@ import subway.dto.LineRequest;
 
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
+import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.apache.http.HttpStatus.SC_CREATED;
 import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
@@ -31,6 +32,20 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .statusCode(SC_CREATED)
                 .header("Location", notNullValue());
+    }
+
+    @DisplayName("기존에 있는 이름으로 노선을 추가한다.")
+    @Test
+    void addLineException() throws JsonProcessingException {
+        final LineRequest lineRequest = new LineRequest("1호선", "아무색");
+        final String json = objectMapper.writeValueAsString(lineRequest);
+
+        given().log().all()
+                .contentType(JSON)
+                .body(json)
+                .post("/lines")
+                .then().log().all()
+                .statusCode(SC_BAD_REQUEST);
     }
 
     @DisplayName("역이 있는 노선을 조회한다.")
