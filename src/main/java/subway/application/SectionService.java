@@ -8,8 +8,8 @@ import subway.domain.*;
 @Transactional(readOnly = true)
 @Service
 public class SectionService {
-    private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
 
     public SectionService(SectionRepository sectionRepository, StationRepository stationRepository) {
         this.sectionRepository = sectionRepository;
