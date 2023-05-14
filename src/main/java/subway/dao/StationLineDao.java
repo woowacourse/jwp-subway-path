@@ -5,9 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
-import subway.domain.Station;
-import subway.domain.StationLine;
+import subway.domain.*;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,9 +29,12 @@ public class StationLineDao {
                     rs.getString("station_name")
             ),
             new Line(
-                    rs.getLong("line_id"),
-                    rs.getString("line_name"),
-                    rs.getString("line_color")
+                    rs.getLong("id"),
+                    new LineName(rs.getString("name")),
+                    new LineColor(rs.getString("color")),
+                    null,
+                    null,
+                    Collections.EMPTY_LIST
             )
     );
 

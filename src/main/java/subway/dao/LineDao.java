@@ -7,7 +7,10 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.domain.LineColor;
+import subway.domain.LineName;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,8 +30,11 @@ public class LineDao {
     private RowMapper<Line> rowMapper = (rs, rowNum) ->
             new Line(
                     rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
+                    new LineName(rs.getString("name")),
+                    new LineColor(rs.getString("color")),
+                    null,
+                    null,
+                    Collections.EMPTY_LIST
             );
 
     public Long save(final String lineName, final String lineColor) {
