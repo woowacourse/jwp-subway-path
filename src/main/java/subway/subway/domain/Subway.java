@@ -25,4 +25,21 @@ public class Subway {
     public void removeLine(final String lineName) {
         lines.removeIf(line -> line.isSameName(lineName));
     }
+    
+    public void initAddStation(
+            final String lineName,
+            final String leftAdditional,
+            final String rightAdditional,
+            final long distance
+    ) {
+        final Line line = getLineContainStation(lineName);
+        line.initAddStation(leftAdditional, rightAdditional, distance);
+    }
+    
+    private Line getLineContainStation(final String lineName) {
+        return lines.stream()
+                .filter(line -> line.isSameName(lineName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+    }
 }

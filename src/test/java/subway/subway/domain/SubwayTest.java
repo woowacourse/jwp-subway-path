@@ -50,4 +50,16 @@ class SubwayTest {
         // then
         assertThat(lines).contains(new Line("2호선", "초록"));
     }
+    
+    @Test
+    void 역_최초_등록시_존재하지_않는_노선을_가리키면_예외_발생() {
+        // given
+        final Subway subway = new Subway();
+        
+        // when
+        subway.addLine("1호선", "파랑");
+        subway.addLine("2호선", "초록");
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> subway.initAddStation("3호선", "강남역", "역삼역", 3L));
+    }
 }
