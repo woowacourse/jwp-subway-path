@@ -15,8 +15,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.LineRequest;
-import subway.dto.SectionRequest;
+import subway.application.dto.LineRequest;
+import subway.application.dto.SectionRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {

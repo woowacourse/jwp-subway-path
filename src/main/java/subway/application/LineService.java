@@ -19,10 +19,10 @@ import subway.domain.section.dto.SectionSaveReq;
 import subway.domain.station.Station;
 import subway.domain.station.StationName;
 import subway.domain.station.StationRepository;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.SectionRequest;
-import subway.dto.StationResponse;
+import subway.application.dto.LineRequest;
+import subway.application.dto.LineResponse;
+import subway.application.dto.SectionRequest;
+import subway.application.dto.StationResponse;
 import subway.exception.BadRequestException;
 import subway.exception.NotFoundException;
 

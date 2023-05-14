@@ -22,7 +22,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.station.StationRepository;
-import subway.dto.StationResponse;
+import subway.application.dto.StationResponse;
 import subway.exception.BadRequestException;
 
 @ExtendWith(MockitoExtension.class)
