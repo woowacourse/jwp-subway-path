@@ -27,9 +27,12 @@ class SectionsTest {
         sections.sort();
 
         //then
-        assertThat(sections.findSection(0)).isEqualTo(topSection);
-        assertThat(sections.findSection(1)).isEqualTo(midSection);
-        assertThat(sections.findSection(2)).isEqualTo(bottomSection);
+        assertThat(sections.findSection(0).orElseThrow(RuntimeException::new))
+            .isEqualTo(topSection);
+        assertThat(sections.findSection(1).orElseThrow(RuntimeException::new))
+            .isEqualTo(midSection);
+        assertThat(sections.findSection(2).orElseThrow(RuntimeException::new))
+            .isEqualTo(bottomSection);
     }
 
     @Test

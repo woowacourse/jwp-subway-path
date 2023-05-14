@@ -75,8 +75,11 @@ class LineRepositoryTest {
         assertThat(sections.findStation(1)).isEqualTo(savedMidUpStation);
         assertThat(sections.findStation(2)).isEqualTo(savedMidDownStation);
         assertThat(sections.findStation(3)).isEqualTo(savedBottomStation);
-        assertThat(sections.findSection(0)).isEqualTo(savedTopSection);
-        assertThat(sections.findSection(1)).isEqualTo(savedMidSection);
-        assertThat(sections.findSection(2)).isEqualTo(savedBottomSection);
+        assertThat(sections.findSection(0).orElseThrow(RuntimeException::new))
+            .isEqualTo(savedTopSection);
+        assertThat(sections.findSection(1).orElseThrow(RuntimeException::new))
+            .isEqualTo(savedMidSection);
+        assertThat(sections.findSection(2).orElseThrow(RuntimeException::new))
+            .isEqualTo(savedBottomSection);
     }
 }

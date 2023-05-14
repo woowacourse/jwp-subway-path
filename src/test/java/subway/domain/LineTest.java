@@ -12,18 +12,23 @@ import subway.domain.exception.BusinessException;
 
 class LineTest {
 
+    private final Station firstStation = new Station("firstStation");
+    private final Station secondStation = new Station("secondStation");
+    private final Station thirdStation = new Station("thirdStation");
+    private final long distance = 10L;
+    private final Section section1 = new Section(firstStation, secondStation, distance);
+    private final Section section2 = new Section(secondStation, thirdStation, distance);
+
     @Test
     @DisplayName("빈 호선의 맨 위에 역을 추가한다.")
     void testAddTopStationWhenEmpty() {
         //given
         final Sections sections = new Sections(Collections.emptyList());
         final Line line = new Line("name", "color", sections);
-        final Station station = new Station("station");
-        final long distance = 10L;
 
         //when
         //then
-        assertThatThrownBy(() -> line.addTopStation(station, distance))
+        assertThatThrownBy(() -> line.addTopStation(firstStation, distance))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -31,22 +36,15 @@ class LineTest {
     @DisplayName("비어있지 않은 호선의 맨 위에 역을 추가한다.")
     void testAddTopStationWhenNotEmpty() {
         //given
-        final Station firstStation = new Station("firstStation");
-        final Station secondStation = new Station("secondStation");
-        final Station thirdStation = new Station("thirdStation");
-        final long distance = 10L;
-        final Section section1 = new Section(firstStation, secondStation, distance);
-        final Section section2 = new Section(secondStation, thirdStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
-        final Station station = new Station("station");
 
         //when
-        line.addTopStation(station, distance);
+        line.addTopStation(thirdStation, distance);
 
         //then
         assertThat(line.getStationsSize()).isEqualTo(4);
-        assertThat(line.getSections().findTopStation()).isEqualTo(station);
+        assertThat(line.getSections().findTopStation()).isEqualTo(thirdStation);
     }
 
     @Test
@@ -55,12 +53,11 @@ class LineTest {
         //given
         final Sections sections = new Sections(Collections.emptyList());
         final Line line = new Line("name", "color", sections);
-        final Station station = new Station("station");
         final long distance = 10L;
 
         //when
         //then
-        assertThatThrownBy(() -> line.addBottomStation(station, distance))
+        assertThatThrownBy(() -> line.addBottomStation(firstStation, distance))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -68,12 +65,6 @@ class LineTest {
     @DisplayName("비어있지 않은 호선의 맨 아래에 역을 추가한다.")
     void testAddBottomStationWhenNotEmpty() {
         //given
-        final Station firstStation = new Station("firstStation");
-        final Station secondStation = new Station("secondStation");
-        final Station thirdStation = new Station("thirdStation");
-        final long distance = 10L;
-        final Section section1 = new Section(firstStation, secondStation, distance);
-        final Section section2 = new Section(secondStation, thirdStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
         final Station station = new Station("station");
@@ -92,14 +83,10 @@ class LineTest {
         //given
         final Sections sections = new Sections(Collections.emptyList());
         final Line line = new Line("name", "color", sections);
-        final Station station1 = new Station("station1");
-        final Station station2 = new Station("station2");
-        final Station station = new Station("station");
-        final long distance = 10L;
 
         //when
         //then
-        assertThatThrownBy(() -> line.addBetweenStation(station, station1, station2, 10L))
+        assertThatThrownBy(() -> line.addBetweenStation(firstStation, secondStation, thirdStation, distance))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -107,12 +94,6 @@ class LineTest {
     @DisplayName("비어있지 않은 호선의 사이에에 역을 추가한다.")
     void testAddBetweenStationWhenNotEmpty() {
         //given
-        final Station firstStation = new Station("firstStation");
-        final Station secondStation = new Station("secondStation");
-        final Station thirdStation = new Station("thirdStation");
-        final long distance = 10L;
-        final Section section1 = new Section(firstStation, secondStation, distance);
-        final Section section2 = new Section(secondStation, thirdStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
         final Station station = new Station("station");
@@ -129,34 +110,79 @@ class LineTest {
     @DisplayName("빈 호선에 station을 초기화한다.")
     void testAddInitStations() {
         //given
-        final Station upStation = new Station("upStation");
-        final Station downStation = new Station("downStation");
-        final long distance = 10L;
         final Sections sections = new Sections(new ArrayList<>());
         final Line line = new Line("name", "color", sections);
 
         //when
-        line.addInitStations(upStation, downStation, distance);
+        line.addInitStations(firstStation, secondStation, distance);
 
         //then
         assertThat(line.getStationsSize()).isEqualTo(2);
-        assertThat(line.getSections().findStation(0)).isEqualTo(upStation);
+        assertThat(line.getSections().findStation(0)).isEqualTo(firstStation);
     }
 
     @Test
     @DisplayName("비어있지 않은 호선에 station을 초기화한다.")
     void testAddInitStationsWhenLineNotEmpty() {
         //given
-        final Station upStation = new Station("upStation");
-        final Station downStation = new Station("downStation");
-        final long distance = 10L;
-        final Section section = new Section(upStation, downStation, distance);
+        final Section section = new Section(firstStation, secondStation, distance);
         final Sections sections = new Sections(new ArrayList<>(List.of(section)));
         final Line line = new Line("name", "color", sections);
 
         //when
         //then
-        assertThatThrownBy(() -> line.addInitStations(upStation, downStation, distance))
+        assertThatThrownBy(() -> line.addInitStations(firstStation, secondStation, distance))
             .isInstanceOf(BusinessException.class);
+    }
+
+    @Test
+    @DisplayName("호선에서 맨 위에 있는 역을 삭제한다.")
+    void testRemoveStationTop() {
+        //given
+        final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
+        final Line line = new Line("name", "color", sections);
+
+        //when
+        line.removeStation(firstStation);
+
+        //then
+        final Sections removedSections = line.getSections();
+        assertThat(removedSections.getStationsSize()).isEqualTo(2);
+        assertThat(removedSections.findTopStation()).isEqualTo(secondStation);
+        assertThat(removedSections.findBottomStation()).isEqualTo(thirdStation);
+    }
+
+    @Test
+    @DisplayName("호선에서 맨 아래에 있는 역을 삭제한다.")
+    void testRemoveStationBottom() {
+        //given
+        final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
+        final Line line = new Line("name", "color", sections);
+
+        //when
+        line.removeStation(thirdStation);
+
+        //then
+        final Sections removedSections = line.getSections();
+        assertThat(removedSections.getStationsSize()).isEqualTo(2);
+        assertThat(removedSections.findTopStation()).isEqualTo(firstStation);
+        assertThat(removedSections.findBottomStation()).isEqualTo(secondStation);
+    }
+
+    @Test
+    @DisplayName("호선에서 중간에 있는 역을 삭제한다.")
+    void testRemoveStationBetween() {
+        //given
+        final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
+        final Line line = new Line("name", "color", sections);
+
+        //when
+        line.removeStation(secondStation);
+
+        //then
+        final Sections removedSections = line.getSections();
+        assertThat(removedSections.getStationsSize()).isEqualTo(2);
+        assertThat(removedSections.findTopStation()).isEqualTo(firstStation);
+        assertThat(removedSections.findBottomStation()).isEqualTo(thirdStation);
     }
 }

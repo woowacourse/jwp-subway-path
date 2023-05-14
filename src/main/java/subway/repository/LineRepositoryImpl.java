@@ -6,23 +6,21 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.exception.BusinessException;
 import subway.repository.dao.LineDao;
 import subway.repository.dao.LineSectionStationJoinDto;
 import subway.repository.dao.SectionDao;
-import subway.repository.dao.StationDao;
 
 @Repository
 public class LineRepositoryImpl implements LineRepository {
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private final StationDao stationDao;
     private final LineConverter lineConverter = new LineConverter();
 
-    public LineRepositoryImpl(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
+    public LineRepositoryImpl(final LineDao lineDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
     }
 
     @Override
@@ -78,7 +76,8 @@ public class LineRepositoryImpl implements LineRepository {
         final Line insertedLine = lineDao.insert(line);
         final Sections sections = line.getSections();
         for (int index = 0; index < sections.size(); index++) {
-            final Section section = sections.findSection(index);
+            final Section section = sections.findSection(index)
+                .orElseThrow(() -> new BusinessException("해당 구간을 찾을 수 없습니다."));
             sectionDao.insert(section, insertedLine.getId());
         }
     }

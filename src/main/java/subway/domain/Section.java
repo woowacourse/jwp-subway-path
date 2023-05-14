@@ -25,6 +25,14 @@ public class Section {
             && this.downStation.equals(downStation);
     }
 
+    public boolean isUpStation(final Station upStation) {
+        return this.upStation.equals(upStation);
+    }
+
+    public boolean isDownStation(final Station downStation) {
+        return this.downStation.equals(downStation);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

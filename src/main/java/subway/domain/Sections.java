@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import subway.domain.exception.BusinessException;
 
 public class Sections {
@@ -61,13 +62,13 @@ public class Sections {
     private boolean isTopSection(final Section section) {
         final Station upStation = section.getUpStation();
         return value.stream()
-            .noneMatch(otherSection -> otherSection.getDownStation().equals(upStation));
+            .noneMatch(it -> it.isDownStation(upStation));
     }
 
     private boolean isBottomSection(final Section section) {
         final Station downStation = section.getDownStation();
         return value.stream()
-            .noneMatch(otherSection -> otherSection.getUpStation().equals(downStation));
+            .noneMatch(it -> it.isUpStation(downStation));
     }
 
     public boolean isEmpty() {
@@ -86,13 +87,6 @@ public class Sections {
         value.add(section);
     }
 
-    public Section findSection(final Station upStation, final Station downStation) {
-        return value.stream()
-            .filter(section -> section.bothStationsEquals(upStation, downStation))
-            .findAny()
-            .orElseThrow(() -> new BusinessException("찾을 수 없습니다."));
-    }
-
     public void remove(final Section section) {
         value.remove(section);
     }
@@ -102,8 +96,30 @@ public class Sections {
         sort();
     }
 
-    public Section findSection(final int index) {
-        return value.get(index);
+    public Section findSection(final Station upStation, final Station downStation) {
+        return value.stream()
+            .filter(section -> section.bothStationsEquals(upStation, downStation))
+            .findAny()
+            .orElseThrow(() -> new BusinessException("해당 구간을 찾을 수 없습니다."));
+    }
+
+    public Optional<Section> findSection(final int index) {
+        if (index < 0 || index > value.size() - 1) {
+            return Optional.empty();
+        }
+        return Optional.of(value.get(index));
+    }
+
+    public Optional<Section> findSectionByUpStation(final Station upStation) {
+        return value.stream()
+            .filter(section -> section.isDownStation(upStation))
+            .findAny();
+    }
+
+    public Optional<Section> findSectionByDownStation(final Station downStation) {
+        return value.stream()
+            .filter(section -> section.isUpStation(downStation))
+            .findAny();
     }
 
     public Station findTopStation() {
@@ -125,6 +141,53 @@ public class Sections {
             return findTopStation();
         }
         return value.get(index - 1).getDownStation();
+    }
+
+    public void clear() {
+        value.clear();
+    }
+
+    public void remove(final Station station) {
+        final Optional<Section> optionalUpSection = findSectionByUpStation(station);
+        final Optional<Section> optionalDownSection = findSectionByDownStation(station);
+        if (optionalUpSection.isEmpty() && optionalDownSection.isEmpty()) {
+            throw new BusinessException("해당 호선에 존재하지 않는 역입니다.");
+        }
+        if (removeOneSection(optionalUpSection, optionalDownSection)) {
+            return;
+        }
+        if (value.size() == 1) {
+            value.clear();
+            return;
+        }
+        removeAndReplace(optionalUpSection.get(), optionalDownSection.get());
+        sort();
+    }
+
+    private void removeAndReplace(final Section upSection, final Section downSection) {
+        removeAll(upSection, downSection);
+        final Section newSection = new Section(upSection.getUpStation(), downSection.getDownStation(),
+            upSection.getDistance() + downSection.getDistance());
+        value.add(newSection);
+    }
+
+    private boolean removeOneSection(final Optional<Section> optionalUpSection,
+        final Optional<Section> optionalDownSection) {
+        if (optionalUpSection.isPresent() && optionalDownSection.isEmpty()) {
+            value.remove(optionalUpSection.get());
+            return true;
+        }
+        if (optionalUpSection.isEmpty() && optionalDownSection.isPresent()) {
+            value.remove(optionalDownSection.get());
+            return true;
+        }
+        return false;
+    }
+
+    private void removeAll(final Section... sections) {
+        for (final Section section : sections) {
+            remove(section);
+        }
     }
 
     public int getStationsSize() {

@@ -72,6 +72,10 @@ public class Line {
         }
     }
 
+    public void removeStation(final Station station) {
+        sections.remove(station);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
