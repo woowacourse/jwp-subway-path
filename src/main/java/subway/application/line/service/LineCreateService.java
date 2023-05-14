@@ -2,6 +2,7 @@ package subway.application.line.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.application.line.port.in.LineCreateRequestDto;
 import subway.application.line.port.in.LineCreateUseCase;
 import subway.application.line.port.in.LineResponseDto;
@@ -10,6 +11,7 @@ import subway.domain.line.Line;
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class LineCreateService implements LineCreateUseCase {
 
     private final LineRepository lineRepository;
