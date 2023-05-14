@@ -1,8 +1,11 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.integration.IntegrationTestFixture.노선_생성_요청;
+import static subway.integration.IntegrationTestFixture.노선_정보;
+import static subway.integration.IntegrationTestFixture.노선_조회_결과;
+import static subway.integration.IntegrationTestFixture.단일_노선_조회_요청;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -10,8 +13,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
+import subway.dto.SaveResponse;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -22,10 +24,8 @@ public class LineIntegrationTest extends IntegrationTest {
 
         @Test
         void 정상적으로_추가된다() {
-            // given
             ExtractableResponse<Response> response = 노선_생성_요청("2호선", "강남역", "역삼역", 10);
 
-            // expect
             assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
             assertThat(response.header("Location")).isNotEmpty();
         }
@@ -40,15 +40,17 @@ public class LineIntegrationTest extends IntegrationTest {
         }
     }
 
-    private static ExtractableResponse<Response> 노선_생성_요청(String lineName, String source, String target, int distance) {
-        LineRequest request = new LineRequest(lineName, source, target, distance);
+    @Nested
+    public class 단일_노선을_조회할_때 {
 
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
-                .when().post("/lines")
-                .then().log().all()
-                .extract();
+        @Test
+        void 노선_ID를_받아_상행부터_하행까지의_역을_정렬하여_반환한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 4).as(SaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 단일_노선_조회_요청(저장된_노선_ID);
+
+            노선_조회_결과(response, 노선_정보("2호선", "강남역", "역삼역"));
+        }
     }
+
 }
