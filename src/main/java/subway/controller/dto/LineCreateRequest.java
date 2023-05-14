@@ -10,7 +10,7 @@ public class LineCreateRequest {
     @NotBlank(message = "노선 색깔은 공백일 수 없습니다.")
     private String color;
 
-    public LineCreateRequest() {
+    private LineCreateRequest() {
 
     }
 

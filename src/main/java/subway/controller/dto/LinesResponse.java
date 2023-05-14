@@ -4,7 +4,7 @@ import java.util.List;
 
 public class LinesResponse {
 
-    private List<LineResponse> lines;
+    private final List<LineResponse> lines;
 
     public LinesResponse(final List<LineResponse> lines) {
         this.lines = lines;

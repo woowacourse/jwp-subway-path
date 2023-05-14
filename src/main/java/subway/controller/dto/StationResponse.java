@@ -4,12 +4,8 @@ import subway.domain.station.Station;
 
 public class StationResponse {
 
-    private Long id;
-    private String name;
-
-    public StationResponse() {
-
-    }
+    private final Long id;
+    private final String name;
 
     public StationResponse(final Long id, final String name) {
         this.id = id;
