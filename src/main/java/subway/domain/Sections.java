@@ -8,6 +8,8 @@ import subway.exception.BusinessException;
 
 public class Sections {
 
+    private static final String NOT_EXIST_SECTION_MESSAGE = "존재하지 않는 섹션입니다.";
+    private static final String EMPTY_MESSAGE = "빈 섹션 목록입니다.";
     private List<Section> value;
 
     public Sections(final List<Section> value) {
@@ -38,7 +40,7 @@ public class Sections {
                 return section;
             }
         }
-        throw new BusinessException("존재하지 않는 섹션입니다.");
+        throw new BusinessException(NOT_EXIST_SECTION_MESSAGE);
     }
 
     private Section findBottomSection() {
@@ -47,7 +49,7 @@ public class Sections {
                 return section;
             }
         }
-        throw new BusinessException("존재하지 않는 섹션입니다.");
+        throw new BusinessException(NOT_EXIST_SECTION_MESSAGE);
     }
 
     private Section findNextSection(final Section currentSection) {
@@ -56,7 +58,7 @@ public class Sections {
                 return section;
             }
         }
-        throw new BusinessException("존재하지 않는 섹션입니다.");
+        throw new BusinessException(NOT_EXIST_SECTION_MESSAGE);
     }
 
     private boolean isTopSection(final Section section) {
@@ -100,7 +102,7 @@ public class Sections {
         return value.stream()
             .filter(section -> section.bothStationsEquals(upStation, downStation))
             .findAny()
-            .orElseThrow(() -> new BusinessException("해당 구간을 찾을 수 없습니다."));
+            .orElseThrow(() -> new BusinessException(NOT_EXIST_SECTION_MESSAGE));
     }
 
     public Optional<Section> findSection(final int index) {
@@ -124,14 +126,14 @@ public class Sections {
 
     public Station findTopStation() {
         if (isEmpty()) {
-            throw new BusinessException("빈 구간 목록입니다.");
+            throw new BusinessException(EMPTY_MESSAGE);
         }
         return value.get(0).getUpStation();
     }
 
     public Station findBottomStation() {
         if (isEmpty()) {
-            throw new BusinessException("빈 구간 목록입니다.");
+            throw new BusinessException(EMPTY_MESSAGE);
         }
         return value.get(value.size() - 1).getDownStation();
     }
