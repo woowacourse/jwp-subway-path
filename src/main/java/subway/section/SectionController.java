@@ -2,11 +2,11 @@ package subway.section;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import subway.section.dto.SectionCreateDto;
-import subway.section.dto.SectionDeleteDto;
 
 @RestController
 public class SectionController {
@@ -17,14 +17,15 @@ public class SectionController {
     }
 
     @PostMapping("/section")
-    public ResponseEntity<Void> create(@RequestBody SectionCreateDto sectionCreateDto) {
+    public ResponseEntity<Void> create(@RequestBody final SectionCreateDto sectionCreateDto) {
         sectionService.addSection(sectionCreateDto);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/section")
-    public ResponseEntity<Void> delete(@RequestBody final SectionDeleteDto sectionDeleteDto) {
-        sectionService.removeStationBy(sectionDeleteDto);
-        return ResponseEntity.ok().build();
+    @DeleteMapping("/lines/{lineId}/stations/{stationId}")
+    public ResponseEntity<Void> delete(@PathVariable(name = "lineId") final Long lineId,
+        @PathVariable(name = "stationId") final Long stationId) {
+        sectionService.removeStationBy(lineId, stationId);
+        return ResponseEntity.noContent().build();
     }
 }

@@ -60,7 +60,7 @@ graph TD
 
 ### 제거 API 신규
 
-- [ ] 역 제거
+- [x] 역 제거
   - stationId
   - 종점인 경우 (한쪽 station만 있는 경우) 해당 station과 함께 제거
   - 중간역 제거하는 경우 중간역이 downStation인 section을 찾아 downStation과 distance를 업데이트 후 중간역이 upStation인 section을 제거

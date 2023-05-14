@@ -92,7 +92,6 @@ public final class Sections {
         return sections.get(0).isStartWith(downStation);
     }
 
-
     private Optional<Section> findSectionStartWith(final Station station) {
         return sections.stream()
             .filter(section -> section.isStartWith(station))
@@ -136,12 +135,11 @@ public final class Sections {
             .anyMatch(section -> section.isContainStation(station));
     }
 
-    public void removeStation(final String name) {
-//        final Station station = Station.get(name);
-//        final List<Section> containsSections = sections.stream()
-//            .filter(section -> section.isContainStation(station))
-//            .collect(Collectors.toList());
-//        combineSection(containsSections, station);
+    public void removeStation(final Station station) {
+        final List<Section> containsSections = sections.stream()
+            .filter(section -> section.isContainStation(station))
+            .collect(Collectors.toList());
+        combineSection(containsSections, station);
     }
 
     private void combineSection(final List<Section> containsSections, final Station station) {

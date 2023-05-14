@@ -6,12 +6,12 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.LineService;
+import subway.line.persistence.LineDao;
 import subway.line.persistence.LineEntity;
 import subway.section.domain.Section;
 import subway.section.domain.Sections;
 import subway.section.domain.SectionsSorter;
 import subway.section.dto.SectionCreateDto;
-import subway.section.dto.SectionDeleteDto;
 import subway.section.persistence.SectionDao;
 import subway.section.persistence.SectionEntity;
 import subway.station.StationService;
@@ -28,13 +28,15 @@ public class SectionService {
     private final StationService stationService;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
     public SectionService(final LineService lineService, final StationService stationService, final SectionDao sectionDao,
-        StationDao stationDao) {
+        StationDao stationDao, LineDao lineDao) {
         this.lineService = lineService;
         this.stationService = stationService;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     public void addSection(final SectionCreateDto sectionCreateDto) {
@@ -120,9 +122,15 @@ public class SectionService {
         return stationResponseDtos;
     }
 
-    public void removeStationBy(final SectionDeleteDto sectionDeleteDto) {
-        final Sections sections = generateSections(sectionDeleteDto.getLineId());
-        sections.removeStation(sectionDeleteDto.getStationName());
-        updateLine(sectionDeleteDto.getLineId(), sections);
+    public void removeStationBy(final Long lineId, final Long stationId) {
+        final LineEntity lineEntity = lineDao.findById(lineId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 라인은 존재하지 않습니다."));
+        final StationEntity stationEntity = stationDao.findById(stationId)
+            .orElseThrow(() -> new IllegalArgumentException("해당 역은 존재하지 않습니다."));
+
+        final Sections sections = generateSections(lineEntity.getId());
+
+        sections.removeStation(new Station(stationEntity.getId(), stationEntity.getStationName()));
+        updateLine(lineEntity.getId(), sections);
     }
 }

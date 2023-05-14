@@ -137,68 +137,64 @@ class SectionsTest {
     //then
     Assertions.assertThatThrownBy(() -> sections.addSection(잠실역, 잠실나루역, 4));
   }
-//
-//
-//    @DisplayName("노선의 제일 앞에 있는 역을 제거한다.")
-//    @Test
-//    void removeStationStartOfLine() {
-//        //given
-//        final Sections sections = Sections.empty();
-//        registerStations("잠실역", "잠실새내역", "잠실나루역");
-//        sections.initializeSections("잠실나루역", "잠실역", 3);
-//        sections.addSection("잠실역", "잠실새내역", 2);
-//
-//        //when
-//        sections.removeStation("잠실나루역");
-//
-//        //then
-//        assertAll(
-//            () -> assertThat(sections.getSections()).hasSize(1),
-//            () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(Station.get("잠실역")),
-//            () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(Station.get("잠실새내역")),
-//            () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(2)
-//        );
-//    }
-//
-//    @DisplayName("노선의 제일 뒤에 있는 역을 제거한다.")
-//    @Test
-//    void removeStationEndOfLine() {
-//        //given
-//        final Sections sections = Sections.empty();
-//        registerStations("잠실역", "잠실새내역", "잠실나루역");
-//        sections.initializeSections("잠실나루역", "잠실역", 3);
-//        sections.addSection("잠실역", "잠실새내역", 2);
-//
-//        //when
-//        sections.removeStation("잠실새내역");
-//
-//        //then
-//        assertAll(
-//            () -> assertThat(sections.getSections()).hasSize(1),
-//            () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(Station.get("잠실나루역")),
-//            () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(Station.get("잠실역")),
-//            () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(3)
-//        );
-//    }
-//
-//    @DisplayName("노선의 중간에서 역을 제거한다.")
-//    @Test
-//    void removeStation() {
-//        //given
-//        final Sections sections = Sections.empty();
-//        registerStations("잠실역", "잠실새내역", "잠실나루역");
-//        sections.initializeSections("잠실나루역", "잠실역", 3);
-//        sections.addSection("잠실역", "잠실새내역", 2);
-//
-//        //when
-//        sections.removeStation("잠실역");
-//
-//        //then
-//        assertAll(
-//            () -> assertThat(sections.getSections()).hasSize(1),
-//            () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(Station.get("잠실나루역")),
-//            () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(Station.get("잠실새내역")),
-//            () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(5)
-//        );
-//    }
+
+    @DisplayName("노선의 제일 앞에 있는 역을 제거한다.")
+    @Test
+    void removeStationStartOfLine() {
+        //given
+        final Sections sections = Sections.empty();
+        sections.initializeSections(잠실새내역, 잠실역, 3);
+        sections.addSection(잠실역, 잠실나루역, 2);
+
+        //when
+        sections.removeStation(잠실새내역);
+
+        //then
+        assertAll(
+            () -> assertThat(sections.getSections()).hasSize(1),
+            () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(잠실역),
+            () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(잠실나루역),
+            () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(2)
+        );
+    }
+
+    @DisplayName("노선의 제일 뒤에 있는 역을 제거한다.")
+    @Test
+    void removeStationEndOfLine() {
+      //given
+      final Sections sections = Sections.empty();
+      sections.initializeSections(잠실새내역, 잠실역, 3);
+      sections.addSection(잠실역, 잠실나루역, 2);
+
+      //when
+      sections.removeStation(잠실나루역);
+
+      //then
+      assertAll(
+          () -> assertThat(sections.getSections()).hasSize(1),
+          () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(잠실새내역),
+          () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(잠실역),
+          () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(3)
+      );
+    }
+
+    @DisplayName("노선의 중간에서 역을 제거한다.")
+    @Test
+    void removeStation() {
+        //given
+      final Sections sections = Sections.empty();
+      sections.initializeSections(잠실새내역, 잠실역, 3);
+      sections.addSection(잠실역, 잠실나루역, 2);
+
+        //when
+        sections.removeStation(잠실역);
+
+        //then
+        assertAll(
+            () -> assertThat(sections.getSections()).hasSize(1),
+            () -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(잠실새내역),
+            () -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(잠실나루역),
+            () -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(5)
+        );
+    }
 }
