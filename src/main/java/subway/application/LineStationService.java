@@ -8,6 +8,7 @@ import subway.controller.dto.AddStationToEndLineRequest;
 import subway.controller.dto.RemoveStationOnLineRequest;
 import subway.domain.Line;
 import subway.domain.Station;
+import subway.domain.vo.Distance;
 import subway.exception.BusinessException;
 import subway.persistence.LineRepository;
 import subway.persistence.StationRepository;
@@ -28,21 +29,24 @@ public class LineStationService {
         final Line line = getLineByName(request.getLineName());
         final Station upStation = getStationByName(request.getUpStationName());
         final Station downStation = getStationByName(request.getDownStationName());
-        line.addInitStations(upStation, downStation, request.getDistance());
+        final Distance distance = new Distance(request.getDistance());
+        line.addInitStations(upStation, downStation, distance);
         lineRepository.update(line);
     }
 
     public void addStationToTopLine(final AddStationToEndLineRequest request) {
         final Line line = getLineByName(request.getLineName());
         final Station station = getStationByName(request.getStationName());
-        line.addTopStation(station, request.getDistance());
+        final Distance distance = new Distance(request.getDistance());
+        line.addTopStation(station, distance);
         lineRepository.update(line);
     }
 
     public void addStationToBottomLine(final AddStationToEndLineRequest request) {
         final Line line = getLineByName(request.getLineName());
         final Station station = getStationByName(request.getStationName());
-        line.addBottomStation(station, request.getDistance());
+        final Distance distance = new Distance(request.getDistance());
+        line.addBottomStation(station, distance);
         lineRepository.update(line);
     }
 
@@ -51,7 +55,8 @@ public class LineStationService {
         final Station station = getStationByName(request.getStationName());
         final Station upStation = getStationByName(request.getUpStationName());
         final Station downStation = getStationByName(request.getDownStationName());
-        line.addBetweenStation(station, upStation, downStation, request.getDistance());
+        final Distance distance = new Distance(request.getDistance());
+        line.addBetweenStation(station, upStation, downStation, distance);
         lineRepository.update(line);
     }
 

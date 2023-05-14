@@ -1,26 +1,23 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.exception.BusinessException;
+import subway.domain.vo.Distance;
 
 public class Section {
 
     private final Long id;
     private final Station upStation;
     private final Station downStation;
-    private final long distance;
+    private final Distance distance;
 
-    public Section(final Long id, final Station upStation, final Station downStation, final long distance) {
-        if (distance <= 0L) {
-            throw new BusinessException("거리는 1 이상이어야합니다.");
-        }
+    public Section(final Long id, final Station upStation, final Station downStation, final Distance distance) {
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Section(final Station upStation, final Station downStation, final long distance) {
+    public Section(final Station upStation, final Station downStation, final Distance distance) {
         this(null, upStation, downStation, distance);
     }
 
@@ -71,7 +68,7 @@ public class Section {
         return downStation;
     }
 
-    public long getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 }

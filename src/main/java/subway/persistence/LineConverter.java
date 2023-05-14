@@ -10,6 +10,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.vo.Distance;
 import subway.exception.BusinessException;
 import subway.persistence.dao.LineSectionStationJoinDto;
 
@@ -36,7 +37,7 @@ public class LineConverter {
             final Station endStation = new Station(sameLineKeyDto.getEndStationId(),
                 sameLineKeyDto.getEndStationName());
             final Section section = new Section(sameLineKeyDto.getSectionId(), startStation, endStation,
-                sameLineKeyDto.getSectionDistance());
+                new Distance(sameLineKeyDto.getSectionDistance()));
             sectionSet.add(section);
         }
         final Sections sections = new Sections(new ArrayList<>(sectionSet));

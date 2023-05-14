@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.vo.Distance;
 
 @JdbcTest(includeFilters = {
     @Filter(type = FilterType.ANNOTATION, value = Repository.class)
@@ -23,7 +24,7 @@ class LineDaoTest {
     private final Station midUpStation = new Station(2L, "midUpStation");
     private final Station midDownStation = new Station(3L, "midDownStation");
     private final Station bottomStation = new Station(4L, "bottomStation");
-    private final long distance = 10L;
+    private final Distance distance = new Distance(10L);
     private final Line line = new Line("lineName", "lineColor");
     @Autowired
     private LineDao lineDao;

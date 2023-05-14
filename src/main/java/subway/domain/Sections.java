@@ -169,7 +169,7 @@ public class Sections {
     private void removeAndReplace(final Section upSection, final Section downSection) {
         removeAll(upSection, downSection);
         final Section newSection = new Section(upSection.getUpStation(), downSection.getDownStation(),
-            upSection.getDistance() + downSection.getDistance());
+            upSection.getDistance().plus(downSection.getDistance()));
         value.add(newSection);
     }
 

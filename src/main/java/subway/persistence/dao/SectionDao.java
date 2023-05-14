@@ -22,7 +22,7 @@ public class SectionDao {
 
     public Section insert(final Section section, final long lindId) {
         final Map<String, Object> params = new HashMap<>();
-        params.put("distance", section.getDistance());
+        params.put("distance", section.getDistance().getValue());
         params.put("line_id", lindId);
         params.put("up_station_id", section.getUpStation().getId());
         params.put("down_station_id", section.getDownStation().getId());

@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.vo.Distance;
 import subway.exception.BusinessException;
 
 class LineTest {
@@ -15,7 +16,7 @@ class LineTest {
     private final Station firstStation = new Station("firstStation");
     private final Station secondStation = new Station("secondStation");
     private final Station thirdStation = new Station("thirdStation");
-    private final long distance = 10L;
+    private final Distance distance = new Distance(10L);
     private final Section section1 = new Section(firstStation, secondStation, distance);
     private final Section section2 = new Section(secondStation, thirdStation, distance);
 
@@ -53,7 +54,7 @@ class LineTest {
         //given
         final Sections sections = new Sections(Collections.emptyList());
         final Line line = new Line("name", "color", sections);
-        final long distance = 10L;
+        final Distance distance = new Distance(10L);
 
         //when
         //then
@@ -97,9 +98,10 @@ class LineTest {
         final Sections sections = new Sections(new ArrayList<>(List.of(section1, section2)));
         final Line line = new Line("name", "color", sections);
         final Station station = new Station("station");
+        final Distance distance = new Distance(5L);
 
         //when
-        line.addBetweenStation(station, firstStation, secondStation, 5L);
+        line.addBetweenStation(station, firstStation, secondStation, distance);
 
         //then
         assertThat(line.getStationsSize()).isEqualTo(4);

@@ -22,6 +22,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.vo.Distance;
 import subway.exception.BusinessException;
 import subway.persistence.LineRepository;
 import subway.persistence.StationRepository;
@@ -31,12 +32,12 @@ class LineStationServiceTest {
 
     private static final Station topStation = new Station(1L, "topStation");
     private static final Station midUpStation = new Station(2L, "midUpStation");
-    private static final Station midDownStation = new Station(2L, "midDownStation");
-    private static final Station bottomStation = new Station(3L, "bottomStation");
-    private static final long distance = 10L;
+    private static final Station midDownStation = new Station(3L, "midDownStation");
+    private static final Station bottomStation = new Station(4L, "bottomStation");
+    private static final Distance distance = new Distance(10L);
     private static final Section topSection = new Section(1L, topStation, midUpStation, distance);
     private static final Section midSection = new Section(2L, midUpStation, midDownStation, distance);
-    private static final Section bottomSection = new Section(2L, midDownStation, bottomStation, distance);
+    private static final Section bottomSection = new Section(3L, midDownStation, bottomStation, distance);
 
     @Mock
     private LineRepository lineRepository;
