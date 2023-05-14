@@ -116,4 +116,25 @@ public class SectionDaoTest {
         // then
         assertThat(result).usingRecursiveComparison().ignoringFields("id").isEqualTo(sections);
     }
+
+    @Test
+    void 구간_id를_받아_제거한다() {
+        // given
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        final StationEntity station1 = stationDao.insert(new StationEntity("A", line.getId()));
+        final StationEntity station2 = stationDao.insert(new StationEntity("B", line.getId()));
+
+        final List<SectionEntity> sections = List.of(
+                new SectionEntity(station1.getId(), station2.getId(), 3, line.getId())
+        );
+        sectionDao.insertAll(sections);
+        final SectionEntity sectionEntity = sectionDao.findByLineId(line.getId()).get(0);
+
+        // when
+        sectionDao.deleteById(sectionEntity.getId());
+
+        // then
+        final List<SectionEntity> result = sectionDao.findAll();
+        assertThat(result).isEmpty();
+    }
 }

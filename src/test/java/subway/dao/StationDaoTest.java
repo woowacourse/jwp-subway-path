@@ -97,4 +97,36 @@ class StationDaoTest {
                 () -> assertThat(stationDao.findAll()).hasSize(1)
         );
     }
+
+    @Test
+    void 노선_id를_받아_역을_전체_조회한다() {
+        // given
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        stationDao.insertAll(List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId())
+        ));
+
+        // when
+        final List<StationEntity> result = stationDao.findByLineId(line.getId());
+
+        // then
+        assertThat(result).usingRecursiveComparison().ignoringExpectedNullFields().isEqualTo(List.of(
+                new StationEntity("A", line.getId()),
+                new StationEntity("B", line.getId())
+        ));
+    }
+
+    @Test
+    void id를_받아_역을_삭제한다() {
+        // given
+        final LineEntity line = lineDao.insert(new LineEntity("1호선", "RED"));
+        final StationEntity stationEntity = stationDao.insert(new StationEntity("A", line.getId()));
+
+        // when
+        stationDao.deleteById(stationEntity.getId());
+
+        // then
+        assertThat(stationDao.findAll()).isEmpty();
+    }
 }
