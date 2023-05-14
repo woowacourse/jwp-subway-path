@@ -48,7 +48,7 @@ class InterStationsTest {
 
     @Test
     void 역을_통해서_생성할_수_있다() {
-        assertThatCode(() -> InterStations.of(코다_역_id_1, 누누_역_id_2, 1L))
+        assertThatCode(() -> InterStations.of(코다_역_id_1.getId(), 누누_역_id_2.getId(), 1L))
             .doesNotThrowAnyException();
     }
 
@@ -103,9 +103,9 @@ class InterStationsTest {
             final InterStations interStations = new InterStations(given);
 
             assertThat(interStations.getAllStations()).containsExactly(
-                코다_역_id_1,
-                누누_역_id_2,
-                두둠_역_id_3);
+                코다_역_id_1.getId(),
+                누누_역_id_2.getId(),
+                두둠_역_id_3.getId());
         }
     }
 
@@ -168,7 +168,7 @@ class InterStationsTest {
             );
             final InterStations interStations = new InterStations(given);
 
-            interStations.remove(코다_역_id_1);
+            interStations.remove(코다_역_id_1.getId());
 
             assertThat(interStations.getInterStations()).containsExactly(누누에서_두둠_구간_id_2);
         }
@@ -181,7 +181,7 @@ class InterStationsTest {
             );
             final InterStations interStations = new InterStations(given);
 
-            interStations.remove(두둠_역_id_3);
+            interStations.remove(두둠_역_id_3.getId());
 
             assertThat(interStations.getInterStations()).containsExactly(코다에서_누누_구간_id_1);
         }
@@ -194,10 +194,10 @@ class InterStationsTest {
             );
             final InterStations interStations = new InterStations(given);
 
-            interStations.remove(누누_역_id_2);
+            interStations.remove(누누_역_id_2.getId());
 
             assertThat(interStations.getInterStations()).usingRecursiveComparison()
-                .isEqualTo(List.of(new InterStation(null, 코다_역_id_1, 두둠_역_id_3, 20)));
+                .isEqualTo(List.of(new InterStation(null, 코다_역_id_1.getId(), 두둠_역_id_3.getId(), 20)));
         }
 
         @Test
@@ -208,7 +208,7 @@ class InterStationsTest {
             );
             final InterStations interStations = new InterStations(given);
 
-            assertThatCode(() -> interStations.remove(처음보는_역_id_4))
+            assertThatCode(() -> interStations.remove(처음보는_역_id_4.getId()))
                 .isInstanceOf(InterStationsException.class)
                 .hasMessage("역이 존재하지 않습니다.");
         }

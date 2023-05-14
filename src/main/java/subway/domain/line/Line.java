@@ -4,7 +4,6 @@ import lombok.Getter;
 import lombok.ToString;
 import subway.domain.interstation.InterStation;
 import subway.domain.interstation.InterStations;
-import subway.domain.station.Station;
 
 @Getter
 @ToString
@@ -28,22 +27,22 @@ public class Line {
 
     public Line(final String name,
                 final String color,
-                final Station upStation,
-                final Station downStation,
+                final Long upStationId,
+                final Long downStationId,
                 final long distance) {
-        this(null, name, color, InterStations.of(upStation, downStation, distance));
+        this(null, name, color, InterStations.of(upStationId, downStationId, distance));
     }
 
     public InterStation getFirstInterStation() {
         return interStations.getFirstInterStation();
     }
 
-    public void deleteStation(final Station existStation) {
-        interStations.remove(existStation);
+    public void deleteStation(final long existStationId) {
+        interStations.remove(existStationId);
     }
 
-    public void addInterStation(final Station existStation, final Station newStation, final long distance) {
-        interStations.add(new InterStation(existStation, newStation, distance));
+    public void addInterStation(final Long existStationId, final Long newStationId, final long distance) {
+        interStations.add(new InterStation(existStationId, newStationId, distance));
     }
 
     public boolean isEmpty() {

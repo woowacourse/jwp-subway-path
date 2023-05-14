@@ -8,7 +8,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.ToString;
 import subway.domain.interstation.exception.InterStationsException;
-import subway.domain.station.Station;
 
 /**
  * 구간들은 상행선부터, 하행선까지 순서대로 정렬되어있다.
@@ -24,33 +23,33 @@ public class InterStations {
         this.interStations = sort(interStations);
     }
 
-    public static InterStations of(final Station upStation, final Station downStation, final long distance) {
-        return new InterStations(List.of(new InterStation(upStation, downStation, distance)));
+    public static InterStations of(final Long upStationId, final Long downStationId, final long distance) {
+        return new InterStations(List.of(new InterStation(upStationId, downStationId, distance)));
     }
 
     /**
      * 상행선부터 하행선까지 순서대로 구간을 정렬한다
      */
     private List<InterStation> sort(final List<InterStation> interStations) {
-        final Station firstStation = findFirstStation(interStations);
+        final long firstStation = findFirstStation(interStations);
 
-        final Map<Station, InterStation> upStationToInterStation = interStations.stream()
-            .collect(Collectors.toMap(InterStation::getUpStation, interStation -> interStation));
+        final Map<Long, InterStation> upStationToInterStation = interStations.stream()
+            .collect(Collectors.toMap(InterStation::getUpStationId, interStation -> interStation));
 
         final List<InterStation> sortedInterStations = new ArrayList<>();
-        Station currentStation = firstStation;
+        long currentStation = firstStation;
         while (upStationToInterStation.containsKey(currentStation)) {
             final InterStation interStation = upStationToInterStation.get(currentStation);
             sortedInterStations.add(interStation);
-            currentStation = interStation.getDownStation();
+            currentStation = interStation.getDownStationId();
         }
 
         return sortedInterStations;
     }
 
-    private Station findFirstStation(final List<InterStation> interStations) {
-        final Set<Station> downStations = findDownStations(interStations);
-        final Set<Station> upStations = findUpStations(interStations);
+    private Long findFirstStation(final List<InterStation> interStations) {
+        final Set<Long> downStations = findDownStations(interStations);
+        final Set<Long> upStations = findUpStations(interStations);
         upStations.removeAll(downStations);
         if (upStations.size() != 1) {
             throw new InterStationsException("구간이 연결되어있지 않습니다.");
@@ -58,15 +57,15 @@ public class InterStations {
         return upStations.stream().findFirst().get();
     }
 
-    private Set<Station> findDownStations(final List<InterStation> interStations) {
+    private Set<Long> findDownStations(final List<InterStation> interStations) {
         return interStations.stream()
-            .map(InterStation::getDownStation)
+            .map(InterStation::getDownStationId)
             .collect(Collectors.toSet());
     }
 
-    private Set<Station> findUpStations(final List<InterStation> interStations) {
+    private Set<Long> findUpStations(final List<InterStation> interStations) {
         return interStations.stream()
-            .map(InterStation::getUpStation)
+            .map(InterStation::getUpStationId)
             .collect(Collectors.toSet());
     }
 
@@ -85,38 +84,38 @@ public class InterStations {
         interStations = sort(interStations);
     }
 
-    public void remove(final Station station) {
-        if (isStartStation(station)) {
+    public void remove(final long stationId) {
+        if (isStartStation(stationId)) {
             interStations.remove(0);
             return;
         }
-        if (isEndStation(station)) {
+        if (isEndStation(stationId)) {
             interStations.remove(interStations.size() - 1);
             return;
         }
-        removeMiddle(station);
+        removeMiddle(stationId);
     }
 
-    private boolean isStartStation(final Station station) {
-        return interStations.get(0).getUpStation().equals(station);
+    private boolean isStartStation(final long stationId) {
+        return interStations.get(0).getUpStationId().equals(stationId);
     }
 
-    private boolean isEndStation(final Station station) {
-        return interStations.get(interStations.size() - 1).getDownStation().equals(station);
+    private boolean isEndStation(final long stationId) {
+        return interStations.get(interStations.size() - 1).getDownStationId().equals(stationId);
     }
 
-    private void removeMiddle(final Station station) {
-        final int index = findDownStationIndex(station);
+    private void removeMiddle(final long stationId) {
+        final int index = findDownStationIndex(stationId);
         final InterStation downInterStation = interStations.remove(index + 1);
         final InterStation upInterStation = interStations.remove(index);
-        interStations.add(index, new InterStation(upInterStation.getUpStation(),
-            downInterStation.getDownStation(),
+        interStations.add(index, new InterStation(upInterStation.getUpStationId(),
+            downInterStation.getDownStationId(),
             upInterStation.getDistance().add(downInterStation.getDistance())));
     }
 
-    private int findDownStationIndex(final Station station) {
+    private int findDownStationIndex(final long stationId) {
         for (int i = 0; i < interStations.size(); i++) {
-            if (interStations.get(i).getDownStation().equals(station)) {
+            if (interStations.get(i).getDownStationId().equals(stationId)) {
                 return i;
             }
         }
@@ -131,11 +130,11 @@ public class InterStations {
         return interStations.get(0);
     }
 
-    public List<Station> getAllStations() {
-        final List<Station> stations = new ArrayList<>();
-        stations.add(interStations.get(0).getUpStation());
+    public List<Long> getAllStations() {
+        final List<Long> stations = new ArrayList<>();
+        stations.add(interStations.get(0).getUpStationId());
         for (final InterStation interStation : interStations) {
-            stations.add(interStation.getDownStation());
+            stations.add(interStation.getDownStationId());
         }
         return stations;
     }

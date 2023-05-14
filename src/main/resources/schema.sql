@@ -21,7 +21,5 @@ create table if not exists INTERSTATION
     start_station_id bigint                not null,
     end_station_id   bigint                not null,
     primary key (id),
-    foreign key (line_id) references LINE (id),
-    foreign key (start_station_id) references STATION (id),
-    foreign key (end_station_id) references STATION (id)
+    foreign key (line_id) references LINE (id)
     );

@@ -4,7 +4,6 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import subway.domain.interstation.exception.InterStationException;
-import subway.domain.station.Station;
 
 @Getter
 @ToString
@@ -12,43 +11,43 @@ import subway.domain.station.Station;
 public class InterStation {
 
     private final Long id;
-    private final Station upStation;
-    private final Station downStation;
+    private final Long upStationId;
+    private final Long downStationId;
     private final Distance distance;
 
     public InterStation(final Long id,
-                        final Station upStation,
-                        final Station downStation,
+                        final Long upStationId,
+                        final Long downStationId,
                         final Distance distance) {
-        validateStations(upStation, downStation);
+        validateStations(upStationId, downStationId);
         this.id = id;
-        this.upStation = upStation;
-        this.downStation = downStation;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
         this.distance = distance;
     }
 
-    public InterStation(final Station upStation, final Station downStation, final Distance distance) {
-        this(null, upStation, downStation, distance);
+    public InterStation(final Long upStationId, final Long downStationId, final Distance distance) {
+        this(null, upStationId, downStationId, distance);
     }
 
-    public InterStation(final Long id, final Station upStation, final Station downStation, final long distance) {
-        this(id, upStation, downStation, new Distance(distance));
+    public InterStation(final Long id, final Long upStationId, final Long downStationId, final long distance) {
+        this(id, upStationId, downStationId, new Distance(distance));
     }
 
-    public InterStation(final Station upStation, final Station downStation, final long distance) {
-        this(null, upStation, downStation, distance);
+    public InterStation(final Long upStationId, final Long downStationId, final long distance) {
+        this(null, upStationId, downStationId, distance);
     }
 
-    private void validateStations(final Station firstStation, final Station secondStation) {
-        if (firstStation.equals(secondStation)) {
+    private void validateStations(final Long upStationId, final Long downStationId) {
+        if (upStationId.equals(downStationId)) {
             throw new InterStationException("상행역과 하행역이 같습니다.");
         }
     }
 
-    public boolean contains(final Station station) {
-        if (station == null) {
+    public boolean contains(final Long stationId) {
+        if (stationId == null) {
             return false;
         }
-        return upStation.equals(station) || downStation.equals(station);
+        return upStationId.equals(stationId) || downStationId.equals(stationId);
     }
 }

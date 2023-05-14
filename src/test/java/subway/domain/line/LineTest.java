@@ -35,7 +35,7 @@ class LineTest {
             final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
             final Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
 
-            line.addInterStation(누누_역_id_2, 두둠_역_id_3, 1L);
+            line.addInterStation(누누_역_id_2.getId(), 두둠_역_id_3.getId(), 1L);
 
             assertThat(line.getInterStations().getInterStations()).hasSize(2);
         }
@@ -50,7 +50,7 @@ class LineTest {
             final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
             final Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
 
-            line.deleteStation(누누_역_id_2);
+            line.deleteStation(누누_역_id_2.getId());
 
             assertThat(line.getInterStations().isEmpty()).isTrue();
         }
