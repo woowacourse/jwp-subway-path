@@ -13,7 +13,7 @@ import subway.persistence.LineDao;
 import subway.persistence.SectionDao;
 import subway.persistence.StationDao;
 import subway.persistence.entity.LineEntity;
-import subway.persistence.entity.SectionDetail;
+import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.StationEntity;
 import subway.presentation.dto.response.LineDetailResponse;
 
@@ -78,13 +78,13 @@ class LineServiceTest {
     @DisplayName("전체 조회 성공")
     void findAll_success() {
         // given
-        final List<SectionDetail> sectionDetails = List.of(
-                new SectionDetail(1L, 2, 1L, "1호선", "bg-blue-600", 1L, "청량리", 2L, "회기"),
-                new SectionDetail(2L, 3, 1L, "1호선", "bg-blue-600", 2L, "회기", 3L, "외대앞"),
-                new SectionDetail(3L, 4, 2L, "2호선", "bg-green-600", 4L, "시청", 5L, "을지로입구"),
-                new SectionDetail(4L, 3, 2L, "2호선", "bg-green-600", 5L, "을지로입구", 6L, "을지로3가")
+        final List<SectionDetailEntity> sectionDetailEntities = List.of(
+                new SectionDetailEntity(1L, 2, 1L, "1호선", "bg-blue-600", 1L, "청량리", 2L, "회기"),
+                new SectionDetailEntity(2L, 3, 1L, "1호선", "bg-blue-600", 2L, "회기", 3L, "외대앞"),
+                new SectionDetailEntity(3L, 4, 2L, "2호선", "bg-green-600", 4L, "시청", 5L, "을지로입구"),
+                new SectionDetailEntity(4L, 3, 2L, "2호선", "bg-green-600", 5L, "을지로입구", 6L, "을지로3가")
         );
-        given(sectionDao.findSectionDetail()).willReturn(sectionDetails);
+        given(sectionDao.findSectionDetail()).willReturn(sectionDetailEntities);
 
         // when
         final List<LineDetailResponse> responses = lineService.findAll();

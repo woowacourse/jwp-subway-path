@@ -23,7 +23,7 @@ public class RowMapperUtil {
             rs.getLong("next_station_id")
     );
 
-    public static final RowMapper<SectionDetail> sectionDetailRowMapper = (rs, rn) -> new SectionDetail(
+    public static final RowMapper<SectionDetailEntity> sectionDetailRowMapper = (rs, rn) -> new SectionDetailEntity(
             rs.getLong("id"),
             rs.getInt("distance"),
             rs.getLong("line_id"),

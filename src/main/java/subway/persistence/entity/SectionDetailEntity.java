@@ -1,6 +1,6 @@
 package subway.persistence.entity;
 
-public class SectionDetail {
+public class SectionDetailEntity {
 
     private final long id;
     private final int distance;
@@ -12,10 +12,10 @@ public class SectionDetail {
     private final long nextStationId;
     private final String nextStationName;
 
-    public SectionDetail(final long id, final int distance, final long lineId,
-                         final String lineName, final String lineColor,
-                         final long previousStationId, final String previousStationName,
-                         final long nextStationId, final String nextStationName) {
+    public SectionDetailEntity(final long id, final int distance, final long lineId,
+                               final String lineName, final String lineColor,
+                               final long previousStationId, final String previousStationName,
+                               final long nextStationId, final String nextStationName) {
         this.id = id;
         this.distance = distance;
         this.lineId = lineId;

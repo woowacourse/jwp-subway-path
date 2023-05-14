@@ -3,7 +3,7 @@ package subway.business.converter;
 import subway.business.domain.Line;
 import subway.business.domain.Section;
 import subway.business.domain.Station;
-import subway.persistence.entity.SectionDetail;
+import subway.persistence.entity.SectionDetailEntity;
 import subway.presentation.dto.response.SectionResponse;
 
 import java.util.List;
@@ -26,19 +26,19 @@ public class SectionConverter {
                 StationEntityDomainConverter.domainToResponseDto(section.getNextStation()));
     }
 
-    public static List<Section> queryResultToDomains(final List<SectionDetail> sectionDetails) {
-        return sectionDetails.stream()
+    public static List<Section> queryResultToDomains(final List<SectionDetailEntity> sectionDetailEntities) {
+        return sectionDetailEntities.stream()
                 .map(SectionConverter::queryResultToDomain)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private static Section queryResultToDomain(final SectionDetail sectionDetail) {
+    private static Section queryResultToDomain(final SectionDetailEntity sectionDetailEntity) {
         return new Section(
-                sectionDetail.getId(),
-                new Line(sectionDetail.getLineId(), sectionDetail.getLineName(), sectionDetail.getLineColor()),
-                new Station(sectionDetail.getPreviousStationId(), sectionDetail.getPreviousStationName()),
-                new Station(sectionDetail.getNextStationId(), sectionDetail.getNextStationName()),
-                sectionDetail.getDistance()
+                sectionDetailEntity.getId(),
+                new Line(sectionDetailEntity.getLineId(), sectionDetailEntity.getLineName(), sectionDetailEntity.getLineColor()),
+                new Station(sectionDetailEntity.getPreviousStationId(), sectionDetailEntity.getPreviousStationName()),
+                new Station(sectionDetailEntity.getNextStationId(), sectionDetailEntity.getNextStationName()),
+                sectionDetailEntity.getDistance()
         );
     }
 

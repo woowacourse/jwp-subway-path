@@ -11,10 +11,8 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.LineNotFoundException;
 import subway.persistence.entity.LineEntity;
-import subway.persistence.entity.StationEntity;
 
 import javax.sql.DataSource;
-
 import java.util.List;
 import java.util.stream.Collectors;
 

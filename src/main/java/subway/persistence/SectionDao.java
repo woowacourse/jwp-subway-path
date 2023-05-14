@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.persistence.entity.SectionDetail;
+import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
 
@@ -90,7 +90,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, stationEntityRowMapper, lineId);
     }
 
-    public List<SectionDetail> findSectionDetailByLineId(final long lineId) {
+    public List<SectionDetailEntity> findSectionDetailByLineId(final long lineId) {
         final String sql = "SELECT se.id, se.distance, se.line_id, " +
                 "line.name line_name, line.color line_color, " +
                 "pst.id previous_station_id, pst.name previous_station_name, " +
@@ -98,13 +98,13 @@ public class SectionDao {
                 "FROM section se " +
                 "JOIN station pst ON se.previous_station_id = pst.id " +
                 "JOIN station nst ON se.next_station_id = nst.id " +
-                "JOIN line WHERE se.line_id = line.id " +
+                "JOIN line ON se.line_id = line.id " +
                 "WHERE se.line_id = ?";
 
         return jdbcTemplate.query(sql, sectionDetailRowMapper, lineId);
     }
 
-    public List<SectionDetail> findSectionDetail() {
+    public List<SectionDetailEntity> findSectionDetail() {
         final String sql = "SELECT se.id, se.distance, se.line_id, " +
                 "line.name line_name, line.color line_color, " +
                 "pst.id previous_station_id, pst.name previous_station_name, " +
@@ -112,7 +112,7 @@ public class SectionDao {
                 "FROM section se " +
                 "JOIN station pst ON se.previous_station_id = pst.id " +
                 "JOIN station nst ON se.next_station_id = nst.id " +
-                "JOIN line " +
+                "JOIN line ON se.line_id = line.id " +
                 "WHERE line.id = se.line_id";
 
         return jdbcTemplate.query(sql, sectionDetailRowMapper);
