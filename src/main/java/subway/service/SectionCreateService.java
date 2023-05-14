@@ -70,17 +70,30 @@ public class SectionCreateService {
     private List<SectionEntity> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSectionEntity) {
         sectionDao.deleteById(existSectionEntity.getId());
 
-        if (Direction.from(direction) == Direction.UP) {
-            final SectionEntity upSectionEntity = new SectionEntity(lineId, existSectionEntity.getUpStationId(), addedId, existSectionEntity.getDistance() - distance);
-            final SectionEntity upSavedSectionEntity = sectionDao.insert(upSectionEntity);
-            final SectionEntity downSectionEntity = new SectionEntity(lineId, addedId, existSectionEntity.getDownStationId(), distance);
-            final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
-            return List.of(upSavedSectionEntity, downSavedSectionEntity);
-        }
-        final SectionEntity upSectionEntity = new SectionEntity(lineId, existSectionEntity.getUpStationId(), addedId, distance);
+        final SectionEntity upSectionEntity = createUpSectionByDirection(lineId, addedId, direction, distance, existSectionEntity);
         final SectionEntity upSavedSectionEntity = sectionDao.insert(upSectionEntity);
-        final SectionEntity downSectionEntity = new SectionEntity(lineId, addedId, existSectionEntity.getDownStationId(), existSectionEntity.getDistance() - distance);
+        final SectionEntity downSectionEntity = createDownSectionByDirection(lineId, addedId, direction, distance, existSectionEntity);
         final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
         return List.of(upSavedSectionEntity, downSavedSectionEntity);
+    }
+
+    private SectionEntity createUpSectionByDirection(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSection) {
+        if (Direction.from(direction) == Direction.UP) {
+            return new SectionEntity(lineId, existSection.getUpStationId(), addedId, existSection.getDistance() - distance);
+        }
+        if (Direction.from(direction) == Direction.DOWN) {
+            return new SectionEntity(lineId, existSection.getUpStationId(), addedId, distance);
+        }
+        throw new IllegalArgumentException("존재하지 않는 방향입니다.");
+    }
+
+    private SectionEntity createDownSectionByDirection(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSection) {
+        if (Direction.from(direction) == Direction.UP) {
+            return new SectionEntity(lineId, addedId, existSection.getDownStationId(), distance);
+        }
+        if (Direction.from(direction) == Direction.DOWN) {
+            return new SectionEntity(lineId, addedId, existSection.getDownStationId(), existSection.getDistance() - distance);
+        }
+        throw new IllegalArgumentException("존재하지 않는 방향입니다.");
     }
 }
