@@ -32,9 +32,9 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public List<SectionEntity> findAllByLineId(Long line_id) {
+    public List<SectionEntity> findAllByLineId(Long id) {
         String sql = "SELECT id, line_id, source_station_id, target_station_id, distance FROM section WHERE line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, line_id);
+        return jdbcTemplate.query(sql, rowMapper, id);
     }
 
     public Long save(SectionEntity section) {
@@ -45,5 +45,10 @@ public class SectionDao {
     public int updatePre(Section modified) {
         String sql = "UPDATE section SET source_station_id = ? WHERE target_station_id = ?";
         return jdbcTemplate.update(sql, modified.getPreStationId(), modified.getStationId());
+    }
+
+    public int remove(Long stationId) {
+        String sql = "DELETE FROM section WHERE source_station_id = ? OR target_station_id = ?";
+        return jdbcTemplate.update(sql, stationId, stationId);
     }
 }

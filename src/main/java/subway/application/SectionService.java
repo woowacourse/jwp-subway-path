@@ -48,8 +48,24 @@ public class SectionService {
 
     public void removeStation(Long lineId, Long stationId) {
         Sections currentLineSections = getCurrentLineSections(lineId);
-//        currentLineSections.removeStation(stationId);
 
+        if (!currentLineSections.isExistStation(stationId)) {
+            throw new RuntimeException("노선에 없는 역은 삭제할 수 없습니다");
+        }
+
+        if (currentLineSections.getSections().size() == 1) {
+            currentLineSections.removeWhenOnlyTwoStationsExist(stationId);
+            sectionDao.remove(stationId);
+            return;
+        }
+
+        Section modified = currentLineSections.remove(stationId);
+
+        sectionDao.remove(stationId);
+        if (modified != null) {
+            sectionDao.save(new SectionEntity(modified.getLineId(),
+                    modified.getPreStationId(), modified.getStationId(), modified.getDistance()));
+        }
     }
 
     public LineStationResponse findByLineId(Long lineId) {
