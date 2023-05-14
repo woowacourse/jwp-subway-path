@@ -7,6 +7,7 @@ import subway.line.service.LineService;
 import subway.section.domain.Section;
 import subway.section.service.SectionService;
 import subway.station.domain.Station;
+import subway.station.service.StationService;
 import subway.subwayMap.domain.SectionToStationConverter;
 import subway.subwayMap.domain.SubwayMap;
 import subway.subwayMap.dto.SubwayMapForLineResponse;
@@ -19,13 +20,27 @@ import java.util.stream.Collectors;
 public class SubwayMapService {
 
     private final LineService lineService;
+    private final StationService stationService;
     private final SectionService sectionService;
     private final SubwayMap subwayMap;
 
-    public SubwayMapService(final LineService lineService, final SectionService sectionService, final SubwayMap subwayMap) {
+    public SubwayMapService(final LineService lineService, final StationService stationService, final SectionService sectionService, final SubwayMap subwayMap) {
         this.lineService = lineService;
+        this.stationService = stationService;
         this.sectionService = sectionService;
         this.subwayMap = subwayMap;
+    }
+
+    public void addStation(Long lineId,Long baseStationId, Long addStationId ,boolean direction) {
+        subwayMap.addStation(lineService.findLineById(lineId),
+                stationService.findStationById(baseStationId),
+                stationService.findStationById(addStationId),
+                direction);
+    }
+
+    public void deleteStation(Long lineId,Long stationId) {
+        subwayMap.deleteStation(lineService.findLineById(lineId),
+                stationService.findStationById(stationId));
     }
 
     public List<SubwayMapForLineResponse> findAllSubwayMap() {

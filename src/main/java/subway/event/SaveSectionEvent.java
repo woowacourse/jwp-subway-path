@@ -6,9 +6,9 @@ public class SaveSectionEvent {
     private final Long lineId;
     private final Long upStation;
     private final Long downStation;
-    private final boolean direction;
+    private final Boolean direction;
 
-    public SaveSectionEvent(final Long lineId, final Long upStation, final Long downStation, final boolean direction) {
+    public SaveSectionEvent(final Long lineId, final Long upStation, final Long downStation, final Boolean direction) {
         this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -27,7 +27,7 @@ public class SaveSectionEvent {
         return downStation;
     }
 
-    public boolean isDirection() {
+    public Boolean getDirection() {
         return direction;
     }
 }

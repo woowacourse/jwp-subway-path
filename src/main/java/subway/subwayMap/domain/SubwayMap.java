@@ -30,18 +30,19 @@ public class SubwayMap {
         return subwayMaps.getOrDefault(line, new ArrayList<>());
     }
 
-    public void addStation(Line line,Station station1,Station station2,boolean isDirection){
+    public void addStation(Line line, Station baseStationId, Station addStationId, Boolean direction) {
         List<Station> stations = subwayMaps.get(line);
-        if (isDirection){
-            int index = stations.indexOf(station1);
-            stations.add(index+1,station2);
+        if (direction) {
+            int baseStationIndex = stations.indexOf(baseStationId);
+            int UpStation = 1;
+            stations.add(baseStationIndex + UpStation, addStationId);
             return;
         }
-        int index = stations.indexOf(station1);
-        stations.add(index,station2);
+        int index = stations.indexOf(baseStationId);
+        stations.add(index, addStationId);
     }
 
-    public void deleteStation(Line line,Station station){
+    public void deleteStation(Line line, Station station) {
         List<Station> stations = subwayMaps.get(line);
 
         stations.remove(station);
