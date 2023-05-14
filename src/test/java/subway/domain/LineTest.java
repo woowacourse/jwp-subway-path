@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -7,7 +8,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 
+@DisplayNameGeneration(ReplaceUnderscores.class)
 class LineTest {
 
     @ParameterizedTest

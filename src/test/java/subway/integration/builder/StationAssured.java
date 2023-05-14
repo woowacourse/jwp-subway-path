@@ -2,22 +2,27 @@ package subway.integration.builder;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import subway.application.request.CreateSectionRequest;
 import subway.application.response.StationResponse;
 import subway.integration.support.RestAssuredFixture;
-import subway.application.request.CreateStationRequest;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.*;
-import static subway.integration.support.RestAssuredFixture.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static subway.integration.support.RestAssuredFixture.post;
 
 public class StationAssured {
 
     private StationAssured() {
     }
 
-    public static CreateStationRequest 역_요청(final String stationName) {
-        return new CreateStationRequest(stationName);
+    public static CreateSectionRequest 상행역_하행역_노선_거리_요청(
+            final String upStationName,
+            final String downStationName,
+            final Long lineId,
+            final Integer distance
+    ) {
+        return new CreateSectionRequest(upStationName, downStationName, lineId, distance);
     }
 
     public static StationRequestBuilder request() {
@@ -28,7 +33,7 @@ public class StationAssured {
 
         private ExtractableResponse<Response> response;
 
-        public StationRequestBuilder 역을_등록한다(final CreateStationRequest request) {
+        public StationRequestBuilder 역과_구간을_등록한다(final CreateSectionRequest request) {
             response = post("/stations", request);
             return this;
         }
@@ -58,12 +63,13 @@ public class StationAssured {
             return response.jsonPath().getList("", cls);
         }
 
-        public void 등록된_역이_조회된다(final Long stationId, final String stationName) {
+        public void 등록된_역이_조회된다(final String stationName) {
             final StationResponse response = toBody(StationResponse.class);
 
             assertThat(response)
                     .usingRecursiveComparison()
-                    .isEqualTo(new StationResponse(stationId, stationName));
+                    .ignoringFields("id")
+                    .isEqualTo(new StationResponse(0L, stationName));
         }
     }
 }

@@ -8,6 +8,7 @@ import subway.application.response.StationResponse;
 import subway.integration.support.RestAssuredFixture;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -56,14 +57,19 @@ public class LineAssured {
             return response.as(cls);
         }
 
-        public void 노선이_조회된다(final Long lineId, final String lineName, final String lineColor, final List<StationResponse> stations) {
+        public void 노선이_조회된다(final Long lineId, final String lineName, final String lineColor, final List<String> stationNames) {
             final LineResponse response = toBody(LineResponse.class);
+
+            final List<String> responseStationNames = response.getStations()
+                    .stream()
+                    .map(StationResponse::getName)
+                    .collect(Collectors.toList());
 
             assertAll(
                     () -> assertThat(response.getId()).isEqualTo(lineId),
                     () -> assertThat(response.getName()).isEqualTo(lineName),
                     () -> assertThat(response.getColor()).isEqualTo(lineColor),
-                    () -> assertThat(response.getStations()).isNotNull()
+                    () -> assertThat(responseStationNames).containsExactlyElementsOf(stationNames)
             );
         }
     }

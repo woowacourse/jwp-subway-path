@@ -2,12 +2,11 @@ package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import subway.application.LineService;
 import subway.application.response.LineResponse;
+import subway.application.response.StationResponse;
 import subway.config.ServiceTestConfig;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.application.response.StationResponse;
 
 import java.util.List;
 
