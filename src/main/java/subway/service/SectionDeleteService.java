@@ -19,31 +19,30 @@ public class SectionDeleteService {
         final Optional<SectionEntity> upSection = sectionDao.findNeighborUpSection(lineId, stationId);
         final Optional<SectionEntity> downSection = sectionDao.findNeighborDownSection(lineId, stationId);
 
+        validateRegistered(upSection, downSection);
+        deleteSection(upSection, downSection);
+        if (upSection.isPresent() && downSection.isPresent()) {
+            insertNewSection(lineId, upSection.get(), downSection.get());
+        }
+    }
+
+    private void validateRegistered(final Optional<SectionEntity> upSection, final Optional<SectionEntity> downSection) {
         if (upSection.isEmpty() && downSection.isEmpty()) {
             throw new IllegalArgumentException("등록되어있지 않은 역은 지울 수 없습니다.");
         }
+    }
 
-        if (upSection.isEmpty()) {
-            sectionDao.deleteById(downSection.get().getId());
-            return;
-        }
+    private void deleteSection(final Optional<SectionEntity> upSection, final Optional<SectionEntity> downSection) {
+        upSection.ifPresent(section -> sectionDao.deleteById(section.getId()));
+        downSection.ifPresent(section -> sectionDao.deleteById(section.getId()));
+    }
 
-        if (downSection.isEmpty()) {
-            sectionDao.deleteById(upSection.get().getId());
-            return;
-        }
-
-        final SectionEntity existUpSectionEntity = upSection.get();
-        final SectionEntity existDownSectionEntity = downSection.get();
-
-        sectionDao.deleteById(existUpSectionEntity.getId());
-        sectionDao.deleteById(existDownSectionEntity.getId());
-
+    private void insertNewSection(final Long lineId, final SectionEntity upSection, final SectionEntity downSection) {
         final SectionEntity sectionEntity = new SectionEntity(
                 lineId,
-                existUpSectionEntity.getUpStationId(),
-                existDownSectionEntity.getDownStationId(),
-                existUpSectionEntity.getDistance() + existDownSectionEntity.getDistance()
+                upSection.getUpStationId(),
+                downSection.getDownStationId(),
+                upSection.getDistance() + downSection.getDistance()
         );
 
         sectionDao.insert(sectionEntity);
