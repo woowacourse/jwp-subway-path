@@ -11,7 +11,7 @@ public interface LineRepository {
 
     List<LineWithSectionRes> findAllWithSections();
 
-    void update(final Long id, final Line line);
+    void updateById(final Long id, final Line line);
 
     void deleteById(final Long id);
 

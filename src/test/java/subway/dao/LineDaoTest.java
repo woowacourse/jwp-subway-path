@@ -33,8 +33,10 @@ public class LineDaoTest {
     @Test
     @DisplayName("노선 정보를 저장한다")
     void insert() {
-        // when
+        // given
         final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600");
+
+        // when
         final Long 저장된_이호선_아이디 = lineDao.insert(이호선_엔티티);
 
         // then
@@ -62,8 +64,8 @@ public class LineDaoTest {
             .containsExactly("이호선", "bg-green-600");
     }
 
-    @DisplayName("유효하지 않은 노선 아이디가 주어지면, 빈 값을 반환한다")
     @Test
+    @DisplayName("유효하지 않은 노선 아이디가 주어지면, 빈 값을 반환한다")
     void findById_empty() {
         // when
         final Optional<LineEntity> findLine = lineDao.findById(1L);
@@ -97,7 +99,8 @@ public class LineDaoTest {
         // then
         assertThat(lines).hasSize(2);
         assertThat(lines)
-            .extracting(LineWithSection::getLineId, LineWithSection::getLineName, LineWithSection::getLineColor,
+            .extracting(
+                LineWithSection::getLineId, LineWithSection::getLineName, LineWithSection::getLineColor,
                 LineWithSection::getSourceStationId, LineWithSection::getSourceStationName,
                 LineWithSection::getTargetStationId,
                 LineWithSection::getTargetStationName, LineWithSection::getDistance)

@@ -12,19 +12,6 @@ public class LineWithSection {
     private final String targetStationName;
     private final Integer distance;
 
-    public LineWithSection(final Long lineId, final Long sourceStationId,
-                           final Long targetStationId, final Integer distance) {
-        this(null, lineId, null, null, sourceStationId, null,
-            targetStationId, null, distance);
-    }
-
-    public LineWithSection(final Long id, final Long lineId, final Long sourceStationId,
-                           final String sourceStationName, final Long targetStationId,
-                           final String targetStationName, final Integer distance) {
-        this(id, lineId, null, null, sourceStationId, sourceStationName,
-            targetStationId, targetStationName, distance);
-    }
-
     public LineWithSection(final Long id, final Long lineId, final String lineName, final String lineColor,
                            final Long sourceStationId, final String sourceStationName, final Long targetStationId,
                            final String targetStationName, final Integer distance) {
@@ -37,10 +24,6 @@ public class LineWithSection {
         this.targetStationId = targetStationId;
         this.targetStationName = targetStationName;
         this.distance = distance;
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public Long getLineId() {
