@@ -4,22 +4,78 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
+import subway.Fixture;
 import subway.domain.Line;
 
+import java.util.List;
+import java.util.Optional;
+
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
-@Sql("classpath:schema.sql")
+@ContextConfiguration(classes = LineDao.class)
+@Sql("/schema.sql")
 class LineDaoTest {
 
-    private final LineDao lineDao;
+    @Autowired
+    private LineDao lineDao;
 
-    private LineDaoTest(@Autowired final JdbcTemplate jdbcTemplate) {
-        this.lineDao = new LineDao(jdbcTemplate);
+    @Test
+    @DisplayName("노선을 추가한다")
+    void insert() {
+        // given & when
+        Line inserted = lineDao.insert(Fixture.line1);
+
+        // then
+        assertThat(inserted.getName()).isEqualTo(Fixture.line1.getName());
+        assertThat(inserted.getColor()).isEqualTo(Fixture.line1.getColor());
     }
 
+    @Test
+    @DisplayName("모든 노선을 조회한다")
+    void findAll() {
+        // given
+        lineDao.insert(Fixture.line1);
+        lineDao.insert(Fixture.line2);
+        lineDao.insert(Fixture.line3);
 
+        // when
+        List<Line> lines = lineDao.findAll();
+
+        // then
+        assertThat(lines.size()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("id에 해당하는 노선을 조회한다")
+    void findById() {
+        // given
+        Line inserted1 = lineDao.insert(Fixture.line1);
+        Line inserted2 = lineDao.insert(Fixture.line2);
+        Line inserted3 = lineDao.insert(Fixture.line3);
+
+        // when
+        Optional<Line> found = lineDao.findById(inserted2.getId());
+
+        // then
+        assertThat(found.get().getName()).isEqualTo(Fixture.line2.getName());
+        assertThat(found.get().getColor()).isEqualTo(Fixture.line2.getColor());
+    }
+
+    @Test
+    @DisplayName("id에 해당하는 노선을 삭제한다")
+    void deleteById() {
+        // given
+        Line inserted1 = lineDao.insert(Fixture.line1);
+        Line inserted2 = lineDao.insert(Fixture.line2);
+        Line inserted3 = lineDao.insert(Fixture.line3);
+
+        // when
+        lineDao.deleteById(inserted2.getId());
+
+        // then
+        assertThat(lineDao.findAll().size()).isEqualTo(2);
+    }
 }

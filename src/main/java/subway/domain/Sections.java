@@ -74,7 +74,7 @@ public class Sections {
         return IntStream.range(0, sections.size())
                 .filter(i -> sections.get(i).equals(section))
                 .findAny()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 구간입니다."));
     }
 
     public List<Section> getSections() {
