@@ -14,14 +14,17 @@ import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 class SectionsDomainTest {
+    private static final Distance 거리1 = new Distance(1);
+    private static final Distance 거리10 = new Distance(10);
+    private static final Distance 거리20 = new Distance(20);
+
 
     @Test
     void 비어있는_구간_목록에_새로운_구간을_추가할_수_있다() {
         // given
         final StationDomain 잠실역 = new StationDomain("잠실");
         final StationDomain 잠실새내역 = new StationDomain("잠실새내");
-        final Distance 거리10 = new Distance(10);
-        final SectionDomain 잠실역_잠실새내역_구간 = SectionDomain.startFrom(잠실역, 잠실새내역, 거리10);
+        final SectionDomain 잠실역_잠실새내역_구간 = new SectionDomain(거리10, true, 잠실역, 잠실새내역);
 
         final SectionsDomain 구간_목록 = SectionsDomain.from(List.of());
 
@@ -34,8 +37,7 @@ class SectionsDomainTest {
         // given
         final StationDomain 잠실역 = new StationDomain("잠실");
         final StationDomain 잠실새내역 = new StationDomain("잠실새내");
-        final Distance 거리10 = new Distance(10);
-        final SectionDomain 잠실역_잠실새내역_구간 = SectionDomain.startFrom(잠실역, 잠실새내역, 거리10);
+        final SectionDomain 잠실역_잠실새내역_구간 = new SectionDomain(거리10, true, 잠실역, 잠실새내역);
 
         final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(잠실역_잠실새내역_구간));
 
@@ -51,15 +53,13 @@ class SectionsDomainTest {
         @Test
         void 존재하지않는_경우_예외가_발생한다() {
             // given
-            final Distance 거리10 = new Distance(10);
-
             final StationDomain 잠실역 = new StationDomain("잠실");
             final StationDomain 잠실새내역 = new StationDomain("잠실새내");
-            final SectionDomain 잠실역_잠실새내역_구간 = SectionDomain.startFrom(잠실역, 잠실새내역, 거리10);
+            final SectionDomain 잠실역_잠실새내역_구간 = new SectionDomain(거리10, true, 잠실역, 잠실새내역);
 
             final StationDomain 창동역 = new StationDomain("창동");
             final StationDomain 녹천역 = new StationDomain("녹천");
-            final SectionDomain 창동역_녹천역_구간 = SectionDomain.startFrom(창동역, 녹천역, 거리10);
+            final SectionDomain 창동역_녹천역_구간 = new SectionDomain(거리10, true, 창동역, 녹천역);
 
             final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(잠실역_잠실새내역_구간));
 
@@ -71,14 +71,12 @@ class SectionsDomainTest {
         @Test
         void 존재하는_경우_등록_성공한다() {
             // given
-            final Distance 거리10 = new Distance(10);
-
             final StationDomain 잠실역 = new StationDomain("잠실");
             final StationDomain 잠실새내역 = new StationDomain("잠실새내");
-            final SectionDomain 잠실역_잠실새내역_구간 = SectionDomain.startFrom(잠실역, 잠실새내역, 거리10);
+            final SectionDomain 잠실역_잠실새내역_구간 = new SectionDomain(거리10, true, 잠실역, 잠실새내역);
 
             final StationDomain 창동역 = new StationDomain("창동");
-            final SectionDomain 잠실새내역_창동역_구간 = SectionDomain.notStartFrom(잠실새내역, 창동역, 거리10);
+            final SectionDomain 잠실새내역_창동역_구간 = new SectionDomain(거리10, false, 잠실새내역, 창동역);
 
             final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(잠실역_잠실새내역_구간));
 
@@ -99,15 +97,12 @@ class SectionsDomainTest {
             @Test
             void 새로운_구간의_길이가_기존_구간의_길이보다_클_경우_예외가_발생한다() {
                 // given
-                final Distance 거리10 = new Distance(10);
-                final Distance 거리20 = new Distance(20);
-
                 final StationDomain 기존_상행역 = new StationDomain("기존_상행역");
                 final StationDomain 기존_하행역 = new StationDomain("기존_하행역");
-                final SectionDomain 기존_구간 = SectionDomain.startFrom(기존_상행역, 기존_하행역, 거리10);
+                final SectionDomain 기존_구간 = new SectionDomain(거리10, true, 기존_상행역, 기존_하행역);
 
                 final StationDomain 새로운_하행역 = new StationDomain("새로운_하행역");
-                final SectionDomain 새로운_구간 = SectionDomain.notStartFrom(기존_상행역, 새로운_하행역, 거리20);
+                final SectionDomain 새로운_구간 = new SectionDomain(거리20, false, 기존_상행역, 새로운_하행역);
 
                 final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(기존_구간));
 
@@ -119,14 +114,12 @@ class SectionsDomainTest {
             @Test
             void 새로운_구간의_길이가_기존_구간의_길이가_같을_경우_예외가_발생한다() {
                 // given
-                final Distance 거리10 = new Distance(10);
-
                 final StationDomain 기존_상행역 = new StationDomain("기존_상행역");
                 final StationDomain 기존_하행역 = new StationDomain("기존_하행역");
-                final SectionDomain 기존_구간 = SectionDomain.startFrom(기존_상행역, 기존_하행역, 거리10);
+                final SectionDomain 기존_구간 = new SectionDomain(거리10, true, 기존_상행역, 기존_하행역);
 
                 final StationDomain 새로운_하행역 = new StationDomain("새로운_하행역");
-                final SectionDomain 새로운_구간 = SectionDomain.notStartFrom(기존_상행역, 새로운_하행역, 거리10);
+                final SectionDomain 새로운_구간 = new SectionDomain(거리10, false, 기존_상행역, 새로운_하행역);
 
                 final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(기존_구간));
 
@@ -143,15 +136,12 @@ class SectionsDomainTest {
             @Test
             void 새로운_구간의_길이가_0보다_클_경우_등록_성공한다() {
                 // given
-                final Distance 거리10 = new Distance(10);
-                final Distance 거리1 = new Distance(1);
-
                 final StationDomain 기존_상행역 = new StationDomain("기존_상행역");
                 final StationDomain 기존_하행역 = new StationDomain("기존_하행역");
-                final SectionDomain 기존_구간 = SectionDomain.startFrom(기존_상행역, 기존_하행역, 거리10);
+                final SectionDomain 기존_구간 = new SectionDomain(거리10, true, 기존_상행역, 기존_하행역);
 
                 final StationDomain 새로운_상행역 = new StationDomain("새로운_상행역");
-                final SectionDomain 새로운_구간 = SectionDomain.notStartFrom(새로운_상행역, 기존_하행역, 거리1);
+                final SectionDomain 새로운_구간 = new SectionDomain(거리1, false, 새로운_상행역, 기존_하행역);
 
                 final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(기존_구간));
 
@@ -172,15 +162,12 @@ class SectionsDomainTest {
             @Test
             void 새로운_구간의_길이가_0보다_클_경우_등록_성공한다() {
                 // given
-                final Distance 거리10 = new Distance(10);
-                final Distance 거리1 = new Distance(1);
-
                 final StationDomain 기존_상행역 = new StationDomain("기존_상행역");
                 final StationDomain 기존_하행역 = new StationDomain("기존_하행역");
-                final SectionDomain 기존_구간 = SectionDomain.startFrom(기존_상행역, 기존_하행역, 거리10);
+                final SectionDomain 기존_구간 = new SectionDomain(거리10, true, 기존_상행역, 기존_하행역);
 
                 final StationDomain 새로운_하행역 = new StationDomain("새로운_하행역");
-                final SectionDomain 새로운_구간 = SectionDomain.notStartFrom(기존_상행역, 새로운_하행역, 거리1);
+                final SectionDomain 새로운_구간 = new SectionDomain(거리1, false, 기존_상행역, 새로운_하행역);
 
                 final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(기존_구간));
 
@@ -196,15 +183,12 @@ class SectionsDomainTest {
             @Test
             void 새로운_구간의_길이가_기존_구간의_길이보다_클_경우_예외가_발생한다() {
                 // given
-                final Distance 거리10 = new Distance(10);
-                final Distance 거리20 = new Distance(20);
-
                 final StationDomain 기존_상행역 = new StationDomain("기존_상행역");
                 final StationDomain 기존_하행역 = new StationDomain("기존_하행역");
-                final SectionDomain 기존_구간 = SectionDomain.startFrom(기존_상행역, 기존_하행역, 거리10);
+                final SectionDomain 기존_구간 = new SectionDomain(거리10, true, 기존_상행역, 기존_하행역);
 
                 final StationDomain 새로운_상행역 = new StationDomain("새로운_상행역");
-                final SectionDomain 새로운_구간 = SectionDomain.notStartFrom(새로운_상행역, 기존_하행역, 거리20);
+                final SectionDomain 새로운_구간 = new SectionDomain(거리20, false, 새로운_상행역, 기존_하행역);
 
                 final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(기존_구간));
 
@@ -220,10 +204,10 @@ class SectionsDomainTest {
 
                 final StationDomain 기존_상행역 = new StationDomain("기존_상행역");
                 final StationDomain 기존_하행역 = new StationDomain("기존_하행역");
-                final SectionDomain 기존_구간 = SectionDomain.startFrom(기존_상행역, 기존_하행역, 거리10);
+                final SectionDomain 기존_구간 = new SectionDomain(거리10, true, 기존_상행역, 기존_하행역);
 
                 final StationDomain 새로운_상행역 = new StationDomain("새로운_상행역");
-                final SectionDomain 새로운_구간 = SectionDomain.notStartFrom(새로운_상행역, 기존_하행역, 거리10);
+                final SectionDomain 새로운_구간 = new SectionDomain(거리10, false, 새로운_상행역, 기존_하행역);
 
                 final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(기존_구간));
 
@@ -243,17 +227,17 @@ class SectionsDomainTest {
         final StationDomain 녹천역 = new StationDomain("녹천");
 
         final Distance 거리10 = new Distance(10);
-        final SectionDomain 잠실역_잠실새내역_구간 = SectionDomain.startFrom(잠실역, 잠실새내역, 거리10);
-        final SectionDomain 잠실새내역_창동역_구간 = SectionDomain.notStartFrom(잠실새내역, 창동역, 거리10);
-        final SectionDomain 창동역_녹천역_구간 = SectionDomain.notStartFrom(창동역, 녹천역, 거리10);
+        final SectionDomain 잠실역_잠실새내역_구간 = new SectionDomain(거리10, true, 잠실역, 잠실새내역);
+        final SectionDomain 잠실새내역_창동역_구간 = new SectionDomain(거리10, false, 잠실새내역, 창동역);
+        final SectionDomain 창동역_녹천역_구간 = new SectionDomain(거리10, false, 창동역, 녹천역);
 
         final SectionsDomain 구간_목록 = SectionsDomain.from(List.of(잠실역_잠실새내역_구간, 잠실새내역_창동역_구간, 창동역_녹천역_구간));
 
         // when
-        final List<StationDomain> stations = 구간_목록.collectAllStations();
+        final List<StationDomain> 역_목록 = 구간_목록.collectAllStations();
 
         // then
-        assertThat(stations)
+        assertThat(역_목록)
                 .contains(잠실역, 잠실새내역, 창동역, 녹천역);
     }
 }

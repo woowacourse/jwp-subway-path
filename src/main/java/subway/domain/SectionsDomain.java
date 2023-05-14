@@ -17,7 +17,7 @@ public class SectionsDomain {
 
     public void addSection(final SectionDomain newSection) {
         validate(newSection);
-        this.sections.add(newSection);
+        addSectionBy(newSection);
     }
 
     private void validate(final SectionDomain newSection) {
@@ -26,9 +26,6 @@ public class SectionsDomain {
         }
         if (isAlreadyExist(newSection)) {
             throw new IllegalArgumentException("노선에 이미 존재하는 구간을 등록할 수 없습니다.");
-        }
-        if (isDistanceRangeNotOk(newSection)) {
-            throw new IllegalArgumentException("기존 구간 사이에 들어갈 새로운 구간의 길이가 더 크거나 같을 수 없습니다.");
         }
     }
 
@@ -44,21 +41,29 @@ public class SectionsDomain {
         return sections.contains(newSection);
     }
 
-    private boolean isDistanceRangeNotOk(final SectionDomain newSection) {
-        if (isDistanceRangeOverSectionWithOldUpStation(newSection)) {
-            return true;
+    private void addSectionBy(final SectionDomain newSection) {
+        if (isInnerSectionBaseIsUpStation(newSection)) {
+            return;
         }
-        return isDistanceRangeOverSectionWithOldDownStation(newSection);
+        if (isInnerSectionBaseIsDownStation(newSection)) {
+            return;
+        }
+        if (isOuterSectionBaseIsUpStation(newSection)) {
+            return;
+        }
+        if (isOuterSectionBaseIsDownStation(newSection)) {
+            return;
+        }
+        sections.add(newSection);
     }
 
-    private boolean isDistanceRangeOverSectionWithOldUpStation(final SectionDomain newSection) {
-        final Optional<SectionDomain> maybeSectionWithOldUpStation
+    private boolean isInnerSectionBaseIsUpStation(final SectionDomain newSection) {
+        final Optional<SectionDomain> maybeInnerSectionBaseIsUp
                 = findSectionWithOldUpStation(newSection.getUpStation());
 
-        if (maybeSectionWithOldUpStation.isPresent()) {
-            final SectionDomain sectionWithOldUpStation = maybeSectionWithOldUpStation.get();
-
-            return sectionWithOldUpStation.isDistanceLessThan(newSection);
+        if (maybeInnerSectionBaseIsUp.isPresent()) {
+            addNewSectionAfterRemoveOldSection(newSection, maybeInnerSectionBaseIsUp.get());
+            return true;
         }
         return false;
     }
@@ -69,14 +74,19 @@ public class SectionsDomain {
                 .findFirst();
     }
 
-    private boolean isDistanceRangeOverSectionWithOldDownStation(final SectionDomain newSection) {
-        final Optional<SectionDomain> maybeSectionWithOldDownStation
+    private void addNewSectionAfterRemoveOldSection(final SectionDomain newSection, final SectionDomain oldSection) {
+        final int oldSectionIndex = sections.indexOf(oldSection);
+        sections.remove(oldSection);
+        sections.addAll(oldSectionIndex, oldSection.separateBy(newSection));
+    }
+
+    private boolean isInnerSectionBaseIsDownStation(final SectionDomain newSection) {
+        final Optional<SectionDomain> maybeInnerSectionBaseIsDown
                 = findSectionWithOldDownStation(newSection.getDownStation());
 
-        if (maybeSectionWithOldDownStation.isPresent()) {
-            final SectionDomain findSection = maybeSectionWithOldDownStation.get();
-
-            return findSection.isDistanceLessThan(newSection);
+        if (maybeInnerSectionBaseIsDown.isPresent()) {
+            addNewSectionAfterRemoveOldSection(newSection, maybeInnerSectionBaseIsDown.get());
+            return true;
         }
         return false;
     }
@@ -85,6 +95,28 @@ public class SectionsDomain {
         return sections.stream()
                 .dropWhile(section -> !section.isSameDownStationBy(station))
                 .findFirst();
+    }
+
+    private boolean isOuterSectionBaseIsUpStation(final SectionDomain newSection) {
+        final Optional<SectionDomain> maybeOuterSectionBaseIsUp
+                = findSectionWithOldUpStation(newSection.getDownStation());
+
+        if (maybeOuterSectionBaseIsUp.isPresent()) {
+            addNewSectionAfterRemoveOldSection(newSection, maybeOuterSectionBaseIsUp.get());
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isOuterSectionBaseIsDownStation(final SectionDomain newSection) {
+        final Optional<SectionDomain> maybeOuterSectionBaseIsDown
+                = findSectionWithOldDownStation(newSection.getUpStation());
+
+        if (maybeOuterSectionBaseIsDown.isPresent()) {
+            addNewSectionAfterRemoveOldSection(newSection, maybeOuterSectionBaseIsDown.get());
+            return true;
+        }
+        return false;
     }
 
     public List<StationDomain> collectAllStations() {
