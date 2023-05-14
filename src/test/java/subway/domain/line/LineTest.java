@@ -26,6 +26,36 @@ class LineTest {
             .doesNotThrowAnyException();
     }
 
+    @Test
+    void 색을_변경할_수_있다() {
+        final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
+        final Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
+        final String updatedColor = "bg-green-600";
+
+        line.updateColor(updatedColor);
+
+        assertThat(line.getColor().getValue()).isEqualTo(updatedColor);
+    }
+
+    @Test
+    void 이름을_변경할_수_있다() {
+        final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
+        final Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
+        final String updatedName = "누누선";
+
+        line.updateName(updatedName);
+
+        assertThat(line.getName().getValue()).isEqualTo(updatedName);
+    }
+
+    @Test
+    void id가_같으면_같은_객체이다() {
+        final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
+        final Line line2 = new Line(1L, "코다선", "bg-blue-600", interStations);
+
+        assertThat(line2).isEqualTo(new Line(1L, "코다선", "bg-blue-600", interStations));
+    }
+
     @Nested
     @DisplayName("구간을 추가하면")
     class Context_addInterStation {

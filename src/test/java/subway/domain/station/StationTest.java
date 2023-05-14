@@ -33,4 +33,15 @@ class StationTest {
     void id가_다르면_다른_객체이다() {
         assertThat(코다_역_id_1).isNotEqualTo(누누_역_id_2);
     }
+
+    @Test
+    void 이름을_변경할_수_있다() {
+        final String input = "강남역";
+        final Station station = new Station(input);
+        final String updatedName = "역삼역";
+
+        station.updateName(updatedName);
+
+        assertThat(station.getName().getValue()).isEqualTo(updatedName);
+    }
 }

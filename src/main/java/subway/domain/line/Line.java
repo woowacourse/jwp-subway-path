@@ -1,5 +1,6 @@
 package subway.domain.line;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import subway.domain.interstation.InterStation;
@@ -7,12 +8,13 @@ import subway.domain.interstation.InterStations;
 
 @Getter
 @ToString
+@EqualsAndHashCode(of = "id")
 public class Line {
 
     private final Long id;
-    private final LineName name;
-    private final LineColor color;
     private final InterStations interStations;
+    private LineName name;
+    private LineColor color;
 
     public Line(final Long id, final LineColor color, final LineName name, final InterStations interStations) {
         this.id = id;
@@ -47,5 +49,13 @@ public class Line {
 
     public boolean isEmpty() {
         return interStations.isEmpty();
+    }
+
+    public void updateName(final String name) {
+        this.name = new LineName(name);
+    }
+
+    public void updateColor(final String color) {
+        this.color = new LineColor(color);
     }
 }

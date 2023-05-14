@@ -13,7 +13,7 @@ public class Station {
     private static final int MAX_STATION_NAME_LENGTH = 20;
 
     private final Long id;
-    private final StationName name;
+    private StationName name;
 
     public Station(@Nullable final Long id, final StationName name) {
         this.id = id;
@@ -26,5 +26,9 @@ public class Station {
 
     public Station(final String name) {
         this(null, name);
+    }
+
+    public void updateName(final String name) {
+        this.name = new StationName(name);
     }
 }
