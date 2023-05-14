@@ -9,7 +9,7 @@ public class Edge {
     private Station downStation;
     private int distance;
 
-    public Edge() {
+    private Edge() {
     }
 
     public Edge(Long id, Station upStation, Station downStation, int distance) {

@@ -1,7 +1,6 @@
 package subway.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -40,16 +39,15 @@ public class LineDao {
     }
 
     public Optional<Line> findById(final Long lineId) {
-        final String sql = "SELECT * FROM line WHERE id = ?";
-        BeanPropertyRowMapper<Line> mapper = BeanPropertyRowMapper.newInstance(Line.class);
+        final String sql = "SELECT l.id, l.name FROM line l WHERE l.id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, mapper, lineId));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineRowMapper, lineId));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public Optional<Line> findLineByName(final Line line) {
+    public Optional<Line> findByName(final Line line) {
         final String sql = "SELECT l.id, l.name FROM line l WHERE l.name = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineRowMapper, line.getName()));

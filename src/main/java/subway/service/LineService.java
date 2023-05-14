@@ -8,7 +8,6 @@ import subway.dao.StationDao;
 import subway.domain.edge.Edge;
 import subway.domain.edge.Edges;
 import subway.domain.line.Line;
-import subway.domain.line.Lines;
 import subway.domain.station.Station;
 import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.LineCreateRequest;
@@ -23,13 +22,11 @@ import java.util.Map;
 @Transactional(readOnly = true)
 public class LineService {
 
-    private final Lines lines;
     private final StationDao stationDao;
-    private final LineDao lineDao;
     private final EdgeDao edgeDao;
+    private final LineDao lineDao;
 
     public LineService(StationDao stationDao, LineDao lineDao, EdgeDao edgeDao) {
-        this.lines = new Lines();
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.edgeDao = edgeDao;
@@ -41,7 +38,7 @@ public class LineService {
         final Station downStation = stationDao.insert(new Station(request.getDownStation()));
 
         final Line line = new Line(request.getLineName());
-        if (lineDao.findLineByName(line).isPresent()) {
+        if (lineDao.findByName(line).isPresent()) {
             throw new IllegalArgumentException();
         }
         final Line createdLine = lineDao.insert(line);

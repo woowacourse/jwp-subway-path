@@ -1,7 +1,6 @@
 package subway.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Repository;
 import subway.domain.station.Station;
 
 import javax.sql.DataSource;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -59,11 +57,5 @@ public class StationDao {
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-    }
-
-    public List<Station> findAll() {
-        final String sql = "SELECT * FROM station";
-        BeanPropertyRowMapper<Station> mapper = BeanPropertyRowMapper.newInstance(Station.class);
-        return jdbcTemplate.query(sql, mapper);
     }
 }

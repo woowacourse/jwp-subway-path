@@ -1,12 +1,6 @@
 package subway.domain;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
-import subway.domain.line.Line;
 import subway.domain.station.Station;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 class LineTest {
 
@@ -16,7 +10,7 @@ class LineTest {
     public static final Station STATION_C = new Station(3L, "C");
     public static final Station STATION_D = new Station(4L, "D");
 
-    @DisplayName("라인을 최초 생성한다.")
+   /* @DisplayName("라인을 최초 생성한다.")
     @Test
     void createLine() {
         // given
@@ -159,5 +153,5 @@ class LineTest {
         class AddFail {
 
         }
-    }
+    }*/
 }

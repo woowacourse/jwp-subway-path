@@ -39,6 +39,25 @@ public class EdgeDao {
         return new Edge(id, edge.getUpStation(), edge.getDownStation(), edge.getDistance());
     }
 
+    public void insertAllByLineId(final Long lineId, final List<Edge> edges) {
+        final String sql = "INSERT INTO edge(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                final Edge edge = edges.get(i);
+                ps.setLong(1, lineId);
+                ps.setLong(2, edge.getUpStation().getId());
+                ps.setLong(3, edge.getDownStation().getId());
+                ps.setInt(4, edge.getDistance());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return edges.size();
+            }
+        });
+    }
+
     public List<Edge> findAllByLineId(final Long lineId) {
         final String sql =
                 "SELECT e.id,"
@@ -63,27 +82,9 @@ public class EdgeDao {
 
         return jdbcTemplate.query(sql, mapper, lineId);
     }
+
     public void deleteAllByLineId(final Long lineId) {
         String sql = "DELETE FROM edge WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
-    }
-
-    public void insertAllByLineId(final Long lineId, final List<Edge> edges) {
-        final String sql = "INSERT INTO edge(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                final Edge edge = edges.get(i);
-                ps.setLong(1, lineId);
-                ps.setLong(2, edge.getUpStation().getId());
-                ps.setLong(3, edge.getDownStation().getId());
-                ps.setInt(4, edge.getDistance());
-            }
-
-            @Override
-            public int getBatchSize() {
-                return edges.size();
-            }
-        });
     }
 }
