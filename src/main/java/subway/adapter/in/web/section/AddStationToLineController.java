@@ -25,5 +25,4 @@ public class AddStationToLineController {
         addStationToLineUseCase.addStation(request.toCommand(lineId));
         return ResponseEntity.ok().build();
     }
-
 }

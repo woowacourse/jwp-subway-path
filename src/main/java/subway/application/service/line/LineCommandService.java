@@ -1,6 +1,5 @@
 package subway.application.service.line;
 
-import subway.common.exception.NoSuchLineException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.port.in.line.CreateLineUseCase;
@@ -10,6 +9,7 @@ import subway.application.port.in.line.dto.command.CreateLineCommand;
 import subway.application.port.in.line.dto.command.UpdateLineInfoCommand;
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
+import subway.common.exception.NoSuchLineException;
 import subway.domain.LineInfo;
 
 @Service
@@ -24,7 +24,7 @@ public class LineCommandService implements CreateLineUseCase, UpdateLineInfoUseC
         this.persistLinePort = persistLinePort;
     }
 
-    // TODO: 이름 및 색상 중복 검사
+    // TODO: 이름 및 색상 중복 검사? 서비스 or 일급컬렉션
     @Override
     public long createLine(final CreateLineCommand command) {
         return persistLinePort.create(new LineInfo(command.getName(), command.getColor()));
