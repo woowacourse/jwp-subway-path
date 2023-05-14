@@ -4,13 +4,21 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.repository.dao.LineDao;
+import subway.repository.dao.LineSectionStationJoinDto;
 
 @Repository
 public class LineRepositoryImpl implements LineRepository {
 
+    private final LineDao lineDao;
+
+    public LineRepositoryImpl(final LineDao lineDao) {
+        this.lineDao = lineDao;
+    }
+
     @Override
-    public Line insert(final Line line) {
-        return null;
+    public Line save(final Line line) {
+        return lineDao.insert(line);
     }
 
     @Override
@@ -20,7 +28,7 @@ public class LineRepositoryImpl implements LineRepository {
 
     @Override
     public Line findById(final Long id) {
-        return null;
+        return lineDao.findById(id);
     }
 
     @Override
@@ -34,7 +42,12 @@ public class LineRepositoryImpl implements LineRepository {
     }
 
     @Override
-    public Optional<Line> findByName(final String lineName) {
-        return Optional.empty();
+    public Optional<Line> findByName(final String name) {
+        final List<LineSectionStationJoinDto> joinDto = lineDao.findByName(name);
+        final Line line = new LineConverter().convertToLine(joinDto);
+        if (line == null) {
+            return Optional.empty();
+        }
+        return Optional.of(line);
     }
 }

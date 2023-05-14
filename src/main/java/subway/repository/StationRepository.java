@@ -6,7 +6,7 @@ import subway.domain.Station;
 
 public interface StationRepository {
 
-    Station insert(Station station);
+    Station save(Station station);
 
     List<Station> findAll();
 

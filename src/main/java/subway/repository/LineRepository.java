@@ -6,7 +6,7 @@ import subway.domain.Line;
 
 public interface LineRepository {
 
-    Line insert(Line line);
+    Line save(Line line);
 
     List<Line> findAll();
 

@@ -4,13 +4,20 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
+import subway.repository.dao.StationDao;
 
 @Repository
 public class StationRepositoryImpl implements StationRepository {
 
+    private final StationDao stationDao;
+
+    public StationRepositoryImpl(final StationDao stationDao) {
+        this.stationDao = stationDao;
+    }
+
     @Override
-    public Station insert(final Station station) {
-        return null;
+    public Station save(final Station station) {
+        return stationDao.insert(station);
     }
 
     @Override
