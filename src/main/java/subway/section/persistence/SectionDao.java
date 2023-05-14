@@ -41,8 +41,8 @@ public class SectionDao {
 
     public List<SectionStationDto> findAllByLineId(final Long lineId) {
         final String query =
-            "SELECT sec.id AS section_id, s1.id AS up_station_id, s1.name AS up_station_name, s2.id AS "
-                + "down_station_id, s2.name AS "
+            "SELECT sec.id AS section_id, s1.id AS up_station_id, s1.stationName AS up_station_name, s2.id AS "
+                + "down_station_id, s2.stationName AS "
                 + "down_station_name, sec.distance AS distance "
                 + "FROM SECTION sec "
                 + "JOIN STATION s1 ON sec.up_station_id = s1.id "
@@ -52,7 +52,7 @@ public class SectionDao {
         return jdbcTemplate.query(query, SECTION_STATION_DTO_ROW_MAPPER, lineId);
     }
 
-    public void deleteAlByLineId(final Long lineId) {
+    public void deleteAllByLineId(final Long lineId) {
         final String sql = "DELETE FROM SECTION WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }

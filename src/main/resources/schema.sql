@@ -3,14 +3,14 @@ DROP TABLE IF EXISTS SECTION;
 create table if not exists STATION
 (
     id   bigint auto_increment not null,
-    station_name varchar(255)          not null,
+    stationName varchar(255)          not null,
     primary key (id)
 );
 
 create table if not exists LINE
 (
     id   bigint auto_increment not null,
-    line_name varchar(255)          not null unique,
+    lineName varchar(255)          not null unique,
     primary key (id)
 );
 

@@ -29,23 +29,19 @@ public final class Sections {
         return new Sections(sections);
     }
 
-    public void initializeSections(final String upStationName, final String downStationName, final int distance) {
+    public void initializeSections(final Station upStation, final Station downStation, final int distance) {
         if (!sections.isEmpty()) {
             throw new IllegalArgumentException("이미 역들이 존재하는 노선입니다.");
         }
-        final Station upStation = Station.get(upStationName);
-        final Station downStation = Station.get(downStationName);
         sections.add(Section.of(upStation, downStation, distance));
     }
 
-    public void addSection(final String upStationName, final String downStationName, final int distance) {
+    public void addSection(final Station upStation, final Station downStation, final int distance) {
         if (sections.size() < INITIALIZE_SECTION_COUNT) {
             throw new IllegalArgumentException("노선에는 한 구간이라도 존재해야 역이 추가 가능합니다.");
         }
-        final Station upStation = Station.get(upStationName);
-        final Station downStation = Station.get(downStationName);
         validateSection(upStation, downStation);
-        addSection(upStation, downStation, distance);
+        addSectionByPosition(upStation, downStation, distance);
     }
 
     private void validateSection(final Station upStation, final Station downStation) {
@@ -59,7 +55,7 @@ public final class Sections {
         }
     }
 
-    private void addSection(final Station upStation, final Station downStation, final int weight) {
+    private void addSectionByPosition(final Station upStation, final Station downStation, final int weight) {
         final Section newSection = Section.of(upStation, downStation, weight);
 
         if (isLineExtend(upStation, downStation)) {
@@ -110,7 +106,7 @@ public final class Sections {
     }
 
     private void divideSection(final Section newSection, final Section target) {
-        if (target.isStartWith(newSection.getUp())) {
+        if (target.isStartWith(newSection.getUpStation())) {
             putNewSectionUpOfOther(newSection, target);
             return;
         }
@@ -120,7 +116,7 @@ public final class Sections {
     private void putNewSectionUpOfOther(final Section newSection, final Section target) {
         final int remainDistance = target.getDistance() - newSection.getDistance();
         final int targetIndex = sections.indexOf(target);
-        final Section rightSection = Section.of(newSection.getDown(), target.getDown(), remainDistance);
+        final Section rightSection = Section.of(newSection.getDownStation(), target.getDownStation(), remainDistance);
         sections.add(targetIndex, rightSection);
         sections.add(targetIndex, newSection);
         sections.remove(target);
@@ -129,7 +125,7 @@ public final class Sections {
     private void putNewSectionDownOfOther(final Section newSection, final Section target) {
         final int remainDistance = target.getDistance() - newSection.getDistance();
         final int targetIndex = sections.indexOf(target);
-        final Section leftSection = Section.of(target.getUp(), newSection.getUp(), remainDistance);
+        final Section leftSection = Section.of(target.getUpStation(), newSection.getUpStation(), remainDistance);
         sections.add(targetIndex, newSection);
         sections.add(targetIndex, leftSection);
         sections.remove(target);
@@ -141,11 +137,11 @@ public final class Sections {
     }
 
     public void removeStation(final String name) {
-        final Station station = Station.get(name);
-        final List<Section> containsSections = sections.stream()
-            .filter(section -> section.isContainStation(station))
-            .collect(Collectors.toList());
-        combineSection(containsSections, station);
+//        final Station station = Station.get(name);
+//        final List<Section> containsSections = sections.stream()
+//            .filter(section -> section.isContainStation(station))
+//            .collect(Collectors.toList());
+//        combineSection(containsSections, station);
     }
 
     private void combineSection(final List<Section> containsSections, final Station station) {
@@ -158,8 +154,8 @@ public final class Sections {
         final Section sectionStartWith = findSectionStartWith(containsSections, station);
 
         final Section combinedSection = Section.of(
-            sectionEndWith.getUp(),
-            sectionStartWith.getDown(),
+            sectionEndWith.getUpStation(),
+            sectionStartWith.getDownStation(),
             sectionStartWith.getDistance() + sectionEndWith.getDistance()
         );
 

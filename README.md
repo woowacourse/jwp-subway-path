@@ -42,7 +42,7 @@ graph TD
 - [x] 라인 생성
     - lineName
     - 이름이 존재하면 예외처리
-- [ ] 구간 생성
+- [x] 구간 생성
     - lineId
     - upStationId
     - downsStationId
@@ -68,7 +68,7 @@ graph TD
 
 ### 노선 조회 API 수정
 
-- [ ] 노선에 포함된 역 순서대로 조회
+- [x] 노선에 포함된 역 순서대로 조회
   - lineId
   - 해당 노선의 첫번째 역을 찾아서
     - upStation에 자신의 역밖에 없는 역이 처음 역 

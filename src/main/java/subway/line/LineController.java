@@ -12,8 +12,6 @@ import subway.line.dto.LineResponseDto;
 import subway.line.persistence.LineEntity;
 import subway.section.SectionService;
 import subway.station.dto.StationResponseDto;
-import subway.station.persistence.StationEntity;
-import subway.station.util.StationEntityConverter;
 
 @RestController
 public class LineController {
@@ -39,8 +37,7 @@ public class LineController {
 
 
     private List<StationResponseDto> getStationResponseDtosByLineId(final Long lineId) {
-        final List<StationEntity> stationEntities = sectionService.findSortedStationEntityByLineId(lineId);
-        return StationEntityConverter.convertToStationResponseDto(stationEntities);
+        return sectionService.findSortedStations(lineId);
     }
 
     @GetMapping("/line/{lineId}")

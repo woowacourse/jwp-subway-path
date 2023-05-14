@@ -3,14 +3,14 @@ package subway.section;
 public class SectionCreateDto {
 
     private final Long lineId;
-    private final String up;
-    private final String down;
+    private final Long upStationId;
+    private final Long downStationId;
     private final int distance;
 
-    public SectionCreateDto(final Long lineId, final String up, final String down, final int distance) {
+    public SectionCreateDto(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
         this.lineId = lineId;
-        this.up = up;
-        this.down = down;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
         this.distance = distance;
     }
 
@@ -18,12 +18,12 @@ public class SectionCreateDto {
         return lineId;
     }
 
-    public String getUp() {
-        return up;
+    public Long getUpStationId() {
+        return upStationId;
     }
 
-    public String getDown() {
-        return down;
+    public Long getDownStationId() {
+        return downStationId;
     }
 
     public int getDistance() {
