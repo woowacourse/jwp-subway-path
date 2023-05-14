@@ -174,6 +174,7 @@ class LineTest {
 
     @Test
     void 중간에_존재하는_역_제거시_양옆_역이_새로운_구간이_된다() {
+        // given
         final Section section1 = new Section("잠실역", "석촌역", 10);
         final Section section2 = new Section("석촌역", "송파역", 10);
         final Line line = new Line("8호선", "분홍색", List.of(section1, section2));
@@ -183,5 +184,30 @@ class LineTest {
 
         // then
         assertThat(line.getSections()).contains(new Section("잠실역", "송파역", 20));
+    }
+
+    @Test
+    void 존재하지_않는_역을_삭제하면_예외가_발생한다() {
+        // given
+        final Section section = new Section("잠실역", "석촌역", 10);
+        final Line line = new Line("8호선", "분홍색", List.of(section));
+
+        // expect
+        assertThatThrownBy(() -> line.delete(new Station("강남역")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("존재하지 않는 역을 삭제할 수 없습니다.");
+    }
+
+    @Test
+    void 두_역이_등록된_경우_하나의_역을_제거시_모든_역을_제거한다() {
+        // given
+        final Section section = new Section("잠실역", "석촌역", 10);
+        final Line line = new Line("8호선", "분홍색", List.of(section));
+
+        // when
+        line.delete(new Station("잠실역"));
+
+        // then
+        assertThat(line.getSections()).isEmpty();
     }
 }

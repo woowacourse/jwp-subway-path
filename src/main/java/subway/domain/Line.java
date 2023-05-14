@@ -7,6 +7,7 @@ import java.util.Optional;
 public class Line {
     private static final int MIN_NAME_LENGTH = 3;
     private static final int MAX_NAME_LENGTH = 10;
+    private static final int CLEAR_SECTIONS_SIZE = 1;
 
     private final String name;
     private final String color;
@@ -117,6 +118,13 @@ public class Line {
     }
 
     public void delete(final Station station) {
+        if (doesNotHave(station)) {
+            throw new IllegalArgumentException("존재하지 않는 역을 삭제할 수 없습니다.");
+        }
+        if (sections.size() == CLEAR_SECTIONS_SIZE) {
+            sections.clear();
+            return;
+        }
         final Optional<Section> foundSourceSection = findSourceSection(station);
         final Optional<Section> foundTargetSection = findTargetSection(station);
         if (foundSourceSection.isPresent() && foundTargetSection.isPresent()) {
@@ -140,7 +148,6 @@ public class Line {
         }
         if (upSection.isPresent()) {
             sections.remove(upSection.get());
-            return;
         }
     }
 
