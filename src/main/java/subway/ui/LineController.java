@@ -1,7 +1,6 @@
 package subway.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.application.dto.LineCreationDto;
@@ -12,13 +11,12 @@ import subway.ui.dto.LineCreationRequest;
 import subway.ui.dto.LineDto;
 import subway.ui.dto.StationAdditionRequest;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
-@Validated
 public class LineController {
 
     private final LineService lineService;
@@ -28,7 +26,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody LineCreationRequest lineCreationRequest) {
+    public ResponseEntity<Void> createLine(@Valid @RequestBody LineCreationRequest lineCreationRequest) {
         final LineCreationDto lineCreationDto = DtoMapper.toLineCreationDto(lineCreationRequest);
         final long lineId = lineService.createLine(lineCreationDto);
 
@@ -41,20 +39,20 @@ public class LineController {
     }
 
     @GetMapping("/{lineId}")
-    public ResponseEntity<LineDto> findLineById(@PathVariable @NotNull Long lineId) {
+    public ResponseEntity<LineDto> findLineById(@PathVariable Long lineId) {
         return ResponseEntity.ok(lineService.findLineById(lineId));
     }
 
     @PostMapping("/{lineId}/stations")
-    public ResponseEntity<Void> addStationToLine(@PathVariable @NotNull Long lineId, @RequestBody StationAdditionRequest stationAdditionRequest) {
+    public ResponseEntity<Void> addStationToLine(@PathVariable Long lineId, @Valid @RequestBody StationAdditionRequest stationAdditionRequest) {
         final StationAdditionToLineDto stationAdditionToLineDto = DtoMapper.toStationAdditionToLineDto(lineId, stationAdditionRequest);
         final long stationId = lineService.addStationToLine(stationAdditionToLineDto);
 
-        return ResponseEntity.created(URI.create("/lines" + lineId + "/stations/" + stationId)).build();
+        return ResponseEntity.created(URI.create("/lines/" + lineId + "/stations/" + stationId)).build();
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> deleteStationFromLine(@PathVariable @NotNull Long lineId, @PathVariable @NotNull Long stationId) {
+    public ResponseEntity<Void> deleteStationFromLine(@PathVariable Long lineId, @PathVariable Long stationId) {
         final StationDeletionFromLineDto stationDeletionFromLineDto = DtoMapper.toStationRemovalFromLineDto(lineId, stationId);
         lineService.deleteStationFromLine(stationDeletionFromLineDto);
 

@@ -4,13 +4,13 @@ import javax.validation.constraints.NotNull;
 
 public class LineCreationRequest {
 
-    @NotNull
+    @NotNull(message = "생성하려는 노선 이름을 입력해주세요")
     private String lineName;
-    @NotNull
+    @NotNull(message = "노선의 상행 종점을 입력해주세요")
     private String upstreamName;
-    @NotNull
+    @NotNull(message = "노선의 하행 종점을 입력해주세요")
     private String downstreamName;
-    @NotNull
+    @NotNull(message = "노선의 상행 종점과 하행 종점의 거리를 입력해주세요")
     private int distance;
 
     public LineCreationRequest(String lineName, String upstreamName, String downstreamName, int distance) {
