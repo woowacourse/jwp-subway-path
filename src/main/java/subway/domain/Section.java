@@ -1,5 +1,7 @@
 package subway.domain;
 
+import static subway.domain.Direction.LEFT;
+
 import java.util.Objects;
 
 public class Section {
@@ -31,11 +33,10 @@ public class Section {
         return this.distance.moreThanOrEqual(distance);
     }
 
-    public boolean isStart(final Station station) {
-        return start.equals(station);
-    }
-
-    public boolean isEnd(final Station station) {
+    public boolean isStationExistsAtDirection(final Station station, final Direction direction) {
+        if (direction == LEFT) {
+            return start.equals(station);
+        }
         return end.equals(station);
     }
 

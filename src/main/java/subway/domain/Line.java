@@ -36,7 +36,7 @@ public class Line {
         validate(base, additional, distance, direction);
 
         if (direction == RIGHT) {
-            final Optional<Section> sectionAtStart = findSectionAtStart(base);
+            final Optional<Section> sectionAtStart = findSectionByStationExistsAtDirection(base, LEFT);
             if (sectionAtStart.isPresent()) {
                 final Section originSection = sectionAtStart.get();
                 changeDistance(additional, originSection.getEnd(), originSection, distance);
@@ -45,7 +45,7 @@ public class Line {
         }
 
         if (direction == LEFT) {
-            final Optional<Section> sectionAtEnd = findSectionAtEnd(base);
+            final Optional<Section> sectionAtEnd = findSectionByStationExistsAtDirection(base, RIGHT);
             if (sectionAtEnd.isPresent()) {
                 final Section originSection = sectionAtEnd.get();
                 changeDistance(originSection.getStart(), additional, originSection, distance);
@@ -66,8 +66,7 @@ public class Line {
         if (contains(additional)) {
             throw new InvalidSectionException("등록할 역이 이미 존재합니다.");
         }
-        if (isNotValidDistanceToAddRight(base, distance, direction)
-                || isNotValidDistanceToAddLeft(base, distance, direction)) {
+        if (isInvalidDistance(base, distance, direction)) {
             throw new InvalidSectionException("등록할 구간의 거리가 기존 구간의 거리보다 같거나 클 수 없습니다.");
         }
     }
@@ -77,41 +76,15 @@ public class Line {
                 .anyMatch(section -> section.contains(station));
     }
 
-    private boolean isNotValidDistanceToAddRight(
-            final Station base,
-            final Distance distance,
-            final Direction direction
-    ) {
-        if (direction == LEFT) {
-            return false;
-        }
-        final Optional<Section> findSection = findSectionAtStart(base);
-        return findSection.map(section -> section.moreThanOrEqual(distance))
+    private boolean isInvalidDistance(final Station base, final Distance distance, final Direction direction) {
+        return findSectionByStationExistsAtDirection(base, direction.flip())
+                .map(section -> section.moreThanOrEqual(distance))
                 .orElse(false);
     }
 
-    private Optional<Section> findSectionAtStart(final Station base) {
+    private Optional<Section> findSectionByStationExistsAtDirection(final Station base, final Direction direction) {
         return sections.stream()
-                .filter(section -> section.isStart(base))
-                .findFirst();
-    }
-
-    private boolean isNotValidDistanceToAddLeft(
-            final Station base,
-            final Distance distance,
-            final Direction direction
-    ) {
-        if (direction == RIGHT) {
-            return false;
-        }
-        final Optional<Section> findSection = findSectionAtEnd(base);
-        return findSection.map(section -> section.moreThanOrEqual(distance))
-                .orElse(false);
-    }
-
-    private Optional<Section> findSectionAtEnd(final Station base) {
-        return sections.stream()
-                .filter(section -> section.isEnd(base))
+                .filter(section -> section.isStationExistsAtDirection(base, direction))
                 .findFirst();
     }
 
@@ -134,23 +107,17 @@ public class Line {
             throw new StationNotFoundException();
         }
 
-        final Optional<Section> sectionAtStart = findSectionAtStart(station);
-        final Optional<Section> sectionAtEnd = findSectionAtEnd(station);
+        final Optional<Section> sectionAtLeft = findSectionByStationExistsAtDirection(station, RIGHT);
+        final Optional<Section> sectionAtRight = findSectionByStationExistsAtDirection(station, LEFT);
 
-        if (sectionAtStart.isPresent() && sectionAtEnd.isPresent()) {
-            final Section left = sectionAtEnd.get();
-            final Section right = sectionAtStart.get();
+        if (sectionAtLeft.isPresent() && sectionAtRight.isPresent()) {
+            final Section left = sectionAtLeft.get();
+            final Section right = sectionAtRight.get();
             sections.add(new Section(left.getStart(), right.getEnd(), left.add(right.getDistance())));
-            sections.remove(left);
-            sections.remove(right);
-            return;
         }
 
-        if (sectionAtStart.isPresent()) {
-            sections.remove(sectionAtStart.get());
-            return;
-        }
-        sections.remove(sectionAtEnd.get());
+        sectionAtLeft.ifPresent(sections::remove);
+        sectionAtRight.ifPresent(sections::remove);
     }
 
     public List<Station> findAllStation() {

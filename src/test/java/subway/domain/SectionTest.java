@@ -42,24 +42,14 @@ class SectionTest {
         assertThat(section.moreThanOrEqual(new Distance(value))).isEqualTo(result);
     }
 
-    @CsvSource({"A, true", "B, false"})
-    @ParameterizedTest(name = "Section(A, B)일 때 {0}이 시작 위치에 존재하는지 확인한다. 결과: {1}")
-    void 입력받은_역이_구간의_시작_위치에_존재하는지_확인한다(final String name, final boolean result) {
+    @CsvSource({"A, LEFT, true", "B, LEFT, false", "B, RIGHT, true", "B, LEFT, false"})
+    @ParameterizedTest(name = "Section(A, B)일 때 {0}이 {1} 위치에 존재하는지 확인한다. 결과: {2}")
+    void 입력받은_역이_입력받은_위치에_존재하는지_확인한다(final String name, final Direction direction, final boolean result) {
         // given
         final Section section = new Section("A", "B", 5);
 
         // expect
-        assertThat(section.isStart(new Station(name))).isEqualTo(result);
-    }
-
-    @CsvSource({"B, true", "A, false"})
-    @ParameterizedTest(name = "Section(A, B)일 때 {0}이 도착 위치에 존재하는지 확인한다. 결과: {1}")
-    void 입력받은_역이_구간의_도착_위치에_존재하는지_확인한다(final String name, final boolean result) {
-        // given
-        final Section section = new Section("A", "B", 5);
-
-        // expect
-        assertThat(section.isEnd(new Station(name))).isEqualTo(result);
+        assertThat(section.isStationExistsAtDirection(new Station(name), direction)).isEqualTo(result);
     }
 
     @Test
