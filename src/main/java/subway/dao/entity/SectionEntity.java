@@ -3,11 +3,11 @@ package subway.dao.entity;
 import subway.domain.Station;
 
 public class SectionEntity {
-    private Long id;
-    private Long lineId;
-    private Station upBoundStation;
-    private Station downBoundStation;
-    private int distance;
+    private final Long id;
+    private final Long lineId;
+    private final Station upBoundStation;
+    private final Station downBoundStation;
+    private final int distance;
 
     public SectionEntity(Long id, Long lineId, Station upBoundStation, Station downBoundStation, int distance) {
         this.id = id;
