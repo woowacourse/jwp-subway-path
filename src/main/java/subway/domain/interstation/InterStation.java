@@ -26,6 +26,10 @@ public class InterStation {
         this.distance = distance;
     }
 
+    public InterStation(final Long id, final InterStation other) {
+        this(id, other.upStationId, other.downStationId, other.distance);
+    }
+
     public InterStation(final Long upStationId, final Long downStationId, final Distance distance) {
         this(null, upStationId, downStationId, distance);
     }

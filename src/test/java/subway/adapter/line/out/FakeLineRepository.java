@@ -1,0 +1,60 @@
+package subway.adapter.line.out;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import subway.domain.interstation.InterStation;
+import subway.domain.interstation.InterStations;
+import subway.domain.line.Line;
+
+public class FakeLineRepository implements LineRepository {
+
+    private final Map<Long, Line> lines = new HashMap<>();
+    private long id = 0L;
+    private long interStationId = 0L;
+
+    @Override
+    public Line save(final Line line) {
+        final List<InterStation> interStations = line.getInterStations()
+            .getInterStations()
+            .stream()
+            .map(this::createInterStation)
+            .collect(Collectors.toList());
+
+        final Line savedLine = new Line(++id, line.getColor(), line.getName(), new InterStations(interStations));
+        lines.put(id, savedLine);
+        return savedLine;
+    }
+
+    private InterStation createInterStation(final InterStation interStation) {
+        return new InterStation(++interStationId, interStation);
+    }
+
+    @Override
+    public List<Line> findAll() {
+        return new ArrayList<>(lines.values());
+    }
+
+    @Override
+    public Line update(final Line line) {
+        final Long lineId = line.getId();
+        lines.put(lineId, new Line(lineId, line));
+        return line;
+    }
+
+    @Override
+    public Optional<Line> findByName(final String lineName) {
+        return lines.values()
+            .stream()
+            .filter(line -> line.getName().getValue().equals(lineName))
+            .findFirst();
+    }
+
+    @Override
+    public void delete(final Line line) {
+        lines.remove(line.getId());
+    }
+}

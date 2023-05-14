@@ -1,4 +1,4 @@
-package subway.repository;
+package subway.adapter.line.out;
 
 import java.util.List;
 import java.util.Optional;

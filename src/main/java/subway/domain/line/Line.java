@@ -23,6 +23,10 @@ public class Line {
         this.interStations = interStations;
     }
 
+    public Line(final Long id, final Line other) {
+        this(id, other.color, other.name, other.interStations);
+    }
+
     public Line(final Long id, final String name, final String color, final InterStations interStations) {
         this(id, new LineColor(color), new LineName(name), interStations);
     }
