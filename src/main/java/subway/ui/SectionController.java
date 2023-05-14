@@ -25,8 +25,10 @@ public class SectionController {
 
     @PostMapping("lines/{lineId}/stations")
     public ResponseEntity<Void> addSection(@PathVariable long lineId, @RequestBody SectionSaveRequest request) {
-        sectionService.addSection(lineId, request);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        long savedSectionId = sectionService.addSection(lineId, request);
+        String location1 = "/stations/"+request.getUpStationId();
+        String location2 = "/stations/"+request.getDownStationId();
+        return ResponseEntity.status(HttpStatus.CREATED).header("Location", location1, location2).build();
     }
 
     @DeleteMapping("lines/{lineId}/stations/{stationId}")
