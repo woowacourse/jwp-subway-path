@@ -32,12 +32,12 @@ public class SectionService {
 
     private Line findLineByLineId(final Long lineId) {
         return lineRepository.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 노선입니다."));
     }
 
     private Station findStationByStationId(final long stationId) {
         return stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 역입니다."));
     }
 
     public void deleteSections(final long lineId, final long stationId) {

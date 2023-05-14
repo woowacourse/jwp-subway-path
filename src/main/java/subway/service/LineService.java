@@ -38,7 +38,7 @@ public class LineService {
 
     public LineResponse findLineById(final long id) {
         Line line = lineRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 노선입니다."));
         return LineResponse.from(line);
     }
 
@@ -53,7 +53,7 @@ public class LineService {
 
     public void deleteLineById(final long id) {
         lineRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 노선입니다."));
         lineRepository.deleteById(id);
     }
 

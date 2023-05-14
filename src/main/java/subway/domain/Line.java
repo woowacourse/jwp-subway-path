@@ -42,7 +42,7 @@ public class Line {
             Section emptySection = sections.get(0);
             addSection(emptySection, upwardStation, null, null);
             Section originalSection = findSectionContainsStationAsUpward(upwardStation)
-                    .orElseThrow(() -> new IllegalStateException("노선에 방금 구간을 추가했는데 찾을 수 없는 이상한 상황입니다."));
+                    .orElseThrow(() -> new IllegalStateException("[ERROR] 노선에 방금 구간을 추가했는데 찾을 수 없는 이상한 상황입니다."));
             addSection(originalSection, downwardStation, distance, null);
             return;
         }
@@ -80,13 +80,13 @@ public class Line {
 
     private void validateTwoStationsNotExist(final Station upwardStation, final Station downwardStation) {
         if (!hasStation(upwardStation) && !hasStation(downwardStation)) {
-            throw new IllegalArgumentException("노선에 역을 1개씩 삽입해 주세요.");
+            throw new IllegalArgumentException("[ERROR] 노선에 역을 1개씩 삽입해 주세요.");
         }
     }
 
     private void validateTwoStationsAlreadyExist(final Station upwardStation, final Station downwardStation) {
         if (hasStation(upwardStation) && hasStation(downwardStation)) {
-            throw new IllegalArgumentException("노선에 두 개의 역 모두가 이미 존재합니다.");
+            throw new IllegalArgumentException("[ERROR] 노선에 두 개의 역 모두가 이미 존재합니다.");
         }
     }
 
@@ -110,12 +110,12 @@ public class Line {
 
     public void removeStation(final Station station) {
         if (!hasStation(station)) {
-            throw new IllegalArgumentException("노선에 해당 역이 존재하지 않습니다.");
+            throw new IllegalArgumentException("[ERROR] 노선에 해당 역이 존재하지 않습니다.");
         }
         Section downwardSection = findSectionContainsStationAsUpward(station)
-                .orElseThrow(() -> new IllegalStateException("노선에 해당 역은 존재하지만 구간이 존재하지 않는 이상한 상황입니다."));
+                .orElseThrow(() -> new IllegalStateException("[ERROR] 노선에 해당 역은 존재하지만 구간이 존재하지 않는 이상한 상황입니다."));
         Section upwardSection = findSectionContainsStationAsDownward(station)
-                .orElseThrow(() -> new IllegalStateException("노선에 해당 역은 존재하지만 구간이 존재하지 않는 이상한 상황입니다."));
+                .orElseThrow(() -> new IllegalStateException("[ERROR] 노선에 해당 역은 존재하지만 구간이 존재하지 않는 이상한 상황입니다."));
 
         Integer newDistance = null;
         if (!upwardSection.isEmptySection() && !downwardSection.isEmptySection()) {
@@ -174,21 +174,21 @@ public class Line {
         return sections.stream()
                 .filter(Section::isEndOfUpward)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("상행 종점을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalStateException("[ERROR] 상행 종점을 찾을 수 없습니다."));
     }
 
     private Section getDownwardEndSection() {
         return sections.stream()
                 .filter(Section::isEndOfDownward)
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("하행 종점을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalStateException("[ERROR] 하행 종점을 찾을 수 없습니다."));
     }
 
     private Section findNextSectionToDownward(final Section section) {
         return sections.stream()
                 .filter(next -> next.isUpwardStation(section.getDownwardStation()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("다음 구간을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalStateException("[ERROR] 다음 구간을 찾을 수 없습니다."));
     }
 
     public List<Station> getStations() {

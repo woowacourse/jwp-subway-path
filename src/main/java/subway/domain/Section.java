@@ -44,7 +44,7 @@ public class Section {
 
     public List<Section> splitByStation(final Station middleStation, Integer upwardDistance, Integer downwardDistance) {
         if (!isEmptySection() && !isSameDistance(upwardDistance + downwardDistance)) {
-            throw new IllegalArgumentException("구간 거리가 보존되지 않습니다.");
+            throw new IllegalArgumentException("[ERROR] 구간 거리가 보존되지 않습니다.");
         }
         Section upwardSection = Section.of(this.upwardStation, middleStation, upwardDistance);
         Section downwardSection = Section.of(middleStation, this.downwardStation, downwardDistance);

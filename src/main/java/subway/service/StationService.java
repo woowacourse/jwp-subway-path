@@ -31,7 +31,7 @@ public class StationService {
 
     public StationResponse findStationById(Long id) {
         return StationResponse.from(stationDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다.")));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 역입니다.")));
     }
 
     public List<StationResponse> findAllStations() {
@@ -51,7 +51,7 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.findById(id)
-                .orElseThrow(() -> new IllegalStateException("존재하지 않는 역을 삭제할 수 없습니다."));
+                .orElseThrow(() -> new IllegalStateException("[ERROR] 존재하지 않는 역을 삭제할 수 없습니다."));
         stationDao.deleteById(id);
     }
 }

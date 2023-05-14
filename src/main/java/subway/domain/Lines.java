@@ -41,7 +41,7 @@ public class Lines {
         return lines.stream()
                 .filter(line -> line.isSameId(id))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 노선을 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 노선을 찾을 수 없습니다."));
     }
 
     public void remove(final Line oldLine) {
