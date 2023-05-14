@@ -80,4 +80,8 @@ public class Section {
     public Distance getDistance() {
         return distance;
     }
+
+    public SectionChangeBuilder change() {
+        return new SectionChangeBuilder(id, line, previousStation, nextStation, distance);
+    }
 }

@@ -1,11 +1,16 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.application.strategy.sectioninsertion.*;
 import subway.dao.LineDao;
-import subway.dao.StationDao;
 import subway.dao.SectionDao;
-import subway.domain.*;
+import subway.dao.StationDao;
+import subway.domain.Distance;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Station;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,126 +29,26 @@ public class SectionService {
         Line line = lineDao.findById(lineId);
         Station previousStation = stationDao.findByName(previousStationName);
         Station nextStation = stationDao.findByName(nextStationName);
-        if (sectionDao.isLineEmpty(line)) {
-            return initialize(line, previousStation, nextStation, distance, isDown);
-        }
 
-        if (isDown) {
-            return insert(Section.builder()
-                    .line(line)
-                    .startingStation(previousStation)
-                    .before(nextStation)
-                    .distance(distance)
-                    .build());
-        }
-        return insert(Section.builder()
-                .line(line)
-                .startingStation(previousStation)
-                .after(nextStation)
-                .distance(distance)
-                .build());
-    }
+        final var section = isDown ?
+                new Section(line, previousStation, nextStation, distance)
+                : new Section(line, nextStation, previousStation, distance);
 
-    private long insert(Section section) {
-        // 1. 등록할 역이 연결할 역에 상행방향으로 달려있는 경우
-        Optional<Section> nextStations = sectionDao.findByNextStation(section.getNextStation(), section.getLine());
-        if (nextStations.isPresent()) {
-            return insertUpStations(section, nextStations.get());
-        }
+        final var strategies = List.of(
+                new InitializingSectionInsertionStrategy(sectionDao, lineDao),
+                new UpDirectionSectionInsertionStrategy(sectionDao),
+                new LowestSectionInsertionStrategy(sectionDao),
+                new DownDirectionInsertionStrategy(sectionDao),
+                new HighestSectionInsertionStrategy(sectionDao, lineDao)
+        );
 
-        // 2. 등록할 역이 연결할 역에 하행방향으로 달려있는 경우
-        Optional<Section> previousStations = sectionDao.findByPreviousStation(section.getPreviousStation(), section.getLine());
-        if (previousStations.isPresent()) {
-            if (previousStations.get().isNextStationEmpty()) {
-                // 3. 등록할 역이 맨 뒤인 경우
-                return insertLowestStation(section);
+        for (SectionInsertionStrategy strategy : strategies) {
+            if (strategy.support(section)) {
+                return strategy.insert(section);
             }
-            return insertDownStations(section, previousStations.get());
-        }
-
-        // 4. 등록할 역이 맨 앞인 경우
-        if (lineDao.findHeadStation(section.getLine()).equals(section.getNextStation())) {
-            return insertHighestStation(section);
         }
 
         throw new IllegalArgumentException("등록하는 역과 연결되는 기존의 역 정보가 노선상에 존재하지 않습니다.");
-    }
-
-    private long insertLowestStation(Section section) {
-        Optional<Section> previousLowestSection = sectionDao.findByPreviousStation(section.getPreviousStation(), section.getLine());
-        if (previousLowestSection.isEmpty()) {
-            throw new IllegalArgumentException("원래 하행 종점역의 정보를 찾을 수 없습니다.");
-        }
-
-        Section newSection = sectionDao.insert(Section.builder()
-                .line(section.getLine())
-                .nextStationEmpty(section.getNextStation())
-                .build());
-
-        sectionDao.update(Section.builder()
-                .id(previousLowestSection.get().getId())
-                .line(section.getLine())
-                .nextStationEmpty(section.getPreviousStation())
-                .build());
-
-        return newSection.getId();
-    }
-
-    private long insertHighestStation(Section section) {
-        final var sectionId = sectionDao.insert(section).getId();
-        lineDao.updateHeadStation(section.getLine(), section.getPreviousStation());
-        return sectionId;
-    }
-
-    private long initialize(Line line, Station previousStation, Station nextStation, Distance distance, boolean isDown) {
-        if (!sectionDao.isLineEmpty(line)) {
-            throw new IllegalArgumentException("이미 초기 설정이 완료된 노선입니다.");
-        }
-
-        if (isDown) {
-            Long savedId = sectionDao.insert(Section.builder()
-                    .line(line)
-                    .startingStation(previousStation)
-                    .before(nextStation)
-                    .distance(distance)
-                    .build()).getId();
-
-            sectionDao.insert(Section.builder()
-                    .line(line)
-                    .nextStationEmpty(nextStation)
-                    .build());
-
-            lineDao.updateHeadStation(line, previousStation);
-            return savedId;
-        }
-
-        Long saveId = sectionDao.insert(Section.builder()
-                .line(line)
-                .startingStation(previousStation)
-                .after(nextStation)
-                .distance(distance)
-                .build()).getId();
-
-        sectionDao.insert(Section.builder()
-                .line(line)
-                .nextStationEmpty(previousStation)
-                .build());
-
-        lineDao.updateHeadStation(line, nextStation);
-        return saveId;
-    }
-
-    private Long insertDownStations(Section newSection, Section originalSection) {
-        // 새로운 역 :
-        Section savedSection = sectionDao.insert(Section.makeSectionToInsertDownDirection(newSection, originalSection));
-        sectionDao.update(Section.makeSectionToUpdateDownDirection(newSection, originalSection));
-        return savedSection.getId();
-    }
-
-    private Long insertUpStations(Section newSection, Section originalSection) {
-        Section savedSection = sectionDao.insert(newSection);
-        sectionDao.update(Section.makeSectionToUpdateUpDirection(newSection, originalSection));
-        return savedSection.getId();
     }
 
     public void deleteStation(long lineId, String stationName) {
