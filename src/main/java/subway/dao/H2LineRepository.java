@@ -3,6 +3,7 @@ package subway.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import subway.application.LineRepository;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.LineProperty;
@@ -19,7 +20,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
-public class H2LineRepository {
+public class H2LineRepository implements LineRepository {
 
     private static final int BATCH_SIZE = 50;
 

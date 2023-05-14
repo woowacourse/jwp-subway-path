@@ -4,6 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.application.LinePropertyRepository;
 import subway.domain.LineProperty;
 
 import javax.sql.DataSource;
@@ -12,7 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class H2LinePropertyRepository {
+public class H2LinePropertyRepository implements LinePropertyRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;

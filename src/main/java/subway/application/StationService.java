@@ -2,7 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.H2StationRepository;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
@@ -14,9 +13,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class StationService {
 
-    private final H2StationRepository stationRepository;
+    private final StationRepository stationRepository;
 
-    public StationService(H2StationRepository stationRepository) {
+    public StationService(StationRepository stationRepository) {
         this.stationRepository = stationRepository;
     }
 

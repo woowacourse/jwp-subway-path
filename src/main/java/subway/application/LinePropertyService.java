@@ -2,7 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.H2LinePropertyRepository;
 import subway.domain.LineProperty;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
@@ -14,9 +13,9 @@ import java.util.stream.Collectors;
 @Transactional
 public class LinePropertyService {
 
-    private final H2LinePropertyRepository linePropertyRepository;
+    private final LinePropertyRepository linePropertyRepository;
 
-    public LinePropertyService(H2LinePropertyRepository linePropertyRepository) {
+    public LinePropertyService(LinePropertyRepository linePropertyRepository) {
         this.linePropertyRepository = linePropertyRepository;
     }
 

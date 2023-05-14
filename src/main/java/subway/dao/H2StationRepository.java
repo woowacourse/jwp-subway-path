@@ -6,13 +6,14 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.application.StationRepository;
 import subway.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
-public class H2StationRepository {
+public class H2StationRepository implements StationRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;

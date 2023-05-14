@@ -2,9 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.H2LinePropertyRepository;
-import subway.dao.H2StationRepository;
-import subway.dao.H2LineRepository;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -20,11 +17,12 @@ import java.util.stream.Collectors;
 @Transactional
 public class LineService {
 
-    private final H2LineRepository lineRepository;
-    private final H2LinePropertyRepository linePropertyRepository;
-    private final H2StationRepository stationRepository;
+    private final LineRepository lineRepository;
+    private final LinePropertyRepository linePropertyRepository;
+    private final StationRepository stationRepository;
 
-    public LineService(H2LineRepository lineRepository, H2LinePropertyRepository linePropertyRepository, H2StationRepository stationRepository) {
+    public LineService(LineRepository lineRepository, LinePropertyRepository linePropertyRepository,
+                       StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.linePropertyRepository = linePropertyRepository;
         this.stationRepository = stationRepository;
