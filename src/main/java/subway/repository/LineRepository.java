@@ -54,6 +54,7 @@ public class LineRepository {
     }
 
     public void updateNameAndColorById(final Long id, final String name, final String color) {
+        lineDao.findById(id).orElseThrow(LineNotFoundException::new);
         lineDao.update(new LineEntity(id, name, color));
     }
 
