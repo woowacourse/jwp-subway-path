@@ -1,5 +1,7 @@
 package subway.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -14,6 +16,7 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class DbLineDao {
@@ -39,9 +42,13 @@ public class DbLineDao {
 
     }
 
-    public LineEntity findByName(final String name) {
+    public Optional<LineEntity> findByName(final String name) {
         final String sql = "SELECT * FROM line WHERE name = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, name);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public LineEntity findById(final Long id) {

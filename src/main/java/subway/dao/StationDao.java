@@ -4,6 +4,7 @@ import subway.domain.Station;
 import subway.entity.StationEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface StationDao {
 
@@ -13,7 +14,7 @@ public interface StationDao {
 
     StationEntity findById(Long id);
 
-    StationEntity findByName(String name);
+    Optional<StationEntity> findByName(String name);
 
     void delete(Long id);
 }
