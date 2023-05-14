@@ -8,12 +8,10 @@ import java.util.stream.Collectors;
 public class LineMap {
 
     private final Map<Station, List<Station>> lineMap;
-    private Map<Station, Boolean> visited;
 
     public LineMap(final Sections sections) {
         this.lineMap = initLineMap(sections);
         sections.getSections().forEach(this::addSection);
-        this.visited = initVisited();
     }
 
     private Map<Station, List<Station>> initLineMap(final Sections sections) {
@@ -25,14 +23,6 @@ public class LineMap {
         }
 
         return lineMap;
-    }
-
-    private Map<Station, Boolean> initVisited() {
-        Map<Station, Boolean> visited = new HashMap<>();
-        for (Station station : lineMap.keySet()) {
-            visited.put(station, false);
-        }
-        return visited;
     }
 
     private void addSection(final Section section) {
@@ -47,8 +37,6 @@ public class LineMap {
     }
 
     public List<Station> getOrderedStations(final Sections sections) {
-        this.visited = initVisited();
-
         List<Station> endPointStations = getEndPointStations();
         Station upStationEndPoint = getUpStationEndPoint(sections, endPointStations);
 
@@ -56,6 +44,7 @@ public class LineMap {
     }
 
     private List<Station> bfs(final Station upStationEndPoint) {
+        Map<Station, Boolean> visited = initVisited();
         List<Station> stations = new ArrayList<>();
 
         Queue<Station> queue = new LinkedList<>();
@@ -72,6 +61,14 @@ public class LineMap {
             }
         }
         return stations;
+    }
+
+    private Map<Station, Boolean> initVisited() {
+        Map<Station, Boolean> visited = new HashMap<>();
+        for (Station station : lineMap.keySet()) {
+            visited.put(station, false);
+        }
+        return visited;
     }
 
     private List<Station> getEndPointStations() {
