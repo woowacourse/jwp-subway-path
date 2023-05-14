@@ -34,16 +34,22 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
+    @GetMapping
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        List<LineResponse> lines = lineService.findAllLines();
+        return ResponseEntity.ok(lines);
+    }
+
     @GetMapping("/{lineId}")
     public ResponseEntity<LineResponse> findLine(@PathVariable Long lineId) {
         LineResponse response = lineService.findLineById(lineId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        List<LineResponse> lines = lineService.findAllLines();
-        return ResponseEntity.ok(lines);
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
+        lineService.deleteLineById(lineId);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/{lineId}/station")

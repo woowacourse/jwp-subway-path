@@ -47,6 +47,16 @@ public class IntegrationTestFixture {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 노선_삭제_요청(Long lineId) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/{lineId}", lineId)
+                .then().log().all()
+                .extract();
+    }
+
+
     public static ExtractableResponse<Response> 단일_노선_조회_요청(Long lineId) {
         return RestAssured
                 .given().log().all()

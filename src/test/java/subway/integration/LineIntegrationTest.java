@@ -1,6 +1,7 @@
 package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.integration.IntegrationTestFixture.노선_삭제_요청;
 import static subway.integration.IntegrationTestFixture.노선_생성_요청;
 import static subway.integration.IntegrationTestFixture.노선_전체_조회_결과를_확인한다;
 import static subway.integration.IntegrationTestFixture.노선_정보;
@@ -76,6 +77,31 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Nested
+    public class 노선을_삭제할_때 {
+
+        @Test
+        void 정상_제거된다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 노선_삭제_요청(저장된_노선_ID);
+
+            반환값이_없는지_검증한다(response);
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청());
+        }
+
+        @Test
+        void 사용되지_않는_역만_제거한다() {
+            노선_생성_요청("1호선", "서울역", "강남역", 10);
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 노선_삭제_요청(저장된_노선_ID);
+
+            반환값이_없는지_검증한다(response);
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("1호선", "서울역", "강남역"));
+        }
+    }
+
+    @Nested
     public class 노선에_역을_등록할_때 {
 
         @Test
@@ -121,7 +147,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             ExtractableResponse<Response> response = 역_추가_요청(Long.MAX_VALUE, "강남역", "잠실역", 2);
 
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+            리소스를_찾을_수_없다는_응답인지_검증한다(response);
         }
     }
 
