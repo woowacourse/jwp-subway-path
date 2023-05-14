@@ -42,7 +42,7 @@ class SubwayMapServiceUnitTest {
         given(sectionRepository.findSectionsByLineNumber(lineNumber)).willReturn(sections);
 
         // when
-        subwayMapService.showLineMap(2L);
+        subwayMapService.showLineMapByLineNumber(2L);
 
         // then
         assertThat(sections.getSections().size()).isEqualTo(1);

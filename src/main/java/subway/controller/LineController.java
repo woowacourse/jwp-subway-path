@@ -35,8 +35,8 @@ public class LineController {
     }
 
     @GetMapping("/{lineNumber}")
-    public ResponseEntity<LineMapResponse> findLineMapById(@PathVariable final Long lineNumber) {
-        return ResponseEntity.ok().body(subwayMapService.showLineMap(lineNumber));
+    public ResponseEntity<LineMapResponse> findLineMapByLineNumber(@PathVariable final Long lineNumber) {
+        return ResponseEntity.ok().body(subwayMapService.showLineMapByLineNumber(lineNumber));
     }
 
     @DeleteMapping("/{id}")
