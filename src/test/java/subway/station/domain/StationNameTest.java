@@ -5,7 +5,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 
-class NameTest {
+class StationNameTest {
 
     @ParameterizedTest(name = "이름의 값으로 {0} 가 들어올 경우 오류를 던진다.")
     @NullAndEmptySource
@@ -14,6 +14,6 @@ class NameTest {
         //given
         //when
         //then
-        Assertions.assertThatThrownBy(() -> Name.from(value)).isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> StationName.from(value)).isInstanceOf(IllegalArgumentException.class);
     }
 }

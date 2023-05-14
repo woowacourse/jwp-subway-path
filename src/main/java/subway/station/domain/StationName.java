@@ -2,7 +2,7 @@ package subway.station.domain;
 
 import java.util.Objects;
 
-final class Name {
+final class StationName {
 
     private static final int MIN_LENGTH = 2;
     private static final int MAX_LENGTH = 10;
@@ -10,13 +10,13 @@ final class Name {
 
     private final String value;
 
-    private Name(final String value) {
+    private StationName(final String value) {
         this.value = value;
     }
 
-    public static Name from(final String value) {
+    public static StationName from(final String value) {
         validate(value);
-        return new Name(value);
+        return new StationName(value);
     }
 
     private static void validate(final String value) {
@@ -53,8 +53,8 @@ final class Name {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Name name = (Name) o;
-        return Objects.equals(value, name.value);
+        final StationName stationName = (StationName) o;
+        return Objects.equals(value, stationName.value);
     }
 
     @Override

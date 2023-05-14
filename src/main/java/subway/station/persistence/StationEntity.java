@@ -10,6 +10,10 @@ public class StationEntity {
         this.name = name;
     }
 
+    public StationEntity(String name) {
+        this(null, name);
+    }
+
     public Long getId() {
         return id;
     }

@@ -14,7 +14,7 @@ graph TD
 ### Line
 
 - Long:id
-- String:name
+- String:Name
 - Sections:sections
 
 ### Sections
@@ -31,16 +31,16 @@ graph TD
 ### Station
 
 - Long:id
-- String:name
+- String:stationName
 
 ## 요구사항
 
 ### 등록 API 신규 구현
 
-- [ ] 역 생성
-    - name
+- [x] 역 생성
+    - stationName
 - [ ] 라인 생성
-    - name
+    - stationName
     - 이름이 존재하면 예외처리
 - [ ] 구간 생성
     - lineId

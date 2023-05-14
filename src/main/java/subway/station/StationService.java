@@ -3,6 +3,7 @@ package subway.station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.station.domain.Station;
+import subway.station.dto.StationCreateDto;
 import subway.station.persistence.StationDao;
 import subway.station.persistence.StationEntity;
 
@@ -17,8 +18,10 @@ public class StationService {
     }
 
     @Transactional
-    public Long create(final Station station) {
-        return stationDao.insert(station);
+    public Long create(final StationCreateDto stationCreateDto) {
+        final Station station = new Station(stationCreateDto.getName());
+
+        return stationDao.insert(new StationEntity(station.getName()));
     }
 
     public StationEntity findByName(final String name) {

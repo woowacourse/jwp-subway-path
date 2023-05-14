@@ -32,11 +32,10 @@ public class StationDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(final Station station) {
-        return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(station))
+    public Long insert(final StationEntity stationEntity) {
+        return simpleJdbcInsert.executeAndReturnKey(new BeanPropertySqlParameterSource(stationEntity))
             .longValue();
     }
-
 
     public Long findIdByName(final String name) {
         final String sql = "SELECT * FROM STATION WHERE name = ?";
