@@ -28,6 +28,16 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional(readOnly = true)
+    public List<StationResponse> findStationsInOrder(long lineId) {
+        Sections sections = sectionDao.findSectionsByLineId(lineId);
+
+        List<Station> stations = sections.getStationsInOrder();
+        return stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
+    }
+
     public long addSection(final long lineId, SectionSaveRequest request) {
         Sections sections = sectionDao.findSectionsByLineId(lineId);
 
@@ -52,27 +62,6 @@ public class SectionService {
             return addInnerLeft(lineId, requestedSection, includeSection);
         }
         return addInnerRight(lineId, requestedSection, includeSection);
-    }
-
-    public void removeStation(long stationId, long lineId) {
-        Sections sections = sectionDao.findSectionsByLineId(lineId);
-
-        validateStationExist(stationId, sections);
-        if (isLastSection(sections)) {
-            sectionDao.deleteAllByLineId(lineId);
-            return;
-        }
-
-        if (isUpEnd(stationId, sections)) {
-            sectionDao.deleteSectionByUpStationId(stationId, lineId);
-            return;
-        }
-
-        if (sections.getDownEndSection().isSameDownStationId(stationId)) {
-            updateDownEndRemove(stationId, lineId, sections);
-            return;
-        }
-        removeMiddleStation(stationId, sections);
     }
 
     private void validateAddAvailable(SectionDirection newSectionDirection) {
@@ -122,6 +111,33 @@ public class SectionService {
         return savedSectionId;
     }
 
+    public void removeStation(long stationId, long lineId) {
+        Sections sections = sectionDao.findSectionsByLineId(lineId);
+
+        validateStationExist(stationId, sections);
+        if (isLastSection(sections)) {
+            sectionDao.deleteAllByLineId(lineId);
+            return;
+        }
+
+        if (isUpEnd(stationId, sections)) {
+            sectionDao.deleteSectionByUpStationId(stationId, lineId);
+            return;
+        }
+
+        if (sections.getDownEndSection().isSameDownStationId(stationId)) {
+            updateDownEndRemove(stationId, lineId, sections);
+            return;
+        }
+        removeMiddleStation(stationId, sections);
+    }
+
+    private void validateStationExist(long stationId, Sections sections) {
+        if (sections.isNotExistStation(stationId)) {
+            throw new StationNotFoundException();
+        }
+    }
+
     private void updateDownEndRemove(long stationId, long lineId, Sections sections) {
         Section previousDownEnd = sections.findPreviousSection(sections.getDownEndSection());
         sectionDao.deleteSectionByDownStationId(stationId, lineId);
@@ -144,21 +160,5 @@ public class SectionService {
 
     private boolean isLastSection(Sections sections) {
         return sections.size() == LAST_REMAIN;
-    }
-
-    private void validateStationExist(long stationId, Sections sections) {
-        if (sections.isNotExistStation(stationId)) {
-            throw new StationNotFoundException();
-        }
-    }
-
-    @Transactional(readOnly = true)
-    public List<StationResponse> findStationsInOrder(long lineId) {
-        Sections sections = sectionDao.findSectionsByLineId(lineId);
-
-        List<Station> stations = sections.getStationsInOrder();
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
     }
 }

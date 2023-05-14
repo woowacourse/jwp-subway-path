@@ -107,7 +107,6 @@ public class Sections {
 
         List<Section> sortedSections = this.getSorted();
 
-
         List<Station> sortedStations = new ArrayList<>();
         sortedStations.add(sortedSections.get(0).getUpStation());
         for (Section section : sortedSections) {
