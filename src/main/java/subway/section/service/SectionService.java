@@ -1,7 +1,10 @@
 package subway.section.service;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.event.DeleteSectionEvent;
+import subway.event.SaveSectionEvent;
 import subway.section.dao.SectionDao;
 import subway.section.domain.Direction;
 import subway.section.domain.Section;
@@ -14,12 +17,14 @@ import java.util.Optional;
 public class SectionService {
 
     private final SectionDao sectionDao;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
-    public SectionService(final SectionDao sectionDao) {
+    public SectionService(final SectionDao sectionDao, final ApplicationEventPublisher applicationEventPublisher) {
         this.sectionDao = sectionDao;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
-    public List<Section> findSectionsByLineId(final Long id){
+    public List<Section> findSectionsByLineId(final Long id) {
         return sectionDao.findSectionsByLineId(id);
     }
 
@@ -42,6 +47,8 @@ public class SectionService {
         if (existSectionEntity.getDistance() <= distance) {
             throw new IllegalArgumentException("새롭게 등록하는 구간의 거리는 기존에 존재하는 구간의 거리보다 작아야합니다.");
         }
+
+        applicationEventPublisher.publishEvent(new SaveSectionEvent(lineId, baseId, addedId, direction));
 
         return divideSectionByAddedStation(lineId, addedId, direction, distance, existSectionEntity);
     }
@@ -74,6 +81,7 @@ public class SectionService {
         return List.of(upSavedSectionEntity, downSavedSectionEntity);
     }
 
+    @Transactional
     public void deleteSection(final Long lineId, final Long stationId) {
         final Optional<SectionEntity> upSection = sectionDao.findNeighborSection(lineId, stationId, Direction.UP);
         final Optional<SectionEntity> downSection = sectionDao.findNeighborSection(lineId, stationId, Direction.DOWN);
@@ -106,5 +114,7 @@ public class SectionService {
         );
 
         sectionDao.insert(sectionEntity);
+
+        applicationEventPublisher.publishEvent(new DeleteSectionEvent(lineId, stationId));
     }
 }

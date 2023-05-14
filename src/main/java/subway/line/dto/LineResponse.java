@@ -2,6 +2,8 @@ package subway.line.dto;
 
 import subway.line.domain.Line;
 
+import java.util.Objects;
+
 public class LineResponse {
 
     private Long id;
@@ -31,5 +33,18 @@ public class LineResponse {
 
     public String getColor() {
         return color;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LineResponse that = (LineResponse) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
