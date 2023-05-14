@@ -2,8 +2,11 @@ package subway.application.request;
 
 public class DeleteStationRequest {
 
-    private final String stationName;
-    private final String lineName;
+    private String stationName;
+    private String lineName;
+
+    public DeleteStationRequest() {
+    }
 
     public DeleteStationRequest(final String stationName, final String lineName) {
         this.stationName = stationName;

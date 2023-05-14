@@ -36,4 +36,19 @@ public class RestAssuredFixture {
                         .log().all()
                         .extract();
     }
+
+    public static ExtractableResponse<Response> delete(final String url, final Object body) {
+        return RestAssured
+                .given()
+                        .log().all()
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .body(body)
+
+                .when()
+                        .delete(url)
+
+                .then()
+                        .log().all()
+                        .extract();
+    }
 }
