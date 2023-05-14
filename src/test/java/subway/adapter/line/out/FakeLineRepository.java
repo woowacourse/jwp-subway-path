@@ -46,15 +46,12 @@ public class FakeLineRepository implements LineRepository {
     }
 
     @Override
-    public Optional<Line> findByName(final String lineName) {
-        return lines.values()
-            .stream()
-            .filter(line -> line.getName().getValue().equals(lineName))
-            .findFirst();
+    public Optional<Line> findById(final long id) {
+        return Optional.ofNullable(lines.get(id));
     }
 
     @Override
-    public void delete(final Line line) {
-        lines.remove(line.getId());
+    public void deleteById(final long id) {
+        lines.remove(id);
     }
 }

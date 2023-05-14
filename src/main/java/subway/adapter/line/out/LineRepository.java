@@ -12,8 +12,8 @@ public interface LineRepository {
 
     Line update(Line line);
 
-    Optional<Line> findByName(String lineName);
+    Optional<Line> findById(long id);
 
-    void delete(Line line);
+    void deleteById(long id);
 
 }
