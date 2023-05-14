@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -66,7 +67,22 @@ public class StationControllerTest {
             final String name = "혜화";
             final StationRequest request = new StationRequest(name);
             final String requestBody = objectMapper.writeValueAsString(request);
-            given(stationService.save(any())).willThrow(EmptyResultDataAccessException.class);
+            given(stationService.save(any())).willThrow(StationNotFoundException.class);
+
+            // when, then
+            mockMvc.perform(post("/stations")
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isBadRequest());
+        }
+
+        @Test
+        @DisplayName("실패 - 잘못된 request body")
+        void fail_invalid_request() throws Exception {
+            // given
+            final StationRequest request = new StationRequest(null);
+            final String requestBody = objectMapper.writeValueAsString(request);
+            given(stationService.save(any())).willThrow(DataIntegrityViolationException.class);
 
             // when, then
             mockMvc.perform(post("/stations")
@@ -129,7 +145,7 @@ public class StationControllerTest {
         void fail_id_not_found() throws Exception {
             // given
             final long id = 10L;
-            given(stationService.findById(id)).willThrow(EmptyResultDataAccessException.class);
+            given(stationService.findById(id)).willThrow(StationNotFoundException.class);
 
             // when, then
             mockMvc.perform(get("/stations/{id}", id))
