@@ -1,6 +1,7 @@
 package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SaveResponse;
 import subway.dto.StationResponse;
+import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -44,6 +46,21 @@ class LineServiceTest {
                 () -> assertThat(lineRepository.findAll()).hasSize(1),
                 () -> assertThat(saveResponse.getId()).isPositive()
         );
+    }
+
+    @Test
+    void 이미_존재하는_이름의_노선을_추가하면_예외가_발생한다() {
+        // given
+        LineRequest request = new LineRequest("2호선", "A", "B", 10);
+        SaveResponse saveResponse = lineService.saveLine(request);
+
+        // when
+        LineRequest secondRequest = new LineRequest("2호선", "B", "C", 10);
+
+        // then
+        assertThatThrownBy(() -> lineService.saveLine(secondRequest))
+                .isInstanceOf(DuplicatedNameException.class)
+                .hasMessage("이미 존재하는 이름입니다 입력값 : " + secondRequest.getLineName());
     }
 
     @Test

@@ -102,13 +102,16 @@ class LineRepositoryTest {
 
     @Test
     void 노선에_역을_추가한다() {
+        // given
         List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
         Line firstLine = new Line("1호선", firstSections);
         lineRepository.save(firstLine);
         firstLine.addSection(new Section(new Station("B"), new Station("D"), 5));
 
+        // when
         lineRepository.save(firstLine);
 
+        // then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
                 .containsOnly(
                         new Section("A", "B", 10),
@@ -119,13 +122,16 @@ class LineRepositoryTest {
 
     @Test
     void 노선에_역을_삭제한다() {
+        // given
         List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
         Line firstLine = new Line("1호선", firstSections);
         lineRepository.save(firstLine);
         firstLine.removeStation(new Station("B"));
 
+        // when
         lineRepository.save(firstLine);
 
+        // then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
                 .containsOnly(
                         new Section("A", "C", 17)
@@ -134,17 +140,44 @@ class LineRepositoryTest {
 
     @Test
     void 노선_ID로_조회한다() {
+        // given
         List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
         Line firstLine = new Line("1호선", firstSections);
         Long savedId = lineRepository.save(firstLine);
 
+        // when
         Line findLine = lineRepository.findById(savedId);
 
+        // then
         assertThat(findLine.getStations())
                 .containsOnly(
                         new Station("A"),
                         new Station("B"),
                         new Station("C")
                 );
+    }
+
+    @Test
+    void 노선_이름이_이미_존재하면_true를_반환한다() {
+        // given
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        lineRepository.save(firstLine);
+
+        // when, then
+        assertThat(lineRepository.existsByName("1호선")).isTrue();
+    }
+
+    @Test
+    void 노선_이름이_이미_존재하지않으면_false를_반환한다() {
+        // given
+        List<Section> firstSections = List.of(new Section("A", "B", 10), new Section("B", "C", 7));
+        Line firstLine = new Line("1호선", firstSections);
+        lineRepository.save(firstLine);
+
+        // when, then
+        assertThat(lineRepository.existsByName("2호선")).isFalse();
+
+
     }
 }

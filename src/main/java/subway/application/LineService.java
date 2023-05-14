@@ -11,6 +11,7 @@ import subway.dto.DeleteStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SaveResponse;
+import subway.exception.DuplicatedNameException;
 import subway.repository.LineRepository;
 
 @Transactional
@@ -24,6 +25,9 @@ public class LineService {
     }
 
     public SaveResponse saveLine(LineRequest request) {
+        if (lineRepository.existsByName(request.getLineName())) {
+            throw new DuplicatedNameException(request.getLineName());
+        }
         Line line = request.toDomain();
         Long saveId = lineRepository.save(line);
         return new SaveResponse(saveId);

@@ -77,4 +77,23 @@ class LineDaoTest {
         //when, then
         assertThat(lineDao.findByName("1호선")).isPresent();
     }
+
+    @Test
+    void 노선_이름이_존재하면_true를_반환한다() {
+        //given
+        lineDao.insert(new LineEntity("1호선"));
+
+        //when, then
+        assertThat(lineDao.existsByName("1호선")).isTrue();
+    }
+
+
+    @Test
+    void 노선_이름이_존재하지_않으면_false를_반환한다() {
+        //given
+        lineDao.insert(new LineEntity("2호선"));
+
+        //when, then
+        assertThat(lineDao.existsByName("1호선")).isFalse();
+    }
 }

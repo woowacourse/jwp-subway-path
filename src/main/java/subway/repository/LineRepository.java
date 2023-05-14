@@ -131,4 +131,8 @@ public class LineRepository {
         List<Long> collect = savedStations.stream().map(StationEntity::getId).collect(toList());
         stationDao.deleteByIds(collect);
     }
+
+    public boolean existsByName(String lineName) {
+        return lineDao.existsByName(lineName);
+    }
 }
