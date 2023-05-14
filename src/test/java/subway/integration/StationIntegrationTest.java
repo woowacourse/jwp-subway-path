@@ -1,12 +1,11 @@
 package subway.integration;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
+import static subway.exception.ErrorCode.INVALID_REQUEST;
+import static subway.exception.ErrorCode.STATION_NAME_DUPLICATED;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import java.util.HashMap;
 import java.util.Map;
 import org.hamcrest.Matchers;
@@ -15,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.exception.ErrorCode;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
@@ -55,7 +53,7 @@ public class StationIntegrationTest extends IntegrationTest {
             .post("/stations")
             .then().log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value())
-            .body("errorCode", equalTo(ErrorCode.INVALID_REQUEST.name()))
+            .body("errorCode", equalTo(INVALID_REQUEST.name()))
             .body("errorMessage[0]", equalTo("역 이름을 입력해 주세요."));
     }
 
@@ -68,18 +66,16 @@ public class StationIntegrationTest extends IntegrationTest {
         stationRequest.put("name", "강남역");
         saveStation(stationRequest);
 
-        // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
+        // expected
+        RestAssured.given().log().all()
             .body(stationRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/stations")
             .then()
             .log().all()
-            .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            .body("errorCode", equalTo(STATION_NAME_DUPLICATED.name()))
+            .body("errorMessage[0]", equalTo("역 이름은 중복될 수 없습니다"));
     }
 
     @Test

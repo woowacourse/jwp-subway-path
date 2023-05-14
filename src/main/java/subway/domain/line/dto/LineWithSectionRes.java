@@ -1,5 +1,7 @@
 package subway.domain.line.dto;
 
+import subway.domain.station.StationName;
+
 public class LineWithSectionRes {
 
     private final Long lineId;
@@ -24,16 +26,19 @@ public class LineWithSectionRes {
         this.distance = distance;
     }
 
-    public boolean isSourceOrTargetStation(final String stationName) {
-        return sourceStationName.equals(stationName) || targetStationName.equals(stationName);
+    public boolean isSourceOrTargetStation(final StationName stationName) {
+        final StationName sourceName = new StationName(sourceStationName);
+        final StationName targetName = new StationName(targetStationName);
+        return sourceName.equals(stationName) || targetName.equals(stationName);
     }
 
     public boolean isSourceOrTargetStation(final Long stationId) {
         return sourceStationId.equals(stationId) || targetStationId.equals(stationId);
     }
 
-    public Long getStationIdByStationName(final String stationName) {
-        if (sourceStationName.equals(stationName)) {
+    public Long getStationIdByStationName(final StationName stationName) {
+        final StationName sourceName = new StationName(sourceStationName);
+        if (sourceName.equals(stationName)) {
             return sourceStationId;
         }
         return targetStationId;

@@ -1,6 +1,8 @@
 package subway.dao;
 
+import static subway.exception.ErrorCode.DB_DELETE_ERROR;
 import static subway.exception.ErrorCode.DB_UPDATE_ERROR;
+import static subway.exception.ErrorCode.STATION_NOT_FOUND;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -9,8 +11,7 @@ import subway.dao.entity.StationEntity;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
 import subway.domain.station.dto.StationRes;
-import subway.exception.ErrorCode;
-import subway.exception.GlobalException;
+import subway.exception.DBException;
 import subway.exception.NotFoundException;
 
 @Repository
@@ -24,7 +25,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     public Long insert(final Station station) {
-        final StationEntity stationEntity = new StationEntity(station.getName());
+        final StationEntity stationEntity = new StationEntity(station.getName().name());
         return stationDao.insert(stationEntity);
     }
 
@@ -39,16 +40,16 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     public Station findById(final Long id) {
         final StationEntity stationEntity = stationDao.findById(id)
-            .orElseThrow(() -> new NotFoundException("역 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new NotFoundException(STATION_NOT_FOUND.getMessage() + " id = " + id));
         return new Station(stationEntity.getName());
     }
 
     @Override
     public void updateById(final Long id, final Station station) {
-        final StationEntity stationEntity = new StationEntity(id, station.getName());
+        final StationEntity stationEntity = new StationEntity(id, station.getName().name());
         final int updatedCount = stationDao.update(stationEntity);
         if (updatedCount != 1) {
-            throw new GlobalException(DB_UPDATE_ERROR);
+            throw new DBException(DB_UPDATE_ERROR);
         }
     }
 
@@ -56,7 +57,7 @@ public class StationRepositoryImpl implements StationRepository {
     public void deleteById(final Long id) {
         final int deletedCount = stationDao.deleteById(id);
         if (deletedCount != 1) {
-            throw new GlobalException(ErrorCode.DB_DELETE_ERROR);
+            throw new DBException(DB_DELETE_ERROR);
         }
     }
 

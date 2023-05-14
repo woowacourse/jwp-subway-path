@@ -1,5 +1,8 @@
 package subway.exception;
 
+import static subway.exception.ErrorCode.INTERNAL_SERVER_ERROR;
+import static subway.exception.ErrorCode.INVALID_REQUEST;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.slf4j.Logger;
@@ -15,25 +18,32 @@ public class GlobalExceptionHandler {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    @ExceptionHandler(GlobalException.class)
-    public ResponseEntity<ErrorResponse> globalException(final GlobalException e) {
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<ErrorResponse> globalException(final BadRequestException e) {
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse errorResponse = new ErrorResponse(errorCode, List.of(errorCode.getMessage()));
         return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(
-        final MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> methodArgumentNotValidException(final MethodArgumentNotValidException e) {
         final List<String> errorMessage = getErrorMessage(e);
-        final ErrorResponse errorResponse = new ErrorResponse(ErrorCode.INVALID_REQUEST, errorMessage);
+        final ErrorResponse errorResponse = new ErrorResponse(INVALID_REQUEST, errorMessage);
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(DBException.class)
+    public ResponseEntity<ErrorResponse> dbException(final DBException e) {
+        log.error(e.getMessage());
+        final ErrorCode errorCode = INTERNAL_SERVER_ERROR;
+        final ErrorResponse errorResponse = new ErrorResponse(errorCode, List.of(e.getMessage()));
+        return ResponseEntity.internalServerError().body(errorResponse);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> exception(final Exception e) {
         log.error(e.getMessage());
-        final ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+        final ErrorCode errorCode = INTERNAL_SERVER_ERROR;
         final ErrorResponse errorResponse = new ErrorResponse(errorCode, List.of(errorCode.getMessage()));
         return ResponseEntity.internalServerError().body(errorResponse);
     }

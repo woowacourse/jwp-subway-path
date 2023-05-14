@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import subway.domain.station.Station;
-import subway.exception.GlobalException;
+import subway.exception.BadRequestException;
 
 public class Sections {
 
@@ -30,10 +30,10 @@ public class Sections {
         final Station sourceStation = section.getSource();
         final Station targetStation = section.getTarget();
         if (!sortedStations.contains(sourceStation) && !sortedStations.contains(targetStation)) {
-            throw new GlobalException(SECTION_ADD_STATION_NOT_EXISTS);
+            throw new BadRequestException(SECTION_ADD_STATION_NOT_EXISTS);
         }
         if (sortedStations.contains(sourceStation) && sortedStations.contains(targetStation)) {
-            throw new GlobalException(SECTION_ALREADY_ADD);
+            throw new BadRequestException(SECTION_ALREADY_ADD);
         }
     }
 
@@ -86,7 +86,7 @@ public class Sections {
         final SectionDistance requestDistance = requestSection.getDistance();
         final SectionDistance targetDistance = targetSection.getDistance();
         if (requestDistance.isGreaterAndEqualsThan(targetDistance)) {
-            throw new GlobalException(SECTION_TOO_FAR_DISTANCE);
+            throw new BadRequestException(SECTION_TOO_FAR_DISTANCE);
         }
         return targetSection;
     }

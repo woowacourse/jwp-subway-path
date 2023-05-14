@@ -1,10 +1,10 @@
 package subway.exception;
 
-public class GlobalException extends RuntimeException {
+public class BadRequestException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
-    public GlobalException(final ErrorCode errorCode) {
+    public BadRequestException(final ErrorCode errorCode) {
         this.errorCode = errorCode;
     }
 

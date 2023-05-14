@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.GlobalException;
+import subway.exception.BadRequestException;
 
 class SectionDistanceTest {
 
@@ -27,7 +27,7 @@ class SectionDistanceTest {
     @ValueSource(ints = {0, 51})
     void station_name_fail_test(final int distance) {
         assertThatThrownBy(() -> SectionDistance.create(distance))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(SECTION_DISTANCE);
     }

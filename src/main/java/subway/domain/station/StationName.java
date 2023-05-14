@@ -3,7 +3,7 @@ package subway.domain.station;
 import static subway.exception.ErrorCode.STATION_NAME_LENGTH;
 
 import java.util.Objects;
-import subway.exception.GlobalException;
+import subway.exception.BadRequestException;
 
 public class StationName {
 
@@ -19,7 +19,7 @@ public class StationName {
 
     private void validateLength(final String name) {
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
-            throw new GlobalException(STATION_NAME_LENGTH);
+            throw new BadRequestException(STATION_NAME_LENGTH);
         }
     }
 

@@ -6,8 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static subway.exception.ErrorCode.DB_DELETE_ERROR;
-import static subway.exception.ErrorCode.DB_UPDATE_ERROR;
 import static subway.fixture.StationFixture.역_엔티티들;
 import static subway.fixture.StationFixture.잠실역;
 import static subway.fixture.StationFixture.잠실역_엔티티;
@@ -24,8 +22,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.station.Station;
+import subway.domain.station.StationName;
 import subway.domain.station.dto.StationRes;
-import subway.exception.GlobalException;
+import subway.exception.DBException;
 import subway.exception.NotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -81,7 +80,7 @@ class StationRepositoryImplTest {
         // then
         assertThat(station)
             .extracting(Station::getName)
-            .isEqualTo("잠실역");
+            .isEqualTo(new StationName("잠실역"));
     }
 
     @Test
@@ -94,7 +93,7 @@ class StationRepositoryImplTest {
         // expected
         assertThatThrownBy(() -> stationRepository.findById(1L))
             .isInstanceOf(NotFoundException.class)
-            .hasMessage("역 정보가 존재하지 않습니다.");
+            .hasMessage("역 정보가 존재하지 않습니다. id = 1");
     }
 
     @Test
@@ -117,9 +116,8 @@ class StationRepositoryImplTest {
 
         // expected
         assertThatThrownBy(() -> stationRepository.updateById(1L, 잠실역))
-            .isInstanceOf(GlobalException.class)
-            .extracting("errorCode")
-            .isEqualTo(DB_UPDATE_ERROR);
+            .isInstanceOf(DBException.class)
+            .hasMessage("DB 업데이트가 정상적으로 진행되지 않았습니다.");
     }
 
     @Test
@@ -142,9 +140,8 @@ class StationRepositoryImplTest {
 
         // expected
         assertThatThrownBy(() -> stationRepository.deleteById(1L))
-            .isInstanceOf(GlobalException.class)
-            .extracting("errorCode")
-            .isEqualTo(DB_DELETE_ERROR);
+            .isInstanceOf(DBException.class)
+            .hasMessage("DB 삭제가 정상적으로 진행되지 않았습니다.");
     }
 
     @ParameterizedTest(name = "주어진 이름을 가진 역이 존재하면 true를, 아니면 false를 반환한다.")

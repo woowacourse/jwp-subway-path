@@ -3,11 +3,11 @@ package subway.domain.line;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static subway.exception.ErrorCode.LINE_NAME_LENGTH;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.ErrorCode;
-import subway.exception.GlobalException;
+import subway.exception.BadRequestException;
 
 class LineNameTest {
 
@@ -24,8 +24,8 @@ class LineNameTest {
     @ValueSource(strings = {"일이", "영일이삼사오륙칠팔구십"})
     void line_name_fail_test(final String name) {
         assertThatThrownBy(() -> new LineName(name))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
-            .isEqualTo(ErrorCode.LINE_NAME_LENGTH);
+            .isEqualTo(LINE_NAME_LENGTH);
     }
 }

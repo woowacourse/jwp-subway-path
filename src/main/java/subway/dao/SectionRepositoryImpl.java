@@ -6,7 +6,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
 import subway.domain.section.SectionRepository;
 import subway.domain.section.dto.SectionSaveReq;
-import subway.exception.GlobalException;
+import subway.exception.DBException;
 
 @Repository
 public class SectionRepositoryImpl implements SectionRepository {
@@ -29,7 +29,7 @@ public class SectionRepositoryImpl implements SectionRepository {
     public void deleteOldSection(final Long lineId, final Long sourceStationId) {
         final int deletedCount = sectionDao.deleteByLineIdAndSourceStationId(lineId, sourceStationId);
         if (deletedCount != 1) {
-            throw new GlobalException(DB_DELETE_ERROR);
+            throw new DBException(DB_DELETE_ERROR);
         }
     }
 

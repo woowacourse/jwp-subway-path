@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
-import static subway.exception.ErrorCode.DB_DELETE_ERROR;
 import static subway.fixture.SectionFixture.구간_저장_요청;
 
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +16,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.exception.GlobalException;
+import subway.exception.DBException;
 
 @ExtendWith(MockitoExtension.class)
 class SectionRepositoryImplTest {
@@ -63,9 +62,8 @@ class SectionRepositoryImplTest {
 
         // expected
         assertThatThrownBy(() -> sectionRepository.deleteOldSection(1L, 1L))
-            .isInstanceOf(GlobalException.class)
-            .extracting("errorCode")
-            .isEqualTo(DB_DELETE_ERROR);
+            .isInstanceOf(DBException.class)
+            .hasMessage("DB 삭제가 정상적으로 진행되지 않았습니다.");
     }
 
     @Test

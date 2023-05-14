@@ -7,7 +7,7 @@ import static subway.exception.ErrorCode.STATION_NAME_LENGTH;
 
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.GlobalException;
+import subway.exception.BadRequestException;
 
 class StationNameTest {
 
@@ -24,7 +24,7 @@ class StationNameTest {
     @ValueSource(strings = {"일이", "영일이삼사오륙칠팔구십"})
     void station_name_fail_test(final String name) {
         assertThatThrownBy(() -> new StationName(name))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(STATION_NAME_LENGTH);
     }

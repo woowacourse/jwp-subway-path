@@ -1,6 +1,8 @@
 package subway.dao;
 
+import static subway.exception.ErrorCode.DB_DELETE_ERROR;
 import static subway.exception.ErrorCode.DB_UPDATE_ERROR;
+import static subway.exception.ErrorCode.LINE_NOT_FOUND;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,8 +12,7 @@ import subway.dao.entity.LineEntity;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.line.dto.LineWithSectionRes;
-import subway.exception.ErrorCode;
-import subway.exception.GlobalException;
+import subway.exception.DBException;
 import subway.exception.NotFoundException;
 
 @Repository
@@ -25,7 +26,7 @@ public class LineRepositoryImpl implements LineRepository {
 
     @Override
     public Long insert(final Line line) {
-        final LineEntity requestLineEntity = new LineEntity(line.getName(), line.getColor());
+        final LineEntity requestLineEntity = new LineEntity(line.getName().name(), line.getColor());
         return lineDao.insert(requestLineEntity);
     }
 
@@ -53,15 +54,15 @@ public class LineRepositoryImpl implements LineRepository {
     public Line findById(final Long id) {
         return lineDao.findById(id)
             .map(entity -> new Line(entity.getName(), entity.getColor()))
-            .orElseThrow(() -> new NotFoundException("노선 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new NotFoundException(LINE_NOT_FOUND.getMessage() + " id = " + id));
     }
 
     @Override
     public void updateById(final Long id, final Line line) {
-        final LineEntity requestLineEntity = new LineEntity(id, line.getName(), line.getColor());
+        final LineEntity requestLineEntity = new LineEntity(id, line.getName().name(), line.getColor());
         final int updatedCount = lineDao.update(requestLineEntity);
         if (updatedCount != 1) {
-            throw new GlobalException(DB_UPDATE_ERROR);
+            throw new DBException(DB_UPDATE_ERROR);
         }
     }
 
@@ -69,7 +70,7 @@ public class LineRepositoryImpl implements LineRepository {
     public void deleteById(final Long id) {
         final int deletedCount = lineDao.deleteById(id);
         if (deletedCount != 1) {
-            throw new GlobalException(ErrorCode.DB_DELETE_ERROR);
+            throw new DBException(DB_DELETE_ERROR);
         }
     }
 

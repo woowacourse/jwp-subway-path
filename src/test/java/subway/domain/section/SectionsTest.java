@@ -21,7 +21,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.domain.station.Station;
-import subway.exception.GlobalException;
+import subway.exception.BadRequestException;
 
 class SectionsTest {
 
@@ -48,7 +48,7 @@ class SectionsTest {
 
         // expected
         assertThatThrownBy(() -> sections.validateSections(requestSection))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(SECTION_ADD_STATION_NOT_EXISTS);
     }
@@ -68,7 +68,7 @@ class SectionsTest {
 
         // expected
         assertThatThrownBy(() -> sections.validateSections(requestSection))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(SECTION_ALREADY_ADD);
     }
@@ -131,7 +131,7 @@ class SectionsTest {
 
         // expected
         assertThatThrownBy(() -> sections.getExistsSectionOfSource(requestSection))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(SECTION_TOO_FAR_DISTANCE);
     }
@@ -181,7 +181,7 @@ class SectionsTest {
 
         // expected
         assertThatThrownBy(() -> sections.getExistsSectionOfTarget(requestSection))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(SECTION_TOO_FAR_DISTANCE);
     }

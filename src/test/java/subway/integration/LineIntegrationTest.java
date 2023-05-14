@@ -2,7 +2,8 @@ package subway.integration;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.is;
+import static subway.exception.ErrorCode.INVALID_REQUEST;
+import static subway.exception.ErrorCode.LINE_NAME_DUPLICATED;
 
 import io.restassured.RestAssured;
 import java.util.HashMap;
@@ -16,7 +17,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.LineRequest;
 import subway.dto.SectionRequest;
-import subway.exception.ErrorCode;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -52,7 +52,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .when().post("/lines")
             .then().log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value())
-            .body("errorCode", equalTo(ErrorCode.INVALID_REQUEST.name()))
+            .body("errorCode", equalTo(INVALID_REQUEST.name()))
             .body("errorMessage", containsInAnyOrder("호선 이름을 입력해 주세요.", "호선 색상을 입력해 주세요."));
     }
 
@@ -72,7 +72,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .when().post("/lines")
             .then().log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value())
-            .body("errorCode", equalTo(ErrorCode.LINE_NAME_DUPLICATED.name()))
+            .body("errorCode", equalTo(LINE_NAME_DUPLICATED.name()))
             .body("errorMessage[0]", equalTo("노선 이름은 중복될 수 없습니다."));
     }
 
@@ -115,7 +115,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .when().post("/lines/sections")
             .then().log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value())
-            .body("errorCode", equalTo(ErrorCode.INVALID_REQUEST.name()))
+            .body("errorCode", equalTo(INVALID_REQUEST.name()))
             .body("errorMessage", containsInAnyOrder("호선 아이디를 입력해 주세요.", "시작역 아이디를 입력해 주세요.",
                 "끝역 아이디를 입력해 주세요.", "거리를 입력해 주세요."));
     }
@@ -132,7 +132,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .when().post("/lines/sections")
             .then().log().all()
             .statusCode(HttpStatus.BAD_REQUEST.value())
-            .body("errorCode", equalTo(ErrorCode.INVALID_REQUEST.name()))
+            .body("errorCode", equalTo(INVALID_REQUEST.name()))
             .body("errorMessage", containsInAnyOrder("올바른 호선 아이디를 입력해 주세요.",
                 "올바른 시작역 아이디를 입력해 주세요.", "올바른 끝역 아이디를 입력해 주세요."));
     }

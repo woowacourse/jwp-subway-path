@@ -23,8 +23,8 @@ public class Line {
         this.sections = sections;
     }
 
-    public String getName() {
-        return name.name();
+    public LineName getName() {
+        return name;
     }
 
     public String getColor() {

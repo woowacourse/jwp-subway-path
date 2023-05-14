@@ -1,7 +1,8 @@
 package subway.domain.section;
 
-import subway.exception.ErrorCode;
-import subway.exception.GlobalException;
+import static subway.exception.ErrorCode.SECTION_DISTANCE;
+
+import subway.exception.BadRequestException;
 
 public class SectionDistance {
 
@@ -37,7 +38,7 @@ public class SectionDistance {
 
     private static void validateRange(final int distance) {
         if (distance < MIN_DISTANCE || distance > MAX_DISTANCE) {
-            throw new GlobalException(ErrorCode.SECTION_DISTANCE);
+            throw new BadRequestException(SECTION_DISTANCE);
         }
     }
 

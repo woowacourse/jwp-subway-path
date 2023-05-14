@@ -23,7 +23,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.station.StationRepository;
 import subway.dto.StationResponse;
-import subway.exception.GlobalException;
+import subway.exception.BadRequestException;
 
 @ExtendWith(MockitoExtension.class)
 class StationServiceTest {
@@ -43,7 +43,7 @@ class StationServiceTest {
 
         // expect
         assertThatThrownBy(() -> stationService.saveStation(역_요청_정보))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(STATION_NAME_DUPLICATED);
     }
@@ -74,7 +74,7 @@ class StationServiceTest {
 
         // expected
         assertThatThrownBy(() -> stationService.updateStationById(1L, 역_요청_정보))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(STATION_NAME_DUPLICATED);
     }

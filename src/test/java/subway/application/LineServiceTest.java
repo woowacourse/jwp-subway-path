@@ -13,6 +13,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static subway.exception.ErrorCode.LINE_NAME_DUPLICATED;
+import static subway.exception.ErrorCode.LINE_NOT_FOUND;
 import static subway.fixture.LineFixture.이호선;
 import static subway.fixture.LineFixture.이호선_구간을_포함한_응답들;
 import static subway.fixture.LineFixture.이호선_팔호선_구간을_포함한_응답들;
@@ -36,7 +37,7 @@ import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationResponse;
-import subway.exception.GlobalException;
+import subway.exception.BadRequestException;
 import subway.exception.NotFoundException;
 
 @ExtendWith(MockitoExtension.class)
@@ -61,7 +62,7 @@ class LineServiceTest {
 
         // expect
         assertThatThrownBy(() -> lineService.save(lineRequest))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(LINE_NAME_DUPLICATED);
     }
@@ -91,7 +92,7 @@ class LineServiceTest {
 
         // expect
         assertThatThrownBy(() -> lineService.update(1L, lineRequest))
-            .isInstanceOf(GlobalException.class)
+            .isInstanceOf(BadRequestException.class)
             .extracting("errorCode")
             .isEqualTo(LINE_NAME_DUPLICATED);
     }
@@ -124,7 +125,7 @@ class LineServiceTest {
     void saveSection_non_exists_line_test() {
         // given
         when(lineRepository.findById(anyLong()))
-            .thenThrow(new NotFoundException("노선 정보가 존재하지 않습니다."));
+            .thenThrow(new NotFoundException(LINE_NOT_FOUND.getMessage()));
 
         final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 3);
 

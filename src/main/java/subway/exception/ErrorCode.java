@@ -2,10 +2,12 @@ package subway.exception;
 
 public enum ErrorCode {
     INVALID_REQUEST(""),
+    LINE_NOT_FOUND("노선 정보가 존재하지 않습니다."),
     LINE_NAME_DUPLICATED("노선 이름은 중복될 수 없습니다."),
     LINE_NAME_LENGTH("노선 이름 길이는 3~10여야 합니다."),
     DB_UPDATE_ERROR("DB 업데이트가 정상적으로 진행되지 않았습니다."),
     DB_DELETE_ERROR("DB 삭제가 정상적으로 진행되지 않았습니다."),
+    STATION_NOT_FOUND("역 정보가 존재하지 않습니다."),
     STATION_NAME_DUPLICATED("역 이름은 중복될 수 없습니다"),
     STATION_NAME_LENGTH("역 이름 길이는 3~10여야 합니다."),
     SECTION_DISTANCE("거리는 최소 1부터 최대 50까지 가능합니다."),

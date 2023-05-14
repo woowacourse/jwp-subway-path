@@ -1,5 +1,8 @@
 package subway.application;
 
+import static subway.exception.ErrorCode.LINE_NAME_DUPLICATED;
+import static subway.exception.ErrorCode.STATION_NOT_FOUND;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -14,13 +17,13 @@ import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
 import subway.domain.section.dto.SectionSaveReq;
 import subway.domain.station.Station;
+import subway.domain.station.StationName;
 import subway.domain.station.StationRepository;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionRequest;
 import subway.dto.StationResponse;
-import subway.exception.ErrorCode;
-import subway.exception.GlobalException;
+import subway.exception.BadRequestException;
 import subway.exception.NotFoundException;
 
 @Service
@@ -112,7 +115,7 @@ public class LineService {
 
     private void validateDuplicatedName(final LineRequest request) {
         if (lineRepository.existByName(request.getName())) {
-            throw new GlobalException(ErrorCode.LINE_NAME_DUPLICATED);
+            throw new BadRequestException(LINE_NAME_DUPLICATED);
         }
     }
 
@@ -167,12 +170,12 @@ public class LineService {
         });
     }
 
-    private Long getStationIdByName(final String stationName, final List<LineWithSectionRes> lineWithSections) {
+    private Long getStationIdByName(final StationName stationName, final List<LineWithSectionRes> lineWithSections) {
         return lineWithSections.stream()
             .filter(res -> res.isSourceOrTargetStation(stationName))
             .findFirst()
             .map(res -> res.getStationIdByStationName(stationName))
-            .orElseThrow(() -> new NotFoundException("역 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new NotFoundException(STATION_NOT_FOUND.getMessage() + " name = " + stationName));
     }
 
     private void saveSectionOf(final Long lineId, final Long sourceStationId,
@@ -187,9 +190,9 @@ public class LineService {
         final List<Station> sortedStations = sections.getSortedStations();
         final List<StationResponse> stationResponses = sortedStations.stream().map(station -> {
             final Long stationId = getStationIdByName(station.getName(), lineWithSections);
-            return new StationResponse(stationId, station.getName());
+            return new StationResponse(stationId, station.getName().name());
         }).collect(Collectors.toUnmodifiableList());
-        return new LineResponse(lineWithSections.get(0).getLineId(), line.getName(), line.getColor(), stationResponses);
+        return new LineResponse(lineWithSections.get(0).getLineId(), line.getName().name(), line.getColor(), stationResponses);
     }
 
     private Station createStation(final Long stationId, final List<LineWithSectionRes> lineWithSections) {
@@ -197,6 +200,6 @@ public class LineService {
             .filter(res -> res.isSourceOrTargetStation(stationId))
             .findFirst()
             .map(res -> new Station(res.getStationNameByStationId(stationId)))
-            .orElseThrow(() -> new NotFoundException("역 정보가 존재하지 않습니다."));
+            .orElseThrow(() -> new NotFoundException(STATION_NOT_FOUND.getMessage() + " id = " + stationId));
     }
 }

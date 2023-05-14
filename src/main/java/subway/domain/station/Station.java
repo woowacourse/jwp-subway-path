@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class Station {
 
-    private final String name;
+    private final StationName name;
 
     public Station(String name) {
-        this.name = name;
+        this.name = new StationName(name);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class Station {
         return Objects.hash(name);
     }
 
-    public String getName() {
+    public StationName getName() {
         return name;
     }
 }
