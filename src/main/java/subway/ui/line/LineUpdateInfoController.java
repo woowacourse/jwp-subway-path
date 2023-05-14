@@ -1,6 +1,7 @@
 package subway.ui.line;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -21,7 +22,7 @@ public class LineUpdateInfoController {
 
     @PatchMapping("/{id}")
     public ResponseEntity<Void> updateLineInfo(@PathVariable final Long id,
-                                               @RequestBody final LineUpdateInfoRequest request) {
+                                               @RequestBody @Valid final LineUpdateInfoRequest request) {
         lineUpdateInfoUseCase.updateLine(LineAssembler.toLineUpdateInfoRequestDto(id, request));
         return ResponseEntity.noContent().build();
     }

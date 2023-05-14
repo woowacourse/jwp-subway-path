@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.line.port.in.LineAddInterStationUseCase;
 import subway.application.line.port.in.LineResponseDto;
-import subway.ui.line.dto.LineAddStationRequest;
+import subway.ui.line.dto.in.LineAddStationRequest;
 import subway.ui.line.dto.in.LineResponse;
 
 @RequiredArgsConstructor

@@ -1,5 +1,7 @@
-package subway.ui.line.dto;
+package subway.ui.line.dto.in;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,7 +14,11 @@ public class LineAddStationRequest {
 
     private Long upStationId;
     private Long downStationId;
+    @NotNull
+    @Positive
     private Long newStationId;
-    private long distance;
+    @Positive
+    @NotNull
+    private Long distance;
 
 }
