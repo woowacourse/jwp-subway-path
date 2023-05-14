@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.Objects;
+
 public class Section {
     private static final int MIN_DISTANCE = 1;
 
@@ -28,7 +30,19 @@ public class Section {
     }
 
     public boolean have(final Station station) {
-        return source.equals(station) || target.equals(station);
+        return isSource(station) || isTarget(station);
+    }
+
+    public boolean isSource(final Station station) {
+        return source.equals(station);
+    }
+
+    public boolean isTarget(final Station station) {
+        return target.equals(station);
+    }
+
+    public boolean isLongOrEqualThan(final int distance) {
+        return this.distance <= distance;
     }
 
     public Station getSource() {
@@ -42,4 +56,23 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Section)) {
+            return false;
+        }
+        final Section section = (Section) o;
+        return distance == section.distance && Objects.equals(source, section.source) && Objects.equals(
+                target, section.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(source, target, distance);
+    }
+
 }

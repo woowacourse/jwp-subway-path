@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Line {
     private static final int MIN_NAME_LENGTH = 3;
@@ -25,11 +26,26 @@ public class Line {
     }
 
     public void register(final Station source, final Station target, final int distance) {
+        if (sections.isEmpty()) {
+            sections.add(new Section(source, target, distance));
+            return;
+        }
+        validateRegister(source, target);
+        final Station existence = getExistingStation(source, target);
+        if (existence.equals(source)) {
+            registerTargetStation(existence, target, distance);
+        }
+        if (existence.equals(target)) {
+            registerSourceStation(existence, source, distance);
+        }
+    }
+
+    private void validateRegister(final Station source, final Station target) {
         if (doesNotHave(source) && doesNotHave(target)) {
-            throw new IllegalArgumentException("기준역이 존재하지 않습니다.");
+            throw new IllegalArgumentException("기준역이 존재하지 않아 추가할 수 없습니다.");
         }
         if (have(source) && have(target)) {
-            throw new IllegalArgumentException("등록될 역이 이미 존재합니다.");
+            throw new IllegalArgumentException("두 역 모두 노선에 존재하는 역입니다.");
         }
     }
 
@@ -39,8 +55,68 @@ public class Line {
 
     private boolean have(final Station station) {
         return sections.stream()
-                .map(section -> section.have(station))
-                .findAny()
+                .anyMatch(section -> section.have(station));
+    }
+
+    private Station getExistingStation(final Station source, final Station target) {
+        if (have(source)) {
+            return source;
+        }
+        return target;
+    }
+
+    private void registerTargetStation(final Station existence, final Station additional, final int distance) {
+        if (isTargetDistanceUnRegistrable(existence, distance)) {
+            throw new IllegalArgumentException("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
+        }
+        final Optional<Section> foundSection = findSourceSection(existence);
+        if (foundSection.isPresent()) {
+            changeDistance(additional, foundSection.get().getTarget(), foundSection.get(), distance);
+        }
+        sections.add(new Section(existence, additional, distance));
+    }
+
+    private boolean isTargetDistanceUnRegistrable(final Station existence, final int distance) {
+        final Optional<Section> foundSourceSection = findSourceSection(existence);
+        return foundSourceSection.map(section -> section.isLongOrEqualThan(distance))
                 .orElse(false);
+    }
+
+    private Optional<Section> findSourceSection(final Station existence) {
+        return sections.stream()
+                .filter(section -> section.isSource(existence))
+                .findAny();
+    }
+
+    private void changeDistance(final Station source, final Station target, final Section oldSection, final int distance) {
+        sections.add(new Section(source, target, oldSection.getDistance() - distance));
+        sections.remove(oldSection);
+    }
+
+    private void registerSourceStation(final Station existence, final Station additional, final int distance) {
+        if (isSourceDistanceUnRegistrable(existence, distance)) {
+            throw new IllegalArgumentException("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
+        }
+        final Optional<Section> foundSection = findTargetSection(existence);
+        if (foundSection.isPresent()) {
+            changeDistance(foundSection.get().getSource(), additional, foundSection.get(), distance);
+        }
+        sections.add(new Section(additional, existence, distance));
+    }
+
+    private boolean isSourceDistanceUnRegistrable(final Station existence, final int distance) {
+        final Optional<Section> foundSection = findSourceSection(existence);
+        return foundSection.map(section -> section.isLongOrEqualThan(distance))
+                .orElse(false);
+    }
+
+    private Optional<Section> findTargetSection(final Station existence) {
+        return sections.stream()
+                .filter(section -> section.isTarget(existence))
+                .findAny();
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
