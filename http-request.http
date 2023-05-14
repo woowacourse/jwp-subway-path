@@ -1,0 +1,81 @@
+### 역 등록
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name": "판교역"
+}
+
+### 역 수정(station_id)
+
+PATCH http://localhost:8080/stations/8
+Content-Type: application/json
+
+{
+  "name": "판교역2"
+}
+
+
+### 역 제거
+
+DELETE http://localhost:8080/stations/8
+Content-Type: application/json
+
+### 노선 등록
+
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "5호선",
+  "lineNumber": 5,
+  "color": "초록"
+}
+
+### 노선 수정(line_id)
+
+PATCH http://localhost:8080/lines/3
+Content-Type: application/json
+
+{
+  "name": "5호선",
+  "lineNumber": 5,
+  "color": "노랑"
+}
+
+### 노선 삭제(lineId)
+
+DELETE http://localhost:8080/lines/3
+Content-Type: application/json
+
+### 노선 전체 조회
+
+GET http://localhost:8080/lines
+Content-Type: application/json
+
+### 노선 단일 조회 (/{lineNumber})
+
+GET http://localhost:8080/lines/2
+Content-Type: application/json
+
+
+### 구간 추가
+POST http://localhost:8080/sections
+Content-Type: application/json
+
+{
+  "lineName": "2호선",
+  "upStation": "선릉역",
+  "downStation": "매봉역",
+  "distance": 5
+}
+
+### 구간 삭제
+DELETE http://localhost:8080/sections
+Content-Type: application/json
+
+{
+  "lineNumber": 2,
+  "station": "선릉역"
+}
