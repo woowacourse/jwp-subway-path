@@ -76,10 +76,12 @@ public class LineService {
         return lineRepository.createLine(lineToAdd);
     }
 
+    @Transactional(readOnly = true)
     public LineDto findLineById(long id) {
         return toLineDto(findLineOrThrow(id));
     }
 
+    @Transactional(readOnly = true)
     public List<LineDto> findAllLines() {
         return lineRepository.findAllLines()
                              .getLines()

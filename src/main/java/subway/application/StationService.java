@@ -2,10 +2,12 @@ package subway.application;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
 import subway.exception.StationNotFoundException;
 import subway.repository.StationRepository;
 
+@Transactional
 @Service
 public class StationService {
 
@@ -16,11 +18,13 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional(readOnly = true)
     public Station findStationByName(String stationName) {
         return stationRepository.findStationByName(stationName)
                                 .orElseThrow(() -> new StationNotFoundException("존재하지 않는 역 이름입니다."));
     }
 
+    @Transactional(readOnly = true)
     public Station findStationById(long stationId) {
         return stationRepository.findStationById(stationId)
                                 .orElseThrow(() -> new StationNotFoundException("존재하지 않는 역 ID입니다."));
@@ -30,6 +34,6 @@ public class StationService {
         final Station stationToInsert = new Station(stationName);
 
         return stationRepository.findIdByName(stationName)
-                                .orElseGet(() -> stationRepository.insert(stationToInsert));
+                                .orElseGet(() -> stationRepository.createStation(stationToInsert));
     }
 }

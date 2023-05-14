@@ -29,7 +29,7 @@ public class StationRepository {
                          .map(stationEntity -> new Station(stationEntity.getName()));
     }
 
-    public long insert(Station stationToInsert) {
+    public long createStation(Station stationToInsert) {
         stationDao.findByName(stationToInsert.getName())
                   .ifPresent(ignored -> {throw new IllegalStateException("디버깅: 추가하려는 역이 이미 존재합니다");});
 
