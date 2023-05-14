@@ -106,6 +106,25 @@ public class Line {
         sections.add(new Section(newStation, baseStation, newDistance));
     }
 
+    public void removeStation(Station stationToRemove) {
+        if (!isExistInLine(stationToRemove)) {
+            throw new IllegalArgumentException("삭제하려는 역이 존재하지 않습니다");
+        }
+        Optional<Section> upSectionOpt = findSectionIncludingStationOnDirection(stationToRemove, Direction.RIGHT);
+        Optional<Section> downSectionOpt = findSectionIncludingStationOnDirection(stationToRemove, Direction.LEFT);
+
+        if (upSectionOpt.isPresent() && downSectionOpt.isPresent()) {
+            Section upSection = upSectionOpt.get();
+            Section downSection = downSectionOpt.get();
+            Distance newDistance = upSection.getDistance().plus(downSection.getDistance());
+            sections.removeAll(List.of(upSection, downSection));
+            sections.add(new Section(upSection.getUpStation(), downSection.getDownStation(), newDistance));
+            return;
+        }
+        upSectionOpt.ifPresent(sections::remove);
+        downSectionOpt.ifPresent(sections::remove);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
