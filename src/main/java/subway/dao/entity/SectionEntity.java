@@ -4,6 +4,8 @@ import subway.domain.Distance;
 import subway.domain.SectionDomain;
 import subway.domain.StationDomain;
 
+import java.util.Objects;
+
 public class SectionEntity {
 
     private final Long id;
@@ -26,8 +28,19 @@ public class SectionEntity {
         this.lineId = lineId;
     }
 
+    public static SectionEntity toEntity(final SectionDomain section, final Long lineId) {
+        return new SectionEntity(
+                section.getId(),
+                section.getDistance().getValue(),
+                section.getStart(),
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                lineId
+        );
+    }
+
     public SectionDomain toDomain(final StationDomain upStation, final StationDomain downStation) {
-        return SectionDomain.from(id, new Distance(distance), isStart, upStation, downStation);
+        return new SectionDomain(id, new Distance(distance), isStart, upStation, downStation);
     }
 
     public Long getId() {
@@ -52,5 +65,18 @@ public class SectionEntity {
 
     public Long getLineId() {
         return lineId;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final SectionEntity that = (SectionEntity) o;
+        return Objects.equals(id, that.id) && Objects.equals(distance, that.distance) && Objects.equals(isStart, that.isStart) && Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId, that.downStationId) && Objects.equals(lineId, that.lineId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, distance, isStart, upStationId, downStationId, lineId);
     }
 }

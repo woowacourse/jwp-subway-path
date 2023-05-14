@@ -143,11 +143,13 @@ public class SectionDomain {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final SectionDomain that = (SectionDomain) o;
-        return isStart == that.isStart && Objects.equals(id, that.id) && Objects.equals(distance, that.distance) && Objects.equals(upStation, that.upStation) && Objects.equals(downStation, that.downStation);
+        return Objects.equals(distance, that.distance)
+                && Objects.equals(upStation, that.upStation)
+                && Objects.equals(downStation, that.downStation);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, distance, isStart, upStation, downStation);
+        return Objects.hash(distance, upStation, downStation);
     }
 }
