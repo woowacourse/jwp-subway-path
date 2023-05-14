@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.adapter.subway.out.FakeStationRepository;
+import subway.adapter.station.out.FakeStationRepository;
 import subway.application.station.port.in.StationInfoUpdateRequestDto;
 import subway.domain.station.Station;
 

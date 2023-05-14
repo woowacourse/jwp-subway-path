@@ -1,4 +1,4 @@
-package subway.adapter.subway.out;
+package subway.adapter.station.out;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package subway.adapter.subway.out;
+package subway.adapter.station.out;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static subway.domain.station.StationFixture.코다_역_id_1;
@@ -13,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.adapter.subway.out.station.StationRepositoryImpl;
 import subway.domain.station.Station;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)

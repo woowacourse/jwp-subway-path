@@ -1,4 +1,4 @@
-package subway.adapter.subway.out.station;
+package subway.adapter.station.out;
 
 import java.util.List;
 import java.util.Optional;
