@@ -1,5 +1,6 @@
 package subway.domain.line;
 
+import java.util.List;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -29,6 +30,10 @@ public class Line {
 
     public Line(final Long id, final String name, final String color, final InterStations interStations) {
         this(id, new LineColor(color), new LineName(name), interStations);
+    }
+
+    public Line(final Long id, final String name, final String color, final List<InterStation> interStations) {
+        this(id, name, color, new InterStations(interStations));
     }
 
     public Line(final String name,
