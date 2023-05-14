@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.SectionDirection;
@@ -16,6 +17,7 @@ import subway.exception.SectionNotFoundException;
 import subway.exception.StationNotFoundException;
 
 @Service
+@Transactional
 public class SectionService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
@@ -36,7 +38,7 @@ public class SectionService {
             return sectionDao.save(requestedSection, lineId);
         }
         if (sections.isDownEndAppend(requestedSection)) {
-            return updateDownEnd(lineId, sections, requestedSection);
+            return updateDownEndAppend(lineId, sections, requestedSection);
         }
         if (sections.isUpEndAppend(requestedSection)) {
             return updateUpEnd(lineId, request, sections, requestUpStation, requestDownStation);
@@ -65,9 +67,8 @@ public class SectionService {
             return;
         }
 
-        Section downEndSection = sections.getDownEndSection();
         if (sections.getDownEndSection().isSameDownStationId(stationId)) {
-            updateDownEnd(stationId, lineId, sections, downEndSection);
+            updateDownEndRemove(stationId, lineId, sections);
             return;
         }
         removeMiddleStation(stationId, sections);
@@ -113,17 +114,17 @@ public class SectionService {
         return sectionDao.save(newSection, lineId);
     }
 
-    private long updateDownEnd(long lineId, Sections sections, Section requestedSection) {
+    private long updateDownEndAppend(long lineId, Sections sections, Section requestedSection) {
         long savedSectionId = sectionDao.save(requestedSection, lineId);
         Section downEndSection = sections.getDownEndSection();
         sectionDao.updateSectionNext(savedSectionId, downEndSection.getId());
         return savedSectionId;
     }
 
-    private void updateDownEnd(long stationId, long lineId, Sections sections, Section downEndSection) {
-        Section section = sections.findSectionByNextSection(downEndSection);
+    private void updateDownEndRemove(long stationId, long lineId, Sections sections) {
+        Section previousDownEnd = sections.findPreviousSection(sections.getDownEndSection());
         sectionDao.deleteSectionByDownStationId(stationId, lineId);
-        sectionDao.updateSectionNext(null, section.getId());
+        sectionDao.updateSectionNext(null, previousDownEnd.getId());
     }
 
     private void removeMiddleStation(long stationId, Sections sections) {
@@ -156,10 +157,10 @@ public class SectionService {
 
     public List<StationResponse> findStationsInOrder(long lineId) {
         Sections sections = sectionDao.findSectionsByLineId(lineId);
-        System.out.println(sections);
 
         List<Station> stations = sections.getStationsInOrder();
-        return stations.stream().map(StationResponse::of)
+        return stations.stream()
+                .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 }

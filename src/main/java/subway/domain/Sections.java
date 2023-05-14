@@ -55,13 +55,13 @@ public class Sections {
                 .collect(Collectors.toList());
 
         return sections.stream()
-                .filter(isUpEndSection(downSectionIds))
+                .filter(isNotContainedId(downSectionIds))
                 .findFirst()
                 .orElseThrow(EndStationNotExistException::new);
     }
 
-    private static Predicate<Section> isUpEndSection(List<Long> downSectionIds) {
-        return existingSection -> !downSectionIds.contains(existingSection.getId());
+    private static Predicate<Section> isNotContainedId(List<Long> sectionIds) {
+        return existingSection -> !sectionIds.contains(existingSection.getId());
     }
 
     public boolean isInitialSave() {
@@ -76,9 +76,9 @@ public class Sections {
         return sections;
     }
 
-    public Section findSectionByNextSection(Section section) {
+    public Section findPreviousSection(Section section) {
         return sections.stream()
-                .filter(section1 -> section1.getNextSectionId().equals(section.getNextSectionId()))
+                .filter(existingSection -> existingSection.getNextSectionId().equals(section.getId()))
                 .findFirst().orElseThrow(SectionNotFoundException::new);
     }
 
@@ -127,8 +127,8 @@ public class Sections {
         List<Section> result = new ArrayList<>();
         result.add(upEndSection);
         Section currentSection = upEndSection;
-        while (currentSection.getNextSectionId() != DOWN_END_ID) {
-            Section nextSection = sectionIdMapping.get(currentSection.getNextSectionId());
+        while (currentSection != null && currentSection.getNextSectionId() != DOWN_END_ID) {
+            Section nextSection = sectionIdMapping.getOrDefault(currentSection.getNextSectionId(), null);
             result.add(nextSection);
             currentSection = nextSection;
         }
