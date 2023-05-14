@@ -31,6 +31,16 @@ public class LineDao {
                 .usingGeneratedKeyColumns("line_id");
     }
 
+    public boolean isLineNumberExist(final Long lineNumber) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM line WHERE line_number = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, lineNumber));
+    }
+
+    public boolean isLineIdExist(final Long lineId) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM line WHERE line_id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, lineId));
+    }
+
     public Long save(final LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getName());

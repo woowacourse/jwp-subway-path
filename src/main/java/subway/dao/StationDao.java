@@ -29,6 +29,16 @@ public class StationDao {
                 .usingGeneratedKeyColumns("station_id");
     }
 
+    public boolean isStationIdExist(final Long stationId) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE station_id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId));
+    }
+
+    public boolean isStationNameExist(final String name) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM station WHERE name = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, name));
+    }
+
     public Long save(final StationEntity stationEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", stationEntity.getName());

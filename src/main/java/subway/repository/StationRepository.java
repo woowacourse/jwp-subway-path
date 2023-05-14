@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.entity.StationEntity;
+import subway.exception.notfound.StationNotFoundException;
 
 @Repository
 public class StationRepository {
@@ -21,13 +22,21 @@ public class StationRepository {
     }
 
     public Station findByStationId(final Long stationId) {
-        StationEntity stationEntity = stationDao.findByStationId(stationId);
-        return new Station(stationEntity.getName());
+        final boolean exist = stationDao.isStationIdExist(stationId);
+        if (exist) {
+            StationEntity stationEntity = stationDao.findByStationId(stationId);
+            return new Station(stationEntity.getName());
+        }
+        throw new StationNotFoundException();
     }
 
     public Long findStationIdByStationName(final String stationName) {
-        StationEntity stationEntity = stationDao.findByName(stationName);
-        return stationEntity.getStationId();
+        final boolean exist = stationDao.isStationNameExist(stationName);
+        if (exist) {
+            StationEntity stationEntity = stationDao.findByName(stationName);
+            return stationEntity.getStationId();
+        }
+        throw new StationNotFoundException();
     }
 
     public List<Station> findAll() {
@@ -39,6 +48,10 @@ public class StationRepository {
     }
 
     public void deleteByStationId(final Long stationId) {
-        stationDao.deleteByStationId(stationId);
+        final boolean exist = stationDao.isStationIdExist(stationId);
+        if (exist) {
+            stationDao.deleteByStationId(stationId);
+        }
+        throw new StationNotFoundException();
     }
 }

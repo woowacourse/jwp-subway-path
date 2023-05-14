@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.entity.LineEntity;
+import subway.exception.notfound.LineNotFoundException;
 
 @Repository
 public class LineRepository {
@@ -22,8 +23,12 @@ public class LineRepository {
     }
 
     public Long findLineIdByLine(final Line line) {
-        final LineEntity lineEntity = lineDao.findByLineNumber(line.getLineNumber());
-        return lineEntity.getLineId();
+        final boolean exist = lineDao.isLineNumberExist(line.getLineNumber());
+        if (exist) {
+            final LineEntity lineEntity = lineDao.findByLineNumber(line.getLineNumber());
+            return lineEntity.getLineId();
+        }
+        throw new LineNotFoundException();
     }
 
     public List<Line> findAll() {
@@ -33,6 +38,11 @@ public class LineRepository {
     }
 
     public void deleteByLineId(final Long lineId) {
-        lineDao.deleteByLineId(lineId);
+        final boolean exist = lineDao.isLineIdExist(lineId);
+        if (exist) {
+            lineDao.deleteByLineId(lineId);
+            return;
+        }
+        throw new LineNotFoundException();
     }
 }

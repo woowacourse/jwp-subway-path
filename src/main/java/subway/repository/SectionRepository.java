@@ -12,6 +12,8 @@ import subway.domain.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
+import subway.exception.notfound.LineNotFoundException;
+import subway.exception.notfound.SectionNotFoundException;
 
 @Repository
 public class SectionRepository {
@@ -27,11 +29,19 @@ public class SectionRepository {
     }
 
     public Sections findByLineNumber(final Long lineNumber) {
-        final LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
-        return getSections(lineEntity);
+        final boolean exist = lineDao.isLineNumberExist(lineNumber);
+        if (exist) {
+            final LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
+            return getSections(lineEntity);
+        }
+        throw new LineNotFoundException();
     }
 
     private Sections getSections(final LineEntity lineEntity) {
+        final boolean sectionsExist = sectionDao.isLineIdExist(lineEntity.getLineId());
+        if (!sectionsExist) {
+            throw new SectionNotFoundException();
+        }
         final List<SectionEntity> sectionsByLineId = sectionDao.findAllByLineId(lineEntity.getLineId());
 
         final List<Section> sections = sectionsByLineId.stream()
@@ -49,6 +59,10 @@ public class SectionRepository {
     }
 
     public void updateByLineNumber(final Sections sections, final Long lineNumber) {
+        final boolean exist = lineDao.isLineNumberExist(lineNumber);
+        if (!exist) {
+            throw new LineNotFoundException();
+        }
         final LineEntity lineEntity = lineDao.findByLineNumber(lineNumber);
         final List<SectionEntity> sectionEntities = sections.getSections().stream()
                 .map(section -> {
