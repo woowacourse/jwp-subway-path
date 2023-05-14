@@ -3,57 +3,59 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.station.Station;
-import subway.domain.station.Stations;
+import subway.domain.station.StationRepository;
+import subway.domain.station.dto.StationRes;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.exception.NotFoundException;
+import subway.exception.ErrorCode;
+import subway.exception.GlobalException;
 
 @Service
+@Transactional(readOnly = true)
 public class StationService {
-    private final StationDao stationDao;
 
-    public StationService(final StationDao stationDao) {
-        this.stationDao = stationDao;
+    private final StationRepository stationRepository;
+
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(final StationRequest stationRequest) {
-        final Stations stations = getStations();
+    @Transactional
+    public Long saveStation(final StationRequest stationRequest) {
+        validateDuplicatedName(stationRequest);
         final Station requestStation = new Station(stationRequest.getName());
-        stations.validateDuplication(requestStation);
-        final Station savedStation = stationDao.insert(requestStation);
-        return StationResponse.of(savedStation.getId(), savedStation.getName());
+        return stationRepository.insert(requestStation);
     }
 
-    public StationResponse findStationResponseById(final Long id) {
-        final Station station = getById(id);
-        return StationResponse.of(station.getId(), station.getName());
+    @Transactional
+    public void updateStationById(Long id, StationRequest stationRequest) {
+        validateDuplicatedName(stationRequest);
+        final Station station = new Station(stationRequest.getName());
+        stationRepository.updateById(id, station);
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(station -> StationResponse.of(station.getId(), station.getName()))
-                .collect(Collectors.toList());
-    }
-
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
-    }
-
+    @Transactional
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteById(id);
     }
 
-    private Stations getStations() {
-        final List<Station> stations = stationDao.findAll();
-        return new Stations(stations);
+    public StationResponse getStationById(final Long id) {
+        final Station station = stationRepository.findById(id);
+        return new StationResponse(id, station.getName());
     }
 
-    private Station getById(final Long id) {
-        return stationDao.findById(id)
-            .orElseThrow(() -> new NotFoundException("해당하는 역이 없습니다"));
+    public List<StationResponse> getStations() {
+        final List<StationRes> findStations = stationRepository.findAll();
+        return findStations.stream()
+            .map(res -> new StationResponse(res.getId(), res.getName()))
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    private void validateDuplicatedName(final StationRequest stationRequest) {
+        if (stationRepository.existByName(stationRequest.getName())) {
+            throw new GlobalException(ErrorCode.STATION_NAME_DUPLICATED);
+        }
     }
 }

@@ -1,11 +1,11 @@
-package subway.dto;
+package subway.domain.station.dto;
 
-public class StationResponse {
+public class StationRes {
 
     private final Long id;
     private final String name;
 
-    public StationResponse(final Long id, final String name) {
+    public StationRes(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
