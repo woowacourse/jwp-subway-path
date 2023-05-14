@@ -1,5 +1,7 @@
 package subway.dao;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
@@ -38,10 +40,19 @@ class LineDaoTest {
     @DisplayName("insert()를 호출할 때 유효한 LineEntity를 입력하면 정상적으로 노선이 추가된다.")
     void insert_success() {
         // given
+        LineEntity entity=new LineEntity("수인분당선","노란색",7L);
+        int beforeSize=lineDao.findAll().size();
 
         // when
+        Long newLineId=lineDao.insert(entity);
+        int afterSize = lineDao.findAll().size();
 
         // then
+        assertAll(
+            () -> assertThatCode(() -> lineDao.findById(newLineId))
+                .doesNotThrowAnyException(),
+            () -> assertThat(afterSize).isEqualTo(beforeSize + 1)
+        );
 
     }
 

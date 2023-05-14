@@ -32,7 +32,6 @@ public class LineDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    // TODO: 2023-05-14 테스트 코드 작성 
     public Long insert(LineEntity entity) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", entity.getName());
