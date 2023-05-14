@@ -1,15 +1,16 @@
 package subway.persistence;
 
+import java.util.List;
+
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
 import subway.domain.Line;
 import subway.domain.repository.LineRepository;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Repository
 public class LineJdbcRepository implements LineRepository {
@@ -31,12 +32,9 @@ public class LineJdbcRepository implements LineRepository {
     }
 
     @Override
-    public void createLine(final Line line) {
-        final Map<String, Object> parameters = new HashMap<>();
-
-        parameters.put("name", line.getName());
-
-        insert.execute(parameters);
+    public long createLine(final Line line) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(line);
+        return insert.executeAndReturnKey(params).longValue();
     }
 
     @Override
