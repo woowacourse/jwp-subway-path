@@ -18,115 +18,7 @@
 - [ ] 노선 목록 조회 API 수정
   - [ ] 존재하는 노선들을 보여준다.
 
----
-
-# API 설계
-
-## 단일 노선 조회
-
-```http request
-GET "/lines/{lineId}"
-
-// List<StationResponse>
-HTTP Status : 200 OK
-```
-```java
-public class LineResponse {
-    int id;
-    String name;
-    String color;
-    List<StationResponse> stations;
-}
-```
-
-## 노선 목록 조회
-
-```http request
-GET "/lines"
-
-// List<LineResponse>
-HTTP Status : 200 OK
-```
-
-## 노선에 초기 역 추가
-
-```http request
-POST "/lines/{lineId}"
-
-Location: "/lines/{lineId}"
-
-CREATED 201
-```
-```java
-public class InitStationAddRequest {
-    Long upStationId;
-    Long downStationId;
-    int distance;
-}
-```
-
-## 노선에 역 1개 추가
-
-```http request
-POST "/lines/{lineId}/stations"
-
-Location: "/lines/{lineId}"
-
-CREATED 201
-```
-
-```java
-public class StationAddRequest {
-    Long newStationId;
-    Long upStationId;
-    Long nextStationId;
-    int upStationDistance;
-    int downStationDistance;
-}
-```
-
-## 노선에 역 제거
-
-```http request
-DELETE "/lines/{lineId}/stations/{stationId}"
-
-HTTP Status : 204 NO Contentent
-```
-
----
-
-# DB TABLE 설계
-```mysql
-CREATE TABLE STATION
-(
-  id   BIGINT NOT NULL AUTO_INCREMENT,
-  name VARCHAR(255) NOT NULL UNIQUE,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE LINE
-(
-  id    BIGINT AUTO_INCREMENT NOT NULL,
-  name  VARCHAR(255)          NOT NULL UNIQUE,
-  color VARCHAR(255)          NOT NULL UNIQUE,
-  PRIMARY KEY (id)
-);
-
-CREATE TABLE SECTION
-(
-    id         BIGINT AUTO_INCREMENT NOT NULL,
-    line_id    BIGINT,
-    previous_station_id BIGINT,
-    next_station_id BIGINT,
-    distance INT NOT NULL,
-    PRIMARY KEY (id),
-    FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE,
-    FOREIGN KEY (previous_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
-    FOREIGN KEY (next_station_id) REFERENCES STATION (id) ON DELETE CASCADE
-);
-```
-
----
+# 도메인 객체 설계
 
 ```mermaid
 graph TD
@@ -136,3 +28,11 @@ graph TD
     Lines --> Stations
     Stations --> Station
 ```
+
+# API 설계
+
+[API 설계](API%20statements.http)
+
+# DB TABLE 설계
+
+[DB 테이블 설계](src/main/resources/schema.sql)

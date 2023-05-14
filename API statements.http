@@ -1,0 +1,30 @@
+### 단일 노선 조회
+GET http://localhost:8080/lines/1
+
+### 전체 노선 조회
+GET http://localhost:8080/lines
+
+### 노선에 초기 역 추가
+POST http://localhost:8080/lines/1
+Content-Type: application/json
+
+{
+  "upStationId" : 1,
+  "downStationId" : 2,
+  "distance" : 10
+}
+
+### 노선에 역 1개 추가
+POST http://localhost:8080/1/stations
+Content-Type: application/json
+
+{
+  "newStationId": 3,
+  "upStationId": 1,
+  "nextStationId": 2,
+  "upStationDistance": 4,
+  "ownStationDistance": 6
+}
+
+### 노선에 역 제거
+DELETE http://localhost:8080/lines/1/stations/3
