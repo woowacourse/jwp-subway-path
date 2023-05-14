@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LineStationResponse;
+import subway.dto.SectionRequest;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -26,14 +28,34 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
+    @PostMapping("/{id}/stations/{stationId}")
+    public ResponseEntity<Long> registerStation(
+            @PathVariable final Long id,
+            @PathVariable final Long stationId,
+            @RequestBody final SectionRequest sectionRequest
+    ) {
+        Long sectionId = lineService.saveStationInLine(sectionRequest);
+        return ResponseEntity.created(URI.create("/lines/" + id + "/stations/" + stationId)).body(sectionId);
+    }
+
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         return ResponseEntity.ok(lineService.findLineResponses());
     }
 
+    @GetMapping("/stations")
+    public ResponseEntity<List<LineStationResponse>> findRegisteredStations() {
+        return ResponseEntity.ok(lineService.findAll());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
+    }
+
+    @GetMapping("/{id}/stations")
+    public ResponseEntity<LineStationResponse> findRegisteredStationsInLine(@PathVariable final Long id) {
+        return ResponseEntity.ok(lineService.findById(id));
     }
 
     @PutMapping("/{id}")
@@ -45,6 +67,12 @@ public class LineController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{id}/stations/{stationId}")
+    public ResponseEntity<Void> deleteSection(@PathVariable final Long id, @PathVariable final Long stationId) {
+        lineService.deleteByLineIdAndStationId(id, stationId);
         return ResponseEntity.noContent().build();
     }
 }
