@@ -29,7 +29,7 @@ class SectionTest {
         final int distance = 0;
 
         // expect
-        assertThatThrownBy(() -> new Section("잠실역", "몽촌토성역", distance))
+        assertThatThrownBy(() -> new Section("잠실역", "석촌역", distance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("거리 정보는 1 이상이어야 합니다.");
     }
@@ -50,5 +50,14 @@ class SectionTest {
                 () -> assertThat(section.getTarget()).isEqualTo(new Station("석촌역")),
                 () -> assertThat(section.getDistance()).isEqualTo(1)
         );
+    }
+
+    @Test
+    void 동일한_역들을_가졌는지_확인할_수_있다() {
+        // given
+        final Section section = new Section("잠실역", "석촌역", 10);
+
+        // expect
+        assertThat(section.have("잠실역", "석촌역")).isTrue();
     }
 }

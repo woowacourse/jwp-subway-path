@@ -19,6 +19,10 @@ public class Station {
         }
     }
 
+    public boolean isName(final String other) {
+        return name.equals(other);
+    }
+
     public String getName() {
         return name;
     }

@@ -23,4 +23,17 @@ public class Line {
             throw new IllegalArgumentException(String.format("노선 이름은 %d~%d자 사이여야 합니다.", MIN_NAME_LENGTH, MAX_NAME_LENGTH));
         }
     }
+
+    public void register(final String source, final String target, final int distance) {
+        if (haveSection(source, target)) {
+            throw new IllegalArgumentException("이미 존재하는 구간입니다.");
+        }
+    }
+
+    private boolean haveSection(final String source, final String target) {
+        return sections.stream()
+                .map(section -> section.have(source, target) || section.have(target, source))
+                .findAny()
+                .orElse(false);
+    }
 }
