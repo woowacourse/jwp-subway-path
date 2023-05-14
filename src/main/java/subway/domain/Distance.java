@@ -11,10 +11,6 @@ public final class Distance {
 		this.distance = distance;
 	}
 
-	public boolean isLonger(final Distance distance) {
-		return this.distance > distance.distance;
-	}
-
 	public Distance subtractDistance(final Distance distance) {
 		final int result = this.distance - distance.distance;
 

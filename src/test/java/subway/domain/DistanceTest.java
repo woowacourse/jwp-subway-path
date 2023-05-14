@@ -20,40 +20,6 @@ class DistanceTest {
 	}
 
 	@Nested
-	@DisplayName("두 거리를 비교할 때, 주어진 거리가 ")
-	class IsLonger {
-
-		@Test
-		@DisplayName("짧으면 참을 반환한다.")
-		void givenShortDistance_ThenReturnTrue() {
-			//given
-			final Distance distance = new Distance(10);
-			final Distance comparison = new Distance(9);
-
-			//when
-			final boolean result = distance.isLonger(comparison);
-
-			//then
-			assertThat(result).isTrue();
-		}
-
-		@ParameterizedTest
-		@ValueSource(ints = {10, 11})
-		@DisplayName("같거나 길면 거짓을 반환한다.")
-		void givenLongOrSameDistance_ThenReturnFalse(final int input) {
-			//given
-			final Distance distance = new Distance(10);
-			final Distance comparison = new Distance(input);
-
-			//when
-			final boolean result = distance.isLonger(comparison);
-
-			//then
-			assertThat(result).isFalse();
-		}
-	}
-
-	@Nested
 	@DisplayName("두 거리의 차를 구할 때, 거리의 차가")
 	class subtractDistance {
 
