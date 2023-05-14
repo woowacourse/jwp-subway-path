@@ -19,111 +19,33 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선에 처음 두 역을 등록할 수 있다.")
     @Test
     void initialize() {
-        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        String requestUri = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all()
-                .extract()
-                .header("location");
+        String location = saveLine();
+        saveStation("개룡역");
+        saveStation("거여역");
+        final var response = saveSection("개룡역", "거여역", 5, location);
 
-        RestAssured.given().log().all()
-                .body(Map.of("name", "개룡역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        RestAssured.given().log().all()
-                .body(Map.of("name", "거여역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        StationsSavingRequest stationsSavingRequest
-                = new StationsSavingRequest("개룡역", "거여역", 5, true);
-        ExtractableResponse<Response> response2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest)
-                .when().post(requestUri + "/stations")
-                .then().log().all()
-                .extract();
-
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response2.header("Location")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
     }
 
     @DisplayName("지하철 노선에 상행 방향으로 역을 추가할 수 있다.")
     @Test
     void insertUp() {
-        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        String requestUri = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all()
-                .extract()
-                .header("location");
+        String requestUri = saveLine();
+        saveStation("개룡역");
+        saveStation("거여역");
+        final var response = saveSection("개룡역", "거여역", 5, requestUri);
 
-        RestAssured.given().log().all()
-                .body(Map.of("name", "개룡역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        RestAssured.given().log().all()
-                .body(Map.of("name", "거여역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        StationsSavingRequest stationsSavingRequest
-                = new StationsSavingRequest("개룡역", "거여역", 5, false);
-        ExtractableResponse<Response> response2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest)
-                .when().post(requestUri + "/stations")
-                .then().log().all()
-                .extract();
-
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response2.header("Location")).isNotBlank();
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
     }
 
     @DisplayName("역과 역 사이의 거리로 양의 정수만을 입력할 수 있다.")
     @Test
     void invalidDistance() {
-        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        String requestUri = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all()
-                .extract()
-                .header("location");
-
-        RestAssured.given().log().all()
-                .body(Map.of("name", "개룡역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        RestAssured.given().log().all()
-                .body(Map.of("name", "거여역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
+        final var requestUri = saveLine();
+        saveStation("개룡역");
+        saveStation("거여역");
 
         String json = "{\n" +
                 "    \"previousStationName\": \"개룡역\",\n" +
@@ -145,111 +67,26 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("역과 역 사이에 추가하는 과정에서 거리가 양의 정수보다 내려갈 수 없다.")
     @Test
     void invalidDistance2() {
-        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        String requestUri = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all()
-                .extract()
-                .header("location");
+        String requestUri = saveLine();
+        saveStation("개룡역");
+        saveStation("거여역");
+        saveStation("용암역");
 
-        RestAssured.given().log().all()
-                .body(Map.of("name", "개룡역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
+        saveSection("개룡역", "거여역", 5, requestUri);
+        final var response = saveSection("개룡역", "용암역", 5, requestUri);
 
-        RestAssured.given().log().all()
-                .body(Map.of("name", "거여역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        RestAssured.given().log().all()
-                .body(Map.of("name", "용암역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        StationsSavingRequest stationsSavingRequest
-                = new StationsSavingRequest("개룡역", "거여역", 5, false);
-        ExtractableResponse<Response> response2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest)
-                .when().post(requestUri + "/stations")
-                .then().log().all()
-                .extract();
-
-        StationsSavingRequest stationsSavingRequest2
-                = new StationsSavingRequest("개룡역", "용암역", 5, false);
-        ExtractableResponse<Response> response3 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest2)
-                .when().post(requestUri + "/stations")
-                .then().log().all()
-                .extract();
-
-        assertThat(response3.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
     @DisplayName("노선상에 있는 역을 삭제할 수 있습니다.")
     void delete() {
-        LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        String requestUri = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all()
-                .extract()
-                .header("location");
-
-        RestAssured.given().log().all()
-                .body(Map.of("name", "개룡역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        RestAssured.given().log().all()
-                .body(Map.of("name", "거여역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        RestAssured.given().log().all()
-                .body(Map.of("name", "용암역"))
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all();
-
-        StationsSavingRequest stationsSavingRequest
-                = new StationsSavingRequest("개룡역", "거여역", 5, false);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest)
-                .when().post(requestUri + "/stations")
-                .then().log().all();
-
-        StationsSavingRequest stationsSavingRequest2
-                = new StationsSavingRequest("개룡역", "용암역", 2, false);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationsSavingRequest2)
-                .when().post(requestUri + "/stations")
-                .then().log().all();
+        String requestUri = saveLine();
+        saveStation("개룡역");
+        saveStation("거여역");
+        saveStation("용암역");
+        saveSection("개룡역", "거여역", 5, requestUri);
+        saveSection("개룡역", "용암역", 2, requestUri);
 
 
         ExtractableResponse<Response> response = RestAssured
@@ -261,5 +98,37 @@ public class SectionIntegrationTest extends IntegrationTest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private static ExtractableResponse<Response> saveSection(String previousStationName, String nextStationName, int distance, String requestUri) {
+        StationsSavingRequest stationsSavingRequest
+                = new StationsSavingRequest(previousStationName, nextStationName, distance, false);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationsSavingRequest)
+                .when().post(requestUri + "/stations")
+                .then().log().all()
+                .extract();
+    }
+
+    private static void saveStation(String name) {
+        RestAssured.given().log().all()
+                .body(Map.of("name", name))
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/stations")
+                .then().log().all();
+    }
+
+    private static String saveLine() {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new LineRequest("신분당선", "bg-red-600"))
+                .when().post("/lines")
+                .then().log().all()
+                .extract()
+                .header("location");
     }
 }
