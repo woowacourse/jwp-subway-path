@@ -1,7 +1,7 @@
 package subway.dao.entity;
 
-import subway.domain.LineDomain;
-import subway.domain.SectionsDomain;
+import subway.domain.Line;
+import subway.domain.Sections;
 
 import java.util.Objects;
 
@@ -21,8 +21,8 @@ public class LineEntity {
         this.color = color;
     }
 
-    public LineDomain toDomain(final SectionsDomain sections) {
-        return new LineDomain(id, name, color, sections);
+    public Line toDomain(final Sections sections) {
+        return new Line(id, name, color, sections);
     }
 
     public Long getId() {

@@ -1,25 +1,21 @@
 package subway.dao;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.config.DaoTestConfig;
-import subway.dao.dto.SectionEntity;
-import subway.domain.Distance;
-import subway.domain.Station;
+import subway.dao.entity.SectionEntity;
+import subway.dao.entity.StationEntity;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class SectionDaoTest extends DaoTestConfig {
 
     SectionDao sectionDao;
-
     StationDao stationDao;
-
     LineDao lineDao;
 
     @BeforeEach
@@ -29,111 +25,120 @@ class SectionDaoTest extends DaoTestConfig {
         lineDao = new LineDao(jdbcTemplate);
     }
 
-    @DisplayName("구간을 저장한다.")
     @Test
-    void save() {
+    void 구간을_저장한다() {
         // given
-        final Long 잠실역_식별자값 = stationDao.save("잠실");
-        final Long 잠실새내역_식별자값 = stationDao.save("잠실새내");
-        final Long 노선_2_식별자값 = lineDao.save("2", "초록");
+        final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
+        final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
+
+        final Long saveLineId = lineDao.insert("2", "초록");
 
         // when
-        final Long 구간_식별자값 = sectionDao.save(
-                잠실역_식별자값,
-                잠실새내역_식별자값,
-                노선_2_식별자값,
-                true,
-                new Distance(10)
-        );
+        final SectionEntity sectionEntity = new SectionEntity(10, true, saveUpStationId, saveDownStationId, saveLineId);
+
+        final Long saveSectionId = sectionDao.insert(sectionEntity);
 
         // then
-        assertThat(구간_식별자값).isNotNull();
+        assertThat(saveSectionId)
+                .isNotNull()
+                .isNotZero();
     }
 
-    @DisplayName("구간을 저장하고 구간_식별자값으로 조회한다.")
     @Test
-    void findBySectionId() {
+    void 구간을_모두_배치_저장한다() {
         // given
-        final Long 잠실역_식별자값 = stationDao.save("잠실");
-        final Long 잠실새내역_식별자값 = stationDao.save("잠실새내");
-        final Long 노선_2_식별자값 = lineDao.save("2", "초록");
+        final List<SectionEntity> sectionEntities = List.of(
+                new SectionEntity(10, false, 1L, 2L, 3L),
+                new SectionEntity(10, false, 2L, 3L, 3L),
+                new SectionEntity(10, false, 3L, 4L, 3L));
 
         // when
-        final Long 구간_식별자값 = sectionDao.save(
-                잠실역_식별자값,
-                잠실새내역_식별자값,
-                노선_2_식별자값,
-                true,
-                new Distance(10)
-        );
+        sectionDao.insertBatch(sectionEntities);
 
-        final Optional<SectionEntity> 아마도_잠실_잠실새내_구간 = sectionDao.findBySectionId(구간_식별자값);
-
-        assertThat(아마도_잠실_잠실새내_구간).isPresent();
-        final SectionEntity 잠실_잠실새내_구간 = 아마도_잠실_잠실새내_구간.get();
+        final List<SectionEntity> findSectionEntities = sectionDao.findAllByLineId(3L);
 
         // then
-        assertThat(잠실_잠실새내_구간)
-                .usingRecursiveComparison()
-                .ignoringFields("id")
-                .isEqualTo(new SectionEntity(
-                        0L,
-                        잠실역_식별자값,
-                        잠실새내역_식별자값,
-                        노선_2_식별자값,
-                        10,
-                        true
+        assertThat(findSectionEntities)
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .containsExactlyElementsOf(sectionEntities);
+    }
+
+    @Test
+    void 구간을_조회한다() {
+        // given
+        final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
+        final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
+
+        final Long saveLineId = lineDao.insert("2", "초록");
+
+        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, saveLineId, true, 10);
+
+        // when
+        final Optional<SectionEntity> maybeSectionEntity = sectionDao.findBySectionId(saveSectionId);
+
+        // then
+        assertAll(
+                () -> assertThat(maybeSectionEntity).isPresent(),
+                () -> assertThat(maybeSectionEntity.get())
+                        .usingRecursiveComparison()
+                        .isEqualTo(new SectionEntity(saveSectionId, 10, true, saveUpStationId, saveDownStationId, saveLineId))
+        );
+    }
+
+    @Test
+    void 노선_식별자값에_해당하는_구간들을_모두_조회한다() {
+        // given
+        final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
+        final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
+        final Long saveLineId = lineDao.insert("2", "초록");
+
+        sectionDao.insert(saveUpStationId, saveDownStationId, saveLineId, true, 10);
+
+        // when
+        final List<SectionEntity> findSectionEntities = sectionDao.findAllByLineId(saveLineId);
+
+        // then
+        assertThat(findSectionEntities)
+                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
+                .containsExactly(new SectionEntity(
+                        10, true, saveUpStationId, saveDownStationId, saveLineId
                 ));
     }
 
-    @DisplayName("구간을 저장하고 노선_식별자값을 통해 구간들을 조회한다.")
     @Test
-    void findByLineId() {
+    void 구간_식별자값으로_구간을_삭제한다() {
         // given
-        final Long 잠실역_식별자값 = stationDao.save("잠실");
-        final Long 잠실새내역_식별자값 = stationDao.save("잠실새내");
-        final Long 잠실나루역_식별자값 = stationDao.save("잠실나루");
-        final Long 노선_2_식별자값 = lineDao.save("2", "초록");
+        final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
+        final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
 
-        sectionDao.save(잠실역_식별자값, 잠실새내역_식별자값, 노선_2_식별자값, false, new Distance(10));
-        sectionDao.save(잠실나루역_식별자값, 잠실역_식별자값, 노선_2_식별자값, true, new Distance(10));
+        final Long saveLineId = lineDao.insert("2", "초록");
+
+        final Long saveSectionId = sectionDao.insert(saveUpStationId, saveDownStationId, saveLineId, true, 10);
 
         // when
-        final List<SectionEntity> 노선_2_목록 = sectionDao.findByLineId(노선_2_식별자값);
+        sectionDao.deleteBySectionId(saveSectionId);
+
+        final Optional<SectionEntity> maybeSectionEntity = sectionDao.findBySectionId(saveSectionId);
 
         // then
-        assertThat(노선_2_목록)
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                .containsExactly(
-                        new SectionEntity(0L, 잠실역_식별자값, 잠실새내역_식별자값, 노선_2_식별자값, 10, false),
-                        new SectionEntity(0L, 잠실나루역_식별자값, 잠실역_식별자값, 노선_2_식별자값, 10, true)
-                );
+        assertThat(maybeSectionEntity).isEmpty();
     }
 
-    @DisplayName("노선_식별자값을 통해 노선의 상행 종점 지하철역_식별자값을 반환한다.")
     @Test
-    void findFirstStationIdByLineId() {
+    void 노선_식별자값으로_구간을_삭제한다() {
         // given
-        final Long 잠실역_식별자값 = stationDao.save("잠실");
-        final Long 잠실새내역_식별자값 = stationDao.save("잠실새내");
-        final Long 잠실나루역_식별자값 = stationDao.save("잠실나루");
-        final Long 노선_2_식별자값 = lineDao.save("2", "초록");
+        final Long saveUpStationId = stationDao.insert(new StationEntity("헤나"));
+        final Long saveDownStationId = stationDao.insert(new StationEntity("루카"));
+        final Long saveLineId = lineDao.insert("2", "초록");
 
-        sectionDao.save(잠실역_식별자값, 잠실새내역_식별자값, 노선_2_식별자값, false, new Distance(10));
-        sectionDao.save(잠실나루역_식별자값, 잠실역_식별자값, 노선_2_식별자값, true, new Distance(10));
+        sectionDao.insert(saveUpStationId, saveDownStationId, saveLineId, true, 10);
 
         // when
-        final Long 상행종점_지하철역_식별자값 = sectionDao.findFirstStationIdByLineId(노선_2_식별자값);
+        sectionDao.deleteByLineId(saveLineId);
 
-        final Optional<Station> maybeFirstUpStation = stationDao.findById(상행종점_지하철역_식별자값);
-
-        assertThat(maybeFirstUpStation).isPresent();
-        final Station firstUpStation = maybeFirstUpStation.get();
+        final List<SectionEntity> findSectionEntities = sectionDao.findAllByLineId(saveLineId);
 
         // then
-        assertThat(firstUpStation)
-                .usingRecursiveComparison()
-                .ignoringFields("id", "sections")
-                .isEqualTo(new Station("잠실나루", Collections.emptyList()));
+        assertThat(findSectionEntities).isEmpty();
     }
 }

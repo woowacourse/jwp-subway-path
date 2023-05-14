@@ -4,7 +4,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.application.request.CreateLineRequest;
 import subway.application.response.LineResponse;
-import subway.dto.StationResponse;
+import subway.application.response.StationResponse;
 import subway.integration.support.RestAssuredFixture;
 
 import java.util.List;
@@ -31,12 +31,12 @@ public class LineAssured {
         private ExtractableResponse<Response> response;
 
         public LineRequestBuilder 노선을_등록한다(final CreateLineRequest request) {
-            response = post("/v2/lines", request);
+            response = post("/lines", request);
             return this;
         }
 
         public LineRequestBuilder 노선을_조회한다(final Long lineId) {
-            response = RestAssuredFixture.get("/v2/lines/" + lineId);
+            response = RestAssuredFixture.get("/lines/" + lineId);
             return this;
         }
 

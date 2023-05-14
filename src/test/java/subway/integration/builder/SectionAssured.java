@@ -32,12 +32,12 @@ public class SectionAssured {
         private ExtractableResponse<Response> response;
 
         public SectionRequestBuilder 구간을_등록한다(final CreateSectionRequest request) {
-            response = RestAssuredFixture.post("/v2/sections", request);
+            response = RestAssuredFixture.post("/sections", request);
             return this;
         }
 
         public SectionRequestBuilder 구간을_조회한다(final Long sectionId) {
-            response = RestAssuredFixture.get("/v2/sections/" + sectionId);
+            response = RestAssuredFixture.get("/sections/" + sectionId);
             return this;
         }
 

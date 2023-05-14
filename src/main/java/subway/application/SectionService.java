@@ -1,30 +1,30 @@
-package subway.application.v2;
+package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.request.CreateSectionRequest;
 import subway.application.response.SectionResponse;
-import subway.domain.SectionDomain;
-import subway.dto.StationResponse;
+import subway.domain.Section;
+import subway.application.response.StationResponse;
 import subway.repository.SectionRepository;
 
 @Transactional(readOnly = true)
 @Service
-public class SectionServiceV2 {
+public class SectionService {
 
     private final SectionRepository sectionRepository;
 
-    public SectionServiceV2(final SectionRepository sectionRepository) {
+    public SectionService(final SectionRepository sectionRepository) {
         this.sectionRepository = sectionRepository;
     }
 
     @Transactional
     public Long saveSection(final CreateSectionRequest request) {
-        return sectionRepository.save(request.getUpStationId(), request.getDownStationId(), request.getLineId(), false, request.getDistance());
+        return null;
     }
 
     public SectionResponse findBySectionId(final Long sectionId) {
-        final SectionDomain section = sectionRepository.findBySectionId(sectionId);
+        final Section section = sectionRepository.findBySectionId(sectionId);
 
         return SectionResponse.from(
                 sectionId,

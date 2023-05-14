@@ -1,16 +1,17 @@
 package subway.dao;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.config.DaoTestConfig;
-import subway.domain.Station;
+import subway.dao.StationDao;
+import subway.dao.entity.StationEntity;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class StationDaoTest extends DaoTestConfig {
 
@@ -21,93 +22,67 @@ class StationDaoTest extends DaoTestConfig {
         stationDao = new StationDao(jdbcTemplate);
     }
 
-    @DisplayName("지하철역을 저장한다.")
     @Test
-    void save() {
+    void 역_저장() {
         // when
-        final Long 잠실역_식별자값 = stationDao.save("잠실");
-
-        final Optional<Station> 아마도_잠실역 = stationDao.findById(잠실역_식별자값);
-
-        assertThat(아마도_잠실역).isPresent();
-        final Station 잠실역 = 아마도_잠실역.get();
+        final Long saveStationId = stationDao.insert(new StationEntity("잠실"));
 
         // expect
-        assertThat(잠실역)
-                .usingRecursiveComparison()
-                .ignoringFields("id", "sections")
-                .isEqualTo(new Station(0L, "잠실", Collections.emptyList()));
+        assertThat(saveStationId)
+                .isNotNull()
+                .isNotZero();
     }
 
-    @DisplayName("전체 지하철역을 조회한다.")
     @Test
-    void findAll() {
+    void 역_조회() {
         // given
-        stationDao.save("잠실");
-        stationDao.save("잠실새내");
+        final Long saveStationId = stationDao.insert(new StationEntity("잠실"));
 
         // when
-        final List<Station> 전체_역 = stationDao.findAll();
+        final Optional<StationEntity> maybeStation = stationDao.findByStationId(saveStationId);
+
+        // expect
+        assertAll(
+                () -> assertThat(maybeStation).isPresent(),
+                () -> assertThat(maybeStation.get())
+                        .usingRecursiveComparison()
+                        .ignoringFields("id")
+                        .isEqualTo(new StationEntity(0L, "잠실"))
+        );
+    }
+
+    @Test
+    void 역_식별자값_목록으로_역들을_조회한다() {
+        // given
+        final Long saveStationId1 = stationDao.insert(new StationEntity("잠실"));
+        final Long saveStationId2 = stationDao.insert(new StationEntity("잠실나루"));
+        final Long saveStationId3 = stationDao.insert(new StationEntity("잠실새내"));
+
+        // when
+        final List<StationEntity> findStations = stationDao.findInStationIds(List.of(saveStationId1, saveStationId2, saveStationId3));
 
         // then
-        assertThat(전체_역)
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id", "sections")
+        Assertions.assertThat(findStations)
                 .containsExactly(
-                        new Station(0L, "잠실", Collections.emptyList()),
-                        new Station(0L, "잠실새내", Collections.emptyList())
+                        new StationEntity(saveStationId1, "잠실"),
+                        new StationEntity(saveStationId2, "잠실나루"),
+                        new StationEntity(saveStationId3, "잠실새내")
                 );
     }
 
-    @DisplayName("지하철역_식별자값으로 지하철역을 조회한다.")
     @Test
-    void findById() {
+    void 역_이름으로_역을_조회한다() {
         // given
-        final Long 잠실역_식별자값 = stationDao.save("잠실");
+        final Long saveStationId = stationDao.insert(new StationEntity("잠실"));
 
         // when
-        final Optional<Station> 아마도_잠실역 = stationDao.findById(잠실역_식별자값);
-
-        assertThat(아마도_잠실역).isPresent();
-        final Station 잠실 = 아마도_잠실역.get();
+        final Optional<StationEntity> maybeStationEntity = stationDao.findByStationName("잠실");
 
         // then
-        assertThat(잠실)
-                .usingRecursiveComparison()
-                .ignoringFields("id", "sections")
-                .isEqualTo(new Station(0L, "잠실", Collections.emptyList()));
-    }
-
-    @DisplayName("지하철역_이름으로 지하철역을 조회한다.")
-    @Test
-    void findByName() {
-        // given
-        final Long 잠실역_식별자값 = stationDao.save("잠실");
-
-        // when
-        final Optional<Station> 아마도_잠실역 = stationDao.findByName("잠실");
-
-        assertThat(아마도_잠실역).isPresent();
-        final Station 잠실 = 아마도_잠실역.get();
-
-        // then
-        assertThat(잠실)
-                .usingRecursiveComparison()
-                .ignoringFields("id", "sections")
-                .isEqualTo(new Station(0L, "잠실", Collections.emptyList()));
-    }
-
-    @DisplayName("지하철역_식별자값으로 지하철역을 삭제한다.")
-    @Test
-    void deleteById() {
-        // given
-        final Long 잠실역_식별자값 = stationDao.save("잠실");
-
-        // when
-        stationDao.deleteById(잠실역_식별자값);
-
-        final Optional<Station> 아마도_잠실역 = stationDao.findById(잠실역_식별자값);
-
-        // then
-        assertThat(아마도_잠실역).isEmpty();
+        assertAll(
+                () -> assertThat(maybeStationEntity).isPresent(),
+                () -> assertThat(maybeStationEntity.get())
+                        .isEqualTo(new StationEntity(saveStationId, "잠실"))
+        );
     }
 }

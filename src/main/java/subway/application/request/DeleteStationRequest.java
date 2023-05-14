@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.application.request;
 
 public class DeleteStationRequest {
 

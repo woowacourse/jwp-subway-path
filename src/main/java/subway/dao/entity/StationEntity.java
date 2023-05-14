@@ -1,6 +1,6 @@
 package subway.dao.entity;
 
-import subway.domain.StationDomain;
+import subway.domain.Station;
 
 import java.util.Objects;
 
@@ -18,8 +18,8 @@ public class StationEntity {
         this.name = name;
     }
 
-    public StationDomain toDomain() {
-        return new StationDomain(id, name);
+    public Station toDomain() {
+        return new Station(id, name);
     }
 
     public Long getId() {

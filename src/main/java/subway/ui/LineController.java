@@ -2,40 +2,49 @@ package subway.ui;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import subway.application.request.CreateLineRequest;
+import subway.application.response.LineResponse;
 import subway.application.LineService;
-import subway.dto.LineResponse;
 
+import java.net.URI;
 import java.util.List;
 
-@RestController
 @RequestMapping("/lines")
+@RestController
 public class LineController {
 
     private final LineService lineService;
 
-    public LineController(LineService lineService) {
+    public LineController(final LineService lineService) {
         this.lineService = lineService;
     }
 
-    @GetMapping("/stations")
-    public ResponseEntity<List<LineResponse>> findAllLines() {
-        final List<LineResponse> findAllLines = lineService.findAllLines();
+    @PostMapping
+    public ResponseEntity<Long> createLine(@RequestBody CreateLineRequest request) {
+        final Long saveLineId = lineService.saveLine(request);
 
         return ResponseEntity
-                .status(HttpStatus.OK)
-                .body(findAllLines);
+                .status(HttpStatus.CREATED)
+                .location(URI.create("/lines/" + saveLineId))
+                .body(saveLineId);
     }
 
-    @GetMapping("/{lineName}/stations")
-    public ResponseEntity<LineResponse> findLineStations(@PathVariable String lineName) {
-        final LineResponse stations = lineService.findStationsByLineName(lineName);
+    @GetMapping("/{lineId}")
+    public ResponseEntity<LineResponse> findLineByLineId(@PathVariable Long lineId) {
+        final LineResponse lineResponse = lineService.findByLineId(lineId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(stations);
+                .body(lineResponse);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<LineResponse>> findAll() {
+        final List<LineResponse> findLineResponses = lineService.findAll();
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(findLineResponses);
     }
 }

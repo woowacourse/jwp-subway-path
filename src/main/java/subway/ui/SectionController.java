@@ -1,21 +1,21 @@
-package subway.ui.v2;
+package subway.ui;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.request.CreateSectionRequest;
 import subway.application.response.SectionResponse;
-import subway.application.v2.SectionServiceV2;
+import subway.application.SectionService;
 
 import java.net.URI;
 
-@RequestMapping("/v2/sections")
+@RequestMapping("/sections")
 @RestController
-public class SectionControllerV2 {
+public class SectionController {
 
-    private final SectionServiceV2 sectionService;
+    private final SectionService sectionService;
 
-    public SectionControllerV2(final SectionServiceV2 sectionService) {
+    public SectionController(final SectionService sectionService) {
         this.sectionService = sectionService;
     }
 
@@ -25,7 +25,7 @@ public class SectionControllerV2 {
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .location(URI.create("/v2/sections/" + saveSectionId))
+                .location(URI.create("/sections/" + saveSectionId))
                 .body(saveSectionId);
     }
 

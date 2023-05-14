@@ -1,170 +1,110 @@
 package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
-import subway.dao.StationLineDao;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Station;
-import subway.dto.DeleteStationRequest;
-import subway.dto.StationRequest;
-
-import java.util.Optional;
+import subway.application.request.CreateSectionRequest;
+import subway.application.request.CreateStationRequest;
+import subway.application.response.StationResponse;
+import subway.config.ServiceTestConfig;
+import subway.dao.entity.StationEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 
-@JdbcTest
-class StationServiceTest {
-
-    @Autowired
-    JdbcTemplate jdbcTemplate;
+@DisplayNameGeneration(ReplaceUnderscores.class)
+class StationServiceTest extends ServiceTestConfig {
 
     StationService stationService;
 
-    StationDao stationDao;
-
-    SectionDao sectionDao;
-
-    LineDao lineDao;
-
-    StationLineDao stationLineDao;
-
     @BeforeEach
     void setUp() {
-        stationDao = new StationDao(jdbcTemplate);
-        sectionDao = new SectionDao(jdbcTemplate);
-        lineDao = new LineDao(jdbcTemplate);
-        stationLineDao = new StationLineDao(jdbcTemplate);
-
-        stationService = new StationService(stationDao, lineDao, sectionDao, stationLineDao);
+        stationService = new StationService(stationRepository, sectionRepository, lineRepository);
     }
 
-    @DisplayName("upStation과 downStation이 이미 같은 노선에 있고, 추가하려는 구간이 그 노선일 때 예외를 발생한다.")
     @Test
-    void throwExceptionWHenUpStationAndDownStationAndLineIsSame() {
+    void 역을_등록한다() {
         // given
-        StationRequest stationRequest = new StationRequest(
-                "잠실",
-                "잠실새내",
-                "2",
-                "초록",
-                10
-        );
-
-        final Long upStationId = stationDao.save("잠실");
-        final Long downStationId = stationDao.save("잠실새내");
-        final Long lineId = lineDao.save("2", "초록");
-        sectionDao.save(upStationId, downStationId, lineId, true, new Distance(10));
-
-        // expect
-        assertThatThrownBy(() -> stationService.saveStation(stationRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("downStation이 상행 종점이 아니면 해당 upStation이 상행 종점 아니다.")
-    @Test
-    void saveStationNotStart() {
-        // given
-        final Long upStationId = stationDao.save("잠실");
-        final Long downStationId = stationDao.save("잠실새내");
-        final Long lineId = lineDao.save("2", "초록");
-        sectionDao.save(upStationId, downStationId, lineId, true, new Distance(10));
-
-        final StationRequest stationRequest = new StationRequest(
-                "강변",
-                "잠실새내",
-                "2",
-                "초록",
-                5
-        );
+        final CreateStationRequest 잠실역_요청 = new CreateStationRequest("잠실");
 
         // when
-        stationService.saveStation(stationRequest);
-
-        final Long firstStationId = sectionDao.findFirstStationIdByLineId(lineId);
+        final Long 잠실역_식별자값 = stationService.saveStation(잠실역_요청);
 
         // then
-        assertThat(firstStationId).isEqualTo(upStationId);
+        assertThat(잠실역_식별자값)
+                .isNotNull()
+                .isNotZero();
     }
 
-    @DisplayName("line 이 존재하지 않을 때, line 과 section을 저장한다.")
     @Test
-    void saveStationNewLine() {
+    void 노선에_새로운_구간을_추가할_때_등록되지_않은_새로운_역일_경우_역을_저장한다() {
         // given
-        StationRequest stationRequest = new StationRequest(
-                "잠실",
-                "잠실새내",
-                "2",
-                "초록",
-                10
-        );
-        final Optional<Line> before = lineDao.findByName("2");
+        final Long 노선2_식별자값 = lineDao.insert("2", "초록");
+        final Long 잠실_식별자값 = stationDao.insert(new StationEntity("잠실"));
+        final Long 잠실새내_식별자값 = stationDao.insert(new StationEntity("잠실새내"));
+
+        sectionDao.insert(잠실_식별자값, 잠실새내_식별자값, 노선2_식별자값, false, 10);
 
         // when
-        stationService.saveStation(stationRequest);
-
-        // expect
-        final Optional<Line> after = lineDao.findByName("2");
-        assertAll(
-                () -> assertThat(before).isEmpty(),
-                () -> assertThat(after).isPresent()
-        );
-    }
-
-    @DisplayName("역을 삭제할 때 역이 존재하지 않을 경우 예외가 발생한다.")
-    @Test
-    void throwExceptionWhenStationIsNotExists() {
-        // given
-        lineDao.save("2", "초록");
-
-        final DeleteStationRequest deleteStationRequest = new DeleteStationRequest("없는역", "2");
-
-        // expect
-        assertThatThrownBy(() -> stationService.deleteStationByStationNameAndLineName(deleteStationRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("역을 삭제할 때 노선이 존재하지 않을 경우 예외가 발생한다.")
-    @Test
-    void throwExceptionWhenLineIsNotExists() {
-        // given
-        stationDao.save("잠실");
-
-        final DeleteStationRequest deleteStationRequest = new DeleteStationRequest("잠실", "없는노선");
-
-        // expect
-        assertThatThrownBy(() -> stationService.deleteStationByStationNameAndLineName(deleteStationRequest))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @DisplayName("역을 삭제한다.")
-    @Test
-    void deleteStationByStationNameAndLineName() {
-        // given
-        final Long upStationId = stationDao.save("잠실");
-        final Long downStationId = stationDao.save("잠실새내");
-        final Long lineId = lineDao.save("2", "초록");
-        stationLineDao.save(upStationId, lineId);
-        stationLineDao.save(downStationId, lineId);
-        sectionDao.save(upStationId, downStationId, lineId, true, new Distance(10));
-
-        final DeleteStationRequest deleteStationRequest = new DeleteStationRequest("잠실", "2");
-
-        // when
-        stationService.deleteStationByStationNameAndLineName(deleteStationRequest);
-
-        final Optional<Station> maybeStation = stationDao.findByName("잠실");
+        final CreateSectionRequest 구간_요청
+                = new CreateSectionRequest("창동", "녹천", 노선2_식별자값, 10);
 
         // then
-        assertThat(maybeStation).isEmpty();
+        assertThatThrownBy(() -> stationService.saveSection(구간_요청))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 노선에_중복되는_구간을_추가할_경우_예외가_발생한다() {
+        // given
+        final Long 노선2_식별자값 = lineDao.insert("2", "초록");
+        final Long 잠실_식별자값 = stationDao.insert(new StationEntity("잠실"));
+        final Long 잠실새내_식별자값 = stationDao.insert(new StationEntity("잠실새내"));
+
+        sectionDao.insert(잠실_식별자값, 잠실새내_식별자값, 노선2_식별자값, false, 10);
+
+        // when
+        final CreateSectionRequest 구간_요청
+                = new CreateSectionRequest("잠실", "잠실새내", 노선2_식별자값, 10);
+
+        // then
+        assertThatThrownBy(() -> stationService.saveSection(구간_요청))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 노선에_구간이_하나_이상_존재할_때_상행역_하행역_모두_노선에_없는_새로운_구간을_추가할_경우_예외가_발생한다() {
+        // given
+        final Long 노선2_식별자값 = lineDao.insert("2", "초록");
+        final Long 잠실_식별자값 = stationDao.insert(new StationEntity("잠실"));
+        final Long 잠실새내_식별자값 = stationDao.insert(new StationEntity("잠실새내"));
+
+        sectionDao.insert(잠실_식별자값, 잠실새내_식별자값, 노선2_식별자값, false, 10);
+
+        // when
+        final CreateSectionRequest 구간_요청
+                = new CreateSectionRequest("창동", "녹천", 노선2_식별자값, 10);
+
+        // then
+        assertThatThrownBy(() -> stationService.saveSection(구간_요청))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 역_식별자값으로_역을_조회한다() {
+        // given
+        final CreateStationRequest 잠실_요청 = new CreateStationRequest("잠실");
+        final Long 잠실역_식별자값 = stationService.saveStation(잠실_요청);
+
+        // when
+        final StationResponse 역_조회_응답 = stationService.findByStationId(잠실역_식별자값);
+
+        // then
+        assertThat(역_조회_응답)
+                .usingRecursiveComparison()
+                .isEqualTo(new StationResponse(
+                        잠실역_식별자값, "잠실"
+                ));
     }
 }

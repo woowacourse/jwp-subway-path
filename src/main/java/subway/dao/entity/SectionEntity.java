@@ -1,8 +1,8 @@
 package subway.dao.entity;
 
 import subway.domain.Distance;
-import subway.domain.SectionDomain;
-import subway.domain.StationDomain;
+import subway.domain.Section;
+import subway.domain.Station;
 
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public class SectionEntity {
         this.lineId = lineId;
     }
 
-    public static SectionEntity toEntity(final SectionDomain section, final Long lineId) {
+    public static SectionEntity toEntity(final Section section, final Long lineId) {
         return new SectionEntity(
                 section.getId(),
                 section.getDistance().getValue(),
@@ -39,8 +39,8 @@ public class SectionEntity {
         );
     }
 
-    public SectionDomain toDomain(final StationDomain upStation, final StationDomain downStation) {
-        return new SectionDomain(id, new Distance(distance), isStart, upStation, downStation);
+    public Section toDomain(final Station upStation, final Station downStation) {
+        return new Section(id, new Distance(distance), isStart, upStation, downStation);
     }
 
     public Long getId() {

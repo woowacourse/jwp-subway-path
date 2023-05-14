@@ -1,7 +1,5 @@
 package subway.application.response;
 
-import subway.dto.StationResponse;
-
 public class SectionResponse {
     private Long id;
     private Integer distance;

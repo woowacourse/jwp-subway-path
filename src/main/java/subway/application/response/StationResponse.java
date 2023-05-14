@@ -1,6 +1,6 @@
-package subway.dto;
+package subway.application.response;
 
-import subway.domain.StationDomain;
+import subway.domain.Station;
 
 public class StationResponse {
     private Long id;
@@ -14,7 +14,7 @@ public class StationResponse {
         this.name = name;
     }
 
-    public static StationResponse from(final StationDomain station) {
+    public static StationResponse from(final Station station) {
         return new StationResponse(station.getId(), station.getName());
     }
 

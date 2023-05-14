@@ -4,12 +4,12 @@ import org.springframework.stereotype.Repository;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.dao.v2.LineDaoV2;
-import subway.dao.v2.SectionDaoV2;
-import subway.dao.v2.StationDaoV2;
-import subway.domain.LineDomain;
-import subway.domain.SectionDomain;
-import subway.domain.SectionsDomain;
+import subway.dao.LineDao;
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,11 +18,11 @@ import java.util.stream.IntStream;
 @Repository
 public class LineRepository {
 
-    private final LineDaoV2 lineDao;
-    private final SectionDaoV2 sectionDao;
-    private final StationDaoV2 stationDao;
+    private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationDao stationDao;
 
-    public LineRepository(final LineDaoV2 lineDao, final SectionDaoV2 sectionDao, final StationDaoV2 stationDao) {
+    public LineRepository(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
@@ -32,9 +32,9 @@ public class LineRepository {
         return lineDao.insert(name, color);
     }
 
-    public LineDomain findByLineId(final Long lineId) {
+    public Line findByLineId(final Long lineId) {
         final LineEntity lineEntity = getLineEntityOrThrowException(lineId);
-        final SectionsDomain sections = collectSectionsByLineId(lineId);
+        final Sections sections = collectSectionsByLineId(lineId);
 
         return lineEntity.toDomain(sections);
     }
@@ -44,18 +44,18 @@ public class LineRepository {
                 .orElseThrow(() -> new IllegalArgumentException("해당 노선 식별자값은 존재하지 않는 노선의 식별자값입니다."));
     }
 
-    private SectionsDomain collectSectionsByLineId(final Long lineId) {
+    private Sections collectSectionsByLineId(final Long lineId) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
         final List<StationEntity> upStationEntities = stationDao.findInStationIds(collectUpStationIds(sectionEntities));
         final List<StationEntity> downStationEntities = stationDao.findInStationIds(collectDownStationIds(sectionEntities));
 
-        final List<SectionDomain> sections = IntStream.range(0, sectionEntities.size())
+        final List<Section> sections = IntStream.range(0, sectionEntities.size())
                 .mapToObj(index -> sectionEntities.get(index).toDomain(
                         upStationEntities.get(index).toDomain(),
                         downStationEntities.get(index).toDomain()
                 )).collect(Collectors.toList());
 
-        return SectionsDomain.from(sections);
+        return Sections.from(sections);
     }
 
     private List<Long> collectUpStationIds(final List<SectionEntity> sectionEntities) {
@@ -70,10 +70,10 @@ public class LineRepository {
                 .collect(Collectors.toList());
     }
 
-    public List<LineDomain> findAll() {
+    public List<Line> findAll() {
         return lineDao.findAll()
                 .stream()
-                .map(lineEntity -> new LineDomain(
+                .map(lineEntity -> new Line(
                         lineEntity.getId(),
                         lineEntity.getName(),
                         lineEntity.getColor(),

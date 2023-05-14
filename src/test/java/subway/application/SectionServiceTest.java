@@ -1,22 +1,22 @@
-package subway.application.v2;
+package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import subway.application.request.CreateSectionRequest;
 import subway.application.response.SectionResponse;
+import subway.application.response.StationResponse;
 import subway.config.ServiceTestConfig;
 import subway.dao.entity.StationEntity;
-import subway.dto.StationResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class SectionServiceV2Test extends ServiceTestConfig {
+class SectionServiceTest extends ServiceTestConfig {
 
-    SectionServiceV2 sectionService;
+    SectionService sectionService;
 
     @BeforeEach
     void setUp() {
-        sectionService = new SectionServiceV2(sectionRepository);
+        sectionService = new SectionService(sectionRepository);
     }
 
     @Test
@@ -36,8 +36,8 @@ class SectionServiceV2Test extends ServiceTestConfig {
     @Test
     void 구간을_조회한다() {
         // given
-        final Long upStationId = stationDaoV2.insert(new StationEntity("루카"));
-        final Long downStationId = stationDaoV2.insert(new StationEntity("헤나"));
+        final Long upStationId = stationDao.insert(new StationEntity("루카"));
+        final Long downStationId = stationDao.insert(new StationEntity("헤나"));
 
         final CreateSectionRequest request = new CreateSectionRequest("잠실", "잠실새내", 0L, 10);
         final Long saveSectionId = sectionService.saveSection(request);

@@ -4,14 +4,15 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.dao.entity.StationEntity;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static subway.dao.support.SqlHelper.sqlHelper;
 
 @Repository
 public class StationDao {
@@ -26,45 +27,57 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
-                    rs.getString("name"),
-                    Collections.emptyList()
+                    rs.getString("name")
             );
 
-    public Long save(final String stationName) {
-        final SqlParameterSource paramSource = new MapSqlParameterSource()
-                .addValue("name", stationName);
-
-        return insertAction.executeAndReturnKey(paramSource).longValue();
+    public Long insert(final StationEntity stationEntity) {
+        return insertAction.executeAndReturnKey(new MapSqlParameterSource()
+                .addValue("name", stationEntity.getName())
+        ).longValue();
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATIONS";
+    public Optional<StationEntity> findByStationId(final Long stationId) {
+        final String sql = sqlHelper()
+                .select().columns("id, name")
+                .from().table("STATIONS")
+                .where().condition("id = ?")
+                .toString();
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public List<StationEntity> findInStationIds(final List<Long> stationIds) {
+        final String ids = stationIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        final String sql = sqlHelper()
+                .select().columns("id, name")
+                .from().table("STATIONS")
+                .where().in("id", ids)
+                .toString();
+
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Station> findById(Long stationId) {
-        String sql = "select * from STATIONS where id = ?";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationId));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
-    }
+    public Optional<StationEntity> findByStationName(final String stationName) {
+        final String sql = sqlHelper()
+                .select().columns("id, name")
+                .from().columns("STATIONS")
+                .where().condition("name = ?")
+                .toString();
 
-    public Optional<Station> findByName(final String stationName) {
-        final String sql = "SELECT id, name FROM STATIONS WHERE name = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationName));
-        } catch (EmptyResultDataAccessException exception) {
+        } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
-    }
-
-    public void deleteById(Long stationId) {
-        String sql = "delete from STATIONS where id = ?";
-        jdbcTemplate.update(sql, stationId);
     }
 }

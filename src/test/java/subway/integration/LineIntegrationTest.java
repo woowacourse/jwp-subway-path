@@ -2,7 +2,7 @@ package subway.integration;
 
 import org.junit.jupiter.api.Test;
 import subway.config.ControllerTestConfig;
-import subway.dto.StationResponse;
+import subway.application.response.StationResponse;
 import subway.integration.builder.LineAssured;
 import subway.integration.builder.SectionAssured;
 import subway.integration.builder.StationAssured;

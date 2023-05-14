@@ -1,119 +1,72 @@
 package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
-import subway.domain.Distance;
+import subway.application.LineService;
 import subway.application.response.LineResponse;
-import subway.dto.StationResponse;
+import subway.config.ServiceTestConfig;
+import subway.dao.entity.SectionEntity;
+import subway.dao.entity.StationEntity;
+import subway.application.response.StationResponse;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
-@JdbcTest
-class LineServiceTest {
+class LineServiceTest extends ServiceTestConfig {
 
-    @Autowired
-    private JdbcTemplate jdbcTemplate;
-
-    private LineDao lineDao;
-    private SectionDao sectionDao;
-    private StationDao stationDao;
-    private LineService lineService;
+    LineService lineService;
 
     @BeforeEach
-    void setup() {
-        lineDao = new LineDao(jdbcTemplate);
-        sectionDao = new SectionDao(jdbcTemplate);
-        stationDao = new StationDao(jdbcTemplate);
-        lineService = new LineService(
-                lineDao,
-                sectionDao,
-                stationDao
-        );
+    void setUp() {
+        lineService = new LineService(lineRepository);
     }
 
-    @DisplayName("노선의 정보를 조회한다.")
     @Test
-    void findStationsByLineName() {
+    void 노선과_노선에_해당하는_역을_조회한다() {
         // given
-        final Long stationId1 = stationDao.save("잠실나루");
-        final Long stationId2 = stationDao.save("잠실");
-        final Long stationId3 = stationDao.save("잠실새내");
-        final Long lineId = lineDao.save("1", "파랑");
-        sectionDao.save(stationId1, stationId2, lineId, true, new Distance(10));
-        sectionDao.save(stationId2, stationId3, lineId, false, new Distance(10));
+        final Long saveUpStationId = stationDao.insert(new StationEntity("잠실"));
+        final Long saveDownStationId = stationDao.insert(new StationEntity("잠실나루"));
+        final Long saveLineId = lineDao.insert("2", "초록");
+
+        sectionDao.insert(new SectionEntity(10, true, saveUpStationId, saveDownStationId, saveLineId));
 
         // when
-        final LineResponse stationsByLineName = lineService.findStationsByLineName("1");
-
+        final LineResponse lineResponse = lineService.findByLineId(saveLineId);
 
         // then
-        assertThat(stationsByLineName.getStations())
-                .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                .containsExactly(
-                        new StationResponse(0L, "잠실나루"),
-                        new StationResponse(0L, "잠실"),
-                        new StationResponse(0L, "잠실새내")
-                );
+        assertThat(lineResponse)
+                .usingRecursiveComparison()
+                .isEqualTo(new LineResponse(
+                        saveLineId,
+                        "2",
+                        "초록",
+                        List.of(new StationResponse(saveUpStationId, "잠실"),
+                                new StationResponse(saveDownStationId, "잠실나루"))
+                ));
     }
 
-    @DisplayName("전체 노선의 정보를 조회한다.")
     @Test
-    void findAllLines() {
+    void 모든_노선과_노선에_해당하는_역을_조회한다() {
         // given
-        final Long stationId1 = stationDao.save("잠실나루");
-        final Long stationId2 = stationDao.save("잠실");
-        final Long stationId3 = stationDao.save("잠실새내");
-        final Long lineId = lineDao.save("1", "파랑");
-        sectionDao.save(stationId1, stationId2, lineId, true, new Distance(10));
-        sectionDao.save(stationId2, stationId3, lineId, false, new Distance(10));
+        final Long saveUpStationId = stationDao.insert(new StationEntity("잠실"));
+        final Long saveDownStationId = stationDao.insert(new StationEntity("잠실나루"));
+        final Long saveLineId = lineDao.insert("2", "초록");
 
-        final Long stationId4 = stationDao.save("헤나역");
-        final Long stationId5 = stationDao.save("환승역");
-        final Long stationId6 = stationDao.save("루카역");
-        final Long lineId2 = lineDao.save("2", "초록");
-        sectionDao.save(stationId4, stationId5, lineId2, true, new Distance(10));
-        sectionDao.save(stationId5, stationId6, lineId2, false, new Distance(10));
-
+        sectionDao.insert(new SectionEntity(10, true, saveUpStationId, saveDownStationId, saveLineId));
 
         // when
-        final List<LineResponse> findAllLines = lineService.findAllLines();
-
-        final LineResponse line1 = findAllLines.stream()
-                .filter(lineResponse -> lineResponse.getName().equals("1"))
-                .findFirst()
-                .get();
-
-        final LineResponse line2 = findAllLines.stream()
-                .filter(lineResponse -> lineResponse.getName().equals("2"))
-                .findFirst()
-                .get();
+        final List<LineResponse> lineResponses = lineService.findAll();
 
         // then
-        assertAll(
-                () -> assertThat(line1.getStations())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                        .containsExactly(
-                                new StationResponse(0L, "잠실나루"),
-                                new StationResponse(0L, "잠실"),
-                                new StationResponse(0L, "잠실새내")
-                        ),
-                () -> assertThat(line2.getStations())
-                        .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
-                        .containsExactly(
-                                new StationResponse(0L, "헤나역"),
-                                new StationResponse(0L, "환승역"),
-                                new StationResponse(0L, "루카역")
+        assertThat(lineResponses)
+                .usingRecursiveFieldByFieldElementComparator()
+                .contains(new LineResponse(saveLineId, "2", "초록",
+                                List.of(
+                                        new StationResponse(saveUpStationId, "잠실"),
+                                        new StationResponse(saveDownStationId, "잠실나루")
+                                )
                         )
-        );
+                );
     }
 }

@@ -3,39 +3,38 @@ package subway.ui;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import subway.application.request.CreateStationRequest;
 import subway.application.StationService;
-import subway.dto.DeleteStationRequest;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway.application.response.StationResponse;
 
 import java.net.URI;
 
-@RestController
 @RequestMapping("/stations")
+@RestController
 public class StationController {
 
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationController(final StationService stationService) {
         this.stationService = stationService;
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-        final Long savedSectionId = stationService.saveStation(stationRequest);
+    public ResponseEntity<Long> createStation(@RequestBody CreateStationRequest request) {
+        final Long saveStationId = stationService.saveStation(request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
-                .location(URI.create("/sections/" + savedSectionId))
-                .build();
+                .location(URI.create("/stations/" + saveStationId))
+                .body(saveStationId);
     }
 
-    @DeleteMapping
-    public ResponseEntity<Void> deleteStationByName(@RequestBody DeleteStationRequest deleteStationRequest) {
-        stationService.deleteStationByStationNameAndLineName(deleteStationRequest);
+    @GetMapping("/{stationId}")
+    public ResponseEntity<StationResponse> findStation(@PathVariable Long stationId) {
+        final StationResponse response = stationService.findByStationId(stationId);
 
         return ResponseEntity
-                .status(HttpStatus.NO_CONTENT)
-                .build();
+                .status(HttpStatus.OK)
+                .body(response);
     }
 }

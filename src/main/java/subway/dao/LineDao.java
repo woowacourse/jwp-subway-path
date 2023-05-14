@@ -4,12 +4,15 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
+import subway.dao.entity.LineEntity;
 
 import java.util.List;
 import java.util.Optional;
+
+import static subway.dao.support.SqlHelper.sqlHelper;
 
 @Repository
 public class LineDao {
@@ -24,41 +27,51 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
             );
 
-    public Long save(final String lineName, final String lineColor) {
-        return insertAction.executeAndReturnKey(new MapSqlParameterSource("name", lineName).addValue("color", lineColor)).longValue();
+    public Long insert(final String lineName, final String lineColor) {
+        final SqlParameterSource paramSource = new MapSqlParameterSource()
+                .addValue("name", lineName)
+                .addValue("color", lineColor);
+
+        return insertAction.executeAndReturnKey(paramSource).longValue();
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from lines";
+    public Optional<LineEntity> findByLineId(Long lineId) {
+        final String sql = sqlHelper()
+                .select().columns("id, name, color")
+                .from().table("LINES")
+                .where().condition("id = ?")
+                .toString();
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineId));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+
+    public List<LineEntity> findAll() {
+        final String sql = sqlHelper()
+                .select().columns("id, name, color")
+                .from().table("LINES")
+                .toString();
+
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Line> findById(Long id) {
-        String sql = "select id, name, color from lines WHERE id = ?";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
-    }
+    public void deleteByLineId(Long lineId) {
+        final String sql = sqlHelper()
+                .delete()
+                .from().table("LINES")
+                .where().condition("id = ?")
+                .toString();
 
-    public Optional<Line> findByName(final String lineName) {
-        final String sql = "SELECT id, name, color FROM lines WHERE name = ?";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineName));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
-    }
-
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from lines where id = ?", id);
+        jdbcTemplate.update(sql, lineId);
     }
 }

@@ -3,21 +3,21 @@ package subway.repository;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.dao.v2.SectionDaoV2;
-import subway.dao.v2.StationDaoV2;
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.domain.Distance;
-import subway.domain.SectionDomain;
-import subway.domain.StationDomain;
+import subway.domain.Section;
+import subway.domain.Station;
 
 import java.util.List;
 
 @Repository
 public class SectionRepository {
 
-    private final SectionDaoV2 sectionDao;
-    private final StationDaoV2 stationDao;
+    private final SectionDao sectionDao;
+    private final StationDao stationDao;
 
-    public SectionRepository(final SectionDaoV2 sectionDao, final StationDaoV2 stationDao) {
+    public SectionRepository(final SectionDao sectionDao, final StationDao stationDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
     }
@@ -36,7 +36,7 @@ public class SectionRepository {
         sectionDao.insertBatch(sectionEntities);
     }
 
-    public SectionDomain findBySectionId(final Long sectionId) {
+    public Section findBySectionId(final Long sectionId) {
         final SectionEntity section = sectionDao.findBySectionId(sectionId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 구간_식별자값으로 구간을 조회하지 못했습니다."));
 
@@ -46,13 +46,13 @@ public class SectionRepository {
         final StationEntity downStationEntity = stationDao.findByStationId(section.getDownStationId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 역_식별자값으로 구간을 조회하지 못했습니다."));
 
-        final StationDomain upStation = new StationDomain(upStationEntity.getId(), upStationEntity.getName());
-        final StationDomain downStation = new StationDomain(downStationEntity.getId(), downStationEntity.getName());
+        final Station upStation = new Station(upStationEntity.getId(), upStationEntity.getName());
+        final Station downStation = new Station(downStationEntity.getId(), downStationEntity.getName());
 
         final Distance distance = new Distance(section.getDistance());
         final Boolean isStart = section.getStart();
 
-        return new SectionDomain(sectionId, distance, isStart, upStation, downStation);
+        return new Section(sectionId, distance, isStart, upStation, downStation);
     }
 
     public void deleteByLineId(final Long lineId) {

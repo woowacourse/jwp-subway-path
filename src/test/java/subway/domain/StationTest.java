@@ -1,36 +1,31 @@
 package subway.domain;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.List;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-
-@ExtendWith(MockitoExtension.class)
 class StationTest {
 
-    @Mock
-    Section mockSection;
-
-    @DisplayName("생성한다.")
-    @Test
-    void create() {
-        assertDoesNotThrow(() -> new Station(1L, "luca", List.of(mockSection)));
+    @ParameterizedTest
+    @ValueSource(strings = {"헤나", "루카", "현구막"})
+    void 역을_생성한다(final String value) {
+        assertDoesNotThrow(() -> new Station(value));
     }
 
-    @DisplayName("이름이 공백이거나 null일 경우 예외가 발생한다.")
     @ParameterizedTest
     @NullAndEmptySource
-    void throwExceptionWhenNameIsNullOrEmpty(final String name) {
-        assertThatThrownBy(() -> new Station(1L, name, List.of(mockSection)))
+    void 역_이름이_null이거나_공백일_경우_예외가_발생한다(final String value) {
+        assertThatThrownBy(() -> new Station(value))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"", "12345678901"})
+    void 역_이름_길이가_1미만_10초과일_경우_예외가_발생한다(final String value) {
+        assertThatThrownBy(() -> new Station(value))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

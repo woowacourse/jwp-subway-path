@@ -2,7 +2,7 @@ package subway.integration.builder;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.dto.StationResponse;
+import subway.application.response.StationResponse;
 import subway.integration.support.RestAssuredFixture;
 import subway.application.request.CreateStationRequest;
 
@@ -29,12 +29,12 @@ public class StationAssured {
         private ExtractableResponse<Response> response;
 
         public StationRequestBuilder 역을_등록한다(final CreateStationRequest request) {
-            response = post("/v2/stations", request);
+            response = post("/stations", request);
             return this;
         }
 
         public StationRequestBuilder 역을_조회한다(final Long stationId) {
-            response = RestAssuredFixture.get("/v2/stations/" + stationId);
+            response = RestAssuredFixture.get("/stations/" + stationId);
             return this;
         }
 

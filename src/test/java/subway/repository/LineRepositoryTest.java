@@ -17,31 +17,31 @@ class LineRepositoryTest extends RepositoryTestConfig {
 
     @BeforeEach
     void setUp() {
-        lineRepository = new LineRepository(lineDaoV2, sectionDaoV2, stationDaoV2);
+        lineRepository = new LineRepository(lineDao, sectionDao, stationDao);
     }
 
     @Test
     void 노선에_해당하는_구간을_조회한다() {
         // given
-        final Long saveUpStationId = stationDaoV2.insert(new StationEntity("잠실"));
-        final Long saveDownStationId = stationDaoV2.insert(new StationEntity("잠실나루"));
-        final Long saveLineId = lineDaoV2.insert("2", "초록");
-        sectionDaoV2.insert(new SectionEntity(10, true, saveUpStationId, saveDownStationId, saveLineId));
+        final Long saveUpStationId = stationDao.insert(new StationEntity("잠실"));
+        final Long saveDownStationId = stationDao.insert(new StationEntity("잠실나루"));
+        final Long saveLineId = lineDao.insert("2", "초록");
+        sectionDao.insert(new SectionEntity(10, true, saveUpStationId, saveDownStationId, saveLineId));
 
         // when
-        final LineDomain findLine = lineRepository.findByLineId(saveLineId);
+        final Line findLine = lineRepository.findByLineId(saveLineId);
 
         // then
         assertThat(findLine)
                 .usingRecursiveComparison()
-                .isEqualTo(new LineDomain(saveLineId, "2", "초록",
-                        SectionsDomain.from(List.of(
-                                new SectionDomain(
+                .isEqualTo(new Line(saveLineId, "2", "초록",
+                        Sections.from(List.of(
+                                new Section(
                                         saveLineId,
                                         new Distance(10),
                                         true,
-                                        new StationDomain(saveUpStationId, "잠실"),
-                                        new StationDomain(saveDownStationId, "잠실나루")
+                                        new Station(saveUpStationId, "잠실"),
+                                        new Station(saveDownStationId, "잠실나루")
                                 )
                         ))
                 ));
@@ -50,26 +50,26 @@ class LineRepositoryTest extends RepositoryTestConfig {
     @Test
     void 모든_노선과_구간을_조회한다() {
         // given
-        final Long saveUpStationId = stationDaoV2.insert(new StationEntity("잠실"));
-        final Long saveDownStationId = stationDaoV2.insert(new StationEntity("잠실나루"));
+        final Long saveUpStationId = stationDao.insert(new StationEntity("잠실"));
+        final Long saveDownStationId = stationDao.insert(new StationEntity("잠실나루"));
         final Long saveLineId = lineRepository.saveLine("2", "초록");
 
-        sectionDaoV2.insert(new SectionEntity(10, true, saveUpStationId, saveDownStationId, saveLineId));
+        sectionDao.insert(new SectionEntity(10, true, saveUpStationId, saveDownStationId, saveLineId));
 
         // when
-        final List<LineDomain> findLines = lineRepository.findAll();
+        final List<Line> findLines = lineRepository.findAll();
 
         // then
         assertThat(findLines)
                 .usingRecursiveFieldByFieldElementComparator()
-                .contains(new LineDomain(saveLineId, "2", "초록",
-                                SectionsDomain.from(List.of(
-                                        new SectionDomain(
+                .contains(new Line(saveLineId, "2", "초록",
+                                Sections.from(List.of(
+                                        new Section(
                                                 saveLineId,
                                                 new Distance(10),
                                                 true,
-                                                new StationDomain(saveUpStationId, "잠실"),
-                                                new StationDomain(saveDownStationId, "잠실나루")
+                                                new Station(saveUpStationId, "잠실"),
+                                                new Station(saveDownStationId, "잠실나루")
                                         )
                                 ))
                         )
