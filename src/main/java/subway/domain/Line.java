@@ -65,7 +65,7 @@ public class Line {
         final List<Station> stations = sortStations();
         final AddPathStrategy strategy = direction.getStrategy();
         final Map<Station, Path> added = strategy.add(targetStation, addStation, distance, stations, paths);
-        
+
         return setPath(added);
     }
 
