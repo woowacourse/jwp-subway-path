@@ -72,4 +72,9 @@ public class SubwayGraphs {
 
         return subwayGraph.findStationByName(name);
     }
+
+    public void remove(Line line) {
+        SubwayGraph subwayGraph = findSubwayGraphOf(line);
+        subwayGraphs.remove(subwayGraph);
+    }
 }

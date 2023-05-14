@@ -44,9 +44,18 @@ public class DbLineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
     }
 
+    public LineEntity findById(final Long id) {
+        final String sql = "SELECT * FROM line WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
     public List<LineEntity> findAll() {
         final String sql = "SELECT * FROM line";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
+    public void deleteLine(Long id) {
+        final String sql = "delete from line where id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

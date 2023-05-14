@@ -9,22 +9,22 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.SubwayGraphs;
 import subway.dto.LineCreateRequest;
-import subway.dto.LineDto;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
 import subway.entity.EdgeEntity;
+import subway.entity.LineEntity;
 
 import java.util.List;
 
 @Service
-public class LineCreateService {
+public class LineService {
 
     private final SubwayGraphs subwayGraphs;
     private final DbLineDao dbLineDao;
     private final StationDao stationDao;
     private final DbEdgeDao edgeDao;
 
-    public LineCreateService(final SubwayGraphs subwayGraphs, final DbLineDao dbLineDao, final StationDao stationDao, final DbEdgeDao edgeDao) {
+    public LineService(final SubwayGraphs subwayGraphs, final DbLineDao dbLineDao, final StationDao stationDao, final DbEdgeDao edgeDao) {
         this.subwayGraphs = subwayGraphs;
         this.dbLineDao = dbLineDao;
         this.stationDao = stationDao;
@@ -57,5 +57,13 @@ public class LineCreateService {
         );
 
         return LineResponse.of(savedLine, stations);
+    }
+
+    public String deleteLine(Long lineId) {
+        Line line = dbLineDao.findById(lineId).toDomain();
+        subwayGraphs.remove(line);
+        edgeDao.deleteAllEdgesOf(lineId);
+        dbLineDao.deleteLine(lineId);
+        return line.getName();
     }
 }

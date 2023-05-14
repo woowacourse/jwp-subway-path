@@ -1,33 +1,26 @@
 package subway.service;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import subway.dao.DbEdgeDao;
 import subway.dao.DbLineDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.Station;
 import subway.domain.SubwayGraphs;
 import subway.dto.LineCreateRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
-import subway.entity.EdgeEntity;
 import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class LineCreateServiceTest {
+class LineServiceTest {
 
     @Mock
     private StationDao stationDao;
@@ -42,7 +35,7 @@ class LineCreateServiceTest {
     private DbEdgeDao dbEdgeDao;
 
     @InjectMocks
-    private LineCreateService lineCreateService;
+    private LineService lineService;
 
     @Test
     void createLine() {
@@ -55,7 +48,7 @@ class LineCreateServiceTest {
         when(stationDao.saveStation(any())).thenReturn(stationEntity1, stationEntity2);
         when(dbLineDao.saveLine(any())).thenReturn(lineEntity);
 
-        LineResponse result = lineCreateService.createLine(lineCreateRequest);
+        LineResponse result = lineService.createLine(lineCreateRequest);
 
         Assertions.assertThat(result.getId()).isEqualTo(1L);
         Assertions.assertThat(result.getName()).isEqualTo("2호선");
