@@ -37,9 +37,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .when().post("/lines")
             .then().log().all()
             .statusCode(HttpStatus.CREATED.value())
-            .header("Location", "/lines/1")
-            .body("name", is("이호선"))
-            .body("color", is("bg-green-600"));
+            .header("Location", "/lines/1");
     }
 
     @Test
@@ -61,7 +59,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     @Sql("classpath:/init.sql")
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
-    void createLineWithDuplicateName() {
+    void createLine_duplicate_name() {
         // given
         final LineRequest lineRequest = new LineRequest("이호선", "bg-green-600");
         saveLine(lineRequest);
@@ -142,7 +140,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선 전체 목록을 조회한다.")
-    void getLines() {
+    void getAllLines() {
         // given
         final LineRequest lineRequest1 = new LineRequest("이호선", "bg-green-600");
         final LineRequest lineRequest2 = new LineRequest("팔호선", "bg-pink-600");
@@ -166,8 +164,8 @@ public class LineIntegrationTest extends IntegrationTest {
         saveStation(stationRequest4);
 
         final SectionRequest sectionRequest1 = new SectionRequest(1L, 1L, 2L, 10);
-        final SectionRequest sectionRequest2 = new SectionRequest(2L, 3L, 4L, 10);
         saveSection(sectionRequest1);
+        final SectionRequest sectionRequest2 = new SectionRequest(2L, 3L, 4L, 10);
         saveSection(sectionRequest2);
 
         // expected
@@ -203,7 +201,6 @@ public class LineIntegrationTest extends IntegrationTest {
         stationRequest2.put("name", "역삼역");
         saveStation(stationRequest2);
 
-        // 구간 추가
         final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 10);
         saveSection(sectionRequest);
 
@@ -249,6 +246,33 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured
             .given().log().all()
             .when().delete("/lines/{lineId}", 1)
+            .then().log().all()
+            .statusCode(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @Sql("classpath:/init.sql")
+    @DisplayName("지하철 노선의 역을 제거한다.")
+    void deleteStationInLine() {
+        // given
+        final LineRequest lineRequest = new LineRequest("이호선", "bg-green-600");
+        saveLine(lineRequest);
+
+        final Map<String, String> stationRequest1 = new HashMap<>();
+        stationRequest1.put("name", "강남역");
+        saveStation(stationRequest1);
+
+        final Map<String, String> stationRequest2 = new HashMap<>();
+        stationRequest2.put("name", "역삼역");
+        saveStation(stationRequest2);
+
+        final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 10);
+        saveSection(sectionRequest);
+
+        // expected
+        RestAssured
+            .given().log().all()
+            .when().delete("/lines/{id}/stations/{stationId}", 1, 1)
             .then().log().all()
             .statusCode(HttpStatus.NO_CONTENT.value());
     }

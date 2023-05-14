@@ -62,7 +62,7 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     @Sql("classpath:/init.sql")
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
-    void createStationWithDuplicateName() {
+    void createStation_duplicate_name() {
         // given
         final Map<String, String> stationRequest = new HashMap<>();
         stationRequest.put("name", "강남역");
@@ -108,7 +108,7 @@ public class StationIntegrationTest extends IntegrationTest {
     @Test
     @Sql("classpath:/init.sql")
     @DisplayName("지하철역을 조회한다.")
-    void getStation() {
+    void getStationById() {
         /// given
         final Map<String, String> stationRequest = new HashMap<>();
         stationRequest.put("name", "강남역");

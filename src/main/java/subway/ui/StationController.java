@@ -19,6 +19,7 @@ import subway.dto.StationResponse;
 @RestController
 @RequestMapping("/stations")
 public class StationController {
+
     private final StationService stationService;
 
     public StationController(StationService stationService) {
@@ -27,23 +28,24 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@Valid @RequestBody StationRequest stationRequest) {
-        final StationResponse station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(station);
+        final Long stationId = stationService.saveStation(stationRequest);
+        return ResponseEntity.created(URI.create("/stations/" + stationId)).build();
     }
 
     @GetMapping
-    public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationResponses());
+    public ResponseEntity<List<StationResponse>> getStations() {
+        return ResponseEntity.ok().body(stationService.getStations());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
+    public ResponseEntity<StationResponse> getStationById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(stationService.getStationById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id, @Valid@RequestBody StationRequest stationRequest) {
-        stationService.updateStation(id, stationRequest);
+    public ResponseEntity<Void> updateStation(@PathVariable Long id,
+                                              @Valid @RequestBody StationRequest stationRequest) {
+        stationService.updateStationById(id, stationRequest);
         return ResponseEntity.noContent().build();
     }
 
