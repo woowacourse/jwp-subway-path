@@ -57,4 +57,32 @@ class AddLineIntegratedTest extends IntegrationTest {
                 .body("message", containsString("1호선"))
                 .body("message", containsString("초록"));
     }
+    
+    @Test
+    void 이미_존재하는_노선_색상으로_추가할_시_예외_발생() {
+        // given
+        final Map<String, String> params = new HashMap<>();
+        params.put("name", "1호선");
+        params.put("color", "파랑");
+        
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", startsWith("/lines/"));
+        
+        params.clear();
+        params.put("name", "2호선");
+        params.put("color", "파랑");
+        RestAssured.given().log().all()
+                .contentType(ContentType.JSON)
+                .body(params)
+                .when().post("/lines")
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", containsString("2호선"))
+                .body("message", containsString("파랑"));
+    }
 }
