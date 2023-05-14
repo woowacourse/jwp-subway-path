@@ -1,15 +1,18 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.H2StationDao;
 import subway.dao.StationDao;
 import subway.domain.Station;
+import subway.domain.Stations;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class StationService {
     private final StationDao stationDao;
@@ -18,11 +21,12 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    //todo: Stations를 이용한 검증
-
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(Station.from(stationRequest.getName()));
-        return StationResponse.from(station);
+        Stations stations = Stations.from(stationDao.findAll());
+        Station newStation = Station.from(stationRequest.getName());
+        stations.addStation(newStation);
+        Station insertedStation = stationDao.insert(Station.from(stationRequest.getName()));
+        return StationResponse.from(insertedStation);
     }
 
     public StationResponse findStationResponseById(Long id) {
