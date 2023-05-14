@@ -32,7 +32,7 @@ public class LineDao {
                 .usingGeneratedKeyColumns("line_id");
     }
 
-    public Long insert(final LineEntity lineEntity) {
+    public long insert(final LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", lineEntity.getName());
         params.put("line_number", lineEntity.getLineNumber());

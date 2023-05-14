@@ -41,7 +41,6 @@ public class SectionRepository {
                     StationEntity downStationEntity = stationDao.findById(sectionEntity.getDownStationId());
                     Station upStation = new Station(upStationEntity.getStationId(), upStationEntity.getName());
                     Station downStation = new Station(downStationEntity.getStationId(), downStationEntity.getName());
-
                     return new Section(upStation, downStation, sectionEntity.getDistance());
                 })
                 .collect(Collectors.toList());

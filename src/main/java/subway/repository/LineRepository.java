@@ -27,7 +27,7 @@ public class LineRepository {
         this.stationDao = stationDao;
     }
 
-    public Long insertLine(final LineEntity lineEntity) {
+    public long insertLine(final LineEntity lineEntity) {
         return lineDao.insert(lineEntity);
     }
 
