@@ -10,6 +10,7 @@ import subway.domain.subway.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
+import subway.exception.StationNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -56,8 +57,10 @@ public class LineRepository {
                 .map(section -> {
                     Station upStation = section.getUpStation();
                     Station downStation = section.getDownStation();
-                    StationEntity upStationEntity = stationDao.findByName(upStation.getName());
-                    StationEntity downStationEntity = stationDao.findByName(downStation.getName());
+                    StationEntity upStationEntity = stationDao.findByName(upStation.getName())
+                            .orElseThrow(StationNotFoundException::new);
+                    StationEntity downStationEntity = stationDao.findByName(downStation.getName())
+                            .orElseThrow(StationNotFoundException::new);
 
                     return new SectionEntity(null, lineEntity.getLineId(), upStationEntity.getStationId(), downStationEntity.getStationId(), section.getDistance());
                 })

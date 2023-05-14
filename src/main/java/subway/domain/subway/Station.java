@@ -19,6 +19,10 @@ public class Station {
         this.name = new Name(name);
     }
 
+    public void edit(final String name) {
+        this.name.edit(name);
+    }
+
     public long getId() {
         return id;
     }

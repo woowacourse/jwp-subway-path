@@ -3,6 +3,7 @@ package subway.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.dto.station.StationCreateRequest;
+import subway.dto.station.StationEditRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
 import subway.service.StationService;
@@ -34,6 +35,12 @@ public class StationController {
     @GetMapping("/{id}")
     public ResponseEntity<StationResponse> showStation(@PathVariable final Long id) {
         return ResponseEntity.ok().body(stationService.findStationEntityById(id));
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Void> editStation(@PathVariable final Long id, @Valid @RequestBody StationEditRequest stationEditRequest) {
+        stationService.editStation(id, stationEditRequest);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

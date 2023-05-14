@@ -6,9 +6,14 @@ import java.util.Objects;
 
 public class Name {
 
-    private final String name;
+    private String name;
 
     public Name(final String name) {
+        validateName(name);
+        this.name = name;
+    }
+
+    public void edit(final String name) {
         validateName(name);
         this.name = name;
     }

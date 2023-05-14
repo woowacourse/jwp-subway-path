@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.station.StationDao;
 import subway.domain.subway.Station;
 import subway.entity.StationEntity;
+import subway.exception.StationNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,7 +23,8 @@ public class StationRepository {
     }
 
     public Station findByStationId(final Long stationId) {
-        StationEntity stationEntity = stationDao.findById(stationId);
+        StationEntity stationEntity = stationDao.findById(stationId)
+                .orElseThrow(StationNotFoundException::new);
         return new Station(stationEntity.getStationId(), stationEntity.getName());
     }
 
@@ -36,5 +38,9 @@ public class StationRepository {
 
     public void deleteById(final long stationId) {
         stationDao.deleteById(stationId);
+    }
+
+    public void update(final long id, final Station station) {
+        stationDao.update(id, station);
     }
 }

@@ -8,6 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.subway.Station;
 import subway.dto.station.StationCreateRequest;
+import subway.dto.station.StationEditRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
 import subway.exception.NameIsBlankException;
@@ -19,6 +20,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -85,6 +87,23 @@ public class StationServiceUnitTest {
                 () -> assertThat(result.getStations().size()).isEqualTo(1),
                 () -> assertThat(result.getStations().get(0).getName()).isEqualTo(stations.get(0).getName())
         );
+    }
+
+    @Test
+    @DisplayName("역을 수정한다.")
+    void edit_station_success() {
+        // given
+        Long id = 1L;
+        StationEditRequest stationEditRequest = new StationEditRequest("판교역");
+
+        Station station = new Station(1, "잠실역");
+        given(stationRepository.findByStationId(id)).willReturn(station);
+
+        // when
+        stationService.editStation(id, stationEditRequest);
+
+        // then
+        verify(stationRepository).update(id, station);
     }
 }
 

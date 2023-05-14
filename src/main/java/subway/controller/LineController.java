@@ -41,7 +41,7 @@ public class LineController {
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<Void> editLineById(@PathVariable final Long id, @RequestBody final LineEditRequest lineEditRequest) {
+    public ResponseEntity<Void> editLineById(@PathVariable final Long id, @RequestBody @Valid final LineEditRequest lineEditRequest) {
         lineService.editLineById(id, lineEditRequest);
         return ResponseEntity.noContent().build();
     }

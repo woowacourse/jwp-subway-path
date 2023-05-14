@@ -39,7 +39,6 @@ public class LineService {
                 .orElseThrow(LineNotFoundException::new);
 
         lineEntity.update(lineEditRequest.getLineNumber(), lineEditRequest.getName(), lineEditRequest.getColor());
-
         lineRepository.updateLine(lineId, lineEntity);
     }
 }

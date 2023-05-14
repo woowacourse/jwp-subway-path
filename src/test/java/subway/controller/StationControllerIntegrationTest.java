@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dto.station.StationCreateRequest;
+import subway.dto.station.StationEditRequest;
 import subway.dto.station.StationsResponse;
 import subway.service.StationService;
 
@@ -100,5 +101,27 @@ class StationControllerIntegrationTest {
 
         StationsResponse stations = stationService.findAllStationResponses();
         assertThat(stations.getStations().size()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("역을 수정한다.")
+    void edit_station_success() {
+        // given
+        StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
+        long id = stationService.saveStation(stationCreateRequest);
+
+        StationEditRequest stationEditRequest = new StationEditRequest("판교역");
+
+        // when & then
+        RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationEditRequest)
+                .when().patch("/stations/" + id)
+                .then()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
+        StationsResponse stations = stationService.findAllStationResponses();
+        assertThat(stations.getStations().get(0).getName()).isEqualTo(stationEditRequest.getName());
     }
 }

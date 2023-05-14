@@ -10,9 +10,11 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.subway.Station;
 import subway.dto.station.StationCreateRequest;
+import subway.dto.station.StationEditRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
 import subway.exception.NameIsBlankException;
+import subway.exception.StationNotFoundException;
 import subway.repository.StationRepository;
 import subway.service.StationService;
 
@@ -96,5 +98,38 @@ public class StationServiceIntegrationTest {
                 () -> assertThat(result.getStations().size()).isEqualTo(1),
                 () -> assertThat(result.getStations().get(0).getName()).isEqualTo(station.getName())
         );
+    }
+
+    @Test
+    @DisplayName("역을 수정한다.")
+    void edit_station_success() {
+        // given
+        StationCreateRequest stationCreateRequest = new StationCreateRequest("잠실역");
+        long id = stationService.saveStation(stationCreateRequest);
+
+        StationEditRequest stationEditRequest = new StationEditRequest("판교역");
+
+        // when
+        stationService.editStation(id, stationEditRequest);
+
+        // then
+        StationsResponse expected = stationService.findAllStationResponses();
+
+        assertAll(
+                () -> assertThat(expected.getStations().size()).isEqualTo(1),
+                () -> assertThat(expected.getStations().get(0).getName()).isEqualTo(stationEditRequest.getName())
+        );
+    }
+
+    @Test
+    @DisplayName("역을 찾을 수 없으면 예외를 발생시킨다..")
+    void throws_exception_when_station_not_found() {
+        // given
+        StationEditRequest stationEditRequest = new StationEditRequest("판교역");
+        Long id = 1L;
+
+        // when & then
+        assertThatThrownBy(() -> stationService.editStation(id, stationEditRequest))
+                .isInstanceOf(StationNotFoundException.class);
     }
 }

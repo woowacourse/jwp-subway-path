@@ -86,6 +86,11 @@ public class GlobalExceptionHandler {
         return getResponseOfNotFound(exception);
     }
 
+    @ExceptionHandler(StationNotFoundException.class)
+    public ResponseEntity<ExceptionResponse> stationNotFoundExceptionHandler(final StationNotFoundException exception) {
+        return getResponseOfNotFound(exception);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> internalServerErrorHandler(final Exception exception) {
         Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
