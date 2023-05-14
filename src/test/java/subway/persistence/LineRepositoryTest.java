@@ -34,8 +34,8 @@ class LineRepositoryTest {
     private final RowMapper<SectionEntity> sectionMapper = (rs, cn) -> new SectionEntity(
             rs.getLong("id"),
             rs.getLong("line_id"),
-            rs.getString("up"),
-            rs.getString("down"),
+            rs.getString("up_bound"),
+            rs.getString("down_bound"),
             rs.getInt("distance")
     );
 
@@ -52,10 +52,10 @@ class LineRepositoryTest {
     @DisplayName("Line은 저장될 수 있다")
     void test_saveFirst() {
         //given
-        String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
+        String sectionSql = "select id, line_id, up_bound, down_bound, distance from section where line_id = ?";
         LineProperty lineProperty = new LineProperty(1L, "2호선", "red");
 
-        Line line = new Line(new LineProperty(1L, "2호선", "red"), List.of(
+        Line line = new Line(lineProperty, List.of(
                 new Section(new Station("푸우"), new Station("테오"), new Distance(1)),
                 new Section(new Station("테오"), new Station("제이온"), new Distance(2)),
                 new Section(new Station("제이온"), new Station("시카"), new Distance(3))
