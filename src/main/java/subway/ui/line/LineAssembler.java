@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import subway.application.line.port.in.InterStationResponseDto;
 import subway.application.line.port.in.LineCreateRequestDto;
-import subway.application.line.port.in.LineCreateResponseDto;
+import subway.application.line.port.in.LineResponseDto;
 import subway.ui.line.dto.InterStationResponse;
 import subway.ui.line.dto.LineCreateRequest;
 import subway.ui.line.dto.LineResponse;
@@ -24,7 +24,7 @@ public class LineAssembler {
         );
     }
 
-    public static LineResponse toLineResponse(final LineCreateResponseDto responseDto) {
+    public static LineResponse toLineResponse(final LineResponseDto responseDto) {
         return new LineResponse(
             responseDto.getId(),
             responseDto.getName(),

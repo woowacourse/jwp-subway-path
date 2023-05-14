@@ -3,17 +3,17 @@ package subway.application.line.port;
 import java.util.List;
 import subway.application.line.port.in.InterStationResponseDto;
 import subway.application.line.port.in.LineCreateRequestDto;
-import subway.application.line.port.in.LineCreateResponseDto;
 import subway.application.line.port.in.LineCreateUseCase;
+import subway.application.line.port.in.LineResponseDto;
 
 public class MockLineCreateUseCase implements LineCreateUseCase {
 
     private int callCount = 0;
 
     @Override
-    public LineCreateResponseDto createLine(final LineCreateRequestDto lineCreateRequestDto) {
+    public LineResponseDto createLine(final LineCreateRequestDto lineCreateRequestDto) {
         callCount++;
-        return new LineCreateResponseDto(
+        return new LineResponseDto(
             1L,
             lineCreateRequestDto.getName(),
             lineCreateRequestDto.getColor(),

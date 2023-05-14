@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class LineCreateResponseDto {
+public class LineResponseDto {
 
     private Long id;
     private String name;

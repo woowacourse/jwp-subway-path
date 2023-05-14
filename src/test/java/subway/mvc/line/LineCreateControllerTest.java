@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.application.line.port.in.InterStationResponseDto;
 import subway.application.line.port.in.LineCreateRequestDto;
-import subway.application.line.port.in.LineCreateResponseDto;
+import subway.application.line.port.in.LineResponseDto;
 import subway.mvc.AbstractControllerTest;
 import subway.ui.line.dto.InterStationResponse;
 import subway.ui.line.dto.LineResponse;
@@ -26,7 +26,7 @@ class LineCreateControllerTest extends AbstractControllerTest {
 
     @Test
     void 정상적으로_생성된다() throws Exception {
-        final LineCreateResponseDto givenResult = new LineCreateResponseDto(1L, "2호선", "초록색",
+        final LineResponseDto givenResult = new LineResponseDto(1L, "2호선", "초록색",
             List.of(new InterStationResponseDto(1L, 2L, 3L, 4L)));
         given(lineCreateUseCase.createLine(any(LineCreateRequestDto.class)))
             .willReturn(givenResult);

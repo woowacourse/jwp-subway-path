@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/lines")
 public class LineDeleteController {
 
-    
+
 }
