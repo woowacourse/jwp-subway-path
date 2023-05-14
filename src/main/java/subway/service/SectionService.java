@@ -3,10 +3,8 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
-import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.request.SectionCreationRequest;
 import subway.repository.LineRepository;

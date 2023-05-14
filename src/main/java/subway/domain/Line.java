@@ -38,7 +38,7 @@ public class Line {
     }
 
     public void addSection(final Station upwardStation, final Station downwardStation, final int distance) {
-        if(!hasAnyStation()){
+        if (!hasAnyStation()) {
             Section emptySection = sections.get(0);
             addSection(emptySection, upwardStation, null, null);
             Section originalSection = findSectionContainsStationAsUpward(upwardStation)
@@ -79,13 +79,13 @@ public class Line {
     }
 
     private void validateTwoStationsNotExist(final Station upwardStation, final Station downwardStation) {
-        if(!hasStation(upwardStation) && !hasStation(downwardStation)){
+        if (!hasStation(upwardStation) && !hasStation(downwardStation)) {
             throw new IllegalArgumentException("노선에 역을 1개씩 삽입해 주세요.");
         }
     }
 
     private void validateTwoStationsAlreadyExist(final Station upwardStation, final Station downwardStation) {
-        if(hasStation(upwardStation) && hasStation(downwardStation)){
+        if (hasStation(upwardStation) && hasStation(downwardStation)) {
             throw new IllegalArgumentException("노선에 두 개의 역 모두가 이미 존재합니다.");
         }
     }
@@ -109,7 +109,7 @@ public class Line {
     }
 
     public void removeStation(final Station station) {
-        if(!hasStation(station)){
+        if (!hasStation(station)) {
             throw new IllegalArgumentException("노선에 해당 역이 존재하지 않습니다.");
         }
         Section downwardSection = findSectionContainsStationAsUpward(station)
