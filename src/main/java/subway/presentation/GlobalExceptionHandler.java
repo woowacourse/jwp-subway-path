@@ -8,6 +8,8 @@ import subway.exception.DatabaseException;
 import subway.exception.GlobalException;
 import subway.presentation.dto.response.BadResponse;
 
+import java.net.BindException;
+
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -22,6 +24,13 @@ public class GlobalExceptionHandler {
     public ResponseEntity<BadResponse> handleDatabaseException(DatabaseException e) {
         return ResponseEntity
                 .status(HttpStatus.CONFLICT)
+                .body(new BadResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BadResponse> handleBindException(BindException e) {
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
                 .body(new BadResponse(e.getMessage()));
     }
 
