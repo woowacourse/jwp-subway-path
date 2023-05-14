@@ -37,4 +37,9 @@ public class LineService {
     public List<LineResponse> findAll(){
         return LineResponse.of(lineRepository.findAll());
     }
+
+    public LineResponse findById(final long lineId) {
+        final Line line = lineRepository.findById(lineId);
+        return new LineResponse(lineId, line.getName());
+    }
 }
