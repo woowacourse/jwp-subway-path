@@ -4,11 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import subway.section.domain.Direction;
-import subway.section.domain.Section;
 import subway.section.domain.Sections;
 
 import java.util.Objects;
-import java.util.Set;
 
 @Getter
 @ToString
