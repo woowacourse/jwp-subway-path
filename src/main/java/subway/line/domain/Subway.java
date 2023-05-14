@@ -1,9 +1,8 @@
-package subway.subway.domain;
+package subway.line.domain;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import subway.line.domain.Line;
 import subway.section.domain.Direction;
 
 import java.util.HashSet;
@@ -16,7 +15,11 @@ public class Subway {
     private final Set<Line> lines;
     
     public Subway() {
-        this.lines = new HashSet<>();
+        this(new HashSet<>());
+    }
+    
+    public Subway(final Set<Line> lines) {
+        this.lines = lines;
     }
     
     public void addLine(final String lineName, final String lineColor) {
@@ -24,6 +27,7 @@ public class Subway {
             throw new IllegalArgumentException("이미 존재하는 노선의 이름 또는 색상으로는 노선을 추가할 수 없습니다. " +
                     "lineName : " + lineName + ", lineColor : " + lineColor);
         }
+        
         lines.add(new Line(lineName, lineColor));
     }
     
@@ -37,22 +41,22 @@ public class Subway {
     }
     
     public void initAddStation(
-            final String line,
+            final String lineName,
             final String leftAdditional,
             final String rightAdditional,
             final long distance
     ) {
-        findLineByLineName(line).initAddStation(leftAdditional, rightAdditional, distance);
+        findLineByLineName(lineName).initAddStation(leftAdditional, rightAdditional, distance);
     }
     
     public void addStation(
-            final String line,
+            final String lineName,
             final String base,
             final Direction direction,
             final String additionalStation,
             final long distance
     ) {
-        findLineByLineName(line).addStation(base, direction, additionalStation, distance);
+        findLineByLineName(lineName).addStation(base, direction, additionalStation, distance);
     }
     
     public void removeStation(final String line, final String station) {

@@ -22,7 +22,7 @@ public class Sections {
         this(new HashSet<>());
     }
     
-    Sections(final Set<Section> sections) {
+    public Sections(final Set<Section> sections) {
         this.sections = sections;
     }
     

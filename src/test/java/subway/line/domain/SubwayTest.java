@@ -1,14 +1,12 @@
-package subway.subway.domain;
+package subway.line.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import subway.line.domain.Line;
 import subway.section.domain.Direction;
 
 import java.util.Set;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SubwayTest {

@@ -4,9 +4,12 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import subway.section.domain.Direction;
+import subway.section.domain.Section;
 import subway.section.domain.Sections;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @ToString
@@ -17,10 +20,18 @@ public class Line {
     private final Sections sections;
     
     public Line(final String name, final String color) {
+        this(name, color, new HashSet<>());
+    }
+    
+    public Line(final String name, final String color, final Set<Section> sections) {
+        this(name, color, new Sections(sections));
+    }
+    
+    public Line(final String name, final String color, final Sections sections) {
         validateNameAndColor(name, color);
         this.name = name;
         this.color = color;
-        this.sections = new Sections();
+        this.sections = sections;
     }
     
     private void validateNameAndColor(final String name, final String color) {
