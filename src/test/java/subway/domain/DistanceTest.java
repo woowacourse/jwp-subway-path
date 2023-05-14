@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 @DisplayName("Distance는 ")
 class DistanceTest {
@@ -15,11 +17,12 @@ class DistanceTest {
         assertDoesNotThrow(() -> Distance.from(3));
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("거리 정보가 양수가 아닐 경우 예외처리한다.")
-    void invalidDistanceExceptionTest() {
-        assertThatThrownBy(() -> Distance.from(-1))
+    @ValueSource(ints = {-1, 0})
+    void invalidDistanceExceptionTest(int input) {
+        assertThatThrownBy(() -> Distance.from(input))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 거리는 음수 일 수 없습니다.");
+                .hasMessageContaining("[ERROR] 거리는 양의 정수만 가능합니다.");
     }
 }

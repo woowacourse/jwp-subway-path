@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 @DisplayName("Section은 ")
 class SectionTest {
 
-/*    @Test
+    @Test
     @DisplayName("id, 상행 방향 역(Station) 정보, 하행 방향 역(Station) 정보, 역 사이 거리를 갖는다.")
     void sectionCreateTest() {
         // given
@@ -18,7 +18,7 @@ class SectionTest {
         Line line = Line.of("2호선", "초록색");
 
         // then
-        assertDoesNotThrow(() -> Section.of(upwardStation, downwardStation, 10, line));
+        assertDoesNotThrow(() -> Section.of(upwardStation, downwardStation, 10));
     }
 
     @Test
@@ -29,8 +29,8 @@ class SectionTest {
         Line line = Line.of("2호선", "초록색");
 
         // then
-        assertThatThrownBy(() -> Section.of(upwardStation, upwardStation, 10, line))
+        assertThatThrownBy(() -> Section.of(upwardStation, upwardStation, 10))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 구간을 구성하는 역은 동일한 역일 수 없습니다.");
-    }*/
+    }
 }
