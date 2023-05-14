@@ -4,11 +4,9 @@ import org.springframework.stereotype.Service;
 import subway.station.dao.StationDao;
 import subway.station.domain.Station;
 import subway.station.dto.StationRequest;
-import subway.station.dto.StationResponse;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class StationService {
@@ -18,27 +16,22 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(final StationRequest stationRequest) {
+    public Station saveStation(final StationRequest stationRequest) {
         Optional<Station> findStation = stationDao.findByName(stationRequest.getName());
 
         if (findStation.isPresent()) {
             throw new IllegalArgumentException("역 이름이 이미 존재합니다. 유일한 역 이름을 사용해주세요.");
         }
 
-        final Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        return stationDao.insert(new Station(stationRequest.getName()));
     }
 
-    public StationResponse findStationResponseById(final Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public Station findStationById(final Long id) {
+        return stationDao.findById(id);
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        final List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public List<Station> findAllStationResponses() {
+        return stationDao.findAll();
     }
 
     public void updateStation(final Long id, final StationRequest stationRequest) {
