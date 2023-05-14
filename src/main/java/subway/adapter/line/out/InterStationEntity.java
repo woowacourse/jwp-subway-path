@@ -1,4 +1,4 @@
-package subway.entity;
+package subway.adapter.line.out;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -10,8 +10,8 @@ public class InterStationEntity {
 
     private final Long id;
     private final Long lineId;
-    private final long frontStationId;
-    private final long backStationId;
+    private final long upStationId;
+    private final long downStationId;
     private final long distance;
 
     public static InterStationEntity of(final InterStation interStation, final Long lineId) {
@@ -20,5 +20,17 @@ public class InterStationEntity {
             interStation.getUpStationId(),
             interStation.getDownStationId(),
             interStation.getDistance().getValue());
+    }
+
+    public static InterStationEntity of(final InterStationEntity interStationEntity, final long lineId) {
+        return new InterStationEntity(interStationEntity.getId(),
+            lineId,
+            interStationEntity.getUpStationId(),
+            interStationEntity.getDownStationId(),
+            interStationEntity.getDistance());
+    }
+
+    public InterStation toInterStation() {
+        return new InterStation(id, upStationId, downStationId, distance);
     }
 }

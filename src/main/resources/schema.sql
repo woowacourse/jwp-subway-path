@@ -18,8 +18,8 @@ create table if not exists INTERSTATION
     id               bigint auto_increment not null,
     line_id          bigint                not null,
     distance         bigint                not null,
-    start_station_id bigint                not null,
-    end_station_id   bigint                not null,
+    up_station_id bigint                not null,
+    down_station_id   bigint                not null,
     primary key (id),
     foreign key (line_id) references LINE (id)
     );
