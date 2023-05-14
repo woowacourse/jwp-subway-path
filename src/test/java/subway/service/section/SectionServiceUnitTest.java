@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static subway.fixture.SectionsFixture.createSections;
 
 @ExtendWith(MockitoExtension.class)
-public class SectionServiceMockTest {
+public class SectionServiceUnitTest {
 
     @InjectMocks
     private SectionService sectionService;

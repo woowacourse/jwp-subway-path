@@ -18,7 +18,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class SubwayMapServiceMockTest {
+class SubwayMapServiceUnitTest {
 
     @InjectMocks
     private SubwayMapService subwayMapService;

@@ -22,7 +22,7 @@ import static subway.fixture.LineEntityFixture.createLineEntity;
 import static subway.fixture.LineEntityFixture.createLineEntity2;
 
 @ExtendWith(MockitoExtension.class)
-class LineServiceMockTest {
+class LineServiceUnitTest {
 
     @InjectMocks
     private LineService lineService;
