@@ -1,74 +1,49 @@
 package subway.subwayMap.domain;
 
-import subway.section.domain.Section;
+import org.springframework.stereotype.Component;
+import subway.line.domain.Line;
 import subway.station.domain.Station;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * 지하철 지도 서비스에서 가장 중요한 서비스는 검색
+ * 검색마다 query 를 날리는것은 비효율 적이기 때문에 Bean으로 관리
+ */
+@Component
 public class SubwayMap {
 
-    private final Map<Station, List<Section>> subwayMap;
+    private final Map<Line, List<Station>> subwayMaps;
 
-    public SubwayMap(final Map<Station, List<Section>> subwayMap) {
-        this.subwayMap = subwayMap;
+    public SubwayMap() {
+        this.subwayMaps = new ConcurrentHashMap<>();
     }
 
-    public static SubwayMap of(final List<Section> sections) {
-        final SubwayMap subwayMap = new SubwayMap(new HashMap<>());
-        for (final Section section : sections) {
-            subwayMap.put(section.getUpStation(), section);
-            subwayMap.put(section.getDownStation(), section);
+    public void put(final Line line, final List<Station> sections) {
+        subwayMaps.put(line, sections);
+    }
+
+    public List<Station> getSubwayMapByLine(final Line line) {
+        return subwayMaps.getOrDefault(line, new ArrayList<>());
+    }
+
+    public void addStation(Line line,Station station1,Station station2,boolean isDirection){
+        List<Station> stations = subwayMaps.get(line);
+        if (isDirection){
+            int index = stations.indexOf(station1);
+            stations.add(index+1,station2);
+            return;
         }
-        return subwayMap;
+        int index = stations.indexOf(station1);
+        stations.add(index,station2);
     }
 
-    private void put(final Station station, final Section section) {
-        subwayMap.computeIfAbsent(station, key -> new ArrayList<>()).add(section);
-    }
+    public void deleteStation(Line line,Station station){
+        List<Station> stations = subwayMaps.get(line);
 
-    public List<Station> getStations() {
-        final Station station = subwayMap.keySet().iterator().next();
-        final List<Station> upStation = computeOneWayUp(station);
-        final List<Station> downStation = computeOneWayDown(station);
-        final List<Station> mergedList = new ArrayList<>();
-        Collections.reverse(upStation);
-        mergedList.addAll(upStation);
-        mergedList.addAll(downStation);
-        return mergedList;
-    }
-
-    private List<Station> computeOneWayUp(final Station station) {
-        final List<Station> result = new ArrayList<>();
-        final Queue<Station> queue = new LinkedList<>();
-        queue.add(station);
-        result.add(station);
-        while (!queue.isEmpty()) {
-            final Station poll = queue.poll();
-            final List<Section> sections = subwayMap.get(poll);
-            for (final Section section : sections) {
-                if (section.getDownStation().equals(poll)) {
-                    queue.add(section.getUpStation());
-                    result.add(section.getUpStation());
-                }
-            }
-        }
-        return result;
-    }
-
-    private List<Station> computeOneWayDown(final Station station) {
-        final List<Station> result = new ArrayList<>();
-        final Queue<Station> queue = new LinkedList<>();
-        queue.add(station);
-        while (!queue.isEmpty()) {
-            final Station poll = queue.poll();
-            final List<Section> sections = subwayMap.get(poll);
-            for (final Section section : sections) {
-                if (section.getUpStation().equals(poll)) {
-                    queue.add(section.getDownStation());
-                    result.add(section.getDownStation());
-                }
-            }
-        }
-        return result;
+        stations.remove(station);
     }
 }
