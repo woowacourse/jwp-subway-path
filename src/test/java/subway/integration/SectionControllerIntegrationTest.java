@@ -157,7 +157,7 @@ class SectionControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("노선에 역을 추가할 때, 존재하지 않는 역이면 추가에 실패한다. ")
+    @DisplayName("노선에 구간을 추가할 때, 존재하지 않는 역이면 추가에 실패한다. ")
     void addSection_notExistsStation_fail() throws Exception {
         // given
         SectionCreateRequest request = new SectionCreateRequest("장승배기역", "상도역", 10);
