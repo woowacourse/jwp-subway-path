@@ -72,11 +72,11 @@ public class SectionEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final SectionEntity that = (SectionEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(distance, that.distance) && Objects.equals(isStart, that.isStart) && Objects.equals(upStationId, that.upStationId) && Objects.equals(downStationId, that.downStationId) && Objects.equals(lineId, that.lineId);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, distance, isStart, upStationId, downStationId, lineId);
+        return Objects.hash(id);
     }
 }
