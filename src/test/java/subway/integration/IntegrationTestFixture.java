@@ -8,12 +8,23 @@ import io.restassured.response.Response;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import subway.dto.AddStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
 
+@SuppressWarnings("NonAsciiCharacters")
 public class IntegrationTestFixture {
+
+    public static void 비정상_요청을_반환한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    public static void 정상_요청을_반환한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
 
     public static ExtractableResponse<Response> 노선_생성_요청(String lineName, String source, String target, int distance) {
         LineRequest request = new LineRequest(lineName, source, target, distance);
@@ -62,5 +73,17 @@ public class IntegrationTestFixture {
         assertThat(response.jsonPath().getList(".", LineResponse.class))
                 .usingRecursiveComparison()
                 .isEqualTo(전체_노선_정보);
+    }
+
+    public static ExtractableResponse<Response> 역_추가_요청(Long lineId, String source, String target, int distance) {
+        AddStationRequest request = new AddStationRequest(source, target, distance);
+
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/lines/{lineId}/station", lineId)
+                .then().log().all()
+                .extract();
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.dto.AddStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SaveResponse;
@@ -36,10 +37,16 @@ public class LineController {
         LineResponse response = lineService.findLineById(lineId);
         return ResponseEntity.ok(response);
     }
-    
+
     @GetMapping
     public ResponseEntity<List<LineResponse>> findAllLines() {
         List<LineResponse> lines = lineService.findAllLines();
         return ResponseEntity.ok(lines);
+    }
+
+    @PostMapping("/{lineId}/station")
+    public ResponseEntity<Void> addStation(@PathVariable Long lineId, @RequestBody AddStationRequest request) {
+        lineService.addStation(lineId, request);
+        return ResponseEntity.ok().build();
     }
 }

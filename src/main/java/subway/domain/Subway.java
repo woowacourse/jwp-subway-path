@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 public class Subway {
 
@@ -43,7 +44,7 @@ public class Subway {
         return lines.stream()
                 .filter(line -> line.getName().equals(lineName))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new NoSuchElementException("존재하지 않는 노선입니다."));
     }
 
     public void addStation(String name, String sourceStation, String targetStation, int distance) {

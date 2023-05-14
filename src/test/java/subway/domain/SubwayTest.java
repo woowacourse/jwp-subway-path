@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -82,7 +83,7 @@ class SubwayTest {
 
         // when, then
         assertThatThrownBy(() -> subway.removeStation("1호선", "강남역"))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 노선입니다.");
     }
 
@@ -124,7 +125,7 @@ class SubwayTest {
 
         // when, then
         assertThatThrownBy(() -> subway.findLineByName("2호선"))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("존재하지 않는 노선입니다.");
     }
 

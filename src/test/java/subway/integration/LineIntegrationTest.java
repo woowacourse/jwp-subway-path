@@ -6,7 +6,10 @@ import static subway.integration.IntegrationTestFixture.노선_전체_조회_결
 import static subway.integration.IntegrationTestFixture.노선_정보;
 import static subway.integration.IntegrationTestFixture.노선_조회_결과;
 import static subway.integration.IntegrationTestFixture.단일_노선_조회_요청;
+import static subway.integration.IntegrationTestFixture.비정상_요청을_반환한다;
+import static subway.integration.IntegrationTestFixture.역_추가_요청;
 import static subway.integration.IntegrationTestFixture.전체_노선_조회_요청;
+import static subway.integration.IntegrationTestFixture.정상_요청을_반환한다;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -38,7 +41,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             ExtractableResponse<Response> response = 노선_생성_요청("2호선", "역삼역", "잠실역", 10);
 
-            assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+            비정상_요청을_반환한다(response);
         }
     }
 
@@ -66,6 +69,56 @@ public class LineIntegrationTest extends IntegrationTest {
             ExtractableResponse<Response> response = 전체_노선_조회_요청();
 
             노선_전체_조회_결과를_확인한다(response, 노선_정보("1호선", "서울역", "시청역"), 노선_정보("2호선", "강남역", "역삼역"));
+        }
+    }
+
+    @Nested
+    public class 노선에_역을_등록할_때 {
+
+        @Test
+        void 정상_추가_한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 역_추가_요청(저장된_노선_ID, "강남역", "잠실역", 2);
+
+            정상_요청을_반환한다(response);
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("2호선", "강남역", "잠실역", "역삼역"));
+        }
+
+        @Test
+        void 구간이_연결되지_않으면_예외가_발생한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 역_추가_요청(저장된_노선_ID, "서울역", "시청역", 3);
+
+            비정상_요청을_반환한다(response);
+        }
+
+        @Test
+        void 구간_사이에_추가하는_경우_구간_사이의_길이보다_추가할_구간의_거리가_같거나_긴경우_예외가_발생한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 역_추가_요청(저장된_노선_ID, "강남역", "잠실역", 5);
+
+            비정상_요청을_반환한다(response);
+        }
+
+        @Test
+        void 이미_존재하는_구간을_등록하면_예외가_발생한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 역_추가_요청(저장된_노선_ID, "강남역", "역삼역", 3);
+
+            비정상_요청을_반환한다(response);
+        }
+
+        @Test
+        void 없는_노선에_구간을_등록하면_예외가_발생한다() {
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
+
+            ExtractableResponse<Response> response = 역_추가_요청(Long.MAX_VALUE, "강남역", "잠실역", 2);
+
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
         }
     }
 }
