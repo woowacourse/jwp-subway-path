@@ -53,8 +53,7 @@ public class LineService {
 
     public List<StationResponse> findRouteMap(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        return line.routeMap()
-                .getRouteMap()
+        return line.routeMap().value()
                 .stream()
                 .map(station -> new StationResponse(
                         station.getId(),

@@ -23,7 +23,7 @@ class RouteMapTest {
         RouteMap routeMap = new RouteMap(sections);
 
         //when
-        List<Station> stations = routeMap.getRouteMap();
+        List<Station> stations = routeMap.value();
 
         //then
         assertThat(stations).isEqualTo(Collections.emptyList());
@@ -68,7 +68,7 @@ class RouteMapTest {
         );
 
         //when
-        List<Station> routeMap = new RouteMap(sections).getRouteMap();
+        List<Station> routeMap = new RouteMap(sections).value();
 
         //then
         assertThat(routeMap).containsExactly(

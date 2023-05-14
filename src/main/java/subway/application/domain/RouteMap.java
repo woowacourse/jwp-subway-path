@@ -75,7 +75,7 @@ public class RouteMap {
         }
     }
 
-    public List<Station> getRouteMap() {
+    public List<Station> value() {
         return Collections.unmodifiableList(routeMap);
     }
 }
