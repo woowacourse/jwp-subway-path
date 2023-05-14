@@ -20,6 +20,14 @@ public class Station {
         this.line = line;
     }
 
+    public boolean isSameLine(Line targetLine) {
+        return line.getId().equals(targetLine.getId());
+    }
+
+    public boolean isSameStationName(String targetStationName) {
+        return name.getStationName().equals(targetStationName);
+    }
+
     public Long getId() {
         return id;
     }

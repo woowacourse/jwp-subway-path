@@ -54,7 +54,7 @@ public class Section {
     public String toString() {
         return "Section{" +
                 "id=" + id +
-                ", adjacentStations=" + nearbyStations +
+                ", nearbyStations=" + nearbyStations +
                 ", line=" + line +
                 ", distance=" + distance +
                 '}';

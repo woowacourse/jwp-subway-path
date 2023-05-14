@@ -18,6 +18,14 @@ public class Distance {
         }
     }
 
+    public Distance subtract(Distance targetDistance) {
+        return new Distance(this.distance - targetDistance.getDistance());
+    }
+
+    public boolean isGreaterThanOrEqual(Distance targetDistance) {
+        return distance >= targetDistance.getDistance();
+    }
+
     public int getDistance() {
         return distance;
     }
