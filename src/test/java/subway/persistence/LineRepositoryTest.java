@@ -110,12 +110,12 @@ class LineRepositoryTest {
                 () -> assertThat(actualLine.getName()).isEqualTo("2호선"),
                 () -> assertThat(actualLine.getColor()).isEqualTo("red"),
                 () -> assertThat(sections).hasSize(3),
-                () -> assertThat(sections).anyMatch(section -> section.getUpStation().getName().equals("푸우") &&
-                        section.getDownStation().getName().equals("테오") && section.getDistance().value() == 1),
-                () -> assertThat(sections).anyMatch(section -> section.getUpStation().getName().equals("테오") &&
-                        section.getDownStation().getName().equals("제이온") && section.getDistance().value() == 2),
-                () -> assertThat(sections).anyMatch(section -> section.getUpStation().getName().equals("제이온") &&
-                        section.getDownStation().getName().equals("시카") && section.getDistance().value() == 3)
+                () -> assertThat(sections).anyMatch(section -> section.getUpBound().getName().equals("푸우") &&
+                        section.getDownBound().getName().equals("테오") && section.getDistance().value() == 1),
+                () -> assertThat(sections).anyMatch(section -> section.getUpBound().getName().equals("테오") &&
+                        section.getDownBound().getName().equals("제이온") && section.getDistance().value() == 2),
+                () -> assertThat(sections).anyMatch(section -> section.getUpBound().getName().equals("제이온") &&
+                        section.getDownBound().getName().equals("시카") && section.getDistance().value() == 3)
         );
     }
 }

@@ -35,8 +35,8 @@ public class H2LineRepository implements LineRepository {
     private final RowMapper<SectionEntity> sectionMapper = (rs, cn) -> new SectionEntity(
             rs.getLong("id"),
             rs.getLong("line_id"),
-            rs.getString("up"),
-            rs.getString("down"),
+            rs.getString("up_bound"),
+            rs.getString("down_bound"),
             rs.getInt("distance")
     );
 
@@ -46,7 +46,7 @@ public class H2LineRepository implements LineRepository {
 
     public Line findById(Long linePropertyId) {
         String linePropertySql = "select id, name, color from line_property where id = ?";
-        String sectionSql = "select id, line_id, up, down, distance from section where line_id = ?";
+        String sectionSql = "select id, line_id, up_bound, down_bound, distance from section where line_id = ?";
 
         List<SectionEntity> sectionEntities = jdbcTemplate.query(sectionSql, sectionMapper, linePropertyId);
         LineProperty lineProperty = jdbcTemplate.queryForObject(linePropertySql, propertyRowMapper, linePropertyId);
@@ -89,13 +89,13 @@ public class H2LineRepository implements LineRepository {
     }
 
     public void save(Line line) {
-        String sectionSql = "insert into section (line_id, up, down, distance) values (?, ?, ?, ?)";
+        String sectionSql = "insert into section (line_id, up_bound, down_bound, distance) values (?, ?, ?, ?)";
 
         List<SectionEntity> sections = line.getSections().stream()
                 .map(section -> new SectionEntity(
                         line.getId(),
-                        section.getUpStation().getName(),
-                        section.getDownStation().getName(),
+                        section.getUpBound().getName(),
+                        section.getDownBound().getName(),
                         section.getDistance().value()
                 )).collect(Collectors.toList());
 

@@ -36,10 +36,10 @@ public class Line {
     }
 
     private void validateExistence(Section target) {
-        boolean downStationExists = sections.stream().anyMatch(section -> section.containsUpStationOf(target));
-        boolean upStationExists = sections.stream().anyMatch(section -> section.containsDownStationOf(target));
+        boolean downBoundsExists = sections.stream().anyMatch(section -> section.containsUpBoundOf(target));
+        boolean upBoundsExists = sections.stream().anyMatch(section -> section.containsDownBoundOf(target));
 
-        if (downStationExists && upStationExists) {
+        if (downBoundsExists && upBoundsExists) {
             throw new IllegalStateException("이미 노선에 등록된 역입니다.");
         }
     }
@@ -66,22 +66,22 @@ public class Line {
 
     public void deleteStation(Station station) {
         validateStationExistence(station);
-        Optional<Section> upStation = findSectionOf(section -> section.hasDownStation(station));
-        Optional<Section> downStation = findSectionOf(section -> section.hasUpStation(station));
+        Optional<Section> upBound = findSectionOf(section -> section.hasDownBound(station));
+        Optional<Section> downBound = findSectionOf(section -> section.hasUpBound(station));
 
-        if (upStation.isPresent() && downStation.isPresent()) {
-            sections.add(upStation.get().merge(downStation.get()));
+        if (upBound.isPresent() && downBound.isPresent()) {
+            sections.add(upBound.get().merge(downBound.get()));
         }
         deleteOldSections(station);
     }
 
     private void validateStationExistence(Station station) {
-        findSectionOf(section -> section.hasUpStation(station) || section.hasDownStation(station))
+        findSectionOf(section -> section.hasUpBound(station) || section.hasDownBound(station))
                 .orElseThrow(() -> new IllegalStateException("존재하지 않는 역에 대해 삭제할 수 없습니다."));
     }
 
     private void deleteOldSections(Station station) {
-        findSectionOf(section -> section.hasDownStation(station) || section.hasUpStation(station))
+        findSectionOf(section -> section.hasDownBound(station) || section.hasUpBound(station))
                 .ifPresent(sections::remove);
     }
 

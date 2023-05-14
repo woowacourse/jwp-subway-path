@@ -33,23 +33,23 @@ public class RouteMap {
     }
 
     private Station findFirstStation(List<Section> sections) {
-        List<Station> allUpStations = sections.stream()
-                .map(Section::getUpStation)
+        List<Station> allUpBounds = sections.stream()
+                .map(Section::getUpBound)
                 .collect(Collectors.toList());
-        List<Station> allDownStations = sections.stream()
-                .map(Section::getDownStation)
+        List<Station> allDownBounds = sections.stream()
+                .map(Section::getDownBound)
                 .collect(Collectors.toList());
 
-        allUpStations.removeAll(allDownStations);
+        allUpBounds.removeAll(allDownBounds);
 
-        return allUpStations.stream()
+        return allUpBounds.stream()
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("순환노선은 등록할 수 없습니다."));
     }
 
     private boolean hasNextStation(List<Section> sections, Station targetStation) {
         return sections.stream()
-                .anyMatch(section -> section.getUpStation().equals(targetStation));
+                .anyMatch(section -> section.getUpBound().equals(targetStation));
     }
 
     private boolean isInnerCircle(List<Section> sections, List<Station> stations) {
@@ -59,8 +59,8 @@ public class RouteMap {
 
     private Station findNext(List<Section> sections, Station targetStation) {
         return sections.stream()
-                .filter(section -> section.getUpStation().equals(targetStation))
-                .map(Section::getDownStation)
+                .filter(section -> section.getUpBound().equals(targetStation))
+                .map(Section::getDownBound)
                 .findAny()
                 .orElseThrow();
     }

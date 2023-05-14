@@ -34,8 +34,8 @@ public class LineService {
     public void enrollStation(Long lineId, StationEnrollRequest request) {
         Line line = lineRepository.findById(lineId);
         Section section = new Section(
-                stationRepository.findById(request.getUpStation()),
-                stationRepository.findById(request.getDownStation()),
+                stationRepository.findById(request.getUpBound()),
+                stationRepository.findById(request.getDownBound()),
                 new Distance(request.getDistance())
         );
         line.addSection(section);

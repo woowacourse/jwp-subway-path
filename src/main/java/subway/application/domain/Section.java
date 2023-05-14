@@ -4,22 +4,22 @@ import java.util.Objects;
 
 public class Section {
 
-    private final Station upStation;
-    private final Station downStation;
+    private final Station upBound;
+    private final Station downBound;
     private final Distance distance;
 
-    public Section(Station upStation, Station downStation, Distance distance) {
-        this.upStation = upStation;
-        this.downStation = downStation;
+    public Section(Station upBound, Station downBound, Distance distance) {
+        this.upBound = upBound;
+        this.downBound = downBound;
         this.distance = distance;
     }
 
     public boolean hasAnySameStationWith(Section targetSection) {
-        return hasStationOf(targetSection.upStation) || hasStationOf(targetSection.downStation);
+        return hasStationOf(targetSection.upBound) || hasStationOf(targetSection.downBound);
     }
 
     private boolean hasStationOf(Station station) {
-        return upStation.equals(station) || downStation.equals(station);
+        return upBound.equals(station) || downBound.equals(station);
     }
 
     public boolean isDistanceBiggerOrEqualThan(Section target) {
@@ -27,46 +27,46 @@ public class Section {
     }
 
     public boolean overlaps(Section target) {
-        return target.downStation.equals(downStation) || target.upStation.equals(upStation);
+        return target.downBound.equals(downBound) || target.upBound.equals(upBound);
     }
 
-    public boolean containsDownStationOf(Section target) {
-        return downStation.equals(target.downStation) || upStation.equals(target.downStation);
+    public boolean containsDownBoundOf(Section target) {
+        return downBound.equals(target.downBound) || upBound.equals(target.downBound);
     }
 
-    public boolean containsUpStationOf(Section target) {
-        return downStation.equals(target.upStation) || upStation.equals(target.upStation);
+    public boolean containsUpBoundOf(Section target) {
+        return downBound.equals(target.upBound) || upBound.equals(target.upBound);
     }
 
     public Section makeConnectionTo(Section target) {
-        if (containsUpStationOf(target)) {
-            return new Section(target.downStation, downStation, distance.sub(target.distance));
+        if (containsUpBoundOf(target)) {
+            return new Section(target.downBound, downBound, distance.sub(target.distance));
         }
-        return new Section(upStation, target.upStation, distance.sub(target.distance));
+        return new Section(upBound, target.upBound, distance.sub(target.distance));
     }
 
-    public boolean hasUpStation(Station target) {
-        return upStation.equals(target);
+    public boolean hasUpBound(Station target) {
+        return upBound.equals(target);
     }
 
-    public boolean hasDownStation(Station target) {
-        return downStation.equals(target);
+    public boolean hasDownBound(Station target) {
+        return downBound.equals(target);
     }
 
     public Section merge(Section target) {
-        if (!downStation.equals(target.upStation)) {
+        if (!downBound.equals(target.upBound)) {
             throw new IllegalStateException("두 섹션은 접합부가 달라 연결될 수 없습니다.");
         }
 
-        return new Section(upStation, target.downStation, distance.add(target.distance));
+        return new Section(upBound, target.downBound, distance.add(target.distance));
     }
 
-    public Station getUpStation() {
-        return upStation;
+    public Station getUpBound() {
+        return upBound;
     }
 
-    public Station getDownStation() {
-        return downStation;
+    public Station getDownBound() {
+        return downBound;
     }
 
     public Distance getDistance() {
@@ -78,11 +78,11 @@ public class Section {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return upStation.equals(section.upStation) && downStation.equals(section.downStation);
+        return upBound.equals(section.upBound) && downBound.equals(section.downBound);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(upStation, downStation);
+        return Objects.hash(upBound, downBound);
     }
 }

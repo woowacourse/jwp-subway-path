@@ -15,10 +15,10 @@ CREATE TABLE IF NOT EXISTS LINE_PROPERTY
 
 CREATE TABLE IF NOT EXISTS SECTION
 (
-    id       BIGINT          AUTO_INCREMENT NOT NULL,
-    line_id  BIGINT          NOT NULL,
-    up       VARCHAR(255)    NOT NULL,
-    down     VARCHAR(255)    NOT NULL,
-    distance INT             NOT NULL,
+    id         BIGINT          AUTO_INCREMENT NOT NULL,
+    line_id    BIGINT          NOT NULL,
+    up_bound   VARCHAR(255)    NOT NULL,
+    down_bound VARCHAR(255)    NOT NULL,
+    distance   INT             NOT NULL,
     PRIMARY KEY(ID)
 );
