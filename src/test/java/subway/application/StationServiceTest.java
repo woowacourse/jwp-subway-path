@@ -88,5 +88,13 @@ class StationServiceTest {
 
 	@Test
 	void deleteById() {
+		// given
+		given(repository.deleteById(anyLong())).willReturn(true);
+
+		// when
+		final long deletedId = service.deleteById(1L);
+
+		// then
+		Assertions.assertThat(1L).isEqualTo(deletedId);
 	}
 }
