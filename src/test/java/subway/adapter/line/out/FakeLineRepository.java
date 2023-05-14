@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import subway.application.line.port.out.LineRepository;
 import subway.domain.interstation.InterStation;
 import subway.domain.interstation.InterStations;
 import subway.domain.line.Line;

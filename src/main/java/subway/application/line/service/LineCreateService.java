@@ -2,10 +2,10 @@ package subway.application.line.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import subway.adapter.line.out.LineRepository;
 import subway.application.line.port.in.LineCreateRequestDto;
 import subway.application.line.port.in.LineCreateUseCase;
 import subway.application.line.port.in.LineResponseDto;
+import subway.application.line.port.out.LineRepository;
 import subway.domain.line.Line;
 
 @RequiredArgsConstructor

@@ -1,4 +1,4 @@
-package subway.adapter.line.out;
+package subway.application.line.port.out;
 
 import java.util.List;
 import java.util.Optional;
