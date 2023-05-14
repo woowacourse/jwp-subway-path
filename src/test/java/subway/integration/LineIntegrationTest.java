@@ -8,6 +8,7 @@ import subway.dto.LineRequest;
 import static io.restassured.RestAssured.given;
 import static io.restassured.http.ContentType.JSON;
 import static org.apache.http.HttpStatus.SC_CREATED;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_OK;
 import static org.hamcrest.Matchers.hasSize;
@@ -88,5 +89,15 @@ public class LineIntegrationTest extends IntegrationTest {
                 .contentType(JSON)
                 .assertThat()
                 .body("name", hasSize(2));
+    }
+
+    @DisplayName("없는 노선을 삭제하면 404를 반환한다.")
+    @Test
+    void removeLineNotFound() {
+        given().log().all()
+                .when()
+                .delete("/lines/500")
+                .then().log().all()
+                .statusCode(SC_NOT_FOUND);
     }
 }
