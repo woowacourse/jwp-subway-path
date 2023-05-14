@@ -14,6 +14,8 @@ import subway.dto.StationAddRequest;
 import subway.dto.StationResponse;
 import subway.entity.EdgeEntity;
 import subway.entity.StationEntity;
+import subway.exception.LineException;
+import subway.exception.StationException;
 
 import java.util.List;
 
@@ -33,7 +35,9 @@ public class StationService {
 
     @Transactional
     public StationResponse addStation(final StationAddRequest stationAddRequest) {
-        final Line line = dbLineDao.findByName(stationAddRequest.getLineName()).toDomain();
+        final Line line = dbLineDao.findByName(stationAddRequest.getLineName())
+                .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다."))
+                .toDomain();
 
         Station upLineStation = subwayGraphs.findStationByName(line, stationAddRequest.getUpLineStationName())
                 .orElseGet(
@@ -62,8 +66,14 @@ public class StationService {
     }
 
     public StationResponse deleteStation(StationDeleteRequest stationDeleteRequest) {
-        Line line = dbLineDao.findByName(stationDeleteRequest.getLineName()).toDomain();
-        Station targetStation = stationDao.findByName(stationDeleteRequest.getStationName()).toDomain();
+        Line line = dbLineDao.findByName(stationDeleteRequest.getLineName()).
+                orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다."))
+                .toDomain();
+
+        Station targetStation = stationDao.findByName(stationDeleteRequest.getStationName()).
+                orElseThrow(()-> new StationException("해당 역이 존재 하지 않습니다."))
+                .toDomain();
+
         subwayGraphs.deleteStation(line, targetStation);
 
         List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);

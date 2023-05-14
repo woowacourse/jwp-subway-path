@@ -13,6 +13,7 @@ import subway.dto.LineResponse;
 import subway.dto.StationResponse;
 import subway.entity.EdgeEntity;
 import subway.entity.LineEntity;
+import subway.exception.LineException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,12 +37,22 @@ public class LineService {
     @Transactional
     public LineResponse createLine(final LineCreateRequest lineCreateRequest) {
         final Line line = new Line(lineCreateRequest.getLineName());
+
+        if (dbLineDao.findByName(line.getName()).isPresent()) {
+            throw new LineException("해당 노선이 이미 존재합니다.");
+        }
+
         final Station upLineStation = new Station(lineCreateRequest.getUpLineStationName());
         final Station downLineStation = new Station(lineCreateRequest.getDownLineStationName());
-        final int distance = (int) lineCreateRequest.getDistance();
+        final int distance = lineCreateRequest.getDistance();
 
-        final Station savedUpLineStation = stationDao.saveStation(upLineStation.toEntity()).toDomain();
-        final Station savedDownLineStation = stationDao.saveStation(downLineStation.toEntity()).toDomain();
+        final Station savedUpLineStation = stationDao.findByName(upLineStation.getName())
+                .orElseGet(() -> stationDao.saveStation(upLineStation.toEntity()))
+                .toDomain();
+
+        final Station savedDownLineStation = stationDao.findByName(downLineStation.getName())
+                .orElseGet(() -> stationDao.saveStation(downLineStation.toEntity()))
+                .toDomain();
 
         final Line savedLine = dbLineDao.saveLine(line.toEntity()).toDomain();
 
