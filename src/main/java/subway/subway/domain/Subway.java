@@ -17,4 +17,8 @@ public class Subway {
     public Subway() {
         this.lines = new HashSet<>();
     }
+    
+    public void addLine(final String lineName, final String lineColor) {
+        lines.add(new Line(lineName, lineColor));
+    }
 }

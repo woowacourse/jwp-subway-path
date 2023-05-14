@@ -22,4 +22,17 @@ class SubwayTest {
         // then
         assertThat(lines).isNotNull();
     }
+    
+    @Test
+    void 노선을_추가한다() {
+        // given
+        final Subway subway = new Subway();
+        
+        // when
+        subway.addLine("1호선", "파랑");
+        final Set<Line> lines = subway.getLines();
+        
+        // then
+        assertThat(lines).contains(new Line("1호선", "파랑"));
+    }
 }
