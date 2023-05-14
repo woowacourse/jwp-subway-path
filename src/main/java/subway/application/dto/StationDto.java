@@ -1,14 +1,10 @@
-package subway.dao;
+package subway.application.dto;
 
-public class StationEntity {
+public class StationDto {
     private final Long id;
     private final String name;
 
-    public StationEntity(String name) {
-        this(null, name);
-    }
-
-    public StationEntity(Long id, String name) {
+    public StationDto(Long id, String name) {
         this.id = id;
         this.name = name;
     }

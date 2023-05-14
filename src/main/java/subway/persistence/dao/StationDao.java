@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.persistence.entity.StationEntity;
 
 @Repository
 public class StationDao {
@@ -17,7 +18,6 @@ public class StationDao {
                     rs.getLong("id"),
                     rs.getString("name")
             );
-
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;

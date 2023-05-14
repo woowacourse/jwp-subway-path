@@ -5,6 +5,7 @@ import subway.exception.GlobalException;
 
 public class Station {
     private static final int NAME_MAX_LENGTH = 10;
+
     private final String name;
 
     public Station(String name) {
