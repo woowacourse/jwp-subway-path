@@ -34,7 +34,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        final List<SectionResponse> result = response.jsonPath().getList(".", SectionResponse.class);
+        final List<SectionResponse> result = response.jsonPath().getList("data.", SectionResponse.class);
         Assertions.assertAll(
                 () -> assertThat(result.get(0).getId()).isPositive(),
                 () -> assertThat(result.get(0).getLineId()).isEqualTo(1L),

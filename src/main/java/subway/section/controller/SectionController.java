@@ -3,6 +3,8 @@ package subway.section.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import subway.global.common.ResultResponse;
+import subway.global.common.SuccessCode;
 import subway.section.dto.SectionCreateRequest;
 import subway.section.dto.SectionDeleteRequest;
 import subway.section.dto.SectionResponse;
@@ -23,7 +25,7 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<List<SectionResponse>> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
+    public ResponseEntity<ResultResponse> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
         final List<SectionEntity> sectionEntities = sectionService.createSection(
                 sectionCreateRequest.getLineId(),
                 sectionCreateRequest.getBaseId(),
@@ -34,12 +36,12 @@ public class SectionController {
         final List<SectionResponse> sectionResponses = sectionEntities.stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.CREATED).body(sectionResponses);
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResultResponse(SuccessCode.CREATE_SECTION,sectionResponses));
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> deleteSection(@RequestBody final SectionDeleteRequest sectionDeleteRequest) {
+    public ResponseEntity<ResultResponse> deleteSection(@RequestBody final SectionDeleteRequest sectionDeleteRequest) {
         sectionService.deleteSection(sectionDeleteRequest.getLineId(), sectionDeleteRequest.getStationId());
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResultResponse(SuccessCode.DELETE_SECTION,sectionDeleteRequest.getStationId()));
     }
 }

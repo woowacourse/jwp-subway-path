@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import subway.global.common.ResultResponse;
+import subway.global.common.SuccessCode;
 import subway.subwayMap.dto.SubwayMapForLineResponse;
 import subway.subwayMap.dto.SubwayMapResponse;
 import subway.subwayMap.service.SubwayMapService;
@@ -20,14 +22,14 @@ public class SubwayMapController {
     }
 
     @GetMapping
-    public ResponseEntity<SubwayMapResponse> findAllSubwayMap() {
+    public ResponseEntity<ResultResponse> findAllSubwayMap() {
         SubwayMapResponse subwayMapResponse = new SubwayMapResponse(subwayMapService.findAllSubwayMap());
-        return ResponseEntity.ok(subwayMapResponse);
+        return ResponseEntity.ok().body(new ResultResponse(SuccessCode.SELECT_SUBWAY_MAPS, subwayMapResponse));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<SubwayMapForLineResponse> findSubwayMapByLineId(@PathVariable final Long id) {
+    public ResponseEntity<ResultResponse> findSubwayMapByLineId(@PathVariable final Long id) {
         SubwayMapForLineResponse subwayMapForLineResponse = subwayMapService.findSubwayMapByLineId(id);
-        return ResponseEntity.ok(subwayMapForLineResponse);
+        return ResponseEntity.ok().body(new ResultResponse(SuccessCode.SELECT_SUBWAY_MAP, subwayMapForLineResponse));
     }
 }

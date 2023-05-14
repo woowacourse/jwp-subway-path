@@ -34,7 +34,8 @@ class SectionToStationConverterControllerTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        final SubwayMapForLineResponse subwayMapForLineResponse = response.as(SubwayMapForLineResponse.class);
+
+        final SubwayMapForLineResponse subwayMapForLineResponse = response.jsonPath().getObject("data.", SubwayMapForLineResponse.class);
         assertThat(subwayMapForLineResponse.getLineResponse()).isEqualTo(new LineResponse(1L, "2호선", "초록색"));
         assertThat(subwayMapForLineResponse.getStations()).containsExactly(
                 new Station(1L, "신림역"),
@@ -61,7 +62,7 @@ class SectionToStationConverterControllerTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        final SubwayMapResponse subwayMapResponse = new SubwayMapResponse(response.jsonPath().getList("subwayMapResponses.", SubwayMapForLineResponse.class));
+        final SubwayMapResponse subwayMapResponse = new SubwayMapResponse(response.jsonPath().getList("data.subwayMapResponses.", SubwayMapForLineResponse.class));
 
         List<SubwayMapForLineResponse> result = subwayMapResponse.getSubwayMapResponses();
 
