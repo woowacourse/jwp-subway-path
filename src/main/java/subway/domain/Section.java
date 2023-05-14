@@ -13,6 +13,7 @@ public class Section {
     }
 
     public Section(final Long lineId, final Station upStation, final Station downStation, final Long distance) {
+        validateDuplication(upStation, downStation);
         this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -20,9 +21,9 @@ public class Section {
     }
 
 
-    public void validateDuplication() {
-        if (this.upStation.equals(this.downStation)) {
-            throw new IllegalArgumentException("중복된 이름입니다. 다른 이름을 입력해주세요.");
+    public void validateDuplication(final Station upStation, final Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new IllegalArgumentException("중복된 역입니다. 다른 역을 입력해주세요.");
         }
     }
 

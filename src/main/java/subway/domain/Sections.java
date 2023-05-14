@@ -106,8 +106,6 @@ public class Sections {
     }
 
     private void isSectionDuplicate(final Section newSection) {
-        newSection.validateDuplication();
-
         if (sections.stream()
                 .anyMatch(section -> section.validateDuplicateSection(newSection))) {
             throw new IllegalArgumentException("이미 존재하는 구간입니다.");
