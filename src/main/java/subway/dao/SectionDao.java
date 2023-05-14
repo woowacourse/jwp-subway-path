@@ -64,4 +64,10 @@ public class SectionDao {
                 sectionEntity.getId()
         );
     }
+
+    public void deleteById(final Long sectionId) {
+        final String sql = "DELETE FROM SECTION S WHERE S.id = ?";
+
+        jdbcTemplate.update(sql, sectionId);
+    }
 }

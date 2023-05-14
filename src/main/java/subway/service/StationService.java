@@ -72,14 +72,34 @@ public class StationService {
         final LineEntity lineEntity = lineService.getLineEntity(lineName);
         final Line line = lineService.findByLineName(lineName);
 
+        final List<Section> originSection = line.getSections();
+
         line.delete(new Station(stationDeleteRequest.getStationName()));
+
+        final List<Section> updatedSection = line.getSections();
+
+        updatedSection.stream()
+                      .filter(it -> originSection.stream().noneMatch(it::isSame))
+                      .findAny()
+                      .ifPresentOrElse(
+                              it -> {
+                                  sectionService.updateSection(it, lineEntity.getId());
+
+                                  originSection.stream()
+                                               .filter(origin -> updatedSection.stream().noneMatch(it::isSame))
+                                               .filter(origin -> !origin.equals(it))
+                                               .findFirst()
+                                               .ifPresent(origin -> sectionService.deleteSection(it.getId()));
+                              },
+                              () -> originSection.stream()
+                                                 .filter(it -> updatedSection.stream().noneMatch(it::isSame))
+                                                 .findFirst()
+                                                 .ifPresent(it -> sectionService.deleteSection(it.getId()))
+                      );
 
         if (line.isDeleted()) {
             sectionService.deleteAll(lineEntity.getId());
             lineService.deleteLine(lineEntity.getId());
-            return;
         }
-
-        sectionService.updateLine(lineEntity, line);
     }
 }

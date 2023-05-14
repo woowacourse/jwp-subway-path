@@ -45,6 +45,10 @@ public class SectionService {
         sectionDao.deleteAll(lineId);
     }
 
+    public void deleteSection(final Long sectionId) {
+        sectionDao.deleteById(sectionId);
+    }
+
     public void registerSection(
             final String currentStationName,
             final String nextStationName,
