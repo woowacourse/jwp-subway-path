@@ -69,13 +69,13 @@ class LineServiceTest {
         lineRepository.save(new Line("1호선", List.of(
                 new Section("A", "B", 2)
         )));
-        lineRepository.save(new Line("2호선", List.of(
+        Long savedLineId = lineRepository.save(new Line("2호선", List.of(
                 new Section("X", "B", 2),
                 new Section("B", "Y", 3)
         )));
 
         //when
-        lineService.addStation(new AddStationRequest("2호선", "Y", "Z", 10));
+        lineService.addStation(savedLineId, new AddStationRequest("Y", "Z", 10));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)

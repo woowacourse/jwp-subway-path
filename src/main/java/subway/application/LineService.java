@@ -33,17 +33,16 @@ public class LineService {
         return new SaveResponse(saveId);
     }
 
-    public void addStation(AddStationRequest request) {
+    public void addStation(Long lineId, AddStationRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
-
+        Line line = lineRepository.findById(lineId);
         subway.addStation(
-                request.getLineName(),
+                line.getName(),
                 request.getSourceStation(),
                 request.getTargetStation(),
                 request.getDistance()
         );
-        Line line = subway.findLineByName(request.getLineName());
-        lineRepository.save(line);
+        lineRepository.save(subway.findLineByName(line.getName()));
     }
 
     public void deleteStation(DeleteStationRequest request) {
