@@ -50,4 +50,8 @@ public class Line {
     public void removeStation(final String station) {
         sections.removeStation(station);
     }
+    
+    public boolean isSameName(final String targetLineName) {
+        return this.name.equals(targetLineName);
+    }
 }

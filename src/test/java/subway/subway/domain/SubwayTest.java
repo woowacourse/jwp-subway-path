@@ -35,4 +35,19 @@ class SubwayTest {
         // then
         assertThat(lines).contains(new Line("1호선", "파랑"));
     }
+    
+    @Test
+    void 노선을_삭제한다() {
+        // given
+        final Subway subway = new Subway();
+        
+        // when
+        subway.addLine("1호선", "파랑");
+        subway.addLine("2호선", "초록");
+        subway.removeLine("1호선");
+        final Set<Line> lines = subway.getLines();
+        
+        // then
+        assertThat(lines).contains(new Line("2호선", "초록"));
+    }
 }

@@ -21,4 +21,8 @@ public class Subway {
     public void addLine(final String lineName, final String lineColor) {
         lines.add(new Line(lineName, lineColor));
     }
+    
+    public void removeLine(final String lineName) {
+        lines.removeIf(line -> line.isSameName(lineName));
+    }
 }
