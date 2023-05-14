@@ -36,8 +36,8 @@ class SectionDaoTest {
     @DisplayName("노선의 구간 갯수가 정확하게 반환되어야 한다.")
     void countByLineId_success() {
         // given
-        sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
-        sectionDao.insert(lineId, new Section(new Station("samsung"), new Station("busan"), 1));
+        sectionDao.insert(lineId, new Section(new Station("잠실역"), new Station("삼성역"), 1));
+        sectionDao.insert(lineId, new Section(new Station("삼성역"), new Station("부산역"), 1));
 
         // when
         Long count = sectionDao.countByLineId(lineId);
@@ -62,24 +62,24 @@ class SectionDaoTest {
     @DisplayName("노선의 수정이 정상적으로 되어야 한다.")
     void update_success() {
         // given
-        long sectionId = sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
+        long sectionId = sectionDao.insert(lineId, new Section(new Station("잠실역"), new Station("삼성역"), 1));
 
         // when
-        sectionDao.update(sectionId, new Section(new Station("samsung"), new Station("busan"), 1));
+        sectionDao.update(sectionId, new Section(new Station("삼성역"), new Station("부산역"), 1));
 
         List<SectionEntity> sections = sectionDao.findAllByLineId(lineId);
 
-        List<SectionEntity> sectionEntities = List.of(new SectionEntity(sectionId, lineId, new Station("samsung"), new Station("busan"), 1));
+        List<SectionEntity> sectionEntities = List.of(new SectionEntity(sectionId, lineId, new Station("삼성역"), new Station("부산역"), 1));
         assertThat(sections).usingRecursiveComparison()
                 .isEqualTo(sectionEntities);
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"jamsil:true", "busan:false", "samsung:true"}, delimiter = ':')
+    @CsvSource(value = {"잠실역:true", "부산역:false", "삼성역:true"}, delimiter = ':')
     @DisplayName("주어진 역이 구간에 있는지 확인한다.")
     void existsByStartStationNameAndLineId(String stationName, boolean exists) {
         // given
-        sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
+        sectionDao.insert(lineId, new Section(new Station("잠실역"), new Station("삼성역"), 1));
 
         // when
         boolean expect = sectionDao.isStationInLine(lineId, stationName);
@@ -101,7 +101,7 @@ class SectionDaoTest {
     @DisplayName("노선에 구간이 있는지 확인한다.")
     void isEmptyByLineId_false() {
         // given
-        sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
+        sectionDao.insert(lineId, new Section(new Station("잠실역"), new Station("삼성역"), 1));
 
         // expect
         assertThat(sectionDao.isEmptyByLineId(lineId))

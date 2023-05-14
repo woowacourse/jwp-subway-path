@@ -8,6 +8,8 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.entity.LineEntity;
 import subway.domain.Line;
+import subway.domain.LineColor;
+import subway.domain.LineName;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
@@ -26,7 +28,9 @@ public class LineService {
         if (lineDao.existsByName(request.getLineName())) {
             throw new DuplicateLineException();
         }
-        return lineDao.insert(new Line(request.getLineName(), request.getColor()));
+        LineName lineName = new LineName(request.getLineName());
+        LineColor lineColor = new LineColor(request.getColor());
+        return lineDao.insert(new Line(lineName, lineColor));
     }
 
     @Transactional(readOnly = true)
@@ -43,8 +47,10 @@ public class LineService {
         return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
-    public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
-        lineDao.update(id, new Line(lineUpdateRequest.getLineName(), lineUpdateRequest.getColor()));
+    public void updateLine(Long id, LineUpdateRequest request) {
+        LineName lineName = new LineName(request.getLineName());
+        LineColor lineColor = new LineColor(request.getColor());
+        lineDao.update(id, new Line(lineName, lineColor));
     }
 
     public void deleteLineById(Long id) {

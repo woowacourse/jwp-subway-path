@@ -3,20 +3,20 @@ package subway.domain;
 import java.util.Objects;
 
 public class Line {
-    private final String name;
-    private final String color;
+    private final LineName name;
+    private final LineColor color;
 
-    public Line(String name, String color) {
+    public Line(LineName name, LineColor color) {
         this.name = name;
         this.color = color;
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public String getColor() {
-        return color;
+        return color.getColor();
     }
 
     @Override
