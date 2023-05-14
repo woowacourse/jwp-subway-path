@@ -143,4 +143,32 @@ class LineTest {
                 new Section("석촌역", "송파역", 5)
         ));
     }
+
+    @Test
+    void 상행_종점을_제거한다() {
+        // given
+        final Section section1 = new Section("잠실역", "석촌역", 10);
+        final Section section2 = new Section("석촌역", "송파역", 10);
+        final Line line = new Line("8호선", "분홍색", List.of(section1, section2));
+
+        // when
+        line.delete(new Station("잠실역"));
+
+        // then
+        assertThat(line.getSections()).contains(new Section("석촌역", "송파역", 10));
+    }
+
+    @Test
+    void 하행_종점을_제거한다() {
+        // given
+        final Section section1 = new Section("잠실역", "석촌역", 10);
+        final Section section2 = new Section("석촌역", "송파역", 10);
+        final Line line = new Line("8호선", "분홍색", List.of(section1, section2));
+
+        // when
+        line.delete(new Station("송파역"));
+
+        // then
+        assertThat(line.getSections()).contains(new Section("잠실역", "석촌역", 10));
+    }
 }

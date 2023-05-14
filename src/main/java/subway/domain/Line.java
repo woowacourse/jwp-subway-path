@@ -116,6 +116,21 @@ public class Line {
                 .findAny();
     }
 
+    public void delete(final Station station) {
+        deleteLastStation(findTargetSection(station), findSourceSection(station));
+    }
+
+    private void deleteLastStation(final Optional<Section> upSection, final Optional<Section> downSection) {
+        if (downSection.isPresent()) {
+            sections.remove(downSection.get());
+            return;
+        }
+        if (upSection.isPresent()) {
+            sections.remove(upSection.get());
+            return;
+        }
+    }
+
     public List<Section> getSections() {
         return sections;
     }
