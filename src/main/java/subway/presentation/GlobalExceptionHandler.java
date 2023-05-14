@@ -2,13 +2,13 @@ package subway.presentation;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.exception.DatabaseException;
 import subway.exception.GlobalException;
 import subway.presentation.dto.response.BadResponse;
-
-import java.net.BindException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -28,10 +28,17 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<BadResponse> handleBindException(BindException e) {
+    public ResponseEntity<BadResponse> handleBeanValidationException(MethodArgumentNotValidException e) {
+        String errorMessage = e.getMessage();
+        BindingResult bindingResult = e.getBindingResult();
+
+        if (bindingResult.hasErrors()) {
+            errorMessage = bindingResult.getFieldError().getDefaultMessage();
+        }
+
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(new BadResponse(e.getMessage()));
+                .body(new BadResponse(errorMessage));
     }
 
     @ExceptionHandler

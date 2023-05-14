@@ -19,7 +19,7 @@ public class SectionController {
     }
 
     @PostMapping("/{lineId}/sections")
-    public ResponseEntity<Void> createSection(@PathVariable Long lineId, @Valid @RequestBody SectionRequest request) {
+    public ResponseEntity<Void> createSection(@PathVariable Long lineId, @RequestBody @Valid SectionRequest request) {
         SectionDto sectionDto = new SectionDto(
                 request.getStartStation(),
                 request.getEndStation(),
