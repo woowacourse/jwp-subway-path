@@ -115,4 +115,12 @@ public class LineRepository {
                         collectSectionsByLineId(lineEntity.getId())
                 )).collect(Collectors.toList());
     }
+
+    public Line findByLineName(final String lineName) {
+        final LineEntity lineEntity = lineDao.findByLineName(lineName)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선명입니다."));
+        final Sections sections = collectSectionsByLineId(lineEntity.getId());
+
+        return lineEntity.toDomain(sections);
+    }
 }

@@ -38,18 +38,18 @@ public class Station {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Station that = (Station) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
+        final Station station = (Station) o;
+        return Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(name);
     }
 
     @Override
     public String toString() {
-        return "StationDomain{" +
+        return "Station{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';

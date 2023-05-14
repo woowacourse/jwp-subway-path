@@ -67,6 +67,20 @@ class LineDaoTest extends DaoTestConfig {
     }
 
     @Test
+    void 노선_이름으로_노선을_조회한다() {
+        // given
+        final Long saveBlueLineId = lineDao.insert("1", "파랑");
+        final Long saveGreenLineId = lineDao.insert("2", "초록");
+
+        // when
+        final Optional<LineEntity> findLineEntity = lineDao.findByLineName("1");
+
+        // then
+        assertThat(findLineEntity)
+                .contains(new LineEntity(saveBlueLineId, "1", "파랑"));
+    }
+
+    @Test
     void 노선을_삭제한다() {
         // given
         final Long saveLineId = lineDao.insert("2", "초록");

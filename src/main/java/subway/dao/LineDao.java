@@ -56,6 +56,20 @@ public class LineDao {
         }
     }
 
+    public Optional<LineEntity> findByLineName(final String lineName) {
+        final String sql = sqlHelper()
+                .select().columns("id, name, color")
+                .from().table("LINES")
+                .where().condition("name = ?")
+                .toString();
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineName));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+
     public List<LineEntity> findAll() {
         final String sql = sqlHelper()
                 .select().columns("id, name, color")
