@@ -11,10 +11,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.controller.SectionController;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
-import subway.exception.SectionDuplicatedException;
-import subway.exception.SectionForkedException;
-import subway.exception.SectionNotConnectException;
-import subway.exception.SectionNotFoundException;
+import subway.exception.*;
 import subway.service.SectionService;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -67,6 +64,44 @@ public class SectionControllerUnitTest {
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(sectionCreateRequest)))
                 .andExpect(status().isNotFound());
+
+        verify(sectionService).insertSection(any(SectionCreateRequest.class));
+    }
+
+    @Test
+    @DisplayName("상행 종점을 찾을 수 없다면 예외를 발생시킨다.")
+    void throws_exception_when_not_found_up_station_section() throws Exception {
+        // given
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
+        doAnswer(invocation -> {
+            throw new UpStationNotFoundException();
+        }).when(sectionService).insertSection(any(SectionCreateRequest.class));
+
+        // when & then
+        mockMvc.perform(
+                        post("/sections")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(sectionCreateRequest)))
+                .andExpect(status().isNotFound());
+
+        verify(sectionService).insertSection(any(SectionCreateRequest.class));
+    }
+
+    @Test
+    @DisplayName("역 사이의 거리가 1보다 작으면 예외를 발생시킨다.")
+    void throws_exception_when_invalid_distance_between_section() throws Exception {
+        // given
+        SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("2호선", "잠실역", "잠실새내역", 3);
+        doAnswer(invocation -> {
+            throw new InvalidDistanceException();
+        }).when(sectionService).insertSection(any(SectionCreateRequest.class));
+
+        // when & then
+        mockMvc.perform(
+                        post("/sections")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(sectionCreateRequest)))
+                .andExpect(status().isBadRequest());
 
         verify(sectionService).insertSection(any(SectionCreateRequest.class));
     }
