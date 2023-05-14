@@ -30,6 +30,6 @@ public class StationRepository {
     public Optional<StationDomain> findByStationName(final String stationName) {
         final Optional<StationEntity> maybeStationEntity = stationDao.findByStationName(stationName);
 
-        return Optional.ofNullable(maybeStationEntity.orElseGet(null).toDomain());
+        return maybeStationEntity.map(StationEntity::toDomain);
     }
 }

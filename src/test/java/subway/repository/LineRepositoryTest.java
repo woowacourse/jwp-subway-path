@@ -33,9 +33,10 @@ class LineRepositoryTest extends RepositoryTestConfig {
 
         // then
         assertThat(findLine)
+                .usingRecursiveComparison()
                 .isEqualTo(new LineDomain(saveLineId, "2", "초록",
                         SectionsDomain.from(List.of(
-                                SectionDomain.from(
+                                new SectionDomain(
                                         saveLineId,
                                         new Distance(10),
                                         true,
@@ -60,9 +61,10 @@ class LineRepositoryTest extends RepositoryTestConfig {
 
         // then
         assertThat(findLines)
+                .usingRecursiveFieldByFieldElementComparator()
                 .contains(new LineDomain(saveLineId, "2", "초록",
                                 SectionsDomain.from(List.of(
-                                        SectionDomain.from(
+                                        new SectionDomain(
                                                 saveLineId,
                                                 new Distance(10),
                                                 true,

@@ -10,7 +10,7 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;
-import subway.dto.LineResponse;
+import subway.application.response.LineResponse;
 import subway.dto.StationResponse;
 
 import java.util.List;
@@ -57,7 +57,7 @@ class LineServiceTest {
 
 
         // then
-        assertThat(stationsByLineName.getStationResponses())
+        assertThat(stationsByLineName.getStations())
                 .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                 .containsExactly(
                         new StationResponse(0L, "잠실나루"),
@@ -100,14 +100,14 @@ class LineServiceTest {
 
         // then
         assertAll(
-                () -> assertThat(line1.getStationResponses())
+                () -> assertThat(line1.getStations())
                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                         .containsExactly(
                                 new StationResponse(0L, "잠실나루"),
                                 new StationResponse(0L, "잠실"),
                                 new StationResponse(0L, "잠실새내")
                         ),
-                () -> assertThat(line2.getStationResponses())
+                () -> assertThat(line2.getStations())
                         .usingRecursiveFieldByFieldElementComparatorIgnoringFields("id")
                         .containsExactly(
                                 new StationResponse(0L, "헤나역"),

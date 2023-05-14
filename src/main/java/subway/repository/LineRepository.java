@@ -55,7 +55,7 @@ public class LineRepository {
                         downStationEntities.get(index).toDomain()
                 )).collect(Collectors.toList());
 
-        return new SectionsDomain(sections);
+        return SectionsDomain.from(sections);
     }
 
     private List<Long> collectUpStationIds(final List<SectionEntity> sectionEntities) {
