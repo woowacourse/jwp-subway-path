@@ -44,7 +44,7 @@ class StationServiceTest {
 	@Test
 	void findAll() {
 		// given
-		final Station jamsil = new Station(1L,"잠실");
+		final Station jamsil = new Station(1L, "잠실");
 		given(repository.findAll()).willReturn(List.of(jamsil));
 
 		// when
@@ -73,6 +73,17 @@ class StationServiceTest {
 
 	@Test
 	void updateStation() {
+		// given
+		given(repository.updateStation(anyLong(), any())).willReturn(true);
+
+		// when
+		final StationCreateRequest request = new StationCreateRequest("삼성");
+		final StationResponse response = service.updateStation(1L, request);
+
+		// then
+		Assertions.assertThat(response)
+			.hasFieldOrPropertyWithValue("id", 1L)
+			.hasFieldOrPropertyWithValue("name", "삼성");
 	}
 
 	@Test

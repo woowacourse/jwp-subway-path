@@ -41,15 +41,19 @@ public class StationService {
 
 	public StationResponse updateStation(final long stationId, final StationCreateRequest request) {
 		final Station station = stationRepository.findById(stationId);
-		stationRepository.updateStation(stationId, new Station(request.getName()));
+		final boolean isUpdated = stationRepository.updateStation(stationId, new Station(request.getName()));
 
-		return new StationResponse(stationId, station.getName());
+		if (!isUpdated) {
+			throw new IllegalStateException("역 갱신에 실패했습니다");
+		}
+
+		return new StationResponse(stationId, request.getName());
 	}
 
 	public void deleteById(final Long stationIdRequest) {
 		final boolean isDelete = stationRepository.deleteById(stationIdRequest);
 
-		if(!isDelete){
+		if (!isDelete) {
 			throw new IllegalStateException("역 삭제에 실패했습니다");
 		}
 	}

@@ -51,12 +51,11 @@ public class StationRepositoryImpl implements StationRepository {
 	}
 
 	@Override
-	public void updateStation(final long stationId, final Station station) {
+	public boolean updateStation(final long stationId, final Station station) {
 		final String sql = "UPDATE station SET name = ? WHERE id = ?";
 		final int updateCount = jdbcTemplate.update(sql, station.getName(), stationId);
-		if (updateCount != UPDATED_COUNT) {
-			throw new IllegalStateException(String.format("1개 이상의 상품이 수정되었습니다. 수정된 상품 수 : %d", updateCount));
-		}
+
+		return updateCount == UPDATED_COUNT;
 	}
 
 	@Override
