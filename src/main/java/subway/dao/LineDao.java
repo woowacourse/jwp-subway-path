@@ -24,6 +24,10 @@ public class LineDao {
     }
 
     public LineEntity insert(LineEntity lineEntity) {
+        Optional<LineEntity> findLineEntity = findByLineName(lineEntity.getLineName());
+        if (findLineEntity.isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 노선입니다.");
+        }
         String sql = "INSERT INTO line (name) VALUES (?)";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {

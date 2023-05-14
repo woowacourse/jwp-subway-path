@@ -10,10 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.StationService;
 import subway.dto.StationRequest;
-import subway.dto.StationSaveResponse;
 
+import static fixtures.StationFixtures.LINE2_ID;
 import static fixtures.StationFixtures.REQUEST_잠실역_TO_건대역;
-import static fixtures.StationFixtures.RESPONSE_SAVE_INITIAL_STATIONS_잠실역_TO_건대역;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -37,8 +36,8 @@ class StationControllerTest {
     void createStationTest() throws Exception {
         // given
         StationRequest request = REQUEST_잠실역_TO_건대역;
-        StationSaveResponse response = RESPONSE_SAVE_INITIAL_STATIONS_잠실역_TO_건대역;
-        when(stationService.saveStation(request))
+        Long response = LINE2_ID;
+        when(stationService.saveSection(request))
                 .thenReturn(response);
 
         // when, then
@@ -46,7 +45,7 @@ class StationControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isCreated())
-                .andExpect(header().string("Location", "/lines/" + response.getLineId()));
+                .andExpect(header().string("Location", "/lines/" + response));
     }
 
     @Test

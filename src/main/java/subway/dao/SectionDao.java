@@ -49,6 +49,15 @@ public class SectionDao {
         return new SectionEntity(insertedId, upStationId, downStationId, distance, lineId);
     }
 
+    public List<SectionEntity> findContainingSections(Long newUpStationId, Long newDownStationId) {
+        String sql = "SELECT id, up_station_id, down_station_id, distance, line_id " +
+                "FROM section " +
+                "WHERE up_station_id = ? OR up_station_id = ? OR down_station_id = ? OR down_station_id = ?";
+
+        return jdbcTemplate.query(sql, sectionEntityRowMapper,
+                newUpStationId, newDownStationId, newUpStationId, newDownStationId);
+    }
+
     public Optional<SectionEntity> findByUpStationIdAndLindId(Long upStationId, Long lineId) {
         String sql = "SELECT id, up_station_id, down_station_id, distance, line_id " +
                 "FROM section WHERE up_station_id = ? AND line_id = ?";

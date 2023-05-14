@@ -21,7 +21,7 @@ public class SectionDto {
 
     public static SectionDto from(Section section) {
         return new SectionDto(section.getId(), section.getUpStation().getName(),
-                section.getDownStation().getName(), section.getDistance());
+                section.getDownStation().getName(), section.getDistanceValue());
     }
 
     public Long getId() {

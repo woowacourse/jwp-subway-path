@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.StationService;
 import subway.dto.StationRequest;
-import subway.dto.StationSaveResponse;
 
 import java.net.URI;
 
@@ -21,9 +20,9 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<Void> createStation(@RequestBody StationRequest stationRequest) {
-        StationSaveResponse stationSaveResponse = stationService.saveStation(stationRequest);
+        Long lineId = stationService.saveSection(stationRequest);
         return ResponseEntity
-                .created(URI.create("/lines/" + stationSaveResponse.getLineId()))
+                .created(URI.create("/lines/" + lineId))
                 .build();
     }
 
