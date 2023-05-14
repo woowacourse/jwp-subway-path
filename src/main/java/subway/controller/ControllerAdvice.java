@@ -29,28 +29,28 @@ public class ControllerAdvice {
         final String message = exception.getBindingResult().getFieldErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(System.lineSeparator()));
-        LOGGER.warn(message);
+        LOGGER.info(message);
         return ResponseEntity.badRequest().body(message);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<String> handleException(final MethodArgumentTypeMismatchException exception) {
         final String message = exception.getMessage();
-        LOGGER.warn(message);
+        LOGGER.info(message);
         return ResponseEntity.badRequest().body(message);
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<String> handleException(final MissingServletRequestParameterException exception) {
         final String message = exception.getMessage();
-        LOGGER.warn(message);
+        LOGGER.error(message);
         return ResponseEntity.badRequest().body(message);
     }
 
     @ExceptionHandler(HttpException.class)
     public ResponseEntity<String> handleException(final HttpException exception) {
         final String message = exception.getMessage();
-        LOGGER.warn(message);
+        LOGGER.info(message);
         return ResponseEntity.badRequest().body(message);
     }
 }
