@@ -13,10 +13,6 @@ public class StationEntity {
     private final Long id;
     private final String name;
 
-    public StationEntity(final String name) {
-        this(null, name);
-    }
-
     public static StationEntity from(final Station station) {
         return new StationEntity(station.getId(), station.getName().getValue());
     }

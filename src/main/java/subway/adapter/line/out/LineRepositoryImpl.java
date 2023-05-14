@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import subway.application.line.port.in.LineNotFoundException;
 import subway.application.line.port.out.LineRepository;
 import subway.domain.interstation.InterStation;
 import subway.domain.line.Line;
@@ -39,7 +40,7 @@ public class LineRepositoryImpl implements LineRepository {
     }
 
     @Override
-    public void update(final Line line) {
+    public Line update(final Line line) {
         if (!(line instanceof LineProxy)) {
             throw new LineProxyNotInitializedException();
         }
@@ -47,6 +48,8 @@ public class LineRepositoryImpl implements LineRepository {
         updateInformation(line, lineProxy);
         addInterStations(lineProxy);
         removeInterStations(lineProxy);
+        return findById(line.getId())
+            .orElseThrow(LineNotFoundException::new);
     }
 
 

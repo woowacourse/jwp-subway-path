@@ -3,9 +3,11 @@ package subway.ui.line;
 import java.util.List;
 import java.util.stream.Collectors;
 import subway.application.line.port.in.InterStationResponseDto;
+import subway.application.line.port.in.LineAddInterStationRequestDto;
 import subway.application.line.port.in.LineCreateRequestDto;
 import subway.application.line.port.in.LineResponseDto;
 import subway.application.line.port.in.LineUpdateRequestDto;
+import subway.ui.line.dto.LineAddStationRequest;
 import subway.ui.line.dto.in.InterStationResponse;
 import subway.ui.line.dto.in.LineCreateRequest;
 import subway.ui.line.dto.in.LineResponse;
@@ -43,7 +45,7 @@ public class LineAssembler {
             .collect(Collectors.toList());
     }
 
-    private static InterStationResponse toInterStationResponse(final InterStationResponseDto responseDto) {
+    public static InterStationResponse toInterStationResponse(final InterStationResponseDto responseDto) {
         return new InterStationResponse(
             responseDto.getId(),
             responseDto.getUpStationId(),
@@ -66,5 +68,15 @@ public class LineAssembler {
             request.getName(),
             request.getColor()
         );
+    }
+
+    public static LineAddInterStationRequestDto toLineAddInterStationRequestDto(final Long id,
+                                                                                final LineAddStationRequest request) {
+        return new LineAddInterStationRequestDto(
+            id,
+            request.getUpStationId(),
+            request.getDownStationId(),
+            request.getNewStationId(),
+            request.getDistance());
     }
 }

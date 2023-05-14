@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static subway.domain.interstation.InterStationFixture.코다에서_누누_구간_id_1;
 import static subway.domain.station.StationFixture.누누_역_id_2;
-import static subway.domain.station.StationFixture.두둠_역_id_3;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -65,7 +64,7 @@ class LineTest {
             final InterStations interStations = new InterStations(List.of(코다에서_누누_구간_id_1));
             final Line line = new Line(1L, "코다선", "bg-blue-600", interStations);
 
-            line.addInterStation(누누_역_id_2.getId(), 두둠_역_id_3.getId(), 1L);
+            line.addInterStation(누누_역_id_2.getId(), null, 4L, 1L);
 
             assertThat(line.getInterStations().getInterStations()).hasSize(2);
         }

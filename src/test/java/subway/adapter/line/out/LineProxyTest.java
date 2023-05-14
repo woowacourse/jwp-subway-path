@@ -77,11 +77,6 @@ class LineProxyTest {
     @Test
     void 구간이_변경되지_않으면_정보_수정_여부가_바뀌지_않는다() {
         //given
-        final List<InterStation> newInterStations = List.of(
-            new InterStation(1L, 1L, 2L, 3L),
-            new InterStation(2L, 2L, 3L, 3L)
-        );
-
         //then
         assertSoftly(softly -> {
             softly.assertThat(lineProxy.isInfoNeedToUpdated()).isFalse();
@@ -98,7 +93,7 @@ class LineProxyTest {
         void 끝에_추가되면_정보_수정_여부가_바뀐다() {
             //given
             //when
-            lineProxy.addInterStation(3L, 4L, 3L);
+            lineProxy.addInterStation(3L, null, 4L, 3L);
 
             //then
             assertSoftly(softly -> {
@@ -112,7 +107,7 @@ class LineProxyTest {
         void 중간에_추가되면_정보_수정_여부가_바뀐다() {
             //given
             //when
-            lineProxy.addInterStation(2L, 4L, 1L);
+            lineProxy.addInterStation(2L, 3L, 4L, 1L);
 
             //then
             assertSoftly(softly -> {
@@ -126,7 +121,7 @@ class LineProxyTest {
         void 처음에_추가되면_정보_수정_여부가_바뀐다() {
             //given
             //when
-            lineProxy.addInterStation(1L, 4L, 1L);
+            lineProxy.addInterStation(null, 1L, 4L, 1L);
 
             //then
             assertSoftly(softly -> {

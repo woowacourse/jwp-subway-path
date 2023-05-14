@@ -26,9 +26,12 @@ public class LineProxy extends Line {
     }
 
     @Override
-    public void addInterStation(final Long existStationId, final Long newStationId, final long distance) {
+    public void addInterStation(final Long existStationId,
+                                final Long downStationId,
+                                final Long newStationId,
+                                final long distance) {
         final List<InterStation> beforeInterStations = new ArrayList<>(super.getInterStations().getInterStations());
-        super.addInterStation(existStationId, newStationId, distance);
+        super.addInterStation(existStationId, downStationId, newStationId, distance);
         calculateDifference(beforeInterStations);
     }
 

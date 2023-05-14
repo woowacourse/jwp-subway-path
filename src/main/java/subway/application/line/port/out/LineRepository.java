@@ -10,7 +10,7 @@ public interface LineRepository {
 
     List<Line> findAll();
 
-    void update(Line line);
+    Line update(Line line);
 
     Optional<Line> findById(long id);
 

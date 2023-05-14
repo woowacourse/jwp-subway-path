@@ -52,8 +52,11 @@ public class Line {
         interStations.remove(existStationId);
     }
 
-    public void addInterStation(final Long existStationId, final Long newStationId, final long distance) {
-        interStations.add(new InterStation(existStationId, newStationId, distance));
+    public void addInterStation(final Long existStationId,
+                                final Long downStationId,
+                                final Long newStationId,
+                                final long distance) {
+        interStations.add(existStationId, downStationId, newStationId, distance);
     }
 
     public boolean isEmpty() {

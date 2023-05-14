@@ -78,6 +78,29 @@ public class InterStations {
         }
     }
 
+    public void add(final Long upStationId, final Long downStationId, final Long newStationId, final long distance) {
+        if (downStationId == null) {
+            addLast(new InterStation(upStationId, newStationId, distance));
+            return;
+        }
+        if (upStationId == null) {
+            addFirst(new InterStation(newStationId, downStationId, distance));
+            return;
+        }
+        addMiddle(upStationId, downStationId, newStationId, distance);
+    }
+
+    private void addMiddle(final Long upStationId,
+                           final Long downStationId,
+                           final Long newStationId,
+                           final long distance) {
+        final int index = findUpStationIndex(upStationId);
+        final InterStation removedInterStation = interStations.remove(index);
+        interStations.add(index, new InterStation(upStationId, newStationId, distance));
+        interStations.add(index + 1,
+            new InterStation(newStationId, downStationId, removedInterStation.getDistance().minus(distance)));
+    }
+
     public void add(final InterStation interStation) {
         validate(interStation);
         if (isFirstStation(interStation)) {

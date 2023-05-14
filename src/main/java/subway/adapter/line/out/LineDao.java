@@ -53,11 +53,7 @@ class LineDao {
     }
 
     public void insertInterStations(final List<InterStationEntity> interStationEntities) {
-        final BeanPropertySqlParameterSource[] beanPropertySqlParameterSources = interStationEntities.stream()
-            .map(BeanPropertySqlParameterSource::new)
-            .toArray(BeanPropertySqlParameterSource[]::new);
-
-        lineInsertAction.executeBatch(beanPropertySqlParameterSources);
+        interStationDao.insertAll(interStationEntities);
     }
 
     public void deleteInterStations(final Long lineId, final List<InterStationEntity> toInterStationEntities) {
