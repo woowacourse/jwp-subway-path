@@ -158,7 +158,7 @@ public class SectionDao {
     public List<Station> findAllStationsOrderByUp(Line line) {
         final var stations = new ArrayList<Station>();
 
-        var station = lineDao.findHeadStation(line);
+        var station = line.getHead();
         while (true) {
             final var previousSectionOptional = findByPreviousStation(station, line);
             if (previousSectionOptional.isPresent()) {

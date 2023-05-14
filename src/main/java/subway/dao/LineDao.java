@@ -1,13 +1,14 @@
 package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.Station;
 
 import javax.sql.DataSource;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +17,6 @@ import java.util.Map;
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
-            );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -42,20 +36,27 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+        String sql = "select L.id as L_ID, L.name as L_NAME, L.color as L_COLOR, S.id as S_ID, S.name as S_NAME from LINE L " +
+                "LEFT OUTER JOIN STATION S ON S.id = L.head_station_id";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> getLineFromRowSet(rs));
     }
 
     public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        String sql = "select L.id as L_ID, L.name as L_NAME, L.color as L_COLOR, S.id as S_ID, S.name as S_NAME from LINE L " +
+                "LEFT OUTER JOIN STATION S ON S.id = L.head_station_id " +
+                "WHERE L.id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> getLineFromRowSet(rs), id);
     }
 
-    public Station findHeadStation(Line line) {
-        final var sql = "select S.id as id, S.name as name from LINE L " +
-                "inner join STATION S on L.head_station_id = S.id " +
-                "where L.id = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> new Station(rs.getLong("id"), rs.getString("name")), line.getId());
+    private static Line getLineFromRowSet(ResultSet rs) throws SQLException {
+        Station headStation = null;
+        if (rs.getLong("S_ID") != 0 && rs.getString("S_NAME") != null) {
+            headStation = new Station(rs.getLong("S_ID"), rs.getString("S_NAME"));
+        }
+        return new Line(rs.getLong("L_ID"),
+                rs.getString("L_NAME"),
+                rs.getString("L_COLOR"),
+                headStation);
     }
 
     public void update(Line newLine) {

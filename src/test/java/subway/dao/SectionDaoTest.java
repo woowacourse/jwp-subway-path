@@ -82,7 +82,7 @@ class SectionDaoTest {
         sectionService.insert(line.getId(), stationS.getName(), stationJ.getName(), Distance.of(5), true);
         sectionService.insert(line.getId(), stationO.getName(), stationS.getName(), Distance.of(6), true);
 
-        assertThat(sectionDao.findAllStationsOrderByUp(line))
+        assertThat(sectionDao.findAllStationsOrderByUp(lineDao.findById(line.getId())))
                 .containsExactly(stationO, stationS, stationJ);
     }
 }

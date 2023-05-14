@@ -19,7 +19,7 @@ public class HighestSectionInsertionStrategy implements SectionInsertionStrategy
 
     @Override
     public boolean support(Section section) {
-        return lineDao.findHeadStation(section.getLine()).equals(section.getNextStation());
+        return section.getLine().getHead().equals(section.getNextStation());
     }
 
     @Override

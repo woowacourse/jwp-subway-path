@@ -197,18 +197,18 @@ class SectionServiceTest {
     @Test
     @DisplayName("역을 처음 초기화하면 노선 정보에 상행 종점 역 정보가 저장되어 있다.")
     void head() {
-        final var headStation = lineDao.findHeadStation(lineOne);
+        final var headStation = lineDao.findById(lineOne.getId()).getHead();
         assertThat(headStation).isEqualTo(stationS);
     }
 
     @Test
     @DisplayName("역의 상행 종점 역 정보가 바뀌면, 노선 정보에 상행 종점 역 정보도 변경된다.")
     void changeHead() {
-        assertThat(lineDao.findHeadStation(lineOne))
+        assertThat(lineDao.findById(lineOne.getId()).getHead())
                 .as("본래는 송탄이 상행 최종역이지만")
                 .isEqualTo(stationS);
         sectionService.insert(lineOne.getId(), "오산", "송탄", Distance.of(4), true);
-        assertThat(lineDao.findHeadStation(lineOne))
+        assertThat(lineDao.findById(lineOne.getId()).getHead())
                 .as("오산을 송탄 앞에 배치한 이후로는 오산이 상행 최종역이다.")
                 .isEqualTo(stationO);
     }
