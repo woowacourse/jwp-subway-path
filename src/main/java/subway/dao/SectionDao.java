@@ -3,7 +3,6 @@ package subway.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 
@@ -28,10 +27,6 @@ public class SectionDao {
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("SECTION")
                 .usingGeneratedKeyColumns("id");
-    }
-
-    public void batchSave(final List<SectionEntity> sectionEntities) {
-        simpleJdbcInsert.executeBatch(SqlParameterSourceUtils.createBatch(sectionEntities));
     }
 
     public void save(final SectionEntity sectionEntity) {

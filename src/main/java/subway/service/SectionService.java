@@ -1,7 +1,6 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineEntity;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.domain.Line;
@@ -20,25 +19,6 @@ public class SectionService {
 
     public SectionService(final SectionDao sectionDao) {
         this.sectionDao = sectionDao;
-    }
-
-    public void updateLine(
-            final LineEntity lineEntity,
-            final Line line
-    ) {
-        sectionDao.deleteAll(lineEntity.getId());
-
-        sectionDao.batchSave(
-                line.getSections()
-                    .stream()
-                    .map(it -> new SectionEntity(
-                            it.getStations().getCurrent().getName(),
-                            it.getStations().getNext().getName(),
-                            it.getStations().getDistance(),
-                            lineEntity.getId())
-                    )
-                    .collect(Collectors.toList())
-        );
     }
 
     public void deleteAll(final Long lineId) {
