@@ -53,7 +53,7 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        String sql = "SELECT * FROM station";
+        String sql = "SELECT * FROM station ORDER BY id";
         BeanPropertyRowMapper<Station> mapper = BeanPropertyRowMapper.newInstance(Station.class);
         return jdbcTemplate.query(sql, mapper);
     }

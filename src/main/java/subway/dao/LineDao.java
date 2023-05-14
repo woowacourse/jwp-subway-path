@@ -42,7 +42,7 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        String sql = "SELECT * FROM line";
+        String sql = "SELECT * FROM line ORDER BY id";
         BeanPropertyRowMapper<Line> mapper = BeanPropertyRowMapper.newInstance(Line.class);
         return jdbcTemplate.query(sql, mapper);
     }

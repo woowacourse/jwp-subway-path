@@ -37,15 +37,15 @@ public class EdgeDao {
     }
 
     public List<Edge> findEdgesByLineId(Long lineId) {
-        String sql =
-                "SELECT e.id,"
-                        + "s1.id AS upstation_id, s1.name AS upstation_name, "
-                        + "s2.id AS downstation_id, s2.name AS downstation_name, "
-                        + "e.distance "
-                        + "FROM edge e "
-                        + "JOIN station s1 ON e.upstation_id = s1.id "
-                        + "JOIN station s2 ON e.downstation_id = s2.id "
-                        + "WHERE e.line_id = ?";
+        String sql = "SELECT e.id,"
+                + "s1.id AS upstation_id, s1.name AS upstation_name, "
+                + "s2.id AS downstation_id, s2.name AS downstation_name, "
+                + "e.distance "
+                + "FROM edge e "
+                + "JOIN station s1 ON e.upstation_id = s1.id "
+                + "JOIN station s2 ON e.downstation_id = s2.id "
+                + "WHERE e.line_id = ? "
+                + "ORDER BY e.id";
 
         RowMapper<Edge> mapper =
                 (resultSet, rowNum) -> {
@@ -59,6 +59,7 @@ public class EdgeDao {
                 };
         return jdbcTemplate.query(sql, mapper, lineId);
     }
+
     public void deleteAllByLineId(Long lineId) {
         String sql = "DELETE FROM edge WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
