@@ -1,11 +1,12 @@
-package subway.ui;
+package subway.ui.handler;
 
-import java.sql.SQLException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.sql.SQLException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -19,8 +20,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleBadRequestException(IllegalArgumentException e) {
-        log.warn(e.getMessage());
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<ErrorResponse> handleBadRequestException(IllegalArgumentException e) {
+        log.error("Error from IllegalArgumentException = ", e);
+        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 }

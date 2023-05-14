@@ -54,7 +54,7 @@ public class LineService {
     }
 
     @Transactional
-    public Line addStationToLine(Long lineId, AddStationToLineRequest request) {
+    public Line addStationToLine(final Long lineId, final AddStationToLineRequest request) {
         final Station existStation = stationDao.findById(request.getExistStationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
         final Station newStation = stationDao.insert(new Station(request.getNewStationName()));
