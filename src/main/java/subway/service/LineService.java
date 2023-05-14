@@ -73,7 +73,9 @@ public class LineService {
     }
 
     public String deleteLine(Long lineId) {
-        Line line = dbLineDao.findById(lineId).toDomain();
+        Line line = dbLineDao.findById(lineId)
+                .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다"))
+                .toDomain();
         subwayGraphs.remove(line);
         edgeDao.deleteAllEdgesOf(lineId);
         dbLineDao.deleteLine(lineId);
@@ -81,7 +83,9 @@ public class LineService {
     }
 
     public LineResponse findLine(Long lineId) {
-        Line line = dbLineDao.findById(lineId).toDomain();
+        Line line = dbLineDao.findById(lineId)
+                .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다"))
+                .toDomain();
         List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 
         List<StationResponse> stationResponses = allStationsInOrder.stream()

@@ -1,5 +1,6 @@
 package subway.dao;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.dao.IncorrectResultSizeDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,9 +52,13 @@ public class DbLineDao {
         }
     }
 
-    public LineEntity findById(final Long id) {
+    public Optional<LineEntity> findById(final Long id) {
         final String sql = "SELECT * FROM line WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<LineEntity> findAll() {
