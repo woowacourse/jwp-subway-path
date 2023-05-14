@@ -9,10 +9,6 @@ public class Sections {
     private static final int END_POINT_SIZE = 1;
     private List<Section> sections;
 
-    public Sections() {
-        this.sections = new ArrayList<>();
-    }
-
     public Sections(final List<Section> sections) {
         this.sections = sections;
     }
@@ -77,11 +73,13 @@ public class Sections {
 
         if (sections.size() == ONE_SECTION) {
             sections.clear();
+            return;
         }
 
         final List<Section> stationSection = getStationSection(station);
         if (stationSection.size() == END_POINT_SIZE) {
             sections.removeAll(stationSection);
+            return;
         }
 
         removeMiddleStation(stationSection, station);
