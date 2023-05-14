@@ -3,7 +3,7 @@ package subway.dto;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
-public class SectionRequest {
+public class StationRegistrationRequest {
 
     @NotNull(message = "호선 ID는 null이 될 수 없습니다.")
     private final Long lineId;
@@ -18,7 +18,7 @@ public class SectionRequest {
     @Positive(message = "거리는 양의 정수만 가능합니다.")
     private final int distance;
 
-    public SectionRequest(final Long lineId, final Long upStationId, final Long stationId, final int distance) {
+    public StationRegistrationRequest(final Long lineId, final Long upStationId, final Long stationId, final int distance) {
         this.lineId = lineId;
         this.upStationId = upStationId;
         this.stationId = stationId;

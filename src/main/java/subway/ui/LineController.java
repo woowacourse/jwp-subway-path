@@ -6,7 +6,7 @@ import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
-import subway.dto.SectionRequest;
+import subway.dto.StationRegistrationRequest;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -32,9 +32,9 @@ public class LineController {
     public ResponseEntity<Long> registerStation(
             @PathVariable final Long id,
             @PathVariable final Long stationId,
-            @RequestBody final SectionRequest sectionRequest
+            @RequestBody final StationRegistrationRequest stationRegistrationRequest
     ) {
-        Long sectionId = lineService.saveStationInLine(sectionRequest);
+        Long sectionId = lineService.saveStationInLine(stationRegistrationRequest);
         return ResponseEntity.created(URI.create("/lines/" + id + "/stations/" + stationId)).body(sectionId);
     }
 
