@@ -1,10 +1,10 @@
 package subway.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
 import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
@@ -53,8 +53,12 @@ public class LineDao {
     }
 
     public LineEntity findById(Long id) {
-        String sql = "select * from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            String sql = "select * from LINE WHERE id = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new IllegalArgumentException("존재하지 않는 노선입니다.");
+        }
     }
 
 //    public Long findHeadIdById(Long lineId) {
