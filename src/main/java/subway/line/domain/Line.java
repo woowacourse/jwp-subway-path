@@ -3,9 +3,12 @@ package subway.line.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import subway.section.domain.Direction;
+import subway.section.domain.Section;
 import subway.section.domain.Sections;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Getter
 @ToString
@@ -31,5 +34,22 @@ public class Line {
         if (Objects.isNull(value) || value.isBlank()) {
             throw new IllegalArgumentException("노선의 이름이나 색상은 null 또는 빈값일 수 없습니다.");
         }
+    }
+    
+    public void initAddStation(final String leftAdditional, final String rightAdditional, final long distance) {
+        sections.initAddStation(leftAdditional, rightAdditional, distance);
+    }
+    
+    public void addStation(
+            final String base,
+            final Direction direction,
+            final String additionalStation,
+            final long distance
+    ) {
+        sections.addStation(base, direction, additionalStation, distance);
+    }
+    
+    public void removeStation(final String station) {
+        sections.removeStation(station);
     }
 }
