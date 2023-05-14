@@ -17,6 +17,25 @@ public class Line {
         this.sections = new LinkedList<>(sections);
     }
 
+    public void addInitialStations(Station baseStation, Station newStation, Direction directionOfBase, Distance newDistance) {
+        validateInitialSectionToAdd(baseStation, newStation);
+        if(directionOfBase == Direction.LEFT) {
+            sections.add(new Section(baseStation, newStation, newDistance));
+        }
+        if(directionOfBase == Direction.RIGHT) {
+            sections.add(new Section(newStation, baseStation, newDistance));
+        }
+    }
+
+    private void validateInitialSectionToAdd(Station baseStation, Station newStation) {
+        if(!sections.isEmpty()) {
+            throw new IllegalArgumentException("이미 등록된 역이 있습니다.");
+        }
+        if(baseStation.equals(newStation)) {
+            throw new IllegalArgumentException("구간은 서로 다른 두 역으로 이뤄져 있어야 합니다.");
+        }
+    }
+
     public void addStation(Station baseStation, Station newStation, Direction directionOfBase, Distance newDistance) {
         validateSectionToAdd(baseStation, newStation, directionOfBase, newDistance);
         if (directionOfBase == Direction.LEFT) {
