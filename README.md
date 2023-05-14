@@ -22,11 +22,11 @@
 
 ```mermaid
 graph TD
-    SubwayMap
-    
-    Lines --> Line
-    Lines --> Stations
-    Stations --> Station
+Lines --> Line
+Line --> Sections
+Sections --> Section
+Section --> Station
+Section --> Distance
 ```
 
 # API 설계
