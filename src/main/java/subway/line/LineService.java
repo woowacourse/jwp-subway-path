@@ -2,12 +2,15 @@ package subway.line;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.line.domain.Line;
 import subway.line.dto.LineCreateDto;
+import subway.line.dto.LineResponseDto;
 import subway.line.persistence.LineDao;
 import subway.line.persistence.LineEntity;
+import subway.section.SectionService;
 import subway.section.domain.Sections;
 
 @Service
@@ -15,9 +18,11 @@ import subway.section.domain.Sections;
 public class LineService {
 
     private final LineDao lineDao;
+    private final SectionService sectionService;
 
-    public LineService(final LineDao lineDao) {
+    public LineService(final LineDao lineDao, final SectionService sectionService) {
         this.lineDao = lineDao;
+        this.sectionService = sectionService;
     }
 
     @Transactional
@@ -35,7 +40,13 @@ public class LineService {
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선 이름입니다."));
     }
 
-    public List<LineEntity> findAll() {
-        return lineDao.findAll();
+    public List<LineResponseDto> findAllLines() {
+        final List<LineEntity> lines = lineDao.findAll();
+
+        return lines.stream()
+            .map((line) -> new LineResponseDto(line.getId(), line.getLineName(),
+                sectionService.findSortedStations(line.getId())))
+            .collect(Collectors.toList());
     }
+
 }
