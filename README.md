@@ -39,8 +39,8 @@ graph TD
 
 - [x] 역 생성
     - stationName
-- [ ] 라인 생성
-    - stationName
+- [x] 라인 생성
+    - lineName
     - 이름이 존재하면 예외처리
 - [ ] 구간 생성
     - lineId

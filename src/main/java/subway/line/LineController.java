@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-import subway.line.domain.SubwayLine;
 import subway.line.dto.LineResponseDto;
 import subway.line.persistence.LineEntity;
 import subway.section.SectionService;
@@ -31,7 +30,7 @@ public class LineController {
     public ResponseEntity<List<LineResponseDto>> getLines() {
         final List<LineEntity> lines = lineService.findAll();
         final List<LineResponseDto> lineResponseDtos = lines.stream()
-            .map((line) -> new LineResponseDto(line.getId(), line.getName(),
+            .map((line) -> new LineResponseDto(line.getId(), line.getLineName(),
                 getStationResponseDtosByLineId(line.getId())))
             .collect(Collectors.toList());
 
@@ -50,9 +49,9 @@ public class LineController {
         return ResponseEntity.ok(responseDtos);
     }
 
-    @PostMapping("/line")
+    @PostMapping("/lines")
     public ResponseEntity<Void> create(@RequestBody LineCreateDto lineCreateDto) {
-        lineService.create(SubwayLine.register(lineCreateDto.getName()));
+        lineService.create(lineCreateDto);
         return ResponseEntity.ok().build();
     }
 }
