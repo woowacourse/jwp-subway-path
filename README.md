@@ -98,7 +98,7 @@
 ### 구간 관련 기능
 
 - Line 에 Station 등록 API - POST /sections
-  - [ ] 통합 테스트 작성
+  - [x] 통합 테스트 작성
   - [ ] Dao 단위 테스트 작성
   - [ ] Dao 프로덕션 코드 작성
   - [ ] Service 단위 테스트

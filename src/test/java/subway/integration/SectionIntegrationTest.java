@@ -7,30 +7,36 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.presentation.dto.request.SectionRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 구간 관련 기능")
+@Sql({"/station_test_data.sql", "/section_test_data.sql", "/line_test_data.sql"})
 public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
-    @DisplayName("구간 추가 성공")
-    void create_success() {
+    @DisplayName("노선에 구간을 추가한다.")
+    void createSection() {
         // given
-        SectionRequest sectionRequest = new SectionRequest("2호선", "UP", "대림", "온수", 1);
+        final SectionRequest sectionRequest = new SectionRequest("2호선", "UP", "잠실", "석촌", 1);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
+        final ExtractableResponse<Response> response = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(sectionRequest)
                 .when().post("/sections")
-                .then().extract();
+                .then()
+                .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header("Location")).isNotBlank()
+        );
     }
 
 }
