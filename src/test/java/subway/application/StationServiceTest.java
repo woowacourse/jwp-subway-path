@@ -8,6 +8,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
 import subway.domain.section.SectionRepository;
 import subway.domain.station.StationRepository;
 import subway.dto.StationRequest;
@@ -19,6 +21,8 @@ import java.util.Optional;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -29,6 +33,10 @@ class StationServiceTest {
 
     @Mock
     LineDao lineDao;
+    @Mock
+    StationDao stationDao;
+    @Mock
+    SectionDao sectionDao;
     @Mock
     SectionRepository sectionRepository;
     @Mock
@@ -159,7 +167,8 @@ class StationServiceTest {
             when(stationRepository.findStationById(stationIdToDelete)).thenReturn(Optional.of(STATION_잠실역));
             when(sectionRepository.findSectionsByLineId(LINE2_ID))
                     .thenReturn(List.of(SECTION_잠실역_TO_건대역));
-
+            doNothing().when(lineDao).deleteById(LINE2_ID);
+            
             // when
             Long changedLineId = stationService.deleteStationById(stationIdToDelete);
 
@@ -175,6 +184,7 @@ class StationServiceTest {
             when(stationRepository.findStationById(stationIdToDelete)).thenReturn(Optional.of(STATION_잠실역));
             when(sectionRepository.findSectionsByLineId(LINE2_ID))
                     .thenReturn(List.of(SECTION_잠실역_TO_강변역, SECTION_강변역_TO_건대역));
+            doNothing().when(stationDao).deleteById(STATION_잠실역_ID);
 
             // when
             Long changedLineId = stationService.deleteStationById(stationIdToDelete);
@@ -191,6 +201,7 @@ class StationServiceTest {
             when(stationRepository.findStationById(stationIdToDelete)).thenReturn(Optional.of(STATION_건대역));
             when(sectionRepository.findSectionsByLineId(LINE2_ID))
                     .thenReturn(List.of(SECTION_잠실역_TO_강변역, SECTION_강변역_TO_건대역));
+            doNothing().when(stationDao).deleteById(STATION_건대역_ID);
 
             // when
             Long changedLineId = stationService.deleteStationById(stationIdToDelete);
@@ -207,6 +218,8 @@ class StationServiceTest {
             when(stationRepository.findStationById(stationIdToDelete)).thenReturn(Optional.of(STATION_강변역));
             when(sectionRepository.findSectionsByLineId(LINE2_ID))
                     .thenReturn(List.of(SECTION_잠실역_TO_강변역, SECTION_강변역_TO_건대역));
+            doNothing().when(stationDao).deleteById(STATION_강변역_ID);
+            when(sectionDao.insert(ENTITY_잠실역_TO_건대역_INSERT)).thenReturn(any());
 
             // when
             Long changedLineId = stationService.deleteStationById(stationIdToDelete);

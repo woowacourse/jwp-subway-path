@@ -119,6 +119,7 @@ public class StationFixtures {
     public static final StationEntity ENTITY_강변역_FIND = new StationEntity(STATION_강변역_ID, STATION_강변역_NAME, LINE2_ID);
     public static final SectionEntity ENTITY_잠실역_TO_강변역_INSERT = new SectionEntity(null, STATION_잠실역_ID, STATION_강변역_ID, DISTANCE_잠실역_TO_강변역, LINE2_ID);
     public static final SectionEntity ENTITY_잠실역_TO_건대역_FIND = new SectionEntity(SECTION_잠실역_TO_건대역_ID, STATION_잠실역_ID, STATION_건대역_ID, DISTANCE_잠실역_TO_건대역, LINE2_ID);
+    public static final SectionEntity ENTITY_잠실역_TO_건대역_INSERT = new SectionEntity(null, STATION_잠실역_ID, STATION_건대역_ID, DISTANCE_잠실역_TO_건대역, LINE2_ID);
     public static final SectionEntity ENTITY_잠실역_TO_강변역_FIND = new SectionEntity(SECTION_잠실역_TO_강변역_ID, STATION_잠실역_ID, STATION_강변역_ID, DISTANCE_잠실역_TO_강변역, LINE2_ID);
 
     /**
