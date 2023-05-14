@@ -15,6 +15,7 @@ import subway.domain.repository.LineRepository;
 @Repository
 public class LineJdbcRepository implements LineRepository {
 
+    private static final int DELETED_COUNT = 1;
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insert;
 
@@ -38,9 +39,11 @@ public class LineJdbcRepository implements LineRepository {
     }
 
     @Override
-    public void deleteById(final Long lineIdRequest) {
+    public boolean deleteById(final Long lineIdRequest) {
         String sql = "delete from line where id = ?";
-        jdbcTemplate.update(sql, lineIdRequest);
+        final int deleteCount = jdbcTemplate.update(sql, lineIdRequest);
+
+        return deleteCount == DELETED_COUNT;
     }
 
     @Override

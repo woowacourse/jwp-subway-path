@@ -7,7 +7,7 @@ import java.util.List;
 public interface LineRepository {
     long createLine(Line line);
 
-    void deleteById(Long lineIdRequest);
+    boolean deleteById(Long lineIdRequest);
 
     List<Line> findAll();
 
