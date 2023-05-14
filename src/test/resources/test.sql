@@ -37,7 +37,8 @@ INSERT INTO station (name)
 VALUES ('수원'),
        ('잠실나루'),
        ('의왕'),
-       ('선릉');
+       ('선릉'),
+       ('여긴 못감');
 
 INSERT INTO paths (line_id, up_station_id, down_station_id, distance)
 VALUES (1, 1, 2, 5),

@@ -94,3 +94,23 @@
 - DELETE /lines/{line-id}/stations/{station-id}
     - 노선의 역을 삭제한다.
     - Response Status OK
+
+- GET /fee?start={id}&end={id}
+- Response OK
+
+```json
+{
+  "fee": 1250,
+  "stations": [
+    {
+      "id": 1,
+      "name": "수원"
+    },
+    {
+      "id": 2,
+      "name": "잠실나루"
+    }
+  ]
+}
+
+```

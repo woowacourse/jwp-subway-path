@@ -9,17 +9,17 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class FeeCalculator {
+public class ShortestWayCalculator {
 
-    private final double distance;
+    private final int distance;
     private final List<Station> way;
 
-    private FeeCalculator(final double distance, final List<Station> way) {
+    public ShortestWayCalculator(final int distance, final List<Station> way) {
         this.distance = distance;
         this.way = way;
     }
 
-    public static FeeCalculator from(final Station start, final Station end, final List<Line> lines) {
+    public static ShortestWayCalculator from(final Station start, final Station end, final List<Line> lines) {
         final List<Station> stations = integrateStations(lines);
 
         final var graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
@@ -33,7 +33,7 @@ public class FeeCalculator {
         final var dijkPath = new DijkstraShortestPath<>(graph)
                 .getPath(start, end);
         try {
-            return new FeeCalculator(dijkPath.getWeight(), dijkPath.getVertexList());
+            return new ShortestWayCalculator(((int) dijkPath.getWeight()), dijkPath.getVertexList());
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("갈 수 없는 경로입니다.");
         }
@@ -56,7 +56,7 @@ public class FeeCalculator {
                 );
     }
 
-    public double getDistance() {
+    public int getDistance() {
         return distance;
     }
 

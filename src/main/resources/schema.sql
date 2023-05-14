@@ -1,7 +1,3 @@
-DROP TABLE station IF EXISTS;
-DROP TABLE line IF EXISTS;
-DROP TABLE paths IF EXISTS;
-
 
 create table if not exists STATION
 (

@@ -10,9 +10,9 @@ import java.util.Map;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.FeeCalculator.from;
+import static subway.domain.ShortestWayCalculator.from;
 
-class FeeCalculatorTest {
+class ShortestWayCalculatorTest {
 
     @DisplayName("최단 거리를 계산한다.")
     @Test
@@ -29,8 +29,8 @@ class FeeCalculatorTest {
         );
 
         //when
-        final FeeCalculator feeCalculator = from(stationA, stationC, of(line));
-        final double distance = feeCalculator.getDistance();
+        final ShortestWayCalculator shortestWayCalculator = from(stationA, stationC, of(line));
+        final double distance = shortestWayCalculator.getDistance();
 
         //then
         assertThat(distance).isEqualTo(15);
@@ -51,8 +51,8 @@ class FeeCalculatorTest {
         );
 
         //when
-        final FeeCalculator feeCalculator = from(stationA, stationC, of(line));
-        final List<Station> way = feeCalculator.getWay();
+        final ShortestWayCalculator shortestWayCalculator = from(stationA, stationC, of(line));
+        final List<Station> way = shortestWayCalculator.getWay();
 
         //then
         assertThat(way).containsExactly(stationA, stationB, stationC);
@@ -78,8 +78,8 @@ class FeeCalculatorTest {
         );
 
         //when
-        final FeeCalculator feeCalculator = from(stationA, stationC, of(line, line2));
-        final double distance = feeCalculator.getDistance();
+        final ShortestWayCalculator shortestWayCalculator = from(stationA, stationC, of(line, line2));
+        final double distance = shortestWayCalculator.getDistance();
 
         //then
         assertThat(distance).isEqualTo(5);
