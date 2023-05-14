@@ -23,8 +23,6 @@ public class Sections {
         boolean hasUpStation = hasStation(section.getUpStation());
         boolean hasDownStation = hasStation(section.getDownStation());
 
-        validateSection(hasUpStation, hasDownStation);
-
         insertSection(hasUpStation, hasDownStation, section);
     }
 
@@ -33,9 +31,16 @@ public class Sections {
                 .anyMatch(section -> section.hasStation(station));
     }
 
-    private void validateSection(final boolean hasUpStation, final boolean hasDownStation) {
+    private void insertSection(final boolean hasUpStation, final boolean hasDownStation, final Section section) {
         validateConnectSection(hasUpStation, hasDownStation);
         validateDuplicatedSection(hasUpStation, hasDownStation);
+
+        if (!hasUpStation && !hasDownStation) {
+            sections.add(section);
+            return;
+        }
+
+        insertSectionAtMiddle(section);
     }
 
     private void validateConnectSection(final boolean hasUpStation, final boolean hasDownStation) {
@@ -48,15 +53,6 @@ public class Sections {
         if (hasUpStation && hasDownStation) {
             throw new SectionDuplicatedException();
         }
-    }
-
-    private void insertSection(final boolean hasUpStation, final boolean hasDownStation, final Section section) {
-        if (!hasUpStation && !hasDownStation) {
-            sections.add(section);
-            return;
-        }
-
-        insertSectionAtMiddle(section);
     }
 
     private void insertSectionAtMiddle(final Section section) {
