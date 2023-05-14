@@ -58,7 +58,7 @@
     - `String color`
 
 - [x] Line
-    - `LineInfo lineInfo`
+    - `LineInfo line`
     - `List<Section> line`
 
 - [x] SectionSorter
