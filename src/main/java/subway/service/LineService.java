@@ -4,6 +4,8 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.domain.Line;
+import subway.global.exception.line.CanNotDuplicatedLineNameException;
+import subway.global.exception.line.CanNotFoundLineException;
 import subway.service.dto.LineResponse;
 import subway.service.dto.RegisterLineRequest;
 import subway.service.dto.SearchAllSectionLineRequest;
@@ -70,6 +72,13 @@ public class LineService {
 
     public Long registerLine(final RegisterLineRequest registerLineRequest) {
 
+        try {
+            final String lineName = registerLineRequest.getLineName();
+            findByLineName(lineName);
+        } catch (CanNotFoundLineException exception) {
+            throw new CanNotDuplicatedLineNameException("이미 등록되어 있는 노선입니다. 노선 이름은 중복될 수 없습니다.");
+        }
+
         final Long savedId = lineDao.save(new LineEntity(registerLineRequest.getLineName()));
 
         sectionService.registerSection(
@@ -85,7 +94,7 @@ public class LineService {
     public Line findByLineName(final String lineName) {
         final LineEntity lineEntity =
                 lineDao.findLineByName(lineName)
-                       .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
+                       .orElseThrow(() -> new CanNotFoundLineException("해당 노선은 존재하지 않습니다."));
 
         return new Line(
                 lineEntity.getId(),
