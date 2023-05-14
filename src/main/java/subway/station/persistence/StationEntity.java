@@ -3,22 +3,22 @@ package subway.station.persistence;
 public class StationEntity {
 
     private final Long id;
-    private final String name;
+    private final String stationName;
 
-    public StationEntity(final Long id, final String name) {
+    public StationEntity(final Long id, final String stationName) {
         this.id = id;
-        this.name = name;
+        this.stationName = stationName;
     }
 
-    public StationEntity(String name) {
-        this(null, name);
+    public StationEntity(String stationName) {
+        this(null, stationName);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getStationName() {
+        return stationName;
     }
 }

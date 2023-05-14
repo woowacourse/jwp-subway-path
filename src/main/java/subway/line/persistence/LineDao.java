@@ -9,14 +9,13 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.line.domain.Line;
 
 @Repository
 public class LineDao {
 
     private static final RowMapper<LineEntity> LINE_ENTITY_ROW_MAPPER = (rs, rowNum) -> {
         final long id = rs.getLong("id");
-        final String findName = rs.getString("name");
+        final String findName = rs.getString("lineName");
         return new LineEntity(id, findName);
     };
     private final JdbcTemplate jdbcTemplate;
@@ -51,7 +50,7 @@ public class LineDao {
     }
 
     public Optional<LineEntity> findByName(String name) {
-        final String sql = "SELECT * FROM LINE WHERE line_name = :name";
+        final String sql = "SELECT * FROM LINE WHERE lineName = :name";
         final MapSqlParameterSource params = new MapSqlParameterSource();
         params.addValue("name", name);
 

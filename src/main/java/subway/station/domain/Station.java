@@ -1,5 +1,7 @@
 package subway.station.domain;
 
+import java.util.Objects;
+
 public final class Station {
 
     private final Long id;
@@ -14,7 +16,28 @@ public final class Station {
         this(null, stationName);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return stationName.getValue();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Station station = (Station) o;
+        return Objects.equals(id, station.id) && Objects.equals(stationName, station.stationName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, stationName);
     }
 }

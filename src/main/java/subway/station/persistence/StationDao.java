@@ -1,6 +1,7 @@
 package subway.station.persistence;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -8,7 +9,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.station.domain.Station;
 
 @Repository
 public class StationDao {
@@ -28,7 +28,6 @@ public class StationDao {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
             .withTableName("STATION")
-            .usingColumns("name")
             .usingGeneratedKeyColumns("id");
     }
 
@@ -47,17 +46,12 @@ public class StationDao {
         return findId.get(0);
     }
 
-    public StationEntity findByName(final String name) {
-        final String sql = "SELECT * FROM STATION WHERE name = :name";
+    public Optional<StationEntity> findById(final Long stationId) {
+        final String sql = "SELECT * FROM STATION WHERE id = :stationId";
         final MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("name", name);
+        params.addValue("id", stationId);
 
-        final List<StationEntity> findStation =
-            namedParameterJdbcTemplate.query(sql, params, STATION_ENTITY_ROW_MAPPER);
-
-        if (findStation.isEmpty()) {
-            throw new IllegalArgumentException("해당 이름의 역이 존재하지 않습니다.");
-        }
-        return findStation.get(0);
+        return namedParameterJdbcTemplate.query(sql, params, STATION_ENTITY_ROW_MAPPER)
+                .stream().findAny();
     }
 }

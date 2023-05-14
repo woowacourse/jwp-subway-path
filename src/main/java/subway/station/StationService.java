@@ -24,7 +24,7 @@ public class StationService {
         return stationDao.insert(new StationEntity(station.getName()));
     }
 
-    public StationEntity findByName(final String name) {
-        return stationDao.findByName(name);
+    public StationEntity findById(final Long stationId) {
+        return stationDao.findById(stationId).orElseThrow(() -> new IllegalArgumentException("해당 이름의 역이 존재하지 않습니다."));
     }
 }
