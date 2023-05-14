@@ -18,6 +18,7 @@ class DistanceTest {
     @ValueSource(ints = {-1, 0, 11})
     void createDistanceFailTestByRange(int distance) {
         assertThatThrownBy(() -> new Distance(distance))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("역간 거리는 10km이하 양의 정수만 가능합니다.");
     }
 }

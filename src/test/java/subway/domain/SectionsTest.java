@@ -1,13 +1,14 @@
 package subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.exception.GlobalException;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class SectionsTest {
 
@@ -150,7 +151,8 @@ class SectionsTest {
         Section sectionForAdd = new Section(잠실, 잠실나루, new Distance(6));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("구간 길이로 인해 연결할 수 없습니다.");
     }
 
     @DisplayName("구간 사이에 Section 거리가 해당 구간보다 거리가 클 경우 연결할 수 없다.")
@@ -165,7 +167,8 @@ class SectionsTest {
         Section sectionForAdd = new Section(잠실나루, 잠실새내, new Distance(6));
 
         assertThatThrownBy(() -> sections.add(sectionForAdd))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("구간 길이로 인해 연결할 수 없습니다.");
     }
 
     @DisplayName("존재하지 않는 역을 삭제할 수 없다.")
@@ -179,7 +182,8 @@ class SectionsTest {
         Sections sections = new Sections(List.of(section));
 
         assertThatThrownBy(() -> sections.remove(잠실나루))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("존재하지 않는 구간입니다.");
     }
 
     @DisplayName("역이 단 두 개일때 삭제시, 모든 구간이 삭제된다.")

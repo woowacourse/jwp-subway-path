@@ -18,6 +18,7 @@ class StationTest {
     @ValueSource(strings = {"", "01234567890"})
     void createStationFailTestByNameLength(String name) {
         assertThatThrownBy(() -> new Station(name))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("역 이름은 1글자 이상, 10글자 이하여야 합니다.");
     }
 }

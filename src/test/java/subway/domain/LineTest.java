@@ -1,12 +1,12 @@
 package subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.exception.GlobalException;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class LineTest {
 
@@ -21,7 +21,8 @@ public class LineTest {
     @NullSource
     void createLineInfoFailTestByNameLength(String name) {
         assertThatThrownBy(() -> new Line(name))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("호선의 이름은 1글자 이상, 10글자 이하여야 한다.");
     }
 
 }

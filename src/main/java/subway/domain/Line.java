@@ -17,7 +17,7 @@ public class Line {
 
     private void validateName(String name) {
         if (name == null || name.length() < NAME_MIN_LENGTH || NAME_MAX_LENGTH < name.length()) {
-            throw new GlobalException("호선은 이름은 1글자 이상, 10글자 이하여야 한다.");
+            throw new GlobalException("호선의 이름은 1글자 이상, 10글자 이하여야 한다.");
         }
     }
 

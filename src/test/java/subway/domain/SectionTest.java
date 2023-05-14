@@ -26,6 +26,7 @@ class SectionTest {
         Station endStation = new Station("회기역");
 
         assertThatThrownBy(() -> new Section(startStation, endStation, DISTANCE))
-                .isInstanceOf(GlobalException.class);
+                .isInstanceOf(GlobalException.class)
+                .hasMessage("시작 역과 도착 역은 같을 수 없습니다.");
     }
 }
