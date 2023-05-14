@@ -1,32 +1,38 @@
-package subway.persistence;
+package subway.persistence.entity;
 
 import subway.domain.Section;
+import subway.domain.Station;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class SectionEntity {
+    private final Long lineId;
     private final String upStation;
     private final String downStation;
     private final Long distance;
-    private final Long lineId;
 
-    public SectionEntity(final String upStation, final String downStation, final Long distance, final Long lineId) {
+    public SectionEntity(final Long lineId, final String upStation, final String downStation, final Long distance) {
+        this.lineId = lineId;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
-        this.lineId = lineId;
     }
 
     public static List<SectionEntity> of(final Long lineId, final List<Section> sections) {
         return sections.stream()
                 .map(section -> new SectionEntity(
+                        lineId,
                         section.getUpStation().getName(),
                         section.getDownStation().getName(),
-                        section.getDistance(),
-                        lineId
+                        section.getDistance()
                 ))
                 .collect(Collectors.toList());
+    }
+
+
+    public Long getLineId() {
+        return lineId;
     }
 
     public String getUpStation() {
@@ -39,9 +45,5 @@ public class SectionEntity {
 
     public Long getDistance() {
         return distance;
-    }
-
-    public Long getLineId() {
-        return lineId;
     }
 }
