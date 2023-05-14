@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.exception.LineNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
@@ -101,7 +102,11 @@ public class SectionDao {
                 "JOIN line ON se.line_id = line.id " +
                 "WHERE se.line_id = ?";
 
-        return jdbcTemplate.query(sql, sectionDetailRowMapper, lineId);
+        final List<SectionDetailEntity> result = jdbcTemplate.query(sql, sectionDetailRowMapper, lineId);
+        if (result.isEmpty()) {
+            throw new LineNotFoundException();
+        }
+        return result;
     }
 
     public List<SectionDetailEntity> findSectionDetail() {
@@ -117,4 +122,5 @@ public class SectionDao {
 
         return jdbcTemplate.query(sql, sectionDetailRowMapper);
     }
+
 }

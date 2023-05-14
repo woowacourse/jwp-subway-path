@@ -64,7 +64,7 @@ public class LineService {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public LineDetailResponse getLine(final Long lineId) {
+    public LineDetailResponse findById(final Long lineId) {
         return convert(sectionDao.findSectionDetailByLineId(lineId));
     }
 

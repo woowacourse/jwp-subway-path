@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.exception.LineNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 
@@ -15,6 +16,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.persistence.entity.RowMapperUtil.sectionEntityRowMapper;
 
@@ -76,7 +78,7 @@ class SectionDaoTest {
 
     @Test
     @DisplayName("노선 id에 해당하는 구간 조회 성공")
-    void findSectionDetailByLineName_success() {
+    void findSectionDetailByLineId_success() {
         // given
         final long lineId = 1L;
 
@@ -95,6 +97,17 @@ class SectionDaoTest {
                 () -> assertThat(sectionDetailEntities.get(0).getNextStationId()).isEqualTo(2L),
                 () -> assertThat(sectionDetailEntities.get(0).getNextStationName()).isEqualTo("잠실새내")
         );
+    }
+
+    @Test
+    @DisplayName("노선 id에 해당하는 구간 조회 실패 - 존재하지 않는 노선 id")
+    void findSectionDetailByLineId_fail_line_not_found() {
+        // given
+        final long lineId = 10L;
+
+        // when, then
+        assertThatThrownBy(() -> sectionDao.findSectionDetailByLineId(lineId))
+                .isInstanceOf(LineNotFoundException.class);
     }
 
     @Test

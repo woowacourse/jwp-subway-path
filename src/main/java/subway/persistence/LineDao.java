@@ -49,7 +49,7 @@ public class LineDao {
         final List<LineEntity> result = jdbcTemplate.query(sql, lineEntityRowMapper, name);
 
         if (result.isEmpty()) {
-            throw new LineNotFoundException("존재하지 않는 노선 이름입니다.");
+            throw new LineNotFoundException();
         }
 
         return result.get(0);
