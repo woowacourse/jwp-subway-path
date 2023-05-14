@@ -49,7 +49,7 @@ public class SectionServiceUnitTest {
         sectionService.insertSection(req);
 
         // then
-        verify(lineRepository).updateLine(sections, line.getLineNumber());
+        verify(lineRepository).insertSectionInLine(sections, line.getLineNumber());
     }
 
     @Test
@@ -112,6 +112,6 @@ public class SectionServiceUnitTest {
         sectionService.deleteSection(req);
 
         // then
-        verify(lineRepository).updateLine(sections, req.getLineNumber());
+        verify(lineRepository).insertSectionInLine(sections, req.getLineNumber());
     }
 }

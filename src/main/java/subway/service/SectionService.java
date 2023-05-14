@@ -32,7 +32,7 @@ public class SectionService {
         Section section = new Section(requestUpStation, requestDownStation, request.getDistance());
         line.addSection(section);
 
-        lineRepository.updateLine(sections, line.getLineNumber());
+        lineRepository.insertSectionInLine(sections, line.getLineNumber());
     }
 
     @Transactional
@@ -42,6 +42,6 @@ public class SectionService {
         Sections sections = sectionRepository.findSectionsByLineNumber(lineNumber);
         sections.deleteSectionByStation(station);
 
-        lineRepository.updateLine(sections, lineNumber);
+        lineRepository.insertSectionInLine(sections, lineNumber);
     }
 }

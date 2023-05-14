@@ -49,7 +49,7 @@ class SubwayMapServiceIntegrationTest {
         stationRepository.insertStation(new Station("종합운동장역"));
 
         lineRepository.insertLine(new LineEntity(1L, 2, "2호선", "초록색"));
-        lineRepository.updateLine(createSections(), 2);
+        lineRepository.insertSectionInLine(createSections(), 2);
 
         // when
         LineMapResponse result = subwayMapService.showLineMapByLineNumber(2L);
