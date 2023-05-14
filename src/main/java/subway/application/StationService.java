@@ -2,7 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.StationDao;
+import subway.dao.H2StationRepository;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
@@ -14,23 +14,23 @@ import java.util.stream.Collectors;
 @Transactional
 public class StationService {
 
-    private final StationDao stationDao;
+    private final H2StationRepository stationRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(H2StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        Station station = stationRepository.insert(new Station(stationRequest.getName()));
         return StationResponse.of(station);
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        return StationResponse.of(stationRepository.findById(id));
     }
 
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
+        List<Station> stations = stationRepository.findAll();
 
         return stations.stream()
                 .map(StationResponse::of)
@@ -38,10 +38,10 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        stationRepository.update(new Station(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteById(id);
     }
 }

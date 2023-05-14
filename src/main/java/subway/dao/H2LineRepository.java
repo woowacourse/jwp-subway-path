@@ -19,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Repository
-public class SubwayDao {
+public class H2LineRepository {
 
     private static final int BATCH_SIZE = 50;
 
@@ -39,7 +39,7 @@ public class SubwayDao {
             rs.getInt("distance")
     );
 
-    public SubwayDao(JdbcTemplate jdbcTemplate) {
+    public H2LineRepository(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
     }
 

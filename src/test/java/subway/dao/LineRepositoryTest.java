@@ -22,14 +22,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @JdbcTest
-class SubwayDaoTest {
+class LineRepositoryTest {
 
     @Autowired
     private DataSource dataSource;
     private JdbcTemplate jdbcTemplate;
-    private StationDao stationDao;
-    private SubwayDao subwayDao;
-    private LinePropertyDao linePropertyDao;
+    private H2StationRepository stationRepository;
+    private H2LineRepository lineRepository;
+    private H2LinePropertyRepository linePropertyRepository;
 
     private final RowMapper<SectionEntity> sectionMapper = (rs, cn) -> new SectionEntity(
             rs.getLong("id"),
@@ -43,9 +43,9 @@ class SubwayDaoTest {
     @BeforeEach
     void setting() {
         jdbcTemplate = new JdbcTemplate(dataSource);
-        subwayDao = new SubwayDao(jdbcTemplate);
-        linePropertyDao = new LinePropertyDao(jdbcTemplate, dataSource);
-        stationDao = new StationDao(jdbcTemplate, dataSource);
+        lineRepository = new H2LineRepository(jdbcTemplate);
+        linePropertyRepository = new H2LinePropertyRepository(jdbcTemplate, dataSource);
+        stationRepository = new H2StationRepository(jdbcTemplate, dataSource);
     }
 
     @Test
@@ -63,8 +63,8 @@ class SubwayDaoTest {
 
         // when
 
-        linePropertyDao.insert(lineProperty);
-        subwayDao.save(line);
+        linePropertyRepository.insert(lineProperty);
+        lineRepository.save(line);
 
         List<SectionEntity> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
 
@@ -92,16 +92,16 @@ class SubwayDaoTest {
         ));
 
         //when
-        stationDao.insert(new Station("푸우"));
-        stationDao.insert(new Station("테오"));
-        stationDao.insert(new Station("제이온"));
-        stationDao.insert(new Station("시카"));
+        stationRepository.insert(new Station("푸우"));
+        stationRepository.insert(new Station("테오"));
+        stationRepository.insert(new Station("제이온"));
+        stationRepository.insert(new Station("시카"));
 
-        linePropertyDao.insert(lineProperty);
+        linePropertyRepository.insert(lineProperty);
 
-        subwayDao.save(line);
+        lineRepository.save(line);
 
-        Line actualLine = subwayDao.findById(1L);
+        Line actualLine = lineRepository.findById(1L);
         List<Section> sections = actualLine.getSections();
 
         //then

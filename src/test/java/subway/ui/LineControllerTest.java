@@ -8,7 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.SubwayService;
+import subway.application.LineService;
 import subway.dto.StationEnrollRequest;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -17,15 +17,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
-@WebMvcTest(SubwayController.class)
-class SubwayControllerTest {
+@WebMvcTest(LineController.class)
+class LineControllerTest {
 
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
     private MockMvc mockMvc;
     @MockBean
-    private SubwayService subwayService;
+    private LineService lineService;
 
     @Test
     @DisplayName("/subway/{lineId}로 POST 요청을 보낼 수 있다")

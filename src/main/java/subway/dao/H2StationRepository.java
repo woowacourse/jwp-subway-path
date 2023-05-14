@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 import java.util.List;
 
 @Repository
-public class StationDao {
+public class H2StationRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
@@ -24,7 +24,7 @@ public class StationDao {
             );
 
 
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public H2StationRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")

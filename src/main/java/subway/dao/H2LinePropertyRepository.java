@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class LinePropertyDao {
+public class H2LinePropertyRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
@@ -24,7 +24,7 @@ public class LinePropertyDao {
                     rs.getString("color")
             );
 
-    public LinePropertyDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public H2LinePropertyRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("line_property")
