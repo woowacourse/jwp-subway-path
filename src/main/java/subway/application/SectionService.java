@@ -62,7 +62,7 @@ public class SectionService {
             Section sectionToDelete = stationsToDeleteOptional.get();
             Section sectionLeft = stationsLeftOptional.get();
 
-            sectionDao.update(Section.makeSectionToUpdateAfterDeletion(sectionLeft, sectionToDelete));
+            sectionDao.update(new Section(sectionLeft.getId(), sectionLeft.getLine(), sectionLeft.getPreviousStation(), sectionToDelete.getNextStation(), sectionToDelete.getDistance().add(sectionLeft.getDistance())));
         }
 
         sectionDao.deleteStation(station, line);

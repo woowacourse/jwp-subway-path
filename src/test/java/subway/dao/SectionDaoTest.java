@@ -51,12 +51,7 @@ class SectionDaoTest {
     @DisplayName("거리 정보는 양의 정수로 제한합니다.")
     void distanceFormat() {
         // when && then
-        assertThatThrownBy(() -> sectionDao.insert(Section.builder()
-                .line(line)
-                .startingStation(stationS)
-                .before(stationJ)
-                .distance(Distance.of(-3)).build())
-        )
+        assertThatThrownBy(() -> sectionDao.insert(new Section(line, stationS, stationJ, Distance.of(-3))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리 정보는 양의 정수로 제한합니다.");
     }
@@ -74,12 +69,8 @@ class SectionDaoTest {
 
         // when & then
         Station stationY = stationDao.insert(new Station("양평"));
-        assertThatCode(() -> sectionDao.insert(Section.builder()
-                .line(line)
-                .startingStation(stationY)
-                .after(stations.get(index))
-                .distance(Distance.of(2)).build())
-        ).doesNotThrowAnyException();
+        assertThatCode(() -> sectionDao.insert(new Section(line, stations.get(index), stationY, Distance.of(2))))
+                .doesNotThrowAnyException();
     }
 
     @Test

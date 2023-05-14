@@ -51,12 +51,7 @@ public class SectionDao {
                 section.getDistance()
         );
 
-        return Section.builder()
-                .id(id)
-                .line(section.getLine())
-                .startingStation(section.getPreviousStation())
-                .before(section.getNextStation())
-                .distance(section.getDistance()).build();
+        return new Section(id, section.getLine(), section.getPreviousStation(), section.getNextStation(), section.getDistance());
     }
 
     private long insertAndReturnId(Long lineId, Long previousStationId, Long nextStationId, Distance distance) {
@@ -101,12 +96,14 @@ public class SectionDao {
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, previousStation.getId(), line.getId());
         if (rs.next()) {
             var distance = rs.getInt("DISTANCE") == 0 ? Distance.emptyDistance() : Distance.of(rs.getInt("DISTANCE"));
-            return Optional.of(Section.builder()
-                    .id(rs.getLong("ID"))
-                    .line(new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")))
-                    .startingStation(new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")))
-                    .before(new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME")))
-                    .distance(distance).build());
+            return Optional.of(
+                    new Section(
+                            rs.getLong("ID"),
+                            new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")),
+                            new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")),
+                            new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME")),
+                            distance
+                    ));
         }
         return Optional.empty();
     }
@@ -133,12 +130,11 @@ public class SectionDao {
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, nextStation.getId(), line.getId());
         if (rs.next()) {
             var distance = rs.getInt("DISTANCE") == 0 ? Distance.emptyDistance() : Distance.of(rs.getInt("DISTANCE"));
-            return Optional.of(Section.builder()
-                    .id(rs.getLong("ID"))
-                    .line(new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")))
-                    .startingStation(new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")))
-                    .before(new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME")))
-                    .distance(distance).build());
+            return Optional.of(new Section(rs.getLong("ID"),
+                    new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")),
+                    new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")),
+                    new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME")),
+                    distance));
         }
         return Optional.empty();
     }

@@ -15,46 +15,12 @@ public class Section {
         this.distance = distance;
     }
 
-    public static StationsBuilder builder() {
-        return new StationsBuilder();
-    }
-
-    public static Section makeSectionToInsertDownDirection(Section newSection, Section originalSection) {
-        return builder()
-                .line(newSection.line)
-                .startingStation(newSection.nextStation)
-                .before(originalSection.nextStation)
-                .distance(originalSection.distance.subtract(newSection.distance))
-                .build();
-    }
-
-    public static Section makeSectionToUpdateDownDirection(Section newSection, Section originalSection) {
-        return builder()
-                .id(originalSection.id)
-                .line(originalSection.line)
-                .startingStation(originalSection.previousStation)
-                .before(newSection.nextStation)
-                .distance(newSection.distance)
-                .build();
-    }
-
-    public static Section makeSectionToUpdateUpDirection(Section newSection, Section originalSection) {
-        return builder()
-                .id(originalSection.id)
-                .line(newSection.line)
-                .startingStation(originalSection.previousStation)
-                .before(newSection.previousStation)
-                .distance(originalSection.distance.subtract(newSection.distance))
-                .build();
-    }
-
-    public static Section makeSectionToUpdateAfterDeletion(Section sectionLeft, Section sectionToDelete) {
-        return builder()
-                .id(sectionLeft.id)
-                .startingStation(sectionLeft.previousStation)
-                .before(sectionToDelete.nextStation)
-                .distance(sectionToDelete.distance.add(sectionLeft.distance))
-                .build();
+    public Section(Line line, Station previousStation, Station nextStation, Distance distance) {
+        this.id = null;
+        this.line = line;
+        this.previousStation = previousStation;
+        this.nextStation = nextStation;
+        this.distance = distance;
     }
 
     public boolean isNextStationEmpty() {
