@@ -27,8 +27,12 @@ public class Section {
         }
     }
 
-    public boolean have(final String source, final String target) {
-        return this.source.isName(source) && this.target.isName(target);
+    public boolean haveSection(final Station from, final Station to) {
+        return (source.equals(from) && target.equals(target)) || (source.equals(to) && target.equals(from));
+    }
+
+    public boolean have(final Station station) {
+        return source.equals(station) || target.equals(station);
     }
 
     public Station getSource() {

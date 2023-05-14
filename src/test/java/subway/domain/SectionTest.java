@@ -58,6 +58,6 @@ class SectionTest {
         final Section section = new Section("잠실역", "석촌역", 10);
 
         // expect
-        assertThat(section.have("잠실역", "석촌역")).isTrue();
+        assertThat(section.haveSection(new Station("잠실역"), new Station("석촌역"))).isTrue();
     }
 }

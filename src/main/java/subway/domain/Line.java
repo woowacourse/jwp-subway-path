@@ -24,15 +24,29 @@ public class Line {
         }
     }
 
-    public void register(final String source, final String target, final int distance) {
+    public void register(final Station source, final Station target, final int distance) {
         if (haveSection(source, target)) {
             throw new IllegalArgumentException("이미 존재하는 구간입니다.");
         }
+        if (doesNotHave(source)) {
+            throw new IllegalArgumentException("기준역이 존재하지 않습니다.");
+        }
     }
 
-    private boolean haveSection(final String source, final String target) {
+    private boolean haveSection(final Station source, final Station target) {
         return sections.stream()
-                .map(section -> section.have(source, target) || section.have(target, source))
+                .map(section -> section.haveSection(source, target))
+                .findAny()
+                .orElse(false);
+    }
+
+    private boolean doesNotHave(final Station station) {
+        return !have(station);
+    }
+
+    private boolean have(final Station station) {
+        return sections.stream()
+                .map(section -> section.have(station))
                 .findAny()
                 .orElse(false);
     }

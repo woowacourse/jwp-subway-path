@@ -38,18 +38,20 @@ class LineTest {
         final Line line = new Line("8호선", "분홍색", List.of(section));
 
         // expect
-        assertThatThrownBy(() -> line.register("잠실역", "석촌역", 1))
+        assertThatThrownBy(() -> line.register(new Station("잠실역"), new Station("석촌역"), 1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("이미 존재하는 구간입니다.");
     }
 
-    @ParameterizedTest
-    @CsvSource({"잠실역, true", "석촌역, false"})
-    void 이름이_같은지_확인할_수_있다(final String name, final boolean result) {
+    @Test
+    void 등록시_기준역이_존재하지_않으면_예외가_발생한다() {
         // given
-        final Station station = new Station("잠실역");
+        final Section section = new Section("잠실역", "석촌역", 1);
+        final Line line = new Line("8호선", "분홍색", List.of(section));
 
         // expect
-        assertThat(station.isName(name)).isEqualTo(result);
+        assertThatThrownBy(() -> line.register(new Station("송파역"), new Station("몽촌토성역"), 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("기준역이 존재하지 않습니다.");
     }
 }

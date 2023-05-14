@@ -15,12 +15,9 @@ public class Station {
 
     private void validate(final String name) {
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
-            throw new IllegalArgumentException(String.format("역 이름은 %d~%d자 사이여야 합니다", MIN_NAME_LENGTH, MAX_NAME_LENGTH));
+            throw new IllegalArgumentException(
+                    String.format("역 이름은 %d~%d자 사이여야 합니다", MIN_NAME_LENGTH, MAX_NAME_LENGTH));
         }
-    }
-
-    public boolean isName(final String other) {
-        return name.equals(other);
     }
 
     public String getName() {
