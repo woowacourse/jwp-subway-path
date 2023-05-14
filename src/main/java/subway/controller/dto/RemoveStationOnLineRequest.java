@@ -2,8 +2,11 @@ package subway.controller.dto;
 
 public class RemoveStationOnLineRequest {
 
-    private final String lineName;
-    private final String stationName;
+    private String lineName;
+    private String stationName;
+
+    public RemoveStationOnLineRequest() {
+    }
 
     public RemoveStationOnLineRequest(final String lineName, final String stationName) {
         this.lineName = lineName;

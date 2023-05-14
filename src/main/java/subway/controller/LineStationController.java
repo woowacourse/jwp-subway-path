@@ -1,6 +1,7 @@
 package subway.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,6 +12,7 @@ import subway.application.dto.AddStationToEndLineRequest;
 import subway.controller.dto.AddInitStationToLineRequest;
 import subway.controller.dto.AddStationLocation;
 import subway.controller.dto.AddStationToLineRequest;
+import subway.controller.dto.RemoveStationOnLineRequest;
 
 @RestController
 @RequestMapping("/line/station")
@@ -24,12 +26,12 @@ public class LineStationController {
 
     @PostMapping("/init")
     public ResponseEntity<Void> addInitStationToLine(
-        @RequestBody final AddInitStationToLineRequest addInitStationToLineRequest) {
-        lineStationService.addInitStationToLine(addInitStationToLineRequest);
+        @RequestBody final AddInitStationToLineRequest request) {
+        lineStationService.addInitStationToLine(request);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<Void> addStationToLine(@RequestBody final AddStationToLineRequest addStationToLineRequest) {
         final AddStationLocation addStationLocation = addStationToLineRequest.getAddStationLocation();
         if (addStationLocation.equals(AddStationLocation.BETWEEN)) {
@@ -44,5 +46,11 @@ public class LineStationController {
         }
         lineStationService.addStationToBottomLine(request);
         return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> removeStationOnLine(@RequestBody final RemoveStationOnLineRequest request) {
+        lineStationService.removeStationOnLine(request);
+        return ResponseEntity.noContent().build();
     }
 }

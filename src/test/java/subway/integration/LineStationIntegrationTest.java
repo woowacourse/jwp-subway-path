@@ -17,6 +17,7 @@ import subway.controller.dto.AddStationLocation;
 import subway.controller.dto.AddStationToLineRequest;
 import subway.controller.dto.LineRequest;
 import subway.controller.dto.LineResponse;
+import subway.controller.dto.RemoveStationOnLineRequest;
 import subway.controller.dto.StationResponse;
 
 public class LineStationIntegrationTest extends IntegrationTest {
@@ -140,7 +141,7 @@ public class LineStationIntegrationTest extends IntegrationTest {
             .body(request)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .post("/line/station/add")
+            .post("/line/station")
             .then().log().all()
             .extract();
 
@@ -214,7 +215,7 @@ public class LineStationIntegrationTest extends IntegrationTest {
             .body(request)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .post("/line/station/add")
+            .post("/line/station")
             .then().log().all()
             .extract();
 
@@ -288,11 +289,96 @@ public class LineStationIntegrationTest extends IntegrationTest {
             .body(request)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
-            .post("/line/station/add")
+            .post("/line/station")
             .then().log().all()
             .extract();
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    @DisplayName("노선에서 지하철을 삭제한다..")
+    void testRemoveStationOnLine() {
+        //given
+        final ExtractableResponse<Response> createLineResponse = RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(lineRequest1)
+            .when().post("/lines")
+            .then().log().all().
+            extract();
+        final LineResponse lineResponse = createLineResponse.as(LineResponse.class);
+
+        final Map<String, String> params1 = new HashMap<>();
+        params1.put("name", "강남역");
+        final ExtractableResponse<Response> createStationResponse1 = given().log().all()
+            .body(params1)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/stations")
+            .then().log().all()
+            .extract();
+        final StationResponse stationResponse1 = createStationResponse1.as(StationResponse.class);
+
+        final Map<String, String> params2 = new HashMap<>();
+        params2.put("name", "신논현역");
+        final ExtractableResponse<Response> createStationResponse2 = given().log().all()
+            .body(params2)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/stations")
+            .then().log().all()
+            .extract();
+        final StationResponse stationResponse2 = createStationResponse2.as(StationResponse.class);
+
+        final Map<String, String> params3 = new HashMap<>();
+        params3.put("name", "신사역");
+        final ExtractableResponse<Response> createStationResponse3 = given().log().all()
+            .body(params3)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/stations")
+            .then().log().all()
+            .extract();
+        final StationResponse stationResponse3 = createStationResponse3.as(StationResponse.class);
+
+        final AddInitStationToLineRequest initRequest = new AddInitStationToLineRequest(
+            lineResponse.getName(), stationResponse1.getName(), stationResponse2.getName(),
+            10L);
+        given().log().all()
+            .body(initRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/line/station/init")
+            .then().log().all()
+            .extract();
+
+        final AddStationToLineRequest addRequest = new AddStationToLineRequest(AddStationLocation.BETWEEN,
+            lineResponse.getName(), stationResponse3.getName(),
+            stationResponse1.getName(), stationResponse2.getName(), 10L);
+
+        final ExtractableResponse<Response> addResponse = given().log().all()
+            .body(addRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .post("/line/station")
+            .then().log().all()
+            .extract();
+
+        final RemoveStationOnLineRequest request = new RemoveStationOnLineRequest(lineResponse.getName(),
+            stationResponse2.getName());
+
+        //when
+        final ExtractableResponse<Response> response = given().log().all()
+            .body(request)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when()
+            .delete("/line/station")
+            .then().log().all()
+            .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
