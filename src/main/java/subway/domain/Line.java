@@ -34,24 +34,7 @@ public class Line {
 
     public void add(final Station base, final Station additional, final Distance distance, final Direction direction) {
         validate(base, additional, distance, direction);
-
-        if (direction == RIGHT) {
-            final Optional<Section> sectionAtStart = findSectionByStationExistsAtDirection(base, LEFT);
-            if (sectionAtStart.isPresent()) {
-                final Section originSection = sectionAtStart.get();
-                changeDistance(additional, originSection.getEnd(), originSection, distance);
-            }
-            sections.add(new Section(base, additional, distance));
-        }
-
-        if (direction == LEFT) {
-            final Optional<Section> sectionAtEnd = findSectionByStationExistsAtDirection(base, RIGHT);
-            if (sectionAtEnd.isPresent()) {
-                final Section originSection = sectionAtEnd.get();
-                changeDistance(originSection.getStart(), additional, originSection, distance);
-            }
-            sections.add(new Section(additional, base, distance));
-        }
+        direction.addStation(sections, base, additional, distance);
     }
 
     private void validate(
@@ -86,16 +69,6 @@ public class Line {
         return sections.stream()
                 .filter(section -> section.isStationExistsAtDirection(base, direction))
                 .findFirst();
-    }
-
-    private void changeDistance(
-            final Station start,
-            final Station end,
-            final Section originSection,
-            final Distance distance
-    ) {
-        sections.add(new Section(start, end, originSection.subtract(distance)));
-        sections.remove(originSection);
     }
 
     public boolean isSameName(final String lineName) {
