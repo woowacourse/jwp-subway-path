@@ -1,7 +1,6 @@
 package subway.repository;
 
 import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -29,11 +27,18 @@ public class LineRepository {
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionDao sectionDao;
+    private final LineMapper lineMapper;
 
-    public LineRepository(final LineDao lineDao, final StationDao stationDao, final SectionDao sectionDao) {
+    public LineRepository(
+            final LineDao lineDao,
+            final StationDao stationDao,
+            final SectionDao sectionDao,
+            final LineMapper lineMapper
+    ) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
+        this.lineMapper = lineMapper;
     }
 
     public Line save(final Line line) {
@@ -42,7 +47,7 @@ public class LineRepository {
         }
         final Line savedLine = findById(line.getId()).orElseThrow(LineNotFoundException::new);
         lineDao.update(new LineEntity(line.getId(), line.getName(), line.getColor()));
-        addNewStation(line, savedLine);
+        addNewStation(line);
         addNewSection(line);
         deleteRemovedSection(line, savedLine);
         deleteRemovedStation(line, savedLine);
@@ -51,50 +56,28 @@ public class LineRepository {
 
     private Line saveNewLine(final Line line) {
         final LineEntity lineEntity = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
-        final List<StationEntity> stations = line.findAllStation().stream()
-                .map(station -> new StationEntity(station.getName(), lineEntity.getId()))
-                .collect(toList());
-        stationDao.insertAll(stations);
+        final List<StationEntity> stationEntities = lineMapper.toStationEntities(line, lineEntity.getId());
+        stationDao.insertAll(stationEntities);
         final List<StationEntity> savedStations = stationDao.findByLineId(lineEntity.getId());
-        final Map<String, Long> stationNameByStationId = savedStations.stream()
-                .collect(toMap(StationEntity::getName, StationEntity::getId));
-        final List<SectionEntity> sections = line.getSections().stream()
-                .map(section -> new SectionEntity(
-                        stationNameByStationId.get(section.getStartName()),
-                        stationNameByStationId.get(section.getEndName()),
-                        section.getDistanceValue(),
-                        lineEntity.getId()
-                ))
-                .collect(toList());
-        sectionDao.insertAll(sections);
+        List<SectionEntity> sectionEntities = lineMapper.toSectionEntities(line, lineEntity.getId(), savedStations);
+        sectionDao.insertAll(sectionEntities);
         return findById(lineEntity.getId()).orElseThrow(LineNotFoundException::new);
     }
 
-    private void addNewStation(final Line line, final Line savedLine) {
+    private void addNewStation(final Line line) {
         line.getSections().stream()
                 .flatMap(section -> Stream.of(section.getStart(), section.getEnd()))
                 .filter(station -> Objects.isNull(station.getId()))
                 .map(Station::getName)
                 .distinct()
-                .map(name -> new StationEntity(name, savedLine.getId()))
+                .map(name -> new StationEntity(name, line.getId()))
                 .forEach(stationDao::insert);
     }
 
     private void addNewSection(final Line line) {
-        final List<StationEntity> stations = stationDao.findByLineId(line.getId());
-        final Map<String, Long> stationNameByStationId = stations.stream()
-                .collect(toMap(StationEntity::getName, StationEntity::getId));
-
-        final List<SectionEntity> sections = line.getSections().stream()
-                .filter(section -> Objects.isNull(section.getId()))
-                .map(section -> new SectionEntity(
-                        stationNameByStationId.get(section.getStartName()),
-                        stationNameByStationId.get(section.getEndName()),
-                        section.getDistanceValue(),
-                        line.getId()
-                ))
-                .collect(toList());
-        sectionDao.insertAll(sections);
+        final List<StationEntity> stationEntities = stationDao.findByLineId(line.getId());
+        final List<SectionEntity> sectionEntities = lineMapper.toSectionEntities(line, line.getId(), stationEntities);
+        sectionDao.insertAll(sectionEntities);
     }
 
     private void deleteRemovedSection(final Line line, final Line savedLine) {
@@ -123,46 +106,17 @@ public class LineRepository {
     public List<Line> findAll() {
         final List<LineEntity> lineEntities = lineDao.findAll();
         final List<SectionEntity> sectionEntities = sectionDao.findAll();
-        final List<StationEntity> stations = stationDao.findAll();
-        final Map<Long, String> stationIdByStationName = stations.stream()
-                .collect(toMap(StationEntity::getId, StationEntity::getName));
-
+        final List<StationEntity> stationEntities = stationDao.findAll();
         final Map<Long, List<SectionEntity>> idBySections = sectionEntities.stream()
                 .collect(Collectors.groupingBy(SectionEntity::getLineId));
 
         return lineEntities.stream()
-                .map(lineEntity -> toLine(
+                .map(lineEntity -> lineMapper.toLine(
                         lineEntity,
                         idBySections.getOrDefault(lineEntity.getId(), new ArrayList<>()),
-                        stationIdByStationName)
+                        stationEntities)
                 )
                 .collect(toList());
-    }
-
-    private Line toLine(
-            final LineEntity lineEntity,
-            final List<SectionEntity> sectionEntities,
-            final Map<Long, String> stationIdByStationName
-    ) {
-        final List<Section> sections = sectionEntities.stream()
-                .map(sectionEntity -> toSection(stationIdByStationName, sectionEntity))
-                .collect(toList());
-
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
-    }
-
-    private static Section toSection(
-            final Map<Long, String> stationIdByStationName,
-            final SectionEntity sectionEntity
-    ) {
-        return new Section(
-                sectionEntity.getId(),
-                new Station(sectionEntity.getStartStationId(),
-                        stationIdByStationName.get(sectionEntity.getStartStationId())),
-                new Station(sectionEntity.getEndStationId(),
-                        stationIdByStationName.get(sectionEntity.getEndStationId())),
-                new Distance(sectionEntity.getDistance())
-        );
     }
 
     public Optional<Long> findIdByName(final String name) {
@@ -172,20 +126,12 @@ public class LineRepository {
     public Optional<Line> findById(final Long id) {
         return lineDao.findById(id).map(lineEntity -> {
             final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
-            final List<StationEntity> stations = stationDao.findAll();
-            final Map<Long, String> stationIdByStationName = stations.stream()
-                    .collect(toMap(StationEntity::getId, StationEntity::getName));
-            return toLine(lineEntity, sectionEntities, stationIdByStationName);
+            final List<StationEntity> stationEntities = stationDao.findAll();
+            return lineMapper.toLine(lineEntity, sectionEntities, stationEntities);
         });
     }
 
     public void deleteById(final Long id) {
-        sectionDao.deleteAllByLineId(id);
-        stationDao.deleteByLineId(id);
-        lineDao.deleteById(id);
-    }
-
-    public void delete(final Long id) {
         sectionDao.deleteAllByLineId(id);
         stationDao.deleteByLineId(id);
         lineDao.deleteById(id);
