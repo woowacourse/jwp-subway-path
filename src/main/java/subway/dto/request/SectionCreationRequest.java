@@ -10,7 +10,7 @@ public class SectionCreationRequest {
     @Positive
     private Integer distance;
 
-    public SectionCreationRequest() {
+    private SectionCreationRequest() {
     }
 
     public SectionCreationRequest(final Long lineId, final Long upwardStationId, final Long downwardStationId, final Integer distance) {
