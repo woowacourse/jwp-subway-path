@@ -3,6 +3,7 @@ package subway.subway.domain;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import subway.line.domain.Line;
+import subway.section.domain.Direction;
 
 import java.util.Set;
 
@@ -61,5 +62,19 @@ class SubwayTest {
         subway.addLine("2호선", "초록");
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> subway.initAddStation("3호선", "강남역", "역삼역", 3L));
+    }
+    
+    @Test
+    void 역_추가시_존재하지_않는_노선을_가리키면_예외_발생() {
+        // given
+        final Subway subway = new Subway();
+        subway.addLine("1호선", "파랑");
+        subway.initAddStation("1호선", "강남역", "선릉역", 3L);
+        
+        // when
+        
+        
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> subway.addStation("2호선", "강남역", Direction.RIGHT, "역삼역", 2L));
     }
 }

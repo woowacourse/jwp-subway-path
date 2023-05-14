@@ -4,6 +4,7 @@ import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 import subway.line.domain.Line;
+import subway.section.domain.Direction;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,8 +33,17 @@ public class Subway {
             final String rightAdditional,
             final long distance
     ) {
-        final Line line = getLineContainStation(lineName);
-        line.initAddStation(leftAdditional, rightAdditional, distance);
+        getLineContainStation(lineName).initAddStation(leftAdditional, rightAdditional, distance);
+    }
+    
+    public void addStation(
+            final String lineName,
+            final String base,
+            final Direction direction,
+            final String additionalStation,
+            final long distance
+    ) {
+        getLineContainStation(lineName).addStation(base, direction, additionalStation, distance);
     }
     
     private Line getLineContainStation(final String lineName) {
