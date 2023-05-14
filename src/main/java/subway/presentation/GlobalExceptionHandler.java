@@ -4,16 +4,24 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import subway.exception.DatabaseException;
 import subway.exception.GlobalException;
 import subway.presentation.dto.response.BadResponse;
 
 @RestControllerAdvice
-public class SubwayExceptionHandler {
+public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<BadResponse> handleGlobalException(GlobalException e) {
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
+                .body(new BadResponse(e.getMessage()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<BadResponse> handleDatabaseException(DatabaseException e) {
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
                 .body(new BadResponse(e.getMessage()));
     }
 
