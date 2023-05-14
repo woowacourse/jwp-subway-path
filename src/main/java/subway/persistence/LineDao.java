@@ -1,6 +1,7 @@
 package subway.persistence;
 
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -40,13 +41,11 @@ public class LineDao {
 
     public LineEntity findByName(final String name) {
         final String sql = "SELECT * FROM line WHERE name = ?";
-        final LineEntity result = jdbcTemplate.queryForObject(sql, lineEntityRowMapper, name);
-
-        if (result.isEmpty()) {
+        try {
+            return jdbcTemplate.queryForObject(sql, lineEntityRowMapper, name);
+        } catch (EmptyResultDataAccessException e) {
             throw new LineNotFoundException();
         }
-
-        return result.get(0);
     }
 
     public void update(LineEntity newLine) {

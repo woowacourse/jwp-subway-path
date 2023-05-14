@@ -73,23 +73,24 @@ class LineDaoTest {
     }
 
     @Test
-    @DisplayName("이름으로 id 조회 성공")
-
-    void findIdByName_success() {
+    @DisplayName("이름으로 조회 성공")
+    void findByName_success() {
         // given
         final String name = "2호선";
 
         // when
-        final LineEntity entity = lineDao.findByName(name);
+        final LineEntity lineEntity = lineDao.findByName(name);
 
         // then
-        assertThat(entity.getId()).isEqualTo(1L);
+        assertAll(
+                () -> assertThat(lineEntity.getId()).isEqualTo(1L),
+                () -> assertThat(lineEntity.getName()).isEqualTo(name)
+        );
     }
 
     @Test
-    @DisplayName("이름으로 id 조회 실패 - 존재하지 않는 이름 입력")
-    @Sql("/line_test_data.sql")
-    void findIdByName_fail_name_not_found() {
+    @DisplayName("이름으로 조회 실패 - 존재하지 않는 이름 입력")
+    void findByName_fail_name_not_found() {
         // given
         final String name = "포비";
 
