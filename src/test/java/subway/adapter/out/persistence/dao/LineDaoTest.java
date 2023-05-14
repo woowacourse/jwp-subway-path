@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.adapter.out.persistence.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -15,9 +16,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import subway.adapter.out.persistence.dao.LineDao;
 import subway.adapter.out.persistence.entity.LineEntity;
-import subway.fixture.LineFixture.이호선;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -48,54 +47,107 @@ class LineDaoTest {
 
     @Test
     void 삽입_테스트() {
-        LineEntity lineEntity = lineDao.insert(이호선.ENTITY);
-        LineEntity result = jdbcTemplate.queryForObject("SELECT * FROM line WHERE id = ?", lineRowMapper,
-                lineEntity.getId());
-        assertThat(result).isNotNull();
+        // given
+        LineEntity entity = new LineEntity("2호선", "GREEN");
+
+        // when
+        LineEntity response = lineDao.insert(entity);
+
+        // then
+        String sql = "SELECT * FROM line WHERE id = ?";
+        LineEntity result = jdbcTemplate.queryForObject(sql, lineRowMapper, response.getId());
+        assertThat(result)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(entity);
     }
 
     @Test
     void 전체_조회_테스트() {
+        // given
         jdbcTemplate.update("INSERT INTO line(name, color) VALUES (?,?)", "2호선", "GREEN");
         jdbcTemplate.update("INSERT INTO line(name, color) VALUES (?,?)", "3호선", "ORANGE");
+
+        // when
         List<LineEntity> lineEntities = lineDao.findAll();
+
+        // then
         assertAll(
                 () -> assertThat(lineEntities.size())
                         .isEqualTo(2),
                 () -> assertThat(lineEntities)
-                        .extracting("name")
-                        .containsExactlyInAnyOrder("2호선", "3호선")
+                        .usingRecursiveComparison()
+                        .ignoringFields("id")
+                        .ignoringCollectionOrder()
+                        .isEqualTo(List.of(
+                                new LineEntity("2호선", "GREEN"),
+                                new LineEntity("3호선", "ORANGE")))
         );
+    }
+
+    @Test
+    void 아이디로_조회_테스트() {
+        // given
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", "2호선");
+        params.put("color", "GREEN");
+        Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+
+        // when
+        Optional<LineEntity> line = lineDao.findById(lineId);
+
+        // then
+        assertAll(
+                () -> assertThat(line).isPresent(),
+                () -> assertThat(line.get())
+                        .usingRecursiveComparison()
+                        .isEqualTo(new LineEntity(lineId, "2호선", "GREEN"))
+        );
+    }
+
+    @Test
+    void 아이디로_조회시_노선이_존재하지않을떼_Optional_empty_반환() {
+        // when
+        Optional<LineEntity> line = lineDao.findById(-1L);
+
+        // then
+        assertThat(line).isEmpty();
     }
 
     @Test
     void 갱신_테스트() {
+        // given
         Map<String, Object> params = new HashMap<>();
         params.put("name", "2호선");
         params.put("color", "GREEN");
-
         Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
+        // when
         lineDao.update(new LineEntity(lineId, "3호선", "ORANGE"));
 
-        LineEntity result = jdbcTemplate.queryForObject("SELECT * FROM line WHERE id = ?", lineRowMapper, lineId);
-        assertAll(
-                () -> assertThat(result.getName()).isEqualTo("3호선"),
-                () -> assertThat(result.getColor()).isEqualTo("ORANGE")
-        );
+        // then
+        String sql = "SELECT * FROM line WHERE id = ?";
+        LineEntity result = jdbcTemplate.queryForObject(sql, lineRowMapper, lineId);
+        assertThat(result)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(new LineEntity("3호선", "ORANGE"));
     }
 
     @Test
     void 삭제_테스트() {
+        // given
         Map<String, Object> params = new HashMap<>();
         params.put("name", "2호선");
         params.put("color", "GREEN");
-
         Long lineId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
+        // when
         lineDao.deleteById(lineId);
 
-        List<LineEntity> result = jdbcTemplate.query("SELECT * FROM line WHERE id = ?", lineRowMapper, lineId);
+        // then
+        String sql = "SELECT * FROM line WHERE id = ?";
+        List<LineEntity> result = jdbcTemplate.query(sql, lineRowMapper, lineId);
         assertThat(result).isEmpty();
     }
 }

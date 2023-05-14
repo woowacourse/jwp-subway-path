@@ -1,8 +1,9 @@
-package subway.dao;
+package subway.adapter.out.persistence.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,11 +16,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import subway.adapter.out.persistence.dao.SectionDao;
 import subway.adapter.out.persistence.entity.SectionEntity;
 import subway.fixture.LineFixture.이호선;
-import subway.fixture.SectionFixture.이호선_삼성_잠실_2;
-import subway.fixture.SectionFixture.이호선_역삼_삼성_3;
+import subway.fixture.StationFixture.건대역;
 import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.역삼역;
 import subway.fixture.StationFixture.잠실역;
@@ -55,79 +54,143 @@ class SectionDaoTest {
 
     @Test
     void 삽입_테스트() {
-        SectionEntity sectionEntity = sectionDao.insert(이호선_역삼_삼성_3.ENTITY);
-        SectionEntity result = jdbcTemplate.queryForObject("SELECT * FROM section WHERE id = ?", sectionRowMapper,
-                sectionEntity.getId());
-        assertThat(result).isNotNull();
+        // given
+        SectionEntity entity = new SectionEntity(1L, 2L, 3L, 1);
+
+        // when
+        SectionEntity response = sectionDao.insert(entity);
+
+        // then
+        String sql = "SELECT * FROM section WHERE id = ?";
+        SectionEntity result = jdbcTemplate.queryForObject(sql, sectionRowMapper,
+                response.getId());
+        assertThat(result)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .isEqualTo(entity);
+    }
+
+    @Test
+    void 여러개_삽입_테스트() {
+        // given
+        long lineId = -1L;
+        List<SectionEntity> sectionEntities = List.of(
+                new SectionEntity(lineId, 1L, 2L, 1),
+                new SectionEntity(lineId, 3L, 4L, 2));
+
+        // when
+        sectionDao.insertAll(sectionEntities);
+
+        // then
+        String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE line_id = ?";
+        List<SectionEntity> response = jdbcTemplate.query(sql, sectionRowMapper, lineId);
+        assertThat(response)
+                .usingRecursiveComparison()
+                .ignoringFields("id")
+                .ignoringCollectionOrder()
+                .isEqualTo(sectionEntities);
     }
 
     @Test
     void 전체_조회_테스트() {
-        jdbcTemplate.update("INSERT INTO section(line_id, up_station_id, down_station_id, distance) VALUES (?,?,?,?)",
-                이호선.ENTITY.getId(), 역삼역.ENTITY.getId(), 삼성역.ENTITY.getId(), 3);
-        jdbcTemplate.update("INSERT INTO section(line_id, up_station_id, down_station_id, distance) VALUES (?,?,?,?)",
-                이호선.ENTITY.getId(), 삼성역.ENTITY.getId(), 잠실역.ENTITY.getId(), 2);
-        List<SectionEntity> sectionEntities = sectionDao.findAll();
+        // given
+        List<SectionEntity> entities = List.of(
+                new SectionEntity(1L, 2L, 3L, 1),
+                new SectionEntity(4L, 5L, 6L, 2)
+        );
+
+        for (final SectionEntity entity : entities) {
+            jdbcTemplate.update(
+                    "INSERT INTO section(line_id, up_station_id, down_station_id, distance) VALUES (?,?,?,?)",
+                    entity.getLineId(), entity.getUpStationId(), entity.getDownStationId(), entity.getDistance());
+        }
+
+        // when
+        List<SectionEntity> responses = sectionDao.findAll();
+
+        // then
         assertAll(
-                () -> assertThat(sectionEntities.size())
+                () -> assertThat(responses.size())
                         .isEqualTo(2),
-                () -> assertThat(sectionEntities)
+                () -> assertThat(responses)
                         .usingRecursiveComparison()
                         .ignoringFields("id")
-                        .isEqualTo(List.of(이호선_역삼_삼성_3.ENTITY, 이호선_삼성_잠실_2.ENTITY))
+                        .ignoringCollectionOrder()
+                        .isEqualTo(entities)
         );
     }
 
     @Test
     void 라인_아이디로_조회_테스트() {
-        Long lineId = 이호선.ENTITY.getId();
+        // given
+        long lineId = 1L;
+        List<SectionEntity> targetEntities = List.of(
+                new SectionEntity(lineId, 2L, 3L, 1),
+                new SectionEntity(lineId, 5L, 6L, 2)
+        );
+        List<SectionEntity> otherEntities = List.of(
+                new SectionEntity(lineId + 1L, 2L, 3L, 1),
+                new SectionEntity(lineId + 2L, 5L, 6L, 2)
+        );
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("line_id", lineId);
-        params.put("up_station_id", 삼성역.ENTITY.getId());
-        params.put("down_station_id", 잠실역.ENTITY.getId());
-        params.put("distance", 2);
+        List<SectionEntity> entities = new ArrayList<>();
+        entities.addAll(targetEntities);
+        entities.addAll(otherEntities);
 
-        simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        for (final SectionEntity entity : entities) {
+            jdbcTemplate.update(
+                    "INSERT INTO section(line_id, up_station_id, down_station_id, distance) VALUES (?,?,?,?)",
+                    entity.getLineId(), entity.getUpStationId(), entity.getDownStationId(), entity.getDistance());
+        }
 
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        // when
+        List<SectionEntity> responses = sectionDao.findByLineId(lineId);
 
-        assertThat(sectionEntities)
+        // then
+        assertThat(responses)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(List.of(이호선_삼성_잠실_2.ENTITY));
+                .ignoringCollectionOrder()
+                .isEqualTo(targetEntities);
     }
 
     @Test
     void 갱신_테스트() {
+        // given
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", 이호선.ENTITY.getId());
         params.put("up_station_id", 삼성역.ENTITY.getId());
         params.put("down_station_id", 잠실역.ENTITY.getId());
         params.put("distance", 2);
-
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        SectionEntity updateEntity = new SectionEntity(sectionId, 이호선.ENTITY.getId(), 역삼역.ENTITY.getId(),
+                건대역.ENTITY.getId(), 5);
 
-        sectionDao.update(new SectionEntity(sectionId, 이호선.ENTITY.getId(), 삼성역.ENTITY.getId(),
-                잠실역.ENTITY.getId(), 5));
+        // when
+        sectionDao.update(updateEntity);
 
+        // then
         SectionEntity result = jdbcTemplate.queryForObject("SELECT * FROM section WHERE id = ?", sectionRowMapper,
                 sectionId);
-        assertThat(result.getDistance()).isEqualTo(5);
+        assertThat(result)
+                .usingRecursiveComparison()
+                .isEqualTo(updateEntity);
     }
 
     @Test
     void 삭제_테스트() {
+        // given
         Map<String, Object> params = new HashMap<>();
         params.put("line_id", 이호선.ENTITY.getId());
         params.put("up_station_id", 삼성역.ENTITY.getId());
         params.put("down_station_id", 잠실역.ENTITY.getId());
         params.put("distance", 2);
-
         Long sectionId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
+        // when
         sectionDao.deleteById(sectionId);
 
+        // then
         List<SectionEntity> result = jdbcTemplate.query("SELECT * FROM section WHERE id = ?", sectionRowMapper,
                 sectionId);
         assertThat(result).isEmpty();
@@ -135,6 +198,7 @@ class SectionDaoTest {
 
     @Test
     void 라인_아이디로_삭제_테스트() {
+        // given
         Long lineId = 이호선.ENTITY.getId();
 
         Map<String, Object> params = new HashMap<>();
@@ -145,8 +209,10 @@ class SectionDaoTest {
 
         simpleJdbcInsert.executeAndReturnKey(params).longValue();
 
+        // when
         sectionDao.deleteAllByLineId(lineId);
 
+        // then
         List<SectionEntity> result = jdbcTemplate.query("SELECT * FROM section WHERE line_id = ?", sectionRowMapper,
                 lineId);
         assertThat(result).isEmpty();
