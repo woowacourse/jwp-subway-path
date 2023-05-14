@@ -17,11 +17,11 @@ CREATE TABLE IF NOT EXISTS section
 (
     id BIGINT AUTO_INCREMENT NOT NULL,
     line_id BIGINT NOT NULL,
-    source_station_id BIGINT NOT NULL,
-    target_station_id BIGINT NOT NULL,
+    pre_station_id BIGINT NOT NULL,
+    station_id BIGINT NOT NULL,
     distance BIGINT NOT NULL,
     PRIMARY KEY(id),
     FOREIGN KEY(line_id) REFERENCES line(id),
-    FOREIGN KEY(source_station_id) REFERENCES station(id),
-    FOREIGN KEY(target_station_id) REFERENCES station(id)
+    FOREIGN KEY(pre_station_id) REFERENCES station(id),
+    FOREIGN KEY(station_id) REFERENCES station(id)
 )

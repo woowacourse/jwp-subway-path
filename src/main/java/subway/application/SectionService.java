@@ -40,8 +40,8 @@ public class SectionService {
         List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
         List<Section> sections = new ArrayList<>();
         for (SectionEntity sectionEntity : sectionEntities) {
-            sections.add(new Section(lineId, sectionEntity.getSourceStationId(),
-                    sectionEntity.getTargetStationId(), sectionEntity.getDistance()));
+            sections.add(new Section(lineId, sectionEntity.getPreStationId(),
+                    sectionEntity.getStationId(), sectionEntity.getDistance()));
         }
         return new Sections(sections);
     }

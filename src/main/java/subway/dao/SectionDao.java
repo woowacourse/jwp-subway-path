@@ -20,8 +20,8 @@ public class SectionDao {
     private RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("line_id"),
-                    rs.getLong("source_station_id"),
-                    rs.getLong("target_station_id"),
+                    rs.getLong("pre_station_id"),
+                    rs.getLong("station_id"),
                     rs.getLong("distance")
             );
 
@@ -33,7 +33,7 @@ public class SectionDao {
     }
 
     public List<SectionEntity> findAllByLineId(Long id) {
-        String sql = "SELECT id, line_id, source_station_id, target_station_id, distance FROM section WHERE line_id = ?";
+        String sql = "SELECT id, line_id, pre_station_id, station_id, distance FROM section WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, id);
     }
 
@@ -43,12 +43,12 @@ public class SectionDao {
     }
 
     public int updatePre(Section modified) {
-        String sql = "UPDATE section SET source_station_id = ? WHERE target_station_id = ?";
+        String sql = "UPDATE section SET pre_station_id = ? WHERE station_id = ?";
         return jdbcTemplate.update(sql, modified.getPreStationId(), modified.getStationId());
     }
 
     public int remove(Long stationId) {
-        String sql = "DELETE FROM section WHERE source_station_id = ? OR target_station_id = ?";
+        String sql = "DELETE FROM section WHERE pre_station_id = ? OR station_id = ?";
         return jdbcTemplate.update(sql, stationId, stationId);
     }
 }
