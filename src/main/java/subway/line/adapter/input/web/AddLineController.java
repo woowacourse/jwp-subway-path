@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.line.application.port.input.AddLineUseCase;
 import subway.line.dto.LineSaveRequest;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RequiredArgsConstructor
@@ -18,7 +19,7 @@ public class AddLineController {
     private final AddLineUseCase addLineUseCase;
     
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody final LineSaveRequest request) {
+    public ResponseEntity<Void> save(@RequestBody @Valid final LineSaveRequest request) {
         final Long lineId = addLineUseCase.addLine(request);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
