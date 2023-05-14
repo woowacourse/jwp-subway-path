@@ -33,9 +33,7 @@ public class LineRepository {
 
     public Line save(final Line line) {
         final Optional<LineEntity> lineEntity = lineDao.findByName(line.getName());
-        if (lineEntity.isPresent()) {
-            deleteAllByLineId(lineEntity.get().getId());
-        }
+        lineEntity.ifPresent(entity -> deleteAllByLineId(entity.getId()));
         final LineEntity newLineEntity = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
         final List<StationEntity> stations = StationEntity.of(line, newLineEntity.getId());
         stationDao.insertAll(stations);
@@ -44,10 +42,19 @@ public class LineRepository {
         return line;
     }
 
+    public void deleteById(final Long id) {
+        lineDao.findById(id).orElseThrow(LineNotFoundException::new);
+        deleteAllByLineId(id);
+    }
+
     private void deleteAllByLineId(final Long id) {
         sectionDao.deleteAll(id);
         stationDao.deleteByLineId(id);
         lineDao.deleteById(id);
+    }
+
+    public void updateNameAndColorById(final Long id, final String name, final String color) {
+        lineDao.update(new LineEntity(id, name, color));
     }
 
     public List<Line> findAll() {
@@ -62,6 +69,18 @@ public class LineRepository {
                 .collect(toList());
     }
 
+    public Line findById(final Long id) {
+        final LineEntity lineEntity = lineDao.findById(id).orElseThrow(LineNotFoundException::new);
+        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
+        return toLine(lineEntity, sectionEntities);
+    }
+
+    public Long findIdByName(final String name) {
+        return lineDao.findByName(name)
+                .orElseThrow(LineNotFoundException::new)
+                .getId();
+    }
+
     private Line toLine(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
         final List<Section> sections = sectionEntities.stream()
                 .map(sectionEntity -> new Section(
@@ -72,26 +91,5 @@ public class LineRepository {
                 .collect(toList());
 
         return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
-    }
-
-    public void deleteById(final Long id) {
-        lineDao.findById(id).orElseThrow(LineNotFoundException::new);
-        deleteAllByLineId(id);
-    }
-
-    public Long findIdByName(final String name) {
-        return lineDao.findByName(name)
-                .orElseThrow(LineNotFoundException::new)
-                .getId();
-    }
-
-    public void updateNameAndColorById(final Long id, final String name, final String color) {
-        lineDao.update(new LineEntity(id, name, color));
-    }
-
-    public Line findById(final Long id) {
-        final LineEntity lineEntity = lineDao.findById(id).orElseThrow(LineNotFoundException::new);
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
-        return toLine(lineEntity, sectionEntities);
     }
 }
