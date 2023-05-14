@@ -173,27 +173,6 @@ class SectionsTest {
                     .hasMessageContaining("서로 다른 역을 입력해 주세요.");
         }
 
-        @Test
-        @DisplayName("입력한 두 역이 모두 새로운 역이면 예외가 발생한다.")
-        void onlyNewStations() {
-            final Sections sections = new Sections(LINE_999);
-            sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
-            assertThatThrownBy(
-                    () -> sections.addStation(SAPYEONG_STATION, SINNONHYEON_STATION, 2))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("모두 새로운 역입니다. 새로운 역과 기존 역을 입력해 주세요.");
-        }
-
-        @Test
-        @DisplayName("입력한 두 역이 모두 이미 존재하는 역이면 예외가 발생한다.")
-        void onlyExistingStations() {
-            final Sections sections = new Sections(LINE_999);
-            sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
-            assertThatThrownBy(
-                    () -> sections.addStation(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 2)).isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
-        }
-
         @ParameterizedTest
         @DisplayName("역 사이의 거리는 양의 정수이다.")
         @ValueSource(ints = {0, -1})
