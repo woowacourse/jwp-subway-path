@@ -1,6 +1,7 @@
 package subway.application.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.application.feepolicy.FeePolicy;
 import subway.domain.Line;
 import subway.domain.ShortestWayCalculator;
@@ -11,6 +12,7 @@ import subway.persistence.repository.SubwayRepository;
 
 import java.util.List;
 
+@Transactional
 @Service
 public class FeeService {
 
@@ -22,6 +24,7 @@ public class FeeService {
         this.feePolicy = feePolicy;
     }
 
+    @Transactional(readOnly = true)
     public ShortestWayResponse showShortestWay(final Long startStationId, final Long endStationId) {
         final List<Line> lines = subwayRepository.findLines();
         final Station start = subwayRepository.findStationById(startStationId);

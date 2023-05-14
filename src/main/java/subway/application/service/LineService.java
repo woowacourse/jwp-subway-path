@@ -37,12 +37,14 @@ public class LineService {
         subwayRepository.deleteLineById(id);
     }
 
+    @Transactional(readOnly = true)
     public LineWithStationResponse findLineById(final Long id) {
         final Line line = subwayRepository.findLine(id);
         final List<Station> stations = line.sortStations();
         return LineWithStationResponse.from(line, stations);
     }
 
+    @Transactional(readOnly = true)
     public List<LineWithStationResponse> findAllLines() {
         final List<Line> lines = subwayRepository.findLines();
         return lines.stream()

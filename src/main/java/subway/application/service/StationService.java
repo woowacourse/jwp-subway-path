@@ -27,10 +27,12 @@ public class StationService {
         return StationResponse.of(persist);
     }
 
+    @Transactional(readOnly = true)
     public StationResponse findStationResponseById(Long id) {
         return StationResponse.of(stationDao.findById(id));
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
