@@ -35,11 +35,11 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }
