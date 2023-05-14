@@ -65,7 +65,7 @@ public class LineService {
     }
 
     public StationSelectResponse addStation(Long lineId, StationSaveRequest stationRequest) {
-        Subway subway = new Subway(lineRepository.findAllLine());
+        Subway subway = new Subway(lineRepository.findAll());
         LineEntity lineEntity = lineDao.findById(lineId);
         Line lineByName = subway.findLineByName(lineEntity.getName());
 

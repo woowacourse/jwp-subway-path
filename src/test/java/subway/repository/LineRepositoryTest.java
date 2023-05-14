@@ -60,7 +60,7 @@ class LineRepositoryTest {
         lineRepository.save(secondLine);
 
         // when
-        List<Line> lines = lineRepository.findAllLine();
+        List<Line> lines = lineRepository.findAll();
 
         // then
         assertThat(lines).hasSize(2);
