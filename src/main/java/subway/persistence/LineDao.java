@@ -38,11 +38,6 @@ public class LineDao {
         }
     }
 
-    public List<LineEntity> findAll() {
-        final String sql = "SELECT * FROM line";
-        return jdbcTemplate.query(sql, lineEntityRowMapper);
-    }
-
     // TODO: 꼭 queryForList로 해야하나? 다른 방법 찾아보자. 옵셔널 말고.
     public LineEntity findByName(final String name) {
         final String sql = "SELECT * FROM line WHERE name = ?";
@@ -53,11 +48,6 @@ public class LineDao {
         }
 
         return result.get(0);
-    }
-
-    public LineEntity findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, lineEntityRowMapper, id);
     }
 
     public void update(LineEntity newLine) {

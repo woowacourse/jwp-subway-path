@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.business.dto.LineDto;
 import subway.business.dto.SectionCreateDto;
 import subway.exception.DuplicatedLineNameException;
+import subway.exception.LineNotFoundException;
 import subway.persistence.LineDao;
 import subway.persistence.SectionDao;
 import subway.persistence.StationDao;
@@ -24,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {
@@ -99,6 +101,47 @@ class LineServiceTest {
                 () -> assertThat(responses.get(0).getStations().get(1).getId()).isEqualTo(2L),
                 () -> assertThat(responses.get(0).getStations().get(1).getName()).isEqualTo("회기")
         );
+    }
+
+    @Test
+    @DisplayName("id로 노선 조회 성공")
+    void findById_success() {
+        // given
+        final long lineId = 1L;
+        final String lineName = "1호선";
+        final String lineColor = "bg-blue-600";
+        final List<SectionDetailEntity> sectionDetailEntities = List.of(
+                new SectionDetailEntity(1L, 2, lineId, lineName, lineColor, 1L, "청량리", 2L, "회기"),
+                new SectionDetailEntity(2L, 3, lineId, lineName, lineColor, 2L, "회기", 3L, "외대앞")
+        );
+        given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
+
+        // when
+        final LineDetailResponse response = lineService.findById(lineId);
+
+        // then
+        assertAll(
+                () -> assertThat(response.getId()).isEqualTo(lineId),
+                () -> assertThat(response.getName()).isEqualTo(lineName),
+                () -> assertThat(response.getColor()).isEqualTo(lineColor),
+                () -> assertThat(response.getStations()).hasSize(3),
+                () -> assertThat(response.getStations().get(0).getName()).isEqualTo("청량리"),
+                () -> assertThat(response.getStations().get(2).getName()).isEqualTo("외대앞")
+        );
+    }
+
+    @Test
+    @DisplayName("id로 노선 조회 실패 - 존재하지 않는 id")
+    void findById_fail_id_not_found() {
+        // given
+        final long invalidLineId = 10L;
+
+        // when
+        when(sectionDao.findSectionDetailByLineId(invalidLineId)).thenThrow(LineNotFoundException.class);
+
+        // then
+        assertThatThrownBy(() -> lineService.findById(invalidLineId))
+                .isInstanceOf(LineNotFoundException.class);
     }
 
 }
