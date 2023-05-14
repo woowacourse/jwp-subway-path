@@ -28,8 +28,8 @@ public class SectionDao {
 
         String sql = "SELECT SEC.id, S1.id, S1.name, S2.id, S2.name, SEC.distance, SEC.next_id"
                 + " FROM SECTIONS AS SEC "
-                + " JOIN STATION AS S1 ON SEC.up_id = S1.id "
-                + " JOIN STATION AS S2 ON SEC.down_id = S2.id "
+                + "INNER JOIN STATION AS S1 ON SEC.up_id = S1.id "
+                + "INNER JOIN STATION AS S2 ON SEC.down_id = S2.id "
                 + " WHERE SEC.line_id = ?";
 
         List<Section> sections = jdbcTemplate.query(sql, upStationMapper(), lineId);
