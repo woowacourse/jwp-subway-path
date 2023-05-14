@@ -6,15 +6,15 @@ import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.dto.LineAddRequest;
 import subway.dto.LineResponse;
-import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
 
 @RequestMapping("/lines")
@@ -28,8 +28,8 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> save(@RequestBody @Valid final LineSaveRequest request) {
-        final Long id = lineService.save(request);
+    public ResponseEntity<Void> add(@RequestBody @Valid final LineAddRequest request) {
+        final Long id = lineService.add(request);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
@@ -43,7 +43,7 @@ public class LineController {
         return ResponseEntity.ok(lineService.findAll());
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<Void> update(
             @PathVariable final Long id,
             @RequestBody @Valid final LineUpdateRequest request

@@ -14,8 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.dto.LineAddRequest;
 import subway.dto.LineResponse;
-import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
 import subway.exception.LineAlreadyExistsException;
 import subway.exception.LineNotFoundException;
@@ -36,10 +36,10 @@ class LineServiceTest {
     @Test
     void 라인을_저장한다() {
         // given
-        final LineSaveRequest request = new LineSaveRequest("1호선", "RED");
+        final LineAddRequest request = new LineAddRequest("1호선", "RED");
 
         // when
-        final Long id = lineService.save(request);
+        final Long id = lineService.add(request);
 
         // then
         assertAll(
@@ -51,11 +51,11 @@ class LineServiceTest {
     @Test
     void 라인을_저장할_때_이미_라인이_존재하는_경우_예외를_던진다() {
         // given
-        final LineSaveRequest request = new LineSaveRequest("1호선", "RED");
-        lineService.save(request);
+        final LineAddRequest request = new LineAddRequest("1호선", "RED");
+        lineService.add(request);
 
         // expect
-        assertThatThrownBy(() -> lineService.save(request))
+        assertThatThrownBy(() -> lineService.add(request))
                 .isInstanceOf(LineAlreadyExistsException.class)
                 .hasMessage("노선이 이미 존재합니다.");
     }
@@ -63,8 +63,8 @@ class LineServiceTest {
     @Test
     void 라인id를_받아서_라인을_삭제한다() {
         // given
-        final LineSaveRequest request = new LineSaveRequest("1호선", "RED");
-        final Long id = lineService.save(request);
+        final LineAddRequest request = new LineAddRequest("1호선", "RED");
+        final Long id = lineService.add(request);
 
         // when
         lineService.delete(id);
@@ -84,7 +84,7 @@ class LineServiceTest {
     @Test
     void 라인을_수정한다() {
         // given
-        final Long id = lineService.save(new LineSaveRequest("1호선", "RED"));
+        final Long id = lineService.add(new LineAddRequest("1호선", "RED"));
         final LineUpdateRequest request = new LineUpdateRequest("2호선", "BLACK");
 
         // when
@@ -112,7 +112,7 @@ class LineServiceTest {
     @Test
     void 라인id로_라인을_조회한다() {
         // given
-        final Long id = lineService.save(new LineSaveRequest("1호선", "RED"));
+        final Long id = lineService.add(new LineAddRequest("1호선", "RED"));
 
         // when
         final LineResponse result = lineService.findById(id);

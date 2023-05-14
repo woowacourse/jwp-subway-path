@@ -8,8 +8,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
+import subway.dto.LineAddRequest;
 import subway.dto.LineResponse;
-import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
 import subway.exception.LineAlreadyExistsException;
 import subway.exception.LineNotFoundException;
@@ -25,7 +25,7 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    public Long save(final LineSaveRequest request) {
+    public Long add(final LineAddRequest request) {
         final Optional<Long> lineId = lineRepository.findIdByName(request.getName());
         if (lineId.isPresent()) {
             throw new LineAlreadyExistsException();

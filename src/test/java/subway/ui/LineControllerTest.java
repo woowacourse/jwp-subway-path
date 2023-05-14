@@ -14,8 +14,8 @@ import org.springframework.http.MediaType;
 import subway.common.IntegrationTest;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.dto.LineAddRequest;
 import subway.dto.LineResponse;
-import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
 import subway.repository.LineRepository;
 
@@ -28,7 +28,7 @@ public class LineControllerTest extends IntegrationTest {
     @Test
     void 노선을_추가한다() {
         // given
-        final LineSaveRequest request = new LineSaveRequest("1호선", "RED");
+        final LineAddRequest request = new LineAddRequest("1호선", "RED");
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -117,7 +117,7 @@ public class LineControllerTest extends IntegrationTest {
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().put("/lines/" + id)
+                .when().patch("/lines/" + id)
                 .then().log().all()
                 .extract();
 

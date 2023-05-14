@@ -9,15 +9,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.MediaType;
+import subway.dto.LineAddRequest;
 import subway.dto.LineResponse;
-import subway.dto.LineSaveRequest;
 import subway.dto.LineUpdateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class LineSteps {
 
     public static ExtractableResponse<Response> 노선_생성_요청(final String 노선명, final String 색상) {
-        final LineSaveRequest request = new LineSaveRequest(노선명, 색상);
+        final LineAddRequest request = new LineAddRequest(노선명, 색상);
 
         return RestAssured
                 .given().log().all()
@@ -48,12 +48,12 @@ public class LineSteps {
 
     public static ExtractableResponse<Response> 노선_수정_요청(final String 노선_번호, final String 노선명, final String 색상) {
         final LineUpdateRequest request = new LineUpdateRequest(노선명, 색상);
-        
+
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().put("/lines/" + 노선_번호)
+                .when().patch("/lines/" + 노선_번호)
                 .then().log().all()
                 .extract();
     }
