@@ -27,10 +27,6 @@ public class Section {
         }
     }
 
-    public boolean haveSection(final Station from, final Station to) {
-        return (source.equals(from) && target.equals(target)) || (source.equals(to) && target.equals(from));
-    }
-
     public boolean have(final Station station) {
         return source.equals(station) || target.equals(station);
     }

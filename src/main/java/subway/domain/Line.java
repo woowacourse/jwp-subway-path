@@ -25,19 +25,12 @@ public class Line {
     }
 
     public void register(final Station source, final Station target, final int distance) {
-        if (haveSection(source, target)) {
-            throw new IllegalArgumentException("이미 존재하는 구간입니다.");
-        }
-        if (doesNotHave(source)) {
+        if (doesNotHave(source) && doesNotHave(target)) {
             throw new IllegalArgumentException("기준역이 존재하지 않습니다.");
         }
-    }
-
-    private boolean haveSection(final Station source, final Station target) {
-        return sections.stream()
-                .map(section -> section.haveSection(source, target))
-                .findAny()
-                .orElse(false);
+        if (have(source) && have(target)) {
+            throw new IllegalArgumentException("등록될 역이 이미 존재합니다.");
+        }
     }
 
     private boolean doesNotHave(final Station station) {

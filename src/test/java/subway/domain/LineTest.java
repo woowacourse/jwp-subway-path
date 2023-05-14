@@ -32,18 +32,6 @@ class LineTest {
     }
 
     @Test
-    void 존재하는_구간_등록시_예외가_발생한다() {
-        // given
-        final Section section = new Section("잠실역", "석촌역", 1);
-        final Line line = new Line("8호선", "분홍색", List.of(section));
-
-        // expect
-        assertThatThrownBy(() -> line.register(new Station("잠실역"), new Station("석촌역"), 1))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("이미 존재하는 구간입니다.");
-    }
-
-    @Test
     void 등록시_기준역이_존재하지_않으면_예외가_발생한다() {
         // given
         final Section section = new Section("잠실역", "석촌역", 1);
@@ -53,5 +41,18 @@ class LineTest {
         assertThatThrownBy(() -> line.register(new Station("송파역"), new Station("몽촌토성역"), 1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("기준역이 존재하지 않습니다.");
+    }
+
+    @Test
+    void 등록시_추가할_역이_존재하면_예외가_발생한다() {
+        // given
+        final Section section1 = new Section("잠실역", "석촌역", 1);
+        final Section section2 = new Section("석촌역", "가락시장역", 1);
+        final Line line = new Line("8호선", "분홍색", List.of(section1, section2));
+
+        // expect
+        assertThatThrownBy(() -> line.register(new Station("잠실역"), new Station("석촌역"), 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("등록될 역이 이미 존재합니다.");
     }
 }

@@ -51,13 +51,4 @@ class SectionTest {
                 () -> assertThat(section.getDistance()).isEqualTo(1)
         );
     }
-
-    @Test
-    void 동일한_역들을_가졌는지_확인할_수_있다() {
-        // given
-        final Section section = new Section("잠실역", "석촌역", 10);
-
-        // expect
-        assertThat(section.haveSection(new Station("잠실역"), new Station("석촌역"))).isTrue();
-    }
 }
