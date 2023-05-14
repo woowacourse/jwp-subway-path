@@ -28,14 +28,13 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
-    @PostMapping("/{id}/stations/{stationId}")
+    @PostMapping("/{id}/stations")
     public ResponseEntity<Long> registerStation(
             @PathVariable final Long id,
-            @PathVariable final Long stationId,
             @RequestBody final StationRegistrationRequest stationRegistrationRequest
     ) {
-        Long sectionId = lineService.saveStationInLine(stationRegistrationRequest);
-        return ResponseEntity.created(URI.create("/lines/" + id + "/stations/" + stationId)).body(sectionId);
+        Long sectionId = lineService.saveStationInLine(id, stationRegistrationRequest);
+        return ResponseEntity.created(URI.create("/lines/" + id + "/stations/" )).body(sectionId);
     }
 
     @GetMapping
@@ -54,7 +53,7 @@ public class LineController {
     }
 
     @GetMapping("/{id}/stations")
-    public ResponseEntity<LineStationResponse> findRegisteredStationsInLine(@PathVariable final Long id) {
+    public ResponseEntity<LineStationResponse> findRegisteredStationsById(@PathVariable final Long id) {
         return ResponseEntity.ok(lineService.findById(id));
     }
 

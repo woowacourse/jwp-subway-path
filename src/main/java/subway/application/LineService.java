@@ -120,39 +120,38 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public Long saveStationInLine(final StationRegistrationRequest stationRegistrationRequest) {
+    public Long saveStationInLine(final Long lineId, final StationRegistrationRequest stationRegistrationRequest) {
         // 예외: sectionRequest에 들어온 호선이 존재하지 않는 경우
-        if (lineDao.findById(stationRegistrationRequest.getLineId()).isEmpty()) {
+        if (lineDao.findById(lineId).isEmpty()) {
             throw new NoSuchElementException("해당하는 호선이 존재하지 않습니다.");
         }
 
         // 예외: sectionRequest에 들어온 2개의 역이 모두 Station에 존재하는 역인지 검증
-        if (stationDao.findById(stationRegistrationRequest.getUpStationId()).isEmpty() || stationDao.findById(stationRegistrationRequest.getStationId()).isEmpty()) {
+        if (stationDao.findById(stationRegistrationRequest.getUpStationId()).isEmpty() || stationDao.findById(stationRegistrationRequest.getDownStationId()).isEmpty()) {
             throw new NoSuchElementException("해당하는 역이 존재하지 않습니다.");
         }
 
         // 예외: sectionRequest에 들어온 2개의 역이 구간이 있는지 검증
-        if (sectionDao.findByStationIds(stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getStationId()).isPresent()) {
+        if (sectionDao.findByStationIds(stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDownStationId()).isPresent()) {
             throw new IllegalArgumentException("이미 존재하는 구간입니다.");
         }
 
         // 1. 노선에 대한 구간이 아예 없는 경우
-        List<Section> sectionEntities = sectionDao.findByLineId(stationRegistrationRequest.getLineId());
+        List<Section> sectionEntities = sectionDao.findByLineId(lineId);
         if (sectionEntities.isEmpty()) {
-            sectionDao.insert(new Section(stationRegistrationRequest.getLineId(), null, stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDistance()));
-            sectionDao.insert(new Section(stationRegistrationRequest.getLineId(), stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getStationId(), stationRegistrationRequest.getDistance()));
-            sectionDao.insert(new Section(stationRegistrationRequest.getLineId(), stationRegistrationRequest.getStationId(), null, stationRegistrationRequest.getDistance()));
+            sectionDao.insert(new Section(lineId, null, stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDistance()));
+            sectionDao.insert(new Section(lineId, stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDownStationId(), stationRegistrationRequest.getDistance()));
+            sectionDao.insert(new Section(lineId, stationRegistrationRequest.getDownStationId(), null, stationRegistrationRequest.getDistance()));
         }
 
-        List<Section> upSections = sectionDao.findByLineIdAndStationId(stationRegistrationRequest.getLineId(), stationRegistrationRequest.getUpStationId());
-        List<Section> downSections = sectionDao.findByLineIdAndStationId(stationRegistrationRequest.getLineId(), stationRegistrationRequest.getStationId());
+        List<Section> upSections = sectionDao.findByLineIdAndStationId(lineId, stationRegistrationRequest.getUpStationId());
+        List<Section> downSections = sectionDao.findByLineIdAndStationId(lineId, stationRegistrationRequest.getDownStationId());
 
         // 예외: 기준이 되는 역이 노선에 존재하지 않는 경우 예외 처리
         if (upSections.isEmpty() && downSections.isEmpty()) {
             throw new IllegalArgumentException("노선에 기준이 되는 역이 존재하지 않습니다.");
         }
 
-        //
         if (downSections.isEmpty()) {
             Section targetSection = upSections.stream()
                     .filter(it -> it.getDownStationId() == null || it.getUpStationId().equals(stationRegistrationRequest.getUpStationId()))
@@ -161,7 +160,7 @@ public class LineService {
 
             // 2. 하행 종점에 넣는 경우
             if (targetSection.getDownStationId() == null) {
-                sectionDao.insert(new Section(stationRegistrationRequest.getLineId(), stationRegistrationRequest.getStationId(), null, 0));
+                sectionDao.insert(new Section(lineId, stationRegistrationRequest.getDownStationId(), null, 0));
             }
 
             // 3. 하행 중간에 넣는 경우
@@ -170,7 +169,7 @@ public class LineService {
                     throw new IllegalArgumentException("현재 구간보다 긴 구간을 추가할 수 없습니다.");
                 }
                 // AB
-                sectionDao.insert(new Section(stationRegistrationRequest.getLineId(), stationRegistrationRequest.getStationId(), targetSection.getDownStationId(), targetSection.getDistance() - stationRegistrationRequest.getDistance()));
+                sectionDao.insert(new Section(lineId, stationRegistrationRequest.getDownStationId(), targetSection.getDownStationId(), targetSection.getDistance() - stationRegistrationRequest.getDistance()));
             }
 
             sectionDao.deleteBySectionId(targetSection.getId());
@@ -178,27 +177,27 @@ public class LineService {
 
         if (upSections.isEmpty()) {
             Section targetSection = downSections.stream()
-                    .filter(it -> it.getUpStationId() == null || it.getDownStationId().equals(stationRegistrationRequest.getStationId()))
+                    .filter(it -> it.getUpStationId() == null || it.getDownStationId().equals(stationRegistrationRequest.getDownStationId()))
                     .findAny()
                     .orElseThrow(() -> new IllegalArgumentException("해당하는 구간이 존재하지 않습니다."));
 
             // 2. 상행 종점에 넣는 경우
             if (targetSection.getUpStationId() == null) {
-                sectionDao.insert(new Section(stationRegistrationRequest.getLineId(), null, stationRegistrationRequest.getUpStationId(), 0));
+                sectionDao.insert(new Section(lineId, null, stationRegistrationRequest.getUpStationId(), 0));
             }
 
             // 3. 상행 중간에 넣는 경우
-            if (targetSection.getDownStationId().equals(stationRegistrationRequest.getStationId())) {
+            if (targetSection.getDownStationId().equals(stationRegistrationRequest.getDownStationId())) {
                 if (targetSection.getDistance() <= stationRegistrationRequest.getDistance()) {
                     throw new IllegalArgumentException("현재 구간보다 긴 구간을 추가할 수 없습니다.");
                 }
                 // AB
-                sectionDao.insert(new Section(stationRegistrationRequest.getLineId(), targetSection.getUpStationId(), stationRegistrationRequest.getUpStationId(), targetSection.getDistance() - stationRegistrationRequest.getDistance()));
+                sectionDao.insert(new Section(lineId, targetSection.getUpStationId(), stationRegistrationRequest.getUpStationId(), targetSection.getDistance() - stationRegistrationRequest.getDistance()));
             }
 
             sectionDao.deleteBySectionId(targetSection.getId());
         }
-        return sectionDao.insert(new Section(stationRegistrationRequest.getLineId(), stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getStationId(), stationRegistrationRequest.getDistance()));
+        return sectionDao.insert(new Section(lineId, stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDownStationId(), stationRegistrationRequest.getDistance()));
     }
 
     public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {

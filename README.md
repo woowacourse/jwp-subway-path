@@ -11,8 +11,8 @@
 ## API 명세
 
 > section
-- 노선에 역 등록 API: POST /lines/{lineId}/stations/{stationId}
-  - BODY: upStationId, distance
+- 노선에 역 등록 API: POST /lines/{lineId}/stations
+  - BODY: upStationId, downStationId, distance
 - 노선에 역 제거 API: DELETE /lines/{lineId}/stations/{stationId}
 - 노선 조회 API: GET /lines/{lineId}/stations
 - 모든 노선 조회 API: GET /lines/stations
