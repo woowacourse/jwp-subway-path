@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.exception.LineNotFoundException;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -56,6 +57,9 @@ public class LineDao {
     }
 
     public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        final int affected = jdbcTemplate.update("delete from Line where id = ?", id);
+        if (affected == 0) {
+            throw new LineNotFoundException();
+        }
     }
 }

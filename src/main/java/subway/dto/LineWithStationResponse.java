@@ -24,6 +24,9 @@ public class LineWithStationResponse {
     }
 
     public static LineWithStationResponse from(final Line line, final List<Station> stations) {
+        if (stations.isEmpty()) {
+            return new LineWithStationResponse(line.getId(), line.getName(), line.getColor(), List.of());
+        }
         return new LineWithStationResponse(line.getId(), line.getName(), line.getColor(), StationResponse.of(stations));
     }
 

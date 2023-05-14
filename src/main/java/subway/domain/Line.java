@@ -35,6 +35,9 @@ public class Line {
     }
 
     public List<Station> sortStations() {
+        if (paths.isEmpty()) {
+            return List.of();
+        }
         final Station start = computeStartStation();
         final List<Station> result = new ArrayList<>();
         result.add(start);
@@ -66,6 +69,7 @@ public class Line {
         if (direction == UP) {
             if (paths.isEmpty()) {
                 paths.put(addStation, new Path(targetStation, distance));
+                return;
             }
             if (index == 0) {
                 paths.put(addStation, new Path(targetStation, distance));
@@ -80,6 +84,7 @@ public class Line {
 
         if (paths.isEmpty()) {
             paths.put(targetStation, new Path(addStation, distance));
+            return;
         }
         if (index == stations.size() - 1) {
             paths.put(targetStation, new Path(addStation, distance));
@@ -137,7 +142,7 @@ public class Line {
     }
 
     public Map<Station, Path> getPaths() {
-        return paths;
+        return new HashMap<>(paths);
     }
 
     @Override

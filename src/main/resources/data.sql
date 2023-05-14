@@ -1,6 +1,7 @@
 INSERT INTO line (name, color)
 VALUES ('1호선', '파랑'),
-       ('2호선', '초록');
+       ('2호선', '초록'),
+       ('empty', 'none');
 
 INSERT INTO station (name)
 VALUES ('수원'),

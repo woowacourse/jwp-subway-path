@@ -62,7 +62,7 @@ public class SubwayRepository {
 
         return lines.stream()
                 .map(line -> line.setPath(
-                        entitiesToPath(pathEntitiesByLineId.get(line.getId()), mapper))
+                        entitiesToPath(pathEntitiesByLineId.getOrDefault(line.getId(), List.of()), mapper))
                 )
                 .collect(Collectors.toList());
     }
@@ -73,6 +73,15 @@ public class SubwayRepository {
 
     public void saveLine(final Line line) {
         pathDao.clear(line.getId());
-        pathDao.addAll(line.getId(), line.getPaths(), line.sortStations());
+        final List<Station> stations = line.sortStations();
+        if (stations.isEmpty()) {
+            return;
+        }
+        pathDao.addAll(line.getId(), line.getPaths(), stations);
+    }
+
+    public void deleteLineById(final Long id) {
+        lineDao.deleteById(id);
+        pathDao.deleteByLineId(id);
     }
 }
