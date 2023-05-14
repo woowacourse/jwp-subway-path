@@ -22,7 +22,7 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     public List<Station> findAll() {
-        return null;
+        return stationDao.findAll();
     }
 
     @Override
@@ -35,13 +35,13 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
-    public void update(final Station newStation) {
-
+    public void update(final Station station) {
+        stationDao.update(station);
     }
 
     @Override
     public void deleteById(final Long id) {
-
+        stationDao.deleteById(id);
     }
 
     @Override

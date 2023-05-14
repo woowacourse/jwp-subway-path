@@ -17,6 +17,7 @@ public class LineRepositoryImpl implements LineRepository {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final LineConverter lineConverter = new LineConverter();
 
     public LineRepositoryImpl(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
         this.lineDao = lineDao;
@@ -31,16 +32,47 @@ public class LineRepositoryImpl implements LineRepository {
 
     @Override
     public List<Line> findAll() {
-        return null;
+        final List<LineSectionStationJoinDto> joinDtos = lineDao.findAll();
+        if (joinDtos.isEmpty()) {
+            return lineDao.findOnlyLines();
+        }
+        return lineConverter.convertToLines(joinDtos);
     }
 
     @Override
-    public Line findById(final Long id) {
-        return lineDao.findById(id);
+    public Optional<Line> findById(final Long id) {
+        final List<LineSectionStationJoinDto> joinDtos = lineDao.findById(id);
+        if (joinDtos.isEmpty()) {
+            final Line line = lineDao.findOnlyLineById(id);
+            if (line == null) {
+                return Optional.empty();
+            }
+            return Optional.of(line);
+        }
+        final Line line = lineConverter.convertToLine(joinDtos);
+        return Optional.of(line);
+    }
+
+    @Override
+    public Optional<Line> findByName(final String name) {
+        final List<LineSectionStationJoinDto> joinDtos = lineDao.findByName(name);
+        if (joinDtos.isEmpty()) {
+            final Line line = lineDao.findOnlyLineByName(name);
+            if (line == null) {
+                return Optional.empty();
+            }
+            return Optional.of(line);
+        }
+        final Line line = lineConverter.convertToLine(joinDtos);
+        return Optional.of(line);
     }
 
     @Override
     public void update(final Line line) {
+        if (line.getSections() == null) {
+            lineDao.update(line);
+            return;
+        }
         sectionDao.deleteAllByLineId(line.getId());
         lineDao.delete(line);
         lineDao.insert(line);
@@ -54,15 +86,5 @@ public class LineRepositoryImpl implements LineRepository {
     @Override
     public void deleteById(final Long id) {
 
-    }
-
-    @Override
-    public Optional<Line> findByName(final String name) {
-        final List<LineSectionStationJoinDto> joinDto = lineDao.findByName(name);
-        final Line line = new LineConverter().convertToLine(joinDto);
-        if (line == null) {
-            return Optional.empty();
-        }
-        return Optional.of(line);
     }
 }

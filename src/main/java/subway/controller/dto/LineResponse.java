@@ -4,9 +4,12 @@ import subway.domain.Line;
 
 public class LineResponse {
 
-    private final Long id;
-    private final String name;
-    private final String color;
+    private Long id;
+    private String name;
+    private String color;
+
+    public LineResponse() {
+    }
 
     public LineResponse(final Long id, final String name, final String color) {
         this.id = id;

@@ -49,14 +49,45 @@ public class LineDao {
         return new Line(lineId, line.getName(), line.getColor());
     }
 
-    public List<Line> findAll() {
-        final String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, lineRowMapper);
+    public List<LineSectionStationJoinDto> findAll() {
+        final String sql = "SELECT line.id                 AS line_id, "
+            + "       line.name               AS line_name, "
+            + "       line.color              AS line_color, "
+            + "       start_station.id        AS start_station_id, "
+            + "       start_station.name      AS start_station_name, "
+            + "       end_station.id          AS end_station_id, "
+            + "       end_station.name        AS end_station_name, "
+            + "       section.id              AS section_id, "
+            + "       section.line_id         AS section_line_id, "
+            + "       section.up_station_id   AS section_up_station_id, "
+            + "       section.down_station_id AS section_down_station_id, "
+            + "       section.distance        AS section_distance "
+            + "FROM SECTION AS section "
+            + "         JOIN LINE AS line ON line.id = section.line_id "
+            + "         JOIN STATION AS start_station ON start_station.id = section.up_station_id "
+            + "         JOIN STATION AS end_station ON end_station.id = section.down_station_id ";
+        return jdbcTemplate.query(sql, lineSectionStationJoinRowMapper);
     }
 
-    public Line findById(final Long id) {
-        final String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
+    public List<LineSectionStationJoinDto> findById(final Long id) {
+        final String sql = "SELECT line.id                 AS line_id, "
+            + "       line.name               AS line_name, "
+            + "       line.color              AS line_color, "
+            + "       start_station.id        AS start_station_id, "
+            + "       start_station.name      AS start_station_name, "
+            + "       end_station.id          AS end_station_id, "
+            + "       end_station.name        AS end_station_name, "
+            + "       section.id              AS section_id, "
+            + "       section.line_id         AS section_line_id, "
+            + "       section.up_station_id   AS section_up_station_id, "
+            + "       section.down_station_id AS section_down_station_id, "
+            + "       section.distance        AS section_distance "
+            + "FROM SECTION AS section "
+            + "         JOIN LINE AS line ON line.id = section.line_id "
+            + "         JOIN STATION AS start_station ON start_station.id = section.up_station_id "
+            + "         JOIN STATION AS end_station ON end_station.id = section.down_station_id "
+            + "WHERE line.id = ?;";
+        return jdbcTemplate.query(sql, lineSectionStationJoinRowMapper, id);
     }
 
     public void update(final Line newLine) {
@@ -94,5 +125,25 @@ public class LineDao {
             + "FROM SECTION "
             + "WHERE id = ?";
         jdbcTemplate.update(sql, line.getId());
+    }
+
+    public Line findOnlyLineById(final Long id) {
+        final String sql = "SELECT id, name, color "
+            + "FROM LINE "
+            + "WHERE id = ?;";
+        return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
+    }
+
+    public Line findOnlyLineByName(final String name) {
+        final String sql = "SELECT id, name, color "
+            + "FROM LINE "
+            + "WHERE name = ?;";
+        return jdbcTemplate.queryForObject(sql, lineRowMapper, name);
+    }
+
+    public List<Line> findOnlyLines() {
+        final String sql = "SELECT id, name, color "
+            + "FROM LINE;";
+        return jdbcTemplate.query(sql, lineRowMapper);
     }
 }

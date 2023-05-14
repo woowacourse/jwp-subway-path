@@ -41,6 +41,6 @@ public class Station {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName());
+        return Objects.hash(getName());
     }
 }

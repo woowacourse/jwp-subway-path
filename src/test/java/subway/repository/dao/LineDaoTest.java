@@ -24,9 +24,6 @@ class LineDaoTest {
     private final Station midDownStation = new Station(3L, "midDownStation");
     private final Station bottomStation = new Station(4L, "bottomStation");
     private final long distance = 10L;
-    private final Section topSection = new Section(1L, topStation, midUpStation, distance);
-    private final Section midSection = new Section(2L, midUpStation, midDownStation, distance);
-    private final Section bottomSection = new Section(3L, midDownStation, bottomStation, distance);
     private final Line line = new Line("lineName", "lineColor");
     @Autowired
     private LineDao lineDao;
@@ -51,10 +48,13 @@ class LineDaoTest {
     void testFindByName() {
         //given
         final Line insertedLine = lineDao.insert(line);
-        stationDao.insert(topStation);
-        stationDao.insert(midUpStation);
-        stationDao.insert(midDownStation);
-        stationDao.insert(bottomStation);
+        final Station insertedTopStation = stationDao.insert(topStation);
+        final Station insertedMidUpStation = stationDao.insert(midUpStation);
+        final Station insertedMidDownStation = stationDao.insert(midDownStation);
+        final Station insertedBottomStation = stationDao.insert(bottomStation);
+        final Section topSection = new Section(insertedTopStation, insertedMidUpStation, distance);
+        final Section midSection = new Section(insertedMidUpStation, insertedMidDownStation, distance);
+        final Section bottomSection = new Section(insertedMidDownStation, insertedBottomStation, distance);
         sectionDao.insert(topSection, insertedLine.getId());
         sectionDao.insert(midSection, insertedLine.getId());
         sectionDao.insert(bottomSection, insertedLine.getId());

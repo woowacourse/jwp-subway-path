@@ -25,9 +25,6 @@ class LineRepositoryTest {
     private final Station midDownStation = new Station(3L, "midDownStation");
     private final Station bottomStation = new Station(4L, "bottomStation");
     private final long distance = 10L;
-    private final Section topSection = new Section(1L, topStation, midUpStation, distance);
-    private final Section midSection = new Section(2L, midUpStation, midDownStation, distance);
-    private final Section bottomSection = new Section(3L, midDownStation, bottomStation, distance);
     private final Line line = new Line("lineName", "lineColor");
     @Autowired
     private LineRepository lineRepository;
@@ -52,13 +49,16 @@ class LineRepositoryTest {
     void testFindByName() {
         //given
         final Line savedLine = lineRepository.save(line);
-        final Station topStation = stationRepository.save(this.topStation);
-        final Station midUpStation = stationRepository.save(this.midUpStation);
-        final Station midDownStation = stationRepository.save(this.midDownStation);
-        final Station bottomStation = stationRepository.save(this.bottomStation);
-        final Section topSection = sectionRepository.save(this.topSection, savedLine.getId());
-        final Section midSection = sectionRepository.save(this.midSection, savedLine.getId());
-        final Section bottomSection = sectionRepository.save(this.bottomSection, savedLine.getId());
+        final Station savedTopStation = stationRepository.save(topStation);
+        final Station savedMidUpStation = stationRepository.save(midUpStation);
+        final Station savedMidDownStation = stationRepository.save(midDownStation);
+        final Station savedBottomStation = stationRepository.save(bottomStation);
+        final Section topSection = new Section(savedTopStation, savedMidUpStation, distance);
+        final Section midSection = new Section(savedMidUpStation, savedMidDownStation, distance);
+        final Section bottomSection = new Section(savedMidDownStation, savedBottomStation, distance);
+        final Section savedTopSection = sectionRepository.save(topSection, savedLine.getId());
+        final Section savedMidSection = sectionRepository.save(midSection, savedLine.getId());
+        final Section savedBottomSection = sectionRepository.save(bottomSection, savedLine.getId());
 
         //when
         final Optional<Line> result = lineRepository.findByName(savedLine.getName());
@@ -71,12 +71,12 @@ class LineRepositoryTest {
         assertThat(line.getName()).isEqualTo(savedLine.getName());
         final Sections sections = line.getSections();
         assertThat(sections.size()).isEqualTo(3);
-        assertThat(sections.findStation(0)).isEqualTo(topStation);
-        assertThat(sections.findStation(1)).isEqualTo(midUpStation);
-        assertThat(sections.findStation(2)).isEqualTo(midDownStation);
-        assertThat(sections.findStation(3)).isEqualTo(bottomStation);
-        assertThat(sections.findSection(0)).isEqualTo(topSection);
-        assertThat(sections.findSection(1)).isEqualTo(midSection);
-        assertThat(sections.findSection(2)).isEqualTo(bottomSection);
+        assertThat(sections.findStation(0)).isEqualTo(savedTopStation);
+        assertThat(sections.findStation(1)).isEqualTo(savedMidUpStation);
+        assertThat(sections.findStation(2)).isEqualTo(savedMidDownStation);
+        assertThat(sections.findStation(3)).isEqualTo(savedBottomStation);
+        assertThat(sections.findSection(0)).isEqualTo(savedTopSection);
+        assertThat(sections.findSection(1)).isEqualTo(savedMidSection);
+        assertThat(sections.findSection(2)).isEqualTo(savedBottomSection);
     }
 }

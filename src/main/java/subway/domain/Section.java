@@ -44,7 +44,11 @@ public class Section {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, getUpStation(), getDownStation());
+        return Objects.hash(getUpStation(), getDownStation());
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Station getUpStation() {
@@ -53,5 +57,9 @@ public class Section {
 
     public Station getDownStation() {
         return downStation;
+    }
+
+    public long getDistance() {
+        return distance;
     }
 }

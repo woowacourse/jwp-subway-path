@@ -49,7 +49,8 @@ public class Line {
         final Section existedSection = sections.findSection(upStation, downStation);
         sections.remove(existedSection);
         final Section upSection = new Section(existedSection.getUpStation(), addStation, distance);
-        final Section downSection = new Section(addStation, existedSection.getDownStation(), distance);
+        final Section downSection = new Section(addStation, existedSection.getDownStation(),
+            existedSection.getDistance() - distance);
         sections.addAll(upSection, downSection);
     }
 
@@ -76,7 +77,7 @@ public class Line {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getId(), getName());
+        return Objects.hash(getName());
     }
 
     public int getStationsSize() {

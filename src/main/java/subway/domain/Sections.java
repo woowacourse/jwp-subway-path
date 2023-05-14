@@ -124,9 +124,6 @@ public class Sections {
         if (index == 0) {
             return findTopStation();
         }
-        if (index == value.size() - 1) {
-            return findBottomStation();
-        }
         return value.get(index - 1).getDownStation();
     }
 

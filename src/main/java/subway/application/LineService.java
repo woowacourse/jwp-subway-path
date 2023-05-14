@@ -28,7 +28,7 @@ public class LineService {
 
     @Transactional
     public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineRepository.insert(new Line(request.getName(), request.getColor()));
+        final Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }
 
@@ -49,7 +49,8 @@ public class LineService {
     }
 
     public Line findLineById(final Long id) {
-        return lineRepository.findById(id);
+        return lineRepository.findById(id)
+            .orElseThrow(() -> new BusinessException("존재하지 않는 호선입니다."));
     }
 
     @Transactional
