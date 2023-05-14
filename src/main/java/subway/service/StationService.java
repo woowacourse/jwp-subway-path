@@ -2,8 +2,8 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationCreateRequest;
+import subway.domain.station.Station;
+import subway.domain.station.dto.StationCreateRequest;
 
 @Service
 public class StationService {

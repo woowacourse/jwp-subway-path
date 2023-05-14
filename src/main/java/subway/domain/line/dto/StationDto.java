@@ -1,15 +1,15 @@
-package subway.dto;
+package subway.domain.line.dto;
 
-public class StationCreateResponse {
-    private final Long stationId;
+public class StationDto {
+    private final long stationId;
     private final String stationName;
 
-    public StationCreateResponse(Long stationId, String stationName) {
+    public StationDto(long stationId, String stationName) {
         this.stationId = stationId;
         this.stationName = stationName;
     }
 
-    public Long getStationId() {
+    public long getStationId() {
         return stationId;
     }
 

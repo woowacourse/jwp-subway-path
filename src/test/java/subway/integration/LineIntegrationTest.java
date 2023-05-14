@@ -11,9 +11,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.AddStationToLineRequest;
-import subway.dto.LineCreateRequest;
+import subway.domain.line.dto.AddStationToLineRequest;
+import subway.domain.line.dto.LineCreateRequest;
+import subway.domain.station.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.is;

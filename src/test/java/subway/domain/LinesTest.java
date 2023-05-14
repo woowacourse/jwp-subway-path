@@ -1,10 +1,15 @@
 package subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.edge.Edge;
+import subway.domain.line.Line;
+import subway.domain.line.Lines;
+import subway.domain.station.Station;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class LinesTest {
     @Test

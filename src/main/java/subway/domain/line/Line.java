@@ -1,4 +1,7 @@
-package subway.domain;
+package subway.domain.line;
+
+import subway.domain.edge.Edge;
+import subway.domain.station.Station;
 
 import java.util.ArrayList;
 import java.util.HashSet;

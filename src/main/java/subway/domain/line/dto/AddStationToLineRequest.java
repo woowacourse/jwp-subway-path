@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.domain.line.dto;
 
 public class AddStationToLineRequest {
     private final Long upStationId;

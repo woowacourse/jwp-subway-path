@@ -1,4 +1,6 @@
-package subway.domain;
+package subway.domain.edge;
+
+import subway.domain.station.Station;
 
 public class Edge {
 

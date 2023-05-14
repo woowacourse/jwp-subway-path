@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.domain.line.dto;
 
 import java.util.List;
 

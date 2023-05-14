@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.domain.station.dto;
 
 public class StationCreateRequest {
     private String stationName;

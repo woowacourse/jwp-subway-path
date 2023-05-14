@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Edge;
-import subway.domain.Station;
+import subway.domain.edge.Edge;
+import subway.domain.station.Station;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;

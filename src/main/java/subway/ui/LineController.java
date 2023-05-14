@@ -8,14 +8,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.domain.Line;
-import subway.domain.Station;
-import subway.dto.AddStationToLineRequest;
-import subway.dto.AddStationToLineResponse;
-import subway.dto.DeleteStationFromLineResponse;
-import subway.dto.GetAllStationsInLineResponse;
-import subway.dto.GetAllStationsInLineResponses;
-import subway.dto.LineCreateRequest;
+import subway.domain.line.Line;
+import subway.domain.line.dto.AddStationToLineRequest;
+import subway.domain.line.dto.AddStationToLineResponse;
+import subway.domain.line.dto.DeleteStationFromLineResponse;
+import subway.domain.line.dto.GetAllStationsInLineResponse;
+import subway.domain.line.dto.GetAllStationsInLineResponses;
+import subway.domain.line.dto.LineCreateRequest;
+import subway.domain.station.Station;
 import subway.service.LineService;
 
 import java.net.URI;
@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/lines")
 public class LineController {
+
     private final LineService lineService;
 
     public LineController(LineService lineService) {

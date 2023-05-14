@@ -1,14 +1,15 @@
 package subway.domain;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
-import subway.dto.AddStationToLineRequest;
-import subway.dto.LineCreateRequest;
+import subway.domain.line.Line;
+import subway.domain.line.dto.AddStationToLineRequest;
+import subway.domain.line.dto.LineCreateRequest;
+import subway.domain.station.Station;
 import subway.service.LineService;
 
 import java.util.List;
@@ -25,11 +26,6 @@ class LineServiceTest {
 
     @Autowired
     private LineService lineService;
-
-
-    @BeforeEach
-    void setUp() {
-    }
 
     @DisplayName("새로운 노선을 추가한다")
     @Test

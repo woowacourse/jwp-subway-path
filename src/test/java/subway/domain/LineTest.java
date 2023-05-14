@@ -1,10 +1,12 @@
 package subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.Line;
+import subway.domain.station.Station;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class LineTest {
 
