@@ -5,7 +5,10 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 
 public class ErrorResponse {
 
-    private final String message;
+    private String message;
+
+    private ErrorResponse(){
+    }
 
     public ErrorResponse(String message) {
         this.message = message;
