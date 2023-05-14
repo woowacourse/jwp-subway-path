@@ -17,19 +17,19 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @GetMapping("lines/{lineId}/sections")
+    @GetMapping("lines/{lineId}/stations")
     public ResponseEntity<List<StationResponse>> findStationsInLine(@PathVariable long lineId) {
         List<StationResponse> stationsInOrder = sectionService.findStationsInOrder(lineId);
         return ResponseEntity.status(HttpStatus.OK).body(stationsInOrder);
     }
 
-    @PostMapping("lines/{lineId}/sections")
+    @PostMapping("lines/{lineId}/stations")
     public ResponseEntity<Void> addSection(@PathVariable long lineId, @RequestBody SectionSaveRequest request) {
         sectionService.addSection(lineId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("lines/{lineId}/sections/{stationId}")
+    @DeleteMapping("lines/{lineId}/stations/{stationId}")
     public ResponseEntity<Void> removeStationInLine(@PathVariable long lineId, @PathVariable long stationId) {
         sectionService.removeStation(stationId, lineId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

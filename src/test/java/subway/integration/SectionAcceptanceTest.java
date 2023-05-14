@@ -28,7 +28,7 @@ public class SectionAcceptanceTest extends IntegrationTest {
                 .given()
                 .body(initSaveRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/{lineId}/sections", lineId)
+                .when().post("/lines/{lineId}/stations", lineId)
                 .then();
 
         // 하행 종점 등록
@@ -37,7 +37,7 @@ public class SectionAcceptanceTest extends IntegrationTest {
                 .given().log().all()
                 .body(saveRequest2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/{lineId}/sections", lineId)
+                .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all().
                 extract();
 
@@ -45,7 +45,7 @@ public class SectionAcceptanceTest extends IntegrationTest {
         ExtractableResponse<Response> findResponse = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}/sections", lineId)
+                .when().get("/lines/{lineId}/stations", lineId)
                 .then().extract();
 
         List<Long> resultStationIds = findResponse.jsonPath()

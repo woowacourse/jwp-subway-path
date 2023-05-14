@@ -33,7 +33,7 @@ public class SectionRemoveIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .body(removeId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/{lineId}/sections/{stationId}", LINE_ID, removeId)
+                .when().delete("/lines/{lineId}/stations/{stationId}", LINE_ID, removeId)
                 .then().log().all().
                 extract();
 
@@ -41,7 +41,7 @@ public class SectionRemoveIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> findResponse = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}/sections", LINE_ID)
+                .when().get("/lines/{lineId}/stations", LINE_ID)
                 .then().extract();
 
 
@@ -71,7 +71,7 @@ public class SectionRemoveIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/{lineId}/sections/{stationId}", LINE_ID, notExistingId)
+                .when().delete("/lines/{lineId}/stations/{stationId}", LINE_ID, notExistingId)
                 .then().log().all().
                 extract();
 

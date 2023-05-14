@@ -35,7 +35,7 @@ public class SectionAddIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/{lineId}/sections", lineId)
+                .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all().
                 extract();
 
@@ -43,7 +43,7 @@ public class SectionAddIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> findResponse = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}/sections", lineId)
+                .when().get("/lines/{lineId}/stations", lineId)
                 .then().extract();
 
         List<Long> resultStationIds = findResponse.jsonPath()
@@ -66,7 +66,7 @@ public class SectionAddIntegrationTest extends IntegrationTest {
                 .given()
                 .body(initSaveRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/{lineId}/sections", lineId)
+                .when().post("/lines/{lineId}/stations", lineId)
                 .then();
         //현재 상태 1-2
 
@@ -75,7 +75,7 @@ public class SectionAddIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .body(request)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/{lineId}/sections", lineId)
+                .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all().
                 extract();
 
@@ -83,7 +83,7 @@ public class SectionAddIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> findResponse = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}/sections", lineId)
+                .when().get("/lines/{lineId}/stations", lineId)
                 .then().extract();
 
         List<Long> resultStationIds = findResponse.jsonPath()
