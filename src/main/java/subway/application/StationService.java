@@ -40,7 +40,6 @@ public class StationService {
 	}
 
 	public StationResponse updateStation(final long stationId, final StationCreateRequest request) {
-		final Station station = stationRepository.findById(stationId);
 		final boolean isUpdated = stationRepository.updateStation(stationId, new Station(request.getName()));
 
 		if (!isUpdated) {
