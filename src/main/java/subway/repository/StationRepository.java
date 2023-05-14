@@ -12,7 +12,7 @@ public interface StationRepository {
 
     Long create(final Station station);
 
-    List<Station> findById(List<Long> ids);
+    List<Station> findById(final List<Long> ids);
 
     List<Station> findAll();
 }

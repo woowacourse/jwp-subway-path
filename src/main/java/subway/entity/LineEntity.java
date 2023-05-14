@@ -14,7 +14,7 @@ public class LineEntity {
         this.color = color;
     }
 
-    public static LineEntity from(Line line) {
+    public static LineEntity from(final Line line) {
         return new LineEntity(line.getId(), line.getName(), line.getColor());
     }
 

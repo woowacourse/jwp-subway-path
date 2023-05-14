@@ -7,19 +7,19 @@ import subway.domain.StationEdge;
 
 public interface LineRepository {
 
-    Optional<Line> findById(Long id);
+    Optional<Line> findById(final Long id);
 
     List<Line> findAll();
 
-    Optional<Line> findByName(String name);
+    Optional<Line> findByName(final String name);
 
-    Long create(Line line);
+    Long create(final Line line);
 
-    Long insertStationEdge(Line line, StationEdge stationEdge);
+    Long insertStationEdge(final Line line, final StationEdge stationEdge);
 
-    void updateStationEdge(Line line, StationEdge stationEdge);
+    void updateStationEdge(final Line line, final StationEdge stationEdge);
 
-    void deleteStation(Line line, Long stationId);
+    void deleteStation(final Line line, final Long stationId);
 
-    void deleteById(Long id);
+    void deleteById(final Long id);
 }

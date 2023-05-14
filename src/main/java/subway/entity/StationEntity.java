@@ -7,12 +7,12 @@ public class StationEntity {
     private final Long id;
     private final String name;
 
-    public StationEntity(Long id, String name) {
+    public StationEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationEntity from(Station station) {
+    public static StationEntity from(final Station station) {
         return new StationEntity(station.getId(), station.getName());
     }
 

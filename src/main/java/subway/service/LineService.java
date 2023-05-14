@@ -1,7 +1,5 @@
 package subway.service;
 
-import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
@@ -16,6 +14,9 @@ import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class LineService {
 
@@ -23,12 +24,12 @@ public class LineService {
 
     private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
+    public LineService(final LineRepository lineRepository, final StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
 
-    public Long create(LineRequest lineRequest) {
+    public Long create(final LineRequest lineRequest) {
         final Station upStation = findStationById(lineRequest.getUpStationId());
         final Station downStation = findStationById(lineRequest.getDownStationId());
 
@@ -43,12 +44,12 @@ public class LineService {
     }
 
     @Transactional
-    public void insertStation(StationInsertRequest stationInsertRequest) {
+    public void insertStation(final StationInsertRequest stationInsertRequest) {
         findStationById(stationInsertRequest.getStationId());
         findStationById(stationInsertRequest.getAdjacentStationId());
 
-        Line line = findLineById(stationInsertRequest.getLineId());
-        InsertionResult insertionResult = insertStationAndReturnEdgesToSave(stationInsertRequest, line);
+        final Line line = findLineById(stationInsertRequest.getLineId());
+        final InsertionResult insertionResult = insertStationAndReturnEdgesToSave(stationInsertRequest, line);
 
         lineRepository.insertStationEdge(line, insertionResult.getInsertedEdge());
         if (insertionResult.getUpdatedEdge() != null) {
@@ -58,13 +59,13 @@ public class LineService {
 
 
     private InsertionResult insertStationAndReturnEdgesToSave(
-            StationInsertRequest stationInsertRequest,
-            Line line
+            final StationInsertRequest stationInsertRequest,
+            final Line line
     ) {
-        Long stationId = stationInsertRequest.getStationId();
-        Long adjacentStationId = stationInsertRequest.getAdjacentStationId();
-        LineDirection direction = LineDirection.valueOf(stationInsertRequest.getDirection());
-        int distance = stationInsertRequest.getDistance();
+        final Long stationId = stationInsertRequest.getStationId();
+        final Long adjacentStationId = stationInsertRequest.getAdjacentStationId();
+        final LineDirection direction = LineDirection.valueOf(stationInsertRequest.getDirection());
+        final int distance = stationInsertRequest.getDistance();
 
         if (direction == LineDirection.UP) {
             return line.insertUpStation(stationId, adjacentStationId, distance);
@@ -72,18 +73,18 @@ public class LineService {
         return line.insertDownStation(stationId, adjacentStationId, distance);
     }
 
-    public Line findLineById(Long id) {
+    public Line findLineById(final Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(LineNotFoundException::new);
     }
 
-    private Station findStationById(Long stationId) {
+    private Station findStationById(final Long stationId) {
         return stationRepository.findById(stationId)
                 .orElseThrow(StationNotFoundException::new);
     }
 
-    public void deleteStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
+    public void deleteStation(final Long lineId, final Long stationId) {
+        final Line line = findLineById(lineId);
         if (line.size() == 2 && line.contains(stationId)) {
             lineRepository.deleteById(line.getId());
             return;

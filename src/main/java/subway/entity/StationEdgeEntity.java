@@ -11,7 +11,12 @@ public class StationEdgeEntity {
     private final Integer distance;
     private final Long previousStationEdgeId;
 
-    public StationEdgeEntity(Long lineId, Long downStationId, Integer distance, Long previousStationEdgeId) {
+    public StationEdgeEntity(
+            final Long lineId,
+            final Long downStationId,
+            final Integer distance,
+            final Long previousStationEdgeId
+    ) {
         this.id = null;
         this.lineId = lineId;
         this.downStationId = downStationId;
@@ -19,7 +24,13 @@ public class StationEdgeEntity {
         this.previousStationEdgeId = previousStationEdgeId;
     }
 
-    public StationEdgeEntity(Long id, Long lineId, Long downStationId, Integer distance, Long previousStationEdgeId) {
+    public StationEdgeEntity(
+            final Long id,
+            final Long lineId,
+            final Long downStationId,
+            final Integer distance,
+            final Long previousStationEdgeId
+    ) {
         this.id = id;
         this.lineId = lineId;
         this.downStationId = downStationId;
@@ -27,12 +38,21 @@ public class StationEdgeEntity {
         this.previousStationEdgeId = previousStationEdgeId;
     }
 
-    public static StationEdgeEntity of(Long lineId, StationEdge stationEdge, Long previousStationEdgeId) {
+    public static StationEdgeEntity of(
+            final Long lineId,
+            final StationEdge stationEdge,
+            final Long previousStationEdgeId
+    ) {
         return new StationEdgeEntity(lineId, stationEdge.getDownStationId(), stationEdge.getDistance(),
                 previousStationEdgeId);
     }
 
-    public static StationEdgeEntity of(Long id, Long lineId, StationEdge stationEdge, Long previousStationEdgeId) {
+    public static StationEdgeEntity of(
+            final Long id,
+            final Long lineId,
+            final StationEdge stationEdge,
+            final Long previousStationEdgeId
+    ) {
         return new StationEdgeEntity(id, lineId, stationEdge.getDownStationId(), stationEdge.getDistance(),
                 previousStationEdgeId);
     }

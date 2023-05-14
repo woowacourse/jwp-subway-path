@@ -13,14 +13,15 @@ import subway.service.StationService;
 @RestController
 @RequestMapping("/stations")
 public class StationController {
+
     private final StationService stationService;
 
-    public StationController(StationService stationService) {
+    public StationController(final StationService stationService) {
         this.stationService = stationService;
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest stationRequest) {
         Long stationId = stationService.create(stationRequest.getName());
         return ResponseEntity.created(URI.create("/stations/" + stationId)).build();
     }

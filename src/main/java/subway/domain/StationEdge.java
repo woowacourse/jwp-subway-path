@@ -8,7 +8,7 @@ public class StationEdge {
     private final Long downStationId;
     private final int distance;
 
-    public StationEdge(Long downStationId, int distance) {
+    public StationEdge(final Long downStationId, final int distance) {
         this.downStationId = downStationId;
         this.distance = distance;
     }
@@ -21,19 +21,19 @@ public class StationEdge {
         return distance;
     }
 
-    public List<StationEdge> splitFromDownStation(Long insertStationId, int distance) {
-        int distanceFromUpStation = calculateDistanceFromUpStation(distance);
-        StationEdge upStationEdge = new StationEdge(insertStationId, distanceFromUpStation);
-        StationEdge downStationEdge = new StationEdge(downStationId, distance);
+    public List<StationEdge> splitFromDownStation(final Long insertStationId, final int distance) {
+        final int distanceFromUpStation = calculateDistanceFromUpStation(distance);
+        final StationEdge upStationEdge = new StationEdge(insertStationId, distanceFromUpStation);
+        final StationEdge downStationEdge = new StationEdge(downStationId, distance);
         return List.of(upStationEdge, downStationEdge);
     }
 
-    private int calculateDistanceFromUpStation(int distanceFromDownStation) {
+    private int calculateDistanceFromUpStation(final int distanceFromDownStation) {
         if (distance == 0) {
             return 0;
         }
 
-        int distanceFromUpStation = distance - distanceFromDownStation;
+        final int distanceFromUpStation = distance - distanceFromDownStation;
         if (distanceFromUpStation <= 0) {
             throw new InvalidDistanceException();
         }

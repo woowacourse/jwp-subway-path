@@ -13,13 +13,13 @@ public class DbStationRepository implements StationRepository {
 
     private final StationDao stationDao;
 
-    public DbStationRepository(StationDao stationDao) {
+    public DbStationRepository(final StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
     @Override
-    public Optional<Station> findById(Long id) {
-        Optional<StationEntity> optionalStationEntity = stationDao.findById(id);
+    public Optional<Station> findById(final Long id) {
+        final Optional<StationEntity> optionalStationEntity = stationDao.findById(id);
         if (optionalStationEntity.isEmpty()) {
             return Optional.empty();
         }
@@ -27,8 +27,8 @@ public class DbStationRepository implements StationRepository {
     }
 
     @Override
-    public Optional<Station> findByName(String name) {
-        Optional<StationEntity> optionalStationEntity = stationDao.findByName(name);
+    public Optional<Station> findByName(final String name) {
+        final Optional<StationEntity> optionalStationEntity = stationDao.findByName(name);
         if (optionalStationEntity.isEmpty()) {
             return Optional.empty();
         }
@@ -36,12 +36,12 @@ public class DbStationRepository implements StationRepository {
     }
 
     @Override
-    public Long create(Station station) {
+    public Long create(final Station station) {
         return stationDao.insert(StationEntity.from(station));
     }
 
     @Override
-    public List<Station> findById(List<Long> ids) {
+    public List<Station> findById(final List<Long> ids) {
         return stationDao.findById(ids).stream()
                 .map(StationEntity::toDomain)
                 .collect(Collectors.toList());

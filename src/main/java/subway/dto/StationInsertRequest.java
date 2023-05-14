@@ -8,8 +8,13 @@ public class StationInsertRequest {
     private final String direction;
     private final Integer distance;
 
-    public StationInsertRequest(Long stationId, Long lineId, Long adjacentStationId, String direction,
-                                Integer distance) {
+    public StationInsertRequest(
+            final Long stationId,
+            final Long lineId,
+            final Long adjacentStationId,
+            final String direction,
+            final Integer distance
+    ) {
         this.stationId = stationId;
         this.lineId = lineId;
         this.adjacentStationId = adjacentStationId;

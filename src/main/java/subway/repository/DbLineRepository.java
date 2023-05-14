@@ -1,9 +1,5 @@
 package subway.repository;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.LineDao;
 import subway.dao.StationEdgeDao;
@@ -13,6 +9,11 @@ import subway.entity.LineEntity;
 import subway.entity.StationEdgeEntity;
 import subway.exception.StationEdgeNotFoundException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 
 @Repository
 public class DbLineRepository implements LineRepository {
@@ -21,37 +22,37 @@ public class DbLineRepository implements LineRepository {
     private final StationEdgeDao stationEdgeDao;
 
 
-    public DbLineRepository(LineDao lineDao, StationEdgeDao stationEdgeDao) {
+    public DbLineRepository(final LineDao lineDao, final StationEdgeDao stationEdgeDao) {
         this.lineDao = lineDao;
         this.stationEdgeDao = stationEdgeDao;
     }
 
     @Override
-    public Optional<Line> findById(Long id) {
-        Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
+    public Optional<Line> findById(final Long id) {
+        final Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
         if (optionalLineEntity.isEmpty()) {
             return Optional.empty();
         }
 
-        LineEntity lineEntity = optionalLineEntity.get();
+        final LineEntity lineEntity = optionalLineEntity.get();
 
         return convertToDomain(lineEntity);
     }
 
-    private Optional<Line> convertToDomain(LineEntity lineEntity) {
-        List<StationEdgeEntity> stationEdgeEntities = stationEdgeDao.findByLineId(lineEntity.getId());
-        List<StationEdge> sorted = getStationEdges(stationEdgeEntities);
+    private Optional<Line> convertToDomain(final LineEntity lineEntity) {
+        final List<StationEdgeEntity> stationEdgeEntities = stationEdgeDao.findByLineId(lineEntity.getId());
+        final List<StationEdge> sorted = getStationEdges(stationEdgeEntities);
 
         return Optional.of(Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sorted));
     }
 
-    private List<StationEdge> getStationEdges(List<StationEdgeEntity> stationEdgeEntities) {
-        int numberOfStations = stationEdgeEntities.size();
-        List<StationEdge> sorted = new ArrayList<>();
-        StationEdgeEntity first = getFirstStationEdgeEntity(stationEdgeEntities);
+    private List<StationEdge> getStationEdges(final List<StationEdgeEntity> stationEdgeEntities) {
+        final int numberOfStations = stationEdgeEntities.size();
+        final List<StationEdge> sorted = new ArrayList<>();
+        final StationEdgeEntity first = getFirstStationEdgeEntity(stationEdgeEntities);
         sorted.add(first.toDomain());
-        Long previousId = first.getId();
 
+        Long previousId = first.getId();
         while (sorted.size() < numberOfStations) {
             StationEdgeEntity next = getNext(stationEdgeEntities, previousId);
             sorted.add(next.toDomain());
@@ -60,8 +61,8 @@ public class DbLineRepository implements LineRepository {
         return sorted;
     }
 
-    private static StationEdgeEntity getFirstStationEdgeEntity(List<StationEdgeEntity> stationEdgeEntities) {
-        StationEdgeEntity first = stationEdgeEntities.stream()
+    private static StationEdgeEntity getFirstStationEdgeEntity(final List<StationEdgeEntity> stationEdgeEntities) {
+        final StationEdgeEntity first = stationEdgeEntities.stream()
                 .filter(stationEdgeEntity -> stationEdgeEntity.getPreviousStationEdgeId() == null)
                 .findFirst()
                 .get();
@@ -69,9 +70,8 @@ public class DbLineRepository implements LineRepository {
         return first;
     }
 
-    private static StationEdgeEntity getNext(List<StationEdgeEntity> stationEdgeEntities,
-                                             Long previousId) {
-        StationEdgeEntity next = stationEdgeEntities.stream()
+    private static StationEdgeEntity getNext(final List<StationEdgeEntity> stationEdgeEntities, final Long previousId) {
+        final StationEdgeEntity next = stationEdgeEntities.stream()
                 .filter(stationEdge -> stationEdge.getPreviousStationEdgeId().equals(previousId))
                 .findFirst().get();
         return next;
@@ -80,33 +80,34 @@ public class DbLineRepository implements LineRepository {
 
     @Override
     public List<Line> findAll() {
-        List<LineEntity> lineEntities = lineDao.findAll();
-        List<Line> lines = new ArrayList<>();
-        List<StationEdgeEntity> all = stationEdgeDao.findAll();
+        final List<LineEntity> lineEntities = lineDao.findAll();
+        final List<Line> lines = new ArrayList<>();
+        final List<StationEdgeEntity> all = stationEdgeDao.findAll();
         for (LineEntity lineEntity : lineEntities) {
-            List<StationEdgeEntity> stationEdgeEntities = all.stream()
+            final List<StationEdgeEntity> stationEdgeEntities = all.stream()
                     .filter(stationEdge -> stationEdge.getLineId().equals(lineEntity.getId()))
                     .collect(Collectors.toList());
-            List<StationEdge> sorted = getStationEdges(stationEdgeEntities);
+            final List<StationEdge> sorted = getStationEdges(stationEdgeEntities);
             lines.add(Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sorted));
         }
         return lines;
     }
 
     @Override
-    public Optional<Line> findByName(String name) {
-        Optional<LineEntity> optionalLineEntity = lineDao.findByName(name);
+    public Optional<Line> findByName(final String name) {
+        final Optional<LineEntity> optionalLineEntity = lineDao.findByName(name);
         if (optionalLineEntity.isEmpty()) {
             return Optional.empty();
         }
-        LineEntity lineEntity = optionalLineEntity.get();
+        final LineEntity lineEntity = optionalLineEntity.get();
         return convertToDomain(lineEntity);
     }
 
     @Override
-    public Long create(Line line) {
-        Long lineEntityId = lineDao.insert(LineEntity.from(line));
-        List<StationEdge> stationEdges = line.getStationEdges();
+    public Long create(final Line line) {
+        final Long lineEntityId = lineDao.insert(LineEntity.from(line));
+        final List<StationEdge> stationEdges = line.getStationEdges();
+
         Long previousEdgeId = null;
         for (StationEdge stationEdge : stationEdges) {
             previousEdgeId = stationEdgeDao.insert(StationEdgeEntity.of(lineEntityId, stationEdge, previousEdgeId));
@@ -115,29 +116,29 @@ public class DbLineRepository implements LineRepository {
     }
 
     @Override
-    public Long insertStationEdge(Line line, StationEdge stationEdge) {
-        Long lineId = line.getId();
-        int edgeIndex = line.getStationEdges().indexOf(stationEdge) - 1;
+    public Long insertStationEdge(final Line line, final StationEdge stationEdge) {
+        final Long lineId = line.getId();
+        final int edgeIndex = line.getStationEdges().indexOf(stationEdge) - 1;
 
         if (edgeIndex == -1) {
             return stationEdgeDao.insert(StationEdgeEntity.of(lineId, stationEdge, null));
         }
-        Long downStationId = line.getStationEdges().get(edgeIndex).getDownStationId();
-        StationEdgeEntity previousStationEdge = stationEdgeDao.findByLineIdAndStationId(lineId, downStationId)
+        final Long downStationId = line.getStationEdges().get(edgeIndex).getDownStationId();
+        final StationEdgeEntity previousStationEdge = stationEdgeDao.findByLineIdAndStationId(lineId, downStationId)
                 .orElseThrow(StationEdgeNotFoundException::new);
 
         return stationEdgeDao.insert(StationEdgeEntity.of(lineId, stationEdge, previousStationEdge.getId()));
     }
 
     @Override
-    public void updateStationEdge(Line line, StationEdge stationEdge) {
-        Long lineId = line.getId();
-        Long downStationId = stationEdge.getDownStationId();
-        StationEdgeEntity stationEdgeEntity = stationEdgeDao.findByLineIdAndStationId(lineId, downStationId)
+    public void updateStationEdge(final Line line, final StationEdge stationEdge) {
+        final Long lineId = line.getId();
+        final Long downStationId = stationEdge.getDownStationId();
+        final StationEdgeEntity stationEdgeEntity = stationEdgeDao.findByLineIdAndStationId(lineId, downStationId)
                 .orElseThrow(StationEdgeNotFoundException::new);
 
-        StationEdge upStationEdge = line.getStationEdges().get(line.getStationEdges().indexOf(stationEdge) - 1);
-        Long previousStationEdgeId = stationEdgeDao.findByLineIdAndStationId(lineId, upStationEdge.getDownStationId())
+        final StationEdge upStationEdge = line.getStationEdges().get(line.getStationEdges().indexOf(stationEdge) - 1);
+        final Long previousStationEdgeId = stationEdgeDao.findByLineIdAndStationId(lineId, upStationEdge.getDownStationId())
                 .get().getId();
         stationEdgeDao.update(
                 StationEdgeEntity.of(stationEdgeEntity.getId(), lineId, stationEdge,
@@ -145,13 +146,13 @@ public class DbLineRepository implements LineRepository {
     }
 
     @Override
-    public void deleteStation(Line line, Long stationId) {
-        Long lineId = line.getId();
+    public void deleteStation(final Line line, final Long stationId) {
+        final Long lineId = line.getId();
         stationEdgeDao.deleteByLineIdAndStationId(lineId, stationId);
     }
 
     @Override
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         lineDao.deleteById(id);
     }
 }
