@@ -15,9 +15,11 @@ import subway.domain.Station;
 public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final BeanPropertyRowMapper<Station> stationMapper;
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.stationMapper = BeanPropertyRowMapper.newInstance(Station.class);
     }
 
     public Station insert(Station station) {
@@ -34,9 +36,8 @@ public class StationDao {
 
     public Optional<Station> findById(long stationId) {
         String sql = "SELECT * FROM station WHERE id = ?";
-        BeanPropertyRowMapper<Station> mapper = BeanPropertyRowMapper.newInstance(Station.class);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, mapper, stationId));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationMapper, stationId));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -44,9 +45,8 @@ public class StationDao {
 
     public Optional<Station> findByName(Station station) {
         String sql = "SELECT * FROM station WHERE name = ?";
-        BeanPropertyRowMapper<Station> mapper = BeanPropertyRowMapper.newInstance(Station.class);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, mapper, station.getName()));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationMapper, station.getName()));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -54,7 +54,6 @@ public class StationDao {
 
     public List<Station> findAll() {
         String sql = "SELECT * FROM station ORDER BY id";
-        BeanPropertyRowMapper<Station> mapper = BeanPropertyRowMapper.newInstance(Station.class);
-        return jdbcTemplate.query(sql, mapper);
+        return jdbcTemplate.query(sql, stationMapper);
     }
 }

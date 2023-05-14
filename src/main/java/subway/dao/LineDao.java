@@ -14,9 +14,11 @@ import subway.domain.Line;
 @Repository
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
+    private final BeanPropertyRowMapper<Line> lineMapper;
 
     public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.lineMapper = BeanPropertyRowMapper.newInstance(Line.class);
     }
 
     public Line insert(Line line) {
@@ -33,9 +35,8 @@ public class LineDao {
 
     public Optional<Line> findById(Long lineId) {
         String sql = "SELECT * FROM line WHERE id = ?";
-        BeanPropertyRowMapper<Line> mapper = BeanPropertyRowMapper.newInstance(Line.class);
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, mapper, lineId));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineMapper, lineId));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -43,7 +44,6 @@ public class LineDao {
 
     public List<Line> findAll() {
         String sql = "SELECT * FROM line ORDER BY id";
-        BeanPropertyRowMapper<Line> mapper = BeanPropertyRowMapper.newInstance(Line.class);
-        return jdbcTemplate.query(sql, mapper);
+        return jdbcTemplate.query(sql, lineMapper);
     }
 }

@@ -16,9 +16,20 @@ import subway.domain.Station;
 public class EdgeDao {
 
     private final JdbcTemplate jdbcTemplate;
+    private final RowMapper<Edge> edgeMapper;
 
     public EdgeDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.edgeMapper =
+        (resultSet, rowNum) -> {
+            Station upStation = new Station(
+                    resultSet.getLong("upstation_id"),
+                    resultSet.getString("upstation_name"));
+            Station downStation = new Station(
+                    resultSet.getLong("downstation_id"),
+                    resultSet.getString("downstation_name"));
+            return new Edge(resultSet.getLong("id"), upStation, downStation, resultSet.getInt("distance"));
+        };
     }
 
     public Edge insert(Long lineId, Edge edge) {
@@ -46,18 +57,7 @@ public class EdgeDao {
                 + "JOIN station s2 ON e.downstation_id = s2.id "
                 + "WHERE e.line_id = ? "
                 + "ORDER BY e.id";
-
-        RowMapper<Edge> mapper =
-                (resultSet, rowNum) -> {
-                    Station upStation = new Station(
-                            resultSet.getLong("upstation_id"),
-                            resultSet.getString("upstation_name"));
-                    Station downStation = new Station(
-                            resultSet.getLong("downstation_id"),
-                            resultSet.getString("downstation_name"));
-                    return new Edge(resultSet.getLong("id"), upStation, downStation, resultSet.getInt("distance"));
-                };
-        return jdbcTemplate.query(sql, mapper, lineId);
+        return jdbcTemplate.query(sql, edgeMapper, lineId);
     }
 
     public void deleteAllByLineId(Long lineId) {
