@@ -73,30 +73,13 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException("!"));
     }
 
-    @Transactional
-    public Line deleteStationFromLine(Long lineId, Long stationId) {
-        Station station = stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Line line = assembleLine(lineId);
-
-        Line updatedLine = lines.deleteStationFromLine(line, station);
-        edgeDao.deleteAllByLineId(updatedLine.getId());
-        edgeDao.insertAllByLineId(updatedLine.getId(), updatedLine.getEdges());
-
-        return assembleLine(updatedLine.getId());
-    }
-
-    public List<Station> getStations(Long lineId) {
-        Line assembleLine = assembleLine(lineId);
-        return lines.findAllStation(assembleLine);
-    }
-
-    public Line assembleLine(Long lineId) {
-        Line line = lineDao.findById(lineId)
+    public List<Station> findLineById(final Long lineId) {
+        final Line findLine = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+        final List<Edge> findEdges = edgeDao.findAllByLineId(findLine.getId());
+        final Edges edges = new Edges(findEdges);
 
-        List<Edge> edges = edgeDao.findAllByLineId(line.getId());
-        return new Line(line.getId(), line.getName(), edges);
+        return edges.getStations();
     }
 
     public Map<Line, List<Station>> findAllLines() {
@@ -109,5 +92,20 @@ public class LineService {
         }
 
         return result;
+    }
+
+    @Transactional
+    public void deleteStationFromLine(final Long lineId, final Long stationId) {
+        final Line targetLine = lineDao.findById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+        final Station targetStation = stationDao.findById(stationId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+
+        final List<Edge> findEdges = edgeDao.findAllByLineId(targetLine.getId());
+        final Edges edges = new Edges(findEdges);
+        final Edges removedEdges = edges.remove(targetStation);
+
+        edgeDao.deleteAllByLineId(targetLine.getId());
+        edgeDao.insertAllByLineId(targetLine.getId(), removedEdges.getEdges());
     }
 }

@@ -25,7 +25,7 @@ public class Edge {
         this.distance = distance;
     }
 
-    public boolean hasStation(Station station) {
+    public boolean hasStation(final Station station) {
         return upStation.equals(station) || downStation.equals(station);
     }
 

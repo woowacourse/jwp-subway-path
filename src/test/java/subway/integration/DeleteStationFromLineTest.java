@@ -1,52 +1,107 @@
 package subway.integration;
 
+import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
-import org.springframework.beans.factory.annotation.Autowired;
-import subway.dao.StationDao;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import subway.domain.line.Direction;
+import subway.ui.line.dto.AddStationToLineRequest;
+import subway.ui.line.dto.LineCreateRequest;
+
+import static org.hamcrest.Matchers.is;
 
 public class DeleteStationFromLineTest extends IntegrationTestSetUp {
 
+    private final LineCreateRequest createRequest =
+            new LineCreateRequest("3호선", "A", "B", 10);
+
+    @DisplayName("3호선에 A-B-C 역이 있을 때 - ")
     @BeforeEach
     void init() {
         super.setUp();
-    }
-
-    @Autowired
-    public StationDao stationDao;
-
-    /*@DisplayName("기존 노선에 존재하는 역을 제거한다.")
-    @Test
-    void deleteStationFromLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
+        RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(createRequest)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
-        String location = createResponse.header("Location");
-        Long lineId = Long.parseLong(location.split("/")[2]);
-
-        Station newStation = stationDao.insert(new Station("충무로"));
-        AddStationToLineRequest addRequest = new AddStationToLineRequest(initialUpStation.getId(), newStation.getId(),
-                5);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(addRequest)
-                .when().post("/lines/{lineId}/stations", lineId)
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value());
+                .header("Location", "/lines/1");
 
-        // when
-        ExtractableResponse<Response> deleteResponse = RestAssured
-                .given().log().all()
+        final AddStationToLineRequest request = new AddStationToLineRequest(2L, "C", Direction.DOWN, 3);
+        RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/{lineId}/stations/{stationId}", lineId, newStation.getId())
-                .then().log().all().
-                extract();
+                .body(request)
+                .when().post("/lines/{lineId}/stations", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.CREATED.value())
+                .header("Location", "/lines/1");
+    }
 
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }*/
+    @DisplayName("A를 제거한다.")
+    @Test
+    void deleteStationFromLine1() {
+        // when
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/{lineId}/stations/{stationId}", 1, 1)
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
+        // then
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("lineId", is(1))
+                .body("lineName", is("3호선"))
+                .body("stations[0].stationName", is("B"))
+                .body("stations[1].stationName", is("C"));
+    }
+
+    @DisplayName("B를 제거한다.")
+    @Test
+    void deleteStationFromLine2() {
+        // when
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/{lineId}/stations/{stationId}", 1, 2)
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
+        // then
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("lineId", is(1))
+                .body("lineName", is("3호선"))
+                .body("stations[0].stationName", is("A"))
+                .body("stations[1].stationName", is("C"));
+    }
+
+    @DisplayName("C를 제거한다.")
+    @Test
+    void deleteStationFromLine3() {
+        // when
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/{lineId}/stations/{stationId}", 1, 3)
+                .then().log().all()
+                .statusCode(HttpStatus.NO_CONTENT.value());
+
+        // then
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("lineId", is(1))
+                .body("lineName", is("3호선"))
+                .body("stations[0].stationName", is("A"))
+                .body("stations[1].stationName", is("B"));
+    }
 }

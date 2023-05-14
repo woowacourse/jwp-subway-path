@@ -91,6 +91,37 @@ public class Edges {
         throw new UnsupportedOperationException();
     }
 
+    public Edges remove(final Station station) {
+        final List<Edge> targetEdges = edges.stream()
+                .filter(edge -> edge.hasStation(station))
+                .collect(Collectors.toList());
+        validateRemoveStation(targetEdges);
+
+        if (targetEdges.size() == 1) {
+            edges.remove(targetEdges.get(0));
+        }
+        if (targetEdges.size() == 2) {
+            final Edge edge1 = targetEdges.get(0);
+            final Edge edge2 = targetEdges.get(1);
+
+            final Edge newEdge = new Edge(edge1.getUpStation(), edge2.getDownStation(), edge1.getDistance() + edge2.getDistance());
+            final int targetIndex = targetEdges.indexOf(edge1);
+            edges.remove(edge1);
+            edges.remove(edge2);
+            edges.add(targetIndex, newEdge);
+        }
+        return new Edges(edges);
+    }
+
+    private void validateRemoveStation(final List<Edge> targetEdges) {
+        if (targetEdges.isEmpty()) {
+            throw new IllegalArgumentException("해당 역이 해당 노선에 존재하지 않습니다.");
+        }
+        if (targetEdges.size() > 2) {
+            throw new UnsupportedOperationException("해당 노선에 갈래길이 존재합니다. 확인해주세요.");
+        }
+    }
+
     public List<Edge> getEdges() {
         return new LinkedList<>(edges);
     }

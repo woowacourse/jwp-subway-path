@@ -4,10 +4,8 @@ import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dao.StationDao;
 import subway.domain.line.Direction;
 import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.LineCreateRequest;
@@ -19,9 +17,6 @@ public class FindLineTest extends IntegrationTestSetUp {
 
     private final LineCreateRequest createRequest =
             new LineCreateRequest("3호선", "A", "B", 10);
-
-    @Autowired
-    private StationDao stationDao;
 
     @DisplayName("3호선에 A-B-C 역이 있을 때 - ")
     @BeforeEach

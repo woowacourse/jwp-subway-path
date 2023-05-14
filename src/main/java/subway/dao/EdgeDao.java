@@ -63,17 +63,17 @@ public class EdgeDao {
 
         return jdbcTemplate.query(sql, mapper, lineId);
     }
-    public void deleteAllByLineId(Long lineId) {
+    public void deleteAllByLineId(final Long lineId) {
         String sql = "DELETE FROM edge WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }
 
-    public void insertAllByLineId(Long lineId, List<Edge> edges) {
-        String sql = "INSERT INTO edge(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
+    public void insertAllByLineId(final Long lineId, final List<Edge> edges) {
+        final String sql = "INSERT INTO edge(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Edge edge = edges.get(i);
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                final Edge edge = edges.get(i);
                 ps.setLong(1, lineId);
                 ps.setLong(2, edge.getUpStation().getId());
                 ps.setLong(3, edge.getDownStation().getId());

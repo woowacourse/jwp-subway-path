@@ -13,7 +13,6 @@ import subway.domain.station.Station;
 import subway.service.LineService;
 import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.AddStationToLineResponse;
-import subway.ui.line.dto.DeleteStationFromLineResponse;
 import subway.ui.line.dto.GetAllStationsInLineResponse;
 import subway.ui.line.dto.GetAllStationsInLineResponses;
 import subway.ui.line.dto.LineCreateRequest;
@@ -21,7 +20,6 @@ import subway.ui.line.dto.LineCreateRequest;
 import java.net.URI;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/lines")
@@ -51,7 +49,7 @@ public class LineController {
     @GetMapping("/{lineId}")
     public ResponseEntity<GetAllStationsInLineResponse> findLineById(@PathVariable Long lineId) {
         final Line line = lineService.getLine(lineId);
-        final List<Station> stations = lineService.getStations(lineId);
+        final List<Station> stations = lineService.findLineById(lineId);
         final GetAllStationsInLineResponse response = new GetAllStationsInLineResponse(line, stations);
 
         return ResponseEntity.ok(response);
@@ -65,12 +63,10 @@ public class LineController {
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<DeleteStationFromLineResponse> delete(@PathVariable Long lineId,
-                                                                @PathVariable Long stationId) {
-        Line line = lineService.deleteStationFromLine(lineId, stationId);
-        List<Long> stationIds = line.getStations().stream()
-                .map(Station::getId)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new DeleteStationFromLineResponse(line.getId(), line.getName(), stationIds));
+    public ResponseEntity<Void> delete(@PathVariable Long lineId,
+                                       @PathVariable Long stationId) {
+        lineService.deleteStationFromLine(lineId, stationId);
+
+        return ResponseEntity.noContent().build();
     }
 }
