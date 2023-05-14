@@ -61,7 +61,7 @@ public class DbStationDao implements StationDao {
 
     @Override
     public void delete(Long id) {
-        final String sql = "delete * from STATION WHERE id = ?";
+        final String sql = "delete from STATION WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 }

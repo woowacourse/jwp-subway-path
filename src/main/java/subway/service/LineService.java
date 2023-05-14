@@ -14,6 +14,7 @@ import subway.dto.StationResponse;
 import subway.entity.EdgeEntity;
 import subway.entity.LineEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,5 +78,23 @@ public class LineService {
                 .collect(Collectors.toList());
 
         return LineResponse.of(line, stationResponses);
+    }
+
+    public List<LineResponse> findAllLines() {
+        List<Line> lines = dbLineDao.findAll().stream()
+                .map(LineEntity::toDomain)
+                .collect(Collectors.toList());
+
+        List<LineResponse> lineResponses = new ArrayList<>();
+
+        for (Line line : lines) {
+            List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
+
+            List<StationResponse> stationResponses = allStationsInOrder.stream()
+                    .map(station -> StationResponse.of(station))
+                    .collect(Collectors.toList());
+            lineResponses.add(LineResponse.of(line, stationResponses));
+        }
+        return lineResponses;
     }
 }

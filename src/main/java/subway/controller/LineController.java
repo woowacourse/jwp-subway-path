@@ -6,6 +6,7 @@ import subway.dto.*;
 import subway.service.LineService;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class LineController {
@@ -39,4 +40,13 @@ public class LineController {
                 .ok()
                 .body(lineResponse);
     }
+
+    @GetMapping("/lines")
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        List<LineResponse> lineResponses = lineService.findAllLines();
+        return ResponseEntity
+                .ok()
+                .body(lineResponses);
+    }
+
 }
