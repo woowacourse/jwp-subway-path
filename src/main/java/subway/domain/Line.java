@@ -232,4 +232,7 @@ public class Line {
         return Objects.hash(name, color);
     }
 
+    public boolean isSameId(final long id) {
+        return this.id == id;
+    }
 }

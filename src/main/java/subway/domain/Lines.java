@@ -36,4 +36,15 @@ public class Lines {
             throw new IllegalArgumentException("[ERROR] 중복되는 색상으로 노선을 생성할 수 없습니다.");
         }
     }
+
+    public Line findById(final long id) {
+        return lines.stream()
+                .filter(line -> line.isSameId(id))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 노선을 찾을 수 없습니다."));
+    }
+
+    public void remove(final Line oldLine) {
+        lines.remove(oldLine);
+    }
 }

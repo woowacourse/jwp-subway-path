@@ -29,25 +29,29 @@ public class StationService {
         return StationResponse.from(insertedStation);
     }
 
-    public StationResponse findStationResponseById(Long id) {
+    public StationResponse findStationById(Long id) {
         return StationResponse.from(stationDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다.")));
     }
 
-    public List<StationResponse> findAllStationResponses() {
+    public List<StationResponse> findAllStations() {
         List<Station> stations = stationDao.findAll();
-
         return stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    //todo : Station 이름 검증 후 DB 삽입하도록 수정
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(Station.of(id, stationRequest.getName()));
+        Station updatedStation = Station.of(id, stationRequest.getName());
+        Stations stations = Stations.from(stationDao.findAll());
+        stations.removeById(updatedStation.getId());
+        stations.addStation(updatedStation);
+        stationDao.update(updatedStation);
     }
 
     public void deleteStationById(Long id) {
+        stationDao.findById(id)
+                .orElseThrow(() -> new IllegalStateException("존재하지 않는 역을 삭제할 수 없습니다."));
         stationDao.deleteById(id);
     }
 }

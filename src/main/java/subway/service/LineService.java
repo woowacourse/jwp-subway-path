@@ -42,11 +42,13 @@ public class LineService {
         return LineResponse.from(line);
     }
 
-    //todo : line name, color 검증 후 DB 삽입하도록 수정
     public void updateLine(final long id, final LineRequest request) {
-        Line line = lineRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
-        lineRepository.update(Line.of(id, request.getName(), request.getColor(), line.getSections()));
+        Lines lines = Lines.from(lineRepository.findAll());
+        Line oldLine = lines.findById(id);
+        lines.remove(oldLine);
+        Line updatedLine = Line.of(id, request.getName(), request.getColor(), oldLine.getSections());
+        lines.add(updatedLine);
+        lineRepository.update(Line.of(id, request.getName(), request.getColor(), updatedLine.getSections()));
     }
 
     public void deleteLineById(final long id) {
