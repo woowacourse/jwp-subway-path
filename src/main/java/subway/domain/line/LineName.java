@@ -18,6 +18,10 @@ public class LineName {
         }
     }
 
+    public boolean isSameName(String targetLineName) {
+        return lineName.equals(targetLineName);
+    }
+
     public String getLineName() {
         return lineName;
     }

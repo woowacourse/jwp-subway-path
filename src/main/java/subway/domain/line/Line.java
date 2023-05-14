@@ -13,7 +13,7 @@ public class Line {
     }
 
     public boolean isSameName(String targetName) {
-        return name.getLineName().equals(targetName);
+        return name.isSameName(targetName);
     }
 
     public Long getId() {
