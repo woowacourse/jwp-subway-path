@@ -1,4 +1,4 @@
-package subway.application;
+package subway2.application;
 
 public class NotFoundException extends RuntimeException {
 

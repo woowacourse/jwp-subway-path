@@ -1,4 +1,4 @@
-package subway.exception;
+package subway2.exception;
 
 public class LineDuplicatedException extends RuntimeException {
 

@@ -1,12 +1,12 @@
-package subway.application;
+package subway2.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import subway2.dao.StationDao;
+import subway2.domain.Station;
+import subway2.dto.StationRequest;
+import subway2.dto.StationResponse;
 
 @Service
 public class StationService {

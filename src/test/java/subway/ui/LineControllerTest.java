@@ -23,9 +23,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway2.application.LineService;
+import subway2.dto.LineRequest;
+import subway2.dto.LineResponse;
+import subway2.ui.LineController;
 
 @WebMvcTest(LineController.class)
 class LineControllerTest {

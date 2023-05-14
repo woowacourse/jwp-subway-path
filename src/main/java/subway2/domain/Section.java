@@ -1,4 +1,4 @@
-package subway.domain;
+package subway2.domain;
 
 import java.util.Objects;
 

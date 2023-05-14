@@ -1,4 +1,4 @@
-package subway.dao;
+package subway2.dao;
 
 import java.util.Objects;
 

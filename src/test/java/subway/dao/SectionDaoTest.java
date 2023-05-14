@@ -13,8 +13,10 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway2.dao.SectionDao;
+import subway2.dao.SectionEntity;
+import subway2.domain.Section;
+import subway2.domain.Station;
 
 @JdbcTest
 @Sql("classpath:initializeTestDb.sql")

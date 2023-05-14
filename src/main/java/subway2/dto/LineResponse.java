@@ -1,10 +1,10 @@
-package subway.dto;
+package subway2.dto;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway2.domain.Line;
+import subway2.domain.Station;
 
 public class LineResponse {
     private Long id;

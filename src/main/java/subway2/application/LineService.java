@@ -1,18 +1,18 @@
-package subway.application;
+package subway2.application;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.dao.LineEntity;
-import subway.dao.SectionDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.exception.LineDuplicatedException;
+import subway2.dao.LineDao;
+import subway2.dao.LineEntity;
+import subway2.dao.SectionDao;
+import subway2.domain.Line;
+import subway2.domain.Section;
+import subway2.domain.Sections;
+import subway2.dto.LineRequest;
+import subway2.dto.LineResponse;
+import subway2.exception.LineDuplicatedException;
 
 @Service
 public class LineService {

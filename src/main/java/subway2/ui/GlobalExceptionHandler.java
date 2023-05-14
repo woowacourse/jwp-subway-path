@@ -1,14 +1,14 @@
-package subway.ui;
+package subway2.ui;
 
 import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import subway.application.NotFoundException;
-import subway.dto.ExceptionResponse;
-import subway.exception.InvalidSectionException;
-import subway.exception.LineDuplicatedException;
+import subway2.application.NotFoundException;
+import subway2.dto.ExceptionResponse;
+import subway2.exception.InvalidSectionException;
+import subway2.exception.LineDuplicatedException;
 
 @ControllerAdvice
 public class GlobalExceptionHandler {
