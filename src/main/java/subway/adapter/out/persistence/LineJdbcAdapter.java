@@ -12,12 +12,12 @@ import subway.adapter.out.persistence.entity.LineEntity;
 import subway.adapter.out.persistence.entity.SectionEntity;
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
+import subway.common.mapper.LineMapper;
+import subway.common.mapper.SectionMapper;
 import subway.domain.Line;
 import subway.domain.LineInfo;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.common.mapper.LineMapper;
-import subway.common.mapper.SectionMapper;
 
 @Repository
 public class LineJdbcAdapter implements LoadLinePort, PersistLinePort {
@@ -44,6 +44,12 @@ public class LineJdbcAdapter implements LoadLinePort, PersistLinePort {
     public long create(final LineInfo lineInfo) {
         LineEntity lineEntity = lineDao.insert(LineMapper.toEntity(lineInfo));
         return lineEntity.getId();
+    }
+
+    @Override
+    public boolean checkExistById(final long lineId) {
+        Optional<LineEntity> entity = lineDao.findById(lineId);
+        return entity.isPresent();
     }
 
     @Override

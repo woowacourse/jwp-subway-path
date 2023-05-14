@@ -46,7 +46,8 @@ public class LineCommandService implements CreateLineUseCase, UpdateLineInfoUseC
     }
 
     private void validateLineId(final long lineId) {
-        loadLinePort.findById(lineId)
-                .orElseThrow(NoSuchLineException::new);
+        if (!loadLinePort.checkExistById(lineId)) {
+            throw new NoSuchLineException();
+        }
     }
 }

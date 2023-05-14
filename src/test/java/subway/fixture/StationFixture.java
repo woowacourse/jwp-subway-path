@@ -2,6 +2,7 @@ package subway.fixture;
 
 import subway.adapter.in.web.station.dto.CreateStationRequest;
 import subway.adapter.out.persistence.entity.StationEntity;
+import subway.application.port.in.station.dto.response.StationQueryResponse;
 import subway.domain.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -15,6 +16,7 @@ public class StationFixture {
         public static final Station STATION = new Station(ID, NAME);
         public static final StationEntity ENTITY = new StationEntity(ID, NAME);
         public static final CreateStationRequest REQUEST = new CreateStationRequest(NAME);
+        public static final StationQueryResponse RESPONSE = new StationQueryResponse(ID, NAME);
     }
 
     public static class 삼성역 {
@@ -25,6 +27,7 @@ public class StationFixture {
         public static final Station STATION = new Station(ID, NAME);
         public static final StationEntity ENTITY = new StationEntity(ID, NAME);
         public static final CreateStationRequest REQUEST = new CreateStationRequest(NAME);
+        public static final StationQueryResponse RESPONSE = new StationQueryResponse(ID, NAME);
     }
 
     public static class 잠실역 {
@@ -35,6 +38,7 @@ public class StationFixture {
         public static final Station STATION = new Station(ID, NAME);
         public static final StationEntity ENTITY = new StationEntity(ID, NAME);
         public static final CreateStationRequest REQUEST = new CreateStationRequest(NAME);
+        public static final StationQueryResponse RESPONSE = new StationQueryResponse(ID, NAME);
     }
 
     public static class 건대역 {
@@ -45,5 +49,6 @@ public class StationFixture {
         public static final Station STATION = new Station(ID, NAME);
         public static final StationEntity ENTITY = new StationEntity(ID, NAME);
         public static final CreateStationRequest REQUEST = new CreateStationRequest(NAME);
+        public static final StationQueryResponse RESPONSE = new StationQueryResponse(ID, NAME);
     }
 }

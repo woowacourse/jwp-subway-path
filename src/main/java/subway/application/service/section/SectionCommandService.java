@@ -1,7 +1,5 @@
 package subway.application.service.section;
 
-import subway.common.exception.NoSuchLineException;
-import subway.common.exception.NoSuchStationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.port.in.section.AddStationToLineUseCase;
@@ -11,6 +9,8 @@ import subway.application.port.in.section.dto.command.RemoveStationFromLineComma
 import subway.application.port.out.line.LoadLinePort;
 import subway.application.port.out.line.PersistLinePort;
 import subway.application.port.out.station.LoadStationPort;
+import subway.common.exception.NoSuchLineException;
+import subway.common.exception.NoSuchStationException;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
