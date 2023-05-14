@@ -16,6 +16,38 @@ public final class Section {
 		this.distance = distance;
 	}
 
+	public boolean isTerminalConnected(final Section upLineTerminal, final Section downLineTerminal) {
+		return isConnectedToUpLine(upLineTerminal) || isConnectedToDownLine(downLineTerminal);
+	}
+
+	public boolean isCrossConnected(final Section upLineTerminal, final Section downLineTerminal) {
+		return isConnectedToDownLine(downLineTerminal) && isConnectedToUpLine(upLineTerminal);
+	}
+
+	private boolean isConnectedToUpLine(final Section section) {
+		return this.arrival.equals(section.departure);
+	}
+
+	private boolean isConnectedToDownLine(final Section section) {
+		return this.departure.equals(section.arrival);
+	}
+
+	public boolean isConnected(final Section section) {
+		return isSameDeparture(section) || isSameArrival(section);
+	}
+
+	public boolean isSameDeparture(final Section newSection) {
+		return this.departure.equals(newSection.departure);
+	}
+
+	private boolean isSameArrival(final Section section) {
+		return this.arrival.equals(section.arrival);
+	}
+
+	public Distance subtractDistance(final Section newSection) {
+		return this.distance.subtractDistance(newSection.distance);
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -26,10 +58,6 @@ public final class Section {
 
 	public Station getArrival() {
 		return arrival;
-	}
-
-	public Distance getDistance() {
-		return distance;
 	}
 
 	@Override
