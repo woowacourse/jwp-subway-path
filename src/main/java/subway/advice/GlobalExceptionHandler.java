@@ -73,7 +73,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ColorNotBlankException.class)
     public ResponseEntity<ExceptionResponse> colorNotBlankExceptionHandler(final ColorNotBlankException exception) {
-        return getResponseOfNotFound(exception);
+        return getResponseOfBadRequest(exception);
     }
 
     @ExceptionHandler(SectionNotConnectException.class)

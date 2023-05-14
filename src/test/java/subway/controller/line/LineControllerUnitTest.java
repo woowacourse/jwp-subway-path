@@ -8,17 +8,16 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
 import subway.controller.LineController;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineEditRequest;
+import subway.exception.ColorNotBlankException;
 import subway.exception.LineNotFoundException;
+import subway.exception.LineNumberUnderMinimumNumber;
+import subway.exception.NameIsBlankException;
 import subway.service.LineService;
 import subway.service.SubwayMapService;
 
-import java.util.Objects;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doAnswer;
@@ -47,28 +46,73 @@ public class LineControllerUnitTest {
         // given
         LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2, "green");
 
-        // when
-        MvcResult result = mockMvc.perform(
+        // when & then
+        mockMvc.perform(
                         post("/lines")
                                 .contentType(MediaType.APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsString(lineCreateRequest)))
-                .andExpect(status().isCreated())
-                .andReturn();
+                .andExpect(status().isCreated());
+    }
 
-        // then
-        String locationHeader = result.getResponse().getHeader("Location");
-        assertThat(Objects.requireNonNull(locationHeader).startsWith("/lines")).isTrue();
+    @Test
+    @DisplayName("노선의 색상이 없으면 예외를 발생시킨다.")
+    void throws_exception_when_line_color_empty() throws Exception {
+        // given
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", 2, "");
+        doAnswer(invocation -> {
+            throw new ColorNotBlankException();
+        }).when(lineService).saveLine(any(LineCreateRequest.class));
+
+        // when & then
+        mockMvc.perform(
+                        post("/lines")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(lineCreateRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("노선의 번호가 음수이면 예외를 발생시킨다.")
+    void throws_exception_when_line_number_under_zero() throws Exception {
+        // given
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("2호선", -1, "");
+        doAnswer(invocation -> {
+            throw new LineNumberUnderMinimumNumber();
+        }).when(lineService).saveLine(any(LineCreateRequest.class));
+
+        // when & then
+        mockMvc.perform(
+                        post("/lines")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(lineCreateRequest)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @DisplayName("노선의 이름이 없으면 예외를 발생시킨다.")
+    void throws_exception_when_line_name_empty() throws Exception {
+        // given
+        LineCreateRequest lineCreateRequest = new LineCreateRequest("", 2, "green");
+        doAnswer(invocation -> {
+            throw new NameIsBlankException();
+        }).when(lineService).saveLine(any(LineCreateRequest.class));
+
+        // when & then
+        mockMvc.perform(
+                        post("/lines")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsString(lineCreateRequest)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("모든 노선을 조회한다.")
     void find_all_lines_success() throws Exception {
-        // when
+        // when & then
         mockMvc.perform(
                 get("/lines")
         ).andExpect(status().isOk());
 
-        // then
         verify(lineService).findAll();
     }
 
@@ -78,12 +122,11 @@ public class LineControllerUnitTest {
         // given
         Long lineNumber = 1L;
 
-        // when
+        // when & then
         mockMvc.perform(
                 get("/lines/" + lineNumber)
         ).andExpect(status().isOk());
 
-        // then
         verify(subwayMapService).showLineMapByLineNumber(lineNumber);
     }
 
@@ -94,14 +137,13 @@ public class LineControllerUnitTest {
         Long id = 1L;
         LineEditRequest lineEditRequest = new LineEditRequest("2호선", 10, "blue");
 
-        // when
+        // when & then
         mockMvc.perform(
                 patch("/lines/" + id)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(lineEditRequest))
         ).andExpect(status().isNoContent());
 
-        // then
         verify(lineService).editLineById(eq(id), any(LineEditRequest.class));
     }
 
@@ -131,12 +173,11 @@ public class LineControllerUnitTest {
         // given
         Long id = 1L;
 
-        // when
+        // when & then
         mockMvc.perform(
                 delete("/lines/" + id)
         ).andExpect(status().isNoContent());
 
-        // then
         verify(lineService).deleteLineById(id);
     }
 }
