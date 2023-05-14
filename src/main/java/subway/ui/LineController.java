@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.LineStationResponse;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -28,14 +27,13 @@ public class LineController {
     }
 
     @GetMapping
-    public ResponseEntity<List<LineStationResponse>> findAllLines() {
-        return ResponseEntity.ok().body(lineService.findAll());
+    public ResponseEntity<List<LineResponse>> findAllLines() {
+        return ResponseEntity.ok(lineService.findLineResponses());
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<LineStationResponse> findLineById(@PathVariable Long id) {
-        LineStationResponse lineStationResponse = lineService.findById(id);
-        return ResponseEntity.ok(lineStationResponse);
+    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
     @PutMapping("/{id}")

@@ -13,9 +13,11 @@ import subway.entity.Section;
 import subway.entity.Station;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -29,6 +31,27 @@ public class LineService {
     public Long save(LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         return persistLine.getId();
+    }
+
+    public List<LineResponse> findLineResponses() {
+        List<Line> persistLines = findLines();
+        return persistLines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    public List<Line> findLines() {
+        return lineDao.findAll();
+    }
+
+    public LineResponse findLineResponseById(Long id) {
+        Line persistLine = findLineById(id);
+        return LineResponse.of(persistLine);
+    }
+
+    public Line findLineById(Long id) {
+        return lineDao.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 ID가 없습니다."));
     }
 
     public List<LineStationResponse> findAll() {
@@ -57,15 +80,14 @@ public class LineService {
     }
 
     public LineStationResponse findById(Long id) {
-        Optional<Line> line = lineDao.findById(id);
-        if (line.isEmpty()) {
-            throw new NoSuchElementException("해당하는 ID가 없습니다.");
-        }
+        Line line = lineDao.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 ID가 없습니다."));
+
         List<Section> sections = sectionDao.findByLineId(id);
         List<Station> stations = stationDao.findAll();
 
         List<StationResponse> stationResponses = linkStationsByLine(sections, stations);
-        return LineStationResponse.from(LineResponse.of(line.get()), stationResponses);
+        return LineStationResponse.from(LineResponse.of(line), stationResponses);
     }
 
     private List<StationResponse> linkStationsByLine(final List<Section> sections, final List<Station> stations) {
@@ -94,7 +116,7 @@ public class LineService {
     }
 
     public void update(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(id, new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteById(Long id) {
