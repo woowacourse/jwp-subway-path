@@ -1,9 +1,12 @@
 package subway.common.mapper;
 
-import subway.domain.Section;
 import subway.adapter.out.persistence.entity.SectionEntity;
+import subway.domain.Section;
 
 public class SectionMapper {
+
+    private SectionMapper() {
+    }
 
     public static SectionEntity toEntity(final long lineId, final Section section) {
         return new SectionEntity(lineId, section.getUpStation().getId(), section.getDownStation().getId(),

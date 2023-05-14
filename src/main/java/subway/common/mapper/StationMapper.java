@@ -6,6 +6,9 @@ import subway.domain.Station;
 
 public class StationMapper {
 
+    private StationMapper() {
+    }
+
     public static Station toStation(final StationEntity entity) {
         return new Station(entity.getId(), entity.getName());
     }

@@ -10,6 +10,9 @@ import subway.domain.LineInfo;
 
 public class LineMapper {
 
+    private LineMapper() {
+    }
+
     public static LineQueryResponse toResponse(Line line) {
         List<StationQueryResponse> stations = line.findOrderedStation().stream()
                 .map(StationMapper::toResponse)
