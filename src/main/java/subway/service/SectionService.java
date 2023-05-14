@@ -7,6 +7,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.Stations;
+import subway.global.exception.section.CanNotDuplicatedSectionException;
 import subway.service.dto.SectionInLineResponse;
 
 import java.util.List;
@@ -21,20 +22,26 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public void deleteAll(final Long lineId) {
-        sectionDao.deleteAll(lineId);
-    }
-
-    public void deleteSection(final Long sectionId) {
-        sectionDao.deleteById(sectionId);
-    }
-
     public void registerSection(
             final String currentStationName,
             final String nextStationName,
             final int distance,
             final Long lineId
     ) {
+
+        final List<Section> originSections = findSectionsByLineId(lineId);
+
+        final Section targetSection = new Section(
+                new Stations(
+                        new Station(currentStationName),
+                        new Station(nextStationName),
+                        distance
+                )
+        );
+
+        if (hasSameSection(targetSection, originSections)) {
+            throw new CanNotDuplicatedSectionException("해당 호선에 이미 출발지와 도착지가 같은 구간이 존재합니다.");
+        }
 
         final SectionEntity sectionEntity = new SectionEntity(
                 currentStationName,
@@ -44,6 +51,19 @@ public class SectionService {
         );
 
         sectionDao.save(sectionEntity);
+    }
+
+    private boolean hasSameSection(final Section target, final List<Section> originSections) {
+        return originSections.stream()
+                             .anyMatch(it -> it.isSame(target));
+    }
+
+    public void deleteAll(final Long lineId) {
+        sectionDao.deleteAll(lineId);
+    }
+
+    public void deleteSection(final Long sectionId) {
+        sectionDao.deleteById(sectionId);
     }
 
     public List<SectionInLineResponse> mapToSectionInLineResponseFrom(final Line line) {
