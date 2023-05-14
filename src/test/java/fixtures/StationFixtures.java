@@ -23,6 +23,8 @@ public class StationFixtures {
     public static final String STATION_성수역_NAME = "성수역";
     public static final String STATION_신림역_NAME = "신림역";
     public static final String STATION_예외역_NAME = "예외역";
+    public static final String STATION_온수역_NAME = "온수역";
+    public static final String STATION_철산역_NAME = "철산역";
     public static final long LINE2_ID = 1L;
     public static final long LINE7_ID = 2L;
     public static final long STATION_잠실역_ID = 1L;
@@ -31,6 +33,8 @@ public class StationFixtures {
     public static final long STATION_대림역_ID = 3L;
     public static final long STATION_성수역_ID = 3L;
     public static final long STATION_예외역_ID = 3L;
+    public static final long STATION_온수역_ID = 1L;
+    public static final long STATION_철산역_ID = 2L;
 
     /**
      * 잠실 - 건대
@@ -50,6 +54,7 @@ public class StationFixtures {
     public static final int DISTANCE_건대역_TO_성수역 = 15;
     public static final int DISTANCE_잠실역_TO_예외역 = 20;
     public static final int DISTANCE_대림역_TO_신림역 = 8;
+    public static final int DISTANCE_온수역_TO_철산역 = 11;
 
 
     /**
@@ -67,6 +72,7 @@ public class StationFixtures {
      * domain
      */
     public static final Line LINE2 = new Line(LINE2_ID, LINE2_NAME);
+    public static final Line LINE7 = new Line(LINE7_ID, LINE7_NAME);
     public static final Station STATION_잠실역 = new Station(STATION_잠실역_ID, STATION_잠실역_NAME, LINE2);
     public static final Station STATION_TO_INSERT_잠실역 = new Station(null, STATION_잠실역_NAME, LINE2);
     public static final Station STATION_건대역 = new Station(STATION_건대역_ID, STATION_건대역_NAME, LINE2);
@@ -80,6 +86,8 @@ public class StationFixtures {
     public static final Station STATION_TO_INSERT_신림역 = new Station(null, STATION_신림역_NAME, LINE2);
     public static final Station STATION_예외역 = new Station(STATION_예외역_ID, STATION_예외역_NAME, LINE2);
     public static final Station STATION_TO_INSERT_예외역 = new Station(null, STATION_예외역_NAME, LINE2);
+    public static final Station STATION_온수역 = new Station(STATION_온수역_ID, STATION_온수역_NAME, LINE7);
+    public static final Station STATION_철산역 = new Station(STATION_철산역_ID, STATION_철산역_NAME, LINE7);
     public static final Section SECTION_잠실역_TO_건대역 = new Section(SECTION_잠실역_TO_건대역_ID, STATION_잠실역, STATION_건대역, DISTANCE_잠실역_TO_건대역);
     public static final Section SECTION_AFTER_CALCULATE_잠실역_TO_건대역 = new Section(null, STATION_TO_INSERT_잠실역, STATION_TO_INSERT_건대역, DISTANCE_잠실역_TO_건대역);
     public static final Section SECTION_TO_INSERT_잠실역_TO_건대역 = new Section(null, STATION_TO_INSERT_잠실역, STATION_TO_INSERT_건대역, DISTANCE_잠실역_TO_건대역);
@@ -97,6 +105,7 @@ public class StationFixtures {
     public static final Section SECTION_잠실역_TO_예외역 = new Section(SECTION_잠실역_TO_예외역_ID, STATION_잠실역, STATION_예외역, DISTANCE_잠실역_TO_예외역);
     public static final Section SECTION_AFTER_CALCULATE_잠실역_TO_예외역 = new Section(null, STATION_잠실역, STATION_TO_INSERT_예외역, DISTANCE_잠실역_TO_예외역);
     public static final Section SECTION_TO_INSERT_대림역_TO_신림역 = new Section(null, STATION_TO_INSERT_대림역, STATION_TO_INSERT_신림역, DISTANCE_대림역_TO_신림역);
+    public static final Section SECTION_온수역_TO_철산역 = new Section(null, STATION_온수역, STATION_철산역, DISTANCE_온수역_TO_철산역);
 
     /**
      * entity
