@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.entity.EdgeEntity;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -30,6 +31,24 @@ public class SubwayGraph {
     public int findOrderOf(final Station station) {
         return findAllStationsInOrder().indexOf(station);
     }
+
+    public EdgeEntity findEdge(Station station) {
+        return new EdgeEntity(line.getId(), station.getId(), findOrderOf(station), findWeight(station));
+    }
+
+    public Station findNextStation(Station station) {
+        Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(station);
+        return findNextStation(outgoingEdges);
+    }
+
+    public Integer findWeight(Station station) {
+        Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(station);
+        if (outgoingEdges.isEmpty()) {
+            return null;
+        }
+        return (int) graph.getEdgeWeight(outgoingEdges.iterator().next());
+    }
+
 
     public Station findUpEndStation() {
         return graph.vertexSet().stream()

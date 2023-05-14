@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.springframework.stereotype.Component;
 import subway.dto.LineDto;
+import subway.entity.EdgeEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,11 @@ public class SubwayGraphs {
         final SubwayGraph lineGraph = findSubwayGraphOf(line);
 
         return lineGraph.findOrderOf(station);
+    }
+
+    public EdgeEntity findEdge(Line line, Station station) {
+        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
+        return subwayGraph.findEdge(station);
     }
 
     public List<Station> findAllStationsInOrderOf(Line line) {

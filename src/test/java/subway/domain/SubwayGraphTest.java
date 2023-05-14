@@ -246,4 +246,34 @@ class SubwayGraphTest {
         assertThat(subwayGraph.findDistanceBetween(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION))
                 .isEqualTo(5);
     }
+
+    @Test
+    @DisplayName("연결된 다음 역을 찾을 수 있다")
+    void findNextStation() {
+        SubwayGraph subwayGraph = createSubwayGraph();
+        subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 2);
+        Station nextStation = subwayGraph.findNextStation(EXPRESS_BUS_TERMINAL_STATION);
+
+        assertThat(nextStation).isEqualTo(NEW_STATION);
+    }
+
+    @Test
+    @DisplayName("연결된 다음 역의 거리를 찾을 수 있다")
+    void findWeight() {
+        SubwayGraph subwayGraph = createSubwayGraph();
+        subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 2);
+        int weight = subwayGraph.findWeight(EXPRESS_BUS_TERMINAL_STATION);
+
+        assertThat(weight).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("연결된 다음 역의 거리가 종점인 경우 거리는 null이다.")
+    void findWeight1() {
+        SubwayGraph subwayGraph = createSubwayGraph();
+        subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 2);
+        Integer weight = subwayGraph.findWeight(SAPYEONG_STATION);
+
+        assertThat(weight).isNull();
+    }
 }
