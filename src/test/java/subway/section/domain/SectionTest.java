@@ -99,7 +99,7 @@ class SectionTest {
         final String base = "역삼역";
         final String additional = "선릉역";
         
-        // when
+        // expect
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> section.getAdditionalSectionsWithOneself(base, Direction.LEFT, additional, distance));
     }

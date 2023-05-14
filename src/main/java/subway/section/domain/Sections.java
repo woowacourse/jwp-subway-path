@@ -93,10 +93,17 @@ public class Sections {
     
     public void removeStation(final String station) {
         final Set<Section> sectionsContainedStation = getSectionsOfContainStation(station);
+        validateExistStation(sectionsContainedStation);
         sections.removeAll(sectionsContainedStation);
         
         if (isMiddleStationCase(sectionsContainedStation)) {
             sections.add(getCombinedSection(sectionsContainedStation));
+        }
+    }
+    
+    private void validateExistStation(final Set<Section> sectionsContainedStation) {
+        if (sectionsContainedStation.isEmpty()) {
+            throw new IllegalArgumentException("해당 노선에 삭제하려는 역이 존재하지 않습니다.");
         }
     }
     

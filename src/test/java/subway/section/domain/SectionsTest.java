@@ -253,4 +253,15 @@ class SectionsTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.addStation("역삼역", Direction.RIGHT, "강남역", 3L));
     }
+    
+    @Test
+    void 삭제하려는_역이_존재하지_않을_시_예외_발생() {
+        // given
+        final Set<Section> initSections = Set.of(new Section("강남역", "역삼역", 5L));
+        final Sections sections = new Sections(new HashSet<>(initSections));
+        
+        // when, then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> sections.removeStation("가양역"));
+    }
 }
