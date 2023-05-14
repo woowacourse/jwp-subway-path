@@ -11,7 +11,7 @@ public class Section {
     private final long distance;
 
     public Section(final Long id, final Station upStation, final Station downStation, final long distance) {
-        if (distance <= 0) {
+        if (distance <= 0L) {
             throw new BusinessException("거리는 1 이상이어야합니다.");
         }
         this.id = id;

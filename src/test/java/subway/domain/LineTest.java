@@ -99,7 +99,7 @@ class LineTest {
         final Station station = new Station("station");
 
         //when
-        line.addBetweenStation(station, firstStation, secondStation, distance);
+        line.addBetweenStation(station, firstStation, secondStation, 5L);
 
         //then
         assertThat(line.getStationsSize()).isEqualTo(4);

@@ -205,7 +205,7 @@ class LineStationServiceTest {
         given(stationRepository.findByName(anyString()))
             .willReturn(Optional.of(station), Optional.of(midUpStation), Optional.of(midDownStation));
         final AddStationToBetweenLineRequest request = new AddStationToBetweenLineRequest("lineName", "stationName",
-            "upStationName", "downStationName", 10L);
+            "upStationName", "downStationName", 5L);
 
         //when
         lineStationService.addStationToBetweenLine(request);

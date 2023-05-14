@@ -282,7 +282,7 @@ public class LineStationIntegrationTest extends IntegrationTest {
 
         final AddStationToLineRequest request = new AddStationToLineRequest(AddStationLocation.BETWEEN,
             lineResponse.getName(), stationResponse3.getName(),
-            stationResponse1.getName(), stationResponse2.getName(), 10L);
+            stationResponse1.getName(), stationResponse2.getName(), 5L);
 
         //when
         final ExtractableResponse<Response> response = given().log().all()
