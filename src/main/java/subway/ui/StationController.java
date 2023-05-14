@@ -2,7 +2,6 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,9 +9,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
 import subway.dto.StationResponse;
-import subway.entity.StationEntity;
-
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -22,11 +18,6 @@ public class StationController {
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
-    }
-
-    @GetMapping("/test")
-    public ResponseEntity<List<StationEntity>> showAllStations() {
-        return ResponseEntity.ok().body(stationService.findAllStationTest());
     }
 
     /**
@@ -39,11 +30,6 @@ public class StationController {
         return ResponseEntity.ok(stationService.findLineStationResponsesById(lineId));
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
-//        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
-//    }
-
 //    @PostMapping
 //    public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
 //        StationResponse station = stationService.saveStation(stationRequest);
@@ -55,14 +41,16 @@ public class StationController {
 //        return ResponseEntity.ok().build();
 //    }
 
+    /**
+     * 특정 노선 제거
+     * @param name
+     * @param lineId
+     * @return
+     */
     @DeleteMapping("/{lineId}")
     public ResponseEntity<List<StationResponse>> deleteStation(@RequestBody String name,@PathVariable Long lineId ) {
         stationService.deleteStation(lineId, name);
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
 }

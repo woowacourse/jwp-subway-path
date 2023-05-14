@@ -65,11 +65,6 @@ public class StationService {
 //    public StationResponse findStationResponseById(Long id) {
 //        return StationResponse.of(stationDao.findById(id));
 //    }
-
-    public List<StationEntity> findAllStationTest() {
-        return stationDao.findAll();
-    }
-
 //    public void updateStation(Long id, StationRequest stationRequest) {
 //        stationDao.update(new Station(id, stationRequest.getName()));
 //    }
