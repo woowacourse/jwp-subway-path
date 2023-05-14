@@ -21,10 +21,10 @@ class ColorTest {
 
     @ParameterizedTest
     @DisplayName("색 이름 형식에 맞지 않는다면 예외를 던진다.")
-    @ValueSource(strings = {"색", "하양", "white색", "하양하양하양하양하양하양색"})
+    @ValueSource(strings = {"색", "하양", "white색", "열글자가넘는색이름입니다색"})
     void validateWithInvalidColorFormat(final String input) {
         assertThatThrownBy(() -> new Color(input))
                 .isInstanceOf(InvalidColorException.class)
-                .hasMessage("색 이름은 '색'으로 끝나야 합니다.");
+                .hasMessage("색 이름은 1~10자의 한글이며, '색'으로 끝나야 합니다.");
     }
 }

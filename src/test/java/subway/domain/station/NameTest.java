@@ -20,28 +20,11 @@ class NameTest {
 
     @ParameterizedTest
     @DisplayName("역 이름이 2글자이하, 11글자 이상일 경우 예외를 던진다.")
-    @ValueSource(strings = {"역", "열한글자가넘는역이름입니다역"})
+    @ValueSource(strings = {"역", "열한글자가넘는역이름입니다역", "선릉", "NewYork역", "!!역"})
     void validateWithInvalidLength(final String input) {
         assertThatThrownBy(() -> new Name(input))
                 .isInstanceOf(InvalidStationNameException.class)
-                .hasMessage("역 이름은 2글자에서 11글자까지 가능합니다.");
-    }
-
-    @Test
-    @DisplayName("역 이름이 역으로 끝나지 않을 경우 예외를 던진다.")
-    void validateWithInvalidNameFormat() {
-        assertThatThrownBy(() -> new Name("선릉"))
-                .isInstanceOf(InvalidStationNameException.class)
-                .hasMessage("역 이름은 '역'으로 끝나야 합니다.");
-    }
-
-    @ParameterizedTest
-    @DisplayName("역 이름이 한글, 숫자로 구성되지 않을 경우 예외를 던진다.")
-    @ValueSource(strings = {"NewYork역", "!!역"})
-    void validateWithInvalidNameElement(final String input) {
-        assertThatThrownBy(() -> new Name(input))
-                .isInstanceOf(InvalidStationNameException.class)
-                .hasMessage("역 이름은 한글, 숫자만 가능합니다.");
+                .hasMessage("역 이름은 2 ~ 11자의 한글과 숫자로 구성되며, '역'으로 끝나야 합니다.");
     }
 
     @ParameterizedTest

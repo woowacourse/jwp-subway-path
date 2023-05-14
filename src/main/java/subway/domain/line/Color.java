@@ -20,7 +20,7 @@ final class Color {
             throw new InvalidColorException("노선 색은 존재해야 합니다.");
         }
         if (!PATTERN.matcher(value).matches()) {
-            throw new InvalidColorException("색 이름은 '색'으로 끝나야 합니다.");
+            throw new InvalidColorException("색 이름은 1~10자의 한글이며, '색'으로 끝나야 합니다.");
         }
     }
 
