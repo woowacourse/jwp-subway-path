@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -93,7 +94,7 @@ public class Line {
 
     public void removeStation(Station station) {
         if (!isDuplicatedName(station)) {
-            throw new IllegalArgumentException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
+            throw new NoSuchElementException("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
         }
         Optional<Section> findSource = findBySource(station);
         Optional<Section> findTarget = findByTarget(station);

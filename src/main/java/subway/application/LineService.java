@@ -45,11 +45,11 @@ public class LineService {
         lineRepository.save(subway.findLineByName(line.getName()));
     }
 
-    public void deleteStation(DeleteStationRequest request) {
+    public void deleteStation(Long lineId, DeleteStationRequest request) {
         Subway subway = new Subway(lineRepository.findAll());
-        subway.removeStation(request.getLineName(), request.getStationName());
-        Line line = subway.findLineByName(request.getLineName());
-        lineRepository.save(line);
+        Line line = lineRepository.findById(lineId);
+        subway.removeStation(line.getName(), request.getStationName());
+        lineRepository.save(subway.findLineByName(line.getName()));
     }
 
     @Transactional(readOnly = true)

@@ -96,7 +96,7 @@ class SubwayTest {
 
         // when, then
         assertThatThrownBy(() -> subway.removeStation("2호선", "역삼역"))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(NoSuchElementException.class)
                 .hasMessage("현재 삭제하려는 구간에는 노선에 존재하지 않는 역이 포함돼 있습니다.");
     }
 

@@ -68,8 +68,12 @@ public class LineRepository {
             Station target = section.getTarget();
             StationEntity sourceStationEntity = nameByStations.get(source.getName());
             StationEntity targetStationEntity = nameByStations.get(target.getName());
-            sectionDao.insert(new SectionEntity(sourceStationEntity.getId(), targetStationEntity.getId(),
-                    lineId, section.getDistance()));
+            sectionDao.insert(new SectionEntity(
+                    sourceStationEntity.getId(),
+                    targetStationEntity.getId(),
+                    lineId,
+                    section.getDistance()
+            ));
         }
     }
 
@@ -128,7 +132,9 @@ public class LineRepository {
         List<StationEntity> afterDeleteStations = stationDao.findAllBySections();
 
         savedStations.removeAll(afterDeleteStations);
-        List<Long> collect = savedStations.stream().map(StationEntity::getId).collect(toList());
+        List<Long> collect = savedStations.stream()
+                .map(StationEntity::getId)
+                .collect(toList());
         stationDao.deleteByIds(collect);
     }
 

@@ -93,13 +93,13 @@ class LineServiceTest {
         lineRepository.save(new Line("1호선", List.of(
                 new Section("A", "B", 2)
         )));
-        lineRepository.save(new Line("2호선", List.of(
+        Long savedLineId = lineRepository.save(new Line("2호선", List.of(
                 new Section("X", "B", 2),
                 new Section("B", "Y", 3)
         )));
 
         //when
-        lineService.deleteStation(new DeleteStationRequest("2호선", "Y"));
+        lineService.deleteStation(savedLineId, new DeleteStationRequest("Y"));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
@@ -112,12 +112,12 @@ class LineServiceTest {
     @Test
     void 노선에_역이_하나_남으면_전체를_삭제한다() {
         //given
-        lineRepository.save(new Line("1호선", List.of(
+        Long savedLineId = lineRepository.save(new Line("1호선", List.of(
                 new Section("A", "B", 2)
         )));
 
         //when
-        lineService.deleteStation(new DeleteStationRequest("1호선", "A"));
+        lineService.deleteStation(savedLineId, new DeleteStationRequest("A"));
 
         //then
         assertThat(lineRepository.findAll()).flatExtracting(Line::getStations)

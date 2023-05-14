@@ -6,10 +6,13 @@ import static subway.integration.IntegrationTestFixture.노선_전체_조회_결
 import static subway.integration.IntegrationTestFixture.노선_정보;
 import static subway.integration.IntegrationTestFixture.노선_조회_결과;
 import static subway.integration.IntegrationTestFixture.단일_노선_조회_요청;
-import static subway.integration.IntegrationTestFixture.비정상_요청을_반환한다;
+import static subway.integration.IntegrationTestFixture.리소스를_찾을_수_없다는_응답인지_검증한다;
+import static subway.integration.IntegrationTestFixture.반환값이_없는지_검증한다;
+import static subway.integration.IntegrationTestFixture.비정상_요청이라는_응답인지_검증한다;
+import static subway.integration.IntegrationTestFixture.역_삭제_요청;
 import static subway.integration.IntegrationTestFixture.역_추가_요청;
 import static subway.integration.IntegrationTestFixture.전체_노선_조회_요청;
-import static subway.integration.IntegrationTestFixture.정상_요청을_반환한다;
+import static subway.integration.IntegrationTestFixture.정상_응답인지_검증한다;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -41,7 +44,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             ExtractableResponse<Response> response = 노선_생성_요청("2호선", "역삼역", "잠실역", 10);
 
-            비정상_요청을_반환한다(response);
+            비정상_요청이라는_응답인지_검증한다(response);
         }
     }
 
@@ -81,7 +84,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             ExtractableResponse<Response> response = 역_추가_요청(저장된_노선_ID, "강남역", "잠실역", 2);
 
-            정상_요청을_반환한다(response);
+            정상_응답인지_검증한다(response);
             노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("2호선", "강남역", "잠실역", "역삼역"));
         }
 
@@ -91,7 +94,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             ExtractableResponse<Response> response = 역_추가_요청(저장된_노선_ID, "서울역", "시청역", 3);
 
-            비정상_요청을_반환한다(response);
+            비정상_요청이라는_응답인지_검증한다(response);
         }
 
         @Test
@@ -100,7 +103,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             ExtractableResponse<Response> response = 역_추가_요청(저장된_노선_ID, "강남역", "잠실역", 5);
 
-            비정상_요청을_반환한다(response);
+            비정상_요청이라는_응답인지_검증한다(response);
         }
 
         @Test
@@ -109,7 +112,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             ExtractableResponse<Response> response = 역_추가_요청(저장된_노선_ID, "강남역", "역삼역", 3);
 
-            비정상_요청을_반환한다(response);
+            비정상_요청이라는_응답인지_검증한다(response);
         }
 
         @Test
@@ -119,6 +122,58 @@ public class LineIntegrationTest extends IntegrationTest {
             ExtractableResponse<Response> response = 역_추가_요청(Long.MAX_VALUE, "강남역", "잠실역", 2);
 
             assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        }
+    }
+
+    @Nested
+    public class 노선에서_역을_삭제할_떄 {
+
+        @Test
+        void 정상적으로_추가된다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+            역_추가_요청(저장된_노선_ID, "역삼역", "잠실역", 10);
+
+            역_삭제_요청(저장된_노선_ID, "역삼역");
+
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("2호선", "강남역", "잠실역"));
+        }
+
+        @Test
+        void 노선에_역이_2개만_존재할_때_역은_전체가_삭제된다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+
+            역_삭제_요청(저장된_노선_ID, "역삼역");
+
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("2호선"));
+        }
+
+        @Test
+        void 존재하지_않는_노선의_역을_삭제하면_예외가_발생한다() {
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 역_삭제_요청(저장된_노선_ID, "서면역");
+
+            리소스를_찾을_수_없다는_응답인지_검증한다(response);
+        }
+
+        @Test
+        void 환승역을_삭제하면_한_노선에서만_삭제되고_다른_노선에는_존재한다() {
+            노선_생성_요청("1호선", "강남역", "시청역", 10);
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+
+            ExtractableResponse<Response> response = 역_삭제_요청(저장된_노선_ID, "강남역");
+
+            반환값이_없는지_검증한다(response);
+            노선_전체_조회_결과를_확인한다(전체_노선_조회_요청(), 노선_정보("1호선", "강남역", "시청역"), 노선_정보("2호선"));
+        }
+
+        @Test
+        void 노선에_존재하지_않는_역을_삭제하면_예외가_발생한다() {
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
+
+            ExtractableResponse<Response> response = 역_삭제_요청(Long.MAX_VALUE, "강남역");
+
+            리소스를_찾을_수_없다는_응답인지_검증한다(response);
         }
     }
 }

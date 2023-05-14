@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.AddStationRequest;
+import subway.dto.DeleteStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
@@ -18,12 +19,20 @@ import subway.dto.StationResponse;
 @SuppressWarnings("NonAsciiCharacters")
 public class IntegrationTestFixture {
 
-    public static void 비정상_요청을_반환한다(ExtractableResponse<Response> response) {
+    public static void 비정상_요청이라는_응답인지_검증한다(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static void 정상_요청을_반환한다(ExtractableResponse<Response> response) {
+    public static void 정상_응답인지_검증한다(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 반환값이_없는지_검증한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 리소스를_찾을_수_없다는_응답인지_검증한다(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
     public static ExtractableResponse<Response> 노선_생성_요청(String lineName, String source, String target, int distance) {
@@ -83,6 +92,17 @@ public class IntegrationTestFixture {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
                 .when().post("/lines/{lineId}/station", lineId)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 역_삭제_요청(Long lineId, String stationName) {
+        DeleteStationRequest request = new DeleteStationRequest(stationName);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().delete("/lines/{lineId}/stations", lineId)
                 .then().log().all()
                 .extract();
     }
