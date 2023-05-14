@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.exception.InvalidSectionLengthException;
+
 import static subway.domain.SectionDirection.INNER_RIGHT;
 import static subway.domain.SectionDirection.NONE;
 import static subway.domain.SectionDirection.INNER_LEFT;
@@ -19,6 +21,12 @@ public class Section {
         this.downStation = downStation;
         this.distance = distance;
         this.nextSectionId = nextSectionId;
+    }
+
+    private void validateDistance(int distance) {
+        if (distance < 1) {
+            throw new InvalidSectionLengthException();
+        }
     }
 
     public Section(final long id, final Station upStation, final Station downStation, final int distance) {
@@ -100,12 +108,6 @@ public class Section {
 
     public boolean containsStation(long stationId) {
         return this.getUpStationId() == stationId || this.getDownStationId() == stationId;
-    }
-
-    private void validateDistance(int distance) {
-        if (distance < 1) {
-            throw new IllegalArgumentException("거리는 1이상의 정수이어야 합니다.");
-        }
     }
 
     @Override
