@@ -32,7 +32,7 @@ public class AddStationToLineTest extends IntegrationTestSetUp {
 
     @DisplayName("B-C를 DOWN 방향으로 추가하면 A-B-C가 된다.")
     @Test
-    void addStationToLine1() {
+    void addStationToLine1_success() {
         // when
         final AddStationToLineRequest request = new AddStationToLineRequest(2L, "C", Direction.DOWN, 3);
         RestAssured.given().log().all()
@@ -58,7 +58,7 @@ public class AddStationToLineTest extends IntegrationTestSetUp {
 
     @DisplayName("B-C를 UP 방향으로 추가하면 A-C-B가 된다.")
     @Test
-    void addStationToLine2() {
+    void addStationToLine2_success() {
         // when
         final AddStationToLineRequest request = new AddStationToLineRequest(2L, "C", Direction.UP, 3);
         RestAssured.given().log().all()
@@ -82,9 +82,33 @@ public class AddStationToLineTest extends IntegrationTestSetUp {
                 .body("stations[2].stationName", equalTo("B"));
     }
 
+    @DisplayName("B-C를 UP 방향으로 추가하되, distance가 기존의 edge보다 길다면 BAD_REQUEST가 반환된다.")
+    @Test
+    void addStationToLine2_fail() {
+        // when
+        final AddStationToLineRequest request = new AddStationToLineRequest(2L, "C", Direction.UP, 10);
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/lines/{lineId}/stations", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+        // then
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("lineId", equalTo(1))
+                .body("lineName", equalTo("3호선"))
+                .body("stations[0].stationName", equalTo("A"))
+                .body("stations[1].stationName", equalTo("B"));
+    }
+
     @DisplayName("A-C를 DOWN 방향으로 추가하면 A-C-B가 된다.")
     @Test
-    void addStationToLine3() {
+    void addStationToLine3_success() {
         // when
         final AddStationToLineRequest request = new AddStationToLineRequest(1L, "C", Direction.DOWN, 3);
         RestAssured.given().log().all()
@@ -108,9 +132,33 @@ public class AddStationToLineTest extends IntegrationTestSetUp {
                 .body("stations[2].stationName", equalTo("B"));
     }
 
+    @DisplayName("A-C를 DOWN 방향으로 추가추가하되, distance가 기존의 edge보다 길다면 BAD_REQUEST가 반환된다.")
+    @Test
+    void addStationToLine3_fail() {
+        // when
+        final AddStationToLineRequest request = new AddStationToLineRequest(1L, "C", Direction.DOWN, 11);
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/lines/{lineId}/stations", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+        // then
+        RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", 1)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("lineId", equalTo(1))
+                .body("lineName", equalTo("3호선"))
+                .body("stations[0].stationName", equalTo("A"))
+                .body("stations[1].stationName", equalTo("B"));
+    }
+
     @DisplayName("A-C를 UP 방향으로 추가하면 C-A-B가 된다.")
     @Test
-    void addStationToLine4() {
+    void addStationToLine4_success() {
         // when
         final AddStationToLineRequest request = new AddStationToLineRequest(1L, "C", Direction.UP, 3);
         RestAssured.given().log().all()

@@ -41,7 +41,7 @@ public class Edges {
         if (direction == Direction.UP) {
             if (existEdgeOptional.isPresent()) {
                 final Edge existEdge = existEdgeOptional.get();
-                if (existEdge.getDistance() < distance) {
+                if (existEdge.getDistance() <= distance) {
                     throw new IllegalArgumentException("추가하려는 구간의 길이가 기존 구간의 길이보다 깁니다.");
                 }
                 final Edge edge1 = new Edge(existEdge.getUpStation(), newStation, existEdge.getDistance() - distance);
@@ -59,7 +59,7 @@ public class Edges {
         if (direction == Direction.DOWN) {
             if (existEdgeOptional.isPresent()) {
                 final Edge existEdge = existEdgeOptional.get();
-                if (existEdge.getDistance() < distance) {
+                if (existEdge.getDistance() <= distance) {
                     throw new IllegalArgumentException("추가하려는 구간의 길이가 기존 구간의 길이보다 깁니다.");
                 }
                 final Edge edge1 = new Edge(newStation, existEdge.getDownStation(), existEdge.getDistance() - distance);
