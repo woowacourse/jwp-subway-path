@@ -1,39 +1,41 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.domain.station.StationConnections;
-import subway.dto.LineFindResponse;
-import subway.entity.LineEntity;
-import subway.entity.SectionStationJoinEntity;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
+import org.springframework.stereotype.Service;
+import subway.domain.line.Line;
+import subway.domain.section.Sections;
+import subway.domain.station.StationConnections;
+import subway.dto.LineFindResponse;
+import subway.repository.LineRepository;
+import subway.repository.SectionRepository;
 
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
+    private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao) {
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+    public LineService(final LineRepository lineRepository, final SectionRepository sectionRepository) {
+        this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     public LineFindResponse findStationNamesByLineId(Long lineId) {
-        LineEntity lineEntity = lineDao.findById(lineId);
-        List<SectionStationJoinEntity> findSectionStationEntities = sectionDao.findSectionStationByLineId(lineId);
-        StationConnections stationConnections = StationConnections.fromEntities(findSectionStationEntities);
-        return new LineFindResponse(lineEntity.getName(), stationConnections.getSortedStationNames());
+        Line findLine = lineRepository.findLineById(lineId);
+
+        Sections sections = new Sections(sectionRepository.findAllSectionByLineId(lineId));
+        StationConnections stationConnections = new StationConnections(sections.generateStationConnections());
+
+        return new LineFindResponse(findLine.getName(), stationConnections.getSortedStationNames());
     }
 
     public List<LineFindResponse> findAllLineStationNames() {
-        List<LineEntity> lineEntities = lineDao.findAll();
-        return lineEntities.stream()
-                .map(lineEntity -> findStationNamesByLineId(lineEntity.getId()))
+        List<Line> findLines = lineRepository.findAllLine();
+        return findLines.stream()
+                .map(line -> findStationNamesByLineId(line.getId()))
                 .collect(toList());
     }
 }
