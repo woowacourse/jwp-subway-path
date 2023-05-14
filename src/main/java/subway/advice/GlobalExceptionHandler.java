@@ -78,7 +78,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SectionNotConnectException.class)
     public ResponseEntity<ExceptionResponse> sectionNotConnectExceptionHandler(final SectionNotConnectException exception) {
-        return getResponseOfNotFound(exception);
+        return getResponseOfBadRequest(exception);
     }
 
     @ExceptionHandler(LineNotFoundException.class)
