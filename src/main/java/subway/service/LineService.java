@@ -1,6 +1,7 @@
 package subway.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.EdgeDao;
@@ -43,7 +44,7 @@ public class LineService {
 
         edgeDao.insert(createdLine.getId(), updatedLine.getEdges().get(0));
 
-        return lineDao.findById(createdLine.getId()).get();
+        return assembleLine(createdLine.getId());
     }
 
     @Transactional
@@ -74,12 +75,18 @@ public class LineService {
         return assembleLine(updatedLine.getId());
     }
 
-    public List<Station> findAllStation(Long lineId) {
-        Line assembleLine = assembleLine(lineId);
-        return lines.findAllStation(assembleLine);
+    public Line findOneLine(Long lineId) {
+        return assembleLine(lineId);
     }
 
-    public Line assembleLine(Long lineId) {
+    public List<Line> findAllLine() {
+        return lineDao.findAll()
+                .stream()
+                .map(line -> assembleLine(line.getId()))
+                .collect(Collectors.toList());
+    }
+
+    private Line assembleLine(Long lineId) {
         Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
 
@@ -87,7 +94,8 @@ public class LineService {
         return new Line(line.getId(), line.getName(), edges);
     }
 
-    public List<Line> findAllLine() {
-        return lineDao.findAll();
+    public List<Station> findAllStation(Long lineId) {
+        Line assembleLine = assembleLine(lineId);
+        return lines.findAllStation(assembleLine);
     }
 }

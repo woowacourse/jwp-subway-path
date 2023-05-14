@@ -29,12 +29,13 @@ request
    }
 ```
 response
-````JSON
-{
-    "lineId" : 1,
-    "lineName" : "2호선"
-}
-````
+```JSON
+  {
+  "lineId" : 1,
+  "lineName" : "2호선",
+  "stationIds" : [1, 2, 3]
+  }
+```
 
 ### 3. [x] 노선에 역 등록 API (post - "/lines/{lineId}/stations")
 request

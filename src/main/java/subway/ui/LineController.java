@@ -33,49 +33,44 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<LineCreateResponse> createLine(@RequestBody LineCreateRequest createRequest) {
-        Line newLine = lineService.createNewLine(createRequest);
-        LineCreateResponse lineCreateResponse = new LineCreateResponse(newLine.getId(), newLine.getName());
-        return ResponseEntity.created(URI.create("/lines/" + newLine.getId())).body(lineCreateResponse);
+        Line createdLine = lineService.createNewLine(createRequest);
+
+        LineCreateResponse response = LineCreateResponse.fromDomain(createdLine);
+        return ResponseEntity.created(URI.create("/lines/" + createdLine.getId())).body(response);
     }
 
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<AddStationToLineResponse> addStationToLine(@PathVariable Long lineId,
                                                                      @RequestBody AddStationToLineRequest addStationToLineRequest) {
-        Line line = lineService.addStationToExistLine(lineId, addStationToLineRequest);
-        List<Long> stationIds = line.getStations().stream()
-                .map(Station::getId)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new AddStationToLineResponse(line.getId(), line.getName(), stationIds));
+        Line updatedLine = lineService.addStationToExistLine(lineId, addStationToLineRequest);
+
+        AddStationToLineResponse response = AddStationToLineResponse.fromDomain(updatedLine);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/{lineId}")
     public ResponseEntity<GetAllStationsInLineResponse> findLineById(@PathVariable Long lineId) {
-        List<Station> stations = lineService.findAllStation(lineId);
-        Line assembleLine = lineService.assembleLine(lineId);
+        Line findLine = lineService.findOneLine(lineId);
 
-        GetAllStationsInLineResponse response = new GetAllStationsInLineResponse(assembleLine.getId(), assembleLine.getName(), assembleLine.getStations());
+        GetAllStationsInLineResponse response = GetAllStationsInLineResponse.fromDomain(findLine);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping
     public ResponseEntity<List<GetAllStationsInLineResponse>> findAllLines() {
-        List<GetAllStationsInLineResponse> result = new ArrayList<>();
-        List<Line> lines = lineService.findAllLine();
-        for (Line line : lines) {
-            Line assembleLine = lineService.assembleLine(line.getId());
-            GetAllStationsInLineResponse response = new GetAllStationsInLineResponse(assembleLine.getId(), assembleLine.getName(), assembleLine.getStations());
-            result.add(response);
-        }
-        return ResponseEntity.ok(result);
+        List<GetAllStationsInLineResponse> response = lineService.findAllLine()
+                .stream().map(GetAllStationsInLineResponse::fromDomain)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
     public ResponseEntity<DeleteStationFromLineResponse> delete(@PathVariable Long lineId,
                                                            @PathVariable Long stationId) {
-        Line line = lineService.deleteStationFromLine(lineId, stationId);
-        List<Long> stationIds = line.getStations().stream()
-                .map(Station::getId)
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(new DeleteStationFromLineResponse(line.getId(), line.getName(), stationIds));
+        Line updatedLine = lineService.deleteStationFromLine(lineId, stationId);
+
+        DeleteStationFromLineResponse response = DeleteStationFromLineResponse.fromDomain(updatedLine);
+        return ResponseEntity.ok(response);
     }
 }
