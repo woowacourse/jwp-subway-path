@@ -2,30 +2,38 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.dao.SectionDao;
+import subway.domain.section.Section;
+import subway.domain.section.SectionRepository;
+import subway.domain.station.StationConnections;
 import subway.dto.LineFindResponse;
+import subway.entity.LineEntity;
 
 import java.util.List;
+
+import static java.util.stream.Collectors.toList;
 
 @Service
 public class LineService {
 
-    // TODO: LineService 구현
-
     private final LineDao lineDao;
-    private final SectionDao sectionDao;
+    private final SectionRepository sectionRepository;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao) {
+    public LineService(LineDao lineDao, SectionRepository sectionRepository) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+        this.sectionRepository = sectionRepository;
     }
 
+    public LineFindResponse findStationNamesByLineId(Long lineId) {
+        LineEntity lineEntity = lineDao.findById(lineId);
+        List<Section> findSections = sectionRepository.findSectionsByLineId(lineId);
+        StationConnections stationConnections = StationConnections.fromSections(findSections);
+        return new LineFindResponse(lineEntity.getLineName(), stationConnections.getSortedStationNames());
+    }
 
     public List<LineFindResponse> findAllLineStationNames() {
-        return null;
-    }
-
-    public LineFindResponse findStationNamesByLineId(Long id) {
-        return null;
+        List<LineEntity> lineEntities = lineDao.findAll();
+        return lineEntities.stream()
+                .map(lineEntity -> findStationNamesByLineId(lineEntity.getId()))
+                .collect(toList());
     }
 }

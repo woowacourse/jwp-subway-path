@@ -1,8 +1,12 @@
 package subway.domain.station;
 
+import subway.domain.section.Section;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import static java.util.stream.Collectors.toMap;
 
 public class StationConnections {
 
@@ -10,6 +14,12 @@ public class StationConnections {
 
     private StationConnections(Map<Station, Station> stationConnections) {
         this.stationConnections = stationConnections;
+    }
+
+    public static StationConnections fromSections(List<Section> findSections) {
+        Map<Station, Station> stationConnections = findSections.stream()
+                .collect(toMap(Section::getUpStation, Section::getDownStation));
+        return new StationConnections(stationConnections);
     }
 
     public List<String> getSortedStationNames() {
