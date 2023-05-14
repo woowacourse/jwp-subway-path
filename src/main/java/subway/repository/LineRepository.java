@@ -1,6 +1,7 @@
 package subway.repository;
 
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 import subway.Entity.LineEntity;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 @Repository
 public class LineRepository {
     private final LineDao lineDao;

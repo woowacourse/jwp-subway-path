@@ -2,7 +2,6 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.H2StationDao;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.domain.Stations;
@@ -29,7 +28,7 @@ public class StationService {
         return StationResponse.from(insertedStation);
     }
 
-    public StationResponse findStationById(final Long id) {
+    public StationResponse findStationById(final long id) {
         return StationResponse.from(stationDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 역입니다.")));
     }
@@ -41,15 +40,16 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(final Long id, final StationRequest stationRequest) {
+    public void updateStation(final long id, final StationRequest stationRequest) {
         Station updatedStation = Station.of(id, stationRequest.getName());
         Stations stations = Stations.from(stationDao.findAll());
-        stations.removeById(updatedStation.getId());
+        Station oldStation = stations.findById(updatedStation.getId());
+        stations.remove(oldStation);
         stations.addStation(updatedStation);
         stationDao.update(updatedStation);
     }
 
-    public void deleteStationById(final Long id) {
+    public void deleteStationById(final long id) {
         stationDao.findById(id)
                 .orElseThrow(() -> new IllegalStateException("[ERROR] 존재하지 않는 역을 삭제할 수 없습니다."));
         stationDao.deleteById(id);

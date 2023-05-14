@@ -43,7 +43,7 @@ public class H2StationDao implements StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Station> findById(final Long id) {
+    public Optional<Station> findById(final long id) {
         try {
             String sql = "select * from STATION where id = ?";
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -57,7 +57,7 @@ public class H2StationDao implements StationDao {
         jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
 
-    public void deleteById(final Long id) {
+    public void deleteById(final long id) {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
     }

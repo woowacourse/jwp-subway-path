@@ -11,11 +11,11 @@ public interface StationDao {
 
     List<Station> findAll();
 
-    Optional<Station> findById(final Long id);
+    Optional<Station> findById(final long id);
 
     void update(final Station newStation);
 
-    void deleteById(final Long id);
+    void deleteById(final long id);
 
     Station findByName(final String name);
 }

@@ -25,12 +25,11 @@ public class SectionService {
         Line line = findLineByLineId(request.getLineId());
         Station upwardStation = findStationByStationId(request.getUpwardStationId());
         Station downwardStation = findStationByStationId(request.getDownwardStationId());
-
         line.addSection(upwardStation, downwardStation, request.getDistance());
         lineRepository.update(line);
     }
 
-    private Line findLineByLineId(final Long lineId) {
+    private Line findLineByLineId(final long lineId) {
         return lineRepository.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 노선입니다."));
     }
@@ -43,7 +42,6 @@ public class SectionService {
     public void deleteSections(final long lineId, final long stationId) {
         Line line = findLineByLineId(lineId);
         Station station = findStationByStationId(stationId);
-
         line.removeStation(station);
         lineRepository.update(line);
     }

@@ -43,17 +43,14 @@ public class Stations {
         return stations.stream()
                 .filter(each -> each.isSameName(station))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 역을 조회했습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 역입니다."));
     }
 
     public Station findById(final long id) {
         return stations.stream()
                 .filter(each -> each.isSameId(id))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 역을 조회했습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 역입니다."));
     }
 
-    public void removeById(final Long id) {
-        stations.remove(findById(id));
-    }
 }
