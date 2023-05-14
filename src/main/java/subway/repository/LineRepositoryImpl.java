@@ -4,16 +4,24 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
 import subway.repository.dao.LineDao;
 import subway.repository.dao.LineSectionStationJoinDto;
+import subway.repository.dao.SectionDao;
+import subway.repository.dao.StationDao;
 
 @Repository
 public class LineRepositoryImpl implements LineRepository {
 
     private final LineDao lineDao;
+    private final SectionDao sectionDao;
+    private final StationDao stationDao;
 
-    public LineRepositoryImpl(final LineDao lineDao) {
+    public LineRepositoryImpl(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
         this.lineDao = lineDao;
+        this.sectionDao = sectionDao;
+        this.stationDao = stationDao;
     }
 
     @Override
@@ -32,8 +40,15 @@ public class LineRepositoryImpl implements LineRepository {
     }
 
     @Override
-    public void update(final Line newLine) {
-
+    public void update(final Line line) {
+        sectionDao.deleteAllByLineId(line.getId());
+        lineDao.delete(line);
+        lineDao.insert(line);
+        final Sections sections = line.getSections();
+        for (int index = 0; index < sections.size(); index++) {
+            final Section section = sections.findSection(index);
+            sectionDao.insert(section, line.getId());
+        }
     }
 
     @Override

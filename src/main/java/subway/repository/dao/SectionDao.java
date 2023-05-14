@@ -30,4 +30,18 @@ public class SectionDao {
         return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
+    public void deleteAllByLineId(final Long lineId) {
+        final String sql = "DELETE "
+            + "FROM SECTION "
+            + "WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public boolean containId(final Long id) {
+        final String sql = "SELECT count(id) "
+            + "FROM SECTION "
+            + "WHERE line_id = ?";
+        final Integer count = jdbcTemplate.queryForObject(sql, Integer.class, id);
+        return count != 0;
+    }
 }

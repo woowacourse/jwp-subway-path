@@ -88,4 +88,11 @@ public class LineDao {
             + "WHERE line.name = ?;";
         return jdbcTemplate.query(sql, lineSectionStationJoinRowMapper, name);
     }
+
+    public void delete(final Line line) {
+        final String sql = "DELETE "
+            + "FROM SECTION "
+            + "WHERE id = ?";
+        jdbcTemplate.update(sql, line.getId());
+    }
 }
