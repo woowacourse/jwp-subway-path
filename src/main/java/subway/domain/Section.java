@@ -47,7 +47,11 @@ public class Section {
         return isSameStartStation(otherStation) || isSameEndStation(otherStation);
     }
 
-    public Distance subtract(Section otherSection) {
+    public Distance addDistance(Section otherSection) {
+        return this.distance.add(otherSection.distance);
+    }
+
+    public Distance subtractDistance(Section otherSection) {
         return this.distance.subtract(otherSection.distance);
     }
 

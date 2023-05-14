@@ -3,9 +3,12 @@ package subway.presentation.dto;
 import java.util.List;
 
 public class LineResponse {
-    private final Long id;
-    private final String name;
-    private final List<StationResponse> stations;
+    private Long id;
+    private String name;
+    private List<StationResponse> stations;
+
+    public LineResponse() {
+    }
 
     public LineResponse(Long id, String name, List<StationResponse> stations) {
         this.id = id;

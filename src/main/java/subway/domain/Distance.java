@@ -19,6 +19,10 @@ public class Distance {
         }
     }
 
+    public Distance add(Distance otherDistance) {
+        return new Distance(this.distance + otherDistance.distance);
+    }
+
     public Distance subtract(Distance otherDistance) {
         return new Distance(this.distance - otherDistance.distance);
     }
