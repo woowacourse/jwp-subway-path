@@ -106,29 +106,23 @@ public class SectionAddIntegrationTest extends IntegrationTest {
     @Test
     void addMiddleSectionToLine_success() {
         //given
-        ExtractableResponse<Response> response1 = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(new StationRequest("강남역"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+                .post("/stations");
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(new StationRequest("잠실역"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+                .post("/stations");
 
-        ExtractableResponse<Response> response3 = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(new StationRequest("잠실나루역"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
+                .post("/stations");
 
         long lineId = 1L;
         SectionSaveRequest initSaveRequest = new SectionSaveRequest(1L, 2L, 10);
@@ -136,7 +130,7 @@ public class SectionAddIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .body(initSaveRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/" + lineId + "/sections")
+                .when().post("/lines/{lineId}/sections", lineId)
                 .then().log().all().
                 extract();
 
@@ -146,7 +140,7 @@ public class SectionAddIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .body(middleSaveRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/" + lineId + "/sections")
+                .when().post("/lines/{lineId}/sections", lineId)
                 .then().log().all().
                 extract();
 

@@ -17,7 +17,7 @@ public class SectionFindIntegrationTest extends IntegrationTest {
     @Test
     void find_sections_Line() {
         //given
-        ExtractableResponse<Response> response1 = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(new StationRequest("강남역"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -25,7 +25,7 @@ public class SectionFindIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        ExtractableResponse<Response> response2 = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(new StationRequest("잠실역"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -33,7 +33,7 @@ public class SectionFindIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        ExtractableResponse<Response> response3 = RestAssured.given().log().all()
+        RestAssured.given().log().all()
                 .body(new StationRequest("잠실나루역"))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
@@ -47,7 +47,7 @@ public class SectionFindIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .body(initSaveRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/" + lineId + "/sections")
+                .when().post("/lines/{lineId}/sections", lineId)
                 .then().log().all().
                 extract();
 
@@ -57,7 +57,7 @@ public class SectionFindIntegrationTest extends IntegrationTest {
                 .given().log().all()
                 .body(saveRequest2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/" + lineId + "/sections")
+                .when().post("/lines/{lineId}/sections", lineId)
                 .then().log().all().
                 extract();
 
@@ -66,7 +66,7 @@ public class SectionFindIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/" + lineId + "/sections")
+                .when().get("/lines/{lineId}/sections", lineId)
                 .then().log().all().
                 extract();
 
