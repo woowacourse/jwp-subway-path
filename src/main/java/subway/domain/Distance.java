@@ -19,15 +19,15 @@ public class Distance {
         }
     }
 
-    public int getDistance() {
-        return distance;
+    public Distance subtract(Distance otherDistance) {
+        return new Distance(this.distance - otherDistance.distance);
     }
 
     public boolean isBiggerThanOtherDistance(Distance otherDistance) {
         return this.distance > otherDistance.distance;
     }
 
-    public Distance subtract(Distance otherDistance) {
-        return new Distance(this.distance - otherDistance.distance);
+    public int getDistance() {
+        return distance;
     }
 }
