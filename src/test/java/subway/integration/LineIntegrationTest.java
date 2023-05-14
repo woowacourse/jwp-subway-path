@@ -136,27 +136,38 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
+        final ExtractableResponse<Response> createResponse = RestAssured
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then()
+                .extract();
 
         // when
         Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+        final ExtractableResponse<Response> response = RestAssured
+                .given()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId)
-                .then().log().all()
+                .when().get("/lines/{id}", lineId)
+                .then()
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-//        LineResponse resultResponse = response.as(LineResponse.class);
-//        assertThat(resultResponse.getId()).isEqualTo(lineId);
+        final Configuration conf = Configuration.defaultConfiguration();
+        final DocumentContext documentContext = JsonPath.using(conf).parse(response.asString());
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(documentContext.read("$.id", Long.class)).isEqualTo(lineId),
+                () -> assertThat(documentContext.read("$.name", String.class)).isEqualTo(lineRequest1.getName()),
+                () -> assertThat(documentContext.read("$.color", String.class)).isEqualTo(lineRequest1.getColor()),
+                () -> assertThat(documentContext.read("$.stations.size()", Integer.class)).isEqualTo(2),
+                () -> assertThat(documentContext.read("$.stations[0].name", String.class))
+                        .isEqualTo(lineRequest1.getFirstStation()),
+                () -> assertThat(documentContext.read("$.stations[1].name", String.class))
+                        .isEqualTo(lineRequest1.getSecondStation())
+        );
     }
 
     @DisplayName("지하철 노선을 수정한다.")
