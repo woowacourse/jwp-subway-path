@@ -17,21 +17,22 @@ public class Line {
         this.sections = new LinkedList<>(sections);
     }
 
-    public void addInitialStations(Station baseStation, Station newStation, Direction directionOfBase, Distance newDistance) {
+    public void addInitialStations(Station baseStation, Station newStation, Direction directionOfBase,
+            Distance newDistance) {
         validateInitialSectionToAdd(baseStation, newStation);
-        if(directionOfBase == Direction.LEFT) {
+        if (directionOfBase == Direction.LEFT) {
             sections.add(new Section(baseStation, newStation, newDistance));
         }
-        if(directionOfBase == Direction.RIGHT) {
+        if (directionOfBase == Direction.RIGHT) {
             sections.add(new Section(newStation, baseStation, newDistance));
         }
     }
 
     private void validateInitialSectionToAdd(Station baseStation, Station newStation) {
-        if(!sections.isEmpty()) {
+        if (!sections.isEmpty()) {
             throw new IllegalArgumentException("이미 등록된 역이 있습니다.");
         }
-        if(baseStation.equals(newStation)) {
+        if (baseStation.equals(newStation)) {
             throw new IllegalArgumentException("구간은 서로 다른 두 역으로 이뤄져 있어야 합니다.");
         }
     }
@@ -66,37 +67,39 @@ public class Line {
 
     private boolean isExistingSectionIsLongerThanNewSection(Station baseStation, Direction directionOfBase,
             Distance newDistance) {
-        Optional<Section> sectionToRevise = findSectionIncludingBaseStationOnDirection(baseStation, directionOfBase);
+        Optional<Section> sectionToRevise = findSectionIncludingStationOnDirection(baseStation, directionOfBase);
         return sectionToRevise
                 .map(section -> section.isLongerThan(newDistance))
                 .orElse(true);
     }
 
-    private Optional<Section> findSectionIncludingBaseStationOnDirection(Station baseStation, Direction direction) {
+    private Optional<Section> findSectionIncludingStationOnDirection(Station baseStation, Direction direction) {
         return sections.stream()
                 .filter(section -> section.isStationOnDirection(baseStation, direction))
                 .findFirst();
     }
 
-    private void addNewStationToRight(Station baseStation, Station newStation, Distance newDistance, Direction directionOfBase) {
-        Optional<Section> sectionToRevise = findSectionIncludingBaseStationOnDirection(baseStation, directionOfBase);
+    private void addNewStationToRight(Station baseStation, Station newStation, Distance newDistance,
+            Direction directionOfBase) {
+        Optional<Section> sectionToRevise = findSectionIncludingStationOnDirection(baseStation, directionOfBase);
         if (sectionToRevise.isPresent()) {
             Section origin = sectionToRevise.get();
             sections.remove(origin);
             sections.add(new Section(newStation, origin.getDownStation(),
-                    origin.findGapBy(newDistance)));
+                    origin.getDistance().subtract(newDistance)));
             sections.add(new Section(baseStation, newStation, newDistance));
             return;
         }
         sections.add(new Section(baseStation, newStation, newDistance));
     }
 
-    private void addNewStationToLeft(Station baseStation, Station newStation, Distance newDistance, Direction directionOfBase) {
-        Optional<Section> sectionToRevise = findSectionIncludingBaseStationOnDirection(baseStation, directionOfBase);
+    private void addNewStationToLeft(Station baseStation, Station newStation, Distance newDistance,
+            Direction directionOfBase) {
+        Optional<Section> sectionToRevise = findSectionIncludingStationOnDirection(baseStation, directionOfBase);
         if (sectionToRevise.isPresent()) {
             Section origin = sectionToRevise.get();
             sections.remove(origin);
-            sections.add(new Section(origin.getUpStation(), newStation, origin.findGapBy(newDistance)));
+            sections.add(new Section(origin.getUpStation(), newStation, origin.getDistance().subtract(newDistance)));
             sections.add(new Section(newStation, baseStation, newDistance));
             return;
         }

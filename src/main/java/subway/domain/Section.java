@@ -32,10 +32,6 @@ public class Section {
         return downStation.equals(baseStation);
     }
 
-    public Distance findGapBy(Distance other) {
-        return distance.subtract(other);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -60,5 +56,9 @@ public class Section {
 
     public Station getDownStation() {
         return downStation;
+    }
+
+    public Distance getDistance() {
+        return distance;
     }
 }
