@@ -9,6 +9,7 @@ import subway.dao.SectionDao;
 import subway.domain.Direction;
 import subway.entity.SectionEntity;
 
+@Transactional
 @Service
 public class SectionCreateService {
 
@@ -18,7 +19,6 @@ public class SectionCreateService {
         this.sectionDao = sectionDao;
     }
 
-    @Transactional
     public List<SectionEntity> createSection(
             final Long lineId,
             final Long baseId,

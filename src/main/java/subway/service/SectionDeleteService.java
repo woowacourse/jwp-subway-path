@@ -3,9 +3,11 @@ package subway.service;
 import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.entity.SectionEntity;
 
+@Transactional
 @Service
 public class SectionDeleteService {
 
