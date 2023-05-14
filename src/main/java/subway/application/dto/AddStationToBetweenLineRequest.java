@@ -1,5 +1,7 @@
 package subway.application.dto;
 
+import subway.controller.dto.AddStationToLineRequest;
+
 public class AddStationToBetweenLineRequest {
 
     private String lineName;
@@ -12,13 +14,18 @@ public class AddStationToBetweenLineRequest {
     }
 
     public AddStationToBetweenLineRequest(final String lineName, final String stationName, final String upStationName,
-        final String downStationName,
-        final Long distance) {
+        final String downStationName, final Long distance) {
         this.lineName = lineName;
         this.stationName = stationName;
         this.upStationName = upStationName;
         this.downStationName = downStationName;
         this.distance = distance;
+    }
+
+    public static AddStationToBetweenLineRequest from(final AddStationToLineRequest addStationToLineRequest) {
+        return new AddStationToBetweenLineRequest(addStationToLineRequest.getLineName(),
+            addStationToLineRequest.getStationName(), addStationToLineRequest.getUpStationName(),
+            addStationToLineRequest.getDownStationName(), addStationToLineRequest.getDistance());
     }
 
     public String getLineName() {

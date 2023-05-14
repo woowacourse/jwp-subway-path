@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.dto.AddStationToBetweenLineRequest;
 import subway.application.dto.AddStationToEndLineRequest;
+import subway.controller.dto.AddInitStationToLine;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -25,7 +26,7 @@ import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
 @ExtendWith(MockitoExtension.class)
-class LineServiceTest {
+class LineStationServiceTest {
 
     private static final Station topStation = new Station(1L, "topStation");
     private static final Station midUpStation = new Station(2L, "midUpStation");
@@ -41,7 +42,7 @@ class LineServiceTest {
     @Mock
     private StationRepository stationRepository;
     @InjectMocks
-    private LineService lineService;
+    private LineStationService lineStationService;
 
     @Test
     @DisplayName("호선이 없을 시 역을 호선의 맨 위에 추가한다.")
@@ -53,7 +54,7 @@ class LineServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> lineService.addStationToTopLine(request))
+        assertThatThrownBy(() -> lineStationService.addStationToTopLine(request))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -73,7 +74,7 @@ class LineServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> lineService.addStationToTopLine(request))
+        assertThatThrownBy(() -> lineStationService.addStationToTopLine(request))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -93,7 +94,7 @@ class LineServiceTest {
             topStation.getName(), 10L);
 
         //when
-        lineService.addStationToTopLine(request);
+        lineStationService.addStationToTopLine(request);
 
         //then
         assertThat(line.getSections().findTopStation()).isEqualTo(station);
@@ -109,7 +110,7 @@ class LineServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> lineService.addStationToBottomLine(request))
+        assertThatThrownBy(() -> lineStationService.addStationToBottomLine(request))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -129,7 +130,7 @@ class LineServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> lineService.addStationToBottomLine(request))
+        assertThatThrownBy(() -> lineStationService.addStationToBottomLine(request))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -149,7 +150,7 @@ class LineServiceTest {
             topStation.getName(), 10L);
 
         //when
-        lineService.addStationToBottomLine(request);
+        lineStationService.addStationToBottomLine(request);
 
         //then
         assertThat(line.getSections().findBottomStation()).isEqualTo(station);
@@ -166,7 +167,7 @@ class LineServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> lineService.addStationToBetweenLine(request))
+        assertThatThrownBy(() -> lineStationService.addStationToBetweenLine(request))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -186,7 +187,7 @@ class LineServiceTest {
 
         //when
         //then
-        assertThatThrownBy(() -> lineService.addStationToBetweenLine(request))
+        assertThatThrownBy(() -> lineStationService.addStationToBetweenLine(request))
             .isInstanceOf(BusinessException.class);
     }
 
@@ -206,9 +207,29 @@ class LineServiceTest {
             "upStationName", "downStationName", 10L);
 
         //when
-        lineService.addStationToBetweenLine(request);
+        lineStationService.addStationToBetweenLine(request);
 
         //then
         assertThat(line.getSections().findStation(2)).isEqualTo(station);
+    }
+
+    @Test
+    @DisplayName("호선의 역을 초기화한다.")
+    void testAddInitStationToLine() {
+        //given
+        final Sections sections = new Sections(new ArrayList<>());
+        final Line line = new Line(1L, "name", "color", sections);
+        given(lineRepository.findByName(anyString()))
+            .willReturn(Optional.of(line));
+        given(stationRepository.findByName(anyString()))
+            .willReturn(Optional.of(midUpStation), Optional.of(midDownStation));
+        final AddInitStationToLine request = new AddInitStationToLine("lineName", "upStationName", "downStationName",
+            10L);
+
+        //when
+        lineStationService.addInitStationToLine(request);
+
+        //then
+        assertThat(line.getStationsSize()).isEqualTo(2);
     }
 }
