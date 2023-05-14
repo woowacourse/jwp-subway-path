@@ -69,7 +69,7 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    @DisplayName("지하철역 목록을 조회한다.")
+    @DisplayName("지하철역 목록을 조회한다")
     @Test
     void getStations() {
         /// given
@@ -139,7 +139,7 @@ public class StationIntegrationTest extends IntegrationTest {
 	    assertThat(stationResponse.getId()).isEqualTo(stationId);
 	}
 
-	@DisplayName("지하철역을 수정한다.")
+	@DisplayName("지하철역을 수정한다")
 	@Test
 	void updateStation() {
 	    // given
@@ -168,30 +168,30 @@ public class StationIntegrationTest extends IntegrationTest {
 	    // then
 	    assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 	}
-	//
-	// @DisplayName("지하철역을 제거한다.")
-	// @Test
-	// void deleteStation() {
-	//     // given
-	//     Map<String, String> params = new HashMap<>();
-	//     params.put("name", "강남역");
-	//     ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
-	//             .body(params)
-	//             .contentType(MediaType.APPLICATION_JSON_VALUE)
-	//             .when()
-	//             .post("/stations")
-	//             .then().log().all()
-	//             .extract();
-	//
-	//     // when
-	//     String uri = createResponse.header("Location");
-	//     ExtractableResponse<Response> response = RestAssured.given().log().all()
-	//             .when()
-	//             .delete(uri)
-	//             .then().log().all()
-	//             .extract();
-	//
-	//     // then
-	//     assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-	// }
+
+	@DisplayName("지하철역을 제거한다")
+	@Test
+	void deleteStation() {
+	    // given
+	    Map<String, String> params = new HashMap<>();
+	    params.put("name", "강남역");
+	    ExtractableResponse<Response> createResponse = RestAssured.given().log().all()
+	            .body(params)
+	            .contentType(MediaType.APPLICATION_JSON_VALUE)
+	            .when()
+	            .post("/stations")
+	            .then().log().all()
+	            .extract();
+
+	    // when
+	    String uri = createResponse.header("Location");
+	    ExtractableResponse<Response> response = RestAssured.given().log().all()
+	            .when()
+	            .delete(uri)
+	            .then().log().all()
+	            .extract();
+
+	    // then
+	    assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+	}
 }
