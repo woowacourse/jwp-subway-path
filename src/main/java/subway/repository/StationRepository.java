@@ -51,6 +51,7 @@ public class StationRepository {
         final boolean exist = stationDao.isStationIdExist(stationId);
         if (exist) {
             stationDao.deleteByStationId(stationId);
+            return;
         }
         throw new StationNotFoundException();
     }

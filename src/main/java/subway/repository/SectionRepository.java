@@ -38,10 +38,6 @@ public class SectionRepository {
     }
 
     private Sections getSections(final LineEntity lineEntity) {
-        final boolean sectionsExist = sectionDao.isLineIdExist(lineEntity.getLineId());
-        if (!sectionsExist) {
-            throw new SectionNotFoundException();
-        }
         final List<SectionEntity> sectionsByLineId = sectionDao.findAllByLineId(lineEntity.getLineId());
 
         final List<Section> sections = sectionsByLineId.stream()
