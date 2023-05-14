@@ -22,10 +22,10 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<StationCreateResponse> createStation(@RequestBody StationCreateRequest createRequest) {
-        Station createStation = stationService.saveStation(createRequest);
-        StationCreateResponse stationCreateResponse = new StationCreateResponse(createStation.getId(),
-                createStation.getName());
-        return ResponseEntity.created(URI.create("/stations/" + stationCreateResponse.getStationId()))
+        Station createdStation = stationService.saveStation(createRequest);
+        StationCreateResponse stationCreateResponse = new StationCreateResponse(createdStation.getId(), createdStation.getName());
+        return ResponseEntity
+                .created(URI.create("/stations/" + stationCreateResponse.getStationId()))
                 .body(stationCreateResponse);
     }
 }

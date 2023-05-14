@@ -43,10 +43,10 @@ public class StationDao {
         }
     }
 
-    public Optional<Station> findByName(Station station) {
+    public Optional<Station> findByName(String stationName) {
         String sql = "SELECT * FROM station WHERE name = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationMapper, station.getName()));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationMapper, stationName));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }

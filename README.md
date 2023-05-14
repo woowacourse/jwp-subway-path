@@ -1,7 +1,8 @@
 # jwp-subway-path
 
 ## API 설계
-- [x] 역 등록 API (post - "/stations")
+### 1. [x] 역 등록 API (post - "/stations")
+
 request
 ```JSON
   {
@@ -16,7 +17,8 @@ response
   }
 ```
 
-- [x] 최초 노선 등록 API (post - "/lines") `addInitialLine(Line line, Station s1, Station s2, int dist)`
+### 2. [x] 최초 노선 등록 API (post - "/lines")
+
 request
 ```JSON
   {
@@ -34,7 +36,7 @@ response
 }
 ````
 
-- [x] 노선에 역 등록 API 신규 구현 (post - "/lines/{lineId}/stations")
+### 3. [x] 노선에 역 등록 API (post - "/lines/{lineId}/stations")
 request
 ```JSON
   {
@@ -52,7 +54,7 @@ response
   }
 ```
 
-- [x] 노선의 모든 역 조회 API (get - "/lines/{lineId}")
+### 4. [x] 노선의 모든 역 조회 API (get - "/lines/{lineId}")
 response
 ```JSON
 {
@@ -70,7 +72,7 @@ response
   ]
 }
 ```
-- [x] 모든 노선의 모든 역 조회 API (get - "/lines")
+### 5. [x] 모든 노선의 모든 역 조회 API (get - "/lines")
 response
 ```JSON
 [
@@ -105,7 +107,7 @@ response
 ]
 ```
 
-- [x] 노선에 역 제거 API (delete - "/lines/{lineId}/stations/{stationId}")
+### 6. [x] 노선에 역 제거 API (delete - "/lines/{lineId}/stations/{stationId}")
 response
 ```JSON
   {

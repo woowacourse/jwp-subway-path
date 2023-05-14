@@ -43,7 +43,6 @@ public class LineService {
 
         edgeDao.insert(createdLine.getId(), updatedLine.getEdges().get(0));
 
-        Line findLine = assembleLine(createdLine.getId());
         return lineDao.findById(createdLine.getId()).get();
     }
 
