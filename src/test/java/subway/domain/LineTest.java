@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.Direction.DOWN;
 import static subway.domain.Direction.UP;
@@ -27,6 +28,16 @@ class LineTest {
         final List<Station> stations = line.sortStations();
 
         assertThat(stations).map(Station::getName).containsExactly("성남", "성대", "강남");
+    }
+
+    @DisplayName("경로가 없을 때 정렬하면 빈 리스트를 반환한다.")
+    @Test
+    void sortEmptyTest() {
+        final Line line = new Line(1L, "1호선", "blue", Map.of());
+
+        final List<Station> stations = line.sortStations();
+
+        assertThat(stations).isEmpty();
     }
 
     @DisplayName("역을 추가한다.")
@@ -103,4 +114,22 @@ class LineTest {
                 () -> assertThat(line.getPaths().get(stationA).getNext()).isEqualTo(stationC)
         );
     }
+
+    @DisplayName("없는 역을 삭제하면 예외를 던진다.")
+    @Test
+    void removeStationNotExistExceptionTest() {
+        //given
+        final Station stationA = new Station(1L, "A");
+        final Station stationB = new Station(3L, "B");
+        final Station stationC = new Station(2L, "C");
+        final Line line = new Line(1L, "1호선", "파랑",
+                new HashMap<>(Map.of(
+                        stationA, new Path(stationB, 5)
+                        , stationB, new Path(stationC, 10)
+                ))
+        );
+        assertThatThrownBy(() -> line.removeStation(new Station(4L, "none")))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }

@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static subway.domain.Direction.UP;
-
 public class Line {
     private final Long id;
     private final String name;
@@ -58,49 +56,17 @@ public class Line {
         return ups.get(0);
     }
 
-    public void addPath(
+    public Line addPath(
             final Station targetStation,
             final Station addStation,
             final Integer distance,
             final Direction direction
     ) {
         final List<Station> stations = sortStations();
-        final int index = stations.indexOf(targetStation);
-        if (direction == UP) {
-            if (paths.isEmpty()) {
-                paths.put(addStation, new Path(targetStation, distance));
-                return;
-            }
-            if (index == 0) {
-                paths.put(addStation, new Path(targetStation, distance));
-                return;
-            }
-            final Station stationBefore = stations.get(index - 1);
-            final Path path = paths.get(stationBefore);
-            validatePathDistance(distance, path);
-            paths.put(stationBefore, new Path(addStation, path.getDistance() - distance));
-            paths.put(addStation, new Path(targetStation, distance));
-        }
-
-        if (paths.isEmpty()) {
-            paths.put(targetStation, new Path(addStation, distance));
-            return;
-        }
-        if (index == stations.size() - 1) {
-            paths.put(targetStation, new Path(addStation, distance));
-            return;
-        }
-        final Path path = paths.get(targetStation);
-        validatePathDistance(distance, path);
-        paths.put(targetStation, new Path(addStation, distance));
-        paths.put(addStation, new Path(path.getNext(), path.getDistance() - distance));
-
-    }
-
-    private void validatePathDistance(final Integer distance, final Path path) {
-        if (path.isShorterThan(distance)) {
-            throw new IllegalArgumentException("기존 경로보다 짧은 경로를 추가해야 합니다.");
-        }
+        final AddPathStrategy strategy = direction.getStrategy();
+        final Map<Station, Path> added = strategy.add(targetStation, addStation, distance, stations, paths);
+        
+        return setPath(added);
     }
 
     public void removeStation(final Station station) {

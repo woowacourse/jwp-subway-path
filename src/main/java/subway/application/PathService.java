@@ -27,9 +27,9 @@ public class PathService {
         final Station targetStation = subwayRepository.findStationById(targetStationId);
         final Station addStation = subwayRepository.findStationById(addStationId);
 
-        line.addPath(targetStation, addStation, distance, Direction.of(direction));
+        final Line lineAdded = line.addPath(targetStation, addStation, distance, Direction.of(direction));
 
-        subwayRepository.saveLine(line);
+        subwayRepository.saveLine(lineAdded);
     }
 
     public void removeStationFromLine(final Long lineId, final Long stationId) {
