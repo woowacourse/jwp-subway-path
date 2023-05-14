@@ -9,31 +9,23 @@ public class LineMap {
 
     private final Map<Station, List<Station>> lineMap;
 
-    public LineMap(final Sections sections) {
-        this.lineMap = initLineMap(sections);
-        sections.getSections().forEach(this::addSection);
+    private LineMap(final Map<Station, List<Station>> lineMap) {
+        this.lineMap = lineMap;
     }
 
-    private Map<Station, List<Station>> initLineMap(final Sections sections) {
+    public static LineMap from(final Sections sections) {
         Map<Station, List<Station>> lineMap = new HashMap<>();
 
-        for (Section section : sections.getSections()) {
-            lineMap.put(section.getUpStation(), new ArrayList<>());
-            lineMap.put(section.getDownStation(), new ArrayList<>());
-        }
+        sections.getSections()
+                .forEach(section -> {
+                    Station upStation = section.getUpStation();
+                    Station downStation = section.getDownStation();
 
-        return lineMap;
-    }
+                    lineMap.computeIfAbsent(upStation, station -> new ArrayList<>()).add(downStation);
+                    lineMap.computeIfAbsent(downStation, station -> new ArrayList<>()).add(upStation);
+                });
 
-    private void addSection(final Section section) {
-        Station upStation = section.getUpStation();
-        Station downStation = section.getDownStation();
-
-        List<Station> upStationList = lineMap.get(upStation);
-        List<Station> downStationList = lineMap.get(downStation);
-
-        upStationList.add(downStation);
-        downStationList.add(upStation);
+        return new LineMap(lineMap);
     }
 
     public List<Station> getOrderedStations(final Sections sections) {

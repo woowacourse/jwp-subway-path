@@ -22,7 +22,7 @@ public class SubwayMapService {
     @Transactional(readOnly = true)
     public LineMapResponse showLineMap(final long lineNumber) {
         Sections sections = sectionRepository.findSectionsByLineNumber(lineNumber);
-        LineMap lineMap = new LineMap(sections);
+        LineMap lineMap = LineMap.from(sections);
 
         return lineMap.getOrderedStations(sections).stream()
                 .map(StationResponse::from)

@@ -16,7 +16,7 @@ class LineMapTest {
     void find_ordered_line_map_success() {
         // given
         Sections sections = createSections();
-        LineMap lineMap = new LineMap(sections);
+        LineMap lineMap = LineMap.from(sections);
 
         // when
         List<Station> orderedStations = lineMap.getOrderedStations(sections);
