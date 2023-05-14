@@ -139,6 +139,6 @@ class StationsTest {
         //then
         assertThatThrownBy(() -> stations.find(station3))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 등록되지 않은 역을 조회했습니다.");
+                .hasMessageContaining("[ERROR] 등록되지 않은 역입니다.");
     }
 }
