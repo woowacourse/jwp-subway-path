@@ -1,4 +1,4 @@
-package subway.section;
+package subway.section.dto;
 
 public class SectionCreateDto {
 

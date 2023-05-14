@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import subway.line.dto.LineCreateDto;
 import subway.line.dto.LineResponseDto;
 import subway.line.persistence.LineEntity;
 import subway.section.SectionService;
@@ -34,7 +35,6 @@ public class LineController {
 
         return ResponseEntity.ok(lineResponseDtos);
     }
-
 
     private List<StationResponseDto> getStationResponseDtosByLineId(final Long lineId) {
         return sectionService.findSortedStations(lineId);
