@@ -28,4 +28,11 @@ public class NearbyStations {
     public Station getDownStation() {
         return nearbyStations.get(DOWN_STATION_INDEX);
     }
+
+    @Override
+    public String toString() {
+        return "NearbyStations{" +
+                "nearbyStations=" + nearbyStations +
+                '}';
+    }
 }
