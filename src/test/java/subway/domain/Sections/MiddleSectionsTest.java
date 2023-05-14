@@ -17,11 +17,10 @@ class MiddleSectionsTest {
 	void givenAddUpLineMiddleNewSection_thenReturnNewSectionList() {
 		//given
 		final Section addSection = new Section(2L, Fixture.잠실역, Fixture.NEW_ARRIVAL, Fixture.NEW_DISTANCE);
-		final Sections sections = SectionsFactory.create(Fixture.LINE_NUMBER_2, addSection);
+		final StationAddable sections = SectionsFactory.createForAdd(Fixture.LINE_NUMBER_2, addSection);
 
 		//when
-		final MiddleSections middleSections = (MiddleSections)sections;
-		final List<Section> actual = middleSections.addStation(addSection);
+		final List<Section> actual = sections.addStation(addSection);
 
 		//then
 		assertThat(actual).hasSize(3);
@@ -33,11 +32,10 @@ class MiddleSectionsTest {
 	void givenAddDownLineMiddleNewSection_thenReturnNewSectionList() {
 		//given
 		final Section addSection = new Section(2L, Fixture.NEW_DEPARTURE, Fixture.선릉역, Fixture.NEW_DISTANCE);
-		final Sections sections = SectionsFactory.create(Fixture.LINE_NUMBER_2, addSection);
+		final StationAddable sections = SectionsFactory.createForAdd(Fixture.LINE_NUMBER_2, addSection);
 
 		//when
-		final MiddleSections middleSections = (MiddleSections)sections;
-		final List<Section> actual = middleSections.addStation(addSection);
+		final List<Section> actual = sections.addStation(addSection);
 
 		//then
 		assertThat(actual).hasSize(3);

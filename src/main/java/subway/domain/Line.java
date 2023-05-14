@@ -1,11 +1,9 @@
 package subway.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 import subway.domain.Sections.FilledSections;
 import subway.domain.Sections.Sections;
-import subway.domain.Sections.StationAddable;
 
 public final class Line {
 
@@ -15,10 +13,6 @@ public final class Line {
 	public Line(final LineInfo lineInfo, final FilledSections sections) {
 		this.lineInfo = lineInfo;
 		this.sections = sections;
-	}
-
-	public List<Section> addStation(final Section newSection) {
-		return ((StationAddable)sections).addStation(newSection);
 	}
 
 	public LineInfo getLineInfo() {

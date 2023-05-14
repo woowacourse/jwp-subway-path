@@ -6,14 +6,14 @@ import subway.domain.Section;
 
 public final class SectionsFactory {
 
-	public static Sections create(List<Section> sections) {
+	public static Sections createForFind(List<Section> sections) {
 		if (sections.isEmpty()) {
 			return new EmptySections();
 		}
 		return new FilledSections(sections);
 	}
 
-	public static Sections create(List<Section> sections, Section newSection) {
+	public static StationAddable createForAdd(List<Section> sections, Section newSection) {
 		if (sections.isEmpty()) {
 			return new EmptySections();
 		}

@@ -22,7 +22,7 @@ class FilledSectionsTest {
 		Collections.shuffle(sections);
 
 		// when
-		final Sections result = SectionsFactory.create(sections);
+		final Sections result = SectionsFactory.createForFind(sections);
 
 		// then
 		assertThat(result instanceof FilledSections).isTrue();

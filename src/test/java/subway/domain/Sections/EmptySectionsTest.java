@@ -17,7 +17,7 @@ class EmptySectionsTest {
 	@DisplayName("새로운 구간을 추가 시, 리스트로 감싸서 반환한다")
 	void givenNewSection_thenReturnNewSectionList() {
 		//given
-		final Sections sections = SectionsFactory.create(Collections.emptyList());
+		final Sections sections = SectionsFactory.createForFind(Collections.emptyList());
 
 		//when
 		final EmptySections emptySections = (EmptySections)sections;

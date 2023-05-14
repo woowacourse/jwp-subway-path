@@ -25,7 +25,7 @@ class SectionsFactoryTest {
 			final List<Section> givenSections = Collections.emptyList();
 
 			//when
-			final Sections result = SectionsFactory.create(givenSections);
+			final Sections result = SectionsFactory.createForFind(givenSections);
 
 			//then
 			assertThat(result instanceof EmptySections).isTrue();
@@ -39,7 +39,7 @@ class SectionsFactoryTest {
 			final List<Section> givenSections = LINE_NUMBER_2;
 
 			//when
-			final Sections result = SectionsFactory.create(givenSections);
+			final Sections result = SectionsFactory.createForFind(givenSections);
 
 			//then
 			assertThat(result instanceof FilledSections).isTrue();

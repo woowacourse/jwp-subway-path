@@ -17,11 +17,10 @@ class TerminalSectionsTest {
 	void givenAddUpLineTerminalNewSection_thenReturnNewSectionList() {
 		//given
 		final Section addSection = new Section(2L, Fixture.NEW_DEPARTURE, Fixture.잠실역, Fixture.NEW_DISTANCE);
-		final Sections sections = SectionsFactory.create(Fixture.LINE_NUMBER_2, addSection);
+		final StationAddable sections = SectionsFactory.createForAdd(Fixture.LINE_NUMBER_2, addSection);
 
 		//when
-		final TerminalSections terminalSections = (TerminalSections)sections;
-		final List<Section> actual = terminalSections.addStation(addSection);
+		final List<Section> actual = sections.addStation(addSection);
 
 		//then
 		assertThat(actual).hasSize(1);
@@ -33,11 +32,10 @@ class TerminalSectionsTest {
 	void givenAddDownLineNewSection_thenReturnNewSectionList() {
 		//given
 		final Section addSection = new Section(2L, Fixture.선릉역, Fixture.NEW_ARRIVAL, Fixture.NEW_DISTANCE);
-		final Sections sections = SectionsFactory.create(Fixture.LINE_NUMBER_2, addSection);
+		final StationAddable sections = SectionsFactory.createForAdd(Fixture.LINE_NUMBER_2, addSection);
 
 		//when
-		final TerminalSections terminalSections = (TerminalSections)sections;
-		final List<Section> actual = terminalSections.addStation(addSection);
+		final List<Section> actual = sections.addStation(addSection);
 
 		//then
 		assertThat(actual).hasSize(1);

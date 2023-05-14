@@ -12,23 +12,12 @@ public final class MiddleSections extends FilledSections implements StationAddab
 
 	@Override
 	public List<Section> addStation(final Section newSection) {
-
 		validateExistedSection(newSection);
 
 		final Section targetSection = findTargetSection(newSection);
 		final Distance newDistance = targetSection.subtractDistance(newSection);
 
-		if (targetSection.isSameDeparture(newSection)) {
-			final Section downLineSection = new Section(null, newSection.getArrival(), targetSection.getArrival(),
-				newDistance);
-
-			return List.of(newSection, downLineSection, targetSection);
-		}
-
-		final Section upLineSection = new Section(null, targetSection.getDeparture(), newSection.getDeparture(),
-			newDistance);
-
-		return List.of(upLineSection, newSection, targetSection);
+		return addStationSections(newSection, targetSection, newDistance);
 	}
 
 	private void validateExistedSection(final Section newSection) {
@@ -47,4 +36,18 @@ public final class MiddleSections extends FilledSections implements StationAddab
 			.orElseThrow(() -> new IllegalArgumentException("노선에 연결될 수 없는 구간입니다."));
 	}
 
+	private static List<Section> addStationSections(final Section newSection, final Section targetSection,
+		final Distance newDistance) {
+		if (targetSection.isSameDeparture(newSection)) {
+			final Section downLineSection = new Section(null, newSection.getArrival(), targetSection.getArrival(),
+				newDistance);
+
+			return List.of(newSection, downLineSection, targetSection);
+		}
+
+		final Section upLineSection = new Section(null, targetSection.getDeparture(), newSection.getDeparture(),
+			newDistance);
+
+		return List.of(upLineSection, newSection, targetSection);
+	}
 }
