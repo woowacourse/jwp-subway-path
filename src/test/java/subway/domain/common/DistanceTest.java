@@ -4,7 +4,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.exception.DistanceForkedException;
 import subway.exception.InvalidDistanceException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -34,14 +33,18 @@ class DistanceTest {
         assertThat(distance.getDistance()).isEqualTo(givenDistance);
     }
 
-    @ParameterizedTest
-    @ValueSource(longs = {5, 6, 10})
-    @DisplayName("현재 길이보다 입력 길이가 같거나 크면 예외를 발생시킨다. (갈래길 방지)")
-    void throws_exception_when_input_distance_is_forked_distance(final long givenDistance) {
-        Distance distance = new Distance(3);
+    @Test
+    @DisplayName("입력으로 온 거리가 현재 거리보다 큰지 확인한다.")
+    void check_input_is_longer_than_now_distance() {
+        // given
+        long givenDistance = 3;
+        long inputDistance = 5;
+        Distance distance = new Distance(givenDistance);
 
-        // when & then
-        assertThatThrownBy(() -> distance.validateSectionDistance(givenDistance))
-                .isInstanceOf(DistanceForkedException.class);
+        // when
+        boolean result = distance.isShorterOrEqualThan(inputDistance);
+
+        // then
+        assertThat(result).isTrue();
     }
 }

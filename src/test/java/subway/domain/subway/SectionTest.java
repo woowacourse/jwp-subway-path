@@ -2,7 +2,7 @@ package subway.domain.subway;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.exception.DistanceForkedException;
+import subway.exception.SectionForkedException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -31,7 +31,7 @@ class SectionTest {
         long requestDistance = 10L;
 
         // when & then
-        assertThatThrownBy(() -> section.validateDistance(requestDistance))
-                .isInstanceOf(DistanceForkedException.class);
+        assertThatThrownBy(() -> section.validateForkedSection(requestDistance))
+                .isInstanceOf(SectionForkedException.class);
     }
 }

@@ -1,6 +1,5 @@
 package subway.domain.common;
 
-import subway.exception.DistanceForkedException;
 import subway.exception.InvalidDistanceException;
 
 import java.util.Objects;
@@ -22,10 +21,8 @@ public class Distance {
         }
     }
 
-    public void validateSectionDistance(final long requestDistance) {
-        if (distance <= requestDistance) {
-            throw new DistanceForkedException();
-        }
+    public boolean isShorterOrEqualThan(final long requestDistance) {
+        return distance <= requestDistance;
     }
 
     public long getDistance() {

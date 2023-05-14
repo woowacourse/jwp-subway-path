@@ -2,9 +2,9 @@ package subway.domain.subway;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.exception.DistanceForkedException;
-import subway.exception.SectionNotConnectException;
 import subway.exception.SectionDuplicatedException;
+import subway.exception.SectionForkedException;
+import subway.exception.SectionNotConnectException;
 import subway.exception.SectionNotFoundException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -65,7 +65,7 @@ class SectionsTest {
 
         // when & then
         assertThatThrownBy(() -> sections.addSection(section))
-                .isInstanceOf(DistanceForkedException.class);
+                .isInstanceOf(SectionForkedException.class);
     }
 
     @Test

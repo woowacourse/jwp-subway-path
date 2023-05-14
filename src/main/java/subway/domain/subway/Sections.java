@@ -79,18 +79,18 @@ public class Sections {
         sections.add(section);
     }
 
-    private void insertSectionBetweenWithUpStation(Section section, Section sectionWithUpStation) {
-        sectionWithUpStation.validateDistance(section.getDistance());
+    private void insertSectionBetweenWithUpStation(final Section newSection, final Section sectionWithUpStation) {
+        sectionWithUpStation.validateForkedSection(newSection.getDistance());
         sections.remove(sectionWithUpStation);
-        sections.add(section);
-        sections.add(new Section(section.getDownStation(), sectionWithUpStation.getDownStation(), sectionWithUpStation.getDistance() - section.getDistance()));
+        sections.add(newSection);
+        sections.add(new Section(newSection.getDownStation(), sectionWithUpStation.getDownStation(), sectionWithUpStation.getDistance() - newSection.getDistance()));
     }
 
-    private void insertSectionBetweenWithDownStation(Section section, Section sectionWithDownStation) {
-        sectionWithDownStation.validateDistance(section.getDistance());
+    private void insertSectionBetweenWithDownStation(final Section newSection, final Section sectionWithDownStation) {
+        sectionWithDownStation.validateForkedSection(newSection.getDistance());
         sections.remove(sectionWithDownStation);
-        sections.add(section);
-        sections.add(new Section(sectionWithDownStation.getUpStation(), section.getUpStation(), sectionWithDownStation.getDistance() - section.getDistance()));
+        sections.add(newSection);
+        sections.add(new Section(sectionWithDownStation.getUpStation(), newSection.getUpStation(), sectionWithDownStation.getDistance() - newSection.getDistance()));
     }
 
 

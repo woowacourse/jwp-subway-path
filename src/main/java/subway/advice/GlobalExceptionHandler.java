@@ -31,8 +31,8 @@ public class GlobalExceptionHandler {
                 .body(ExceptionResponse.from(exception.getMessage(), HttpStatus.BAD_REQUEST.value()));
     }
 
-    @ExceptionHandler(DistanceForkedException.class)
-    public ResponseEntity<ExceptionResponse> distanceInvalidExceptionHandler(final DistanceForkedException exception) {
+    @ExceptionHandler(SectionForkedException.class)
+    public ResponseEntity<ExceptionResponse> sectionForkedExceptionHandler(final SectionForkedException exception) {
         return getResponseOfBadRequest(exception);
     }
 

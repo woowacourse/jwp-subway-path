@@ -1,6 +1,7 @@
 package subway.domain.subway;
 
 import subway.domain.common.Distance;
+import subway.exception.SectionForkedException;
 
 import java.util.Objects;
 
@@ -20,8 +21,10 @@ public class Section {
         return this.upStation.equals(station) || this.downStation.equals(station);
     }
 
-    public void validateDistance(final long requestDistance) {
-        distance.validateSectionDistance(requestDistance);
+    public void validateForkedSection(final long requestDistance) {
+        if (distance.isShorterOrEqualThan(requestDistance)) {
+            throw new SectionForkedException();
+        }
     }
 
     public Station getUpStation() {

@@ -11,6 +11,7 @@ import subway.domain.subway.Sections;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 import subway.exception.SectionDuplicatedException;
+import subway.exception.SectionForkedException;
 import subway.exception.SectionNotConnectException;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
@@ -81,6 +82,22 @@ public class SectionServiceUnitTest {
         // when & then
         assertThatThrownBy(() -> sectionService.insertSection(req))
                 .isInstanceOf(SectionNotConnectException.class);
+    }
+
+    @Test
+    @DisplayName("갈래길이 생기면 예외를 발생시킨다.")
+    void throws_exception_when_new_section_is_forked() {
+        // given
+        SectionCreateRequest req = new SectionCreateRequest("2호선", "잠실역", "선릉역", 10);
+        Sections sections = createSections();
+        Line line = new Line(sections, 2, "2호선", "green");
+
+        given(sectionRepository.findSectionsByLineName(req.getLineName())).willReturn(sections);
+        given(lineRepository.findByLineNameAndSections(req.getLineName(), sections)).willReturn(line);
+
+        // when & then
+        assertThatThrownBy(() -> sectionService.insertSection(req))
+                .isInstanceOf(SectionForkedException.class);
     }
 
     @Test
