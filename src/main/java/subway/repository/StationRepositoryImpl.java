@@ -26,8 +26,12 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     @Override
-    public Station findById(final Long id) {
-        return null;
+    public Optional<Station> findById(final Long id) {
+        final Station station = stationDao.findById(id);
+        if (station == null) {
+            return Optional.empty();
+        }
+        return Optional.of(station);
     }
 
     @Override
@@ -42,6 +46,10 @@ public class StationRepositoryImpl implements StationRepository {
 
     @Override
     public Optional<Station> findByName(final String stationName) {
-        return Optional.empty();
+        final Station station = stationDao.findByName(stationName);
+        if (station == null) {
+            return Optional.empty();
+        }
+        return Optional.of(station);
     }
 }

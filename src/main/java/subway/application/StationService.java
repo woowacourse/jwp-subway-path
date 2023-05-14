@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.controller.dto.StationRequest;
 import subway.controller.dto.StationResponse;
-import subway.dao.StationDao;
 import subway.domain.Station;
+import subway.repository.dao.StationDao;
 
 @Service
 public class StationService {

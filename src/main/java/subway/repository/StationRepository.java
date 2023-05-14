@@ -10,7 +10,7 @@ public interface StationRepository {
 
     List<Station> findAll();
 
-    Station findById(Long id);
+    Optional<Station> findById(Long id);
 
     void update(Station newStation);
 
