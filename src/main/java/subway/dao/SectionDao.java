@@ -30,17 +30,7 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public List<SectionEntity> findSectionsByLineId(long lineId) {
-        String sql = "select * from SECTION where line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
-    }
-
-    public void deleteAll(long lineId) {
-        String sql = "delete from SECTION where line_id = ?";
-        jdbcTemplate.update(sql, lineId);
-    }
-
-    public void insertAll(List<SectionEntity> sectionEntities) {
+    public void insertSections(List<SectionEntity> sectionEntities) {
         String sql = "insert into SECTION (upstream_id, downstream_id, line_id, distance) values (?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
@@ -56,5 +46,15 @@ public class SectionDao {
                 return sectionEntities.size();
             }
         });
+    }
+
+    public List<SectionEntity> findSectionsByLineId(long lineId) {
+        String sql = "select * from SECTION where line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
+
+    public void deleteSectionsByLineId(long lineId) {
+        String sql = "delete from SECTION where line_id = ?";
+        jdbcTemplate.update(sql, lineId);
     }
 }
