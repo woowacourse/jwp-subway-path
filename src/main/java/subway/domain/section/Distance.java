@@ -15,7 +15,7 @@ final class Distance {
 
     private void validate(final int value) {
         if (value < MINIMUM_VALUE) {
-            throw new InvalidDistanceException("역 사이의 거리는 0이상이어야합니다.");
+            throw new InvalidDistanceException("역 사이의 거리는 0 이상이어야 합니다.");
         }
     }
 

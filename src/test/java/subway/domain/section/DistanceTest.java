@@ -23,7 +23,7 @@ class DistanceTest {
     void validateWithInvalidRange(final int input) {
         assertThatThrownBy(() -> new Distance(input))
                 .isInstanceOf(InvalidDistanceException.class)
-                .hasMessage("역 사이의 거리는 0이상이어야합니다.");
+                .hasMessage("역 사이의 거리는 0 이상이어야 합니다.");
     }
 }
 
