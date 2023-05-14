@@ -32,22 +32,20 @@ public class LineDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    // TODO: 2023/05/11 name을 받고 id를 찾아 반환하는 메서드 구현하기 
-    public LineEntity insert(Line line) {
+    // TODO: 2023-05-14 테스트 코드 작성 
+    public Long insert(LineEntity entity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-        params.put("head_station", line.getHeadStation().getId());
+        params.put("name", entity.getName());
+        params.put("color", entity.getColor());
+        params.put("head_station", entity.getHeadStation());
 
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineEntity(lineId, line.getName(), line.getColor(),
-            line.getHeadStation().getId());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public Long findIdByName(String name) {
-        String sql = "select id from LINE where name = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("id"), name);
-    }
+//    public Long findIdByName(String name) {
+//        String sql = "select id from LINE where name = ?";
+//        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("id"), name);
+//    }
 
     public List<LineEntity> findAll() {
         String sql = "select * from LINE";
@@ -59,10 +57,10 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Long findHeadIdById(Long lineId) {
-        String sql = "select head_station from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("head_station"), lineId);
-    }
+//    public Long findHeadIdById(Long lineId) {
+//        String sql = "select head_station from LINE WHERE id = ?";
+//        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("head_station"), lineId);
+//    }
 
     public boolean isUpEndStation(Long lineId, String name) {
         String sql = "select exists(select * from LINE "
@@ -77,12 +75,12 @@ public class LineDao {
 //        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
 //    }
 
-    public void updateHeadStation(Long lineId, Long headStation) {
+    public int updateHeadStation(Long lineId, Long headStation) {
         String sql = "update LINE set head_station = ? where id = ?";
-        jdbcTemplate.update(sql, headStation, lineId);
+        return jdbcTemplate.update(sql, headStation, lineId);
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }

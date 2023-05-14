@@ -16,6 +16,7 @@ import java.util.Map;
 @Repository
 public class StationDao {
 
+    public static final int MIN_DISTANCE_VALUE = 1;
     private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
         new StationEntity(
             rs.getLong("id"),
@@ -67,28 +68,31 @@ public class StationDao {
             , station.getDistance().getValue(), lineId);
     }
 
-    public List<StationEntity> findAll() {
-        String sql = "select * from STATION";
-        List<StationEntity> query = jdbcTemplate.query(sql, rowMapper);
-
-        return jdbcTemplate.query(sql, rowMapper);
-    }
+//    public List<StationEntity> findAll() {
+//        String sql = "select * from STATION";
+//        List<StationEntity> query = jdbcTemplate.query(sql, rowMapper);
+//
+//        return jdbcTemplate.query(sql, rowMapper);
+//    }
 
     public List<StationEntity> findByLineId(Long lineId) {
         String sql = "select * from STATION where line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
-
     }
 
-    public StationEntity findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
+//    public StationEntity findById(Long id) {
+//        String sql = "select * from STATION where id = ?";
+//        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+//    }
 
     //전 역을 찾는 메서드
     public StationEntity findByNextStationId(Long lineId, Long nextStationId) {
-        String sql = "select * from STATION where line_id = ? AND next_station = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, lineId, nextStationId);
+        try {
+            String sql = "select * from STATION where line_id = ? AND next_station = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, lineId, nextStationId);
+        } catch (EmptyResultDataAccessException exception) {
+            throw new IllegalArgumentException("노선에 존재하지 않는 역이거나 이전 역이 존재하지 않는 역입니다.");
+        }
     }
 
     public StationEntity findByLineIdAndName(Long lineId, String name) {
@@ -99,6 +103,7 @@ public class StationDao {
             throw new IllegalArgumentException(String.format("노선에 %s이 존재하지 않습니다.", name));
         }
     }
+
     public StationEntity findHeadStationByLineId(Long lineId) {
         String sql = "select * from STATION "
             + "left outer join LINE on STATION.id = LINE.head_station "
@@ -112,28 +117,35 @@ public class StationDao {
             rs.getBoolean("IS_DOWN_END_STATION"), lineId, name));
     }
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, newStation.getName(), newStation.getId());
-    }
+//    public void update(Station newStation) {
+//        String sql = "update STATION set name = ? where id = ?";
+//        jdbcTemplate.update(sql, newStation.getName(), newStation.getId());
+//    }
 
-    public void updateNextStationById(Long id, Long newNextStation) {
+    public int updateNextStationById(Long id, Long newNextStation) {
         String sql = "update STATION set next_station = ? where id = ?";
-        jdbcTemplate.update(sql, newNextStation, id);
+        return jdbcTemplate.update(sql, newNextStation, id);
     }
 
-    public void updateDistanceById(Long id, int newDistance) {
+    public int updateDistanceById(Long id, int newDistance) {
+        validateDistance(newDistance);
         String sql = "update STATION set distance = ? where id = ?";
-        jdbcTemplate.update(sql, newDistance, id);
+        return jdbcTemplate.update(sql, newDistance, id);
     }
 
-    public void deleteById(Long id) {
+    private void validateDistance(int newDistance) {
+        if (newDistance < MIN_DISTANCE_VALUE) {
+            throw new IllegalArgumentException("거리는 양의 정수여야 합니다");
+        }
+    }
+
+    public int deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        return jdbcTemplate.update(sql, id);
     }
 
-    public void deleteByLineId(Long lineId) {
+    public int deleteByLineId(Long lineId) {
         String sql = "delete from STATION where line_id = ?";
-        jdbcTemplate.update(sql, lineId);
+        return jdbcTemplate.update(sql, lineId);
     }
 }
