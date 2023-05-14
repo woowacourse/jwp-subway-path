@@ -3,6 +3,7 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.controller.dto.StationRequest;
 import subway.controller.dto.StationResponse;
 import subway.domain.Station;
@@ -10,6 +11,7 @@ import subway.exception.BusinessException;
 import subway.persistence.StationRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class StationService {
 
     private final StationRepository stationRepository;
@@ -18,6 +20,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public StationResponse saveStation(final StationRequest stationRequest) {
         final Station station = stationRepository.save(new Station(stationRequest.getName()));
         return StationResponse.of(station);
@@ -37,10 +40,12 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
+    @Transactional
     public void updateStation(final Long id, final StationRequest stationRequest) {
         stationRepository.update(new Station(id, stationRequest.getName()));
     }
 
+    @Transactional
     public void deleteStationById(final Long id) {
         stationRepository.deleteById(id);
     }
