@@ -3,12 +3,10 @@ package fixtures;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
-import subway.dto.*;
+import subway.dto.StationRequest;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
-
-import java.util.List;
 
 public class StationFixtures {
     /**
@@ -121,13 +119,4 @@ public class StationFixtures {
     public static final SectionEntity ENTITY_잠실역_TO_건대역_FIND = new SectionEntity(SECTION_잠실역_TO_건대역_ID, STATION_잠실역_ID, STATION_건대역_ID, DISTANCE_잠실역_TO_건대역, LINE2_ID);
     public static final SectionEntity ENTITY_잠실역_TO_건대역_INSERT = new SectionEntity(null, STATION_잠실역_ID, STATION_건대역_ID, DISTANCE_잠실역_TO_건대역, LINE2_ID);
     public static final SectionEntity ENTITY_잠실역_TO_강변역_FIND = new SectionEntity(SECTION_잠실역_TO_강변역_ID, STATION_잠실역_ID, STATION_강변역_ID, DISTANCE_잠실역_TO_강변역, LINE2_ID);
-
-    /**
-     * response
-     */
-    public static final StationSaveResponse RESPONSE_SAVE_INITIAL_STATIONS_잠실역_TO_건대역 =
-            new StationSaveResponse(
-                    LineDto.from(LINE2),
-                    List.of(StationDto.from(STATION_잠실역), StationDto.from(STATION_건대역)),
-                    List.of(SectionDto.from(SECTION_잠실역_TO_건대역)));
 }

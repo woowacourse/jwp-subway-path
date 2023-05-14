@@ -8,9 +8,6 @@ public class StationRequest {
     private int distance;
     private String lineName;
 
-    private StationRequest() {
-    }
-
     public StationRequest(String upStationName, String downStationName, int distance, String lineName) {
         this.upStationName = upStationName;
         this.downStationName = downStationName;
