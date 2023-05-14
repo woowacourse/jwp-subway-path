@@ -18,6 +18,14 @@ public class Distance {
         }
     }
 
+    public boolean isLongerThan(Distance other) {
+        return this.value.compareTo(other.getValue()) > 0;
+    }
+
+    public Distance subtract(Distance other) {
+        return new Distance(this.value - other.value);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -38,5 +46,4 @@ public class Distance {
     public Integer getValue() {
         return value;
     }
-
 }
