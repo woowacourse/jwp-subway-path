@@ -1,13 +1,10 @@
 package subway.domain.line;
 
-import java.util.LinkedList;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
-import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
 import subway.exception.InvalidDistanceException;
 import subway.exception.InvalidSectionException;
 
@@ -26,43 +23,24 @@ public final class Line {
     }
 
     public Line(final Long id, final String name, final String color) {
-        this(id, name, color, new LinkedList<>());
+        this(id, name, color, Collections.emptyList());
     }
 
     public Line(final Long id, final String name, final String color, final List<Section> sections) {
         this.id = id;
         this.name = new Name(name);
         this.color = new Color(color);
-        this.sections = new Sections(sections);
+        this.sections = new Sections();
+        loadSections(sections);
     }
 
-    public static Line from(final LineEntity lineEntity) {
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
-    }
-
-    public static Line of(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
-        final Line line = new Line(
-                lineEntity.getId(),
-                lineEntity.getName(),
-                lineEntity.getColor()
-        );
-        loadSections(line, generateSections(sectionEntities));
-        return line;
-    }
-
-    private static List<Section> generateSections(final List<SectionEntity> sectionEntities) {
-        return sectionEntities.stream()
-                .map(Section::from)
-                .collect(Collectors.toList());
-    }
-
-    private static void loadSections(final Line line, final List<Section> sections) {
+    private void loadSections(final List<Section> sections) {
         int numberOfInvalidSections = 0;
         while (!sections.isEmpty()) {
             validateSections(sections, numberOfInvalidSections);
             final Section section = sections.remove(0);
             try {
-                line.addSection(section.getUpward(), section.getDownward(), section.getDistance());
+                addSection(section.getUpward(), section.getDownward(), section.getDistance());
                 numberOfInvalidSections = 0;
             } catch (InvalidSectionException e) {
                 sections.add(section);

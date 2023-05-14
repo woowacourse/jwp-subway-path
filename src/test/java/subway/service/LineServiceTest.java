@@ -8,6 +8,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -82,10 +83,9 @@ class LineServiceTest {
         void findLineById() {
             //given
             final List<Section> sections = List.of(
-                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
-                    new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
+                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10)
             );
-            final Line line = new Line(1L, "2호선", "초록색", sections);
+            final Line line = new Line(1L, "2호선", "초록색", new LinkedList<>(sections));
 
             given(lineRepository.findById(1L)).willReturn(line);
 
@@ -110,14 +110,13 @@ class LineServiceTest {
     @DisplayName("노선 목록을 조회한다.")
     void findLines() {
         //given
-        final List<Section> sectionsOfLineTwo = List.of(
-                new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
-                new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
-        );
-        final List<Section> sectionsOfLineFour = List.of(
-                new Section(new Station(3L, "이수역"), new Station(4L, "서울역"), 11),
-                new Section(new Station(4L, "서울역"), Station.TERMINAL, 0)
-        );
+        final List<Section> sectionsOfLineTwo = new LinkedList<>(List.of(
+                new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10)
+        ));
+        final List<Section> sectionsOfLineFour = new LinkedList<>(List.of(
+                new Section(new Station(3L, "이수역"), new Station(4L, "서울역"), 11)
+        ));
+
         final List<Line> lines = List.of(
                 new Line(1L, "2호선", "초록색", sectionsOfLineTwo),
                 new Line(2L, "4호선", "하늘색", sectionsOfLineFour)
@@ -159,8 +158,7 @@ class LineServiceTest {
             //given
             final SectionCreateRequest request = new SectionCreateRequest(1L, 3L, 2);
             final List<Section> sections = List.of(
-                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
-                    new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
+                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10)
             );
             final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
             given(lineRepository.findById(1L)).willReturn(line);
@@ -204,8 +202,7 @@ class LineServiceTest {
         @DisplayName("유효한 정보라면 역을 삭제한다.")
         void deleteStation() {
             final List<Section> sections = List.of(
-                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10),
-                    new Section(new Station(2L, "잠실새내역"), Station.TERMINAL, 0)
+                    new Section(new Station(1L, "잠실역"), new Station(2L, "잠실새내역"), 10)
             );
             final Line line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
             given(lineRepository.findById(1L)).willReturn(line);

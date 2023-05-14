@@ -25,20 +25,20 @@ public class LineRepository {
 
     public Line save(final Line line) {
         final LineEntity entity = lineDao.save(new LineEntity(line.getId(), line.getName(), line.getColor()));
-        return Line.from(entity);
+        return new Line(entity.getId(), entity.getName(), entity.getColor());
     }
 
     public Line findById(final Long lineId) {
         final LineEntity lineEntity = lineDao.findById(lineId)
                 .orElseThrow(() -> new InvalidLineException("존재하지 않는 노선 ID 입니다."));
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
-        return Line.of(lineEntity, sectionEntities);
+        return generateLine(lineEntity, sectionEntities);
     }
 
     public List<Line> findAll() {
         return lineDao.findAll()
                 .stream()
-                .map(lineEntity -> Line.of(lineEntity, sectionDao.findAllByLineId(lineEntity.getId())))
+                .map(lineEntity -> generateLine(lineEntity, sectionDao.findAllByLineId(lineEntity.getId())))
                 .collect(Collectors.toList());
     }
 
@@ -47,6 +47,21 @@ public class LineRepository {
         sectionDao.deleteAllByLineId(line.getId());
         final List<SectionEntity> entities = generateSectionEntities(line);
         sectionDao.saveAll(entities);
+    }
+
+    private Line generateLine(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor(),
+                generateSections(sectionEntities)
+        );
+    }
+
+    private List<Section> generateSections(final List<SectionEntity> sectionEntities) {
+        return sectionEntities.stream()
+                .map(Section::from)
+                .collect(Collectors.toList());
     }
 
     private List<SectionEntity> generateSectionEntities(final Line line) {

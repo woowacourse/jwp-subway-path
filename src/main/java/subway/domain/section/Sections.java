@@ -11,8 +11,8 @@ public final class Sections {
 
     private final List<Section> sections;
 
-    public Sections(final List<Section> sections) {
-        this.sections = sections;
+    public Sections() {
+        this.sections = new LinkedList<>();
     }
 
     public void add(final Section section) {

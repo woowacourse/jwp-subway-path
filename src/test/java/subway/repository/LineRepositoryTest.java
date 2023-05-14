@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -151,7 +152,7 @@ class LineRepositoryTest {
                             10
                     )
             );
-            final Line line = Line.of(lineEntity, List.of(sectionEntity));
+            final Line line = generateLine(lineEntity, List.of(sectionEntity));
             line.addSection(Station.from(upward), Station.from(middle), 3);
 
             //when
@@ -186,7 +187,7 @@ class LineRepositoryTest {
                             10
                     )
             );
-            final Line line = Line.of(lineEntity, List.of(sectionEntity));
+            final Line line = generateLine(lineEntity, List.of(sectionEntity));
             line.deleteStation(Station.from(upward));
 
             //when
@@ -197,5 +198,20 @@ class LineRepositoryTest {
             final List<Station> stations = result.getStations();
             assertThat(stations).isEmpty();
         }
+    }
+
+    private Line generateLine(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor(),
+                generateSections(sectionEntities)
+        );
+    }
+
+    private List<Section> generateSections(final List<SectionEntity> sectionEntities) {
+        return sectionEntities.stream()
+                .map(Section::from)
+                .collect(Collectors.toList());
     }
 }

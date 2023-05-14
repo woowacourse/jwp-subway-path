@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -28,8 +29,7 @@ class LineTest {
         upward = new Station(1L, "잠실역");
         downward = new Station(2L, "종합운동장역");
         final List<Section> sections = List.of(
-                new Section(upward, downward, 10),
-                new Section(downward, Station.TERMINAL, 0)
+                new Section(upward, downward, 10)
         );
         line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
     }
@@ -51,7 +51,7 @@ class LineTest {
             );
 
             //when
-            final Line line = Line.of(lineEntity, sectionEntities);
+            final Line line = generateLine(lineEntity, sectionEntities);
 
             //then
             assertAll(
@@ -75,7 +75,7 @@ class LineTest {
 
             //when
             //then
-            assertThatThrownBy(() -> Line.of(lineEntity, sectionEntities))
+            assertThatThrownBy(() -> generateLine(lineEntity, sectionEntities))
                     .isInstanceOf(InvalidSectionException.class)
                     .hasMessage("구간 정보가 올바르지 않습니다.");
         }
@@ -275,5 +275,20 @@ class LineTest {
                     .isInstanceOf(InvalidSectionException.class)
                     .hasMessage("노선에 해당 역이 존재하지 않습니다.");
         }
+    }
+
+    private Line generateLine(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
+        return new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor(),
+                generateSections(sectionEntities)
+        );
+    }
+
+    private List<Section> generateSections(final List<SectionEntity> sectionEntities) {
+        return sectionEntities.stream()
+                .map(Section::from)
+                .collect(Collectors.toList());
     }
 }
