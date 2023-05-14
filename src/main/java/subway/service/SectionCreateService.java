@@ -3,18 +3,20 @@ package subway.service;
 import java.util.List;
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.domain.Direction;
 import subway.entity.SectionEntity;
 
-@AllArgsConstructor
 @Service
 public class SectionCreateService {
 
-    private SectionDao sectionDao;
+    private final SectionDao sectionDao;
+
+    public SectionCreateService(final SectionDao sectionDao) {
+        this.sectionDao = sectionDao;
+    }
 
     @Transactional
     public List<SectionEntity> createSection(

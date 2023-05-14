@@ -3,7 +3,6 @@ package subway.controller;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,12 +19,16 @@ import subway.service.SectionCreateService;
 import subway.service.SectionDeleteService;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/sections")
 public class SectionController {
 
     private final SectionCreateService sectionCreateService;
     private final SectionDeleteService sectionDeleteService;
+
+    public SectionController(final SectionCreateService sectionCreateService, final SectionDeleteService sectionDeleteService) {
+        this.sectionCreateService = sectionCreateService;
+        this.sectionDeleteService = sectionDeleteService;
+    }
 
     @PostMapping
     public ResponseEntity<List<SectionResponse>> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {

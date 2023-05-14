@@ -2,16 +2,18 @@ package subway.service;
 
 import java.util.Optional;
 
-import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.entity.SectionEntity;
 
 @Service
-@AllArgsConstructor
 public class SectionDeleteService {
 
-    private SectionDao sectionDao;
+    private final SectionDao sectionDao;
+
+    public SectionDeleteService(final SectionDao sectionDao) {
+        this.sectionDao = sectionDao;
+    }
 
     public void deleteSection(final Long lineId, final Long stationId) {
         final Optional<SectionEntity> upSection = sectionDao.findNeighborUpSection(lineId, stationId);

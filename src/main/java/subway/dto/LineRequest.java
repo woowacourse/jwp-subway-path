@@ -1,14 +1,21 @@
 package subway.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class LineRequest {
 
-    private String name;
-    private String color;
+    private final String name;
+    private final String color;
+
+    public LineRequest(final String name, final String color) {
+        this.name = name;
+        this.color = color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
 }

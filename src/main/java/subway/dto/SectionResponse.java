@@ -1,20 +1,22 @@
 package subway.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
 import subway.entity.SectionEntity;
 
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class SectionResponse {
 
-    private Long id;
-    private Long lineId;
-    private Long upStationId;
-    private Long downStationId;
-    private int distance;
+    private final Long id;
+    private final Long lineId;
+    private final Long upStationId;
+    private final Long downStationId;
+    private final int distance;
+
+    public SectionResponse(final Long id, final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+        this.id = id;
+        this.lineId = lineId;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
+    }
 
     public static SectionResponse of(final SectionEntity sectionEntity) {
         return new SectionResponse(
@@ -24,5 +26,25 @@ public class SectionResponse {
                 sectionEntity.getDownStationId(),
                 sectionEntity.getDistance()
         );
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getLineId() {
+        return lineId;
+    }
+
+    public Long getUpStationId() {
+        return upStationId;
+    }
+
+    public Long getDownStationId() {
+        return downStationId;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }

@@ -1,17 +1,38 @@
 package subway.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-@Getter
-@NoArgsConstructor
-@AllArgsConstructor
 public class SectionCreateRequest {
 
-    private Long lineId;
-    private Long baseId;
-    private Long addedId;
-    private Boolean direction;
-    private Integer distance;
+    private final Long lineId;
+    private final Long baseId;
+    private final Long addedId;
+    private final Boolean direction;
+    private final Integer distance;
+
+    public SectionCreateRequest(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
+        this.lineId = lineId;
+        this.baseId = baseId;
+        this.addedId = addedId;
+        this.direction = direction;
+        this.distance = distance;
+    }
+
+    public Long getLineId() {
+        return lineId;
+    }
+
+    public Long getBaseId() {
+        return baseId;
+    }
+
+    public Long getAddedId() {
+        return addedId;
+    }
+
+    public Boolean getDirection() {
+        return direction;
+    }
+
+    public Integer getDistance() {
+        return distance;
+    }
 }

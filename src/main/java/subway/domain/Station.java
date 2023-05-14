@@ -1,23 +1,51 @@
 package subway.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.util.Objects;
 
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString
 public class Station {
 
-    @EqualsAndHashCode.Include
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public Station(final String name) {
         this(null, name);
+    }
+
+    public Station(final Long id, final String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Station station = (Station) o;
+        return Objects.equals(id, station.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

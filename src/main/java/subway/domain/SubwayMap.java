@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 
-import lombok.AllArgsConstructor;
-
-@AllArgsConstructor
 public class SubwayMap {
 
     private final Map<Station, List<Section>> subwayMap;
+
+    private SubwayMap(final Map<Station, List<Section>> subwayMap) {
+        this.subwayMap = subwayMap;
+    }
 
     public static SubwayMap of(final List<Section> sections) {
         final SubwayMap subwayMap = new SubwayMap(new HashMap<>());
