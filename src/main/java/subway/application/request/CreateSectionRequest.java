@@ -1,6 +1,7 @@
 package subway.application.request;
 
 public class CreateSectionRequest {
+
     private String upStationName;
     private String downStationName;
     private Long lineId;

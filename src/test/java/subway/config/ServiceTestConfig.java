@@ -5,7 +5,7 @@ import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
-public class ServiceTestConfig extends RepositoryTestConfig {
+public abstract class ServiceTestConfig extends RepositoryTestConfig {
 
     protected SectionRepository sectionRepository;
     protected StationRepository stationRepository;
