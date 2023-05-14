@@ -155,6 +155,7 @@ public class SectionService {
          return sectionDao.findSectionsByLineId(lineId);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findStationsInOrder(long lineId) {
         Sections sections = sectionDao.findSectionsByLineId(lineId);
 

@@ -101,11 +101,12 @@ public class Sections {
 
 
     public List<Station> getStationsInOrder() {
-        List<Section> sortedSections = this.getSorted();
-
-        if (sortedSections.isEmpty()) {
+        if (sections.isEmpty()) {
             return Collections.emptyList();
         }
+
+        List<Section> sortedSections = this.getSorted();
+
 
         List<Station> sortedStations = new ArrayList<>();
         sortedStations.add(sortedSections.get(0).getUpStation());

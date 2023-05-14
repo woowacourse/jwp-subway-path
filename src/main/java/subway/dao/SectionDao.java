@@ -48,7 +48,7 @@ public class SectionDao {
 
     public long save(final Section section, final long lineId) {
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource()
-                .addValue("id", section.getId())
+                .addValue("id", null)
                 .addValue("up_id", section.getUpStationId())
                 .addValue("down_id", section.getDownStationId())
                 .addValue("distance", section.getDistance())
