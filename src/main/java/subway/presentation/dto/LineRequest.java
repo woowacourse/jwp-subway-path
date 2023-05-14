@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.presentation.dto;
 
 public class LineRequest {
     private String lineName;
@@ -13,5 +13,4 @@ public class LineRequest {
     public String getLineName() {
         return lineName;
     }
-
 }

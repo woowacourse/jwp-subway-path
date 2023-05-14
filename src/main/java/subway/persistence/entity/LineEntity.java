@@ -1,17 +1,16 @@
-package subway.dao;
+package subway.persistence.entity;
 
 public class LineEntity {
-
     private final Long id;
     private final String name;
-
-    public LineEntity(String name) {
-        this(null, name);
-    }
 
     public LineEntity(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public LineEntity(String name) {
+        this(null, name);
     }
 
     public Long getId() {
@@ -21,5 +20,4 @@ public class LineEntity {
     public String getName() {
         return name;
     }
-
 }

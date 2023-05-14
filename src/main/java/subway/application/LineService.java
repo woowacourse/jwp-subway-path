@@ -1,101 +1,73 @@
 package subway.application;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.SectionRepository;
+import subway.domain.StationRepository;
+import subway.domain.Line;
+import subway.domain.Sections;
+import subway.domain.Station;
+import subway.application.dto.LineDto;
+import subway.application.dto.StationDto;
+import subway.domain.LineRepository;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.LineEntity;
-import subway.dao.SectionDao;
-import subway.dao.SectionEntity;
-import subway.dao.StationDao;
-import subway.dao.StationEntity;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationResponse;
 
 @Transactional(readOnly = true)
 @Service
 public class LineService {
-    private final LineDao lineDao;
-    private final StationDao stationDao;
-    private final SectionDao sectionDao;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
+    private final SectionRepository sectionRepository;
 
-    public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
-        this.lineDao = lineDao;
-        this.stationDao = stationDao;
-        this.sectionDao = sectionDao;
+    public LineService(LineRepository lineRepository,
+                       StationRepository stationRepository, SectionRepository sectionRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
+        this.sectionRepository = sectionRepository;
     }
 
     @Transactional
-    public LineResponse saveLine(LineRequest request) {
-        Long savedId = lineDao.insert(new LineEntity(request.getLineName()));
+    public Long saveLine(String lineName) {
+        Line line = new Line(lineName);
 
-        return new LineResponse(savedId, request.getLineName(), null);
+        return lineRepository.save(line);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
-        return persistLines.stream()
-                .map(entities -> {
-                    Long lineId = entities.getId();
-                    return getLineResponse(entities, lineId);
-                })
+    public List<LineDto> findAllLinesDetails() {
+        List<Line> lines = lineRepository.findAll();
+
+        return lines.stream()
+                .map(this::toLineDetailsDto)
                 .collect(Collectors.toList());
     }
 
-    private LineResponse getLineResponse(LineEntity entities, Long lineId) {
-        List<SectionEntity> findSections = sectionDao.findByLineId(lineId);
-        List<Section> collect = findSections.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
-
-        if (collect.isEmpty()) {
-            return new LineResponse(entities.getId(), entities.getName(), new ArrayList<StationResponse>());
+    private LineDto toLineDetailsDto(Line line) {
+        Long lineId = lineRepository.findIdByName(line.getName());
+        Sections sections = sectionRepository.findAllByLineId(lineId);
+        if (sections.isEmpty()) {
+            return new LineDto(lineId, line.getName(), new ArrayList<>());
         }
+        List<Station> orderedStations = sections.getOrderedStations();
 
-        Sections sections = new Sections(collect);
-
-        List<Station> sortedStations = sections.getSortedStations();
-
-        List<StationResponse> stationsResponses = sortedStations.stream()
-                .map(it -> {
-                    Long findStationId = stationDao.findIdByName(it.getName());
-                    return new StationResponse(findStationId, it.getName());
-                })
+        List<StationDto> stations = orderedStations.stream()
+                .map(this::toStationDto)
                 .collect(Collectors.toList());
 
-        return new LineResponse(entities.getId(), entities.getName(), stationsResponses);
+        return new LineDto(lineId, line.getName(), stations);
     }
 
-    private Section toSection(SectionEntity sectionEntity) {
-        Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
-        Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
-        Distance distance = new Distance(sectionEntity.getDistance());
+    private StationDto toStationDto(Station station) {
+        Long stationId = stationRepository.findIdByName(station.getName());
 
-        return new Section(startStation, endStation, distance);
+        return new StationDto(stationId, station.getName());
     }
 
-    private Station toStation(StationEntity stationEntity) {
-        return new Station(stationEntity.getName());
-    }
+    public LineDto findLineById(Long id) {
+        Line line = lineRepository.findLineById(id);
 
-    private List<LineEntity> findLines() {
-        return lineDao.findAll();
+        return toLineDetailsDto(line);
     }
-
-    public LineResponse findLineResponseById(Long id) {
-        LineEntity findEntity = findLineById(id);
-        return getLineResponse(findEntity, id);
-    }
-
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
 }
