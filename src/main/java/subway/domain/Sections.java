@@ -3,9 +3,40 @@ package subway.domain;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
+import org.apache.logging.log4j.util.TriConsumer;
 
 public class Sections {
 
+    private static final Map<BiPredicate<Section, Section>, TriConsumer<List<Section>, Section, Section>> addPrincipal = Map.of(
+            (originSection, newSection) -> originSection.getNextStation().equals(newSection.getNextStation()),
+            (sections, originSection, newSection) -> {
+                int originIndex = sections.indexOf(originSection);
+                sections.add(originIndex,
+                        new Section(
+                                originSection.getPrevStation(),
+                                newSection.getPrevStation(),
+                                originSection.getDistance().minusValue(newSection.getDistance())
+                        )
+                );
+                sections.add(originIndex + 1, newSection);
+            },
+            (originSection, newSection) -> originSection.getPrevStation().equals(newSection.getPrevStation()),
+            (sections, originSection, newSection) -> {
+                int originIndex = sections.indexOf(originSection);
+                sections.add(originIndex,
+                        new Section(
+                                newSection.getNextStation(),
+                                originSection.getNextStation(),
+                                originSection.getDistance().minusValue(newSection.getDistance())
+                        )
+                );
+                sections.add(originIndex, newSection);
+
+            }
+    );
     private final List<Section> sections;
 
     public Sections() {
@@ -42,22 +73,34 @@ public class Sections {
         final Section originSection = findOriginSection(section, newSections);
 
         final int originIndex = newSections.indexOf(originSection);
+        if (originSection.getNextStation().equals(section.getNextStation())) {
+            newSections.add(originIndex, section);
+            newSections.add(originIndex,
+                    new Section(
+                            originSection.getPrevStation(),
+                            section.getPrevStation(),
+                            originSection.getDistance().minusValue(section.getDistance())
+                    )
+            );
+        }
+        if (originSection.getPrevStation().equals(section.getPrevStation())) {
+            newSections.add(originIndex,
+                    new Section(
+                            section.getNextStation(),
+                            originSection.getNextStation(),
+                            originSection.getDistance().minusValue(section.getDistance())
+                    )
+            );
+            newSections.add(originIndex, section);
+        }
         newSections.remove(originSection);
-        newSections.add(originIndex, section);
-        newSections.add(originIndex + 1,
-                new Section(
-                        section.getNextStation(),
-                        originSection.getNextStation(),
-                        originSection.getDistance().minusValue(section.getDistance())
-                )
-        );
-
         return new Sections(newSections);
     }
 
     private static Section findOriginSection(final Section section, final LinkedList<Section> newSections) {
         return newSections.stream()
-                .filter(element -> element.getPrevStation().equals(section.getPrevStation()))
+                .filter(element -> element.getPrevStation().equals(section.getPrevStation())
+                        || element.getNextStation().equals(section.getNextStation()))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("이전 역을 찾을 수 없습니다."));
     }
@@ -121,10 +164,9 @@ public class Sections {
         if (sections.isEmpty()) {
             return Collections.emptyList();
         }
-        final List<Station> stations = new LinkedList<>();
-        for (final Section section : sections) {
-            stations.add(section.getPrevStation());
-        }
+        final List<Station> stations = sections.stream()
+                .map(Section::getPrevStation)
+                .collect(Collectors.toList());
         stations.add(sections.get(sections.size() - 1).getNextStation());
         return stations;
     }

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 class SectionsTest {
@@ -71,21 +72,44 @@ class SectionsTest {
                 .containsExactly(SECTION_1, SECTION_2, newSection);
     }
 
-    @DisplayName("Sections의 중간에 section을 추가한다.")
-    @Test
-    void addCentral() {
-        final Station stationD = new Station(4L, "D");
-        final Section newSection = new Section(STATION_A, stationD, new Distance(1));
+    @DisplayName("Sections 중간에 Section을 추가한다.")
+    @Nested
+    class addCentral {
 
-        final Sections addedSections = ORIGIN_SECTIONS.addCentral(newSection);
+        @DisplayName("Sections의 중간에 section을 추가하되, 요청과 일치하는 역은 prevStation이다.")
+        @Test
+        void addCentralPrevEqualCase() {
+            final Station stationD = new Station(4L, "D");
+            final Section newSection = new Section(STATION_A, stationD, new Distance(1));
 
-        assertThat(addedSections.getSections())
-                .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
-                .containsExactly(
-                        tuple(STATION_A, stationD, new Distance(1)),
-                        tuple(stationD, STATION_B, new Distance(2)),
-                        tuple(STATION_B, STATION_C, new Distance(4))
-                );
+            final Sections addedSections = ORIGIN_SECTIONS.addCentral(newSection);
+
+            assertThat(addedSections.getSections())
+                    .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_A, stationD, new Distance(1)),
+                            tuple(stationD, STATION_B, new Distance(2)),
+                            tuple(STATION_B, STATION_C, new Distance(4))
+                    );
+        }
+
+        @DisplayName("Sections의 중간에 section을 추가하되, 요청과 일치는 역은 nextStation이다.")
+        @Test
+        void addCentralNextEqualCase() {
+            final Station stationD = new Station(4L, "D");
+            final Section newSection = new Section(stationD, STATION_B, new Distance(1));
+
+            final Sections addedSections = ORIGIN_SECTIONS.addCentral(newSection);
+
+            assertThat(addedSections.getSections())
+                    .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_A, stationD, new Distance(2)),
+                            tuple(stationD, STATION_B, new Distance(1)),
+                            tuple(STATION_B, STATION_C, new Distance(4))
+                    );
+        }
+
     }
 
     @DisplayName("상행종점을 제거한다.")
