@@ -3,7 +3,7 @@ package subway.dto;
 public class LineSaveDto {
     private String lineName;
 
-    public LineSaveDto() {
+    private LineSaveDto() {
     }
 
     public LineSaveDto(String lineName) {

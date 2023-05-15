@@ -5,7 +5,7 @@ public class SectionSaveDto {
     private String endStation;
     private Integer distance;
 
-    public SectionSaveDto() {
+    private SectionSaveDto() {
     }
 
     public SectionSaveDto(String startStation, String endStation, Integer distance) {
