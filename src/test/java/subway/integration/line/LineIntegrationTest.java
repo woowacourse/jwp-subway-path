@@ -1,4 +1,4 @@
-package subway.integration;
+package subway.integration.line;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.integration.line.LineSteps.노선_단건_삭제_요청;
@@ -24,6 +24,7 @@ import subway.dto.LineSelectResponse;
 import subway.dto.LinesSelectResponse;
 import subway.dto.StationSaveRequest;
 import subway.dto.StationSelectResponse;
+import subway.integration.IntegrationTest;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

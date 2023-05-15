@@ -21,7 +21,6 @@ class StationTest {
                 .hasMessage("아름에는 빈 문자가 들어올 수 없습니다.");
     }
 
-
     @Test
     void 같은_이름의_역은_true를_반환한다() {
         //given
