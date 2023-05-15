@@ -1,6 +1,6 @@
 package subway.domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 import subway.exception.DomainException;
 
 class SectionsTest {
-    private List<Section> sectionsList = new ArrayList<>();
+    List<Section> sectionsList = new ArrayList<>();
 
     @BeforeEach
     public void setUp() {
@@ -28,8 +28,8 @@ class SectionsTest {
     void lineUpTest() {
         Sections sections = new Sections(sectionsList);
         assertAll(
-            () -> assertThat(sections.findFirstStationId()).isEqualTo(1L),
-            () -> assertThat(sections.findLastStationId()).isEqualTo(4L));
+                () -> assertThat(sections.findFirstStationId()).isEqualTo(1L),
+                () -> assertThat(sections.findLastStationId()).isEqualTo(4L));
     }
 
     @Test
@@ -55,5 +55,23 @@ class SectionsTest {
         Assertions.assertThatThrownBy(() -> sections.validateAddingSection(1L))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("STATION_ALREADY_EXIST_IN_LINE");
+    }
+
+    @Test
+    @DisplayName("sourceStation과 targetStation으로 이뤄진 Section을 찾는다.")
+    void findSectionSuccessTest() {
+        //given
+        final Sections sections = new Sections(sectionsList);
+
+        //when
+        final Section result = sections.findSection(1L, 2L);
+
+        //then
+        assertAll(
+                () -> assertThat(result.getId()).isEqualTo(1L),
+                () -> assertThat(result.getSourceStationId()).isEqualTo(1L),
+                () -> assertThat(result.getTargetStationId()).isEqualTo(2L),
+                () -> assertThat(result.getDistance()).isEqualTo(10)
+        );
     }
 }
