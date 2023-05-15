@@ -20,7 +20,6 @@ import subway.ui.line.dto.ShortestPathResponse;
 
 import java.net.URI;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/lines")
@@ -58,9 +57,9 @@ public class LineController {
 
     @GetMapping
     public ResponseEntity<GetAllStationsInLineResponses> findAllLines() {
-        final Map<Line, List<Station>> result = lineService.findAllLines();
+        final List<Line> lines = lineService.findAllLines();
 
-        return ResponseEntity.ok(new GetAllStationsInLineResponses(result));
+        return ResponseEntity.ok(new GetAllStationsInLineResponses(lines));
     }
 
     @DeleteMapping("/{lineId}/stations/{stationId}")

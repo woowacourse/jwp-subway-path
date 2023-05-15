@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.line.Direction;
+import subway.domain.edge.Direction;
 import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.LineCreateRequest;
 

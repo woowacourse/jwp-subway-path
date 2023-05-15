@@ -31,10 +31,6 @@ public class StationDao {
             );
 
     public Station insert(final Station station) {
-        final Optional<Station> stationOptional = findByName(station.getName());
-        if (stationOptional.isPresent()) {
-            return stationOptional.get();
-        }
         final SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("name", station.getName());
         final Long id = jdbcInsert.executeAndReturnKey(params).longValue();

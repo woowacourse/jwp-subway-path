@@ -31,11 +31,11 @@ public class LineDao {
                     result.getString("name")
             );
 
-    public Line insert(final Line line) {
+    public Line insert(final String lineName) {
         final SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("name", line.getName());
+                .addValue("name", lineName);
         final Long id = jdbcInsert.executeAndReturnKey(params).longValue();
-        return new Line(id, line.getName());
+        return new Line(id, lineName);
     }
 
     public Optional<Line> findById(final Long lineId) {
@@ -47,10 +47,10 @@ public class LineDao {
         }
     }
 
-    public Optional<Line> findByName(final Line line) {
+    public Optional<Line> findByName(final String lineName) {
         final String sql = "SELECT l.id, l.name FROM line l WHERE l.name = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineRowMapper, line.getName()));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineRowMapper, lineName));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }

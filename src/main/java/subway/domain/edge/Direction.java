@@ -1,8 +1,4 @@
-package subway.domain.line;
-
-import subway.domain.edge.DirectionStrategy;
-import subway.domain.edge.DownDirectionStrategy;
-import subway.domain.edge.UpDirectionStrategy;
+package subway.domain.edge;
 
 public enum Direction {
 

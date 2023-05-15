@@ -10,7 +10,6 @@ import subway.domain.line.Line;
 import subway.domain.station.Station;
 
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,8 +25,8 @@ class SubwayGraphTest {
     private static final Station H = new Station(8L, "H");
 
     // given
-    final Map<Line, Edges> allEdges = Map.of(
-            new Line(1L, "1호선"), new Edges(
+    final List<Line> lines = List.of(
+            new Line(1L, "1호선", new Edges(
                     List.of(
                             new Edge(1L, A, B, new Distance(3)),
                             new Edge(2L, B, C, new Distance(4)),
@@ -35,16 +34,16 @@ class SubwayGraphTest {
                             new Edge(4L, D, E, new Distance(5))
 
                     )
-            ),
-            new Line(2L, "2호선"), new Edges(
+            )),
+            new Line(2L, "2호선", new Edges(
                     List.of(
                             new Edge(5L, B, C, new Distance(3)),
                             new Edge(6L, C, D, new Distance(1)),
                             new Edge(7L, D, H, new Distance(5))
                     )
-            )
+            ))
     );
-    final DijkstraShortestPath<Station, Edge> shortestPath = SubwayGraph.getShortestPath(allEdges);
+    final DijkstraShortestPath<Station, Edge> shortestPath = SubwayGraph.getShortestPath(lines);
 
 
     @DisplayName("A에서 H로 간다.")
