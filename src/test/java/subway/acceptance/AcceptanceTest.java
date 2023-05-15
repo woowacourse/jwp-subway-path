@@ -14,14 +14,14 @@ import subway.dto.request.StationRequest;
 import subway.dto.response.LineResponse;
 import subway.dto.response.RouteResponse;
 import subway.dto.response.StationResponse;
+import subway.fixture.LineFixture;
 import subway.fixture.LineFixture.이호선;
-import subway.fixture.StationFixture.삼성역;
-import subway.fixture.StationFixture.역삼역;
-import subway.fixture.StationFixture.잠실역;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.fixture.LineFixture.신분당선;
+import static subway.fixture.StationFixture.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -130,24 +130,27 @@ class AcceptanceTest {
     @Test
     void 역에서_역으로_경로를_구한다() {
         // 역을 등록한다.
-        StationResponse stationResponse1 = addStation(역삼역.REQUEST);
-        StationResponse stationResponse2 = addStation(삼성역.REQUEST);
-        StationResponse stationResponse3 = addStation(잠실역.REQUEST);
+        StationResponse 강남 = addStation(강남역.REQUEST);
+        StationResponse 신논현 = addStation(신논현역.REQUEST);
+        StationResponse 종합운동장 = addStation(종합운동장역.REQUEST);
 
         // 노선을 등록한다.
-        LineResponse lineResponse = addLine(이호선.REQUEST);
+        LineResponse 이호선 = addLine(LineFixture.이호선.REQUEST);
+        LineResponse 신분당 = addLine(신분당선.REQUEST);
+        LineResponse 구호선 = addLine(LineFixture.구호선.REQUEST);
 
         // 노선에 역을 등록한다.
-        CreateSectionRequest createSectionRequest1 = new CreateSectionRequest(stationResponse1.getId(),
-                stationResponse3.getId(), 5);
-        CreateSectionRequest createSectionRequest2 = new CreateSectionRequest(stationResponse2.getId(),
-                stationResponse3.getId(), 2);
+        CreateSectionRequest 강남_신논현_1 = new CreateSectionRequest(강남.getId(), 신논현.getId(), 1);
+        addSection(강남_신논현_1, 신분당.getId());
 
-        addSection(createSectionRequest1, lineResponse.getId());
-        addSection(createSectionRequest2, lineResponse.getId());
+        CreateSectionRequest 신논현_종합운동장_1 = new CreateSectionRequest(신논현.getId(), 종합운동장.getId(), 1);
+        addSection(신논현_종합운동장_1, 구호선.getId());
 
-        // 역삼역 -> 잠실역 경로의 요금, 거리, 경로를 구한다.
-        RouteRequest request = new RouteRequest(stationResponse1.getId(), stationResponse3.getId());
+        CreateSectionRequest 강남_종합운동장_5 = new CreateSectionRequest(강남.getId(), 종합운동장.getId(), 5);
+        addSection(강남_종합운동장_5, 이호선.getId());
+
+        // 최단경로를 구한다.
+        RouteRequest request = new RouteRequest(강남.getId(), 종합운동장.getId());
 
         RouteResponse routeResponse = RestAssured
                 .given().log().all()
@@ -157,11 +160,11 @@ class AcceptanceTest {
                 .then().log().all()
                 .extract().as(RouteResponse.class);
 
-        assertThat(routeResponse.getDistance()).isEqualTo(5);
+        assertThat(routeResponse.getDistance()).isEqualTo(2);
         assertThat(routeResponse.getMoney()).isEqualTo(1250);
         assertThat(routeResponse.getStations())
                 .usingRecursiveComparison()
-                .isEqualTo(List.of(stationResponse1, stationResponse2, stationResponse3));
+                .isEqualTo(List.of(강남, 신논현, 종합운동장));
     }
 
     private StationResponse addStation(final StationRequest request) {
