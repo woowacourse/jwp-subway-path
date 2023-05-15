@@ -27,10 +27,10 @@ public class DetachStationService {
 
     public void deleteStation(final Long lineId, final SectionDeleteRequest sectionDeleteRequest) {
         final Line line = lineRepository.findById(lineId);
-        Station station = stationRepository.findByName(new Station(sectionDeleteRequest.getStationName()))
+        final Station station = stationRepository.findByName(new Station(sectionDeleteRequest.getStationName()))
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 없습니다."));
 
-        List<Section> findSections = sectionRepository.findAllByLineId(line.getId());
+        final List<Section> findSections = sectionRepository.findAllByLineId(line.getId());
         if (findSections.isEmpty()) {
             throw new IllegalArgumentException("노선의 역이 없습니다.");
         }
