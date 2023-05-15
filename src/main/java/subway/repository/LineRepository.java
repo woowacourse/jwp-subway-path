@@ -100,11 +100,15 @@ public class LineRepository {
                         final Map<Long, StationEntity> stationEntityById) {
 
         List<Section> sections = sectionEntities.stream()
-                .map(sectionEntity -> new Section(
-                        stationEntityById.get(sectionEntity.getSourceStationId()).getName(),
-                        stationEntityById.get(sectionEntity.getTargetStationId()).getName(),
-                        sectionEntity.getDistance()
-                ))
+                .map(sectionEntity -> {
+                    final StationEntity source = stationEntityById.get(sectionEntity.getSourceStationId());
+                    final StationEntity target = stationEntityById.get(sectionEntity.getTargetStationId());
+                    return new Section(
+                            new Station(source.getId(), source.getName()),
+                            new Station(target.getId(), target.getName()),
+                            sectionEntity.getDistance()
+                    );
+                })
                 .collect(toList());
 
         return new Line(lineEntity.getId(), lineEntity.getName(), sections);
