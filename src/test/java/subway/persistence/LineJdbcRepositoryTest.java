@@ -3,6 +3,7 @@ package subway.persistence;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,14 +21,23 @@ class LineJdbcRepositoryTest {
 	@Autowired
 	JdbcTemplate jdbcTemplate;
 
+	Line line1;
+	Line line2;
+
+	@BeforeEach
+	void setUp(){
+		line1 = new Line("1호선");
+		line2 = new Line("2호선");
+		jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 0");
+		jdbcTemplate.execute("TRUNCATE TABLE line RESTART IDENTITY");
+		jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1");
+	}
+
 	@DisplayName("노선 생성 서비스 테스트")
 	@Test
 	void createLine() {
-		// given
-		final Line line = new Line("1호선");
-
 		// when
-		final long lineId = repository.createLine(line);
+		final long lineId = repository.createLine(line1);
 
 		// then
 		Assertions.assertThat(1L).isEqualTo(lineId);
@@ -36,10 +46,6 @@ class LineJdbcRepositoryTest {
 	@DisplayName("노선 전체 조회 서비스 테스트")
 	@Test
 	void findAll() {
-		// given
-		final Line line1 = new Line("1호선");
-		final Line line2 = new Line("2호선");
-
 		// when
 		repository.createLine(line1);
 		repository.createLine(line2);
@@ -53,7 +59,6 @@ class LineJdbcRepositoryTest {
 	@Test
 	void findById() {
 		// given
-		final Line line1 = new Line("1호선");
 		final long lineId = repository.createLine(line1);
 
 		// when
@@ -66,8 +71,6 @@ class LineJdbcRepositoryTest {
 	@Test
 	void updateLine() {
 		// given
-		final Line line1 = new Line("1호선");
-		final Line line2 = new Line("2호선");
 		final long lineId = repository.createLine(line1);
 
 		// when
@@ -82,7 +85,6 @@ class LineJdbcRepositoryTest {
 	@Test
 	void deleteById() {
 		//given
-		final Line line1 = new Line("1호선");
 		final long lineId = repository.createLine(line1);
 
 		// when
