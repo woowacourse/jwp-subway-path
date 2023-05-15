@@ -3,6 +3,7 @@ package subway.persistence.repository;
 import org.springframework.stereotype.Repository;
 import subway.business.domain.Station;
 import subway.business.domain.StationRepository;
+import subway.exception.NoSuchStationException;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.StationEntity;
 
@@ -24,7 +25,7 @@ public class DbStationRepository implements StationRepository {
 
     @Override
     public Station findById(Long id) {
-        StationEntity stationEntity = stationDao.findById(id);
+        StationEntity stationEntity = stationDao.findById(id).orElseThrow(NoSuchStationException::new);
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
 

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 import subway.persistence.entity.LineEntity;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class LineDao {
@@ -36,15 +37,13 @@ public class LineDao {
         return simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
     }
 
-    public LineEntity findById(Long id) {
+    public Optional<LineEntity> findById(Long id) {
+        String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id FROM line WHERE id=:id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
         try {
-            String sql = "SELECT id, name, upward_terminus_id, downward_terminus_id FROM line WHERE id=:id";
-            SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
-            return namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper);
+            return Optional.ofNullable(namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper));
         } catch (EmptyResultDataAccessException exception) {
-            throw new IllegalArgumentException(String.format(
-                    "DB에서 ID에 해당하는 Line을 조회할 수 없습니다. " +
-                            "(입력한 ID : %d)", id));
+            return Optional.empty();
         }
     }
 

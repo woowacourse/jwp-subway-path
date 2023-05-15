@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.ui.dto.ExceptionResponse;
 
+import java.util.NoSuchElementException;
+
 @RestControllerAdvice
 public class GlobalControllerAdvice {
     @ExceptionHandler(IllegalArgumentException.class)

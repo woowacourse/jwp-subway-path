@@ -5,6 +5,8 @@ import subway.business.domain.Line;
 import subway.business.domain.LineRepository;
 import subway.business.domain.Section;
 import subway.business.domain.Station;
+import subway.exception.NoSuchLineException;
+import subway.exception.NoSuchStationException;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
@@ -44,7 +46,7 @@ public class DbLineRepository implements LineRepository {
 
     @Override
     public Line findById(Long id) {
-        LineEntity lineEntity = lineDao.findById(id);
+        LineEntity lineEntity = lineDao.findById(id).orElseThrow(NoSuchLineException::new);
         List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineEntity.getId());
 
         List<Section> sections = mapSectionEntitiesToSections(sectionEntities);
@@ -92,15 +94,19 @@ public class DbLineRepository implements LineRepository {
     private List<Section> mapSectionEntitiesToSections(List<SectionEntity> sectionEntities) {
         return sectionEntities.stream()
                 .map(sectionEntity -> new Section(
-                        Station.from(stationDao.findById(sectionEntity.getUpwardStationId())),
-                        Station.from(stationDao.findById(sectionEntity.getDownwardStationId())),
+                        Station.from(stationDao.findById(sectionEntity.getUpwardStationId())
+                                .orElseThrow(NoSuchStationException::new)),
+                        Station.from(stationDao.findById(sectionEntity.getDownwardStationId())
+                                .orElseThrow(NoSuchStationException::new)),
                         sectionEntity.getDistance()))
                 .collect(Collectors.toList());
     }
 
     private List<Section> getOrderedSections(LineEntity lineEntity, List<Section> sections) {
-        Station upwardTerminus = Station.from(stationDao.findById(lineEntity.getUpwardTerminusId()));
-        Station downwardTerminus = Station.from(stationDao.findById(lineEntity.getDownwardTerminusId()));
+        Station upwardTerminus = Station.from(stationDao.findById(lineEntity.getUpwardTerminusId())
+                .orElseThrow(NoSuchStationException::new));
+        Station downwardTerminus = Station.from(stationDao.findById(lineEntity.getDownwardTerminusId())
+                .orElseThrow(NoSuchStationException::new));
         return getOrderedSectionsByTerminus(sections, upwardTerminus,
                 downwardTerminus);
     }

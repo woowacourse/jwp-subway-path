@@ -1,5 +1,6 @@
 package subway.persistence.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -10,6 +11,7 @@ import subway.persistence.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
@@ -40,9 +42,13 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     public void update(StationEntity newStationEntity) {
