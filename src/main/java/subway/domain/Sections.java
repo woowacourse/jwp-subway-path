@@ -7,7 +7,11 @@ public class Sections {
 
     private final List<Section> sections;
 
-    public Sections(final List<Section> sections) {
+    public Sections() {
+        sections = List.of();
+    }
+
+    private Sections(final List<Section> sections) {
         this.sections = sections;
     }
 

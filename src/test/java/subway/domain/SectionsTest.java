@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,7 +14,9 @@ class SectionsTest {
     private static final Station STATION_C = new Station(3L, "C");
     private static final Section SECTION_1 = new Section(1L, STATION_A, STATION_B, new Distance(3));
     private static final Section SECTION_2 = new Section(2L, STATION_B, STATION_C, new Distance(4));
-    private static final Sections ORIGIN_SECTIONS = new Sections(List.of(SECTION_1, SECTION_2));
+    private static final Sections ORIGIN_SECTIONS = new Sections()
+            .addHead(SECTION_1)
+            .addTail(SECTION_2);
 
     @DisplayName("Sections 간의 차집합을 구한다.")
     @Test
