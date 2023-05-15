@@ -45,8 +45,8 @@ public class LineService {
                 .stream()
                 .map(lineDomain -> new LineResponse(
                         lineDomain.getId(),
-                        lineDomain.getName(),
-                        lineDomain.getColor(),
+                        lineDomain.getNameValue(),
+                        lineDomain.getColorValue(),
                         collectStationResponses(lineDomain)
                 )).collect(Collectors.toList());
     }

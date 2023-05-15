@@ -32,8 +32,8 @@ class LineRepositoryTest extends RepositoryTestConfig {
         // when
         final Line findLine = lineRepository.findByLineId(saveLineId);
 
-        final String lineName = findLine.getName();
-        final String lineColor = findLine.getColor();
+        final String lineName = findLine.getNameValue();
+        final String lineColor = findLine.getColorValue();
         final List<Section> findSections = findLine.getSections();
 
         // then
@@ -62,8 +62,8 @@ class LineRepositoryTest extends RepositoryTestConfig {
         // when
         final Line findLine = lineRepository.findByLineName("2");
 
-        final String lineName = findLine.getName();
-        final String lineColor = findLine.getColor();
+        final String lineName = findLine.getNameValue();
+        final String lineColor = findLine.getColorValue();
         final List<Section> findSections = findLine.getSections();
 
         // then
@@ -93,8 +93,8 @@ class LineRepositoryTest extends RepositoryTestConfig {
         // when
         final List<Line> findLines = lineRepository.findAll();
 
-        final String lineName = findLines.get(0).getName();
-        final String lineColor = findLines.get(0).getColor();
+        final String lineName = findLines.get(0).getNameValue();
+        final String lineColor = findLines.get(0).getColorValue();
         final List<Section> findSections = findLines.get(0).getSections();
 
         // then

@@ -22,7 +22,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(final Line line, final List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations);
+        return new LineResponse(line.getId(), line.getNameValue(), line.getColorValue(), stations);
     }
 
     public Long getId() {

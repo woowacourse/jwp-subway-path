@@ -57,11 +57,11 @@ class StationServiceTest extends ServiceTestConfig {
         final Line 노선 = lineRepository.findByLineId(노선1_식별자값);
         final Section 구간 = 노선.getSections().get(0);
 
-        final String 노선명 = 노선.getName();
-        final String 노선_색상 = 노선.getColor();
+        final String 노선명 = 노선.getNameValue();
+        final String 노선_색상 = 노선.getColorValue();
 
-        final String 구간의_상행역 = 구간.getUpStation().getName();
-        final String 구간의_하행역 = 구간.getDownStation().getName();
+        final String 구간의_상행역 = 구간.getUpStation().getNameValue();
+        final String 구간의_하행역 = 구간.getDownStation().getNameValue();
 
         // then
 
