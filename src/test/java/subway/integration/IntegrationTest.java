@@ -27,6 +27,7 @@ import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static org.hamcrest.Matchers.containsString;
 import static subway.utils.SectionFixture.JAMSIL_TO_JAMSILNARU;
 import static subway.utils.StationFixture.JAMSIL_NARU_STATION;
 import static subway.utils.StationFixture.JAMSIL_STATION;
@@ -75,6 +76,8 @@ public class IntegrationTest {
     @Test
     @DisplayName("/line/stations에 post 요청을 보내면 노선에 새로운 역을 추가할 수 있다.")
     void addStation() {
+        int expectedId = 3;
+
         given()
                 .contentType(ContentType.JSON)
                 .body(toJson(new AddStationRequest(VALID_STATION_NAME, line.getName().getName(), upstream.getName(), downstream.getName(), DISTANCE - 1)))
@@ -83,7 +86,8 @@ public class IntegrationTest {
                 .post("/line/stations")
                 .then()
                 .log().all()
-                .statusCode(HttpStatus.CREATED.value());
+                .statusCode(HttpStatus.CREATED.value())
+                .header("location", containsString("/line/stations/"));
     }
 
     @ParameterizedTest(name = "/line/stations에 post 요청 역 이름 길이가 맞지 않으면 역을 추가할 수 없다.")
