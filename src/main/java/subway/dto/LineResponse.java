@@ -15,12 +15,12 @@ public class LineResponse {
 
     public LineResponse(final Line line) {
         this.id = line.getId();
-        this.name = line.getName();
-        this.color = line.getColor();
+        this.name = line.getNameValue();
+        this.color = line.getColorValue();
     }
 
     public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+        return new LineResponse(line.getId(), line.getNameValue(), line.getColorValue());
     }
 
     public Long getId() {

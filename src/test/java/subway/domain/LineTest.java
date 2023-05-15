@@ -1,30 +1,66 @@
-//package subway.domain;
-//
-//import org.junit.jupiter.api.DisplayNameGeneration;
-//import org.junit.jupiter.api.DisplayNameGenerator;
-//import org.junit.jupiter.params.ParameterizedTest;
-//import org.junit.jupiter.params.provider.NullAndEmptySource;
-//import subway.domain.Line;
-//
-//import static org.assertj.core.api.Assertions.assertThatThrownBy;
-//
-//@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-//@SuppressWarnings("NonAsciiCharacters")
-//class LineTest {
-//
-//    @ParameterizedTest
-//    @NullAndEmptySource
-//    void 이름은_null_이거나_빈_값일_수_없다(final String name) {
-//        assertThatThrownBy(() -> new Line(name, "green", sections))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessage("노선 이름이 입력되지 않았습니다.");
-//    }
-//
-//    @ParameterizedTest
-//    @NullAndEmptySource
-//    void 색깔은_null_이거나_빈_값일_수_없다(final String color) {
-//        assertThatThrownBy(() -> new Line("2호선", color, sections))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessage("색깔이 입력되지 않았습니다.");
-//    }
-//}
+package subway.domain;
+
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.fixture.Fixture.*;
+
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
+class LineTest {
+
+    //before : 후추 - 7 - 디노 - 4 - 조앤
+    //after : 후추 - 5 - 로운 - 2 - 디노 - 4 - 조앤
+    @Test
+    void 호선에_역을_추가한다() {
+        //given
+        final Line line = new Line(1L, 일호선, 남색, new Sections(List.of(후추_디노, 디노_조앤)));
+
+        //when
+        final Line insertedLine = line.insert(로운, 디노, 2);
+
+        //then
+        assertSoftly(softly -> {
+            final List<Section> sections = insertedLine.getSections();
+            softly.assertThat(sections).contains(new Section(후추, 로운, 5), new Section(로운, 디노, 2), 디노_조앤);
+        });
+    }
+
+    //before : 후추 - 7 - 디노 - 4 - 조앤
+    //after : 후추 - 11 - 조앤
+    @Test
+    void 호선에_역을_제거한다() {
+        //given
+        final Line line = new Line(1L, 일호선, 남색, new Sections(List.of(후추_디노, 디노_조앤)));
+
+        //when
+        final Line deletedLine = line.delete(디노);
+
+        //then
+        assertSoftly(softly -> {
+            final List<Section> sections = deletedLine.getSections();
+            softly.assertThat(sections).contains(new Section(후추, 조앤, 11));
+            softly.assertThat(sections).doesNotContain(후추_디노, 디노_조앤);
+        });
+    }
+
+    @ParameterizedTest
+    @CsvSource({"일호선, true", "이호선, false"})
+    void 이름이_같은지_확인한다(final Name name, final boolean expected) {
+        //given
+        final Line line = new Line(1L, 일호선, 남색, new Sections(List.of(후추_디노, 디노_조앤)));
+
+        //when
+        final boolean actual = line.hasSameName(new Line(1L, name, 남색, new Sections(List.of(후추_디노, 디노_조앤))));
+
+        //then
+        assertThat(actual).isEqualTo(expected);
+    }
+}
