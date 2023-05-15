@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.*;
@@ -57,9 +58,9 @@ public class LineService {
             return rawLine;
         }
 
-        Map<Map.Entry<Station, Station>, Integer> distances = new HashMap<>();
+        Map<Map.Entry<Station, Station>, Distance> distances = new HashMap<>();
         sections.forEach(section ->
-                distances.put(Map.entry(stationDao.findById(section.getStationId()), stationDao.findById(section.getNextStationId())), section.getDistance()));
+                distances.put(Map.entry(stationDao.findById(section.getStationId()), stationDao.findById(section.getNextStationId())), new Distance(section.getDistance())));
 
         SectionDto section = sections.remove(0);
         LinkedList<Long> stationIds = new LinkedList<>(List.of(section.getStationId(), section.getNextStationId()));
@@ -99,7 +100,7 @@ public class LineService {
         Station station = stationDao.findById(request.getUpperStation());
         Station base = stationDao.findById(request.getLowerStation());
 
-        line.insert(station, base, request.getDistance());
+        line.insert(station, base, new Distance(request.getDistance()));
 
         sectionDao.deleteAllByLineId(line.getId());
         sectionDao.insertAll(toSectionDtos(line));
@@ -124,6 +125,6 @@ public class LineService {
     }
 
     private SectionDto toSectionDto(Line line, Station station, Station nextStation) {
-        return new SectionDto(line.getId(), station.getId(), nextStation.getId(), line.getDistanceBetween(station, nextStation));
+        return new SectionDto(line.getId(), station.getId(), nextStation.getId(), line.getDistanceBetween(station, nextStation).getValue());
     }
 }

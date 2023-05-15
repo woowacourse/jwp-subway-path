@@ -14,7 +14,7 @@ public class Line {
     private String color;
 
     private final LinkedList<Station> stations;
-    private final Map<Map.Entry<Station, Station>, Integer> distances;
+    private final Map<Map.Entry<Station, Station>, Distance> distances;
 
     public Line(String name, String color) {
         this(null, name, color, new LinkedList<>(), new HashMap<>());
@@ -24,7 +24,7 @@ public class Line {
         this(id, name, color, new LinkedList<>(), new HashMap<>());
     }
 
-    public Line(Long id, String name, String color, LinkedList<Station> stations, Map<Map.Entry<Station, Station>, Integer> distances) {
+    public Line(Long id, String name, String color, LinkedList<Station> stations, Map<Map.Entry<Station, Station>, Distance> distances) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -32,7 +32,7 @@ public class Line {
         this.distances = distances;
     }
 
-    public void insert(Station upper, Station lower, int distance) {
+    public void insert(Station upper, Station lower, Distance distance) {
         if (stations.isEmpty()) {
             insertBoth(upper, lower, distance);
             return;
@@ -51,18 +51,14 @@ public class Line {
         throw new IllegalArgumentException("이미 등록된 역을 등록할 수 없습니다.");
     }
 
-    private void insertBoth(Station top, Station bottom, int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("등록하려는 역의 거리 정보가 잘못되어 등록에 실패했습니다.");
-        }
-
+    private void insertBoth(Station top, Station bottom, Distance distance) {
         stations.add(top);
         stations.add(bottom);
 
         insertDistanceBetween(top, bottom, distance);
     }
 
-    private void insertUpper(Station station, Station base, int distance) {
+    private void insertUpper(Station station, Station base, Distance distance) {
         stations.add(stations.indexOf(base), station);
         insertDistanceBetween(station, base, distance);
 
@@ -70,17 +66,14 @@ public class Line {
             return;
         }
 
-        int previousDistance = getDistanceBetween(getUpperOf(station), base);
-        int upperDistance = Math.abs(previousDistance - distance);
-        if (previousDistance <= distance || distance <= 0) {
-            throw new IllegalArgumentException("등록하려는 역의 거리 정보가 잘못되어 등록에 실패했습니다.");
-        }
+        Distance previousDistance = getDistanceBetween(getUpperOf(station), base);
+        Distance upperDistance = previousDistance.minus(distance);
 
         insertDistanceBetween(getUpperOf(station), station, upperDistance);
         deleteDistanceBetween(getUpperOf(station), base);
     }
 
-    private void insertLower(Station station, Station base, int distance) {
+    private void insertLower(Station station, Station base, Distance distance) {
         stations.add(stations.indexOf(base) + 1, station);
         insertDistanceBetween(base, station, distance);
 
@@ -88,11 +81,8 @@ public class Line {
             return;
         }
 
-        int previousDistance = getDistanceBetween(getLowerOf(station), base);
-        int lowerDistance = Math.abs(previousDistance - distance);
-        if (previousDistance <= distance || distance <= 0) {
-            throw new IllegalArgumentException("등록하려는 역의 거리 정보가 잘못되어 등록에 실패했습니다.");
-        }
+        Distance previousDistance = getDistanceBetween(getLowerOf(station), base);
+        Distance lowerDistance = previousDistance.minus(distance);
 
         insertDistanceBetween(station, getLowerOf(station), lowerDistance);
         deleteDistanceBetween(base, getLowerOf(station));
@@ -121,15 +111,15 @@ public class Line {
             return;
         }
 
-        int upperDistance = getDistanceBetween(station, getUpperOf(station));
-        int lowerDistance = getDistanceBetween(station, getLowerOf(station));
+        Distance upperDistance = getDistanceBetween(station, getUpperOf(station));
+        Distance lowerDistance = getDistanceBetween(station, getLowerOf(station));
         deleteDistanceBetween(getUpperOf(station), station);
         deleteDistanceBetween(station, getLowerOf(station));
-        insertDistanceBetween(getUpperOf(station), getLowerOf(station), upperDistance + lowerDistance);
+        insertDistanceBetween(getUpperOf(station), getLowerOf(station), upperDistance.plus(lowerDistance));
         stations.remove(station);
     }
 
-    public int getDistanceBetween(Station from, Station to) {
+    public Distance getDistanceBetween(Station from, Station to) {
         int startInclusive = Math.min(stations.indexOf(from), stations.indexOf(to));
         int endInclusive = Math.max(stations.indexOf(from), stations.indexOf(to));
 
@@ -141,13 +131,13 @@ public class Line {
         for (int i = startInclusive; i < endInclusive; i++) {
             Station station = stations.get(i);
             Station other = stations.get(i + 1);
-            distance += distances.get(Map.entry(station, other));
+            distance += distances.get(Map.entry(station, other)).getValue();
         }
 
-        return distance;
+        return new Distance(distance);
     }
 
-    private void insertDistanceBetween(Station upper, Station lower, int distance) {
+    private void insertDistanceBetween(Station upper, Station lower, Distance distance) {
         distances.put(Map.entry(upper, lower), distance);
     }
 
