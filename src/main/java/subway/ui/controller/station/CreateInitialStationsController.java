@@ -26,17 +26,21 @@ public class CreateInitialStationsController {
             @PathVariable final Long lineId,
             @RequestBody final CreateInitialStationsRequest request
     ) {
-        final Long savedStationId = createInitialStationsService.addInitialStations(lineId, request);
+        final Long savedSectionId = createInitialStationsService.addInitialStations(lineId, request);
 
-        final String createdResourceUri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedStationId)
-                .toUriString();
+        final String createdResourceUri = generateCreateUri(savedSectionId);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .header(HttpHeaders.CONTENT_LOCATION, createdResourceUri)
                 .build();
+    }
+
+    private String generateCreateUri(final Long savedSectionId) {
+        return ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedSectionId)
+                .toUriString();
     }
 }

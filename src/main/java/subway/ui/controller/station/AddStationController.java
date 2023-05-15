@@ -27,15 +27,19 @@ public class AddStationController {
     ) {
         final Long savedStationId = addStationService.addStation(lineId, request);
 
-        final String createdResourceUri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(savedStationId)
-                .toUriString();
+        final String createdResourceUri = generateCreateUri(savedStationId);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .header(HttpHeaders.CONTENT_LOCATION, createdResourceUri)
                 .build();
+    }
+
+    private String generateCreateUri(final Long savedStationId) {
+        return ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedStationId)
+                .toUriString();
     }
 }
