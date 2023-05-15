@@ -10,4 +10,7 @@ public class Sections {
         this.sections = sections;
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
 }

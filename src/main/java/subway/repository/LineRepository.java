@@ -14,6 +14,7 @@ import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.entity.SectionStationEntity;
 import subway.entity.StationEntity;
 import subway.exception.common.NotFoundLineException;
 import subway.exception.common.NotFoundStationException;
@@ -45,23 +46,18 @@ public class LineRepository {
         LineEntity lineEntity = lineDao.findByName(name)
             .orElseThrow(NotFoundLineException::new);
 
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
-        if (sectionEntities.isEmpty()) {
+        List<SectionStationEntity> sectionStationEntities = sectionDao.findByLineId(lineEntity.getId());
+        if (sectionStationEntities.isEmpty()) {
             return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
         }
 
         List<Section> sections = new ArrayList<>();
-        for (SectionEntity sectionEntity : sectionEntities) {
-            StationEntity leftStationEntity = stationDao.findById(sectionEntity.getLeftStationId())
-                .orElseThrow(NotFoundStationException::new);
-            StationEntity rightStationstationEntity = stationDao.findById(sectionEntity.getRightStationId())
-                .orElseThrow(NotFoundStationException::new);
-            
+        for (SectionStationEntity sectionStationEntity : sectionStationEntities) {
             sections.add(new Section(
-                sectionEntity.getId(),
-                new Station(leftStationEntity.getId(), leftStationEntity.getName()),
-                new Station(rightStationstationEntity.getId(), rightStationstationEntity.getName()),
-                sectionEntity.getDistance())
+                sectionStationEntity.getId(),
+                new Station(sectionStationEntity.getLeftStationId(), sectionStationEntity.getLeftStationName()),
+                new Station(sectionStationEntity.getRightStationId(), sectionStationEntity.getRightStationName()),
+                    sectionStationEntity.getDistance())
             );
         }
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);

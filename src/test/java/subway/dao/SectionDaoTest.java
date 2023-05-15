@@ -9,6 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
+import subway.entity.SectionStationEntity;
 import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
@@ -82,12 +83,13 @@ class SectionDaoTest {
         SectionEntity insertedJamsilSeolleung = sectionDao.insert(jamsilSeolleung);
 
         // when
-        List<SectionEntity> result = sectionDao.findByLineId(insertedLine.getId());
+        List<SectionStationEntity> result = sectionDao.findByLineId(insertedLine.getId());
 
         // then
         assertThat(result.get(0).getLeftStationId()).isEqualTo(insertedJamsilSeolleung.getLeftStationId());
+        assertThat(result.get(0).getLeftStationName()).isEqualTo(insertedJamsil.getName());
         assertThat(result.get(0).getRightStationId()).isEqualTo(insertedJamsilSeolleung.getRightStationId());
-        assertThat(result.get(0).getLineId()).isEqualTo(insertedJamsilSeolleung.getLineId());
+        assertThat(result.get(0).getRightStationName()).isEqualTo(insertedSeolleung.getName());
         assertThat(result.get(0).getDistance()).isEqualTo(insertedJamsilSeolleung.getDistance());
     }
 }
