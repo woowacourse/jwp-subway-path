@@ -10,7 +10,7 @@
 
 ### 구역
 - [x] 구역은 두 역과 역사이의 거리를 가진다.
-- [x] 거리는 0 이상의 정수이고, 최대 15이다. 단위는 km이다.
+- [x] 거리는 0 이상의 정수이고, 단위는 km이다.
 
 ### 노선
 - [x] 노선 이름은 숫자 + `호선` 이다.
@@ -35,6 +35,15 @@
   -[x] 노선에서 역이 제거될 경우 역과 역 사이의 거리도 재배정되어야한다.
   -[x] 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거되어야한다.
 
+### 노선 전체 관리
+
+- [ ] 출발역과 도착역을 넣으면 최단 거리 경로를 반환해야한다.
+  - [ ] 거리 정보도 함께 응답해야한다.
+  - [ ] 요금 정보도 함께 응답해야한다.
+    - 기본 운임은 1250원이다.
+    - 추가운임은 밑 조건에 따라 결정된다. 
+      - 거리 10 ~ 50km 까지는 5km 마다 100원 추가
+      - 거리가 50km 초과할 때 부터는 8km 마다 100원 추가
 
 ---
 
@@ -192,6 +201,36 @@ DELETE /lines/{lineId}?stationId={stationId}
 response
 ```http request
 204 No Content
+```
+
+**경로 조회**
+
+request
+```http request
+GET /shortest-paths?sourceStationId={sourceStationId}&destinationStationId={destinationStationId}
+```
+
+response
+```http request
+200 OK
+{
+    "path" : [
+        {
+            "id" : 1,
+            "name" "잠실역"
+        },
+        {
+            "id" : 2,
+            "name" "잠실새내역"
+        },
+        {
+            "id" : 3,
+            "name" "종합운동장역"
+        }
+    ],
+    "distance" : 13,
+    "fare" : 3000 
+}
 ```
 
 
