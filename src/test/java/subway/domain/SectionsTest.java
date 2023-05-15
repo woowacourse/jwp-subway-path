@@ -12,9 +12,9 @@ class SectionsTest {
     private static final Station STATION_A = new Station(1L, "A");
     private static final Station STATION_B = new Station(2L, "B");
     private static final Station STATION_C = new Station(3L, "C");
-    private static final Section SECTIONS_1 = new Section(1L, STATION_A, STATION_B, new Distance(3));
-    private static final Section SECTIONS_2 = new Section(2L, STATION_B, STATION_C, new Distance(4));
-    private static final Sections ORIGIN_SECTIONS = new Sections(List.of(SECTIONS_1, SECTIONS_2));
+    private static final Section SECTION_1 = new Section(1L, STATION_A, STATION_B, new Distance(3));
+    private static final Section SECTION_2 = new Section(2L, STATION_B, STATION_C, new Distance(4));
+    private static final Sections ORIGIN_SECTIONS = new Sections(List.of(SECTION_1, SECTION_2));
 
     @DisplayName("Sections 간의 차집합을 구한다.")
     @Test
@@ -24,7 +24,7 @@ class SectionsTest {
         final Sections difference = ORIGIN_SECTIONS.getDifferenceOfSet(newSections);
 
         assertThat(difference.getSections())
-                .containsExactly(SECTIONS_1);
+                .containsExactly(SECTION_1);
     }
 
     @DisplayName("Sections에서 해당 Station이 상행종점인지 확인한다.")
@@ -54,10 +54,10 @@ class SectionsTest {
         final Sections addedSections = ORIGIN_SECTIONS.addHead(newSection);
 
         assertThat(addedSections.getSections())
-                .containsExactly(newSection, SECTIONS_1, SECTIONS_2);
+                .containsExactly(newSection, SECTION_1, SECTION_2);
     }
 
-    @DisplayName("Sections의 상행종점에 section을 추가한다.")
+    @DisplayName("Sections의 하행종점에 section을 추가한다.")
     @Test
     void addTail() {
         final Station stationD = new Station(4L, "D");
@@ -66,6 +66,28 @@ class SectionsTest {
         final Sections addedSections = ORIGIN_SECTIONS.addTail(newSection);
 
         assertThat(addedSections.getSections())
-                .containsExactly(SECTIONS_1, SECTIONS_2, newSection);
+                .containsExactly(SECTION_1, SECTION_2, newSection);
     }
+
+    @DisplayName("Sections의 중간에 section을 추가한다.")
+    @Test
+    void addCentral() {
+        final Station stationD = new Station(4L, "D");
+        final Section newSection = new Section(STATION_A, stationD, new Distance(1));
+
+        final Sections addedSections = ORIGIN_SECTIONS.addCentral(newSection);
+
+        assertThat(addedSections.getSections())
+                .extracting(Section::getPrevStation)
+                .containsExactly(STATION_A, stationD, STATION_B);
+        assertThat(addedSections.getSections())
+                .extracting(Section::getNextStation)
+                .containsExactly(stationD, STATION_B, STATION_C);
+        assertThat(addedSections.getSections())
+                .extracting(Section::getDistance)
+                .extracting(Distance::getValue)
+                .containsExactly(1, 2, 4);
+    }
+
+
 }
