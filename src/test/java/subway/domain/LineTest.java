@@ -1,11 +1,11 @@
 package subway.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +31,7 @@ class LineTest {
         final var line = Line.of(name, color, stationId, stationId2, distance);
 
         //then
-        Assertions.assertThat(line)
+        assertThat(line)
                 .isInstanceOf(Line.class)
                 .isNotNull();
     }
@@ -135,6 +135,35 @@ class LineTest {
         //when
         boolean contains = line.contains(stationId1);
         //then
-        Assertions.assertThat(contains).isTrue();
+        assertThat(contains).isTrue();
     }
+
+    @Test
+    @DisplayName("역이 2개 이상이면 삭제 가능하다.")
+    void canDeleteStation() {
+        //given
+        final Line lineWithTwoStation = createLine();
+        lineWithTwoStation.addStationDownFrom(3L, stationId1, 2);
+        final Line lineWithThreeStation = lineWithTwoStation;
+
+        //when
+        boolean canDeleteStation = lineWithThreeStation.canDeleteStation();
+
+        //then
+        assertThat(canDeleteStation).isTrue();
+    }
+
+    @Test
+    @DisplayName("역이 2개이면 삭제가 불가능하다.")
+    void cannotDeleteStation() {
+        //given
+        final Line lineWithTwoStation = createLine();
+
+        //when
+        boolean canDeleteStation = lineWithTwoStation.canDeleteStation();
+
+        //then
+        assertThat(canDeleteStation).isFalse();
+    }
+
 }

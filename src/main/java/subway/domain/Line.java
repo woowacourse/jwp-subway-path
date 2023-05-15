@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import subway.domain.dto.InsertionResult;
 import subway.exception.StationAlreadyExistsException;
 import subway.exception.StationNotFoundException;
 
@@ -103,8 +102,8 @@ public class Line {
         return combinedStationEdge;
     }
 
-    public int size() {
-        return stationEdges.size();
+    public boolean canDeleteStation() {
+        return stationEdges.size() > 2;
     }
 
     private StationEdge getStationEdge(long stationId) {

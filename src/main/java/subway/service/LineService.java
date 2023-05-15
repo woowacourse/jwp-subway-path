@@ -10,6 +10,7 @@ import subway.dto.LineRequest;
 import subway.dto.StationInsertRequest;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.LineNotFoundException;
+import subway.exception.NoSuchStationException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
@@ -78,10 +79,15 @@ public class LineService {
 
     public void deleteStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        if (line.size() == 2 && line.contains(stationId)) {
+        if (!line.contains(stationId)) {
+            throw new NoSuchStationException();
+        }
+
+        if (!line.canDeleteStation()) {
             lineRepository.deleteById(line.getId());
             return;
         }
+
         line.deleteStation(stationId);
         lineRepository.update(line);
     }
