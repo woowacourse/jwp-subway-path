@@ -3,19 +3,27 @@ package subway.domain;
 import java.util.Objects;
 
 public class Station {
+
     private Long id;
     private String name;
 
-    public Station() {
+    public Station(final String name) {
+        this(null, name);
     }
 
-    public Station(Long id, String name) {
+    public Station(final Long id, final String name) {
+        validate(name);
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
+    private void validate(final String name) {
+        if (Objects.isNull(name) || name.isBlank()) {
+            throw new IllegalArgumentException("지하철 역 이름은 null 또는 공백일 수 없습니다.");
+        }
+        if (name.length() > 10) {
+            throw new IllegalArgumentException("이름은 1~10글자여야합니다.");
+        }
     }
 
     public Long getId() {
@@ -27,15 +35,23 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        final Station station = (Station) o;
+        return Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(name);
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 }

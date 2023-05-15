@@ -1,53 +1,53 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
+import org.springframework.transaction.annotation.Transactional;
+import subway.application.request.CreateLineRequest;
+import subway.application.response.LineResponse;
 import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.application.response.StationResponse;
+import subway.repository.LineRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional(readOnly = true)
 @Service
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    @Transactional
+    public Long saveLine(final CreateLineRequest request) {
+        return lineRepository.saveLine(request.getName(), request.getColor());
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
+    public LineResponse findByLineId(final Long lineId) {
+        final Line line = lineRepository.findByLineId(lineId);
+        final List<StationResponse> stationResponses = collectStationResponses(line);
+
+        return LineResponse.of(line, stationResponses);
+    }
+
+    private List<StationResponse> collectStationResponses(final Line line) {
+        return line.getAllStations()
+                .stream()
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    public List<LineResponse> findAll() {
+        return lineRepository.findAll()
+                .stream()
+                .map(lineDomain -> new LineResponse(
+                        lineDomain.getId(),
+                        lineDomain.getName(),
+                        lineDomain.getColor(),
+                        collectStationResponses(lineDomain)
+                )).collect(Collectors.toList());
     }
-
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
-    }
-
 }

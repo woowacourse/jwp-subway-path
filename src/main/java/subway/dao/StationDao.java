@@ -1,58 +1,83 @@
 package subway.dao;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.dao.entity.StationEntity;
 
-import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import static subway.dao.support.SqlHelper.sqlHelper;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    public StationDao(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("STATIONS")
+                .usingGeneratedKeyColumns("id");
+    }
+
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
-
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
-        this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+    public Long insert(final StationEntity stationEntity) {
+        return insertAction.executeAndReturnKey(new MapSqlParameterSource()
+                .addValue("name", stationEntity.getName())
+        ).longValue();
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public Optional<StationEntity> findByStationId(final Long stationId) {
+        final String sql = sqlHelper()
+                .select().columns("id, name")
+                .from().table("STATIONS")
+                .where().condition("id = ?")
+                .toString();
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
+    public List<StationEntity> findInStationIds(final List<Long> stationIds) {
+        final String ids = stationIds.stream()
+                .map(String::valueOf)
+                .collect(Collectors.joining(","));
+
+        final String sql = sqlHelper()
+                .select().columns("id, name")
+                .from().table("STATIONS")
+                .where().in("id", ids)
+                .toString();
+
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
+    public Optional<StationEntity> findByStationName(final String stationName) {
+        final String sql = sqlHelper()
+                .select().columns("id, name")
+                .from().columns("STATIONS")
+                .where().condition("name = ?")
+                .toString();
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
-    }
-
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationName));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 }
