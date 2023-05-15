@@ -1,12 +1,12 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -40,7 +40,7 @@ class SectionsTest {
         final Sections sections = new Sections(sectionsList);
 
         //then
-        Assertions.assertThatThrownBy(() -> sections.validateAddingSection(5L))
+        assertThatThrownBy(() -> sections.validateAddingSection(5L))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("LINE_IS_NOT_INITIALIZED");
     }
@@ -52,7 +52,7 @@ class SectionsTest {
         final Sections sections = new Sections(sectionsList);
 
         //then
-        Assertions.assertThatThrownBy(() -> sections.validateAddingSection(1L))
+        assertThatThrownBy(() -> sections.validateAddingSection(1L))
                 .isInstanceOf(DomainException.class)
                 .hasMessage("STATION_ALREADY_EXIST_IN_LINE");
     }
@@ -73,5 +73,44 @@ class SectionsTest {
                 () -> assertThat(result.getTargetStationId()).isEqualTo(2L),
                 () -> assertThat(result.getDistance()).isEqualTo(10)
         );
+    }
+
+    @Test
+    @DisplayName("sourceStation과 targetStation으로 이뤄진 Section을 찾는다.")
+    void findSectionFailTest() {
+        //given
+        final Sections sections = new Sections(sectionsList);
+
+        //then
+        assertThatThrownBy(() -> sections.findSection(1L, 3L))
+                .isInstanceOf(DomainException.class)
+                .hasMessage("NON_EXISTENT_SECTION");
+    }
+
+    @Test
+    @DisplayName("sections에서 station을 포함한 모든 section을 반환한다")
+    void findSectionsIncludeStationTest() {
+        //given
+        final Sections sections = new Sections(sectionsList);
+
+        //when
+        final List<Section> results = sections.findSectionsIncludeStation(2L);
+
+        //then
+        assertThat(results).hasSize(2);
+    }
+
+
+    @Test
+    @DisplayName("sections에서 station을 포함한 모든 section을 반환한다")
+    void findSectionsIncludeStationTestSingleSection() {
+        //given
+        final Sections sections = new Sections(sectionsList);
+
+        //when
+        final List<Section> results = sections.findSectionsIncludeStation(1L);
+
+        //then
+        assertThat(results).hasSize(1);
     }
 }
