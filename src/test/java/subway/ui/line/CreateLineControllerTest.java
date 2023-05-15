@@ -40,7 +40,7 @@ class CreateLineControllerTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank(),
-                () -> assertThat(lineRepository.findAll()).usingRecursiveComparison().isEqualTo(List.of(new Line(1L, "1호선"))
+                () -> assertThat(lineRepository.findAll()).usingRecursiveComparison().ignoringFields("id").isEqualTo(List.of(new Line(1L, "1호선"))
                 ));
     }
 }

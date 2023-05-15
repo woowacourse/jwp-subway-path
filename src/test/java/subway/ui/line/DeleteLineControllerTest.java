@@ -22,10 +22,10 @@ class DeleteLineControllerTest extends IntegrationTest {
     @Test
     @DisplayName("노선을 삭제한다.")
     void deleteLine() {
-        lineRepository.createLine(new Line("1호선"));
+        final Long lineId = lineRepository.createLine(new Line("1호선"));
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when().delete("/lines/1")
+                .when().delete("/lines/"+lineId)
                 .then().log().all()
                 .extract();
 

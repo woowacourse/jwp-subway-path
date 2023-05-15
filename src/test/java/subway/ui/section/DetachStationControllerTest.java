@@ -15,14 +15,14 @@ import subway.domain.Station;
 import subway.persistence.repository.LineRepositoryImpl;
 import subway.persistence.repository.SectionRepositoryImpl;
 import subway.persistence.repository.StationRepositoryImpl;
-import subway.ui.dto.request.SectionCreateRequest;
+import subway.ui.dto.request.SectionDeleteRequest;
 
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-class AttachStationControllerTest extends IntegrationTest {
+class DetachStationControllerTest extends IntegrationTest {
 
     @Autowired
     private LineRepositoryImpl lineRepository;
@@ -32,26 +32,24 @@ class AttachStationControllerTest extends IntegrationTest {
     private SectionRepositoryImpl sectionRepository;
 
     @Test
-    @DisplayName("구간을 추가한다.")
-    void createSection() {
+    @DisplayName("구간의 역을 삭제한다.")
+    void deleteSection() {
         final Long lineId = lineRepository.createLine(new Line("1호선"));
         stationRepository.createStation(new Station("비버"));
         stationRepository.createStation(new Station("라빈"));
-
-        final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest("비버", "라빈", 5L);
+        sectionRepository.saveSection(lineId, List.of(new Section(lineId, new Station("비버"), new Station("라빈"), 5L)));
+        final SectionDeleteRequest 비버 = new SectionDeleteRequest("비버");
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(ContentType.JSON)
-                .body(sectionCreateRequest)
-                .when().post("/line/" + lineId + "/station")
+                .body(비버)
+                .when().delete("/line/" + lineId + "/station")
                 .then().log().all()
                 .extract();
 
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(sectionRepository.findAllByLineId(lineId))
-                        .usingRecursiveComparison()
-                        .isEqualTo(List.of(new Section(lineId, new Station("비버"), new Station("라빈"), 5L)))
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(sectionRepository.findAllByLineId(lineId)).hasSize(0)
         );
     }
 }

@@ -15,8 +15,8 @@ public class DetachStationController {
     }
 
     @DeleteMapping("/line/{line_id}/station")
-    public void deleteSection(@PathVariable("line_id") Long line_id, @RequestBody SectionDeleteRequest sectionDeleteRequest) {
+    public ResponseEntity<String> deleteSection(@PathVariable("line_id") Long line_id, @RequestBody SectionDeleteRequest sectionDeleteRequest) {
         detachStationService.deleteStation(line_id, sectionDeleteRequest);
-        ResponseEntity.noContent().build();
+        return ResponseEntity.noContent().build();
     }
 }

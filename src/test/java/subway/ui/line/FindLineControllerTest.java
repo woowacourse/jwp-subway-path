@@ -46,7 +46,7 @@ class FindLineControllerTest extends IntegrationTest {
 
         sectionRepository.saveSection(lineId, sections);
         ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .when().get("/lines/1")
+                .when().get("/lines/" + lineId)
                 .then().log().all()
                 .extract();
 
