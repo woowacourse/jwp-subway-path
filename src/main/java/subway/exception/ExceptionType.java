@@ -13,7 +13,8 @@ public enum ExceptionType {
     NO_EXISTENT_STATION("Can't find station"),
     UN_EXISTED_LINE("lineId is not existed in DB"),
     UN_EXISTED_STATION("stationId is not existed in DB"),
-    ;
+    LINE_NAME_ALREADY_EXISTED("That line name is already existed."),
+    STATION_NAME_IS_ALREADY_EXISTED("That station name is already existed.");
 
     private final String reason;
 
