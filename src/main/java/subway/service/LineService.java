@@ -10,6 +10,7 @@ import subway.dto.CreateNewLineDto;
 import subway.repository.LineRepository;
 
 @Service
+@Transactional
 public class LineService {
 
     public final LineRepository lineRepository;
@@ -18,7 +19,6 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    @Transactional
     public Line createNewLine(CreateNewLineDto dto) {
         lineRepository.checkLineIsExist(dto.getLineName());
         Station upStation = lineRepository.getStation(dto.getUpStationId());
@@ -29,7 +29,6 @@ public class LineService {
         return lineRepository.insertNewLine(createdLine);
     }
 
-    @Transactional
     public Line addStationToExistLine(AddStationToExistLineDto dto) {
         Line line = lineRepository.getLine(dto.getLineId());
         Station upStation = lineRepository.getStation(dto.getUpStationId());
@@ -40,7 +39,6 @@ public class LineService {
         return lineRepository.updateLine(line);
     }
 
-    @Transactional
     public Line deleteStationFromLine(Long lineId, Long stationId) {
         Line line = lineRepository.getLine(lineId);
         Station station = lineRepository.getStation(stationId);
@@ -50,10 +48,12 @@ public class LineService {
         return lineRepository.updateLine(line);
     }
 
+    @Transactional(readOnly = true)
     public Line findOneLine(Long lineId) {
         return lineRepository.getLine(lineId);
     }
 
+    @Transactional(readOnly = true)
     public List<Line> findAllLine() {
         return lineRepository.getAllLines();
     }
