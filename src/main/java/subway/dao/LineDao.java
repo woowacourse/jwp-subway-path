@@ -50,6 +50,13 @@ public class LineDao {
                 .findAny();
     }
 
+    public Optional<LineEntity> findByName(String name) {
+        String sql = "select id, name from LINE WHERE name = ?";
+        return jdbcTemplate.query(sql, rowMapper, name)
+                .stream()
+                .findAny();
+    }
+
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }

@@ -42,6 +42,11 @@ public class LineRepository {
         return new Line(lineEntity.getId(), lineEntity.getName(), sections);
     }
 
+    public boolean existsByName(String name) {
+        return lineDao.findByName(name).isPresent();
+
+    }
+
     public List<Line> findAll() {
         List<LineEntity> lineEntities = lineDao.findAll();
 
@@ -66,5 +71,13 @@ public class LineRepository {
 
     public void deleteById(Long id) {
         lineDao.deleteById(id);
+    }
+
+    public void saveSection(SectionEntity sectionEntity) {
+        sectionDao.insert(sectionEntity);
+    }
+
+    public void deleteSection(Long leftStationId, Long rightStationId) {
+        sectionDao.deleteByStationId(leftStationId, rightStationId);
     }
 }
