@@ -41,7 +41,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
+        List<LineEntity> persistLines = lineDao.findAll();
         return persistLines.stream()
                 .map(entities -> {
                     Long lineId = entities.getId();
@@ -80,10 +80,6 @@ public class LineService {
         Distance distance = new Distance(sectionEntity.getDistance());
 
         return new Section(startStation, endStation, distance);
-    }
-
-    private List<LineEntity> findLines() {
-        return lineDao.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
