@@ -1,10 +1,16 @@
 package subway.ui.dto;
 
+import javax.validation.constraints.Positive;
+
 public class PostSectionRequest {
 
+    @Positive
     private Long upStationId;
+    @Positive
     private Long downStationId;
+    @Positive
     private Long lineId;
+    @Positive
     private Integer distance;
 
     public PostSectionRequest() {

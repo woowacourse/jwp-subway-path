@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.dao.LineDao;
+import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Station;
@@ -30,6 +31,8 @@ class LineServiceTest {
     StationDao stationDao;
     @Mock
     LineDao lineDao;
+    @Mock
+    SectionDao sectionDao;
     @InjectMocks
     LineService lineService;
 

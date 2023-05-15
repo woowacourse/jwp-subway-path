@@ -2,6 +2,8 @@ package subway.ui;
 
 import java.net.URI;
 
+import javax.validation.Valid;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,13 +25,13 @@ public class SectionController {
     }
 
     @PostMapping("/sections")
-    public ResponseEntity<Void> createSection(@RequestBody PostSectionRequest postSectionRequest) {
+    public ResponseEntity<Void> createSection(@RequestBody @Valid PostSectionRequest postSectionRequest) {
         SectionResponse sectionResponse = sectionService.saveSection(postSectionRequest);
         return ResponseEntity.created(URI.create("/sections/" + sectionResponse.getId())).build();
     }
 
     @DeleteMapping("/sections")
-    public ResponseEntity<Void> deleteSection(@RequestBody DeleteSectionRequest deleteSectionRequest) {
+    public ResponseEntity<Void> deleteSection(@RequestBody @Valid DeleteSectionRequest deleteSectionRequest) {
         sectionService.deleteSection(deleteSectionRequest);
         return ResponseEntity.noContent().build();
     }

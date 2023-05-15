@@ -43,7 +43,7 @@ public class SectionService {
 
         ChangesByAddition changes = sections.findChangesWhenAdd(upStation, downStation, line, distance);
         List<Section> added = sectionDao.insertAll(changes.getAddedSections());
-        sectionDao.deleteAll(changes.getDeletedSections());
+        sectionDao.deleteGivenSections(changes.getDeletedSections());
         return SectionResponse.of(findRequestedSection(added, upStation, downStation));
     }
 
@@ -69,7 +69,7 @@ public class SectionService {
 
         ChangesByDeletion changes = sections.findChangesWhenDelete(station);
         sectionDao.insertAll(changes.getAddedSections());
-        sectionDao.deleteAll(changes.getDeletedSections());
+        sectionDao.deleteGivenSections(changes.getDeletedSections());
     }
 
     private void deleteLineIfLastSection(Sections sections, Long lineId) {

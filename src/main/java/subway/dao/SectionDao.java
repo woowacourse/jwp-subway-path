@@ -69,18 +69,18 @@ public class SectionDao {
             section.getDistance());
     }
 
-    public void deleteAll(List<Section> sections) {
+    public void deleteGivenSections(List<Section> sections) {
         for (Section section : sections) {
             deleteByUpStationIdAndDownStationId(section.getUpStation().getId(), section.getDownStation().getId());
         }
     }
 
-    public void deleteByUpStationIdAndDownStationId(long upStationId, long downStationId) {
+    private void deleteByUpStationIdAndDownStationId(long upStationId, long downStationId) {
         String sql = "DELETE FROM section WHERE up_station_id = ? AND down_station_id = ?";
         jdbcTemplate.update(sql, upStationId, downStationId);
     }
 
-    public void deleteAllByLineId(Long id) {
+    public void deleteByLineId(Long id) {
         String sql = "DELETE FROM section WHERE line_id = ?";
         jdbcTemplate.update(sql, id);
     }
