@@ -1,11 +1,9 @@
-package subway.domain;
-
-import static org.assertj.core.api.Assertions.assertThat;
+package subway.business.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.business.domain.Section;
-import subway.business.domain.Station;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class SectionTest {
     @DisplayName("거리를 받아 전체 거리에서 뺀 거리를 계산한다.")

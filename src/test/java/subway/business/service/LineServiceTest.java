@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.business.domain.Direction;
 import subway.business.domain.Line;
 import subway.business.domain.LineRepository;
-import subway.business.service.dto.LineResponse;
 import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.LineStationsResponse;
 import subway.business.service.dto.StationAddToLineRequest;
@@ -21,6 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 public class LineServiceTest {
     @InjectMocks
@@ -34,10 +34,10 @@ public class LineServiceTest {
     void shouldCreateLineWhenRequest() {
         when(lineRepository.create(any())).thenReturn(1L);
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
-          "2호선",
-          "강남역",
-          "잠실역",
-          10
+                "2호선",
+                "강남역",
+                "잠실역",
+                10
         );
 
         long id = lineService.createLine(lineSaveRequest).getId();
@@ -51,10 +51,10 @@ public class LineServiceTest {
         when(lineRepository.findById(1L)).thenReturn(line);
         doNothing().when(lineRepository).update(any());
         StationAddToLineRequest stationAddToLineRequest = new StationAddToLineRequest(
-          "역삼역",
-          "잠실역",
-          "상행",
-          5
+                "역삼역",
+                "잠실역",
+                "상행",
+                5
         );
 
         lineService.addStationToLine(1L, stationAddToLineRequest);
@@ -80,14 +80,14 @@ public class LineServiceTest {
     @Test
     void shouldReturnAllLineNameAndAllStationsOfLineWhenRequest() {
         Line line1 = Line.of("2호선", "강남역", "잠실역", 10);
-        Line line2 = Line.of("1호선", "인천역", "부평역", 10);
+        Line line2 = Line.of("3호선", "수서역", "교대역", 10);
         when(lineRepository.findAll()).thenReturn(List.of(line1, line2));
 
         List<LineStationsResponse> lineStationsResponses = lineService.findLineResponses();
 
         assertAll(
                 () -> assertThat(lineStationsResponses.get(0).getName()).isEqualTo("2호선"),
-                () -> assertThat(lineStationsResponses.get(1).getName()).isEqualTo("1호선")
+                () -> assertThat(lineStationsResponses.get(1).getName()).isEqualTo("3호선")
         );
     }
 

@@ -1,15 +1,6 @@
 package subway.ui;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +14,14 @@ import subway.business.service.dto.LineSaveRequest;
 import subway.business.service.dto.LineStationsResponse;
 import subway.business.service.dto.StationAddToLineRequest;
 import subway.ui.dto.StationDeleteRequest;
+
+import java.util.List;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(LineController.class)
 public class LineControllerTest {
@@ -38,13 +37,13 @@ public class LineControllerTest {
     @DisplayName("노선과 두 개의 역을 추가한다")
     @Test
     void shouldCreateLineWhenRequest() throws Exception {
-        given(lineService.createLine(any())).willReturn(new LineResponse(1L, "잠실역"));
+        given(lineService.createLine(any())).willReturn(new LineResponse(1L, "2호선"));
 
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
                 "2호선",
+                "강남역",
                 "잠실역",
-                "몽촌토성역",
-                5
+                10
         );
         String jsonRequest = objectMapper.writeValueAsString(lineSaveRequest);
 
