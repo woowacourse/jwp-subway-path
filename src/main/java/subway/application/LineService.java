@@ -77,12 +77,12 @@ public class LineService {
     }
 
     public Line findById(final Long id) {
-        Line emptyLine = lineDao.findById(id);
-        final Sections sections = sectionService.findByLineId(emptyLine.getId());
+        Line resultLine = lineDao.findById(id);
+        final Sections sections = sectionService.findByLineId(resultLine.getId());
         for (final Section section : sections.getSections()) {
-            emptyLine = emptyLine.addSection(section);
+            resultLine = resultLine.addSection(section);
         }
-        return emptyLine;
+        return resultLine;
     }
 
     private Section createSection(final SectionRequest request) {
