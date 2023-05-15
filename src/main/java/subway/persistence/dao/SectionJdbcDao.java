@@ -32,7 +32,7 @@ public class SectionJdbcDao implements SectionDao {
 
     @Override
     public void saveSection(final Long lineId, final List<SectionEntity> sectionEntities) {
-        jdbcTemplate.update("drop table section where line_id = ?", lineId);
+        jdbcTemplate.update("delete from section where line_id = ?", lineId);
 
         final BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
                 .map(BeanPropertySqlParameterSource::new)
