@@ -14,6 +14,8 @@ import static subway.integration.IntegrationTestFixture.역_삭제_요청;
 import static subway.integration.IntegrationTestFixture.역_추가_요청;
 import static subway.integration.IntegrationTestFixture.전체_노선_조회_요청;
 import static subway.integration.IntegrationTestFixture.정상_응답인지_검증한다;
+import static subway.integration.IntegrationTestFixture.최단_거리_정보를_확인한다;
+import static subway.integration.IntegrationTestFixture.최단_거리_조회_요청;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -155,7 +157,7 @@ public class LineIntegrationTest extends IntegrationTest {
     public class 노선에서_역을_삭제할_떄 {
 
         @Test
-        void 정상적으로_추가된다() {
+        void 정상적으로_삭제된다() {
             Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
             역_추가_요청(저장된_노선_ID, "역삼역", "잠실역", 10);
 
@@ -198,6 +200,41 @@ public class LineIntegrationTest extends IntegrationTest {
             노선_생성_요청("2호선", "강남역", "역삼역", 5);
 
             ExtractableResponse<Response> response = 역_삭제_요청(Long.MAX_VALUE, "강남역");
+
+            리소스를_찾을_수_없다는_응답인지_검증한다(response);
+        }
+    }
+
+    @Nested
+    public class 최단_거리를_조회할_때 {
+
+        @Test
+        void 요금과_지나가는_역을_반환한다() {
+            노선_생성_요청("1호선", "강남역", "시청역", 10);
+            Long 저장된_노선_ID = 노선_생성_요청("2호선", "강남역", "역삼역", 5).as(SaveResponse.class).getId();
+            역_추가_요청(저장된_노선_ID, "역삼역", "시청역", 3);
+
+            ExtractableResponse<Response> response = 최단_거리_조회_요청("강남역", "시청역");
+
+            최단_거리_정보를_확인한다(response, 1250, 8, "강남역", "역삼역", "시청역");
+        }
+
+        @Test
+        void 출발지와_도착지가_같으면_예외가_발생한다() {
+            노선_생성_요청("1호선", "강남역", "시청역", 10);
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
+
+            ExtractableResponse<Response> response = 최단_거리_조회_요청("강남역", "강남역");
+
+            비정상_요청이라는_응답인지_검증한다(response);
+        }
+
+        @Test
+        void 출발지나_도착지가_존재하지_않는_역이면_예외가_발생한다() {
+            노선_생성_요청("1호선", "강남역", "시청역", 10);
+            노선_생성_요청("2호선", "강남역", "역삼역", 5);
+
+            ExtractableResponse<Response> response = 최단_거리_조회_요청("서면역", "강남역");
 
             리소스를_찾을_수_없다는_응답인지_검증한다(response);
         }

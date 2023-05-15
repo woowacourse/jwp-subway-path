@@ -14,6 +14,8 @@ import subway.dto.AddStationRequest;
 import subway.dto.DeleteStationRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.PathRequest;
+import subway.dto.PathResponse;
 import subway.dto.StationResponse;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -115,5 +117,25 @@ public class IntegrationTestFixture {
                 .when().delete("/lines/{lineId}/stations", lineId)
                 .then().log().all()
                 .extract();
+    }
+
+    public static ExtractableResponse<Response> 최단_거리_조회_요청(String source, String target) {
+        PathRequest request = new PathRequest(source, target);
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().get("/lines/paths")
+                .then().log().all()
+                .extract();
+    }
+
+
+    public static void 최단_거리_정보를_확인한다(ExtractableResponse<Response> response, int fee, int distance,
+                                      String... station) {
+        List<StationResponse> stations = Arrays.stream(station).map(StationResponse::new)
+                .collect(Collectors.toList());
+        assertThat(response.as(PathResponse.class)).usingRecursiveComparison()
+                .isEqualTo(new PathResponse(stations, distance, fee));
     }
 }

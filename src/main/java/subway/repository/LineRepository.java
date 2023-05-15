@@ -141,4 +141,10 @@ public class LineRepository {
     public boolean existsByName(String lineName) {
         return lineDao.existsByName(lineName);
     }
+
+    public Station findStationByStationName(String stationName) {
+        return stationDao.findByName(stationName)
+                .map(it -> new Station(it.getName()))
+                .orElseThrow(() -> new NoSuchElementException("역을 찾을 수 없습니다"));
+    }
 }

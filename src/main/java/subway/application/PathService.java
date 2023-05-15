@@ -22,8 +22,8 @@ public class PathService {
     }
 
     public PathResponse findShortestPath(PathRequest request) {
-        Station source = new Station(request.getSource());
-        Station target = new Station(request.getTarget());
+        Station source = lineRepository.findStationByStationName(request.getSource());
+        Station target = lineRepository.findStationByStationName(request.getTarget());
         validatePath(source, target);
         SubwayGraph graph = SubwayGraph.from(new Subway(lineRepository.findAll()));
         ShortestPath path = graph.findPath(source, target);
