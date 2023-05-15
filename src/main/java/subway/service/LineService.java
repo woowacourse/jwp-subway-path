@@ -19,7 +19,7 @@ public class LineService {
     }
 
     @Transactional
-    public Long saveLine(final LineCreateRequest request) {
+    public long saveLine(final LineCreateRequest request) {
         return lineRepository.insertLine(new LineEntity(null, request.getLineNumber(), request.getName(), request.getColor()));
     }
 
