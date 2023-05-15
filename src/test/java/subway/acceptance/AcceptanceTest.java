@@ -1,19 +1,13 @@
 package subway.acceptance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import io.restassured.RestAssured;
-import java.util.List;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayNameGeneration;
-import org.junit.jupiter.api.DisplayNameGenerator;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dto.request.CreateSectionRequest;
 import subway.dto.request.LineRequest;
@@ -25,11 +19,16 @@ import subway.fixture.StationFixture.삼성역;
 import subway.fixture.StationFixture.역삼역;
 import subway.fixture.StationFixture.잠실역;
 
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Transactional
-public class AcceptanceTest {
+@ActiveProfiles("test")
+class AcceptanceTest {
 
     @LocalServerPort
     int port;
