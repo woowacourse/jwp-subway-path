@@ -19,6 +19,7 @@ public class GlobalControllerAdvice {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ExceptionResponse> handleIllegalStateException(Exception exception) {
-        return ResponseEntity.internalServerError().body(new ExceptionResponse(exception.getMessage()));
+        String message = "서버에 예기치 못한 에러가 발생했습니다.";
+        return ResponseEntity.internalServerError().body(new ExceptionResponse(message));
     }
 }
