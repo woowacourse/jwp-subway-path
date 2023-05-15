@@ -9,8 +9,6 @@ import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
 
 public class Sections {
-    private static final int END_POINT_STATION_FLAG = 1;
-    private static final int BETWEEN_STATION_FLAG = 2;
 
     private final List<Section> sections;
 
@@ -80,45 +78,18 @@ public class Sections {
         }
     }
 
-    public void removeFirstStation(final Station station) {
-        validateEndPointStation(station);
-        final Section firstSection = peekByFirstStationUnique(station);
-        sections.remove(firstSection);
+    public void removeSection(final Section section) {
+        validateExistSection(section);
+        sections.remove(section);
     }
 
-    public void removeLastStation(final Station station) {
-        validateEndPointStation(station);
-        final Section lastSection = peekBySecondStationUnique(station);
-        sections.remove(lastSection);
-    }
+    private void validateExistSection(final Section other) {
+        final boolean isExistSection = sections.stream()
+                .anyMatch(section -> section.equals(other));
 
-    public void removeStation(final Station station) {
-        validateBetweenStation(station);
-        final Section frontSection = peekBySecondStationUnique(station);
-        final Section behindSection = peekByFirstStationUnique(station);
-
-        final Section mergedSection = frontSection.merge(behindSection);
-
-        sections.removeAll(List.of(frontSection, behindSection));
-        sections.add(mergedSection);
-    }
-
-    private void validateEndPointStation(final Station station) {
-        if (countStationInSection(station) != END_POINT_STATION_FLAG) {
-            throw new IllegalArgumentException();
+        if (!isExistSection) {
+            throw new IllegalStateException("존재 하지 않는 구간입니다.");
         }
-    }
-
-    private void validateBetweenStation(final Station station) {
-        if (countStationInSection(station) != BETWEEN_STATION_FLAG) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    private int countStationInSection(final Station station) {
-        return (int) sections.stream()
-                .filter(section -> section.contains(station))
-                .count();
     }
 
     public Station getFrontStation() {

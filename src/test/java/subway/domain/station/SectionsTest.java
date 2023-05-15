@@ -93,36 +93,4 @@ class SectionsTest {
         //then
         assertThat(peekSection).isEqualTo(initSection);
     }
-
-    @Test
-    void 노선_앞에_역_제거_테스트() {
-        //given
-        final Sections sections = new Sections();
-        final Station startStation = new Station("start");
-        final Section section = new Section(startStation, new Station("to"), new StationDistance(5));
-        sections.addInitialStations(section);
-
-        //when
-        sections.removeFirstStation(startStation);
-
-        //then
-        assertThat(sections.getSections()).hasSize(0);
-    }
-
-
-    @Test
-    void 노선_뒤에_역_제거_테스트() {
-        //given
-        final Sections sections = new Sections();
-        final Station endStation = new Station("end");
-        final Section section = new Section(new Station("from"), endStation, new StationDistance(5));
-
-        sections.addInitialStations(section);
-
-        //when
-        sections.removeLastStation(endStation);
-
-        //then
-        assertThat(sections.getSections()).hasSize(0);
-    }
 }

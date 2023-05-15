@@ -40,4 +40,11 @@ public class StationRepositoryImpl implements StationRepository {
 
         return stationDao.insert(stationEntity).getStationId();
     }
+
+    @Override
+    public Station findById(final Long stationId) {
+        final StationEntity stationEntity = stationDao.findById(stationId);
+
+        return toStation(stationEntity);
+    }
 }

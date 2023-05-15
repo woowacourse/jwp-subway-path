@@ -90,4 +90,49 @@ public class StationIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header(HttpHeaders.CONTENT_LOCATION)).isNotBlank();
     }
+
+    @Test
+    void 상행_종점_역_삭제_API_테스트() {
+        // given
+        final Long removalStationId = 1L;
+
+        // when
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when().delete("/lines/{lineId}/stations/{stationId}", 1L, removalStationId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 하행_종점_역_삭제_API_테스트() {
+        // given
+        final Long removalStationId = 3L;
+
+        // when
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when().delete("/lines/{lineId}/stations/{stationId}", 1L, removalStationId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    void 역과_역_사이_역_삭제_API_테스트() {
+        // given
+        final Long removalStationId = 2L;
+
+        // when
+        final ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when().delete("/lines/{lineId}/stations/{stationId}", 1L, removalStationId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
 }
