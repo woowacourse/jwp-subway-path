@@ -20,6 +20,10 @@ public class Station {
         return this.name.equals(name);
     }
 
+    public boolean isSameName(final Station other) {
+        return name.equals(other.name);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -29,12 +33,12 @@ public class Station {
             return false;
         }
         final Station station = (Station) o;
-        return Objects.equals(name, station.name);
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 
     @Override

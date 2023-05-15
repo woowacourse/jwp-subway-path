@@ -48,10 +48,13 @@ public class StationControllerTest extends IntegrationTest {
         final List<Line> result = lineRepository.findAll();
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(result).flatExtracting(Line::getSections).contains(
-                        new Section("A", "B", 2),
-                        new Section("B", "C", 3)
-                )
+                () -> assertThat(result).flatExtracting(Line::getSections)
+                        .usingRecursiveComparison()
+                        .ignoringExpectedNullFields()
+                        .isEqualTo(List.of(
+                                new Section("A", "B", 2),
+                                new Section("B", "C", 3)
+                        ))
         );
     }
 
@@ -99,9 +102,12 @@ public class StationControllerTest extends IntegrationTest {
         final List<Line> result = lineRepository.findAll();
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(result).flatExtracting(Line::getSections).contains(
-                        new Section("A", "B", 3)
-                )
+                () -> assertThat(result).flatExtracting(Line::getSections)
+                        .usingRecursiveComparison()
+                        .ignoringExpectedNullFields()
+                        .isEqualTo(List.of(
+                                new Section("A", "B", 3)
+                        ))
         );
     }
 }

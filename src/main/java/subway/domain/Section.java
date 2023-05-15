@@ -31,12 +31,12 @@ public class Section {
     }
 
     public boolean contains(final Station station) {
-        return start.equals(station) || end.equals(station);
+        return start.isSameName(station) || end.isSameName(station);
     }
 
     public boolean containsAll(final Station start, final Station end) {
-        return (this.start.equals(start) && this.end.equals(end))
-                || (this.start.equals(end) && this.end.equals(start));
+        return (this.start.isSameName(start) && this.end.isSameName(end))
+                || (this.start.isSameName(end) && this.end.isSameName(start));
     }
 
     public boolean moreThanOrEqual(final Distance distance) {
@@ -45,9 +45,9 @@ public class Section {
 
     public boolean isStationExistsAtDirection(final Station station, final Direction direction) {
         if (direction == LEFT) {
-            return start.equals(station);
+            return start.isSameName(station);
         }
-        return end.equals(station);
+        return end.isSameName(station);
     }
 
     public Distance subtract(final Distance distance) {
@@ -67,13 +67,12 @@ public class Section {
             return false;
         }
         final Section section = (Section) o;
-        return Objects.equals(start, section.start) && Objects.equals(end, section.end)
-                && Objects.equals(distance, section.distance);
+        return Objects.equals(id, section.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(start, end, distance);
+        return Objects.hash(id);
     }
 
     @Override

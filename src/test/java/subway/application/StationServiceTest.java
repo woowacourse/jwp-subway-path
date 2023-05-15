@@ -46,12 +46,15 @@ public class StationServiceTest {
         stationService.save(request);
 
         // then
-        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections).contains(
-                new Section("A", "B", 2),
-                new Section("B", "C", 3),
-                new Section("Z", "B", 2),
-                new Section("B", "Y", 3)
-        );
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("A", "B", 2),
+                        new Section("B", "C", 3),
+                        new Section("Z", "B", 2),
+                        new Section("B", "Y", 3)
+                ));
     }
 
     @Test
@@ -71,11 +74,14 @@ public class StationServiceTest {
         stationService.delete(request);
 
         // then
-        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections).contains(
-                new Section("A", "C", 5),
-                new Section("Z", "B", 2),
-                new Section("B", "Y", 3)
-        );
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("A", "C", 5),
+                        new Section("Z", "B", 2),
+                        new Section("B", "Y", 3)
+                ));
     }
 
     @Test
@@ -88,8 +94,11 @@ public class StationServiceTest {
         stationService.initialSave(request);
 
         // then
-        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections).contains(
-                new Section("A", "B", 3)
-        );
+        assertThat(lineRepository.findAll()).flatExtracting(Line::getSections)
+                .usingRecursiveComparison()
+                .ignoringExpectedNullFields()
+                .isEqualTo(List.of(
+                        new Section("A", "B", 3)
+                ));
     }
 }

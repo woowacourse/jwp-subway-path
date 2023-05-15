@@ -1,5 +1,7 @@
 package subway.domain;
 
+import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 import static subway.domain.Direction.LEFT;
 import static subway.domain.Direction.RIGHT;
 
@@ -8,9 +10,9 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
@@ -101,28 +103,30 @@ public class Line {
     }
 
     public List<Station> findAllStation() {
-        final Map<Station, Station> stationToStation = sections.stream()
-                .collect(Collectors.toMap(Section::getStart, Section::getEnd));
+        final Map<String, String> stationToStation = sections.stream()
+                .collect(toMap(Section::getStartName, Section::getEndName));
 
-        final Optional<Station> firstStation = findFirstStation(stationToStation);
-        return firstStation.map(station -> orderStations(stationToStation, station))
+        final Optional<String> firstStationName = findFirstStation(stationToStation);
+        return firstStationName.map(station -> orderStations(stationToStation, station))
                 .orElse(Collections.emptyList());
     }
 
-    private Optional<Station> findFirstStation(final Map<Station, Station> stationToStation) {
-        final Set<Station> stations = new HashSet<>(stationToStation.keySet());
+    private Optional<String> findFirstStation(final Map<String, String> stationToStation) {
+        final Set<String> stations = new HashSet<>(stationToStation.keySet());
         stations.removeAll(stationToStation.values());
         return stations.stream().findFirst();
     }
 
-    private List<Station> orderStations(final Map<Station, Station> stationToStation, Station station) {
-        final List<Station> result = new ArrayList<>(List.of(station));
+    private List<Station> orderStations(final Map<String, String> stationToStation, String station) {
+        final List<String> result = new ArrayList<>(List.of(station));
         while (stationToStation.containsKey(station)) {
-            final Station next = stationToStation.get(station);
+            final String next = stationToStation.get(station);
             result.add(next);
             station = next;
         }
-        return result;
+        return result.stream()
+                .map(this::findStationByName)
+                .collect(toList());
     }
 
     public void initialAdd(final Section section) {
@@ -143,6 +147,23 @@ public class Line {
                 .filter(station -> station.isSameName(name))
                 .findFirst()
                 .orElseThrow(StationNotFoundException::new);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Line line = (Line) o;
+        return Objects.equals(id, line.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 
     @Override
