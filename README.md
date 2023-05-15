@@ -20,12 +20,12 @@
     - [x] 삭제할 역이 노선에 없으면 예외가 발생한다.
     - [x] 노선에 역이 2개만 있으면 노선 전체를 삭제한다.
 - [x] 노선에 역을 삭제하면 거리가 역 사이의 거리가 삭제된 거리만큼 더해진다.
-- [ ] 노선에서 역을 제거할 경우 정상 재배치 되어야 한다.
+- [x] 노선에서 역을 제거할 경우 정상 재배치 되어야 한다.
     - A-B-C-D 역이 있는 노선에서 C역이 제거되는 경우 A-B-D 순으로 재배치됩니다.
 
 노선 조회 API 수정
 
-- [ ] 노선에 포함된 역을 순서대로 보여주도록 응답을 개선합니다.
+- [x] 노선에 포함된 역을 순서대로 보여주도록 응답을 개선합니다.
 
 Section
 
@@ -72,18 +72,30 @@ Line
 응답
 
 ```json
-{
-  "lines": [
-    {
-      "name": "1호선",
-      "id": 1
-    },
-    {
-      "name": "2호선",
-      "id": 2
-    }
-  ]
-}
+[
+  {
+    "name": "1호선",
+    "stations": [
+      {
+        "name": "서울역"
+      },
+      {
+        "name": "시청역"
+      }
+    ]
+  },
+  {
+    "name": "2호선",
+    "stations": [
+      {
+        "name": "강남역"
+      },
+      {
+        "name": "역삼역"
+      }
+    ]
+  }
+]
 ```
 
 ### Line 단건 조회
@@ -94,21 +106,17 @@ Line
 
 ```json
 {
-  "line": "1호선"
+  "name": "2호선",
+  "stations": [
+    {
+      "name": "강남역"
+    },
+    {
+      "name": "역삼역"
+    }
+  ]
 }
 ```
-
-### Line 수정
-
-요청 `PUT("/lines/{id}")`
-
-```json
-{
-  "lineName": "2호선"
-}
-```
-
-응답 X
 
 ### Line 삭제
 
@@ -120,7 +128,7 @@ Line
 
 ### Station 등록
 
-요청 `POST("/stations")`
+요청 `POST("/lines/{lineId}/stations")`
 
 ```json
 {
@@ -131,61 +139,16 @@ Line
 }
 ```
 
-응답
-
-```json
-{
-  "stationId": 1
-}
-```
-
-### Station 전체 조회
-
-요청 `GET("/stations")`
-
-응답
-
-```json
-{
-  "stations": [
-    {
-      "name": "강남역",
-      "id": 1
-    },
-    {
-      "name": "역삼역",
-      "id": 2
-    }
-  ]
-}
-```
-
-### Station 단건 조회
-
-요청 `GET("/stations/{id}")`
-
-응답
-
-```json
-{
-  "name": "겅남역"
-}
-```
-
-### Station 수정
-
-요청 `PUT("/stations/{id}")`
-
-```json
-{
-  "stationName": "선릉역"
-}
-```
-
 응답 X
 
 ### Station 삭제
 
-요청 `DELETE("/stations/{id}")`
+요청 `DELETE("/lines/{lineId}/stations")`
+
+```json
+{
+  "stationName": "역삼역"
+}
+```
 
 응답 X
