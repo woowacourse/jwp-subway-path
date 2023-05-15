@@ -13,6 +13,7 @@ import subway.station.application.port.output.SaveAllStationPort;
 import subway.station.dto.StationInitSaveRequest;
 
 import java.util.List;
+import java.util.Set;
 
 @RequiredArgsConstructor
 @Transactional
@@ -26,6 +27,7 @@ public class InitAddStationService implements InitAddStationUseCase {
     @Override
     public void initAddStations(final StationInitSaveRequest request) { // TODO
         final Subway subway = new Subway(findAllLinePort.findAll());
+        
         final Line line = findLineByIdPort.findById(request.getLineId());
         subway.initAddStation(line.getName(), request.getFirstStation(), request.getSecondStation(), request.getDistance());
         

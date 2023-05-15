@@ -12,10 +12,7 @@ import subway.section.domain.Section;
 import subway.station.adapter.output.persistence.StationDao;
 import subway.station.adapter.output.persistence.StationEntity;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -57,6 +54,9 @@ public class LinePersistenceAdapter implements FindAllLinePort, SaveLinePort, Fi
     
     @Override
     public Line findById(final Long id) { // TODO
+        validateNotExistLine(id);
+        
+        final LineEntity lineEntity = lineDao.findById(id);
         final Set<Section> sections = sectionDao.findByLineId(id).stream()
                 .map(sectionEntity -> {
                     final StationEntity first = stationDao.findById(sectionEntity.getFirstStationId());
@@ -64,8 +64,19 @@ public class LinePersistenceAdapter implements FindAllLinePort, SaveLinePort, Fi
                     return new Section(first.getName(), second.getName(), sectionEntity.getDistance());
                 })
                 .collect(Collectors.toSet());
-        final LineEntity lineEntity = lineDao.findById(id);
         
         return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
+    }
+    
+    private void validateNotExistLine(final Long id) {
+        if (isNotExistLine(id)) {
+            throw new IllegalArgumentException("존재하지 않는 노선을 지정하셨습니다.");
+        }
+    }
+    
+    private boolean isNotExistLine(final Long id) {
+        return lineDao.findAll().stream()
+                .map(LineEntity::getId)
+                .noneMatch(lineId -> Objects.equals(lineId, id));
     }
 }
