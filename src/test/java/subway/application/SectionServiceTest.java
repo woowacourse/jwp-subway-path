@@ -1,7 +1,12 @@
 package subway.application;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,9 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.domain.Section;
 import subway.dto.InitialSectionAddRequest;
 import subway.dto.SectionAddRequest;
@@ -27,10 +30,6 @@ import subway.exception.DomainException;
 class SectionServiceTest {
     @InjectMocks
     private SectionService sectionService;
-    @Mock
-    private LineDao lineDao;
-    @Mock
-    private StationDao stationDao;
     @Mock
     private SectionDao sectionDao;
 
