@@ -65,15 +65,16 @@ class LineRepositoryTest {
         // then
         assertThat(lines).hasSize(2);
         assertThat(lines).flatExtracting(Line::getStations)
+                .map(Station::getName)
                 .contains(
-                        new Station("서울역"),
-                        new Station("명동역"),
-                        new Station("광화문역"),
-                        new Station("민트역"),
-                        new Station("교대역"),
-                        new Station("강남역"),
-                        new Station("역삼역"),
-                        new Station("박스터역")
+                        "서울역",
+                        "명동역",
+                        "광화문역",
+                        "민트역",
+                        "교대역",
+                        "강남역",
+                        "역삼역",
+                        "박스터역"
                 );
     }
 }
