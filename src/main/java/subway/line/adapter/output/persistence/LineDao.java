@@ -45,14 +45,9 @@ public class LineDao {
         final String sql = "SELECT * FROM line WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
-
-
-//    public void update(Line newLine) {
-//        String sql = "update LINE set name = ?, color = ? where id = ?";
-//        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
-//    }
-//
-//    public void deleteById(Long id) {
-//        jdbcTemplate.update("delete from Line where id = ?", id);
-//    }
+    
+    public void deleteById(final Long id) {
+        final String sql = "DELETE FROM line WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

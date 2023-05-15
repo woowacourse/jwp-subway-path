@@ -2,6 +2,7 @@ package subway.line.adapter.output.persistence;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import subway.line.application.port.output.DeleteLinePort;
 import subway.line.application.port.output.GetAllLinePort;
 import subway.line.application.port.output.GetLineByIdPort;
 import subway.line.application.port.output.SaveLinePort;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
-public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, GetLineByIdPort {
+public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, GetLineByIdPort, DeleteLinePort {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -78,5 +79,10 @@ public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, Get
         return lineDao.findAll().stream()
                 .map(LineEntity::getId)
                 .noneMatch(lineId -> Objects.equals(lineId, id));
+    }
+    
+    @Override
+    public void deleteById(final Long id) {
+        lineDao.deleteById(id);
     }
 }

@@ -87,4 +87,17 @@ class LinePersistenceAdapterTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> adapter.getLineById(id));
     }
+    
+    @Test
+    void id로_노선_삭제() {
+        // given
+        final String name = "1호선";
+        final String color = "파랑";
+        final Line line = new Line(name, color);
+        final Long id = adapter.save(line);
+        
+        // expect
+        assertThatNoException()
+                .isThrownBy(() -> adapter.deleteById(id));
+    }
 }

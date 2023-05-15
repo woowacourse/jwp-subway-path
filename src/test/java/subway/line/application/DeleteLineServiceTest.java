@@ -1,0 +1,47 @@
+package subway.line.application;
+
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import subway.line.application.port.output.DeleteLinePort;
+import subway.line.application.port.output.GetAllLinePort;
+import subway.line.application.port.output.GetLineByIdPort;
+import subway.line.domain.Line;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+
+@SuppressWarnings("NonAsciiCharacters")
+@ExtendWith(MockitoExtension.class)
+class DeleteLineServiceTest {
+    @Mock
+    private GetAllLinePort getAllLinePort;
+    @Mock
+    private GetLineByIdPort getLineByIdPort;
+    @Mock
+    private DeleteLinePort deleteLinePort;
+    
+    @InjectMocks
+    private DeleteLineService deleteLineService;
+    
+    @Test
+    void lineId로_노선_삭제() {
+        // given
+        final Line line1 = new Line("1호선", "파랑");
+        final Line line2 = new Line("2호선", "초록");
+        given(getAllLinePort.findAll()).willReturn(new HashSet<>(Set.of(line1, line2)));
+        given(getLineByIdPort.getLineById(anyLong())).willReturn(line1);
+        
+        // expect
+        assertThatNoException()
+                .isThrownBy(() -> deleteLineService.deleteLine(1L));
+    }
+}
