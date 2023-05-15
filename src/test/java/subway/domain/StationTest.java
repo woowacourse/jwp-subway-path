@@ -18,5 +18,4 @@ class StationTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("역 이름이 입력되지 않았습니다.");
     }
-
 }

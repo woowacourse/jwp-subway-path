@@ -3,15 +3,8 @@ package subway.domain;
 import java.util.Objects;
 
 public class Station {
-    private Long id;
-    private String name;
-
-    public Station() {
-    }
-
-    public Station(final String name) {
-        this(null, name);
-    }
+    private final Long id;
+    private final String name;
 
     public Station(Long id, String name) {
         validateName(name);
@@ -19,7 +12,11 @@ public class Station {
         this.name = name;
     }
 
-    private static void validateName(final String name) {
+    public Station(final String name) {
+        this(null, name);
+    }
+
+    private void validateName(final String name) {
         if (name == null || name.isEmpty()) {
             throw new IllegalArgumentException("역 이름이 입력되지 않았습니다.");
         }

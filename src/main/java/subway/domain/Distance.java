@@ -11,7 +11,7 @@ public class Distance {
         this.distance = distance;
     }
 
-    private static void validate(final int distance) {
+    private void validate(final int distance) {
         if (distance <= 0) {
             throw new IllegalArgumentException("거리는 양수여야 합니다.");
         }
