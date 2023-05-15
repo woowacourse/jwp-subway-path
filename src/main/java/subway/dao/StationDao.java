@@ -53,4 +53,8 @@ public class StationDao {
         String sql = "SELECT COUNT(*) FROM STATION WHERE name = ? LIMIT 1";
         return jdbcTemplate.queryForObject(sql, Long.class, stationName) > 0;
     }
+
+    public boolean doesNotExistBy(String stationName) {
+        return !existsBy(stationName);
+    }
 }
