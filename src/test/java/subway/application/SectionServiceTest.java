@@ -8,6 +8,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import subway.SubwayJdbcFixture;
 import subway.application.strategy.delete.DeleteBetweenStation;
 import subway.application.strategy.delete.DeleteDownTerminal;
+import subway.application.strategy.delete.DeleteInitialSection;
 import subway.application.strategy.delete.DeleteUpTerminal;
 import subway.application.strategy.delete.SectionDeleter;
 import subway.application.strategy.insert.BetweenStationInserter;
@@ -41,16 +42,25 @@ class SectionServiceTest extends SubwayJdbcFixture {
         final StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
         sectionRepository = new SectionRepository(sectionDao);
 
-        final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);
-        final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
-        final BetweenStationInserter betweenStationInserter = new BetweenStationInserter(List.of(insertUpwardStation, insertDownwardStation));
+        final BetweenStationInserter betweenStationInserter = createBetweenStationInserter();
 
-        final DeleteUpTerminal deleteUpTerminal = new DeleteUpTerminal(sectionRepository);
-        final DeleteDownTerminal deleteDownTerminal = new DeleteDownTerminal(sectionRepository);
-        final DeleteBetweenStation deleteBetweenStation = new DeleteBetweenStation(sectionRepository);
-        final SectionDeleter sectionDeleter = new SectionDeleter(List.of(deleteBetweenStation, deleteUpTerminal, deleteDownTerminal));
+        final SectionDeleter sectionDeleter = createSectionDeleter();
 
         sectionService = new SectionService(lineDao, stationDao, sectionRepository, betweenStationInserter, sectionDeleter);
+    }
+
+    private BetweenStationInserter createBetweenStationInserter() {
+        final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);
+        final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
+        return new BetweenStationInserter(List.of(insertUpwardStation, insertDownwardStation));
+    }
+
+    private SectionDeleter createSectionDeleter() {
+        final DeleteUpTerminal deleteUpTerminal = new DeleteUpTerminal(sectionRepository);
+        final DeleteInitialSection deleteInitialSection = new DeleteInitialSection(sectionRepository, lineDao);
+        final DeleteDownTerminal deleteDownTerminal = new DeleteDownTerminal(sectionRepository);
+        final DeleteBetweenStation deleteBetweenStation = new DeleteBetweenStation(sectionRepository);
+        return new SectionDeleter(List.of(deleteBetweenStation, deleteInitialSection, deleteUpTerminal, deleteDownTerminal));
     }
 
     @Nested

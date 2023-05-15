@@ -8,19 +8,21 @@ import subway.domain.Station;
 import subway.repository.SectionRepository;
 
 @Component
-public class DeleteBetweenStation extends DeleteStationStrategy {
+public class DeleteBetweenStation implements DeleteStationStrategy {
+
+    private final SectionRepository sectionRepository;
 
     public DeleteBetweenStation(SectionRepository sectionRepository) {
-        super(sectionRepository);
+        this.sectionRepository = sectionRepository;
     }
 
     @Override
-    boolean support(Sections sections, Station targetStation) {
+    public boolean support(Sections sections, Station targetStation) {
         return sections.isBetweenStation(targetStation);
     }
 
     @Override
-    void delete(Sections sections, Station targetStation) {
+    public void delete(Sections sections, Station targetStation) {
         final Sections includeTargetSection = sections.findIncludeTargetSection(targetStation);
         final Distance newDistance = includeTargetSection.calculateTotalDistance();
 

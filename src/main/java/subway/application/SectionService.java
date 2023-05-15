@@ -90,14 +90,7 @@ public class SectionService {
 
     public void deleteStation(Long targetId, SectionDeleteRequest request) {
         final Station targetStation = stationDao.findById(targetId).orElseThrow(NoSuchElementException::new);
-
         final Sections sections = sectionRepository.findAllByLineId(request.getLineId());
-
-        if (sections.isInitialState()) {
-            sectionRepository.delete(sections.findFirstSectionId());
-            lineDao.deleteById(request.getLineId());
-            return;
-        }
 
         sectionDeleter.delete(sections, targetStation);
     }
