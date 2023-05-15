@@ -3,24 +3,23 @@ package subway.persistence.dao;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
-import subway.domain.Line;
-import subway.domain.LineName;
+import org.springframework.stereotype.Component;
+import subway.persistence.entity.LineEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Repository
+@Component
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+    private final RowMapper<LineEntity> lineEntityRowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
-                    new LineName(rs.getString("name"))
+                    rs.getString("name")
             );
 
     public LineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
@@ -30,27 +29,26 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(final LineName lineName) {
+    public long insert(final LineEntity newLine) {
         final Map<String, Object> params = new HashMap<>();
-        params.put("name", lineName.getValue());
+        params.put("name", newLine.getName());
 
-        final Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, lineName);
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Line> findAll() {
+    public List<LineEntity> findAll() {
         final String sql = "select id, name from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+        return jdbcTemplate.query(sql, lineEntityRowMapper);
     }
 
-    public Line findById(final Long id) {
+    public LineEntity findById(final Long id) {
         final String sql = "select id, name from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        return jdbcTemplate.queryForObject(sql, lineEntityRowMapper, id);
     }
 
-    public void updateName(final Long id, final LineName lineName) {
+    public void updateName(final LineEntity line) {
         final String sql = "update LINE set name = ? where id = ?";
-        jdbcTemplate.update(sql, lineName.getValue(), id);
+        jdbcTemplate.update(sql, line.getName(), line.getId());
     }
 
     public void deleteById(final Long id) {

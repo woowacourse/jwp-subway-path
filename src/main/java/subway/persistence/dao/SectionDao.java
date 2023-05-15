@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -15,7 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-@Repository
+@Component
 public class SectionDao {
 
     private static final RowMapper<Section> SECTION_ROW_MAPPER = (rs, num) -> new Section(

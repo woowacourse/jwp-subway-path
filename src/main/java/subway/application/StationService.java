@@ -6,7 +6,6 @@ import subway.persistence.dao.StationDao;
 import subway.ui.request.StationRequest;
 import subway.ui.response.StationResponse;
 
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,17 +40,5 @@ public class StationService {
 
     public void deleteStationById(final Long id) {
         stationDao.deleteById(id);
-    }
-
-    public Station findStationByName(final String name) {
-        return stationDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
-    }
-
-    public List<Station> findStationsById(final List<Long> stationIds) {
-        if (stationIds.isEmpty()) {
-            return new LinkedList<>();
-        }
-        return stationDao.findAllById(stationIds);
     }
 }

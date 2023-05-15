@@ -3,7 +3,7 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.*;
-import subway.persistence.dao.LineDao;
+import subway.persistence.repository.LineRepository;
 import subway.ui.request.LineRequest;
 import subway.ui.request.SectionRequest;
 import subway.ui.request.StationRequest;
@@ -15,19 +15,15 @@ import java.util.stream.Collectors;
 @Service
 public class LineService {
 
-    private final StationService stationService;
-    private final SectionService sectionService;
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
 
-    public LineService(final StationService stationService, final SectionService sectionService, final LineDao lineDao) {
-        this.stationService = stationService;
-        this.sectionService = sectionService;
-        this.lineDao = lineDao;
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new LineName(request.getName()));
-        return LineResponse.from(persistLine);
+    public long saveLine(final LineRequest request) {
+        final LineName lineName = new LineName(request.getName());
+        return lineRepository.insert(lineName);
     }
 
     public List<LineResponse> findLineResponses() {
@@ -38,9 +34,7 @@ public class LineService {
     }
 
     public List<Line> findLines() {
-        return lineDao.findAll().stream()
-                .map(line -> findById(line.getId()))
-                .collect(Collectors.toList());
+        return lineRepository.findLines();
     }
 
     public LineResponse findLineResponseById(final Long id) {
@@ -58,44 +52,40 @@ public class LineService {
         final Sections deleteSections = line.getSections().getDifferenceOfSet(addedLine.getSections());
         final Sections insertSections = new Sections(List.of(newSection));
 
-        sectionService.deleteSections(deleteSections);
-        sectionService.insertSections(lineId, insertSections);
+        lineRepository.deleteSections(deleteSections);
+        lineRepository.insertSections(lineId, insertSections);
     }
 
     @Transactional
     public void unregisterStation(final Long id, final StationRequest request) {
         final Line line = findById(id);
 
-        final Station station = stationService.findStationByName(request.getName());
+        final Station station = lineRepository.findStationByName(request.getName());
         final Line deletedLine = line.removeStation(station);
 
         final Sections deleteSections = line.getSections().getDifferenceOfSet(deletedLine.getSections());
         final Sections insertSections = deletedLine.getSections().getDifferenceOfSet(line.getSections());
 
-        sectionService.deleteSections(deleteSections);
-        sectionService.insertSections(line.getId(), insertSections);
+        lineRepository.deleteSections(deleteSections);
+        lineRepository.insertSections(line.getId(), insertSections);
     }
 
     public Line findById(final Long id) {
-        Line resultLine = lineDao.findById(id);
-        final Sections sections = sectionService.findByLineId(resultLine.getId());
-        for (final Section section : sections.getSections()) {
-            resultLine = resultLine.addSection(section);
-        }
-        return resultLine;
+        return lineRepository.findById(id);
     }
 
     private Section createSection(final SectionRequest request) {
-        final Station beforeStation = stationService.findStationByName(request.getBeforeStationName());
-        final Station nextStation = stationService.findStationByName(request.getNextStationName());
+        final Station beforeStation = lineRepository.findStationByName(request.getBeforeStationName());
+        final Station nextStation = lineRepository.findStationByName(request.getNextStationName());
         return new Section(beforeStation, nextStation, new Distance(request.getDistance()));
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        lineDao.updateName(id, new LineName(lineUpdateRequest.getName()));
+
+        lineRepository.updateName(id, lineUpdateRequest);
     }
 
     public void deleteLineById(final Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteLineById(id);
     }
 }
