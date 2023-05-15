@@ -72,6 +72,7 @@ public class LineService {
         return LineResponse.of(savedLine, stations);
     }
 
+    // TODO: 노선에 역이 2개만 있는경우 노선 삭제하기
     @Transactional
     public String deleteLine(Long lineId) {
         Line line = dbLineDao.findById(lineId)

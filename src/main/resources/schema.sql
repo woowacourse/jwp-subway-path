@@ -29,15 +29,3 @@ CREATE TABLE EDGE
     FOREIGN KEY (station_id) REFERENCES STATION (id),
     FOREIGN KEY (line_id) REFERENCES LINE (id)
 );
-
--- DROP TABLE IF EXISTS LINE;
---
--- CREATE TABLE LINE
--- (
---     id            BIGINT      NOT NULL AUTO_INCREMENT,
---     name          VARCHAR(20) NOT NULL,
---     station_id    BIGINT      NOT NULL,
---     station_order BIGINT      NOT NULL,
---     FOREIGN KEY (station_id) REFERENCES STATION (id),
---     PRIMARY KEY (id)
--- );
