@@ -26,6 +26,10 @@ public class Line {
         this.sections.addSection(section);
     }
 
+    public Sections getSections() {
+        return sections;
+    }
+
     public String getName() {
         return name.getName();
     }

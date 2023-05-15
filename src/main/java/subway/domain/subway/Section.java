@@ -3,8 +3,6 @@ package subway.domain.subway;
 import subway.domain.common.Distance;
 import subway.exception.SectionForkedException;
 
-import java.util.Objects;
-
 public class Section {
 
     private final Station upStation;
@@ -37,18 +35,5 @@ public class Section {
 
     public long getDistance() {
         return distance.getDistance();
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Section)) return false;
-        Section section = (Section) o;
-        return Objects.equals(upStation, section.upStation) && Objects.equals(downStation, section.downStation) && Objects.equals(distance, section.distance);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(upStation, downStation, distance);
     }
 }
