@@ -1,5 +1,7 @@
 package subway.domain.line;
 
+import subway.domain.edge.DirectionStrategy;
+import subway.domain.edge.Distance;
 import subway.domain.edge.Edge;
 import subway.domain.edge.Edges;
 import subway.domain.station.Station;
@@ -34,6 +36,14 @@ public class Line {
         this.id = id;
         this.name = name;
         this.edges = edges;
+    }
+
+    public void addEdge(final Station existStation, final Station newStation, final DirectionStrategy directionStrategy, final Distance distance) {
+        this.edges = edges.add(existStation, newStation, directionStrategy, distance);
+    }
+
+    public void delete(final Station station) {
+        this.edges = edges.delete(station);
     }
 
     public Long getId() {

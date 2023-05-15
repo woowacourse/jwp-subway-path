@@ -6,13 +6,13 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import subway.domain.station.Station;
 
 import javax.sql.DataSource;
 import java.util.Optional;
 
-@Repository
+@Component
 public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -30,11 +30,11 @@ public class StationDao {
                     result.getString("name")
             );
 
-    public Station insert(final Station station) {
+    public Station insert(final String stationName) {
         final SqlParameterSource params = new MapSqlParameterSource()
-                .addValue("name", station.getName());
+                .addValue("name", stationName);
         final Long id = jdbcInsert.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        return new Station(id, stationName);
     }
 
     public Optional<Station> findById(final Long stationId) {

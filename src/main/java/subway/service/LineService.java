@@ -35,20 +35,17 @@ public class LineService {
         this.edgeRepository = edgeRepository;
     }
 
-
     @Transactional
     public Line createNewLine(final LineCreateRequest request) {
         final Station upStation = stationRepository.save(new Station(request.getUpStation()));
         final Station downStation = stationRepository.save(new Station(request.getDownStation()));
-
         final Line line = new Line(request.getLineName());
         if (lineRepository.findLineByName(line).isPresent()) {
             throw new LineAlreadyExistException(request.getLineName());
         }
-
         final Edge edge = new Edge(upStation, downStation, new Distance(request.getDistance()));
 
-        return lineRepository.save(new Line(line.getName(), new Edges(List.of(edge))));
+        return lineRepository.saveWithEdges(new Line(line.getName(), new Edges(List.of(edge))));
     }
 
     @Transactional
@@ -56,15 +53,14 @@ public class LineService {
         final Station existStation = stationRepository.findById(request.getExistStationId())
                 .orElseThrow(() -> new StationNotFoundException(request.getExistStationId()));
         final Station newStation = stationRepository.save(new Station(request.getNewStationName()));
-        final Line findLine = lineRepository.findById(lineId)
+        final Line line = lineRepository.findLineWithEdgesByLineId(lineId)
                 .orElseThrow(() -> new LineNotFoundException(lineId));
 
-        final Edges originalEdges = new Edges(edgeRepository.findAllByLineId(lineId));
-        final Edges newEdges = originalEdges.add(existStation, newStation, request.getDirection().getDirectionStrategy(), new Distance(request.getDistance()));
+        line.addEdge(existStation, newStation, request.getDirection().getDirectionStrategy(), new Distance(request.getDistance()));
         edgeRepository.deleteAllByLineId(lineId);
-        edgeRepository.insertAllByLineId(lineId, newEdges);
+        edgeRepository.insertAllByLineId(lineId, line.getEdges());
 
-        return findLine;
+        return line;
     }
 
     public Line findLineById(final Long lineId) {
@@ -86,16 +82,14 @@ public class LineService {
 
     @Transactional
     public void deleteStationFromLine(final Long lineId, final Long stationId) {
-        final Line targetLine = lineRepository.findLineWithEdgesByLineId(lineId)
+        final Line line = lineRepository.findLineWithEdgesByLineId(lineId)
                 .orElseThrow(() -> new LineNotFoundException(lineId));
-        final Station targetStation = stationRepository.findById(stationId)
+        final Station station = stationRepository.findById(stationId)
                 .orElseThrow(() -> new StationNotFoundException(stationId));
 
-        final Edges edges = targetLine.getEdges();
-        final Edges removedEdges = edges.remove(targetStation);
-
+        line.delete(station);
         edgeRepository.deleteAllByLineId(lineId);
-        edgeRepository.insertAllByLineId(lineId, removedEdges);
+        edgeRepository.insertAllByLineId(lineId, line.getEdges());
     }
 
     public ShortestPathResponse getShortestPath(final Long fromId, final Long toId) {

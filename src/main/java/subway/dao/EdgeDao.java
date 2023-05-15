@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import subway.domain.edge.Distance;
 import subway.domain.edge.Edge;
 import subway.domain.station.Station;
@@ -16,7 +16,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-@Repository
+@Component
 public class EdgeDao {
 
     private final JdbcTemplate jdbcTemplate;
@@ -61,7 +61,7 @@ public class EdgeDao {
 
     public List<Edge> findAllByLineId(final Long lineId) {
         final String sql =
-                "SELECT e.id,"
+                "SELECT e.id, "
                         + "s1.id AS upstation_id, s1.name AS upstation_name, "
                         + "s2.id AS downstation_id, s2.name AS downstation_name, "
                         + "e.distance "
@@ -87,6 +87,7 @@ public class EdgeDao {
 
     public void deleteAllByLineId(final Long lineId) {
         String sql = "DELETE FROM edge WHERE line_id = ?";
+
         jdbcTemplate.update(sql, lineId);
     }
 }

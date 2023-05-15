@@ -6,14 +6,14 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import subway.domain.line.Line;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Component
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;

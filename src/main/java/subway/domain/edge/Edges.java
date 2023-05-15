@@ -39,7 +39,7 @@ public class Edges {
         return strategy.calculate(edges, existStation, newStation, distance);
     }
 
-    public Edges remove(final Station station) {
+    public Edges delete(final Station station) {
         final List<Edge> targetEdges = edges.stream()
                 .filter(edge -> edge.hasStation(station))
                 .collect(Collectors.toList());

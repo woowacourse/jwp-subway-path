@@ -30,7 +30,7 @@ public class LineRepository {
         return lineDao.findByName(line.getName());
     }
 
-    public Line save(final Line line) {
+    public Line saveWithEdges(final Line line) {
         final Line insertedLine = lineDao.insert(line.getName());
         edgeDao.insertAllByLineId(insertedLine.getId(), line.getEdges().getEdges());
 
