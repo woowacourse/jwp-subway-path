@@ -2,147 +2,228 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.fixture.Fixture.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 class SectionsTest {
 
-    @Test
-    void 초기_상태에_구간을_추가한다() {
-        // given
-        final Sections sections = new Sections();
+    @Nested
+    class InsertTest {
 
-        final Station 디노 = new Station(1L, "디노");
-        final Station 후추 = new Station(2L, "후추");
+        @Test
+        void 첫_구간을_추가한다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>());
 
-        // when
-        sections.insertInitially(디노, 후추, 7);
+            // when
+            final Sections insertedSections = sections.insert(후추, 디노, 7);
 
-        // then
-        assertThat(sections.getSections()).contains(
-                new Section(new Station(1L, "디노"), new Station(2L, "후추"), 7)
-        );
+            // then
+            assertThat(insertedSections.getSections())
+                    .contains(new Section(후추, 디노, 7));
+        }
+
+        //before : 후추 - 7 - 디노 - 4 - 조앤
+        //after : 후추 - 7 - 디노 - 2 - 로운 - 2 - 조앤
+        @Test
+        void 역을_오른쪽_사이에_추가한다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+
+            // when
+            final Sections insertedSections = sections.insert(디노, 로운, 2);
+
+            // then
+            assertSoftly(softly -> {
+                final List<Section> allSections = insertedSections.getSections();
+                softly.assertThat(allSections).contains(후추_디노, new Section(디노, 로운, 2), new Section(로운, 조앤, 2));
+                softly.assertThat(allSections).doesNotContain(디노_조앤);
+            });
+        }
+
+        //before : 후추 - 7 - 디노 - 4 - 조앤
+        //after : 후추 - 5 - 로운 - 2 - 디노 - 4 - 조앤
+        @Test
+        void 역을_왼쪽_사이에_추가한다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+
+            // when
+            final Sections insertedSections = sections.insert(로운, 디노, 2);
+
+            // then
+            assertSoftly(softly -> {
+                final List<Section> allSections = insertedSections.getSections();
+                softly.assertThat(allSections).contains(new Section(후추, 로운, 5), new Section(로운, 디노, 2), 디노_조앤);
+                softly.assertThat(allSections).doesNotContain(후추_디노);
+            });
+        }
+
+        //before : 후추 - 7 - 디노 - 4 - 조앤
+        //after : 후추 - 7 - 디노 - 4 - 조앤 - 2 - 로운
+        @Test
+        void 역을_오른쪽_끝에_추가한다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+
+            // when
+            final Sections insertedSections = sections.insert(조앤, 로운, 2);
+
+            // then
+            assertThat(insertedSections.getSections()).contains(후추_디노, 디노_조앤, new Section(조앤, 로운, 2));
+        }
+
+        //before : 후추 - 7 - 디노 - 4 - 조앤
+        //after : 로운 - 2 - 후추 - 7 - 디노 - 4 - 조앤
+        @Test
+        void 역을_왼쪽_끝에_추가한다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+
+            // when
+            final Sections insertedSections = sections.insert(로운, 후추, 2);
+
+            // then
+            assertThat(insertedSections.getSections()).contains(new Section(로운, 후추, 2), 후추_디노, 디노_조앤);
+        }
+
+        // 후추 - 7 - 디노 - 4 - 조앤
+        @Test
+        void 호선에_존재하는_역인_경우_예외를_던진다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+
+            // expect
+            assertThatThrownBy(() -> sections.insert(후추, 조앤, 2))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("이미 호선에 존재하는 역입니다.");
+        }
+
+        // 후추 - 7 - 디노
+        @Test
+        void 역이_다른_역들과_연결되지_않는_경우_예외를_던진다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노)));
+
+            // expect
+            assertThatThrownBy(() -> sections.insert(로운, 조앤, 3))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("역이 기존 호선과 연결되어야 합니다.");
+        }
     }
 
-    @Test
-    void 역을_오른쪽_사이에_추가한다() {
-        // given
-        // 뚝섬 - 5 - 성수 - 7 - 건대입구
-        // 뚝섬 - 5 - 성수 - 3- 디노 - 4 - 건대입구
+    @Nested
+    class DeleteTest {
 
-        final Station 뚝섬 = new Station(1L, "뚝섬");
-        final Station 성수 = new Station(2L, "성수");
-        final Station 건대입구 = new Station(3L, "건대입구");
+        //before : 후추 - 7 - 디노 - 4 - 조앤
+        //after : 후추 - 7 - 디노
+        @Test
+        void 오른쪽_끝_역을_삭제한다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
 
-        final Section 뚝섬_성수 = new Section(뚝섬, 성수, 5);
-        final Section 성수_건대입구 = new Section(성수, 건대입구, 7);
+            // when
+            final Sections deletedSections = sections.delete(조앤);
 
-        final Sections sections = new Sections(new ArrayList<>(List.of(뚝섬_성수, 성수_건대입구)));
+            // then
+            assertSoftly(softly -> {
+                final List<Section> allSections = deletedSections.getSections();
+                softly.assertThat(allSections).contains(후추_디노);
+                softly.assertThat(allSections).doesNotContain(디노_조앤);
+            });
+        }
 
-        final Station 디노 = new Station(4L, "디노");
+        //before : 후추 - 7 - 디노 - 4 - 조앤
+        //after : 디노 - 4 - 조앤
+        @Test
+        void 왼쪽_끝_역을_삭제한다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
 
-        sections.insert(성수, 디노, 3);
+            // when
+            final Sections deletedSections = sections.delete(후추);
 
-        assertThat(sections.getSections()).contains(
-                new Section(new Station(1L, "뚝섬"), new Station(2L, "성수"), 5),
-                new Section(new Station(2L, "성수"), new Station(4L, "디노"), 3),
-                new Section(new Station(4L, "디노"), new Station(3L, "건대입구"), 4)
-        );
+            // then
+            assertSoftly(softly -> {
+                final List<Section> allSections = deletedSections.getSections();
+                softly.assertThat(allSections).contains(디노_조앤);
+                softly.assertThat(allSections).doesNotContain(후추_디노);
+            });
+        }
+
+        //before : 후추 - 7 - 디노 - 4 - 조앤
+        //after : 후추 - 11 - 조앤
+        @Test
+        void 중간_역을_삭제한다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+
+            // when
+            final Sections deletedSections = sections.delete(디노);
+
+            // then
+            assertSoftly(softly -> {
+                final List<Section> allSections = deletedSections.getSections();
+                softly.assertThat(allSections).contains(new Section(후추, 조앤, 11));
+                softly.assertThat(allSections).doesNotContain(후추_디노, 디노_조앤);
+            });
+        }
+
+        //before : 후추 - 7 - 디노
+        //after :
+        @Test
+        void 역이_두_개인_경우_역을_모두_삭제한다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노)));
+
+            // when
+            final Sections deletedSections = sections.delete(디노);
+
+            // then
+            assertSoftly(softly -> {
+                final List<Section> allSections = deletedSections.getSections();
+                softly.assertThat(allSections).isEmpty();
+                softly.assertThat(allSections).doesNotContain(후추_디노);
+            });
+        }
+
+        // 후추 - 7 - 디노 - 4 - 조앤
+        @Test
+        void 역이_호선에_존재하지_않는_경우_예외를_던진다() {
+            // given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤)));
+
+            // expect
+            assertThatThrownBy(() -> sections.delete(로운))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("입력한 역이 호선에 존재하지 않습니다.");
+        }
     }
 
-    @Test
-    void 역을_왼쪽_사이에_추가한다() {
-        // given
-        // 뚝섬 - 5 - 성수 - 7 - 건대입구
-        // 뚝섬 - 3 - 후추 - 2 - 성수 - 7 - 건대입구
+    @Nested
+    class OrderTest {
 
-        final Station 뚝섬 = new Station(1L, "뚝섬");
-        final Station 성수 = new Station(2L, "성수");
-        final Station 건대입구 = new Station(3L, "건대입구");
+        @Test
+        void 역을_정렬해서_반환한다() {
+            //given
+            final Sections sections = new Sections(new ArrayList<>(List.of(후추_디노, 디노_조앤, 조앤_로운)));
 
-        final Section 뚝섬_성수 = new Section(뚝섬, 성수, 5);
-        final Section 성수_건대입구 = new Section(성수, 건대입구, 7);
+            //when
+            final List<Station> orderedStations = sections.getOrderedStations(후추);
 
-        final Sections sections = new Sections(new ArrayList<>(List.of(뚝섬_성수, 성수_건대입구)));
-
-        final Station 후추 = new Station(4L, "후추");
-
-        sections.insert(후추, 성수, 2);
-
-        assertThat(sections.getSections()).contains(
-                new Section(new Station(1L, "뚝섬"), new Station(4L, "후추"), 3),
-                new Section(new Station(4L, "후추"), new Station(2L, "성수"), 2),
-                new Section(new Station(2L, "성수"), new Station(3L, "건대입구"), 7)
-        );
+            //then
+            assertThat(orderedStations).containsExactly(후추, 디노, 조앤, 로운);
+            System.out.println("orderedStations = " + orderedStations);
+        }
     }
-
-    @Test
-    void 역을_오른쪽_끝에_추가한다() {
-        // given
-        // 뚝섬 - 5 - 성수
-        // 뚝섬 - 5 - 성수 - 3- 디노
-
-        final Station 뚝섬 = new Station(1L, "뚝섬");
-        final Station 성수 = new Station(2L, "성수");
-
-        final Section 뚝섬_성수 = new Section(뚝섬, 성수, 5);
-
-        final Sections sections = new Sections(new ArrayList<>(List.of(뚝섬_성수)));
-
-        final Station 디노 = new Station(4L, "디노");
-
-        sections.insert(성수, 디노, 3);
-
-        assertThat(sections.getSections()).contains(
-                new Section(new Station(1L, "뚝섬"), new Station(2L, "성수"), 5),
-                new Section(new Station(2L, "성수"), new Station(4L, "디노"), 3)
-        );
-    }
-
-    @Test
-    void 역을_왼쪽_끝에_추가한다() {
-        // given
-        // 성수 - 7 - 건대입구
-        // 후추 - 2 - 성수 - 7 - 건대입구
-
-        final Station 성수 = new Station(2L, "성수");
-        final Station 건대입구 = new Station(3L, "건대입구");
-
-        final Section 성수_건대입구 = new Section(성수, 건대입구, 7);
-
-        final Sections sections = new Sections(new ArrayList<>(List.of(성수_건대입구)));
-
-        final Station 후추 = new Station(4L, "후추");
-
-        sections.insert(후추, 성수, 2);
-
-        assertThat(sections.getSections()).contains(
-                new Section(new Station(4L, "후추"), new Station(2L, "성수"), 2),
-                new Section(new Station(2L, "성수"), new Station(3L, "건대입구"), 7)
-        );
-    }
-
-    @Test
-    void 역을_수정한다() {
-        // given
-        final Station 뚝섬 = new Station(1L, "뚝섬");
-        final Station 성수 = new Station(2L, "성수");
-        final Station 건대입구 = new Station(3L, "건대입구");
-
-        final Section 뚝섬_성수 = new Section(뚝섬, 성수, 5);
-        final Section 성수_건대입구 = new Section(성수, 건대입구, 7);
-
-        final Sections sections = new Sections(new ArrayList<>(List.of(뚝섬_성수, 성수_건대입구)));
-        // when
-        sections.updateStation(성수, new Station(4L, "후추"));
-        // then
-        assertThat(sections.getSections()).contains(new Section(new Station(1L, "뚝섬"), new Station(4L, "후추"), 5), new Section(new Station(4L, "후추"), new Station(3L, "건대입구"), 7));
-    }
-
 }
