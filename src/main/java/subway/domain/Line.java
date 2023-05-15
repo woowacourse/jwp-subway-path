@@ -39,14 +39,14 @@ public class Line {
         validateDuplicateSection(newSection);
         if (sections.isHeadStation(newSection.getNextStation())) {
             final Sections addedSections = sections.addHead(newSection);
-            return new Line(name, addedSections);
+            return new Line(id, name, addedSections);
         }
         if (sections.isTailStation(newSection.getBeforeStation())) {
             final Sections addedSections = sections.addTail(newSection);
-            return new Line(name, addedSections);
+            return new Line(id, name, addedSections);
         }
         final Sections addedSections = sections.addCentral(newSection);
-        return new Line(name, addedSections);
+        return new Line(id, name, addedSections);
     }
 
     private void validateDuplicateSection(final Section newSection) {
@@ -58,14 +58,14 @@ public class Line {
     public Line removeStation(final Station station) {
         if (sections.isHeadStation(station)) {
             final Sections removedSections = sections.removeHead();
-            return new Line(name, removedSections);
+            return new Line(id, name, removedSections);
         }
         if (sections.isTailStation(station)) {
             final Sections removedSections = sections.removeTail();
-            return new Line(name, removedSections);
+            return new Line(id, name, removedSections);
         }
         final Sections removedSections = sections.removeCentral(station);
-        return new Line(name, removedSections);
+        return new Line(id, name, removedSections);
     }
 
     @Override

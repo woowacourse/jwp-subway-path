@@ -3,6 +3,7 @@ package subway.integration;
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.integration.IntegrationFixture.LINE_2;
 import static subway.integration.IntegrationFixture.OBJECT_MAPPER;
 import static subway.integration.IntegrationFixture.jsonSerialize;
 
@@ -10,7 +11,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -23,17 +23,9 @@ import subway.service.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
 
-    @Override
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        lineRequest1 = new LineRequest("신분당선");
-        lineRequest2 = new LineRequest("구신분당선");
-    }
+    private final LineRequest lineRequest1 = new LineRequest("분당");
+    private final LineRequest lineRequest2 = new LineRequest(LINE_2.getName().getValue());
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
@@ -55,20 +47,11 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
-        // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineRequest2)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -80,17 +63,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() throws JsonProcessingException {
-        // given
-        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
-        final String json = jsonSerialize(request);
-        final Long lineId = 1L;
-
-        given().body(json)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/{lineId}/register", lineId)
-                .then().statusCode(HttpStatus.CREATED.value());
-
-        // when
+        // given when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -100,6 +73,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         final String string = response.asString();
+        System.out.println(string);
         final LineResponse[] responses = OBJECT_MAPPER.readValue(string, LineResponse[].class);
         assertAll(
                 () -> assertThat(responses)
