@@ -63,29 +63,14 @@ public class SectionDao {
         insertAction.executeBatch(insertParameters);
     }
 
-    public List<SectionEntity> findAll() {
-        final String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section";
-
-        return jdbcTemplate.query(sql, rowMapper);
-    }
-
     public List<SectionEntity> findAllByLineId(final Long lineId) {
         final String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE line_id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public SectionEntity findById(final Long id) {
-        final String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE id = ?";
-
-        return jdbcTemplate.query(sql, rowMapper, id)
-                .stream()
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 관계입니다."));
-    }
-
     public List<SectionEntity> findAllByStationId(final Long stationId) {
-        final String sql = "SELECT id FROM section WHERE up_station_id = ? OR down_station_id = ?";
+        final String sql = "SELECT id, line_id, up_station_id, down_station_id, distance FROM section WHERE up_station_id = ? OR down_station_id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, stationId, stationId);
     }

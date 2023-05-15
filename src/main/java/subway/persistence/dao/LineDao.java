@@ -1,17 +1,16 @@
 package subway.persistence.dao;
 
+import java.util.List;
 import java.util.Optional;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import subway.persistence.entity.LineEntity;
 
-import javax.sql.DataSource;
-import java.util.List;
-
-@Repository
+@Component
 public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
@@ -41,18 +40,30 @@ public class LineDao {
 
     public List<LineEntity> findAll() {
         final String sql = "SELECT id, name, color FROM line";
+
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<LineEntity> findById(final Long id) {
         final String sql = "SELECT id, name, color FROM LINE WHERE id = ?";
+
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()
                 .findAny();
     }
 
+    public boolean existsByName(final String name) {
+        final String sql = "SELECT id, name, color FROM LINE WHERE name = ?";
+
+        return jdbcTemplate.query(sql, rowMapper, name)
+                .stream()
+                .findAny()
+                .isPresent();
+    }
+
     public int deleteById(final Long id) {
         final String sql = "DELETE FROM Line WHERE id = ?";
+
         return jdbcTemplate.update(sql, id);
     }
 }

@@ -12,10 +12,10 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import subway.persistence.entity.StationEntity;
 
-@Repository
+@Component
 public class StationDao {
 
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
@@ -51,10 +51,14 @@ public class StationDao {
                 .findAny();
     }
 
-    public List<StationEntity> findAll() {
-        final String sql = "SELECT id, name FROM station";
+    public boolean existsByName(final String name) {
+        final String sql = "SELECT id, name FROM station WHERE name = :name";
+        final MapSqlParameterSource parameter = new MapSqlParameterSource("name", name);
 
-        return namedParameterJdbcTemplate.query(sql, rowMapper);
+        return namedParameterJdbcTemplate.query(sql, parameter, rowMapper)
+                .stream()
+                .findAny()
+                .isPresent();
     }
 
     public List<StationEntity> findAllByIds(final Set<Long> ids) {
