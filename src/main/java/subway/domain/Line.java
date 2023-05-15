@@ -40,6 +40,14 @@ public class Line {
         return new Line(name, sections.reverse());
     }
 
+    public boolean upTerminalIsEqualTo(final Station station) {
+        return upTerminal().equals(station);
+    }
+
+    public boolean downTerminalIsEqualTo(final Station station) {
+        return downTerminal().equals(station);
+    }
+
     public Station upTerminal() {
         return sections.upTerminal();
     }

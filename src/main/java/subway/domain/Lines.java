@@ -37,9 +37,17 @@ public class Lines {
     }
 
     private void validateStartStation(final Station start) {
-        if (!firstLine().upTerminal().equals(start) && !firstLine().downTerminal().equals(start)) {
+        if (!isStartStationIsUpTerminal(start) && !isStartStationIsDownTerminal(start)) {
             throw new LineException("경로가 주어진 역으로 시작할 수 없습니다.");
         }
+    }
+
+    private boolean isStartStationIsUpTerminal(final Station start) {
+        return firstLine().upTerminalIsEqualTo(start);
+    }
+
+    private boolean isStartStationIsDownTerminal(final Station start) {
+        return firstLine().downTerminalIsEqualTo(start);
     }
 
     private Line firstLine() {
@@ -58,14 +66,14 @@ public class Lines {
 
     private Line lineWithStartStation(final Station start, Line line) {
         validateLinked(line, start);
-        if (line.downTerminal().equals(start)) {
+        if (line.downTerminalIsEqualTo(start)) {
             return line.reverse();
         }
         return line;
     }
 
     private void validateLinked(final Line line, final Station start) {
-        if (!line.downTerminal().equals(start) && !line.upTerminal().equals(start)) {
+        if (!line.downTerminalIsEqualTo(start) && !line.upTerminalIsEqualTo(start)) {
             throw new LineException("노선들이 연결될 수 없습니다");
         }
     }
