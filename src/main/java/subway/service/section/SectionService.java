@@ -80,6 +80,12 @@ public class SectionService {
 
     }
 
+    public void findStationsByLine(long lineId) {
+        Line line = lineRepository.findById(lineId);
+        Sections sections = sectionRepository.findSectionsByLine(line);
+
+    }
+
     private void deleteStationsInLastSection(Station station, Section lastSection) {
         if (lastSection.isUpStation(station)) {
             stationRepository.deleteById(lastSection.getDownStation().getId());

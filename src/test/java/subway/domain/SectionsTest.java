@@ -27,7 +27,6 @@ import static subway.domain.StationFixture.YUKSAM;
 class SectionsTest {
     @Nested
     class 역_추가 {
-
         @Test
         void 동일한_역으로_추가하려고_하면_예외() {
             Sections sections = new Sections(new ArrayList<>());
@@ -343,4 +342,14 @@ class SectionsTest {
         }
     }
 
+    @Test
+    void 라인에_맞는_지하철_역_조회() {
+        Section jamsilSeonleungSection = new Section(JAMSIL, SEONLEUNG, new Distance(10));
+        Section gangnamToSeonleung = new Section(YUKSAM, GANGNAM, new Distance(20));
+        Section seonleungYuksam = new Section(SEONLEUNG, YUKSAM, new Distance(15));
+        Sections sections = new Sections(List.of(jamsilSeonleungSection, gangnamToSeonleung, seonleungYuksam));
+
+        List<Station> stations = sections.orderStations();
+        assertThat(stations).containsExactly(JAMSIL, SEONLEUNG, YUKSAM, GANGNAM);
+    }
 }

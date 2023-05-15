@@ -4,7 +4,9 @@ import subway.service.section.dto.AddResult;
 import subway.service.section.dto.DeleteResult;
 import subway.service.station.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -56,6 +58,35 @@ public class Sections {
 
         Section newSection = new Section(sectionOfDeleteStationIsDown.getUpStation(), sectionOfDeleteStationIsUp.getDownStation(), combinedDistance);
         return new DeleteResult(List.of(newSection), List.of(sectionOfDeleteStationIsUp, sectionOfDeleteStationIsDown), false);
+    }
+
+    public List<Station> orderStations() {
+        Station upEndStation = findUpwardStation();
+        Map<Station, Station> stationPair = sections.stream()
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
+
+        List<Station> stationsInOrder = new ArrayList<>();
+
+        Station currentStation = upEndStation;
+        while (stationsInOrder.size() != stationPair.size()) {
+            stationsInOrder.add(currentStation);
+            currentStation = stationPair.get(currentStation);
+        }
+        stationsInOrder.add(currentStation);
+        return stationsInOrder;
+    }
+
+    private Station findUpwardStation() {
+        List<Station> upStations = findUpStations();
+        List<Station> downStations = findDownStations();
+        upStations.removeAll(downStations);
+
+        boolean isUp = sections.stream()
+                .anyMatch(section -> section.isUpStation(upStations.get(0)));
+        if (isUp) {
+            return upStations.get(0);
+        }
+        return upStations.get(1);
     }
 
     private Section findSectionDeleteStationIsUpStation(Station station, List<Section> sectionsOfContainDeleteStation) {

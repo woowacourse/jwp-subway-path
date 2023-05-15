@@ -7,6 +7,7 @@ public class StationFixture {
     public static Station SEONLEUNG = new Station(2L, "선릉");
     public static Station GANGNAM = new Station(3L, "강남");
     public static Station YUKSAM = new Station(4L, "역삼");
+    public static Station SADANG = new Station(10L, "사당");
 
     public static Station JANGJI = new Station(5L, "장지");
     public static Station SEOKCHON = new Station(6L, "석촌");
