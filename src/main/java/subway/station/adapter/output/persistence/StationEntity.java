@@ -1,4 +1,4 @@
-package subway.line.adapter.output.persistence;
+package subway.station.adapter.output.persistence;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,12 +9,11 @@ import lombok.ToString;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class LineEntity {
+public class StationEntity {
     private final Long id;
     private final String name;
-    private final String color;
     
-    public LineEntity(final String name, final String color) {
-        this(null, name, color);
+    public StationEntity(final String name) {
+        this(null, name);
     }
 }

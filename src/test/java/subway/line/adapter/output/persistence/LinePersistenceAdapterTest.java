@@ -7,6 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.line.domain.Line;
 import subway.section.adapter.output.persistence.SectionDao;
+import subway.station.adapter.output.persistence.StationDao;
 
 import java.util.Set;
 
@@ -15,16 +16,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
-class LineRepositoryImplTest {
+class LinePersistenceAdapterTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private LineRepositoryImpl lineRepository;
+    private LinePersistenceAdapter lineRepository;
     
     @BeforeEach
     void setUp() {
         final LineDao lineDao = new LineDao(jdbcTemplate);
         final SectionDao sectionDao = new SectionDao(jdbcTemplate);
-        lineRepository = new LineRepositoryImpl(lineDao, sectionDao);
+        final StationDao stationDao = new StationDao(jdbcTemplate);
+        lineRepository = new LinePersistenceAdapter(lineDao, sectionDao, stationDao);
     }
     
     @Test

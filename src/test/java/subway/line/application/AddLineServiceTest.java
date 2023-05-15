@@ -5,7 +5,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.line.application.port.output.LineRepository;
+import subway.line.application.port.output.FindAllLinePort;
+import subway.line.application.port.output.SaveLinePort;
 import subway.line.domain.Line;
 import subway.line.dto.LineSaveRequest;
 
@@ -19,7 +20,9 @@ import static org.mockito.BDDMockito.given;
 @ExtendWith(MockitoExtension.class)
 class AddLineServiceTest {
     @Mock
-    private LineRepository lineRepository;
+    private FindAllLinePort findAllLinePort;
+    @Mock
+    private SaveLinePort saveLinePort;
     @InjectMocks
     private AddLineService addLineService;
     
@@ -29,8 +32,8 @@ class AddLineServiceTest {
         final Line line1 = new Line("1호선", "파랑");
         final Line line2 = new Line("2호선", "초록");
         final Line line3 = new Line("3호선", "주황");
-        given(lineRepository.findAll()).willReturn(new HashSet<>(Set.of(line1, line2)));
-        given(lineRepository.save(line3)).willReturn(3L);
+        given(findAllLinePort.findAll()).willReturn(new HashSet<>(Set.of(line1, line2)));
+        given(saveLinePort.save(line3)).willReturn(3L);
         
         // when
         final Long LineId = addLineService.addLine(new LineSaveRequest("3호선", "주황"));

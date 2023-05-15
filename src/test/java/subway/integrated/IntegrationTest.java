@@ -1,6 +1,7 @@
 package subway.integrated;
 
 import io.restassured.RestAssured;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,6 +21,10 @@ public class IntegrationTest {
     @BeforeEach
     public void setUp() {
         RestAssured.port = port;
+    }
+    
+    @AfterEach
+    void tearDown() {
         jdbcTemplate.execute(LINE_DELETE_ALL_SQL);
         jdbcTemplate.execute(STATION_DELETE_ALL_SQL);
         jdbcTemplate.execute(SECTION_DELETE_ALL_SQL);

@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 public class GlobalExceptionHandler {
     private final Logger logger;
     
-    private ResponseEntity<ExceptionResponse> logAndRespond(String message, HttpStatus status) {
+    private ResponseEntity<ExceptionResponse> logAndRespond(final String message, final HttpStatus status) {
         logger.error(message);
         return ResponseEntity.status(status).body(new ExceptionResponse("[ERROR] " + message));
     }
@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
     }
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException exception) {
+    public ResponseEntity<ExceptionResponse> handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
         final String exceptionMessage = exception.getBindingResult().getAllErrors().stream()
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.joining(System.lineSeparator()));

@@ -4,8 +4,6 @@ import subway.line.domain.Line;
 
 import java.util.Set;
 
-public interface LineRepository {
+public interface FindAllLinePort {
     Set<Line> findAll();
-    
-    Long save(Line line);
 }

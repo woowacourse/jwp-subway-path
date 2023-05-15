@@ -2,29 +2,21 @@ package subway.section.adapter.output.persistence;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 @Getter
 @ToString
 @EqualsAndHashCode
+@RequiredArgsConstructor
 public class SectionEntity {
-    private final long id;
-    private final String firstStation;
-    private final String secondStation;
-    private final int distance;
-    private final long lineId;
+    private final Long id;
+    private final Long firstStationId;
+    private final Long secondStationId;
+    private final Long distance;
+    private final Long lineId;
     
-    public SectionEntity(
-            final long id,
-            final String firstStation,
-            final String secondStation,
-            final int distance,
-            final long lineId
-    ) {
-        this.id = id;
-        this.firstStation = firstStation;
-        this.secondStation = secondStation;
-        this.distance = distance;
-        this.lineId = lineId;
+    public SectionEntity(final Long firstStationId, final Long secondStationId, final Long distance, final Long lineId) {
+        this(null, firstStationId, secondStationId, distance, lineId);
     }
 }
