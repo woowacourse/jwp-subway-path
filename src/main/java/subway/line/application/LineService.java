@@ -45,7 +45,7 @@ public class LineService {
 
     public UUID create(final LineCreateCommand command) {
         lineValidator.validateDuplicateLineName(command.lineName());
-        final Line line = new Line(command.lineName());
+        final Line line = new Line(command.lineName(), command.surcharge());
         lineRepository.save(line);
         applicationEventPublisher.publishEvent(new ChangeLineEvent());
         return line.id();

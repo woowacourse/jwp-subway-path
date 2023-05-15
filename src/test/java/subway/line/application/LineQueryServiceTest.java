@@ -31,7 +31,7 @@ class LineQueryServiceTest {
     @Test
     void id_를_통해서_노선을_조회한다() {
         // given
-        final Line line = new Line("1호선",
+        final Line line = new Line("1호선", 0,
                 new Section(역1, 역2, 10),
                 new Section(역2, 역3, 10),
                 new Section(역3, 역4, 10)
@@ -56,11 +56,11 @@ class LineQueryServiceTest {
     @Test
     void 모든_노선을_조회한다() {
         // given
-        final Line line1 = new Line("1호선",
+        final Line line1 = new Line("1호선", 0,
                 new Section(역1, 역2, 10),
                 new Section(역2, 역3, 10)
         );
-        final Line line2 = new Line("2호선",
+        final Line line2 = new Line("2호선", 0,
                 new Section(역3, 역4, 10),
                 new Section(역4, 역5, 10)
         );

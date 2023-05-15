@@ -18,9 +18,10 @@ import subway.line.presentation.request.LineCreateRequest;
 public class LineSteps {
 
     public static ExtractableResponse<Response> 노선_생성_요청(
-            final String lineName
+            final String lineName,
+            final int surcharge
     ) {
-        final LineCreateRequest request = new LineCreateRequest(lineName);
+        final LineCreateRequest request = new LineCreateRequest(lineName, surcharge);
         return 노선_생성_요청(request);
     }
 
@@ -37,9 +38,10 @@ public class LineSteps {
     }
 
     public static UUID 노선_생성하고_아이디_반환(
-            final String lineName
+            final String lineName,
+            final int surcharge
     ) {
-        final LineCreateRequest request = new LineCreateRequest(lineName);
+        final LineCreateRequest request = new LineCreateRequest(lineName, surcharge);
         final ExtractableResponse<Response> response = 노선_생성_요청(request);
         return 응답_헤더에_담긴_노선_아이디(response);
     }
@@ -106,5 +108,14 @@ public class LineSteps {
                 new ParameterizedTypeReference<List<LineQueryResponse>>() {
                 }.getType()
         );
+    }
+
+    public static void 단일_노선의_가격을_검증한다(final ExtractableResponse<Response> response, final int surcharge) {
+        final LineQueryResponse result = response.as(LineQueryResponse.class);
+        단일_노선의_가격을_검증한다(result, surcharge);
+    }
+
+    public static void 단일_노선의_가격을_검증한다(final LineQueryResponse response, final int surcharge) {
+        assertThat(response.getSurcharge()).isEqualTo(surcharge);
     }
 }

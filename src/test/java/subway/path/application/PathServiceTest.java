@@ -69,21 +69,21 @@ class PathServiceTest {
          *     잠실 - 선릉
          */
         private final List<Line> lines = List.of(
-                new Line("1호선",
+                new Line("1호선", 0,
                         new Section(역1, 역2, 10),
                         new Section(역2, 역3, 5),
                         new Section(역3, 역4, 7)
                 ),
-                new Line("2호선",
+                new Line("2호선", 0,
                         new Section(역6, 역3, 7),
                         new Section(역3, 역5, 1)
                 ),
-                new Line("3호선",
+                new Line("3호선", 0,
                         new Section(역1, 역7, 10),
                         new Section(역7, 역8, 5),
                         new Section(역8, 역6, 51)
                 ),
-                new Line("4호선",
+                new Line("4호선", 0,
                         new Section(잠실, 선릉, 10)
                 )
         );

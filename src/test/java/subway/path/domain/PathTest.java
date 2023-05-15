@@ -22,15 +22,15 @@ import subway.line.exception.line.LineException;
 class PathTest {
 
     private final Path path = new Path(
-            new Line("2호선",
+            new Line("2호선", 0,
                     new Section(StationFixture.선릉, 역2, 1),
                     new Section(역2, StationFixture.잠실, 7)
             ),
-            new Line("1호선",
+            new Line("1호선", 0,
                     new Section(StationFixture.선릉, StationFixture.역4, 10),
                     new Section(StationFixture.역4, StationFixture.역5, 5)
             ),
-            new Line("4호선",
+            new Line("4호선", 0,
                     new Section(StationFixture.역6, StationFixture.역5, 10)
             )
     );

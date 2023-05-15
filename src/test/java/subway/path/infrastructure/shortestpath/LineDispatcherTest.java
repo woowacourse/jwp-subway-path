@@ -27,17 +27,17 @@ class LineDispatcherTest {
     private final LineDispatcher lineDispatcher = new LineDispatcher();
 
     private final Path path = new Path(
-            new Line("1호선",
+            new Line("1호선", 0,
                     new Section(역1, 역2, 1),
                     new Section(역2, 역3, 2),
                     new Section(역3, 역4, 3)
             ),
-            new Line("2호선",
+            new Line("2호선", 0,
                     new Section(역4, 역2, 4),
                     new Section(역2, 역5, 5),
                     new Section(역5, 역7, 6)
             ),
-            new Line("3호선",
+            new Line("3호선", 0,
                     new Section(역7, 역6, 7),
                     new Section(역6, 역1, 8),
                     new Section(역1, 역3, 9)

@@ -34,7 +34,7 @@ class RemoveStationFromLineServiceTest {
                 new Section(역1, 역2, 10),
                 new Section(역2, 역3, 10))
         );
-        final Line line = new Line("1호선", sections);
+        final Line line = new Line("1호선", 0, sections);
 
         // when
         removeStation.remove(line, 역2);
@@ -50,7 +50,7 @@ class RemoveStationFromLineServiceTest {
     void 노션에_역이_두개일떄_노선에서_역_제거시_노선도_제거된다() {
         // given
         final Sections sections = new Sections(new Section(역1, 역2, 10));
-        final Line line = new Line("1호선", sections);
+        final Line line = new Line("1호선", 0, sections);
 
         // when
         removeStation.remove(line, 역2);

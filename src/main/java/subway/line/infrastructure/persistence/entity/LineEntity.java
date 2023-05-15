@@ -10,18 +10,20 @@ public class LineEntity {
 
     private final UUID domainId;
     private final String name;
+    private final int surcharge;
 
-    public LineEntity(final UUID domainId, final String name) {
+    public LineEntity(final UUID domainId, final String name, final int surcharge) {
         this.domainId = domainId;
         this.name = name;
+        this.surcharge = surcharge;
     }
 
     public static LineEntity from(final Line line) {
-        return new LineEntity(line.id(), line.name());
+        return new LineEntity(line.id(), line.name(), line.surcharge());
     }
 
     public Line toDomain(final List<Section> sections) {
-        return new Line(domainId, name, new Sections(sections));
+        return new Line(domainId, name, surcharge, new Sections(sections));
     }
 
     public UUID domainId() {
@@ -30,5 +32,9 @@ public class LineEntity {
 
     public String name() {
         return name;
+    }
+
+    public int surcharge() {
+        return surcharge;
     }
 }
