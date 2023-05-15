@@ -1,77 +1,47 @@
 package subway.domain;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Queue;
+import java.util.Set;
 
 public class SubwayMap {
 
-    private final Map<Station, List<Section>> subwayMap;
+    private final Map<Long, List<Station>> stationsByLineId;
 
-    private SubwayMap(final Map<Station, List<Section>> subwayMap) {
-        this.subwayMap = subwayMap;
+    private SubwayMap(final Map<Long, List<Station>> stationsByLineId) {
+        this.stationsByLineId = stationsByLineId;
     }
 
     public static SubwayMap of(final List<Section> sections) {
         final SubwayMap subwayMap = new SubwayMap(new HashMap<>());
-        for (final Section section : sections) {
-            subwayMap.put(section.getUpStation(), section);
-            subwayMap.put(section.getDownStation(), section);
-        }
+        final StationGraph stationGraph = StationGraph.of(sections);
+
+        subwayMap.createAllStations(stationGraph, sections);
         return subwayMap;
     }
 
-    private void put(final Station station, final Section section) {
-        subwayMap.computeIfAbsent(station, key -> new ArrayList<>()).add(section);
-    }
+    private void createAllStations(final StationGraph stationGraph, final List<Section> sections) {
+        final Set<Long> lineIds = new HashSet<>();
 
-    public List<Station> getStations() {
-        final Station station = subwayMap.keySet().iterator().next();
-        final List<Station> upStation = computeOneWayUp(station);
-        final List<Station> downStation = computeOneWayDown(station);
-        final List<Station> mergedList = new ArrayList<>();
-        Collections.reverse(upStation);
-        mergedList.addAll(upStation);
-        mergedList.addAll(downStation);
-        return mergedList;
-    }
-
-    private List<Station> computeOneWayUp(final Station station) {
-        final List<Station> result = new ArrayList<>();
-        final Queue<Station> queue = new LinkedList<>();
-        queue.add(station);
-        result.add(station);
-        while (!queue.isEmpty()) {
-            final Station poll = queue.poll();
-            final List<Section> sections = subwayMap.get(poll);
-            for (final Section section : sections) {
-                if (section.getDownStation().equals(poll)) {
-                    queue.add(section.getUpStation());
-                    result.add(section.getUpStation());
-                }
+        for (final Section section : sections) {
+            final Long lineId = section.getLineId();
+            if (lineIds.contains(lineId)) {
+                continue;
             }
+            lineIds.add(lineId);
+            final List<Station> stations = stationGraph.findStations(section);
+            stationsByLineId.put(lineId, stations);
         }
-        return result;
     }
 
-    private List<Station> computeOneWayDown(final Station station) {
-        final List<Station> result = new ArrayList<>();
-        final Queue<Station> queue = new LinkedList<>();
-        queue.add(station);
-        while (!queue.isEmpty()) {
-            final Station poll = queue.poll();
-            final List<Section> sections = subwayMap.get(poll);
-            for (final Section section : sections) {
-                if (section.getUpStation().equals(poll)) {
-                    queue.add(section.getDownStation());
-                    result.add(section.getDownStation());
-                }
-            }
-        }
-        return result;
+    public List<Station> getStations(final Long lineId) {
+        return stationsByLineId.get(lineId);
+    }
+
+    public List<List<Station>> getAllStations() {
+        return new ArrayList<>(stationsByLineId.values());
     }
 }

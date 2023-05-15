@@ -40,7 +40,7 @@ public class LineService {
     public LineSearchResponse findLineResponseById(final Long id) {
         final List<Section> sections = sectionDao.findSectionsByLineId(id);
         final SubwayMap subwayMap = SubwayMap.of(sections);
-        final List<Station> stations = subwayMap.getStations();
+        final List<Station> stations = subwayMap.getStations(id);
         final Line line = lineDao.findById(id);
         return new LineSearchResponse(line.getId(), line.getName(), line.getColor(), stations);
     }
