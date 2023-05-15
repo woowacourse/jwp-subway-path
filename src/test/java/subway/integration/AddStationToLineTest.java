@@ -36,11 +36,11 @@ public class AddStationToLineTest extends IntegrationTestSetUp {
         // when
         final AddStationToLineRequest request = new AddStationToLineRequest(2L, "C", Direction.DOWN, 3);
 
-        RestAssured.given().log().all()
+        RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
+                .body(request).log().all()
                 .when().post("/lines/{lineId}/stations", 1)
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.CREATED.value())
                 .header("Location", "/lines/1");
 
