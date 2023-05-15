@@ -2,9 +2,9 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.dto.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -83,8 +83,9 @@ public class SectionDeleteService {
         sectionDao.deleteByStationId(rightSection.getLeft().getId(), rightSection.getRight().getId());
 
         int newDistance = leftSection.getDistance() + rightSection.getDistance();
-        sectionDao.insert(new SectionDto(line.getId(), leftSection.getLeft().getId(), rightSection.getRight().getId(),
-                newDistance));
+        sectionDao.insert(
+                new SectionEntity(line.getId(), leftSection.getLeft().getId(), rightSection.getRight().getId(),
+                        newDistance));
     }
 
     private void deleteLastSectionAtLeft(Line line, Station station) {

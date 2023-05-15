@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.springframework.stereotype.Repository;
-import subway.application.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.dto.LineEntity;
+import subway.dao.dto.SectionEntity;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -36,8 +36,8 @@ public class LineRepository {
         LineEntity lineEntity = lineDao.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 노선이 존재하지 않습니다."));
 
-        List<SectionDto> sectionDtos = sectionDao.findByLineId(lineEntity.getId());
-        LinkedList<Section> sections = convertToSections(sectionDtos);
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
+        LinkedList<Section> sections = convertToSections(sectionEntities);
 
         return new Line(lineEntity.getId(), lineEntity.getName(), sections);
     }
@@ -47,15 +47,15 @@ public class LineRepository {
 
         List<Line> lines = new ArrayList<>();
         for (LineEntity lineEntity : lineEntities) {
-            List<SectionDto> sectionDtos = sectionDao.findByLineId(lineEntity.getId());
-            LinkedList<Section> sections = convertToSections(sectionDtos);
+            List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
+            LinkedList<Section> sections = convertToSections(sectionEntities);
             lines.add(new Line(lineEntity.getId(), lineEntity.getName(), sections));
         }
         return lines;
     }
 
-    private LinkedList<Section> convertToSections(List<SectionDto> sectionDtos) {
-        return sectionDtos.stream()
+    private LinkedList<Section> convertToSections(List<SectionEntity> sectionEntities) {
+        return sectionEntities.stream()
                 .map(sectionDto -> new Section(
                         stationRepository.findById(sectionDto.getLeftStationId()),
                         stationRepository.findById(sectionDto.getRightStationId()),

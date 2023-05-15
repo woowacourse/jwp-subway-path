@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.application.dto.SectionDto;
+import subway.dao.dto.SectionEntity;
 
 @Repository
 public class SectionDao {
@@ -15,8 +15,8 @@ public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<SectionDto> sectionMapper = (rs, rowNum) ->
-            new SectionDto(
+    private RowMapper<SectionEntity> sectionMapper = (rs, rowNum) ->
+            new SectionEntity(
                     rs.getLong("line_id"),
                     rs.getLong("left_station_id"),
                     rs.getLong("right_station_id"),
@@ -30,15 +30,17 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public List<SectionDto> findByLineId(Long lineId) {
+    public SectionEntity insert(SectionEntity sectionEntity) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
+        long savedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        return new SectionEntity(savedId, sectionEntity.getLeftStationId(), sectionEntity.getRightStationId(),
+                sectionEntity.getDistance());
+    }
+
+    public List<SectionEntity> findByLineId(Long lineId) {
         String sql = "SELECT LINE_ID, LEFT_STATION_ID, RIGHT_STATION_ID, DISTANCE FROM SECTION WHERE LINE_ID = ?";
 
         return jdbcTemplate.query(sql, sectionMapper, lineId);
-    }
-
-    public Long insert(SectionDto sectionDto) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(sectionDto);
-        return simpleJdbcInsert.executeAndReturnKey(params).longValue();
     }
 
     public void deleteByStationId(Long leftStationId, Long rightStationId) {

@@ -17,8 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.application.dto.SectionDto;
 import subway.dao.SectionDao;
+import subway.dao.dto.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.repository.LineRepository;
@@ -65,8 +65,8 @@ public class LineIntegrationTest extends IntegrationTest {
 
         line1 = lineRepository.save(new Line(null, lineName1, null));
 
-        sectionDao.insert(new SectionDto(line1.getId(), station1.getId(), station2.getId(), 5));
-        sectionDao.insert(new SectionDto(line1.getId(), station2.getId(), station3.getId(), 3));
+        sectionDao.insert(new SectionEntity(line1.getId(), station1.getId(), station2.getId(), 5));
+        sectionDao.insert(new SectionEntity(line1.getId(), station2.getId(), station3.getId(), 3));
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -203,7 +203,7 @@ public class LineIntegrationTest extends IntegrationTest {
         // given
         station4 = stationRepository.save(new Station("잠실역"));
         line2 = lineRepository.save(new Line(null, lineName2, null));
-        sectionDao.insert(new SectionDto(line2.getId(), station3.getId(), station4.getId(), 6));
+        sectionDao.insert(new SectionEntity(line2.getId(), station3.getId(), station4.getId(), 6));
 
         // when
 

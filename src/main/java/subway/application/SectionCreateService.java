@@ -2,8 +2,8 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.dto.SectionDto;
 import subway.dao.SectionDao;
+import subway.dao.dto.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -79,9 +79,9 @@ public class SectionCreateService {
     }
 
     private void insertSection(Long lineId, Station leftStation, Station rightStation, int distance) {
-        SectionDto sectionDto = new SectionDto(lineId, leftStation.getId(), rightStation.getId(),
+        SectionEntity sectionEntity = new SectionEntity(lineId, leftStation.getId(), rightStation.getId(),
                 distance);
-        sectionDao.insert(sectionDto);
+        sectionDao.insert(sectionEntity);
     }
 
     private void leftStationUpdate(Line line, Station leftStation, Station rightStation, int distance) {
@@ -95,8 +95,8 @@ public class SectionCreateService {
         }
 
         sectionDao.deleteByStationId(originLeft.getId(), originRight.getId());
-        sectionDao.insert(new SectionDto(line.getId(), leftStation.getId(), rightStation.getId(), distance));
-        sectionDao.insert(new SectionDto(line.getId(), rightStation.getId(), originRight.getId(),
+        sectionDao.insert(new SectionEntity(line.getId(), leftStation.getId(), rightStation.getId(), distance));
+        sectionDao.insert(new SectionEntity(line.getId(), rightStation.getId(), originRight.getId(),
                 originDistance - distance));
     }
 
@@ -111,8 +111,8 @@ public class SectionCreateService {
         }
 
         sectionDao.deleteByStationId(originLeft.getId(), originRight.getId());
-        sectionDao.insert(new SectionDto(line.getId(), originLeft.getId(), leftStation.getId(),
+        sectionDao.insert(new SectionEntity(line.getId(), originLeft.getId(), leftStation.getId(),
                 originDistance - distance));
-        sectionDao.insert(new SectionDto(line.getId(), leftStation.getId(), rightStation.getId(), distance));
+        sectionDao.insert(new SectionEntity(line.getId(), leftStation.getId(), rightStation.getId(), distance));
     }
 }

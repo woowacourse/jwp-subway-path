@@ -1,13 +1,13 @@
-package subway.application.dto;
+package subway.dao.dto;
 
-public class SectionDto {
+public class SectionEntity {
 
-    private Long lineId;
-    private Long leftStationId;
-    private Long rightStationId;
-    private Integer distance;
+    private final Long lineId;
+    private final Long leftStationId;
+    private final Long rightStationId;
+    private final Integer distance;
 
-    public SectionDto(Long lineId, Long leftStationId, Long rightStationId, Integer distance) {
+    public SectionEntity(Long lineId, Long leftStationId, Long rightStationId, Integer distance) {
         this.lineId = lineId;
         this.leftStationId = leftStationId;
         this.rightStationId = rightStationId;
