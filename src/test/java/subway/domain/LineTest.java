@@ -30,7 +30,7 @@ class LineTest {
         final List<Section> sections = newLine.getSections().getSections();
         assertAll(
                 () -> assertThat(sections)
-                        .extracting(Section::getBeforeStation)
+                        .extracting(Section::getPrevStation)
                         .extracting(Station::getName)
                         .containsExactly("a", "b", "d"),
                 () -> assertThat(sections)
@@ -59,7 +59,7 @@ class LineTest {
             final List<Section> sections = removedLine.getSections().getSections();
             assertAll(
                     () -> assertThat(sections)
-                            .extracting(Section::getBeforeStation)
+                            .extracting(Section::getPrevStation)
                             .extracting(Station::getName)
                             .containsExactly("b"),
                     () -> assertThat(sections)
@@ -85,7 +85,7 @@ class LineTest {
 
             assertAll(
                     () -> assertThat(sections)
-                            .extracting(Section::getBeforeStation)
+                            .extracting(Section::getPrevStation)
                             .extracting(Station::getName)
                             .containsExactly("a"),
                     () -> assertThat(sections)
@@ -111,7 +111,7 @@ class LineTest {
 
             assertAll(
                     () -> assertThat(sections)
-                            .extracting(Section::getBeforeStation)
+                            .extracting(Section::getPrevStation)
                             .extracting(Station::getName)
                             .containsExactly("a"),
                     () -> assertThat(sections)

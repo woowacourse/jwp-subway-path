@@ -17,7 +17,7 @@ public class Sections {
     }
 
     public boolean isHeadStation(final Station station) {
-        return sections.isEmpty() || sections.get(0).getBeforeStation().equals(station);
+        return sections.isEmpty() || sections.get(0).getPrevStation().equals(station);
     }
 
     public boolean isTailStation(final Station station) {
@@ -57,7 +57,7 @@ public class Sections {
 
     private static Section findOriginSection(final Section section, final LinkedList<Section> newSections) {
         return newSections.stream()
-                .filter(element -> element.getBeforeStation().equals(section.getBeforeStation()))
+                .filter(element -> element.getPrevStation().equals(section.getPrevStation()))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("이전 역을 찾을 수 없습니다."));
     }
@@ -84,7 +84,7 @@ public class Sections {
         newSections.remove(beforeSection);
         newSections.remove(nextSection);
         final Section newSection = new Section(
-                beforeSection.getBeforeStation(),
+                beforeSection.getPrevStation(),
                 nextSection.getNextStation(),
                 beforeSection.getDistance().plusValue(nextSection.getDistance())
         );
@@ -101,7 +101,7 @@ public class Sections {
 
     private static Section findNextSection(final Station station, final List<Section> newSections) {
         return newSections.stream()
-                .filter(section -> section.isEqualBeforeStation(station))
+                .filter(section -> section.isEqualPrevStation(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
     }

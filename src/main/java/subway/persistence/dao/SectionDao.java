@@ -52,7 +52,7 @@ public class SectionDao {
     public void insert(final Long lineId, final List<Section> sections) {
         final MapSqlParameterSource[] sources = sections.stream()
                 .map(section -> new MapSqlParameterSource()
-                        .addValue("BEFORE_STATION", section.getBeforeStation().getId())
+                        .addValue("BEFORE_STATION", section.getPrevStation().getId())
                         .addValue("NEXT_STATION", section.getNextStation().getId())
                         .addValue("DISTANCE", section.getDistance().getValue())
                         .addValue("LINE_ID", lineId)

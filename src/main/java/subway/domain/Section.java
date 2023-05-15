@@ -3,30 +3,30 @@ package subway.domain;
 public class Section {
 
     private final Long id;
-    private final Station beforeStation;
+    private final Station prevStation;
     private final Station nextStation;
     private final Distance distance;
 
-    public Section(final Long id, final Station beforeStation, final Station nextStation, final Distance distance) {
-        validateSameStation(beforeStation, nextStation);
+    public Section(final Long id, final Station prevStation, final Station nextStation, final Distance distance) {
+        validateSameStation(prevStation, nextStation);
         this.id = id;
-        this.beforeStation = beforeStation;
+        this.prevStation = prevStation;
         this.nextStation = nextStation;
         this.distance = distance;
     }
 
-    private void validateSameStation(final Station beforeStation, final Station nextStation) {
-        if (beforeStation.equals(nextStation)) {
+    private void validateSameStation(final Station prevStation, final Station nextStation) {
+        if (prevStation.equals(nextStation)) {
             throw new IllegalArgumentException("구간은 서로 다른 두 역이어야 합니다.");
         }
     }
 
-    public Section(final Station beforeStation, final Station nextStation, final Distance distance) {
-        this(null, beforeStation, nextStation, distance);
+    public Section(final Station prevStation, final Station nextStation, final Distance distance) {
+        this(null, prevStation, nextStation, distance);
     }
 
-    public boolean isEqualBeforeStation(final Station station) {
-        return station.equals(beforeStation);
+    public boolean isEqualPrevStation(final Station station) {
+        return station.equals(prevStation);
     }
 
     public boolean isEqualNextStation(final Station station) {
@@ -37,8 +37,8 @@ public class Section {
         return id;
     }
 
-    public Station getBeforeStation() {
-        return beforeStation;
+    public Station getPrevStation() {
+        return prevStation;
     }
 
     public Station getNextStation() {
@@ -50,7 +50,7 @@ public class Section {
     }
 
     public boolean isSameStations(final Section section) {
-        return (section.beforeStation.equals(beforeStation) && section.nextStation.equals(nextStation))
-                || (section.nextStation.equals(beforeStation) && section.beforeStation.equals(nextStation));
+        return (section.prevStation.equals(prevStation) && section.nextStation.equals(nextStation))
+                || (section.nextStation.equals(prevStation) && section.prevStation.equals(nextStation));
     }
 }

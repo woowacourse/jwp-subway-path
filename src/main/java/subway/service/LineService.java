@@ -91,7 +91,7 @@ public class LineService {
     }
 
     private Section createSections(final SectionRequest request) {
-        final Station beforeStation = stationService.findStationByName(request.getBeforeStationName());
+        final Station beforeStation = stationService.findStationByName(request.getPrevStationName());
         final Station nextStation = stationService.findStationByName(request.getNextStationName());
         return new Section(beforeStation, nextStation, new Distance(request.getDistance()));
     }

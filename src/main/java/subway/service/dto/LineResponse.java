@@ -28,7 +28,7 @@ public class LineResponse {
         final List<StationResponse> stationResponses = new LinkedList<>();
         final List<Section> sections = line.getSections().getSections();
         for (final Section section : sections) {
-            stationResponses.add(StationResponse.of(section.getBeforeStation()));
+            stationResponses.add(StationResponse.of(section.getPrevStation()));
         }
         stationResponses.add(StationResponse.of(sections.get(sections.size() - 1).getNextStation()));
         return new LineResponse(line.getId(), line.getName().getValue(), stationResponses);

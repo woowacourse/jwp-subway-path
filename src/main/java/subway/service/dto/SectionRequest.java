@@ -6,14 +6,14 @@ import javax.validation.constraints.NotNull;
 public class SectionRequest {
 
     @NotBlank
-    private final String beforeStationName;
+    private final String prevStationName;
     @NotBlank
     private final String nextStationName;
     @NotNull
     private final Integer distance;
 
-    public SectionRequest(final String beforeStationName, final String nextStationName, final Integer distance) {
-        this.beforeStationName = beforeStationName;
+    public SectionRequest(final String prevStationName, final String nextStationName, final Integer distance) {
+        this.prevStationName = prevStationName;
         this.nextStationName = nextStationName;
         this.distance = distance;
     }
@@ -22,8 +22,8 @@ public class SectionRequest {
         this(null, null, null);
     }
 
-    public String getBeforeStationName() {
-        return beforeStationName;
+    public String getPrevStationName() {
+        return prevStationName;
     }
 
     public String getNextStationName() {

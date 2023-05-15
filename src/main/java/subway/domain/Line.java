@@ -19,10 +19,6 @@ public class Line {
         this(id, name, new Sections(new LinkedList<>()));
     }
 
-    public Line(final LineName name, final Sections sections) {
-        this(null, name, sections);
-    }
-
     public Long getId() {
         return id;
     }
@@ -41,7 +37,7 @@ public class Line {
             final Sections addedSections = sections.addHead(newSection);
             return new Line(id, name, addedSections);
         }
-        if (sections.isTailStation(newSection.getBeforeStation())) {
+        if (sections.isTailStation(newSection.getPrevStation())) {
             final Sections addedSections = sections.addTail(newSection);
             return new Line(id, name, addedSections);
         }

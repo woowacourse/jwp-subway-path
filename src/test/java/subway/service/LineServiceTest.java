@@ -11,9 +11,6 @@ import subway.persistence.dao.StationDao;
 import subway.domain.Line;
 import subway.service.dto.SectionRequest;
 import subway.service.dto.StationRequest;
-import subway.service.LineService;
-import subway.service.SectionService;
-import subway.service.StationService;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -36,7 +33,7 @@ class LineServiceTest {
 
         final Line line = lineService.findById(lineId);
         assertAll(
-                () -> assertThat(line.getSections().getSections().get(0).getBeforeStation().getName()).isEqualTo("잠실"),
+                () -> assertThat(line.getSections().getSections().get(0).getPrevStation().getName()).isEqualTo("잠실"),
                 () -> assertThat(line.getSections().getSections().get(0).getNextStation().getName()).isEqualTo("강남"),
                 () -> assertThat(line.getSections().getSections().get(0).getDistance().getValue()).isEqualTo(10)
         );
