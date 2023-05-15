@@ -178,4 +178,25 @@ class SectionsTest {
         // then
         assertThat(currentSection.isEmpty()).isTrue();
     }
+
+    @Test
+    @DisplayName("역 순서대로 정렬한 역 이름 리스트를 반환한다.")
+    void getSortedStationNames() {
+        // given
+        Line line2 = INITIAL_Line2.FIND_LINE;
+        Station stationA = INITIAL_STATION_A.FIND_STATION;
+        Station stationB = STATION_B.createDummyStation(100L, line2);
+        Station stationC = INITIAL_STATION_C.FIND_STATION;
+        Section sectionAtoB = SECTION_A_TO_B.createSectionToInsert(stationA, stationB, line2);
+        Section sectionBtoC = SECTION_B_TO_C.createSectionToInsert(stationB, stationC, line2);
+        Sections sections = new Sections(List.of(sectionAtoB, sectionBtoC));
+
+        List<String> expected = List.of(stationA.getName(), stationB.getName(), stationC.getName());
+
+        // when
+        List<String> sortedStationNames = sections.getSortedStationNames();
+
+        // then
+        assertThat(sortedStationNames).containsExactlyElementsOf(expected);
+    }
 }

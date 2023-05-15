@@ -16,6 +16,7 @@ public class LineFixtures {
 
     public static class Line7 {
         public static final String NAME = "7호선";
+        public static final Line DUMMY_LINE7 = new Line(100L, NAME);
         public static final Line INSERT_ENTITY = new Line(null, NAME);
         public static final LineFindResponse FIND_RESPONSE = new LineFindResponse(NAME, List.of("온수역", "대림역", "논현역", "장암역"));
 
