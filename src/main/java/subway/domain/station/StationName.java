@@ -21,8 +21,8 @@ public class StationName {
     }
 
     private void validateName(final String name) {
-        validateFormat(name);
         validateLength(name);
+        validateFormat(name);
     }
 
     private void validateLength(final String name) {

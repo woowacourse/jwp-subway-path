@@ -35,6 +35,10 @@ public class Distance {
         return this.distance >= target.distance;
     }
 
+    public int distance() {
+        return distance;
+    }
+
     public int getDistance() {
         return distance;
     }

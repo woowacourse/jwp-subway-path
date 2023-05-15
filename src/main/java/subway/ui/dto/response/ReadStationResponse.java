@@ -1,19 +1,19 @@
 package subway.ui.dto.response;
 
-import subway.domain.station.Station;
+import subway.application.dto.ReadStationDto;
 
 public class ReadStationResponse {
 
     private final Long id;
     private final String name;
 
-    public ReadStationResponse(Long id, String name) {
+    private ReadStationResponse(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static ReadStationResponse of(Station station) {
-        return new ReadStationResponse(station.getId(), station.getName());
+    public static ReadStationResponse from(final ReadStationDto dto) {
+        return new ReadStationResponse(dto.getId(), dto.getName());
     }
 
     public Long getId() {

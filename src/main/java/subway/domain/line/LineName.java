@@ -17,19 +17,19 @@ public class LineName {
     }
 
     private void validateName(final String name) {
-        validateNameFormat(name);
         validateNameLength(name);
+        validateNameFormat(name);
     }
 
     private void validateNameFormat(final String name) {
         if (!NAME_PATTERN.matcher(name).matches()) {
-            throw new IllegalArgumentException("노선 이름은 한글과 숫자만 가능합니다");
+            throw new IllegalArgumentException("노선 이름은 한글과 숫자만 가능합니다.");
         }
     }
 
     private void validateNameLength(final String name) {
         if (!(MINIMUM_LENGTH <= name.length() && name.length() <= MAXIMUM_LENGTH)) {
-            throw new IllegalArgumentException("노선 이름은 2글자 ~ 9글자만 가능합니다");
+            throw new IllegalArgumentException("노선 이름은 2글자 ~ 9글자만 가능합니다.");
         }
     }
 

@@ -16,7 +16,7 @@ public class LineColor {
 
     private void validateColorFormat(final String color) {
         if (!COLOR_PATTERN.matcher(color).matches()) {
-            throw new IllegalArgumentException("노선 색깔은 tailwindcss 형식만 가능합니다");
+            throw new IllegalArgumentException("노선 색상은 tailwindcss 형식만 가능합니다.");
         }
     }
 

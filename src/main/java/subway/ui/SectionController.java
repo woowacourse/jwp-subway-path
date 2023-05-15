@@ -1,5 +1,6 @@
 package subway.ui;
 
+import java.net.URI;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -9,16 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.AddSectionService;
 import subway.application.RemoveSectionService;
-import subway.ui.dto.request.CreationEndSectionRequest;
-import subway.ui.dto.request.CreationInitialSectionRequest;
-import subway.ui.dto.request.CreationMiddleSectionRequest;
-import subway.ui.dto.request.DeleteEndSectionRequest;
-import subway.ui.dto.request.DeleteMiddleSectionRequest;
-
-import java.net.URI;
+import subway.application.dto.AddSectionDto;
+import subway.ui.dto.request.CreationSectionRequest;
+import subway.ui.dto.request.DeleteSectionRequest;
+import subway.ui.dto.response.AddSectionResponse;
 
 @RestController
-@RequestMapping("/lines/{lineId}/stations")
+@RequestMapping("/lines/{lineId}/sections")
 public class SectionController {
 
     private final AddSectionService addSectionService;
@@ -29,51 +27,21 @@ public class SectionController {
         this.removeSectionService = removeSectionService;
     }
 
-    @PostMapping("/init")
-    public ResponseEntity<Void> addInitialStations(@PathVariable Long lineId,
-            @RequestBody CreationInitialSectionRequest request) {
-        addSectionService.addInitialStations(
-                lineId, request.getUpStationId(), request.getDownStationId(), request.getDistance());
+    @PostMapping
+    public ResponseEntity<AddSectionResponse> addSection(
+            @PathVariable Long lineId,
+            @RequestBody CreationSectionRequest request
+    ) {
+        final AddSectionDto dto = addSectionService.addSection(lineId, request.getSourceStationId(),
+                request.getTargetStationId(), request.getDirection(), request.getDistance());
+        final AddSectionResponse response = AddSectionResponse.from(dto);
 
-        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
+        return ResponseEntity.created(URI.create("/lines/" + dto.getId())).body(response);
     }
 
-    @PostMapping("/end")
-    public ResponseEntity<Void> addEndStation(@PathVariable Long lineId,
-            @RequestBody CreationEndSectionRequest request) {
-        addSectionService.addEndStation(lineId, request.getSourceStationId(), request.getTargetStationId(), request.getDistance());
-
-        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
-    }
-
-    @PostMapping("/middle")
-    public ResponseEntity<Void> addMiddleStation(@PathVariable Long lineId,
-            @RequestBody CreationMiddleSectionRequest request) {
-        addSectionService.addMiddleStation(
-                lineId, request.getUpStationId(), request.getDownStationId(), request.getTargetStationId(), request.getDistance());
-
-        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
-    }
-
-    @DeleteMapping("/all")
-    public ResponseEntity<Void> removeAllStation(@PathVariable Long lineId) {
-        removeSectionService.removeAllStation(lineId);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/end")
-    public ResponseEntity<Void> removeEndStation(@PathVariable Long lineId,
-            @RequestBody DeleteEndSectionRequest request) {
-        removeSectionService.removeEndStation(lineId, request.getTargetStationId());
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @DeleteMapping("/middle")
-    public ResponseEntity<Void> removeMiddleStation(@PathVariable Long lineId,
-            @RequestBody DeleteMiddleSectionRequest request) {
-        removeSectionService.removeMiddleStation(lineId, request.getTargetStationId());
+    @DeleteMapping
+    public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestBody DeleteSectionRequest request) {
+        removeSectionService.removeSection(request.getTargetStationId(), lineId);
 
         return ResponseEntity.noContent().build();
     }

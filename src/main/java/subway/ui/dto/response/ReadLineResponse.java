@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import java.util.List;
 import java.util.stream.Collectors;
+import subway.application.dto.ReadStationDto;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 
@@ -26,7 +27,8 @@ public class ReadLineResponse {
     public static ReadLineResponse of(final Line line) {
         final List<Station> stations = line.findStationsByOrdered();
         final List<ReadStationResponse> stationResponses = stations.stream()
-                .map(ReadStationResponse::of)
+                .map(ReadStationDto::from)
+                .map(ReadStationResponse::from)
                 .collect(Collectors.toList());
 
         return new ReadLineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);

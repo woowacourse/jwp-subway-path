@@ -8,7 +8,6 @@ import subway.persistence.repository.LineRepository;
 import subway.persistence.repository.SectionRepository;
 import subway.persistence.repository.StationRepository;
 
-@Transactional
 @Service
 public class RemoveSectionService {
 
@@ -19,42 +18,25 @@ public class RemoveSectionService {
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
 
-    public RemoveSectionService(final StationRepository stationRepository,
-                                final LineRepository lineRepository,
-                                final SectionRepository sectionRepository) {
+    public RemoveSectionService(
+            final StationRepository stationRepository,
+            final LineRepository lineRepository,
+            final SectionRepository sectionRepository
+    ) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
     }
 
-    public void removeAllStation(final Long lineId) {
+    @Transactional
+    public void removeSection(final Long targetStationId, final Long lineId) {
         final Line persistLine = lineRepository.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_LINE));
         final Line line = sectionRepository.findAllByLine(persistLine);
-
-        line.removeAllStation();
-        sectionRepository.insert(line);
-    }
-
-    public void removeEndStation(final Long lineId, final Long targetStationId) {
-        final Line persistLine = lineRepository.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_LINE));
         final Station targetStation = stationRepository.findById(targetStationId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION));
-        final Line line = sectionRepository.findAllByLine(persistLine);
 
-        line.removeEndStation(targetStation);
-        sectionRepository.insert(line);
-    }
-
-    public void removeMiddleStation(final Long lineId, final Long targetStationId) {
-        final Line persistLine = lineRepository.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_LINE));
-        final Station targetStation = stationRepository.findById(targetStationId)
-                .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION));
-        final Line line = sectionRepository.findAllByLine(persistLine);
-
-        line.removeMiddleStation(targetStation);
+        line.removeSection(targetStation);
         sectionRepository.insert(line);
     }
 }
