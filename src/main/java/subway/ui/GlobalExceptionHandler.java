@@ -22,6 +22,11 @@ public final class GlobalExceptionHandler {
     }
 
     @ExceptionHandler
+    public ResponseEntity<String> handle(final IllegalStateException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler
     public ResponseEntity<String> handle(final Exception e) {
         logger.error(e.getMessage(), e);
         return ResponseEntity.internalServerError().body("예상치 못한 에러가 발생했습니다.");

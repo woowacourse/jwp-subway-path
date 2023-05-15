@@ -28,7 +28,7 @@ public class ShortestService {
         this.lineDao = lineDao;
     }
 
-    public ShortestResponse getShortest(final Long startId, final Long endId) {
+    public ShortestResponse findShortest(final Long startId, final Long endId) {
         final List<Path> paths = findAllPaths();
         final List<Station> stations = findAllStations(paths);
 
@@ -36,9 +36,8 @@ public class ShortestService {
 
         final Station start = findStationById(stations, startId);
         final Station end = findStationById(stations, endId);
-        final List<PathEdge> result = graph.getPath(start, end).getEdgeList();
-        
-        return ShortestResponse.from(result);
+
+        return findOrThrow(graph, start, end);
     }
 
     private List<Path> findAllPaths() {
@@ -70,5 +69,15 @@ public class ShortestService {
                 .filter(station -> stationId.equals(station.getId()))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+    }
+
+    private ShortestResponse findOrThrow(final DijkstraShortestPath<Station, PathEdge> graph, final Station start, final Station end) {
+        try {
+            final List<PathEdge> result = graph.getPath(start, end).getEdgeList();
+
+            return ShortestResponse.from(result);
+        } catch (final NullPointerException e) {
+            throw new IllegalStateException("경로가 존재하지 않습니다.");
+        }
     }
 }

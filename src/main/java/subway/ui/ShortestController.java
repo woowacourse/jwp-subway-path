@@ -21,7 +21,7 @@ public final class ShortestController {
     @GetMapping("/start/{start-station-id}/end/{end-station-id}")
     public ResponseEntity<ShortestResponse> getShortest(@PathVariable("start-station-id") final Long startId,
                                                         @PathVariable("end-station-id") final Long endId) {
-        final ShortestResponse result = shortestService.getShortest(startId, endId);
+        final ShortestResponse result = shortestService.findShortest(startId, endId);
 
         return ResponseEntity.ok(result);
     }

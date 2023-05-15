@@ -66,23 +66,24 @@ class ShortestControllerTest {
         Long lineId1 = lineService.saveLine(new LineRequest("1호선", "red")).getId();
         Long lineId2 = lineService.saveLine(new LineRequest("2호선", "blue")).getId();
 
-        Long stationId1 = stationService.saveStation(new StationRequest("광안역")).getId();
+        Long source = stationService.saveStation(new StationRequest("광안역")).getId();
+        Long destination = stationService.saveStation(new StationRequest("노포역")).getId();
+
         Long stationId2 = stationService.saveStation(new StationRequest("전포역")).getId();
         Long stationId3 = stationService.saveStation(new StationRequest("부산역")).getId();
         Long stationId4 = stationService.saveStation(new StationRequest("해운대역")).getId();
 
-        Long destination = stationService.saveStation(new StationRequest("노포역")).getId();
 
-        lineService.addPathToLine(lineId1, new PathRequest(stationId1, stationId2, 5));
+        lineService.addPathToLine(lineId1, new PathRequest(source, stationId2, 5));
         lineService.addPathToLine(lineId1, new PathRequest(stationId2, destination, 5));
 
-        lineService.addPathToLine(lineId2, new PathRequest(stationId1, stationId3, 1));
+        lineService.addPathToLine(lineId2, new PathRequest(source, stationId3, 1));
         lineService.addPathToLine(lineId2, new PathRequest(stationId3, stationId4, 1));
         lineService.addPathToLine(lineId2, new PathRequest(stationId4, destination, 1));
 
         //when, then
         RestAssured.given()
-                .get("/paths/start/{start-station-id}/end/{end-station-id}", stationId1, destination)
+                .get("/paths/start/{start-station-id}/end/{end-station-id}", source, destination)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("totalDistance", equalTo(3));
