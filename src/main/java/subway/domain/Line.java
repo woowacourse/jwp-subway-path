@@ -16,26 +16,26 @@ public class Line {
     public Line(LineName name, List<Section> sections) {
         this.name = name;
         this.sections = new LinkedList<>(sections);
-        addEndpoints(sections);
+        addEmptyEndpoints(sections);
     }
 
     public Line(LineName name, Section section) {
         this.name = name;
         this.sections = new LinkedList<>();
         sections.add(section);
-        addEndpoints(sections);
+        addEmptyEndpoints(sections);
     }
 
     public Line(Line otherLine) {
         this(otherLine.getName(), otherLine.getSections());
     }
 
-    private void addEndpoints(List<Section> sections) {
-        Station upstreamEndpoint = sections.get(0).getUpstream();
-        Station downstreamEndpoint = sections.get(sections.size() - 1).getDownstream();
+    private void addEmptyEndpoints(List<Section> sections) {
+        Station upstreamEmptyEndpoint = sections.get(0).getUpstream();
+        Station downstreamEmptyEndpoint = sections.get(sections.size() - 1).getDownstream();
 
-        this.sections.addFirst(new Section(Station.getEmptyEndpoint(), upstreamEndpoint, Integer.MAX_VALUE));
-        this.sections.addLast(new Section(downstreamEndpoint, Station.getEmptyEndpoint(), Integer.MAX_VALUE));
+        this.sections.addFirst(new Section(Station.getEmptyEndpoint(), upstreamEmptyEndpoint, Integer.MAX_VALUE));
+        this.sections.addLast(new Section(downstreamEmptyEndpoint, Station.getEmptyEndpoint(), Integer.MAX_VALUE));
     }
 
     public List<Section> addStation(Station newStation, Station upstream, Station downstream, int distanceToUpstream) {
