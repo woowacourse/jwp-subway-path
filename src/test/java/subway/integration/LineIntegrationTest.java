@@ -10,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.controller.line.dto.LineStationsResponse;
-import subway.controller.station.dto.StationResponse;
+import subway.controller.station.dto.StationWebResponse;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
@@ -82,7 +82,7 @@ public class LineIntegrationTest extends IntegrationTest {
         sectionRepository.insertSection(jamsilMongchon, eightLine);
     }
 
-    @DisplayName("해당 지하철 노선의 지하철 역을 조회한다 하행 -> 상행 순")
+    @DisplayName("해당 지하철 노선의 지하철 역을 조회한다 상행 -> 하행 순")
     @Test
     void getLine() {
         // given
@@ -94,10 +94,10 @@ public class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         // when
-//        List<StationResponse> stations = List.of(
-//                new StationResponse(gangnam.getId(), gangnam.getName()),
-//                new StationResponse(seonleung.getId(), seonleung.getName()),
-//                new StationResponse(jamsil.getId(), jamsil.getName())
+//        List<StationWebResponse> stations = List.of(
+//                new StationWebResponse(gangnam.getId(), gangnam.getName()),
+//                new StationWebResponse(seonleung.getId(), seonleung.getName()),
+//                new StationWebResponse(jamsil.getId(), jamsil.getName())
 //        );
 
         // then
@@ -106,9 +106,9 @@ public class LineIntegrationTest extends IntegrationTest {
 
         assertThat(lineStationsResponse.getId()).isEqualTo(secondLine.getId());
         assertThat(lineStationsResponse.getStations()).containsExactly(
-                new StationResponse(gangnam.getId(), gangnam.getName()),
-                new StationResponse(seonleung.getId(), seonleung.getName()),
-                new StationResponse(jamsil.getId(), jamsil.getName())
+                new StationWebResponse(jamsil.getId(), jamsil.getName()),
+                new StationWebResponse(seonleung.getId(), seonleung.getName()),
+                new StationWebResponse(gangnam.getId(), gangnam.getName())
         );
 
     }

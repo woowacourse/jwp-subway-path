@@ -1,14 +1,14 @@
 package subway.controller.line.dto;
 
-import subway.controller.station.dto.StationResponse;
+import subway.controller.station.dto.StationWebResponse;
 
 import java.util.List;
 
 public class LineStationsResponse {
     private long id;
-    private List<StationResponse> stations;
+    private List<StationWebResponse> stations;
 
-    public LineStationsResponse(long id, List<StationResponse> stations) {
+    public LineStationsResponse(long id, List<StationWebResponse> stations) {
         this.id = id;
         this.stations = stations;
     }
@@ -20,7 +20,7 @@ public class LineStationsResponse {
         return id;
     }
 
-    public List<StationResponse> getStations() {
+    public List<StationWebResponse> getStations() {
         return stations;
     }
 }

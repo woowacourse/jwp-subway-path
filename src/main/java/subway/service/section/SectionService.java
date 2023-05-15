@@ -17,10 +17,12 @@ import subway.service.section.dto.SectionResponse;
 import subway.service.section.repository.SectionRepository;
 import subway.service.station.StationRepository;
 import subway.service.station.domain.Station;
+import subway.service.station.dto.StationResponse;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -80,10 +82,14 @@ public class SectionService {
 
     }
 
-    public void findStationsByLine(long lineId) {
+    public List<StationResponse> findStationsByLine(long lineId) {
         Line line = lineRepository.findById(lineId);
         Sections sections = sectionRepository.findSectionsByLine(line);
+        List<Station> stationsInOrder = sections.orderStations();
 
+        return stationsInOrder.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     private void deleteStationsInLastSection(Station station, Section lastSection) {
