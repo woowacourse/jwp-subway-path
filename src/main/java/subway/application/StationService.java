@@ -1,13 +1,16 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
 
 @Service
 public class StationService {
@@ -23,7 +26,8 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        return StationResponse.of(stationDao.findById(id)
+                .orElseThrow(() -> new DomainException(ExceptionType.UN_EXISTED_STATION)));
     }
 
     public List<StationResponse> findAllStationResponses() {
@@ -35,10 +39,16 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+        final int updatedRow = stationDao.update(new Station(id, stationRequest.getName()));
+        if(updatedRow == 0) {
+            throw new DomainException(ExceptionType.UN_EXISTED_STATION);
+        }
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        final int deletedRow = stationDao.deleteById(id);
+        if(deletedRow == 0) {
+            throw new DomainException(ExceptionType.UN_EXISTED_STATION);
+        }
     }
 }
