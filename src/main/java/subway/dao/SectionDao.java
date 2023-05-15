@@ -9,8 +9,6 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Section;
-import subway.domain.Station;
 
 @Repository
 public class SectionDao {
@@ -19,8 +17,8 @@ public class SectionDao {
     private static final RowMapper<SectionEntity> rowMapper = (rs, rowNum) -> new SectionEntity(
             rs.getLong("id"),
             rs.getLong("line_id"),
-            new Station(rs.getString("start_station_name")),
-            new Station(rs.getString("end_station_name")),
+            rs.getLong("start_station_id"),
+            rs.getLong("end_station_id"),
             rs.getInt("distance"));
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
@@ -30,19 +28,19 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public long insert(Long lineId, Section section) {
+    public long insert(SectionEntity sectionEntity) {
         return insertAction.executeAndReturnKey(Map.of(
-                "line_id", lineId,
-                "start_station_name", section.getStartStation().getName(),
-                "end_station_name", section.getEndStation().getName(),
-                "distance", section.getDistance()
+                "line_id", sectionEntity.getLineId(),
+                "start_station_id", sectionEntity.getStartStationId(),
+                "end_station_id", sectionEntity.getEndStationId(),
+                "distance", sectionEntity.getDistance()
         )).longValue();
     }
 
-    public void update(Long sectionId, Section section) {
-        String sql = "UPDATE SECTION SET start_station_name = ?, end_station_name = ?, distance = ? WHERE id = ?";
-        jdbcTemplate.update(sql, section.getStartStationName(), section.getEndStationName(),
-                section.getDistance(), sectionId);
+    public void update(SectionEntity section) {
+        String sql = "UPDATE SECTION SET start_station_id = ?, end_station_id = ?, distance = ? WHERE id = ?";
+        jdbcTemplate.update(sql, section.getStartStationId(), section.getEndStationId(),
+                section.getDistance(), section.getId());
     }
 
     public Long countByLineId(Long lineId) {
@@ -51,13 +49,13 @@ public class SectionDao {
     }
 
     public List<SectionEntity> findAllByLineId(Long lineId) {
-        String sql = "SELECT id, line_id, start_station_name, end_station_name, distance FROM SECTION WHERE line_id = ?";
+        String sql = "SELECT id, line_id, start_station_id, end_station_id, distance FROM SECTION WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public boolean isStationInLine(Long lineId, String stationName) {
-        String sql = "SELECT COUNT(*) FROM SECTION WHERE start_station_name = ? OR end_station_name = ? AND line_id = ? LIMIT 1";
-        return jdbcTemplate.queryForObject(sql, Long.class, stationName, stationName, lineId) > 0;
+    public boolean isStationInLineById(Long lineId, long stationId) {
+        String sql = "SELECT COUNT(*) FROM SECTION WHERE start_station_id = ? OR end_station_id = ? AND line_id = ? LIMIT 1";
+        return jdbcTemplate.queryForObject(sql, Long.class, stationId, stationId, lineId) > 0;
     }
 
     public boolean isEmptyByLineId(Long lineId) {
@@ -65,19 +63,19 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, Long.class, lineId) == 0;
     }
 
-    public Optional<SectionEntity> findByStartStationNameAndLineId(String startStationName, Long lineId) {
-        String sql = "SELECT id, line_id, start_station_name, end_station_name, distance FROM SECTION WHERE start_station_name = ? AND line_id = ?";
+    public Optional<SectionEntity> findByStartStationIdAndLineId(Long startStationId, Long lineId) {
+        String sql = "SELECT id, line_id, start_station_id, end_station_id, distance FROM SECTION WHERE start_station_id = ? AND line_id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, startStationName, lineId));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, startStationId, lineId));
         } catch (DataAccessException e) {
             return Optional.empty();
         }
     }
 
-    public Optional<SectionEntity> findByEndStationNameAndLineId(String endStationName, Long lineId) {
-        String sql = "SELECT id, line_id, start_station_name, end_station_name, distance FROM SECTION WHERE end_station_name = ? AND line_id = ?";
+    public Optional<SectionEntity> findByEndStationIdAndLineId(Long endStationId, Long lineId) {
+        String sql = "SELECT id, line_id, start_station_id, end_station_id, distance FROM SECTION WHERE end_station_id = ? AND line_id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, endStationName, lineId));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, endStationId, lineId));
         } catch (DataAccessException e) {
             return Optional.empty();
         }

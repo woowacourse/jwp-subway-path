@@ -1,12 +1,17 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.dao.entity.StationEntity;
 
 public class Station {
     private final String name;
 
     public Station(String name) {
         this.name = name;
+    }
+
+    public static Station fromEntity(StationEntity stationEntity) {
+        return new Station(stationEntity.getName());
     }
 
     public String getName() {

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
+import subway.dao.entity.StationEntity;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -32,62 +33,32 @@ public class SectionService {
     }
 
     public void saveSection(Long lineId, SectionCreateRequest sectionCreateRequest) {
-        String startStationName = sectionCreateRequest.getStartStationName();
-        String endStationName = sectionCreateRequest.getEndStationName();
-        validateStation(startStationName, endStationName);
-        addSection(lineId, new Section(new Station(startStationName), new Station(endStationName),
-                sectionCreateRequest.getDistance()));
+        StationEntity startStation = findStationByName(sectionCreateRequest.getStartStationName());
+        StationEntity endStation = findStationByName(sectionCreateRequest.getEndStationName());
+        addSection(new SectionEntity(lineId, startStation.getId(), endStation.getId(),
+                sectionCreateRequest.getDistance())); // TODO: 2023-05-15 Section 도메인으로 처리하는 방향 생각
     }
 
-    private void validateStation(String startStationName, String endStationName) {
-        if (!stationDao.existsBy(startStationName) || !stationDao.existsBy(endStationName)) {
-            throw new StationNotFoundException();
+    private StationEntity findStationByName(String name) {
+        if (stationDao.existsBy(name)) {
+            return stationDao.findByName(name);
         }
+        throw new StationNotFoundException();
     }
 
-    private void addSection(Long lineId, Section newSection) {
-        if (sectionDao.isEmptyByLineId(lineId)) {
-            sectionDao.insert(lineId, newSection);
+    private void addSection(SectionEntity section) {
+        if (sectionDao.isEmptyByLineId(section.getLineId())) {
+            sectionDao.insert(section);
             return;
         }
-        boolean hasStartStation = sectionDao.isStationInLine(lineId, newSection.getStartStationName());
-        boolean hasEndStation = sectionDao.isStationInLine(lineId, newSection.getEndStationName());
+        boolean hasStartStation = sectionDao.isStationInLineById(section.getLineId(), section.getStartStationId());
+        boolean hasEndStation = sectionDao.isStationInLineById(section.getLineId(), section.getEndStationId());
         validateHasStation(hasStartStation, hasEndStation);
         if (hasStartStation) {
-            addEndSection(lineId, newSection);
+            addEndSection(section);
         }
         if (hasEndStation) {
-            addStartSection(lineId, newSection);
-        }
-    }
-
-    private void addEndSection(Long lineId, Section newSection) {
-        sectionDao.findByStartStationNameAndLineId(newSection.getStartStationName(), lineId)
-            .ifPresentOrElse(section -> {
-                int distance = section.getDistance();
-                int newDistance = newSection.getDistance();
-                validateDistance(distance, newDistance);
-                Station newStation = newSection.getEndStation();
-                sectionDao.update(section.getId(), new Section(section.getStartStation(), newStation, newDistance));
-                sectionDao.insert(lineId, new Section(newStation, section.getEndStation(), distance - newDistance));
-            }, () -> sectionDao.insert(lineId, newSection));
-    }
-
-    private void addStartSection(Long lineId, Section newSection) {
-        sectionDao.findByEndStationNameAndLineId(newSection.getEndStationName(), lineId)
-                .ifPresentOrElse(section -> {
-                    int distance = section.getDistance();
-                    int newDistance = newSection.getDistance();
-                    validateDistance(distance, newDistance);
-                    Station newStation = newSection.getStartStation();
-                    sectionDao.update(section.getId(), new Section(newStation, section.getEndStation(), newDistance));
-                    sectionDao.insert(lineId, new Section(section.getStartStation(), newStation, distance - newDistance));
-                }, () -> sectionDao.insert(lineId, newSection));
-    }
-
-    private void validateDistance(int distance, int newDistance) {
-        if (distance <= newDistance) {
-            throw new IllegalDistanceException("새로운 구간의 길이는 기존 구간의 길이보다 작아야 합니다.");
+            addStartSection(section);
         }
     }
 
@@ -100,11 +71,48 @@ public class SectionService {
         }
     }
 
+    private void addEndSection(SectionEntity sectionToAdd) {
+        Long lineId = sectionToAdd.getLineId();
+        sectionDao.findByStartStationIdAndLineId(sectionToAdd.getStartStationId(), lineId)
+            .ifPresentOrElse(prevSection -> {
+                int distance = prevSection.getDistance();
+                int newDistance = sectionToAdd.getDistance();
+                validateDistance(distance, newDistance);
+                Long newSectionEndStationId = prevSection.getEndStationId();
+                prevSection.updateEndStationId(sectionToAdd.getEndStationId());
+                prevSection.updateDistance(newDistance);
+                sectionDao.update(prevSection);
+                sectionDao.insert(new SectionEntity(lineId, sectionToAdd.getEndStationId(), newSectionEndStationId, distance - newDistance));
+            }, () -> sectionDao.insert(sectionToAdd));
+    }
+
+    private void validateDistance(int distance, int newDistance) {
+        if (distance <= newDistance) {
+            throw new IllegalDistanceException("새로운 구간의 길이는 기존 구간의 길이보다 작아야 합니다.");
+        }
+    }
+
+    private void addStartSection(SectionEntity sectionToAdd) {
+        Long lineId = sectionToAdd.getLineId();
+        sectionDao.findByEndStationIdAndLineId(sectionToAdd.getEndStationId(), lineId)
+                .ifPresentOrElse(prevSection -> {
+                    int distance = prevSection.getDistance();
+                    int newDistance = sectionToAdd.getDistance();
+                    validateDistance(distance, newDistance);
+                    Long newSectionStartStationId = prevSection.getStartStationId();
+                    prevSection.updateStartStationId(sectionToAdd.getStartStationId());
+                    prevSection.updateDistance(newDistance);
+                    sectionDao.update(prevSection);
+                    sectionDao.insert(new SectionEntity(lineId, newSectionStartStationId, sectionToAdd.getStartStationId(), distance - newDistance));
+                }, () -> sectionDao.insert(sectionToAdd));
+    }
+
     public void deleteSection(Long lineId, SectionDeleteRequest sectionDeleteRequest) {
         String stationName = sectionDeleteRequest.getStationName();
-        validateStationInLine(lineId, stationName);
-        Optional<SectionEntity> startSection = sectionDao.findByEndStationNameAndLineId(stationName, lineId);
-        Optional<SectionEntity> endSection = sectionDao.findByStartStationNameAndLineId(stationName, lineId);
+        StationEntity station = findStationByName(stationName);
+        validateStationInLine(lineId, station);
+        Optional<SectionEntity> startSection = sectionDao.findByEndStationIdAndLineId(station.getId(), lineId);
+        Optional<SectionEntity> endSection = sectionDao.findByStartStationIdAndLineId(station.getId(), lineId);
         if (startSection.isPresent() && endSection.isPresent()) {
             mergeSection(startSection.get(), endSection.get());
             return;
@@ -113,22 +121,26 @@ public class SectionService {
         startSection.ifPresent(sectionDao::deleteBy);
     }
 
-    private void validateStationInLine(Long lineId, String stationName) {
-        if (!sectionDao.isStationInLine(lineId, stationName)) {
+    private void validateStationInLine(Long lineId, StationEntity station) {
+        if (!sectionDao.isStationInLineById(lineId, station.getId())) {
             throw new StationNotFoundException();
         }
     }
 
     private void mergeSection(SectionEntity startSection, SectionEntity endSection) {
         sectionDao.deleteBy(startSection);
-        sectionDao.update(endSection.getId(), new Section(startSection.getStartStation(), endSection.getEndStation(),
-                startSection.getDistance() + endSection.getDistance()));
+        endSection.updateDistance(startSection.getDistance() + endSection.getDistance());
+        endSection.updateStartStationId(startSection.getStartStationId());
+        sectionDao.update(endSection);
     }
 
     @Transactional(readOnly = true)
     public List<SectionResponse> findSectionsByLineId(Long lineId) {
         Sections sections = sectionDao.findAllByLineId(lineId).stream()
-                .map(Section::fromEntity)
+                .map(entity -> new Section(
+                        Station.fromEntity(stationDao.findById(entity.getStartStationId())),
+                        Station.fromEntity(stationDao.findById(entity.getEndStationId())),
+                        entity.getDistance()))
                 .collect(collectingAndThen(toList(), Sections::new));
         return sections.getSections().stream()
                 .map(SectionResponse::from)

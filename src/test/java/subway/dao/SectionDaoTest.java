@@ -13,8 +13,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.entity.SectionEntity;
-import subway.domain.Section;
-import subway.domain.Station;
 
 @JdbcTest
 @Sql("/section_initialize.sql")
@@ -36,8 +34,8 @@ class SectionDaoTest {
     @DisplayName("노선의 구간 갯수가 정확하게 반환되어야 한다.")
     void countByLineId_success() {
         // given
-        sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
-        sectionDao.insert(lineId, new Section(new Station("samsung"), new Station("busan"), 1));
+        sectionDao.insert(new SectionEntity(lineId, 1L,2L, 1));
+        sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
 
         // when
         Long count = sectionDao.countByLineId(lineId);
@@ -62,27 +60,31 @@ class SectionDaoTest {
     @DisplayName("노선의 수정이 정상적으로 되어야 한다.")
     void update_success() {
         // given
-        long sectionId = sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
+        SectionEntity sectionEntity = new SectionEntity(lineId, 1L, 2L, 1);
+        sectionDao.insert(sectionEntity);
+        sectionEntity = sectionDao.findAllByLineId(lineId).get(0);
+        sectionEntity.updateDistance(3);
+        sectionEntity.updateEndStationId(3L);
+        sectionEntity.updateStartStationId(2L);
 
         // when
-        sectionDao.update(sectionId, new Section(new Station("samsung"), new Station("busan"), 1));
+        sectionDao.update(sectionEntity);
 
         List<SectionEntity> sections = sectionDao.findAllByLineId(lineId);
 
-        List<SectionEntity> sectionEntities = List.of(new SectionEntity(sectionId, lineId, new Station("samsung"), new Station("busan"), 1));
+        List<SectionEntity> sectionEntities = List.of(sectionEntity);
         assertThat(sections).usingRecursiveComparison()
                 .isEqualTo(sectionEntities);
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"jamsil:true", "busan:false", "samsung:true"}, delimiter = ':')
+    @CsvSource(value = {"1:true", "2:false", "3:true"}, delimiter = ':')
     @DisplayName("주어진 역이 구간에 있는지 확인한다.")
-    void existsByStartStationNameAndLineId(String stationName, boolean exists) {
+    void existsByStartStationNameAndLineId(Long stationId, boolean exists) {
         // given
-        sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
-
+        sectionDao.insert(new SectionEntity(lineId, 1L, 3L, 1));
         // when
-        boolean expect = sectionDao.isStationInLine(lineId, stationName);
+        boolean expect = sectionDao.isStationInLineById(lineId, stationId);
 
         // then
         assertThat(expect)
@@ -101,7 +103,7 @@ class SectionDaoTest {
     @DisplayName("노선에 구간이 있는지 확인한다.")
     void isEmptyByLineId_false() {
         // given
-        sectionDao.insert(lineId, new Section(new Station("jamsil"), new Station("samsung"), 1));
+        sectionDao.insert(new SectionEntity(lineId, 1L, 2L, 1));
 
         // expect
         assertThat(sectionDao.isEmptyByLineId(lineId))

@@ -1,22 +1,21 @@
 package subway.dao.entity;
 
-import subway.domain.Station;
-
 public class SectionEntity {
     private Long id;
     private Long lineId;
-    private Station startStation;
-    private Station endStation;
+    private Long startStationId;
+    private Long endStationId;
     private int distance;
 
-    public SectionEntity() {
+    public SectionEntity(Long lineId, Long startStationId, Long endStationId, int distance) {
+        this(null, lineId, startStationId, endStationId, distance);
     }
 
-    public SectionEntity(Long id, Long lineId, Station startStation, Station endStation, int distance) {
+    public SectionEntity(Long id, Long lineId, Long startStationId, Long endStationId, int distance) {
         this.id = id;
         this.lineId = lineId;
-        this.startStation = startStation;
-        this.endStation = endStation;
+        this.startStationId = startStationId;
+        this.endStationId = endStationId;
         this.distance = distance;
     }
 
@@ -28,15 +27,38 @@ public class SectionEntity {
         return lineId;
     }
 
-    public Station getStartStation() {
-        return startStation;
+    public Long getStartStationId() {
+        return startStationId;
     }
 
-    public Station getEndStation() {
-        return endStation;
+    public Long getEndStationId() {
+        return endStationId;
     }
 
     public int getDistance() {
         return distance;
+    }
+
+    public void updateStartStationId(Long startStationId) {
+        this.startStationId = startStationId;
+    }
+
+    public void updateEndStationId(Long endStationId) {
+        this.endStationId = endStationId;
+    }
+
+    public void updateDistance(int distance) {
+        this.distance = distance;
+    }
+
+    @Override
+    public String toString() {
+        return "SectionEntity{" +
+                "id=" + id +
+                ", lineId=" + lineId +
+                ", startStationId=" + startStationId +
+                ", endStationId=" + endStationId +
+                ", distance=" + distance +
+                '}';
     }
 }
