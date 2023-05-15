@@ -19,22 +19,22 @@ public class Line {
     public Line(String lineName, Sections sections) {
         this(null, lineName, sections);
     }
-
-    public void initializeLine(final String upStationName, final String downStationName, final int distance) {
-        sections.initializeSections(upStationName, downStationName, distance);
-    }
-
-    public void addStation(final String upStationName, final String downStationName, final int distance) {
-        sections.addSection(upStationName, downStationName, distance);
-    }
-
-    public void removeStation(final String stationName) {
-        sections.removeStation(lineName);
-    }
-
-    public boolean hasSameName(final String name) {
-        return this.lineName.equals(name);
-    }
+//
+//    public void initializeLine(final String upStationName, final String downStationName, final int distance) {
+//        sections.initializeSections(upStationName, downStationName, distance);
+//    }
+//
+//    public void addStation(final String upStationName, final String downStationName, final int distance) {
+//        sections.addSection(upStationName, downStationName, distance);
+//    }
+//
+//    public void removeStation(final String stationName) {
+//        sections.removeStation(lineName);
+//    }
+//
+//    public boolean hasSameName(final String name) {
+//        return this.lineName.equals(name);
+//    }
 
     public String getLineName() {
         return lineName;

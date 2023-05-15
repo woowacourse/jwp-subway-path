@@ -35,11 +35,6 @@ public class LineService {
         return lineDao.insert(new LineEntity(line.getLineName()));
     }
 
-    public LineEntity findById(final Long lineId) {
-        return lineDao.findById(lineId)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선 이름입니다."));
-    }
-
     public List<LineResponseDto> findAllLines() {
         final List<LineEntity> lines = lineDao.findAll();
 

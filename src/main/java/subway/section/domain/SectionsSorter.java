@@ -72,20 +72,4 @@ public final class SectionsSorter {
 
         return startStation.get(0);
     }
-
-//    public List<StationEntity> getSortedStationEntities() {
-//        final ArrayList<StationEntity> sortedStationEntities = new ArrayList<>();
-//        final List<String> sortedStationNames = getSortedStationNames();
-//
-//        for (int index = 0; index < sortedStationNames.size() - 1; index++) {
-//            final SectionStationDto sectionStationDto = sectionRelations.get(sortedStationNames.get(index));
-//            sortedStationEntities.add(sectionStationDto.getUpStationEntity());
-//        }
-//
-//        final String lastSectionUpStationName = sortedStationNames.get(sortedStationNames.size() - 2);
-//        final SectionStationDto lastSectionStationDto = sectionRelations.get(lastSectionUpStationName);
-//        sortedStationEntities.add(lastSectionStationDto.getDownStationEntity());
-//
-//        return sortedStationEntities;
-//    }
 }
