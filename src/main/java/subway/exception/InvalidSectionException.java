@@ -1,4 +1,4 @@
-package subway2.exception;
+package subway.exception;
 
 public class InvalidSectionException extends RuntimeException {
 
