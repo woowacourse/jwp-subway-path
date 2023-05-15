@@ -30,6 +30,7 @@ public class DownDirectionStrategy implements DirectionStrategy {
         if (existEdgeOptional.isEmpty()) {
             edges.add(new Edge(existStation, newStation, distance));
         }
+
         return new Edges(new LinkedList<>(edges));
     }
 }
