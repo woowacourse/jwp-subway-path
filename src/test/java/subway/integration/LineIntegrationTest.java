@@ -2,9 +2,15 @@ package subway.integration;
 
 import static io.restassured.RestAssured.given;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.integration.IntegrationFixture.GANGNAM;
+import static subway.integration.IntegrationFixture.JAMSIL;
 import static subway.integration.IntegrationFixture.LINE_2;
+import static subway.integration.IntegrationFixture.LINE_3;
 import static subway.integration.IntegrationFixture.OBJECT_MAPPER;
+import static subway.integration.IntegrationFixture.SAMSUNG;
+import static subway.integration.IntegrationFixture.SEONGLENUG;
 import static subway.integration.IntegrationFixture.jsonSerialize;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -73,30 +79,22 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         final String string = response.asString();
-        System.out.println(string);
         final LineResponse[] responses = OBJECT_MAPPER.readValue(string, LineResponse[].class);
         assertAll(
                 () -> assertThat(responses)
-                        .extracting(LineResponse::getId)
-                        .containsExactlyInAnyOrder(1L, 2L),
-                () -> assertThat(responses)
-                        .extracting(LineResponse::getName)
-                        .containsExactlyInAnyOrder("2호선", "3호선")
+                        .extracting(LineResponse::getId, LineResponse::getName)
+                        .contains(
+                                tuple(1L, "2호선"),
+                                tuple(2L, "3호선")
+                        )
         );
     }
 
     @DisplayName("지하철 노선을 조회한다.")
     @Test
-    void getLine() throws JsonProcessingException {
+    void getLine() {
         // given
-        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
-        final String json = jsonSerialize(request);
-        final Long lineId = 1L;
-
-        given().body(json)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/{lineId}/register", lineId)
-                .then().statusCode(HttpStatus.CREATED.value());
+        final Long lineId = LINE_3.getId();
 
         // when
         final ExtractableResponse<Response> response = RestAssured
@@ -111,10 +109,10 @@ public class LineIntegrationTest extends IntegrationTest {
         final LineResponse result = response.as(LineResponse.class);
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(lineId),
-                () -> assertThat(result.getName()).isEqualTo("2호선"),
+                () -> assertThat(result.getName()).isEqualTo(LINE_3.getName().getValue()),
                 () -> assertThat(result.getStations())
                         .extracting(StationResponse::getName)
-                        .containsExactly("잠실", "강남")
+                        .containsExactly(GANGNAM.getName(), SEONGLENUG.getName(), SAMSUNG.getName())
         );
     }
 
@@ -137,17 +135,10 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선을 제거한다.")
     @Test
     void deleteLine() {
-        // given
-        final ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+        //given
+        final Long lineId = LINE_2.getId();
 
         // when
-        final Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .when().delete("/lines/{lineId}", lineId)
@@ -161,30 +152,24 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("노선에 역을 최초 등록한다.")
     @Test
     void addInitialStationInLine() throws JsonProcessingException {
-        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
+        final SectionRequest request = new SectionRequest(JAMSIL.getName(), GANGNAM.getName(), 10);
 
         final String json = jsonSerialize(request);
 
         given().body(json)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/1/register")
+                .when().post("/lines/" + LINE_2.getId() + "/register")
                 .then().statusCode(HttpStatus.CREATED.value());
     }
 
     @DisplayName("노선에서 역을 삭제한다.")
     @Test
     void deleteStationInLine() throws JsonProcessingException {
-        final SectionRequest request = new SectionRequest("잠실", "강남", 10);
-        final String json = jsonSerialize(request);
-        given().body(json)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/1/register")
-                .then().statusCode(HttpStatus.CREATED.value());
-        final StationRequest stationRequest = new StationRequest("잠실");
+        final StationRequest stationRequest = new StationRequest(SEONGLENUG.getName());
 
         given().body(jsonSerialize(stationRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/1/unregister")
+                .when().delete("/lines/" + LINE_3.getId() + "/unregister")
                 .then().statusCode(HttpStatus.NO_CONTENT.value());
     }
 }
