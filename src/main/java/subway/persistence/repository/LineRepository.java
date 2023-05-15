@@ -70,7 +70,9 @@ public class LineRepository {
         if (stationIds.isEmpty()) {
             return new LinkedList<>();
         }
-        return stationDao.findAllById(stationIds);
+        return stationDao.findAllById(stationIds).stream()
+                .map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName()))
+                .collect(Collectors.toList());
     }
 
     private Sections joinStationsToSections(final List<Section> sections, final List<Station> stations) {
@@ -94,6 +96,7 @@ public class LineRepository {
 
     public Station findStationByName(final String name) {
         return stationDao.findByName(name)
+                .map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName()))
                 .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
     }
 

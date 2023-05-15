@@ -11,6 +11,7 @@ import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.repository.LineRepository;
+import subway.persistence.repository.StationRepository;
 import subway.ui.request.SectionRequest;
 import subway.ui.request.StationRequest;
 
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @JdbcTest
-@Import({LineService.class, LineRepository.class, LineDao.class, StationDao.class, SectionDao.class, StationService.class})
+@Import({LineService.class, StationService.class, LineRepository.class, StationRepository.class, LineDao.class, StationDao.class, SectionDao.class})
 class LineServiceTest {
 
     @Autowired
