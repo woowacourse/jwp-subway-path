@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
-class LinesTest {
+class SubwayTest {
 
     @Test
     void 모든_노선을_조회할_수_있다() {
@@ -22,14 +22,12 @@ class LinesTest {
         final Line firstLine = new Line("8호선", "분홍색", List.of(firstSection, secondSection));
         final Line secondLine = new Line("분당선", "노란색", List.of(thirdSection, fourthSection));
 
-        final Lines lines = new Lines(List.of(firstLine, secondLine));
+        final Subway subway = new Subway(List.of(firstLine, secondLine));
 
         // when
-        final List<Line> result = lines.getLines();
+        final List<Line> lines = subway.getLines();
 
         // then
-        assertThat(result).containsExactly(firstLine, secondLine);
+        assertThat(lines).containsExactly(firstLine, secondLine);
     }
-
-
 }

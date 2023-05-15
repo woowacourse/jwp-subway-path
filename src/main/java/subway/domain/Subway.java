@@ -1,13 +1,14 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class Lines {
+public class Subway {
 
     private final List<Line> lines;
 
-    public Lines(final List<Line> lines) {
-        this.lines = lines;
+    public Subway(final List<Line> lines) {
+        this.lines = new ArrayList<>(lines);
     }
 
     public List<Line> getLines(){
