@@ -7,8 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
-import subway.ui.dto.request.SectionRequest;
+import subway.controller.dto.request.SectionRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
