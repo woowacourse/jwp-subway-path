@@ -23,11 +23,11 @@ public class StationService {
     public void deleteStation(Long stationId) {
         List<SectionEntity> sectionEntities = sectionDao.findAll();
         long startStationCount = sectionEntities.stream()
-                .filter(it -> it.getStartStationId() == stationId)
+                .filter(it -> it.getStartStationId().equals(stationId))
                 .count();
 
         long endStationCount = sectionEntities.stream()
-                .filter(it -> it.getStartStationId() == stationId)
+                .filter(it -> it.getStartStationId().equals(stationId))
                 .count();
 
         if (startStationCount == 0 || endStationCount == 0) {
