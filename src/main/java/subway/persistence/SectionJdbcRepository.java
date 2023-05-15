@@ -21,7 +21,7 @@ public class SectionJdbcRepository implements SectionRepository {
     private final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
             new Section(
                     rs.getLong("id"),
-                    new Line(rs.getString("lineId")),
+                    new Line(rs.getString("line")),
                     new Station(rs.getString("up_station")),
                     new Station(rs.getString("down_station")),
                     rs.getLong("distance")
@@ -52,9 +52,9 @@ public class SectionJdbcRepository implements SectionRepository {
     }
 
     @Override
-    public List<Section> findAllByLineId(final Long lineId) {
-        String sql = "select * from section where lineId = ?";
-        return jdbcTemplate.query(sql, sectionRowMapper, lineId);
+    public List<Section> findAllByLineName(final String lineName) {
+        String sql = "select * from section where line = ?";
+        return jdbcTemplate.query(sql, sectionRowMapper, lineName);
     }
 
     @Override

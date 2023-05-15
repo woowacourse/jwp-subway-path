@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class SectionEntity {
-    private final Long lineId;
+    private final String line;
     private final String upStation;
     private final String downStation;
     private final Long distance;
 
-    public SectionEntity(final Long lineId, final String upStation, final String downStation, final Long distance) {
-        this.lineId = lineId;
+    public SectionEntity(final String line, final String upStation, final String downStation,
+        final Long distance) {
+        this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -21,7 +22,7 @@ public class SectionEntity {
     public static List<SectionEntity> of(final List<Section> sections) {
         return sections.stream()
                 .map(section -> new SectionEntity(
-                        section.getLine().getId(),
+                        section.getLine().getName(),
                         section.getUpStation().getName(),
                         section.getDownStation().getName(),
                         section.getDistance()
@@ -29,8 +30,8 @@ public class SectionEntity {
                 .collect(Collectors.toList());
     }
 
-    public Long getLineId() {
-        return lineId;
+    public String getLine() {
+        return line;
     }
 
     public String getUpStation() {

@@ -2,7 +2,7 @@ package subway.domain;
 
 public class Section {
 	private Long id;
-	private Line line;
+	private final Line line;
 	private Station upStation;
 	private Station downStation;
 	private Long distance;
@@ -22,17 +22,11 @@ public class Section {
 		this.distance = distance;
 	}
 
-	public Section(final Station upStation, final Station downStation, final Long distance) {
-		this.upStation = upStation;
-		this.downStation = downStation;
-		this.distance = distance;
-	}
-
 	public static Section of(final Line line, final String upStation, final String downStation, final Long distance) {
 		return new Section(line, new Station(upStation), new Station(downStation), distance);
 	}
-	public static Section of(final String line, final String upStation, final String downStation, final Long distance) {
-		return new Section(new Line(line), new Station(upStation), new Station(downStation), distance);
+	public static Section of(final String lineName, final String upStationName, final String downStationName, final Long distance) {
+		return new Section(new Line(lineName), new Station(upStationName), new Station(downStationName), distance);
 	}
 
 	public static Section of(final String upStation, final String downStation) {
@@ -93,9 +87,9 @@ public class Section {
 		final Long distance = this.distance + section.getDistance();
 
 		if (this.downStation.equals(station)) {
-			return new Section(this.upStation, section.downStation, distance);
+			return new Section(this.line, this.upStation, section.downStation, distance);
 		}
-		return new Section(this.downStation, section.upStation, distance);
+		return new Section(this.line, this.downStation, section.upStation, distance);
 	}
 
 	public Long getId() {
