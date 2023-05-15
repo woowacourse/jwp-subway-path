@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -82,12 +83,11 @@ public class Sections {
         final int index = newSections.indexOf(beforeSection);
         newSections.remove(beforeSection);
         newSections.remove(nextSection);
-        final Section newSection = new Section(
+        newSections.add(index, new Section(
                 beforeSection.getPrevStation(),
                 nextSection.getNextStation(),
                 beforeSection.getDistance().plusValue(nextSection.getDistance())
-        );
-        newSections.add(index, newSection);
+        ));
         return new Sections(newSections);
     }
 
@@ -112,8 +112,21 @@ public class Sections {
     }
 
     public boolean containSection(final Section otherSection) {
-        return sections.stream()
-                .anyMatch(section -> section.isSameStations(otherSection));
+        final List<Station> allStations = getAllStations();
+        return allStations.contains(otherSection.getPrevStation())
+                && allStations.contains(otherSection.getNextStation());
+    }
+
+    public List<Station> getAllStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+        final List<Station> stations = new LinkedList<>();
+        for (final Section section : sections) {
+            stations.add(section.getPrevStation());
+        }
+        stations.add(sections.get(sections.size() - 1).getNextStation());
+        return stations;
     }
 
     public List<Section> getSections() {

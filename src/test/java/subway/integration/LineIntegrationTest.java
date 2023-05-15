@@ -205,6 +205,18 @@ public class LineIntegrationTest extends IntegrationTest {
                     .then().statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
+        @DisplayName("이미 Line에 포함되어있는 Station들을 삽입하는 경우 400을 반환한다.")
+        @Test
+        void registerAlreadyStations() {
+            final SectionRequest request = new SectionRequest(GANGNAM.getName(), SAMSUNG.getName(), 1);
+
+            final String json = jsonSerialize(request);
+
+            given().body(json)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .then().log().all().statusCode(HttpStatus.BAD_REQUEST.value());
+        }
     }
 
     @DisplayName("노선에서 역을 삭제한다.")

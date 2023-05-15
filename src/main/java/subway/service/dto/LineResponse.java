@@ -1,9 +1,8 @@
 package subway.service.dto;
 
-import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 import subway.domain.Line;
-import subway.domain.Section;
 
 public class LineResponse {
 
@@ -22,15 +21,9 @@ public class LineResponse {
     }
 
     public static LineResponse from(final Line line) {
-        if (line.getSections().getSections().isEmpty()) {
-            return new LineResponse(line.getId(), line.getName().getValue(), new LinkedList<>());
-        }
-        final List<StationResponse> stationResponses = new LinkedList<>();
-        final List<Section> sections = line.getSections().getSections();
-        for (final Section section : sections) {
-            stationResponses.add(StationResponse.of(section.getPrevStation()));
-        }
-        stationResponses.add(StationResponse.of(sections.get(sections.size() - 1).getNextStation()));
+        final List<StationResponse> stationResponses = line.getSections().getAllStations().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toUnmodifiableList());
         return new LineResponse(line.getId(), line.getName().getValue(), stationResponses);
     }
 
