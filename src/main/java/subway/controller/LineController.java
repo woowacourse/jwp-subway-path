@@ -2,6 +2,7 @@ package subway.controller;
 
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<Void> createLine(@Valid @RequestBody LineRequest lineRequest) {
         long id = lineService.save(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
