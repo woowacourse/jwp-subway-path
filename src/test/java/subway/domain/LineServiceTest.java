@@ -11,8 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
-import subway.dto.AddStationToLineRequest;
-import subway.dto.LineCreateRequest;
+import subway.dto.AddStationToExistLineDto;
+import subway.dto.CreateNewLineDto;
 import subway.service.LineService;
 
 @SpringBootTest
@@ -37,7 +37,7 @@ class LineServiceTest {
         Station upStation = stationDao.insert(new Station("안국"));
         Station downStation = stationDao.insert(new Station("경복궁"));
         Line newLine = lineService.createNewLine(
-                new LineCreateRequest("3호선", upStation.getId(), downStation.getId(), 10));
+                new CreateNewLineDto("3호선", upStation.getId(), downStation.getId(), 10));
         // when
         List<Station> allStation = lineService.findAllStation(newLine.getId());
 
@@ -55,12 +55,13 @@ class LineServiceTest {
         Station upStation = stationDao.insert(new Station("안국"));
         Station downStation = stationDao.insert(new Station("경복궁"));
         Line line = lineService.createNewLine(
-                new LineCreateRequest("3호선", upStation.getId(), downStation.getId(), 10));
+                new CreateNewLineDto("3호선", upStation.getId(), downStation.getId(), 10));
 
         Station newStation = stationDao.insert(new Station("충무로"));
-        AddStationToLineRequest addRequest = new AddStationToLineRequest(downStation.getId(),
+        AddStationToExistLineDto dto = new AddStationToExistLineDto(line.getId(),
+                downStation.getId(),
                 newStation.getId(), 5);
-        Line newLine = lineService.addStationToExistLine(line.getId(), addRequest);
+        Line newLine = lineService.addStationToExistLine(dto);
         // when
         List<Station> allStation = lineService.findAllStation(newLine.getId());
         // then

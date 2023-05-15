@@ -1,7 +1,6 @@
-package subway.ui;
+package subway.controller;
 
 import java.net.URI;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
@@ -13,13 +12,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.domain.Line;
-import subway.domain.Station;
-import subway.dto.AddStationToLineRequest;
-import subway.dto.AddStationToLineResponse;
-import subway.dto.DeleteStationFromLineResponse;
-import subway.dto.GetAllStationsInLineResponse;
-import subway.dto.LineCreateRequest;
-import subway.dto.LineCreateResponse;
+import subway.dto.AddStationToExistLineDto;
+import subway.dto.CreateNewLineDto;
+import subway.dto.request.AddStationToLineRequest;
+import subway.dto.request.LineCreateRequest;
+import subway.dto.response.AddStationToLineResponse;
+import subway.dto.response.DeleteStationFromLineResponse;
+import subway.dto.response.GetAllStationsInLineResponse;
+import subway.dto.response.LineCreateResponse;
 import subway.service.LineService;
 
 @RestController
@@ -32,8 +32,13 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineCreateResponse> createLine(@RequestBody LineCreateRequest createRequest) {
-        Line createdLine = lineService.createNewLine(createRequest);
+    public ResponseEntity<LineCreateResponse> createLine(@RequestBody LineCreateRequest request) {
+        CreateNewLineDto dto = new CreateNewLineDto(
+                request.getLineName(),
+                request.getUpStationId(),
+                request.getDownStationId(),
+                request.getDistance());
+        Line createdLine = lineService.createNewLine(dto);
 
         LineCreateResponse response = LineCreateResponse.fromDomain(createdLine);
         return ResponseEntity.created(URI.create("/lines/" + createdLine.getId())).body(response);
@@ -41,8 +46,13 @@ public class LineController {
 
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<AddStationToLineResponse> addStationToLine(@PathVariable Long lineId,
-                                                                     @RequestBody AddStationToLineRequest addStationToLineRequest) {
-        Line updatedLine = lineService.addStationToExistLine(lineId, addStationToLineRequest);
+                                                                     @RequestBody AddStationToLineRequest request) {
+        AddStationToExistLineDto dto = new AddStationToExistLineDto(
+                lineId,
+                request.getUpStationId(),
+                request.getDownStationId(),
+                request.getDistance());
+        Line updatedLine = lineService.addStationToExistLine(dto);
 
         AddStationToLineResponse response = AddStationToLineResponse.fromDomain(updatedLine);
         return ResponseEntity.ok(response);
@@ -67,7 +77,7 @@ public class LineController {
 
     @DeleteMapping("/{lineId}/stations/{stationId}")
     public ResponseEntity<DeleteStationFromLineResponse> delete(@PathVariable Long lineId,
-                                                           @PathVariable Long stationId) {
+                                                                @PathVariable Long stationId) {
         Line updatedLine = lineService.deleteStationFromLine(lineId, stationId);
 
         DeleteStationFromLineResponse response = DeleteStationFromLineResponse.fromDomain(updatedLine);

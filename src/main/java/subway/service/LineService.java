@@ -11,8 +11,8 @@ import subway.domain.Edge;
 import subway.domain.Line;
 import subway.domain.Lines;
 import subway.domain.Station;
-import subway.dto.AddStationToLineRequest;
-import subway.dto.LineCreateRequest;
+import subway.dto.AddStationToExistLineDto;
+import subway.dto.CreateNewLineDto;
 
 @Service
 public class LineService {
@@ -31,14 +31,13 @@ public class LineService {
     }
 
     @Transactional
-    public Line createNewLine(LineCreateRequest createRequest) {
-        Station upStation = stationDao.findById(createRequest.getUpStationId())
+    public Line createNewLine(CreateNewLineDto dto) {
+        Station upStation = stationDao.findById(dto.getUpStationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Station downStation = stationDao.findById(createRequest.getDownStationId())
+        Station downStation = stationDao.findById(dto.getDownStationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
 
-        Line updatedLine = lines.addNewLine(createRequest.getLineName(), upStation, downStation,
-                createRequest.getDistance());
+        Line updatedLine = lines.addNewLine(dto.getLineName(), upStation, downStation, dto.getDistance());
 
         Line createdLine = lineDao.insert(updatedLine);
 
@@ -48,14 +47,14 @@ public class LineService {
     }
 
     @Transactional
-    public Line addStationToExistLine(Long lineId, AddStationToLineRequest addStationToLineRequest) {
-        Station upStation = stationDao.findById(addStationToLineRequest.getUpStationId())
+    public Line addStationToExistLine(AddStationToExistLineDto dto) {
+        Station upStation = stationDao.findById(dto.getUpStationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Station downStation = stationDao.findById(addStationToLineRequest.getDownStationId())
+        Station downStation = stationDao.findById(dto.getDownStationId())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        Line line = assembleLine(lineId);
+        Line line = assembleLine(dto.getLineId());
 
-        Line updatedLine = lines.addStationToLine(line, upStation, downStation, addStationToLineRequest.getDistance());
+        Line updatedLine = lines.addStationToLine(line, upStation, downStation, dto.getDistance());
         edgeDao.deleteAllByLineId(updatedLine.getId());
         edgeDao.insertAllByLineId(updatedLine.getId(), updatedLine.getEdges());
 
