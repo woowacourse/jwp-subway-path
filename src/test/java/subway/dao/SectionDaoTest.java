@@ -20,7 +20,7 @@ class SectionDaoTest {
 
     @Test
     void saveSection() {
-       sectionDao.saveSection(1l, 1, "신림", "봉선");
+       sectionDao.saveSection(1l, 1, "신림", "봉천");
     }
 
     @Test
@@ -31,13 +31,17 @@ class SectionDaoTest {
 
     @Test
     void findSectionsByLineId() {
+        Assertions.assertThat(sectionDao.findSectionsByLineId(1l)).hasSize(4);
     }
 
     @Test
     void findSectionByLineIdAndStationId() {
+        Assertions.assertThat(sectionDao.findSectionByLineIdAndStationId(1l,2l)).hasSize(2);
     }
 
     @Test
     void deleteSection() {
+        Assertions.assertThatNoException()
+                .isThrownBy(()-> sectionDao.deleteSection(1l));
     }
 }
