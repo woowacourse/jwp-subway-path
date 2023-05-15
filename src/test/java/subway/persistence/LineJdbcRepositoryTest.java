@@ -49,8 +49,18 @@ class LineJdbcRepositoryTest {
 		Assertions.assertThat(2).isEqualTo(lines.size());
 	}
 
+	@DisplayName("ID를 사용한 노선 조회 서비스 테스트")
 	@Test
 	void findById() {
+		// given
+		final Line line1 = new Line("1호선");
+		final long lineId = repository.createLine(line1);
+
+		// when
+		final Line foundLine = repository.findById(lineId);
+
+		// then
+		Assertions.assertThat(line1).isEqualTo(foundLine);
 	}
 
 	@Test
