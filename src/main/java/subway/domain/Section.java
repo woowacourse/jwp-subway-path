@@ -22,6 +22,14 @@ public class Section {
         this(null, line, upStation, downStation, distance);
     }
 
+    public Section reverseDirection() {
+        return new Section(id, line, downStation, upStation, distance);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
     public Line getLine() {
         return line;
     }
