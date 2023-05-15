@@ -18,7 +18,7 @@ class LinesTest {
         List<Edge> edges = List.of(new Edge(c, d, 5), new Edge(a, b, 3), new Edge(b, c, 4));
         Line line = new Line(1L, "3호선", edges);
 
-        Lines lines = new Lines();
+        Lines lines = new Lines(List.of(line));
         List<Station> allStation = lines.findAllStation(line);
         assertThat(allStation).containsExactly(a, b, c, d);
     }
