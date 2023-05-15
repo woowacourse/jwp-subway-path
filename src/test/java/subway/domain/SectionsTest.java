@@ -55,6 +55,7 @@ class SectionsTest {
     void 등록시_기준역이_구간의_출발점에_존재할_경우_등록하려는_구간의_거리는_기존_거리보다_짧지_않으면_예외가_발생한다(final int distance) {
         // given
         final Section section = new Section("잠실역", "석촌역", 10);
+
         final Sections sections = new Sections(List.of(section));
 
         // expect
@@ -68,6 +69,7 @@ class SectionsTest {
     void 상행_등록시_기준역이_구간의_끝점에_존재할_경우_등록할_구간의_거리가_기존_구간의_거리보다_짧지_않으면_예외가_발생한다(final int distance) {
         // given
         final Section section = new Section("잠실역", "석촌역", 10);
+
         final Sections sections = new Sections(List.of(section));
 
         // expect
@@ -81,6 +83,7 @@ class SectionsTest {
         // given
         final Section firstSection = new Section("잠실역", "석촌역", 10);
         final Section secondSection = new Section("석촌역", "송파역", 10);
+
         final Sections sections = new Sections(List.of(firstSection, secondSection));
 
         // when
@@ -98,6 +101,7 @@ class SectionsTest {
     void 상행_종점을_등록한다() {
         // given
         final Section section = new Section("잠실역", "석촌역", 10);
+
         final Sections sections = new Sections(List.of(section));
 
         // when
@@ -114,6 +118,7 @@ class SectionsTest {
     void 하행_종점을_등록한다() {
         // given
         final Section section = new Section("잠실역", "석촌역", 10);
+
         final Sections sections = new Sections(List.of(section));
 
         // when
@@ -131,6 +136,7 @@ class SectionsTest {
         // given
         final Section firstSection = new Section("잠실역", "석촌역", 10);
         final Section secondSection = new Section("석촌역", "송파역", 10);
+
         final Sections sections = new Sections(List.of(firstSection, secondSection));
 
         // when
@@ -145,6 +151,7 @@ class SectionsTest {
         // given
         final Section firstSection = new Section("잠실역", "석촌역", 10);
         final Section secondSection = new Section("석촌역", "송파역", 10);
+
         final Sections sections = new Sections(List.of(firstSection, secondSection));
 
         // when
@@ -159,6 +166,7 @@ class SectionsTest {
         // given
         final Section firstSection = new Section("잠실역", "석촌역", 10);
         final Section secondSection = new Section("석촌역", "송파역", 10);
+
         final Sections sections = new Sections(List.of(firstSection, secondSection));
 
         // when
@@ -172,6 +180,7 @@ class SectionsTest {
     void 존재하지_않는_역을_삭제하면_예외가_발생한다() {
         // given
         final Section section = new Section("잠실역", "석촌역", 10);
+
         final Sections sections = new Sections(List.of(section));
 
         // expect

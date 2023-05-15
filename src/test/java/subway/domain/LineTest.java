@@ -20,7 +20,7 @@ class LineTest {
     @ValueSource(strings = {"일이삼", "일이삼사오륙칠팔구십"})
     void 세글자부터_열글자_사이의_이름은_정상_생성된다(final String name) {
         // expect
-        assertDoesNotThrow(() -> new Line(name, "초록색", new ArrayList<>()));
+        assertDoesNotThrow(() -> new Line(name, "초록색"));
     }
 
     @ParameterizedTest(name = "세글자 미만 열글자 초과의 이름은 예외가 발생한다.")
@@ -38,7 +38,7 @@ class LineTest {
         final Line line = new Line("8호선", "분홍색", new ArrayList<>());
 
         // when
-        line.register(new Station("잠실역"), new Station("석촌역"), 10);
+        line.registerSection(new Station("잠실역"), new Station("석촌역"), 10);
 
         // then
         assertThat(line.sections()).contains(new Section("잠실역", "석촌역", 10));
@@ -52,9 +52,23 @@ class LineTest {
         final Line line = new Line("8호선", "분홍색", List.of(firstSection, secondSection));
 
         // when
-        line.delete(new Station("석촌역"));
+        line.deleteStation(new Station("석촌역"));
 
         // then
         assertThat(line.sections()).contains(new Section("잠실역", "송파역", 20));
+    }
+
+    @Test
+    void 이름과_색상이_같으면_동등하다() {
+        // given
+        final String name = "8호선";
+        final String color = "분홍색";
+
+        // when
+        final Line firstLine = new Line(name, color);
+        final Line secondLine = new Line(name, color);
+
+        // then
+        assertThat(firstLine).isEqualTo(secondLine);
     }
 }
