@@ -18,6 +18,18 @@ public class Section {
         this.distance = distance;
     }
 
+    public boolean isSameDownStationName(String downStationName) {
+        return nearbyStations.getDownStation().isSameStationName(downStationName);
+    }
+
+    public boolean isSameUpStationName(String upStationName) {
+        return nearbyStations.getUpStation().isSameStationName(upStationName);
+    }
+
+    public boolean isSameLineId(Long lineId) {
+        return line.getId().equals(lineId);
+    }
+
     public Station getUpStation() {
         return nearbyStations.getUpStation();
     }

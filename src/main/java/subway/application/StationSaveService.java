@@ -86,7 +86,7 @@ public class StationSaveService {
         Station currentDownStation = stationsByLine.findStationByStationNameAndLine(stationRequest.getDownStationName(), line);
         Station savedUpStation = stationRepository.saveStation(new Station(null, stationRequest.getUpStationName(), line));
         Optional<Section> currentSectionHasRequestDownStationAsDownStation =
-                sections.findCurrentSectionHasRequestDownStationNameAsDownStationByLine(stationRequest.getDownStationName(), line);
+                sections.findSectionHasDownStationNameAsDownStationByLine(stationRequest.getDownStationName(), line);
 
         Section sectionToSave =
                 NewSectionMaker.makeSectionToSave(line, savedUpStation, currentDownStation, new Distance(stationRequest.getDistance()));
@@ -125,7 +125,7 @@ public class StationSaveService {
         Station currentUpStation = stationsByLine.findStationByStationNameAndLine(stationRequest.getUpStationName(), line);
         Station savedDownStation = stationRepository.saveStation(new Station(null, stationRequest.getDownStationName(), line));
         Optional<Section> currentSectionHasRequestUpStationAsUpStation =
-                sections.findCurrentSectionHasRequestUpStationNameAsUpStationByLine(stationRequest.getUpStationName(), line);
+                sections.findSectionHasUpStationNameAsUpStationByLine(stationRequest.getUpStationName(), line);
         Section sectionToSave =
                 NewSectionMaker.makeSectionToSave(line, currentUpStation, savedDownStation, new Distance(stationRequest.getDistance()));
 

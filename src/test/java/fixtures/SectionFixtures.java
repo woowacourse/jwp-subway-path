@@ -15,7 +15,8 @@ public class SectionFixtures {
 
     public static class INITIAL_SECTION_A_TO_C {
         public static final Long ID = 1L;
-        public static final Distance DISTANCE = new Distance(10);
+        public static final int RAW_DISTANCE = 10;
+        public static final Distance DISTANCE = new Distance(RAW_DISTANCE);
 
         public static final Section FIND_SECTION = new Section(ID,
                 NearbyStations.createByUpStationAndDownStation(INITIAL_STATION_A.FIND_STATION, INITIAL_STATION_C.FIND_STATION),

@@ -30,6 +30,10 @@ public class StationFixtures {
         public static Station createStationToInsert(Line line) {
             return new Station(null, NAME, line);
         }
+
+        public static Station createDummyStation(Long dummyId, Line line) {
+            return new Station(dummyId, NAME, line);
+        }
     }
 
     public static class STATION_D {
@@ -37,6 +41,10 @@ public class StationFixtures {
 
         public static Station createStationToInsert(Line line) {
             return new Station(null, NAME, line);
+        }
+
+        public static Station createDummyStation(Long dummyId, Line line) {
+            return new Station(dummyId, NAME, line);
         }
     }
 

@@ -46,8 +46,8 @@ public class StationRemoveService {
     }
 
     private void saveNewSection(Station findStation, Sections sections) {
-        Section upSection = sections.findUpSectionByStation(findStation);
-        Section downSection = sections.findDownSectionByStation(findStation);
+        Section upSection = sections.findSectionByDownStation(findStation);
+        Section downSection = sections.findSectionByUpStation(findStation);
 
         int upDistance = upSection.getDistance().getDistance();
         int downDistance = downSection.getDistance().getDistance();

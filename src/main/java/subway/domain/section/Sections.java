@@ -6,6 +6,7 @@ import java.util.*;
 
 import subway.domain.line.Line;
 import subway.domain.station.Station;
+import subway.exception.SectionNotFoundException;
 
 public class Sections {
 
@@ -15,27 +16,27 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public Section findUpSectionByStation(Station station) {
+    public Section findSectionByDownStation(Station station) {
         Long stationId = station.getId();
         return sections.stream()
                 .filter(section -> section.getDownStation().getId().equals(stationId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역에 해당하는 상행 구간이 없습니다."));
+                .orElseThrow(() -> new SectionNotFoundException("해당 역을 하행역으로 가지는 구간이 없습니다."));
     }
 
-    public Section findDownSectionByStation(Station station) {
+    public Section findSectionByUpStation(Station station) {
         Long stationId = station.getId();
         return sections.stream()
                 .filter(section -> section.getUpStation().getId().equals(stationId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 역에 해당하는 하행 구간이 없습니다."));
+                .orElseThrow(() -> new SectionNotFoundException("해당 역을 상행역으로 가지는 구간이 없습니다."));
     }
 
     public Map<Station, Station> generateStationConnections() {
         return sections.stream()
                 .collect(toUnmodifiableMap(
-                        section -> section.getUpStation(),
-                        section -> section.getDownStation())
+                        Section::getUpStation,
+                        Section::getDownStation)
                 );
     }
 
@@ -57,16 +58,17 @@ public class Sections {
         return SectionCase.MIDDLE_SECTION;
     }
 
-    // TODO :  디미터 리팩토링
-    public Optional<Section> findCurrentSectionHasRequestDownStationNameAsDownStationByLine(String downStationName, Line line) {
+    public Optional<Section> findSectionHasDownStationNameAsDownStationByLine(String downStationName, Line line) {
         return sections.stream()
-                .filter(section -> section.getDownStation().isSameStationName(downStationName) && section.getLine().getId().equals(line.getId()))
+                .filter(section -> section.isSameDownStationName(downStationName) &&
+                        section.isSameLineId(line.getId()))
                 .findFirst();
     }
 
-    public Optional<Section> findCurrentSectionHasRequestUpStationNameAsUpStationByLine(String upStationName, Line line) {
+    public Optional<Section> findSectionHasUpStationNameAsUpStationByLine(String upStationName, Line line) {
         return sections.stream()
-                .filter(section -> section.getUpStation().isSameStationName(upStationName) && section.getLine().getId().equals(line.getId()))
+                .filter(section -> section.isSameUpStationName(upStationName) &&
+                        section.isSameLineId(line.getId()))
                 .findFirst();
     }
 
