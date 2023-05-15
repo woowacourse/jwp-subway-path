@@ -79,6 +79,34 @@ class LineTest {
     }
 
     @Test
+    void 하행_종점을_삭제하면_종점의_전_역이_종점이_된다() {
+        Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
+        Section section2 = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
+
+        Line line = new Line(new LineName("2호선"), List.of(section1, section2));
+        line.deleteStation(JAMSIL_NARU_STATION);
+
+        assertSoftly(softly -> {
+            softly.assertThat(line.getSections()).hasSize(1);
+            softly.assertThat(line.getSections()).doesNotContain(section2);
+        });
+    }
+
+    @Test
+    void 상행_종점을_삭제하면_두_번째_역이_상행_종점이_된다() {
+        Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
+        Section section2 = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 5);
+
+        Line line = new Line(new LineName("2호선"), List.of(section1, section2));
+        line.deleteStation(SULLEUNG_STATION);
+
+        assertSoftly(softly -> {
+            softly.assertThat(line.getSections()).hasSize(1);
+            softly.assertThat(line.getSections()).doesNotContain(section1);
+        });
+    }
+
+    @Test
     void Station을_추가할_수_있다() {
         Line lineNumberTwo = new Line(LINE_NUMBER_TWO);
 

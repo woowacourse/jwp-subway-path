@@ -113,4 +113,12 @@ public class Line {
                 .map(section -> section.getDownstream().getName())
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "name=" + name +
+                ", sections=" + sections +
+                '}';
+    }
 }

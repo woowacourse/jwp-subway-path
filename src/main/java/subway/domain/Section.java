@@ -6,7 +6,6 @@ import subway.exception.SectionMergeException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 public class Section {
 
@@ -54,23 +53,25 @@ public class Section {
     }
 
     public Section merge(Section sectionToMerge) {
-        Optional<Station> optionalStation = getLinkingStation(sectionToMerge);
-        Station linkingStation = optionalStation.orElseThrow(() -> new SectionMergeException("연결할 수 없는 구간입니다."));
-        int mergedSectionDistance = distance + sectionToMerge.distance;
-        if (downstream.equals(linkingStation)) {
+        validateLinkingStation(sectionToMerge);
+        int mergedSectionDistance = calculateDistance(sectionToMerge);
+        if (downstream.equals(sectionToMerge.upstream)) {
             return new Section(upstream, sectionToMerge.downstream, mergedSectionDistance);
         }
-        return new Section(downstream, sectionToMerge.upstream, mergedSectionDistance);
+        return new Section(sectionToMerge.upstream, downstream, mergedSectionDistance);
     }
 
-    private Optional<Station> getLinkingStation(Section otherSection) {
-        if (downstream.equals(otherSection.upstream)) {
-            return Optional.of(downstream);
+    private void validateLinkingStation(Section sectionToMerge) {
+        if (!downstream.equals(sectionToMerge.upstream) && !upstream.equals(sectionToMerge.downstream)) {
+            throw new SectionMergeException("연결할 수 없는 구간입니다.");
         }
-        if (upstream.equals(otherSection.downstream)) {
-            return Optional.of(upstream);
+    }
+
+    private int calculateDistance(Section sectionToMerge) {
+        if (distance == Integer.MAX_VALUE || sectionToMerge.distance == Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
         }
-        return Optional.empty();
+        return distance + sectionToMerge.distance;
     }
 
     public int getDistance() {

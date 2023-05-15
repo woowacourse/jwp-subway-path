@@ -17,6 +17,7 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.domain.Line;
+import subway.domain.LineName;
 import subway.domain.Station;
 import subway.dto.AddStationRequest;
 import subway.entity.LineEntity;
@@ -63,7 +64,7 @@ public class IntegrationTest {
         RestAssured.port = port;
         upstream = JAMSIL_STATION;
         downstream = JAMSIL_NARU_STATION;
-        line = new Line(VALID_LINE_NAME, List.of(JAMSIL_TO_JAMSILNARU));
+        line = new Line(new LineName(VALID_LINE_NAME), List.of(JAMSIL_TO_JAMSILNARU));
 
         lineDao.insert(new LineEntity.Builder().name(VALID_LINE_NAME).build());
         subwayRepository.addStation(upstream);
@@ -76,7 +77,7 @@ public class IntegrationTest {
     void addStation() {
         given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(VALID_STATION_NAME, line.getName(), upstream.getName(), downstream.getName(), DISTANCE - 1)))
+                .body(toJson(new AddStationRequest(VALID_STATION_NAME, line.getName().getName(), upstream.getName(), downstream.getName(), DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")
@@ -90,7 +91,7 @@ public class IntegrationTest {
     void addStationFail1(String invalidStationName) {
         given()
                 .contentType(ContentType.JSON)
-                .body(toJson(new AddStationRequest(invalidStationName, line.getName(), upstream.getName(), downstream.getName(), DISTANCE - 1)))
+                .body(toJson(new AddStationRequest(invalidStationName, line.getName().getName(), upstream.getName(), downstream.getName(), DISTANCE - 1)))
                 .log().all()
                 .when()
                 .post("/line/stations")

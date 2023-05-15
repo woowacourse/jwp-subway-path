@@ -70,6 +70,16 @@ class SectionTest {
     }
 
     @Test
+    void 종점역을_포함하는_section을_병합하면_병합하는_section의_거리는_정수_최대가_된다() {
+        Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
+        Section section2 = new Section(JAMSIL_STATION, Station.getEmptyEndpoint(), Integer.MAX_VALUE);
+
+        Section mergedSection = section1.merge(section2);
+
+        assertThat(mergedSection.getDistance()).isEqualTo(Integer.MAX_VALUE);
+    }
+
+    @Test
     void Section병합시_하나의_Downstream과_다른_하나의_Upstream이_같지_않은_경우_예외를_던진다() {
         Section section1 = new Section(SULLEUNG_STATION, JAMSIL_STATION, 5);
         Section section2 = new Section(JAMSIL_NARU_STATION, JAMSIL_STATION, 5);
