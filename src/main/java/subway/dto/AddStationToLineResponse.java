@@ -1,9 +1,7 @@
 package subway.dto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 import subway.domain.Line;
-import subway.domain.Station;
 
 public class AddStationToLineResponse {
     private final Long lineId;
@@ -17,10 +15,7 @@ public class AddStationToLineResponse {
     }
 
     public static AddStationToLineResponse fromDomain(Line line) {
-        List<Long> stationIds = line.getStations().stream()
-                .map(Station::getId)
-                .collect(Collectors.toList());
-        return new AddStationToLineResponse(line.getId(), line.getName(), stationIds);
+        return new AddStationToLineResponse(line.getId(), line.getName(), line.getStationIds());
     }
 
     public Long getLineId() {

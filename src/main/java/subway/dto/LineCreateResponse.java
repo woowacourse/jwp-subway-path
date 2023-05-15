@@ -18,10 +18,7 @@ public class LineCreateResponse {
     }
 
     public static LineCreateResponse fromDomain(Line line) {
-        List<Long> stationIds = line.getStations().stream()
-                .map(Station::getId)
-                .collect(Collectors.toList());
-        return new LineCreateResponse(line.getId(), line.getName(), stationIds);
+        return new LineCreateResponse(line.getId(), line.getName(), line.getStationIds());
     }
 
     public Long getLineId() {

@@ -39,34 +39,6 @@ public class Line {
         return new Line(name, edges);
     }
 
-    public List<Station> getStations() {
-        Map<Station, Station> stationToStation = edges.stream()
-                .collect(Collectors.toMap(Edge::getUpStation, Edge::getDownStation));
-        Set<Station> ups = new HashSet<>(stationToStation.keySet());
-        ups.removeAll(stationToStation.values());
-
-        List<Station> result = new ArrayList<>(ups);
-        Station targetStation = result.get(0);
-        while (stationToStation.containsKey(targetStation)) {
-            Station next = stationToStation.get(targetStation);
-            result.add(next);
-            targetStation = next;
-        }
-        return result;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public List<Edge> getEdges() {
-        return edges;
-    }
-
     public void addEdge(Station upStation, Station downStation, int distance) {
         /* TODO : validate
         1. from, to 둘 중 하나가 기존 노선에 등록되어 있는지 확인 (둘 다 있으면 안됨)
@@ -187,6 +159,40 @@ public class Line {
             edges.remove(edge2);
             edges.add(removedIndex, newEdge);
         }
+    }
+
+    public List<Station> getStations() {
+        Map<Station, Station> stationToStation = edges.stream()
+                .collect(Collectors.toMap(Edge::getUpStation, Edge::getDownStation));
+        Set<Station> ups = new HashSet<>(stationToStation.keySet());
+        ups.removeAll(stationToStation.values());
+
+        List<Station> result = new ArrayList<>(ups);
+        Station targetStation = result.get(0);
+        while (stationToStation.containsKey(targetStation)) {
+            Station next = stationToStation.get(targetStation);
+            result.add(next);
+            targetStation = next;
+        }
+        return result;
+    }
+
+    public List<Long> getStationIds() {
+        return getStations().stream()
+                .map(Station::getId)
+                .collect(Collectors.toList());
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Edge> getEdges() {
+        return edges;
     }
 
     public void setId(Long id) {
