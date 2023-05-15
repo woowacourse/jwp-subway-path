@@ -16,16 +16,16 @@ import java.util.Objects;
 @Transactional
 public class StationService {
 
-    private final SectionService sectionService;
+    private final SectionCommandService sectionCommandService;
     private final LineCommandService lineCommandService;
     private final LineQueryService lineQueryService;
 
     public StationService(
-            final SectionService sectionService,
+            final SectionCommandService sectionCommandService,
             final LineCommandService lineCommandService,
             final LineQueryService lineQueryService
     ) {
-        this.sectionService = sectionService;
+        this.sectionCommandService = sectionCommandService;
         this.lineCommandService = lineCommandService;
         this.lineQueryService = lineQueryService;
     }
@@ -41,7 +41,7 @@ public class StationService {
 
         line.add(newSection);
 
-        sectionService.registerSection(
+        sectionCommandService.registerSection(
                 stationRegisterRequest.getCurrentStationName(),
                 stationRegisterRequest.getNextStationName(),
                 stationRegisterRequest.getDistance(),
@@ -54,7 +54,7 @@ public class StationService {
                       .filter(it -> originSection.stream().noneMatch(it::isSame))
                       .filter(it -> Objects.nonNull(it.getId()))
                       .findFirst()
-                      .ifPresent(it -> sectionService.updateSection(it, line.getId()));
+                      .ifPresent(it -> sectionCommandService.updateSection(it, line.getId()));
     }
 
     private Section mapToSectionFrom(final StationRegisterRequest stationRegisterRequest) {
@@ -83,24 +83,24 @@ public class StationService {
                       .findAny()
                       .ifPresentOrElse(
                               it -> {
-                                  sectionService.updateSection(it, line.getId());
+                                  sectionCommandService.updateSection(it, line.getId());
 
                                   originSection.stream()
                                                .filter(origin -> updatedSection.stream().noneMatch(origin::isSame))
                                                .filter(origin -> !origin.equals(it))
                                                .findFirst()
-                                               .ifPresent(origin -> sectionService.deleteSection(origin.getId()));
+                                               .ifPresent(origin -> sectionCommandService.deleteSection(origin.getId()));
 
                               },
 
                               () -> originSection.stream()
                                                  .filter(it -> updatedSection.stream().noneMatch(it::isSame))
                                                  .findFirst()
-                                                 .ifPresent(it -> sectionService.deleteSection(it.getId()))
+                                                 .ifPresent(it -> sectionCommandService.deleteSection(it.getId()))
                       );
 
         if (line.isDeleted()) {
-            sectionService.deleteAll(line.getId());
+            sectionCommandService.deleteAll(line.getId());
             lineCommandService.deleteLine(line.getId());
         }
     }

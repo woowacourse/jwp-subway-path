@@ -13,16 +13,16 @@ import subway.service.dto.RegisterLineRequest;
 public class LineCommandService {
 
     private final LineDao lineDao;
-    private final SectionService sectionService;
+    private final SectionCommandService sectionCommandService;
     private final LineQueryService lineQueryService;
 
     public LineCommandService(
             final LineDao lineDao,
-            final SectionService sectionService,
+            final SectionCommandService sectionCommandService,
             final LineQueryService lineQueryService
     ) {
         this.lineDao = lineDao;
-        this.sectionService = sectionService;
+        this.sectionCommandService = sectionCommandService;
         this.lineQueryService = lineQueryService;
     }
 
@@ -41,7 +41,7 @@ public class LineCommandService {
 
         final Long savedId = lineDao.save(new LineEntity(registerLineRequest.getLineName()));
 
-        sectionService.registerSection(
+        sectionCommandService.registerSection(
                 registerLineRequest.getCurrentStationName(),
                 registerLineRequest.getNextStationName(),
                 registerLineRequest.getDistance(),
