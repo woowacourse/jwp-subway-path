@@ -64,3 +64,34 @@
 - [x] 중복 역 등록 방어 로직 작성
 - [x] 테스트 코드 깨짐 확인
 - [x] dto 의존성 관리
+
+## [2단계]
+
+### 기능 요구사항
+
+- [ ] 프로덕션과 테스트 데이터베이스 환경 분리
+    - 프로덕션은 로컬에 저장
+    - 테스트는 인메모리에 저장
+- [ ] 경로 조회 API 구현
+- [ ] 요금 조회 기능 추가
+    - 10㎞ 이내: 1,250원
+    - 10km~50km: 5km 까지 마다 100원 추가
+    - 50km 초과: 8km 까지 마다 100원 추가
+
+### API 명세서
+
+| Method | URI                    | Description |
+|--------|------------------------|-------------|
+| GET    | /lines/stations/path   | 경로 조회 API   |
+| GET    | /lines/stations/charge | 요금 조회 API   |
+
+### Request Body
+
+#### [GET] /lines/stations/path && [GET] /lines/stations/charge
+
+```json
+{
+  "startStationName": "잠실",
+  "endStationName": "강남"
+}
+```
