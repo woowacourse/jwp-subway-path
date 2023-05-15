@@ -1,23 +1,15 @@
 package subway.persistence.entity;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public class LineEntity {
     private final Long id;
     private final String name;
 
     public LineEntity(final String name) {
         this(null, name);
-    }
-
-    public LineEntity(final Long id, final String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
     }
 }

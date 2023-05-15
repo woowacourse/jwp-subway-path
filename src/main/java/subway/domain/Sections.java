@@ -1,9 +1,13 @@
 package subway.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Getter
 public class Sections {
     private static final int ONE_SECTION = 1;
     private static final int END_POINT_SIZE = 1;
@@ -133,9 +137,5 @@ public class Sections {
             }
         }
         return sortStation;
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 }
