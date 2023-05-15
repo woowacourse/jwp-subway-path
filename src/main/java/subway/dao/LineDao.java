@@ -13,10 +13,10 @@ import subway.dao.dto.LineDto;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-
-    private RowMapper<LineDto> rowMapper = (rs, rowNum) ->
+    private final RowMapper<LineDto> rowMapper = (rs, rowNum) ->
             new LineDto(
                     rs.getLong("id"),
                     rs.getString("name")

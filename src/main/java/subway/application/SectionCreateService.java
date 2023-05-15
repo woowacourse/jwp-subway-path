@@ -8,12 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.dao.dto.LineDto;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.repository.StationRepository;
 import subway.ui.dto.SectionRequest;
 
 @Service
@@ -21,12 +21,12 @@ public class SectionCreateService {
 
     private final SectionDao sectionDao;
     private final LineDao lineDao;
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public SectionCreateService(SectionDao sectionDao, LineDao lineDao, StationDao stationDao) {
+    public SectionCreateService(SectionDao sectionDao, LineDao lineDao, StationRepository stationRepository) {
         this.sectionDao = sectionDao;
         this.lineDao = lineDao;
-        this.stationDao = stationDao;
+        this.stationRepository = stationRepository;
     }
 
     @Transactional
@@ -56,8 +56,8 @@ public class SectionCreateService {
         List<SectionDto> sectionDtos = sectionDao.findByLineId(lineId);
         LinkedList<Section> sections = sectionDtos.stream()
                 .map(sectionDto -> new Section(
-                                stationDao.findById(sectionDto.getLeftStationId()),
-                                stationDao.findById(sectionDto.getRightStationId()),
+                                stationRepository.findById(sectionDto.getLeftStationId()),
+                                stationRepository.findById(sectionDto.getRightStationId()),
                                 new Distance(sectionDto.getDistance())
                         )
                 ).collect(Collectors.toCollection(LinkedList::new));
@@ -66,8 +66,7 @@ public class SectionCreateService {
     }
 
     private Station findStation(String name) {
-        return stationDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 없습니다."));
+        return stationRepository.findByName(name);
     }
 
     private void updateSection(Line line, Station leftStation, Station rightStation, int distance) {

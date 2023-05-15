@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.dao.dto.StationEntity;
 
 public class Station {
 
@@ -8,9 +9,6 @@ public class Station {
 
     private Long id;
     private String name;
-
-    public Station() {
-    }
 
     public Station(Long id, String name) {
         validateName(name);
@@ -21,6 +19,10 @@ public class Station {
     public Station(String name) {
         validateName(name);
         this.name = name;
+    }
+
+    public static Station from(StationEntity stationEntity) {
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
     private void validateName(String name) {

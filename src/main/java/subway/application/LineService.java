@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import subway.application.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.dao.dto.LineDto;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.repository.StationRepository;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
 import subway.ui.dto.LineStationResponse;
@@ -24,12 +24,12 @@ public class LineService {
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationDao stationDao) {
+    public LineService(LineDao lineDao, SectionDao sectionDao, StationRepository stationRepository) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
+        this.stationRepository = stationRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
@@ -67,8 +67,8 @@ public class LineService {
 
         LinkedList<Section> sections = sectionDtos.stream()
                 .map(sectionDto -> new Section(
-                                stationDao.findById(sectionDto.getLeftStationId()),
-                                stationDao.findById(sectionDto.getRightStationId()),
+                                stationRepository.findById(sectionDto.getLeftStationId()),
+                                stationRepository.findById(sectionDto.getRightStationId()),
                                 new Distance(sectionDto.getDistance())
                         )
                 ).collect(Collectors.toCollection(LinkedList::new));

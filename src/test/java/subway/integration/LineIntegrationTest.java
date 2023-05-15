@@ -19,9 +19,9 @@ import org.springframework.http.MediaType;
 import subway.application.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.dao.dto.LineDto;
 import subway.domain.Station;
+import subway.repository.StationRepository;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
 
@@ -35,13 +35,13 @@ public class LineIntegrationTest extends IntegrationTest {
     private SectionDao sectionDao;
 
     @Autowired
-    private StationDao stationDao;
+    private StationRepository stationRepository;
 
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
 
-    private String lineName1 = "1호선";
-    private String lineName2 = "2호선";
+    private final String lineName1 = "1호선";
+    private final String lineName2 = "2호선";
 
     private Long lineId1;
     private Long lineId2;
@@ -57,9 +57,9 @@ public class LineIntegrationTest extends IntegrationTest {
         lineRequest1 = new LineRequest("신분당선");
         lineRequest2 = new LineRequest("구신분당선");
 
-        station1 = stationDao.insert(new Station("강남역"));
-        station2 = stationDao.insert(new Station("서초역"));
-        station3 = stationDao.insert(new Station("선릉역"));
+        station1 = stationRepository.save(new Station("강남역"));
+        station2 = stationRepository.save(new Station("서초역"));
+        station3 = stationRepository.save(new Station("선릉역"));
 
         lineId1 = lineDao.insert(new LineDto(null, lineName1));
 
@@ -199,7 +199,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void findAllLinesAndStations() {
         // given
-        station4 = stationDao.insert(new Station("잠실역"));
+        station4 = stationRepository.save(new Station("잠실역"));
         lineId2 = lineDao.insert(new LineDto(null, lineName2));
         sectionDao.insert(new SectionDto(lineId2, station3.getId(), station4.getId(), 6));
 

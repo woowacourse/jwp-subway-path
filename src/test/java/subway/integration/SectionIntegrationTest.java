@@ -13,9 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
-import subway.dao.StationDao;
 import subway.dao.dto.LineDto;
 import subway.domain.Station;
+import subway.repository.StationRepository;
 import subway.ui.dto.SectionDeleteRequest;
 import subway.ui.dto.SectionRequest;
 
@@ -26,7 +26,7 @@ public class SectionIntegrationTest extends IntegrationTest {
     private LineDao lineDao;
 
     @Autowired
-    private StationDao stationDao;
+    private StationRepository stationRepository;
 
     private Long lineId;
 
@@ -35,12 +35,12 @@ public class SectionIntegrationTest extends IntegrationTest {
         super.setUp();
 
         lineId = lineDao.insert(new LineDto(null, "1호선"));
-        stationDao.insert(new Station("강남역"));
-        stationDao.insert(new Station("잠실역"));
-        stationDao.insert(new Station("역삼역"));
-        stationDao.insert(new Station("선릉역"));
-        stationDao.insert(new Station("사당역"));
-        stationDao.insert(new Station("서초역"));
+        stationRepository.save(new Station("강남역"));
+        stationRepository.save(new Station("잠실역"));
+        stationRepository.save(new Station("역삼역"));
+        stationRepository.save(new Station("선릉역"));
+        stationRepository.save(new Station("사당역"));
+        stationRepository.save(new Station("서초역"));
     }
 
     @DisplayName("노선에 역을 추가한다.")
