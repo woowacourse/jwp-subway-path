@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.domain.vo.Distance;
 
-class PathTest {
+class NavigationTest {
 
     private final Station firstStation = new Station("firstStation");
     private final Station secondStation = new Station("secondStation");
@@ -30,30 +30,14 @@ class PathTest {
         final Sections sections2 = new Sections(List.of(section4, section5, section6));
         final Line line2 = new Line("lineName", "lineColor", sections2);
         final Lines lines = new Lines(List.of(line1, line2));
-        final Path path = new Path(lines);
+        final Navigation navigation = new Navigation(lines);
 
         //when
-        final List<Station> shortest = path.findShortest(firstStation, fourthStation);
+        final Path shortestPath = navigation.findShortestPath(firstStation, fourthStation);
 
         //then
-        assertThat(shortest).containsExactly(firstStation, secondStation, thirdStation, fourthStation);
-    }
-
-    @Test
-    @DisplayName("경로들 중 최단 경로의 총 거리를 찾는다..")
-    void testFindTotalDistance() {
-        //given
-        final Sections sections1 = new Sections(List.of(section1, section2, section3));
-        final Line line1 = new Line("lineName", "lineColor", sections1);
-        final Sections sections2 = new Sections(List.of(section4, section5, section6));
-        final Line line2 = new Line("lineName", "lineColor", sections2);
-        final Lines lines = new Lines(List.of(line1, line2));
-        final Path path = new Path(lines);
-
-        //when
-        final long totalDistance = path.findTotalDistanceAsLong(firstStation, fourthStation);
-
-        //then
-        assertThat(totalDistance).isEqualTo(3L);
+        assertThat(shortestPath.getStations()).containsExactly(firstStation, secondStation, thirdStation,
+            fourthStation);
+        assertThat(shortestPath.getDistance().getValue()).isEqualTo(3L);
     }
 }
