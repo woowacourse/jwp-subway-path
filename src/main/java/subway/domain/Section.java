@@ -1,9 +1,12 @@
 package subway.domain;
 
+import static subway.domain.Direction.INNER_LEFT;
 import static subway.domain.Direction.INNER_RIGHT;
 import static subway.domain.Direction.NONE;
-import static subway.domain.Direction.INNER_LEFT;
 
+import lombok.Getter;
+
+@Getter
 public class Section {
     private final Long id;
     private final Station upStation;
@@ -66,32 +69,12 @@ public class Section {
         return isUpSame != isDownSame;
     }
 
-    public int getDistance() {
-        return distance;
-    }
-
-    public Long getNextSectionId() {
-        return nextSectionId;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
     public long getUpStationId() {
         return upStation.getId();
     }
 
     public long getDownStationId() {
         return downStation.getId();
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
     }
 
     public boolean isDistanceSmallOrSame(final Section section) {

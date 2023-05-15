@@ -5,7 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import lombok.Getter;
 
+@Getter
 public class Sections {
     private final long lineId;
     private final List<Section> sections;
@@ -103,13 +105,5 @@ public class Sections {
 
     public int size() {
         return this.sections.size();
-    }
-
-    public List<Section> getSections() {
-        return sections;
-    }
-
-    public long getLineId() {
-        return lineId;
     }
 }
