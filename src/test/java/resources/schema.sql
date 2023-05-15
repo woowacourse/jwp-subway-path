@@ -1,7 +1,3 @@
-drop table section;
-drop table station;
-drop table line;
-
 create table if not exists STATION
 (
     id int auto_increment not null,
