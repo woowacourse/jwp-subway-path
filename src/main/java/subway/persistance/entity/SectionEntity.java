@@ -1,4 +1,4 @@
-package subway.dao.entity;
+package subway.persistance.entity;
 
 import subway.domain.Section;
 

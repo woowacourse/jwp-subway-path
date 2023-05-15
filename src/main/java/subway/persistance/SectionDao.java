@@ -1,9 +1,9 @@
-package subway.dao;
+package subway.persistance;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import subway.dao.entity.SectionEntity;
+import subway.persistance.entity.SectionEntity;
 
 import java.util.List;
 

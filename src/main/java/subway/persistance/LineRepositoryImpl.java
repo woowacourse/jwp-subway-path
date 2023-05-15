@@ -1,7 +1,7 @@
-package subway.dao;
+package subway.persistance;
 
 import org.springframework.stereotype.Repository;
-import subway.dao.entity.SectionEntity;
+import subway.persistance.entity.SectionEntity;
 import subway.domain.*;
 
 import java.util.Comparator;

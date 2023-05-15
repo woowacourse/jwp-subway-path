@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistance;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
