@@ -178,7 +178,7 @@ public class Line {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("추가하려는 역의 이웃 역이 존재하지 않습니다. " +
-                                "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name, neighborhoodStation.getName())));
+                                "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name.getName(), neighborhoodStation.getName())));
     }
 
     private Section getSectionDownwardSameWith(Station neighborhoodStation) {
@@ -187,14 +187,14 @@ public class Line {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
                         String.format("추가하려는 역의 이웃 역이 존재하지 않습니다. " +
-                                "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name, neighborhoodStation.getName())));
+                                "(추가하려는 노선 : %s 존재하지 않는 이웃 역 : %s)", name.getName(), neighborhoodStation.getName())));
     }
 
     private void validateAlreadyExist(Station station) {
         if (isStationExist(station)) {
             throw new IllegalArgumentException(String.format(
                     "이미 노선에 존재하는 역은 추가할 수 없습니다. " +
-                            "(추가하려는 노선 : %s 추가하려는 역 : %s)", name, station.getName()));
+                            "(추가하려는 노선 : %s 추가하려는 역 : %s)", name.getName(), station.getName()));
         }
     }
 
