@@ -272,13 +272,14 @@ NONE
 
 ## Station API
 
-| Method | URL            | HttpStatus | Description    |
-|--------|----------------|------------|----------------|
-| GET    | /stations      | 200        | 전체 역 목록을 조회한다. |
-| GET    | /stations/{id} | 200        | 해당 역을 조회한다.    |
-| POST   | /stations      | 200        | 해당 역을 등록한다.    |
-| PUT    | /stations/{id} | 200        | 해당 역을 수정한다.    |
-| DELETE | /stations/{id} | 204        | 해당 역을 삭제한다.    |
+| Method | URL                      | HttpStatus | Description                |
+|--------|--------------------------|------------|----------------------------|
+| GET    | /stations                | 200        | 전체 역 목록을 조회한다.             |
+| GET    | /stations/{id}           | 200        | 해당 역을 조회한다.                |
+| POST   | /stations                | 200        | 해당 역을 등록한다.                |
+| PUT    | /stations/{id}           | 200        | 해당 역을 수정한다.                |
+| DELETE | /stations/{id}           | 204        | 해당 역을 삭제한다.                |
+| GET    | /stations/shortest-route | 200        | 최단거리경로, 총 거리정보, 요금정보를 구한다. |
 
 ### GET /stations
 
@@ -375,6 +376,42 @@ NONE
 #### Response
 
 NONE
+
+### GET /stations/shortest-route
+
+#### Request
+
+```json
+{
+  "originStation": 1,
+  "destStation": 3
+}
+```
+
+#### Response
+
+Body
+
+```json
+{
+  "stations": [
+    {
+      "id": 1,
+      "name": "역삼역"
+    },
+    {
+      "id": 2,
+      "name": "삼성역"
+    },
+    {
+      "id": 3,
+      "name": "잠실역"
+    }
+  ],
+  "distance": 10,
+  "money": 1250
+}
+```
 
 ---
 

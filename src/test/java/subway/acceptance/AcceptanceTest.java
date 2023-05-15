@@ -9,8 +9,10 @@ import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dto.request.CreateSectionRequest;
 import subway.dto.request.LineRequest;
+import subway.dto.request.RouteRequest;
 import subway.dto.request.StationRequest;
 import subway.dto.response.LineResponse;
+import subway.dto.response.RouteResponse;
 import subway.dto.response.StationResponse;
 import subway.fixture.LineFixture.이호선;
 import subway.fixture.StationFixture.삼성역;
@@ -123,6 +125,43 @@ class AcceptanceTest {
         LineResponse resultResponse = getLine(lineResponse.getId());
 
         assertThat(resultResponse.getStations()).isEmpty();
+    }
+
+    @Test
+    void 역에서_역으로_경로를_구한다() {
+        // 역을 등록한다.
+        StationResponse stationResponse1 = addStation(역삼역.REQUEST);
+        StationResponse stationResponse2 = addStation(삼성역.REQUEST);
+        StationResponse stationResponse3 = addStation(잠실역.REQUEST);
+
+        // 노선을 등록한다.
+        LineResponse lineResponse = addLine(이호선.REQUEST);
+
+        // 노선에 역을 등록한다.
+        CreateSectionRequest createSectionRequest1 = new CreateSectionRequest(stationResponse1.getId(),
+                stationResponse3.getId(), 5);
+        CreateSectionRequest createSectionRequest2 = new CreateSectionRequest(stationResponse2.getId(),
+                stationResponse3.getId(), 2);
+
+        addSection(createSectionRequest1, lineResponse.getId());
+        addSection(createSectionRequest2, lineResponse.getId());
+
+        // 역삼역 -> 잠실역 경로의 요금, 거리, 경로를 구한다.
+        RouteRequest request = new RouteRequest(stationResponse1.getId(), stationResponse3.getId());
+
+        RouteResponse routeResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().get("/stations/shortest-route")
+                .then().log().all()
+                .extract().as(RouteResponse.class);
+
+        assertThat(routeResponse.getDistance()).isEqualTo(5);
+        assertThat(routeResponse.getMoney()).isEqualTo(1250);
+        assertThat(routeResponse.getStations())
+                .usingRecursiveComparison()
+                .isEqualTo(List.of(stationResponse1, stationResponse2, stationResponse3));
     }
 
     private StationResponse addStation(final StationRequest request) {
