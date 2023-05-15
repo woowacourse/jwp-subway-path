@@ -12,5 +12,6 @@ create table if not exists SECTION
     next_station_name varchar(255) not null,
     distance int not null,
     line_id bigint not null,
-    primary key(id)
+    primary key(id),
+    unique key(current_station_name, next_station_name)
 );

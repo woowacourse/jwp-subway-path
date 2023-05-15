@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.domain.Line;
 import subway.service.LineCommandService;
 import subway.service.LineQueryService;
-import subway.service.SectionCommandService;
 import subway.service.dto.LineResponse;
 import subway.service.dto.RegisterLineRequest;
 import subway.service.dto.SearchAllSectionLineRequest;
@@ -22,15 +21,12 @@ import java.util.stream.Collectors;
 public class LineController {
 
     private final LineCommandService lineCommandService;
-    private final SectionCommandService sectionCommandService;
     private final LineQueryService lineQueryService;
 
     public LineController(
             final LineCommandService lineCommandService,
-            final SectionCommandService sectionCommandService,
             final LineQueryService lineQueryService) {
         this.lineCommandService = lineCommandService;
-        this.sectionCommandService = sectionCommandService;
         this.lineQueryService = lineQueryService;
     }
 
