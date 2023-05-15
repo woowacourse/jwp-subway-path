@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
+import subway.exception.ApiNoSuchResourceException;
+import subway.exception.NoSuchLineException;
 
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
@@ -27,7 +29,6 @@ public class H2SectionDao implements SectionDao {
                     rs.getLong("down_station_id"),
                     rs.getInt("distance")
             );
-
 
     public H2SectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -84,7 +85,10 @@ public class H2SectionDao implements SectionDao {
 
     @Override
     public void update(final SectionEntity newSectionEntity) {
-        String sql = "UPDATE section SET line_id = ? , up_station_id = ?, down_station_id = ?, distance = ? WHERE id = ?";
+        if (!existsById(newSectionEntity.getId())) {
+            throw new NoSuchLineException(newSectionEntity.getId());
+        }
+        String sql = "UPDATE section SET line_id = ?, up_station_id = ?, down_station_id = ?, distance = ? WHERE id = ?";
         jdbcTemplate.update(sql,
                 newSectionEntity.getLineId(), newSectionEntity.getUpStationId(),
                 newSectionEntity.getDownStationId(),
@@ -93,11 +97,19 @@ public class H2SectionDao implements SectionDao {
 
     @Override
     public void deleteById(final Long id) {
+        if (!existsById(id)) {
+            throw new ApiNoSuchResourceException("존재하지 않는 구간입니다 id : " + id);
+        }
         jdbcTemplate.update("DELETE FROM section WHERE id = ?", id);
     }
 
     @Override
     public void deleteAllByLineId(Long lineId) {
         jdbcTemplate.update("DELETE FROM section WHERE line_id = ?", lineId);
+    }
+
+    private boolean existsById(final Long id) {
+        String sql = "SELECT EXISTS(SELECT 1 FROM section WHERE id = ?)";
+        return jdbcTemplate.queryForObject(sql, new Object[]{id}, Boolean.class);
     }
 }

@@ -7,8 +7,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.transaction.annotation.Transactional;
 import subway.dto.request.CreateSectionRequest;
 import subway.dto.request.LineRequest;
 import subway.dto.request.StationRequest;
@@ -26,8 +24,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Transactional
-@ActiveProfiles("test")
 class AcceptanceTest {
 
     @LocalServerPort
