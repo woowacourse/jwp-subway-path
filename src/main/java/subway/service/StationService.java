@@ -1,4 +1,4 @@
-package subway.application;
+package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
@@ -42,5 +42,4 @@ public class StationService {
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
     }
-
 }

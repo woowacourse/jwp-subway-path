@@ -2,9 +2,9 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.service.LineService;
 
 import javax.validation.Valid;
 import java.net.URI;

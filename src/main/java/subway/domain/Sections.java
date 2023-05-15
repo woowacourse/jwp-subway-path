@@ -33,6 +33,16 @@ public class Sections {
         throw new SectionException("추가할 수 없는 구간입니다");
     }
 
+    public boolean isExistStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> Objects.equals(section.getStation(), station)
+                        || Objects.equals(section.getPreStation(), station));
+    }
+
+    public boolean isDownEndStation(Station station) {
+        return sections.stream().noneMatch(section -> Objects.equals(section.getPreStation(), station));
+    }
+
     private boolean addUpEndStation(Section newSection, Station station) {
         if (isUpEndStation(station)) {
             sections.add(newSection);
@@ -77,18 +87,8 @@ public class Sections {
                 original.getStation(), original.getDistance() - newSection.getDistance());
     }
 
-    public boolean isExistStation(Station station) {
-        return sections.stream()
-                .anyMatch(section -> Objects.equals(section.getStation(), station)
-                        || Objects.equals(section.getPreStation(), station));
-    }
-
     private boolean isUpEndStation(Station station) {
         return sections.stream().noneMatch(section -> Objects.equals(section.getStation(), station));
-    }
-
-    public boolean isDownEndStation(Station station) {
-        return sections.stream().noneMatch(section -> Objects.equals(section.getPreStation(), station));
     }
 
     public Section remove(Station station) {
