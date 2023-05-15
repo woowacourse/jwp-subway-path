@@ -128,8 +128,8 @@ public class Line {
             sections.clear();
             return;
         }
-        final Optional<Section> foundSourceSection = findSourceSection(station);
         final Optional<Section> foundTargetSection = findTargetSection(station);
+        final Optional<Section> foundSourceSection = findSourceSection(station);
         if (foundSourceSection.isPresent() && foundTargetSection.isPresent()) {
             mergeSections(foundTargetSection, foundSourceSection);
             return;
@@ -180,6 +180,10 @@ public class Line {
             nextStation = Optional.ofNullable(stationsChain.get(nextStation.get()));
         }
         return sortedStations;
+    }
+
+    public boolean isName(final String name) {
+        return this.name.equals(name);
     }
 
     public List<Section> getSections() {
