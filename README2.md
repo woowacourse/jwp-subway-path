@@ -47,21 +47,21 @@ Lines
 ---
 ## API 명세
 1. Line API
-   - 모든 노선 조회하기 : GET /lines                
-   - 특정 노선 조회하기 (노선 정보, 모든 역) : GET /lines/{lineId}       
-   - 새 노선 등록하기 : POST /lines               
-   - 특정 노선 정보 수정하기 : PUT /lines/{lineId}      
-   - 특정 노선 삭제하기 : DELETE /lines/{lineId}    
+   - [x] 모든 노선 조회하기 : GET /lines                
+   - [x] 특정 노선 조회하기 (노선 정보, 모든 역) : GET /lines/{lineId}       
+   - [x] 새 노선 등록하기 : POST /lines               
+   - [x] 특정 노선 정보 수정하기 : PUT /lines/{lineId}      
+   - [x] 특정 노선 삭제하기 : DELETE /lines/{lineId}    
     
-   - 특정 노선에 역 추가하기 : POST /lines/{lineId}/stations/{stationId} 
-   - 특정 노선에 역 삭제하기 : DELETE  /lines/{lineId}/stations/{stationId} 
+   - 특정 노선에 역 추가하기 : POST /stations/
+   - 특정 노선에 역 삭제하기 : DELETE  /stations/{stationIdxx}
 
 2. Station API
    문제 : 역 등록할 때, 특정 노선의 역 등록하기로 가야함
    문제 2 : 역 수정, 삭제할 때, 여러 역
    문제 3 : 같은 역 사이에도 노선이 다르면 거리가 존재함?
-      - 모든 역 조회하기
-      - 특정 역 조회하기 (id, )
+      - [x] 모든 역 조회하기
+      - [x] 특정 역 조회하기 (id, )
       - 새 역 등록하기
       - 특정 역 정보 수정하기
       - 특정 역 삭제하기
