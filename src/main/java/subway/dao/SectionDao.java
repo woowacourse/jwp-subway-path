@@ -1,13 +1,15 @@
 package subway.dao;
 
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 import subway.entity.SectionEntity;
 
 @Component
-public class SectionDao {
+public class SectionDao implements Dao<SectionEntity> {
 
     private final JdbcTemplate jdbcTemplate;
     private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
@@ -23,6 +25,37 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+    @Override
+    public SectionEntity insert(SectionEntity section) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void update(SectionEntity sectionEntity) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        final String sql = "DELETE FROM section WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    @Override
+    public Optional<SectionEntity> findById(Long id) {
+        String sql = "SELECT s.id, s1.name AS start_station_name, s2.name AS end_station_name, distance, s.line_id "
+                + "FROM section s "
+                + "JOIN station s1 ON s.start_station_id = s1.id "
+                + "JOIN station s2 ON s.end_station_id = s2.id"
+                + "WEHRE id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public List<SectionEntity> findAll() {
         final String sql =
                 "SELECT s.id, s1.name AS start_station_name, s2.name AS end_station_name, distance, s.line_id "

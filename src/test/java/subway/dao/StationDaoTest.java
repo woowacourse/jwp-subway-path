@@ -3,6 +3,7 @@ package subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -40,7 +41,7 @@ class StationDaoTest {
         final StationEntity savedStation = stationDao.insert(station);
 
         // then
-        assertThat(stationDao.findById(savedStation.getId())).isEqualTo(savedStation);
+        assertThat(stationDao.findById(savedStation.getId()).get()).isEqualTo(savedStation);
     }
 
     @Test
@@ -54,7 +55,7 @@ class StationDaoTest {
         stationDao.update(newStation);
 
         // then
-        assertThat(stationDao.findById(savedStation.getId())).isEqualTo(newStation);
+        assertThat(stationDao.findById(savedStation.getId()).get()).isEqualTo(newStation);
     }
 
     @Test
@@ -91,10 +92,10 @@ class StationDaoTest {
         final StationEntity savedStation = stationDao.insert(new StationEntity("A", line.getId()));
 
         // when
-        final StationEntity result = stationDao.findById(savedStation.getId());
+        Optional<StationEntity> result = stationDao.findById(savedStation.getId());
 
         // then
-        assertThat(result).isEqualTo(savedStation);
+        assertThat(result.get()).isEqualTo(savedStation);
     }
 
     @Test
