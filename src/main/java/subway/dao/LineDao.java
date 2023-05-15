@@ -60,7 +60,7 @@ public class LineDao {
 
     public void update(final LineEntity newLine) {
         String sql = "UPDATE LINE SET name = ?, color = ? WHERE id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
     }
 
     public void deleteById(final Long id) {
