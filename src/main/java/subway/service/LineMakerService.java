@@ -1,6 +1,6 @@
 package subway.service;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.dao.SectionDao;
@@ -12,13 +12,13 @@ import subway.domain.Stations;
 
 import java.util.List;
 
-@Component
-public class CommonService {
+@Service
+public class LineMakerService {
 
     private final SectionDao sectionDao;
     private final LineDao lineDao;
 
-    public CommonService(final SectionDao sectionDao, final LineDao lineDao) {
+    public LineMakerService(final SectionDao sectionDao, final LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.lineDao = lineDao;
     }
@@ -26,7 +26,7 @@ public class CommonService {
     public Line mapToLineFrom(final String lineName) {
         final LineEntity lineEntity =
                 lineDao.findLineByName(lineName)
-                       .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
+                        .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
 
         final Line line = new Line(lineEntity.getName());
 
@@ -46,6 +46,6 @@ public class CommonService {
 
     public LineEntity getLineEntity(final String lineName) {
         return lineDao.findLineByName(lineName)
-                      .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
     }
 }

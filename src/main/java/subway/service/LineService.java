@@ -16,17 +16,17 @@ import java.util.stream.Collectors;
 public class LineService {
 
     private final LineDao lineDao;
-    private final CommonService commonService;
+    private final LineMakerService lineMakerService;
     private final SectionService sectionService;
 
     public LineService(
             final LineDao lineDao,
-            final CommonService commonService,
+            final LineMakerService lineMakerService,
             final SectionService sectionService
     ) {
 
         this.lineDao = lineDao;
-        this.commonService = commonService;
+        this.lineMakerService = lineMakerService;
         this.sectionService = sectionService;
     }
 
@@ -45,7 +45,7 @@ public class LineService {
 
         return lineEntities.stream()
                            .map(lineEntity -> {
-                               Line line = commonService.mapToLineFrom(lineEntity.getName());
+                               Line line = lineMakerService.mapToLineFrom(lineEntity.getName());
 
                                List<SectionInLineResponse> sectionInLineResponses
                                        = sectionService.mapToSectionInLineResponseFrom(line);
@@ -59,7 +59,7 @@ public class LineService {
             final SearchAllSectionLineRequest searchAllSectionLineRequest
     ) {
         final String lineName = searchAllSectionLineRequest.getLineName();
-        final Line line = commonService.mapToLineFrom(lineName);
+        final Line line = lineMakerService.mapToLineFrom(lineName);
 
         final List<SectionInLineResponse> sectionInLineResponses =
                 sectionService.mapToSectionInLineResponseFrom(line);
