@@ -7,8 +7,8 @@ import subway.domain.Station;
 @Getter
 @AllArgsConstructor
 public class StationEntity {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public StationEntity(String name) {
         this(null, name);

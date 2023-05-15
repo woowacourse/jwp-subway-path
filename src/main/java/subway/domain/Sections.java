@@ -106,16 +106,16 @@ public class Sections {
         return newSection;
     }
 
-    public Section getPreviousSection(Station station) {
-        return sections.stream()
-                .filter(section -> Objects.equals(section.getStation(), station))
-                .findFirst().orElseThrow(() -> new SectionException("이전 역을 찾을 수 없습니다"));
-    }
-
     public Section getNextSection(Station preStation) {
         return sections.stream()
                 .filter(section -> Objects.equals(section.getPreStation(), preStation))
                 .findFirst().orElseThrow(() -> new SectionException("다음 역을 찾을 수 없습니다"));
+    }
+
+    private Section getPreviousSection(Station station) {
+        return sections.stream()
+                .filter(section -> Objects.equals(section.getStation(), station))
+                .findFirst().orElseThrow(() -> new SectionException("이전 역을 찾을 수 없습니다"));
     }
 
     private boolean removeEndStation(Station station) {
