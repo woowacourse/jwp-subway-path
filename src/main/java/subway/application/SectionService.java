@@ -53,6 +53,11 @@ public class SectionService {
         Line line = lineDao.findById(lineId);
         Station station = stationDao.findByName(stationName);
 
+        if (sectionDao.countStations(line) == Section.MIN_STATION_COUNT) {
+            sectionDao.clearStations(line);
+            return;
+        }
+
         Optional<Section> stationsToDeleteOptional = sectionDao.findByPreviousStation(station, line);
         Optional<Section> stationsLeftOptional = sectionDao.findByNextStation(station, line);
 

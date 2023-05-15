@@ -1,6 +1,7 @@
 package subway.domain;
 
 public class Section {
+    public static final int MIN_STATION_COUNT = 2;
     private final Long id;
     private final Line line;
     private final Station previousStation;

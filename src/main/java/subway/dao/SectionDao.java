@@ -126,16 +126,10 @@ public class SectionDao {
 
     public void deleteStation(Station station, Line line) {
         String sql = "delete from SECTION where current_station_id = ? and line_id = ?";
-
-        if (countStations(line) == 2) {
-            clearStations(line);
-            return;
-        }
-
         jdbcTemplate.update(sql, station.getId(), line.getId());
     }
 
-    private void clearStations(Line line) {
+    public void clearStations(Line line) {
         String sql = "delete from SECTION where line_id = ?";
         jdbcTemplate.update(sql, line.getId());
     }
