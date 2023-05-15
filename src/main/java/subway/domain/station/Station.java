@@ -21,4 +21,8 @@ public class Station {
             throw new IllegalArgumentException("역의 이름은 필수 입니다.");
         }
     }
+
+    public boolean isSameStation(final Station downStation) {
+        return this.name.equals(downStation.name);
+    }
 }

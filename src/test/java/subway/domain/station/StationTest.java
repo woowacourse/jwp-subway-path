@@ -1,5 +1,6 @@
 package subway.domain.station;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -26,5 +27,15 @@ class StationTest {
 
         // expect
         assertDoesNotThrow(() -> new Station(name));
+    }
+
+    @Test
+    void 역은_이름이_같다면_같은_역이다() {
+        // given
+        final StationName name1 = new StationName("잠실");
+        final StationName name2 = new StationName("잠실");
+
+        // expect
+        assertThat(name1.equals(name2)).isTrue();
     }
 }
