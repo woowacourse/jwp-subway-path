@@ -82,11 +82,10 @@ public class SectionService {
         final SectionEntity originalSection = sections.get(0);
         final int nextDistance = getNewDistance(distance, originalSection);
         sectionDao.delete(originalSection);
-        SectionEntity backsectionEntity = insertSectionEntity(line.getId(), previousStation.getId(), nextStation.getId(), distance);
+        SectionEntity backSectionEntity = insertSectionEntity(line.getId(), previousStation.getId(), nextStation.getId(), distance);
         SectionEntity frontSectionEntity = insertSectionEntity(line.getId(), nextStation.getId(), originalSection.getNextStationId(), nextDistance);
-        System.out.println(originalSection.getPreviousStationId() + " " + originalSection.getNextStationId());
 
-        return List.of(sectionEntityToSection(backsectionEntity, line, previousStation, nextStation, distance),
+        return List.of(sectionEntityToSection(backSectionEntity, line, previousStation, nextStation, distance),
                 sectionEntityToSection(frontSectionEntity, line, nextStation, stationDao.findById(originalSection.getNextStationId()), nextDistance));
     }
 
@@ -98,6 +97,7 @@ public class SectionService {
         if (sections.size() > 1) {
             throw new RuntimeException("중복된 경로가 검색됩니다.");
         }
+
         final SectionEntity originalSection = sections.get(0);
         final int nextDistance = getNewDistance(distance, originalSection);
         sectionDao.delete(originalSection);

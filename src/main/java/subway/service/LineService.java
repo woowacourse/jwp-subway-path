@@ -16,7 +16,6 @@ import subway.service.dto.LineDto;
 import subway.service.dto.SectionCreateDto;
 import subway.entity.StationEntity;
 import subway.controller.dto.request.LineRequest;
-import subway.controller.dto.response.LineResponse;
 import subway.entity.LineEntity;
 import subway.controller.dto.response.SingleLineDetailResponse;
 import subway.service.domain.SubwayDirection;
@@ -116,31 +115,11 @@ public class LineService {
     }
 
     private void moveNextStation(final Deque<Station> deque, final Map<Station, List<Object[]>> map, final Set<Station> visited, final Object[] object) {
-        if (visited.contains((Station) object[1])) {
+        if (visited.contains(object[1])) {
             return;
         }
 
         moveStation((Station) object[1], deque, map, visited, (SubwayDirection) object[0]);
-    }
-
-    public List<LineResponse> findLineResponses() {
-        List<LineEntity> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public List<LineEntity> findLines() {
-        return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(Long id) {
-        LineEntity persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
-    }
-
-    public LineEntity findLineById(Long id) {
-        return lineDao.findById(id);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
