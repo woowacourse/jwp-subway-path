@@ -46,16 +46,16 @@ public abstract class SubwayJdbcFixture {
     }
 
     /**
- *            팔호선
-     *        몽촌토성
-     *          |
-     *         10
-     *          |
+     * 팔호선
+     * 몽촌토성
+     * |
+     * 10
+     * |
      * 이호선 : 잠실 -- 10 -- 잠실새내 -- 20 -- 삼성 -- 15 -- 선릉
-     *          |
-     *         15
-     *          |
-     *         석촌
+     * |
+     * 15
+     * |
+     * 석촌
      */
     private void save() {
         이호선 = lineDao.insert(new Line("2호선", "초록색"));

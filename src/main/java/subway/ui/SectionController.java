@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 import subway.application.SectionService;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
@@ -26,7 +27,9 @@ public class SectionController {
     @PostMapping
     public ResponseEntity<Void> insertSection(@Valid @RequestBody SectionRequest sectionRequest) {
         Long sectionId = sectionService.insertSection(sectionRequest);
-        return ResponseEntity.created(URI.create("/sections/" + sectionId)).build();
+        final URI location = UriComponentsBuilder.fromPath("/sections/{sectionId}")
+                .build(sectionId);
+        return ResponseEntity.created(location).build();
     }
 
     @DeleteMapping("/stations/{stationId}")

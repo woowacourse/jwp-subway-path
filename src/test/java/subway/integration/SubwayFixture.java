@@ -32,16 +32,16 @@ public abstract class SubwayFixture extends IntegrationTest {
     }
 
     /**
-     *       8호선
-     *      몽촌토성
-     *        |
-     *        10
-     *        |
+     * 8호선
+     * 몽촌토성
+     * |
+     * 10
+     * |
      * 2호선 : 잠실 -- 10 -- 잠실새내 -- 20 -- 삼성 -- 15 -- 선릉
-     *        |
-     *       15
-     *        |
-     *       석촌
+     * |
+     * 15
+     * |
+     * 석촌
      */
     private void save() {
         이호선 = lineDao.insert(new Line("2호선", "초록색"));

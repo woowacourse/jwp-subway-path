@@ -1,7 +1,10 @@
 package subway.application;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import subway.SubwayJdbcFixture;
 import subway.application.strategy.InsertDownPointStrategy;
 import subway.application.strategy.InsertMiddlePoint;
@@ -40,58 +43,91 @@ class SectionServiceTest extends SubwayJdbcFixture {
         sectionService = new SectionService(lineDao, stationDao, sectionRepository, insertMiddlePoint);
     }
 
-    @Test
-    void 하행역_종점에_구간을_추가한다() {
-        // given
-        final Long 역삼역 = stationDao.insert(new Station("역삼역")).getId();
+    @Nested
+    class 종점에_구간을_추가한다{
 
-        // when
-        final Long id = sectionService.insertSection(new SectionRequest(3, 선릉역, 역삼역, 이호선));
+        @Test
+        void 하행역_종점에_구간을_추가한다() {
+            // given
+            final Long 역삼역 = 역을_추가한다("역삼역");
 
-        // then
-        assertThat(id).isNotNull();
+            // when
+            final Long id = sectionService.insertSection(new SectionRequest(3, 선릉역, 역삼역, 이호선));
+
+            // then
+            assertThat(id).isNotNull();
+        }
+
+        @Test
+        void 상행역_종점에_구간을_추가한다() {
+            // given
+            final Long 잠실나루역 = 역을_추가한다("잠실나루역");
+
+            // when
+            final Long id = sectionService.insertSection(new SectionRequest(3, 잠실나루역, 잠실역, 이호선));
+
+            // 4 -> 1 -> 2 -> 3
+            assertThat(id).isNotNull();
+        }
     }
 
-    @Test
-    void 상행역_종점에_구간을_추가한다() {
-        // given
-        final Long 잠실나루역 = stationDao.insert(new Station("잠실나루역")).getId();
 
-        // when
-        final Long id = sectionService.insertSection(new SectionRequest(3, 잠실나루역, 잠실역, 이호선));
+    @Nested
+    class 중간_지점에_구간을_추가한다 {
 
-        // 4 -> 1 -> 2 -> 3
-        assertThat(id).isNotNull();
-    }
+        @Test
+        void 상행역_기준인_경우_성공한다() {
+            // given
+            final Long 하행역 = 역을_추가한다("하행역");
 
-    @Test
-    void 중간에_추가하는데_상행역_기준인_경우() {
-        // given
-        final Long 하행역 = stationDao.insert(new Station("하행역")).getId();
+            // when
+            final Long id = sectionService.insertSection(new SectionRequest(3, 잠실역, 하행역, 이호선));
 
-        // when
-        final Long id = sectionService.insertSection(new SectionRequest(3, 잠실역, 하행역, 이호선));
+            // then
+            assertThat(id).isNotNull();
+        }
 
-        // 1 -> 4 -> 2 -> 3
-        assertThat(id).isNotNull();
-    }
+        @ParameterizedTest(name = "거리 : {0}")
+        @ValueSource(ints = {10, 11})
+        void 상행역_기준으로_추가하려는_거리는_기존_거리보다_클_수_없다(final int distance) {
+            // given
+            final Long 삽입역 = 역을_추가한다("삽입역");
+            final SectionRequest request = new SectionRequest(distance, 잠실역, 삽입역, 이호선);
 
-    @Test
-    void 중간에_추가하는데_하행역_기준인_경우() {
-        // given
-        final Long 상행역 = stationDao.insert(new Station("상행역")).getId();
+            // when, then
+            assertThatThrownBy(() -> sectionService.insertSection(request))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
 
-        // when
-        final Long id = sectionService.insertSection(new SectionRequest(3, 상행역, 잠실새내역, 이호선));
+        @Test
+        void 하행역_기준인_경우_성공한다() {
+            // given
+            final Long 상행역 = 역을_추가한다("상행역");
 
-        // then
-        assertThat(id).isNotNull();
+            // when
+            final Long id = sectionService.insertSection(new SectionRequest(3, 상행역, 잠실새내역, 이호선));
+
+            // then
+            assertThat(id).isNotNull();
+        }
+
+        @ParameterizedTest(name = "거리 : {0}")
+        @ValueSource(ints = {20, 21})
+        void 하행역_기준으로_추가하려는_거리는_기존_거리보다_클_수_없다(final int distance) {
+            // given
+            final Long 삽입역 = 역을_추가한다("삽입역");
+            final SectionRequest request = new SectionRequest(distance, 삽입역, 잠실새내역, 이호선);
+
+            // when, then
+            assertThatThrownBy(() -> sectionService.insertSection(request))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
     @Test
     void 같은_역_두_개를_등록할_수_없다() {
         // given
-        final Long 같은역 = stationDao.insert(new Station("같은역")).getId();
+        final Long 같은역 = 역을_추가한다("같은역");
         final SectionRequest request = new SectionRequest(3, 같은역, 같은역, 이호선);
 
         // when, then
@@ -99,45 +135,39 @@ class SectionServiceTest extends SubwayJdbcFixture {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    void 동일한_구간은_등록할_수_없다() {
-        // given
-        final SectionRequest request = new SectionRequest(3, 잠실역, 잠실새내역, 이호선);
+    @Nested
+    class 구간을_등록할_수_없는_경우 {
 
-        // when, then
-        assertThatThrownBy(() -> sectionService.insertSection(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
+        @Test
+        void 동일한_구간은_등록할_수_없다() {
+            // given
+            final SectionRequest request = new SectionRequest(3, 잠실역, 잠실새내역, 이호선);
 
-    @Test
-    void 역이_존재하지_않으면_추가할_수_있다() {
-        // given
-        final SectionRequest request = new SectionRequest(3, 잠실역, 50L, 이호선);
+            // when, then
+            assertThatThrownBy(() -> sectionService.insertSection(request))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
 
-        // when, then
-        assertThatThrownBy(() -> sectionService.insertSection(request))
-                .isInstanceOf(NoSuchElementException.class);
-    }
+        @Test
+        void 역이_존재하지_않으면_등록할_수_없다() {
+            // given
+            final SectionRequest request = new SectionRequest(3, 잠실역, 50L, 이호선);
 
-    @Test
-    void 추가하려는_거리는_기존_거리보다_클_수_없다() {
-        // given
-        final Long 삽입역 = stationDao.insert(new Station("삽입역")).getId();
-        final SectionRequest request = new SectionRequest(100, 잠실역, 삽입역, 이호선);
+            // when, then
+            assertThatThrownBy(() -> sectionService.insertSection(request))
+                    .isInstanceOf(NoSuchElementException.class);
+        }
 
-        // when, then
-        assertThatThrownBy(() -> sectionService.insertSection(request))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
 
-    @Test
-    void 노선이_없으면_추가할_수_없다() {
-        // given
-        final SectionRequest request = new SectionRequest(1, 잠실역, 선릉역, 3L);
+        @Test
+        void 노선이_없으면_등록할_수_없다() {
+            // given
+            final SectionRequest request = new SectionRequest(1, 잠실역, 선릉역, 3L);
 
-        // when, then
-        assertThatThrownBy(() -> sectionService.insertSection(request))
-                .isInstanceOf(IllegalArgumentException.class);
+            // when, then
+            assertThatThrownBy(() -> sectionService.insertSection(request))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 
     @Test
@@ -177,5 +207,9 @@ class SectionServiceTest extends SubwayJdbcFixture {
                 () -> assertThat(sections.get(0).getDownStation().getId()).isEqualTo(삼성역),
                 () -> assertThat(sections.get(0).getDistance()).isEqualTo(Distance.from(30))
         );
+    }
+
+    private Long 역을_추가한다(String name) {
+        return stationDao.insert(new Station(name)).getId();
     }
 }
