@@ -1,6 +1,6 @@
 package subway.dao;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import javax.sql.DataSource;
 
@@ -37,6 +37,6 @@ class LineDaoTest {
     void 등록된_역을_삭제한다() {
         Line line8 = lineDao.insert(new Line("8호선", "pink"));
 
-        assertThat(lineDao.deleteById(line8.getId())).isPositive();
+        assertDoesNotThrow(() -> lineDao.deleteById(line8.getId()));
     }
 }

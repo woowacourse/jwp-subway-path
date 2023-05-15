@@ -3,7 +3,6 @@ package subway.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
@@ -81,8 +80,8 @@ public class SectionDao {
         jdbcTemplate.update(sql, upStationId, downStationId);
     }
 
-    public int deleteAllByLineId(Long id) {
+    public void deleteAllByLineId(Long id) {
         String sql = "DELETE FROM section WHERE line_id = ?";
-        return jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(sql, id);
     }
 }

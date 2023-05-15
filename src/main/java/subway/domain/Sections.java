@@ -156,13 +156,6 @@ public class Sections {
         );
     }
 
-    public Optional<Long> findLineIdIfHasSingleSection() {
-        if (size() == 1) {
-            return Optional.of(get(0).getLine().getId());
-        }
-        return Optional.empty();
-    }
-
     public int size() {
         return sections.size();
     }

@@ -6,7 +6,6 @@ import static org.mockito.BDDMockito.*;
 
 import java.util.Optional;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -15,13 +14,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
 import subway.dao.LineDao;
-import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Station;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.LineResponse;
 
 @ExtendWith(MockitoExtension.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -32,8 +30,6 @@ class LineServiceTest {
     StationDao stationDao;
     @Mock
     LineDao lineDao;
-    @Mock
-    SectionDao sectionDao;
     @InjectMocks
     LineService lineService;
 
@@ -64,28 +60,6 @@ class LineServiceTest {
 
     @Test
     void 이미_등록된_노선을_삭제할_수_있다() {
-        given(sectionDao.deleteAllByLineId(1L)).willReturn(2);
-        given(lineDao.deleteById(1L)).willReturn(1);
-
         assertDoesNotThrow(() -> lineService.deleteLineById(1L));
-    }
-
-    @Test
-    void 삭제된_구간의_개수가_0개라면_노선_삭제에_실패한다() {
-        given(sectionDao.deleteAllByLineId(1L)).willReturn(0);
-
-        assertThatThrownBy(() -> lineService.deleteLineById(1L))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("노선이 삭제되지 않았습니다.");
-    }
-
-    @Test
-    void 삭제된_노선의_개수가_0개라면_노선_삭제에_실패한다() {
-        given(sectionDao.deleteAllByLineId(1L)).willReturn(2);
-        given(lineDao.deleteById(1L)).willReturn(0);
-
-        assertThatThrownBy(() -> lineService.deleteLineById(1L))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("노선이 삭제되지 않았습니다.");
     }
 }
