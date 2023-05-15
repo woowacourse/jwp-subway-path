@@ -21,6 +21,10 @@ public class LineRepository {
     }
 
     public Line insert(final Line line) {
+        if (lineDao.existsByName(line.getName())) {
+            throw new IllegalArgumentException("지정한 노선의 이름은 이미 존재하는 이름입니다.");
+        }
+
         final LineEntity lineEntity = LineEntity.of(line.getName(), line.getColor());
         final LineEntity insertedLineEntity = lineDao.insert(lineEntity);
 

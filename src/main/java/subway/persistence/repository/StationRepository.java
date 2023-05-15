@@ -21,6 +21,10 @@ public class StationRepository {
     }
 
     public Station insert(final Station station) {
+        if (stationDao.existsByName(station.getName())) {
+            throw new IllegalArgumentException("지정한 역의 이름은 이미 존재하는 이름입니다.");
+        }
+
         final StationEntity stationEntity = StationEntity.from(station);
         final StationEntity insertedStationEntity = stationDao.insert(stationEntity);
 
@@ -36,7 +40,7 @@ public class StationRepository {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByStationId(id);
 
         if (!sectionEntities.isEmpty()) {
-            throw new IllegalArgumentException("노선에 등록되어 있는 역입니다.");
+            throw new IllegalArgumentException("노선에 등록되어 있는 역은 삭제할 수 없습니다.");
         }
 
         stationDao.deleteById(id);
