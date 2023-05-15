@@ -25,7 +25,7 @@ public class StationService {
 
     public StationInitResponse saveInitStations(final StationInitRequest stationInitRequest) {
         Line line = lineRepository.findByName(stationInitRequest.getLineName());
-        if (line.isEmpty()) {
+        if (!line.isEmpty()) {
             throw new LineIsNotInitException();
         }
 

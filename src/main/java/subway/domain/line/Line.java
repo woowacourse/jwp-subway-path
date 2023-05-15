@@ -53,7 +53,7 @@ public class Line {
     }
 
     public boolean isEmpty() {
-        return !sections.isEmpty();
+        return sections.isEmpty();
     }
 
     public Long getId() {
