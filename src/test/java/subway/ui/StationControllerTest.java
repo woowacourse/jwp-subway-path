@@ -210,7 +210,7 @@ public class StationControllerTest {
             lineRepository.save(new Line("1호선", "RED", List.of(
                     new Section("A", "B", 2)
             )));
-            final StationSaveRequest request = new StationSaveRequest("1호선", "B", "C", RIGHT, 3);
+            final StationSaveRequest request = new StationSaveRequest("1호선", "B", "C", null, 3);
 
             // when
             ExtractableResponse<Response> response = RestAssured
