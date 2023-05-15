@@ -2,11 +2,11 @@ package subway.dao;
 
 public class SectionEntity {
 
-    private Long id;
-    private String currentStationName;
-    private String nextStationName;
-    private int distance;
-    private Long lineId;
+    private final Long id;
+    private final String currentStationName;
+    private final String nextStationName;
+    private final int distance;
+    private final Long lineId;
 
     public SectionEntity(final Long id,
                          final String currentStationName, final String nextStationName,

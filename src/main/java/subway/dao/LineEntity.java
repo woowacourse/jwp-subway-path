@@ -2,8 +2,8 @@ package subway.dao;
 
 public class LineEntity {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public LineEntity(final Long id, final String name) {
         this.id = id;
