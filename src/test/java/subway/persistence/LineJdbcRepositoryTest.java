@@ -33,7 +33,7 @@ class LineJdbcRepositoryTest {
 		jdbcTemplate.execute("SET FOREIGN_KEY_CHECKS = 1");
 	}
 
-	@DisplayName("노선 생성 서비스 테스트")
+	@DisplayName("노선 생성 테스트")
 	@Test
 	void createLine() {
 		// when
@@ -43,7 +43,7 @@ class LineJdbcRepositoryTest {
 		Assertions.assertThat(1L).isEqualTo(lineId);
 	}
 
-	@DisplayName("노선 전체 조회 서비스 테스트")
+	@DisplayName("노선 전체 조회 테스트")
 	@Test
 	void findAll() {
 		// when
@@ -55,7 +55,7 @@ class LineJdbcRepositoryTest {
 		Assertions.assertThat(2).isEqualTo(lines.size());
 	}
 
-	@DisplayName("ID를 사용한 노선 조회 서비스 테스트")
+	@DisplayName("ID를 사용한 노선 조회 테스트")
 	@Test
 	void findById() {
 		// given
@@ -68,6 +68,7 @@ class LineJdbcRepositoryTest {
 		Assertions.assertThat(line1).isEqualTo(foundLine);
 	}
 
+	@DisplayName("노선 갱신 테스트")
 	@Test
 	void updateLine() {
 		// given
@@ -82,6 +83,7 @@ class LineJdbcRepositoryTest {
 		Assertions.assertThat(foundLine).isEqualTo(line2);
 	}
 
+	@DisplayName("노선 삭제 테스트")
 	@Test
 	void deleteById() {
 		//given
