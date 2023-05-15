@@ -113,4 +113,21 @@ class SectionsTest {
         //then
         assertThat(results).hasSize(1);
     }
+
+    @Test
+    @DisplayName("정렬된 stationId를 반환한다.")
+    void findOrderedStationIds() {
+        //given
+        sectionsList.add(new Section(4L, 5L, 1L, 10));
+        final Sections sections = new Sections(sectionsList);
+
+        //when
+        final List<Long> result = sections.findOrderedStationIds();
+
+        //then
+        assertAll(
+                () -> assertThat(result).hasSize(5),
+                () -> assertThat(result).containsExactly(1L, 2L, 3L, 4L, 5L)
+        );
+    }
 }

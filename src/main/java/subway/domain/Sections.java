@@ -97,7 +97,8 @@ public class Sections {
         if (stationIds.isEmpty()) {
             return stationIds;
         }
-        stationIds.add(sections.get(sections.size() - 1).getTargetStationId());
+        final int lastIndex = sections.size() - 1;
+        stationIds.add(sections.get(lastIndex).getTargetStationId());
         return stationIds;
     }
 }
