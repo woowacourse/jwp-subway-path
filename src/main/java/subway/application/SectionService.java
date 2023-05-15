@@ -7,7 +7,6 @@ import subway.application.strategy.insert.BetweenStationInserter;
 import subway.application.strategy.insert.InsertSection;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -49,7 +48,7 @@ public class SectionService {
             return insertToTerminal(request);
         }
 
-        final InsertSection insertSection = new InsertSection(upStation, downStation, Distance.from(request.getDistance()));
+        final InsertSection insertSection = new InsertSection(upStation, downStation, request.getDistance());
         return betweenStationInserter.insert(sections, insertSection);
     }
 

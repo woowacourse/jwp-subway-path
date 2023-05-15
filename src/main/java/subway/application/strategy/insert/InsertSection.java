@@ -9,6 +9,10 @@ public class InsertSection {
     private final Station downStation;
     private final Distance distance;
 
+    public InsertSection(Station upStation, Station downStation, int distance) {
+        this(upStation, downStation, Distance.from(distance));
+    }
+
     public InsertSection(Station upStation, Station downStation, Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
