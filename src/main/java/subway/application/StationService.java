@@ -10,6 +10,7 @@ import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationUpdateRequest;
 import subway.exception.DuplicateStationException;
+import subway.exception.StationNotFoundException;
 
 @Service
 @Transactional
@@ -36,6 +37,9 @@ public class StationService {
     }
 
     public void updateStation(String prevStationName, StationUpdateRequest stationUpdateRequest) {
+        if (stationDao.doesNotExistBy(prevStationName)) {
+            throw new StationNotFoundException();
+        }
         stationDao.update(prevStationName, new Station(stationUpdateRequest.getStationName()));
     }
 

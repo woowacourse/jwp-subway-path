@@ -1,7 +1,9 @@
 package subway.dao;
 
 import java.util.List;
+import java.util.Optional;
 import javax.sql.DataSource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -40,9 +42,13 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public LineEntity findById(Long id) {
+    public Optional<LineEntity> findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public void update(Long id, Line line) {
@@ -57,5 +63,14 @@ public class LineDao {
     public boolean existsByName(String lineName) {
         String sql = "SELECT COUNT(*) FROM LINE WHERE name = ? LIMIT 1";
         return jdbcTemplate.queryForObject(sql, Long.class, lineName) > 0;
+    }
+
+    public boolean existsById(Long id) {
+        String sql = "SELECT COUNT(*) FROM LINE WHERE id = ? LIMIT 1";
+        return jdbcTemplate.queryForObject(sql, Long.class, id) > 0;
+    }
+
+    public boolean doesNotExistById(Long id) {
+        return !existsById(id);
     }
 }

@@ -14,6 +14,7 @@ import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
 import subway.exception.DuplicateLineException;
+import subway.exception.LineNotFoundException;
 
 @Service
 @Transactional
@@ -25,11 +26,11 @@ public class LineService {
     }
 
     public long saveLine(LineCreateRequest request) {
+        LineName lineName = new LineName(request.getLineName());
+        LineColor lineColor = new LineColor(request.getColor());
         if (lineDao.existsByName(request.getLineName())) {
             throw new DuplicateLineException();
         }
-        LineName lineName = new LineName(request.getLineName());
-        LineColor lineColor = new LineColor(request.getColor());
         return lineDao.insert(new Line(lineName, lineColor));
     }
 
@@ -43,17 +44,24 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
-        LineEntity lineEntity = lineDao.findById(id);
+        LineEntity lineEntity = lineDao.findById(id)
+                .orElseThrow(LineNotFoundException::new);
         return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
     public void updateLine(Long id, LineUpdateRequest request) {
         LineName lineName = new LineName(request.getLineName());
         LineColor lineColor = new LineColor(request.getColor());
+        if (lineDao.doesNotExistById(id)) {
+            throw new LineNotFoundException();
+        }
         lineDao.update(id, new Line(lineName, lineColor));
     }
 
     public void deleteLineById(Long id) {
+        if (lineDao.doesNotExistById(id)) {
+            throw new LineNotFoundException();
+        }
         lineDao.deleteById(id);
     }
 }
