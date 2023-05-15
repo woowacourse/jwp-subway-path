@@ -29,93 +29,83 @@ public class SubwayGraph implements Graph {
     }
 
     @Override
-    public void addVertex(final Station station) {
+    public void addStation(final Station station) {
         graph.addVertex(station);
     }
 
     @Override
-    public DefaultWeightedEdge addEdge(final Station upStation, final Station downStation) {
+    public DefaultWeightedEdge addSection(final Station upStation, final Station downStation) {
         graph.addEdge(upStation, downStation);
         return graph.getEdge(upStation, downStation);
     }
 
     @Override
-    public void setEdgeWeight(final DefaultWeightedEdge edge, final int distance) {
-        graph.setEdgeWeight(edge, distance);
+    public void setSectionDistance(final DefaultWeightedEdge section, final int distance) {
+        graph.setEdgeWeight(section, distance);
     }
 
     @Override
-    public boolean containsVertex(final Station station) {
+    public boolean containsStation(final Station station) {
         return graph.containsVertex(station);
     }
 
     @Override
-    public int inDegreeOf(final Station station) {
-        return graph.inDegreeOf(station);
-    }
-
-    @Override
-    public int outDegreeOf(final Station station) {
-        return graph.outDegreeOf(station);
-    }
-
-    @Override
-    public Set<DefaultWeightedEdge> outgoingEdgesOf(final Station station) {
+    public Set<DefaultWeightedEdge> downStationsOf(final Station station) {
         return graph.outgoingEdgesOf(station);
     }
 
     @Override
-    public Set<DefaultWeightedEdge> incomingEdgesOf(final Station station) {
+    public Set<DefaultWeightedEdge> upStationsOf(final Station station) {
         return graph.incomingEdgesOf(station);
     }
 
     @Override
-    public Set<Station> vertexSet() {
+    public Set<Station> stationSet() {
         return graph.vertexSet();
     }
 
     @Override
-    public Station getEdgeTarget(final DefaultWeightedEdge edge) {
+    public Station getDownStation(final DefaultWeightedEdge edge) {
         return graph.getEdgeTarget(edge);
     }
 
     @Override
-    public double getEdgeWeight(final DefaultWeightedEdge edge) {
+    public double getSectionDistance(final DefaultWeightedEdge edge) {
         return graph.getEdgeWeight(edge);
     }
 
     @Override
-    public DefaultWeightedEdge getEdge(final Station upStation, final Station downStation) {
+    public DefaultWeightedEdge getSection(final Station upStation, final Station downStation) {
         return graph.getEdge(upStation, downStation);
     }
 
     @Override
-    public Station getEdgeSource(final DefaultWeightedEdge edge) {
+    public Station getUpStation(final DefaultWeightedEdge edge) {
         return graph.getEdgeSource(edge);
     }
 
     @Override
-    public void removeEdge(final Station upStation, final Station downStation) {
+    public void removeSection(final Station upStation, final Station downStation) {
         graph.removeEdge(upStation, downStation);
     }
 
     @Override
-    public void removeEdge(final DefaultWeightedEdge edge) {
+    public void removeSection(final DefaultWeightedEdge edge) {
         graph.removeEdge(edge);
     }
 
     @Override
-    public Set<DefaultWeightedEdge> edgesOf(final Station station) {
+    public Set<DefaultWeightedEdge> sectionsOf(final Station station) {
         return graph.edgesOf(station);
     }
 
     @Override
-    public void removeVertex(final Station station) {
+    public void removeStation(final Station station) {
         graph.removeVertex(station);
     }
 
     @Override
-    public void removeAllEdges(final Set<DefaultWeightedEdge> edges) {
+    public void removeAllSections(final Set<DefaultWeightedEdge> edges) {
         graph.removeAllEdges(edges);
     }
 }

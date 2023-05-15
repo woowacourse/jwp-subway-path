@@ -9,39 +9,35 @@ public interface Graph {
 
     boolean isUpFirstStation(Station station);
 
-    void addVertex(Station station);
+    void addStation(Station station);
 
-    DefaultWeightedEdge addEdge(Station upStation, Station downStation);
+    DefaultWeightedEdge addSection(Station upStation, Station downStation);
 
-    void setEdgeWeight(DefaultWeightedEdge edge, int distance);
+    void setSectionDistance(DefaultWeightedEdge section, int distance);
 
-    boolean containsVertex(Station station);
+    boolean containsStation(Station station);
 
-    int inDegreeOf(Station station);
+    Set<DefaultWeightedEdge> downStationsOf(Station station);
 
-    int outDegreeOf(Station station);
+    Set<DefaultWeightedEdge> upStationsOf(Station station);
 
-    Set<DefaultWeightedEdge> outgoingEdgesOf(Station station);
+    Set<Station> stationSet();
 
-    Set<DefaultWeightedEdge> incomingEdgesOf(Station station);
+    Station getUpStation(DefaultWeightedEdge edge);
 
-    Set<Station> vertexSet();
+    Station getDownStation(DefaultWeightedEdge edge);
 
-    Station getEdgeTarget(DefaultWeightedEdge edge);
+    double getSectionDistance(DefaultWeightedEdge edge);
 
-    double getEdgeWeight(DefaultWeightedEdge edge);
+    DefaultWeightedEdge getSection(Station upStation, Station downStation);
 
-    DefaultWeightedEdge getEdge(Station upStation, Station downStation);
+    void removeSection(Station upStation, Station downStation);
 
-    Station getEdgeSource(DefaultWeightedEdge edge);
+    void removeSection(DefaultWeightedEdge edge);
 
-    void removeEdge(Station upStation, Station downStation);
+    Set<DefaultWeightedEdge> sectionsOf(Station station);
 
-    void removeEdge(DefaultWeightedEdge edge);
+    void removeStation(Station station);
 
-    Set<DefaultWeightedEdge> edgesOf(Station station);
-
-    void removeVertex(Station station);
-
-    void removeAllEdges(Set<DefaultWeightedEdge> edges);
+    void removeAllSections(Set<DefaultWeightedEdge> edges);
 }
