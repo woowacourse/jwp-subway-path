@@ -44,7 +44,7 @@ public class StationController {
      * @param lineId
      * @return
      */
-    @GetMapping("/{lineId}")
+    @GetMapping("/lines/{lineId}")
     public ResponseEntity<List<StationResponse>> findLineStationsById(@PathVariable Long lineId) {
         return ResponseEntity.ok(stationService.findLineStationResponsesById(lineId));
     }
@@ -56,7 +56,7 @@ public class StationController {
      * @param lineId
      * @return
      */
-    @DeleteMapping("/{lineId}")
+    @DeleteMapping("/lines/{lineId}")
     public ResponseEntity<List<StationResponse>> deleteStation(@RequestBody String name,
         @PathVariable Long lineId) {
         stationService.deleteStation(lineId, name);
