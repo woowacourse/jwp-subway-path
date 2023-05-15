@@ -37,7 +37,7 @@ public class LineController {
                 .body(response);
     }
 
-    @PostMapping("/{id}/stations/initial")
+    @PostMapping("/{id}/station-init")
     public ResponseEntity<LineResponse> createInitialSectionInLine(
             @PathVariable("id") Long id,
             @RequestBody InitialSectionCreateRequest request) {

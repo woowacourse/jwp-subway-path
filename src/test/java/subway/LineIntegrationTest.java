@@ -106,7 +106,7 @@ class LineIntegrationTest {
                 .body(initialSectionCreateRequest)
 
                 .when()
-                .post("/lines/" + lineResponse.getId() + "/stations/initial")
+                .post("/lines/" + lineResponse.getId() + "/station-init")
 
                 .then()
                 .extract();
@@ -186,7 +186,7 @@ class LineIntegrationTest {
                 .body(initialSectionCreateRequest)
 
                 .when()
-                .post("/lines/" + lineResponse.getId() + "/stations/initial")
+                .post("/lines/" + lineResponse.getId() + "/station-init")
 
                 .then()
                 .extract();
