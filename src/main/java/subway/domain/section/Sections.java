@@ -22,6 +22,10 @@ public class Sections {
         }
     }
 
+    public boolean isEmpty() {
+        return this.sections.isEmpty();
+    }
+
     public List<Section> getSections() {
         return new ArrayList<>(sections);
     }

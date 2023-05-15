@@ -21,6 +21,6 @@ class SectionsTest {
 
     @Test
     void 구간들은_비어있는_상태로_생성될_수_있다() {
-        assertThat(emptySections().getSections()).isEmpty();
+        assertThat(emptySections().isEmpty()).isTrue();
     }
 }
