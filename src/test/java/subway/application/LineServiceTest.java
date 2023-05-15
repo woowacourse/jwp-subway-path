@@ -88,7 +88,16 @@ class LineServiceTest {
 			.hasFieldOrPropertyWithValue("name", "2호선");
 	}
 
+	@DisplayName("노선 삭제 서비스 테스트")
 	@Test
 	void deleteLine() {
+		// given
+		given(repository.deleteById(anyLong())).willReturn(true);
+
+		// when
+		final long deletedId = service.deleteLine(1L);
+
+		// then
+		Assertions.assertThat(1L).isEqualTo(deletedId);
 	}
 }
