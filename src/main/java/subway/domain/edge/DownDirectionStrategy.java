@@ -10,17 +10,17 @@ import java.util.Optional;
 public class DownDirectionStrategy implements DirectionStrategy {
 
     @Override
-    public Edges calculate(final List<Edge> edges, final Station existStation, final Station newStation, final Integer distance) {
+    public Edges calculate(final List<Edge> edges, final Station existStation, final Station newStation, final Distance distance) {
         final Optional<Edge> existEdgeOptional = edges.stream()
                 .filter(edge -> edge.getUpStation().equals(existStation))
                 .findFirst();
 
         if (existEdgeOptional.isPresent()) {
             final Edge existEdge = existEdgeOptional.get();
-            if (existEdge.getDistance() <= distance) {
-                throw new InvalidDistanceException(distance, existEdge.getDistance());
+            if (existEdge.getDistance().isLowerOrEqualThan(distance)) {
+                throw new InvalidDistanceException(distance.getDistance(), existEdge.getDistanceValue());
             }
-            final Edge edge1 = new Edge(newStation, existEdge.getDownStation(), existEdge.getDistance() - distance);
+            final Edge edge1 = new Edge(newStation, existEdge.getDownStation(), existEdge.getDistance().minus(distance));
             final Edge edge2 = new Edge(existStation, newStation, distance);
             final int existIndex = edges.indexOf(existEdge);
             edges.remove(existIndex);

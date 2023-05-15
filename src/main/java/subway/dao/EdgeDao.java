@@ -7,6 +7,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.domain.edge.Distance;
 import subway.domain.edge.Edge;
 import subway.domain.station.Station;
 
@@ -33,7 +34,7 @@ public class EdgeDao {
                 .addValue("line_id", lineId)
                 .addValue("upstation_id", edge.getUpStation().getId())
                 .addValue("downstation_id", edge.getDownStation().getId())
-                .addValue("distance", edge.getDistance());
+                .addValue("distance", edge.getDistanceValue());
         final Long id = jdbcInsert.executeAndReturnKey(params).longValue();
 
         return new Edge(id, edge.getUpStation(), edge.getDownStation(), edge.getDistance());
@@ -48,7 +49,7 @@ public class EdgeDao {
                 ps.setLong(1, lineId);
                 ps.setLong(2, edge.getUpStation().getId());
                 ps.setLong(3, edge.getDownStation().getId());
-                ps.setInt(4, edge.getDistance());
+                ps.setInt(4, edge.getDistanceValue());
             }
 
             @Override
@@ -77,7 +78,8 @@ public class EdgeDao {
                     final Station downStation = new Station(
                             resultSet.getLong("downstation_id"),
                             resultSet.getString("downstation_name"));
-                    return new Edge(resultSet.getLong("id"), upStation, downStation, resultSet.getInt("distance"));
+                    final Distance distance = new Distance(resultSet.getInt("distance"));
+                    return new Edge(resultSet.getLong("id"), upStation, downStation, distance);
                 };
 
         return jdbcTemplate.query(sql, mapper, lineId);

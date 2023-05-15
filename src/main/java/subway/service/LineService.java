@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.EdgeDao;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
+import subway.domain.edge.Distance;
 import subway.domain.edge.Edge;
 import subway.domain.edge.Edges;
 import subway.domain.graph.SubwayGraph;
@@ -49,7 +50,7 @@ public class LineService {
         }
         final Line createdLine = lineDao.insert(line);
 
-        final Edge edge = new Edge(upStation, downStation, request.getDistance());
+        final Edge edge = new Edge(upStation, downStation, new Distance(request.getDistance()));
         edgeDao.insert(createdLine.getId(), edge);
 
         return createdLine;
@@ -64,7 +65,7 @@ public class LineService {
                 .orElseThrow(() -> new LineNotFoundException(lineId));
 
         final Edges originalEdges = new Edges(edgeDao.findAllByLineId(lineId));
-        final Edges newEdges = originalEdges.add(existStation, newStation, request.getDirection().getDirectionStrategy(), request.getDistance());
+        final Edges newEdges = originalEdges.add(existStation, newStation, request.getDirection().getDirectionStrategy(), new Distance(request.getDistance()));
         edgeDao.deleteAllByLineId(lineId);
         edgeDao.insertAllByLineId(lineId, newEdges.getEdges());
 

@@ -7,19 +7,19 @@ public class Edge {
     private Long id;
     private Station upStation;
     private Station downStation;
-    private int distance;
+    private Distance distance;
 
     private Edge() {
     }
 
-    public Edge(Long id, Station upStation, Station downStation, int distance) {
+    public Edge(final Long id, final Station upStation, final Station downStation, final Distance distance) {
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Edge(Station upStation, Station downStation, int distance) {
+    public Edge(final Station upStation, final Station downStation, final Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -41,8 +41,12 @@ public class Edge {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
+    }
+
+    public int getDistanceValue() {
+        return distance.getDistance();
     }
 
     @Override

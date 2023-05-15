@@ -34,7 +34,7 @@ public class Edges {
         return result;
     }
 
-    public Edges add(final Station existStation, final Station newStation, final DirectionStrategy strategy, final Integer distance) {
+    public Edges add(final Station existStation, final Station newStation, final DirectionStrategy strategy, final Distance distance) {
 
         return strategy.calculate(edges, existStation, newStation, distance);
     }
@@ -52,7 +52,7 @@ public class Edges {
             final Edge edge1 = targetEdges.get(0);
             final Edge edge2 = targetEdges.get(1);
 
-            final Edge newEdge = new Edge(edge1.getUpStation(), edge2.getDownStation(), edge1.getDistance() + edge2.getDistance());
+            final Edge newEdge = new Edge(edge1.getUpStation(), edge2.getDownStation(), new Distance(edge1.getDistanceValue() + edge2.getDistanceValue()));
             final int targetIndex = targetEdges.indexOf(edge1);
             edges.remove(edge1);
             edges.remove(edge2);

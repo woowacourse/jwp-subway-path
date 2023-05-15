@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface DirectionStrategy {
 
-     Edges calculate(final List<Edge> edges, final Station existStation, final Station newStation, final Integer distance);
+     Edges calculate(final List<Edge> edges, final Station existStation, final Station newStation, final Distance distance);
 }

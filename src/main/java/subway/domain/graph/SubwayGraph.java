@@ -27,7 +27,7 @@ public class SubwayGraph {
             edges.getEdges()
                     .forEach(m -> {
                         final Edge edge = graph.addEdge(m.getUpStation(), m.getDownStation());
-                        graph.setEdgeWeight(edge, m.getDistance());
+                        graph.setEdgeWeight(edge, m.getDistanceValue());
                     });
         }
 

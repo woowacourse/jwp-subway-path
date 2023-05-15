@@ -3,6 +3,7 @@ package subway.domain.graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.edge.Distance;
 import subway.domain.edge.Edge;
 import subway.domain.edge.Edges;
 import subway.domain.line.Line;
@@ -28,18 +29,18 @@ class SubwayGraphTest {
     final Map<Line, Edges> allEdges = Map.of(
             new Line(1L, "1호선"), new Edges(
                     List.of(
-                            new Edge(1L, A, B, 3),
-                            new Edge(2L, B, C, 4),
-                            new Edge(3L, C, D, 5),
-                            new Edge(4L, D, E, 5)
+                            new Edge(1L, A, B, new Distance(3)),
+                            new Edge(2L, B, C, new Distance(4)),
+                            new Edge(3L, C, D, new Distance(5)),
+                            new Edge(4L, D, E, new Distance(5))
 
                     )
             ),
             new Line(2L, "2호선"), new Edges(
                     List.of(
-                            new Edge(5L, B, C, 3),
-                            new Edge(6L, C, D, 1),
-                            new Edge(7L, D, H, 5)
+                            new Edge(5L, B, C, new Distance(3)),
+                            new Edge(6L, C, D, new Distance(1)),
+                            new Edge(7L, D, H, new Distance(5))
                     )
             )
     );
