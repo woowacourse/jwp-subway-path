@@ -9,6 +9,7 @@ import subway.application.station.CreateStationService;
 import subway.ui.dto.request.StationCreateRequest;
 import subway.ui.dto.response.StationResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -21,7 +22,7 @@ public class CreateStationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationCreateRequest stationCreateRequest) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
         final Long stationId = stationService.createStation(stationCreateRequest);
 
         return ResponseEntity.created(URI.create("/stations/" + stationId)).build();

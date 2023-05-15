@@ -1,6 +1,7 @@
 package subway.ui.line;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.NonNull;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,7 +18,7 @@ public class DeleteLineController {
     }
 
     @DeleteMapping("/{line_id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable("line_id") Long lineId) {
+    public ResponseEntity<Void> deleteLine(@PathVariable("line_id") @NonNull Long lineId) {
         lineService.deleteLine(lineId);
         return ResponseEntity.noContent().build();
     }

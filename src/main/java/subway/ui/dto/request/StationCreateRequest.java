@@ -1,6 +1,10 @@
 package subway.ui.dto.request;
 
+import org.springframework.lang.NonNull;
+
 public class StationCreateRequest {
+
+    @NonNull
     private String name;
 
     public StationCreateRequest() {

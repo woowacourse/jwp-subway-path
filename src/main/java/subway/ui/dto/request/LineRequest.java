@@ -1,6 +1,9 @@
 package subway.ui.dto.request;
 
+import org.springframework.lang.NonNull;
+
 public class LineRequest {
+    @NonNull
     private String name;
 
     public LineRequest() {

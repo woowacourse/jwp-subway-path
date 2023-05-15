@@ -1,8 +1,15 @@
 package subway.ui.dto.request;
 
+import org.springframework.lang.NonNull;
+
+import javax.validation.constraints.Positive;
+
 public class SectionCreateRequest {
+    @NonNull
     private String upStationName;
+    @NonNull
     private String downStationName;
+    @Positive
     private Long distance;
 
     public SectionCreateRequest() {
