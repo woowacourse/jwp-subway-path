@@ -2,19 +2,22 @@ package subway.dto;
 
 import subway.domain.Line;
 
-public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
+import java.util.ArrayList;
+import java.util.List;
 
-    public LineResponse(Long id, String name, String color) {
+public class LineResponse {
+    private final Long id;
+    private final String name;
+    private final List<StationResponse> stations;
+
+    public LineResponse(Long id, String name, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
-        this.color = color;
+        this.stations = new ArrayList<>(stations);
     }
 
-    public static LineResponse of(Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+    public static LineResponse of(Line line, List<StationResponse> stations) {
+        return new LineResponse(line.getId(), line.getName(), stations);
     }
 
     public Long getId() {
@@ -25,7 +28,7 @@ public class LineResponse {
         return name;
     }
 
-    public String getColor() {
-        return color;
+    public List<StationResponse> getStations() {
+        return new ArrayList<>(stations);
     }
 }

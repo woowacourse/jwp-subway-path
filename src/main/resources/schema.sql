@@ -1,14 +1,31 @@
-create table if not exists STATION
+DROP TABLE IF EXISTS STATION;
+
+CREATE TABLE STATION
 (
-    id bigint auto_increment not null,
-    name varchar(255) not null unique,
-    primary key(id)
+    id   BIGINT      NOT NULL AUTO_INCREMENT,
+    name VARCHAR(20) NOT NULL UNIQUE,
+    PRIMARY KEY (id)
 );
 
-create table if not exists LINE
+DROP TABLE IF EXISTS LINE;
+
+CREATE TABLE LINE
 (
-    id bigint auto_increment not null,
-    name varchar(255) not null unique,
-    color varchar(20) not null,
-    primary key(id)
+    id   BIGINT      NOT NULL AUTO_INCREMENT,
+    name VARCHAR(20) NOT NULL UNIQUE,
+    PRIMARY KEY (id)
+);
+
+DROP TABLE IF EXISTS EDGE;
+
+CREATE TABLE EDGE
+(
+    id               BIGINT NOT NULL AUTO_INCREMENT,
+    line_id          BIGINT NOT NULL,
+    station_id       BIGINT NOT NULL,
+    station_order    BIGINT NOT NULL,
+    distance_to_next BIGINT,
+    PRIMARY KEY (id),
+    FOREIGN KEY (station_id) REFERENCES STATION (id),
+    FOREIGN KEY (line_id) REFERENCES LINE (id)
 );

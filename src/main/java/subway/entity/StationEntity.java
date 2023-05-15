@@ -1,27 +1,31 @@
-package subway.dto;
+package subway.entity;
 
 import subway.domain.Station;
 
 import java.util.Objects;
 
-public class StationResponse {
+public class StationEntity {
     private Long id;
     private String name;
 
-    public StationResponse(Long id, String name) {
+    public StationEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getName());
+    public StationEntity(final String name) {
+        this(null, name);
+    }
+
+    public Station toDomain() {
+        return new Station(id, name);
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        StationResponse that = (StationResponse) o;
+        StationEntity that = (StationEntity) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
@@ -37,4 +41,6 @@ public class StationResponse {
     public String getName() {
         return name;
     }
+
+
 }
