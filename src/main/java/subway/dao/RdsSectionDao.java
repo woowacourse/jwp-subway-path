@@ -78,13 +78,7 @@ public class RdsSectionDao implements SectionDao {
     }
 
     @Override
-    public List<SectionEntity> findByLineId(final Long lineId) {
-        final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
-    }
-
-    @Override
-    public List<Section> findSectionsByLineId(final Long lineId) {
+    public List<Section> findAll() {
         final String sql = "SELECT s1.id AS up_station_id," +
                 "s1.name AS up_station_name," +
                 "s2.id AS down_station_id," +
@@ -93,9 +87,14 @@ public class RdsSectionDao implements SectionDao {
                 "sec.distance " +
                 "FROM SECTION sec " +
                 "JOIN STATION s1 ON sec.up_station_id = s1.id " +
-                "JOIN STATION s2 ON sec.down_station_id = s2.id " +
-                "WHERE line_id = ?";
-        return jdbcTemplate.query(sql, sectionRowMapper, lineId);
+                "JOIN STATION s2 ON sec.down_station_id = s2.id";
+        return jdbcTemplate.query(sql, sectionRowMapper);
+    }
+
+    @Override
+    public List<SectionEntity> findByLineId(final Long lineId) {
+        final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     @Override

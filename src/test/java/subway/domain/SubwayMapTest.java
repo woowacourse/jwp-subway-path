@@ -1,6 +1,8 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static subway.domain.SectionFixture.LINE1;
+import static subway.domain.SectionFixture.LINE2;
 import static subway.domain.SectionFixture.SECTIONS1;
 import static subway.domain.SectionFixture.SECTIONS2;
 import static subway.domain.SectionFixture.SECTIONS3;
@@ -41,7 +43,7 @@ class SubwayMapTest {
     @ParameterizedTest
     @MethodSource("getSections")
     void getStations(final List<Section> sections) {
-        final SubwayMap subwayMap = SubwayMap.of(sections);
+        final SubwayMap subwayMap = SubwayMap.of(List.of(LINE1), sections);
         assertThat(subwayMap.getStations(1L)).containsExactly(
                 STATION1,
                 STATION2,
@@ -56,25 +58,23 @@ class SubwayMapTest {
     @DisplayName("노선의 경로 조회 테스트")
     @Test
     void getAllStations() {
-        final SubwayMap subwayMap = SubwayMap.of(SECTIONS4);
-        assertThat(subwayMap.getAllStations()).containsExactly(
-                List.of(
-                        STATION1,
-                        STATION2,
-                        STATION3,
-                        STATION4,
-                        STATION5,
-                        STATION6,
-                        STATION7
-                ),
-                List.of(
-                        STATION8,
-                        STATION9,
-                        STATION10,
-                        STATION4,
-                        STATION11,
-                        STATION12
-                )
+        final SubwayMap subwayMap = SubwayMap.of(List.of(LINE1, LINE2), SECTIONS4);
+        assertThat(subwayMap.getStations(LINE1.getId())).containsExactly(
+                STATION1,
+                STATION2,
+                STATION3,
+                STATION4,
+                STATION5,
+                STATION6,
+                STATION7
+        );
+        assertThat(subwayMap.getStations(LINE2.getId())).containsExactly(
+                STATION8,
+                STATION9,
+                STATION10,
+                STATION4,
+                STATION11,
+                STATION12
         );
     }
 }

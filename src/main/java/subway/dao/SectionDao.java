@@ -15,9 +15,9 @@ public interface SectionDao {
 
     void deleteById(final Long id);
 
-    List<SectionEntity> findByLineId(final Long lineId);
+    List<Section> findAll();
 
-    List<Section> findSectionsByLineId(final Long lineId);
+    List<SectionEntity> findByLineId(final Long lineId);
 
     Optional<SectionEntity> findNeighborSection(final Long lineId, final Long baseId, final Direction direction);
 

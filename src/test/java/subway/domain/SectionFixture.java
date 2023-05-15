@@ -4,6 +4,9 @@ import java.util.List;
 
 public class SectionFixture {
 
+    public static final Line LINE1 = new Line(1L, "1호선", "파랑색");
+    public static final Line LINE2 = new Line(2L, "2호선", "초록색");
+
     public static final Station STATION1 = new Station(1L, "1L");
     public static final Station STATION2 = new Station(2L, "2L");
     public static final Station STATION3 = new Station(3L, "3L");

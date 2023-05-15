@@ -1,27 +1,23 @@
 package subway.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.dao.SectionDao;
 import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.domain.SubwayMap;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineSearchResponse;
 
 @Service
 public class LineService {
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
 
-    public LineService(final LineDao lineDao, final SectionDao sectionDao) {
+    private final LineDao lineDao;
+    private final SubwayMapService subwayMapService;
+
+    public LineService(final LineDao lineDao, final SubwayMapService subwayMapService) {
         this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
+        this.subwayMapService = subwayMapService;
     }
 
     public LineResponse saveLine(final LineRequest request) {
@@ -30,19 +26,11 @@ public class LineService {
     }
 
     public List<LineSearchResponse> findLineResponses() {
-        final List<Line> lines = lineDao.findAll();
-        return lines.stream()
-                .map(Line::getId)
-                .map(this::findLineResponseById)
-                .collect(Collectors.toList());
+        return subwayMapService.getLineSearchResponses();
     }
 
     public LineSearchResponse findLineResponseById(final Long id) {
-        final List<Section> sections = sectionDao.findSectionsByLineId(id);
-        final SubwayMap subwayMap = SubwayMap.of(sections);
-        final List<Station> stations = subwayMap.getStations(id);
-        final Line line = lineDao.findById(id);
-        return new LineSearchResponse(line.getId(), line.getName(), line.getColor(), stations);
+        return subwayMapService.getLineSearchResponse(id);
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {

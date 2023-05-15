@@ -39,16 +39,16 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
+    public List<Section> findAll() {
+        return null;
+    }
+
+    @Override
     public List<SectionEntity> findByLineId(final Long lineId) {
         return sectionMap.values()
                 .stream()
                 .filter(it -> it.getLineId().equals(lineId))
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public List<Section> findSectionsByLineId(final Long lineId) {
-        return null;
     }
 
     @Override

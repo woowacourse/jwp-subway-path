@@ -11,15 +11,20 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineSearchResponse;
+import subway.service.SubwayMapService;
 
 @DisplayName("지하철 노선 관련 기능")
 class LineControllerTest extends ControllerTest {
+
+    @Autowired
+    private SubwayMapService subwayMapService;
 
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
@@ -79,6 +84,9 @@ class LineControllerTest extends ControllerTest {
     @Test
     @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
     void getLines() {
+        // given
+        subwayMapService.update();
+
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
@@ -120,6 +128,9 @@ class LineControllerTest extends ControllerTest {
     @Test
     @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
     void getLine() {
+        // given
+        subwayMapService.update();
+
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
