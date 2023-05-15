@@ -28,7 +28,7 @@ public class Section {
         }
     }
 
-    public boolean isCorrespondingSection(Station upstream, Station downstream) {
+    public boolean containsSameStations(Station upstream, Station downstream) {
         return this.upstream.equals(upstream) && this.downstream.equals(downstream);
     }
 

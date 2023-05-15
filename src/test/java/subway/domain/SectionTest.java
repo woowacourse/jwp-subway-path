@@ -37,14 +37,14 @@ class SectionTest {
     void upstream과_downstream이_일치한다면_true를_반환한다() {
         Section newSection = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 3);
 
-        assertThat(newSection.isCorrespondingSection(JAMSIL_STATION, JAMSIL_NARU_STATION)).isTrue();
+        assertThat(newSection.containsSameStations(JAMSIL_STATION, JAMSIL_NARU_STATION)).isTrue();
     }
 
     @Test
     void upstream과_downstream이_순서가_일치하지_않으면_false를_반환한다() {
         Section newSection = new Section(JAMSIL_STATION, JAMSIL_NARU_STATION, 3);
 
-        assertThat(newSection.isCorrespondingSection(JAMSIL_NARU_STATION, JAMSIL_STATION)).isFalse();
+        assertThat(newSection.containsSameStations(JAMSIL_NARU_STATION, JAMSIL_STATION)).isFalse();
     }
 
     @Test

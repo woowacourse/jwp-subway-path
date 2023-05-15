@@ -29,6 +29,12 @@ public class Line {
         this(otherLine.getName(), otherLine.getSections());
     }
 
+    private void validateEmptySection(List<Section> sections) {
+        if (sections.size() == NONE) {
+            throw new IllegalArgumentException("디버깅: section이 존재하지 않는데 종점을 추가하려고 합니다.");
+        }
+    }
+
     private void addEmptyEndpoints(List<Section> sections) {
         Station upstreamEmptyEndpoint = sections.get(0).getUpstream();
         Station downstreamEmptyEndpoint = sections.get(sections.size() - 1).getDownstream();
@@ -37,18 +43,11 @@ public class Line {
         this.sections.addLast(new Section(downstreamEmptyEndpoint, Station.getEmptyEndpoint(), Integer.MAX_VALUE));
     }
 
-    private void validateEmptySection(List<Section> sections) {
-        if (sections.size() == NONE) {
-            throw new IllegalArgumentException("디버깅: section이 존재하지 않는데 종점을 추가하려고 합니다.");
-        }
-    }
-
     public List<Section> addStation(Station newStation, Station upstream, Station downstream, int distanceToUpstream) {
         validateDuplicateStations(newStation);
-
-        Section correspondingSection = findCorrespondingSection(upstream, downstream);
-        List<Section> sectionsToAdd = correspondingSection.insertInTheMiddle(newStation, distanceToUpstream);
-        addSections(correspondingSection, sectionsToAdd);
+        Section section = findSection(upstream, downstream);
+        List<Section> sectionsToAdd = section.insertInTheMiddle(newStation, distanceToUpstream);
+        addSections(section, sectionsToAdd);
 
         return sectionsToAdd;
     }
@@ -59,18 +58,18 @@ public class Line {
         }
     }
 
-    private Section findCorrespondingSection(Station upstream, Station downstream) {
+    private Section findSection(Station upstream, Station downstream) {
         return sections.stream()
-                .filter(section -> section.isCorrespondingSection(upstream, downstream))
+                .filter(section -> section.containsSameStations(upstream, downstream))
                 .findAny()
                 .orElseThrow(() -> new SectionNotFoundException("노선에 해당하는 구간이 존재하지 않습니다."));
     }
 
-    private void addSections(Section correspondingSection, List<Section> sectionsToAdd) {
-        sections.add(sections.indexOf(correspondingSection), sectionsToAdd.get(1));
+    private void addSections(Section section, List<Section> sectionsToAdd) {
+        sections.add(sections.indexOf(section), sectionsToAdd.get(1));
         sections.add(sections.indexOf(sectionsToAdd.get(1)), sectionsToAdd.get(0));
 
-        sections.remove(correspondingSection);
+        sections.remove(section);
     }
 
     public void deleteStation(Station stationToDelete) {
