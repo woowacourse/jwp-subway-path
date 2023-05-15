@@ -30,15 +30,6 @@ public class LineService {
         return new LineResponse(lineId, lineRequest.getName());
     }
 
-    public long deleteLine(final Long lineIdRequest) {
-        final boolean isDeleted = lineRepository.deleteById(lineIdRequest);
-
-        if (!isDeleted) {
-            throw new NullPointerException("노선 삭제에 실패했습니다");
-        }
-        return lineIdRequest;
-    }
-
     public List<LineResponse> findAll(){
         return LineResponse.of(lineRepository.findAll());
     }
@@ -56,5 +47,14 @@ public class LineService {
         }
 
         return new LineResponse(lineId, request.getName());
+    }
+
+    public long deleteLine(final Long lineIdRequest) {
+        final boolean isDeleted = lineRepository.deleteById(lineIdRequest);
+
+        if (!isDeleted) {
+            throw new NullPointerException("노선 삭제에 실패했습니다");
+        }
+        return lineIdRequest;
     }
 }
