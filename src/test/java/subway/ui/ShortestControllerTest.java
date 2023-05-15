@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.jdbc.Sql;
 import subway.application.LineService;
 import subway.application.StationService;
 import subway.dto.LineRequest;
@@ -15,7 +16,9 @@ import subway.dto.PathRequest;
 import subway.dto.StationRequest;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.springframework.test.context.jdbc.Sql.ExecutionPhase.AFTER_TEST_METHOD;
 
+@Sql(scripts = "classpath:truncate.sql", executionPhase = AFTER_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class ShortestControllerTest {
 

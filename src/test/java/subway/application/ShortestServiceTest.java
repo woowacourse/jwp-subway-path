@@ -77,8 +77,8 @@ class ShortestServiceTest {
         @Test
         void findShortest_fail2() {
             //given
-            lineService.saveLine(new LineRequest("1호선", "red"));
-            lineService.saveLine(new LineRequest("2호선", "blue"));
+            final Long lineId1 = lineService.saveLine(new LineRequest("1호선", "red")).getId();
+            final Long lineId2 = lineService.saveLine(new LineRequest("2호선", "blue")).getId();
 
             Long source = stationService.saveStation(new StationRequest("광안역")).getId();
             Long destination = stationService.saveStation(new StationRequest("노포역")).getId();
@@ -86,8 +86,8 @@ class ShortestServiceTest {
             Long stationId1 = stationService.saveStation(new StationRequest("전포역")).getId();
             Long stationId2 = stationService.saveStation(new StationRequest("부산역")).getId();
 
-            lineService.addPathToLine(1L, new PathRequest(source, stationId1, 5));
-            lineService.addPathToLine(2L, new PathRequest(destination, stationId2, 5));
+            lineService.addPathToLine(lineId1, new PathRequest(source, stationId1, 5));
+            lineService.addPathToLine(lineId2, new PathRequest(destination, stationId2, 5));
 
             //when, then
             assertThatThrownBy(() -> shortestService.findShortest(source, destination))
