@@ -68,14 +68,13 @@ public class SectionCommandService {
         sectionDao.deleteById(sectionId);
     }
 
-    public void updateSection(final Section section, final Long lineId) {
+    public void updateSection(final Section section) {
 
         final SectionEntity sectionEntity = new SectionEntity(
                 section.getId(),
                 section.getStations().getCurrent().getName(),
                 section.getStations().getNext().getName(),
-                section.getStations().getDistance(),
-                lineId
+                section.getStations().getDistance()
         );
 
         sectionDao.update(sectionEntity);
