@@ -25,6 +25,7 @@ graph TD
 Sections --> Section
 Section -->  Line
 Section --> Station
+Section --> Distance
 ```
 
 # API 설계
