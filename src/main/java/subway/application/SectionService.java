@@ -3,8 +3,11 @@ package subway.application;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import subway.ui.dto.SectionRequest;
+import subway.domain.dto.ChangesByDeletion;
+import subway.ui.dto.DeleteSectionRequest;
+import subway.ui.dto.PostSectionRequest;
 import subway.ui.dto.SectionResponse;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -16,6 +19,7 @@ import subway.domain.Station;
 import subway.domain.dto.ChangesByAddition;
 
 @Service
+@Transactional
 public class SectionService {
 
     private final StationDao stationDao;
@@ -28,7 +32,7 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public SectionResponse saveSection(SectionRequest request) {
+    public SectionResponse saveSection(PostSectionRequest request) {
         List<Section> sectionList = sectionDao.findAllByLineId(request.getLineId());
         Sections sections = new Sections(sectionList);
 
@@ -52,5 +56,25 @@ public class SectionService {
     private Section findRequestedSection(List<Section> addedSections, Station upStation, Station downStation) {
         Sections sections = new Sections(addedSections);
         return sections.findAnySectionWithGivenStations(upStation, downStation);
+    }
+
+    public void deleteSection(DeleteSectionRequest request) {
+        Long lineId = request.getLineId();
+        Long stationId = request.getStationId();
+
+        Sections sections = new Sections(sectionDao.findAllByLineId(lineId));
+        deleteLineIfLastSection(sections, lineId);
+        Station station = sections.findStationById(stationId)
+            .orElseThrow(() -> new IllegalArgumentException("stationId = " + stationId + " 인 역이 존재하지 않습니다"));
+
+        ChangesByDeletion changes = sections.findChangesWhenDelete(station);
+        sectionDao.insertAll(changes.getAddedSections());
+        sectionDao.deleteAll(changes.getDeletedSections());
+    }
+
+    private void deleteLineIfLastSection(Sections sections, Long lineId) {
+        if (sections.size() == 1) {
+            lineDao.deleteById(lineId);
+        }
     }
 }

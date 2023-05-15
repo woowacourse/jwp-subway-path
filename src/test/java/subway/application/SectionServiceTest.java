@@ -21,7 +21,8 @@ import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.ui.dto.SectionRequest;
+import subway.ui.dto.DeleteSectionRequest;
+import subway.ui.dto.PostSectionRequest;
 import subway.ui.dto.SectionResponse;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,7 +40,7 @@ class SectionServiceTest {
     SectionService sectionService;
 
     @Test
-    void 구간을_저장한다() {
+    void 노선의_중간에_구간을_저장한다() {
         // given
         // 잠실 - 10 - 천호
         Station cheonho = new Station(1L, "천호");
@@ -55,7 +56,8 @@ class SectionServiceTest {
         when(sectionDao.insertAll(any())).thenReturn(List.of(new Section(2L, mongchon, jamsil, line8, 5)));
 
         // when
-        SectionRequest request = new SectionRequest(3L, 2L, 1L, 5);
+        // 잠실 - 5 - 몽촌 - 5 - 천호
+        PostSectionRequest request = new PostSectionRequest(3L, 2L, 1L, 5);
         SectionResponse sectionResponse = sectionService.saveSection(request);
 
         // then
@@ -63,23 +65,82 @@ class SectionServiceTest {
     }
 
     @Test
-    void 구간을_삭제한다() {
+    void 노선에_존재하지_않는_역으로_구간을_저장하면_예외가_발생한다() {
         // given
         // 잠실 - 10 - 천호
         Station cheonho = new Station(1L, "천호");
         Station jamsil = new Station(2L, "잠실");
-        Station mongchon = new Station(3L, "몽촌토성");
         Line line8 = new Line(1L, "8호선", "pink");
         Section cheonhoJamsil10 = new Section(cheonho, jamsil, line8, 10);
 
-        // section에서 findById()로 Section을 찾아온다
-        // 해당 Section과 같은 호선의 List<Section>을 모두 가져온다.
-        // 해당 Section의 up_station이 다른 구간의 down_station인 경우가 존재하는지 확인한다.
-        // 해당 Section의 down_station이 다른 구간의 up_station인 경우가 존재하는지 확인한다.
-        // 위의 두 값을 통해 둘 중 하나가 0이라면 구간의 끝을 의미,
-        // 해당 section이 구간의 끝이 아니라면 예외가 발생한다.
-        //
+        when(stationDao.findById(3L)).thenReturn(Optional.empty());
+        when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(cheonhoJamsil10));
 
-        // assertDoesNotThrow(() -> sectionService.deleteSection(1L));
+        // when
+        PostSectionRequest request = new PostSectionRequest(3L, 2L, 1L, 5);
+
+        // then
+        assertThatThrownBy(() -> sectionService.saveSection(request))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("stationId = " + 3L + " 인 역이 존재하지 않습니다");
+    }
+
+    @Test
+    void 노선의_마지막이_아닌_구간을_삭제한다() {
+        // given
+        // 장지 - 10 - 잠실 - 10 - 천호
+        Station cheonho = new Station(1L, "천호");
+        Station jamsil = new Station(2L, "잠실");
+        Station jangji = new Station(3L, "장지");
+        Line line8 = new Line(1L, "8호선", "pink");
+        Section cheonhoJamsil10 = new Section(cheonho, jamsil, line8, 10);
+        Section jamsilJangji10 = new Section(jamsil, jangji, line8, 10);
+
+        when(sectionDao.findAllByLineId(line8.getId())).thenReturn(List.of(cheonhoJamsil10, jamsilJangji10));
+
+        // when
+        DeleteSectionRequest request = new DeleteSectionRequest(1L, 2L);
+
+        // then
+        assertDoesNotThrow(() -> sectionService.deleteSection(request));
+    }
+
+    @Test
+    void 노선의_마지막_남은_구간을_삭제한다() {
+        // given
+        // 잠실 - 10 - 천호
+        Station cheonho = new Station(1L, "천호");
+        Station jamsil = new Station(2L, "잠실");
+        Line line8 = new Line(1L, "8호선", "pink");
+        Section cheonhoJamsil10 = new Section(cheonho, jamsil, line8, 10);
+
+        when(sectionDao.findAllByLineId(line8.getId())).thenReturn(List.of(cheonhoJamsil10));
+
+        // when
+        DeleteSectionRequest request = new DeleteSectionRequest(1L, 2L);
+
+        // then
+        assertDoesNotThrow(() -> sectionService.deleteSection(request));
+        verify(lineDao, times(1)).deleteById(any());
+    }
+
+    @Test
+    void 삭제할_역이_노선에_존재하지_않으면_예외가_발생한다() {
+        // given
+        // 잠실 - 10 - 천호
+        Station cheonho = new Station(1L, "천호");
+        Station jamsil = new Station(2L, "잠실");
+        Line line8 = new Line(1L, "8호선", "pink");
+        Section cheonhoJamsil10 = new Section(cheonho, jamsil, line8, 10);
+
+        when(sectionDao.findAllByLineId(1L)).thenReturn(List.of(cheonhoJamsil10));
+
+        // when
+        DeleteSectionRequest request = new DeleteSectionRequest(1L, 3L);
+
+        // then
+        assertThatThrownBy(() -> sectionService.deleteSection(request))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("stationId = " + 3L + " 인 역이 존재하지 않습니다");
     }
 }

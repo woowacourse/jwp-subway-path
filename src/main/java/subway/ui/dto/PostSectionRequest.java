@@ -1,16 +1,16 @@
 package subway.ui.dto;
 
-public class SectionRequest {
+public class PostSectionRequest {
 
     private Long upStationId;
     private Long downStationId;
     private Long lineId;
     private Integer distance;
 
-    public SectionRequest() {
+    public PostSectionRequest() {
     }
 
-    public SectionRequest(Long upStationId, Long downStationId, Long lineId, Integer distance) {
+    public PostSectionRequest(Long upStationId, Long downStationId, Long lineId, Integer distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.lineId = lineId;
