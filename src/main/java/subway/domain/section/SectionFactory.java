@@ -5,11 +5,27 @@ import subway.domain.Section;
 
 public class SectionFactory {
 
-    public static Section createRemoveCentralCase(final Section beforeSection, final Section nextSection) {
+    public static Section createRemoveMiddleCase(final Section beforeSection, final Section nextSection) {
         return new Section(
                 beforeSection.getPrevStation(),
                 nextSection.getNextStation(),
                 beforeSection.getDistance().plusValue(nextSection.getDistance())
+        );
+    }
+
+    public static Section createAddConnectedPrevCase(final Section section, final Section originSection) {
+        return new Section(
+                section.getNextStation(),
+                originSection.getNextStation(),
+                originSection.getDistance().minusValue(section.getDistance())
+        );
+    }
+
+    public static Section createAddConnectedNextCase(final Section section, final Section originSection) {
+        return new Section(
+                originSection.getPrevStation(),
+                section.getPrevStation(),
+                originSection.getDistance().minusValue(section.getDistance())
         );
     }
 

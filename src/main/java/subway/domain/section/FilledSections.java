@@ -1,6 +1,5 @@
 package subway.domain.section;
 
-import static subway.domain.section.SectionFactory.createRemoveCentralCase;
 import static subway.domain.section.SectionFactory.from;
 
 import java.util.LinkedList;
@@ -51,42 +50,6 @@ public class FilledSections extends Sections {
         final List<Station> allStations = getAllStations();
         return allStations.contains(otherSection.getPrevStation())
                 && allStations.contains(otherSection.getNextStation());
-    }
-
-    private Sections addCentral(final Section section, final List<Section> sections) {
-        final Section originSection = findOriginSection(section, sections);
-
-        final int originIndex = sections.indexOf(originSection);
-        if (originSection.isEqualNextStation(section.getNextStation())) {
-            sections.add(originIndex, section);
-            sections.add(originIndex,
-                    new Section(
-                            originSection.getPrevStation(),
-                            section.getPrevStation(),
-                            originSection.getDistance().minusValue(section.getDistance())
-                    )
-            );
-        }
-        if (originSection.isEqualNextStation(section.getPrevStation())) {
-            sections.add(originIndex,
-                    new Section(
-                            section.getNextStation(),
-                            originSection.getNextStation(),
-                            originSection.getDistance().minusValue(section.getDistance())
-                    )
-            );
-            sections.add(originIndex, section);
-        }
-        sections.remove(originSection);
-        return from(sections);
-    }
-
-    private static Section findOriginSection(final Section section, final List<Section> sections) {
-        return sections.stream()
-                .filter(element -> element.getPrevStation().equals(section.getPrevStation())
-                        || element.getNextStation().equals(section.getNextStation()))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("이전 역을 찾을 수 없습니다."));
     }
 
     @Override

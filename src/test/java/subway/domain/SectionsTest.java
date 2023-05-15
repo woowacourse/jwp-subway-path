@@ -24,12 +24,12 @@ class SectionsTest {
     @DisplayName("Sections 간의 차집합을 구한다.")
     @Test
     void getDifferenceOfSet() {
-        final Sections newFilledSections = ORIGIN_FILLED_SECTIONS.removeStation(STATION_C);
+        final Sections newSections = ORIGIN_FILLED_SECTIONS.removeStation(STATION_C);
 
-        final Sections difference = ORIGIN_FILLED_SECTIONS.getDifferenceOfSet(newFilledSections);
+        final Sections difference = ORIGIN_FILLED_SECTIONS.getDifferenceOfSet(newSections);
 
         assertThat(difference.getSections())
-                .containsExactly(SECTION_1);
+                .containsExactly(SECTION_2);
     }
 
     @DisplayName("Sections의 상행종점에 section을 추가한다.")
@@ -117,7 +117,7 @@ class SectionsTest {
     @DisplayName("중간에 있는 역을 제거한다.")
     @Test
     void removeCentral() {
-        final Sections filledSections = ORIGIN_FILLED_SECTIONS.removeStation(STATION_C);
+        final Sections filledSections = ORIGIN_FILLED_SECTIONS.removeStation(STATION_B);
 
         assertThat(filledSections.getSections())
                 .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
