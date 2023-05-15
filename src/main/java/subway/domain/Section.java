@@ -4,53 +4,45 @@ import java.util.Objects;
 
 public class Section {
 
-    private Station from;
-    private Station to;
+    private final Station from;
+    private final Station to;
     private final Distance distance;
 
     public Section(final Station from, final Station to, final int distance) {
-        validate(from, to);
+        validateDuplication(from, to);
         this.from = from;
         this.to = to;
         this.distance = new Distance(distance);
     }
 
-    private void validate(final Station from, final Station to) {
+    private void validateDuplication(final Station from, final Station to) {
         if (from.equals(to)) {
-            throw new IllegalArgumentException("입력한 두 역은 같습니다.");
+            throw new IllegalArgumentException("동일한 역을 추가할 수 없습니다.");
         }
     }
 
-    public boolean exist(final Station station) {
-        return existLeft(station) || existRight(station);
+    public boolean contains(final Station station) {
+        return containsOnLeft(station) || containsOnRight(station);
     }
 
-    public boolean existLeft(final Station station) {
+    public boolean containsOnLeft(final Station station) {
         return station.equals(from);
     }
 
-    public boolean existRight(final Station station) {
+    public boolean containsOnRight(final Station station) {
         return station.equals(to);
     }
 
-    public boolean isInsertable(final int otherDistance) {
-        return distance.isLongerThan(otherDistance);
+    public boolean isInsertable(final int distance) {
+        return this.distance.isLongerThan(distance);
     }
 
-    public Section changeLeft(Station otherStation, int otherDistance) {
-        return new Section(otherStation, to, distance.subtract(otherDistance));
+    public Section changeLeft(Station station, int distance) {
+        return new Section(station, to, this.distance.subtract(distance));
     }
 
-    public Section changeRight(final Station otherStation, final int otherDistance) {
-        return new Section(from, otherStation, distance.subtract(otherDistance));
-    }
-
-    public void updateStation(final Station targetStation, final Station updateStation) {
-        if (from.equals(targetStation)) {
-            from = updateStation;
-            return;
-        }
-        to = updateStation;
+    public Section changeRight(final Station station, final int distance) {
+        return new Section(from, station, this.distance.subtract(distance));
     }
 
     public Station getFrom() {

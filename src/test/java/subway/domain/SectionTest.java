@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.fixture.Fixture.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -16,73 +17,82 @@ class SectionTest {
 
     @Test
     void 두_역이_같으면_예외를_발생한다() {
-        final Station station1 = new Station("잠실역");
-        final Station station2 = new Station("잠실역");
-        assertThatThrownBy(() -> new Section(station1, station2, 3))
+        assertThatThrownBy(() -> new Section(후추, 후추, 7))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("입력한 두 역은 같습니다.");
+                .hasMessage("동일한 역을 추가할 수 없습니다.");
     }
 
     @Test
-    void 특정_역을_가지고_있는지_확인한다() {
-        final Station station1 = new Station("잠실역");
-        final Station station2 = new Station("잠실새내역");
-        final Section section = new Section(station1, station2, 3);
+    void 역을_포함하는지_확인한다() {
+        // given
+        final Section section = new Section(후추, 디노, 7);
 
+        // expect
         assertSoftly(softly -> {
-            softly.assertThat(section.exist(new Station("잠실역"))).isTrue();
-            softly.assertThat(section.exist(new Station("잠실새내역"))).isTrue();
-            softly.assertThat(section.exist(new Station("없는역"))).isFalse();
+            softly.assertThat(section.contains(후추)).isTrue();
+            softly.assertThat(section.contains(디노)).isTrue();
+            softly.assertThat(section.contains(조앤)).isFalse();
         });
     }
 
     @Test
-    void 특정_역이_구간의_왼쪽에_있는지_확인한다() {
-        final Station station1 = new Station("잠실역");
-        final Station station2 = new Station("잠실새내역");
-        final Section section = new Section(station1, station2, 3);
+    void 역을_왼쪽에_포함하는지_확인한다() {
+        // given
+        final Section section = new Section(후추, 디노, 7);
 
+        // expect
         assertSoftly(softly -> {
-            softly.assertThat(section.existLeft(new Station("잠실역"))).isTrue();
-            softly.assertThat(section.existLeft(new Station("잠실새내역"))).isFalse();
+            softly.assertThat(section.containsOnLeft(후추)).isTrue();
+            softly.assertThat(section.containsOnLeft(디노)).isFalse();
         });
     }
 
     @Test
-    void 특정_역이_구간의_오른쪽에_있는지_확인한다() {
-        final Station station1 = new Station("잠실역");
-        final Station station2 = new Station("잠실새내역");
-        final Section section = new Section(station1, station2, 3);
+    void 역을_오른쪽에_포함하는지_확인한다() {
+        // given
+        final Section section = new Section(후추, 디노, 7);
 
+        // expect
         assertSoftly(softly -> {
-            softly.assertThat(section.existRight(new Station("잠실역"))).isFalse();
-            softly.assertThat(section.existRight(new Station("잠실새내역"))).isTrue();
+            softly.assertThat(section.containsOnRight(후추)).isFalse();
+            softly.assertThat(section.containsOnRight(디노)).isTrue();
         });
     }
 
     @ParameterizedTest
-    @CsvSource({"2, true", "3, false", "4, false"})
-    void 구간_사이에_역을_추가할_수_있는_거리인지_확인한다(final int otherDistance, final boolean expected) {
+    @CsvSource({"6, true", "7, false", "8, false"})
+    void 역을_추가할_수_있는_거리인지_확인한다(final int distance, final boolean expected) {
         // given
-        final Station station1 = new Station("잠실역");
-        final Station station2 = new Station("잠실새내역");
-        final Section section = new Section(station1, station2, 3);
+        final Section section = new Section(후추, 디노, 7);
+
         // when
-        final boolean actual = section.isInsertable(otherDistance);
+        final boolean actual = section.isInsertable(distance);
+
         // then
         assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    void 역을_수정한다() {
-        // given
-        final Station 잠실 = new Station("잠실역");
-        final Station 잠실새내 = new Station("잠실새내역");
-        final Section section = new Section(잠실, 잠실새내, 3);
-        // when
-        section.updateStation(잠실, new Station("디노"));
-        // then
-        assertThat(section).isEqualTo(new Section(new Station("디노"), new Station("잠실새내역"), 3));
+    void 왼쪽_역을_교체한다() {
+        //given
+        final Section section = new Section(후추, 디노, 7);
+
+        //when
+        final Section insertedSection = section.changeLeft(조앤, 4);
+
+        //then
+        assertThat(insertedSection).isEqualTo(new Section(조앤, 디노, 3));
     }
 
+    @Test
+    void 오른쪽_역을_교체한다() {
+        //given
+        final Section section = new Section(후추, 디노, 7);
+
+        //when
+        final Section insertedSection = section.changeRight(조앤, 4);
+
+        //then
+        assertThat(insertedSection).isEqualTo(new Section(후추, 조앤, 3));
+    }
 }
