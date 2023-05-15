@@ -6,21 +6,15 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.subway.Line;
-import subway.domain.subway.LineMap;
-import subway.domain.subway.Section;
-import subway.domain.subway.Sections;
+import subway.domain.subway.*;
 import subway.dto.route.RouteShortCutRequest;
 import subway.dto.route.RouteShortCutResponse;
 import subway.dto.station.LineMapResponse;
 import subway.dto.station.StationResponse;
-import subway.entity.LineEntity;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -47,23 +41,38 @@ public class SubwayMapService {
     @Transactional(readOnly = true)
     public RouteShortCutResponse findShortCutRoute(final RouteShortCutRequest req) {
         // 1. 데이터셋
-        List<LineEntity> lineEntities = lineRepository.findAll();
+        List<Line> lines = makeAllLines();
 
-        List<Sections> sectionsList = lineEntities.stream()
-                .map(i -> sectionRepository.findSectionsByLineNumber(i.getLineNumber()))
+        // 2. 라이브러리로 최단 경로 조회
+        Map<String, Set<String>> lineMapInPath = new LinkedHashMap<>();
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = findShortestPathGraph(lines, lineMapInPath);
+
+        // 3. 데이터 메이킹 ()
+        DijkstraShortestPath shortestPath = new DijkstraShortestPath(graph);
+        GraphPath path = shortestPath.getPath(req.getStart(), req.getDestination());
+
+        // 4. 데이터 후처리
+        List<String> shortestPathList = path.getVertexList();
+        List<String> shortestPathWithLineNames = makeShortestPathWithLineName(lineMapInPath, shortestPathList);
+        int distance = (int) path.getWeight();
+
+        System.out.println("shortestPath: " + shortestPathList);
+        System.out.println("shortestPathWithLine: " + shortestPathWithLineNames + " distance: " + distance);
+        System.out.println("map = " + lineMapInPath);
+
+        List<StationResponse> shortestPathResponse = shortestPathList.stream()
+                .map(it -> StationResponse.from(new Station(it)))
                 .collect(Collectors.toList());
 
-        List<Line> lines = lineEntities.stream()
-                .flatMap(lineEntity -> sectionsList.stream()
-                        .map(sections -> lineRepository.findByLineNameAndSections(lineEntity.getName(), sections)))
+        List<StationResponse> shortestPathWithLineResponse = shortestPathWithLineNames.stream()
+                .map(it -> StationResponse.from(new Station(it)))
                 .collect(Collectors.toList());
 
-        // 2. 라이브러리 호출
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        return RouteShortCutResponse.from(shortestPathResponse, shortestPathWithLineResponse);
+    }
 
-        // 추가
-        Map<String, List<String>> map = new LinkedHashMap<>();
-
+    private WeightedMultigraph<String, DefaultWeightedEdge> findShortestPathGraph(final List<Line> lines, final Map<String, Set<String>> lineMapInPath) {
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (Line line : lines) {
             Sections sections = line.getSections();
             for (Section section : sections.getSections()) {
@@ -73,22 +82,40 @@ public class SubwayMapService {
                 graph.addVertex(upStation);
                 graph.addVertex(downStation);
 
+                lineMapInPath.computeIfAbsent(line.getName(), station -> new LinkedHashSet<>()).
+                        addAll(Arrays.asList(upStation, downStation));
+
                 graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
             }
         }
+        return graph;
 
-        // 3. 데이터 메이킹
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+    }
 
-        GraphPath path = dijkstraShortestPath.getPath(req.getStart(), req.getDestination());
+    private List<String> makeShortestPathWithLineName(final Map<String, Set<String>> lineMapInPath, final List<String> shortestPathList) {
+        List<String> shortestPathWithLineNames = new ArrayList<>();
+        for (String station : shortestPathList) {
+            List<String> lineNames = new ArrayList<>();
+            for (Map.Entry<String, Set<String>> entry : lineMapInPath.entrySet()) {
+                String lineName = entry.getKey();
+                Set<String> stations = entry.getValue();
+                if (stations.contains(station)) {
+                    lineNames.add(lineName);
+                }
+            }
 
+            String stationWithLineNames = station + " (" + String.join(", ", lineNames) + ")";
+            shortestPathWithLineNames.add(stationWithLineNames);
+        }
+        return shortestPathWithLineNames;
+    }
 
-        List<String> shortestPath = path.getVertexList();
-        int distance = (int) path.getWeight();
-
-        System.out.println("shortRoute: " + shortestPath + " distance: " + distance);
-        System.out.println("map = " + map);
-
-        return null;
+    private List<Line> makeAllLines() {
+        return lineRepository.findAll().stream()
+                .map(lineEntity -> {
+                    Sections sections = sectionRepository.findSectionsByLineNumber(lineEntity.getLineNumber());
+                    return lineRepository.findByLineNameAndSections(lineEntity.getName(), sections);
+                })
+                .collect(Collectors.toList());
     }
 }

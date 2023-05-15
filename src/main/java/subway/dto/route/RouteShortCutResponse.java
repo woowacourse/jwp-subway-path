@@ -1,23 +1,29 @@
 package subway.dto.route;
 
-import subway.dto.fee.FeeResponse;
+import subway.dto.station.StationResponse;
 import subway.dto.station.StationsResponse;
+
+import java.util.List;
 
 public class RouteShortCutResponse {
 
-    private final StationsResponse stations;
-    private final FeeResponse fee;
+    private final StationsResponse path;
+    private final StationsResponse pathWithLineName;
 
-    private RouteShortCutResponse(final StationsResponse stations, final FeeResponse fee) {
-        this.stations = stations;
-        this.fee = fee;
+    public RouteShortCutResponse(final StationsResponse path, final StationsResponse pathWithLineName) {
+        this.path = path;
+        this.pathWithLineName = pathWithLineName;
     }
 
-    public StationsResponse getStations() {
-        return stations;
+    public static RouteShortCutResponse from(final List<StationResponse> shortestPathResponse, final List<StationResponse> shortestPathWithLineResponse) {
+        return new RouteShortCutResponse(StationsResponse.from(shortestPathResponse), StationsResponse.from(shortestPathWithLineResponse));
     }
 
-    public FeeResponse getFee() {
-        return fee;
+    public StationsResponse getPath() {
+        return path;
+    }
+
+    public StationsResponse getPathWithLineName() {
+        return pathWithLineName;
     }
 }

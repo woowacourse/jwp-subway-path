@@ -70,7 +70,7 @@ public class StationControllerUnitTest {
     void show_stations_success() throws Exception {
         // given
         List<StationResponse> stations = List.of(StationResponse.from(new Station("잠실역")));
-        StationsResponse expected = StationsResponse.from(stations);
+        StationsResponse expected = StationsResponse.fromPathes(stations);
         given(stationService.findAllStationResponses()).willReturn(expected);
 
         // when & then
