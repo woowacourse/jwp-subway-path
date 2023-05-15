@@ -64,7 +64,7 @@ public class Sections {
             throw new ApiIllegalArgumentException("하나의 역은 반드시 노선에 존재해야합니다.");
         }
     }
-    
+
     private void replaceSection(final Station station, final Section section) {
         Section originSection = sections.stream()
                 .filter(it -> it.contains(station))
@@ -144,7 +144,7 @@ public class Sections {
         return orderedStations;
     }
 
-    private Map<Station, Station> getStationUpToDown() {
+    public Map<Station, Station> getStationUpToDown() {
         return sections.stream()
                 .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
     }

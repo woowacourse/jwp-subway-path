@@ -5,6 +5,7 @@ import subway.exception.ApiIllegalArgumentException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class Line {
 
@@ -73,5 +74,9 @@ public class Line {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public Map<Station, Station> getSectionsByMap() {
+        return sections.getStationUpToDown();
     }
 }

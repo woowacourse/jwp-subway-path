@@ -5,24 +5,24 @@ import javax.validation.constraints.NotNull;
 public class RouteRequest {
 
     @NotNull(message = "상행역은 비어있을 수 없습니다. 입력값 : ${validatedValue}")
-    private Long upStation;
+    private Long fromStation;
 
     @NotNull(message = "하행역은 비어있을 수 없습니다. 입력값 : ${validatedValue}")
-    private Long downStation;
+    private Long destStation;
 
     public RouteRequest() {
     }
 
-    public RouteRequest(Long upStation, Long downStation) {
-        this.upStation = upStation;
-        this.downStation = downStation;
+    public RouteRequest(Long fromStation, Long destStation) {
+        this.fromStation = fromStation;
+        this.destStation = destStation;
     }
 
-    public Long getUpStation() {
-        return upStation;
+    public Long getFromStation() {
+        return fromStation;
     }
 
-    public Long getDownStation() {
-        return downStation;
+    public Long getDestStation() {
+        return destStation;
     }
 }

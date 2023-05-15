@@ -1,14 +1,19 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.dto.request.CreateSectionRequest;
+import subway.dto.request.RouteRequest;
 import subway.dto.response.LineResponse;
+import subway.dto.response.RouteResponse;
+import subway.dto.response.StationResponse;
 import subway.mapper.LineMapper;
+import subway.mapper.StationMapper;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SectionService {
@@ -43,5 +48,20 @@ public class SectionService {
         line.removeStation(station);
 
         lineRepository.updateSections(line);
+    }
+
+    public RouteResponse getShortestRoute(final RouteRequest routeRequest) {
+        Station fromStation = stationRepository.findById(routeRequest.getFromStation());
+        Station destStation = stationRepository.findById(routeRequest.getDestStation());
+
+        ShortestRouteFinder finder = new ShortestRouteFinder(lineRepository.findAll());
+
+        int distance = finder.getDistance(fromStation, destStation);
+        long money = FeeCalculator.calculate(distance);
+        List<StationResponse> route = finder.getRoute(fromStation, destStation).stream()
+                .map(StationMapper::toResponse)
+                .collect(Collectors.toList());
+
+        return new RouteResponse(money, distance, route);
     }
 }

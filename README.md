@@ -383,7 +383,7 @@ NONE
 
 ```json
 {
-  "originStation": 1,
+  "fromStation": 1,
   "destStation": 3
 }
 ```
