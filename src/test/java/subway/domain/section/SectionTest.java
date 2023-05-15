@@ -43,40 +43,6 @@ class SectionTest {
     }
 
     @Test
-    void 구간_첫번째역_기준으로_구간_생성() {
-        //given
-        final Section section = new Section(
-                new Station("from"),
-                new Station("to"),
-                new StationDistance(5)
-        );
-
-        //when
-        final Section frontSection =
-                section.createFrontSection(new Station("fromFront"), new StationDistance(3));
-
-        //then
-        assertThat(frontSection.getSecondStation()).isEqualTo(new Station("from"));
-    }
-
-    @Test
-    void 구간_두번째역_기준으로_구간_생성() {
-        //given
-        final Section section = new Section(
-                new Station("from"),
-                new Station("to"),
-                new StationDistance(5)
-        );
-
-        //when
-        final Section behindSection =
-                section.createBehindSection(new Station("toBehind"), new StationDistance(3));
-
-        //then
-        assertThat(behindSection.getFirstStation()).isEqualTo(new Station("to"));
-    }
-
-    @Test
     void 역으로_구간_분리() {
         //given
         final Section section = new Section(

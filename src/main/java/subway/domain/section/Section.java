@@ -25,14 +25,6 @@ public class Section {
         return this.secondStation.matchStationName(secondStation);
     }
 
-    public Section createFrontSection(final Station additionStation, final StationDistance stationDistance) {
-        return new Section(additionStation, firstStation, stationDistance);
-    }
-
-    public Section createBehindSection(final Station additionStation, final StationDistance stationDistance) {
-        return new Section(secondStation, additionStation, stationDistance);
-    }
-
     public List<Section> separateByInsertionStation(final Station additionStation,
                                                     final StationDistance stationDistance) {
         final Section firstSection = new Section(firstStation, additionStation, stationDistance);
