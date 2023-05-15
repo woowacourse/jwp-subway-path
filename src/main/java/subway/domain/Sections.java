@@ -15,9 +15,8 @@ public class Sections {
 
     public void createInitialSection(Station upStation, Station downStation, int distance) {
         validateDistance(distance);
-        graph.addStation(upStation);
-        graph.addStation(downStation);
-        graph.setSectionDistance(graph.addSection(upStation, downStation), distance);
+        final Section section = new Section(upStation, downStation, distance);
+        graph.createInitialSection(section);
     }
 
     public Station addStation(Station upLineStation, Station downLineStation, int distance) {

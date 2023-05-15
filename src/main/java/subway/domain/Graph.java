@@ -5,6 +5,8 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import java.util.Set;
 
 public interface Graph {
+    void createInitialSection(Section section);
+
     boolean isDownLastStation(Station station);
 
     boolean isUpFirstStation(Station station);
