@@ -1,6 +1,8 @@
 package subway.path.infrastructure.shortestpath;
 
 import java.util.List;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 import subway.line.domain.Line;
@@ -20,6 +22,12 @@ public class UpdateGraphCacheWithChangeLineEventHandler {
     ) {
         this.lineRepository = lineRepository;
         this.graphCache = graphCache;
+    }
+
+    @EventListener(classes = {ApplicationReadyEvent.class})
+    public void initCache() {
+        final List<Line> lines = lineRepository.findAll();
+        graphCache.updateCache(new Path(lines));
     }
 
     @TransactionalEventListener(classes = {ChangeLineEvent.class})
