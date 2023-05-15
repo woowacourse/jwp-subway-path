@@ -1,13 +1,11 @@
 package subway.service;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.LineDirection;
 import subway.domain.Station;
-import subway.domain.dto.InsertionResult;
 import subway.dto.LineRequest;
 import subway.dto.StationInsertRequest;
 import subway.exception.DuplicatedLineNameException;
@@ -48,16 +46,12 @@ public class LineService {
         findStationById(stationInsertRequest.getAdjacentStationId());
 
         Line line = findLineById(stationInsertRequest.getLineId());
-        InsertionResult insertionResult = insertStationAndReturnEdgesToSave(stationInsertRequest, line);
-
-        lineRepository.insertStationEdge(line, insertionResult.getInsertedEdge());
-        if (insertionResult.getUpdatedEdge() != null) {
-            lineRepository.updateStationEdge(line, insertionResult.getUpdatedEdge());
-        }
+        addStation(stationInsertRequest, line);
+        lineRepository.update(line);
     }
 
 
-    private InsertionResult insertStationAndReturnEdgesToSave(
+    private void addStation(
             StationInsertRequest stationInsertRequest,
             Line line
     ) {
@@ -67,9 +61,9 @@ public class LineService {
         int distance = stationInsertRequest.getDistance();
 
         if (direction == LineDirection.UP) {
-            return line.insertUpStation(stationId, adjacentStationId, distance);
+            line.addStationUpperFrom(stationId, adjacentStationId, distance);
         }
-        return line.insertDownStation(stationId, adjacentStationId, distance);
+        line.addStationDownFrom(stationId, adjacentStationId, distance);
     }
 
     public Line findLineById(Long id) {
@@ -88,9 +82,8 @@ public class LineService {
             lineRepository.deleteById(line.getId());
             return;
         }
-        Optional.ofNullable(line.deleteStation(stationId))
-                .ifPresent(stationEdge -> lineRepository.updateStationEdge(line, stationEdge));
-        lineRepository.deleteStation(line, stationId);
+        line.deleteStation(stationId);
+        lineRepository.update(line);
     }
 
     public List<Line> findAll() {

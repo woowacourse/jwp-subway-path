@@ -15,11 +15,7 @@ public interface LineRepository {
 
     Long create(Line line);
 
-    Long insertStationEdge(Line line, StationEdge stationEdge);
-
-    void updateStationEdge(Line line, StationEdge stationEdge);
-
-    void deleteStation(Line line, Long stationId);
+    void update(Line line);
 
     void deleteById(Long id);
 }

@@ -3,10 +3,10 @@ package subway.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
-import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
@@ -17,7 +17,6 @@ import subway.dao.StationEdgeDao;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.StationEdge;
-import subway.domain.dto.InsertionResult;
 
 @JdbcTest
 class LineRepositoryTest {
@@ -77,26 +76,6 @@ class LineRepositoryTest {
     }
 
     @Test
-    @DisplayName("추가한 edge를 반영한다.")
-    void updateWithInsertedEdge() {
-        //given
-        Line createdLine = createLineWithTwoStation();
-        int originalSize = createdLine.getStationEdges().size();
-
-        Long middleStationId = stationRepository.create(new Station("middle"));
-        Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        InsertionResult insertionResult = createdLine.insertUpStation(middleStationId, downStationId, 2);
-
-        //when
-        lineRepository.insertStationEdge(createdLine, insertionResult.getInsertedEdge());
-        lineRepository.updateStationEdge(createdLine, insertionResult.getUpdatedEdge());
-
-        //then
-        Line actualLine = lineRepository.findById(createdLine.getId()).get();
-        assertThat(actualLine.getStationEdges()).hasSize(originalSize + 1);
-    }
-
-    @Test
     @DisplayName("노선에서 역을 제거한다.")
     void deleteStation() {
         //given
@@ -105,7 +84,7 @@ class LineRepositoryTest {
 
         //when
         line.deleteStation(middleStationId);
-        lineRepository.deleteStation(line, middleStationId);
+        lineRepository.update(line);
 
         //then
         Line actualLine = lineRepository.findById(line.getId()).get();
@@ -118,8 +97,8 @@ class LineRepositoryTest {
 
         Long middleStationId = stationRepository.create(new Station("middle"));
         Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        InsertionResult insertionResult = createdLine.insertUpStation(middleStationId, downStationId, 2);
-        lineRepository.insertStationEdge(createdLine, insertionResult.getInsertedEdge());
+        createdLine.addStationUpperFrom(middleStationId, downStationId, 2);
+        lineRepository.update(createdLine);
         return createdLine;
     }
 
@@ -134,5 +113,44 @@ class LineRepositoryTest {
 
         //then
         assertThat(lineRepository.findById(line.getId())).isEmpty();
+    }
+
+    @Nested
+    class UpdateLine {
+        @Test
+        @DisplayName("추가한 edge를 반영한다.")
+        void updateWithInsertedEdge() {
+            //given
+            Line createdLine = createLineWithTwoStation();
+            int originalSize = createdLine.getStationEdges().size();
+
+            Long middleStationId = stationRepository.create(new Station("middle"));
+            Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
+            createdLine.addStationUpperFrom(middleStationId, downStationId, 2);
+
+            //when
+            lineRepository.update(createdLine);
+
+            //then
+            Line actualLine = lineRepository.findById(createdLine.getId()).get();
+            assertThat(actualLine.getStationEdges()).hasSize(originalSize + 1);
+        }
+
+        @Test
+        @DisplayName("노선에서 역을 제거한다.")
+        void deleteStation() {
+            //given
+            Line line = createLineWithThreeStation();
+            Long middleStationId = stationRepository.findByName("middle").get().getId();
+
+            //when
+            line.deleteStation(middleStationId);
+            lineRepository.update(line);
+
+            //then
+            Line actualLine = lineRepository.findById(line.getId()).get();
+            StationEdge seccondStationEdge = actualLine.getStationEdges().get(1);
+            assertThat(seccondStationEdge.getDownStationId()).isNotEqualTo(middleStationId);
+        }
     }
 }

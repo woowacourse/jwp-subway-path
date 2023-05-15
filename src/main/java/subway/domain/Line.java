@@ -40,7 +40,7 @@ public class Line {
         return new Line(id, name, color, stationEdges);
     }
 
-    public InsertionResult insertUpStation(
+    public void addStationUpperFrom(
             Long insertStationId,
             long adjacentStationId,
             int distance
@@ -55,10 +55,9 @@ public class Line {
         List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distance);
         stationEdges.remove(adjacentDownStationIndex);
         stationEdges.addAll(adjacentDownStationIndex, splitEdges);
-        return new InsertionResult(splitEdges.get(0), splitEdges.get(1));
     }
 
-    public InsertionResult insertDownStation(
+    public void addStationDownFrom(
             Long insertStationId,
             Long adjacentStationId,
             int distance
@@ -73,7 +72,7 @@ public class Line {
         if (isLastEdge) {
             StationEdge insertedStationEdge = new StationEdge(insertStationId, distance);
             stationEdges.add(insertedStationEdge);
-            return new InsertionResult(insertedStationEdge, null);
+            return;
         }
         
         StationEdge adjacentDownStationEdge = stationEdges.get(adjacentDownStationIndex);
@@ -83,7 +82,6 @@ public class Line {
         List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distanceFromDown);
         stationEdges.remove(adjacentDownStationIndex);
         stationEdges.addAll(adjacentDownStationIndex, splitEdges);
-        return new InsertionResult(splitEdges.get(0), splitEdges.get(1));
     }
 
     public StationEdge deleteStation(long stationId) {

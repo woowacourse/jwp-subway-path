@@ -2,10 +2,12 @@ package subway.domain;
 
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.dto.InsertionResult;
 
 class LineTest {
 
@@ -39,14 +41,25 @@ class LineTest {
     void insertUpStation() {
         //given
         Line line = createLine();
+        List<StationEdge> beforeEdges = new ArrayList<>(line.getStationEdges());
+        StationEdge adjacentStationEdge = line.getStationEdges().stream()
+                .filter(stationEdge -> stationEdge.getDownStationId().equals(stationId2)).findFirst().get();
 
         //when
         Long newStationId = 3L;
-        InsertionResult changedEdges = line.insertUpStation(newStationId, stationId2, 2);
+        line.addStationUpperFrom(newStationId, stationId2, 2);
+
+        List<StationEdge> afterEdges = new ArrayList<>(line.getStationEdges());
+
+
+        Optional<StationEdge> addedEdge = afterEdges.stream()
+                .filter(stationEdge -> stationEdge.getDownStationId().equals(newStationId))
+                .findFirst();
+
         //then
         assertSoftly(softly -> {
-            softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(3);
-            softly.assertThat(changedEdges.getUpdatedEdge().getDistance()).isEqualTo(2);
+            softly.assertThat(addedEdge).isNotEmpty();
+            softly.assertThat(beforeEdges.indexOf(adjacentStationEdge)).isEqualTo(afterEdges.indexOf(addedEdge.get()));
         });
     }
 
@@ -55,14 +68,22 @@ class LineTest {
     void insertDownStation() {
         //given
         Line line = createLine();
+        List<StationEdge> beforeEdges = new ArrayList<>(line.getStationEdges());
+        StationEdge adjacentStationEdge = line.getStationEdges().stream()
+                .filter(stationEdge -> stationEdge.getDownStationId().equals(stationId1)).findFirst().get();
 
         //when
         Long newStationId = 3L;
-        InsertionResult changedEdges = line.insertDownStation(newStationId, stationId1, 2);
+        line.addStationDownFrom(newStationId, stationId1, 2);
+
         //then
+        List<StationEdge> afterEdges = new ArrayList<>(line.getStationEdges());
+        Optional<StationEdge> addedEdge = afterEdges.stream()
+                .filter(stationEdge -> stationEdge.getDownStationId().equals(newStationId))
+                .findFirst();
         assertSoftly(softly -> {
-            softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(2);
-            softly.assertThat(changedEdges.getUpdatedEdge().getDistance()).isEqualTo(3);
+            softly.assertThat(addedEdge).isNotEmpty();
+            softly.assertThat(beforeEdges.indexOf(adjacentStationEdge)+1).isEqualTo(afterEdges.indexOf(addedEdge.get()));
         });
     }
 
@@ -79,11 +100,13 @@ class LineTest {
 
         //when
         Long newStationId = 3L;
-        InsertionResult changedEdges = line.insertDownStation(newStationId, stationId2, 2);
+        line.addStationDownFrom(newStationId, stationId2, 2);
+
         //then
+        List<StationEdge> edgesAfterAddition = line.getStationEdges();
         assertSoftly(softly -> {
-            softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(2);
-            softly.assertThat(changedEdges.getUpdatedEdge()).isNull();
+            softly.assertThat(edgesAfterAddition.get(2).getDistance()).isEqualTo(2);
+            softly.assertThat(edgesAfterAddition).hasSize(3);
         });
     }
 
@@ -92,7 +115,7 @@ class LineTest {
     void deleteStation() {
         //given
         final Line line = createLine();
-        line.insertDownStation(3L, stationId1, 2);
+        line.addStationDownFrom(3L, stationId1, 2);
 
         //when
         StationEdge changedStationEdge = line.deleteStation(3L);

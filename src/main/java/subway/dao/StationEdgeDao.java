@@ -55,20 +55,15 @@ public class StationEdgeDao {
         return jdbcTemplate.query(sql, stationEdgeRowMapper);
     }
 
-    public Optional<StationEdgeEntity> findByLineIdAndStationId(Long lineId, Long stationId) {
-        String sql = "SELECT * FROM station_edge WHERE line_id = ? AND down_station_id = ?";
-
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, stationEdgeRowMapper, lineId, stationId));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
-    }
-
     public void update(StationEdgeEntity stationEdgeEntity) {
         String sql = "UPDATE station_edge SET distance = ?, previous_station_edge_id = ? WHERE id = ?";
         jdbcTemplate.update(sql, stationEdgeEntity.getDistance(), stationEdgeEntity.getPreviousStationEdgeId(),
                 stationEdgeEntity.getId());
+    }
+
+    public void deleteByLineId(Long lineId) {
+        String sql = "DELETE FROM station_edge WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
     }
 
     public void deleteByLineIdAndStationId(Long lineId, Long stationId) {

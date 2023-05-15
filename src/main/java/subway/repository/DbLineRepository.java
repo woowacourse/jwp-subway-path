@@ -11,13 +11,13 @@ import subway.domain.Line;
 import subway.domain.StationEdge;
 import subway.entity.LineEntity;
 import subway.entity.StationEdgeEntity;
-import subway.exception.StationEdgeNotFoundException;
 
 
 @Repository
 public class DbLineRepository implements LineRepository {
 
     private final LineDao lineDao;
+
     private final StationEdgeDao stationEdgeDao;
 
 
@@ -115,43 +115,21 @@ public class DbLineRepository implements LineRepository {
     }
 
     @Override
-    public Long insertStationEdge(Line line, StationEdge stationEdge) {
+    public void update(Line line) {
         Long lineId = line.getId();
-        int edgeIndex = line.getStationEdges().indexOf(stationEdge) - 1;
 
-        if (edgeIndex == -1) {
-            return stationEdgeDao.insert(StationEdgeEntity.of(lineId, stationEdge, null));
+        List<StationEdge> stationEdges = line.getStationEdges();
+        stationEdgeDao.deleteByLineId(lineId);
+
+        Long previousEdgeId = null;
+        for (StationEdge stationEdge : stationEdges) {
+            previousEdgeId = stationEdgeDao.insert(StationEdgeEntity.of(lineId, stationEdge, previousEdgeId));
         }
-        Long downStationId = line.getStationEdges().get(edgeIndex).getDownStationId();
-        StationEdgeEntity previousStationEdge = stationEdgeDao.findByLineIdAndStationId(lineId, downStationId)
-                .orElseThrow(StationEdgeNotFoundException::new);
-
-        return stationEdgeDao.insert(StationEdgeEntity.of(lineId, stationEdge, previousStationEdge.getId()));
-    }
-
-    @Override
-    public void updateStationEdge(Line line, StationEdge stationEdge) {
-        Long lineId = line.getId();
-        Long downStationId = stationEdge.getDownStationId();
-        StationEdgeEntity stationEdgeEntity = stationEdgeDao.findByLineIdAndStationId(lineId, downStationId)
-                .orElseThrow(StationEdgeNotFoundException::new);
-
-        StationEdge upStationEdge = line.getStationEdges().get(line.getStationEdges().indexOf(stationEdge) - 1);
-        Long previousStationEdgeId = stationEdgeDao.findByLineIdAndStationId(lineId, upStationEdge.getDownStationId())
-                .get().getId();
-        stationEdgeDao.update(
-                StationEdgeEntity.of(stationEdgeEntity.getId(), lineId, stationEdge,
-                        previousStationEdgeId));
-    }
-
-    @Override
-    public void deleteStation(Line line, Long stationId) {
-        Long lineId = line.getId();
-        stationEdgeDao.deleteByLineIdAndStationId(lineId, stationId);
     }
 
     @Override
     public void deleteById(Long id) {
+        stationEdgeDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
 }
