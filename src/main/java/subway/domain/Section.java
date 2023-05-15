@@ -49,8 +49,7 @@ public class Section {
         return distance;
     }
 
-    public boolean isSameStations(final Section section) {
-        return (section.prevStation.equals(prevStation) && section.nextStation.equals(nextStation))
-                || (section.nextStation.equals(prevStation) && section.prevStation.equals(nextStation));
+    public boolean containStation(final Station station) {
+        return isEqualPrevStation(station) || isEqualNextStation(station);
     }
 }
