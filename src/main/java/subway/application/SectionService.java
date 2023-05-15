@@ -33,7 +33,7 @@ public class SectionService {
         Integer distance = initialSectionAddRequest.getDistance();
 
         if (!sectionDao.findAllSectionByLineId(lineId).isEmpty()) {
-            throw new DomainException(ExceptionType.LINE_HAS_STATION);
+            throw new DomainException(ExceptionType.LINE_IS_ALREADY_INITIALIZED);
         }
 
         Section section = new Section(firstStationId, secondStationId, lineId, distance);
@@ -99,7 +99,7 @@ public class SectionService {
         Section splitTargetSection = sections.findSection(sourceStationId, targetStationId);
 
         if (splitTargetSection.hasShorterOrSameDistanceThan(distance)) {
-            throw new DomainException(ExceptionType.SECTION_CAN_NOT_BE_SPLITED);
+            throw new DomainException(ExceptionType.SECTION_CAN_NOT_BE_SPLIT);
         }
 
         sectionDao.deleteById(splitTargetSection.getId());
