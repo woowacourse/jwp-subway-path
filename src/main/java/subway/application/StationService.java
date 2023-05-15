@@ -2,8 +2,8 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.SectionEntity;
-import subway.domain.StationEntity;
+import subway.domain.entity.SectionEntity;
+import subway.domain.entity.StationEntity;
 import subway.dto.SectionSaveRequest;
 import subway.dto.StationResponse;
 import subway.facade.SectionFacade;

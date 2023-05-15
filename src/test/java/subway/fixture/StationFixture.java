@@ -1,6 +1,6 @@
 package subway.fixture;
 
-import subway.domain.StationEntity;
+import subway.domain.entity.StationEntity;
 
 public class StationFixture {
 

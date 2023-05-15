@@ -1,6 +1,7 @@
 package subway.dto;
 
-import subway.domain.SectionEntity;
+import subway.domain.entity.SectionEntity;
+import subway.domain.vo.Distance;
 
 public class SectionSaveRequest {
 
@@ -8,14 +9,14 @@ public class SectionSaveRequest {
     private final Long lineId;
     private final Long upStationId;
     private final Long downStationId;
-    private final int distance;
+    private final Distance distance;
 
     private SectionSaveRequest(
             final Long id,
             final Long lineId,
             final Long upStationId,
             final Long downStationId,
-            final int distance
+            final Distance distance
     ) {
         this.id = id;
         this.lineId = lineId;
@@ -30,7 +31,7 @@ public class SectionSaveRequest {
                 sectionEntity.getLineId(),
                 sectionEntity.getUpStationId(),
                 sectionEntity.getDownStationId(),
-                sectionEntity.getDistance()
+                Distance.from(sectionEntity.getDistance())
         );
     }
 
@@ -51,6 +52,7 @@ public class SectionSaveRequest {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
+
 }

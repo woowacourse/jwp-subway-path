@@ -3,7 +3,7 @@ package subway.facade;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
-import subway.domain.LineEntity;
+import subway.domain.entity.LineEntity;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.exception.LineNotFoundException;
@@ -48,4 +48,5 @@ public class LineFacade {
     public void deleteById(final Long id) {
         lineDao.deleteById(id);
     }
+
 }

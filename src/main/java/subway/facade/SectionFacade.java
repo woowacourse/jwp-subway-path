@@ -3,7 +3,7 @@ package subway.facade;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
-import subway.domain.SectionEntity;
+import subway.domain.entity.SectionEntity;
 import subway.dto.SectionSaveRequest;
 import subway.exception.SectionNotFoundException;
 

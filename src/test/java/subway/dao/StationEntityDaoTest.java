@@ -9,9 +9,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.LineEntity;
-import subway.domain.SectionEntity;
-import subway.domain.StationEntity;
+import subway.domain.entity.LineEntity;
+import subway.domain.entity.SectionEntity;
+import subway.domain.entity.StationEntity;
 import subway.fixture.StationFixture.GangnamStation;
 import subway.fixture.StationFixture.JamsilStation;
 

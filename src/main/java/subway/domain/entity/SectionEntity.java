@@ -1,4 +1,6 @@
-package subway.domain;
+package subway.domain.entity;
+
+import subway.domain.vo.Distance;
 
 public class SectionEntity {
 
@@ -6,14 +8,14 @@ public class SectionEntity {
     private final Long lineId;
     private final Long upStationId;
     private final Long downStationId;
-    private final int distance;
+    private final Distance distance;
 
     private SectionEntity(
             final Long id,
             final Long lineId,
             final Long upStationId,
             final Long downStationId,
-            final int distance
+            final Distance distance
     ) {
         this.id = id;
         this.lineId = lineId;
@@ -28,7 +30,7 @@ public class SectionEntity {
             final Long downStationId,
             final int distance
     ) {
-        return new SectionEntity(null, lineId, upStationId, downStationId, distance);
+        return new SectionEntity(null, lineId, upStationId, downStationId, Distance.from(distance));
     }
 
     public static SectionEntity of(
@@ -38,7 +40,7 @@ public class SectionEntity {
             final Long downStationId,
             final int distance
     ) {
-        return new SectionEntity(id, lineId, upStationId, downStationId, distance);
+        return new SectionEntity(id, lineId, upStationId, downStationId, Distance.from(distance));
     }
 
     public Long getId() {
@@ -58,6 +60,6 @@ public class SectionEntity {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 }

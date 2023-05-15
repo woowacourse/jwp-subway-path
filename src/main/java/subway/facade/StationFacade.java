@@ -3,8 +3,8 @@ package subway.facade;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
-import subway.domain.SectionEntity;
-import subway.domain.StationEntity;
+import subway.domain.entity.SectionEntity;
+import subway.domain.entity.StationEntity;
 import subway.exception.StationNotFoundException;
 
 import java.util.ArrayList;
