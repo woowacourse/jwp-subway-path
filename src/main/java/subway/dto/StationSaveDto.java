@@ -1,12 +1,12 @@
 package subway.dto;
 
-public class StationRequest {
+public class StationSaveDto {
     private String name;
 
-    public StationRequest() {
+    public StationSaveDto() {
     }
 
-    public StationRequest(String name) {
+    public StationSaveDto(String name) {
         this.name = name;
     }
 

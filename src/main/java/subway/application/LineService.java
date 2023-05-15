@@ -15,8 +15,8 @@ import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.LineSaveDto;
 import subway.dto.StationResponse;
 
 @Transactional(readOnly = true)
@@ -33,7 +33,7 @@ public class LineService {
     }
 
     @Transactional
-    public LineResponse saveLine(LineRequest request) {
+    public LineResponse saveLine(LineSaveDto request) {
         Long savedId = lineDao.insert(new LineEntity(request.getLineName()));
 
         return new LineResponse(savedId, request.getLineName(), null);

@@ -12,7 +12,7 @@ import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.SectionRequest;
+import subway.dto.SectionSaveDto;
 
 @Transactional(readOnly = true)
 @Service
@@ -27,7 +27,7 @@ public class SectionService {
     }
 
     @Transactional
-    public void saveSection(Long lineId, SectionRequest request) {
+    public void saveSection(Long lineId, SectionSaveDto request) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
         List<Section> savedSections = sectionEntities.stream()
                 .map(this::toSection)

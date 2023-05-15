@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
 import subway.application.StationService;
-import subway.dto.SectionRequest;
+import subway.dto.SectionSaveDto;
 
 @RestController
 @RequestMapping("/subway/lines")
@@ -29,8 +29,8 @@ public class SectionController {
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> createSection(@PathVariable Long lineId,
-                                              @RequestBody SectionRequest sectionRequest) {
-        sectionService.saveSection(lineId, sectionRequest);
+                                              @RequestBody SectionSaveDto sectionSaveDto) {
+        sectionService.saveSection(lineId, sectionSaveDto);
 
         return ResponseEntity.ok().build();
     }
