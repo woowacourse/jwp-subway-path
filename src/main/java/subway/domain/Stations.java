@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class Stations {
@@ -11,7 +12,9 @@ public class Stations {
         this.stations = new HashSet<>(stations);
     }
 
-    public boolean contains(Station stationToAdd) {
-        return stations.contains(stationToAdd);
+    public Optional<Station> getStationByName(String stationName) {
+        return stations.stream()
+                .filter(station -> station.getName().equals(stationName))
+                .findAny();
     }
 }

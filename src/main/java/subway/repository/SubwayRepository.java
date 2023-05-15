@@ -9,6 +9,7 @@ import subway.domain.*;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
+import subway.exception.LineNotFoundException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -37,11 +38,11 @@ public class SubwayRepository {
                 .collect(collectingAndThen(toSet(), Stations::new));
     }
 
-    public Line getLineByName(String lineName) {
-        Optional<Long> found = lineDao.findIdByName(lineName);
-        long lineId = found.orElseThrow(() -> new NoSuchElementException("디버깅: 노선 이름에 해당하는 노선이 없습니다."));
+    public Line getLineByName(LineName lineName) {
+        long lineId = lineDao.findIdByName(lineName.getName())
+                .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다."));
         List<SectionEntity> sectionsOfLineName = sectionDao.findSectionsByLineId(lineId);
-        return toLine(lineName, sectionsOfLineName);
+        return toLine(lineName.getName(), sectionsOfLineName);
     }
 
     private Station findStation(long stationId) {
@@ -52,7 +53,6 @@ public class SubwayRepository {
         StationEntity stationEntity = new StationEntity.Builder()
                 .name(stationToAdd.getName())
                 .build();
-
         stationDao.insert(stationEntity);
     }
 
@@ -61,7 +61,8 @@ public class SubwayRepository {
     }
 
     public Long updateLine(Line line) {
-        long lineId = lineDao.findIdByName(line.getName()).orElseThrow(() -> new NoSuchElementException("디버깅: 노선 이름에 해당하는 노선이 없습니다."));
+        long lineId = lineDao.findIdByName(line.getName().getName())
+                .orElseThrow(() -> new NoSuchElementException("디버깅: 노선 이름에 해당하는 노선이 없습니다."));
         sectionDao.deleteAll(lineId);
         addSectionsToLine(line.getSections(), lineId);
         return lineId;
@@ -76,26 +77,16 @@ public class SubwayRepository {
     }
 
     private SectionEntity toSectionEntity(Section section, long lineId) {
-        Long upstreamId = findStationIdByName(section.getUpstream().getName()).orElseThrow(() -> new IllegalArgumentException("디버깅: 등록되지 않은 역이 section으로 만들어졌습니다"));
-        Long downstreamId = findStationIdByName(section.getDownstream().getName()).orElseThrow(() -> new IllegalArgumentException("디버깅: 등록되지 않은 역이 section으로 만들어졌습니다"));
+        Long upstreamId = findStationIdByName(section.getUpstream().getName())
+                .orElseThrow(() -> new IllegalArgumentException("디버깅: 등록되지 않은 역이 section으로 만들어졌습니다"));
+        Long downstreamId = findStationIdByName(section.getDownstream().getName())
+                .orElseThrow(() -> new IllegalArgumentException("디버깅: 등록되지 않은 역이 section으로 만들어졌습니다"));
         return new SectionEntity.Builder()
                 .upstreamId(upstreamId)
                 .downstreamId(downstreamId)
                 .distance(section.getDistance())
                 .lineId(lineId)
                 .build();
-    }
-
-    public LineNames getLineNames() {
-        List<String> lineNames = lineDao.findAll().stream()
-                .map(LineEntity::getName)
-                .collect(toList());
-
-        return new LineNames(lineNames);
-    }
-
-    public long addLine(String lineName) {
-        return lineDao.insert(new LineEntity.Builder().name(lineName).build());
     }
 
     public Optional<Line> getLineById(Long id) {
@@ -111,13 +102,26 @@ public class SubwayRepository {
                     long downstreamId = sectionEntity.getDownstreamId();
                     return new Section(findStation(upstreamId), findStation(downstreamId), sectionEntity.getDistance());
                 })
-                .collect(collectingAndThen(toList(), (sections) -> new Line(lineName, sections)));
+                .collect(collectingAndThen(toList(), (sections) -> new Line(new LineName(lineName), sections)));
     }
 
-    public List<Line> getLines() {
+    public Lines getLines() {
         return lineDao.findAll()
                 .stream()
                 .map(lineEntity -> toLine(lineEntity.getName(), sectionDao.findSectionsByLineId(lineEntity.getId())))
-                .collect(toList());
+                .collect(collectingAndThen(toList(), Lines::new));
+    }
+
+    public long addNewLine(Line newLine) {
+        addLine(newLine.getName());
+        return updateLine(newLine);
+    }
+
+    public long addLine(LineName lineName) {
+        return lineDao.insert(
+                new LineEntity.Builder()
+                        .name(lineName.getName())
+                        .build()
+        );
     }
 }

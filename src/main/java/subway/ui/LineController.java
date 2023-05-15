@@ -22,7 +22,7 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<Void> createLine(@RequestBody AddLineRequest addLineRequest) {
-        Long lineId = subwayService.addLine(addLineRequest);
+        Long lineId = subwayService.addNewLine(addLineRequest);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 

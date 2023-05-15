@@ -1,7 +1,6 @@
 package subway.domain;
 
 import subway.exception.DuplicateStationInLineException;
-import subway.exception.NameLengthException;
 import subway.exception.SectionNotFoundException;
 import subway.exception.StationNotFoundException;
 
@@ -11,28 +10,24 @@ import java.util.stream.Collectors;
 
 public class Line {
 
-    public static final int MINIMUM_NAME_LENGTH = 2;
-    public static final int MAXIMUM_NAME_LENGTH = 15;
-
-    private final String name;
+    private final LineName name;
     private final LinkedList<Section> sections;
 
-    public Line(String name, List<Section> sections) {
-        String stripped = name.strip();
-        validateNameLength(stripped);
-        this.name = stripped;
+    public Line(LineName name, List<Section> sections) {
+        this.name = name;
         this.sections = new LinkedList<>(sections);
+        addEndpoints(sections);
+    }
+
+    public Line(LineName name, Section section) {
+        this.name = name;
+        this.sections = new LinkedList<>();
+        sections.add(section);
         addEndpoints(sections);
     }
 
     public Line(Line otherLine) {
         this(otherLine.getName(), otherLine.getSections());
-    }
-
-    private void validateNameLength(String name) {
-        if (name.length() < MINIMUM_NAME_LENGTH || name.length() > MAXIMUM_NAME_LENGTH) {
-            throw new NameLengthException("이름 길이는 " + MINIMUM_NAME_LENGTH + "자 이상 " + MAXIMUM_NAME_LENGTH + "자 이하입니다.");
-        }
     }
 
     private void addEndpoints(List<Section> sections) {
@@ -87,6 +82,11 @@ public class Line {
         }
     }
 
+    private boolean hasStation(Station newStation) {
+        return sections.stream()
+                .anyMatch(section -> section.contains(newStation));
+    }
+
     private List<Section> findSectionsToMerge(Station stationToDelete) {
         return sections.stream()
                 .filter(section -> section.contains(stationToDelete))
@@ -100,12 +100,7 @@ public class Line {
         sections.remove(sectionsToMerge.get(1));
     }
 
-    private boolean hasStation(Station newStation) {
-        return sections.stream()
-                .anyMatch(section -> section.contains(newStation));
-    }
-
-    public String getName() {
+    public LineName getName() {
         return name;
     }
 
@@ -117,13 +112,5 @@ public class Line {
         return sections.subList(0, sections.size() - 1).stream()
                 .map(section -> section.getDownstream().getName())
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    public String toString() {
-        return "Line{" +
-                "name='" + name + '\'' +
-                ", sections=" + sections +
-                '}';
     }
 }
