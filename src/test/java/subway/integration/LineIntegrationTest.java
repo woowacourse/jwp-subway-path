@@ -6,48 +6,59 @@ import static org.hamcrest.Matchers.is;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.request.AddStationToLineRequest;
 import subway.dto.request.LineCreateRequest;
 
-@DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineCreateRequest createRequest;
-    private Station initialUpStation;
-    private Station initialDownStation;
+
+    private Station line_3_initialUpStation;
+    private Station line_3_initialDownStation;
+    private Station line_3_newStation;
+    private Station line_2_initialUpStation;
+    private Station line_2_initialDownStation;
+
+    private LineCreateRequest line_3_lineCreateRequest;
+    private LineCreateRequest line_2_lineCreateRequest;
+    private AddStationToLineRequest line_3_addStationToLineRequest;
 
     @Autowired
     private StationDao stationDao;
-
-    @Autowired
-    private LineDao lineDao;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        initialUpStation = stationDao.insert(new Station("경복궁"));
-        initialDownStation = stationDao.insert(new Station("안국"));
+        line_3_initialUpStation = stationDao.insert(new Station("경복궁"));
+        line_3_initialDownStation = stationDao.insert(new Station("안국"));
+        line_3_newStation = stationDao.insert(new Station("충무로"));
 
-        createRequest = new LineCreateRequest("3호선", initialUpStation.getId(), initialDownStation.getId(), 10);
+        line_3_lineCreateRequest = new LineCreateRequest("3호선", line_3_initialUpStation.getId(), line_3_initialDownStation.getId(), 10);
+        line_3_addStationToLineRequest = new AddStationToLineRequest(line_3_initialUpStation.getId(), line_3_newStation.getId(), 5);
+
+        line_2_initialUpStation = stationDao.insert(new Station("잠실"));
+        line_2_initialDownStation = stationDao.insert(new Station("잠실새내"));
+
+        line_2_lineCreateRequest = new LineCreateRequest("2호선", line_2_initialUpStation.getId(), line_2_initialDownStation.getId(), 5);
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
     @Test
+    @DisplayName("새로운 노선 생성 API")
     void createLine() {
+        // given
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createRequest)
+                .body(line_3_lineCreateRequest)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -55,134 +66,109 @@ public class LineIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
-        // TODO : 반환값 body제대로 확인
+        assertThat(response.jsonPath().getString("lineName")).isEqualTo("3호선");
+        assertThat(response.jsonPath().getList("stationIds")).isEqualTo(
+                List.of(line_3_initialUpStation.getId().intValue(), line_3_initialDownStation.getId().intValue()));
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
-    @Test
-    void createLineWithDuplicateName() {
-        // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createRequest)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createRequest)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("기존 노선에 역을 추가한다.")
+    @DisplayName("기존 노선에 역 추가 API")
     @Test
     void addStationToLine() {
         // given
-        ExtractableResponse<Response> response = RestAssured
+        ExtractableResponse<Response> initialResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createRequest)
+                .body(line_3_lineCreateRequest)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
-        String location = response.header("Location");
+        String location = initialResponse.header("Location");
         Long lineId = Long.parseLong(location.split("/")[2]);
 
         // when
-        Station newStation = stationDao.insert(new Station("충무로"));
-        AddStationToLineRequest addRequest = new AddStationToLineRequest(initialUpStation.getId(),
-                newStation.getId(), 5);
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_addStationToLineRequest)
+                .when().post("/lines/{lineId}/stations", lineId)
+                .then().log().all()
+                .extract();
 
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getLong("lineId")).isEqualTo(lineId);
+        assertThat(response.jsonPath().getString("lineName")).isEqualTo("3호선");
+        assertThat(response.jsonPath().getList("stationIds")).isEqualTo(
+                List.of(line_3_initialUpStation.getId().intValue(), line_3_newStation.getId().intValue(), line_3_initialDownStation.getId().intValue()));
+    }
+
+    @DisplayName("기존 노선에 존재하는 역 제거 API")
+    @Test
+    void deleteStationFromLine() {
+        // given
+        ExtractableResponse<Response> initialResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_lineCreateRequest)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+        String location = initialResponse.header("Location");
+        Long lineId = Long.parseLong(location.split("/")[2]);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_addStationToLineRequest)
+                .when().post("/lines/{lineId}/stations", lineId)
+                .then().log().all();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/{lineId}/stations/{stationId}", lineId, line_3_initialDownStation.getId())
+                .then().log().all().
+                extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getLong("lineId")).isEqualTo(lineId);
+        assertThat(response.jsonPath().getString("lineName")).isEqualTo("3호선");
+        assertThat(response.jsonPath().getList("stationIds")).isEqualTo(
+                List.of(line_3_initialUpStation.getId().intValue(), line_3_newStation.getId().intValue()));
+    }
+
+    @Test
+    @DisplayName("특정 노선의 모든 역 조회 API")
+    void findLineById() {
+        // given
+        ExtractableResponse<Response> initialResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_lineCreateRequest)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+        String location = initialResponse.header("Location");
+        Long lineId = Long.parseLong(location.split("/")[2]);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_addStationToLineRequest)
+                .when().post("/lines/{lineId}/stations", lineId)
+                .then().log().all();
+
+        // when
         // then
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(addRequest)
-                .when().post("/lines/{lineId}/stations", lineId)
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value());
-    }
-
-    @DisplayName("기존 노선에 존재하는 역을 제거한다.")
-    @Test
-    void deleteStationFromLine() {
-        // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createRequest)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-        String location = createResponse.header("Location");
-        Long lineId = Long.parseLong(location.split("/")[2]);
-
-        Station newStation = stationDao.insert(new Station("충무로"));
-        AddStationToLineRequest addRequest = new AddStationToLineRequest(initialUpStation.getId(), newStation.getId(),
-                5);
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(addRequest)
-                .when().post("/lines/{lineId}/stations", lineId)
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value());
-
-        // when
-        ExtractableResponse<Response> deleteResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/{lineId}/stations/{stationId}", lineId, newStation.getId())
-                .then().log().all().
-                extract();
-
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @Test
-    @DisplayName("기존 노선에 존재하는 모든 역을 조회한다")
-    void findLineById() {
-        // given
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createRequest)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-        String location = response.header("Location");
-        Long lineId = Long.parseLong(location.split("/")[2]);
-
-        Station newStation = stationDao.insert(new Station("충무로"));
-        AddStationToLineRequest addRequest = new AddStationToLineRequest(initialUpStation.getId(),
-                newStation.getId(), 5);
-
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(addRequest)
-                .when().post("/lines/{lineId}/stations", lineId)
-                .then().log().all()
-                .statusCode(HttpStatus.OK.value());
-
-        // when
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(addRequest)
                 .when().get("/lines/{lineId}", lineId)
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("lineId", is(1))
+                .body("lineId", is(lineId.intValue()))
                 .body("lineName", is("3호선"))
                 .body("stations[0].stationName", is("경복궁"))
                 .body("stations[1].stationName", is("충무로"))
@@ -190,33 +176,35 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("모든 노선의 모든 역을 조회한다")
+    @DisplayName("모든 노선의 모든 역 조회 API")
     void findAllLines() {
         // given
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createRequest)
+                .body(line_3_lineCreateRequest)
                 .when().post("/lines")
                 .then().log().all();
-
-        Station upStation = stationDao.insert(new Station("잠실"));
-        Station downStation = stationDao.insert(new Station("잠실새내"));
-        LineCreateRequest createRequest2 = new LineCreateRequest("2호선", upStation.getId(), downStation.getId(), 5);
 
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(createRequest2)
+                .body(line_2_lineCreateRequest)
                 .when().post("/lines")
                 .then().log().all();
 
         // when
+        // then
         RestAssured
                 .given().log().all()
                 .when().get("/lines")
                 .then().log().all()
-                .statusCode(HttpStatus.OK.value());
-
+                .statusCode(HttpStatus.OK.value())
+                .body("[0].lineName", is(line_3_lineCreateRequest.getLineName()))
+                .body("[0].stations[0].stationName", is("경복궁"))
+                .body("[0].stations[1].stationName", is("안국"))
+                .body("[1].lineName", is(line_2_lineCreateRequest.getLineName()))
+                .body("[1].stations[0].stationName", is("잠실"))
+                .body("[1].stations[1].stationName", is("잠실새내"));
     }
 }

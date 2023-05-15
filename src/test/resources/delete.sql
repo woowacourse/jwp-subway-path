@@ -1,0 +1,3 @@
+DELETE FROM edge;
+DELETE FROM station;
+DELETE FROM line;

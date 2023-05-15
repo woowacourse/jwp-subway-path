@@ -58,8 +58,17 @@ public class LineController {
         return ResponseEntity.ok(response);
     }
 
+    @DeleteMapping("/{lineId}/stations/{stationId}")
+    public ResponseEntity<DeleteStationFromLineResponse> deleteStationFromLine(@PathVariable Long lineId,
+                                                                               @PathVariable Long stationId) {
+        Line updatedLine = lineService.deleteStationFromLine(lineId, stationId);
+
+        DeleteStationFromLineResponse response = DeleteStationFromLineResponse.fromDomain(updatedLine);
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/{lineId}")
-    public ResponseEntity<GetAllStationsInLineResponse> findLineById(@PathVariable Long lineId) {
+    public ResponseEntity<GetAllStationsInLineResponse> findLine(@PathVariable Long lineId) {
         Line findLine = lineService.findOneLine(lineId);
 
         GetAllStationsInLineResponse response = GetAllStationsInLineResponse.fromDomain(findLine);
@@ -72,15 +81,6 @@ public class LineController {
                 .stream().map(GetAllStationsInLineResponse::fromDomain)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok(response);
-    }
-
-    @DeleteMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<DeleteStationFromLineResponse> delete(@PathVariable Long lineId,
-                                                                @PathVariable Long stationId) {
-        Line updatedLine = lineService.deleteStationFromLine(lineId, stationId);
-
-        DeleteStationFromLineResponse response = DeleteStationFromLineResponse.fromDomain(updatedLine);
         return ResponseEntity.ok(response);
     }
 }
