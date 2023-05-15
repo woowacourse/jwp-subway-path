@@ -8,6 +8,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.persistence.entity.StationEntity;
 
+import java.util.List;
+
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
@@ -29,6 +31,12 @@ public class StationDao {
     public Long insert(StationEntity stationEntity) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
         return insertAction.executeAndReturnKey(params).longValue();
+    }
+
+    public List<StationEntity> findAll() {
+        String sql = "select * from Station";
+
+        return jdbcTemplate.query(sql, rowMapper);
     }
 
     public StationEntity findById(Long id) {

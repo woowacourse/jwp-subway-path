@@ -1,17 +1,14 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.domain.SectionRepository;
+import subway.domain.*;
 import subway.persistence.dao.SectionDao;
-import subway.persistence.entity.SectionEntity;
 import subway.persistence.dao.StationDao;
+import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
@@ -32,13 +29,16 @@ public class SectionRepositoryImpl implements SectionRepository {
     }
 
     private List<SectionEntity> toSectionEntities(Long lineId, List<Section> sections) {
+        Map<String, Long> stationsIdByName = stationDao.findAll().stream()
+                .collect(Collectors.toMap(StationEntity::getName, StationEntity::getId));
+
         return sections.stream()
                 .map(it -> {
                     Station startStation = it.getStartStation();
                     Station endStation = it.getEndStation();
 
-                    Long startStationId = stationDao.findIdByName(startStation.getName());
-                    Long endStationId = stationDao.findIdByName(endStation.getName());
+                    Long startStationId = stationsIdByName.get(startStation.getName());
+                    Long endStationId = stationsIdByName.get(endStation.getName());
 
                     return new SectionEntity(lineId, startStationId, endStationId, it.getDistance());
                 })
