@@ -32,17 +32,6 @@
     - 수정 : Put /{id}
     - 삭제 : Delete /{id}
 
-
-- URI Mapping 예시 -GET
-    - `/lines` : 전체 노선 조회 ex) 1호선, 2호선, ...
-    - `/lines/{lineId}` : 해당 노선의 역 전체 조회 ex) 합정 -> 홍대 -> 신촌 -> 이대 ...
-
-- URI Mapping 예시 -POST
-    - `/sections/lineId=?` : 역 추가 (구간 추가)
-
-- URI Mapping 예시 -DELETE
-    - `/sections/lineId=?&&stationId=?` : 역 삭제 (해당 구간 삭제 및 재배치)
-
 ### 비즈니스 규칙
 
 - 노선에 역 등록
@@ -68,6 +57,8 @@
 
 ---
 
+### domain
+
 - [x] 역 (Station)
     - [x] 이름을 갖는다. (name)
 
@@ -89,6 +80,21 @@
 - [x] 노선들 (Lines)
     - [x] 노선들을 관리한다.
     - [x] 노선을 추가한다.
+
+### API
+
+- [ ] 노선에 역 등록
+    - Post `/lines/{lineId}/stations`
+    - Request body : stationId
+
+- [ ] 노선의 역 제거
+    - Delete `/lines/{lineId}/stations/{stationId}`
+
+- [ ] 노선의 역 조회
+    - Get `/lines/{lineId}/stations`
+
+- [ ] 모든 노선의 역 조회
+    - Get `/lines/stations`
 
 ## 📀 데이터베이스
 
