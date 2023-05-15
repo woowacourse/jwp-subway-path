@@ -16,7 +16,7 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @PostMapping("/section")
+    @PostMapping("/sections")
     public ResponseEntity<Void> create(@RequestBody final SectionCreateDto sectionCreateDto) {
         sectionService.addSection(sectionCreateDto);
         return ResponseEntity.ok().build();

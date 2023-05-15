@@ -14,7 +14,7 @@ public class StationController {
         this.stationService = stationService;
     }
 
-    @PostMapping("/station")
+    @PostMapping("/stations")
     public void create(@RequestBody StationCreateDto stationCreateDto) {
         stationService.create(stationCreateDto);
     }
