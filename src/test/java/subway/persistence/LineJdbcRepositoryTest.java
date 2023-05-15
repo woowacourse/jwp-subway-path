@@ -81,5 +81,14 @@ class LineJdbcRepositoryTest {
 
 	@Test
 	void deleteById() {
+		//given
+		final Line line1 = new Line("1호선");
+		final long lineId = repository.createLine(line1);
+
+		// when
+		final boolean isDelete = repository.deleteById(lineId);
+
+		// then
+		Assertions.assertThat(isDelete).isTrue();
 	}
 }
