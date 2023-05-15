@@ -12,7 +12,7 @@ import subway.application.domain.Station;
 import subway.persistence.row.SectionRow;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +26,7 @@ public class H2LineRepository implements LineRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<LineProperty> propertyRowMapper = (rs, rowNum) -> new LineProperty(
+    private final RowMapper<LineProperty> propertyRowMapper = (rs, cn) -> new LineProperty(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getString("color")
@@ -64,14 +64,19 @@ public class H2LineRepository implements LineRepository {
 
 
     private Map<String, Long> getStationIdsOf(List<SectionRow> sectionEntities) {
-        String sql = "select id from station where name = ?";
-        List<String> stationNames = getStationNames(sectionEntities);
-        Map<String, Long> result = new HashMap<>();
-        for (String stationName : stationNames) {
-            Long stationId = jdbcTemplate.queryForObject(sql, Long.class, stationName);
-            result.put(stationName, stationId);
+        if (sectionEntities.isEmpty()) {
+            return Collections.emptyMap();
         }
-        return result;
+        List<String> stationNames = getStationNames(sectionEntities);
+        String inSql = String.join(",", Collections.nCopies(stationNames.size(), "?"));
+        String sql = String.format("select id, name from station where name in (%s)", inSql);
+
+        List<Map.Entry<String, Long>> nameIdKeyValue = jdbcTemplate.query(sql,
+                (rs, cn) -> Map.entry(rs.getString("name"), rs.getLong("id")),
+                stationNames.toArray());
+
+        return nameIdKeyValue.stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     private List<String> getStationNames(List<SectionRow> sectionEntities) {
