@@ -1,6 +1,7 @@
 package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
@@ -16,6 +17,9 @@ import subway.domain.StationEdge;
 import subway.dto.LineRequest;
 import subway.dto.StationInsertRequest;
 import subway.exception.DuplicatedLineNameException;
+import subway.exception.NoSuchStationException;
+import subway.exception.StationAlreadyExistsException;
+import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -97,6 +101,38 @@ class LineServiceTest {
     }
 
     @Test
+    @DisplayName("존재하지 않는 역을 추가한다.")
+    void insertNullStation() {
+        //given
+        LineRequest lineRequest = createLineRequest();
+        Long generatedLineId = lineService.create(lineRequest);
+
+        //when
+        //then
+        assertThatThrownBy(() -> lineService.insertStation(
+                new StationInsertRequest(1000L, generatedLineId, lineRequest.getUpStationId(), "DOWN", 1)))
+                .isInstanceOf(StationNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("이미 등록된 역을 노선에 추가한다.")
+    void insertAlreadyExistingStation() {
+        //given
+        LineRequest lineRequest = createLineRequest();
+        Long generatedLineId = lineService.create(lineRequest);
+        Long stationId = stationRepository.create(new Station("강남"));
+        StationInsertRequest stationInsertRequest = new StationInsertRequest(stationId, generatedLineId,
+                lineRequest.getUpStationId(), "DOWN",
+                1);
+        lineService.insertStation(stationInsertRequest);
+
+        //when
+        //then
+        assertThatThrownBy(() -> lineService.insertStation(stationInsertRequest))
+                .isInstanceOf(StationAlreadyExistsException.class);
+    }
+
+    @Test
     @DisplayName("노선에서 역을 제거한다.")
     void deleteStation() {
         //given up - 강남 - down
@@ -121,6 +157,26 @@ class LineServiceTest {
     }
 
     @Test
+    @DisplayName("등록되어있지 않은 역을 노선에서 삭제한다.")
+    void deleteNotExistingStation() {
+        //given
+        LineRequest lineRequest = createLineRequest();
+        Long lineId = lineService.create(lineRequest);
+        Long stationId = stationRepository.create(new Station("강남"));
+        StationInsertRequest stationInsertRequest = new StationInsertRequest(stationId, lineId,
+                lineRequest.getUpStationId(), "DOWN",
+                1);
+        lineService.insertStation(stationInsertRequest);
+
+        Long notExistingStationId = stationRepository.create(new Station("혜화"));
+
+        //when
+        //then
+        assertThatThrownBy(() -> lineService.deleteStation(lineId, notExistingStationId))
+                .isInstanceOf(NoSuchStationException.class);
+    }
+
+    @Test
     @DisplayName("역이 2개인 노선에서 역을 제거한다.")
     void deleteStationWithTwoStation() {
         //given
@@ -133,6 +189,7 @@ class LineServiceTest {
         //then
         assertThat(lineRepository.findById(lineId)).isEmpty();
     }
+
 
     @Test
     @DisplayName("id로 노선을 찾는다.")

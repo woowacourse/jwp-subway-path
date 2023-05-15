@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.LineDirection;
-import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.StationInsertRequest;
 import subway.exception.DuplicatedLineNameException;
@@ -28,23 +27,32 @@ public class LineService {
     }
 
     public Long create(LineRequest lineRequest) {
-        final Station upStation = findStationById(lineRequest.getUpStationId());
-        final Station downStation = findStationById(lineRequest.getDownStationId());
+        validate(lineRequest.getName());
+        validate(lineRequest.getUpStationId());
+        validate(lineRequest.getDownStationId());
 
         final Line line = Line.of(lineRequest.getName(), lineRequest.getColor(),
-                upStation.getId(), downStation.getId(), lineRequest.getDistance());
-
-        lineRepository.findByName(line.getName()).ifPresent(lineWithSameName -> {
-            throw new DuplicatedLineNameException(line.getName());
-        });
+                lineRequest.getUpStationId(), lineRequest.getDownStationId(), lineRequest.getDistance());
 
         return lineRepository.create(line);
     }
 
+    private void validate(String lineName) {
+        lineRepository.findByName(lineName)
+                .ifPresent(lineWithDuplicatedName -> {
+                    throw new DuplicatedLineNameException(lineName);
+                });
+    }
+
+    private void validate(Long stationId) {
+        stationRepository.findById(stationId)
+                .orElseThrow(StationNotFoundException::new);
+    }
+
     @Transactional
     public void insertStation(StationInsertRequest stationInsertRequest) {
-        findStationById(stationInsertRequest.getStationId());
-        findStationById(stationInsertRequest.getAdjacentStationId());
+        validate(stationInsertRequest.getStationId());
+        validate(stationInsertRequest.getAdjacentStationId());
 
         Line line = findLineById(stationInsertRequest.getLineId());
         addStation(stationInsertRequest, line);
@@ -70,11 +78,6 @@ public class LineService {
     public Line findLineById(Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(LineNotFoundException::new);
-    }
-
-    private Station findStationById(Long stationId) {
-        return stationRepository.findById(stationId)
-                .orElseThrow(StationNotFoundException::new);
     }
 
     public void deleteStation(Long lineId, Long stationId) {
