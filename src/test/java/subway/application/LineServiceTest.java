@@ -6,12 +6,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
 import subway.domain.Line;
-import subway.dto.request.SectionRequest;
-import subway.dto.request.StationRequest;
+import subway.persistence.dao.LineDao;
+import subway.persistence.dao.SectionDao;
+import subway.persistence.dao.StationDao;
+import subway.ui.request.SectionRequest;
+import subway.ui.request.StationRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

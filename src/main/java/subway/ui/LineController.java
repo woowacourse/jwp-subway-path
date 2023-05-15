@@ -4,10 +4,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
-import subway.dto.request.LineRequest;
-import subway.dto.request.SectionRequest;
-import subway.dto.request.StationRequest;
-import subway.dto.response.LineResponse;
+import subway.ui.request.LineRequest;
+import subway.ui.request.SectionRequest;
+import subway.ui.request.StationRequest;
+import subway.ui.response.LineResponse;
 
 import javax.validation.Valid;
 import java.net.URI;

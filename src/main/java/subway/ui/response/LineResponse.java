@@ -1,4 +1,4 @@
-package subway.dto.response;
+package subway.ui.response;
 
 import subway.domain.Line;
 import subway.domain.Section;

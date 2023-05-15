@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence.dao;
 
 
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;

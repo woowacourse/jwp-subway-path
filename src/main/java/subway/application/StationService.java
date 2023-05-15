@@ -1,10 +1,10 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.dto.request.StationRequest;
-import subway.dto.response.StationResponse;
+import subway.persistence.dao.StationDao;
+import subway.ui.request.StationRequest;
+import subway.ui.response.StationResponse;
 
 import java.util.LinkedList;
 import java.util.List;
