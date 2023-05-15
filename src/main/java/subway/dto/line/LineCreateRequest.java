@@ -1,5 +1,6 @@
 package subway.dto.line;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotBlank;
 
 public class LineCreateRequest {
@@ -9,9 +10,7 @@ public class LineCreateRequest {
     @NotBlank(message = "노선의 색은 비어있을 수 없습니다.")
     private String color;
 
-    public LineCreateRequest() {
-    }
-
+    @JsonCreator
     public LineCreateRequest(String lineName, String color) {
         this.lineName = lineName;
         this.color = color;

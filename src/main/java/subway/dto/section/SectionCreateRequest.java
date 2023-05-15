@@ -1,5 +1,6 @@
 package subway.dto.section;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
 
@@ -13,9 +14,7 @@ public class SectionCreateRequest {
     @Positive(message = "구간의 길이는 양수여야 합니다.")
     private int distance;
 
-    public SectionCreateRequest() {
-    }
-
+    @JsonCreator
     public SectionCreateRequest(String startStationName, String endStationName, int distance) {
         this.startStationName = startStationName;
         this.endStationName = endStationName;
