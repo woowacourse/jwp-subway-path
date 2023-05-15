@@ -17,7 +17,6 @@ import java.util.List;
 @Transactional
 public class DetachStationService {
     private final LineRepository lineRepository;
-
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
