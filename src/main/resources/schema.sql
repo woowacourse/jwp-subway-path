@@ -5,7 +5,7 @@ create table if not exists LINE
     primary key(id)
 );
 
-create table if not exists SECTION
+create table if not exists section
 (
     id bigint auto_increment not null,
     current_station_name varchar(255) not null,

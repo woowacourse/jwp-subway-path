@@ -25,7 +25,7 @@ public class SectionDao {
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("SECTION")
+                .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }
 
@@ -34,13 +34,13 @@ public class SectionDao {
     }
 
     public List<SectionEntity> findSectionsByLineId(final Long lineId) {
-        final String sql = "SELECT * FROM SECTION S WHERE S.line_id = ?";
+        final String sql = "SELECT * FROM section s WHERE s.line_id = ?";
 
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     public void deleteAll(final Long lineId) {
-        final String sql = "DELETE FROM SECTION S WHERE S.line_id = ?";
+        final String sql = "DELETE FROM section s WHERE s.line_id = ?";
 
         jdbcTemplate.update(sql, lineId);
     }

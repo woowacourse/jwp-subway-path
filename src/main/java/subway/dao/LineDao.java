@@ -24,12 +24,12 @@ public class LineDao {
         this.jdbcTemplate = jdbcTemplate;
         this.simpleJdbcInsert =
                 new SimpleJdbcInsert(jdbcTemplate)
-                        .withTableName("LINE")
+                        .withTableName("line")
                         .usingGeneratedKeyColumns("id");
     }
 
     public Optional<LineEntity> findLineByName(final String lineName) {
-        final String sql = "SELECT * FROM LINE L WHERE L.name = ?";
+        final String sql = "SELECT * FROM line l WHERE l.name = ?";
 
         return Optional.ofNullable(
                 jdbcTemplate.queryForObject(
@@ -40,13 +40,13 @@ public class LineDao {
     }
 
     public List<LineEntity> findAll() {
-        final String sql = "SELECT * FROM LINE";
+        final String sql = "SELECT * FROM line";
 
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public void deleteLineById(final Long lineId) {
-        final String sql = "DELETE FROM LINE L WHERE L.id = ?";
+        final String sql = "DELETE FROM line l WHERE l.id = ?";
 
         jdbcTemplate.update(sql, lineId);
     }
