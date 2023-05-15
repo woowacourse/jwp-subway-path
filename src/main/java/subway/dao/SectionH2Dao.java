@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
 
@@ -15,9 +14,9 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class DbSectionDao implements SectionDao {
+public class SectionH2Dao implements SectionDao {
 
-    public static final RowMapper<SectionEntity> SECTION_ENTITY_ROW_MAPPER = (resultSet, rowNum) -> new SectionEntity(
+    private static final RowMapper<SectionEntity> SECTION_ENTITY_ROW_MAPPER = (resultSet, rowNum) -> new SectionEntity(
             resultSet.getLong("id"),
             resultSet.getLong("line_id"),
             resultSet.getLong("up_station_id"),
@@ -28,7 +27,7 @@ public class DbSectionDao implements SectionDao {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertSection;
 
-    public DbSectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public SectionH2Dao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         this.insertSection = new SimpleJdbcInsert(dataSource)

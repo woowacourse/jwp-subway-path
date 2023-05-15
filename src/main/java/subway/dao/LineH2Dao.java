@@ -6,7 +6,6 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
 
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 @Repository
-public class DbLineDao implements LineDao {
+public class LineH2Dao implements LineDao {
 
     public static final RowMapper<LineEntity> lineEntityRowMapper = (resultSet, rowNum) -> new LineEntity(
             resultSet.getLong("id"),
@@ -26,7 +25,7 @@ public class DbLineDao implements LineDao {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertLine;
 
-    public DbLineDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public LineH2Dao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
         this.insertLine = new SimpleJdbcInsert(dataSource)

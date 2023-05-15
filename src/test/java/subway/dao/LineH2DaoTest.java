@@ -15,7 +15,7 @@ import static subway.fixture.LineFixture.LINE_2;
 import static subway.fixture.LineFixture.LINE_999;
 
 @JdbcTest
-class DbLineDaoTest {
+class LineH2DaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -27,7 +27,7 @@ class DbLineDaoTest {
 
     @BeforeEach
     void setUp() {
-        lineDao = new DbLineDao(jdbcTemplate, dataSource);
+        lineDao = new LineH2Dao(jdbcTemplate, dataSource);
     }
 
     @Test

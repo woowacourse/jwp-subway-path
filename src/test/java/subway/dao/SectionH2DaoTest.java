@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
-class DbSectionDaoTest {
+class SectionH2DaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -26,7 +26,7 @@ class DbSectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        sectionDao = new DbSectionDao(jdbcTemplate, dataSource);
+        sectionDao = new SectionH2Dao(jdbcTemplate, dataSource);
     }
 
     @Test
