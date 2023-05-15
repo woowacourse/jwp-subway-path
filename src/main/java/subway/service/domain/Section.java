@@ -37,4 +37,16 @@ public class Section {
     public int getDistance() {
         return distance;
     }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", line=" + line +
+                ", previousStation=" + previousStation +
+                ", nextStation=" + nextStation +
+                ", distance=" + distance +
+                '}';
+    }
+
 }

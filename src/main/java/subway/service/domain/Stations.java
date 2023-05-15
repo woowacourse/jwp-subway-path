@@ -14,4 +14,11 @@ public class Stations {
         return stations;
     }
 
+    @Override
+    public String toString() {
+        return "Stations{" +
+                "stations=" + stations +
+                '}';
+    }
+
 }
