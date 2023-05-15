@@ -39,7 +39,7 @@ class LineServiceTest {
         Line newLine = lineService.createNewLine(
                 new CreateNewLineDto("3호선", upStation.getId(), downStation.getId(), 10));
         // when
-        List<Station> allStation = lineService.findAllStation(newLine.getId());
+        List<Station> allStation = newLine.getStations();
 
         // then
         assertAll(
@@ -63,7 +63,7 @@ class LineServiceTest {
                 newStation.getId(), 5);
         Line newLine = lineService.addStationToExistLine(dto);
         // when
-        List<Station> allStation = lineService.findAllStation(newLine.getId());
+        List<Station> allStation = newLine.getStations();
         // then
         assertAll(
                 () -> assertThat(allStation.get(0).getName()).isEqualTo("안국"),

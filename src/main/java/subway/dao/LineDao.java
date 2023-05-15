@@ -21,7 +21,7 @@ public class LineDao {
         this.lineMapper = BeanPropertyRowMapper.newInstance(Line.class);
     }
 
-    public Line insert(Line line) {
+    public Long insert(Line line) {
         String sql = "INSERT INTO line(name) VALUES (?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -29,14 +29,22 @@ public class LineDao {
             ps.setString(1, line.getName());
             return ps;
         }, keyHolder);
-        long lineId = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return new Line(lineId, line.getName());
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     public Optional<Line> findById(Long lineId) {
         String sql = "SELECT * FROM line WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineMapper, lineId));
+        } catch (final EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<Line> findByName(String lineName) {
+        String sql = "SELECT * FROM line WHERE name = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineMapper, lineName));
         } catch (final EmptyResultDataAccessException e) {
             return Optional.empty();
         }

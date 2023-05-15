@@ -32,7 +32,7 @@ public class EdgeDao {
         };
     }
 
-    public Edge insert(Long lineId, Edge edge) {
+    public Long insert(Long lineId, Edge edge) {
         String sql = "INSERT INTO edge(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -43,8 +43,7 @@ public class EdgeDao {
             ps.setInt(4, edge.getDistance());
             return ps;
         }, keyHolder);
-        long edgeId = Objects.requireNonNull(keyHolder.getKey()).longValue();
-        return new Edge(edgeId, edge.getUpStation(), edge.getDownStation(), edge.getDistance());
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     public List<Edge> findEdgesByLineId(Long lineId) {

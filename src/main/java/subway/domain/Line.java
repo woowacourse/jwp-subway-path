@@ -124,7 +124,7 @@ public class Line {
     }
 
     private boolean isAlreadyExistBoth(Station upStation, Station downStation) {
-        return getStations().containsAll(List.of(upStation, downStation));
+        return new HashSet<>(getStations()).containsAll(List.of(upStation, downStation));
     }
 
     public void deleteStation(Station station) {
