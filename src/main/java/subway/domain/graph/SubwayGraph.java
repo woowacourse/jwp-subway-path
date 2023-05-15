@@ -18,7 +18,12 @@ public class SubwayGraph {
         final WeightedMultigraph<Station, Edge> graph = new WeightedMultigraph<>(Edge.class);
         for (Map.Entry<Line, Edges> entry : allEdges.entrySet()) {
             final Edges edges = entry.getValue();
-            edges.getStations().forEach(graph::addVertex);
+
+            edges.getStations().forEach(v -> {
+                if (!graph.containsVertex(v)) {
+                    graph.addVertex(v);
+                }
+            });
             edges.getEdges()
                     .forEach(m -> {
                         final Edge edge = graph.addEdge(m.getUpStation(), m.getDownStation());
