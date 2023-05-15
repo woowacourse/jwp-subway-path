@@ -2,6 +2,7 @@ package subway.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import subway.domain.Line;
 
 @Getter
 @AllArgsConstructor
@@ -12,5 +13,9 @@ public class LineEntity {
 
     public LineEntity(String name, String color) {
         this(null, name, color);
+    }
+
+    public Line toLine() {
+        return new Line(name, color);
     }
 }

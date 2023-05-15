@@ -8,8 +8,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class Section {
-    private Line line;
-    private Station preStation;
-    private Station station;
-    private Long distance;
+    private final Line line;
+    private final Station preStation;
+    private final Station station;
+    private final Long distance;
 }

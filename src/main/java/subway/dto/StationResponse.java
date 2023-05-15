@@ -7,8 +7,8 @@ import subway.entity.StationEntity;
 @Getter
 @AllArgsConstructor
 public class StationResponse {
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public static StationResponse of(StationEntity station) {
         return new StationResponse(station.getId(), station.getName());

@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class LineStationResponse {
-    private Long lineId;
-    private List<Station> stations;
+    private final Long lineId;
+    private final List<Station> stations;
 }

@@ -7,9 +7,9 @@ import subway.entity.LineEntity;
 @Getter
 @AllArgsConstructor
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
 
     public static LineResponse of(LineEntity line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor());
