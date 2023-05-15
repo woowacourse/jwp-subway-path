@@ -7,7 +7,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.domain.StationEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,19 +18,19 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            Station.of(
+    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            StationEntity.of(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
-    private RowMapper<List<Station>> listRowMapper = (rs, rowNum) -> {
-        final ArrayList<Station> stations = new ArrayList<>();
-        stations.add(Station.of(
+    private RowMapper<List<StationEntity>> listRowMapper = (rs, rowNum) -> {
+        final ArrayList<StationEntity> stationEntities = new ArrayList<>();
+        stationEntities.add(StationEntity.of(
                 rs.getLong("id"),
                 rs.getString("name")
         ));
-        return stations;
+        return stationEntities;
     };
 
     public StationDao(JdbcTemplate jdbcTemplate) {
@@ -40,24 +40,24 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+    public Long insert(StationEntity stationEntity) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Station> findAll() {
+    public List<StationEntity> findAll() {
         String sql = "select * from STATIONS";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
+    public StationEntity findById(Long id) {
         String sql = "select * from STATIONS where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void updateById(Long id, Station newStation) {
+    public void updateById(Long id, StationEntity newStationEntity) {
         String sql = "update STATIONS set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), id});
+        jdbcTemplate.update(sql, new Object[]{newStationEntity.getName(), id});
     }
 
     public void deleteById(Long id) {
@@ -65,7 +65,7 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Optional<Station> findByName(final String name) {
+    public Optional<StationEntity> findByName(final String name) {
         String sql = "select * from STATIONS where name = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
@@ -74,7 +74,7 @@ public class StationDao {
         }
     }
 
-    public Station findFinalUpStation(Long lineId) {
+    public StationEntity findFinalUpStation(Long lineId) {
         String sql = "SELECT st.* "
                 + "FROM STATIONS st "
                 + "WHERE ( "
@@ -88,7 +88,7 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, lineId, lineId);
     }
 
-    public Station findFinalDownStation(Long lineId) {
+    public StationEntity findFinalDownStation(Long lineId) {
         String sql = "SELECT st.* "
                 + "FROM STATIONS st "
                 + "WHERE ( "

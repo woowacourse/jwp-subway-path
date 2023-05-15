@@ -1,20 +1,22 @@
 package subway.dao;
 
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
+import subway.domain.SectionEntity;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class SectionDao {
 
-    private RowMapper<Section> sectionRowMapper = (rs, rowNum) -> Section.of(
+    private RowMapper<SectionEntity> sectionRowMapper = (rs, rowNum) -> SectionEntity.of(
             rs.getLong("id"),
             rs.getLong("line_id"),
             rs.getLong("up_station_id"),
@@ -32,19 +34,23 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(final Section section) {
+    public Long insert(final SectionEntity sectionEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("line_id", section.getLineId());
-        params.put("up_station_id", section.getUpStationId());
-        params.put("down_station_id", section.getDownStationId());
-        params.put("distance", section.getDistance());
+        params.put("line_id", sectionEntity.getLineId());
+        params.put("up_station_id", sectionEntity.getUpStationId());
+        params.put("down_station_id", sectionEntity.getDownStationId());
+        params.put("distance", sectionEntity.getDistance());
 
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public Section findByUpStationId(final Long upStationId) {
+    public Optional<SectionEntity> findByUpStationId(final Long upStationId) {
         String sql = "select * from SECTIONS where up_station_id = ?";
-        return jdbcTemplate.queryForObject(sql, sectionRowMapper, upStationId);
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, sectionRowMapper, upStationId));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public void deleteById(final Long id) {
@@ -52,21 +58,25 @@ public class SectionDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public List<Section> findAll() {
+    public List<SectionEntity> findAll() {
         String sql = "select * from SECTIONS";
         return jdbcTemplate.query(sql, sectionRowMapper);
     }
 
-    public Section findLeftSectionByStationId(Long stationId) {
+    public SectionEntity findLeftSectionByStationId(Long stationId) {
         String sql = "select * from sections se " +
                 "where se.down_station_id = ?";
         return jdbcTemplate.queryForObject(sql, sectionRowMapper, stationId);
     }
 
-    public Section findRightSectionByStationId(Long stationId) {
+    public SectionEntity findRightSectionByStationId(Long stationId) {
         String sql = "select * from sections se " +
                 "where se.up_station_id = ?";
         return jdbcTemplate.queryForObject(sql, sectionRowMapper, stationId);
     }
 
+    public boolean isAlreadyExistsSectionByUpStationId(final Long upStationId) {
+        String sql = "select exists(select 1 from sections WHERE up_station_id = ?)";
+        return jdbcTemplate.queryForObject(sql, Boolean.class, upStationId);
+    }
 }

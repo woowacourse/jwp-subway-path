@@ -3,22 +3,22 @@ package subway.domain;
 import java.util.List;
 import java.util.Objects;
 
-public class Station {
+public class StationEntity {
 
     private Long id;
     private String name;
 
-    private Station(final Long id, final String name) {
+    private StationEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public static Station of(final String name) {
-        return new Station(null, name);
+    public static StationEntity of(final String name) {
+        return new StationEntity(null, name);
     }
 
-    public static Station of(final Long id, final String name) {
-        return new Station(id, name);
+    public static StationEntity of(final Long id, final String name) {
+        return new StationEntity(id, name);
     }
 
     public Long getId() {
@@ -29,9 +29,9 @@ public class Station {
         return name;
     }
 
-    public boolean isContainStations(final List<Station> stations) {
-        for (Station otherStation : stations) {
-            if (this.name.equals(otherStation.name)) {
+    public boolean isContainStations(final List<StationEntity> stationEntities) {
+        for (StationEntity otherStationEntity : stationEntities) {
+            if (this.name.equals(otherStationEntity.name)) {
                 return true;
             }
         }
@@ -47,8 +47,8 @@ public class Station {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Station station = (Station) o;
-        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
+        final StationEntity stationEntity = (StationEntity) o;
+        return Objects.equals(id, stationEntity.id) && Objects.equals(name, stationEntity.name);
     }
 
     @Override

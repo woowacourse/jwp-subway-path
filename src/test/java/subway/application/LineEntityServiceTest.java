@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.LineDao;
-import subway.domain.Line;
+import subway.domain.LineEntity;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -23,7 +23,7 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
-class LineServiceTest {
+class LineEntityServiceTest {
 
     @InjectMocks
     private LineService lineService;
@@ -38,14 +38,14 @@ class LineServiceTest {
         when(lineDao.insert(request.toEntity())).thenReturn(1L);
 
         // when, then
-        assertThat(lineService.saveLine(request)).isEqualTo(1L);
+        assertThat(lineService.createLine(request)).isEqualTo(1L);
     }
 
     @Test
     void id_를_받아_해당_호선을_조회한다() {
         // given
         Long id = 1L;
-        final Line response = Line.of(id, "2호선", "초록");
+        final LineEntity response = LineEntity.of(id, "2호선", "초록");
         doReturn(response).when(lineDao).findById(id);
 
         // when
@@ -60,9 +60,9 @@ class LineServiceTest {
     @Test
     void 전체_호선을_조회한다() {
         // given
-        final Line line1 = Line.of(1L, "1호선", "파랑");
-        final Line line2 = Line.of(2L, "2호선", "초록");
-        doReturn(List.of(line1, line2)).when(lineDao).findAll();
+        final LineEntity lineEntity1 = LineEntity.of(1L, "1호선", "파랑");
+        final LineEntity lineEntity2 = LineEntity.of(2L, "2호선", "초록");
+        doReturn(List.of(lineEntity1, lineEntity2)).when(lineDao).findAll();
 
         // when
         final List<LineResponse> allStationResponses = lineService.findLineResponses();
@@ -71,8 +71,8 @@ class LineServiceTest {
         assertThat(allStationResponses)
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(
-                        LineResponse.of(line1),
-                        LineResponse.of(line2)
+                        LineResponse.of(lineEntity1),
+                        LineResponse.of(lineEntity2)
                 ));
     }
 

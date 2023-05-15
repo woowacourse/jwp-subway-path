@@ -3,9 +3,11 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
-import subway.domain.Line;
+import subway.domain.LineEntity;
+import subway.domain.SectionEntity;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.SectionSaveRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,33 +17,44 @@ import java.util.stream.Collectors;
 public class LineService {
 
     private final LineDao lineDao;
+    private final SectionService sectionService;
 
-    public LineService(final LineDao lineDao) {
+    public LineService(final LineDao lineDao, final SectionService sectionService) {
         this.lineDao = lineDao;
+        this.sectionService = sectionService;
     }
 
     @Transactional
-    public Long saveLine(LineRequest request) {
-        return lineDao.insert(Line.of(request.getName(), request.getColor()));
+    public Long createLine(final LineRequest request, final Long finalUpStationId, final Long finalDownStationId) {
+        Long lineId = lineDao.insert(LineEntity.of(request.getName(), request.getColor()));
+        SectionEntity sectionEntity = SectionEntity.of(lineId, finalUpStationId, finalDownStationId, request.getDistance());
+        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
+        return lineId;
+    }
+
+    @Transactional
+    public void registerStation(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+        SectionEntity sectionEntity = SectionEntity.of(lineId, upStationId, downStationId, distance);
+        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
     }
 
     public List<LineResponse> findLineResponses() {
-        List<Line> allLines = lineDao.findAll();
-        return allLines.stream()
+        List<LineEntity> allLineEntities = lineDao.findAll();
+        return allLineEntities.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line line = lineDao.findById(id);
-        return LineResponse.of(line);
+        LineEntity lineEntity = lineDao.findById(id);
+        return LineResponse.of(lineEntity);
     }
 
     @Transactional
     public void updateLine(Long id, LineRequest request) {
-        Line line = lineDao.findById(id);
-        line.updateInfo(request.getName(), request.getColor());
-        lineDao.updateById(id, line);
+        LineEntity lineEntity = lineDao.findById(id);
+        lineEntity.updateInfo(request.getName(), request.getColor());
+        lineDao.updateById(id, lineEntity);
     }
 
     @Transactional

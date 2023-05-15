@@ -1,40 +1,35 @@
 package subway.ui;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.StationSaveService;
 import subway.application.StationService;
 import subway.dto.StationResponse;
-import subway.dto.StationSaveRequest;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
 @RequestMapping("/stations")
 public class StationController {
 
-    private final StationSaveService stationSaveService;
     private final StationService stationService;
 
-    public StationController(final StationSaveService stationSaveService, final StationService stationService) {
-        this.stationSaveService = stationSaveService;
+    public StationController(final StationService stationService) {
         this.stationService = stationService;
     }
 
-    @PostMapping("/{lineId}")
+    @PostMapping
     public ResponseEntity<Void> registerStation(
-            @PathVariable Long lineId,
-            @RequestBody StationSaveRequest stationSaveRequest
+            @RequestParam String name
     ) {
-        stationSaveService.saveStation(lineId, stationSaveRequest);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        Long stationId = stationService.createStation(name);
+        return ResponseEntity.created(URI.create("/stations/" + stationId)).build();
     }
 
     @GetMapping("/{lineId}")

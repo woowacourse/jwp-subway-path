@@ -8,11 +8,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -26,10 +28,25 @@ public class LineController {
         this.lineService = lineService;
     }
 
-    @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
-        final Long id = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + id)).build();
+    @PostMapping("/{finalUpStationId}/{finalDownStationId}")
+    public ResponseEntity<Void> createLine(
+            @RequestBody @Valid LineRequest lineRequest,
+            @PathVariable Long finalUpStationId,
+            @PathVariable Long finalDownStationId
+    ) {
+        final Long lineId = lineService.createLine(lineRequest, finalUpStationId, finalDownStationId);
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
+    }
+
+    @PostMapping("/{lineId}/{upStationId}/{downStationId}")
+    public ResponseEntity<Void> registerStation(
+            @PathVariable Long lineId,
+            @PathVariable Long upStationId,
+            @PathVariable Long downStationId,
+            @RequestParam int distance
+    ) {
+        lineService.registerStation(lineId, upStationId, downStationId, distance);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping

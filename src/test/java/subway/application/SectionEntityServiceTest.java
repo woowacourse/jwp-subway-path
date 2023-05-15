@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.SectionDao;
-import subway.domain.Section;
+import subway.domain.SectionEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @ExtendWith(MockitoExtension.class)
-class SectionServiceTest {
+class SectionEntityServiceTest {
 
     @InjectMocks
     private SectionService sectionService;
@@ -32,7 +32,7 @@ class SectionServiceTest {
         final Long stationId2 = 2L;
         int distance = 3;
 
-        final Section request = Section.of(lineId, stationId1, stationId2, distance);
+        final SectionEntity request = SectionEntity.of(lineId, stationId1, stationId2, distance);
         when(sectionDao.insert(request)).thenReturn(1L);
 
         // when

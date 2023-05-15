@@ -9,9 +9,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.LineEntity;
+import subway.domain.SectionEntity;
+import subway.domain.StationEntity;
 import subway.fixture.StationFixture.GangnamStation;
 import subway.fixture.StationFixture.JamsilStation;
 
@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @JdbcTest
 @Sql({"classpath:schema-test.sql"})
-class StationDaoTest {
+class StationEntityDaoTest {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
@@ -44,10 +44,10 @@ class StationDaoTest {
     @Test
     void 역_엔티티를_받아_역을_저장한다() {
         // given
-        final Station station = JamsilStation.jamsilStation;
+        final StationEntity stationEntity = JamsilStation.JAMSIL_STATION_ENTITY;
 
         // when
-        final Long result = stationDao.insert(station);
+        final Long result = stationDao.insert(stationEntity);
 
         //then
         assertThat(result).isPositive();
@@ -56,11 +56,11 @@ class StationDaoTest {
     @Test
     void 등록된_모든_역을_조회한다() {
         // given
-        final Long id1 = stationDao.insert(JamsilStation.jamsilStation);
-        final Long id2 = stationDao.insert(GangnamStation.gangnamStation);
+        final Long id1 = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
+        final Long id2 = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
 
         // when
-        final List<Station> result = stationDao.findAll();
+        final List<StationEntity> result = stationDao.findAll();
 
         // then
         assertAll(
@@ -76,10 +76,10 @@ class StationDaoTest {
     @Test
     void 등록된_역을_Id로_조회한다() {
         // given
-        final Long id = stationDao.insert(JamsilStation.jamsilStation);
+        final Long id = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
 
         // when
-        final Station result = stationDao.findById(id);
+        final StationEntity result = stationDao.findById(id);
 
         // then
         assertThat(result.getName()).isEqualTo("잠실역");
@@ -88,12 +88,12 @@ class StationDaoTest {
     @Test
     void 등록된_역을_수정한다() {
         // given
-        final Long id = stationDao.insert(GangnamStation.gangnamStation);
-        final Station 선릉역 = Station.of("선릉역");
+        final Long id = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
+        final StationEntity 선릉역 = StationEntity.of("선릉역");
 
         // when
         stationDao.updateById(id, 선릉역);
-        final Station result = stationDao.findById(id);
+        final StationEntity result = stationDao.findById(id);
 
         // then
         assertThat(result.getName()).isEqualTo("선릉역");
@@ -102,7 +102,7 @@ class StationDaoTest {
     @Test
     void 등록된_역을_삭제한다() {
         // given
-        final Long id = stationDao.insert(GangnamStation.gangnamStation);
+        final Long id = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
 
         // when
         stationDao.deleteById(id);
@@ -116,24 +116,24 @@ class StationDaoTest {
     @Test
     void 종점들을_반환한다() {
         // given
-        final Long lineId1 = lineDao.insert(Line.of("2호선", "초록"));
+        final Long lineId1 = lineDao.insert(LineEntity.of("2호선", "초록"));
 
-        final Long stationId1 = stationDao.insert(GangnamStation.gangnamStation);
-        final Long stationId2 = stationDao.insert(JamsilStation.jamsilStation);
-        final Long stationId3 = stationDao.insert(Station.of("잠실새내역"));
+        final Long stationId1 = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
+        final Long stationId2 = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
+        final Long stationId3 = stationDao.insert(StationEntity.of("잠실새내역"));
 
-        final Section section1 = Section.of(lineId1, stationId1, stationId2, 3);
-        final Section section2 = Section.of(lineId1, stationId2, stationId3, 3);
-        sectionDao.insert(section1);
-        sectionDao.insert(section2);
+        final SectionEntity sectionEntity1 = SectionEntity.of(lineId1, stationId1, stationId2, 3);
+        final SectionEntity sectionEntity2 = SectionEntity.of(lineId1, stationId2, stationId3, 3);
+        sectionDao.insert(sectionEntity1);
+        sectionDao.insert(sectionEntity2);
 
         // when
-        final Station upTerminalStation = stationDao.findFinalUpStation(lineId1);
-        final Station downTerminalStation = stationDao.findFinalDownStation(lineId1);
+        final StationEntity upTerminalStationEntity = stationDao.findFinalUpStation(lineId1);
+        final StationEntity downTerminalStationEntity = stationDao.findFinalDownStation(lineId1);
 
         // then
-        assertThat(upTerminalStation.getName()).isEqualTo("강남역");
-        assertThat(downTerminalStation.getName()).isEqualTo("잠실새내역");
+        assertThat(upTerminalStationEntity.getName()).isEqualTo("강남역");
+        assertThat(downTerminalStationEntity.getName()).isEqualTo("잠실새내역");
     }
 
 }

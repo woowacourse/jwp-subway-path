@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest()
-class StationControllerTest {
+class StationEntityControllerTest {
 
     @MockBean
     private StationService stationService;

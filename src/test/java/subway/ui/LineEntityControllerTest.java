@@ -35,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest()
-class LineControllerTest {
+class LineEntityControllerTest {
 
     @MockBean
     private LineService lineService;
@@ -102,7 +102,7 @@ class LineControllerTest {
         final Long id = 1L;
         final LineRequest line = new LineRequest("2호선", "검정");
         final String requestJson = objectMapper.writeValueAsString(line);
-        lineService.saveLine(line);
+        lineService.createLine(line);
 
         // when, then
         mockMvc.perform(put("/lines/" + id)
@@ -119,7 +119,7 @@ class LineControllerTest {
         // given
         final Long id = 1L;
         final LineRequest line = new LineRequest("1호선", "파랑");
-        lineService.saveLine(line);
+        lineService.createLine(line);
 
         // when, then
         mockMvc.perform(delete("/lines/" + id)
