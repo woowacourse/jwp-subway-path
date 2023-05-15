@@ -1,5 +1,7 @@
 package subway.application;
 
+import static subway.application.StationFactory.toStation;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
@@ -99,7 +101,4 @@ public class SectionService {
         sectionDao.insertAll(makeSectionEntitiesByAddedSections);
     }
 
-    private Station toStation(StationEntity stationEntity) {
-        return new Station(stationEntity.getName());
-    }
 }

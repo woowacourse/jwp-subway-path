@@ -1,5 +1,7 @@
 package subway.application;
 
+import static subway.application.StationFactory.toStation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -10,7 +12,6 @@ import subway.dao.LineEntity;
 import subway.dao.SectionDao;
 import subway.dao.SectionEntity;
 import subway.dao.StationDao;
-import subway.dao.StationEntity;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -79,10 +80,6 @@ public class LineService {
         Distance distance = new Distance(sectionEntity.getDistance());
 
         return new Section(startStation, endStation, distance);
-    }
-
-    private Station toStation(StationEntity stationEntity) {
-        return new Station(stationEntity.getName());
     }
 
     private List<LineEntity> findLines() {
