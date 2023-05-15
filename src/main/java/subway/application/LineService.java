@@ -2,67 +2,58 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
 import subway.domain.LineEntity;
 import subway.domain.SectionEntity;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionSaveRequest;
-import subway.exception.LineNotFoundException;
+import subway.facade.LineFacade;
+import subway.facade.SectionFacade;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
-    private final SectionService sectionService;
+    private final LineFacade lineFacade;
+    private final SectionFacade sectionFacade;
 
-    public LineService(final LineDao lineDao, final SectionService sectionService) {
-        this.lineDao = lineDao;
-        this.sectionService = sectionService;
+    public LineService(final LineFacade lineFacade, final SectionFacade sectionFacade) {
+        this.lineFacade = lineFacade;
+        this.sectionFacade = sectionFacade;
     }
 
     @Transactional
     public Long createLine(final LineRequest request, final Long finalUpStationId, final Long finalDownStationId) {
-        Long lineId = lineDao.insert(LineEntity.of(request.getName(), request.getColor()));
+        Long lineId = lineFacade.insert(LineEntity.of(request.getName(), request.getColor()));
         SectionEntity sectionEntity = SectionEntity.of(lineId, finalUpStationId, finalDownStationId, request.getDistance());
-        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
+        sectionFacade.saveSection(SectionSaveRequest.of(sectionEntity));
         return lineId;
     }
 
     @Transactional
     public void registerStation(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
         SectionEntity sectionEntity = SectionEntity.of(lineId, upStationId, downStationId, distance);
-        sectionService.saveSection(SectionSaveRequest.of(sectionEntity));
+        sectionFacade.saveSection(SectionSaveRequest.of(sectionEntity));
     }
 
     public List<LineResponse> findLineResponses() {
-        List<LineEntity> allLineEntities = lineDao.findAll();
-        return allLineEntities.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+        return lineFacade.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
-        LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> LineNotFoundException.THROW);
-        return LineResponse.of(lineEntity);
+        return lineFacade.findById(id);
     }
 
     @Transactional
     public void updateLine(Long id, LineRequest request) {
-        LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow();
-        lineEntity.updateInfo(request.getName(), request.getColor());
-        lineDao.updateById(id, lineEntity);
+        lineFacade.update(id, request);
     }
 
     @Transactional
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineFacade.deleteById(id);
     }
 
 }

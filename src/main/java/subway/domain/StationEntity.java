@@ -1,12 +1,11 @@
 package subway.domain;
 
-import java.util.List;
 import java.util.Objects;
 
 public class StationEntity {
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     private StationEntity(final Long id, final String name) {
         this.id = id;
@@ -27,16 +26,6 @@ public class StationEntity {
 
     public String getName() {
         return name;
-    }
-
-    public boolean isContainStations(final List<StationEntity> stationEntities) {
-        for (StationEntity otherStationEntity : stationEntities) {
-            if (this.name.equals(otherStationEntity.name)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     @Override
