@@ -1,15 +1,9 @@
 package subway.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
 import subway.exception.NameLengthException;
 
 import java.util.Objects;
 
-@Getter
-@ToString
-@EqualsAndHashCode
 public class Station {
 
     public static final int MINIMUM_NAME_LENGTH = 2;
@@ -41,5 +35,29 @@ public class Station {
 
     public static Station getEmptyEndpoint() {
         return ENDPOINT;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Station{" +
+                "name='" + name + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Station station = (Station) o;
+        return Objects.equals(name, station.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }

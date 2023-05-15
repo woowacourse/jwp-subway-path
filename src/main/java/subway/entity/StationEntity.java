@@ -1,10 +1,5 @@
 package subway.entity;
 
-import lombok.Getter;
-import lombok.ToString;
-
-@Getter
-@ToString
 public class StationEntity {
 
     private Long id;
@@ -13,6 +8,22 @@ public class StationEntity {
     private StationEntity(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "StationEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
     }
 
     public static class Builder {

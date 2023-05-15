@@ -1,8 +1,5 @@
 package subway.entity;
 
-import lombok.Getter;
-
-@Getter
 public class LineEntity {
 
     private final Long id;
@@ -11,6 +8,14 @@ public class LineEntity {
     public LineEntity(Long id, String name) {
         this.id = id;
         this.name = name;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public static class Builder {

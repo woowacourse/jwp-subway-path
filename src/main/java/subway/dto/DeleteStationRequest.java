@@ -1,8 +1,5 @@
 package subway.dto;
 
-import lombok.Getter;
-
-@Getter
 public class DeleteStationRequest {
 
     private String lineName;
@@ -11,5 +8,13 @@ public class DeleteStationRequest {
     public DeleteStationRequest(String lineName, String stationName) {
         this.lineName = lineName;
         this.stationName = stationName;
+    }
+
+    public String getLineName() {
+        return lineName;
+    }
+
+    public String getStationName() {
+        return stationName;
     }
 }

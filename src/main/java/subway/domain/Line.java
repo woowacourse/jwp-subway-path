@@ -1,6 +1,5 @@
 package subway.domain;
 
-import lombok.ToString;
 import subway.exception.DuplicateStationInLineException;
 import subway.exception.NameLengthException;
 import subway.exception.SectionNotFoundException;
@@ -10,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ToString
 public class Line {
 
     public static final int MINIMUM_NAME_LENGTH = 2;
@@ -119,5 +117,13 @@ public class Line {
         return sections.subList(0, sections.size() - 1).stream()
                 .map(section -> section.getDownstream().getName())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "name='" + name + '\'' +
+                ", sections=" + sections +
+                '}';
     }
 }

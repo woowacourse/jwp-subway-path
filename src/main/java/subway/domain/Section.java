@@ -1,16 +1,13 @@
 package subway.domain;
 
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 import subway.exception.InvalidDistanceException;
 import subway.exception.SectionMergeException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
-@ToString
-@EqualsAndHashCode
 public class Section {
 
     public static final int MINIMUM_DISTANCE = 1;
@@ -86,5 +83,27 @@ public class Section {
 
     public Station getDownstream() {
         return downstream;
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "upstream=" + upstream +
+                ", downstream=" + downstream +
+                ", distance=" + distance +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Section section = (Section) o;
+        return distance == section.distance && Objects.equals(upstream, section.upstream) && Objects.equals(downstream, section.downstream);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(upstream, downstream, distance);
     }
 }

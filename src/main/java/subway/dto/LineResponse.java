@@ -1,10 +1,7 @@
 package subway.dto;
 
-import lombok.Getter;
-
 import java.util.List;
 
-@Getter
 public class LineResponse {
 
     private final List<String> stationNames;
@@ -13,5 +10,13 @@ public class LineResponse {
     public LineResponse(List<String> stationNames, String lineName) {
         this.stationNames = stationNames;
         this.lineName = lineName;
+    }
+
+    public List<String> getStationNames() {
+        return stationNames;
+    }
+
+    public String getLineName() {
+        return lineName;
     }
 }

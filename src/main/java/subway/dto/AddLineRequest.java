@@ -1,8 +1,5 @@
 package subway.dto;
 
-import lombok.Getter;
-
-@Getter
 public class AddLineRequest {
 
     private String name;
@@ -15,5 +12,21 @@ public class AddLineRequest {
         this.upstreamName = upstreamName;
         this.downstreamName = downstreamName;
         this.distance = distance;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getUpstreamName() {
+        return upstreamName;
+    }
+
+    public String getDownstreamName() {
+        return downstreamName;
+    }
+
+    public int getDistance() {
+        return distance;
     }
 }

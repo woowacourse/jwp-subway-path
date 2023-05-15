@@ -1,10 +1,7 @@
 package subway.dto;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import java.util.Objects;
 
-@Getter
-@EqualsAndHashCode
 public class AddStationRequest {
 
     private String addStationName;
@@ -19,5 +16,38 @@ public class AddStationRequest {
         this.upstreamName = upstreamName;
         this.downstreamName = downstreamName;
         this.distanceToUpstream = distanceToUpstream;
+    }
+
+    public String getAddStationName() {
+        return addStationName;
+    }
+
+    public String getLineName() {
+        return lineName;
+    }
+
+    public String getUpstreamName() {
+        return upstreamName;
+    }
+
+    public String getDownstreamName() {
+        return downstreamName;
+    }
+
+    public int getDistanceToUpstream() {
+        return distanceToUpstream;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AddStationRequest that = (AddStationRequest) o;
+        return distanceToUpstream == that.distanceToUpstream && Objects.equals(addStationName, that.addStationName) && Objects.equals(lineName, that.lineName) && Objects.equals(upstreamName, that.upstreamName) && Objects.equals(downstreamName, that.downstreamName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(addStationName, lineName, upstreamName, downstreamName, distanceToUpstream);
     }
 }

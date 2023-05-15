@@ -1,8 +1,5 @@
 package subway.entity;
 
-import lombok.Getter;
-
-@Getter
 public class SectionEntity {
 
     private final Long id;
@@ -17,6 +14,26 @@ public class SectionEntity {
         this.downstreamId = downstreamId;
         this.lineId = lineId;
         this.distance = distance;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Long getUpstreamId() {
+        return upstreamId;
+    }
+
+    public Long getDownstreamId() {
+        return downstreamId;
+    }
+
+    public Long getLineId() {
+        return lineId;
+    }
+
+    public Integer getDistance() {
+        return distance;
     }
 
     public static class Builder {
