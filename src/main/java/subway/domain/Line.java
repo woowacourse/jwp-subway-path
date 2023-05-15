@@ -132,7 +132,7 @@ public class Line {
             sections.remove(sectionAtStart.get());
             return;
         }
-        sections.remove(sectionAtEnd.get());
+        sectionAtEnd.ifPresent(sections::remove);
     }
 
     public List<Station> findAllStation() {
