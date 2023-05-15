@@ -22,7 +22,7 @@ public class Sections {
 
     public void addInitialStations(final Section section) {
         if (!sections.isEmpty()) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("이미 노선 내 구간이 존재합니다.");
         }
 
         addSection(section);
@@ -45,7 +45,7 @@ public class Sections {
         this.sections.addAll(sections);
     }
 
-    public Section peekByFirstStationUnique(final Station firstStation) { //FIXME 접근제어자
+    public Section peekByFirstStationUnique(final Station firstStation) {
         final LinkedList<Section> findSections = sections.stream()
                 .filter(section -> section.matchFirstStationByName(firstStation))
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -54,7 +54,7 @@ public class Sections {
         return findSections.peekFirst();
     }
 
-    public Section peekBySecondStationUnique(final Station secondStation) { //FIXME 접근제어자
+    public Section peekBySecondStationUnique(final Station secondStation) {
         final LinkedList<Section> findSections = sections.stream()
                 .filter(section -> section.matchSecondStationName(secondStation))
                 .collect(Collectors.toCollection(LinkedList::new));
@@ -63,9 +63,9 @@ public class Sections {
         return findSections.peekFirst();
     }
 
-    private void validateUniqueSection(final List<Section> collect) {
-        if (collect.size() != 1) {
-            throw new IllegalStateException();
+    private void validateUniqueSection(final List<Section> sections) {
+        if (sections.size() != 1) {
+            throw new IllegalStateException("유일한 구간을 찾을 수 없습니다.");
         }
     }
 
@@ -74,7 +74,7 @@ public class Sections {
                 .anyMatch(section -> section.contains(station));
 
         if (isExistStation) {
-            throw new IllegalStateException();
+            throw new IllegalStateException("이미 존재하는 등록된 역 입니다.");
         }
     }
 

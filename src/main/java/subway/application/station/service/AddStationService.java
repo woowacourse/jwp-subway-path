@@ -1,6 +1,5 @@
 package subway.application.station.service;
 
-import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.station.usecase.AddStationUseCase;
@@ -12,6 +11,7 @@ import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
 import subway.domain.station.StationRepository;
+import subway.exception.NoDataFoundException;
 import subway.ui.dto.request.AddStationRequest;
 
 @Transactional
@@ -47,7 +47,7 @@ public class AddStationService implements AddStationUseCase {
     private Long addStationAsFront(final Line line, final AddStationRequest request) {
         final Station newStation = new Station(request.getNewStation());
         final Station standartStation = stationRepository.findByName(request.getSecondStation())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NoDataFoundException::new);
         final StationDistance distance = new StationDistance(request.getDistance());
         validateIsFrontStation(line.getFrontStation(), standartStation);
 
@@ -67,7 +67,7 @@ public class AddStationService implements AddStationUseCase {
 
     private Long addStationAsEnd(final Line line, final AddStationRequest request) {
         final Station standartStation = stationRepository.findByName(request.getFirstStation())
-                .orElseThrow(NoSuchElementException::new);
+                .orElseThrow(NoDataFoundException::new);
         final Station newStation = new Station(request.getNewStation());
         final StationDistance distance = new StationDistance(request.getDistance());
         validateIsEndStation(line.getEndStation(), standartStation);

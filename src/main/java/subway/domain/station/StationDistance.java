@@ -14,7 +14,7 @@ public class StationDistance {
 
     private void validate(final int distance) {
         if (distance < MINIMUM_DISTANCE) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("역 사이의 거리는 1보다 작을 수 없습니다.");
         }
     }
 

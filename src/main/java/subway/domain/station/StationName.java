@@ -12,7 +12,7 @@ public class StationName {
 
     private void validate(final String name) {
         if (name.isBlank()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("역 이름은 공백일 수 없습니다.");
         }
     }
 

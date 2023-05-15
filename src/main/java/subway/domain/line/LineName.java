@@ -10,7 +10,7 @@ public class LineName {
 
     private void validate(final String name) {
         if (name.isBlank()) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("노선 이름은 공백일 수 없습니다.");
         }
     }
 

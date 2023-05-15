@@ -33,7 +33,8 @@ public class Section {
     }
 
     public boolean contains(final Station station) {
-        return Set.of(firstStation, secondStation).contains(station);
+        return Set.of(firstStation.getStationName(), secondStation.getStationName())
+                .contains(station.getStationName());
     }
 
     public Section merge(final Section other) {

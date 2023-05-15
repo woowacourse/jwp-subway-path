@@ -1,10 +1,8 @@
 package subway.ui.station;
 
-import java.sql.SQLException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -40,10 +38,5 @@ public class CreateInitialStationsController {
                 .status(HttpStatus.CREATED)
                 .header(HttpHeaders.CONTENT_LOCATION, createdResourceUri)
                 .build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
     }
 }
