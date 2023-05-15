@@ -2,7 +2,6 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -10,6 +9,7 @@ import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -20,12 +20,10 @@ import static java.util.stream.Collectors.toList;
 public class LineService {
 
     private final LineDao lineDao;
-    private final StationDao stationDao;
     private final SectionRepository sectionRepository;
 
-    public LineService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository) {
+    public LineService(LineDao lineDao, StationRepository stationRepository, SectionRepository sectionRepository) {
         this.lineDao = lineDao;
-        this.stationDao = stationDao;
         this.sectionRepository = sectionRepository;
     }
 

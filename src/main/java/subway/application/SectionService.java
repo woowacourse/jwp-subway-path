@@ -6,13 +6,13 @@ import subway.application.strategy.delete.SectionDeleter;
 import subway.application.strategy.insert.BetweenStationInserter;
 import subway.application.strategy.insert.InsertSection;
 import subway.dao.LineDao;
-import subway.dao.StationDao;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -22,14 +22,14 @@ import java.util.Objects;
 public class SectionService {
 
     private final LineDao lineDao;
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
     private final BetweenStationInserter betweenStationInserter;
     private final SectionDeleter sectionDeleter;
 
-    public SectionService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository, BetweenStationInserter betweenStationInserter, SectionDeleter sectionDeleter) {
+    public SectionService(LineDao lineDao, StationRepository stationRepository, SectionRepository sectionRepository, BetweenStationInserter betweenStationInserter, SectionDeleter sectionDeleter) {
         this.lineDao = lineDao;
-        this.stationDao = stationDao;
+        this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
         this.betweenStationInserter = betweenStationInserter;
         this.sectionDeleter = sectionDeleter;
@@ -68,7 +68,7 @@ public class SectionService {
     }
 
     private Station findById(Long stationId) {
-        return stationDao.findById(stationId)
+        return stationRepository.findById(stationId)
                 .orElseThrow(() -> new NoSuchElementException("해당하는 역을 찾을 수 없습니다."));
     }
 
@@ -89,7 +89,7 @@ public class SectionService {
     }
 
     public void deleteStation(Long targetId, SectionDeleteRequest request) {
-        final Station targetStation = stationDao.findById(targetId).orElseThrow(NoSuchElementException::new);
+        final Station targetStation = stationRepository.findById(targetId).orElseThrow(NoSuchElementException::new);
         final Sections sections = sectionRepository.findAllByLineId(request.getLineId());
 
         sectionDeleter.delete(sections, targetStation);

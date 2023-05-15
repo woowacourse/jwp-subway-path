@@ -23,6 +23,7 @@ import subway.domain.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 import subway.repository.SectionRepository;
+import subway.repository.StationRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -40,13 +41,14 @@ class SectionServiceTest extends SubwayJdbcFixture {
     @BeforeEach
     void init() {
         final StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
+        final StationRepository stationRepository = new StationRepository(stationDao);
         sectionRepository = new SectionRepository(sectionDao);
 
         final BetweenStationInserter betweenStationInserter = createBetweenStationInserter();
 
         final SectionDeleter sectionDeleter = createSectionDeleter();
 
-        sectionService = new SectionService(lineDao, stationDao, sectionRepository, betweenStationInserter, sectionDeleter);
+        sectionService = new SectionService(lineDao, stationRepository, sectionRepository, betweenStationInserter, sectionDeleter);
     }
 
     private BetweenStationInserter createBetweenStationInserter() {
