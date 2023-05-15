@@ -1,28 +1,37 @@
 package subway.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import subway.service.LineService;
+import subway.domain.Line;
+import subway.service.LineQueryService;
+import subway.service.LineCommandService;
+import subway.service.SectionService;
 import subway.service.dto.LineResponse;
 import subway.service.dto.RegisterLineRequest;
 import subway.service.dto.SearchAllSectionLineRequest;
+import subway.service.dto.SectionInLineResponse;
 
-import java.net.URI;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 public class LineController {
 
-    private final LineService lineService;
+    private final LineCommandService lineCommandService;
+    private final SectionService sectionService;
+    private final LineQueryService lineQueryService;
 
-    public LineController(final LineService lineService) {
-        this.lineService = lineService;
+    public LineController(
+            final LineCommandService lineCommandService,
+            final SectionService sectionService,
+            final LineQueryService lineQueryService) {
+        this.lineCommandService = lineCommandService;
+        this.sectionService = sectionService;
+        this.lineQueryService = lineQueryService;
     }
 
     @GetMapping("/lines")
@@ -30,21 +39,31 @@ public class LineController {
     public List<LineResponse> searchAllSectionInLines(
             @RequestBody(required = false) SearchAllSectionLineRequest searchAllSectionLineRequest
     ) {
-        return lineService.searchAllSectionInLines(searchAllSectionLineRequest);
+        final List<Line> lines = lineQueryService.searchAllSectionInLines(searchAllSectionLineRequest);
+
+        return lines.stream()
+                    .map(line -> {
+
+                        final List<SectionInLineResponse> sectionInLineResponses =
+                                sectionService.mapToSectionInLineResponseFrom(line);
+
+                        return new LineResponse(line.getName(), sectionInLineResponses);
+                    })
+                    .collect(Collectors.toList());
     }
 
     @PostMapping("/lines")
-    public ResponseEntity<Void> registerLine(
+    @ResponseStatus(HttpStatus.CREATED)
+    public LineResponse registerLine(
             @RequestBody RegisterLineRequest registerLineRequest
     ) {
-        Long savedLineId = lineService.registerLine(registerLineRequest);
+        lineCommandService.registerLine(registerLineRequest);
 
-        final URI uri = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{savedLineId}")
-                .buildAndExpand(savedLineId)
-                .toUri();
+        final Line line = lineQueryService.findByLineName(registerLineRequest.getLineName());
 
-        return ResponseEntity.created(uri).build();
+        return new LineResponse(
+                line.getName(),
+                sectionService.mapToSectionInLineResponseFrom(line)
+        );
     }
 }

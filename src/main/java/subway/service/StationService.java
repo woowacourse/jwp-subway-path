@@ -17,21 +17,24 @@ import java.util.Objects;
 public class StationService {
 
     private final SectionService sectionService;
-    private final LineService lineService;
+    private final LineCommandService lineCommandService;
+    private final LineQueryService lineQueryService;
 
     public StationService(
             final SectionService sectionService,
-            final LineService lineService
+            final LineCommandService lineCommandService,
+            final LineQueryService lineQueryService
     ) {
         this.sectionService = sectionService;
-        this.lineService = lineService;
+        this.lineCommandService = lineCommandService;
+        this.lineQueryService = lineQueryService;
     }
 
     public void registerStation(final StationRegisterRequest stationRegisterRequest) {
 
         final String lineName = stationRegisterRequest.getLineName();
 
-        final Line line = lineService.findByLineName(lineName);
+        final Line line = lineQueryService.findByLineName(lineName);
 
         final List<Section> originSection = line.getSections();
         final Section newSection = mapToSectionFrom(stationRegisterRequest);
@@ -67,7 +70,7 @@ public class StationService {
     public void deleteStation(final StationDeleteRequest stationDeleteRequest) {
 
         final String lineName = stationDeleteRequest.getLineName();
-        final Line line = lineService.findByLineName(lineName);
+        final Line line = lineQueryService.findByLineName(lineName);
 
         final List<Section> originSection = line.getSections();
 
@@ -98,7 +101,7 @@ public class StationService {
 
         if (line.isDeleted()) {
             sectionService.deleteAll(line.getId());
-            lineService.deleteLine(line.getId());
+            lineCommandService.deleteLine(line.getId());
         }
     }
 }
