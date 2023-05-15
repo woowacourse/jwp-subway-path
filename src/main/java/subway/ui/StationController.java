@@ -36,16 +36,16 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 
-    @PutMapping("/{stationName}")
-    public ResponseEntity<Void> updateStation(@PathVariable String stationName,
+    @PutMapping("/{id}")
+    public ResponseEntity<Void> updateStation(@PathVariable Long id,
                                               @RequestBody @Valid StationUpdateRequest stationUpdateRequest) {
-        stationService.updateStation(stationName, stationUpdateRequest);
+        stationService.updateStation(id, stationUpdateRequest);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{stationName}")
-    public ResponseEntity<Void> deleteStation(@PathVariable String stationName) {
-        stationService.deleteStationByName(stationName);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+        stationService.deleteStationById(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.LineEntity;
-import subway.domain.Line;
 
 @Repository
 public class LineDao {
@@ -30,7 +29,7 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public long insert(Line line) {
+    public long insert(LineEntity line) {
         SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(line);
         return insertAction.executeAndReturnKey(sqlParameterSource).longValue();
     }
@@ -45,9 +44,9 @@ public class LineDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(Long id, Line line) {
+    public void update(LineEntity line) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, line.getName(), line.getColor(), id);
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
     }
 
     public void deleteById(Long id) {

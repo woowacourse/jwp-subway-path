@@ -40,7 +40,7 @@ public class SectionService {
     }
 
     private StationEntity findStationByName(String name) {
-        if (stationDao.existsBy(name)) {
+        if (stationDao.existsByName(name)) {
             return stationDao.findByName(name);
         }
         throw new StationNotFoundException();

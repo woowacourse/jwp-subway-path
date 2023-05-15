@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
+import subway.dao.entity.StationEntity;
 import subway.domain.Station;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
@@ -20,7 +21,7 @@ public class StationService {
     }
 
     public void saveStation(StationCreateRequest stationCreateRequest) {
-        stationDao.insert(new Station(stationCreateRequest.getStationName()));
+        stationDao.insert(new StationEntity(stationCreateRequest.getStationName()));
     }
 
     @Transactional(readOnly = true)
@@ -34,11 +35,13 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(String prevStationName, StationUpdateRequest stationUpdateRequest) {
-        stationDao.update(prevStationName, new Station(stationUpdateRequest.getStationName()));
+    public void updateStation(Long id, StationUpdateRequest stationUpdateRequest) {
+        StationEntity station = stationDao.findById(id);
+        StationEntity stationEntity = new StationEntity(station.getId(), stationUpdateRequest.getStationName());
+        stationDao.update(stationEntity);
     }
 
-    public void deleteStationByName(String stationName) {
-        stationDao.deleteByName(stationName);
+    public void deleteStationById(Long id) {
+        stationDao.deleteById(id);
     }
 }

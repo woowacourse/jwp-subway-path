@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.StationEntity;
-import subway.domain.Station;
 
 @Repository
 public class StationDao {
@@ -22,7 +21,7 @@ public class StationDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insert(Station station) {
+    public void insert(StationEntity station) {
         String sql = "INSERT INTO STATION (name) VALUES (?)";
         jdbcTemplate.update(sql, station.getName());
     }
@@ -42,17 +41,17 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(String prevStationName, Station station) {
-        String sql = "update STATION set name = ? where name = ?";
-        jdbcTemplate.update(sql, prevStationName, station.getName());
+    public void update(StationEntity station) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, station.getName(), station.getId());
     }
 
-    public void deleteByName(String stationName) {
-        String sql = "delete from STATION where name = ?";
-        jdbcTemplate.update(sql, stationName);
+    public void deleteById(Long stationId) {
+        String sql = "delete from STATION where id = ?";
+        jdbcTemplate.update(sql, stationId);
     }
 
-    public boolean existsBy(String stationName) {
+    public boolean existsByName(String stationName) {
         String sql = "SELECT COUNT(*) FROM STATION WHERE name = ? LIMIT 1";
         return jdbcTemplate.queryForObject(sql, Long.class, stationName) > 0;
     }
