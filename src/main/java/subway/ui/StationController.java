@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.station.StationService;
-import subway.persistence.entity.StationEntity;
+import subway.application.station.dto.StationDto;
 import subway.ui.dto.StationRequest;
 import subway.ui.dto.StationResponse;
 
@@ -32,26 +32,29 @@ public class StationController {
 
 	@PostMapping
 	public ResponseEntity<StationResponse> createStation(@RequestBody StationRequest stationRequest) {
-		final StationEntity station = stationService.saveStation(stationRequest);
-		final StationResponse stationResponse = StationResponse.of(station);
+		final StationDto requestDto = convertToDto(stationRequest);
+		final StationDto stationDto = stationService.saveStation(requestDto);
+
+		final StationResponse stationResponse = StationResponse.from(stationDto);
 		return ResponseEntity.created(URI.create("/stations/" + stationResponse.getId())).body(stationResponse);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<StationResponse>> showStations() {
-		final List<StationResponse> stationResponses = convertToResponse(stationService.findAllStation());
+		final List<StationResponse> stationResponses = convertToResponses(stationService.findAllStation());
 		return ResponseEntity.ok().body(stationResponses);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
-		final StationResponse stationResponse = StationResponse.of(stationService.findStationById(id));
+		final StationResponse stationResponse = StationResponse.from(stationService.findStationById(id));
 		return ResponseEntity.ok().body(stationResponse);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Void> updateStation(@PathVariable Long id, @RequestBody StationRequest stationRequest) {
-		stationService.updateStation(id, stationRequest);
+		final StationDto requestDto = convertToDto(stationRequest);
+		stationService.updateStation(id, requestDto);
 		return ResponseEntity.ok().build();
 	}
 
@@ -66,9 +69,13 @@ public class StationController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	private List<StationResponse> convertToResponse(List<StationEntity> stations) {
+	private StationDto convertToDto(final StationRequest stationRequest) {
+		return new StationDto(null, stationRequest.getName());
+	}
+
+	private List<StationResponse> convertToResponses(List<StationDto> stations) {
 		return stations.stream()
-			.map(StationResponse::of)
+			.map(StationResponse::from)
 			.collect(Collectors.toList());
 	}
 }

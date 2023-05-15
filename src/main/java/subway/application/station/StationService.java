@@ -1,13 +1,14 @@
 package subway.application.station;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import subway.application.station.dto.StationDto;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.StationEntity;
-import subway.ui.dto.StationRequest;
 
 @Service
 @Transactional
@@ -18,27 +19,33 @@ public class StationService {
 		this.stationDao = stationDao;
 	}
 
-	public StationEntity saveStation(final StationRequest stationRequest) {
-		final StationEntity station = new StationEntity(stationRequest.getName());
-		return stationDao.insert(station);
+	public StationDto saveStation(final StationDto stationDto) {
+		final StationEntity station = new StationEntity(stationDto.getName());
+
+		final StationEntity stationEntity = stationDao.insert(station);
+		return new StationDto(stationEntity);
 	}
 
 	@Transactional(readOnly = true)
-	public StationEntity findStationById(final Long id) {
-		return stationDao.findById(id);
+	public StationDto findStationById(final Long id) {
+		final StationEntity stationEntity = stationDao.findById(id);
+		return new StationDto(stationEntity);
 	}
 
 	@Transactional(readOnly = true)
-	public List<StationEntity> findAllStation() {
-		return stationDao.findAll();
+	public List<StationDto> findAllStation() {
+		return stationDao.findAll().stream()
+			.map(StationDto::new)
+			.collect(Collectors.toList());
 	}
 
-	public void updateStation(Long id, StationRequest stationRequest) {
-		final StationEntity newStation = new StationEntity(id, stationRequest.getName());
+	public void updateStation(final Long id, final StationDto stationDto) {
+		final StationEntity newStation = new StationEntity(id, stationDto.getName());
 		stationDao.update(newStation);
 	}
 
 	public void deleteStationById(Long id) {
 		stationDao.deleteById(id);
 	}
+
 }
