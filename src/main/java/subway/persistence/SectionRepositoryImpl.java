@@ -49,13 +49,13 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     @Override
     public List<Section> findAllByLineId(final Long lineId) {
-        String sql = "select * from section where line_id = ?";
+        String sql = "select * from section where lineId = ?";
         return jdbcTemplate.query(sql, sectionRowMapper, lineId);
     }
 
     @Override
     public void deleteBySection(final Long lineId, final Section section) {
-        String sql = "delete from section where line_id = ? and up_station = ? or down_station = ?";
+        String sql = "delete from section where lineId = ? and up_station = ? or down_station = ?";
         jdbcTemplate.update(sql, lineId, section.getUpStation(), section.getDownStation());
     }
 }

@@ -18,20 +18,20 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @PostMapping("/{line_id}/stations")
-    public void createSection(@PathVariable("line_id") Long line_id, @RequestBody SectionCreateRequest sectionCreateRequest) {
-        sectionService.createSection(line_id, sectionCreateRequest);
+    @PostMapping("/{lineId}/stations")
+    public void createSection(@PathVariable("lineId") Long lineId, @RequestBody SectionCreateRequest sectionCreateRequest) {
+        sectionService.createSection(lineId, sectionCreateRequest);
         ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{line_id}/stations")
-    public void deleteSection(@PathVariable("line_id") Long line_id, @RequestBody SectionDeleteRequest sectionDeleteRequest) {
-        sectionService.deleteSection(line_id, sectionDeleteRequest);
+    @DeleteMapping("/{lineId}/stations")
+    public void deleteSection(@PathVariable("lineId") Long lineId, @RequestBody SectionDeleteRequest sectionDeleteRequest) {
+        sectionService.deleteSection(lineId, sectionDeleteRequest);
         ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{line_id}/stations")
-    public ResponseEntity<List<StationResponse>> findAllByLine(@PathVariable("line_id") Long line_id) {
-        return ResponseEntity.ok(sectionService.findAllByLine(line_id));
+    @GetMapping("/{lineId}/stations")
+    public ResponseEntity<List<StationResponse>> findAllByLine(@PathVariable("lineId") Long lineId) {
+        return ResponseEntity.ok(sectionService.findAllByLine(lineId));
     }
 }
