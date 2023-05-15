@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.domain.Direction;
 import subway.domain.Section;
+import subway.dto.SectionCreateRequest;
 
 @Transactional
 @Service
@@ -19,7 +20,17 @@ public class SectionCreateService {
         this.sectionDao = sectionDao;
     }
 
-    public List<Section> createSection(
+    public List<Section> createSection(final SectionCreateRequest sectionCreateRequest) {
+        return createSection(
+                sectionCreateRequest.getLineId(),
+                sectionCreateRequest.getBaseStationId(),
+                sectionCreateRequest.getAddedStationId(),
+                sectionCreateRequest.getDirection(),
+                sectionCreateRequest.getDistance()
+        );
+    }
+
+    private List<Section> createSection(
             final Long lineId,
             final Long baseId,
             final Long addedId,

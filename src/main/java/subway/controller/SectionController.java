@@ -31,13 +31,7 @@ public class SectionController {
 
     @PostMapping
     public ResponseEntity<List<SectionResponse>> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
-        final List<Section> sections = sectionCreateService.createSection(
-                sectionCreateRequest.getLineId(),
-                sectionCreateRequest.getBaseStationId(),
-                sectionCreateRequest.getAddedStationId(),
-                sectionCreateRequest.getDirection(),
-                sectionCreateRequest.getDistance()
-        );
+        final List<Section> sections = sectionCreateService.createSection(sectionCreateRequest);
         final List<SectionResponse> sectionResponses = sections.stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());

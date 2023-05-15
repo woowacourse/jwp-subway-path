@@ -17,6 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import subway.dao.SectionDao;
 import subway.domain.Section;
+import subway.dto.SectionCreateRequest;
 
 @SpringBootTest
 class SubwayMapUpdateAspectTest {
@@ -38,7 +39,8 @@ class SubwayMapUpdateAspectTest {
         given(sectionDao.insert(any())).willReturn(new Section(1L, 2L, 3L, 4L, 5));
 
         // when
-        sectionCreateService.createSection(1L, 1L, 2L, true, 10);
+        final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 1L, 2L, true, 10);
+        sectionCreateService.createSection(sectionCreateRequest);
 
         // then
         verify(subwayMapService, times(1)).update();
