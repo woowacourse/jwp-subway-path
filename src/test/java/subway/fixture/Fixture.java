@@ -1,9 +1,8 @@
 package subway.fixture;
 
-import subway.domain.Color;
-import subway.domain.Name;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.*;
+
+import java.util.List;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class Fixture {
@@ -24,4 +23,8 @@ public class Fixture {
     public static final Color 초록색 = new Color("초록색");
 
 
+    public static final Sections 후추_디노_조앤 = new Sections(List.of(후추_디노, 디노_조앤));
+    public static final Sections EMPTY_SECTIONS = new Sections(List.of());
+
+    public static final Line 일호선_남색_후추_디노_조앤 = new Line(1L, 일호선, 남색, new Sections(List.of(후추_디노, 디노_조앤)));
 }
