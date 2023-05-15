@@ -6,17 +6,21 @@ import java.util.Objects;
 
 public class Line {
     private final Long id;
-    private final String name;
+    private final Name name;
     private final List<Section> sections;
 
-    public Line(String name, List<Section> sections) {
+    public Line(Name name, List<Section> sections) {
         this(null, name, sections);
     }
 
-    public Line(Long id, String name, List<Section> sections) {
+    public Line(Long id, Name name, List<Section> sections) {
         this.id = id;
         this.name = name;
         this.sections = sections;
+    }
+
+    public Line(Long id, String name, List<Section> sections) {
+        this(id, new Name(name), sections);
     }
 
     public static Line of(String name, String upwardStationName, String downwardStationName, int distance) {
@@ -24,7 +28,7 @@ public class Line {
         Station downwardStation = new Station(downwardStationName);
         List<Section> sections = new LinkedList<>();
         sections.add(new Section(upwardStation, downwardStation, distance));
-        return new Line(name, sections);
+        return new Line(new Name(name), sections);
     }
 
     public void addStation(String stationName, String neighborhoodStationName, Direction direction, int distance) {
@@ -233,7 +237,7 @@ public class Line {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public List<Section> getSections() {

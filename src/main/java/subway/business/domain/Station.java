@@ -3,14 +3,18 @@ package subway.business.domain;
 import java.util.Objects;
 
 public class Station {
-    private String name;
+    private Name name;
 
-    public Station(String name) {
+    public Station(Name name) {
         this.name = name;
     }
 
+    public Station(String name) {
+        this(new Name(name));
+    }
+
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     @Override
