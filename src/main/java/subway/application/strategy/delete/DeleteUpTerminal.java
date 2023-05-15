@@ -6,19 +6,19 @@ import subway.domain.Station;
 import subway.repository.SectionRepository;
 
 @Component
-public class DeleteStationDownEndStation extends DeleteStationStrategy {
+public class DeleteUpTerminal extends DeleteStationStrategy {
 
-    public DeleteStationDownEndStation(SectionRepository sectionRepository) {
+    public DeleteUpTerminal(SectionRepository sectionRepository) {
         super(sectionRepository);
     }
 
     @Override
     boolean support(Sections sections, Station targetStation) {
-        return sections.isDownEndPoint(targetStation);
+        return sections.isUpTerminal(targetStation);
     }
 
     @Override
     void delete(Sections sections, Station targetStation) {
-        sectionRepository.delete(sections.findLastSectionId());
+        sectionRepository.delete(sections.findFirstSectionId());
     }
 }

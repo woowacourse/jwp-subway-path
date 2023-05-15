@@ -8,15 +8,15 @@ import subway.domain.Station;
 import subway.repository.SectionRepository;
 
 @Component
-public class DeleteStationMiddleStation extends DeleteStationStrategy {
+public class DeleteBetweenStation extends DeleteStationStrategy {
 
-    public DeleteStationMiddleStation(SectionRepository sectionRepository) {
+    public DeleteBetweenStation(SectionRepository sectionRepository) {
         super(sectionRepository);
     }
 
     @Override
     boolean support(Sections sections, Station targetStation) {
-        return !sections.isDownEndPoint(targetStation) && !sections.isUpEndPoint(targetStation);
+        return sections.isBetweenStation(targetStation);
     }
 
     @Override

@@ -22,41 +22,45 @@ public class Sections {
         return SectionsFactory.createSortedSections(unsortedSections);
     }
 
-    public boolean isDownEndPoint(Station upStation) {
-        return Objects.equals(sections.get(sections.size() - 1).getDownStation(), upStation);
+    public boolean isBetweenStation(Station station) {
+        return !inDownTerminal(station) && !isUpTerminal(station);
     }
 
-    public boolean isUpEndPoint(Station upStation) {
-        return Objects.equals(sections.get(0).getUpStation(), upStation);
+    public boolean inDownTerminal(Station station) {
+        return Objects.equals(sections.get(sections.size() - 1).getDownStation(), station);
     }
 
-    public boolean isUpStationPoint(Station upStation) {
+    public boolean isUpTerminal(Station station) {
+        return Objects.equals(sections.get(0).getUpStation(), station);
+    }
+
+    public boolean isUpwardStation(Station station) {
         return sections.stream()
-                .anyMatch(section -> Objects.equals(section.getUpStation(), upStation));
+                .anyMatch(section -> Objects.equals(section.getUpStation(), station));
     }
 
-    public boolean isDownStationPoint(Station downStation) {
+    public boolean isDownwardStation(Station station) {
         return sections.stream()
-                .anyMatch(section -> Objects.equals(section.getDownStation(), downStation));
+                .anyMatch(section -> Objects.equals(section.getDownStation(), station));
     }
 
-    public Section getTargtUpStationSection(Station upStation) {
+    public Section findUpwardStationSection(Station upStation) {
         return sections.stream()
                 .filter(section -> Objects.equals(section.getUpStation(), upStation))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
-    public Section getTargtDownStationSection(Station downStation) {
+    public Section findDownwardStationSection(Station downStation) {
         return sections.stream()
                 .filter(section -> Objects.equals(section.getDownStation(), downStation))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
-    public Sections findIncludeTargetSection(Station station) {
+    public Sections findIncludeTargetSection(Station betweenStation) {
         final List<Section> sections = this.sections.stream()
-                .filter(section -> Objects.equals(section.getUpStation(), station) || Objects.equals(section.getDownStation(), station))
+                .filter(section -> Objects.equals(section.getUpStation(), betweenStation) || Objects.equals(section.getDownStation(), betweenStation))
                 .collect(toList());
 
         return new Sections(sections);

@@ -6,13 +6,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.SubwayJdbcFixture;
-import subway.application.strategy.delete.DeleteStationDownEndStation;
-import subway.application.strategy.delete.DeleteStationMiddleStation;
-import subway.application.strategy.delete.DeleteUpEndStation;
+import subway.application.strategy.delete.DeleteBetweenStation;
+import subway.application.strategy.delete.DeleteDownTerminal;
+import subway.application.strategy.delete.DeleteUpTerminal;
 import subway.application.strategy.delete.SectionDeleter;
-import subway.application.strategy.insert.InsertDownPointStrategy;
-import subway.application.strategy.insert.InsertMiddlePoint;
-import subway.application.strategy.insert.InsertUpPointStrategy;
+import subway.application.strategy.insert.BetweenStationInserter;
+import subway.application.strategy.insert.InsertDownwardStation;
+import subway.application.strategy.insert.InsertUpwardStation;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
@@ -41,16 +41,16 @@ class SectionServiceTest extends SubwayJdbcFixture {
         final StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
         sectionRepository = new SectionRepository(sectionDao);
 
-        final InsertDownPointStrategy insertDownPointStrategy = new InsertDownPointStrategy(sectionRepository);
-        final InsertUpPointStrategy insertUpPointStrategy = new InsertUpPointStrategy(sectionRepository);
-        final InsertMiddlePoint insertMiddlePoint = new InsertMiddlePoint(List.of(insertUpPointStrategy, insertDownPointStrategy));
+        final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);
+        final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
+        final BetweenStationInserter betweenStationInserter = new BetweenStationInserter(List.of(insertUpwardStation, insertDownwardStation));
 
-        final DeleteUpEndStation deleteUpEndStation = new DeleteUpEndStation(sectionRepository);
-        final DeleteStationDownEndStation deleteStationDownEndStation = new DeleteStationDownEndStation(sectionRepository);
-        final DeleteStationMiddleStation deleteStationMiddleStation = new DeleteStationMiddleStation(sectionRepository);
-        final SectionDeleter sectionDeleter = new SectionDeleter(List.of(deleteStationMiddleStation, deleteUpEndStation, deleteStationDownEndStation));
+        final DeleteUpTerminal deleteUpTerminal = new DeleteUpTerminal(sectionRepository);
+        final DeleteDownTerminal deleteDownTerminal = new DeleteDownTerminal(sectionRepository);
+        final DeleteBetweenStation deleteBetweenStation = new DeleteBetweenStation(sectionRepository);
+        final SectionDeleter sectionDeleter = new SectionDeleter(List.of(deleteBetweenStation, deleteUpTerminal, deleteDownTerminal));
 
-        sectionService = new SectionService(lineDao, stationDao, sectionRepository, insertMiddlePoint, sectionDeleter);
+        sectionService = new SectionService(lineDao, stationDao, sectionRepository, betweenStationInserter, sectionDeleter);
     }
 
     @Nested

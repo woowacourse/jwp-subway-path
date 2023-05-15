@@ -6,11 +6,11 @@ import subway.domain.Sections;
 import java.util.List;
 
 @Component
-public class InsertMiddlePoint {
+public class BetweenStationInserter {
 
     private final List<InsertStrategy> strategies;
 
-    public InsertMiddlePoint(List<InsertStrategy> strategies) {
+    public BetweenStationInserter(List<InsertStrategy> strategies) {
         this.strategies = strategies;
     }
 

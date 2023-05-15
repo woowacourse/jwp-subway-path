@@ -3,7 +3,7 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.strategy.delete.SectionDeleter;
-import subway.application.strategy.insert.InsertMiddlePoint;
+import subway.application.strategy.insert.BetweenStationInserter;
 import subway.application.strategy.insert.InsertSection;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
@@ -25,14 +25,14 @@ public class SectionService {
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionRepository sectionRepository;
-    private final InsertMiddlePoint insertMiddlePoint;
+    private final BetweenStationInserter betweenStationInserter;
     private final SectionDeleter sectionDeleter;
 
-    public SectionService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository, InsertMiddlePoint insertMiddlePoint, SectionDeleter sectionDeleter) {
+    public SectionService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository, BetweenStationInserter betweenStationInserter, SectionDeleter sectionDeleter) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.sectionRepository = sectionRepository;
-        this.insertMiddlePoint = insertMiddlePoint;
+        this.betweenStationInserter = betweenStationInserter;
         this.sectionDeleter = sectionDeleter;
     }
 
@@ -45,12 +45,12 @@ public class SectionService {
 
         checkCanInsert(upStation, downStation, sections);
 
-        if (sections.isUpEndPoint(downStation) || sections.isDownEndPoint(upStation)) {
-            return insertToEndPoint(request);
+        if (sections.isUpTerminal(downStation) || sections.inDownTerminal(upStation)) {
+            return insertToTerminal(request);
         }
 
         final InsertSection insertSection = new InsertSection(upStation, downStation, Distance.from(request.getDistance()));
-        return insertMiddlePoint.insert(sections, insertSection);
+        return betweenStationInserter.insert(sections, insertSection);
     }
 
     private void validateInput(SectionRequest request) {
@@ -79,7 +79,7 @@ public class SectionService {
         }
     }
 
-    private Long insertToEndPoint(SectionRequest request) {
+    private Long insertToTerminal(SectionRequest request) {
         final Section section = new Section(
                 request.getDistance(),
                 new Station(request.getUpStationId()),
