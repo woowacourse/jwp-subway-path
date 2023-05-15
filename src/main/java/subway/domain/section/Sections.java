@@ -1,15 +1,14 @@
-package subway.domain.sections;
+package subway.domain.section;
 
-import java.util.LinkedList;
 import java.util.List;
 import subway.domain.Section;
 import subway.domain.Station;
 
 public abstract class Sections {
 
-    final List<Section> sections;
+    protected final List<Section> sections;
 
-    Sections(final List<Section> sections) {
+    protected Sections(final List<Section> sections) {
         this.sections = sections;
     }
 
@@ -19,11 +18,7 @@ public abstract class Sections {
 
     public abstract Sections removeStation(final Station station);
 
-    public Sections getDifferenceOfSet(final Sections otherFilledSections) {
-        final List<Section> result = new LinkedList<>(this.sections);
-        result.removeAll(otherFilledSections.sections);
-        return FilledSections.from(result);
-    }
+    public abstract Sections getDifferenceOfSet(final Sections otherSections);
 
     public List<Section> getSections() {
         return sections;

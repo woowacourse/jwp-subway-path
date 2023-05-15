@@ -1,7 +1,7 @@
 package subway.domain;
 
-import subway.domain.sections.EmptySections;
-import subway.domain.sections.Sections;
+import subway.domain.section.EmptySections;
+import subway.domain.section.Sections;
 
 public class Line {
 

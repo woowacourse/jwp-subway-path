@@ -9,7 +9,7 @@ import subway.domain.Line;
 import subway.domain.LineName;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.domain.sections.Sections;
+import subway.domain.section.Sections;
 import subway.persistence.dao.LineDao;
 import subway.service.dto.LineRequest;
 import subway.service.dto.LineResponse;

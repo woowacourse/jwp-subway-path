@@ -1,4 +1,6 @@
-package subway.domain.sections;
+package subway.domain.section;
+
+import static subway.domain.section.SectionFactory.from;
 
 import java.util.Collections;
 import java.util.List;
@@ -21,11 +23,16 @@ public class EmptySections extends Sections {
         if (section == null) {
             return this;
         }
-        return FilledSections.from(List.of(section));
+        return from(List.of(section));
     }
 
     @Override
     public Sections removeStation(final Station station) {
         throw new IllegalArgumentException("비어있는 Line에서 역을 지울순 없습니다.");
+    }
+
+    @Override
+    public Sections getDifferenceOfSet(final Sections otherSections) {
+        return this;
     }
 }

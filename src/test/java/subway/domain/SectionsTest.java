@@ -7,8 +7,8 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.domain.sections.EmptySections;
-import subway.domain.sections.Sections;
+import subway.domain.section.EmptySections;
+import subway.domain.section.Sections;
 
 class SectionsTest {
 

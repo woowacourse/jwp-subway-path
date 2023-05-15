@@ -128,6 +128,6 @@ class LineTest {
 
         assertThatThrownBy(() -> newLine.addSection(SECTION_1))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 등록되어 있는 구간입니다.");
+                .hasMessage("이미 등록되어 있는 역들입니다.");
     }
 }
