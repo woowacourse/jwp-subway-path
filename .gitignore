@@ -31,3 +31,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### DOCS ###
+src/main/resources/static/docs/html5/index.html
