@@ -11,7 +11,7 @@ public class LineEntity {
     }
 
     public LineEntity(final String name) {
-        this.name = name;
+        this(null, name);
     }
 
     public Long getId() {

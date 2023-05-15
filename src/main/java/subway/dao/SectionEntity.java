@@ -21,10 +21,7 @@ public class SectionEntity {
     public SectionEntity(final String currentStationName,
                          final String nextStationName,
                          final int distance, final Long lineId) {
-        this.currentStationName = currentStationName;
-        this.nextStationName = nextStationName;
-        this.distance = distance;
-        this.lineId = lineId;
+        this(null, currentStationName, nextStationName, distance, lineId);
     }
 
     public Long getId() {
