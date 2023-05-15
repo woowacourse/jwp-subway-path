@@ -65,10 +65,10 @@ class AddStationServiceTest {
     @Test
     void 노선_상행에_역_추가() {
         //given
-        final AddStationRequest request = new AddStationRequest(null, "강남", "교대", 3);
+        final AddStationRequest request = new AddStationRequest(null, any(), "교대", 3);
         given(lineRepository.findById(1L)).willReturn(lineFixture);
         given(sectionRepository.save(any(), any())).willReturn(1L);
-        given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("강남")));
+        given(stationRepository.findById(any())).willReturn(Optional.of(new Station("강남")));
         given(stationRepository.saveIfNotExist(any())).willReturn(new Station("교대"));
 
         //when
@@ -87,8 +87,8 @@ class AddStationServiceTest {
     @Test
     void 상행역으로_추가시_기준역이_상행역이_아닌경우_예외발생() {
         //given
-        final AddStationRequest request = new AddStationRequest(null, "선릉", "교대", 3);
-        given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("선릉")));
+        final AddStationRequest request = new AddStationRequest(null, 1L, "교대", 3);
+        given(stationRepository.findById(1L)).willReturn(Optional.of(new Station("선릉")));
         given(lineRepository.findById(1L)).willReturn(lineFixture);
 
         //when & then
@@ -100,10 +100,10 @@ class AddStationServiceTest {
     @Test
     void 노선_하행에_역_추가() {
         //given
-        final AddStationRequest request = new AddStationRequest("선릉", null, "삼성", 1);
+        final AddStationRequest request = new AddStationRequest(1L, null, "삼성", 1);
         given(lineRepository.findById(1L)).willReturn(lineFixture);
         given(sectionRepository.save(any(), any())).willReturn(1L);
-        given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("선릉")));
+        given(stationRepository.findById(1L)).willReturn(Optional.of(new Station("선릉")));
         given(stationRepository.saveIfNotExist(any())).willReturn(new Station("삼성"));
 
         //when
@@ -122,9 +122,9 @@ class AddStationServiceTest {
     @Test
     void 하행역으로_추가시_기준역이_하행역이_아닌경우_예외발생() {
         //given
-        final AddStationRequest request = new AddStationRequest("강남", null, "삼성", 3);
+        final AddStationRequest request = new AddStationRequest(1L, null, "삼성", 3);
         given(lineRepository.findById(1L)).willReturn(lineFixture);
-        given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("강남")));
+        given(stationRepository.findById(1L)).willReturn(Optional.of(new Station("강남")));
 
         //when & then
         assertThatThrownBy(() -> addStationService.addStation(1L, request))
@@ -135,9 +135,11 @@ class AddStationServiceTest {
     @Test
     void 노선_사이에_역_추가() {
         //given
-        final AddStationRequest request = new AddStationRequest("강남", "역삼", "삼성", 2);
+        final AddStationRequest request = new AddStationRequest(1L, 2L, "삼성", 2);
         given(lineRepository.findById(1L)).willReturn(lineFixture);
         given(sectionRepository.save(any(), any())).willReturn(1L);
+        given(stationRepository.findById(1L)).willReturn(Optional.of(new Station("강남")));
+        given(stationRepository.findById(2L)).willReturn(Optional.of(new Station("역삼")));
         given(stationRepository.saveIfNotExist(any())).willReturn(new Station(4L, new StationName("삼성")));
 
         //when
@@ -156,8 +158,10 @@ class AddStationServiceTest {
     @Test
     void 연결되지_않은_구간에_역_추가시_예외발생() {
         //given
-        final AddStationRequest request = new AddStationRequest("강남", "선릉", "삼성", 2);
+        final AddStationRequest request = new AddStationRequest(1L, 3L, "삼성", 2);
         given(lineRepository.findById(1L)).willReturn(lineFixture);
+        given(stationRepository.findById(1L)).willReturn(Optional.of(new Station("강남")));
+        given(stationRepository.findById(3L)).willReturn(Optional.of(new Station("선릉")));
 
         //when & then
         assertThatThrownBy(() -> addStationService.addStation(1L, request))

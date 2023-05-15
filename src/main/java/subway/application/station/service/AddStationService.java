@@ -33,11 +33,11 @@ public class AddStationService implements AddStationUseCase {
     public Long addStation(final Long lineId, final AddStationRequest request) {
         final Line line = lineRepository.findById(lineId);
 
-        if (request.getFirstStation() == null) {
+        if (request.getFirstStationId() == null) {
             return addStationAsFront(line, request);
         }
 
-        if (request.getSecondStation() == null) {
+        if (request.getSecondStationId() == null) {
             return addStationAsEnd(line, request);
         }
 
@@ -46,7 +46,7 @@ public class AddStationService implements AddStationUseCase {
 
     private Long addStationAsFront(final Line line, final AddStationRequest request) {
         final Station newStation = new Station(request.getNewStation());
-        final Station standartStation = stationRepository.findByName(request.getSecondStation())
+        final Station standartStation = stationRepository.findById(request.getSecondStationId())
                 .orElseThrow(NoDataFoundException::new);
         final StationDistance distance = new StationDistance(request.getDistance());
         validateIsFrontStation(line.getFrontStation(), standartStation);
@@ -66,7 +66,7 @@ public class AddStationService implements AddStationUseCase {
     }
 
     private Long addStationAsEnd(final Line line, final AddStationRequest request) {
-        final Station standartStation = stationRepository.findByName(request.getFirstStation())
+        final Station standartStation = stationRepository.findById(request.getFirstStationId())
                 .orElseThrow(NoDataFoundException::new);
         final Station newStation = new Station(request.getNewStation());
         final StationDistance distance = new StationDistance(request.getDistance());
@@ -87,8 +87,10 @@ public class AddStationService implements AddStationUseCase {
     }
 
     private Long insertStation(final Line line, final AddStationRequest request) {
-        final Station standardStation = new Station(request.getFirstStation());
-        final Station secondStation = new Station(request.getSecondStation());
+        final Station standardStation = stationRepository.findById(request.getFirstStationId())
+                .orElseThrow(NoDataFoundException::new);
+        final Station secondStation = stationRepository.findById(request.getSecondStationId())
+                .orElseThrow(NoDataFoundException::new);
         final Station newStation = new Station(request.getNewStation());
         validateIsConnectedSection(line, standardStation, secondStation);
 

@@ -19,6 +19,10 @@ import subway.ui.dto.request.AddStationRequest;
 @SuppressWarnings("NonAsciiCharacters")
 public class StationIntegrationTest extends IntegrationTest {
 
+    private static final Long FRONT_STATION_ID = 1L;
+    private static final Long SECOND_STATION_ID = 2L;
+    private static final Long END_STATION_ID = 3L;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -26,8 +30,8 @@ public class StationIntegrationTest extends IntegrationTest {
     void 역과_역_사이에_새로운_역_등록_API_테스트() throws JsonProcessingException {
         // given
         final AddStationRequest request = new AddStationRequest(
-                "강남",
-                "역삼",
+                FRONT_STATION_ID,
+                SECOND_STATION_ID,
                 "잠실",
                 1
         );
@@ -50,7 +54,7 @@ public class StationIntegrationTest extends IntegrationTest {
         // given
         final AddStationRequest request = new AddStationRequest(
                 null,
-                "강남",
+                FRONT_STATION_ID,
                 "교대",
                 5
         );
@@ -72,7 +76,7 @@ public class StationIntegrationTest extends IntegrationTest {
     void 하행_종점에_역_추가_API_테스트() throws JsonProcessingException {
         // given
         final AddStationRequest request = new AddStationRequest(
-                "선릉",
+                END_STATION_ID,
                 null,
                 "삼성",
                 3

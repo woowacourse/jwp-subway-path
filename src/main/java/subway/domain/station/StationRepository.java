@@ -7,5 +7,5 @@ public interface StationRepository {
 
     Station saveIfNotExist(Station station);
 
-    Station findById(Long stationId);
+    Optional<Station> findById(Long stationId);
 }

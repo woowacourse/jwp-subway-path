@@ -10,6 +10,7 @@ import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
+import subway.exception.NoDataFoundException;
 
 @Transactional
 @Service
@@ -33,7 +34,8 @@ public class RemoveStationService implements RemoveStationUseCase {
     public void removeStation(final Long lineId, final Long stationId) {
         final Line line = lineRepository.findById(lineId);
         final Sections sections = line.getSections();
-        final Station removalStation = stationRepository.findById(stationId);
+        final Station removalStation = stationRepository.findById(stationId)
+                .orElseThrow(NoDataFoundException::new);
         if (sections.getFrontStation().equals(removalStation)) {
             removeSection(sections, sections.peekByFirstStationUnique(removalStation));
             return;

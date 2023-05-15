@@ -40,18 +40,20 @@ public class StationRepositoryImpl implements StationRepository {
         final Optional<Station> findStation = findByName(station.getStationName());
 
         if (findStation.isPresent()) {
-            return null;
+            return findStation.get();
         }
 
         final StationEntity stationEntity = new StationEntity(station.getStationName());
-
         return stationDao.insert(stationEntity).toStation();
     }
 
     @Override
-    public Station findById(final Long stationId) {
-        final StationEntity stationEntity = stationDao.findById(stationId);
+    public Optional<Station> findById(final Long stationId) {
+        final Set<StationEntity> stations = new HashSet<>(stationDao.findAll());
 
-        return toStation(stationEntity);
+        return stations.stream()
+                .filter(stationEntity -> stationEntity.getStationId().equals(stationId))
+                .map(this::toStation)
+                .findFirst();
     }
 }

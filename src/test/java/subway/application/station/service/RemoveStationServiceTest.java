@@ -7,6 +7,7 @@ import static org.mockito.Mockito.doNothing;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -67,7 +68,7 @@ class RemoveStationServiceTest {
         doNothing().when(sectionRepository).delete(any());
 
         final Station remvoalStation = new Station("강남");
-        given(stationRepository.findById(any())).willReturn(remvoalStation);
+        given(stationRepository.findById(any())).willReturn(Optional.of(remvoalStation));
 
         //when
         removeStationService.removeStation(1L, 1L);
@@ -85,7 +86,7 @@ class RemoveStationServiceTest {
         doNothing().when(sectionRepository).delete(any());
 
         final Station remvoalStation = new Station("선릉");
-        given(stationRepository.findById(any())).willReturn(remvoalStation);
+        given(stationRepository.findById(any())).willReturn(Optional.of(remvoalStation));
 
         //when
         removeStationService.removeStation(1L, 1L);
@@ -103,7 +104,7 @@ class RemoveStationServiceTest {
         doNothing().when(sectionRepository).delete(any());
 
         final Station remvoalStation = new Station("역삼");
-        given(stationRepository.findById(any())).willReturn(remvoalStation);
+        given(stationRepository.findById(any())).willReturn(Optional.of(remvoalStation));
 
         //when
         removeStationService.removeStation(1L, 1L);
