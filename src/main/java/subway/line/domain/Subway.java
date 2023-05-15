@@ -49,14 +49,16 @@ public class Subway {
         findLineByLineName(lineName).initAddStation(leftAdditional, rightAdditional, distance);
     }
     
-    public void addStation(
+    public Line addStation(
             final String lineName,
             final String base,
             final Direction direction,
             final String additionalStation,
             final long distance
     ) {
-        findLineByLineName(lineName).addStation(base, direction, additionalStation, distance);
+        final Line lineByLineName = findLineByLineName(lineName);
+        lineByLineName.addStation(base, direction, additionalStation, distance);
+        return lineByLineName;
     }
     
     public void removeStation(final String line, final String station) {

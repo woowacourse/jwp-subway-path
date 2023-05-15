@@ -47,7 +47,7 @@ class InitAddStationIntegratedTest extends IntegrationTest {
                 .when().post("/stations/init")
                 .then().log().all()
                 .statusCode(HttpStatus.CREATED.value())
-                .header("Location", startsWith("/stations"));
+                .header("Location", is("/stations"));
     }
     
     @Test
