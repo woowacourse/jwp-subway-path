@@ -1,14 +1,14 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.application.sectionreader.FirstSaveCase;
-import subway.application.sectionreader.SectionReader;
+import subway.application.reader.CaseDto;
+import subway.application.reader.FirstFindCase;
+import subway.application.reader.Reader;
 import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.SectionSorter;
 import subway.dto.AddStationRequest;
-import subway.dto.AddStationResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -24,11 +24,12 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public List<AddStationResponse> addStationByLineId(final Long id, AddStationRequest addStationRequest) throws IllegalAccessException {
+    public List<Section> addStationByLineId(final Long id, AddStationRequest addStationRequest) throws IllegalAccessException {
         final List<Section> allSections = sectionDao.findSectionsByLineId(id);
-        SectionReader sectionReader = new FirstSaveCase(addStationRequest, sectionDao);
-
-        return sectionReader.read(id, allSections);
+        CaseDto caseDto = new CaseDto(id,addStationRequest.getDepartureStation(),addStationRequest.getArrivalStation(),addStationRequest.getDistance());
+        caseDto.setCase(allSections);
+        Reader reader = new FirstFindCase(sectionDao);
+        return reader.read(caseDto);
     }
 
     public Map<Line, List<Section>> findSections() {

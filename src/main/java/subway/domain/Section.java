@@ -16,6 +16,12 @@ public class Section {
         this.arrival = arrival;
         this.distance = distance;
     }
+    public Section(final Long id, final String departure, final String arrival, final int distance){
+        this.id = id;
+        this.departure = new Station(departure);
+        this.arrival = new Station(arrival);
+        this.distance = new Distance(distance);
+    }
 
     public Long getId() {
         return id;

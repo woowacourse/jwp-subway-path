@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.application.SectionService;
+import subway.application.reader.AddSectionException;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -75,7 +76,8 @@ public class LineController {
     @PostMapping("/{id}/stations")
     public ResponseEntity<List<AddStationResponse>> addStation(@PathVariable Long id,
                                                                @Valid @RequestBody AddStationRequest addStationRequest) throws IllegalAccessException {
-        final List<AddStationResponse> addStationResponses = sectionService.addStationByLineId(id, addStationRequest);
+        final List<AddStationResponse> addStationResponses = sectionService.addStationByLineId(id, addStationRequest)
+                .stream().map(section -> new AddStationResponse(id,section.getDeparture().getName(),section.getArrival().getName(),section.getDistance().getDistance())).collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.CREATED).body(addStationResponses);
     }
 
@@ -85,7 +87,7 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler({SQLException.class, IllegalArgumentException.class})
+    @ExceptionHandler({SQLException.class, IllegalArgumentException.class, AddSectionException.class})
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
     }
