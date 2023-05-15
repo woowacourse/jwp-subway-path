@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
@@ -78,16 +79,39 @@ class SectionsTest {
         final Sections addedSections = ORIGIN_SECTIONS.addCentral(newSection);
 
         assertThat(addedSections.getSections())
-                .extracting(Section::getPrevStation)
-                .containsExactly(STATION_A, stationD, STATION_B);
-        assertThat(addedSections.getSections())
-                .extracting(Section::getNextStation)
-                .containsExactly(stationD, STATION_B, STATION_C);
-        assertThat(addedSections.getSections())
-                .extracting(Section::getDistance)
-                .extracting(Distance::getValue)
-                .containsExactly(1, 2, 4);
+                .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
+                .containsExactly(
+                        tuple(STATION_A, stationD, new Distance(1)),
+                        tuple(stationD, STATION_B, new Distance(2)),
+                        tuple(STATION_B, STATION_C, new Distance(4))
+                );
     }
 
+    @DisplayName("상행종점을 제거한다.")
+    @Test
+    void removeHead() {
+        final Sections sections = ORIGIN_SECTIONS.removeHead();
 
+        assertThat(sections.getSections())
+                .containsExactly(SECTION_2);
+    }
+
+    @DisplayName("하행종점을 제거한다.")
+    @Test
+    void removeTail() {
+        final Sections sections = ORIGIN_SECTIONS.removeTail();
+
+        assertThat(sections.getSections())
+                .containsExactly(SECTION_1);
+    }
+
+    @DisplayName("중간에 있는 역을 제거한다.")
+    @Test
+    void removeCentral() {
+        final Sections sections = ORIGIN_SECTIONS.removeCentral(STATION_B);
+
+        assertThat(sections.getSections())
+                .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
+                .containsExactly(tuple(STATION_A, STATION_C, new Distance(7)));
+    }
 }
