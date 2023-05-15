@@ -68,49 +68,85 @@
 
 ---
 
-- [x] 노선 (Line)
-    - [x] 이름과 색을 갖는다. (name, color)
-
 - [x] 역 (Station)
     - [x] 이름을 갖는다. (name)
 
 - [x] 구간 (Section)
-    - [x] 구간을 연결하는 두 역을 갖는다. (stationNodes)
-    - [x] 길이를 갖는다. (distance)
+    - [x] 두 개의 역으로 구성된다.
+    - [x] 두 역 사이의 길이를 갖는다.
+    - [x] 역을 포함하는지 여부를 확인한다.
+    - [x] 역을 교체한다.
 
-- [x] 전체 노선도 (Route)
-    - [x] 특정 호선과 해당 호선의 구간 목록을 각각 key와 value로 가지는 map을 갖는다.
+- [x] 구간들 (Sections)
+    - [x] 여러 구간으로 구성된다.
+    - [x] 역을 추가한다.
+    - [x] 역을 삭제한다.
+
+- [x] 노선 (Line)
+    - [x] 이름을 갖는다.
+    - [x] 색을 갖는다.
+    - [x] 구간을 관리한다.
+- [x] 노선들 (Lines)
+    - [x] 노선들을 관리한다.
+    - [x] 노선을 추가한다.
 
 ## 📀 데이터베이스
 
 ```sql
 create table if not exists STATION
 (
-    id   bigint auto_increment not null,
-    name varchar(255)          not null unique
+    id
+    bigint
+    auto_increment
+    not
+    null,
+    name
+    varchar
+(
+    255
+) not null unique
     );
 
 create table if not exists LINE
 (
-    id    bigint auto_increment not null,
-    name  varchar(255)          not null unique,
-    color varchar(20)           not null
+    id
+    bigint
+    auto_increment
+    not
+    null,
+    name
+    varchar
+(
+    255
+) not null unique,
+    color varchar
+(
+    20
+) not null
     );
 
 create table if not exists SECTION
 (
-    id       bigint auto_increment not null,
-    line_id  bigint                not null,
-    from_id  bigint                not null,
-    to_id    bigint                not null,
-    distance bigint                not null
-);
-
-create table if not exists ENDPOINT
-(
-    id      bigint auto_increment not null,
-    line_id bigint                not null,
-    top_id  bigint                not null,
-    down_id bigint                not null
+    id
+    bigint
+    auto_increment
+    not
+    null,
+    line_id
+    bigint
+    not
+    null,
+    from_id
+    bigint
+    not
+    null,
+    to_id
+    bigint
+    not
+    null,
+    distance
+    bigint
+    not
+    null
 );
 ```
