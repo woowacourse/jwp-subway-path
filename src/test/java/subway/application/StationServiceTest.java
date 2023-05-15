@@ -56,6 +56,7 @@ class StationServiceTest {
 			.isEqualTo(List.of(new StationResponse(1L, "잠실")));
 	}
 
+	@DisplayName("ID를 사용한 역 조회 서비스 테스트")
 	@Test
 	void findById() {
 		// given
@@ -71,6 +72,7 @@ class StationServiceTest {
 			.hasFieldOrPropertyWithValue("name", "잠실");
 	}
 
+	@DisplayName("역 갱신 서비스 테스트")
 	@Test
 	void updateStation() {
 		// given
@@ -86,6 +88,7 @@ class StationServiceTest {
 			.hasFieldOrPropertyWithValue("name", "삼성");
 	}
 
+	@DisplayName("역 삭제 서비스 테스트")
 	@Test
 	void deleteById() {
 		// given
