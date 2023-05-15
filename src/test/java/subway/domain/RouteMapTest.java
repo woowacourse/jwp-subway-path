@@ -6,6 +6,8 @@ import subway.application.domain.Distance;
 import subway.application.domain.RouteMap;
 import subway.application.domain.Section;
 import subway.application.domain.Station;
+import subway.application.exception.CircularRouteException;
+import subway.application.exception.RouteNotConnectedException;
 
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +42,7 @@ class RouteMapTest {
 
         //when, then
         assertThatThrownBy(() -> new RouteMap(sections))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(RouteNotConnectedException.class);
     }
 
     @Test
@@ -55,7 +57,7 @@ class RouteMapTest {
 
         //when, then
         assertThatThrownBy(() -> new RouteMap(sections))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CircularRouteException.class);
     }
 
     @Test

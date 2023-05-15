@@ -8,6 +8,10 @@ import subway.application.domain.Line;
 import subway.application.domain.LineProperty;
 import subway.application.domain.Section;
 import subway.application.domain.Station;
+import subway.application.exception.StationAlreadyExistsException;
+import subway.application.exception.StationConnectException;
+import subway.application.exception.StationNotExistsException;
+import subway.application.exception.StationTooFarException;
 
 import java.util.ArrayList;
 
@@ -41,7 +45,7 @@ class LineTest {
 
         //when, then
         assertThatThrownBy(() -> line.addSection(section))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(StationConnectException.class);
     }
 
     @Test
@@ -68,7 +72,7 @@ class LineTest {
 
         //when, then
         assertThatThrownBy(() -> line.addSection(section))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(StationAlreadyExistsException.class);
     }
 
     @Test
@@ -88,7 +92,7 @@ class LineTest {
 
         //when, then
         assertThatThrownBy(() -> line.addSection(overLengthSection))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(StationTooFarException.class);
     }
 
     @Test
@@ -138,7 +142,7 @@ class LineTest {
 
         //when, then
         assertThatThrownBy(() -> line.deleteStation(station))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(StationNotExistsException.class);
     }
 
     @Test
@@ -156,7 +160,7 @@ class LineTest {
 
         //when, then
         assertThatThrownBy(() -> line.deleteStation(station))
-                .isInstanceOf(IllegalStateException.class);
+                .isInstanceOf(StationNotExistsException.class);
     }
 
     @Test

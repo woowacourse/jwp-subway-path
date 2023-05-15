@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import subway.application.domain.Distance;
+import subway.application.exception.DistanceExceedException;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -15,6 +16,6 @@ class DistanceTest {
     void constructor(int distance) {
         //given, when, then
         assertThatThrownBy(() -> new Distance(distance))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(DistanceExceedException.class);
     }
 }
