@@ -196,8 +196,8 @@ Body
 
 ```json
 {
-  "upStation": 1,
-  "downStation": 2,
+  "upStationId": 1,
+  "downStationId": 2,
   "distance": 15
 }
 ```
