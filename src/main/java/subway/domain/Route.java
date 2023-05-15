@@ -33,11 +33,11 @@ public class Route {
         final Sections sections = sectionsByLine.get(line);
 
         if (sections.isEmpty()) {
-            sections.insertInitially(line, from, to, distance);
+            sections.insertInitially(from, to, distance);
             return;
         }
 
-        sections.insert(line, from, to, distance);
+        sections.insert(from, to, distance);
     }
 
     public void updateStation(final Line line, final Station targetStation, final Station updateStation) {
@@ -53,7 +53,7 @@ public class Route {
 
     public void deleteStation(final Line line, final Station station) {
         final Sections sections = sectionsByLine.get(line);
-        sections.deleteSection(line, station);
+        sections.deleteSection(station);
     }
 
     public Map<Line, Sections> getSectionsByLine() {

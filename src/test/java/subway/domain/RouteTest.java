@@ -1,14 +1,15 @@
 package subway.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -53,8 +54,7 @@ class RouteTest {
             final Map<Line, Sections> sectionsByLine = route.getSectionsByLine();
             softly.assertThat(sectionsByLine).containsOnlyKeys(new Line(1L, "2호선", "green"));
             final Sections sections = sectionsByLine.get(new Line(1L, "2호선", "green"));
-            softly.assertThat(sections.getSections()).contains(new Section(lineNumber2.getId(),
-                    new Station(1L, "뚝섬"), new Station(2L, "성수"), 5));
+            softly.assertThat(sections.getSections()).contains(new Section(new Station(1L, "뚝섬"), new Station(2L, "성수"), 5));
         });
     }
 
@@ -76,8 +76,7 @@ class RouteTest {
         assertSoftly(softly -> {
             final Map<Line, Sections> sectionsByLine = route.getSectionsByLine();
             final Sections sections = sectionsByLine.get(new Line(1L, "2호선", "green"));
-            softly.assertThat(sections.getSections()).contains(new Section(lineNumber2.getId(),
-                    new Station(1L, "뚝섬"), new Station(3L, "후추"), 5));
+            softly.assertThat(sections.getSections()).contains(new Section(new Station(1L, "뚝섬"), new Station(3L, "후추"), 5));
         });
     }
 
@@ -100,7 +99,7 @@ class RouteTest {
             softly.assertThat(sectionsByLine).doesNotContainKey(lineNumber2);
             softly.assertThat(sectionsByLine).containsKey(lineNumber8);
             final Sections sections = sectionsByLine.get(lineNumber8);
-            softly.assertThat(sections.getSections()).containsOnly(new Section(lineNumber2.getId(), 뚝섬, 성수, 5));
+            softly.assertThat(sections.getSections()).containsOnly(new Section(뚝섬, 성수, 5));
         });
     }
 

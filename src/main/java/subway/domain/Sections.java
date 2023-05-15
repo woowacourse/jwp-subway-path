@@ -17,11 +17,11 @@ public class Sections {
         this.sections = sections;
     }
 
-    public void insertInitially(final Line line, final Station from, final Station to, final int distance) {
-        sections.add(new Section(line.getId(), from, to, distance));
+    public void insertInitially(final Station from, final Station to, final int distance) {
+        sections.add(new Section(from, to, distance));
     }
 
-    public void insert(final Line line, final Station from, final Station to, final int distance) {
+    public void insert(final Station from, final Station to, final int distance) {
         // 역 존재
         if (exist(from) == exist(to)) {
             throw new IllegalArgumentException("해당 조건으로 역을 설치할 수 없습니다.");
@@ -36,6 +36,7 @@ public class Sections {
                         .findAny()
                         .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
 
+
                 final Section pastSection = sections.stream()
                         .filter(section -> section.existLeft(from))
                         .findAny()
@@ -45,7 +46,7 @@ public class Sections {
                 sections.add(changedSection);
             }
             //추가 - 오른쪽 끝에 넣기
-            sections.add(new Section(line.getId(), from, to, distance));
+            sections.add(new Section(from, to, distance));
             return;
         }
 
@@ -68,7 +69,7 @@ public class Sections {
                 sections.remove(pastSection2);
                 sections.add(changedSection2);
             }
-            sections.add(new Section(line.getId(), from, to, distance));
+            sections.add(new Section(from, to, distance));
             return;
         }
         throw new UnsupportedOperationException("처리할 수 없는 요청입니다.");
@@ -104,7 +105,7 @@ public class Sections {
                 .forEach(section -> section.updateStation(targetStation, updateStation));
     }
 
-    public void deleteSection(final Line line, final Station targetStation) {
+    public void deleteSection(final Station targetStation) {
         final List<Section> targetSection = sections.stream()
                 .filter(section -> section.exist(targetStation))
                 .collect(Collectors.toUnmodifiableList());
@@ -129,7 +130,7 @@ public class Sections {
                 }
                 sections.remove(section);
             }
-            sections.add(new Section(line.getId(), leftStation, rightStation, distance));
+            sections.add(new Section(leftStation, rightStation, distance));
         }
     }
 
@@ -165,12 +166,8 @@ public class Sections {
 
     @Override
     public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
         final Sections sections1 = (Sections) o;
         return Objects.equals(sections, sections1.sections);
     }

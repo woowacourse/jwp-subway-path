@@ -1,10 +1,5 @@
 package subway.dao;
 
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
-import java.util.List;
-import java.util.Map;
-import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -13,11 +8,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.Line;
-import subway.domain.Route;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.*;
+
+import javax.sql.DataSource;
+import java.util.List;
+import java.util.Map;
+
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -58,7 +55,7 @@ class RouteDaoTest {
             softly.assertThat(sectionsByLine.get(lines.get(0)))
                     .isEqualTo(new Sections(List.of(
                             new Section(
-                                    lineNumber2.getId(), new Station(1L, "후추"),
+                                    new Station(1L, "후추"),
                                     new Station(2L, "디노"),
                                     5))));
         });
