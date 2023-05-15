@@ -10,8 +10,9 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.line.Line;
+import subway.domain.section.Section;
+import subway.domain.station.Station;
 import subway.entity.LineEntity;
-import subway.entity.SectionEntity;
 import subway.entity.SectionStationEntity;
 import subway.entity.StationEntity;
 
@@ -74,6 +75,28 @@ class LineRepositoryTest {
         assertThat(result.getName()).isEqualTo(lineEntity.getName());
         assertThat(result.getColor()).isEqualTo(lineEntity.getColor());
         assertThat(result.getSections().getSections().size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("노선에 초기 두 역을 저장한다.")
+    void register_() {
+        // given
+        List<StationEntity> stationEntities = List.of(
+                new StationEntity(1L, "잠실역", 1L),
+                new StationEntity(2L, "선릉역", 1L));
+        doReturn(stationEntities).when(stationDao).insertInit(any(List.class));
+
+
+        // when
+        List<Station> result = lineRepository.saveInitStations(
+                new Section(new Station("잠실역"), new Station("선릉역"), 10),
+                1L);
+
+        // then
+        assertThat(result.get(0).getId()).isEqualTo(stationEntities.get(0).getId());
+        assertThat(result.get(0).getName()).isEqualTo(stationEntities.get(0).getName());
+        assertThat(result.get(1).getId()).isEqualTo(stationEntities.get(1).getId());
+        assertThat(result.get(1).getName()).isEqualTo(stationEntities.get(1).getName());
     }
 
 }

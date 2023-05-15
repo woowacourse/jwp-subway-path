@@ -11,6 +11,7 @@ import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -53,6 +54,25 @@ class StationDaoTest {
         // then
         assertThat(result.getName()).isEqualTo(jamsil.getName());
         assertThat(result.getLineId()).isEqualTo(jamsil.getLineId());
+    }
+
+    @Test
+    @DisplayName("초기 두 역 정보를 저장한다.")
+    void init_station_data_insert() {
+        // given
+        LineEntity insertedLine = lineDao.insert(LINE2_ENTITY);
+        List<StationEntity> request = List.of(
+                new StationEntity("잠실역", insertedLine.getId()),
+                new StationEntity("선릉역", insertedLine.getId()));
+
+        // when
+        List<StationEntity> result = stationDao.insertInit(request);
+
+        // then
+        assertThat(result.get(0).getName()).isEqualTo(request.get(0).getName());
+        assertThat(result.get(0).getLineId()).isEqualTo(request.get(0).getLineId());
+        assertThat(result.get(1).getName()).isEqualTo(request.get(1).getName());
+        assertThat(result.get(1).getLineId()).isEqualTo(request.get(1).getLineId());
     }
 
     @Test

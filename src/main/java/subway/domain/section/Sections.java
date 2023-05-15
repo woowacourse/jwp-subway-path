@@ -10,6 +10,10 @@ public class Sections {
         this.sections = sections;
     }
 
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
     public List<Section> getSections() {
         return sections;
     }

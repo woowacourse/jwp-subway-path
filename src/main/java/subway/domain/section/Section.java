@@ -1,7 +1,8 @@
 package subway.domain.section;
 
-import java.util.Objects;
 import subway.domain.station.Station;
+
+import java.util.Objects;
 
 public class Section {
 
@@ -16,6 +17,10 @@ public class Section {
         this.leftStation = leftStation;
         this.rightStation = rightStation;
         this.distance = new Distance(distance);
+    }
+
+    public Section(final Station leftStation, final Station rightStation, final int distance) {
+        this(null, leftStation, rightStation, distance);
     }
 
     private void validateBothStationsIsNull(final Station leftStation, final Station rightStation) {

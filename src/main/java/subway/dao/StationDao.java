@@ -1,10 +1,11 @@
 package subway.dao;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.*;
 import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -36,6 +37,21 @@ public class StationDao {
 
         Long stationId = insertAction.executeAndReturnKey(params).longValue();
         return new StationEntity(stationId, station.getName(), station.getLineId());
+    }
+
+    public List<StationEntity> insertInit(List<StationEntity> stationEntities) {
+        List<StationEntity> stations = new ArrayList<>();
+        for (StationEntity station : stationEntities) {
+            Map<String, Object> params = new HashMap<>();
+
+            params.put("name", station.getName());
+            params.put("line_id", station.getLineId());
+
+            Long stationId = insertAction.executeAndReturnKey(params).longValue();
+
+            stations.add(new StationEntity(stationId, station.getName(), station.getLineId()));
+        }
+        return stations;
     }
 
     public Optional<StationEntity> findById(final Long id) {
