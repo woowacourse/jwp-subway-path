@@ -10,7 +10,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import subway.domain.strategy.AddInMiddleStrategy;
+import subway.domain.strategy.AddLeftInMiddleStrategy;
+import subway.domain.strategy.AddRightInMiddleStrategy;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
 import subway.exception.StationNotFoundException;
@@ -20,11 +24,15 @@ public class Line {
     private final String name;
     private final String color;
     private final List<Section> sections;
+    private final AddInMiddleStrategy addRightInMiddleStrategy;
+    private final AddInMiddleStrategy addLeftInMiddleStrategy;
 
     public Line(final String name, final String color, final List<Section> sections) {
         this.name = name;
         this.color = color;
         this.sections = new ArrayList<>(sections);
+        this.addRightInMiddleStrategy = new AddRightInMiddleStrategy();
+        this.addLeftInMiddleStrategy = new AddLeftInMiddleStrategy();
     }
 
     public boolean containsAll(final Station start, final Station end) {
@@ -36,21 +44,11 @@ public class Line {
         validate(base, additional, distance, direction);
 
         if (direction == RIGHT) {
-            final Optional<Section> sectionAtStart = findSectionAtStart(base);
-            if (sectionAtStart.isPresent()) {
-                final Section originSection = sectionAtStart.get();
-                changeDistance(additional, originSection.getEnd(), originSection, distance);
-            }
-            sections.add(new Section(base, additional, distance));
+            addRightInMiddleStrategy.addStation(sections, base, additional, distance);
         }
 
         if (direction == LEFT) {
-            final Optional<Section> sectionAtEnd = findSectionAtEnd(base);
-            if (sectionAtEnd.isPresent()) {
-                final Section originSection = sectionAtEnd.get();
-                changeDistance(originSection.getStart(), additional, originSection, distance);
-            }
-            sections.add(new Section(additional, base, distance));
+            addLeftInMiddleStrategy.addStation(sections, base, additional, distance);
         }
     }
 
@@ -85,15 +83,9 @@ public class Line {
         if (direction == LEFT) {
             return false;
         }
-        final Optional<Section> findSection = findSectionAtStart(base);
+        final Optional<Section> findSection = findSectionAtEdge(section -> section.isStart(base));
         return findSection.map(section -> section.canNotAddStationInMiddle(distance))
                 .orElse(false);
-    }
-
-    private Optional<Section> findSectionAtStart(final Station base) {
-        return sections.stream()
-                .filter(section -> section.isStart(base))
-                .findFirst();
     }
 
     private boolean isNotValidDistanceToAddLeft(
@@ -104,25 +96,15 @@ public class Line {
         if (direction == RIGHT) {
             return false;
         }
-        final Optional<Section> findSection = findSectionAtEnd(base);
+        final Optional<Section> findSection = findSectionAtEdge(section -> section.isEnd(base));
         return findSection.map(section -> section.canNotAddStationInMiddle(distance))
                 .orElse(false);
     }
 
-    private Optional<Section> findSectionAtEnd(final Station base) {
+    private Optional<Section> findSectionAtEdge(final Function<Section, Boolean> isEdge) {
         return sections.stream()
-                .filter(section -> section.isEnd(base))
+                .filter(isEdge::apply)
                 .findFirst();
-    }
-
-    private void changeDistance(
-            final Station start,
-            final Station end,
-            final Section originSection,
-            final Distance distance
-    ) {
-        sections.add(new Section(start, end, originSection.subtract(distance)));
-        sections.remove(originSection);
     }
 
     public boolean isSameName(final String lineName) {
@@ -134,8 +116,8 @@ public class Line {
             throw new StationNotFoundException();
         }
 
-        final Optional<Section> sectionAtStart = findSectionAtStart(station);
-        final Optional<Section> sectionAtEnd = findSectionAtEnd(station);
+        final Optional<Section> sectionAtStart = findSectionAtEdge(section -> section.isStart(station));
+        final Optional<Section> sectionAtEnd = findSectionAtEdge(section -> section.isEnd(station));
 
         if (sectionAtStart.isPresent() && sectionAtEnd.isPresent()) {
             final Section left = sectionAtEnd.get();
