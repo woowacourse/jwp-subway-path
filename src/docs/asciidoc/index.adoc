@@ -1,0 +1,63 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+= Subway Path
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:sectlinks:
+
+== 노선
+
+=== 생성
+
+*요청*
+include::{snippets}/line-create/http-request.adoc[]
+include::{snippets}/line-create/request-fields.adoc[]
+
+*응답*
+include::{snippets}/line-create/http-response.adoc[]
+
+=== 조회
+
+*요청*
+include::{snippets}/line-inquiry/http-request.adoc[]
+
+*응답*
+include::{snippets}/line-inquiry/http-response.adoc[]
+
+=== 상세 조회
+
+*요청*
+include::{snippets}/line-detail-inquiry/http-request.adoc[]
+
+*응답*
+include::{snippets}/line-detail-inquiry/http-response.adoc[]
+
+=== 상세 조회(단건)
+
+*요청*
+include::{snippets}/line-detail-inquiry-single/http-request.adoc[]
+include::{snippets}/line-detail-inquiry-single/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/line-detail-inquiry-single/http-response.adoc[]
+
+=== 수정
+
+*요청*
+include::{snippets}/line-update/http-request.adoc[]
+include::{snippets}/line-update/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/line-update/http-response.adoc[]
+
+=== 삭제
+
+*요청*
+include::{snippets}/line-delete/http-request.adoc[]
+include::{snippets}/line-delete/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/line-delete/http-response.adoc[]
