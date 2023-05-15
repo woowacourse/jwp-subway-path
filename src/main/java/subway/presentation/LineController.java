@@ -1,5 +1,6 @@
 package subway.presentation;
 
+import java.util.stream.Collectors;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.dto.CreationLineDto;
+import subway.application.dto.ReadLineDto;
 import subway.presentation.dto.request.CreationLineRequest;
 import subway.presentation.dto.response.CreationLineResponse;
 import subway.presentation.dto.response.ReadLineResponse;
@@ -29,19 +31,25 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<CreationLineResponse> createLine(@RequestBody final CreationLineRequest lineRequest) {
-        final CreationLineDto lineDto = lineService.saveLine(lineRequest);
+        final CreationLineDto lineDto = lineService.saveLine(lineRequest.getName(), lineRequest.getColor());
 
         return ResponseEntity.created(URI.create("/lines/" + lineDto.getId())).body(CreationLineResponse.from(lineDto));
     }
 
     @GetMapping
     public ResponseEntity<List<ReadLineResponse>> findAllLines() {
-        return ResponseEntity.ok(lineService.findAllLine());
+        final List<ReadLineResponse> responses = lineService.findAllLine().stream()
+                .map(ReadLineResponse::from)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(responses);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReadLineResponse> findLineById(@PathVariable final Long id) {
-        return ResponseEntity.ok(lineService.findLineById(id));
+        final ReadLineDto dto = lineService.findLineById(id);
+
+        return ResponseEntity.ok(ReadLineResponse.from(dto));
     }
 
     @DeleteMapping("/{id}")

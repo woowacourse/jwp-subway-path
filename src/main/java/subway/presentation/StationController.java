@@ -28,17 +28,21 @@ public class StationController {
     public ResponseEntity<CreationStationResponse> createStation(@RequestBody final CreationStationRequest requestDto) {
         final CreationStationDto stationDto = stationService.saveStation(requestDto.getName());
         final CreationStationResponse response = CreationStationResponse.from(stationDto);
+
         return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ReadStationResponse> showStation(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(stationService.findStationById(id));
+        final ReadStationResponse response = ReadStationResponse.from(stationService.findStationById(id));
+
+        return ResponseEntity.ok().body(response);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
         stationService.deleteStationById(id);
+
         return ResponseEntity.noContent().build();
     }
 }

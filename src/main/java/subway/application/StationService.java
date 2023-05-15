@@ -6,13 +6,10 @@ import subway.application.dto.CreationStationDto;
 import subway.application.dto.ReadStationDto;
 import subway.domain.station.Station;
 import subway.persistence.repository.StationRepository;
-import subway.presentation.dto.response.ReadStationResponse;
 
-@Transactional
 @Service
+@Transactional(readOnly = true)
 public class StationService {
-
-    private static final String NOT_EXISTS_STATION = "존재하지 않는 역입니다.";
 
     private final StationRepository stationRepository;
 
@@ -20,6 +17,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public CreationStationDto saveStation(final String name) {
         final Station station = Station.from(name);
         final Station persistStation = stationRepository.insert(station);
@@ -27,13 +25,14 @@ public class StationService {
         return CreationStationDto.from(persistStation);
     }
 
-    public ReadStationResponse findStationById(final Long id) {
+    public ReadStationDto findStationById(final Long id) {
         final Station station = stationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
 
-        return ReadStationResponse.from(ReadStationDto.from(station));
+        return ReadStationDto.from(station);
     }
 
+    @Transactional
     public void deleteStationById(final Long id) {
         stationRepository.deleteById(id);
     }
