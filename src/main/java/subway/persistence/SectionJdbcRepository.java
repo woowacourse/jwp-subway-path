@@ -35,15 +35,14 @@ public class SectionJdbcRepository implements SectionRepository {
     }
 
     @Override
-    public void createSection(final Long lineId, final List<Section> sections) {
-        jdbcTemplate.update("TRUNCATE TABLE section");
+    public void createSection(final String lineName, final List<Section> sections) {
+        jdbcTemplate.update("delete from section where line = ?", lineName);
         List<SectionEntity> sectionEntities = SectionEntity.of(sections);
 
         final BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
             .map(BeanPropertySqlParameterSource::new)
             .toArray(BeanPropertySqlParameterSource[]::new);
         insert.executeBatch(parameterSources);
-
     }
 
     @Override

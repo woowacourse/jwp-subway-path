@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import subway.ui.dto.response.LineResponse;
 import subway.ui.dto.request.SectionRequest;
 import subway.application.SectionService;
+import subway.ui.dto.response.SectionResponse;
 import subway.ui.dto.response.StationResponse;
 
 import java.net.URI;
@@ -21,9 +22,9 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createSection(@RequestBody SectionRequest sectionRequest) {
-        final long sectionId = sectionService.createSection(sectionRequest).getId();
-        final URI uri = URI.create("/sections/" + sectionId);
+    public ResponseEntity<SectionResponse> createSection(@RequestBody SectionRequest sectionRequest) {
+        final SectionResponse response = sectionService.createSection(sectionRequest);
+        final URI uri = URI.create("/sections");
         return ResponseEntity.created(uri).build();
     }
 

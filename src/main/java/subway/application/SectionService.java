@@ -25,18 +25,19 @@ public class SectionService {
 	}
 
 	public SectionResponse createSection(final SectionRequest sectionRequest) {
-		final Line line = lineRepository.findByName(sectionRequest.getLineName());
 		final Section section = Section.of(
 			sectionRequest.getLineName(),
 			sectionRequest.getUpStationName(),
 			sectionRequest.getDownStationName(),
 			sectionRequest.getDistance()
 		);
-
-		final Sections sections = new Sections(sectionRepository.findAllByLineId(line.getId()));
+		final Sections sections = new Sections(sectionRepository.findAllByLineName(section.getLine().getName()));
 		sections.addSection(section);
-		sectionRepository.createSection(line.getId(), sections.getSections());
-		return SectionResponse.of(line.getId(), section.getUpStation().getName(), section.getDownStation().getName(),section.getDistance());
+		sectionRepository.createSection(section.getLine().getName(), sections.getSections());
+		final Long sectionId = sectionRepository.findIdByUpDown(section.getUpStation().getName(),
+			section.getDownStation().getName()).getId();
+		return new SectionResponse(sectionId, section.getLine().getName(), section.getUpStation().getName(),
+			section.getDownStation().getName(), section.getDistance());
 	}
 
 	public List<SectionResponse> findAll(){
