@@ -49,9 +49,9 @@ public class SectionDao {
         jdbcTemplate.update(sql, lineId);
     }
 
-    public Long countUsingStation(Long stationId) {
-        String sql = "select count(*) from SECTION where start_station_id = ? OR end_station_id = ?";
+    public Boolean isExistSectionUsingStation(Long stationId) {
+        String sql = "select exists(select * from SECTION where start_station_id = ? OR end_station_id = ?)";
 
-        return jdbcTemplate.queryForObject(sql, Long.class, stationId, stationId);
+        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId, stationId);
     }
 }

@@ -77,8 +77,6 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     @Override
     public boolean isExistSectionUsingStation(Long stationId) {
-        Long count = sectionDao.countUsingStation(stationId);
-
-        return count > 0;
+        return sectionDao.isExistSectionUsingStation(stationId);
     }
 }
