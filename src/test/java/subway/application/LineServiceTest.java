@@ -14,8 +14,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.domain.Line;
 import subway.persistence.LineJdbcRepository;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
+import subway.ui.dto.request.LineRequest;
+import subway.ui.dto.response.LineResponse;
 
 @ExtendWith(MockitoExtension.class)
 class LineServiceTest {

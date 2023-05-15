@@ -1,4 +1,4 @@
-package subway.ui.dto;
+package subway.ui.dto.response;
 
 import subway.domain.Line;
 
@@ -29,5 +29,26 @@ public class LineResponse {
 
     public String getName() {
         return name;
+    }
+
+    public static class SectionDeleteRequest {
+        private String upStationName;
+        private String downStationName;
+
+        public SectionDeleteRequest() {
+        }
+
+        public SectionDeleteRequest(final String upStationName, final String downStationName) {
+            this.upStationName = upStationName;
+            this.downStationName = downStationName;
+        }
+
+        public String getUpStationName() {
+            return upStationName;
+        }
+
+        public String getDownStationName() {
+            return downStationName;
+        }
     }
 }

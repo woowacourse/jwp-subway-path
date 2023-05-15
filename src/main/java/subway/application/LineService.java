@@ -6,8 +6,8 @@ import org.springframework.stereotype.Service;
 
 import subway.domain.Line;
 import subway.domain.repository.LineRepository;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
+import subway.ui.dto.request.LineRequest;
+import subway.ui.dto.response.LineResponse;
 
 @Service
 public class LineService {

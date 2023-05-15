@@ -13,7 +13,7 @@ import subway.domain.Station;
 import subway.domain.repository.StationRepository;
 
 @Repository
-public class StationRepositoryImpl implements StationRepository {
+public class StationJdbcRepository implements StationRepository {
 	private static final int UPDATED_COUNT = 1;
 	private static final int DELETED_COUNT = 1;
 	private final JdbcTemplate jdbcTemplate;
@@ -25,7 +25,7 @@ public class StationRepositoryImpl implements StationRepository {
 			rs.getString("name")
 		);
 
-	public StationRepositoryImpl(final JdbcTemplate jdbcTemplate) {
+	public StationJdbcRepository(final JdbcTemplate jdbcTemplate) {
 		this.insert = new SimpleJdbcInsert(jdbcTemplate)
 			.withTableName("station")
 			.usingGeneratedKeyColumns("id");

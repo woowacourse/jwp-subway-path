@@ -2,10 +2,11 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.application.SectionCreateRequest;
-import subway.application.SectionDeleteRequest;
+
+import subway.ui.dto.response.LineResponse;
+import subway.ui.dto.request.SectionRequest;
 import subway.application.SectionService;
-import subway.ui.dto.StationResponse;
+import subway.ui.dto.response.StationResponse;
 
 import java.net.URI;
 import java.util.List;
@@ -20,14 +21,14 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createSection(@RequestBody SectionCreateRequest sectionCreateRequest) {
-        final long sectionId = sectionService.createSection(sectionCreateRequest).getId();
+    public ResponseEntity<StationResponse> createSection(@RequestBody SectionRequest sectionRequest) {
+        final long sectionId = sectionService.createSection(sectionRequest).getId();
         final URI uri = URI.create("/sections/" + sectionId);
         return ResponseEntity.created(uri).build();
     }
 
     @DeleteMapping("/{lineId}/stations")
-    public void deleteSection(@PathVariable("lineId") Long lineId, @RequestBody SectionDeleteRequest sectionDeleteRequest) {
+    public void deleteSection(@PathVariable("lineId") Long lineId, @RequestBody LineResponse.SectionDeleteRequest sectionDeleteRequest) {
         sectionService.deleteSection(lineId, sectionDeleteRequest);
         ResponseEntity.noContent().build();
     }

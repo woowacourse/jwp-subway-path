@@ -10,21 +10,21 @@ import org.springframework.http.MediaType;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import subway.application.SectionCreateRequest;
-import subway.ui.dto.LineRequest;
+import subway.ui.dto.request.SectionRequest;
+import subway.ui.dto.request.LineRequest;
 
 @DisplayName("지하철 구간 관련 기능")
 public class SectionIntegrationTest extends IntegrationTest{
 
 	private LineRequest lineRequest1;
-	private SectionCreateRequest sectionRequest1;
+	private SectionRequest sectionRequest1;
 
 	@BeforeEach
 	public void setUp(){
 		super.setUp();
 		lineRequest1 = new LineRequest("2호선");
 
-		sectionRequest1 = new SectionCreateRequest("2호선","잠실역","역삼역", 5L);
+		sectionRequest1 = new SectionRequest("2호선","잠실역","역삼역", 5L);
 	}
 
 	@DisplayName("지하철 구간을 생성한다")

@@ -14,7 +14,7 @@ import subway.domain.repository.SectionRepository;
 import java.util.List;
 
 @Repository
-public class SectionRepositoryImpl implements SectionRepository {
+public class SectionJdbcRepository implements SectionRepository {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insert;
 
@@ -27,7 +27,7 @@ public class SectionRepositoryImpl implements SectionRepository {
                     rs.getLong("distance")
             );
 
-    public SectionRepositoryImpl(final JdbcTemplate jdbcTemplate) {
+    public SectionJdbcRepository(final JdbcTemplate jdbcTemplate) {
         this.insert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("section")
                 .usingGeneratedKeyColumns("id");

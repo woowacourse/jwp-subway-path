@@ -7,8 +7,10 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.repository.LineRepository;
 import subway.domain.repository.SectionRepository;
-import subway.ui.dto.SectionResponse;
-import subway.ui.dto.StationResponse;
+import subway.ui.dto.response.LineResponse;
+import subway.ui.dto.request.SectionRequest;
+import subway.ui.dto.response.SectionResponse;
+import subway.ui.dto.response.StationResponse;
 
 import java.util.List;
 
@@ -22,13 +24,13 @@ public class SectionService {
 		this.lineRepository = lineRepository;
 	}
 
-	public SectionResponse createSection(final SectionCreateRequest sectionCreateRequest) {
-		final Line line = lineRepository.findByName(sectionCreateRequest.getLineName());
+	public SectionResponse createSection(final SectionRequest sectionRequest) {
+		final Line line = lineRepository.findByName(sectionRequest.getLineName());
 		final Section section = Section.of(
-			sectionCreateRequest.getLineName(),
-			sectionCreateRequest.getUpStationName(),
-			sectionCreateRequest.getDownStationName(),
-			sectionCreateRequest.getDistance()
+			sectionRequest.getLineName(),
+			sectionRequest.getUpStationName(),
+			sectionRequest.getDownStationName(),
+			sectionRequest.getDistance()
 		);
 
 		final Sections sections = new Sections(sectionRepository.findAllByLineId(line.getId()));
@@ -47,7 +49,7 @@ public class SectionService {
 		return StationResponse.of(sections.getSortedStations());
 	}
 
-	public void deleteSection(final Long lineId, final SectionDeleteRequest sectionDeleteRequest) {
+	public void deleteSection(final Long lineId, final LineResponse.SectionDeleteRequest sectionDeleteRequest) {
 		final Section section = Section.of(
 			sectionDeleteRequest.getUpStationName(),
 			sectionDeleteRequest.getDownStationName()

@@ -13,15 +13,15 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.domain.Station;
-import subway.persistence.StationRepositoryImpl;
-import subway.ui.dto.StationCreateRequest;
-import subway.ui.dto.StationResponse;
+import subway.persistence.StationJdbcRepository;
+import subway.ui.dto.request.StationRequest;
+import subway.ui.dto.response.StationResponse;
 
 @ExtendWith(MockitoExtension.class)
 class StationServiceTest {
 
 	@Mock
-	StationRepositoryImpl repository;
+	StationJdbcRepository repository;
 
 	@InjectMocks
 	StationService service;
@@ -33,7 +33,7 @@ class StationServiceTest {
 		given(repository.createStation(any())).willReturn(1L);
 
 		// when
-		final StationCreateRequest request = new StationCreateRequest("잠실");
+		final StationRequest request = new StationRequest("잠실");
 		final StationResponse response = service.createStation(request);
 
 		// then
@@ -79,7 +79,7 @@ class StationServiceTest {
 		given(repository.updateStation(anyLong(), any())).willReturn(true);
 
 		// when
-		final StationCreateRequest request = new StationCreateRequest("삼성");
+		final StationRequest request = new StationRequest("삼성");
 		final StationResponse response = service.updateStation(1L, request);
 
 		// then

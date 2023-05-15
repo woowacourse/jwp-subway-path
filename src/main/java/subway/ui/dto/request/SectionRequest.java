@@ -1,15 +1,15 @@
-package subway.application;
+package subway.ui.dto.request;
 
-public class SectionCreateRequest {
+public class SectionRequest {
 	private String lineName;
 	private String upStationName;
 	private String downStationName;
 	private Long distance;
 
-	public SectionCreateRequest() {
+	public SectionRequest() {
 	}
 
-	public SectionCreateRequest(final String lineName, final String upStationName, final String downStationName, final Long distance) {
+	public SectionRequest(final String lineName, final String upStationName, final String downStationName, final Long distance) {
 		this.lineName = lineName;
 		this.upStationName = upStationName;
 		this.downStationName = downStationName;

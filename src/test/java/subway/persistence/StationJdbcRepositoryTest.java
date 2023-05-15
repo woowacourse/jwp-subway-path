@@ -13,10 +13,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Station;
 
 @SpringBootTest
-class StationRepositoryImplTest {
+class StationJdbcRepositoryTest {
 
 	@Autowired
-	StationRepositoryImpl repository;
+	StationJdbcRepository repository;
 
 	@Autowired
 	JdbcTemplate jdbcTemplate;

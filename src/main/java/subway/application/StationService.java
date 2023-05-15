@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 
 import subway.domain.Station;
 import subway.domain.repository.StationRepository;
-import subway.ui.dto.StationCreateRequest;
-import subway.ui.dto.StationResponse;
+import subway.ui.dto.request.StationRequest;
+import subway.ui.dto.response.StationResponse;
 
 import java.util.List;
 
@@ -17,14 +17,14 @@ public class StationService {
 		this.stationRepository = stationRepository;
 	}
 
-	public StationResponse createStation(final StationCreateRequest stationCreateRequest) {
+	public StationResponse createStation(final StationRequest stationRequest) {
 		final List<StationResponse> stations = findAll();
 		for (StationResponse station : stations) {
-			if (station.getName().equals(stationCreateRequest.getName())) {
+			if (station.getName().equals(stationRequest.getName())) {
 				throw new IllegalArgumentException("이미 존재하는 역입니다");
 			}
 		}
-		final Station station = new Station(stationCreateRequest.getName());
+		final Station station = new Station(stationRequest.getName());
 
 		final long stationId = stationRepository.createStation(station);
 		return new StationResponse(stationId, station.getName());
@@ -39,7 +39,7 @@ public class StationService {
 		return new StationResponse(stationIdRequest, station.getName());
 	}
 
-	public StationResponse updateStation(final long stationId, final StationCreateRequest request) {
+	public StationResponse updateStation(final long stationId, final StationRequest request) {
 		final boolean isUpdated = stationRepository.updateStation(stationId, new Station(request.getName()));
 
 		if (!isUpdated) {
