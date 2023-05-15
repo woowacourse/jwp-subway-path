@@ -47,4 +47,18 @@ class LineDaoTest {
         // then
         assertThat(lineEntities).contains(new LineEntity(lineId1, "1호선", "파랑"), new LineEntity(lineId2, "2호선", "초록"));
     }
+    
+    @Test
+    void id로_노선_찾기() {
+        // given
+        final String name = "1호선";
+        final String color = "파랑";
+        final Long lineId = lineDao.insert(new LineEntity(name, color));
+        
+        // when
+        final LineEntity lineEntity = lineDao.findById(lineId);
+        
+        // then
+        assertThat(lineEntity).isEqualTo(new LineEntity(lineEntity.getId(), name, color));
+    }
 }

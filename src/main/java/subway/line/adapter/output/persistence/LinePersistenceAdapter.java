@@ -3,7 +3,7 @@ package subway.line.adapter.output.persistence;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import subway.line.application.port.output.FindAllLinePort;
-import subway.line.application.port.output.FindLineByIdPort;
+import subway.line.application.port.output.GetLineByIdPort;
 import subway.line.application.port.output.SaveLinePort;
 import subway.line.domain.Line;
 import subway.section.adapter.output.persistence.SectionDao;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
-public class LinePersistenceAdapter implements FindAllLinePort, SaveLinePort, FindLineByIdPort {
+public class LinePersistenceAdapter implements FindAllLinePort, SaveLinePort, GetLineByIdPort {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -53,7 +53,7 @@ public class LinePersistenceAdapter implements FindAllLinePort, SaveLinePort, Fi
     }
     
     @Override
-    public Line findById(final Long id) { // TODO
+    public Line getLineById(final Long id) {
         validateNotExistLine(id);
         
         final LineEntity lineEntity = lineDao.findById(id);

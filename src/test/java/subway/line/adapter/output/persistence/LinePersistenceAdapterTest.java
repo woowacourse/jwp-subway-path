@@ -11,6 +11,7 @@ import subway.station.adapter.output.persistence.StationDao;
 
 import java.util.Set;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -19,14 +20,14 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class LinePersistenceAdapterTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
-    private LinePersistenceAdapter lineRepository;
+    private LinePersistenceAdapter adapter;
     
     @BeforeEach
     void setUp() {
         final LineDao lineDao = new LineDao(jdbcTemplate);
         final SectionDao sectionDao = new SectionDao(jdbcTemplate);
         final StationDao stationDao = new StationDao(jdbcTemplate);
-        lineRepository = new LinePersistenceAdapter(lineDao, sectionDao, stationDao);
+        adapter = new LinePersistenceAdapter(lineDao, sectionDao, stationDao);
     }
     
     @Test
@@ -36,8 +37,8 @@ class LinePersistenceAdapterTest {
         final Line line2 = new Line("2호선", "초록");
         
         // when
-        final Long lineId1 = lineRepository.save(line1);
-        final Long lineId2 = lineRepository.save(line2);
+        final Long lineId1 = adapter.save(line1);
+        final Long lineId2 = adapter.save(line2);
         
         // then
         assertAll(
@@ -52,13 +53,38 @@ class LinePersistenceAdapterTest {
         // given
         final Line line1 = new Line("1호선", "파랑");
         final Line line2 = new Line("2호선", "초록");
-        lineRepository.save(line1);
-        lineRepository.save(line2);
+        adapter.save(line1);
+        adapter.save(line2);
         
         // when
-        final Set<Line> lines = lineRepository.findAll();
+        final Set<Line> lines = adapter.findAll();
         
         // then
         assertThat(lines).contains(line1, line2);
+    }
+    
+    @Test
+    void id로_노선_찾기() {
+        // given
+        final String name = "1호선";
+        final String color = "파랑";
+        final Line line = new Line(name, color);
+        final Long id = adapter.save(line);
+        
+        // when
+        final Line result = adapter.getLineById(id);
+        
+        // then
+        assertThat(result).isEqualTo(new Line(name, color));
+    }
+    
+    @Test
+    void id로_노선_찾을시_존재하지_않는_노선이면_예외_발생() {
+        // given
+        final Long id = 1L;
+        
+        // expect
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> adapter.getLineById(id));
     }
 }

@@ -14,7 +14,7 @@ public class SectionPersistenceAdapter implements SaveSectionPort {
     private final SectionDao sectionDao;
     
     @Override
-    public Long save(final Section section, final Long lineId) { // TODO
+    public Long save(final Section section, final Long lineId) {
         final StationEntity leftStationEntity = stationDao.findByName(section.getLeft());
         final StationEntity rightStationEntity = stationDao.findByName(section.getRight());
         

@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.station.application.port.input.InitAddStationUseCase;
 import subway.station.dto.StationInitSaveRequest;
 
-import javax.validation.Valid;
 import java.net.URI;
 
 @RequiredArgsConstructor
