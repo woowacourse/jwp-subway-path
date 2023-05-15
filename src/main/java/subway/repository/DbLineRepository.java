@@ -1,7 +1,10 @@
 package subway.repository;
 
+import static java.util.stream.Collectors.groupingBy;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
@@ -11,6 +14,7 @@ import subway.domain.Line;
 import subway.domain.StationEdge;
 import subway.entity.LineEntity;
 import subway.entity.StationEdgeEntity;
+import subway.exception.StationNotFoundException;
 
 
 @Repository
@@ -28,90 +32,92 @@ public class DbLineRepository implements LineRepository {
 
     @Override
     public Optional<Line> findById(Long id) {
-        Optional<LineEntity> optionalLineEntity = lineDao.findById(id);
-        if (optionalLineEntity.isEmpty()) {
-            return Optional.empty();
-        }
-
-        LineEntity lineEntity = optionalLineEntity.get();
-
-        return convertToDomain(lineEntity);
+        return lineDao.findById(id).map(this::convertToDomain);
     }
 
-    private Optional<Line> convertToDomain(LineEntity lineEntity) {
+    private Line convertToDomain(LineEntity lineEntity) {
         List<StationEdgeEntity> stationEdgeEntities = stationEdgeDao.findByLineId(lineEntity.getId());
-        List<StationEdge> sorted = getStationEdges(stationEdgeEntities);
+        List<StationEdge> stationEdges = convertToDomain(stationEdgeEntities);
 
-        return Optional.of(Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sorted));
+        return Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), stationEdges);
     }
 
-    private List<StationEdge> getStationEdges(List<StationEdgeEntity> stationEdgeEntities) {
+    private List<StationEdge> convertToDomain(List<StationEdgeEntity> stationEdgeEntities) {
         int numberOfStations = stationEdgeEntities.size();
-        List<StationEdge> sorted = new ArrayList<>();
-        StationEdgeEntity first = getFirstStationEdgeEntity(stationEdgeEntities);
-        sorted.add(first.toDomain());
-        Long previousId = first.getId();
 
-        while (sorted.size() < numberOfStations) {
-            StationEdgeEntity next = getNext(stationEdgeEntities, previousId);
-            sorted.add(next.toDomain());
-            previousId = next.getId();
+        List<StationEdge> orderedStationEdges = new ArrayList<>();
+
+        StationEdgeEntity firstStationEdgeEntity = getFirstStationEdgeEntity(stationEdgeEntities);
+        orderedStationEdges.add(firstStationEdgeEntity.toDomain());
+        Long previousId = firstStationEdgeEntity.getId();
+
+        while (orderedStationEdges.size() < numberOfStations) {
+            StationEdgeEntity nextStationEdgeEntity = getNextStationEdgeEntity(stationEdgeEntities, previousId);
+            orderedStationEdges.add(nextStationEdgeEntity.toDomain());
+            previousId = nextStationEdgeEntity.getId();
         }
-        return sorted;
+        return orderedStationEdges;
     }
 
-    private static StationEdgeEntity getFirstStationEdgeEntity(List<StationEdgeEntity> stationEdgeEntities) {
-        StationEdgeEntity first = stationEdgeEntities.stream()
-                .filter(stationEdgeEntity -> stationEdgeEntity.getPreviousStationEdgeId() == null)
+    private StationEdgeEntity getFirstStationEdgeEntity(List<StationEdgeEntity> stationEdgeEntities) {
+        return stationEdgeEntities.stream()
+                .filter(stationEdgeEntity -> isFirstStationEdge(stationEdgeEntity))
                 .findFirst()
-                .get();
-        stationEdgeEntities.remove(first);
-        return first;
+                .orElseThrow(StationNotFoundException::new);
     }
 
-    private static StationEdgeEntity getNext(List<StationEdgeEntity> stationEdgeEntities,
-                                             Long previousId) {
-        StationEdgeEntity next = stationEdgeEntities.stream()
-                .filter(stationEdge -> stationEdge.getPreviousStationEdgeId().equals(previousId))
-                .findFirst().get();
-        return next;
+    private boolean isFirstStationEdge(StationEdgeEntity stationEdgeEntity) {
+        return stationEdgeEntity.getPreviousStationEdgeId() == null;
+    }
+
+    private StationEdgeEntity getNextStationEdgeEntity(List<StationEdgeEntity> stationEdgeEntities,
+                                                       Long previousId) {
+        return stationEdgeEntities.stream()
+                .filter(stationEdge -> !isFirstStationEdge(stationEdge)
+                        && stationEdge.getPreviousStationEdgeId().equals(previousId))
+                .findFirst().orElseThrow(StationNotFoundException::new);
     }
 
 
     @Override
     public List<Line> findAll() {
         List<LineEntity> lineEntities = lineDao.findAll();
-        List<Line> lines = new ArrayList<>();
-        List<StationEdgeEntity> all = stationEdgeDao.findAll();
-        for (LineEntity lineEntity : lineEntities) {
-            List<StationEdgeEntity> stationEdgeEntities = all.stream()
-                    .filter(stationEdge -> stationEdge.getLineId().equals(lineEntity.getId()))
-                    .collect(Collectors.toList());
-            List<StationEdge> sorted = getStationEdges(stationEdgeEntities);
-            lines.add(Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sorted));
-        }
-        return lines;
+        List<StationEdgeEntity> allStationEdgeEntities = stationEdgeDao.findAll();
+
+        Map<Long, List<StationEdgeEntity>> lineIdToStationEdgeEntities = allStationEdgeEntities.stream()
+                .collect(groupingBy(StationEdgeEntity::getLineId));
+
+        return lineEntities.stream()
+                .map(lineEntity -> batchEntityToDomain(lineIdToStationEdgeEntities, lineEntity))
+                .collect(Collectors.toList());
+    }
+
+    private Line batchEntityToDomain(Map<Long, List<StationEdgeEntity>> lineIdToStationEdgeEntities,
+                                     LineEntity lineEntity) {
+        long lineId = lineEntity.getId();
+        List<StationEdgeEntity> stationEdgeEntities = lineIdToStationEdgeEntities.get(lineId);
+        List<StationEdge> stationEdges = convertToDomain(stationEdgeEntities);
+        return Line.of(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), stationEdges);
     }
 
     @Override
     public Optional<Line> findByName(String name) {
-        Optional<LineEntity> optionalLineEntity = lineDao.findByName(name);
-        if (optionalLineEntity.isEmpty()) {
-            return Optional.empty();
-        }
-        LineEntity lineEntity = optionalLineEntity.get();
-        return convertToDomain(lineEntity);
+        return lineDao.findByName(name).map(this::convertToDomain);
     }
 
     @Override
     public Long create(Line line) {
         Long lineEntityId = lineDao.insert(LineEntity.from(line));
         List<StationEdge> stationEdges = line.getStationEdges();
+        createStationEdges(lineEntityId, stationEdges);
+        return lineEntityId;
+    }
+
+    private void createStationEdges(Long lineEntityId, List<StationEdge> stationEdges) {
         Long previousEdgeId = null;
         for (StationEdge stationEdge : stationEdges) {
             previousEdgeId = stationEdgeDao.insert(StationEdgeEntity.of(lineEntityId, stationEdge, previousEdgeId));
         }
-        return lineEntityId;
     }
 
     @Override
@@ -121,10 +127,7 @@ public class DbLineRepository implements LineRepository {
         List<StationEdge> stationEdges = line.getStationEdges();
         stationEdgeDao.deleteByLineId(lineId);
 
-        Long previousEdgeId = null;
-        for (StationEdge stationEdge : stationEdges) {
-            previousEdgeId = stationEdgeDao.insert(StationEdgeEntity.of(lineId, stationEdge, previousEdgeId));
-        }
+        createStationEdges(lineId, stationEdges);
     }
 
     @Override

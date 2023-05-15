@@ -19,20 +19,12 @@ public class DbStationRepository implements StationRepository {
 
     @Override
     public Optional<Station> findById(Long id) {
-        Optional<StationEntity> optionalStationEntity = stationDao.findById(id);
-        if (optionalStationEntity.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(optionalStationEntity.get().toDomain());
+        return stationDao.findById(id).map(StationEntity::toDomain);
     }
 
     @Override
     public Optional<Station> findByName(String name) {
-        Optional<StationEntity> optionalStationEntity = stationDao.findByName(name);
-        if (optionalStationEntity.isEmpty()) {
-            return Optional.empty();
-        }
-        return Optional.of(optionalStationEntity.get().toDomain());
+        return stationDao.findByName(name).map(StationEntity::toDomain);
     }
 
     @Override
