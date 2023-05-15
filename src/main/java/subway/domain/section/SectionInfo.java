@@ -1,8 +1,5 @@
 package subway.domain.section;
 
-import subway.domain.Direction;
-import subway.domain.Distance;
-
 public class SectionInfo {
 
     private final Distance distance;

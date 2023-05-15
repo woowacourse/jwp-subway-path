@@ -11,8 +11,6 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import subway.domain.Direction;
-import subway.domain.Distance;
 import subway.domain.station.Station;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)

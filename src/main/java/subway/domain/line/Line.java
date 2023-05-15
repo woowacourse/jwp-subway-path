@@ -2,8 +2,8 @@ package subway.domain.line;
 
 import java.util.List;
 import java.util.Objects;
-import subway.domain.Direction;
-import subway.domain.Distance;
+import subway.domain.section.Direction;
+import subway.domain.section.Distance;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 

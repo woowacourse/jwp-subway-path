@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import subway.domain.Direction;
-import subway.domain.Distance;
 import subway.domain.station.Station;
 
 public class Section {
