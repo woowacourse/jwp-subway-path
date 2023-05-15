@@ -80,7 +80,6 @@ public class Section {
         return right.getId();
     }
 
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
