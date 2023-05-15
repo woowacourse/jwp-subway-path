@@ -16,6 +16,7 @@ import subway.domain.repository.LineRepository;
 public class LineJdbcRepository implements LineRepository {
 
     private static final int DELETED_COUNT = 1;
+    private static final int UPDATED_COUNT = 1;
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insert;
 
@@ -56,5 +57,13 @@ public class LineJdbcRepository implements LineRepository {
     public Line findById(final Long lineIdRequest) {
         String sql = "select * from line where id = ?";
         return jdbcTemplate.queryForObject(sql, lineRowMapper, lineIdRequest);
+    }
+
+    @Override
+    public boolean updateLine(final long lineId, final Line line) {
+        final String sql = "UPDATE line SET name = ? WHERE id = ?";
+        final int updateCount = jdbcTemplate.update(sql, line.getName(), lineId);
+
+        return updateCount == UPDATED_COUNT;
     }
 }

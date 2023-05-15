@@ -157,7 +157,7 @@ public class LineIntegrationTest extends IntegrationTest {
                .given().log().all()
                .contentType(MediaType.APPLICATION_JSON_VALUE)
                .body(lineRequest2)
-               .when().put("/lines/{lineId}", lineId)
+               .when().put("/lines/{id}", lineId)
                .then().log().all()
                .extract();
 

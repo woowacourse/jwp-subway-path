@@ -12,4 +12,6 @@ public interface LineRepository {
     List<Line> findAll();
 
     Line findById(Long lineIdRequest);
+
+    boolean updateLine(long lineId, Line line);
 }

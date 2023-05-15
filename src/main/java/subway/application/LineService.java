@@ -47,4 +47,14 @@ public class LineService {
         final Line line = lineRepository.findById(lineId);
         return new LineResponse(lineId, line.getName());
     }
+
+    public LineResponse updateLine(final long lineId, final LineRequest request) {
+        final boolean isUpdated = lineRepository.updateLine(lineId, new Line(request.getName()));
+
+        if(!isUpdated){
+            throw new IllegalStateException("노선 갱신에 실패했습니다");
+        }
+
+        return new LineResponse(lineId, request.getName());
+    }
 }
