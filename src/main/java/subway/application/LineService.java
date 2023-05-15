@@ -18,6 +18,8 @@ import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationsResponse;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
 
 @Service
 public class LineService {
@@ -49,15 +51,16 @@ public class LineService {
 
     private List<LineStationsResponse> getResponses(Map<Line, List<Station>> lineMap) {
         return lineMap.entrySet()
-            .stream()
-            .map(entry -> LineStationsResponse.of(entry.getKey(), entry.getValue()))
-            .collect(Collectors.toUnmodifiableList());
+                .stream()
+                .map(entry -> LineStationsResponse.of(entry.getKey(), entry.getValue()))
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public LineStationsResponse findLineStationsResponseById(Long id) {
         List<Station> stations = stationDao.findAll();
         List<Section> allSections = sectionDao.findAllSectionByLineId(id);
-        Line persistLine = lineDao.findById(id);
+        Line persistLine = lineDao.findById(id)
+                .orElseThrow(() -> new DomainException(ExceptionType.UN_EXISTED_LINE));
 
         Sections sections = new Sections(allSections);
         List<Station> orderedStations = getOrderedStations(stations, sections);
@@ -67,20 +70,26 @@ public class LineService {
 
     private List<Station> getOrderedStations(List<Station> stations, Sections sections) {
         Map<Long, Station> idToStations = stations.stream()
-            .collect(Collectors.toMap(Station::getId, Function.identity()));
+                .collect(Collectors.toMap(Station::getId, Function.identity()));
 
         return sections.findOrderedStationIds()
-            .stream()
-            .map(idToStations::get)
-            .collect(Collectors.toList());
+                .stream()
+                .map(idToStations::get)
+                .collect(Collectors.toList());
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        final int updatedRow = lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        if (updatedRow == 0) {
+            throw new DomainException(ExceptionType.UN_EXISTED_LINE);
+        }
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        final int deletedRow = lineDao.deleteById(id);
+        if (deletedRow == 0) {
+            throw new DomainException(ExceptionType.UN_EXISTED_LINE);
+        }
     }
 
 }

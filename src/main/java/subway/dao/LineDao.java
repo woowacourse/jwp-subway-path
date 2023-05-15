@@ -3,9 +3,11 @@ package subway.dao;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -18,7 +20,7 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
         new Line(
             rs.getLong("id"),
             rs.getString("name"),
@@ -47,17 +49,21 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<Line> findById(Long id) {
+        try {
+            String sql = "select id, name, color from LINE WHERE id = ?";
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch(EmptyResultDataAccessException ex) {
+            return Optional.empty();
+        }
     }
 
-    public void update(Line newLine) {
+    public int update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[] {newLine.getName(), newLine.getColor(), newLine.getId()});
+        return jdbcTemplate.update(sql, new Object[] {newLine.getName(), newLine.getColor(), newLine.getId()});
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }
