@@ -11,10 +11,6 @@ public class Sections {
         this.sections = sections;
     }
 
-    public List<Section> getSections() {
-        return sections;
-    }
-
     public boolean isHeadStation(final Station station) {
         return sections.isEmpty() || sections.get(0).getPrevStation().equals(station);
     }
@@ -114,5 +110,9 @@ public class Sections {
     public boolean containSection(final Section otherSection) {
         return sections.stream()
                 .anyMatch(section -> section.isSameStations(otherSection));
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }
