@@ -34,38 +34,19 @@
   - 노선에 두 개 역
     - 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거되어야 합니다.
 
-## 도메인 
-- Station
-  - 역 이름
+---
 
-- Line
-  - 노선 이름
-  - 노선 색
+## 1단계 리팩토링 요구사항
 
-- Section
-  - 노선
-  - 상행역
-  - 하행역
-  - 거리
-
-- Distance
-- LineName
-- LineColor
-- StationName
-
-## 엔티티
-- Station
-  - id
-  - name
-
-- Line
-  - id
-  - name
-  - color
-
-- Section
-  - id
-  - line_id
-  - up_station_id
-  - down_station_id
-  - distance
+- [ ] API 명세 정리
+- [ ] Section ID 정보 삭제
+- [ ] 초기 데이터를 가지지 않도록 schema.sql에서 INSERT문 제거
+- [ ] Service 내 메서드의 역할과 책임 분리
+- [ ] Collections.emptyList() 활용
+- [ ] exists 쿼리 활용
+- [ ] 조회 쿼리에서 필요한 데이터만 조회하도록 쿼리문 변경
+- [ ] Line 정보를 GET 할 경우, 구간 간의 거리 정보도 포함
+- [ ] 테스트 시, Map 타입 대신 실제 요청 객체 생성해서 사용하도록 변경
+- [ ] @AutoConfigureTestDatabase의 default 옵션 제거
+- [ ] 가독성을 위해 개행 추가 및 제거
+- [ ] 필요없는 주석문 제거
