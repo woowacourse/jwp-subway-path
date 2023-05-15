@@ -2,6 +2,7 @@ package subway.infrastructure.shortestpath;
 
 import static subway.exception.line.LineExceptionType.NOT_EXIST_STATION_IN_LINES;
 import static subway.exception.line.LineExceptionType.NO_PATH;
+import static subway.exception.line.LineExceptionType.START_AND_END_STATIONS_IS_SAME;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.service.ShortestRouteService;
 import subway.exception.line.LineException;
-import subway.exception.line.LineExceptionType;
 
 @Component
 public class JgraphtShortestRoute implements ShortestRouteService {
@@ -40,7 +40,7 @@ public class JgraphtShortestRoute implements ShortestRouteService {
 
     private void validateSameStation(final Station start, final Station end) {
         if (start.equals(end)) {
-            throw new LineException(LineExceptionType.START_AND_END_STATIONS_IS_SAME);
+            throw new LineException(START_AND_END_STATIONS_IS_SAME);
         }
     }
 

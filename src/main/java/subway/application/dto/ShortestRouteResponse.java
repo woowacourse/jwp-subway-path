@@ -1,6 +1,5 @@
 package subway.application.dto;
 
-import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
@@ -29,19 +28,8 @@ public class ShortestRouteResponse {
         this.totalFee = totalFee;
     }
 
-    public static ShortestRouteResponse empty() {
-        return new ShortestRouteResponse(
-                emptyList(),
-                emptyList(),
-                0,
-                0);
-    }
-
     public static ShortestRouteResponse from(final PaymentLines paymentLines) {
         final Lines lines = paymentLines.lines();
-        if (lines.isEmpty()) {
-            return empty();
-        }
         final List<SectionInfo> sectionInfoList = lines.lines().stream()
                 .flatMap(it -> SectionInfo.from(it).stream())
                 .collect(toList());

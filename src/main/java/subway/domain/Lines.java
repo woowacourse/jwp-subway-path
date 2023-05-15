@@ -28,9 +28,6 @@ public class Lines {
     }
 
     public Lines continuousLinesWithStartStation(final Station start) {
-        if (isEmpty()) {
-            return new Lines();
-        }
         validateStartStation(start);
         return linkLines(start);
     }

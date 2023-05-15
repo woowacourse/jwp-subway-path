@@ -55,7 +55,8 @@ public class LineQueryService {
     public ShortestRouteResponse findShortestRoute(final String startStationName, final String endStationName) {
         final Station start = findStationByName(startStationName);
         final Station end = findStationByName(endStationName);
-        final Lines lines = shortestRouteService.shortestRoute(new Lines(lineRepository.findAll()), start, end);
+        final Lines lines = shortestRouteService.shortestRoute(
+                new Lines(lineRepository.findAll()), start, end);
         final Lines continousLines = lines.continuousLinesWithStartStation(start);
         final PaymentLines paymentLines = new PaymentLines(continousLines, paymentPolicy);
         return ShortestRouteResponse.from(paymentLines);
@@ -65,5 +66,4 @@ public class LineQueryService {
         return stationRepository.findByName(stationName)
                 .orElseThrow(() -> new StationException(NOT_FOUND_STATION));
     }
-
 }
