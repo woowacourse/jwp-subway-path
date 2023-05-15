@@ -17,42 +17,19 @@ public class Line {
     public Line() {
     }
 
-    private Line(String name, List<Edge> edges) {
-        this.name = name;
-        this.edges = edges;
-    }
-
-    public Line(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
     public Line(Long id, String name, List<Edge> edges) {
         this.id = id;
         this.name = name;
         this.edges = edges;
     }
 
-    public static Line createLine(String name, Station from, Station to, int distance) {
+    public static Line createLine(String name, Station upStation, Station downStation, int distance) {
         List<Edge> edges = new ArrayList<>();
-        edges.add(new Edge(from, to, distance));
-        return new Line(name, edges);
+        edges.add(new Edge(upStation, downStation, distance));
+        return new Line(null, name, edges);
     }
 
     public void addEdge(Station upStation, Station downStation, int distance) {
-        /* TODO : validate
-        1. from, to 둘 중 하나가 기존 노선에 등록되어 있는지 확인 (둘 다 있으면 안됨)
-        2. from, to 둘 중 기존 노선에 등록되어 있는 애 찾기
-        3. 기존 노선의 해당 station를 가지고 있는 edge들 가져오기
-        4. 그중 타겟이 되는 edge 선정
-        3. 새로운 애랑 기존 애 up, down 판별
-            down-up : 뒤에 추가
-            up-down : 앞에 추가
-            up-up 이거나 down-down : 사이에 추가
-                기존 edge의 dist보다 작아야 함
-        */
-
-        // 1번
         if (isAlreadyExistBoth(upStation, downStation)) {
             throw new IllegalArgumentException("해당 노선에 두 역이 모두 존재합니다.");
         }
@@ -60,7 +37,6 @@ public class Line {
             throw new IllegalArgumentException("해당 노선에 두 역이 모두 존재하지 않습니다.");
         }
 
-        // 2번
         Optional<Station> upStationOptional = getStations().stream()
                 .filter(station -> station.equals(upStation))
                 .findFirst();
@@ -128,29 +104,23 @@ public class Line {
     }
 
     public void deleteStation(Station station) {
-        /*
-        1. station이 그 line에 있는지 확인
-        2. station을 포함하고 있는 edge들을 가져온다.
-            - 2개일 경우 : 합치고 삭제
-            - 1개일 경우 : 삭제
-         */
-        List<Edge> findEdges = edges.stream()
+        List<Edge> targetEdges = edges.stream()
                 .filter(edge -> edge.hasStation(station))
                 .collect(Collectors.toList());
 
-        if (findEdges.isEmpty()) {
+        if (targetEdges.isEmpty()) {
             throw new IllegalArgumentException("해당 역이 해당 노선에 존재하지 않습니다.");
         }
-        if (findEdges.size() > 2) {
+        if (targetEdges.size() > 2) {
             throw new IllegalArgumentException("해당 노선에 갈래길이 존재합니다. 확인해주세요.");
         }
 
-        if (findEdges.size() == 1) {
-            edges.remove(findEdges.get(0));
+        if (targetEdges.size() == 1) {
+            edges.remove(targetEdges.get(0));
         }
-        if (findEdges.size() == 2) {
-            Edge edge1 = findEdges.get(0);
-            Edge edge2 = findEdges.get(1);
+        if (targetEdges.size() == 2) {
+            Edge edge1 = targetEdges.get(0);
+            Edge edge2 = targetEdges.get(1);
 
             Edge newEdge = new Edge(edge1.getUpStation(), edge2.getDownStation(),
                     edge1.getDistance() + edge2.getDistance());

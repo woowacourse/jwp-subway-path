@@ -4,61 +4,57 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
-import subway.domain.Lines;
 import subway.domain.Station;
 import subway.dto.AddStationToExistLineDto;
 import subway.dto.CreateNewLineDto;
-import subway.repository.SubwayRepository;
+import subway.repository.LineRepository;
 
 @Service
 public class LineService {
 
-    public final SubwayRepository subwayRepository;
+    public final LineRepository lineRepository;
 
-    public LineService(SubwayRepository subwayRepository) {
-        this.subwayRepository = subwayRepository;
+    public LineService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     @Transactional
     public Line createNewLine(CreateNewLineDto dto) {
-        subwayRepository.checkLineIsExist(dto.getLineName());
-        Station upStation = subwayRepository.getStation(dto.getUpStationId());
-        Station downStation = subwayRepository.getStation(dto.getDownStationId());
+        lineRepository.checkLineIsExist(dto.getLineName());
+        Station upStation = lineRepository.getStation(dto.getUpStationId());
+        Station downStation = lineRepository.getStation(dto.getDownStationId());
 
-        Lines lines = new Lines(subwayRepository.getAllLines());
-        Line createdLine = lines.addNewLine(dto.getLineName(), upStation, downStation, dto.getDistance());
+        Line createdLine = Line.createLine(dto.getLineName(), upStation, downStation, dto.getDistance());
 
-        return subwayRepository.insertNewLine(createdLine);
+        return lineRepository.insertNewLine(createdLine);
     }
 
     @Transactional
     public Line addStationToExistLine(AddStationToExistLineDto dto) {
-        Line line = subwayRepository.getLine(dto.getLineId());
-        Station upStation = subwayRepository.getStation(dto.getUpStationId());
-        Station downStation = subwayRepository.getStation(dto.getDownStationId());
+        Line line = lineRepository.getLine(dto.getLineId());
+        Station upStation = lineRepository.getStation(dto.getUpStationId());
+        Station downStation = lineRepository.getStation(dto.getDownStationId());
 
-        Lines lines = new Lines(subwayRepository.getAllLines());
-        Line updatedLine = lines.addStationToLine(line, upStation, downStation, dto.getDistance());
+        line.addEdge(upStation, downStation, dto.getDistance());
 
-        return subwayRepository.updateLine(updatedLine);
+        return lineRepository.updateLine(line);
     }
 
     @Transactional
     public Line deleteStationFromLine(Long lineId, Long stationId) {
-        Line line = subwayRepository.getLine(lineId);
-        Station station = subwayRepository.getStation(stationId);
+        Line line = lineRepository.getLine(lineId);
+        Station station = lineRepository.getStation(stationId);
 
-        Lines lines = new Lines(subwayRepository.getAllLines());
-        Line updatedLine = lines.deleteStationFromLine(line, station);
+        line.deleteStation(station);
 
-        return subwayRepository.updateLine(updatedLine);
+        return lineRepository.updateLine(line);
     }
 
     public Line findOneLine(Long lineId) {
-        return subwayRepository.getLine(lineId);
+        return lineRepository.getLine(lineId);
     }
 
     public List<Line> findAllLine() {
-        return subwayRepository.getAllLines();
+        return lineRepository.getAllLines();
     }
 }

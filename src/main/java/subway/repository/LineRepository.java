@@ -8,11 +8,10 @@ import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Edge;
 import subway.domain.Line;
-import subway.domain.Lines;
 import subway.domain.Station;
 
 @Repository
-public class SubwayRepository {
+public class LineRepository {
 
     public static final int INITIAL_EDGE = 0;
     private final StationDao stationDao;
@@ -20,7 +19,7 @@ public class SubwayRepository {
     private final EdgeDao edgeDao;
 
 
-    public SubwayRepository(StationDao stationDao, LineDao lineDao, EdgeDao edgeDao) {
+    public LineRepository(StationDao stationDao, LineDao lineDao, EdgeDao edgeDao) {
         this.stationDao = stationDao;
         this.lineDao = lineDao;
         this.edgeDao = edgeDao;
