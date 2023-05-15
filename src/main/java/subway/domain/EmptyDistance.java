@@ -12,4 +12,9 @@ public class EmptyDistance extends Distance {
     public Distance subtract(Distance distance) {
         throw new InvalidDistanceException(ExceptionMessages.INVALID_DISTANCE);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        return getClass() == o.getClass();
+    }
 }

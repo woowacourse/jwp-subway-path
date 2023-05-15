@@ -25,7 +25,7 @@ public class Section {
     }
 
     public boolean isNextStationEmpty() {
-        return nextStation.getName() == null;
+        return nextStation.equals(new EmptyStation());
     }
 
     public Long getId() {
