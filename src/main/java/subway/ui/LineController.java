@@ -42,7 +42,7 @@ public class LineController {
     }
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
+    public ResponseEntity<String> handleSQLException(SQLException exception) {
+        return ResponseEntity.badRequest().body(exception.getMessage());
     }
 }
