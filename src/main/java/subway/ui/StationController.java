@@ -25,17 +25,6 @@ public class StationController {
     }
 
     /**
-     * 특정 노선의 역 목록 조회
-     *
-     * @param lineId
-     * @return
-     */
-    @GetMapping("/{lineId}")
-    public ResponseEntity<List<StationResponse>> findLineStationsById(@PathVariable Long lineId) {
-        return ResponseEntity.ok(stationService.findLineStationResponsesById(lineId));
-    }
-
-    /**
      * 노선에 역 추가
      *
      * @param lineId
@@ -47,6 +36,17 @@ public class StationController {
         @RequestBody StationRequest request) {
         Long newStationId = stationService.saveStation(lineId, request);
         return ResponseEntity.created(URI.create("/stations/" + newStationId)).body(newStationId);
+    }
+
+    /**
+     * 특정 노선의 역 목록 조회
+     *
+     * @param lineId
+     * @return
+     */
+    @GetMapping("/{lineId}")
+    public ResponseEntity<List<StationResponse>> findLineStationsById(@PathVariable Long lineId) {
+        return ResponseEntity.ok(stationService.findLineStationResponsesById(lineId));
     }
 
     /**

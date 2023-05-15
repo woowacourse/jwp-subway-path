@@ -109,6 +109,7 @@ class LineDaoTest {
         // then
         Assertions.assertThat(isExistLine).isFalse();
     }
+
     @Test
     @DisplayName("isUpEndStation()를 호출할 때 입력받은 이름의 역이 노선의 상행종점이라면 true를 반환한다")
     void isUpEndStation_true() {

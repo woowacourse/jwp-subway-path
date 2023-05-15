@@ -25,6 +25,11 @@ public class LineController {
         this.lineService = lineService;
     }
 
+    /**
+     * 노선 추가
+     * @param lineRequest
+     * @return
+     */
     @PostMapping
     public ResponseEntity<Long> createLine(@RequestBody LineRequest lineRequest) {
         Long newLineId = lineService.saveLine(lineRequest);

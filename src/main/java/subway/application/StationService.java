@@ -146,14 +146,14 @@ public class StationService {
         validateExistStation(lineId, name);
     }
 
-    private void validateExistStation(Long lineId, String name) {
-        stationDao.findByLineIdAndName(lineId, name);
-    }
-
     private void validateStationCount(Long lineId) {
         if (stationDao.findByLineId(lineId).size() <= MIN_STATION_COUNT) {
             throw new IllegalArgumentException("노선에는 최소 2개 이상의 역이 존재해야 합니다.");
         }
+    }
+
+    private void validateExistStation(Long lineId, String name) {
+        stationDao.findByLineIdAndName(lineId, name);
     }
 
     private void deleteUpEndStation(Long lineId, StationEntity deleteStation) {

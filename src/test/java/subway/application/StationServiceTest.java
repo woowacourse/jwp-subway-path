@@ -120,7 +120,8 @@ class StationServiceTest {
             // when
             stationService.saveStation(lineId, stationRequest);
             List<StationResponse> stations = stationService.findLineStationResponsesById(lineId);
-            int afterDistance= stationDao.findByLineIdAndName(lineId, newStationName).getDistance();
+            int afterDistance = stationDao.findByLineIdAndName(lineId, newStationName)
+                .getDistance();
             int afterUpStationDistance = stationDao.findByLineIdAndName(lineId, upStationName)
                 .getDistance();
             int afterSize = stations.size();
@@ -143,7 +144,7 @@ class StationServiceTest {
         @CsvSource(value = {
             "강남역:역삼역", "역삼역:선릉역", "선릉역:삼성역", "삼성역:건대입구역", "건대입구역:잠실역"}, delimiter = ':')
         @DisplayName("기존 역의 하행 위치에 역을 추가할 수 있다")
-        void middle_downStation(String criteriaStation,String nextStation ) {
+        void middle_downStation(String criteriaStation, String nextStation) {
             // given
             StationRequest stationRequest = new StationRequest(criteriaStation, newStationName,
                 distance);
@@ -154,7 +155,8 @@ class StationServiceTest {
             // when
             stationService.saveStation(lineId, stationRequest);
             List<StationResponse> stations = stationService.findLineStationResponsesById(lineId);
-            int afterDistance= stationDao.findByLineIdAndName(lineId, newStationName).getDistance();
+            int afterDistance = stationDao.findByLineIdAndName(lineId, newStationName)
+                .getDistance();
             int afterUpStationDistance = stationDao.findByLineIdAndName(lineId, criteriaStation)
                 .getDistance();
             int afterSize = stations.size();
@@ -166,10 +168,10 @@ class StationServiceTest {
                 () -> Assertions.assertThat(afterUpStationDistance)
                     .isEqualTo(distance),
                 () -> Assertions.assertThat(afterDistance)
-                    .isEqualTo(beforeUpStationDistance-distance),
+                    .isEqualTo(beforeUpStationDistance - distance),
                 () -> Assertions.assertThat(afterSize).isEqualTo(beforeSize + 1),
                 () -> Assertions.assertThat(stationNames)
-                    .contains( criteriaStation+ newStationName +nextStation )
+                    .contains(criteriaStation + newStationName + nextStation)
             );
         }
 

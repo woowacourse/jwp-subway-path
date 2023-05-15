@@ -23,7 +23,6 @@ class LineServiceTest {
 
     Long lineId;
 
-
     private StationDao stationDao;
     private LineDao lineDao;
     private LineService lineService;
@@ -42,33 +41,37 @@ class LineServiceTest {
 
     @Nested
     @DisplayName("saveLine()을 호출할 때")
-    class saveLine{
+    class saveLine {
+
         private String newLineName = "수인분당선";
         private String upEndStationName = "왕십리";
         private String downEndStationName = "인천";
-        private int distance=100;
+        private int distance = 100;
+
         @Test
         @DisplayName("새로운 노선과 역들을 추가한다.")
         void success() {
             // given
-            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName, downEndStationName, distance);
+            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName,
+                downEndStationName, distance);
             int beforeSize = lineService.findLineResponses().size();
 
             // when
             Long newLineId = lineService.saveLine(request);
             int afterSize = lineService.findLineResponses().size();
-            int distanceOfUpStation=stationDao.findByLineIdAndName(newLineId,upEndStationName).getDistance();
-            boolean isUpEndStation=lineDao.isUpEndStation(newLineId,upEndStationName);
-            boolean isDownEndStation=stationDao.isDownEndStation(newLineId,downEndStationName);
+            int distanceOfUpStation = stationDao.findByLineIdAndName(newLineId, upEndStationName)
+                .getDistance();
+            boolean isUpEndStation = lineDao.isUpEndStation(newLineId, upEndStationName);
+            boolean isDownEndStation = stationDao.isDownEndStation(newLineId, downEndStationName);
 
             // then
             assertAll(
                 () -> Assertions.assertThatCode(() -> lineDao.findById(newLineId))
                     .doesNotThrowAnyException(),
                 () -> Assertions.assertThat(afterSize).isEqualTo(beforeSize + 1),
-                ()->Assertions.assertThat(distanceOfUpStation).isEqualTo(distance),
-                ()->Assertions.assertThat(isUpEndStation).isTrue(),
-                ()->Assertions.assertThat(isDownEndStation).isTrue()
+                () -> Assertions.assertThat(distanceOfUpStation).isEqualTo(distance),
+                () -> Assertions.assertThat(isUpEndStation).isTrue(),
+                () -> Assertions.assertThat(isDownEndStation).isTrue()
             );
         }
 
@@ -77,10 +80,11 @@ class LineServiceTest {
         void saveLine_fail_same_name() {
             // given
             newLineName = "1호선";
-            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName, downEndStationName, distance);
+            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName,
+                downEndStationName, distance);
 
             // when, then
-            Assertions.assertThatThrownBy(()->lineService.saveLine(request))
+            Assertions.assertThatThrownBy(() -> lineService.saveLine(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 같은 이름의 노선이 존재합니다");
         }
@@ -90,10 +94,11 @@ class LineServiceTest {
         void saveLine_fail_same_stations() {
             // given
             downEndStationName = "왕십리";
-            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName, downEndStationName, distance);
+            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName,
+                downEndStationName, distance);
 
             // when, then
-            Assertions.assertThatThrownBy(()->lineService.saveLine(request))
+            Assertions.assertThatThrownBy(() -> lineService.saveLine(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("상행역과 하행역은 같은 이름을 가질 수 없습니다.");
         }
@@ -103,10 +108,11 @@ class LineServiceTest {
         void saveLine_fail_not_positive_distance() {
             // given
             distance = 0;
-            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName, downEndStationName, distance);
+            LineRequest request = new LineRequest(newLineName, "노란색", upEndStationName,
+                downEndStationName, distance);
 
             // when, then
-            Assertions.assertThatThrownBy(()->lineService.saveLine(request))
+            Assertions.assertThatThrownBy(() -> lineService.saveLine(request))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("거리는 양의 정수여야 합니다");
         }
