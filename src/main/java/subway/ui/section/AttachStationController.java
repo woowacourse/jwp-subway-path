@@ -1,5 +1,6 @@
 package subway.ui.section;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.section.AttachStationService;
@@ -14,8 +15,8 @@ public class AttachStationController {
     }
 
     @PostMapping("/line/{line_id}/station")
-    public void createSection(@PathVariable("line_id") Long line_id, @RequestBody SectionCreateRequest sectionCreateRequest) {
+    public ResponseEntity<String> createSection(@PathVariable("line_id") Long line_id, @RequestBody SectionCreateRequest sectionCreateRequest) {
         attachStationService.createSection(line_id, sectionCreateRequest);
-        ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }
