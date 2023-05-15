@@ -6,10 +6,8 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.annotation.DirtiesContext;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -20,7 +18,6 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
-@AutoConfigureTestDatabase
 public class LineIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
     private LineRequest lineRequest2;
@@ -29,8 +26,8 @@ public class LineIntegrationTest extends IntegrationTest {
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선","강남역","논현역",5);
-        lineRequest2 = new LineRequest("구신분당선","구강남역","구논현역",5);
+        lineRequest1 = new LineRequest("신분당선", "강남역", "논현역", 5);
+        lineRequest2 = new LineRequest("구신분당선", "구강남역", "구논현역", 5);
     }
 
     @DisplayName("지하철 노선을 생성한다.")
