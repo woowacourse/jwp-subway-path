@@ -11,6 +11,9 @@ import subway.domain.edge.Edges;
 import subway.domain.graph.SubwayGraph;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
+import subway.exception.LineAlreadyExistException;
+import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.LineCreateRequest;
 import subway.ui.line.dto.ShortestPathResponse;
@@ -42,7 +45,7 @@ public class LineService {
 
         final Line line = new Line(request.getLineName());
         if (lineDao.findByName(line).isPresent()) {
-            throw new IllegalArgumentException();
+            throw new LineAlreadyExistException(request.getLineName());
         }
         final Line createdLine = lineDao.insert(line);
 
@@ -55,10 +58,10 @@ public class LineService {
     @Transactional
     public Line addStationToLine(final Long lineId, final AddStationToLineRequest request) {
         final Station existStation = stationDao.findById(request.getExistStationId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new StationNotFoundException(request.getExistStationId()));
         final Station newStation = stationDao.insert(new Station(request.getNewStationName()));
         final Line findLine = lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new LineNotFoundException(lineId));
 
         final Edges originalEdges = new Edges(edgeDao.findAllByLineId(lineId));
         final Edges newEdges = originalEdges.add(existStation, newStation, request.getDirection().getDirectionStrategy(), request.getDistance());
@@ -70,12 +73,12 @@ public class LineService {
 
     public Line findLineById(final Long lineId) {
         return lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new LineNotFoundException(lineId));
     }
 
     public List<Station> getStations(final Long lineId) {
         final Line findLine = lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new LineNotFoundException(lineId));
         final List<Edge> findEdges = edgeDao.findAllByLineId(findLine.getId());
         final Edges edges = new Edges(findEdges);
 
@@ -97,9 +100,9 @@ public class LineService {
     @Transactional
     public void deleteStationFromLine(final Long lineId, final Long stationId) {
         final Line targetLine = lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new LineNotFoundException(lineId));
         final Station targetStation = stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new StationNotFoundException(stationId));
 
         final List<Edge> findEdges = edgeDao.findAllByLineId(targetLine.getId());
         final Edges edges = new Edges(findEdges);
@@ -111,9 +114,9 @@ public class LineService {
 
     public ShortestPathResponse getShortestPath(final Long fromId, final Long toId) {
         final Station fromStation = stationDao.findById(fromId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new StationNotFoundException(fromId));
         final Station toStation = stationDao.findById(toId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new StationNotFoundException(toId));
 
         final Map<Line, Edges> allEdges = findAllEdges();
 

@@ -1,6 +1,7 @@
 package subway.domain.edge;
 
 import subway.domain.station.Station;
+import subway.exception.InvalidDistanceException;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -18,7 +19,7 @@ public class UpDirectionStrategy implements DirectionStrategy {
         if (existEdgeOptional.isPresent()) {
             final Edge existEdge = existEdgeOptional.get();
             if (existEdge.getDistance() <= distance) {
-                throw new IllegalArgumentException("추가하려는 구간의 길이가 기존 구간의 길이보다 깁니다.");
+                throw new InvalidDistanceException(distance, existEdge.getDistance());
             }
             final Edge edge1 = new Edge(existEdge.getUpStation(), newStation, existEdge.getDistance() - distance);
             final Edge edge2 = new Edge(newStation, existStation, distance);
