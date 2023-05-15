@@ -6,6 +6,9 @@ import java.util.Map;
 
 public class StationConnections {
 
+    private static final int UP_END_STATION_FIND_SIZE = 1;
+    private static final int UP_END_STATION_FIND_INDEX = 1;
+
     private final Map<Station, Station> stationConnections;
 
     public StationConnections(Map<Station, Station> stationConnections) {
@@ -34,9 +37,9 @@ public class StationConnections {
         upStations.removeAll(downStations);
         System.out.println("After Remove upStations = " + upStations);
         System.out.println("upStations Size = " + upStations.size());
-        if (upStations.size() != 1) {
+        if (upStations.size() != UP_END_STATION_FIND_SIZE) {
             throw new IllegalStateException("상행 종점을 찾을 수 없습니다.");
         }
-        return upStations.get(0);
+        return upStations.get(UP_END_STATION_FIND_INDEX);
     }
 }
