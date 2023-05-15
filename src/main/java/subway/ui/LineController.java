@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
-import subway.ui.dto.LineStationResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -41,16 +40,6 @@ public class LineController {
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         return ResponseEntity.ok(lineService.findLineResponseById(id));
-    }
-
-    @GetMapping("/stations")
-    public ResponseEntity<List<LineStationResponse>> findAllLinesAndStations() {
-        return ResponseEntity.ok(lineService.findAllLinesAndStations());
-    }
-
-    @GetMapping("/{id}/stations")
-    public ResponseEntity<LineStationResponse> findStationsById(@PathVariable Long id) {
-        return ResponseEntity.ok(lineService.findStationsById(id));
     }
 
     @DeleteMapping("/{id}")

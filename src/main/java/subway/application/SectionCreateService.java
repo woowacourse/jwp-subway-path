@@ -1,18 +1,13 @@
 package subway.application;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.SectionDto;
-import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.dto.LineDto;
-import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 import subway.ui.dto.SectionRequest;
 
@@ -20,20 +15,20 @@ import subway.ui.dto.SectionRequest;
 public class SectionCreateService {
 
     private final SectionDao sectionDao;
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public SectionCreateService(SectionDao sectionDao, LineDao lineDao, StationRepository stationRepository) {
+    public SectionCreateService(SectionDao sectionDao, LineRepository lineRepository,
+                                StationRepository stationRepository) {
         this.sectionDao = sectionDao;
-        this.lineDao = lineDao;
+        this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
 
     @Transactional
     public void createSection(SectionRequest sectionRequest) {
         Long lineId = sectionRequest.getLineId();
-        LineDto foundLine = findLine(lineId);
-        Line line = makeLine(lineId, foundLine);
+        Line line = lineRepository.findById(lineId);
 
         Station leftStation = findStation(sectionRequest.getLeftStationName());
         Station rightStation = findStation(sectionRequest.getRightStationName());
@@ -47,23 +42,6 @@ public class SectionCreateService {
         updateSection(line, leftStation, rightStation, distance);
     }
 
-    private LineDto findLine(Long lineId) {
-        return lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
-    }
-
-    private Line makeLine(Long lineId, LineDto foundLine) {
-        List<SectionDto> sectionDtos = sectionDao.findByLineId(lineId);
-        LinkedList<Section> sections = sectionDtos.stream()
-                .map(sectionDto -> new Section(
-                                stationRepository.findById(sectionDto.getLeftStationId()),
-                                stationRepository.findById(sectionDto.getRightStationId()),
-                                new Distance(sectionDto.getDistance())
-                        )
-                ).collect(Collectors.toCollection(LinkedList::new));
-
-        return new Line(foundLine.getId(), foundLine.getName(), sections);
-    }
 
     private Station findStation(String name) {
         return stationRepository.findByName(name);

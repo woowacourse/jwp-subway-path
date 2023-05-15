@@ -17,10 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.application.dto.SectionDto;
-import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.dto.LineDto;
+import subway.domain.Line;
 import subway.domain.Station;
+import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
@@ -29,7 +29,7 @@ import subway.ui.dto.LineResponse;
 public class LineIntegrationTest extends IntegrationTest {
 
     @Autowired
-    private LineDao lineDao;
+    private LineRepository lineRepository;
 
     @Autowired
     private SectionDao sectionDao;
@@ -43,8 +43,8 @@ public class LineIntegrationTest extends IntegrationTest {
     private final String lineName1 = "1호선";
     private final String lineName2 = "2호선";
 
-    private Long lineId1;
-    private Long lineId2;
+    private Line line1;
+    private Line line2;
     private Station station1;
     private Station station2;
     private Station station3;
@@ -61,10 +61,10 @@ public class LineIntegrationTest extends IntegrationTest {
         station2 = stationRepository.save(new Station("서초역"));
         station3 = stationRepository.save(new Station("선릉역"));
 
-        lineId1 = lineDao.insert(new LineDto(null, lineName1));
+        line1 = lineRepository.save(new Line(null, lineName1, null));
 
-        sectionDao.insert(new SectionDto(lineId1, station1.getId(), station2.getId(), 5));
-        sectionDao.insert(new SectionDto(lineId1, station2.getId(), station3.getId(), 3));
+        sectionDao.insert(new SectionDto(line1.getId(), station1.getId(), station2.getId(), 5));
+        sectionDao.insert(new SectionDto(line1.getId(), station2.getId(), station3.getId(), 3));
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -181,10 +181,10 @@ public class LineIntegrationTest extends IntegrationTest {
         // when, then
         RestAssured
                 .given().log().all()
-                .when().get("/lines/{id}/stations", lineId1)
+                .when().get("/lines/{id}", line1.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(lineId1.intValue()))
+                .body("id", equalTo(line1.getId().intValue()))
                 .body("name", equalTo(lineName1))
                 .rootPath("stations")
                 .body("[0].id", equalTo(station1.getId().intValue()))
@@ -200,19 +200,19 @@ public class LineIntegrationTest extends IntegrationTest {
     void findAllLinesAndStations() {
         // given
         station4 = stationRepository.save(new Station("잠실역"));
-        lineId2 = lineDao.insert(new LineDto(null, lineName2));
-        sectionDao.insert(new SectionDto(lineId2, station3.getId(), station4.getId(), 6));
+        line2 = lineRepository.save(new Line(null, lineName2, null));
+        sectionDao.insert(new SectionDto(line2.getId(), station3.getId(), station4.getId(), 6));
 
         // when
 
         // then
         RestAssured
                 .given().log().all()
-                .when().get("/lines/stations")
+                .when().get("/lines")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(2))
-                .body("[0].id", equalTo(lineId1.intValue()))
+                .body("[0].id", equalTo(line1.getId().intValue()))
                 .body("[0].name", equalTo(lineName1))
                 .body("[0].stations", hasSize(3))
                 .body("[0].stations[0].id", equalTo(station1.getId().intValue()))
@@ -221,7 +221,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .body("[0].stations[1].name", equalTo(station2.getName()))
                 .body("[0].stations[2].id", equalTo(station3.getId().intValue()))
                 .body("[0].stations[2].name", equalTo(station3.getName()))
-                .body("[1].id", equalTo(lineId2.intValue()))
+                .body("[1].id", equalTo(line2.getId().intValue()))
                 .body("[1].name", equalTo(lineName2))
                 .body("[1].stations", hasSize(2))
                 .body("[1].stations[0].id", equalTo(station3.getId().intValue()))

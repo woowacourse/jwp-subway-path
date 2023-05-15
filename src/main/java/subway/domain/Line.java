@@ -74,6 +74,9 @@ public class Line {
     }
 
     public List<Station> findLeftToRightRoute() {
+        if (sections.isEmpty()) {
+            return new ArrayList<>();
+        }
         Station lastStations = findLastStationAtLeft();
         List<Station> stations = new ArrayList<>(List.of(lastStations));
 

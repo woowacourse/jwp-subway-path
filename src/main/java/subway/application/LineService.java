@@ -1,93 +1,45 @@
 package subway.application;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
-import subway.application.dto.SectionDto;
-import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.dto.LineDto;
-import subway.domain.Distance;
 import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
-import subway.ui.dto.LineStationResponse;
-import subway.ui.dto.StationResponse;
 
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
     private final SectionDao sectionDao;
+    private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public LineService(LineDao lineDao, SectionDao sectionDao, StationRepository stationRepository) {
-        this.lineDao = lineDao;
+    public LineService(SectionDao sectionDao, LineRepository lineRepository, StationRepository stationRepository) {
         this.sectionDao = sectionDao;
+        this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Long lineId = lineDao.insert(new LineDto(null, request.getName()));
-        return new LineResponse(lineId, request.getName());
-    }
-
-    public List<LineResponse> findLineResponses() {
-        List<LineDto> foundLines = lineDao.findAll();
-        return foundLines.stream()
-                .map(foundLine -> new LineResponse(foundLine.getId(), foundLine.getName()))
-                .collect(Collectors.toList());
+        Line line = lineRepository.save(new Line(null, request.getName(), null));
+        return LineResponse.of(line);
     }
 
     public LineResponse findLineResponseById(Long id) {
-        LineDto foundLine = findByLineId(id);
-        return new LineResponse(foundLine.getId(), foundLine.getName());
+        Line line = lineRepository.findById(id);
+        return LineResponse.of(line);
     }
 
-    public List<LineStationResponse> findAllLinesAndStations() {
-        List<LineDto> lines = lineDao.findAll();
-
-        List<LineStationResponse> responses = new ArrayList<>();
-        for (LineDto line : lines) {
-            LineStationResponse response = findStationsById(line.getId());
-            responses.add(response);
-        }
-        return responses;
-    }
-
-    public LineStationResponse findStationsById(Long lineId) {
-        LineDto foundLine = findByLineId(lineId);
-
-        List<SectionDto> sectionDtos = sectionDao.findByLineId(lineId);
-
-        LinkedList<Section> sections = sectionDtos.stream()
-                .map(sectionDto -> new Section(
-                                stationRepository.findById(sectionDto.getLeftStationId()),
-                                stationRepository.findById(sectionDto.getRightStationId()),
-                                new Distance(sectionDto.getDistance())
-                        )
-                ).collect(Collectors.toCollection(LinkedList::new));
-
-        Line line = new Line(lineId, foundLine.getName(), sections);
-        List<Station> stations = line.findLeftToRightRoute();
-        List<StationResponse> stationResponses = stations.stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+    public List<LineResponse> findLineResponses() {
+        return lineRepository.findAll().stream()
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
-
-        return new LineStationResponse(line.getId(), line.getName(), stationResponses);
-    }
-
-    private LineDto findByLineId(Long id) {
-        return lineDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 노선이 없습니다."));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
     }
 }

@@ -9,15 +9,15 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.dao.dto.LineDto;
+import subway.dao.dto.LineEntity;
 
 @Repository
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-    private final RowMapper<LineDto> rowMapper = (rs, rowNum) ->
-            new LineDto(
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
@@ -30,19 +30,20 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(LineDto lineDto) {
+    public LineEntity insert(LineEntity lineEntity) {
         Map<String, Object> params = new HashMap<>();
-        params.put("name", lineDto.getName());
+        params.put("name", lineEntity.getName());
 
-        return insertAction.executeAndReturnKey(params).longValue();
+        Long savedId = insertAction.executeAndReturnKey(params).longValue();
+        return new LineEntity(savedId, lineEntity.getName());
     }
 
-    public List<LineDto> findAll() {
+    public List<LineEntity> findAll() {
         String sql = "select id, name from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<LineDto> findById(Long id) {
+    public Optional<LineEntity> findById(Long id) {
         String sql = "select id, name from LINE WHERE id = ?";
         return jdbcTemplate.query(sql, rowMapper, id)
                 .stream()

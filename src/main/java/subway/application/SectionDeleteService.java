@@ -1,18 +1,14 @@
 package subway.application;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.dto.LineDto;
-import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 import subway.ui.dto.SectionDeleteRequest;
 
@@ -21,20 +17,21 @@ public class SectionDeleteService {
 
     private final SectionDao sectionDao;
     private final LineDao lineDao;
+    private final LineRepository lineRepository;
     private final StationRepository stationRepository;
 
-    public SectionDeleteService(SectionDao sectionDao, LineDao lineDao, StationRepository stationRepository) {
+    public SectionDeleteService(SectionDao sectionDao, LineDao lineDao, LineRepository lineRepository,
+                                StationRepository stationRepository) {
         this.sectionDao = sectionDao;
         this.lineDao = lineDao;
+        this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
     }
 
     @Transactional
     public void deleteSection(SectionDeleteRequest deleteRequest) {
-        Long lineId = deleteRequest.getLineId();
-        LineDto foundLine = findLine(lineId);
         Station station = findStation(deleteRequest.getStationName());
-        Line line = makeLine(lineId, foundLine);
+        Line line = lineRepository.findById(deleteRequest.getLineId());
 
         if (!line.hasStation(station)) {
             throw new IllegalArgumentException("노선에 해당 역이 존재하지 않습니다.");
@@ -47,24 +44,6 @@ public class SectionDeleteService {
         }
 
         processSectionDeletion(line, station);
-    }
-
-    private LineDto findLine(Long lineId) {
-        return lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("노선이 존재하지 않습니다."));
-    }
-
-    private Line makeLine(Long lineId, LineDto foundLine) {
-        List<SectionDto> sectionDtos = sectionDao.findByLineId(lineId);
-        LinkedList<Section> sections = sectionDtos.stream()
-                .map(sectionDto -> new Section(
-                                stationRepository.findById(sectionDto.getLeftStationId()),
-                                stationRepository.findById(sectionDto.getRightStationId()),
-                                new Distance(sectionDto.getDistance())
-                        )
-                ).collect(Collectors.toCollection(LinkedList::new));
-
-        return new Line(foundLine.getId(), foundLine.getName(), sections);
     }
 
     private Station findStation(String name) {
