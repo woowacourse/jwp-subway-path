@@ -21,6 +21,8 @@ dependencies {
 
     runtimeOnly 'com.h2database:h2'
     runtimeOnly 'com.mysql:mysql-connector-j'
+
+    implementation 'org.jgrapht:jgrapht-core'
 }
 
 test {
