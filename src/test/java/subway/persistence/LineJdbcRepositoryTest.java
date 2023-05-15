@@ -65,6 +65,18 @@ class LineJdbcRepositoryTest {
 
 	@Test
 	void updateLine() {
+		// given
+		final Line line1 = new Line("1호선");
+		final Line line2 = new Line("2호선");
+		final long lineId = repository.createLine(line1);
+
+		// when
+		repository.updateLine(lineId, line2);
+
+		final Line foundLine = repository.findById(lineId);
+
+		// then
+		Assertions.assertThat(foundLine).isEqualTo(line2);
 	}
 
 	@Test
