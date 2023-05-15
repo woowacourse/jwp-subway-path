@@ -7,9 +7,11 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.dto.response.Response;
+import subway.exception.DuplicateLineException;
 import subway.exception.DuplicateStationException;
 import subway.exception.IllegalDistanceException;
 import subway.exception.IllegalSectionException;
+import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 
 @RestControllerAdvice
@@ -63,6 +65,22 @@ public class GlobalExceptionHandler {
         return Response.badRequest()
                 .message(BAD_REQUEST_MESSAGE)
                 .validation("stationName", e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(DuplicateLineException.class)
+    public ResponseEntity<Response> handleDuplicateLineException(DuplicateLineException e) {
+        return Response.badRequest()
+                .message(BAD_REQUEST_MESSAGE)
+                .validation("lineName", e.getMessage())
+                .build();
+    }
+
+    @ExceptionHandler(LineNotFoundException.class)
+    public ResponseEntity<Response> handleLineNotFoundException(LineNotFoundException e) {
+        return Response.badRequest()
+                .message(BAD_REQUEST_MESSAGE)
+                .validation("lineId", e.getMessage())
                 .build();
     }
 }
