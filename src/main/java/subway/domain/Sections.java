@@ -17,8 +17,14 @@ public class Sections {
         this.sections = lineUp(sections);
     }
 
-    public boolean hasNoSection() {
-        return sections.isEmpty();
+    public void validateAddingSection(Long newStationId) {
+        if(sections.isEmpty()) {
+            throw new DomainException(ExceptionType.LINE_IS_NOT_INITIALIZED);
+        }
+        final boolean hasStation = sections.stream().anyMatch(section -> section.includeStation(newStationId));
+        if (hasStation) {
+            throw new DomainException(ExceptionType.STATION_ALREADY_EXIST_IN_LINE);
+        }
     }
 
     private LinkedList<Section> lineUp(List<Section> unorderedSections) {
@@ -81,10 +87,6 @@ public class Sections {
         return sections.stream()
             .filter(section -> section.includeStation(stationId))
             .collect(Collectors.toList());
-    }
-
-    public boolean hasStation(Long stationId) {
-        return sections.stream().anyMatch(section -> section.includeStation(stationId));
     }
 
     public List<Long> findOrderedStationIds() {

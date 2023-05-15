@@ -48,23 +48,13 @@ public class SectionService {
         Long targetStationId = sectionAddRequest.getTargetId();
 
         Sections sections = new Sections(sectionDao.findAllSectionByLineId(lineId));
-        validate(stationId, sections);
+        sections.validateAddingSection(stationId);
 
         if (targetStationId == null) {
             return addAtLastStop(sectionAddRequest, sections);
         }
 
         return addBetweenStations(sectionAddRequest, sections);
-    }
-
-    private void validate(Long stationId, Sections sections) {
-        if (sections.hasStation(stationId)) {
-            throw new DomainException(ExceptionType.STATION_ALREADY_EXIST);
-        }
-
-        if (sections.hasNoSection()) {
-            throw new DomainException(ExceptionType.LINE_HAS_NO_SECTION);
-        }
     }
 
     private List<SectionAddResponse> addAtLastStop(SectionAddRequest sectionAddRequest,
@@ -141,7 +131,6 @@ public class SectionService {
     public void deleteSection(SectionDeleteRequest sectionDeleteRequest) {
         Long lineId = sectionDeleteRequest.getLineId();
         Long stationId = sectionDeleteRequest.getStationId();
-
         Sections sections = new Sections(sectionDao.findAllSectionByLineId(lineId));
 
         List<Section> sectionsIncludeStation = sections.findSectionsIncludeStation(stationId);
