@@ -12,10 +12,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.line.domain.Line;
+import subway.line.domain.Section;
+import subway.line.domain.Sections;
+import subway.line.domain.Station;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)

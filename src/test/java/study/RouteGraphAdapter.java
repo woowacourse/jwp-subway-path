@@ -2,9 +2,9 @@ package study;
 
 import java.util.List;
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.line.domain.Line;
+import subway.line.domain.Section;
+import subway.line.domain.Station;
 
 public class RouteGraphAdapter extends WeightedMultigraph<Station, SectionAdapter> {
 

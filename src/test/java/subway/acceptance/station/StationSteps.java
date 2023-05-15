@@ -7,7 +7,7 @@ import static subway.acceptance.common.JsonMapper.toJson;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
-import subway.presentation.request.StationCreateRequest;
+import subway.line.presentation.request.StationCreateRequest;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class StationSteps {
