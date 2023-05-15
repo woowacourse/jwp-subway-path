@@ -1,4 +1,4 @@
-package subway.application.strategy;
+package subway.application.strategy.insert;
 
 import org.springframework.stereotype.Component;
 import subway.domain.Section;

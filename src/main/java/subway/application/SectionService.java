@@ -2,9 +2,9 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.strategy.InsertMiddlePoint;
-import subway.application.strategy.InsertSection;
 import subway.application.strategy.delete.SectionDeleter;
+import subway.application.strategy.insert.InsertMiddlePoint;
+import subway.application.strategy.insert.InsertSection;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;

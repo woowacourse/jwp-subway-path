@@ -1,4 +1,4 @@
-package subway.application.strategy;
+package subway.application.strategy.insert;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -6,6 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.application.strategy.StrategyFixture;
 import subway.dao.SectionDao;
 import subway.domain.Distance;
 import subway.domain.Sections;

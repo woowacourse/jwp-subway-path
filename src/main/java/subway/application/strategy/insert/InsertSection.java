@@ -1,4 +1,4 @@
-package subway.application.strategy;
+package subway.application.strategy.insert;
 
 import subway.domain.Distance;
 import subway.domain.Station;
