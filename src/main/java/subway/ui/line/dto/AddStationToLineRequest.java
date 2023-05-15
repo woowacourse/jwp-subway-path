@@ -35,7 +35,7 @@ public class AddStationToLineRequest {
         return distance;
     }
 
-    public DirectionStrategy myDirection() {
+    public DirectionStrategy strategy() {
         if (Direction.UP == direction) {
             return new UpDirectionStrategy();
         }
