@@ -1,6 +1,7 @@
 package subway.application.section;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -13,6 +14,7 @@ import subway.ui.dto.request.SectionDeleteRequest;
 import java.util.List;
 
 @Service
+@Transactional
 public class DetachStationService {
     private final LineRepository lineRepository;
 

@@ -1,6 +1,7 @@
 package subway.application.line;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.repository.LineRepository;
 import subway.ui.dto.request.LineRequest;
@@ -8,6 +9,7 @@ import subway.ui.dto.request.LineRequest;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class CreateLineService {
     private final LineRepository lineRepository;
 

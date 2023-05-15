@@ -1,9 +1,11 @@
 package subway.application.line;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.repository.LineRepository;
 
 @Service
+@Transactional
 public class DeleteLineService {
 
     private final LineRepository lineRepository;

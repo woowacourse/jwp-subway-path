@@ -1,6 +1,7 @@
 package subway.application.section;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -11,6 +12,7 @@ import subway.domain.repository.StationRepository;
 import subway.ui.dto.request.SectionCreateRequest;
 
 @Service
+@Transactional
 public class AttachStationService {
     private final LineRepository lineRepository;
 
