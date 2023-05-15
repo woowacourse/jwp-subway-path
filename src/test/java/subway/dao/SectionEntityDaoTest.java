@@ -29,7 +29,7 @@ class SectionEntityDaoTest {
     @DisplayName("section 테이블 삽입")
     void line_station_insert() {
         // given
-        SectionEntity sectionEntity = new SectionEntity(1L, 2L, 10);
+        SectionEntity sectionEntity = new SectionEntity(1L, 2L, 10, 1L);
 
         // when
         SectionEntity result = sectionDao.insert(sectionEntity);

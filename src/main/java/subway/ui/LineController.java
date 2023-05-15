@@ -1,8 +1,5 @@
 package subway.ui;
 
-import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -18,6 +15,10 @@ import subway.dto.LineResponse;
 import subway.dto.RegisterInnerStationRequest;
 import subway.dto.RegisterLastStationRequest;
 import subway.dto.RegisterStationsRequest;
+
+import java.net.URI;
+import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/lines")
@@ -49,7 +50,7 @@ public class LineController {
 
     @PostMapping("/{name}/inner-station")
     public ResponseEntity<Void> registerInnerStation(@PathVariable String name,
-        @RequestBody RegisterInnerStationRequest registerInnerStationRequest) {
+                                                     @RequestBody RegisterInnerStationRequest registerInnerStationRequest) {
         lineService.registerInnerStation(name, registerInnerStationRequest);
         return ResponseEntity.noContent().build();
     }
