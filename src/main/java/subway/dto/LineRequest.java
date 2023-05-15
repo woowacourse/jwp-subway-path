@@ -6,7 +6,7 @@ public class LineRequest {
     @NotBlank(message = "노선 이름은 공백일 수 없습니다.")
     private String name;
 
-    public LineRequest() {
+    private LineRequest() {
     }
 
     public LineRequest(final String name) {

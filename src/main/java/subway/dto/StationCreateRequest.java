@@ -16,7 +16,7 @@ public class StationCreateRequest {
     @Positive(message = "노선 아이디는 양수여야 합니다.")
     private Long lineId;
 
-    public StationCreateRequest() {
+    private StationCreateRequest() {
 
     }
 
