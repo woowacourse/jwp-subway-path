@@ -23,29 +23,27 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 노선 관련 기능")
+@Sql("/station_test_data.sql")
 public class LineIntegrationTest extends IntegrationTest {
-
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
-
-        lineRequest1 = new LineRequest("5호선", "bg-purple-600", 10, "잠실새내", "송파");
-        lineRequest2 = new LineRequest("6호선", "bg-brown-600", 4, "종합운동장", "석촌");
     }
 
     @Test
     @DisplayName("지하철 노선을 생성한다.")
     void createLine() {
-        // given, when
+        // given
+        final LineRequest lineRequest = new LineRequest("1호선", "bg-pink-600", 10, "잠실", "석촌");
+
+        // when
         final ExtractableResponse<Response> response = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineRequest)
                 .when().post("/lines")
-                .then()
+                .then().log().all()
                 .extract();
 
         // then
@@ -59,10 +57,11 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     void createLineWithDuplicateName() {
         // given
+        final LineRequest lineRequest = new LineRequest("2호선", "bg-brown-600", 4, "석촌", "송파");
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineRequest)
                 .when().post("/lines")
                 .then()
                 .extract();
@@ -71,7 +70,7 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineRequest)
                 .when().post("/lines")
                 .then()
                 .extract();
@@ -82,8 +81,10 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("지하철 노선 목록을 조회한다.")
+    @Sql("/line_truncate_test.sql")
     void getLines() {
         // given
+        final LineRequest lineRequest1 = new LineRequest("3호선", "bg-purple-600", 2, "잠실새내", "송파");
         final ExtractableResponse<Response> createResponse1 = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -92,6 +93,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then()
                 .extract();
 
+        final LineRequest lineRequest2 = new LineRequest("4호선", "bg-green-600", 4, "종합운동장", "석촌");
         final ExtractableResponse<Response> createResponse2 = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -122,12 +124,12 @@ public class LineIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(resultIds).containsAll(expectedLineIds),
-                () -> assertThat((int) documentContext.read("$.size()")).isEqualTo(2),
-                () -> assertThat((String) documentContext.read("$[0]['name']")).isEqualTo("5호선"),
-                () -> assertThat((String) documentContext.read("$[0]['color']")).isEqualTo("bg-purple-600"),
-                () -> assertThat((int) documentContext.read("$[0]['stations'].size()")).isEqualTo(2),
-                () -> assertThat((String) documentContext.read("$[0]['stations'][0]['name']")).isEqualTo("잠실새내"),
-                () -> assertThat((String) documentContext.read("$[0]['stations'][1]['name']")).isEqualTo("송파")
+                () -> assertThat(documentContext.read("$.size()", Integer.class)).isEqualTo(2),
+                () -> assertThat(documentContext.read("$[0]['name']", String.class)).isEqualTo("3호선"),
+                () -> assertThat(documentContext.read("$[0]['color']", String.class)).isEqualTo("bg-purple-600"),
+                () -> assertThat(documentContext.read("$[0]['stations'].size()", Integer.class)).isEqualTo(2),
+                () -> assertThat(documentContext.read("$[0]['stations'][0]['name']", String.class)).isEqualTo("잠실새내"),
+                () -> assertThat(documentContext.read("$[0]['stations'][1]['name']", String.class)).isEqualTo("송파")
         );
     }
 
@@ -135,16 +137,17 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLine() {
         // given
+        final LineRequest lineRequest = new LineRequest("5호선", "bg-purple-600", 2, "잠실새내", "송파");
         final ExtractableResponse<Response> createResponse = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineRequest)
                 .when().post("/lines")
                 .then()
                 .extract();
 
         // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        final Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         final ExtractableResponse<Response> response = RestAssured
                 .given()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
@@ -159,13 +162,13 @@ public class LineIntegrationTest extends IntegrationTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(documentContext.read("$.id", Long.class)).isEqualTo(lineId),
-                () -> assertThat(documentContext.read("$.name", String.class)).isEqualTo(lineRequest1.getName()),
-                () -> assertThat(documentContext.read("$.color", String.class)).isEqualTo(lineRequest1.getColor()),
+                () -> assertThat(documentContext.read("$.name", String.class)).isEqualTo(lineRequest.getName()),
+                () -> assertThat(documentContext.read("$.color", String.class)).isEqualTo(lineRequest.getColor()),
                 () -> assertThat(documentContext.read("$.stations.size()", Integer.class)).isEqualTo(2),
                 () -> assertThat(documentContext.read("$.stations[0].name", String.class))
-                        .isEqualTo(lineRequest1.getFirstStation()),
+                        .isEqualTo(lineRequest.getFirstStation()),
                 () -> assertThat(documentContext.read("$.stations[1].name", String.class))
-                        .isEqualTo(lineRequest1.getSecondStation())
+                        .isEqualTo(lineRequest.getSecondStation())
         );
     }
 
@@ -173,6 +176,8 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void updateLine() {
         // given
+        final LineRequest lineRequest1 = new LineRequest("6호선", "bg-purple-600", 2, "잠실새내", "송파");
+        final LineRequest lineRequest2 = new LineRequest("7호선", "bg-brown-600", 2, "잠실새내", "송파");
         ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -199,6 +204,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void deleteLine() {
         // given
+        final LineRequest lineRequest1 = new LineRequest("9호선", "bg-purple-600", 2, "잠실새내", "송파");
         ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
