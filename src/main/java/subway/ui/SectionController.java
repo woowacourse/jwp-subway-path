@@ -28,14 +28,15 @@ public class SectionController {
         return ResponseEntity.created(uri).build();
     }
 
-    @DeleteMapping("/{lineId}/stations")
-    public void deleteSection(@PathVariable("lineId") Long lineId, @RequestBody LineResponse.SectionDeleteRequest sectionDeleteRequest) {
-        sectionService.deleteSection(lineId, sectionDeleteRequest);
-        ResponseEntity.noContent().build();
+    @GetMapping("/{lineId}")
+    public ResponseEntity<List<StationResponse>> findAllByLine(@PathVariable(name = "lineId") long lineId) {
+        final List<StationResponse> stations = sectionService.findAllByLine(lineId);
+        return ResponseEntity.ok(stations);
     }
 
-    @GetMapping("/{lineId}/stations")
-    public ResponseEntity<List<StationResponse>> findAllByLine(@PathVariable("lineId") Long lineId) {
-        return ResponseEntity.ok(sectionService.findAllByLine(lineId));
+    @DeleteMapping("/{lineId}/stations")
+    public void deleteSection(@PathVariable(name = "lineId") Long lineId, @RequestBody LineResponse.SectionDeleteRequest sectionDeleteRequest) {
+        sectionService.deleteSection(lineId, sectionDeleteRequest);
+        ResponseEntity.noContent().build();
     }
 }

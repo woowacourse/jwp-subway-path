@@ -65,4 +65,10 @@ public class StationJdbcRepository implements StationRepository {
 
 		return deleteCount == DELETED_COUNT;
 	}
+
+	@Override
+	public Station findStationWithId(final Station station) {
+		String sql = "SELECT * FROM station WHERE name = ?";
+		return jdbcTemplate.queryForObject(sql,stationRowMapper, station.getName());
+	}
 }
