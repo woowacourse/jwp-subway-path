@@ -106,6 +106,18 @@ class LineTest {
 
             assertThat(sections.isEmpty()).isTrue();
         }
+
+        @DisplayName("존재하지 않는 역을 제거하려는 경우")
+        @Test
+        void removeNotExistStation() {
+            final Line line = new Line(1L, new LineName("2호선"))
+                    .addSection(SECTION_1)
+                    .addSection(SECTION_2);
+
+            assertThatThrownBy(() -> line.removeStation(STATION_D))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("삭제하려는 Station은 해당 노선에 존재하지 않습니다.");
+        }
     }
 
     @DisplayName("이미 등록된 구간이 있는 경우")

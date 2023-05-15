@@ -171,6 +171,10 @@ public class Sections {
         return stations;
     }
 
+    public boolean notContainStation(final Station station) {
+        return !getAllStations().contains(station);
+    }
+
     public List<Section> getSections() {
         return sections;
     }

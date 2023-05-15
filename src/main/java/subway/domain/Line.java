@@ -49,6 +49,7 @@ public class Line {
     }
 
     public Line removeStation(final Station station) {
+        validateIsExist(station);
         if (sections.isHeadStation(station)) {
             final Sections removedSections = sections.removeHead();
             return new Line(id, name, removedSections);
@@ -59,5 +60,11 @@ public class Line {
         }
         final Sections removedSections = sections.removeCentral(station);
         return new Line(id, name, removedSections);
+    }
+
+    private void validateIsExist(final Station station) {
+        if (sections.notContainStation(station)) {
+            throw new IllegalArgumentException("삭제하려는 Station은 해당 노선에 존재하지 않습니다.");
+        }
     }
 }

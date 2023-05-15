@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -138,5 +139,23 @@ class SectionsTest {
         assertThat(sections.getSections())
                 .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
                 .containsExactly(tuple(STATION_A, STATION_C, new Distance(7)));
+    }
+
+    @DisplayName("존재하는 모든 Station들을 반환한다.")
+    @Test
+    void getAllStations() {
+        final List<Station> allStations = ORIGIN_SECTIONS.getAllStations();
+
+        assertThat(allStations)
+                .containsExactly(STATION_A, STATION_B, STATION_C);
+    }
+
+    @DisplayName("입력된 Station이 존재하지 않는지 확인한다.")
+    @Test
+    void notContainStation() {
+        final boolean isNotContain = ORIGIN_SECTIONS.notContainStation(new Station(4L, "D"));
+
+        assertThat(isNotContain)
+                .isTrue();
     }
 }
