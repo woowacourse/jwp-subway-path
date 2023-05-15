@@ -1,6 +1,5 @@
 package subway.station.application;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -14,7 +13,7 @@ import subway.section.application.port.output.SaveAllSectionPort;
 import subway.section.domain.Direction;
 import subway.section.domain.Section;
 import subway.station.application.port.output.SaveStationPort;
-import subway.station.dto.StationSaveRequest;
+import subway.station.dto.StationAddRequest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -44,7 +43,7 @@ class AddStationServiceTest {
     @Test
     void 역을_등록한다() {
         // given
-        final StationSaveRequest request = new StationSaveRequest(1L, "잠실역", Direction.RIGHT, "청라역", 3L);
+        final StationAddRequest request = new StationAddRequest(1L, "잠실역", Direction.RIGHT, "청라역", 3L);
         final Set<Section> sections = new HashSet<>();
         sections.add(new Section("잠실역", "선릉역", 5L));
         final Line line = new Line("1호선", "파랑", sections);

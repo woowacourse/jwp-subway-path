@@ -10,7 +10,7 @@ import subway.line.application.port.output.GetLineByIdPort;
 import subway.line.domain.Line;
 import subway.section.application.port.output.SaveSectionPort;
 import subway.station.application.port.output.SaveAllStationPort;
-import subway.station.dto.StationInitSaveRequest;
+import subway.station.dto.StationInitAddRequest;
 
 import java.util.Set;
 
@@ -42,7 +42,7 @@ class InitAddStationServiceTest {
         
         // expect
         assertThatNoException()
-                .isThrownBy(() -> service.initAddStations(new StationInitSaveRequest("잠실역", "선릉역", 3L, 1L)));
+                .isThrownBy(() -> service.initAddStations(new StationInitAddRequest("잠실역", "선릉역", 3L, 1L)));
     }
     
     @Test
@@ -55,6 +55,6 @@ class InitAddStationServiceTest {
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> service.initAddStations(new StationInitSaveRequest("잠실역", "선릉역", 3L, 1L)));
+                .isThrownBy(() -> service.initAddStations(new StationInitAddRequest("잠실역", "선릉역", 3L, 1L)));
     }
 }

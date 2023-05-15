@@ -22,6 +22,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(status).body(new ExceptionResponse("[ERROR] " + message));
     }
     
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ExceptionResponse> handleException(Exception exception) {
+        return logAndRespond("서버가 응답할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    
     @ExceptionHandler
     public ResponseEntity<ExceptionResponse> handleIllegalArgumentException (final IllegalArgumentException exception) {
         return logAndRespond(exception.getMessage(), HttpStatus.BAD_REQUEST);

@@ -1,7 +1,7 @@
 package subway.station.application.port.input;
 
-import subway.station.dto.StationSaveRequest;
+import subway.station.dto.StationAddRequest;
 
 public interface AddStationUseCase {
-    Long addStation(final StationSaveRequest request);
+    Long addStation(final StationAddRequest request);
 }
