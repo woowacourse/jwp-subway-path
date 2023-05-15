@@ -37,10 +37,6 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, Integer.class, line.getId());
     }
 
-    public boolean isLineEmpty(Line line) {
-        return countStations(line) == 0;
-    }
-
     public Section insert(Section section) {
         long id = insertAndReturnId(
                 section.getLine().getId(),

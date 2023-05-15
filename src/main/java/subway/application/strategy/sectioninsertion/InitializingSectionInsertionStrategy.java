@@ -21,7 +21,7 @@ public class InitializingSectionInsertionStrategy implements SectionInsertionStr
 
     @Override
     public boolean support(Section section) {
-        return sectionDao.isLineEmpty(section.getLine());
+        return sectionDao.countStations(section.getLine()) == 0;
     }
 
     @Override
