@@ -34,9 +34,6 @@ public class StationSaveService {
         this.sectionRepository = sectionRepository;
     }
 
-    // TODO : 중간역 저장 시 상행역, 하행역 등록 분기에서 구간 거리만 다른데 분기를 나누지 않고 하나로 합칠 방법은 없을까?
-    // TODO : Optional.get() -> Optional.orElse(), Optional.orElseGet() 으로 리팩토링
-    // TODO : 이미 있는 노선, 역, 구간 저장 시 예외
     public StationSaveResponse saveStation(StationRequest stationRequest) {
         List<Line> findLines = lineRepository.findAllLine();
         Lines lines = new Lines(findLines);

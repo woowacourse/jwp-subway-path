@@ -3,9 +3,11 @@ package fixtures;
 import static fixtures.LineFixtures.INITIAL_Line2;
 import static fixtures.SectionFixtures.*;
 
+import java.util.List;
+
 import subway.domain.line.Line;
 import subway.domain.station.Station;
-import subway.dto.StationRequest;
+import subway.dto.*;
 
 public class StationFixtures {
 
@@ -54,6 +56,10 @@ public class StationFixtures {
         public static Station createStationToInsert(Line line) {
             return new Station(null, NAME, line);
         }
+
+        public static Station createDummyStation(Long dummyId, Line line) {
+            return new Station(dummyId, NAME, line);
+        }
     }
 
     /**
@@ -77,5 +83,75 @@ public class StationFixtures {
 
     public static class DOWN_END_STATION_REQUEST_C_TO_E {
         public static final StationRequest REQUEST = new StationRequest(INITIAL_STATION_C.NAME, STATION_E.NAME, SECTION_C_TO_E.DISTANCE.getDistance(), INITIAL_Line2.NAME);
+    }
+
+    /**
+     * Response
+     */
+    public static class INITIAL_SAVE_STATION_RESPONSE_A_TO_C {
+        public static final StationSaveResponse RESPONSE =
+                new StationSaveResponse(
+                        LineDto.from(INITIAL_Line2.FIND_LINE),
+                        List.of(StationDto.from(INITIAL_STATION_A.FIND_STATION), StationDto.from(INITIAL_STATION_C.FIND_STATION)),
+                        List.of(SectionDto.from(INITIAL_SECTION_A_TO_C.FIND_SECTION))
+                );
+    }
+
+    public static class UP_MIDDLE_SAVE_STATION_RESPONSE_B_TO_C {
+        static Station dummyStationB = STATION_B.createDummyStation(-1L, INITIAL_Line2.FIND_LINE);
+        static Station stationA = INITIAL_STATION_A.FIND_STATION;
+        static Station stationC = INITIAL_STATION_C.FIND_STATION;
+        static Line line2 = INITIAL_Line2.FIND_LINE;
+        public static final StationSaveResponse RESPONSE =
+                new StationSaveResponse(
+                LineDto.from(line2),
+                List.of(
+                        StationDto.from(dummyStationB)
+                ),
+                List.of(
+                        SectionDto.from(SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
+                        SectionDto.from(SECTION_B_TO_C.createDummy(dummyStationB, stationC, line2))
+                )
+        );
+    }
+
+    public static class UP_END_SAVE_STATION_RESPONSE_D_TO_A {
+        static Station dummyStationD = STATION_D.createDummyStation(-1L, INITIAL_Line2.FIND_LINE);
+        static Station stationA = INITIAL_STATION_A.FIND_STATION;
+        static Line line2 = INITIAL_Line2.FIND_LINE;
+        public static final StationSaveResponse RESPONSE =
+                new StationSaveResponse(
+                        LineDto.from(line2),
+                        List.of(StationDto.from(dummyStationD)),
+                        List.of(SectionDto.from(SECTION_D_TO_A.createDummy(dummyStationD, stationA, line2)))
+                );
+    }
+
+    public static class DOWN_MIDDLE_SAVE_STATION_RESPONSE_A_TO_B {
+        static Station dummyStationB = STATION_B.createDummyStation(-1L, INITIAL_Line2.FIND_LINE);
+        static Station stationA = INITIAL_STATION_A.FIND_STATION;
+        static Station stationC = INITIAL_STATION_C.FIND_STATION;
+        static Line line2 = INITIAL_Line2.FIND_LINE;
+        public static final StationSaveResponse RESPONSE =
+                new StationSaveResponse(
+                        LineDto.from(line2),
+                        List.of(StationDto.from(dummyStationB)),
+                        List.of(
+                                SectionDto.from(SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
+                                SectionDto.from(SECTION_B_TO_C.createDummy(dummyStationB, stationC, line2))
+                        )
+                );
+    }
+
+    public static class DOWN_END_SAVE_STATION_RESPONSE_C_TO_E {
+        static Station dummyStationE = STATION_E.createDummyStation(-1L, INITIAL_Line2.FIND_LINE);
+        static Station stationC = INITIAL_STATION_C.FIND_STATION;
+        static Line line2 = INITIAL_Line2.FIND_LINE;
+        public static final StationSaveResponse RESPONSE =
+                new StationSaveResponse(
+                        LineDto.from(line2),
+                        List.of(StationDto.from(dummyStationE)),
+                        List.of(SectionDto.from(SECTION_C_TO_E.createDummy(stationC, dummyStationE, line2)))
+                );
     }
 }
