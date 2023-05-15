@@ -1,0 +1,37 @@
+package subway.ui.line;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import subway.common.IntegrationTest;
+import subway.domain.Line;
+import subway.persistence.repository.LineRepositoryImpl;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+class DeleteLineControllerTest extends IntegrationTest {
+
+    @Autowired
+    private LineRepositoryImpl lineRepository;
+
+    @Test
+    @DisplayName("노선을 삭제한다.")
+    void deleteLine() {
+        lineRepository.createLine(new Line("1호선"));
+
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .when().delete("/lines/1")
+                .then().log().all()
+                .extract();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value()),
+                () -> assertThat(lineRepository.findAll()).hasSize(0)
+        );
+    }
+}
