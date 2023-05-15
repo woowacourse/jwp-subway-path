@@ -1,0 +1,11 @@
+spring:
+  profiles:
+    active: local
+  h2:
+    console:
+      enabled: true
+  datasource:
+    jdbc-url: jdbc:h2:tcp://localhost/~/jwp-subway-path
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
