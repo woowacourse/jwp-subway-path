@@ -27,18 +27,18 @@ public class SectionDao {
                     rs.getLong("id"),
                     new Station(rs.getLong("departure_station.id"), rs.getString("departure_station.name")),
                     new Station(rs.getLong("arrival_station.id"), rs.getString("arrival_station.name")),
-                    new Distance(rs.getInt("section.distance")));
+                    new Distance(rs.getInt("distance")));
 
     private final RowMapper<LineSection> lineSectionRowMapper = (rs, rowNum) ->
             new LineSection(
-                    new Line(rs.getLong("section.line_id"),
+                    new Line(rs.getLong("sections.line_id"),
                             rs.getString("line.name"),
                             rs.getString("line.color")
                     ),
                     new Section(rs.getLong("id"),
-                            new Station(rs.getLong("departure_station.id"), rs.getString("departure_station.name")),
-                            new Station(rs.getLong("arrival_station.id"), rs.getString("arrival_station.name")),
-                            new Distance(rs.getInt("section.distance"))
+                            new Station(rs.getLong("departure_id"), rs.getString("departure_name")),
+                            new Station(rs.getLong("arrival_id"), rs.getString("arrival_name")),
+                            new Distance(rs.getInt("distance"))
                     )
             );
 
@@ -47,11 +47,10 @@ public class SectionDao {
     }
 
     public long saveSection(Long lineId, int distance, String departure, String arrival) {
-        final String sql = "INSERT INTO sections (line_id, departure_id, ARRIVAL_ID, distance) "
-                + "SELECT ?, departure_station.id, arrival_station.id, ? "
-                + "FROM station AS departure_station "
-                + "LEFT JOIN station AS arrival_station "
-                + "ON departure_station.name = ? AND arrival_station.name = ?";
+        final String sql = "INSERT INTO sections (line_id, departure_id, arrival_id, distance) "
+                + "SELECT ?, departure.id, arrival.id, ? "
+                + "FROM station AS departure, station AS arrival "
+                + "WHERE departure.name = ? AND arrival.name = ?";
 
         final KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
@@ -63,16 +62,18 @@ public class SectionDao {
             return ps;
         }, keyHolder);
 
-        return (long) Objects.requireNonNull(keyHolder.getKeys()).get("id");
+        return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
     public Map<Line, List<Section>> findSections() {
         String sql =
-                "SELECT section.id, section.line_id, line.name, line.color,  departure_station.id, departure_station.name, arrival_station.id, arrival_station.name, section.distance "
-                        + "FROM section "
-                        + "LEFT JOIN station AS departure_station ON departure_station.id = section.departure_id "
-                        + "LEFT JOIN station AS arrival_station ON arrival_station.id = section.arrival_id "
-                        + "LEFT JOIN line ON line.id = section.line_id";
+                "SELECT sections.id, sections.line_id, line.name, line.color, " +
+                        "departure_station.id AS departure_id, departure_station.name AS departure_name, " +
+                        "arrival_station.id AS arrival_id, arrival_station.name AS arrival_name, sections.distance AS distance "
+                        + "FROM sections "
+                        + "LEFT JOIN station AS departure_station ON departure_station.id = sections.departure_id "
+                        + "LEFT JOIN station AS arrival_station ON arrival_station.id = sections.arrival_id "
+                        + "LEFT JOIN line ON line.id = sections.line_id";
 
         final List<LineSection> lineSections = jdbcTemplate.query(sql, lineSectionRowMapper);
 
@@ -83,7 +84,7 @@ public class SectionDao {
     public List<Section> findSectionsByLineId(Long id) {
         String sql =
                 "SELECT section.id, section.line_id, departure_station.id, departure_station.name, arrival_station.id, arrival_station.name, section.distance "
-                        + "FROM section "
+                        + "FROM sections "
                         + "LEFT JOIN station AS departure_station ON departure_station.id = section.departure_id "
                         + "LEFT JOIN station AS arrival_station ON arrival_station.id = section.arrival_id "
                         + "WHERE section.line_id = ?";
