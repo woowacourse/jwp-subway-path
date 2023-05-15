@@ -72,6 +72,7 @@ public class LineService {
         return LineResponse.of(savedLine, stations);
     }
 
+    @Transactional
     public String deleteLine(Long lineId) {
         Line line = dbLineDao.findById(lineId)
                 .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다"))

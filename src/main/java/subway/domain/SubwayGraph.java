@@ -21,6 +21,12 @@ public class SubwayGraph {
         graph.setEdgeWeight(graph.addEdge(upLineStation, downLineStation), distance);
     }
 
+    private static void validateDistance(final int distance) {
+        if (distance <= 0) {
+            throw new IllegalArgumentException("역 사이 거리는 양의 정수로 입력해 주세요.");
+        }
+    }
+
     public boolean isSameLine(Line line) {
         return this.line.equals(line);
     }
@@ -74,13 +80,6 @@ public class SubwayGraph {
         return (int) graph.getEdgeWeight(edge);
     }
 
-    public boolean isEmptyStation(Station station) {
-        return findAllStationsInOrder().stream()
-                .filter(s -> s.isSameName(station))
-                .findAny()
-                .isEmpty();
-    }
-
     public Station addStation(Station upLineStation, Station downLineStation, int distance) {
         validateStations(upLineStation, downLineStation);
         validateDistance(distance);
@@ -128,12 +127,6 @@ public class SubwayGraph {
         throw new IllegalArgumentException("부적절한 입력입니다.");
     }
 
-    private static void validateDistance(final int distance) {
-        if (distance <= 0) {
-            throw new IllegalArgumentException("역 사이 거리는 양의 정수로 입력해 주세요.");
-        }
-    }
-
     private void validateStations(final Station upLineStation, final Station downLineStation) {
         if (upLineStation.equals(downLineStation)) {
             throw new IllegalArgumentException("서로 다른 역을 입력해 주세요.");
@@ -175,13 +168,13 @@ public class SubwayGraph {
     }
 
     private void addStationToUpLine(final Station downLinePreviousStation, final Station newStation, final Station downLineStation, final int distance) {
-        graph.addVertex(newStation); //
         // downLinePreviousStation ~ downLineStation distance <= distance => 예외 발생
         final DefaultWeightedEdge edge = graph.getEdge(downLinePreviousStation, downLineStation);
         final int distanceBetweenDownLinePreviousStationAndDownLineStation = (int) graph.getEdgeWeight(edge);
         if (distanceBetweenDownLinePreviousStationAndDownLineStation <= distance) {
             throw new IllegalArgumentException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
         }
+        graph.addVertex(newStation); //
 
         final int distanceBetweenDownLinePreviousStationAndNewStation = distanceBetweenDownLinePreviousStationAndDownLineStation - distance;
 
@@ -196,14 +189,13 @@ public class SubwayGraph {
     }
 
     private void addStationToDownLine(final Station upLineStation, final Station newStation, final Station upLineNextStation, final int distance) {
-        graph.addVertex(newStation); //
         // upLineStation ~ upLineNextStation distance <= distance => 예외 발생
         DefaultWeightedEdge edge = graph.getEdge(upLineStation, upLineNextStation);
         int distanceBetweenUpLineStationAndUpLineNextStation = (int) graph.getEdgeWeight(edge);
         if (distanceBetweenUpLineStationAndUpLineNextStation <= distance) {
             throw new IllegalArgumentException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
         }
-
+        graph.addVertex(newStation); //
         final int distanceBetweenNewStationAndUpLineNextStation = distanceBetweenUpLineStationAndUpLineNextStation - distance;
 
         // upLineStation, upLineNextStation 끊어줌

@@ -65,6 +65,7 @@ public class StationService {
         return StationResponse.of(addedStation);
     }
 
+    @Transactional
     public StationResponse deleteStation(StationDeleteRequest stationDeleteRequest) {
         Line line = dbLineDao.findByName(stationDeleteRequest.getLineName()).
                 orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다."))

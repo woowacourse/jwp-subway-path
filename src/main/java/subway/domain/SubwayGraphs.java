@@ -3,6 +3,7 @@ package subway.domain;
 import org.springframework.stereotype.Component;
 import subway.dto.LineDto;
 import subway.entity.EdgeEntity;
+import subway.exception.LineException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,12 +24,6 @@ public class SubwayGraphs {
         final List<Station> allStationsInOrder = newLineGraph.findAllStationsInOrder();
         subwayGraphs.add(newLineGraph);
         return new LineDto(line, allStationsInOrder);
-    }
-
-    public int findOrderOf(Line line, Station station) {
-        final SubwayGraph lineGraph = findSubwayGraphOf(line);
-
-        return lineGraph.findOrderOf(station);
     }
 
     public EdgeEntity findEdge(Line line, Station station) {
@@ -53,7 +48,7 @@ public class SubwayGraphs {
         final SubwayGraph lineGraph = subwayGraphs.stream()
                 .filter(s -> s.isSameLine(line))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("해당 노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다."));
         return lineGraph;
     }
 
@@ -61,10 +56,6 @@ public class SubwayGraphs {
         final SubwayGraph subwayGraph = findSubwayGraphOf(line);
 
         return subwayGraph.addStation(upLineStation, downLineStation, distance);
-    }
-
-    public boolean isEmptyStation(Line line, Station station) {
-        return findSubwayGraphOf(line).isEmptyStation(station);
     }
 
     public Optional<Station> findStationByName(Line line, String name) {
