@@ -1,5 +1,6 @@
 package subway.service;
 
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.EdgeDao;
@@ -7,10 +8,12 @@ import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.edge.Edge;
 import subway.domain.edge.Edges;
+import subway.domain.graph.SubwayGraph;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.LineCreateRequest;
+import subway.ui.line.dto.ShortestPathResponse;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -104,5 +107,30 @@ public class LineService {
 
         edgeDao.deleteAllByLineId(targetLine.getId());
         edgeDao.insertAllByLineId(targetLine.getId(), removedEdges.getEdges());
+    }
+
+    public ShortestPathResponse getShortestPath(final Long fromId, final Long toId) {
+        final Station fromStation = stationDao.findById(fromId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+        final Station toStation = stationDao.findById(toId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+
+        final Map<Line, Edges> allEdges = findAllEdges();
+
+        final DijkstraShortestPath<Station, Edge> shortestPath = SubwayGraph.getShortestPath(allEdges);
+        final double pathWeight = shortestPath.getPathWeight(fromStation, toStation);
+        final List<Station> stations = shortestPath.getPath(fromStation, toStation).getVertexList();
+
+        return new ShortestPathResponse(pathWeight, stations);
+    }
+
+    private Map<Line, Edges> findAllEdges() {
+        final Map<Line, Edges> result = new LinkedHashMap<>();
+        final List<Line> allLine = lineDao.findAll();
+        for (Line line : allLine) {
+            final Edges edges = new Edges(new LinkedList<>(edgeDao.findAllByLineId(line.getId())));
+            result.put(line, edges);
+        }
+        return result;
     }
 }

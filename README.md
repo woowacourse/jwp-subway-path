@@ -114,5 +114,5 @@ response
 - [x] 데이터베이스 설정을 프로덕션과 테스트를 다르게 한다.
     - [x] 프로덕션 데이터베이스는 url을 `jdbc:h2:tcp://localhost/~/jwp-subway-path`로 지정한다.
     - [x] 테스트 데이터베이스는 url을 `jdbc:h2:mem:testdb;MODE=MySQL`로 지정한다. (인메모리로 동작)
-- [ ] 경로 조회 API 구현
+- [x] 경로 조회 API 구현 (get - "/lines/findPath?fromId=1&toId=2")
 - [ ] 요금 조회 기능 추가
