@@ -22,6 +22,8 @@ import subway.dto.LineResponse;
 import subway.dto.StationInsertRequest;
 import subway.service.LineService;
 import subway.service.StationService;
+import subway.service.dto.CreateLineServiceRequest;
+import subway.service.dto.InsertStationServiceRequest;
 
 @RestController
 @RequestMapping("/lines")
@@ -37,13 +39,20 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<Void> createLine(@RequestBody LineRequest lineRequest) {
-        Long id = lineService.create(lineRequest);
+        CreateLineServiceRequest request = new CreateLineServiceRequest(lineRequest.getName(), lineRequest.getColor(),
+                lineRequest.getUpStationId(), lineRequest.getDownStationId(), lineRequest.getDistance());
+
+        Long id = lineService.create(request);
         return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
     @PostMapping("/stations")
     public ResponseEntity<Void> insertStation(@RequestBody StationInsertRequest stationInsertRequest) {
-        lineService.insertStation(stationInsertRequest);
+        InsertStationServiceRequest request = new InsertStationServiceRequest(stationInsertRequest.getStationId(),
+                stationInsertRequest.getLineId(), stationInsertRequest.getAdjacentStationId(),
+                stationInsertRequest.getDirection(), stationInsertRequest.getDistance());
+
+        lineService.insertStation(request);
         return ResponseEntity.ok().build();
     }
 
@@ -52,7 +61,8 @@ public class LineController {
         List<Line> lines = lineService.findAll();
         List<Station> stations = stationService.findAll();
         Map<Long, Station> stationIdToStation = getIdToStation(stations);
-        List<LineResponse> lineResponses = getLineResponses(lines, stationIdToStation);
+
+        List<LineResponse> lineResponses = buildLineResponses(lines, stationIdToStation);
         return ResponseEntity.ok(lineResponses);
     }
 
@@ -61,14 +71,14 @@ public class LineController {
                 .collect(toMap(station -> station.getId(), Function.identity()));
     }
 
-    private List<LineResponse> getLineResponses(List<Line> lines, Map<Long, Station> stationIdToStation) {
+    private List<LineResponse> buildLineResponses(List<Line> lines, Map<Long, Station> stationIdToStation) {
         List<LineResponse> lineResponses = lines.stream()
-                .map(line -> toResponse(line, stationIdToStation))
+                .map(line -> buildResponseOf(line, stationIdToStation))
                 .collect(Collectors.toList());
         return lineResponses;
     }
 
-    private LineResponse toResponse(Line line, Map<Long, Station> stationIdToStation) {
+    private LineResponse buildResponseOf(Line line, Map<Long, Station> stationIdToStation) {
         List<Station> stations = line.getStationEdges().stream()
                 .map(stationEdge -> {
                     Long downStationId = stationEdge.getDownStationId();
@@ -77,6 +87,7 @@ public class LineController {
                 .collect(Collectors.toList());
         return LineResponse.of(line, stations);
     }
+
     @GetMapping("/{id}")
     public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
         Line line = lineService.findLineById(id);
