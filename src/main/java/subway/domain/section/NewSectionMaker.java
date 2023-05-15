@@ -31,7 +31,7 @@ public class NewSectionMaker {
 
     public static Section makeNewDownSection(Section sectionToSave, Section currentSection) {
         NearbyStations newDownSectionNearByStations
-                = NearbyStations.createByUpStationAndDownStation(currentSection.getDownStation(), sectionToSave.getDownStation());
+                = NearbyStations.createByUpStationAndDownStation(sectionToSave.getDownStation(), currentSection.getDownStation());
         Line line = sectionToSave.getLine();
 
         Distance currentSectionDistance = new Distance(currentSection.getDistance().getDistance());
@@ -42,6 +42,6 @@ public class NewSectionMaker {
         }
         Distance newDownSectionDistance = currentSectionDistance.subtract(upSectionDistance);
 
-        return new Section(null, newDownSectionNearByStations   , line, newDownSectionDistance);
+        return new Section(null, newDownSectionNearByStations, line, newDownSectionDistance);
     }
 }
