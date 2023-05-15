@@ -1,7 +1,7 @@
 package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
-import subway.persistence.dao.LineDaoImpl;
+import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
@@ -26,9 +26,9 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
-    private final LineDaoImpl lineDao;
+    private final LineDao lineDao;
 
-    public SectionRepositoryImpl(SectionDao sectionDao, StationDao stationDao, LineDaoImpl lineDao) {
+    public SectionRepositoryImpl(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.lineDao = lineDao;

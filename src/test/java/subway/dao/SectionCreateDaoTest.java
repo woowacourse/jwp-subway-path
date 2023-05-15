@@ -5,11 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.persistence.dao.LineDaoImpl;
+import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
+import subway.persistence.repository.StationRepositoryImpl;
 import subway.service.line.domain.Line;
+import subway.service.station.StationRepository;
 import subway.service.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -17,9 +19,12 @@ import javax.sql.DataSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.LineFixture.SECOND_LINE;
+import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
 import static subway.domain.StationFixture.GANGNAM;
 import static subway.domain.StationFixture.JAMSIL;
+import static subway.domain.StationFixture.JAMSIL_NO_ID;
 import static subway.domain.StationFixture.SEONLEUNG;
+import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
@@ -32,22 +37,24 @@ class SectionCreateDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     private SectionDao sectionDao;
-    private LineDaoImpl lineDao;
+    private LineDao lineDao;
     private StationDao stationDao;
+    private StationRepository stationRepository;
 
     @BeforeEach
     void setUp() {
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
-        lineDao = new LineDaoImpl(jdbcTemplate, dataSource);
+        lineDao = new LineDao(jdbcTemplate, dataSource);
         stationDao = new StationDao(jdbcTemplate, dataSource);
+        stationRepository = new StationRepositoryImpl(stationDao);
     }
 
     @Test
     void 새로운_섹션을_저장한다() {
-        Station savedJamsil = stationDao.insert(JAMSIL);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
 
-        Line savedSecondLine = lineDao.insert(SECOND_LINE);
+        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
 
         SectionEntity sectionEntity = new SectionEntity(savedJamsil.getId(), savedSeonleung.getId(), 10, savedSecondLine.getId());
 
@@ -63,9 +70,9 @@ class SectionCreateDaoTest {
 
     @Test
     void 섹션_조회() {
-        Station savedJamsil = stationDao.insert(JAMSIL);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG);
-        Station savedGangnam = stationDao.insert(GANGNAM);
+        Station savedJamsil = stationRepository.insert(JAMSIL);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG);
+        Station savedGangnam = stationRepository.insert(GANGNAM);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE);
 

@@ -7,14 +7,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.section.dto.LineStationDeleteRequest;
-import subway.persistence.dao.LineDaoImpl;
+import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
-import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
 import subway.service.line.domain.Line;
 import subway.service.section.SectionService;
 import subway.service.section.dto.SectionCreateRequest;
 import subway.service.section.repository.SectionRepository;
+import subway.service.station.StationRepository;
 import subway.service.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,10 +45,10 @@ class SectionServiceTest {
     SectionDao sectionDao;
 
     @Autowired
-    LineDaoImpl lineDao;
+    LineDao lineDao;
 
     @Autowired
-    StationDao stationDao;
+    StationRepository stationRepository;
 
     Line savedLine;
     Station savedJamsil;
@@ -57,12 +57,10 @@ class SectionServiceTest {
     @BeforeEach
     void setUp() {
         savedLine = lineDao.insert(EIGHT_LINE_NO_ID);
-        savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        savedGangnam = stationDao.insert(GANGNAM_NO_ID);
+        savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedGangnam.getId(), 10, savedLine.getId());
         sectionService.insert(sectionCreateRequest);
-
-        System.out.println(stationDao.findAll());
     }
 
     @Test
@@ -95,8 +93,8 @@ class SectionServiceTest {
 
     @Test
     void 노선에_역이_존재할_때_새로운_역_2개를_추가하면_예외() {
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
-        Station savedYuksam = stationDao.insert(YUKSAM_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
+        Station savedYuksam = stationRepository.insert(YUKSAM_NO_ID);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedSeonleung.getId(), savedYuksam.getId(), 10, savedLine.getId());
 
@@ -111,34 +109,34 @@ class SectionServiceTest {
         sectionService.delete(new LineStationDeleteRequest(savedGangnam.getId()));
 
 
-        assertThatThrownBy(() -> stationDao.findById(savedGangnam.getId()))
+        assertThatThrownBy(() -> stationRepository.findById(savedGangnam.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 stationId입니다.");
 
-        assertThatThrownBy(() -> stationDao.findById(savedJamsil.getId()))
+        assertThatThrownBy(() -> stationRepository.findById(savedJamsil.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 stationId입니다.");
     }
 
     @Test
     void 종점_제거() {
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
         SectionEntity gangnamSeonleungEntity = new SectionEntity(savedSeonleung.getId(), savedGangnam.getId(), 3, savedLine.getId());
 
         sectionDao.insert(gangnamSeonleungEntity);
 
         sectionService.delete(new LineStationDeleteRequest(savedSeonleung.getId()));
 
-        assertThatThrownBy(() -> stationDao.findById(savedSeonleung.getId()))
+        assertThatThrownBy(() -> stationRepository.findById(savedSeonleung.getId()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 stationId입니다.");
 
-        assertDoesNotThrow(() -> stationDao.findById(savedGangnam.getId()));
+        assertDoesNotThrow(() -> stationRepository.findById(savedGangnam.getId()));
     }
 
     @Test
     void 중간역_제거() {
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedSeonleung.getId(), 4, savedLine.getId());
         sectionService.insert(sectionCreateRequest);
 
@@ -146,22 +144,22 @@ class SectionServiceTest {
         sectionService.delete(lineStationDeleteRequest);
 
         assertAll(
-                () -> assertThatThrownBy(() -> stationDao.findById(savedSeonleung.getId()))
+                () -> assertThatThrownBy(() -> stationRepository.findById(savedSeonleung.getId()))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessage("존재하지 않는 stationId입니다."),
-                () -> assertDoesNotThrow(() -> stationDao.findById(savedGangnam.getId())),
-                () -> assertDoesNotThrow(() -> stationDao.findById(savedJamsil.getId()))
+                () -> assertDoesNotThrow(() -> stationRepository.findById(savedGangnam.getId())),
+                () -> assertDoesNotThrow(() -> stationRepository.findById(savedJamsil.getId()))
         );
     }
 
     @Test
     void 두_개의_노선에_걸치는_역_제거() {
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedSeonleung.getId(), 4, savedLine.getId());
         sectionService.insert(sectionCreateRequest);
 
         Line secondLine = lineDao.insert(SECOND_LINE_NO_ID);
-        Station savedSeokchon = stationDao.insert(SEOKCHON_NO_ID);
+        Station savedSeokchon = stationRepository.insert(SEOKCHON_NO_ID);
 
         SectionCreateRequest seokchonJamsil = new SectionCreateRequest(savedJamsil.getId(), savedSeokchon.getId(), 15, secondLine.getId());
         sectionService.insert(seokchonJamsil);
@@ -171,10 +169,10 @@ class SectionServiceTest {
 
 
         assertAll(
-                () -> assertThatThrownBy(() -> stationDao.findById(savedJamsil.getId()))
+                () -> assertThatThrownBy(() -> stationRepository.findById(savedJamsil.getId()))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessage("존재하지 않는 stationId입니다."),
-                () -> assertThatThrownBy(() -> stationDao.findById(savedSeokchon.getId()))
+                () -> assertThatThrownBy(() -> stationRepository.findById(savedSeokchon.getId()))
                         .isInstanceOf(IllegalArgumentException.class)
                         .hasMessage("존재하지 않는 stationId입니다."),
                 () -> assertThat(sectionRepository.isLastSectionInLine(savedLine)).isTrue()

@@ -1,12 +1,16 @@
 package subway.persistence.dao.entity;
 
 public class StationEntity {
-    private final long stationId;
+    private final Long stationId;
     private final String name;
 
-    public StationEntity(long stationId, String name) {
+    public StationEntity(Long stationId, String name) {
         this.stationId = stationId;
         this.name = name;
+    }
+
+    public StationEntity(String name) {
+        this(null, name);
     }
 
     public long getStationId() {

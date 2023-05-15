@@ -5,11 +5,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.persistence.dao.LineDaoImpl;
+import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
+import subway.persistence.repository.StationRepositoryImpl;
 import subway.service.line.domain.Line;
+import subway.service.station.StationRepository;
 import subway.service.station.domain.Station;
 
 import javax.sql.DataSource;
@@ -36,8 +38,9 @@ public class SectionDaoTestWithDummyData {
     JdbcTemplate jdbcTemplate;
 
     private SectionDao sectionDao;
-    private LineDaoImpl lineDao;
+    private LineDao lineDao;
     private StationDao stationDao;
+    private StationRepository stationRepository;
 
     Station savedJamsil;
     Station savedYuksam;
@@ -54,12 +57,14 @@ public class SectionDaoTestWithDummyData {
     @BeforeEach
     void setUp() {
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
-        lineDao = new LineDaoImpl(jdbcTemplate, dataSource);
+        lineDao = new LineDao(jdbcTemplate, dataSource);
         stationDao = new StationDao(jdbcTemplate, dataSource);
 
-        savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        savedYuksam = stationDao.insert(YUKSAM_NO_ID);
-        savedGangnam = stationDao.insert(GANGNAM_NO_ID);
+        stationRepository = new StationRepositoryImpl(stationDao);
+
+        savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        savedYuksam = stationRepository.insert(YUKSAM_NO_ID);
+        savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
 
         savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
         savedEightLine = lineDao.insert(EIGHT_LINE_NO_ID);
@@ -107,7 +112,7 @@ public class SectionDaoTestWithDummyData {
         // 잠실과 연결된 section조회 시 2개가 나와야 한다.
     void 역과_연결된_모든_구간_조회() {
         //given
-        Station savedSeokchon = stationDao.insert(SEOKCHON);
+        Station savedSeokchon = stationRepository.insert(SEOKCHON);
 
         SectionEntity savedSeokchonToJamsilSectionEntity = new SectionEntity(savedJamsil.getId(), savedSeokchon.getId(), 7, savedEightLine.getId());
         sectionDao.insert(savedSeokchonToJamsilSectionEntity);

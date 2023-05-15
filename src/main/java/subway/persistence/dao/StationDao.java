@@ -43,11 +43,20 @@ public class StationDao {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
-    public Station insert(Station station) {
+//    public Station insert(Station station) {
+//        try {
+//            SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+//            Long id = insertAction.executeAndReturnKey(params).longValue();
+//            return new Station(id, station.getName());
+//        } catch (DuplicateKeyException e) {
+//            throw new IllegalArgumentException("해당 역 이름이 이미 존재합니다.");
+//        }
+//    }
+
+    public long insert(StationEntity stationEntity) {
         try {
-            SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-            Long id = insertAction.executeAndReturnKey(params).longValue();
-            return new Station(id, station.getName());
+            SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
+            return insertAction.executeAndReturnKey(params).longValue();
         } catch (DuplicateKeyException e) {
             throw new IllegalArgumentException("해당 역 이름이 이미 존재합니다.");
         }
@@ -65,19 +74,14 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
+    public StationEntity findById(Long id) {
         try {
             String sql = "select * from STATION where id = ?";
-            return jdbcTemplate.queryForObject(sql, rowMapper, id);
+            return jdbcTemplate.queryForObject(sql, stationMapper, id);
         } catch (EmptyResultDataAccessException e) {
             throw new IllegalArgumentException("존재하지 않는 stationId입니다.");
         }
 
-    }
-
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
 
     public void deleteById(Long id) {

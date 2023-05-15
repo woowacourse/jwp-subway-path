@@ -6,12 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.persistence.dao.StationDao;
+import subway.persistence.dao.entity.StationEntity;
 import subway.service.station.domain.Station;
 
 import javax.sql.DataSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static subway.domain.StationEntityFixture.JAMSIL_NO_ID_ENTITY;
+import static subway.domain.StationEntityFixture.YUKSAM_NO_ID_ENTITY;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
@@ -31,12 +34,10 @@ class StationDaoTest {
 
     @Test
     void 지하철_역을_추가한다() {
-        Station jamsil = new Station("잠실");
-        Station savedStation = stationDao.insert(jamsil);
+        long savedStation = stationDao.insert(JAMSIL_NO_ID_ENTITY);
 
         assertAll(
-                () -> assertThat(savedStation.getId()).isPositive(),
-                () -> assertThat(savedStation.getName()).isEqualTo(jamsil.getName())
+                () -> assertThat(savedStation).isPositive()
         );
 
     }
@@ -46,17 +47,17 @@ class StationDaoTest {
         Station jamsil = new Station("잠실");
         Station yuksam = new Station("역삼");
 
-        Station jamsilSaved = stationDao.insert(jamsil);
-        Station yuksamSaved = stationDao.insert(yuksam);
+        long jamsilId = stationDao.insert(JAMSIL_NO_ID_ENTITY);
+        long yuksamId = stationDao.insert(YUKSAM_NO_ID_ENTITY);
 
-        Station foundJamsil = stationDao.findById(jamsilSaved.getId());
-        Station foundYuksam = stationDao.findById(yuksamSaved.getId());
+        StationEntity foundJamsil = stationDao.findById(jamsilId);
+        StationEntity foundYuksam = stationDao.findById(yuksamId);
 
         assertAll(
-                () -> assertThat(foundJamsil.getId()).isPositive(),
-                () -> assertThat(foundJamsil.getName()).isEqualTo(jamsilSaved.getName()),
-                () -> assertThat(foundYuksam.getId()).isPositive(),
-                () -> assertThat(foundYuksam.getName()).isEqualTo(yuksamSaved.getName())
+                () -> assertThat(jamsilId).isPositive(),
+                () -> assertThat(foundJamsil.getName()).isEqualTo(jamsil.getName()),
+                () -> assertThat(yuksamId).isPositive(),
+                () -> assertThat(foundYuksam.getName()).isEqualTo(yuksam.getName())
         );
 
     }

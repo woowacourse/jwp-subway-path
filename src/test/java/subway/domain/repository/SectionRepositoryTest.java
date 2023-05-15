@@ -5,14 +5,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import subway.persistence.dao.LineDaoImpl;
-import subway.persistence.dao.SectionDao;
-import subway.persistence.dao.StationDao;
+import subway.persistence.dao.LineDao;
 import subway.persistence.repository.SectionRepositoryImpl;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
 import subway.service.section.domain.Sections;
+import subway.service.station.StationRepository;
 import subway.service.station.domain.Station;
 
 import java.util.List;
@@ -37,22 +36,19 @@ class SectionRepositoryTest {
 
     @Autowired
     SectionRepositoryImpl sectionRepositoryImpl;
+    @Autowired
+    StationRepository stationRepository;
 
     @Autowired
-    SectionDao sectionDao;
-
-    @Autowired
-    StationDao stationDao;
-
-    @Autowired
-    LineDaoImpl lineDao;
+    LineDao lineDao;
 
     @Test
     void 섹션_추가() {
-        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+
 
         Distance seonleungJamsilDistance = new Distance(10);
         Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
@@ -68,9 +64,9 @@ class SectionRepositoryTest {
 
     @Test
     void 섹션_조회() {
-        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
-        Station savedGangnam = stationDao.insert(GANGNAM_NO_ID);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
+        Station savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
 
@@ -102,9 +98,9 @@ class SectionRepositoryTest {
     @Test
     void 섹션_삭제() {
         // given
-        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
-        Station savedGangnam = stationDao.insert(GANGNAM_NO_ID);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
+        Station savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
         Line savedEightLine = lineDao.insert(EIGHT_LINE_NO_ID);
@@ -137,10 +133,10 @@ class SectionRepositoryTest {
     @Test
     void 호선_상관없이_지하철_역과_연결된_역_조회() {
         // given
-        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
-        Station savedGangnam = stationDao.insert(GANGNAM_NO_ID);
-        Station savedSeokchon = stationDao.insert(SEOKCHON);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
+        Station savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
+        Station savedSeokchon = stationRepository.insert(SEOKCHON);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
         Line savedEightLine = lineDao.insert(EIGHT_LINE_NO_ID);
@@ -199,8 +195,8 @@ class SectionRepositoryTest {
 
     @Test
     void 해당_라인의_구간이_하나_남아있으면_true() {
-        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
 
@@ -213,9 +209,9 @@ class SectionRepositoryTest {
 
     @Test
     void 해당_라인의_구간이_둘_이상이면_false() {
-        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
-        Station savedYuksam = stationDao.insert(YUKSAM_NO_ID);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
+        Station savedYuksam = stationRepository.insert(YUKSAM_NO_ID);
 
         Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
 

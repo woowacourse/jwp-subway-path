@@ -1,7 +1,7 @@
 package subway.service.line;
 
 import org.springframework.stereotype.Service;
-import subway.persistence.dao.LineDaoImpl;
+import subway.persistence.dao.LineDao;
 import subway.service.line.domain.Line;
 import subway.service.line.dto.LineRequest;
 import subway.service.line.dto.LineResponse;
@@ -11,9 +11,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class LineService {
-    private final LineDaoImpl lineDao;
+    private final LineDao lineDao;
 
-    public LineService(LineDaoImpl lineDao) {
+    public LineService(LineDao lineDao) {
         this.lineDao = lineDao;
     }
 

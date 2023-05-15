@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.domain.LineFixture;
-import subway.persistence.dao.LineDaoImpl;
-import subway.persistence.dao.StationDao;
+import subway.persistence.dao.LineDao;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
 import subway.service.section.repository.SectionRepository;
+import subway.service.station.StationRepository;
 import subway.service.station.domain.Station;
 
 import java.util.HashMap;
@@ -33,10 +33,10 @@ public class StationIntegrationTest extends IntegrationTest {
     SectionRepository sectionRepositoryImpl;
 
     @Autowired
-    StationDao stationDao;
+    StationRepository stationRepository;
 
     @Autowired
-    LineDaoImpl lineDao;
+    LineDao lineDao;
 
     @Test
     void 지하철역을_생성한다() {
@@ -90,9 +90,9 @@ public class StationIntegrationTest extends IntegrationTest {
 
     @Test
     void 종점역을_삭제한다() {
-        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        Station savedYuksam = stationDao.insert(YUKSAM_NO_ID);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedYuksam = stationRepository.insert(YUKSAM_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
 
         Line savedSecondLine = lineDao.insert(LineFixture.SECOND_LINE_NO_ID);
 
@@ -114,9 +114,9 @@ public class StationIntegrationTest extends IntegrationTest {
 
     @Test
     void 중간역을_삭제한다() {
-        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        Station savedYuksam = stationDao.insert(YUKSAM_NO_ID);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedYuksam = stationRepository.insert(YUKSAM_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
 
         Line savedSecondLine = lineDao.insert(LineFixture.SECOND_LINE_NO_ID);
 
@@ -138,10 +138,10 @@ public class StationIntegrationTest extends IntegrationTest {
 
     @Test
     void 존재하지_않는_역_삭제요청_예외() {
-        Station savedJamsil = stationDao.insert(JAMSIL_NO_ID);
-        Station savedYuksam = stationDao.insert(YUKSAM_NO_ID);
-        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
-        Station savedJangji = stationDao.insert(JANGJI_NO_ID);
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedYuksam = stationRepository.insert(YUKSAM_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
+        Station savedJangji = stationRepository.insert(JANGJI_NO_ID);
 
         Line savedSecondLine = lineDao.insert(LineFixture.SECOND_LINE_NO_ID);
 
