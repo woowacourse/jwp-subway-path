@@ -4,9 +4,10 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.section.dto.LineStationDeleteRequest;
-import subway.persistence.dao.LineDao;
+import subway.persistence.dao.LineDaoImpl;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
@@ -16,21 +17,22 @@ import subway.service.section.dto.SectionCreateRequest;
 import subway.service.section.repository.SectionRepository;
 import subway.service.station.domain.Station;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static subway.domain.LineFixture.EIGHT_LINE_NO_ID;
 import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
-import static subway.domain.StationFixture.GANGNAM;
-import static subway.domain.StationFixture.JAMSIL;
+import static subway.domain.StationFixture.GANGNAM_NO_ID;
+import static subway.domain.StationFixture.JAMSIL_NO_ID;
 import static subway.domain.StationFixture.SEOKCHON_NO_ID;
-import static subway.domain.StationFixture.SEONLEUNG;
-import static subway.domain.StationFixture.YUKSAM;
+import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
+import static subway.domain.StationFixture.YUKSAM_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest
 @Transactional
+@Sql("/test-schema.sql")
 class SectionServiceTest {
 
     @Autowired
@@ -43,7 +45,7 @@ class SectionServiceTest {
     SectionDao sectionDao;
 
     @Autowired
-    LineDao lineDao;
+    LineDaoImpl lineDao;
 
     @Autowired
     StationDao stationDao;
@@ -55,10 +57,12 @@ class SectionServiceTest {
     @BeforeEach
     void setUp() {
         savedLine = lineDao.insert(EIGHT_LINE_NO_ID);
-        savedJamsil = stationDao.insert(JAMSIL);
-        savedGangnam = stationDao.insert(GANGNAM);
+        savedJamsil = stationDao.insert(JAMSIL_NO_ID);
+        savedGangnam = stationDao.insert(GANGNAM_NO_ID);
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedGangnam.getId(), 10, savedLine.getId());
         sectionService.insert(sectionCreateRequest);
+
+        System.out.println(stationDao.findAll());
     }
 
     @Test
@@ -91,8 +95,8 @@ class SectionServiceTest {
 
     @Test
     void 노선에_역이_존재할_때_새로운_역_2개를_추가하면_예외() {
-        Station savedSeonleung = stationDao.insert(SEONLEUNG);
-        Station savedYuksam = stationDao.insert(YUKSAM);
+        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedYuksam = stationDao.insert(YUKSAM_NO_ID);
 
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedSeonleung.getId(), savedYuksam.getId(), 10, savedLine.getId());
 
@@ -118,7 +122,7 @@ class SectionServiceTest {
 
     @Test
     void 종점_제거() {
-        Station savedSeonleung = stationDao.insert(SEONLEUNG);
+        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
         SectionEntity gangnamSeonleungEntity = new SectionEntity(savedSeonleung.getId(), savedGangnam.getId(), 3, savedLine.getId());
 
         sectionDao.insert(gangnamSeonleungEntity);
@@ -134,7 +138,7 @@ class SectionServiceTest {
 
     @Test
     void 중간역_제거() {
-        Station savedSeonleung = stationDao.insert(SEONLEUNG);
+        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedSeonleung.getId(), 4, savedLine.getId());
         sectionService.insert(sectionCreateRequest);
 
@@ -152,7 +156,7 @@ class SectionServiceTest {
 
     @Test
     void 두_개의_노선에_걸치는_역_제거() {
-        Station savedSeonleung = stationDao.insert(SEONLEUNG);
+        Station savedSeonleung = stationDao.insert(SEONLEUNG_NO_ID);
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedSeonleung.getId(), 4, savedLine.getId());
         sectionService.insert(sectionCreateRequest);
 

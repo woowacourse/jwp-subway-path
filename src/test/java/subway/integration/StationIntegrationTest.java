@@ -4,13 +4,12 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.domain.LineFixture;
-import subway.persistence.dao.LineDao;
+import subway.persistence.dao.LineDaoImpl;
 import subway.persistence.dao.StationDao;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
@@ -28,17 +27,16 @@ import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
 import static subway.domain.StationFixture.YUKSAM_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
-@DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
 
     @Autowired
-    SectionRepository sectionRepository;
+    SectionRepository sectionRepositoryImpl;
 
     @Autowired
     StationDao stationDao;
 
     @Autowired
-    LineDao lineDao;
+    LineDaoImpl lineDao;
 
     @Test
     void 지하철역을_생성한다() {
@@ -101,8 +99,8 @@ public class StationIntegrationTest extends IntegrationTest {
         Section seonleungJamsil = new Section(savedJamsil, savedSeonleung, new Distance(10));
         Section yuksamSeonleung = new Section(savedSeonleung, savedYuksam, new Distance(4));
 
-        sectionRepository.insertSection(seonleungJamsil, savedSecondLine);
-        sectionRepository.insertSection(yuksamSeonleung, savedSecondLine);
+        sectionRepositoryImpl.insertSection(seonleungJamsil, savedSecondLine);
+        sectionRepositoryImpl.insertSection(yuksamSeonleung, savedSecondLine);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
@@ -125,8 +123,8 @@ public class StationIntegrationTest extends IntegrationTest {
         Section seonleungJamsil = new Section(savedJamsil, savedSeonleung, new Distance(10));
         Section yuksamSeonleung = new Section(savedSeonleung, savedYuksam, new Distance(4));
 
-        sectionRepository.insertSection(seonleungJamsil, savedSecondLine);
-        sectionRepository.insertSection(yuksamSeonleung, savedSecondLine);
+        sectionRepositoryImpl.insertSection(seonleungJamsil, savedSecondLine);
+        sectionRepositoryImpl.insertSection(yuksamSeonleung, savedSecondLine);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()
@@ -150,8 +148,8 @@ public class StationIntegrationTest extends IntegrationTest {
         Section seonleungJamsil = new Section(savedJamsil, savedSeonleung, new Distance(10));
         Section yuksamSeonleung = new Section(savedSeonleung, savedYuksam, new Distance(4));
 
-        sectionRepository.insertSection(seonleungJamsil, savedSecondLine);
-        sectionRepository.insertSection(yuksamSeonleung, savedSecondLine);
+        sectionRepositoryImpl.insertSection(seonleungJamsil, savedSecondLine);
+        sectionRepositoryImpl.insertSection(yuksamSeonleung, savedSecondLine);
 
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when()

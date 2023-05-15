@@ -3,8 +3,9 @@ package subway.service.section;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.section.dto.LineStationDeleteRequest;
-import subway.persistence.dao.LineDao;
+import subway.persistence.dao.LineDaoImpl;
 import subway.persistence.dao.StationDao;
+import subway.persistence.repository.SectionRepositoryImpl;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
@@ -25,19 +26,19 @@ import java.util.Map;
 @Transactional
 public class SectionService {
 
-    private final LineDao lineDao;
-    private final SectionRepository sectionRepository;
+    private final LineDaoImpl lineDao;
+    private final SectionRepository sectionRepositoryImpl;
     private final StationDao stationDao;
 
-    public SectionService(LineDao lineDao, SectionRepository sectionRepository, StationDao stationDao) {
+    public SectionService(LineDaoImpl lineDao, SectionRepositoryImpl sectionRepositoryImpl, StationDao stationDao) {
         this.lineDao = lineDao;
-        this.sectionRepository = sectionRepository;
+        this.sectionRepositoryImpl = sectionRepositoryImpl;
         this.stationDao = stationDao;
     }
 
     public SectionCreateResponse insert(SectionCreateRequest sectionCreateRequest) {
         Line line = lineDao.findById(sectionCreateRequest.getLineId()).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
-        Sections sections = sectionRepository.findSectionsByLine(line);
+        Sections sections = sectionRepositoryImpl.findSectionsByLine(line);
         Station upStation = stationDao.findById(sectionCreateRequest.getUpStationId());
         Station downStation = stationDao.findById(sectionCreateRequest.getDownStationId());
         Distance distance = new Distance(sectionCreateRequest.getDistance());
@@ -45,12 +46,12 @@ public class SectionService {
         AddResult addResult = sections.add(upStation, downStation, distance);
         List<SectionResponse> addedSectionResponses = new ArrayList<>();
         for (Section section : addResult.getAddedResults()) {
-            Section savedSection = sectionRepository.insertSection(section, line);
+            Section savedSection = sectionRepositoryImpl.insertSection(section, line);
             addedSectionResponses.add(SectionResponse.of(savedSection));
         }
 
         for (Section section : addResult.getDeletedResults()) {
-            sectionRepository.deleteSection(section);
+            sectionRepositoryImpl.deleteSection(section);
         }
 
         return new SectionCreateResponse(sectionCreateRequest.getLineId(), addedSectionResponses, List.of());
@@ -59,11 +60,11 @@ public class SectionService {
 
     public void delete(LineStationDeleteRequest lineStationDeleteRequest) {
         Station station = stationDao.findById(lineStationDeleteRequest.getStationId());
-        Map<Line, Sections> sectionsPerLine = sectionRepository.findSectionsByStation(station);
+        Map<Line, Sections> sectionsPerLine = sectionRepositoryImpl.findSectionsByStation(station);
 
         for (Line perLine : sectionsPerLine.keySet()) {
             Sections sections = sectionsPerLine.get(perLine);
-            boolean isLastSection = sectionRepository.isLastSectionInLine(perLine);
+            boolean isLastSection = sectionRepositoryImpl.isLastSectionInLine(perLine);
             if (isLastSection) {
                 Section lastSection = sections.getSections().get(0);
                 deleteStationsInLastSection(station, lastSection);
@@ -72,7 +73,7 @@ public class SectionService {
             DeleteResult deleteResult = sections.deleteSection(station);
 
             for (Section addedSection : deleteResult.getAddedSections()) {
-                sectionRepository.insertSection(addedSection, perLine);
+                sectionRepositoryImpl.insertSection(addedSection, perLine);
             }
         }
         stationDao.deleteById(station.getId());

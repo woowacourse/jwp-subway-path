@@ -6,12 +6,13 @@ import io.restassured.RestAssured;
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.controller.section.dto.SectionCreateControllerRequest;
-import subway.persistence.dao.LineDao;
+import subway.persistence.dao.LineDaoImpl;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
@@ -19,11 +20,11 @@ import subway.service.line.domain.Line;
 import subway.service.station.domain.Station;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.LineFixture.SECOND_LINE;
-import static subway.domain.StationFixture.GANGNAM;
-import static subway.domain.StationFixture.JAMSIL;
-import static subway.domain.StationFixture.SEONLEUNG;
-import static subway.domain.StationFixture.YUKSAM;
+import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
+import static subway.domain.StationFixture.GANGNAM_NO_ID;
+import static subway.domain.StationFixture.JAMSIL_NO_ID;
+import static subway.domain.StationFixture.SEONLEUNG_NO_ID;
+import static subway.domain.StationFixture.YUKSAM_NO_ID;
 
 @SuppressWarnings("NonAsciiCharacters")
 public class SectionIntegrationTest extends IntegrationTest {
@@ -35,16 +36,22 @@ public class SectionIntegrationTest extends IntegrationTest {
     SectionDao sectionDao;
 
     @Autowired
-    LineDao lineDao;
+    LineDaoImpl lineDao;
 
     @Autowired
     ObjectMapper objectMapper;
 
+    @AfterEach
+    public void a() {
+        System.out.println("----------");
+        System.out.println(stationDao.findAll());
+    }
+
     @Test
     void 노선에_아무것도_없는_경우_섹션_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE);
-        Station savedUpStation = stationDao.insert(JAMSIL);
-        Station savedDownStation = stationDao.insert(YUKSAM);
+        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Station savedUpStation = stationDao.insert(JAMSIL_NO_ID);
+        Station savedDownStation = stationDao.insert(YUKSAM_NO_ID);
 
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedUpStation.getId(),
@@ -67,8 +74,8 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 동일한_역_2개를_저장_입력으로_작성하면_예외() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE);
-        Station savedUpStation = stationDao.insert(JAMSIL);
+        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Station savedUpStation = stationDao.insert(JAMSIL_NO_ID);
 
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedUpStation.getId(),
@@ -94,15 +101,15 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 노선에_역이_있을_때_입력으로_들어온_역이_모두_노선에_존재하지_않으면_예외() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE);
-        Station savedUpStation = stationDao.insert(JAMSIL);
-        Station savedDownStation = stationDao.insert(YUKSAM);
+        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Station savedUpStation = stationDao.insert(JAMSIL_NO_ID);
+        Station savedDownStation = stationDao.insert(YUKSAM_NO_ID);
 
         SectionEntity sectionEntity = new SectionEntity(savedUpStation.getId(), savedDownStation.getId(), 10, savedLine.getId());
         sectionDao.insert(sectionEntity);
 
-        Station gangnam = stationDao.insert(GANGNAM);
-        Station seonleung = stationDao.insert(SEONLEUNG);
+        Station gangnam = stationDao.insert(GANGNAM_NO_ID);
+        Station seonleung = stationDao.insert(SEONLEUNG_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 gangnam.getId(),
                 seonleung.getId(),
@@ -127,9 +134,9 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 추가하려는_역이_모두_노선에_있으면_예외() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE);
-        Station savedUpStation = stationDao.insert(JAMSIL);
-        Station savedDownStation = stationDao.insert(YUKSAM);
+        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Station savedUpStation = stationDao.insert(JAMSIL_NO_ID);
+        Station savedDownStation = stationDao.insert(YUKSAM_NO_ID);
 
         SectionEntity sectionEntity = new SectionEntity(savedUpStation.getId(), savedDownStation.getId(), 10, savedLine.getId());
         sectionDao.insert(sectionEntity);
@@ -158,14 +165,14 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 추가하려는_경로의_길이가_기존_경로의_길이보다_크면_예외() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE);
-        Station savedUpStation = stationDao.insert(JAMSIL);
-        Station savedDownStation = stationDao.insert(YUKSAM);
+        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Station savedUpStation = stationDao.insert(JAMSIL_NO_ID);
+        Station savedDownStation = stationDao.insert(YUKSAM_NO_ID);
 
         SectionEntity sectionEntity = new SectionEntity(savedUpStation.getId(), savedDownStation.getId(), 10, savedLine.getId());
         sectionDao.insert(sectionEntity);
 
-        Station gangnam = stationDao.insert(GANGNAM);
+        Station gangnam = stationDao.insert(GANGNAM_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedUpStation.getId(),
                 gangnam.getId(),
@@ -190,14 +197,14 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 하행종점_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE);
-        Station savedUpStation = stationDao.insert(JAMSIL);
-        Station savedDownStation = stationDao.insert(YUKSAM);
+        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Station savedUpStation = stationDao.insert(JAMSIL_NO_ID);
+        Station savedDownStation = stationDao.insert(YUKSAM_NO_ID);
 
         SectionEntity sectionEntity = new SectionEntity(savedUpStation.getId(), savedDownStation.getId(), 10, savedLine.getId());
         sectionDao.insert(sectionEntity);
 
-        Station gangnam = stationDao.insert(GANGNAM);
+        Station gangnam = stationDao.insert(GANGNAM_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedDownStation.getId(),
                 gangnam.getId(),
@@ -219,14 +226,14 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 상행종점_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE);
-        Station savedUpStation = stationDao.insert(SEONLEUNG);
-        Station savedDownStation = stationDao.insert(YUKSAM);
+        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Station savedUpStation = stationDao.insert(SEONLEUNG_NO_ID);
+        Station savedDownStation = stationDao.insert(YUKSAM_NO_ID);
 
         SectionEntity sectionEntity = new SectionEntity(savedUpStation.getId(), savedDownStation.getId(), 10, savedLine.getId());
         sectionDao.insert(sectionEntity);
 
-        Station jamsil = stationDao.insert(JAMSIL);
+        Station jamsil = stationDao.insert(JAMSIL_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 jamsil.getId(),
                 savedUpStation.getId(),
@@ -248,14 +255,14 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 상행역이_존재하고_하행역을_중간에_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE);
-        Station savedUpStation = stationDao.insert(JAMSIL);
-        Station savedDownStation = stationDao.insert(YUKSAM);
+        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Station savedUpStation = stationDao.insert(JAMSIL_NO_ID);
+        Station savedDownStation = stationDao.insert(YUKSAM_NO_ID);
 
         SectionEntity sectionEntity = new SectionEntity(savedUpStation.getId(), savedDownStation.getId(), 10, savedLine.getId());
         sectionDao.insert(sectionEntity);
 
-        Station seonleung = stationDao.insert(SEONLEUNG);
+        Station seonleung = stationDao.insert(SEONLEUNG_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 savedUpStation.getId(),
                 seonleung.getId(),
@@ -277,14 +284,14 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 하행역이_존재하고_상행역을_중간에_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE);
-        Station savedUpStation = stationDao.insert(JAMSIL);
-        Station savedDownStation = stationDao.insert(YUKSAM);
+        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Station savedUpStation = stationDao.insert(JAMSIL_NO_ID);
+        Station savedDownStation = stationDao.insert(YUKSAM_NO_ID);
 
         SectionEntity sectionEntity = new SectionEntity(savedUpStation.getId(), savedDownStation.getId(), 10, savedLine.getId());
         sectionDao.insert(sectionEntity);
 
-        Station seonleung = stationDao.insert(SEONLEUNG);
+        Station seonleung = stationDao.insert(SEONLEUNG_NO_ID);
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
                 seonleung.getId(),
                 savedDownStation.getId(),

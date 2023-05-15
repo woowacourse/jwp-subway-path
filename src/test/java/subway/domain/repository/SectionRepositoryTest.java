@@ -3,15 +3,16 @@ package subway.domain.repository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import subway.persistence.dao.LineDao;
+import subway.persistence.dao.LineDaoImpl;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
+import subway.persistence.repository.SectionRepositoryImpl;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
 import subway.service.section.domain.Sections;
-import subway.service.section.repository.SectionRepository;
 import subway.service.station.domain.Station;
 
 import java.util.List;
@@ -31,10 +32,11 @@ import static subway.domain.StationFixture.YUKSAM_NO_ID;
 @SuppressWarnings("NonAsciiCharacters")
 @SpringBootTest
 @Transactional
+@Sql("/test-schema.sql")
 class SectionRepositoryTest {
 
     @Autowired
-    SectionRepository sectionRepository;
+    SectionRepositoryImpl sectionRepositoryImpl;
 
     @Autowired
     SectionDao sectionDao;
@@ -43,7 +45,7 @@ class SectionRepositoryTest {
     StationDao stationDao;
 
     @Autowired
-    LineDao lineDao;
+    LineDaoImpl lineDao;
 
     @Test
     void 섹션_추가() {
@@ -55,7 +57,7 @@ class SectionRepositoryTest {
         Distance seonleungJamsilDistance = new Distance(10);
         Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
 
-        Section savedSection = sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
+        Section savedSection = sectionRepositoryImpl.insertSection(seonleungJamsilSection, savedSecondLine);
         assertAll(
                 () -> assertThat(savedSection.getId()).isPositive(),
                 () -> assertThat(savedSection.getUpStation()).isEqualTo(savedJamsil),
@@ -75,10 +77,10 @@ class SectionRepositoryTest {
         Section jamsilToSeonleung = new Section(savedJamsil, savedSeonleung, new Distance(10));
         Section gangnamToSeonleung = new Section(savedSeonleung, savedGangnam, new Distance(3));
 
-        sectionRepository.insertSection(jamsilToSeonleung, savedSecondLine);
-        sectionRepository.insertSection(gangnamToSeonleung, savedSecondLine);
+        sectionRepositoryImpl.insertSection(jamsilToSeonleung, savedSecondLine);
+        sectionRepositoryImpl.insertSection(gangnamToSeonleung, savedSecondLine);
 
-        Sections sectionsByLine = sectionRepository.findSectionsByLine(savedSecondLine);
+        Sections sectionsByLine = sectionRepositoryImpl.findSectionsByLine(savedSecondLine);
 
         Section findSeonleungJamsilSection = sectionsByLine.getSections().stream()
                 .filter(section -> section.contains(savedJamsil) && section.contains(savedSeonleung))
@@ -113,14 +115,14 @@ class SectionRepositoryTest {
         Section eightLineSection = new Section(savedJamsil, savedGangnam, new Distance(7));
 
 
-        Section savedSeonleungToJamsilSection = sectionRepository.insertSection(seonleungToJamsilSection, savedSecondLine);
-        Section savedGangnamToSeonleungSection = sectionRepository.insertSection(gangnamToSeonleungSection, savedSecondLine);
-        Section savedSectionInEightLine = sectionRepository.insertSection(eightLineSection, savedEightLine);
+        Section savedSeonleungToJamsilSection = sectionRepositoryImpl.insertSection(seonleungToJamsilSection, savedSecondLine);
+        Section savedGangnamToSeonleungSection = sectionRepositoryImpl.insertSection(gangnamToSeonleungSection, savedSecondLine);
+        Section savedSectionInEightLine = sectionRepositoryImpl.insertSection(eightLineSection, savedEightLine);
 
         //when
-        sectionRepository.deleteSection(savedSeonleungToJamsilSection);
+        sectionRepositoryImpl.deleteSection(savedSeonleungToJamsilSection);
 
-        Sections sectionsByLine = sectionRepository.findSectionsByLine(savedSecondLine);
+        Sections sectionsByLine = sectionRepositoryImpl.findSectionsByLine(savedSecondLine);
 
         //then
         assertAll(
@@ -148,12 +150,12 @@ class SectionRepositoryTest {
 
         Section seokchonToJamsil = new Section(savedJamsil, savedSeokchon, new Distance(7));
 
-        sectionRepository.insertSection(seonleungToJamsilSection, savedSecondLine);
-        sectionRepository.insertSection(seokchonToJamsil, savedEightLine);
-        sectionRepository.insertSection(gangnamToSeonleungSection, savedSecondLine);
+        sectionRepositoryImpl.insertSection(seonleungToJamsilSection, savedSecondLine);
+        sectionRepositoryImpl.insertSection(seokchonToJamsil, savedEightLine);
+        sectionRepositoryImpl.insertSection(gangnamToSeonleungSection, savedSecondLine);
 
         // when
-        Map<Line, Sections> sectionsPerLine = sectionRepository.findSectionsByStation(savedJamsil);
+        Map<Line, Sections> sectionsPerLine = sectionRepositoryImpl.findSectionsByStation(savedJamsil);
 
         // 2호선 역 아이디 추출
         Sections secondSections = sectionsPerLine.get(savedSecondLine);
@@ -205,8 +207,8 @@ class SectionRepositoryTest {
         Distance seonleungJamsilDistance = new Distance(10);
         Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
 
-        sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
-        assertThat(sectionRepository.isLastSectionInLine(savedSecondLine)).isTrue();
+        sectionRepositoryImpl.insertSection(seonleungJamsilSection, savedSecondLine);
+        assertThat(sectionRepositoryImpl.isLastSectionInLine(savedSecondLine)).isTrue();
     }
 
     @Test
@@ -221,8 +223,8 @@ class SectionRepositoryTest {
         Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
         Section seonleungYuksamSection = new Section(savedYuksam, savedSeonleung, new Distance(3));
 
-        sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
-        sectionRepository.insertSection(seonleungYuksamSection, savedSecondLine);
-        assertThat(sectionRepository.isLastSectionInLine(savedSecondLine)).isFalse();
+        sectionRepositoryImpl.insertSection(seonleungJamsilSection, savedSecondLine);
+        sectionRepositoryImpl.insertSection(seonleungYuksamSection, savedSecondLine);
+        assertThat(sectionRepositoryImpl.isLastSectionInLine(savedSecondLine)).isFalse();
     }
 }

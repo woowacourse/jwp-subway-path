@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.persistence.dao.LineDao;
+import subway.persistence.dao.LineDaoImpl;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.dao.entity.SectionEntity;
@@ -32,13 +32,13 @@ class SectionCreateDaoTest {
     private JdbcTemplate jdbcTemplate;
 
     private SectionDao sectionDao;
-    private LineDao lineDao;
+    private LineDaoImpl lineDao;
     private StationDao stationDao;
 
     @BeforeEach
     void setUp() {
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
-        lineDao = new LineDao(jdbcTemplate, dataSource);
+        lineDao = new LineDaoImpl(jdbcTemplate, dataSource);
         stationDao = new StationDao(jdbcTemplate, dataSource);
     }
 
