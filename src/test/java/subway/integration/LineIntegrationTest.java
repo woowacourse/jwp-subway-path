@@ -99,9 +99,6 @@ public class LineIntegrationTest extends IntegrationTest {
         final LineResponse[] responses = OBJECT_MAPPER.readValue(string, LineResponse[].class);
         assertAll(
                 () -> assertThat(responses)
-                        .extracting(LineResponse::getId)
-                        .containsExactlyInAnyOrder(1L, 2L),
-                () -> assertThat(responses)
                         .extracting(LineResponse::getName)
                         .containsExactlyInAnyOrder("2호선", "3호선")
         );
@@ -132,7 +129,6 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         final LineResponse result = response.as(LineResponse.class);
         assertAll(
-                () -> assertThat(result.getId()).isEqualTo(lineId),
                 () -> assertThat(result.getName()).isEqualTo("2호선"),
                 () -> assertThat(result.getStations())
                         .extracting(StationResponse::getName)

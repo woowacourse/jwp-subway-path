@@ -59,7 +59,7 @@ public class LineService {
         final Sections insertSections = new Sections(List.of(newSection));
 
         sectionService.deleteSections(deleteSections);
-        sectionService.insertSections(line.getId(), insertSections);
+        sectionService.insertSections(lineId, insertSections);
     }
 
     @Transactional
