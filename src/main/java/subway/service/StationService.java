@@ -47,13 +47,12 @@ public class StationService {
         return new Section(newStations);
     }
 
-    public void deleteStation(final StationDeleteRequest stationDeleteRequest) {
+    public void deleteStation(final long lineId, final String station) {
 
-        final String lineName = stationDeleteRequest.getLineName();
-        final LineEntity lineEntity = lineMakerService.getLineEntityByName(lineName);
-        final Line line = lineMakerService.mapToLineFrom(lineName);
+        final LineEntity lineEntity = lineMakerService.getLineEntityById(lineId);
+        final Line line = lineMakerService.mapToLineFrom(lineEntity.getName());
 
-        line.delete(new Station(stationDeleteRequest.getStationName()));
+        line.delete(new Station(station));
 
         if (line.isDeleted()) {
             sectionService.deleteAll(lineEntity.getId());
