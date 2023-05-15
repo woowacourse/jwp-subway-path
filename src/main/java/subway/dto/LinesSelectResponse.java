@@ -16,7 +16,7 @@ public class LinesSelectResponse {
 
     public static LinesSelectResponse from(List<Line> lines) {
         final List<LineSelectResponse> lineSelectResponses = lines.stream()
-                .map(line -> LineSelectResponse.of(line.getName(), line.getStations()))
+                .map(line -> LineSelectResponse.of(line))
                 .collect(Collectors.toUnmodifiableList());
 
         return new LinesSelectResponse(lineSelectResponses);

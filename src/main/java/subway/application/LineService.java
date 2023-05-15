@@ -46,13 +46,9 @@ public class LineService {
         return LinesSelectResponse.from(lines);
     }
 
-    public List<LineEntity> findLines() {
-        return lineDao.findAll();
-    }
-
     public LineSelectResponse getStationsByLineId(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        return LineSelectResponse.of(line.getName(), line.getStations());
+        return LineSelectResponse.of(line);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
