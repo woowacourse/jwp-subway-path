@@ -55,9 +55,10 @@ public class SubwayMapService {
         List<String> shortestPathList = path.getVertexList();
         List<String> shortestPathWithLineNames = makeShortestPathWithLineName(lineMapInPath, shortestPathList);
         int distance = (int) path.getWeight();
+        int fee = calculateFee(distance);
 
         System.out.println("shortestPath: " + shortestPathList);
-        System.out.println("shortestPathWithLine: " + shortestPathWithLineNames + " distance: " + distance);
+        System.out.println("shortestPathWithLine: " + shortestPathWithLineNames + " distance: " + fee);
         System.out.println("map = " + lineMapInPath);
 
         List<StationResponse> shortestPathResponse = shortestPathList.stream()
@@ -68,7 +69,7 @@ public class SubwayMapService {
                 .map(it -> StationResponse.from(new Station(it)))
                 .collect(Collectors.toList());
 
-        return RouteShortCutResponse.from(shortestPathResponse, shortestPathWithLineResponse);
+        return RouteShortCutResponse.from(shortestPathResponse, shortestPathWithLineResponse, fee, distance);
     }
 
     private WeightedMultigraph<String, DefaultWeightedEdge> findShortestPathGraph(final List<Line> lines, final Map<String, Set<String>> lineMapInPath) {
@@ -117,5 +118,20 @@ public class SubwayMapService {
                     return lineRepository.findByLineNameAndSections(lineEntity.getName(), sections);
                 })
                 .collect(Collectors.toList());
+    }
+
+    private int calculateFee(final int distance) {
+        int fee = 1250;
+        if (distance <= 10) {
+            return fee;
+        }
+
+        fee += (int) ((Math.ceil((distance - 10) / 5) + 1) * 100);
+        if (distance < 50) {
+            return fee;
+        }
+
+        fee += (int) ((Math.ceil((distance - 50) / 8) + 1) * 100);
+        return fee;
     }
 }
