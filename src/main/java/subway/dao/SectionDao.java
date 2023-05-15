@@ -5,10 +5,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Station;
-import subway.domain.Section;
+import subway.domain.*;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -95,7 +92,7 @@ public class SectionDao {
 
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, previousStation.getId(), line.getId());
         if (rs.next()) {
-            var distance = rs.getInt("DISTANCE") == 0 ? Distance.emptyDistance() : Distance.of(rs.getInt("DISTANCE"));
+            var distance = rs.getInt("DISTANCE") == 0 ? new EmptyDistance() : Distance.of(rs.getInt("DISTANCE"));
             return Optional.of(
                     new Section(
                             rs.getLong("ID"),
@@ -129,7 +126,7 @@ public class SectionDao {
                 "where SE.next_station_id = ? and SE.line_id = ?;";
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, nextStation.getId(), line.getId());
         if (rs.next()) {
-            var distance = rs.getInt("DISTANCE") == 0 ? Distance.emptyDistance() : Distance.of(rs.getInt("DISTANCE"));
+            var distance = rs.getInt("DISTANCE") == 0 ? new EmptyDistance() : Distance.of(rs.getInt("DISTANCE"));
             return Optional.of(new Section(rs.getLong("ID"),
                     new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")),
                     new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")),
@@ -190,7 +187,7 @@ public class SectionDao {
                 "inner join LINE L " +
                 "on SE.line_id = L.id;";
         return jdbcTemplate.query(sql, (rs, rowNum) -> {
-            var distance = rs.getInt("DISTANCE") == 0 ? Distance.emptyDistance() : Distance.of(rs.getInt("DISTANCE"));
+            var distance = rs.getInt("DISTANCE") == 0 ? new EmptyDistance() : Distance.of(rs.getInt("DISTANCE"));
             return new Section((rs.getLong("ID")),
                     new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")),
                     new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")),

@@ -4,7 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.domain.Distance;
+import subway.domain.EmptyDistance;
 import subway.domain.EmptyStation;
 import subway.domain.Section;
 
@@ -27,7 +27,7 @@ public class InitializingSectionInsertionStrategy implements SectionInsertionStr
     @Override
     public long insert(Section section) {
         final var sectionId = sectionDao.insert(section).getId();
-        sectionDao.insert(new Section(section.getLine(), section.getNextStation(), new EmptyStation(), Distance.emptyDistance()));
+        sectionDao.insert(new Section(section.getLine(), section.getNextStation(), new EmptyStation(), new EmptyDistance()));
         lineDao.updateHeadStation(section.getLine(), section.getPreviousStation());
         return sectionId;
     }

@@ -10,7 +10,7 @@ public class Distance {
     public static final int MIN_DISTANCE_VALUE = 0;
     private final int value;
 
-    public Distance(int value) {
+    protected Distance(int value) {
         this.value = value;
     }
 
@@ -21,12 +21,6 @@ public class Distance {
         return new Distance(value);
     }
 
-    /**
-     * 거리가 0이어야 하는 특수 상황의 Distance 객체를 생성할 수 있는 메서드
-     */
-    public static Distance emptyDistance() {
-        return new Distance(0);
-    }
     public Distance subtract(Distance distance) {
         return Distance.of(this.value - distance.value);
     }

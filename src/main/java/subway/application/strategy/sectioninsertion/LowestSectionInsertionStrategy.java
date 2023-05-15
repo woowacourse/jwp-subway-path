@@ -4,7 +4,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import subway.application.exception.ExceptionMessages;
 import subway.dao.SectionDao;
-import subway.domain.Distance;
+import subway.domain.EmptyDistance;
 import subway.domain.EmptyStation;
 import subway.domain.Section;
 
@@ -31,7 +31,7 @@ public class LowestSectionInsertionStrategy implements SectionInsertionStrategy 
         final var savedId = sectionDao.insert(section.change()
                 .previousStation(section.getNextStation())
                 .nextStation(new EmptyStation())
-                .distance(Distance.emptyDistance())
+                .distance(new EmptyDistance())
                 .done()).getId();
 
         sectionDao.update(sectionToUpdate.change()
