@@ -1,44 +1,62 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import static subway.exception.ErrorCode.STATION_NAME_DUPLICATED;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.station.Station;
+import subway.domain.station.StationRepository;
+import subway.domain.station.dto.StationRes;
+import subway.application.dto.StationRequest;
+import subway.application.dto.StationResponse;
+import subway.exception.BadRequestException;
 
 @Service
+@Transactional(readOnly = true)
 public class StationService {
-    private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    private final StationRepository stationRepository;
+
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    @Transactional
+    public Long saveStation(final StationRequest stationRequest) {
+        validateDuplicatedName(stationRequest);
+        final Station requestStation = new Station(stationRequest.getName());
+        return stationRepository.insert(requestStation);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    @Transactional
+    public void updateStationById(Long id, StationRequest stationRequest) {
+        validateDuplicatedName(stationRequest);
+        final Station station = new Station(stationRequest.getName());
+        stationRepository.updateById(id, station);
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
-    }
-
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
-    }
-
+    @Transactional
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        stationRepository.deleteById(id);
+    }
+
+    public StationResponse getStationById(final Long id) {
+        final Station station = stationRepository.findById(id);
+        return new StationResponse(id, station.getName().name());
+    }
+
+    public List<StationResponse> getStations() {
+        final List<StationRes> findStations = stationRepository.findAll();
+        return findStations.stream()
+            .map(res -> new StationResponse(res.getId(), res.getName()))
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    private void validateDuplicatedName(final StationRequest stationRequest) {
+        if (stationRepository.existByName(stationRequest.getName())) {
+            throw new BadRequestException(STATION_NAME_DUPLICATED);
+        }
     }
 }

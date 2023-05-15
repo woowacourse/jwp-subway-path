@@ -1,61 +1,112 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import subway.dao.dto.LineWithSection;
+import subway.dao.entity.LineEntity;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
-            );
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+        new LineEntity(
+            rs.getLong("id"),
+            rs.getString("name"),
+            rs.getString("color")
+        );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("line")
-                .usingGeneratedKeyColumns("id");
+            .withTableName("line")
+            .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+    public Long insert(final LineEntity lineEntity) {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("id", lineEntity.getId());
+        params.put("name", lineEntity.getName());
+        params.put("color", lineEntity.getColor());
+        return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+    public Optional<LineEntity> findById(final Long id) {
+        final String sql = "SELECT id, name, color FROM line WHERE id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public List<LineWithSection> findByLindIdWithSections(final Long id) {
+        final String sql = "SELECT sec.id, l.id as line_id, l.name as line_name, l.color as line_color, "
+            + "sec.source_station_id, sta1.name as source_station_name, "
+            + "sec.target_station_id, sta2.name as target_station_name, sec.distance "
+            + "FROM line l "
+            + "INNER JOIN section sec ON l.id = sec.line_id "
+            + "INNER JOIN station sta1 ON sec.source_station_id = sta1.id "
+            + "INNER JOIN station sta2 ON sec.target_station_id = sta2.id "
+            + "WHERE line_id = ?";
+
+        return jdbcTemplate.query(sql, (result, count) ->
+            new LineWithSection(
+                result.getLong("id"),
+                result.getLong("line_id"),
+                result.getString("line_name"),
+                result.getString("line_color"),
+                result.getLong("source_station_id"),
+                result.getString("source_station_name"),
+                result.getLong("target_station_id"),
+                result.getString("target_station_name"),
+                result.getInt("distance")), id);
     }
 
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    public List<LineWithSection> findAllWithSections() {
+        final String sql = "SELECT sec.id, l.id as line_id, l.name as line_name, l.color as line_color, "
+            + "sec.source_station_id, sta1.name as source_station_name, "
+            + "sec.target_station_id, sta2.name as target_station_name, sec.distance "
+            + "FROM line l "
+            + "INNER JOIN section sec ON l.id = sec.line_id "
+            + "INNER JOIN station sta1 ON sec.source_station_id = sta1.id "
+            + "INNER JOIN station sta2 ON sec.target_station_id = sta2.id ";
+
+        return jdbcTemplate.query(sql, (result, count) ->
+            new LineWithSection(
+                result.getLong("id"),
+                result.getLong("line_id"),
+                result.getString("line_name"),
+                result.getString("line_color"),
+                result.getLong("source_station_id"),
+                result.getString("source_station_name"),
+                result.getLong("target_station_id"),
+                result.getString("target_station_name"),
+                result.getInt("distance")));
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int update(final LineEntity lineEntity) {
+        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
+        return jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
+    }
+
+    public int deleteById(final Long id) {
+        return jdbcTemplate.update("DELETE FROM line WHERE id = ?", id);
+    }
+
+    public boolean existByName(final String name) {
+        final String sql = "SELECT COUNT(*) FROM line WHERE name = ?";
+        final long count = jdbcTemplate.queryForObject(sql, Long.class, name);
+        return count > 0;
     }
 }
