@@ -22,11 +22,9 @@
 
 ```mermaid
 graph TD
-Lines --> Line
-Line --> Sections
 Sections --> Section
+Section -->  Line
 Section --> Station
-Section --> Distance
 ```
 
 # API 설계
