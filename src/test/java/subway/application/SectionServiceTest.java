@@ -82,7 +82,7 @@ class SectionServiceTest {
         // then
         assertThatThrownBy(() -> sectionService.saveSection(request))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("stationId = " + 3L + " 인 역이 존재하지 않습니다");
+            .hasMessage("해당 노선에 stationId = " + 3L + " 인 역이 존재하지 않습니다");
     }
 
     @Test
@@ -141,6 +141,6 @@ class SectionServiceTest {
         // then
         assertThatThrownBy(() -> sectionService.deleteSection(request))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("stationId = " + 3L + " 인 역이 존재하지 않습니다");
+            .hasMessage("해당 노선에 stationId = " + 3L + " 인 역이 존재하지 않습니다");
     }
 }
