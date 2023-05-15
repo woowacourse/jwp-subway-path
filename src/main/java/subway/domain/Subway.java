@@ -11,8 +11,10 @@ import java.util.stream.Collectors;
 @Component
 public class Subway {
     private final List<Sections> sections;
+    private final Graph graph;
 
-    public Subway() {
+    public Subway(final Graph graph) {
+        this.graph = graph;
         this.sections = new ArrayList<>();
     }
 
@@ -31,7 +33,7 @@ public class Subway {
     }
 
     public void createSectionsOf(final Line line) {
-        final Sections newSections = new Sections(line);
+        final Sections newSections = new Sections(line, graph);
         sections.add(newSections);
     }
 
@@ -61,8 +63,6 @@ public class Subway {
         final Sections sections = findSectionsOf(line);
 
         if (!sections.containsStation(upStation) || !sections.containsStation(downStation)) {
-            System.out.println(sections.containsStation(upStation));
-            System.out.println(sections.containsStation(downStation));
             throw new IllegalArgumentException("존재하지 않는 역입니다!");
         }
         return sections.findDistanceBetween(upStation, downStation);

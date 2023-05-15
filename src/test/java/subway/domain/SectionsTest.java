@@ -13,13 +13,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.mockito.Mockito.mock;
 import static subway.fixture.LineFixture.LINE_999;
 import static subway.fixture.StationFixture.*;
 
 class SectionsTest {
 
+    private final Graph graph = new DefaultDirectedWeightedGraph();
+
     private Sections createSections() {
-        final Sections sections = new Sections(LINE_999);
+        final Sections sections = new Sections(LINE_999, graph);
         sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
         return sections;
     }
@@ -27,7 +30,7 @@ class SectionsTest {
     @Test
     @DisplayName("새로운 노선(2개의 역)을 등록한다")
     void createNewLine() {
-        final Sections sections = new Sections(LINE_999);
+        final Sections sections = new Sections(LINE_999, graph);
         sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
 
         assertThat(sections.findAllStationsInOrder()).containsExactly(
@@ -165,7 +168,7 @@ class SectionsTest {
         @Test
         @DisplayName("입력한 두 역이 같은 역이면 예외가 발생한다.")
         void sameStations() {
-            final Sections sections = new Sections(LINE_999);
+            final Sections sections = new Sections(LINE_999, graph);
             sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
             assertThatThrownBy(
                     () -> sections.addStation(SAPYEONG_STATION, SAPYEONG_STATION, 2))
@@ -177,7 +180,7 @@ class SectionsTest {
         @DisplayName("역 사이의 거리는 양의 정수이다.")
         @ValueSource(ints = {0, -1})
         void createNewLineDistanceNegativeTest(int distance) {
-            final Sections sections = new Sections(LINE_999);
+            final Sections sections = new Sections(LINE_999, graph);
             assertThatThrownBy(
                     () -> sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, distance))
                     .isInstanceOf(IllegalArgumentException.class)

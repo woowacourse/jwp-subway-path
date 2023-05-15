@@ -14,16 +14,19 @@ import java.util.stream.Collectors;
 public class LineServiceImpl implements LineService {
 
     private final Subway subway;
+    private final Graph graph;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
     public LineServiceImpl(
             final Subway subway,
+            final Graph graph,
             final LineRepository lineRepository,
             final StationRepository stationRepository,
             final SectionRepository sectionRepository) {
         this.subway = subway;
+        this.graph = graph;
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;

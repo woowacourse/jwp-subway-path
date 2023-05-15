@@ -1,16 +1,15 @@
 package subway.domain;
 
-import org.jgrapht.graph.DefaultDirectedGraph;
-import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.*;
 
 public class Sections {
-    private final DefaultDirectedGraph<Station, DefaultWeightedEdge> graph = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
+    private final Graph graph;
     private final Line line;
 
-    public Sections(final Line line) {
+    public Sections(final Line line, final Graph graph) {
+        this.graph = graph;
         this.line = line;
     }
 
@@ -121,7 +120,7 @@ public class Sections {
         return (int) graph.getEdgeWeight(edge);
     }
 
-    private static void validateDistance(final int distance) {
+    private void validateDistance(final int distance) {
         if (distance <= 0) {
             throw new IllegalArgumentException("역 사이 거리는 양의 정수로 입력해 주세요.");
         }
