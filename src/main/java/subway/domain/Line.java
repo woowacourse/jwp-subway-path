@@ -120,10 +120,11 @@ public class Line {
 
             sections.add(new Section(upSection.getSource(), downSection.getTarget(), downSection.getDistance()
                     + upSection.getDistance()));
+            return;
         }
         findSource.ifPresent(sections::remove);
         findTarget.ifPresent(sections::remove);
-    }
+        }
 
     public boolean isEmpty() {
         return sections.isEmpty();
