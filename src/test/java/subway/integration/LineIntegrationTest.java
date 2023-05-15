@@ -9,7 +9,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.LineRequest;
@@ -41,9 +40,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void createLine() {
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> response = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all()
@@ -58,18 +55,14 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void createLineWithDuplicateName() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> response = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
@@ -83,26 +76,20 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLines() {
         // given
-        ExtractableResponse<Response> createResponse1 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> createResponse1 = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
 
-        ExtractableResponse<Response> createResponse2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> createResponse2 = given()
                 .body(lineRequest2)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> response = given()
                 .when().get("/lines")
                 .then().log().all()
                 .extract();
@@ -119,9 +106,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> createResponse = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
@@ -129,9 +114,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // when
         Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> response = given()
                 .when().get("/lines/{lineId}", lineId)
                 .then().log().all()
                 .extract();
@@ -151,9 +134,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void deleteLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+        ExtractableResponse<Response> createResponse = given()
                 .body(lineRequest)
                 .when().post("/lines")
                 .then().log().all().
