@@ -1,73 +1,70 @@
-package subway.domain;
+package subway.domain.sections;
 
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
-import org.apache.logging.log4j.util.TriConsumer;
+import subway.domain.Section;
+import subway.domain.Station;
 
-public class Sections {
+public class FilledSections extends Sections {
 
-    private static final Map<BiPredicate<Section, Section>, TriConsumer<List<Section>, Section, Section>> addPrincipal = Map.of(
-            (originSection, newSection) -> originSection.getNextStation().equals(newSection.getNextStation()),
-            (sections, originSection, newSection) -> {
-                int originIndex = sections.indexOf(originSection);
-                sections.add(originIndex,
-                        new Section(
-                                originSection.getPrevStation(),
-                                newSection.getPrevStation(),
-                                originSection.getDistance().minusValue(newSection.getDistance())
-                        )
-                );
-                sections.add(originIndex + 1, newSection);
-            },
-            (originSection, newSection) -> originSection.getPrevStation().equals(newSection.getPrevStation()),
-            (sections, originSection, newSection) -> {
-                int originIndex = sections.indexOf(originSection);
-                sections.add(originIndex,
-                        new Section(
-                                newSection.getNextStation(),
-                                originSection.getNextStation(),
-                                originSection.getDistance().minusValue(newSection.getDistance())
-                        )
-                );
-                sections.add(originIndex, newSection);
-
-            }
-    );
-    private final List<Section> sections;
-
-    public Sections() {
-        sections = List.of();
+    private FilledSections(final List<Section> sections) {
+        super(sections);
     }
 
-    private Sections(final List<Section> sections) {
-        this.sections = sections;
+    static Sections from(final List<Section> sections) {
+        if (sections.isEmpty()) {
+            return new EmptySections();
+        }
+        return new FilledSections(sections);
     }
 
-    public boolean isHeadStation(final Station station) {
-        return sections.isEmpty() || sections.get(0).getPrevStation().equals(station);
+    public boolean containSection(final Section otherSection) {
+        final List<Station> allStations = getAllStations();
+        return allStations.contains(otherSection.getPrevStation())
+                && allStations.contains(otherSection.getNextStation());
     }
 
-    public boolean isTailStation(final Station station) {
-        return sections.get(sections.size() - 1).getNextStation().equals(station);
+    @Override
+    public List<Station> getAllStations() {
+        final List<Station> stations = sections.stream()
+                .map(Section::getPrevStation)
+                .collect(Collectors.toList());
+        stations.add(sections.get(sections.size() - 1).getNextStation());
+        return stations;
     }
 
-    public Sections addHead(final Section section) {
+    @Override
+    public Sections addSection(final Section section) {
+        validateDuplicateSection(section);
+        if (isHeadStation(section.getNextStation())) {
+            return addHead(section);
+        }
+        if (isTailStation(section.getPrevStation())) {
+            return addTail(section);
+        }
+        return addCentral(section);
+    }
+
+    private void validateDuplicateSection(final Section newSection) {
+        if (containSection(newSection)) {
+            throw new IllegalArgumentException("이미 등록되어 있는 구간입니다.");
+        }
+    }
+
+    private Sections addHead(final Section section) {
         final List<Section> newSections = new LinkedList<>(sections);
         newSections.add(0, section);
-        return new Sections(newSections);
+        return new FilledSections(newSections);
     }
 
-    public Sections addTail(final Section section) {
+    private Sections addTail(final Section section) {
         final List<Section> newSections = new LinkedList<>(sections);
         newSections.add(sections.size(), section);
-        return new Sections(newSections);
+        return new FilledSections(newSections);
     }
 
-    public Sections addCentral(final Section section) {
+    private Sections addCentral(final Section section) {
         final LinkedList<Section> newSections = new LinkedList<>(sections);
 
         final Section originSection = findOriginSection(section, newSections);
@@ -94,7 +91,7 @@ public class Sections {
             newSections.add(originIndex, section);
         }
         newSections.remove(originSection);
-        return new Sections(newSections);
+        return new FilledSections(newSections);
     }
 
     private static Section findOriginSection(final Section section, final LinkedList<Section> newSections) {
@@ -105,16 +102,36 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("이전 역을 찾을 수 없습니다."));
     }
 
-    public Sections removeHead() {
-        final List<Section> newSections = new LinkedList<>(sections);
-        newSections.remove(0);
-        return new Sections(newSections);
+    private boolean isHeadStation(final Station station) {
+        return sections.isEmpty() || sections.get(0).getPrevStation().equals(station);
     }
 
-    public Sections removeTail() {
+    private boolean isTailStation(final Station station) {
+        return sections.get(sections.size() - 1).getNextStation().equals(station);
+    }
+
+    @Override
+    public Sections removeStation(final Station station) {
+        validateIsExist(station);
+        if (isHeadStation(station)) {
+            return removeHead();
+        }
+        if (isTailStation(station)) {
+            return removeTail();
+        }
+        return removeCentral(station);
+    }
+
+    private Sections removeHead() {
+        final List<Section> newSections = new LinkedList<>(sections);
+        newSections.remove(0);
+        return from(newSections);
+    }
+
+    private Sections removeTail() {
         final List<Section> newSections = new LinkedList<>(sections);
         newSections.remove(sections.size() - 1);
-        return new Sections(newSections);
+        return from(newSections);
     }
 
     public Sections removeCentral(final Station station) {
@@ -131,7 +148,7 @@ public class Sections {
                 nextSection.getNextStation(),
                 beforeSection.getDistance().plusValue(nextSection.getDistance())
         ));
-        return new Sections(newSections);
+        return from(newSections);
     }
 
     private static Section findBeforeSection(final Station station, final List<Section> newSections) {
@@ -148,30 +165,13 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
     }
 
-    public Sections getDifferenceOfSet(final Sections otherSections) {
-        final List<Section> result = new LinkedList<>(sections);
-        result.removeAll(otherSections.getSections());
-        return new Sections(result);
-    }
-
-    public boolean containSection(final Section otherSection) {
-        final List<Station> allStations = getAllStations();
-        return allStations.contains(otherSection.getPrevStation())
-                && allStations.contains(otherSection.getNextStation());
-    }
-
-    public List<Station> getAllStations() {
-        if (sections.isEmpty()) {
-            return Collections.emptyList();
+    private void validateIsExist(final Station station) {
+        if (notContainStation(station)) {
+            throw new IllegalArgumentException("삭제하려는 Station은 해당 노선에 존재하지 않습니다 .");
         }
-        final List<Station> stations = sections.stream()
-                .map(Section::getPrevStation)
-                .collect(Collectors.toList());
-        stations.add(sections.get(sections.size() - 1).getNextStation());
-        return stations;
     }
 
-    public boolean notContainStation(final Station station) {
+    private boolean notContainStation(final Station station) {
         return !getAllStations().contains(station);
     }
 

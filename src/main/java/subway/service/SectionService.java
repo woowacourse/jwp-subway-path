@@ -4,7 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.sections.Sections;
 import subway.persistence.dao.SectionDao;
 
 @Service
