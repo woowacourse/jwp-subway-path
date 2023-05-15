@@ -86,7 +86,7 @@ public class Line {
             return false;
         }
         final Optional<Section> findSection = findSectionAtStart(base);
-        return findSection.map(section -> section.moreThanOrEqual(distance))
+        return findSection.map(section -> section.canNotAddStationInMiddle(distance))
                 .orElse(false);
     }
 
@@ -105,7 +105,7 @@ public class Line {
             return false;
         }
         final Optional<Section> findSection = findSectionAtEnd(base);
-        return findSection.map(section -> section.moreThanOrEqual(distance))
+        return findSection.map(section -> section.canNotAddStationInMiddle(distance))
                 .orElse(false);
     }
 

@@ -37,13 +37,13 @@ class DistanceTest {
     }
 
     @ParameterizedTest(name = "3보다 크거나 같은지 확인한다. 입력: {0}, 결과: {1}")
-    @CsvSource({"2, false", "3, true", "4, true"})
-    void 자신의_거리보다_크거나_같은지_확인한다(final int value, final boolean result) {
+    @CsvSource({"2, 1", "3, 0", "4, -1"})
+    void 자신의_거리와_비교한다(final int value, final int result) {
         // given
         final Distance distance = new Distance(3);
 
         // expect
-        assertThat(distance.moreThanOrEqual(new Distance(value))).isEqualTo(result);
+        assertThat(distance.compareTo(new Distance(value))).isEqualTo(result);
     }
 
     @Test

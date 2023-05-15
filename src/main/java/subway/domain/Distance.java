@@ -3,7 +3,7 @@ package subway.domain;
 import java.util.Objects;
 import subway.exception.DistanceNotValidException;
 
-public class Distance {
+public class Distance implements Comparable<Distance> {
 
     private static final int MINIMUM_DISTANCE_VALUE = 1;
 
@@ -20,16 +20,23 @@ public class Distance {
         }
     }
 
-    public boolean moreThanOrEqual(final Distance distance) {
-        return value <= distance.value;
-    }
-
     public Distance subtract(final Distance distance) {
         return new Distance(value - distance.value);
     }
 
     public Distance add(final Distance distance) {
         return new Distance(value + distance.value);
+    }
+
+    @Override
+    public int compareTo(final Distance comparedDistance) {
+        if (this.value > comparedDistance.value) {
+            return 1;
+        }
+        else if (this.value == comparedDistance.value) {
+            return 0;
+        }
+        return -1;
     }
 
     @Override

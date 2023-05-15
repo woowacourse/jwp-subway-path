@@ -27,8 +27,8 @@ public class Section {
                 || (this.start.equals(end) && this.end.equals(start));
     }
 
-    public boolean moreThanOrEqual(final Distance distance) {
-        return this.distance.moreThanOrEqual(distance);
+    public boolean canNotAddStationInMiddle(final Distance distance) {
+        return this.distance.compareTo(distance) <= 0;
     }
 
     public boolean isStart(final Station station) {

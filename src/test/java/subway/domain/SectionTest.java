@@ -39,7 +39,7 @@ class SectionTest {
         final Section section = new Section("A", "B", 3);
 
         // expect
-        assertThat(section.moreThanOrEqual(new Distance(value))).isEqualTo(result);
+        assertThat(section.canNotAddStationInMiddle(new Distance(value))).isEqualTo(result);
     }
 
     @CsvSource({"A, true", "B, false"})
