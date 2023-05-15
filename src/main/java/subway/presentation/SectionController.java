@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.presentation;
 
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.AddSectionService;
 import subway.application.RemoveSectionService;
 import subway.application.dto.AddSectionDto;
-import subway.ui.dto.request.CreationSectionRequest;
-import subway.ui.dto.request.DeleteSectionRequest;
-import subway.ui.dto.response.AddSectionResponse;
+import subway.presentation.dto.request.CreationSectionRequest;
+import subway.presentation.dto.request.DeleteSectionRequest;
+import subway.presentation.dto.response.AddSectionResponse;
 
 @RestController
 @RequestMapping("/lines/{lineId}/sections")

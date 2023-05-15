@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.presentation;
 
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
 import subway.application.dto.CreationStationDto;
-import subway.ui.dto.request.CreationStationRequest;
-import subway.ui.dto.response.CreationStationResponse;
-import subway.ui.dto.response.ReadStationResponse;
+import subway.presentation.dto.request.CreationStationRequest;
+import subway.presentation.dto.response.CreationStationResponse;
+import subway.presentation.dto.response.ReadStationResponse;
 
 @RestController
 @RequestMapping("/stations")

@@ -6,7 +6,7 @@ import subway.application.dto.CreationStationDto;
 import subway.application.dto.ReadStationDto;
 import subway.domain.station.Station;
 import subway.persistence.repository.StationRepository;
-import subway.ui.dto.response.ReadStationResponse;
+import subway.presentation.dto.response.ReadStationResponse;
 
 @Transactional
 @Service

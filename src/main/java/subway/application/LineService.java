@@ -8,8 +8,8 @@ import subway.application.dto.CreationLineDto;
 import subway.domain.line.Line;
 import subway.persistence.repository.LineRepository;
 import subway.persistence.repository.SectionRepository;
-import subway.ui.dto.request.CreationLineRequest;
-import subway.ui.dto.response.ReadLineResponse;
+import subway.presentation.dto.request.CreationLineRequest;
+import subway.presentation.dto.response.ReadLineResponse;
 
 @Transactional
 @Service

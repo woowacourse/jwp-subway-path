@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.dto.CreationLineDto;
-import subway.ui.dto.request.CreationLineRequest;
-import subway.ui.dto.response.CreationLineResponse;
-import subway.ui.dto.response.ReadLineResponse;
+import subway.presentation.dto.request.CreationLineRequest;
+import subway.presentation.dto.response.CreationLineResponse;
+import subway.presentation.dto.response.ReadLineResponse;
 
 import java.net.URI;
 import java.util.List;

@@ -1,13 +1,13 @@
-package subway.ui.dto.request;
+package subway.presentation.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
-public class DeleteMiddleSectionRequest {
+public class DeleteEndSectionRequest {
 
     private final Long targetStationId;
 
     @JsonCreator
-    public DeleteMiddleSectionRequest(final Long targetStationId) {
+    public DeleteEndSectionRequest(final Long targetStationId) {
         this.targetStationId = targetStationId;
     }
 

@@ -1,10 +1,10 @@
-package subway.ui;
+package subway.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
-import subway.ui.dto.response.ExceptionResponse;
+import subway.presentation.dto.response.ExceptionResponse;
 
 @RestControllerAdvice
 public class ExceptionController extends ResponseEntityExceptionHandler {
