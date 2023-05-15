@@ -8,6 +8,7 @@ import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Station;
+import subway.repository.SectionRepository;
 
 public abstract class SubwayFixture extends IntegrationTest {
 
@@ -17,6 +18,8 @@ public abstract class SubwayFixture extends IntegrationTest {
     protected SectionDao sectionDao;
     @Autowired
     protected LineDao lineDao;
+    @Autowired
+    protected SectionRepository sectionRepository;
     protected Long 이호선;
     protected Long 팔호선;
     protected Long 잠실역;
@@ -32,16 +35,16 @@ public abstract class SubwayFixture extends IntegrationTest {
     }
 
     /**
-     * 8호선
-     * 몽촌토성
-     * |
-     * 10
-     * |
+     *       8호선
+     *      몽촌토성
+     *         |
+     *        10
+     *         |
      * 2호선 : 잠실 -- 10 -- 잠실새내 -- 20 -- 삼성 -- 15 -- 선릉
-     * |
-     * 15
-     * |
-     * 석촌
+     *         |
+     *        15
+     *         |
+     *        석촌
      */
     private void save() {
         이호선 = lineDao.insert(new Line("2호선", "초록색"));

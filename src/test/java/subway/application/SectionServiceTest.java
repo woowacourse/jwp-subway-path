@@ -170,46 +170,59 @@ class SectionServiceTest extends SubwayJdbcFixture {
         }
     }
 
-    @Test
-    void 구간이_한개이면_구간과_노선이_모두_삭제된다() {
-        //given
-        final Long 삼호선 = lineDao.insert(new Line("3호선", "노란색"));
-        sectionDao.insert(new SectionEntity(10, 잠실역, 선릉역, 삼호선));
-
-        //when
-        sectionService.deleteStation(잠실역, new SectionDeleteRequest(삼호선));
-
-        //then
-        assertAll(
-                () -> assertThat(lineDao.findById(삼호선)).isEmpty(),
-                () -> assertThat(sectionDao.findAllByLineId(삼호선)).isEmpty()
-        );
-    }
-
-    @Test
-    void 구간이_두개_이상이고_종점이면_해당구간만_삭제한다() {
-        //when
-        sectionService.deleteStation(잠실역, new SectionDeleteRequest(이호선));
-
-        //then
-        assertThat(sectionDao.findAllByLineId(이호선)).hasSize(2);
-    }
-
-    @Test
-    void 구간이_두개_이상이고_중간이면_겹치는구간_삭제와_이어주기를_한다() {
-        //when
-        sectionService.deleteStation(잠실새내역, new SectionDeleteRequest(이호선));
-
-        //then
-        final List<Section> sections = sectionRepository.findAllByLineId(이호선).getSections();
-        assertAll(() -> assertThat(sections).hasSize(2),
-                () -> assertThat(sections.get(0).getUpStation().getId()).isEqualTo(잠실역),
-                () -> assertThat(sections.get(0).getDownStation().getId()).isEqualTo(삼성역),
-                () -> assertThat(sections.get(0).getDistance()).isEqualTo(Distance.from(30))
-        );
-    }
-
     private Long 역을_추가한다(String name) {
         return stationDao.insert(new Station(name)).getId();
+    }
+
+    @Nested
+    class 구간을_삭제하는_경우 {
+
+        @Test
+        void 구간이_한_개이면_구간과_노선이_모두_삭제된다() {
+            //given
+            final Long 삼호선 = lineDao.insert(new Line("3호선", "노란색"));
+            sectionDao.insert(new SectionEntity(10, 잠실역, 선릉역, 삼호선));
+
+            //when
+            sectionService.deleteStation(잠실역, new SectionDeleteRequest(삼호선));
+
+            //then
+            assertAll(
+                    () -> assertThat(lineDao.findById(삼호선)).isEmpty(),
+                    () -> assertThat(sectionDao.findAllByLineId(삼호선)).isEmpty()
+            );
+        }
+
+        @Test
+        void 구간이_두_개_이상이고_상행_종점이면_해당_구간만_삭제한다() {
+            //when
+            sectionService.deleteStation(잠실역, new SectionDeleteRequest(이호선));
+
+            //then
+            assertThat(sectionDao.findAllByLineId(이호선)).hasSize(2);
+        }
+
+        @Test
+        void 구간이_두_개_이상이고_하행_종점이면_해당_구간만_삭제한다() {
+            //when
+            sectionService.deleteStation(선릉역, new SectionDeleteRequest(이호선));
+
+            //then
+            assertThat(sectionDao.findAllByLineId(이호선)).hasSize(2);
+        }
+
+        @Test
+        void 구간이_두_개_이상이고_중간이면_겹치는_구간을_삭제하고_이어주기를_한다() {
+            //when
+            sectionService.deleteStation(잠실새내역, new SectionDeleteRequest(이호선));
+
+            //then
+            final List<Section> sections = sectionRepository.findAllByLineId(이호선).getSections();
+            assertAll(() -> assertThat(sections).hasSize(2),
+                    () -> assertThat(sections.get(0).getUpStation().getId()).isEqualTo(잠실역),
+                    () -> assertThat(sections.get(0).getDownStation().getId()).isEqualTo(삼성역),
+                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(Distance.from(30))
+            );
+        }
     }
 }

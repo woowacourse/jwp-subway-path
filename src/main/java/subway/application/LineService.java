@@ -13,7 +13,6 @@ import subway.repository.SectionRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.stream.Stream;
 
 import static java.util.stream.Collectors.toList;
 
@@ -58,11 +57,9 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        final Sections sortedSections = sectionRepository.findAllByLineId(id);
+        final Sections sections = sectionRepository.findAllByLineId(id);
 
-        final List<Station> stations = sortedSections.getSections().stream()
-                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
-                .collect(toList());
+        final List<Station> stations = sections.findAllStationsByOrder();
 
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine, stations);

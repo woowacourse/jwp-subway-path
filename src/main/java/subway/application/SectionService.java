@@ -98,12 +98,12 @@ public class SectionService {
         }
 
         if (sections.isDownEndPoint(targetStation)) {
-            sectionRepository.delete(sections.findFirstSectionId());
+            sectionRepository.delete(sections.findLastSectionId());
             return;
         }
 
         if (sections.isUpEndPoint(targetStation)) {
-            sectionRepository.delete(sections.findLastSectionId());
+            sectionRepository.delete(sections.findFirstSectionId());
             return;
         }
 

@@ -80,6 +80,13 @@ public class Sections {
                 .reduce(Distance.zero(), Distance::plus);
     }
 
+    public List<Station> findAllStationsByOrder() {
+        return sections.stream()
+                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
+                .distinct()
+                .collect(toList());
+    }
+
     public boolean canInsert(Station upStation, Station downStation) {
         final Set<Station> allStations = findAllStations();
         return allStations.contains(upStation) == allStations.contains(downStation);
