@@ -75,4 +75,13 @@ public class SectionFixtures {
             return new Section(-1L, NearbyStations.createByUpStationAndDownStation(upStation, downStation), line, DISTANCE);
         }
     }
+
+    public static class SECTION_D_TO_C {
+        public static final Distance DISTANCE = new Distance(3);
+
+        public static Section createSectionToInsert(Station upStation, Station downStation, Line line) {
+            NearbyStations nearbyStations = NearbyStations.createByUpStationAndDownStation(upStation, downStation);
+            return new Section(null, nearbyStations, line, DISTANCE);
+        }
+    }
 }
