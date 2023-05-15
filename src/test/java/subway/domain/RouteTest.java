@@ -1,6 +1,7 @@
 package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 
@@ -122,7 +124,20 @@ class RouteTest {
         );
     }
 
+    @Test
+    @DisplayName("findShortestRoute() : 도착점이나 출발점이 하나라도 그래프에 없다면 IllegalArgumentException이 발생한다.")
+    void test_findShortestRoute_IllegalArgumentException_notContainStartOrEnd() throws Exception {
+        //given
+        final List<Line> lines = createDefaultLines();
+        final Route route = new Route(lines);
 
+        final String startStation = "A";
+        final String notExistEndStation = "K";
+
+        //when & then
+        assertThatThrownBy(() -> route.findShortestRoute(startStation, notExistEndStation))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 
     private List<Line> createDefaultLines() {
         final Stations stations1 = new Stations(new Station("A"), new Station("B"), 1);

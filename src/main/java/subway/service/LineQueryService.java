@@ -36,7 +36,7 @@ public class LineQueryService {
         return List.of(searchSectionsSpecificLine(searchAllSectionLineRequest));
     }
 
-    private List<Line> searchSectionsAllLine() {
+    public List<Line> searchSectionsAllLine() {
 
         final List<LineEntity> lineEntities = lineDao.findAll();
 
