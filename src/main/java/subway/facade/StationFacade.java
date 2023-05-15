@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.domain.SectionEntity;
 import subway.domain.StationEntity;
+import subway.exception.StationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +25,8 @@ public class StationFacade {
     }
 
     public StationEntity findFinalUpStation(final Long lineId) {
-        return stationDao.findFinalUpStation(lineId);
+        return stationDao.findFinalUpStation(lineId)
+                .orElseThrow(() -> StationNotFoundException.THROW);
     }
 
     public StationEntity findById(final Long stationId) {

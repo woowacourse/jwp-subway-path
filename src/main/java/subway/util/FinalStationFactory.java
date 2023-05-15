@@ -3,6 +3,7 @@ package subway.util;
 import org.springframework.stereotype.Component;
 import subway.dao.StationDao;
 import subway.domain.FinalStation;
+import subway.exception.StationNotFoundException;
 
 @Component
 public class FinalStationFactory {
@@ -14,8 +15,10 @@ public class FinalStationFactory {
     }
 
     public FinalStation getFinalStation(final Long lineId) {
-        final String finalUpStationName = stationDao.findFinalUpStation(lineId).getName();
-        final String finalDownStationName = stationDao.findFinalDownStation(lineId).getName();
+        final String finalUpStationName = stationDao.findFinalUpStation(lineId)
+                .orElseThrow(() -> StationNotFoundException.THROW).getName();
+        final String finalDownStationName = stationDao.findFinalDownStation(lineId)
+                .orElseThrow(() -> StationNotFoundException.THROW).getName();
         return FinalStation.of(finalUpStationName, finalDownStationName);
     }
 

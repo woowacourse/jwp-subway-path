@@ -63,20 +63,24 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionRowMapper);
     }
 
-    public SectionEntity findLeftSectionByStationId(Long stationId) {
+    public Optional<SectionEntity> findLeftSectionByStationId(Long stationId) {
         String sql = "select * from sections se " +
                 "where se.down_station_id = ?";
-        return jdbcTemplate.queryForObject(sql, sectionRowMapper, stationId);
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, sectionRowMapper, stationId));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public SectionEntity findRightSectionByStationId(Long stationId) {
+    public Optional<SectionEntity> findRightSectionByStationId(Long stationId) {
         String sql = "select * from sections se " +
                 "where se.up_station_id = ?";
-        return jdbcTemplate.queryForObject(sql, sectionRowMapper, stationId);
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, sectionRowMapper, stationId));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public boolean isAlreadyExistsSectionByUpStationId(final Long upStationId) {
-        String sql = "select exists(select 1 from sections WHERE up_station_id = ?)";
-        return jdbcTemplate.queryForObject(sql, Boolean.class, upStationId);
-    }
 }

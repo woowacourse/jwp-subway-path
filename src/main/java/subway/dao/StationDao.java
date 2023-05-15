@@ -65,16 +65,7 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Optional<StationEntity> findByName(final String name) {
-        String sql = "select * from STATIONS where name = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        } catch (DataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    public StationEntity findFinalUpStation(Long lineId) {
+    public Optional<StationEntity> findFinalUpStation(Long lineId) {
         String sql = "SELECT st.* "
                 + "FROM STATIONS st "
                 + "WHERE ( "
@@ -85,10 +76,14 @@ public class StationDao {
                 + "      AND st.id not in (select down_station_id from sections where line_id = ?)"
                 + "    LIMIT 1"
                 + ") = 1; ";
-        return jdbcTemplate.queryForObject(sql, rowMapper, lineId, lineId);
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, lineId));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public StationEntity findFinalDownStation(Long lineId) {
+    public Optional<StationEntity> findFinalDownStation(Long lineId) {
         String sql = "SELECT st.* "
                 + "FROM STATIONS st "
                 + "WHERE ( "
@@ -99,7 +94,11 @@ public class StationDao {
                 + "      AND st.id not in (select up_station_id from sections where line_id = ?)"
                 + "    LIMIT 1"
                 + ") = 1; ";
-        return jdbcTemplate.queryForObject(sql, rowMapper, lineId, lineId);
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, lineId));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
 }

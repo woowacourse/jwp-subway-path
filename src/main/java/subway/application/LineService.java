@@ -8,6 +8,7 @@ import subway.domain.SectionEntity;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionSaveRequest;
+import subway.exception.LineNotFoundException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -46,13 +47,15 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        LineEntity lineEntity = lineDao.findById(id);
+        LineEntity lineEntity = lineDao.findById(id)
+                .orElseThrow(() -> LineNotFoundException.THROW);
         return LineResponse.of(lineEntity);
     }
 
     @Transactional
     public void updateLine(Long id, LineRequest request) {
-        LineEntity lineEntity = lineDao.findById(id);
+        LineEntity lineEntity = lineDao.findById(id)
+                .orElseThrow();
         lineEntity.updateInfo(request.getName(), request.getColor());
         lineDao.updateById(id, lineEntity);
     }

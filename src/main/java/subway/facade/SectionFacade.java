@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.domain.SectionEntity;
 import subway.dto.SectionSaveRequest;
+import subway.exception.SectionNotFoundException;
 
 import java.util.List;
 import java.util.Optional;
@@ -45,11 +46,13 @@ public class SectionFacade {
     }
 
     public SectionEntity findLeftSectionByStationId(final Long stationId) {
-        return sectionDao.findLeftSectionByStationId(stationId);
+        return sectionDao.findLeftSectionByStationId(stationId)
+                .orElseThrow(() -> SectionNotFoundException.THROW);
     }
 
     public SectionEntity findRightSectionByStationId(final Long stationId) {
-        return sectionDao.findRightSectionByStationId(stationId);
+        return sectionDao.findRightSectionByStationId(stationId)
+                .orElseThrow(() -> SectionNotFoundException.THROW);
     }
 
 }
