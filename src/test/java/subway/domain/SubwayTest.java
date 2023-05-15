@@ -14,14 +14,6 @@ import static subway.domain.StationFixture.*;
 
 class SubwayTest {
 
-    private static final Subway FIXTURE_SUBWAY = Subway.of(FIXTURE_LINE_1, List.of(
-            SECTION_START,
-            SECTION_MIDDLE_1,
-            SECTION_MIDDLE_2,
-            SECTION_MIDDLE_3,
-            SECTION_END
-    ));
-
     @DisplayName("기존 노선도의 첫 부분에 노선을 추가할 수 있다.")
     @Test
     void addSection_start() {
@@ -31,7 +23,7 @@ class SubwayTest {
                 SECTION_MIDDLE_3,
                 SECTION_END
         ));
-        Sections sections = subway.addSection(SECTION_START);
+        Sections sections = subway.findAddSections(SECTION_START);
         assertThat(sections.getSections())
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(SECTION_START));
@@ -44,7 +36,7 @@ class SubwayTest {
                 SECTION_MIDDLE_1,
                 SECTION_MIDDLE_2
         ));
-        Sections sections = subway.addSection(SECTION_MIDDLE_3);
+        Sections sections = subway.findAddSections(SECTION_MIDDLE_3);
         assertThat(sections.getSections())
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(SECTION_MIDDLE_3));
@@ -57,7 +49,7 @@ class SubwayTest {
                 new Section(FIXTURE_STATION_1, FIXTURE_STATION_2, new Distance(10)),
                 new Section(FIXTURE_STATION_2, FIXTURE_STATION_4, new Distance(10))
         ));
-        Sections sections = subway.addSection(new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(3)));
+        Sections sections = subway.findAddSections(new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(3)));
         assertThat(sections.getSections())
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(
@@ -72,7 +64,7 @@ class SubwayTest {
         Subway subway = Subway.of(FIXTURE_LINE_1, List.of(
                 new Section(FIXTURE_STATION_2, FIXTURE_STATION_4, new Distance(10))
         ));
-        Sections sections = subway.addSection(new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(3)));
+        Sections sections = subway.findAddSections(new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(3)));
         assertThat(sections.getSections())
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(
@@ -89,7 +81,7 @@ class SubwayTest {
                 new Section(FIXTURE_STATION_3, FIXTURE_STATION_4, new Distance(10))
         ));
 
-        Sections sections = subway.addSection(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3)));
+        Sections sections = subway.findAddSections(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3)));
         assertThat(sections.getSections())
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(
@@ -105,7 +97,7 @@ class SubwayTest {
                 new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(10))
         ));
 
-        Sections sections = subway.addSection(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3)));
+        Sections sections = subway.findAddSections(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3)));
         assertThat(sections.getSections())
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(
@@ -119,7 +111,7 @@ class SubwayTest {
     void addSection_empty() {
         Subway subway = Subway.of(FIXTURE_LINE_1, new ArrayList<>());
 
-        Sections sections = subway.addSection(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3)));
+        Sections sections = subway.findAddSections(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3)));
         assertThat(sections.getSections())
                 .usingRecursiveComparison()
                 .isEqualTo(List.of(
@@ -135,7 +127,7 @@ class SubwayTest {
         ));
 
         assertThatThrownBy(() ->
-                subway.addSection(new Section(FIXTURE_STATION_5, FIXTURE_STATION_6, new Distance(3))))
+                subway.findAddSections(new Section(FIXTURE_STATION_5, FIXTURE_STATION_6, new Distance(3))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("존재하지 않는 역들과의 구간을 등록할 수 없습니다.");
     }
@@ -149,7 +141,7 @@ class SubwayTest {
         ));
 
         assertThatThrownBy(() ->
-                subway.addSection(new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(3))))
+                subway.findAddSections(new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(3))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("노선에 이미 존재하는 두 역을 등록할 수 없습니다.");
     }
@@ -163,7 +155,7 @@ class SubwayTest {
         ));
 
         assertThatThrownBy(() ->
-                subway.addSection(new Section(FIXTURE_STATION_3, FIXTURE_STATION_1, new Distance(3))))
+                subway.findAddSections(new Section(FIXTURE_STATION_3, FIXTURE_STATION_1, new Distance(3))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("노선에 이미 존재하는 두 역을 등록할 수 없습니다.");
     }
@@ -177,11 +169,57 @@ class SubwayTest {
         ));
 
         assertThatThrownBy(() ->
-                subway.addSection(new Section(FIXTURE_STATION_2, FIXTURE_STATION_4, new Distance(10))))
+                subway.findAddSections(new Section(FIXTURE_STATION_2, FIXTURE_STATION_4, new Distance(10))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
     }
 
+    @DisplayName("오른쪽에만 연결되어있는 역은 삭제 후 구간을 반환하지 않는다.")
+    @Test
+    void findDeleteSections_right() {
+        Subway subway = Subway.of(FIXTURE_LINE_1, List.of(
+                new Section(FIXTURE_STATION_1, FIXTURE_STATION_2, new Distance(10)),
+                new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(10))
+        ));
+
+        assertThat(subway.findDeleteSections(FIXTURE_STATION_1).getSections()).isEmpty();
+    }
+
+    @DisplayName("왼쪽에만 연결되어있는 역은 삭제 후 구간을 반환하지 않는다.")
+    @Test
+    void findDeleteSections_left() {
+        Subway subway = Subway.of(FIXTURE_LINE_1, List.of(
+                new Section(FIXTURE_STATION_1, FIXTURE_STATION_2, new Distance(10)),
+                new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(10))
+        ));
+
+        assertThat(subway.findDeleteSections(FIXTURE_STATION_3).getSections()).isEmpty();
+    }
+
+    @DisplayName("왼쪽에만 연결되어있는 역은 삭제 후 양쪽의 연결된 구간을 합쳐서 반환한다.")
+    @Test
+    void findDeleteSections_both() {
+        Subway subway = Subway.of(FIXTURE_LINE_1, List.of(
+                new Section(FIXTURE_STATION_1, FIXTURE_STATION_2, new Distance(10)),
+                new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(10))
+        ));
+
+        assertThat(subway.findDeleteSections(FIXTURE_STATION_2).getSections())
+                .containsExactly(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20)));
+    }
+
+    @DisplayName("연결되지 않은 역을 삭제하면 예외를 반환한다.")
+    @Test
+    void findDeleteSections_fail() {
+        Subway subway = Subway.of(FIXTURE_LINE_1, List.of(
+                new Section(FIXTURE_STATION_1, FIXTURE_STATION_2, new Distance(10)),
+                new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(10))
+        ));
+
+        assertThatThrownBy(() -> subway.findDeleteSections(FIXTURE_STATION_4))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("역이 존재하지 않습니다.");
+    }
 
     @DisplayName("한 노선에 대해 역들 간의 순서에 맞게 역을 반환한다.")
     @Test

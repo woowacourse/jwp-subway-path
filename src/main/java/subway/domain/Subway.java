@@ -63,7 +63,7 @@ public class Subway {
                 .orElse(null);
     }
 
-    public Sections addSection(Section section) {
+    public Sections findAddSections(Section section) {
         Station left = section.getLeft();
         Station right = section.getRight();
         int distance = section.getDistance();
@@ -176,6 +176,25 @@ public class Subway {
     private static void validateDistance(int newDistance, int existedDistance) {
         if (existedDistance - newDistance <= 0) {
             throw new IllegalArgumentException("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
+        }
+    }
+
+    public Sections findDeleteSections(Station station) {
+        validateStation(station);
+        if (hasRightSection(station) && hasLeftSection(station)) {
+            Section rightSection = findRightSection(station);
+            Section leftSection = findLeftSection(station);
+            Station right = rightSection.getRight();
+            Station left = leftSection.getLeft();
+            Distance distance = new Distance(leftSection.getDistance() + rightSection.getDistance());
+            return new Sections(List.of(new Section(left, right, distance)));
+        }
+        return new Sections(new ArrayList<>());
+    }
+
+    private void validateStation(Station station) {
+        if (!hasStation(station)) {
+            throw new IllegalArgumentException("역이 존재하지 않습니다.");
         }
     }
 
