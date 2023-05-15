@@ -52,14 +52,12 @@ public class SectionService {
 
 	public List<StationResponse> findAllByLine(final long lineId) {
 		final String lineName = lineRepository.findById(lineId).getName();
-		final List<Section> allByLineName = sectionRepository.findAllByLineName(lineName);
-		final Sections sections = new Sections(allByLineName);
+		final Sections sections = new Sections(sectionRepository.findAllByLineName(lineName));
 		final List<Station> sortedStations = sections.getSortedStations();
 
 		List<Station> stations = new ArrayList<>();
 		for (Station station : sortedStations) {
 			stations.add(stationRepository.findStationWithId(station));
-
 		}
 		return StationResponse.of(stations);
 	}
