@@ -17,6 +17,8 @@ dependencies {
     implementation 'net.rakugakibox.spring.boot:logback-access-spring-boot-starter:2.7.1'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+    implementation 'org.springdoc:springdoc-openapi-ui:1.6.6'
+
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
 

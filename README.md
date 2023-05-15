@@ -2,44 +2,8 @@
 
 ### API
 
-#### /stations
+http://localhost:8080/swagger-ui/index.html
 
-- [x] 역 등록
-    - [x] POST, /stations
-    - [x] 요청 포맷
-        - [x] 역 이름
-    - [x] 응답 포맷
-        - [x] Locations : /stations/{id}
-- [x] 역 제거
-    - [x] DELETE, /stations/{id}
-    - [x] 요청 포맷
-        - [x] 역 id
-
-#### /lines
-
-- [x] 노선 등록
-    - [x] POST, /lines
-    - [x] 요청 포맷
-        - [x] 노선 이름, 노선 색깔
-    - [x] 응답 포맷
-        - [x] Locations : /lines/{id}
-- [x] 조회
-    - [x] GET, /lines
-    - [x] 응답
-        - [x] List<List<Station>>
-- [x] 노선별 조회
-    - [x] GET, /lines?id=
-
-#### /lines/{lineId}/stations
-
-- [x] 노선에 역 등록
-    - [x] POST, /lines/{lineId}/stations
-    - [x] 요청 포맷
-        - [x] 노선 id, 상행 역 id, 하행 역 id, 거리
-- [x] 노선에서 역 삭제
-    - [x] DELETE, /lines/{lineId}/stations/{stationId}
-- [x] 노선별 역 조회
-    - [x] GET, /lines/{lineId}/stations
 
 ### Domain
 
@@ -93,8 +57,7 @@
 
 #### 노선별 역 조회
 
-- [ ] 조회할 노선의 List\<Section\> 을 만든다
-- [ ] pivot Station 을 하나 잡는다
-    - [ ] List\<Section\> 을 순회하면서 pivot 의 다음 역들을 List\<Station\> 에 추가한다
-    - [ ] List\<Section\> 을 순회하면서 pivot 의 이전 역들을 List\<Station\> 에 추가한다
-    - [ ] 두 리스트를 합친다
+- [x] 조회할 노선의 List\<Section\> 을 만든다
+- [x] 상행 종점을 찾고 Station 리스트에 추가한다
+- [x] 다음 역을 찾아서 Station 리스트에 추가한다
+- [x] 찾은 다음 역이 하행 종점이 될때까지 다음 역을 찾고 리스트에 추가하는 동작을 반복한다
