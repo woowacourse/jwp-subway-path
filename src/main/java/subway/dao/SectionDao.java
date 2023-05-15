@@ -8,7 +8,8 @@ import org.springframework.stereotype.Repository;
 import subway.domain.*;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -92,20 +93,12 @@ public class SectionDao {
 
         SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, previousStation.getId(), line.getId());
         if (rs.next()) {
-            var distance = rs.getInt("DISTANCE") == 0 ? new EmptyDistance() : Distance.of(rs.getInt("DISTANCE"));
-            return Optional.of(
-                    new Section(
-                            rs.getLong("ID"),
-                            new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")),
-                            new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")),
-                            new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME")),
-                            distance
-                    ));
+            return Optional.of(getSectionByRowSet(rs));
         }
         return Optional.empty();
     }
 
-    public Optional<Section> findByNextStation(Station nextStation, Line line) {
+    public Optional<Section> findByNextStation(Station station, Line line) {
         String sql = "select " +
                 "SE.id as id, " +
                 "PS.id as PS_ID, " +
@@ -124,14 +117,9 @@ public class SectionDao {
                 "inner join LINE L " +
                 "on SE.line_id = L.id " +
                 "where SE.next_station_id = ? and SE.line_id = ?;";
-        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, nextStation.getId(), line.getId());
+        SqlRowSet rs = jdbcTemplate.queryForRowSet(sql, station.getId(), line.getId());
         if (rs.next()) {
-            var distance = rs.getInt("DISTANCE") == 0 ? new EmptyDistance() : Distance.of(rs.getInt("DISTANCE"));
-            return Optional.of(new Section(rs.getLong("ID"),
-                    new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")),
-                    new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")),
-                    new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME")),
-                    distance));
+            return Optional.of(getSectionByRowSet(rs));
         }
         return Optional.empty();
     }
@@ -152,25 +140,7 @@ public class SectionDao {
         jdbcTemplate.update(sql, line.getId());
     }
 
-    public List<Station> findAllStationsOrderByUp(Line line) {
-        final var stations = new ArrayList<Station>();
-
-        var station = line.getHead();
-        while (station != null) {
-            final var previousSectionOptional = findByPreviousStation(station, line);
-            if (previousSectionOptional.isPresent()) {
-                final var previousSection = previousSectionOptional.get();
-                stations.add(previousSection.getPreviousStation());
-                station = previousSection.getNextStation();
-                continue;
-            }
-            station = null;
-        }
-
-        return stations;
-    }
-
-    public List<Section> findAll() {
+    public List<Section> findAllByLine(Line line) {
         String sql = "select " +
                 "SE.id as id, " +
                 "PS.id as PS_ID, " +
@@ -187,15 +157,32 @@ public class SectionDao {
                 "left outer join STATION NS " +
                 "on SE.next_station_id = NS.id " +
                 "inner join LINE L " +
-                "on SE.line_id = L.id;";
-        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+                "on SE.line_id = L.id " +
+                "where SE.line_id = ?;";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> getSectionByResultSet(rs), line.getId());
+    }
+
+    private static Section getSectionByResultSet(ResultSet rs) {
+        try {
             var distance = rs.getInt("DISTANCE") == 0 ? new EmptyDistance() : Distance.of(rs.getInt("DISTANCE"));
-            return new Section((rs.getLong("ID")),
+            var nextStation = rs.getString("NS_NAME") == null ? new EmptyStation() : new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME"));
+            return new Section(rs.getLong("ID"),
                     new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")),
                     new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")),
-                    new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME")),
+                    nextStation,
                     distance);
-        });
+        } catch (SQLException e) {
+            throw new IllegalStateException(e);
+        }
+    }
 
+    private static Section getSectionByRowSet(SqlRowSet rs) {
+        var distance = rs.getInt("DISTANCE") == 0 ? new EmptyDistance() : Distance.of(rs.getInt("DISTANCE"));
+        var nextStation = rs.getString("NS_NAME") == null ? new EmptyStation() : new Station(rs.getLong("NS_ID"), rs.getString("NS_NAME"));
+        return new Section(rs.getLong("ID"),
+                new Line(rs.getLong("L_ID"), rs.getString("L_NAME"), rs.getString("L_COLOR")),
+                new Station(rs.getLong("PS_ID"), rs.getString("PS_NAME")),
+                nextStation,
+                distance);
     }
 }

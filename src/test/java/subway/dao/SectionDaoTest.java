@@ -75,14 +75,4 @@ class SectionDaoTest {
         assertThatCode(() -> sectionDao.insert(new Section(line, stations.get(index), stationY, Distance.of(2))))
                 .doesNotThrowAnyException();
     }
-
-    @Test
-    @DisplayName("특정 노선에 등록된 역을 상행부터 순서대로 조회합니다.")
-    void findAllOrderByUp() {
-        sectionService.insert(line.getId(), stationS.getName(), stationJ.getName(), Distance.of(5), true);
-        sectionService.insert(line.getId(), stationO.getName(), stationS.getName(), Distance.of(6), true);
-
-        assertThat(sectionDao.findAllStationsOrderByUp(lineDao.findById(line.getId())))
-                .containsExactly(stationO, stationS, stationJ);
-    }
 }

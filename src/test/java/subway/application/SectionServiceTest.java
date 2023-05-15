@@ -212,4 +212,14 @@ class SectionServiceTest {
                 .as("오산을 송탄 앞에 배치한 이후로는 오산이 상행 최종역이다.")
                 .isEqualTo(stationO);
     }
+
+
+    @Test
+    @DisplayName("특정 노선에 등록된 역을 상행부터 순서대로 조회합니다.")
+    void findAllOrderByUp() {
+        sectionService.insert(lineOne.getId(), stationO.getName(), stationS.getName(), Distance.of(6), true);
+
+        assertThat(sectionService.findAllStationsOrderByUp(lineDao.findById(lineOne.getId())))
+                .containsExactly(stationO, stationS, stationJ);
+    }
 }

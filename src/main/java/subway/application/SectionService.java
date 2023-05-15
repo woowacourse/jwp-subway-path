@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.application.exception.ExceptionMessages;
 import subway.application.exception.StationNotConnectedException;
 import subway.application.exception.StationNotRegisteredException;
-import subway.application.strategy.sectioninsertion.*;
+import subway.application.strategy.sectioninsertion.SectionInsertionStrategy;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -13,6 +13,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,5 +81,29 @@ public class SectionService {
 
         throw new StationNotConnectedException(ExceptionMessages.STATION_NOT_CONNECTED);
         // TODO: 아직까지 이웃하지 않은 역의 거리를 조회하지는 않는다고 가정합니다.
+    }
+
+    public List<Station> findAllStationsOrderByUp(Line line) {
+        final var stations = new ArrayList<Station>();
+        final var sections = sectionDao.findAllByLine(line);
+
+        var station = line.getHead();
+        while (station != null) {
+            Station currentStation = station;
+
+            final var nextStation = sections.stream()
+                    .filter(section -> section.getPreviousStation().equals(currentStation))
+                    .findAny();
+
+            if (nextStation.isPresent()) {
+                stations.add(nextStation.get().getPreviousStation());
+                station = nextStation.get().getNextStation();
+            }
+            if (nextStation.isEmpty()) {
+                station = null;
+            }
+        }
+
+        return stations;
     }
 }
