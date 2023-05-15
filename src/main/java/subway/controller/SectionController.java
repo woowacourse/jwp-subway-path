@@ -11,7 +11,7 @@ import subway.service.SectionService;
 import subway.service.dto.SectionInsertDto;
 import subway.controller.dto.request.SectionRequest;
 import subway.controller.dto.response.SectionResponse;
-import subway.service.domain.SubwayDirection;
+import subway.service.domain.Direction;
 
 import java.net.URI;
 import java.util.List;
@@ -31,7 +31,7 @@ public class SectionController {
         final List<SectionResponse> responses = sectionService.save(
                 new SectionInsertDto(
                         request.getLineName(),
-                        SubwayDirection.from(request.getDirection()),
+                        Direction.from(request.getDirection()),
                         request.getStandardStationName(),
                         request.getAdditionalStationName(),
                         request.getDistance())

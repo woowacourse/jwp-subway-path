@@ -18,7 +18,7 @@ import subway.entity.StationEntity;
 import subway.controller.dto.request.LineRequest;
 import subway.entity.LineEntity;
 import subway.controller.dto.response.SingleLineDetailResponse;
-import subway.service.domain.SubwayDirection;
+import subway.service.domain.Direction;
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -85,18 +85,18 @@ public class LineService {
         }
 
         for (Section section : sections) {
-            map.get(section.getPreviousStation()).add(new Object[] {SubwayDirection.UP, section.getNextStation(), section.getDistance()});
-            map.get(section.getNextStation()).add(new Object[] {SubwayDirection.DOWN, section.getPreviousStation(), section.getDistance()});
+            map.get(section.getPreviousStation()).add(new Object[] {Direction.UP, section.getNextStation(), section.getDistance()});
+            map.get(section.getNextStation()).add(new Object[] {Direction.DOWN, section.getPreviousStation(), section.getDistance()});
         }
 
         Deque<Station> deque = new LinkedList<>();
         Set<Station> visited = new HashSet<>();
-        moveStation(sections.get(0).getPreviousStation(), deque, map, visited, SubwayDirection.UP);
+        moveStation(sections.get(0).getPreviousStation(), deque, map, visited, Direction.UP);
 
         return new SingleLineDetailResponse(sectionDetails.get(0).getLineId(), sections.get(0).getLine().getName(), sections.get(0).getLine().getColor(), new Stations(new ArrayList<>(deque)));
     }
 
-    public void moveStation(Station station, Deque<Station> deque, Map<Station, List<Object[]>> map, Set<Station> visited, SubwayDirection direction) {
+    public void moveStation(Station station, Deque<Station> deque, Map<Station, List<Object[]>> map, Set<Station> visited, Direction direction) {
         visited.add(station);
 
         getDirection(station, deque, direction);
@@ -106,8 +106,8 @@ public class LineService {
         }
     }
 
-    private void getDirection(final Station station, final Deque<Station> deque, final SubwayDirection direction) {
-        if (direction == SubwayDirection.UP) {
+    private void getDirection(final Station station, final Deque<Station> deque, final Direction direction) {
+        if (direction == Direction.UP) {
             deque.addLast(station);
             return;
         }
@@ -119,7 +119,7 @@ public class LineService {
             return;
         }
 
-        moveStation((Station) object[1], deque, map, visited, (SubwayDirection) object[0]);
+        moveStation((Station) object[1], deque, map, visited, (Direction) object[0]);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {

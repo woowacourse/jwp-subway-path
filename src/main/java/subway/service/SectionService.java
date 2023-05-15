@@ -11,7 +11,7 @@ import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 import subway.controller.dto.response.SectionResponse;
-import subway.service.domain.SubwayDirection;
+import subway.service.domain.Direction;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class SectionService {
         final StationEntity standardStation = stationDao.findByName(sectionInsertDto.getStandardStationName());
         final StationEntity additionStation = stationDao.findByName(sectionInsertDto.getAdditionalStationName());
 
-        if (sectionInsertDto.getDirection() == SubwayDirection.UP) {
+        if (sectionInsertDto.getDirection() == Direction.UP) {
             return domainToResponseDtos(saveUpperSection(line, standardStation, additionStation, sectionInsertDto.getDistance()));
         }
 

@@ -1,16 +1,16 @@
 package subway.service.dto;
 
-import subway.service.domain.SubwayDirection;
+import subway.service.domain.Direction;
 
 public class SectionInsertDto {
 
     private final String lineName;
-    private final SubwayDirection direction;
+    private final Direction direction;
     private final String standardStationName;
     private final String additionalStationName;
     private final Integer distance;
 
-    public SectionInsertDto(final String lineName, final SubwayDirection direction, final String standardStationName,
+    public SectionInsertDto(final String lineName, final Direction direction, final String standardStationName,
                             final String additionalStationName, final Integer distance) {
         this.lineName = lineName;
         this.direction = direction;
@@ -23,7 +23,7 @@ public class SectionInsertDto {
         return lineName;
     }
 
-    public SubwayDirection getDirection() {
+    public Direction getDirection() {
         return direction;
     }
 
