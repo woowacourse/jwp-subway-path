@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.application.dto.CreationLineDto;
 import subway.application.dto.ReadLineDto;
-import subway.presentation.dto.request.CreationLineRequest;
-import subway.presentation.dto.response.CreationLineResponse;
+import subway.presentation.dto.request.CreateLineRequest;
+import subway.presentation.dto.response.CreateLineResponse;
 import subway.presentation.dto.response.ReadLineResponse;
 
 import java.net.URI;
@@ -30,10 +30,10 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<CreationLineResponse> createLine(@RequestBody final CreationLineRequest lineRequest) {
+    public ResponseEntity<CreateLineResponse> createLine(@RequestBody final CreateLineRequest lineRequest) {
         final CreationLineDto lineDto = lineService.saveLine(lineRequest.getName(), lineRequest.getColor());
 
-        return ResponseEntity.created(URI.create("/lines/" + lineDto.getId())).body(CreationLineResponse.from(lineDto));
+        return ResponseEntity.created(URI.create("/lines/" + lineDto.getId())).body(CreateLineResponse.from(lineDto));
     }
 
     @GetMapping

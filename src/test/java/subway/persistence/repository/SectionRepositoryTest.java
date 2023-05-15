@@ -46,7 +46,7 @@ class SectionRepositoryTest {
         line = Line.of(1L, "12호선", "bg-red-500");
         final Station upStation = Station.of(1L, "12역");
         final Station downStation = Station.of(2L, "23역");
-        line.addSection(upStation, downStation, Distance.from(5), Direction.DOWN);
+        line.createSection(upStation, downStation, Distance.from(5), Direction.DOWN);
     }
 
     @Test

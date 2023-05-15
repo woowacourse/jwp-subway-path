@@ -2,16 +2,16 @@ package subway.presentation.dto.response;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.application.dto.AddSectionDto;
+import subway.application.dto.CreateSectionDto;
 
-public class AddSectionResponse {
+public class CreateSectionResponse {
 
     private final Long id;
     private final String name;
     private final String color;
     private final List<ReadStationResponse> stationResponses;
 
-    public AddSectionResponse(
+    public CreateSectionResponse(
             final Long id,
             final String name,
             final String color,
@@ -23,12 +23,12 @@ public class AddSectionResponse {
         this.stationResponses = stationResponses;
     }
 
-    public static AddSectionResponse from(final AddSectionDto dto) {
+    public static CreateSectionResponse from(final CreateSectionDto dto) {
         final List<ReadStationResponse> stationResponses = dto.getStationDtos().stream()
                 .map(ReadStationResponse::from)
                 .collect(Collectors.toList());
 
-        return new AddSectionResponse(dto.getId(), dto.getName(), dto.getColor(), stationResponses);
+        return new CreateSectionResponse(dto.getId(), dto.getName(), dto.getColor(), stationResponses);
     }
 
     public Long getId() {

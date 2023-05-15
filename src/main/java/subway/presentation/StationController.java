@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
 import subway.application.dto.CreationStationDto;
-import subway.presentation.dto.request.CreationStationRequest;
-import subway.presentation.dto.response.CreationStationResponse;
+import subway.presentation.dto.request.CreateStationRequest;
+import subway.presentation.dto.response.CreateStationResponse;
 import subway.presentation.dto.response.ReadStationResponse;
 
 @RestController
@@ -25,9 +25,9 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<CreationStationResponse> createStation(@RequestBody final CreationStationRequest requestDto) {
+    public ResponseEntity<CreateStationResponse> createStation(@RequestBody final CreateStationRequest requestDto) {
         final CreationStationDto stationDto = stationService.saveStation(requestDto.getName());
-        final CreationStationResponse response = CreationStationResponse.from(stationDto);
+        final CreateStationResponse response = CreateStationResponse.from(stationDto);
 
         return ResponseEntity.created(URI.create("/stations/" + response.getId())).body(response);
     }

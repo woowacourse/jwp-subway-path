@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.application.dto.AddSectionDto;
+import subway.application.dto.CreateSectionDto;
 import subway.application.dto.ReadStationDto;
 import subway.domain.line.Line;
 import subway.domain.section.Direction;
@@ -32,12 +32,12 @@ import subway.persistence.repository.StationRepository;
 @JdbcTest
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings({"NonAsciiCharacters", "SpellCheckingInspection"})
-class AddSectionServiceTest {
+class CreateSectionServiceTest {
 
     StationRepository stationRepository;
     LineRepository lineRepository;
     SectionRepository sectionRepository;
-    AddSectionService addSectionService;
+    CreateSectionService createSectionService;
 
     Line line;
     Station upStation;
@@ -52,7 +52,7 @@ class AddSectionServiceTest {
         stationRepository = new StationRepository(stationDao, sectionDao);
         lineRepository = new LineRepository(lineDao, sectionDao);
         sectionRepository = new SectionRepository(sectionDao, stationDao);
-        addSectionService = new AddSectionService(stationRepository, lineRepository, sectionRepository);
+        createSectionService = new CreateSectionService(stationRepository, lineRepository, sectionRepository);
 
         line = lineRepository.insert(Line.of("12호선", "bg-red-500"));
         upStation = stationRepository.insert(Station.from("12역"));
@@ -64,10 +64,10 @@ class AddSectionServiceTest {
 
         @Test
         void addSection_메소드는_유효한_값을_전달하면_section을_생성한다() {
-            final AddSectionDto addSectionDto = addSectionService.addSection(
+            final CreateSectionDto createSectionDto = createSectionService.addSection(
                     line.getId(), upStation.getId(), downStation.getId(), Direction.DOWN, 5);
 
-            final List<ReadStationDto> actual = addSectionDto.getStationDtos();
+            final List<ReadStationDto> actual = createSectionDto.getStationDtos();
 
             assertAll(
                     () -> assertThat(actual).hasSize(2),
@@ -78,14 +78,14 @@ class AddSectionServiceTest {
 
         @Test
         void addSection_메소드는_존재하지_않는_stationId를_전달하면_예외가_발생한다() {
-            assertThatThrownBy(() -> addSectionService.addSection(line.getId(), -999L, -9999L, Direction.DOWN, 5))
+            assertThatThrownBy(() -> createSectionService.addSection(line.getId(), -999L, -9999L, Direction.DOWN, 5))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("존재하지 않는 역입니다.");
         }
 
         @Test
         void addSection_메소드는_존재하지_않는_lineId를_전달하면_예외가_발생한다() {
-            assertThatThrownBy(() -> addSectionService.addSection(-999L, upStation.getId(),
+            assertThatThrownBy(() -> createSectionService.addSection(-999L, upStation.getId(),
                     downStation.getId(), Direction.DOWN, 5))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("존재하지 않는 노선입니다.");
@@ -99,17 +99,17 @@ class AddSectionServiceTest {
         
         @BeforeEach
         void setUp() {
-            line.addSection(upStation, downStation, Distance.from(5), Direction.DOWN);
+            line.createSection(upStation, downStation, Distance.from(5), Direction.DOWN);
             sectionRepository.insert(line);
             targetStation = stationRepository.insert(Station.from("34역"));
         }
         
         @Test
         void addSection_메소드는_기존_구간이_존재하는_경우_중간에_section을_생성한다() {
-            line.addSection(upStation, targetStation, Distance.from(1), Direction.DOWN);
+            line.createSection(upStation, targetStation, Distance.from(1), Direction.DOWN);
             sectionRepository.insert(line);
 
-            final Line persistLine = lineRepository.findById(AddSectionServiceTest.this.line.getId()).get();
+            final Line persistLine = lineRepository.findById(CreateSectionServiceTest.this.line.getId()).get();
             final Line line = sectionRepository.findAllByLine(persistLine);
             final Map<Station, Section> actual = line.getSections().sections();
 
@@ -127,10 +127,10 @@ class AddSectionServiceTest {
 
         @Test
         void addSection_메소드는_기존_구간이_존재하지_않는_경우_종점에_section을_추가한다() {
-            line.addSection(upStation, targetStation, Distance.from(1), Direction.UP);
+            line.createSection(upStation, targetStation, Distance.from(1), Direction.UP);
             sectionRepository.insert(line);
 
-            final Line persistLine = lineRepository.findById(AddSectionServiceTest.this.line.getId()).get();
+            final Line persistLine = lineRepository.findById(CreateSectionServiceTest.this.line.getId()).get();
             final Line line = sectionRepository.findAllByLine(persistLine);
             final Map<Station, Section> actual = line.getSections().sections();
 
@@ -144,21 +144,21 @@ class AddSectionServiceTest {
 
         @Test
         void addSection_메소드는_노선에_등록되지_않은_stationId를_기준_역으로_전달하면_예외가_발생한다() {
-            assertThatThrownBy(() -> addSectionService.addSection(line.getId(), targetStation.getId(), upStation.getId(), Direction.UP, 1))
+            assertThatThrownBy(() -> createSectionService.addSection(line.getId(), targetStation.getId(), upStation.getId(), Direction.UP, 1))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("지정한 기준 역은 등록되어 있지 않은 역입니다.");
         }
 
         @Test
         void addSection_메소드는_이미_노선에_등록된_stationId를_추가할_역으로_전달하면_예외가_발생한다() {
-            assertThatThrownBy(() -> addSectionService.addSection(line.getId(), upStation.getId(), downStation.getId(), Direction.DOWN, 1))
+            assertThatThrownBy(() -> createSectionService.addSection(line.getId(), upStation.getId(), downStation.getId(), Direction.DOWN, 1))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("이미 등록된 역입니다.");
         }
 
         @Test
         void addSection_메소드는_기존_역과_등록할_역이_같으면_예외가_발생한다() {
-            assertThatThrownBy(() -> addSectionService.addSection(line.getId(), targetStation.getId(),
+            assertThatThrownBy(() -> createSectionService.addSection(line.getId(), targetStation.getId(),
                     targetStation.getId(), Direction.DOWN, 1))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("노선에 등록할 역은 동일한 역을 지정할 수 없습니다.");
@@ -166,7 +166,7 @@ class AddSectionServiceTest {
 
         @Test
         void addSection_메소드는_중간에_section을_추가할_때_구간_사이에_다른_역이_있다면_예외가_발생한다() {
-            assertThatThrownBy(() -> line.addSection(upStation, targetStation, Distance.from(100), Direction.DOWN))
+            assertThatThrownBy(() -> line.createSection(upStation, targetStation, Distance.from(100), Direction.DOWN))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("등록되는 구간 중간에 다른 역이 존재합니다.");
         }

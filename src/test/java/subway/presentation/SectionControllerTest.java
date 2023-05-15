@@ -23,14 +23,14 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import subway.application.AddSectionService;
-import subway.application.RemoveSectionService;
-import subway.application.dto.AddSectionDto;
+import subway.application.CreateSectionService;
+import subway.application.DeleteSectionService;
+import subway.application.dto.CreateSectionDto;
 import subway.domain.line.Line;
 import subway.domain.section.Direction;
 import subway.domain.section.Distance;
 import subway.domain.station.Station;
-import subway.presentation.dto.request.CreationSectionRequest;
+import subway.presentation.dto.request.CreateSectionRequest;
 import subway.presentation.dto.request.DeleteSectionRequest;
 
 @WebMvcTest(controllers = SectionController.class)
@@ -39,10 +39,10 @@ import subway.presentation.dto.request.DeleteSectionRequest;
 class SectionControllerTest {
 
     @MockBean
-    AddSectionService addSectionService;
+    CreateSectionService createSectionService;
 
     @MockBean
-    RemoveSectionService removeSectionService;
+    DeleteSectionService deleteSectionService;
 
     @Autowired
     SectionController sectionController;
@@ -65,10 +65,10 @@ class SectionControllerTest {
         final Line line = Line.of(1L, "12호선", "bg-red-500");
         final Station upStation = Station.of(1L, "12역");
         final Station downStation = Station.of(2L, "23역");
-        line.addSection(upStation, downStation, Distance.from(5), Direction.DOWN);
-        given(addSectionService.addSection(anyLong(), anyLong(), anyLong(), any(Direction.class), anyInt()))
-                .willReturn(AddSectionDto.from(line));
-        final CreationSectionRequest request = CreationSectionRequest.of(1L, 2L, 5, Direction.DOWN);
+        line.createSection(upStation, downStation, Distance.from(5), Direction.DOWN);
+        given(createSectionService.addSection(anyLong(), anyLong(), anyLong(), any(Direction.class), anyInt()))
+                .willReturn(CreateSectionDto.from(line));
+        final CreateSectionRequest request = CreateSectionRequest.of(1L, 2L, 5, Direction.DOWN);
 
         mockMvc.perform(post("/lines/{lineId}/sections", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -84,7 +84,7 @@ class SectionControllerTest {
 
     @Test
     void deleteSection_메소드는_지정한_역의_구역을_삭제한다() throws Exception {
-        willDoNothing().given(removeSectionService).removeSection(anyLong(), anyLong());
+        willDoNothing().given(deleteSectionService).removeSection(anyLong(), anyLong());
         final DeleteSectionRequest request = DeleteSectionRequest.of(1L);
 
         mockMvc.perform(delete("/lines/{lineId}/sections", 1L)

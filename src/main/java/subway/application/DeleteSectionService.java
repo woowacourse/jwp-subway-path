@@ -9,7 +9,7 @@ import subway.persistence.repository.SectionRepository;
 import subway.persistence.repository.StationRepository;
 
 @Service
-public class RemoveSectionService {
+public class DeleteSectionService {
 
     private static final String NOT_EXISTS_STATION = "존재하지 않는 역입니다.";
     private static final String NOT_EXISTS_LINE = "존재하지 않는 노선입니다.";
@@ -18,7 +18,7 @@ public class RemoveSectionService {
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
 
-    public RemoveSectionService(
+    public DeleteSectionService(
             final StationRepository stationRepository,
             final LineRepository lineRepository,
             final SectionRepository sectionRepository
@@ -36,7 +36,7 @@ public class RemoveSectionService {
         final Station targetStation = stationRepository.findById(targetStationId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION));
 
-        line.removeSection(targetStation);
+        line.deleteSection(targetStation);
         sectionRepository.insert(line);
     }
 }

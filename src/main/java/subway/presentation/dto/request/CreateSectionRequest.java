@@ -4,7 +4,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 import subway.domain.section.Direction;
 
-public class CreationSectionRequest {
+public class CreateSectionRequest {
 
     @Positive(message = "역의 식별자는 양수여야 합니다.")
     private Long sourceStationId;
@@ -18,10 +18,10 @@ public class CreationSectionRequest {
     @NotNull(message = "방향은 필수적으로 입력해야 합니다.")
     private Direction direction;
 
-    private CreationSectionRequest() {
+    private CreateSectionRequest() {
     }
 
-    private CreationSectionRequest(
+    private CreateSectionRequest(
             final Long sourceStationId,
             final Long targetStationId,
             final int distance,
@@ -33,13 +33,13 @@ public class CreationSectionRequest {
         this.direction = direction;
     }
 
-    public static CreationSectionRequest of(
+    public static CreateSectionRequest of(
             final Long sourceStationId,
             final Long targetStationId,
             final int distance,
             final Direction direction
     ) {
-        return new CreationSectionRequest(sourceStationId, targetStationId, distance, direction);
+        return new CreateSectionRequest(sourceStationId, targetStationId, distance, direction);
     }
 
     public Long getSourceStationId() {

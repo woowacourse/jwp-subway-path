@@ -1,20 +1,20 @@
 package subway.presentation.dto.request;
 
-public class CreationLineRequest {
+public class CreateLineRequest {
 
     private String name;
     private String color;
 
-    private CreationLineRequest() {
+    private CreateLineRequest() {
     }
 
-    private CreationLineRequest(final String name, final String color) {
+    private CreateLineRequest(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
 
-    public static CreationLineRequest of(final String name, final String color) {
-        return new CreationLineRequest(name, color);
+    public static CreateLineRequest of(final String name, final String color) {
+        return new CreateLineRequest(name, color);
     }
 
     public String getName() {

@@ -8,40 +8,40 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.AddSectionService;
-import subway.application.RemoveSectionService;
-import subway.application.dto.AddSectionDto;
-import subway.presentation.dto.request.CreationSectionRequest;
+import subway.application.CreateSectionService;
+import subway.application.DeleteSectionService;
+import subway.application.dto.CreateSectionDto;
+import subway.presentation.dto.request.CreateSectionRequest;
 import subway.presentation.dto.request.DeleteSectionRequest;
-import subway.presentation.dto.response.AddSectionResponse;
+import subway.presentation.dto.response.CreateSectionResponse;
 
 @RestController
 @RequestMapping("/lines/{lineId}/sections")
 public class SectionController {
 
-    private final AddSectionService addSectionService;
-    private final RemoveSectionService removeSectionService;
+    private final CreateSectionService createSectionService;
+    private final DeleteSectionService deleteSectionService;
 
-    public SectionController(final AddSectionService addSectionService, final RemoveSectionService removeSectionService) {
-        this.addSectionService = addSectionService;
-        this.removeSectionService = removeSectionService;
+    public SectionController(final CreateSectionService createSectionService, final DeleteSectionService deleteSectionService) {
+        this.createSectionService = createSectionService;
+        this.deleteSectionService = deleteSectionService;
     }
 
     @PostMapping
-    public ResponseEntity<AddSectionResponse> addSection(
+    public ResponseEntity<CreateSectionResponse> addSection(
             @PathVariable Long lineId,
-            @RequestBody CreationSectionRequest request
+            @RequestBody CreateSectionRequest request
     ) {
-        final AddSectionDto dto = addSectionService.addSection(lineId, request.getSourceStationId(),
+        final CreateSectionDto dto = createSectionService.addSection(lineId, request.getSourceStationId(),
                 request.getTargetStationId(), request.getDirection(), request.getDistance());
-        final AddSectionResponse response = AddSectionResponse.from(dto);
+        final CreateSectionResponse response = CreateSectionResponse.from(dto);
 
         return ResponseEntity.created(URI.create("/lines/" + dto.getId())).body(response);
     }
 
     @DeleteMapping
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId, @RequestBody DeleteSectionRequest request) {
-        removeSectionService.removeSection(request.getTargetStationId(), lineId);
+        deleteSectionService.removeSection(request.getTargetStationId(), lineId);
 
         return ResponseEntity.noContent().build();
     }

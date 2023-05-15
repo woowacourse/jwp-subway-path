@@ -37,7 +37,7 @@ public class Line {
         return new Line(line.getId(), line.getName(), line.getColor(), sections);
     }
 
-    public void addSection(
+    public void createSection(
             final Station sourceStation,
             final Station targetStation,
             final Distance distance,
@@ -46,7 +46,7 @@ public class Line {
         sections.addSection(sourceStation, targetStation, distance, direction);
     }
 
-    public void removeSection(final Station targetStation) {
+    public void deleteSection(final Station targetStation) {
         sections.removeStation(targetStation);
     }
 

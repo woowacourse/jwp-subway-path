@@ -2,7 +2,7 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.dto.AddSectionDto;
+import subway.application.dto.CreateSectionDto;
 import subway.domain.section.Direction;
 import subway.domain.section.Distance;
 import subway.domain.line.Line;
@@ -12,7 +12,7 @@ import subway.persistence.repository.SectionRepository;
 import subway.persistence.repository.StationRepository;
 
 @Service
-public class AddSectionService {
+public class CreateSectionService {
 
     private static final String NOT_EXISTS_STATION = "존재하지 않는 역입니다.";
     private static final String NOT_EXISTS_LINE = "존재하지 않는 노선입니다.";
@@ -21,7 +21,7 @@ public class AddSectionService {
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
 
-    public AddSectionService(
+    public CreateSectionService(
             final StationRepository stationRepository,
             final LineRepository lineRepository,
             final SectionRepository sectionRepository
@@ -32,7 +32,7 @@ public class AddSectionService {
     }
 
     @Transactional
-    public AddSectionDto addSection(
+    public CreateSectionDto addSection(
             final Long lineId,
             final Long sourceStationId,
             final Long targetStationId,
@@ -49,11 +49,11 @@ public class AddSectionService {
         final Station targetStation = stationRepository.findById(targetStationId)
                 .orElseThrow(() -> new IllegalArgumentException(NOT_EXISTS_STATION));
 
-        line.addSection(sourceStation, targetStation, Distance.from(distance), direction);
+        line.createSection(sourceStation, targetStation, Distance.from(distance), direction);
 
         sectionRepository.insert(line);
 
-        return AddSectionDto.from(line);
+        return CreateSectionDto.from(line);
     }
 
     private void validateStation(final Long sourceStationId, final Long targetStationId) {

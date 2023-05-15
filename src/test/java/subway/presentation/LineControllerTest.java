@@ -28,7 +28,7 @@ import subway.application.LineService;
 import subway.application.dto.CreationLineDto;
 import subway.application.dto.ReadLineDto;
 import subway.domain.line.Line;
-import subway.presentation.dto.request.CreationLineRequest;
+import subway.presentation.dto.request.CreateLineRequest;
 
 @WebMvcTest(controllers = LineController.class)
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -58,7 +58,7 @@ class LineControllerTest {
     void createLine_메소드는_line을_저장하고_저장한_데이터를_반환한다() throws Exception {
         final Line line = Line.of(1L, "12호선", "bg-red-500");
         given(lineService.saveLine(anyString(), anyString())).willReturn(CreationLineDto.from(line));
-        final CreationLineRequest request = CreationLineRequest.of(line.getName(), line.getColor());
+        final CreateLineRequest request = CreateLineRequest.of(line.getName(), line.getColor());
 
         mockMvc.perform(post("/lines")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -75,7 +75,7 @@ class LineControllerTest {
     void createLine_메소드는_지정한_노선_이름이_이미_존재하는_경우_예외가_발생한다() throws Exception {
         given(lineService.saveLine(anyString(), anyString()))
                 .willThrow(new IllegalArgumentException("지정한 노선의 이름은 이미 존재하는 이름입니다."));
-        final CreationLineRequest request = CreationLineRequest.of("12호선", "bg-red-500");
+        final CreateLineRequest request = CreateLineRequest.of("12호선", "bg-red-500");
 
         mockMvc.perform(post("/lines")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +117,7 @@ class LineControllerTest {
     @Test
     void findLineById_메소드는_없는_id를_전달하면_예외가_발생한다() throws Exception {
         given(lineService.findLineById(anyLong())).willThrow(new IllegalArgumentException("존재하지 않는 노선입니다."));
-        final CreationLineRequest request = CreationLineRequest.of("12호선", "bg-red-500");
+        final CreateLineRequest request = CreateLineRequest.of("12호선", "bg-red-500");
 
         mockMvc.perform(get("/lines/{lineId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON)
