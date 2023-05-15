@@ -29,12 +29,6 @@ public class Section {
         }
     }
 
-    public void validateDistance(final int distance) {
-        if (this.distance <= distance) {
-            throw new InvalidException(ErrorCode.INVALID_DISTANCE);
-        }
-    }
-
     public Section getDividedSection(final Section newSection) {
         validateDistance(newSection.distance);
 
@@ -42,6 +36,12 @@ public class Section {
             return new Section(newSection.downStation, downStation, distance - newSection.distance);
         }
         return new Section(upStation, newSection.upStation, distance - newSection.distance);
+    }
+
+    private void validateDistance(final int distance) {
+        if (this.distance <= distance) {
+            throw new InvalidException(ErrorCode.INVALID_DISTANCE);
+        }
     }
 
     public Station getUpStation() {

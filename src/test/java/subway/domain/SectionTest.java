@@ -56,20 +56,14 @@ class SectionTest {
         Section originalSection = new Section(upStation, downStation, 10);
 
         // expected
-        assertThatThrownBy(() -> originalSection.validateDistance(10))
+        assertThatThrownBy(() -> originalSection.getDividedSection(
+                    new Section(
+                        new Station("잠실새내역"),
+                        new Station("신림역"),
+                        20)))
                 .isInstanceOf(InvalidException.class);
     }
 
-    /*
-        public Section getDividedSection(final Section newSection) {
-        validateDistance(newSection.distance);
-
-        if (upStation.equals(newSection.upStation)) {
-            return new Section(newSection.downStation, downStation, distance - newSection.distance);
-        }
-        return new Section(upStation, newSection.upStation, distance - newSection.distance);
-    }
-    * */
     @Test
     @DisplayName("새로운 구간이 뒤에 추가될 때 나누어지는 구간을 리턴한다.")
     void getDividedSectionBack() {
