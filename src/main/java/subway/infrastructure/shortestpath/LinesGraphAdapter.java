@@ -1,7 +1,7 @@
 package subway.infrastructure.shortestpath;
 
 import org.jgrapht.graph.WeightedMultigraph;
-import subway.domain.Lines;
+import subway.domain.Path;
 import subway.domain.Section;
 import subway.domain.Station;
 
@@ -11,9 +11,9 @@ public class LinesGraphAdapter extends WeightedMultigraph<Station, SectionAdapte
         super(SectionAdapter.class);
     }
 
-    public static LinesGraphAdapter adapt(final Lines lines) {
+    public static LinesGraphAdapter adapt(final Path path) {
         final LinesGraphAdapter routeGraphAdapter = new LinesGraphAdapter();
-        lines.lines().stream()
+        path.lines().stream()
                 .flatMap(it -> it.sections().stream())
                 .forEach(routeGraphAdapter::addSection);
         return routeGraphAdapter;

@@ -1,22 +1,22 @@
 package subway.domain.payment;
 
-import subway.domain.Lines;
+import subway.domain.Path;
 
 public class PaymentLines {
 
-    private final Lines lines;
+    private final Path path;
     private final PaymentPolicy paymentPolicy;
 
-    public PaymentLines(final Lines lines, final PaymentPolicy paymentPolicy) {
-        this.lines = lines;
+    public PaymentLines(final Path path, final PaymentPolicy paymentPolicy) {
+        this.path = path;
         this.paymentPolicy = paymentPolicy;
     }
 
     public int calculateFee() {
-        return paymentPolicy.calculateFee(lines);
+        return paymentPolicy.calculateFee(path);
     }
 
-    public Lines lines() {
-        return lines;
+    public Path lines() {
+        return path;
     }
 }

@@ -14,7 +14,7 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.springframework.stereotype.Component;
 import subway.domain.Line;
-import subway.domain.Lines;
+import subway.domain.Path;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -31,13 +31,13 @@ public class JgraphtShortestRoute implements ShortestRouteService {
     }
 
     @Override
-    public Lines shortestRoute(final Lines lines, final Station start, final Station end) {
+    public Path shortestRoute(final Path path, final Station start, final Station end) {
         validateSameStation(start, end);
-        final List<Section> shortestSections = findPath(lines, start, end)
+        final List<Section> shortestSections = findPath(path, start, end)
                 .stream()
                 .map(SectionAdapter::toSection)
                 .collect(Collectors.toList());
-        return makeShortestLines(lines, shortestSections);
+        return makeShortestLines(path, shortestSections);
     }
 
     private void validateSameStation(final Station start, final Station end) {
@@ -46,7 +46,7 @@ public class JgraphtShortestRoute implements ShortestRouteService {
         }
     }
 
-    private List<SectionAdapter> findPath(final Lines lines, final Station start, final Station end) {
+    private List<SectionAdapter> findPath(final Path lines, final Station start, final Station end) {
         final LinesGraphAdapter graph = graphCache.linesGraphAdapter(lines);
         final GraphPath<Station, SectionAdapter> path = validPath(graph, start, end);
         if (path == null) {
@@ -67,23 +67,23 @@ public class JgraphtShortestRoute implements ShortestRouteService {
         }
     }
 
-    private Lines makeShortestLines(final Lines lines, final List<Section> shortestSections) {
+    private Path makeShortestLines(final Path path, final List<Section> shortestSections) {
         final List<Line> result = new ArrayList<>();
         final Deque<Section> deque = new ArrayDeque<>(shortestSections);
         while (!deque.isEmpty()) {
-            result.add(sectionOwner(lines, deque));
+            result.add(sectionOwner(path, deque));
         }
-        return new Lines(result);
+        return new Path(result);
     }
 
-    private Line sectionOwner(final Lines lines, final Deque<Section> sections) {
-        final Line sectionOwner = findSectionOwner(lines, sections);
+    private Line sectionOwner(final Path path, final Deque<Section> sections) {
+        final Line sectionOwner = findSectionOwner(path, sections);
         final List<Section> result = addSectionsToLine(sectionOwner, sections);
         return new Line(sectionOwner.id(), sectionOwner.name(), toSections(result));
     }
 
-    private Line findSectionOwner(final Lines lines, final Deque<Section> sections) {
-        return lines.lines()
+    private Line findSectionOwner(final Path path, final Deque<Section> sections) {
+        return path.lines()
                 .stream()
                 .filter(it -> it.contains(sections.peekFirst()))
                 .findAny()

@@ -19,10 +19,10 @@ import subway.exception.line.LineException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
-@DisplayName("Lines 은(는)")
-class LinesTest {
+@DisplayName("Path 은(는)")
+class PathTest {
 
-    private final Lines lines = new Lines(
+    private final Path path = new Path(
             new Line("2호선", new Sections(List.of(
                     new Section(선릉, 역2, 1),
                     new Section(역2, 잠실, 7)
@@ -39,7 +39,7 @@ class LinesTest {
     @Test
     void 각_노선들의_길이의_총합을_구할_수_있다() {
         // when
-        final int totalDistance = lines.totalDistance();
+        final int totalDistance = path.totalDistance();
 
         // then
         assertThat(totalDistance).isEqualTo(33);
@@ -48,10 +48,10 @@ class LinesTest {
     @Test
     void 비었는지_확인한다() {
         // given
-        final Lines lines = new Lines();
+        final Path path = new Path();
 
         // when & then
-        assertThat(lines.isEmpty()).isTrue();
+        assertThat(path.isEmpty()).isTrue();
     }
 
     @Nested
@@ -60,7 +60,7 @@ class LinesTest {
         @Test
         void 주어진_역으로_시작하는_경로를_구한다() {
             // given
-            final Lines result = lines.continuousLinesWithStartStation(잠실);
+            final Path result = path.continuousPathWithStartStation(잠실);
 
             // when & then
             assertThat(result.lines())
@@ -80,7 +80,7 @@ class LinesTest {
             final List<Station> noneStartStations = List.of(역2, 역4, 역5, 역6);
             for (final Station noneStartStation : noneStartStations) {
                 final String message = assertThrows(LineException.class, () ->
-                        lines.continuousLinesWithStartStation(noneStartStation)
+                        path.continuousPathWithStartStation(noneStartStation)
                 ).getMessage();
 
                 // then
@@ -92,7 +92,7 @@ class LinesTest {
         void 노선들이_연속적으로_연결될_수_없다면_예외() {
             // when
             final String message = assertThrows(LineException.class, () ->
-                    lines.continuousLinesWithStartStation(선릉)
+                    path.continuousPathWithStartStation(선릉)
             ).getMessage();
 
             // then

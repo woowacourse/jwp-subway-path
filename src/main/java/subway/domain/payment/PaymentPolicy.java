@@ -1,8 +1,8 @@
 package subway.domain.payment;
 
-import subway.domain.Lines;
+import subway.domain.Path;
 
 public interface PaymentPolicy {
 
-    int calculateFee(final Lines lines);
+    int calculateFee(final Path path);
 }

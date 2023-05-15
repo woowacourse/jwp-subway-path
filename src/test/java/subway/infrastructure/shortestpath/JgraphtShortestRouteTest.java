@@ -24,7 +24,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
-import subway.domain.Lines;
+import subway.domain.Path;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.service.ShortestRouteService;
@@ -38,7 +38,7 @@ class JgraphtShortestRouteTest {
 
     private final ShortestRouteService shortestRouteService = new JgraphtShortestRoute(new GraphCache());
 
-    private final Lines lines = new Lines(
+    private final Path path = new Path(
             new Line("1호선", new Sections(List.of(
                     new Section(역1, 역2, 10),
                     new Section(역2, 역3, 5),
@@ -62,10 +62,10 @@ class JgraphtShortestRouteTest {
     void 주어진_노선들_속에서_출발역과_종점역_사이의_최단_경로를_구할_수_있다() {
         // when
         // 정렬되지 않고, 단순히 간선들만 나온다
-        final Lines shortestLines = shortestRouteService.shortestRoute(lines, 역5, 역7);
+        final Path shortestPath = shortestRouteService.shortestRoute(path, 역5, 역7);
 
         // then
-        assertThat(shortestLines.lines())
+        assertThat(shortestPath.lines())
                 .flatMap(Line::sections)
                 .containsExactly(
                         new Section(역3, 역5, 1),
@@ -75,14 +75,14 @@ class JgraphtShortestRouteTest {
 
                         new Section(역1, 역7, 10)
                 );
-        assertThat(shortestLines.totalDistance()).isEqualTo(26);
+        assertThat(shortestPath.totalDistance()).isEqualTo(26);
     }
 
     @Test
     void 역은_모두_존재하나_경로가_없는경우_예외() {
         // when & then
         final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
-                shortestRouteService.shortestRoute(lines, 역5, 잠실)
+                shortestRouteService.shortestRoute(path, 역5, 잠실)
         ).exceptionType();
         assertThat(exceptionType).isEqualTo(NO_PATH);
     }
@@ -91,7 +91,7 @@ class JgraphtShortestRouteTest {
     void 출발지와_종착지가_동일하다면_예외() {
         // when
         final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
-                shortestRouteService.shortestRoute(lines, 역1, 역1)
+                shortestRouteService.shortestRoute(path, 역1, 역1)
         ).exceptionType();
 
         // then
@@ -102,8 +102,8 @@ class JgraphtShortestRouteTest {
     void 출발역이나_종착역이_해당_노선들에_존재하지_않으면_예외() {
         // when & then
         출발역이나_종착역이_해당_노선들에_존재하지_않는경우_예외_검증(
-                () -> shortestRouteService.shortestRoute(lines, 역1, 건대입구),
-                () -> shortestRouteService.shortestRoute(lines, 건대입구, 홍대입구)
+                () -> shortestRouteService.shortestRoute(path, 역1, 건대입구),
+                () -> shortestRouteService.shortestRoute(path, 건대입구, 홍대입구)
         );
     }
 

@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 import subway.domain.Line;
 import subway.domain.LineRepository;
-import subway.domain.Lines;
+import subway.domain.Path;
 import subway.domain.event.ChangeLineEvent;
 
 @Component
@@ -25,6 +25,6 @@ public class UpdateGraphCacheWithChangeLineEventHandler {
     @TransactionalEventListener(classes = {ChangeLineEvent.class})
     public void updateCache() {
         final List<Line> lines = lineRepository.findAll();
-        graphCache.updateCache(new Lines(lines));
+        graphCache.updateCache(new Path(lines));
     }
 }

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.domain.Lines;
+import subway.domain.Path;
 import subway.exception.line.LineException;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -21,7 +21,7 @@ import subway.exception.line.LineException;
 class DefaultPaymentPolicyTest {
 
     private final DefaultPaymentPolicy paymentPolicy = new DefaultPaymentPolicy();
-    private final Lines route = mock(Lines.class);
+    private final Path route = mock(Path.class);
 
     @Test
     void 거리가_없는경우_예외() {

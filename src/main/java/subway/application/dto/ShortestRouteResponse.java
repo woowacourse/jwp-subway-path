@@ -5,7 +5,7 @@ import static java.util.stream.Collectors.toList;
 import java.util.ArrayList;
 import java.util.List;
 import subway.domain.Line;
-import subway.domain.Lines;
+import subway.domain.Path;
 import subway.domain.Section;
 import subway.domain.payment.PaymentLines;
 
@@ -29,21 +29,21 @@ public class ShortestRouteResponse {
     }
 
     public static ShortestRouteResponse from(final PaymentLines paymentLines) {
-        final Lines lines = paymentLines.lines();
-        final List<SectionInfo> sectionInfoList = lines.lines().stream()
+        final Path path = paymentLines.lines();
+        final List<SectionInfo> sectionInfoList = path.lines().stream()
                 .flatMap(it -> SectionInfo.from(it).stream())
                 .collect(toList());
         return new ShortestRouteResponse(
                 sectionInfoList,
-                toTransferStations(lines),
-                lines.totalDistance(),
+                toTransferStations(path),
+                path.totalDistance(),
                 paymentLines.calculateFee());
     }
 
-    private static List<String> toTransferStations(final Lines lines) {
-        return lines.lines().stream()
+    private static List<String> toTransferStations(final Path path) {
+        return path.lines().stream()
                 .map(it -> it.downTerminal().name())
-                .limit(lines.size() - 1)
+                .limit(path.size() - 1)
                 .collect(toList());
     }
 

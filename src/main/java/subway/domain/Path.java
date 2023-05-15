@@ -8,15 +8,15 @@ import java.util.List;
 import java.util.Objects;
 import subway.exception.line.LineException;
 
-public class Lines {
+public class Path {
 
     private final List<Line> lines = new ArrayList<>();
 
-    public Lines(final Line... lines) {
+    public Path(final Line... lines) {
         this(Arrays.asList(lines));
     }
 
-    public Lines(final List<Line> lines) {
+    public Path(final List<Line> lines) {
         this.lines.addAll(lines);
     }
 
@@ -27,7 +27,7 @@ public class Lines {
                 .sum();
     }
 
-    public Lines continuousLinesWithStartStation(final Station start) {
+    public Path continuousPathWithStartStation(final Station start) {
         validateStartStation(start);
         return linkLines(start);
     }
@@ -54,14 +54,14 @@ public class Lines {
         return lines.get(0);
     }
 
-    private Lines linkLines(final Station start) {
+    private Path linkLines(final Station start) {
         final Deque<Line> sorted = new ArrayDeque<>();
         final Line startLine = lines.remove(0);
         sorted.addLast(lineWithStartStation(start, startLine));
         for (final Line line : lines) {
             sorted.addLast(lineWithStartStation(sorted.peekLast().downTerminal(), line));
         }
-        return new Lines(new ArrayList<>(sorted));
+        return new Path(new ArrayList<>(sorted));
     }
 
     private Line lineWithStartStation(final Station start, Line line) {
@@ -87,11 +87,11 @@ public class Lines {
         if (this == o) {
             return true;
         }
-        if (!(o instanceof Lines)) {
+        if (!(o instanceof Path)) {
             return false;
         }
-        final Lines lines1 = (Lines) o;
-        return Objects.equals(lines, lines1.lines);
+        final Path path1 = (Path) o;
+        return Objects.equals(lines, path1.lines);
     }
 
     @Override

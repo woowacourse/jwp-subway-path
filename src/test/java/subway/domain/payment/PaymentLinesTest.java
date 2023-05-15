@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
-import subway.domain.Lines;
+import subway.domain.Path;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -16,13 +16,13 @@ import subway.domain.Lines;
 class PaymentLinesTest {
 
     private final PaymentPolicy paymentPolicy = new DefaultPaymentPolicy();
-    private final Lines lines = mock(Lines.class);
+    private final Path path = mock(Path.class);
 
     @Test
     void 요금을_구할_수_있다() {
         // given
-        given(lines.totalDistance()).willReturn(58);
-        final PaymentLines paymentLines = new PaymentLines(lines, paymentPolicy);
+        given(path.totalDistance()).willReturn(58);
+        final PaymentLines paymentLines = new PaymentLines(path, paymentPolicy);
 
         // when
         final int fee = paymentLines.calculateFee();

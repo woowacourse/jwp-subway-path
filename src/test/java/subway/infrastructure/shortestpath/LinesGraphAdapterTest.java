@@ -15,7 +15,7 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.Line;
-import subway.domain.Lines;
+import subway.domain.Path;
 import subway.domain.Section;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -30,7 +30,7 @@ class LinesGraphAdapterTest {
      *      |   /
      *     역8
      */
-    private final Lines lines = new Lines(
+    private final Path path = new Path(
             new Line("1호선",
                     new Section(역1, 역2, 10),
                     new Section(역2, 역3, 5),
@@ -49,7 +49,7 @@ class LinesGraphAdapterTest {
     @Test
     void Line_들의_정보를_통해_생성된다() {
         // when
-        final LinesGraphAdapter graph = LinesGraphAdapter.adapt(lines);
+        final LinesGraphAdapter graph = LinesGraphAdapter.adapt(path);
 
         // then
         assertThat(graph.vertexSet())
