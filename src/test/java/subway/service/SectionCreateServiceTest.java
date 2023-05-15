@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import subway.dao.StubSectionDao;
-import subway.entity.SectionEntity;
+import subway.domain.Section;
 
 class SectionCreateServiceTest {
 
@@ -29,15 +29,15 @@ class SectionCreateServiceTest {
     @DisplayName("노선이 비어있을 때 새로운 역을 위로 추가하면 (addedId, baseId) 인 구간이 추가된다.")
     @Test
     void createSectionToUpInEmptyLine() {
-        final List<SectionEntity> sectionEntities = sectionCreateService.createSection(1L, 2L, 3L, true, 5);
-        assertThat(sectionEntities).containsExactly(new SectionEntity(1L, 1L, 3L, 2L, 5));
+        final List<Section> sections = sectionCreateService.createSection(1L, 2L, 3L, true, 5);
+        assertThat(sections).containsExactly(new Section(1L, 1L, 3L, 2L, 5));
     }
 
     @DisplayName("노선이 비어있을 때 새로운 역을 아래로 추가하면 (baseId, addedId) 인 구간이 추가된다.")
     @Test
     void createSectionToDownInEmptyLine() {
-        final List<SectionEntity> sectionEntities = sectionCreateService.createSection(1L, 2L, 3L, false, 5);
-        assertThat(sectionEntities).containsExactly(new SectionEntity(1L, 1L, 2L, 3L, 5));
+        final List<Section> sections = sectionCreateService.createSection(1L, 2L, 3L, false, 5);
+        assertThat(sections).containsExactly(new Section(1L, 1L, 2L, 3L, 5));
     }
 
     @DisplayName("구간이 저장되어 있을 때")
@@ -46,7 +46,7 @@ class SectionCreateServiceTest {
 
         @BeforeEach
         void setUp() {
-            stubSectionDao.insert(new SectionEntity(1L, 1L, 2L, 4));
+            stubSectionDao.insert(new Section(1L, 1L, 2L, 4));
         }
 
         @DisplayName("노선이 비어있지 않을 때 baseId를 포함한 구간이 없으면 예외를 발생시킨다.")
@@ -60,14 +60,14 @@ class SectionCreateServiceTest {
         @DisplayName("인접한 역이 없을 때 기준역 아래에 역을 추가한 경우 만든 구간 하나가 반환된다.")
         @Test
         void createSectionToUpWhenNoNeighbor() {
-            final List<SectionEntity> result = sectionCreateService.createSection(1L, 2L, 3L, false, 5);
-            final List<SectionEntity> sectionEntities = stubSectionDao.findByLineId(1L);
+            final List<Section> result = sectionCreateService.createSection(1L, 2L, 3L, false, 5);
+            final List<Section> sections = stubSectionDao.findByLineId(1L);
 
             assertAll(
-                    () -> assertThat(result).containsExactly(new SectionEntity(2L, 1L, 2L, 3L, 5)),
-                    () -> assertThat(sectionEntities).contains(
-                            new SectionEntity(1L, 1L, 1L, 2L, 4),
-                            new SectionEntity(2L, 1L, 2L, 3L, 5)
+                    () -> assertThat(result).containsExactly(new Section(2L, 1L, 2L, 3L, 5)),
+                    () -> assertThat(sections).contains(
+                            new Section(1L, 1L, 1L, 2L, 4),
+                            new Section(2L, 1L, 2L, 3L, 5)
                     )
             );
         }
@@ -75,13 +75,13 @@ class SectionCreateServiceTest {
         @DisplayName("인접한 역이 없을 때 기준역 위에 역을 추가한 경우 만든 구간 하나가 반환된다.")
         @Test
         void createSectionToDownWhenNoNeighbor() {
-            final List<SectionEntity> result = sectionCreateService.createSection(1L, 1L, 3L, true, 5);
-            final List<SectionEntity> sectionEntities = stubSectionDao.findByLineId(1L);
+            final List<Section> result = sectionCreateService.createSection(1L, 1L, 3L, true, 5);
+            final List<Section> sections = stubSectionDao.findByLineId(1L);
             assertAll(
-                    () -> assertThat(result).containsExactly(new SectionEntity(2L, 1L, 3L, 1L, 5)),
-                    () -> assertThat(sectionEntities).contains(
-                            new SectionEntity(2L, 1L, 3L, 1L, 5),
-                            new SectionEntity(1L, 1L, 1L, 2L, 4)
+                    () -> assertThat(result).containsExactly(new Section(2L, 1L, 3L, 1L, 5)),
+                    () -> assertThat(sections).contains(
+                            new Section(2L, 1L, 3L, 1L, 5),
+                            new Section(1L, 1L, 1L, 2L, 4)
                     )
             );
         }
@@ -98,10 +98,10 @@ class SectionCreateServiceTest {
         @DisplayName("인접한 역이 없을 때 기준역 위에 역을 추가한 경우 만든 구간 두 개가 반환된다.")
         @Test
         void divideSectionByAddedStationWhenUp() {
-            final List<SectionEntity> sectionEntities = sectionCreateService.createSection(1L, 2L, 3L, true, 3);
-            assertThat(sectionEntities).containsExactly(
-                    new SectionEntity(2L, 1L, 1L, 3L, 1),
-                    new SectionEntity(3L, 1L, 3L, 2L, 3)
+            final List<Section> sections = sectionCreateService.createSection(1L, 2L, 3L, true, 3);
+            assertThat(sections).containsExactly(
+                    new Section(2L, 1L, 1L, 3L, 1),
+                    new Section(3L, 1L, 3L, 2L, 3)
             );
         }
 
@@ -109,10 +109,10 @@ class SectionCreateServiceTest {
         @DisplayName("인접한 역이 없을 때 기준역 아래에 역을 추가한 경우 만든 구간 두 개가 반환된다.")
         @Test
         void divideSectionByAddedStationWhenDown() {
-            final List<SectionEntity> sectionEntities = sectionCreateService.createSection(1L, 1L, 3L, false, 3);
-            assertThat(sectionEntities).containsExactly(
-                    new SectionEntity(2L, 1L, 1L, 3L, 3),
-                    new SectionEntity(3L, 1L, 3L, 2L, 1)
+            final List<Section> sections = sectionCreateService.createSection(1L, 1L, 3L, false, 3);
+            assertThat(sections).containsExactly(
+                    new Section(2L, 1L, 1L, 3L, 3),
+                    new Section(3L, 1L, 3L, 2L, 1)
             );
         }
     }

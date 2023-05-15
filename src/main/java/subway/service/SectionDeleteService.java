@@ -5,7 +5,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
-import subway.entity.SectionEntity;
+import subway.domain.Section;
 
 @Transactional
 @Service
@@ -18,8 +18,8 @@ public class SectionDeleteService {
     }
 
     public void deleteSection(final Long lineId, final Long stationId) {
-        final Optional<SectionEntity> upSection = sectionDao.findNeighborUpSection(lineId, stationId);
-        final Optional<SectionEntity> downSection = sectionDao.findNeighborDownSection(lineId, stationId);
+        final Optional<Section> upSection = sectionDao.findNeighborUpSection(lineId, stationId);
+        final Optional<Section> downSection = sectionDao.findNeighborDownSection(lineId, stationId);
 
         validateRegistered(upSection, downSection);
         deleteSection(upSection, downSection);
@@ -28,25 +28,25 @@ public class SectionDeleteService {
         }
     }
 
-    private void validateRegistered(final Optional<SectionEntity> upSection, final Optional<SectionEntity> downSection) {
+    private void validateRegistered(final Optional<Section> upSection, final Optional<Section> downSection) {
         if (upSection.isEmpty() && downSection.isEmpty()) {
             throw new IllegalArgumentException("등록되어있지 않은 역은 지울 수 없습니다.");
         }
     }
 
-    private void deleteSection(final Optional<SectionEntity> upSection, final Optional<SectionEntity> downSection) {
+    private void deleteSection(final Optional<Section> upSection, final Optional<Section> downSection) {
         upSection.ifPresent(section -> sectionDao.deleteById(section.getId()));
         downSection.ifPresent(section -> sectionDao.deleteById(section.getId()));
     }
 
-    private void insertNewSection(final Long lineId, final SectionEntity upSection, final SectionEntity downSection) {
-        final SectionEntity sectionEntity = new SectionEntity(
+    private void insertNewSection(final Long lineId, final Section upSection, final Section downSection) {
+        final Section section = new Section(
                 lineId,
-                upSection.getUpStationId(),
-                downSection.getDownStationId(),
-                upSection.getDistance() + downSection.getDistance()
+                upSection.getUpStation().getId(),
+                downSection.getDownStation().getId(),
+                upSection.getDistance().getValue() + downSection.getDistance().getValue()
         );
 
-        sectionDao.insert(sectionEntity);
+        sectionDao.insert(section);
     }
 }

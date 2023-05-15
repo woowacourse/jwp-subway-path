@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.domain.Direction;
-import subway.entity.SectionEntity;
+import subway.domain.Section;
 
 @Transactional
 @Service
@@ -19,7 +19,7 @@ public class SectionCreateService {
         this.sectionDao = sectionDao;
     }
 
-    public List<SectionEntity> createSection(
+    public List<Section> createSection(
             final Long lineId,
             final Long baseId,
             final Long addedId,
@@ -39,72 +39,72 @@ public class SectionCreateService {
     }
 
     private void validateBaseStationExist(final Long lineId, final Long baseId) {
-        final Optional<SectionEntity> neighborUpSection = sectionDao.findNeighborUpSection(lineId, baseId);
-        final Optional<SectionEntity> neighborDownSection = sectionDao.findNeighborDownSection(lineId, baseId);
+        final Optional<Section> neighborUpSection = sectionDao.findNeighborUpSection(lineId, baseId);
+        final Optional<Section> neighborDownSection = sectionDao.findNeighborDownSection(lineId, baseId);
         if (neighborUpSection.isEmpty() && neighborDownSection.isEmpty()) {
             throw new IllegalArgumentException("기준점이 되는 역은 이미 구간에 존재해야 합니다.");
         }
     }
 
-    private List<SectionEntity> createSectionWhenBaseStationExist(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
-        final Optional<SectionEntity> section = sectionDao.findNeighborSection(lineId, baseId, Direction.from(direction));
+    private List<Section> createSectionWhenBaseStationExist(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
+        final Optional<Section> section = sectionDao.findNeighborSection(lineId, baseId, Direction.from(direction));
         if (section.isEmpty()) {
             return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
         }
-        final SectionEntity existSectionEntity = section.get();
-        validateDistance(distance, existSectionEntity);
+        final Section existSection = section.get();
+        validateDistance(distance, existSection);
 
-        return divideSectionByAddedStation(lineId, addedId, direction, distance, existSectionEntity);
+        return divideSectionByAddedStation(lineId, addedId, direction, distance, existSection);
     }
 
-    private void validateDistance(final Integer distance, final SectionEntity existSectionEntity) {
-        if (existSectionEntity.getDistance() <= distance) {
+    private void validateDistance(final Integer distance, final Section existSection) {
+        if (existSection.getDistance().getValue() <= distance) {
             throw new IllegalArgumentException("새롭게 등록하는 구간의 거리는 기존에 존재하는 구간의 거리보다 작아야합니다.");
         }
     }
 
-    private List<SectionEntity> createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
-        final SectionEntity sectionEntity = createSectionEntityByDirection(lineId, baseId, addedId, direction, distance);
-        final SectionEntity savedSectionEntity = sectionDao.insert(sectionEntity);
-        return List.of(savedSectionEntity);
+    private List<Section> createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
+        final Section section = createSectionByDirection(lineId, baseId, addedId, direction, distance);
+        final Section savedSection = sectionDao.insert(section);
+        return List.of(savedSection);
     }
 
-    private SectionEntity createSectionEntityByDirection(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
+    private Section createSectionByDirection(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
         if (Direction.from(direction) == Direction.UP) {
-            return new SectionEntity(lineId, addedId, baseId, distance);
+            return new Section(lineId, addedId, baseId, distance);
         }
         if (Direction.from(direction) == Direction.DOWN) {
-            return new SectionEntity(lineId, baseId, addedId, distance);
+            return new Section(lineId, baseId, addedId, distance);
         }
         throw new IllegalArgumentException("존재하지 않는 방향입니다.");
     }
 
-    private List<SectionEntity> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSectionEntity) {
-        sectionDao.deleteById(existSectionEntity.getId());
+    private List<Section> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final Section existSection) {
+        sectionDao.deleteById(existSection.getId());
 
-        final SectionEntity upSectionEntity = createUpSectionByDirection(lineId, addedId, direction, distance, existSectionEntity);
-        final SectionEntity upSavedSectionEntity = sectionDao.insert(upSectionEntity);
-        final SectionEntity downSectionEntity = createDownSectionByDirection(lineId, addedId, direction, distance, existSectionEntity);
-        final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
-        return List.of(upSavedSectionEntity, downSavedSectionEntity);
+        final Section upSection = createUpSectionByDirection(lineId, addedId, direction, distance, existSection);
+        final Section upSavedSection = sectionDao.insert(upSection);
+        final Section downSection = createDownSectionByDirection(lineId, addedId, direction, distance, existSection);
+        final Section downSavedSection = sectionDao.insert(downSection);
+        return List.of(upSavedSection, downSavedSection);
     }
 
-    private SectionEntity createUpSectionByDirection(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSection) {
+    private Section createUpSectionByDirection(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final Section existSection) {
         if (Direction.from(direction) == Direction.UP) {
-            return new SectionEntity(lineId, existSection.getUpStationId(), addedId, existSection.getDistance() - distance);
+            return new Section(lineId, existSection.getUpStation().getId(), addedId, existSection.getDistance().getValue() - distance);
         }
         if (Direction.from(direction) == Direction.DOWN) {
-            return new SectionEntity(lineId, existSection.getUpStationId(), addedId, distance);
+            return new Section(lineId, existSection.getUpStation().getId(), addedId, distance);
         }
         throw new IllegalArgumentException("존재하지 않는 방향입니다.");
     }
 
-    private SectionEntity createDownSectionByDirection(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSection) {
+    private Section createDownSectionByDirection(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final Section existSection) {
         if (Direction.from(direction) == Direction.UP) {
-            return new SectionEntity(lineId, addedId, existSection.getDownStationId(), distance);
+            return new Section(lineId, addedId, existSection.getDownStation().getId(), distance);
         }
         if (Direction.from(direction) == Direction.DOWN) {
-            return new SectionEntity(lineId, addedId, existSection.getDownStationId(), existSection.getDistance() - distance);
+            return new Section(lineId, addedId, existSection.getDownStation().getId(), existSection.getDistance().getValue() - distance);
         }
         throw new IllegalArgumentException("존재하지 않는 방향입니다.");
     }

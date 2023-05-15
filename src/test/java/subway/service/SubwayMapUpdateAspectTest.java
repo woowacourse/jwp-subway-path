@@ -16,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import subway.dao.SectionDao;
-import subway.entity.SectionEntity;
+import subway.domain.Section;
 
 @SpringBootTest
 class SubwayMapUpdateAspectTest {
@@ -35,7 +35,7 @@ class SubwayMapUpdateAspectTest {
     void shouldUpdateWhenCreateSection() {
         // given
         given(sectionDao.findByLineId(anyLong())).willReturn(Collections.emptyList());
-        given(sectionDao.insert(any())).willReturn(new SectionEntity(1L, 2L, 3L, 4L, 5));
+        given(sectionDao.insert(any())).willReturn(new Section(1L, 2L, 3L, 4L, 5));
 
         // when
         sectionCreateService.createSection(1L, 1L, 2L, true, 10);
@@ -50,7 +50,7 @@ class SubwayMapUpdateAspectTest {
         // given
         given(sectionDao.findNeighborUpSection(anyLong(), anyLong())).willReturn(Optional.empty());
         given(sectionDao.findNeighborDownSection(anyLong(), anyLong())).willReturn(
-                Optional.of(new SectionEntity(1L, 2L, 3L, 4L, 5))
+                Optional.of(new Section(1L, 2L, 3L, 4L, 5))
         );
         doNothing().when(sectionDao).deleteById(anyLong());
 

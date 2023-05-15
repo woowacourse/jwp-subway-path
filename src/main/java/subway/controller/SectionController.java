@@ -10,10 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import subway.domain.Section;
 import subway.dto.SectionCreateRequest;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionResponse;
-import subway.entity.SectionEntity;
 import subway.service.SectionCreateService;
 import subway.service.SectionDeleteService;
 
@@ -31,14 +31,14 @@ public class SectionController {
 
     @PostMapping
     public ResponseEntity<List<SectionResponse>> createSection(@RequestBody final SectionCreateRequest sectionCreateRequest) {
-        final List<SectionEntity> sectionEntities = sectionCreateService.createSection(
+        final List<Section> sections = sectionCreateService.createSection(
                 sectionCreateRequest.getLineId(),
                 sectionCreateRequest.getBaseStationId(),
                 sectionCreateRequest.getAddedStationId(),
                 sectionCreateRequest.getDirection(),
                 sectionCreateRequest.getDistance()
         );
-        final List<SectionResponse> sectionResponses = sectionEntities.stream()
+        final List<SectionResponse> sectionResponses = sections.stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.CREATED).body(sectionResponses);

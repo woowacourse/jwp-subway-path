@@ -18,6 +18,10 @@ public class Distance {
         throw new IllegalArgumentException("거리는 양의 정수만 가능합니다.");
     }
 
+    public int getValue() {
+        return value;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

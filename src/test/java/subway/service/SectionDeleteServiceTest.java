@@ -12,7 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.dao.StubSectionDao;
-import subway.entity.SectionEntity;
+import subway.domain.Section;
 
 class SectionDeleteServiceTest {
 
@@ -41,7 +41,7 @@ class SectionDeleteServiceTest {
 
         @BeforeEach
         void setUp() {
-            sectionId = stubSectionDao.insert(new SectionEntity(1L, 1L, 2L, 4)).getId();
+            sectionId = stubSectionDao.insert(new Section(1L, 1L, 2L, 4)).getId();
         }
 
         @DisplayName("아랫쪽 구간만 존재하면 그 구간을 지운다.")
@@ -63,17 +63,17 @@ class SectionDeleteServiceTest {
         @DisplayName("윗 아래 모두 구간이 존재하면 두 구간을 합친다.")
         @Test
         void deleteSection() {
-            final Long sectionId2 = stubSectionDao.insert(new SectionEntity(1L, 2L, 3L, 5)).getId();
+            final Long sectionId2 = stubSectionDao.insert(new Section(1L, 2L, 3L, 5)).getId();
 
             assertThatCode(() -> sectionDeleteService.deleteSection(1L, 2L))
                     .doesNotThrowAnyException();
-            final List<SectionEntity> result = stubSectionDao.findByLineId(1L);
+            final List<Section> result = stubSectionDao.findByLineId(1L);
 
             assertAll(
                     () -> assertThat(stubSectionDao.findById(sectionId)).isEmpty(),
                     () -> assertThat(stubSectionDao.findById(sectionId2)).isEmpty(),
                     () -> assertThat(result).containsExactly(
-                            new SectionEntity(3L, 1L, 1L, 3L, 9)
+                            new Section(3L, 1L, 1L, 3L, 9)
                     )
             );
         }

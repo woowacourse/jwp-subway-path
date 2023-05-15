@@ -16,7 +16,6 @@ import subway.domain.Direction;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.entity.SectionEntity;
 
 @Repository
 public class RdsSectionDao implements SectionDao {
@@ -24,8 +23,8 @@ public class RdsSectionDao implements SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
-            new SectionEntity(
+    private final RowMapper<Section> rowMapper = (rs, rowNum) ->
+            new Section(
                     rs.getLong("id"),
                     rs.getLong("line_id"),
                     rs.getLong("up_station_id"),
@@ -50,19 +49,19 @@ public class RdsSectionDao implements SectionDao {
     }
 
     @Override
-    public SectionEntity insert(final SectionEntity sectionEntity) {
+    public Section insert(final Section section) {
         final Map<String, Object> params = new HashMap<>();
-        params.put("line_id", sectionEntity.getLineId());
-        params.put("up_station_id", sectionEntity.getUpStationId());
-        params.put("down_station_id", sectionEntity.getDownStationId());
-        params.put("distance", sectionEntity.getDistance());
+        params.put("line_id", section.getLineId());
+        params.put("up_station_id", section.getUpStation().getId());
+        params.put("down_station_id", section.getDownStation().getId());
+        params.put("distance", section.getDistance().getValue());
 
         final Long sectionId = insertAction.executeAndReturnKey(params).longValue();
-        return new SectionEntity(sectionId, sectionEntity);
+        return new Section(sectionId, section);
     }
 
     @Override
-    public Optional<SectionEntity> findById(final Long id) {
+    public Optional<Section> findById(final Long id) {
         final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION where id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -92,13 +91,13 @@ public class RdsSectionDao implements SectionDao {
     }
 
     @Override
-    public List<SectionEntity> findByLineId(final Long lineId) {
+    public List<Section> findByLineId(final Long lineId) {
         final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     @Override
-    public Optional<SectionEntity> findNeighborSection(final Long lineId, final Long baseId, final Direction direction) {
+    public Optional<Section> findNeighborSection(final Long lineId, final Long baseId, final Direction direction) {
         if (direction == Direction.UP) {
             return findNeighborUpSection(lineId, baseId);
         }
@@ -106,7 +105,7 @@ public class RdsSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<SectionEntity> findNeighborUpSection(final Long lineId, final Long stationId) {
+    public Optional<Section> findNeighborUpSection(final Long lineId, final Long stationId) {
         try {
             final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and down_station_id = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));
@@ -116,7 +115,7 @@ public class RdsSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<SectionEntity> findNeighborDownSection(final Long lineId, final Long stationId) {
+    public Optional<Section> findNeighborDownSection(final Long lineId, final Long stationId) {
         try {
             final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and up_station_id = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));

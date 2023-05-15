@@ -10,6 +10,14 @@ public class Section {
     private final Station downStation;
     private final Distance distance;
 
+    public Section(final Long id, final Section other) {
+        this(id, other.lineId, other.upStation, other.downStation, other.distance);
+    }
+
+    public Section(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+        this(null, lineId, upStationId, downStationId, distance);
+    }
+
     public Section(final Long id, final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
         this(id, lineId, new Station(upStationId), new Station(downStationId), new Distance(distance));
     }

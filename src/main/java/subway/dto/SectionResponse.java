@@ -1,6 +1,6 @@
 package subway.dto;
 
-import subway.entity.SectionEntity;
+import subway.domain.Section;
 
 public class SectionResponse {
 
@@ -18,13 +18,13 @@ public class SectionResponse {
         this.distance = distance;
     }
 
-    public static SectionResponse of(final SectionEntity sectionEntity) {
+    public static SectionResponse of(final Section section) {
         return new SectionResponse(
-                sectionEntity.getId(),
-                sectionEntity.getLineId(),
-                sectionEntity.getUpStationId(),
-                sectionEntity.getDownStationId(),
-                sectionEntity.getDistance()
+                section.getId(),
+                section.getLineId(),
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                section.getDistance().getValue()
         );
     }
 
