@@ -61,7 +61,7 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
 
         final Edges originalEdges = new Edges(edgeDao.findAllByLineId(lineId));
-        final Edges newEdges = originalEdges.add(existStation, newStation, request.strategy(), request.getDistance());
+        final Edges newEdges = originalEdges.add(existStation, newStation, request.getDirection().getDirectionStrategy(), request.getDistance());
         edgeDao.deleteAllByLineId(lineId);
         edgeDao.insertAllByLineId(lineId, newEdges.getEdges());
 
