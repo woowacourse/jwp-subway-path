@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.repository.SectionRepository;
@@ -19,6 +21,7 @@ public class SectionRepositoryImpl implements SectionRepository {
     private final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
             new Section(
                     rs.getLong("id"),
+                    new Line(rs.getString("lineId")),
                     new Station(rs.getString("up_station")),
                     new Station(rs.getString("down_station")),
                     rs.getLong("distance")
@@ -34,12 +37,13 @@ public class SectionRepositoryImpl implements SectionRepository {
     @Override
     public void createSection(final Long lineId, final List<Section> sections) {
         jdbcTemplate.update("TRUNCATE TABLE section");
-        List<SectionEntity> sectionEntities = SectionEntity.of(lineId, sections);
+        List<SectionEntity> sectionEntities = SectionEntity.of(sections);
 
         final BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
             .map(BeanPropertySqlParameterSource::new)
             .toArray(BeanPropertySqlParameterSource[]::new);
         insert.executeBatch(parameterSources);
+
     }
 
     @Override

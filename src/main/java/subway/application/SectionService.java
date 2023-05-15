@@ -2,8 +2,10 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.domain.repository.LineRepository;
 import subway.domain.repository.SectionRepository;
 import subway.ui.dto.SectionResponse;
 import subway.ui.dto.StationResponse;
@@ -13,21 +15,26 @@ import java.util.List;
 @Service
 public class SectionService {
 	private final SectionRepository sectionRepository;
+	private final LineRepository lineRepository;
 
-	public SectionService(final SectionRepository sectionRepository) {
+	public SectionService(final SectionRepository sectionRepository, final LineRepository lineRepository) {
 		this.sectionRepository = sectionRepository;
+		this.lineRepository = lineRepository;
 	}
 
-	public void createSection(final Long lineId, final SectionCreateRequest sectionCreateRequest) {
+	public SectionResponse createSection(final SectionCreateRequest sectionCreateRequest) {
+		final Line line = lineRepository.findByName(sectionCreateRequest.getLineName());
 		final Section section = Section.of(
+			sectionCreateRequest.getLineName(),
 			sectionCreateRequest.getUpStationName(),
 			sectionCreateRequest.getDownStationName(),
 			sectionCreateRequest.getDistance()
 		);
 
-		final Sections sections = new Sections(sectionRepository.findAllByLineId(lineId));
+		final Sections sections = new Sections(sectionRepository.findAllByLineId(line.getId()));
 		sections.addSection(section);
-		sectionRepository.createSection(lineId, sections.getSections());
+		sectionRepository.createSection(line.getId(), sections.getSections());
+		return SectionResponse.of(line.getId(), section.getUpStation().getName(), section.getDownStation().getName(),section.getDistance());
 	}
 
 	public List<SectionResponse> findAll(){

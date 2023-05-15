@@ -7,10 +7,11 @@ import subway.application.SectionDeleteRequest;
 import subway.application.SectionService;
 import subway.ui.dto.StationResponse;
 
+import java.net.URI;
 import java.util.List;
 
 @RestController
-@RequestMapping("/line")
+@RequestMapping("/sections")
 public class SectionController {
     private final SectionService sectionService;
 
@@ -18,10 +19,11 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @PostMapping("/{lineId}/stations")
-    public void createSection(@PathVariable("lineId") Long lineId, @RequestBody SectionCreateRequest sectionCreateRequest) {
-        sectionService.createSection(lineId, sectionCreateRequest);
-        ResponseEntity.ok().build();
+    @PostMapping
+    public ResponseEntity<StationResponse> createSection(@RequestBody SectionCreateRequest sectionCreateRequest) {
+        final long sectionId = sectionService.createSection(sectionCreateRequest).getId();
+        final URI uri = URI.create("/sections/" + sectionId);
+        return ResponseEntity.created(uri).build();
     }
 
     @DeleteMapping("/{lineId}/stations")
