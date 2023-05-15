@@ -26,4 +26,8 @@ public class SectionService {
         return new SectionResponse(null, sectionRequest.getUpStationId(), sectionRequest.getDownStationId(), sectionRequest.getDistance());
     }
 
+
+    public void deleteSectionByStationId(final Long lineId, final Long stationId) {
+
+    }
 }
