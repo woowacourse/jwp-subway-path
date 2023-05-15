@@ -32,19 +32,19 @@ public class SectionRepositoryImpl implements SectionRepository {
     }
 
     @Override
-    public List<Section> findAll() {
-        return null;
-    }
-
-    @Override
     public void createSection(final Long lineId, final List<Section> sections) {
         jdbcTemplate.update("TRUNCATE TABLE section");
         List<SectionEntity> sectionEntities = SectionEntity.of(lineId, sections);
 
         final BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
-                .map(BeanPropertySqlParameterSource::new)
-                .toArray(BeanPropertySqlParameterSource[]::new);
+            .map(BeanPropertySqlParameterSource::new)
+            .toArray(BeanPropertySqlParameterSource[]::new);
         insert.executeBatch(parameterSources);
+    }
+
+    @Override
+    public List<Section> findAll() {
+        return null;
     }
 
     @Override

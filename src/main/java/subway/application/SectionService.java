@@ -4,9 +4,8 @@ import org.springframework.stereotype.Service;
 
 import subway.domain.Section;
 import subway.domain.Sections;
-import subway.domain.repository.LineRepository;
 import subway.domain.repository.SectionRepository;
-import subway.domain.repository.StationRepository;
+import subway.ui.dto.SectionResponse;
 import subway.ui.dto.StationResponse;
 
 import java.util.List;
@@ -31,6 +30,16 @@ public class SectionService {
 		sectionRepository.createSection(lineId, sections.getSections());
 	}
 
+	public List<SectionResponse> findAll(){
+		return SectionResponse.of(sectionRepository.findAll());
+	}
+
+	public List<StationResponse> findAllByLine(final Long lineId) {
+		final Sections sections = new Sections(sectionRepository.findAllByLineId(lineId));
+
+		return StationResponse.of(sections.getSortedStations());
+	}
+
 	public void deleteSection(final Long lineId, final SectionDeleteRequest sectionDeleteRequest) {
 		final Section section = Section.of(
 			sectionDeleteRequest.getUpStationName(),
@@ -38,11 +47,5 @@ public class SectionService {
 		);
 
 		sectionRepository.deleteBySection(lineId, section);
-	}
-
-	public List<StationResponse> findAllByLine(final Long lineId) {
-		final Sections sections = new Sections(sectionRepository.findAllByLineId(lineId));
-
-		return StationResponse.of(sections.getSortedStations());
 	}
 }
