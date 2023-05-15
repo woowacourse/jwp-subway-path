@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import subway.dto.response.ErrorResponse;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -13,14 +14,16 @@ public class GlobalExceptionHandler {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException(SQLException e) {
+    public ResponseEntity<ErrorResponse> handleSQLException(SQLException e) {
         log.warn(e.getMessage());
-        return ResponseEntity.badRequest().build();
+        ErrorResponse response = new ErrorResponse("알 수 없는 에러가 발생하였습니다.");
+        return ResponseEntity.badRequest().body(response);
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<Void> handleBadRequestException(IllegalArgumentException e) {
+    public ResponseEntity<ErrorResponse> handleBadRequestException(IllegalArgumentException e) {
         log.warn(e.getMessage());
-        return ResponseEntity.badRequest().build();
+        ErrorResponse response = new ErrorResponse(e.getMessage());
+        return ResponseEntity.badRequest().body(response);
     }
 }
