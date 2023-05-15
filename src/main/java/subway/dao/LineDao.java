@@ -55,16 +55,16 @@ public class LineDao {
         }
     }
 
+    public Long findHeadIdById(Long lineId) {
+        String sql = "select head_station from LINE WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("head_station"), lineId);
+    }
+
     public boolean isExist(String name) {
         String sql = "select exists(select * from LINE where name = ?) as is_exist";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
             rs.getBoolean("is_exist"), name));
     }
-
-//    public Long findHeadIdById(Long lineId) {
-//        String sql = "select head_station from LINE WHERE id = ?";
-//        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("head_station"), lineId);
-//    }
 
     public boolean isUpEndStation(Long lineId, String name) {
         String sql = "select exists(select * from LINE "

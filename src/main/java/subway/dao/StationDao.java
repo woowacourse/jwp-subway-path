@@ -7,14 +7,10 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
-import subway.entity.LineEntity;
 import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 public class StationDao {
@@ -57,27 +53,17 @@ public class StationDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-//    public List<StationEntity> findAll() {
-//        String sql = "select * from STATION";
-//        List<StationEntity> query = jdbcTemplate.query(sql, rowMapper);
-//
-//        return jdbcTemplate.query(sql, rowMapper);
-//    }
-
     public List<StationEntity> findByLineId(Long lineId) {
         String sql = "select * from STATION where line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-//    public StationEntity findById(Long id) {
-//        String sql = "select * from STATION where id = ?";
-//        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-//    }
-
-    public StationEntity findByNextStationId(Long lineId, Long nextStationId) {
+    public StationEntity findByNextStationId(Long lineId, String nextStationName) {
         try {
-            String sql = "select * from STATION where line_id = ? AND next_station = ?";
-            return jdbcTemplate.queryForObject(sql, rowMapper, lineId, nextStationId);
+            String sql = "select * from STATION S1 "
+                + "left outer join STATION S2 on S1.next_station = S2.id "
+                + "where S1.line_id = ? and S2.name = ?";
+            return jdbcTemplate.queryForObject(sql, rowMapper, lineId, nextStationName);
         } catch (EmptyResultDataAccessException exception) {
             throw new IllegalArgumentException("노선에 존재하지 않는 역이거나 이전 역이 존재하지 않는 역입니다.");
         }
@@ -99,16 +85,22 @@ public class StationDao {
         return jdbcTemplate.queryForObject(sql, rowMapperWithLine, lineId);
     }
 
+    public Long findTailStationByLineId(Long lineId) {
+        String sql = "select id from STATION where line_id = ? and next_station = 0";
+        return jdbcTemplate.queryForObject(sql, (rs, rowNum) -> rs.getLong("id"), lineId);
+    }
+
     public boolean isDownEndStation(Long lineId, String name) {
-        String sql = "select exists(select * from STATION where line_id = ? and name = ? and next_station = 0) as is_down_end_station;";
+        String sql = "select exists(select * from STATION where line_id = ? and name = ? and next_station = 0) as is_down_end_station";
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
             rs.getBoolean("IS_DOWN_END_STATION"), lineId, name));
     }
 
-//    public void update(Station newStation) {
-//        String sql = "update STATION set name = ? where id = ?";
-//        jdbcTemplate.update(sql, newStation.getName(), newStation.getId());
-//    }
+    public boolean isExist(Long lineId, String name) {
+        String sql = "select exists(select * from STATION where line_id = ? and name = ?) as is_exist";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, (rs, rowNum) ->
+            rs.getBoolean("IS_EXIST"), lineId, name));
+    }
 
     public int updateNextStationById(Long id, Long newNextStation) {
         String sql = "update STATION set next_station = ? where id = ?";

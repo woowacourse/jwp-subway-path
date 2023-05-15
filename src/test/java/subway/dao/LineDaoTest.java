@@ -79,6 +79,16 @@ class LineDaoTest {
     }
 
     @Test
+    @DisplayName("findHeadIdById()를 호출하면 노선의 상행 종점의 id 값을 반환한다")
+    void findHeadIdById() {
+        // given, when
+        Long headId = lineDao.findHeadIdById(lineId);
+
+        // then
+        Assertions.assertThat(headId).isEqualTo(1L);
+    }
+
+    @Test
     @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 노선이 존재한다면 true를 반환한다")
     void isExist_true() {
         // given, when

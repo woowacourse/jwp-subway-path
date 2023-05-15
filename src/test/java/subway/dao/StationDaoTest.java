@@ -71,9 +71,9 @@ class StationDaoTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"2:1", "4:2", "6:4", "5:6", "3:5", "0:3"}, delimiter = ':')
+    @CsvSource(value = {"역삼역:1", "선릉역:2", "삼성역:4", "건대입구역:6", "잠실역:5"}, delimiter = ':')
     @DisplayName("findByNextStationId()를 호출할 때 이전 역이 존재한다면 입력받은 역을 다음 역으로 갖는 역을 반환한다")
-    void findByNextStationId_success(Long existPreviousStation, Long expected) {
+    void findByNextStationId_success(String existPreviousStation, Long expected) {
         // given, when
         StationEntity previousStation = stationDao.findByNextStationId(lineId,
             existPreviousStation);
@@ -84,9 +84,9 @@ class StationDaoTest {
     }
 
     @ParameterizedTest
-    @ValueSource(longs = {1L, 24L})
+    @ValueSource(strings = {"강남역", "없는역"})
     @DisplayName("findByNextStationId()를 호출할 때 이전 역이 존재하지 않는다면 예외를 반환한다")
-    void findByNextStationId_fail(Long notExistPreviousStation) {
+    void findByNextStationId_fail(String notExistPreviousStation) {
         // given, when, then
         Assertions.assertThatThrownBy(
                 () -> stationDao.findByNextStationId(lineId, notExistPreviousStation))
@@ -151,6 +151,28 @@ class StationDaoTest {
 
         // then
         Assertions.assertThat(actual).isFalse();
+    }
+
+    @Test
+    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 역이 노선에 존재한다면 true를 반환한다")
+    void isExist_true() {
+        // given, when
+        String name = "선릉역";
+        boolean isExistLine = stationDao.isExist(lineId, name);
+
+        // then
+        Assertions.assertThat(isExistLine).isTrue();
+    }
+
+    @Test
+    @DisplayName("isExist()를 호출할 때 입력한 name를 갖는 역이 노선에 존재하지 않는다면 false를 반환한다")
+    void isExist_false() {
+        // given, when
+        String name = "없는역";
+        boolean isExistLine = stationDao.isExist(lineId, name);
+
+        // then
+        Assertions.assertThat(isExistLine).isFalse();
     }
 
     @Test
