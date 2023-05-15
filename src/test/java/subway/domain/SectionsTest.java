@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import subway.domain.dto.ChangesByAddition;
+import subway.domain.dto.ChangesByDeletion;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
@@ -40,7 +41,7 @@ public class SectionsTest {
         Station downStation = jangji;
 
         // then
-        Section section = line8.getAnySectionWithGivenStations(jamsil, jangji);
+        Section section = line8.findAnySectionWithGivenStations(jamsil, jangji);
         assertThat(section.getUpStation()).isEqualTo(upStation);
         assertThat(section.getDownStation()).isEqualTo(downStation);
     }
@@ -52,7 +53,7 @@ public class SectionsTest {
         Sections line8 = line8source;
 
         // then
-        assertThatThrownBy(() -> line8.getAnySectionWithGivenStations(cheonho, jangji))
+        assertThatThrownBy(() -> line8.findAnySectionWithGivenStations(cheonho, jangji))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("주어진 역으로 구성된 구간이 존재하지 않습니다.");
     }
@@ -73,7 +74,7 @@ public class SectionsTest {
 
             // when
             Station mongchon = new Station(10L, "몽촌토성");
-            ChangesByAddition changes = line8.getChangesWhenAdded(cheonho, mongchon, pink, 4);
+            ChangesByAddition changes = line8.findChangesWhenAdd(cheonho, mongchon, pink, 4);
 
             // then
             // 장지 - 10 - 잠실 - 6 - 몽촌 - 4 - 천호
@@ -92,7 +93,7 @@ public class SectionsTest {
 
             // when
             Station seokchon = new Station(10L, "석촌");
-            ChangesByAddition changes = line8.getChangesWhenAdded(seokchon, jangji, pink, 9);
+            ChangesByAddition changes = line8.findChangesWhenAdd(seokchon, jangji, pink, 9);
 
             // then
             // 장지 - 9 - 석촌 - 1 - 잠실 - 10 - 천호
@@ -111,7 +112,7 @@ public class SectionsTest {
 
             // when
             Station amsa = new Station(10L, "암사");
-            ChangesByAddition changes = line8.getChangesWhenAdded(amsa, cheonho, pink, 10);
+            ChangesByAddition changes = line8.findChangesWhenAdd(amsa, cheonho, pink, 10);
 
             //then
             // 장지 - 10 - 잠실 - 10 - 천호 - 10 - 암사
@@ -129,7 +130,7 @@ public class SectionsTest {
 
             // when
             Station moran = new Station(10L, "모란");
-            ChangesByAddition changes = line8.getChangesWhenAdded(jangji, moran, pink, 4);
+            ChangesByAddition changes = line8.findChangesWhenAdd(jangji, moran, pink, 4);
 
             //then
             // 모란 - 4 - 장지 - 10 - 잠실 - 10 - 천호
@@ -147,7 +148,7 @@ public class SectionsTest {
 
             // when
             Station mongchon = new Station(10L, "몽촌토성");
-            ChangesByAddition changes = line8.getChangesWhenAdded(mongchon, jamsil, pink, 9);
+            ChangesByAddition changes = line8.findChangesWhenAdd(mongchon, jamsil, pink, 9);
 
             //then
             // 장지 - 10 - 잠실 - 9 - 몽촌 - 1 - 천호
@@ -166,7 +167,7 @@ public class SectionsTest {
 
             // when
             Station seokchon = new Station(4L, "석촌");
-            ChangesByAddition changes = line8.getChangesWhenAdded(jamsil, seokchon, pink, 4);
+            ChangesByAddition changes = line8.findChangesWhenAdd(jamsil, seokchon, pink, 4);
 
             //then
             // 장지 - 6 - 석촌 - 4 - 잠실 - 10 - 천호
@@ -182,13 +183,13 @@ public class SectionsTest {
     class 역_추가_실패_테스트 {
 
         @Test
-        void 입력된_두_역이_이미_모두_존재하는_경우() {
+        void 입력된_두_역이_이미_같은_노선에_존재하는_경우() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
             Sections line8 = line8source;
 
             // when & then
-            assertThatThrownBy(() -> line8.getChangesWhenAdded(cheonho, jamsil, pink, 10))
+            assertThatThrownBy(() -> line8.findChangesWhenAdd(cheonho, jamsil, pink, 10))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("최초 등록이 아닌 경우 하나의 역은 이미 존재해야 합니다.");
         }
@@ -204,60 +205,58 @@ public class SectionsTest {
             Station seokchon = new Station(4L, "석촌");
 
             // then
-            assertThatThrownBy(() -> line8.getChangesWhenAdded(mongchon, seokchon, pink, 10))
+            assertThatThrownBy(() -> line8.findChangesWhenAdd(mongchon, seokchon, pink, 10))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("최초 등록이 아닌 경우 하나의 역은 이미 존재해야 합니다.");
         }
-    }
 
-    @Nested
-    class 역_삭제_결과_테스트 {
+        @Nested
+        class 역_삭제_테스트 {
 
-        // @Test
-        // void 종점을_삭제한다() {
-        //     // given
-        //     // 장지 - 10 - 잠실 - 10 - 천호
-        //     Sections line8 = line8source;
-        //
-        //     // when
-        //     SectionResult sectionResult = line8.delete(cheonho);
-        //
-        //     // then
-        //     // 장지 - 10 - 잠실
-        //     assertThat(sectionResult.getAddedSections()).isEmpty();
-        //     assertThat(sectionResult.getDeletedSection()).containsExactlyInAnyOrder(cheonhoJamsil10);
-        //     assertThat(sectionResult.getModifiedStation()).containsExactly(cheonho);
-        // }
-        //
-        // @Test
-        // void 두_개의_호선이_교차하는_환승_역을_삭제한다() {
-        //     // given
-        //     //            건대
-        //     //             |
-        //     //            10
-        //     //             |
-        //     // 장지 - 10 - 잠실 - 10 - 천호
-        //     //             |
-        //     //            10
-        //     //             |
-        //     //            강남
-        //     Sections line2And8 = line2And8source;
-        //
-        //     // when
-        //     SectionResult sectionResult = line2And8.delete(jamsil);
-        //
-        //     // then
-        //     // 장지 - 20 - 천호
-        //     // 강남 - 20 - 건대
-        //     Section cheonhoJangji20 = new Section(cheonho, jangji,
-        //         cheonhoJamsil10.calculateCombinedDistance(jamsilJangji10.getDistance()), pink);
-        //     Section kundaeGangnam20 = new Section(kundae, gangnam,
-        //         kundaeJamsil10.calculateCombinedDistance(jamsilGangnam10.getDistance()), green);
-        //
-        //     assertThat(sectionResult.getAddedSections()).containsExactlyInAnyOrder(cheonhoJangji20, kundaeGangnam20);
-        //     assertThat(sectionResult.getDeletedSection()).containsExactlyInAnyOrder(cheonhoJamsil10, jamsilJangji10,
-        //         jamsilGangnam10, kundaeJamsil10);
-        //     assertThat(sectionResult.getModifiedStation()).containsExactly(jamsil);
-        // }
+            @Test
+            void 포함되지_않은_역을_삭제한다() {
+                // given
+                // 장지 - 10 - 잠실 - 10 - 천호
+                Sections line8 = line8source;
+
+                // when
+                ChangesByDeletion changes = line8.findChangesWhenDelete(gangnam);
+
+                // then
+                assertThat(changes.getAddedSections()).isEmpty();
+                assertThat(changes.getDeletedSections()).isEmpty();
+            }
+
+            @Test
+            void 종점을_삭제한다() {
+                // given
+                // 장지 - 10 - 잠실 - 10 - 천호
+                Sections line8 = line8source;
+
+                // when
+                ChangesByDeletion changes = line8.findChangesWhenDelete(cheonho);
+
+                // then
+                // 장지 - 10 - 잠실
+                assertThat(changes.getAddedSections()).isEmpty();
+                assertThat(changes.getDeletedSections()).containsExactlyInAnyOrder(jamsilJangji10);
+            }
+
+            @Test
+            void 종점이_아닌_역을_삭제한다() {
+                // given
+                // 장지 - 10 - 잠실 - 10 - 천호
+                Sections line8 = line8source;
+
+                // when
+                ChangesByDeletion changes = line8.findChangesWhenDelete(jamsil);
+
+                // then
+                // 장지 - 20 - 천호
+                Section cheonhoJangji20 = new Section(cheonho, jangji, pink, 20);
+                assertThat(changes.getAddedSections()).containsExactlyInAnyOrder(cheonhoJangji20);
+                assertThat(changes.getDeletedSections()).containsExactlyInAnyOrder(cheonhoJamsil10, jamsilJangji10);
+            }
+        }
     }
 }

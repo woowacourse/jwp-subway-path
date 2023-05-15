@@ -2,10 +2,12 @@ package subway.domain;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import subway.domain.dto.ChangesByAddition;
+import subway.domain.dto.ChangesByDeletion;
 
 public class Sections {
 
@@ -22,15 +24,15 @@ public class Sections {
             .flatMap(section -> section.getStationWithGivenId(id));
     }
 
-    public ChangesByAddition getChangesWhenAdded(Station upStation, Station downStation, Line line, int distance) {
+    public ChangesByAddition findChangesWhenAdd(Station upStation, Station downStation, Line line, int distance) {
         if (sections.size() == 0) {
-            return getChangeWithSingleSection(upStation, downStation, line, distance);
+            return findChangeWithSingleSection(upStation, downStation, line, distance);
         }
         validateNotContainsBoth(upStation, downStation);
         if (hasStationWithGivenName(upStation.getName())) {
-            return getChangesWhenDownStationAdded(upStation, downStation, line, distance);
+            return findChangesWhenDownStationAdded(upStation, downStation, line, distance);
         }
-        return getChangesWhenUpStationAdded(upStation, downStation, line, distance);
+        return findChangesWhenUpStationAdded(upStation, downStation, line, distance);
     }
 
     private void validateNotContainsBoth(Station station1, Station station2) {
@@ -42,22 +44,18 @@ public class Sections {
     }
 
     private boolean hasStationWithGivenName(String name) {
-        for (Section section : sections) {
-            if (section.hasGivenNamedStation(name)) {
-                return true;
-            }
-        }
-        return false;
+        return sections.stream()
+            .anyMatch(section -> section.hasGivenNamedStation(name));
     }
 
-    private ChangesByAddition getChangesWhenDownStationAdded(Station upStation, Station downStation, Line line,
+    private ChangesByAddition findChangesWhenDownStationAdded(Station upStation, Station downStation, Line line,
         int distance) {
-        List<Section> relatedSections = getRelatedSections(upStation);
+        Sections relatedSections = findRelatedSections(upStation);
         // (down ->) up -> original 인 경우
         if (relatedSections.size() == 1 && relatedSections.get(0).isDownStationGiven(upStation)) {
-            return getChangeWithSingleSection(upStation, downStation, line, distance);
+            return findChangeWithSingleSection(upStation, downStation, line, distance);
         }
-        Section originalSection = getAnySectionWithGivenUpStation(relatedSections, upStation);
+        Section originalSection = findAnySectionWithGivenUpStation(upStation);
         return new ChangesByAddition(
             List.of(new Section(upStation, downStation, line, distance),
                 new Section(downStation, originalSection.getDownStation(), line,
@@ -66,14 +64,14 @@ public class Sections {
         );
     }
 
-    private ChangesByAddition getChangesWhenUpStationAdded(Station upStation, Station downStation, Line line,
+    private ChangesByAddition findChangesWhenUpStationAdded(Station upStation, Station downStation, Line line,
         int distance) {
-        List<Section> relatedSections = getRelatedSections(downStation);
+        Sections relatedSections = findRelatedSections(downStation);
         // original -> down (-> up) 인 경우
         if (relatedSections.size() == 1 && relatedSections.get(0).isUpStationGiven(downStation)) {
-            return getChangeWithSingleSection(upStation, downStation, line, distance);
+            return findChangeWithSingleSection(upStation, downStation, line, distance);
         }
-        Section originalSection = getAnySectionWithGivenDownStation(relatedSections, downStation);
+        Section originalSection = findAnySectionWithGivenDownStation(downStation);
         return new ChangesByAddition(
             List.of(new Section(upStation, downStation, line, distance),
                 new Section(originalSection.getUpStation(), upStation, line,
@@ -82,7 +80,7 @@ public class Sections {
         );
     }
 
-    private ChangesByAddition getChangeWithSingleSection(Station upStation, Station downStation, Line line,
+    private ChangesByAddition findChangeWithSingleSection(Station upStation, Station downStation, Line line,
         int distance) {
         return new ChangesByAddition(
             List.of(new Section(upStation, downStation, line, distance)),
@@ -90,7 +88,14 @@ public class Sections {
         );
     }
 
-    public Section getAnySectionWithGivenStations(Station upStation, Station downStation) {
+    private Sections findRelatedSections(Station station) {
+        List<Section> sectionList = sections.stream()
+            .filter(section -> section.hasGivenNamedStation(station.getName()))
+            .collect(Collectors.toList());
+        return new Sections(sectionList);
+    }
+
+    public Section findAnySectionWithGivenStations(Station upStation, Station downStation) {
         for (Section section : sections) {
             if (section.isUpStationGiven(upStation) && section.isDownStationGiven(downStation)) {
                 return section;
@@ -99,28 +104,69 @@ public class Sections {
         throw new IllegalArgumentException("주어진 역으로 구성된 구간이 존재하지 않습니다.");
     }
 
-    private Section getAnySectionWithGivenUpStation(List<Section> sections, Station station) {
-        for (Section section : sections) {
-            if (section.isUpStationGiven(station)) {
-                return section;
-            }
-        }
-        throw new IllegalArgumentException("주어진 역이 상행인 경우가 존재하지 않습니다.");
-    }
-
-    private Section getAnySectionWithGivenDownStation(List<Section> sections, Station station) {
-        for (Section section : sections) {
-            if (section.isDownStationGiven(station)) {
-                return section;
-            }
-        }
-        throw new IllegalArgumentException("주어진 역이 하행인 경우가 존재하지 않습니다.");
-    }
-
-    private List<Section> getRelatedSections(Station station) {
+    private Section findAnySectionWithGivenUpStation(Station station) {
         return sections.stream()
-            .filter(section -> section.hasGivenNamedStation(station.getName()))
-            .collect(Collectors.toList());
+            .filter(section -> section.isUpStationGiven(station))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("주어진 역이 상행인 경우가 존재하지 않습니다."));
+    }
+
+    private Section findAnySectionWithGivenDownStation(Station station) {
+        return sections.stream()
+            .filter(section -> section.isDownStationGiven(station))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("주어진 역이 하행인 경우가 존재하지 않습니다."));
+    }
+
+    public ChangesByDeletion findChangesWhenDelete(Station station) {
+        ChangesByDeletion changes = new ChangesByDeletion(Collections.emptyList(), Collections.emptyList());
+        Map<Line, List<Section>> sectionsByLine = sections.stream()
+            .collect(Collectors.groupingBy(Section::getLine));
+        for (Map.Entry<Line, List<Section>> entry : sectionsByLine.entrySet()) {
+            changes = changes.combine(findChangesWhenDelete(station, new Sections(entry.getValue())));
+        }
+        return changes;
+    }
+
+    private ChangesByDeletion findChangesWhenDelete(Station station, Sections sections) {
+        Sections relatedSections = sections.findRelatedSections(station);
+        if (relatedSections.size() == 0) {
+            return new ChangesByDeletion(Collections.emptyList(), Collections.emptyList());
+        }
+        if (relatedSections.size() == 1) {
+            return new ChangesByDeletion(Collections.emptyList(), sections.removeAll(relatedSections).getSections());
+        }
+        return getChangesByMidStationDeletion(station, relatedSections);
+    }
+
+    private ChangesByDeletion getChangesByMidStationDeletion(Station station, Sections relatedSections) {
+        Section upSection;
+        Section downSection;
+        if (relatedSections.get(0).isUpStationGiven(station)) {
+            upSection = relatedSections.get(0);
+            downSection = relatedSections.get(1);
+        } else {
+            upSection = relatedSections.get(1);
+            downSection = relatedSections.get(0);
+        }
+        return new ChangesByDeletion(
+            List.of(new Section(downSection.getUpStation(), upSection.getDownStation(), upSection.getLine(),
+                (upSection.getDistance() + downSection.getDistance()))),
+            List.of(upSection, downSection)
+        );
+    }
+
+    private int size() {
+        return sections.size();
+    }
+
+    private Section get(int index) {
+        return sections.get(index);
+    }
+
+    private Sections removeAll(Sections sections) {
+        this.sections.removeAll(sections.getSections());
+        return new Sections(this.sections);
     }
 
     public List<Section> getSections() {

@@ -37,7 +37,7 @@ public class SectionService {
         Line line = lineDao.findById(request.getLineId());
         int distance = request.getDistance();
 
-        ChangesByAddition changes = sections.getChangesWhenAdded(upStation, downStation, line, distance);
+        ChangesByAddition changes = sections.findChangesWhenAdd(upStation, downStation, line, distance);
         List<Section> added = sectionDao.insertAll(changes.getAddedSections());
         sectionDao.deleteAll(changes.getDeletedSections());
         return SectionResponse.of(findRequestedSection(added, upStation, downStation));
@@ -51,6 +51,6 @@ public class SectionService {
 
     private Section findRequestedSection(List<Section> addedSections, Station upStation, Station downStation) {
         Sections sections = new Sections(addedSections);
-        return sections.getAnySectionWithGivenStations(upStation, downStation);
+        return sections.findAnySectionWithGivenStations(upStation, downStation);
     }
 }
