@@ -1,4 +1,4 @@
-package subway.ui.line;
+package subway.ui.controller.line;
 
 import java.sql.SQLException;
 import org.springframework.http.ResponseEntity;

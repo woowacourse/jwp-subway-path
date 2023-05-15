@@ -1,4 +1,4 @@
-package subway.ui.station;
+package subway.ui.controller.station;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -8,24 +8,25 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import subway.application.station.usecase.AddStationUseCase;
-import subway.ui.dto.request.AddStationRequest;
+import subway.application.station.usecase.CreateInitialStationsUseCase;
+import subway.ui.dto.request.CreateInitialStationsRequest;
 
 @RestController
-public class AddStationController {
+public class CreateInitialStationsController {
 
-    private final AddStationUseCase addStationService;
+    private final CreateInitialStationsUseCase createInitialStationsService;
 
-    public AddStationController(final AddStationUseCase addStationService) {
-        this.addStationService = addStationService;
+
+    public CreateInitialStationsController(final CreateInitialStationsUseCase createInitialStationsService) {
+        this.createInitialStationsService = createInitialStationsService;
     }
 
-    @PostMapping("/lines/{lineId}/station")
-    public ResponseEntity<Void> addStation(
+    @PostMapping("/lines/{lineId}/station/init")
+    public ResponseEntity<Void> createInitialStations(
             @PathVariable final Long lineId,
-            @RequestBody final AddStationRequest request
+            @RequestBody final CreateInitialStationsRequest request
     ) {
-        final Long savedStationId = addStationService.addStation(lineId, request);
+        final Long savedStationId = createInitialStationsService.addInitialStations(lineId, request);
 
         final String createdResourceUri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
