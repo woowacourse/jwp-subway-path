@@ -16,7 +16,7 @@ class SubwayTest {
     void 노선을_등록한다() {
         // given
         Subway subway = new Subway();
-        Line line = new Line("2호선", List.of(new Section("강남역", "역삼역", 10)));
+        Line line = new Line(null, "2호선", List.of(new Section("강남역", "역삼역", 10)));
 
         // when
         subway.addLine(line);
@@ -30,9 +30,9 @@ class SubwayTest {
     void 중복된_이름의_노선을_등록하면_예외가_발생한다() {
         // given
         Subway subway = new Subway();
-        Line line = new Line("2호선", List.of(new Section("강남역", "역삼역", 10)));
+        Line line = new Line(null, "2호선", List.of(new Section("강남역", "역삼역", 10)));
         subway.addLine(line);
-        Line sameNameLine = new Line("2호선", List.of(new Section("서초역", "교대역", 15)));
+        Line sameNameLine = new Line(null, "2호선", List.of(new Section("서초역", "교대역", 15)));
 
         // when, then
         assertThatThrownBy(() -> subway.addLine(sameNameLine))
@@ -44,7 +44,7 @@ class SubwayTest {
     void 입력받은_노선의_역을_삭제한다() {
         // given
         Subway subway = new Subway();
-        Line line = new Line("2호선", List.of(
+        Line line = new Line(null, "2호선", List.of(
                 new Section("교대역", "강남역", 10),
                 new Section("강남역", "역삼역", 5))
         );
@@ -62,7 +62,7 @@ class SubwayTest {
     void 노선에_역이_2개만_존재할_때_하나의_역을_삭제하면_노선_전체가_삭제되고_조회되지_않는다() {
         // given
         Subway subway = new Subway();
-        Line line = new Line("2호선", List.of(new Section("교대역", "강남역", 10)));
+        Line line = new Line(null, "2호선", List.of(new Section("교대역", "강남역", 10)));
         subway.addLine(line);
 
         // when
@@ -78,7 +78,7 @@ class SubwayTest {
     void 존재하지_않는_노선의_역을_삭제하면_예외가_발생한다() {
         // given
         Subway subway = new Subway();
-        Line line = new Line("2호선", List.of(new Section("교대역", "강남역", 10)));
+        Line line = new Line(null, "2호선", List.of(new Section("교대역", "강남역", 10)));
         subway.addLine(line);
 
         // when, then
@@ -91,7 +91,7 @@ class SubwayTest {
     void 노선에_존재하지_않는_역을_삭제하면_예외가_발생한다() {
         // given
         Subway subway = new Subway();
-        Line line = new Line("2호선", List.of(new Section("교대역", "강남역", 10)));
+        Line line = new Line(null, "2호선", List.of(new Section("교대역", "강남역", 10)));
         subway.addLine(line);
 
         // when, then
@@ -104,8 +104,8 @@ class SubwayTest {
     void 이름으로_노선을_찾는다() {
         // given
         Subway subway = new Subway();
-        Line line = new Line("1호선", List.of(new Section("서울역", "명동역", 10)));
-        Line otherLine = new Line("2호선", List.of(new Section("교대역", "강남역", 10)));
+        Line line = new Line(null, "1호선", List.of(new Section("서울역", "명동역", 10)));
+        Line otherLine = new Line(null, "2호선", List.of(new Section("교대역", "강남역", 10)));
         subway.addLine(line);
         subway.addLine(otherLine);
 
@@ -120,7 +120,7 @@ class SubwayTest {
     void 존재하지_않는_이름으로_노선을_찾으면_예외가_발생한다() {
         // given
         Subway subway = new Subway();
-        Line line = new Line("1호선", List.of(new Section("서울역", "명동역", 10)));
+        Line line = new Line(null, "1호선", List.of(new Section("서울역", "명동역", 10)));
         subway.addLine(line);
 
         // when, then
@@ -133,11 +133,11 @@ class SubwayTest {
     void 환승역을_삭제하면_한_노선에서만_삭제되고_다른_노선에는_존재한다() {
         // given
         Subway subway = new Subway();
-        Line firstLine = new Line("1호선", List.of(
+        Line firstLine = new Line(null, "1호선", List.of(
                 new Section("서울역", "강남역", 5),
                 new Section("강남역", "명동역", 10)
         ));
-        Line secondLine = new Line("2호선", List.of(
+        Line secondLine = new Line(null, "2호선", List.of(
                 new Section("교대역", "강남역", 7),
                 new Section("강남역", "역삼역", 9)
         ));

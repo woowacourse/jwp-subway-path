@@ -9,11 +9,17 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class Line {
+    private final Long id;
     private final String name;
     private final List<Section> sections;
 
-    public Line(String name, List<Section> sections) {
+    public Line(final String name, final List<Section> sections) {
+        this(null, name, sections);
+    }
+
+    public Line(final Long id, String name, List<Section> sections) {
         validateName(name);
+        this.id = id;
         this.name = name;
         this.sections = new ArrayList<>(sections);
         validateIsLinked(sections);
@@ -147,6 +153,10 @@ public class Line {
         sources.removeAll(sourceToTarget.values());
         return sources.stream()
                 .findAny().orElseThrow(() -> new IllegalArgumentException("종점역을 찾지 못했습니다"));
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

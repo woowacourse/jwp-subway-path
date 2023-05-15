@@ -38,7 +38,7 @@ class LineRepositoryTest {
     void 노선을_저장한다() {
         // given
         List<Section> sections = List.of(new Section("교대역", "강남역", 10), new Section("강남역", "역삼역", 5));
-        Line line = new Line("2호선", sections);
+        Line line = new Line(null, "2호선", sections);
 
         // when
         Long saveId = lineRepository.save(line);
@@ -52,10 +52,10 @@ class LineRepositoryTest {
         // given
         List<Section> firstSections = List.of(new Section("서울역", "명동역", 10), new Section("명동역", "광화문역", 7),
                 new Section("민트역", "서울역", 5));
-        Line firstLine = new Line("1호선", firstSections);
+        Line firstLine = new Line(null, "1호선", firstSections);
         List<Section> secondSections = List.of(new Section("교대역", "강남역", 10), new Section("강남역", "역삼역", 5),
                 new Section("박스터역", "교대역", 2));
-        Line secondLine = new Line("2호선", secondSections);
+        Line secondLine = new Line(null, "2호선", secondSections);
         lineRepository.save(firstLine);
         lineRepository.save(secondLine);
 

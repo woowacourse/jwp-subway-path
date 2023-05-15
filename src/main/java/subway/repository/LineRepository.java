@@ -107,7 +107,7 @@ public class LineRepository {
                 ))
                 .collect(toList());
 
-        return new Line(lineEntity.getName(), sections);
+        return new Line(lineEntity.getId(), lineEntity.getName(), sections);
     }
 
     public void updateLine(Long lineId, Line updatedLine) {

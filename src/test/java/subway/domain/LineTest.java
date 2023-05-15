@@ -20,7 +20,7 @@ class LineTest {
     @ParameterizedTest
     void 이름에는_공백이나_null이_들어올_수_없다(String value) {
         // when, then
-        assertThatThrownBy(() -> new Line(value, Collections.emptyList()))
+        assertThatThrownBy(() -> new Line(null, value, Collections.emptyList()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("아름에는 빈 문자가 들어올 수 없습니다.");
     }
@@ -28,7 +28,7 @@ class LineTest {
     @Test
     void 역을_등록한다() {
         // given
-        Line line = new Line("1호선", of(new Section("강남역", "역삼역", 10)));
+        Line line = new Line(null, "1호선", of(new Section("강남역", "역삼역", 10)));
 
         //when
         line.addSection(new Section("역삼역", "선릉역", 5));
@@ -40,7 +40,7 @@ class LineTest {
     @Test
     void 등록하려는_역이_이미_모두_존재하면_예외가_발생한다() {
         // given
-        Line line = new Line("1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "선릉역", 5)));
+        Line line = new Line(null, "1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "선릉역", 5)));
 
         // when, then
         assertThatThrownBy(() -> line.addSection(new Section("강남역", "선릉역", 15)))
@@ -51,7 +51,7 @@ class LineTest {
     @Test
     void 구간을_등록할_때_기존의_구간_사이에_등록할_수_있다() {
         // given
-        Line line = new Line("1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
+        Line line = new Line(null, "1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
 
         // when
         line.addSection(new Section("역삼역", "선릉역", 2));
@@ -67,7 +67,7 @@ class LineTest {
     @Test
     void 노선의_상행종점을_등록한다() {
         // given
-        Line line = new Line("1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
+        Line line = new Line(null, "1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
 
         // when
         line.addSection(new Section("교대역", "강남역", 20));
@@ -83,7 +83,7 @@ class LineTest {
     @Test
     void 노선의_하행종점을_등록한다() {
         // given
-        Line line = new Line("1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
+        Line line = new Line(null, "1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
 
         // when
         line.addSection(new Section("삼성역", "종합운동장역", 20));
@@ -99,7 +99,7 @@ class LineTest {
     @Test
     void 기존_구간의_사이에_거리를_초과하는_구간이_추가되면_예외가_발생한다() {
         // given
-        Line line = new Line("1호선", of(new Section("강남역", "역삼역", 10)));
+        Line line = new Line(null, "1호선", of(new Section("강남역", "역삼역", 10)));
 
         // when, then
         assertThatThrownBy(() -> line.addSection(new Section("강남역", "선릉역", 20)))
@@ -110,10 +110,10 @@ class LineTest {
     @Test
     void 하나의_역은_여러_노선에_등록될_수_있다() {
         // given
-        Line line = new Line("1호선", of(new Section("강남역", "역삼역", 10)));
+        Line line = new Line(null, "1호선", of(new Section("강남역", "역삼역", 10)));
 
         // when
-        Line otherLine = new Line("2호선", of(new Section("강남역", "교대역", 15)));
+        Line otherLine = new Line(null, "2호선", of(new Section("강남역", "교대역", 15)));
 
         // then
         assertThat(line.getSections()).map(Section::getSource)
@@ -125,7 +125,7 @@ class LineTest {
     @Test
     void 삭제할_구간이_노선에_존재하지_않으면_예외가_발생한다() {
         // given
-        Line line = new Line("1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
+        Line line = new Line(null, "1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
         Station nonExistStation = new Station("교대역");
 
         // when
@@ -138,7 +138,7 @@ class LineTest {
     @Test
     void 노선에_역을_삭제하면_두_역이_이어지고_거리가_더해진다() {
         // given
-        Line line = new Line("1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
+        Line line = new Line(null, "1호선", of(new Section("강남역", "역삼역", 10), new Section("역삼역", "삼성역", 5)));
 
         // when
         line.removeStation(new Station("역삼역"));
@@ -152,7 +152,7 @@ class LineTest {
     @Test
     void 상행종점을_삭제한다() {
         // given
-        Line line = new Line("1호선", of(
+        Line line = new Line(null, "1호선", of(
                 new Section("강남역", "역삼역", 10),
                 new Section("역삼역", "삼성역", 5))
         );
@@ -169,7 +169,7 @@ class LineTest {
     @Test
     void 하행종점을_삭제한다() {
         // given
-        Line line = new Line("1호선", of(
+        Line line = new Line(null, "1호선", of(
                 new Section("강남역", "역삼역", 10),
                 new Section("역삼역", "삼성역", 5))
         );
@@ -186,7 +186,7 @@ class LineTest {
     @Test
     void 정렬된_역들을_조회한다() {
         // given
-        Line line = new Line("1호선", of(
+        Line line = new Line(null, "1호선", of(
                 new Section("역삼역", "삼성역", 5),
                 new Section("강남역", "역삼역", 10),
                 new Section("신림역", "강남역", 7)
@@ -208,7 +208,7 @@ class LineTest {
     void 연결되지_않은_Section_목록으로_Line을_생성하면_예외가_발생한다() {
         assertThatThrownBy(() ->
                 new Line(
-                        "1호선",
+                        null, "1호선",
                         of(new Section("역삼역", "삼성역", 5), new Section("교대역", "강남역", 10))
                 )
         )
@@ -219,7 +219,7 @@ class LineTest {
     @Test
     void 연결되지_않는_역을_추가하면_예외가_발생한다() {
         // given
-        Line line = new Line("1호선", of(
+        Line line = new Line(null, "1호선", of(
                 new Section("역삼역", "삼성역", 5),
                 new Section("강남역", "역삼역", 10),
                 new Section("신림역", "강남역", 7)
