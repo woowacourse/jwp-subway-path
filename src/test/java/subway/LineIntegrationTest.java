@@ -18,6 +18,9 @@ import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static subway.fixture.StationFixture.EXPRESS_BUS_TERMINAL_STATION;
 import static subway.fixture.StationFixture.SAPYEONG_STATION;
+import static subway.steps.LineSteps.*;
+import static subway.steps.StationSteps.역_생성_요청;
+import static subway.steps.StationSteps.역_생성하고_아이디_반환;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LineIntegrationTest {
@@ -46,29 +49,20 @@ class LineIntegrationTest {
 
     @Test
     void findAllLinesTest() {
-        final StationResponse stationResponse1 = createNewStation(EXPRESS_BUS_TERMINAL_REQUEST);
-        final StationResponse stationResponse2 = createNewStation(SAPYEONG_STATION_REQUEST);
-        final StationResponse newStationResponse = createNewStation(NEW_STATION_REQUEST);
+        final long station1Id = 역_생성하고_아이디_반환(EXPRESS_BUS_TERMINAL_REQUEST);
+        final long station2Id = 역_생성하고_아이디_반환(SAPYEONG_STATION_REQUEST);
+        final long newStationId = 역_생성하고_아이디_반환(NEW_STATION_REQUEST);
 
-        final LineResponse lineResponse = createNewLine(LINE_NINE_CREATE_REQUEST).as(LineResponse.class);
+        final long lineId = 노선_생성하고_아이디_반환(LINE_NINE_CREATE_REQUEST);
 
-        final InitialSectionCreateRequest initialSectionCreateRequest = new InitialSectionCreateRequest(
-                lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId(), 5
-        );
+        노선에_최초의_역_2개_추가_요청(
+                lineId,
+                new InitialSectionCreateRequest(
+                        lineId, station1Id, station2Id, 5
+                ));
+        존재하는_노선에_역_1개_추가_요청(station1Id, newStationId, lineId);
 
-        createNewSection(lineResponse, initialSectionCreateRequest);
-        addStationInLine(stationResponse1, newStationResponse, lineResponse);
-
-        final ExtractableResponse<Response> response = RestAssured
-                .given()
-                .contentType(APPLICATION_JSON_VALUE)
-
-                .when()
-                .get("/lines")
-
-                .then()
-                .log().all()
-                .extract();
+        final ExtractableResponse<Response> response = 전체_노선_조회_요청();
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(OK.value()),
@@ -78,8 +72,7 @@ class LineIntegrationTest {
 
     @Test
     void createNewLineTest() {
-        final LineCreateRequest lineCreateRequest = LINE_NINE_CREATE_REQUEST;
-        final ExtractableResponse<Response> response = createNewLine(lineCreateRequest);
+        final ExtractableResponse<Response> response = 노선_생성_요청(LINE_NINE_CREATE_REQUEST);
 
         assertAll(
                 () -> assertThat(response.statusCode())
@@ -91,25 +84,15 @@ class LineIntegrationTest {
 
     @Test
     void createInitialSectionTest() {
-        final StationResponse stationResponse1 = createNewStation(EXPRESS_BUS_TERMINAL_REQUEST);
-        final StationResponse stationResponse2 = createNewStation(SAPYEONG_STATION_REQUEST);
+        final StationResponse stationResponse1 = 역_생성_요청(EXPRESS_BUS_TERMINAL_REQUEST).as(StationResponse.class);
+        final StationResponse stationResponse2 = 역_생성_요청(SAPYEONG_STATION_REQUEST).as(StationResponse.class);
+        final long lineId = 노선_생성하고_아이디_반환(LINE_NINE_CREATE_REQUEST);
 
-        final LineResponse lineResponse = createNewLine(LINE_NINE_CREATE_REQUEST).as(LineResponse.class);
-
-        final InitialSectionCreateRequest initialSectionCreateRequest = new InitialSectionCreateRequest(
-                lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId(), 5
-        );
-
-        final ExtractableResponse<Response> response = RestAssured
-                .given()
-                .contentType(APPLICATION_JSON_VALUE)
-                .body(initialSectionCreateRequest)
-
-                .when()
-                .post("/lines/" + lineResponse.getId() + "/station-init")
-
-                .then()
-                .extract();
+        final ExtractableResponse<Response> response = 노선에_최초의_역_2개_추가_요청(
+                lineId,
+                new InitialSectionCreateRequest(
+                        lineId, stationResponse1.getId(), stationResponse2.getId(), 5
+                ));
 
         assertThat(response.statusCode()).isEqualTo(CREATED.value());
     }
@@ -126,7 +109,7 @@ class LineIntegrationTest {
                 lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId(), 5
         );
 
-        createNewSection(lineResponse, initialSectionCreateRequest);
+        노선에_최초의_역_2개_추가_요청(lineResponse, initialSectionCreateRequest);
 
         final ExtractableResponse<Response> response = addStationInLine(stationResponse1, newStationResponse, lineResponse);
 
@@ -163,7 +146,7 @@ class LineIntegrationTest {
                 lineResponse.getId(), stationResponse1.getId(), stationResponse2.getId(), 5
         );
 
-        createNewSection(lineResponse, initialSectionCreateRequest);
+        노선에_최초의_역_2개_추가_요청(lineResponse, initialSectionCreateRequest);
         addStationInLine(stationResponse1, newStationResponse, lineResponse);
 
         final ExtractableResponse<Response> response = RestAssured
@@ -177,19 +160,6 @@ class LineIntegrationTest {
                 .extract();
 
         assertThat(response.statusCode()).isEqualTo(NO_CONTENT.value());
-    }
-
-    private void createNewSection(final LineResponse lineResponse, final InitialSectionCreateRequest initialSectionCreateRequest) {
-        RestAssured
-                .given()
-                .contentType(APPLICATION_JSON_VALUE)
-                .body(initialSectionCreateRequest)
-
-                .when()
-                .post("/lines/" + lineResponse.getId() + "/station-init")
-
-                .then()
-                .extract();
     }
 
     private StationResponse createNewStation(final StationCreateRequest stationCreateRequest) {

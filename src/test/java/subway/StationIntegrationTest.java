@@ -15,7 +15,7 @@ import subway.dto.StationCreateRequest;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static subway.steps.StationSteps.역_생성_요청;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class StationIntegrationTest {
@@ -41,18 +41,7 @@ class StationIntegrationTest {
     void createStationTest() {
         final StationCreateRequest stationCreateRequest = new StationCreateRequest("사평역");
 
-        final ExtractableResponse<Response> response = RestAssured
-                .given()
-                .log().all()
-                .contentType(APPLICATION_JSON_VALUE)
-                .body(stationCreateRequest)
-
-                .when()
-                .post("/stations")
-
-                .then()
-                .log().all()
-                .extract();
+        final ExtractableResponse<Response> response = 역_생성_요청(stationCreateRequest);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(CREATED.value()),
