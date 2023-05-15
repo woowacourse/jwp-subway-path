@@ -31,7 +31,7 @@ public class DbStationDao implements StationDao {
     }
 
     @Override
-    public StationEntity save(final StationEntity stationEntity) {
+    public StationEntity insert(final StationEntity stationEntity) {
         final Map<String, String> parameter = Map.of("name", stationEntity.getName());
         final long id = insertStation.executeAndReturnKey(parameter).longValue();
         return new StationEntity(id, stationEntity.getName());

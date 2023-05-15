@@ -47,7 +47,6 @@ public class Sections {
 
         // 기존 역: downLineStation, 새로운 역: upLineStation
         if (graph.containsVertex(downLineStation)) {
-            graph.addVertex(upLineStation);
 
             // nothing -> upLineStation (새 역) -> downLineStation
             int inDegree = graph.inDegreeOf(downLineStation);

@@ -16,7 +16,7 @@ public class DbStationRepository implements StationRepository {
     @Override
     public Station save(final Station station) {
         final StationEntity stationEntity = new StationEntity(station.getName());
-        return Station.from(stationDao.save(stationEntity));
+        return Station.from(stationDao.insert(stationEntity));
     }
 
     @Override

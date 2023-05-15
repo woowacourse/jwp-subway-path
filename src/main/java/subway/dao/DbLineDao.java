@@ -34,7 +34,7 @@ public class DbLineDao implements LineDao {
     }
 
     @Override
-    public LineEntity save(final LineEntity line) {
+    public LineEntity insert(final LineEntity line) {
         final String name = line.getName();
         final String color = line.getColor();
 

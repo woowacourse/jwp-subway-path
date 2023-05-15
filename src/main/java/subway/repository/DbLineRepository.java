@@ -22,6 +22,6 @@ public class DbLineRepository implements LineRepository {
     @Override
     public Line save(final Line line) {
         final LineEntity lineEntity = new LineEntity(line.getName(), line.getColor());
-        return Line.from(lineDao.save(lineEntity));
+        return Line.from(lineDao.insert(lineEntity));
     }
 }

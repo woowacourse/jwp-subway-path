@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface LineDao {
 
-    LineEntity save(LineEntity line);
+    LineEntity insert(LineEntity line);
 
     List<LineEntity> findAll();
 

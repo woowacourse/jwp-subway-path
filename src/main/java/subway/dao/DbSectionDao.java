@@ -36,7 +36,7 @@ public class DbSectionDao implements SectionDao {
     }
 
     @Override
-    public SectionEntity save(final SectionEntity sectionEntity) {
+    public SectionEntity insert(final SectionEntity sectionEntity) {
         final SqlParameterSource parameters = new BeanPropertySqlParameterSource(sectionEntity);
         final long id = insertSection.executeAndReturnKey(parameters).longValue();
         return new SectionEntity(

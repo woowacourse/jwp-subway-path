@@ -5,7 +5,7 @@ import subway.entity.SectionEntity;
 import java.util.List;
 
 public interface SectionDao {
-    SectionEntity save(SectionEntity sectionEntity);
+    SectionEntity insert(SectionEntity sectionEntity);
 
     List<SectionEntity> findAll();
 

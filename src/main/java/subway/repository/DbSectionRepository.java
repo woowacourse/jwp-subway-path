@@ -28,7 +28,7 @@ public class DbSectionRepository implements SectionRepository {
                 section.getUpStation().getId(),
                 section.getDownStation().getId(),
                 section.getDistance());
-        sectionDao.save(sectionEntity);
+        sectionDao.insert(sectionEntity);
     }
 
     @Override

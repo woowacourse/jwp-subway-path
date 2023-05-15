@@ -56,7 +56,7 @@ class DbLineDaoTest {
 
     private LineEntity saveLine(Line line) {
         final LineEntity lineEntity = new LineEntity(line.getName(), line.getColor());
-        final LineEntity savedEntity = lineDao.save(lineEntity);
+        final LineEntity savedEntity = lineDao.insert(lineEntity);
         return savedEntity;
     }
 }
