@@ -14,4 +14,6 @@ public interface LineRepository {
     Line findById(Long lineIdRequest);
 
     boolean updateLine(long lineId, Line line);
+
+    Line findByName(String lineName);
 }

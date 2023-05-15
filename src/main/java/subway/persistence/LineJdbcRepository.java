@@ -60,6 +60,18 @@ public class LineJdbcRepository implements LineRepository {
     }
 
     @Override
+    public Line findByName(final String lineName) {
+        final String sql = "SELECT * from line WHERE name = ?";
+        final List<Line> lines = jdbcTemplate.query(sql, lineRowMapper, lineName);
+
+        if(lines.isEmpty()){
+            throw new IllegalArgumentException("존재하지 않는 노선입니다");
+        }
+
+        return lines.get(0);
+    }
+
+    @Override
     public boolean deleteById(final Long lineIdRequest) {
         String sql = "delete from line where id = ?";
         final int deleteCount = jdbcTemplate.update(sql, lineIdRequest);
