@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
@@ -104,5 +105,16 @@ class LineTest {
 
             assertThat(sections.isEmpty()).isTrue();
         }
+    }
+
+    @DisplayName("이미 등록된 구간이 있는 경우")
+    @Test
+    void validateDuplicateSection() {
+        final Line line = new Line(1L, new LineName("2호선"));
+        final Line newLine = line.addSection(SECTION_1);
+
+        assertThatThrownBy(() -> newLine.addSection(SECTION_1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 등록되어 있는 구간입니다.");
     }
 }
