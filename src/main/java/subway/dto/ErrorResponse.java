@@ -9,6 +9,10 @@ public class ErrorResponse {
         this.reason = reason;
     }
 
+    public ErrorResponse(String errorCode) {
+        this(errorCode, null);
+    }
+
     public String getErrorCode() {
         return errorCode;
     }

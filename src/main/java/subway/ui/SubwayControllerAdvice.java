@@ -10,9 +10,15 @@ import subway.exception.DomainException;
 @ControllerAdvice
 public class SubwayControllerAdvice {
     @ExceptionHandler(DomainException.class)
-    public ResponseEntity<ErrorResponse> handle(DomainException exception) {
+    public ResponseEntity<ErrorResponse> handleDomainException(DomainException exception) {
         final ErrorResponse errorResponse = new ErrorResponse(exception.getMessage(),
                 exception.getExceptionType().getReason());
         return ResponseEntity.badRequest().body(errorResponse);
+    }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<ErrorResponse> handleUnexpectedException(RuntimeException exception) {
+        final ErrorResponse errorResponse = new ErrorResponse(exception.getMessage());
+        return ResponseEntity.internalServerError().body(errorResponse);
     }
 }
