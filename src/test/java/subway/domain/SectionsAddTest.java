@@ -1,6 +1,5 @@
 package subway.domain;
 
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,26 +10,18 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static subway.fixture.LineFixture.LINE;
+import static subway.fixture.SectionFixture.SECTION_1;
+import static subway.fixture.SectionFixture.SECTION_2;
+import static subway.fixture.StationFixture.*;
 
 class SectionsAddTest {
-    static Line line;
-    static Station station1 = new Station("용산");
-    static Station station2 = new Station("이촌");
-    static Station station3 = new Station("서빙고");
-    static Section section1;
-    static Section section2;
     Sections sections;
 
-    @BeforeAll
-    static void setup() {
-        Line line = new Line("경의중앙선", "청록");
-        section1 = new Section(line, station1, station2, 10L);
-        section2 = new Section(line, station2, station3, 10L);
-    }
 
     @BeforeEach
     void beforeEach() {
-        sections = new Sections(new ArrayList<>(List.of(section1, section2)));
+        sections = new Sections(new ArrayList<>(List.of(SECTION_1, SECTION_2)));
     }
 
     @DisplayName("기존 구간이 비어있으면 구간을 등록한다")
@@ -38,7 +29,7 @@ class SectionsAddTest {
     void addFirst() {
         //given
         Sections sections = new Sections(new ArrayList<>());
-        Section newSection = new Section(line, new Station("용산"), new Station("이촌"), 10L);
+        Section newSection = new Section(LINE, STATION_1, STATION_2, 10L);
 
         //when
         sections.add(newSection);
@@ -52,7 +43,7 @@ class SectionsAddTest {
     void addUpEnd() {
         //given
         Station station = new Station("효창공원앞");
-        Section newSection = new Section(line, station, station1, 10L);
+        Section newSection = new Section(LINE, station, STATION_1, 10L);
 
         //when
         sections.add(newSection);
@@ -67,7 +58,7 @@ class SectionsAddTest {
     void addDownEnd() {
         //given
         Station station = new Station("한남");
-        Section newSection = new Section(line, station3, station, 10L);
+        Section newSection = new Section(LINE, STATION_3, station, 10L);
 
         //when
         sections.add(newSection);
@@ -82,10 +73,10 @@ class SectionsAddTest {
     void addInside_PreStationExists() {
         //given
         Station station = new Station("옥수");
-        Section newSection = new Section(line, station1, station, 5L);
+        Section newSection = new Section(LINE, STATION_1, station, 5L);
 
         //when, then
-        assertThat(sections.add(newSection)).isEqualTo(new Section(line, station, station2, 5L));
+        assertThat(sections.add(newSection)).isEqualTo(new Section(LINE, station, STATION_2, 5L));
         assertThat(sections.getSections().contains(newSection)).isTrue();
     }
 
@@ -94,10 +85,10 @@ class SectionsAddTest {
     void addInside_StationExists() {
         //given
         Station station = new Station("공덕");
-        Section newSection = new Section(line, station, station3, 5L);
+        Section newSection = new Section(LINE, station, STATION_3, 5L);
 
         //when, then
-        assertThat(sections.add(newSection)).isEqualTo(new Section(line, station2, station, 5L));
+        assertThat(sections.add(newSection)).isEqualTo(new Section(LINE, STATION_2, station, 5L));
         assertThat(sections.getSections().contains(newSection)).isTrue();
     }
 
@@ -107,7 +98,7 @@ class SectionsAddTest {
     void addInsideWithInvalidDistance() {
         //given
         Station station = new Station("옥수");
-        Section newSection = new Section(line, station1, station, 10L);
+        Section newSection = new Section(LINE, STATION_1, station, 10L);
 
         //when, then
         assertThatThrownBy(() -> sections.add(newSection))
@@ -119,7 +110,7 @@ class SectionsAddTest {
     @Test
     void addExistSection() {
         //given,when,then
-        assertThatThrownBy(() -> sections.add(section1))
+        assertThatThrownBy(() -> sections.add(SECTION_1))
                 .isInstanceOf(SectionException.class)
                 .hasMessageContaining("추가할 수 없는 구간입니다");
     }
