@@ -21,7 +21,11 @@ public class IntegrationFixture {
 
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
 
-    public static String jsonSerialize(final Object request) throws JsonProcessingException {
-        return OBJECT_MAPPER.writeValueAsString(request);
+    public static String jsonSerialize(final Object request) {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(request);
+        } catch (JsonProcessingException exception) {
+            throw new IllegalArgumentException();
+        }
     }
 }

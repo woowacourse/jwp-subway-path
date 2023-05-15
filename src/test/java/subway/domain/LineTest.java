@@ -3,6 +3,7 @@ package subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.Assertions.tuple;
+import static subway.integration.IntegrationFixture.LINE_2;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -21,7 +22,7 @@ class LineTest {
     @DisplayName("Line에 Section을 추가한다.")
     @Test
     void addSection() {
-        final Line line = new Line(1L, new LineName("2호선"));
+        final Line line = new Line(LINE_2.getId(), new LineName(LINE_2.getName().getValue()));
         final Section newSection = new Section(STATION_B, STATION_D, new Distance(3));
 
         final Line newLine = line.addSection(SECTION_2)

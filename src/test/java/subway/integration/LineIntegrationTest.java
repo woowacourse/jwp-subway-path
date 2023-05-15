@@ -18,6 +18,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,8 +43,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest1)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all().extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -149,22 +149,67 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    @DisplayName("노선에 역을 최초 등록한다.")
-    @Test
-    void addInitialStationInLine() throws JsonProcessingException {
-        final SectionRequest request = new SectionRequest(JAMSIL.getName(), GANGNAM.getName(), 10);
+    @DisplayName("노선에 역을 등록하는 경우")
+    @Nested
+    class registerSection {
 
-        final String json = jsonSerialize(request);
+        @DisplayName("노선에 역을 최초 등록한다.")
+        @Test
+        void registerFirstSection() {
+            final SectionRequest request = new SectionRequest(JAMSIL.getName(), GANGNAM.getName(), 10);
 
-        given().body(json)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/lines/" + LINE_2.getId() + "/register")
-                .then().statusCode(HttpStatus.CREATED.value());
+            final String json = jsonSerialize(request);
+
+            given().body(json)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when().post("/lines/{lineId}/register", LINE_2.getId())
+                    .then().statusCode(HttpStatus.CREATED.value());
+        }
+
+        @DisplayName("노선에 이미 존재한 구간을 등록하는 경우 400")
+        @Test
+        void registerExistSection() {
+            final SectionRequest request = new SectionRequest(GANGNAM.getName(), SEONGLENUG.getName(), 10);
+
+            final String json = jsonSerialize(request);
+
+            given().body(json)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .then().statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+
+        @DisplayName("거리가 1보다 작은 경우 400을 반환한다.")
+        @Test
+        void registerInvalidDistance() {
+            final SectionRequest request = new SectionRequest(GANGNAM.getName(), SEONGLENUG.getName(), 10);
+
+            final String json = jsonSerialize(request);
+
+            given().body(json)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .then().statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+
+        @DisplayName("request에서 prev와 next가 동일한 경우 400을 반환한다.")
+        @Test
+        void registerSameStationRequest() {
+            final SectionRequest request = new SectionRequest(GANGNAM.getName(), GANGNAM.getName(), 10);
+
+            final String json = jsonSerialize(request);
+
+            given().body(json)
+                    .contentType(MediaType.APPLICATION_JSON_VALUE)
+                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .then().statusCode(HttpStatus.BAD_REQUEST.value());
+        }
+
     }
 
     @DisplayName("노선에서 역을 삭제한다.")
     @Test
-    void deleteStationInLine() throws JsonProcessingException {
+    void unregisterSection() {
         final StationRequest stationRequest = new StationRequest(SEONGLENUG.getName());
 
         given().body(jsonSerialize(stationRequest))
