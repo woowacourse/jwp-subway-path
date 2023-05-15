@@ -59,12 +59,12 @@ public class LineService {
 
         Map<Map.Entry<Station, Station>, Integer> distances = new HashMap<>();
         sections.forEach(section ->
-            distances.put(Map.entry(stationDao.findById(section.getStationId()), stationDao.findById(section.getNextStationId())), section.getDistance()));
+                distances.put(Map.entry(stationDao.findById(section.getStationId()), stationDao.findById(section.getNextStationId())), section.getDistance()));
 
         SectionDto section = sections.remove(0);
         LinkedList<Long> stationIds = new LinkedList<>(List.of(section.getStationId(), section.getNextStationId()));
 
-        while(!sections.isEmpty()) {
+        while (!sections.isEmpty()) {
             for (int i = 0; i < sections.size(); i++) {
                 section = sections.get(i);
                 if (section.getStationId().equals(stationIds.getLast())) {
@@ -75,7 +75,6 @@ public class LineService {
                 if (section.getNextStationId().equals(stationIds.getFirst())) {
                     stationIds.addFirst(section.getStationId());
                     sections.remove(i);
-                    break;
                 }
             }
         }
@@ -95,29 +94,12 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public void registerStations(Long id, StationsRegisterRequest request) {
-        Line line = findLineById(id);
-        Station top = stationDao.findById(request.getTopId());
-        Station bottom = stationDao.findById(request.getBottomId());
-
-        line.insertBoth(top, bottom, request.getDistance());
-
-        sectionDao.insertAll(toSectionDtos(line));
-    }
-
     public void registerStation(Long id, StationRegisterRequest request) {
         Line line = findLineById(id);
-        Station station = stationDao.findById(request.getStationId());
-        Station base = stationDao.findById(request.getBaseId());
-        String where = request.getWhere();
+        Station station = stationDao.findById(request.getUpperStation());
+        Station base = stationDao.findById(request.getLowerStation());
 
-        if (where.equals("UPPER")) {
-            line.insertUpper(station, base, request.getDistance());
-        }
-
-        if (where.equals("LOWER")) {
-            line.insertLower(station, base, request.getDistance());
-        }
+        line.insert(station, base, request.getDistance());
 
         sectionDao.deleteAllByLineId(line.getId());
         sectionDao.insertAll(toSectionDtos(line));
@@ -131,7 +113,6 @@ public class LineService {
         sectionDao.deleteAllByLineId(line.getId());
         sectionDao.insertAll(toSectionDtos(line));
     }
-    //현재 상행, 하행 모든 내용을 저장하고 있음
 
     private List<SectionDto> toSectionDtos(Line line) {
         return line.getAdjacentStations().stream()

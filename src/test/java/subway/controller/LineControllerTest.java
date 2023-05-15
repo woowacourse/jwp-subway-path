@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineService;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationRegisterRequest;
-import subway.dto.StationsRegisterRequest;
 import subway.ui.LineController;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -35,7 +34,6 @@ class LineControllerTest {
     void registerStation() throws Exception {
         String body = objectMapper.writeValueAsString(
                 new StationRegisterRequest(
-                        "UPPER",
                         2L,
                         1L,
                         10
@@ -52,9 +50,9 @@ class LineControllerTest {
     @Test
     void registerStations() throws Exception {
         String body = objectMapper.writeValueAsString(
-                new StationsRegisterRequest(2L,1L,10));
+                new StationRegisterRequest(2L,1L,10));
 
-        this.mockMvc.perform(post("/lines/1/stations")
+        this.mockMvc.perform(post("/lines/1/station")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isOk());

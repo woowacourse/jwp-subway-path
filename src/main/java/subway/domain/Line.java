@@ -32,8 +32,26 @@ public class Line {
         this.distances = distances;
     }
 
-    public void insertBoth(Station top, Station bottom, int distance) {
-        validateEmptyStations();
+    public void insert(Station upper, Station lower, int distance) {
+        if (stations.isEmpty()) {
+            insertBoth(upper, lower, distance);
+            return;
+        }
+
+        if (stations.contains(upper) && !stations.contains(lower)) {
+            insertLower(lower, upper ,distance);
+            return;
+        }
+
+        if (!stations.contains(upper) && stations.contains(lower)) {
+            insertUpper(upper, lower, distance);
+            return;
+        }
+
+        throw new IllegalArgumentException("이미 등록된 역을 등록할 수 없습니다.");
+    }
+
+    private void insertBoth(Station top, Station bottom, int distance) {
         if (distance <= 0) {
             throw new IllegalArgumentException("등록하려는 역의 거리 정보가 잘못되어 등록에 실패했습니다.");
         }
@@ -44,14 +62,7 @@ public class Line {
         insertDistanceBetween(top, bottom, distance);
     }
 
-    private void validateEmptyStations() {
-        if (!stations.isEmpty()) {
-            throw new IllegalStateException("빈 노선에만 한 번에 두 역을 추가할 수 있습니다");
-        }
-    }
-
-    public void insertUpper(Station station, Station base, int distance) {
-        validateStation(station, base);
+    private void insertUpper(Station station, Station base, int distance) {
         stations.add(stations.indexOf(base), station);
         insertDistanceBetween(station, base, distance);
 
@@ -69,8 +80,7 @@ public class Line {
         deleteDistanceBetween(getUpperOf(station), base);
     }
 
-    public void insertLower(Station station, Station base, int distance) {
-        validateStation(station, base);
+    private void insertLower(Station station, Station base, int distance) {
         stations.add(stations.indexOf(base) + 1, station);
         insertDistanceBetween(base, station, distance);
 
@@ -88,18 +98,7 @@ public class Line {
         deleteDistanceBetween(base, getLowerOf(station));
     }
 
-    private void validateStation(Station station, Station base) {
-        if(stations.contains(station)) {
-            throw new IllegalArgumentException("이미 등록된 역을 등록할 수 없습니다.");
-        }
-
-        if(!stations.contains(base)) {
-            throw new IllegalArgumentException("노선에 기준 역이 존재하지 않아 등록할 수 없습니다.");
-        }
-    }
-
     public void delete(Station station) {
-
         if (!stations.contains(station)) {
             throw new IllegalArgumentException("등록되지 않은 역입니다.");
         }

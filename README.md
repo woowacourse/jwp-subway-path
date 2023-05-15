@@ -3,27 +3,16 @@
 # 구현할 기능 목록
 
 - 노선에 역 등록 API 신규 구현
-    - 한 개 역 등록 요청 {HTTP method: POST, URI: "/lines/{lineId}/station", body: where, stationId, baseStationId, distance}
+    - 역 등록 요청 {HTTP method: POST, URI: "/lines/{lineId}/station", body: upperStation, lowerStation, distance}
       ```json
         {
-          "where": "UPPER",
-          "stationId": 1,
-          "baseStationId": 2,
+          "upperStation": 1,
+          "lowerStation": 2,
           "distance": 10
         }
         ```
-    - 응답 {Status Code: `OK`}
-      
-    - 두개 역 등록 요청 {HTTP method: POST, URI: "/lines/{lineId}/stations", body: 
-        ```json
-        {
-            "topId": 1,
-            "bottomId": 2,
-            "distance": 10
-        }
-        ```
+    - 응답 {Status Code: `OK`} // CREATED 혹은 NO CONTENT를 반환하는 것을 고려해보기
 
-    - 응답 {Status Code: `OK`}
 - 노선에 역 제거 API 신규 구현
     - 요청 {HTTP method: DELETE, URI: "/lines/{lineId}/station", body stationId}
         ```json
