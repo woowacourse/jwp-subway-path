@@ -17,14 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import subway.controller.dto.LineRequest;
+import subway.controller.dto.LineResponse;
 import subway.dao.SectionDao;
-import subway.dao.dto.SectionEntity;
+import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
 
 @Sql("/truncate.sql")
 @DisplayName("지하철 노선 관련 기능")

@@ -1,7 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
-import subway.dao.dto.StationEntity;
+import subway.dao.entity.StationEntity;
 
 public class Station {
 

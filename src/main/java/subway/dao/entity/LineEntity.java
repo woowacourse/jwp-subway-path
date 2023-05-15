@@ -1,13 +1,13 @@
-package subway.dao.dto;
+package subway.dao.entity;
 
 import java.util.Objects;
 
-public class StationEntity {
+public class LineEntity {
 
     private final Long id;
     private final String name;
 
-    public StationEntity(Long id, String name) {
+    public LineEntity(Long id, String name) {
         this.id = id;
         this.name = name;
     }
@@ -28,7 +28,7 @@ public class StationEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        StationEntity that = (StationEntity) o;
+        LineEntity that = (LineEntity) o;
         return Objects.equals(getId(), that.getId());
     }
 

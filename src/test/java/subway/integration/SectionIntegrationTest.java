@@ -12,12 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
+import subway.controller.dto.SectionDeleteRequest;
+import subway.controller.dto.SectionRequest;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
-import subway.ui.dto.SectionDeleteRequest;
-import subway.ui.dto.SectionRequest;
 
 @Sql("/truncate.sql")
 public class SectionIntegrationTest extends IntegrationTest {

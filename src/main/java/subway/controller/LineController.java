@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.controller;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
+import subway.controller.dto.LineRequest;
+import subway.controller.dto.LineResponse;
 
 @RestController
 @RequestMapping("/lines")

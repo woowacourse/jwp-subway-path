@@ -1,4 +1,4 @@
-package subway.dao.dto;
+package subway.dao.entity;
 
 public class SectionEntity {
 

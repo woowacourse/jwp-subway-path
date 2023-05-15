@@ -2,15 +2,15 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.controller.dto.SectionDeleteRequest;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.dto.SectionEntity;
+import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
-import subway.ui.dto.SectionDeleteRequest;
 
 @Service
 public class SectionDeleteService {

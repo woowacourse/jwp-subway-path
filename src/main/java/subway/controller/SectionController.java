@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.controller;
 
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionCreateService;
 import subway.application.SectionDeleteService;
-import subway.ui.dto.SectionDeleteRequest;
-import subway.ui.dto.SectionRequest;
+import subway.controller.dto.SectionDeleteRequest;
+import subway.controller.dto.SectionRequest;
 
 @RestController
 public class SectionController {

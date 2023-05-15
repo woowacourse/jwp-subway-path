@@ -3,10 +3,10 @@ package subway.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import subway.controller.dto.StationRequest;
+import subway.controller.dto.StationResponse;
 import subway.domain.Station;
 import subway.repository.StationRepository;
-import subway.ui.dto.StationRequest;
-import subway.ui.dto.StationResponse;
 
 @Service
 public class StationService {
