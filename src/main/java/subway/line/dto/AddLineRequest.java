@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class LineSaveRequest {
+public class AddLineRequest {
     @NotBlank(message = "노선의 이름은 null 또는 빈값일 수 없습니다.")
     private String name;
     

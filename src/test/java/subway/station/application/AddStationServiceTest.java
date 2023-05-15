@@ -13,7 +13,7 @@ import subway.section.application.port.output.SaveAllSectionPort;
 import subway.section.domain.Direction;
 import subway.section.domain.Section;
 import subway.station.application.port.output.SaveStationPort;
-import subway.station.dto.StationAddRequest;
+import subway.station.dto.AddStationRequest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -43,11 +43,11 @@ class AddStationServiceTest {
     @Test
     void 역을_등록한다() {
         // given
-        final StationAddRequest request = new StationAddRequest(1L, "잠실역", Direction.RIGHT, "청라역", 3L);
+        final AddStationRequest request = new AddStationRequest(1L, "잠실역", Direction.RIGHT, "청라역", 3L);
         final Set<Section> sections = new HashSet<>();
         sections.add(new Section("잠실역", "선릉역", 5L));
         final Line line = new Line("1호선", "파랑", sections);
-        given(getAllLinePort.findAll()).willReturn(Set.of(line));
+        given(getAllLinePort.getAll()).willReturn(Set.of(line));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line);
         given(saveStationPort.saveStation(any())).willReturn(1L);
         

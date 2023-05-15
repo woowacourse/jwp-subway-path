@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.station.application.port.input.InitAddStationUseCase;
-import subway.station.dto.StationInitAddRequest;
+import subway.station.dto.InitAddStationRequest;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -19,7 +19,7 @@ public class InitAddStationController {
     private final InitAddStationUseCase initAddStationUseCase;
     
     @PostMapping
-    public ResponseEntity<Void> initSave(@RequestBody @Valid final StationInitAddRequest request) {
+    public ResponseEntity<Void> initSave(@RequestBody @Valid final InitAddStationRequest request) {
         initAddStationUseCase.initAddStations(request);
         return ResponseEntity.created(URI.create("/stations")).build();
     }

@@ -3,6 +3,7 @@ package subway.section.domain;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -106,7 +107,7 @@ class SectionsTest {
     }
     
     @Test
-    void 방향이_왼쪽일_때_base가_중간역이면_구간_사이에_역을_등록한다() {
+    void 해당_노선의_역을_차례대로_정렬해서_반환하기() {
         // given
         final String first = "잠실역";
         final String second = "가양역";
@@ -122,14 +123,13 @@ class SectionsTest {
         final Sections sections = new Sections(new HashSet<>(initSections));
         final String additionalStation = "화정역";
         final long additionalDistance = 3L;
-        
-        // when
         sections.addStation(third, Direction.LEFT, additionalStation, additionalDistance);
         
+        // when
+        final List<String> sortedStations = sections.getSortedStations();
+        
         // then
-        final Section additionalFirstSection = new Section(second, additionalStation, additionalDistance);
-        final Section additionalSecondSection = new Section(additionalStation, third, distance - additionalDistance);
-        assertThat(sections.getSections()).contains(firstSection, thirdSection, additionalFirstSection, additionalSecondSection);
+        assertThat(sortedStations).containsExactly("잠실역", "가양역", "화정역", "종합운동장", "선릉역");
     }
     
     @Test
@@ -263,5 +263,32 @@ class SectionsTest {
         // when, then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> sections.removeStation("가양역"));
+    }
+    
+    @Test
+    void 방향이_왼쪽일_때_base가_중간역이면_구간_사이에_역을_등록한다() {
+        // given
+        final String first = "잠실역";
+        final String second = "가양역";
+        final String third = "종합운동장";
+        final String fourth = "선릉역";
+        final long distance = 5L;
+        
+        final Section firstSection = new Section(first, second, distance);
+        final Section secondSection = new Section(second, third, distance);
+        final Section thirdSection = new Section(third, fourth, distance);
+        
+        final Set<Section> initSections = Set.of(firstSection, secondSection, thirdSection);
+        final Sections sections = new Sections(new HashSet<>(initSections));
+        final String additionalStation = "화정역";
+        final long additionalDistance = 3L;
+        
+        // when
+        sections.addStation(third, Direction.LEFT, additionalStation, additionalDistance);
+        
+        // then
+        final Section additionalFirstSection = new Section(second, additionalStation, additionalDistance);
+        final Section additionalSecondSection = new Section(additionalStation, third, distance - additionalDistance);
+        assertThat(sections.getSections()).contains(firstSection, thirdSection, additionalFirstSection, additionalSecondSection);
     }
 }

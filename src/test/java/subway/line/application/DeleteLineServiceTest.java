@@ -1,6 +1,5 @@
 package subway.line.application;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -15,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 
@@ -37,7 +35,7 @@ class DeleteLineServiceTest {
         // given
         final Line line1 = new Line("1호선", "파랑");
         final Line line2 = new Line("2호선", "초록");
-        given(getAllLinePort.findAll()).willReturn(new HashSet<>(Set.of(line1, line2)));
+        given(getAllLinePort.getAll()).willReturn(new HashSet<>(Set.of(line1, line2)));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line1);
         
         // expect

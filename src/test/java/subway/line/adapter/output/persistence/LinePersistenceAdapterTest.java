@@ -57,7 +57,7 @@ class LinePersistenceAdapterTest {
         adapter.save(line2);
         
         // when
-        final Set<Line> lines = adapter.findAll();
+        final Set<Line> lines = adapter.getAll();
         
         // then
         assertThat(lines).contains(line1, line2);

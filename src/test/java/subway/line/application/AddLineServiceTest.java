@@ -8,7 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.line.application.port.output.GetAllLinePort;
 import subway.line.application.port.output.SaveLinePort;
 import subway.line.domain.Line;
-import subway.line.dto.LineSaveRequest;
+import subway.line.dto.AddLineRequest;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -32,11 +32,11 @@ class AddLineServiceTest {
         final Line line1 = new Line("1호선", "파랑");
         final Line line2 = new Line("2호선", "초록");
         final Line line3 = new Line("3호선", "주황");
-        given(getAllLinePort.findAll()).willReturn(new HashSet<>(Set.of(line1, line2)));
+        given(getAllLinePort.getAll()).willReturn(new HashSet<>(Set.of(line1, line2)));
         given(saveLinePort.save(line3)).willReturn(3L);
         
         // when
-        final Long LineId = addLineService.addLine(new LineSaveRequest("3호선", "주황"));
+        final Long LineId = addLineService.addLine(new AddLineRequest("3호선", "주황"));
         
         // then
         assertThat(LineId).isEqualTo(3L);

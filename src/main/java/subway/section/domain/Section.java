@@ -90,4 +90,24 @@ public class Section {
         
         return new Section(otherSection.left, this.right, combineDistance);
     }
+    
+    public void putStationIfNotExist(final Set<Station> stations) {
+        Set.of(this.left, this.right).forEach(station -> putStationIfNotExist(stations, station));
+    }
+    
+    private void putStationIfNotExist(final Set<Station> stations, final Station station) {
+        if (stations.contains(station)) {
+            stations.remove(station);
+            return;
+        }
+        stations.add(station);
+    }
+    
+    public boolean isLeftStation(final Station station) {
+        return this.left.equals(station);
+    }
+    
+    public boolean isRightStation(final Station station) {
+        return this.right.equals(station);
+    }
 }

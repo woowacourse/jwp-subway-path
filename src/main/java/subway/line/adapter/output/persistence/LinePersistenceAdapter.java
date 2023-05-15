@@ -24,7 +24,7 @@ public class LinePersistenceAdapter implements GetAllLinePort, SaveLinePort, Get
     private final StationDao stationDao;
     
     @Override
-    public Set<Line> findAll() {
+    public Set<Line> getAll() {
         final List<LineEntity> lineEntities = lineDao.findAll();
         final List<SectionEntity> sectionEntities = sectionDao.findAll();
         

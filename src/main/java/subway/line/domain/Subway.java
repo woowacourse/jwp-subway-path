@@ -6,6 +6,7 @@ import lombok.ToString;
 import subway.section.domain.Direction;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -72,5 +73,9 @@ public class Subway {
                 .filter(line -> line.isSameName(lineName))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+    }
+    
+    public List<String> getSortedStations(final String lineName) {
+        return findLineByLineName(lineName).getSortedStations();
     }
 }

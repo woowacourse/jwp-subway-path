@@ -26,7 +26,7 @@ public class DeleteStationService implements DeleteStationUseCase {
     
     @Override
     public void deleteStation(final Long lineId, final Long stationId) {
-        final Subway subway = new Subway(getAllLinePort.findAll());
+        final Subway subway = new Subway(getAllLinePort.getAll());
         final Line lineById = getLineByIdPort.getLineById(lineId);
         final Station stationById = getStationByIdPort.getStationById(stationId);
         final Line modifiedLine = subway.removeStation(lineById.getName(), stationById.getName());

@@ -1,7 +1,7 @@
 package subway.station.application.port.input;
 
-import subway.station.dto.StationInitAddRequest;
+import subway.station.dto.InitAddStationRequest;
 
 public interface InitAddStationUseCase {
-    void initAddStations(final StationInitAddRequest request);
+    void initAddStations(final InitAddStationRequest request);
 }

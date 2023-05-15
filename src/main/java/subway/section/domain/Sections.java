@@ -3,10 +3,16 @@ package subway.section.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+import subway.station.domain.Station;
 
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
 @Getter
@@ -121,5 +127,49 @@ public class Sections {
         return sectionsContainedStation.stream()
                 .reduce(Section::combine)
                 .orElseThrow(() -> new IllegalArgumentException("삭제할 역이 해당 노선에 존재하지 않습니다."));
+    }
+    
+    public List<String> getSortedStations() {
+        final Set<Station> stations = new HashSet<>();
+        sections.forEach(section -> section.putStationIfNotExist(stations));
+        final Station frontStation = getStationOfMatchMostDirection(stations, Section::isLeftStation);
+        final Station endStation = getStationOfMatchMostDirection(stations, Section::isRightStation);
+        
+        return sort(frontStation, endStation).stream()
+                .map(Station::getName)
+                .collect(Collectors.toUnmodifiableList());
+    }
+    
+    private Station getStationOfMatchMostDirection(final Set<Station> stations, final BiPredicate<Section, Station> process) {
+        return stations.stream()
+                .filter(station -> isExistMatchStation(process, station))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("노선 안에 해당 역이 존재하지 않습니다."));
+    }
+    
+    private boolean isExistMatchStation(final BiPredicate<Section, Station> process, final Station station) {
+        return sections.stream()
+                .anyMatch(section -> process.test(section, station));
+    }
+    
+    private List<Station> sort(final Station frontStation, final Station endStation) {
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = initGraph(sections);
+        
+        final DijkstraShortestPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph);
+        return path.getPath(frontStation, endStation).getVertexList();
+    }
+    
+    private WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(final Set<Section> sections) {
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
+                DefaultWeightedEdge.class);
+        
+        for (final Section section : sections) {
+            final Station left = section.getLeft();
+            final Station right = section.getRight();
+            graph.addVertex(left);
+            graph.addVertex(right);
+            graph.setEdgeWeight(graph.addEdge(left, right), section.getDistance().getDistance());
+        }
+        return graph;
     }
 }

@@ -10,7 +10,7 @@ import subway.line.application.port.output.GetLineByIdPort;
 import subway.line.domain.Line;
 import subway.section.application.port.output.SaveSectionPort;
 import subway.station.application.port.output.SaveAllStationPort;
-import subway.station.dto.StationInitAddRequest;
+import subway.station.dto.InitAddStationRequest;
 
 import java.util.Set;
 
@@ -37,12 +37,12 @@ class InitAddStationServiceTest {
     void 최초_역_등록하기() {
         // given
         final Line line = new Line("1호선", "파랑");
-        given(getAllLinePort.findAll()).willReturn(Set.of(line));
+        given(getAllLinePort.getAll()).willReturn(Set.of(line));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line);
         
         // expect
         assertThatNoException()
-                .isThrownBy(() -> service.initAddStations(new StationInitAddRequest("잠실역", "선릉역", 3L, 1L)));
+                .isThrownBy(() -> service.initAddStations(new InitAddStationRequest("잠실역", "선릉역", 3L, 1L)));
     }
     
     @Test
@@ -50,11 +50,11 @@ class InitAddStationServiceTest {
         // given
         final Line line = new Line("1호선", "파랑");
         line.initAddStation("잠실역", "선릉역", 3L);
-        given(getAllLinePort.findAll()).willReturn(Set.of(line));
+        given(getAllLinePort.getAll()).willReturn(Set.of(line));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line);
         
         // expect
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> service.initAddStations(new StationInitAddRequest("잠실역", "선릉역", 3L, 1L)));
+                .isThrownBy(() -> service.initAddStations(new InitAddStationRequest("잠실역", "선릉역", 3L, 1L)));
     }
 }

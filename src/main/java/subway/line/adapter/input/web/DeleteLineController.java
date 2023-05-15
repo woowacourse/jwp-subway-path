@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.line.application.port.input.DeleteLineUseCase;
-import subway.line.dto.LineDeleteRequest;
+import subway.line.dto.DeleteLineRequest;
 
 import javax.validation.Valid;
 
@@ -18,7 +18,7 @@ public class DeleteLineController {
     private final DeleteLineUseCase useCase;
     
     @DeleteMapping
-    public ResponseEntity<Void> save(@RequestBody @Valid final LineDeleteRequest request) {
+    public ResponseEntity<Void> save(@RequestBody @Valid final DeleteLineRequest request) {
         useCase.deleteLine(request.getLineId());
         return ResponseEntity.noContent().build();
     }

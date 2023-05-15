@@ -14,7 +14,7 @@ import java.util.List;
 @EqualsAndHashCode
 @NoArgsConstructor
 @AllArgsConstructor
-public class StationInitAddRequest {
+public class InitAddStationRequest {
     @NotBlank (message = "역 이름은 null 또는 빈값이 올 수 없습니다.")
     private String firstStation;
     @NotBlank (message = "역 이름은 null 또는 빈값이 올 수 없습니다.")

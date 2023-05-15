@@ -8,6 +8,7 @@ import subway.section.domain.Section;
 import subway.section.domain.Sections;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -68,5 +69,9 @@ public class Line {
     
     public boolean isSameColor(final String lineColor) {
         return this.color.equals(lineColor);
+    }
+    
+    public List<String> getSortedStations() {
+        return sections.getSortedStations();
     }
 }

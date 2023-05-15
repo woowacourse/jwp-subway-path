@@ -13,7 +13,7 @@ import subway.section.domain.Sections;
 import subway.station.application.port.input.AddStationUseCase;
 import subway.station.application.port.output.SaveStationPort;
 import subway.station.domain.Station;
-import subway.station.dto.StationAddRequest;
+import subway.station.dto.AddStationRequest;
 
 @RequiredArgsConstructor
 @Transactional
@@ -26,8 +26,8 @@ public class AddStationService implements AddStationUseCase {
     private final SaveAllSectionPort saveAllSectionPort;
     
     @Override
-    public Long addStation(final StationAddRequest request) {
-        final Subway subway = new Subway(getAllLinePort.findAll());
+    public Long addStation(final AddStationRequest request) {
+        final Subway subway = new Subway(getAllLinePort.getAll());
         final Line lineById = getLineByIdPort.getLineById(request.getLineId());
         final Line modifiedLine = subway.addStation(
                 lineById.getName(),

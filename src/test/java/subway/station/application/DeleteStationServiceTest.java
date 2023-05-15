@@ -44,7 +44,7 @@ class DeleteStationServiceTest {
         final Set<Section> sections = new HashSet<>();
         sections.add(new Section("잠실역", "선릉역", 5L));
         final Line line = new Line("1호선", "파랑", sections);
-        given(getAllLinePort.findAll()).willReturn(Set.of(line));
+        given(getAllLinePort.getAll()).willReturn(Set.of(line));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line);
         given(getStationByIdPort.getStationById(anyLong())).willReturn(new Station("잠실역"));
         
