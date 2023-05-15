@@ -1,10 +1,11 @@
 package subway.domain;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
 public class Subway {
 
@@ -20,29 +21,43 @@ public class Subway {
     }
 
     public static Subway of(final Line line, final List<Section> sections) {
-        StationConnections stationConnections = StationConnections.from(sections);
-        Station start = stationConnections.findStartStation();
-
-        SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations = new SimpleDirectedWeightedGraph<>(
-                DefaultWeightedEdge.class);
-        addVertex(stationConnections, stations);
-        addEdge(sections, stations);
+        SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations = generateStations(sections);
+        Station start = findStartStation(stations);
         return new Subway(line, stations, start);
     }
 
-    private static void addVertex(final StationConnections stationConnections,
-                                  final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
-        for (Station station : stationConnections.getAllStations()) {
-            stations.addVertex(station);
+    private static SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> generateStations(final List<Section> sections) {
+        SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations = new SimpleDirectedWeightedGraph<>(
+                DefaultWeightedEdge.class);
+        for (Section section : sections) {
+            Station right = section.getRight();
+            Station left = section.getLeft();
+
+            stations.addVertex(right);
+            stations.addVertex(left);
+            stations.setEdgeWeight(stations.addEdge(left, right), section.getDistance());
         }
+        return stations;
     }
 
-    private static void addEdge(final List<Section> sections,
-                                final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
-        for (Section section : sections) {
-            stations.setEdgeWeight(
-                    stations.addEdge(section.getLeft(), section.getRight()), section.getDistance());
+    private static Station findStartStation(SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
+        Station station = getBaseStationForFindingStart(stations);
+        while (station != null && !stations.incomingEdgesOf(station).isEmpty()) {
+            station = stations.incomingEdgesOf(station)
+                    .stream()
+                    .map(stations::getEdgeSource)
+                    .findFirst()
+                    .orElse(null);
         }
+        return station;
+    }
+
+    private static Station getBaseStationForFindingStart(SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
+        return stations.edgeSet()
+                .stream()
+                .map(stations::getEdgeSource)
+                .findFirst()
+                .orElse(null);
     }
 
     public boolean hasStation(final Station station) {
