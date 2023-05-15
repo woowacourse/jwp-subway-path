@@ -1,5 +1,6 @@
 package subway.station;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +16,8 @@ public class StationController {
     }
 
     @PostMapping("/stations")
-    public void create(@RequestBody StationCreateDto stationCreateDto) {
+    public ResponseEntity<Void> create(@RequestBody StationCreateDto stationCreateDto) {
         stationService.create(stationCreateDto);
+        return ResponseEntity.ok().build();
     }
 }

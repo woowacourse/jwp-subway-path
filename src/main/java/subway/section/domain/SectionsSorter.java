@@ -29,6 +29,9 @@ public final class SectionsSorter {
 
     public List<Section> getSortedSections() {
         final ArrayList<Section> sortedSection = new ArrayList<>();
+        if (sectionRelations.isEmpty()) {
+            return sortedSection;
+        }
         final List<Station> sortedStations = getSortedStation();
 
         for (int index = 0; index < sortedStations.size() - 1; index++) {

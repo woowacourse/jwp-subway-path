@@ -91,8 +91,8 @@ public class SectionService {
         line.getSections().forEach((section) -> sectionDao.insert(
                 new SectionEntity(
                     line.getId(),
-                    stationDao.findIdByName(section.getUpStation().getName()),
-                    stationDao.findIdByName(section.getDownStation().getName()),
+                    section.getUpStation().getId(),
+                    section.getDownStation().getId(),
                     section.getDistance())
             )
         );

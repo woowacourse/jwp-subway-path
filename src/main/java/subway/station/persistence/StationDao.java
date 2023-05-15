@@ -15,7 +15,7 @@ public class StationDao {
 
     private static final RowMapper<StationEntity> STATION_ENTITY_ROW_MAPPER = (rs, rowNum) -> {
         final Long id = rs.getLong("id");
-        final String stationName = rs.getString("name");
+        final String stationName = rs.getString("stationName");
         return new StationEntity(id, stationName);
     };
 
@@ -36,22 +36,10 @@ public class StationDao {
             .longValue();
     }
 
-    public Long findIdByName(final String name) {
-        final String sql = "SELECT * FROM STATION WHERE name = ?";
-        final List<Long> findId = jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("id"), name);
-        if (findId.isEmpty()) {
-            throw new IllegalArgumentException("해당 이름의 역이 존재하지 않습니다.");
-        }
-
-        return findId.get(0);
-    }
-
     public Optional<StationEntity> findById(final Long stationId) {
-        final String sql = "SELECT * FROM STATION WHERE id = :stationId";
-        final MapSqlParameterSource params = new MapSqlParameterSource();
-        params.addValue("id", stationId);
+        final String sql = "SELECT * FROM STATION WHERE id = ?";
 
-        return namedParameterJdbcTemplate.query(sql, params, STATION_ENTITY_ROW_MAPPER)
+        return jdbcTemplate.query(sql, STATION_ENTITY_ROW_MAPPER, stationId)
                 .stream().findAny();
     }
 }
