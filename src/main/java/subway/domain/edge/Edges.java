@@ -52,7 +52,7 @@ public class Edges {
             final Edge edge1 = targetEdges.get(0);
             final Edge edge2 = targetEdges.get(1);
 
-            final Edge newEdge = new Edge(edge1.getUpStation(), edge2.getDownStation(), new Distance(edge1.getDistanceValue() + edge2.getDistanceValue()));
+            final Edge newEdge = new Edge(edge1.getUpStation(), edge2.getDownStation(), edge1.getDistance().plus(edge2.getDistance()));
             final int targetIndex = targetEdges.indexOf(edge1);
             edges.remove(edge1);
             edges.remove(edge2);
