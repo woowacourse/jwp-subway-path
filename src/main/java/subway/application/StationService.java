@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.StationDao;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.entity.Station;
+import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -20,11 +20,11 @@ public class StationService {
     }
 
     public Long save(StationRequest stationRequest) {
-        return stationDao.insert(new Station(stationRequest.getName()));
+        return stationDao.insert(new StationEntity(stationRequest.getName()));
     }
 
     public StationResponse findById(Long id) {
-        Optional<Station> station = stationDao.findById(id);
+        Optional<StationEntity> station = stationDao.findById(id);
         if (station.isEmpty()) {
             throw new NoSuchElementException("해당하는 역이 존재하지 않습니다.");
         }
@@ -32,7 +32,7 @@ public class StationService {
     }
 
     public List<StationResponse> findAll() {
-        List<Station> stationEntities = stationDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
 
         return stationEntities.stream()
                 .map(StationResponse::of)
@@ -40,7 +40,7 @@ public class StationService {
     }
 
     public void update(Long id, StationRequest stationRequest) {
-        stationDao.update(id, new Station(stationRequest.getName()));
+        stationDao.update(id, new StationEntity(stationRequest.getName()));
     }
 
     public void deleteById(Long id) {

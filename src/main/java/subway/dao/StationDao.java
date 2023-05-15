@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.entity.Station;
+import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -19,8 +19,8 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
@@ -32,19 +32,19 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(Station station) {
+    public Long insert(StationEntity station) {
         Map<String, Object> params = new HashMap<>();
         params.put("name", station.getName());
         Long id = insertAction.executeAndReturnKey(params).longValue();
         return id;
     }
 
-    public List<Station> findAll() {
+    public List<StationEntity> findAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Station> findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         String sql = "select * from STATION where id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -53,7 +53,7 @@ public class StationDao {
         }
     }
 
-    public void update(Long id, Station station) {
+    public void update(Long id, StationEntity station) {
         String sql = "update STATION set name = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{station.getName(), id});
     }

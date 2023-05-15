@@ -33,8 +33,8 @@ public class LineController {
             @PathVariable final Long id,
             @RequestBody final StationRegistrationRequest stationRegistrationRequest
     ) {
-        Long sectionId = lineService.saveStationInLine(id, stationRegistrationRequest);
-        return ResponseEntity.created(URI.create("/lines/" + id + "/stations/" )).body(sectionId);
+        lineService.saveStationInLine(id, stationRegistrationRequest);
+        return ResponseEntity.created(URI.create("/lines/" + id + "/stations/" )).body(1L);
     }
 
     @GetMapping

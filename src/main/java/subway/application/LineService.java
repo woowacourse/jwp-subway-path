@@ -4,10 +4,14 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
 import subway.dto.*;
-import subway.entity.Line;
-import subway.entity.Section;
-import subway.entity.Station;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,221 +30,180 @@ public class LineService {
     }
 
     public Long save(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        LineEntity persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
         return persistLine.getId();
     }
 
+    public void saveStationInLine(final Long lineId, final StationRegistrationRequest stationRegistrationRequest) {
+        // 예외: sectionRequest에 들어온 호선이 존재하지 않는 경우
+        LineEntity lineEntity = lineDao.findById(lineId)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 호선이 존재하지 않습니다."));
+
+        // 예외: sectionRequest에 들어온 2개의 역이 모두 Station에 존재하는 역인지 검증
+        stationDao.findById(stationRegistrationRequest.getUpStationId())
+                .orElseThrow(() -> new NoSuchElementException("해당하는 상행역이 존재하지 않습니다."));
+        stationDao.findById(stationRegistrationRequest.getDownStationId())
+                .orElseThrow(() -> new NoSuchElementException("해당하는 하행역이 존재하지 않습니다."));
+
+        // 예외: sectionRequest에 들어온 2개의 역이 이미 구간이 있는지 검증
+        sectionDao.findByStationIds(stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDownStationId())
+                .ifPresent(section -> {
+                    throw new IllegalArgumentException("이미 존재하는 구간입니다.");
+                });
+
+        // 예외: 2개의 역이 동일한 역인 경우
+
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+
+        Map<Long, Station> stationMap = makeStationMap(stationDao.findAll());
+        Station upStation = stationMap.get(stationRegistrationRequest.getUpStationId());
+        Station downStation = stationMap.get(stationRegistrationRequest.getDownStationId());
+        List<Section> sections = toDomain(sectionEntities, stationMap);
+
+        Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
+        Section section = new Section(upStation, downStation, stationRegistrationRequest.getDistance());
+        line.add(section);
+        sync(lineId, line.getSections()); // TODO: 라인도 삭제해야하는가?
+    }
+
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
+        List<LineEntity> persistLines = findLines();
         return persistLines.stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
+    public List<LineEntity> findLines() {
         return lineDao.findAll();
     }
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
+        LineEntity persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    public Line findLineById(Long id) {
+    public LineEntity findLineById(Long id) {
         return lineDao.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당하는 ID가 없습니다."));
     }
 
     public List<LineStationResponse> findAll() {
-        List<Line> lines = lineDao.findAll();
-        List<Section> sections = sectionDao.findAll();
-        List<Station> stations = stationDao.findAll();
+        List<LineEntity> lineEntities = lineDao.findAll();
+        List<SectionEntity> sectionEntities = sectionDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
 
-        Map<Long, List<Section>> sectionsByLine = sortSectionsByLine(sections);
+        Map<Long, List<SectionEntity>> sectionsByLine = separateByLine(sectionEntities);
 
-        List<LineStationResponse> lineStationResponses = new ArrayList<>();
-        for (Line line : lines) {
-            List<StationResponse> stationResponses = linkStationsByLine(sectionsByLine.get(line.getId()), stations);
-            lineStationResponses.add(LineStationResponse.from(LineResponse.of(line), stationResponses));
-        }
-        return lineStationResponses;
+        return lineEntities.stream()
+                .map(lineEntity -> getLineStationResponse(lineEntity, stationEntities, sectionsByLine.getOrDefault(lineEntity.getId(), Collections.emptyList())))
+                .collect(Collectors.toList());
     }
 
-    private Map<Long, List<Section>> sortSectionsByLine(final List<Section> sections) {
-        Map<Long, List<Section>> sectionsByLine = new HashMap<>();
-        for (Section section : sections) {
-            List<Section> sectionEntities = sectionsByLine.getOrDefault(section.getLineId(), new ArrayList<>());
-            sectionEntities.add(section);
-            sectionsByLine.put(section.getLineId(), sectionEntities);
-        }
-        return sectionsByLine;
+    private Map<Long, List<SectionEntity>> separateByLine(final List<SectionEntity> sections) {
+        return sections.stream()
+                    .collect(Collectors.groupingBy(SectionEntity::getLineId));
     }
 
     public LineStationResponse findById(Long id) {
-        Line line = lineDao.findById(id)
+        LineEntity lineEntity = lineDao.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("해당하는 ID가 없습니다."));
-
-        List<Section> sections = sectionDao.findByLineId(id);
-        List<Station> stations = stationDao.findAll();
-
-        List<StationResponse> stationResponses = linkStationsByLine(sections, stations);
-        return LineStationResponse.from(LineResponse.of(line), stationResponses);
+        List<StationEntity> stationEntities = stationDao.findAll();
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
+        return getLineStationResponse(lineEntity, stationEntities, sectionEntities);
     }
 
-    private List<StationResponse> linkStationsByLine(final List<Section> sections, final List<Station> stations) {
-        if (sections == null) {
-            return new ArrayList<>();
+    private LineStationResponse getLineStationResponse(final LineEntity lineEntity, final List<StationEntity> stationEntities, final List<SectionEntity> sectionEntities) {
+        if (sectionEntities.isEmpty()) {
+            return LineStationResponse.from(LineResponse.of(lineEntity), Collections.emptyList());
         }
 
-        Map<Long, String> stationMap = new HashMap<>();
-        stations.forEach(stationEntity -> stationMap.put(stationEntity.getId(), stationEntity.getName()));
+        Map<Long, Station> stationMap = makeStationMap(stationEntities);
+        Map<Long, Section> sectionMap = makeSectionMap(sectionEntities, stationMap);
 
-        Map<Long, Long> sectionMap = new HashMap<>();
-        sections.forEach(section -> sectionMap.put(section.getUpStationId(), section.getDownStationId()));
-
-        return linkStations(stationMap, sectionMap);
+        List<StationResponse> stationResponses = sortStations(sectionMap);
+        return LineStationResponse.from(LineResponse.of(lineEntity), stationResponses);
     }
 
-    private List<StationResponse> linkStations(final Map<Long, String> stationMap, final Map<Long, Long> sectionMap) {
+    private List<StationResponse> sortStations(final Map<Long, Section> sectionMap) {
         List<StationResponse> stationResponses = new ArrayList<>();
-        Long nextStationId = sectionMap.get(null);
-        while (nextStationId != null) {
-            Station station = new Station(nextStationId, stationMap.get(nextStationId));
-            stationResponses.add(StationResponse.of(station));
-            nextStationId = sectionMap.get(nextStationId);
+        Section section = sectionMap.get(null);
+        while (!section.isDownFinalStation()) { // 하행 종점일 때까지 반복
+            Long nextStationId = section.getDownStation().getId();
+            Station nextStation = sectionMap.get(nextStationId).getUpStation();
+            stationResponses.add(StationResponse.of(nextStation));
+            section = sectionMap.get(nextStationId);
         }
         return stationResponses;
     }
 
     public void update(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        lineDao.update(new LineEntity(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteById(Long id) {
         lineDao.deleteById(id);
     }
 
-    public Long saveStationInLine(final Long lineId, final StationRegistrationRequest stationRegistrationRequest) {
-        // 예외: sectionRequest에 들어온 호선이 존재하지 않는 경우
-        if (lineDao.findById(lineId).isEmpty()) {
-            throw new NoSuchElementException("해당하는 호선이 존재하지 않습니다.");
-        }
-
-        // 예외: sectionRequest에 들어온 2개의 역이 모두 Station에 존재하는 역인지 검증
-        if (stationDao.findById(stationRegistrationRequest.getUpStationId()).isEmpty() || stationDao.findById(stationRegistrationRequest.getDownStationId()).isEmpty()) {
-            throw new NoSuchElementException("해당하는 역이 존재하지 않습니다.");
-        }
-
-        // 예외: sectionRequest에 들어온 2개의 역이 구간이 있는지 검증
-        if (sectionDao.findByStationIds(stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDownStationId()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 구간입니다.");
-        }
-
-        // 1. 노선에 대한 구간이 아예 없는 경우
-        List<Section> sectionEntities = sectionDao.findByLineId(lineId);
-        if (sectionEntities.isEmpty()) {
-            sectionDao.insert(new Section(lineId, null, stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDistance()));
-            sectionDao.insert(new Section(lineId, stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDownStationId(), stationRegistrationRequest.getDistance()));
-            sectionDao.insert(new Section(lineId, stationRegistrationRequest.getDownStationId(), null, stationRegistrationRequest.getDistance()));
-        }
-
-        List<Section> upSections = sectionDao.findByLineIdAndStationId(lineId, stationRegistrationRequest.getUpStationId());
-        List<Section> downSections = sectionDao.findByLineIdAndStationId(lineId, stationRegistrationRequest.getDownStationId());
-
-        // 예외: 기준이 되는 역이 노선에 존재하지 않는 경우 예외 처리
-        if (upSections.isEmpty() && downSections.isEmpty()) {
-            throw new IllegalArgumentException("노선에 기준이 되는 역이 존재하지 않습니다.");
-        }
-
-        if (downSections.isEmpty()) {
-            Section targetSection = upSections.stream()
-                    .filter(it -> it.getDownStationId() == null || it.getUpStationId().equals(stationRegistrationRequest.getUpStationId()))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException("해당하는 구간이 존재하지 않습니다."));
-
-            // 2. 하행 종점에 넣는 경우
-            if (targetSection.getDownStationId() == null) {
-                sectionDao.insert(new Section(lineId, stationRegistrationRequest.getDownStationId(), null, 0));
-            }
-
-            // 3. 하행 중간에 넣는 경우
-            if (targetSection.getUpStationId().equals(stationRegistrationRequest.getUpStationId())) {
-                if (targetSection.getDistance() <= stationRegistrationRequest.getDistance()) {
-                    throw new IllegalArgumentException("현재 구간보다 긴 구간을 추가할 수 없습니다.");
-                }
-                // AB
-                sectionDao.insert(new Section(lineId, stationRegistrationRequest.getDownStationId(), targetSection.getDownStationId(), targetSection.getDistance() - stationRegistrationRequest.getDistance()));
-            }
-
-            sectionDao.deleteBySectionId(targetSection.getId());
-        }
-
-        if (upSections.isEmpty()) {
-            Section targetSection = downSections.stream()
-                    .filter(it -> it.getUpStationId() == null || it.getDownStationId().equals(stationRegistrationRequest.getDownStationId()))
-                    .findAny()
-                    .orElseThrow(() -> new IllegalArgumentException("해당하는 구간이 존재하지 않습니다."));
-
-            // 2. 상행 종점에 넣는 경우
-            if (targetSection.getUpStationId() == null) {
-                sectionDao.insert(new Section(lineId, null, stationRegistrationRequest.getUpStationId(), 0));
-            }
-
-            // 3. 상행 중간에 넣는 경우
-            if (targetSection.getDownStationId().equals(stationRegistrationRequest.getDownStationId())) {
-                if (targetSection.getDistance() <= stationRegistrationRequest.getDistance()) {
-                    throw new IllegalArgumentException("현재 구간보다 긴 구간을 추가할 수 없습니다.");
-                }
-                // AB
-                sectionDao.insert(new Section(lineId, targetSection.getUpStationId(), stationRegistrationRequest.getUpStationId(), targetSection.getDistance() - stationRegistrationRequest.getDistance()));
-            }
-
-            sectionDao.deleteBySectionId(targetSection.getId());
-        }
-        return sectionDao.insert(new Section(lineId, stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDownStationId(), stationRegistrationRequest.getDistance()));
-    }
-
     public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
-        List<Section> sectionEntities = sectionDao.findByLineIdAndStationId(lineId, stationId);
-        if (sectionEntities.isEmpty()) {
-            throw new NoSuchElementException("해당하는 값이 없습니다.");
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        List<StationEntity> stationEntities = stationDao.findAll();
+
+        Map<Long, Station> stationMap = makeStationMap(stationEntities);
+        List<Section> sections = toDomain(sectionEntities, stationMap);
+
+        LineEntity lineEntity = findLineById(lineId);
+        Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
+
+        List<SectionEntity> deleteSectionEntities = sectionDao.findByLineIdAndStationId(lineId, stationId);
+        List<Section> deleteSections = toDomain(deleteSectionEntities, stationMap);
+        if (deleteSections.isEmpty()) {
+            throw new NoSuchElementException("삭제할 구간이 존재하지 않습니다.");
         }
 
-        sectionDao.deleteByLineIdAndStationId(lineId, stationId);
-        // TODO: 라인에 역이 2개만 있는 경우, 삭제 로직 수정 필요
-        if (sectionEntities.size() == 1) {
-            linkIfFinalStation(lineId, stationId, sectionEntities.get(0));
-            return;
-        }
-        link(lineId, stationId, sectionEntities);
+        line.remove(new Sections(deleteSections), stationMap.get(stationId));
+        sync(lineId, line.getSections());
     }
 
-    private void linkIfFinalStation(final Long lineId, final Long stationId, final Section section) {
-        if (sectionDao.findByLineId(lineId).isEmpty()) {
-            return;
-        }
-        if (section.getDownStationId().equals(stationId)) {
-            Long upStationId = section.getUpStationId();
-            sectionDao.insert(new Section(lineId, upStationId, null, 0));
-            return;
-        }
-        Long downStationId = section.getDownStationId();
-        sectionDao.insert(new Section(lineId, null, downStationId, 0));
+    private void sync(final Long lineId, final List<Section> sections) {
+        sectionDao.deleteByLineId(lineId);
+        sectionDao.insertAll(
+                sections.stream()
+                        .map(section -> new SectionEntity(
+                                section.getId(),
+                                lineId,
+                                section.getUpStation().getId(),
+                                section.getDownStation().getId(),
+                                section.getDistance()
+                        )).collect(Collectors.toList())
+        );
     }
 
-    private void link(final Long lineId, final Long stationId, final List<Section> sectionEntities) {
-        Section previousSection = sectionEntities.get(0);
-        Section nextSection = sectionEntities.get(1);
-        int newDistance = previousSection.getDistance() + nextSection.getDistance();
+    private List<Section> toDomain(final List<SectionEntity> sectionEntities, final Map<Long, Station> stationMap) {
+        return sectionEntities.stream()
+                .map(sectionEntity -> {
+                    Station up = stationMap.getOrDefault(sectionEntity.getUpStationId(), Station.empty());
+                    Station down = stationMap.getOrDefault(sectionEntity.getDownStationId(), Station.empty());
+                    return new Section(sectionEntity.getId(), up, down, sectionEntity.getDistance());
+                }).collect(Collectors.toList());
+    }
 
-        if (previousSection.getUpStationId().equals(stationId)) {
-            Long upStationId = nextSection.getUpStationId();
-            Long downStationId = previousSection.getDownStationId();
-            sectionDao.insert(new Section(lineId, upStationId, downStationId, newDistance));
-            return;
-        }
-        Long upStationId = previousSection.getUpStationId();
-        Long downStationId = nextSection.getDownStationId();
-        sectionDao.insert(new Section(lineId, upStationId, downStationId, newDistance));
+    private Map<Long, Station> makeStationMap(final List<StationEntity> stationDao) {
+        return stationDao.stream()
+                .collect(Collectors.toMap(
+                        StationEntity::getId,
+                        station -> new Station(station.getId(), station.getName())
+                ));
+    }
+
+    private Map<Long, Section> makeSectionMap(final List<SectionEntity> sectionEntities, final Map<Long, Station> stationMap) {
+        return sectionEntities.stream()
+                .collect(Collectors.toMap(
+                        SectionEntity::getUpStationId,
+                        sectionEntity -> new Section(
+                                sectionEntity.getId(),
+                                stationMap.get(sectionEntity.getUpStationId()),
+                                stationMap.get(sectionEntity.getDownStationId()),
+                                sectionEntity.getDistance())
+                ));
     }
 }

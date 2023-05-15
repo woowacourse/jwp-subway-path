@@ -2,21 +2,21 @@ package subway.entity;
 
 import java.util.Objects;
 
-public class Line {
+public class LineEntity {
 
     private Long id;
     private String name;
     private String color;
 
-    public Line() {
+    public LineEntity() {
     }
 
-    public Line(String name, String color) {
+    public LineEntity(String name, String color) {
         this.name = name;
         this.color = color;
     }
 
-    public Line(Long id, String name, String color) {
+    public LineEntity(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
@@ -38,8 +38,8 @@ public class Line {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+        LineEntity lineEntity = (LineEntity) o;
+        return Objects.equals(id, lineEntity.id) && Objects.equals(name, lineEntity.name) && Objects.equals(color, lineEntity.color);
     }
 
     @Override
