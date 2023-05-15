@@ -40,6 +40,6 @@
     - [x] 역 추가 기능 통합
     - [x] 역 제거 기능 통합
 - [ ] 예외 처리 공통 관심사 분리
-- [ ] Section의 FK를 Station의 PK로 수정
+- [x] Section의 FK를 Station의 PK로 수정
 - [ ] API 응답 개선
 - [ ] 예외 케이스 분리/구분

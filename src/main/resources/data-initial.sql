@@ -6,7 +6,7 @@ VALUES ('강남'),
        ('역삼'),
        ('선릉');
 
-INSERT INTO section (first_station, second_station, distance, line_id)
-VALUES ('강남', '역삼', 3, 1),
-       ('역삼', '선릉', 2, 1);
+INSERT INTO section (first_station_id, second_station_id, distance, line_id)
+VALUES (1, 2, 3, 1),
+       (2, 3, 2, 1);
 

@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,6 +22,7 @@ import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
+import subway.domain.station.StationName;
 import subway.domain.station.StationRepository;
 import subway.ui.dto.request.AddStationRequest;
 
@@ -66,7 +68,8 @@ class AddStationServiceTest {
         final AddStationRequest request = new AddStationRequest(null, "강남", "교대", 3);
         given(lineRepository.findById(1L)).willReturn(lineFixture);
         given(sectionRepository.save(any(), any())).willReturn(1L);
-        given(stationRepository.save(any())).willReturn(1L);
+        given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("강남")));
+        given(stationRepository.saveIfNotExist(any())).willReturn(new Station("교대"));
 
         //when
         addStationService.addStation(1L, request);
@@ -85,6 +88,7 @@ class AddStationServiceTest {
     void 상행역으로_추가시_기준역이_상행역이_아닌경우_예외발생() {
         //given
         final AddStationRequest request = new AddStationRequest(null, "선릉", "교대", 3);
+        given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("선릉")));
         given(lineRepository.findById(1L)).willReturn(lineFixture);
 
         //when & then
@@ -99,7 +103,8 @@ class AddStationServiceTest {
         final AddStationRequest request = new AddStationRequest("선릉", null, "삼성", 1);
         given(lineRepository.findById(1L)).willReturn(lineFixture);
         given(sectionRepository.save(any(), any())).willReturn(1L);
-        given(stationRepository.save(any())).willReturn(1L);
+        given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("선릉")));
+        given(stationRepository.saveIfNotExist(any())).willReturn(new Station("삼성"));
 
         //when
         addStationService.addStation(1L, request);
@@ -119,6 +124,7 @@ class AddStationServiceTest {
         //given
         final AddStationRequest request = new AddStationRequest("강남", null, "삼성", 3);
         given(lineRepository.findById(1L)).willReturn(lineFixture);
+        given(stationRepository.findByName(any())).willReturn(Optional.of(new Station("강남")));
 
         //when & then
         assertThatThrownBy(() -> addStationService.addStation(1L, request))
@@ -132,7 +138,7 @@ class AddStationServiceTest {
         final AddStationRequest request = new AddStationRequest("강남", "역삼", "삼성", 2);
         given(lineRepository.findById(1L)).willReturn(lineFixture);
         given(sectionRepository.save(any(), any())).willReturn(1L);
-        given(stationRepository.save(any())).willReturn(1L);
+        given(stationRepository.saveIfNotExist(any())).willReturn(new Station(4L, new StationName("삼성")));
 
         //when
         addStationService.addStation(1L, request);

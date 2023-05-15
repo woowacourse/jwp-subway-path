@@ -1,6 +1,5 @@
 package subway.application.station.service;
 
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.station.usecase.CreateInitialStationsUseCase;
@@ -44,22 +43,13 @@ public class CreateInitialStationsService implements CreateInitialStationsUseCas
         final Station firstStation = new Station(request.getFirstStation());
         final Station secondStation = new Station(request.getSecondStation());
 
-        saveIfNotExist(new Station(request.getFirstStation()));
-        saveIfNotExist(new Station(request.getSecondStation()));
+        stationRepository.saveIfNotExist(new Station(request.getFirstStation()));
+        stationRepository.saveIfNotExist(new Station(request.getSecondStation()));
 
         return new Section(
                 firstStation,
                 secondStation,
                 new StationDistance(request.getDistance())
         );
-    }
-
-    private void saveIfNotExist(final Station station) {
-        final Optional<Station> findByNameStation =
-                stationRepository.findByName(station.getStationName());
-
-        if (findByNameStation.isEmpty()) {
-            stationRepository.save(station);
-        }
     }
 }

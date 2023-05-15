@@ -30,15 +30,22 @@ public class StationRepositoryImpl implements StationRepository {
 
     private Station toStation(final StationEntity stationEntity) {
         return new Station(
+                stationEntity.getStationId(),
                 new StationName(stationEntity.getName())
         );
     }
 
     @Override
-    public Long save(final Station station) {
+    public Station saveIfNotExist(final Station station) {
+        final Optional<Station> findStation = findByName(station.getStationName());
+
+        if (findStation.isPresent()) {
+            return null;
+        }
+
         final StationEntity stationEntity = new StationEntity(station.getStationName());
 
-        return stationDao.insert(stationEntity).getStationId();
+        return stationDao.insert(stationEntity).toStation();
     }
 
     @Override

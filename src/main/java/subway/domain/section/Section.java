@@ -17,12 +17,12 @@ public class Section {
         this.distance = distance;
     }
 
-    public boolean matchFirstStation(final Station firstStation) {
-        return this.firstStation.equals(firstStation);
+    public boolean matchFirstStationByName(final Station firstStation) {
+        return this.firstStation.matchStationName(firstStation);
     }
 
-    public boolean matchSecondStation(final Station secondStation) {
-        return this.secondStation.equals(secondStation);
+    public boolean matchSecondStationName(final Station secondStation) {
+        return this.secondStation.matchStationName(secondStation);
     }
 
     public Section createFrontSection(final Station additionStation, final StationDistance stationDistance) {

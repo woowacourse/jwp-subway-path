@@ -34,17 +34,17 @@ class SectionDaoTest {
     void 구간_저장_테스트() {
         //given
         final LineEntity insertLine = lineDao.insert(new LineEntity("2호선", "초록"));
-        stationDao.insert(new StationEntity("강남"));
-        stationDao.insert(new StationEntity("역삼"));
+        final Long firstStationId = stationDao.insert(new StationEntity("강남")).getStationId();
+        final Long secondStationId = stationDao.insert(new StationEntity("역삼")).getStationId();
         final SectionEntity sectionEntity = new SectionEntity(
-                "강남", "역삼", 3, insertLine.getLineId()
+                firstStationId, secondStationId, 3, insertLine.getLineId()
         );
 
         //when
         final SectionEntity insertSection = sectionDao.insert(sectionEntity);
 
         //then
-        assertThat(insertSection.getFirstStation()).isEqualTo("강남");
+        assertThat(insertSection.getFirstStationId()).isEqualTo(firstStationId);
     }
 
 
@@ -52,10 +52,10 @@ class SectionDaoTest {
     void 모든_구간을_조회하는_테스트() {
         //given
         final LineEntity insertLine = lineDao.insert(new LineEntity("2호선", "초록"));
-        stationDao.insert(new StationEntity("강남"));
-        stationDao.insert(new StationEntity("역삼"));
+        final Long firstStationId = stationDao.insert(new StationEntity("강남")).getStationId();
+        final Long secondStationId = stationDao.insert(new StationEntity("역삼")).getStationId();
         final SectionEntity sectionEntity = new SectionEntity(
-                "강남", "역삼", 3, insertLine.getLineId()
+                firstStationId, secondStationId, 3, insertLine.getLineId()
         );
         sectionDao.insert(sectionEntity);
 
@@ -70,10 +70,10 @@ class SectionDaoTest {
     void 식별자로_구간_조회_테스트() {
         //given
         final LineEntity insertLine = lineDao.insert(new LineEntity("2호선", "초록"));
-        stationDao.insert(new StationEntity("강남"));
-        stationDao.insert(new StationEntity("역삼"));
+        final Long firstStationId = stationDao.insert(new StationEntity("강남")).getStationId();
+        final Long secondStationId = stationDao.insert(new StationEntity("역삼")).getStationId();
         final SectionEntity sectionEntity = new SectionEntity(
-                "강남", "역삼", 3, insertLine.getLineId()
+                firstStationId, secondStationId, 3, insertLine.getLineId()
         );
         final SectionEntity insert = sectionDao.insert(sectionEntity);
 
@@ -82,7 +82,7 @@ class SectionDaoTest {
 
         //then
         assertThat(byId).isNotNull();
-        assertThat(byId.getFirstStation()).isEqualTo("강남");
+        assertThat(byId.getFirstStationId()).isEqualTo(firstStationId);
     }
 
     @Test
@@ -90,11 +90,11 @@ class SectionDaoTest {
         //given
         final LineEntity insertLine = lineDao.insert(new LineEntity("2호선", "초록"));
         final Long lineId = insertLine.getLineId();
-        stationDao.insert(new StationEntity("강남"));
-        stationDao.insert(new StationEntity("역삼"));
-        stationDao.insert(new StationEntity("선릉"));
-        sectionDao.insert(new SectionEntity("강남", "역삼", 3, lineId));
-        sectionDao.insert(new SectionEntity("역삼", "선릉", 2, lineId));
+        final Long firstStationId = stationDao.insert(new StationEntity("강남")).getStationId();
+        final Long secondStationId = stationDao.insert(new StationEntity("역삼")).getStationId();
+        final Long thirdStationId = stationDao.insert(new StationEntity("선릉")).getStationId();
+        sectionDao.insert(new SectionEntity(firstStationId, secondStationId, 3, lineId));
+        sectionDao.insert(new SectionEntity(secondStationId, thirdStationId, 2, lineId));
 
         //when
         final List<SectionEntity> byLineId = sectionDao.findByLineId(lineId);
@@ -109,15 +109,15 @@ class SectionDaoTest {
     void 구간_삭제_테스트() {
         //given
         final LineEntity insertLine = lineDao.insert(new LineEntity("2호선", "초록"));
-        stationDao.insert(new StationEntity("강남"));
-        stationDao.insert(new StationEntity("역삼"));
+        final Long firstStationId = stationDao.insert(new StationEntity("강남")).getStationId();
+        final Long secondStationId = stationDao.insert(new StationEntity("역삼")).getStationId();
         final SectionEntity sectionEntity = new SectionEntity(
-                "강남", "역삼", 3, insertLine.getLineId()
+                firstStationId, secondStationId, 3, insertLine.getLineId()
         );
         sectionDao.insert(sectionEntity);
 
         //when
-        sectionDao.deleteByStations("강남", "역삼");
+        sectionDao.deleteByStations(firstStationId, secondStationId);
 
         //then
         final List<SectionEntity> all = sectionDao.findAll();

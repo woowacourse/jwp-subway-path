@@ -12,6 +12,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.section.SectionDao;
 import subway.dao.section.SectionEntity;
+import subway.dao.station.StationDao;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.section.Sections;
@@ -24,12 +25,14 @@ class LineRepositoryImplTest {
     private LineDao lineDao;
     @Mock
     private SectionDao sectionDao;
+    @Mock
+    private StationDao stationDao;
 
     private LineRepository lineRepository;
 
     @BeforeEach
     void setUp() {
-        lineRepository = new LineRepositoryImpl(lineDao, sectionDao);
+        lineRepository = new LineRepositoryImpl(lineDao, sectionDao, stationDao);
     }
 
     @Test
@@ -38,8 +41,8 @@ class LineRepositoryImplTest {
         final Long lineId = 1L;
         given(lineDao.findById(anyLong())).willReturn(new LineEntity("1호선", "파랑"));
         given(sectionDao.findByLineId(anyLong())).willReturn(List.of(
-                new SectionEntity("강남", "역삼", 3, lineId),
-                new SectionEntity("역삼", "선릉", 2, lineId)
+                new SectionEntity(1L, 2L, 3, lineId),
+                new SectionEntity(2L, 3L, 2, lineId)
         ));
 
         //when

@@ -17,8 +17,8 @@ public class SectionDao {
     private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("section_id"),
-                    rs.getString("first_station"),
-                    rs.getString("second_station"),
+                    rs.getLong("first_station_id"),
+                    rs.getLong("second_station_id"),
                     rs.getInt("distance"),
                     rs.getLong("line_id")
             );
@@ -36,8 +36,8 @@ public class SectionDao {
 
         return new SectionEntity(
                 id,
-                section.getFirstStation(),
-                section.getSecondStation(),
+                section.getFirstStationId(),
+                section.getSecondStationId(),
                 section.getDistance(),
                 section.getLineId()
         );
@@ -54,17 +54,17 @@ public class SectionDao {
     }
 
     public List<SectionEntity> findByLineId(final Long lineId) {
-        final String sql = "SELECT * FROM section WHERE line_id = ?";
+        final String sql = "SELECT * FROM section WHERE line_id = ? ";
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public void deleteByStations(final String firstStation, final String secondStation) {
-        final String sql = "DELETE FROM section WHERE first_station = ? AND second_station = ?";
+    public void deleteByStations(final Long firstStation, final Long secondStation) {
+        final String sql = "DELETE FROM section WHERE first_station_id = ? AND second_station_id = ?";
 
         jdbcTemplate.update(con -> {
             final PreparedStatement preparedStatement = con.prepareStatement(sql);
-            preparedStatement.setString(1, firstStation);
-            preparedStatement.setString(2, secondStation);
+            preparedStatement.setLong(1, firstStation);
+            preparedStatement.setLong(2, secondStation);
 
             return preparedStatement;
         });

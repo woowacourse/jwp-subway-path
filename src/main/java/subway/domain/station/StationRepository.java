@@ -5,7 +5,7 @@ import java.util.Optional;
 public interface StationRepository {
     Optional<Station> findByName(String name);
 
-    Long save(Station station);
+    Station saveIfNotExist(Station station);
 
     Station findById(Long stationId);
 }

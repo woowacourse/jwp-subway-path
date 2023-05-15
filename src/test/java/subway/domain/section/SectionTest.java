@@ -20,7 +20,7 @@ class SectionTest {
         );
 
         //when
-        final boolean match = section.matchFirstStation(new Station("from"));
+        final boolean match = section.matchFirstStationByName(new Station("from"));
 
         //then
         assertThat(match).isTrue();
@@ -36,7 +36,7 @@ class SectionTest {
         );
 
         //when
-        final boolean match = section.matchSecondStation(new Station("to"));
+        final boolean match = section.matchSecondStationName(new Station("to"));
 
         //then
         assertThat(match).isTrue();

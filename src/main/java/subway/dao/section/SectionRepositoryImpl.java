@@ -16,8 +16,8 @@ public class SectionRepositoryImpl implements SectionRepository {
     @Override
     public Long save(final Section section, final Long lineId) {
         final SectionEntity sectionEntity = new SectionEntity(
-                section.getFirstStation().getStationName(),
-                section.getSecondStation().getStationName(),
+                section.getFirstStation().getStationId(),
+                section.getSecondStation().getStationId(),
                 section.getDistance().getDistance(),
                 lineId
         );
@@ -29,8 +29,8 @@ public class SectionRepositoryImpl implements SectionRepository {
     @Override
     public void delete(final Section removedSection) {
         sectionDao.deleteByStations(
-                removedSection.getFirstStation().getStationName(),
-                removedSection.getSecondStation().getStationName()
+                removedSection.getFirstStation().getStationId(),
+                removedSection.getSecondStation().getStationId()
         );
     }
 }

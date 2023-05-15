@@ -1,5 +1,6 @@
 package subway.application.station.service;
 
+import java.util.NoSuchElementException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.station.usecase.AddStationUseCase;
@@ -45,40 +46,42 @@ public class AddStationService implements AddStationUseCase {
 
     private Long addStationAsFront(final Line line, final AddStationRequest request) {
         final Station newStation = new Station(request.getNewStation());
-        final Station standartStation = new Station(request.getSecondStation());
+        final Station standartStation = stationRepository.findByName(request.getSecondStation())
+                .orElseThrow(NoSuchElementException::new);
         final StationDistance distance = new StationDistance(request.getDistance());
         validateIsFrontStation(line.getFrontStation(), standartStation);
 
-        final Section section = new Section(newStation, standartStation, distance);
+        final Station savedStation = stationRepository.saveIfNotExist(newStation);
+        final Section section = new Section(savedStation, standartStation, distance);
         line.addSection(section);
 
-        final Long savedStationId = stationRepository.save(newStation);
         sectionRepository.save(section, line.getId());
-        return savedStationId;
+        return savedStation.getStationId();
     }
 
     private void validateIsFrontStation(final Station frontStation, final Station standartStation) {
-        if (!standartStation.equals(frontStation)) {
+        if (!standartStation.matchStationName(frontStation)) {
             throw new IllegalStateException("기준역이 상행 종점이 아닙니다.");
         }
     }
 
     private Long addStationAsEnd(final Line line, final AddStationRequest request) {
-        final Station standartStation = new Station(request.getFirstStation());
+        final Station standartStation = stationRepository.findByName(request.getFirstStation())
+                .orElseThrow(NoSuchElementException::new);
         final Station newStation = new Station(request.getNewStation());
         final StationDistance distance = new StationDistance(request.getDistance());
         validateIsEndStation(line.getEndStation(), standartStation);
 
-        final Section section = new Section(standartStation, newStation, distance);
-        line.addSection(section);
+        final Station savedStation = stationRepository.saveIfNotExist(newStation);
 
-        final Long savedStationId = stationRepository.save(newStation);
+        final Section section = new Section(standartStation, savedStation, distance);
+        line.addSection(section);
         sectionRepository.save(section, line.getId());
-        return savedStationId;
+        return savedStation.getStationId();
     }
 
     private void validateIsEndStation(final Station endStation, final Station standartStation) {
-        if (!standartStation.equals(endStation)) {
+        if (!standartStation.matchStationName(endStation)) {
             throw new IllegalStateException("기준역이 하행 종점이 아닙니다.");
         }
     }
@@ -91,13 +94,13 @@ public class AddStationService implements AddStationUseCase {
 
         final Sections sections = line.getSections();
         final Section removedSection = sections.peekByFirstStationUnique(standardStation);
-        sections.insertBehindStation(standardStation, newStation, new StationDistance(request.getDistance()));
+        final Station savedStation = stationRepository.saveIfNotExist(newStation);
+        sections.insertBehindStation(standardStation, savedStation, new StationDistance(request.getDistance()));
 
-        final Long savedStationId = stationRepository.save(newStation);
         sectionRepository.delete(removedSection);
 
-        saveSeparatedSections(line.getId(), newStation, sections);
-        return savedStationId;
+        saveSeparatedSections(line.getId(), savedStation, sections);
+        return savedStation.getStationId();
     }
 
     private void saveSeparatedSections(final Long lineId, final Station newStation, final Sections sections) {
@@ -111,7 +114,7 @@ public class AddStationService implements AddStationUseCase {
         final Sections sections = line.getSections();
         final Section section = sections.peekByFirstStationUnique(firstStation);
 
-        if (!section.getSecondStation().equals(secondStation)) {
+        if (!section.getSecondStation().matchStationName(secondStation)) {
             throw new IllegalStateException("두 역은 구간으로 연결되어 있지 않습니다.");
         }
     }

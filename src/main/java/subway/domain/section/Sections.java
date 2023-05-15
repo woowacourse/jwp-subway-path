@@ -47,7 +47,7 @@ public class Sections {
 
     public Section peekByFirstStationUnique(final Station firstStation) { //FIXME 접근제어자
         final LinkedList<Section> findSections = sections.stream()
-                .filter(section -> section.matchFirstStation(firstStation))
+                .filter(section -> section.matchFirstStationByName(firstStation))
                 .collect(Collectors.toCollection(LinkedList::new));
 
         validateUniqueSection(findSections);
@@ -56,7 +56,7 @@ public class Sections {
 
     public Section peekBySecondStationUnique(final Station secondStation) { //FIXME 접근제어자
         final LinkedList<Section> findSections = sections.stream()
-                .filter(section -> section.matchSecondStation(secondStation))
+                .filter(section -> section.matchSecondStationName(secondStation))
                 .collect(Collectors.toCollection(LinkedList::new));
 
         validateUniqueSection(findSections);

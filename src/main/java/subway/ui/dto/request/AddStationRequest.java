@@ -1,10 +1,8 @@
 package subway.ui.dto.request;
 
 public class AddStationRequest {
-    //nullable
     private final String firstStation;
-    //nullable
-    private final String secondStation; // TODO firstStation && secondStation 모두 null은 Exception
+    private final String secondStation;
     private final String newStation;
     private final int distance;
 
