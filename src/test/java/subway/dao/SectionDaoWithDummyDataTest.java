@@ -8,11 +8,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
+import subway.persistence.dao.entity.LineEntity;
 import subway.persistence.dao.entity.SectionEntity;
-import subway.persistence.repository.StationRepositoryImpl;
-import subway.service.line.domain.Line;
-import subway.service.station.StationRepository;
-import subway.service.station.domain.Station;
+import subway.persistence.dao.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -20,16 +18,16 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.LineFixture.EIGHT_LINE_NO_ID;
-import static subway.domain.LineFixture.SECOND_LINE_NO_ID;
-import static subway.domain.StationFixture.GANGNAM_NO_ID;
-import static subway.domain.StationFixture.JAMSIL_NO_ID;
-import static subway.domain.StationFixture.SEOKCHON;
-import static subway.domain.StationFixture.YUKSAM_NO_ID;
+import static subway.domain.LineEntityFixture.EIGHT_LINE_NO_ID_ENTITY;
+import static subway.domain.LineEntityFixture.SECOND_LINE_NO_ID_ENTITY;
+import static subway.domain.StationEntityFixture.GANGNAM_NO_ID_ENTITY;
+import static subway.domain.StationEntityFixture.JAMSIL_NO_ID_ENTITY;
+import static subway.domain.StationEntityFixture.SEOKCHON_NO_ID_ENTITY;
+import static subway.domain.StationEntityFixture.YUKSAM_NO_ID_ENTITY;
 
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
-public class SectionDaoTestWithDummyData {
+public class SectionDaoWithDummyDataTest {
 
     @Autowired
     DataSource dataSource;
@@ -40,14 +38,13 @@ public class SectionDaoTestWithDummyData {
     private SectionDao sectionDao;
     private LineDao lineDao;
     private StationDao stationDao;
-    private StationRepository stationRepository;
 
-    Station savedJamsil;
-    Station savedYuksam;
-    Station savedGangnam;
+    StationEntity savedJamsil;
+    StationEntity savedYuksam;
+    StationEntity savedGangnam;
 
-    Line savedSecondLine;
-    Line savedEightLine;
+    LineEntity savedSecondLine;
+    LineEntity savedEightLine;
     SectionEntity yuksamToJamsilSectionEntity;
     SectionEntity yuksamToJamsilSection;
 
@@ -60,14 +57,12 @@ public class SectionDaoTestWithDummyData {
         lineDao = new LineDao(jdbcTemplate, dataSource);
         stationDao = new StationDao(jdbcTemplate, dataSource);
 
-        stationRepository = new StationRepositoryImpl(stationDao);
+        savedJamsil = stationDao.insert(JAMSIL_NO_ID_ENTITY);
+        savedYuksam = stationDao.insert(YUKSAM_NO_ID_ENTITY);
+        savedGangnam = stationDao.insert(GANGNAM_NO_ID_ENTITY);
 
-        savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
-        savedYuksam = stationRepository.insert(YUKSAM_NO_ID);
-        savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
-
-        savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
-        savedEightLine = lineDao.insert(EIGHT_LINE_NO_ID);
+        savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID_ENTITY);
+        savedEightLine = lineDao.insert(EIGHT_LINE_NO_ID_ENTITY);
 
         yuksamToJamsilSectionEntity = new SectionEntity(savedJamsil.getId(), savedYuksam.getId(), 10, savedSecondLine.getId());
         yuksamToJamsilSection = sectionDao.insert(yuksamToJamsilSectionEntity);
@@ -112,7 +107,7 @@ public class SectionDaoTestWithDummyData {
         // 잠실과 연결된 section조회 시 2개가 나와야 한다.
     void 역과_연결된_모든_구간_조회() {
         //given
-        Station savedSeokchon = stationRepository.insert(SEOKCHON);
+        StationEntity savedSeokchon = stationDao.insert(SEOKCHON_NO_ID_ENTITY);
 
         SectionEntity savedSeokchonToJamsilSectionEntity = new SectionEntity(savedJamsil.getId(), savedSeokchon.getId(), 7, savedEightLine.getId());
         sectionDao.insert(savedSeokchonToJamsilSectionEntity);

@@ -22,8 +22,8 @@ public class StationRepositoryImpl implements StationRepository {
     @Override
     public Station insert(Station station) {
         StationEntity stationEntity = new StationEntity(station.getName());
-        long stationID = stationDao.insert(stationEntity);
-        return new Station(stationID, station.getName());
+        StationEntity savedStationEntity = stationDao.insert(stationEntity);
+        return new Station(savedStationEntity.getId(), savedStationEntity.getName());
     }
 
     @Override
@@ -46,6 +46,6 @@ public class StationRepositoryImpl implements StationRepository {
     }
 
     private Station toDomain(StationEntity stationEntity) {
-        return new Station(stationEntity.getStationId(), stationEntity.getName());
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 }

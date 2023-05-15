@@ -34,10 +34,10 @@ class StationDaoTest {
 
     @Test
     void 지하철_역을_추가한다() {
-        long savedStation = stationDao.insert(JAMSIL_NO_ID_ENTITY);
+        StationEntity savedEntity = stationDao.insert(JAMSIL_NO_ID_ENTITY);
 
         assertAll(
-                () -> assertThat(savedStation).isPositive()
+                () -> assertThat(savedEntity.getId()).isPositive()
         );
 
     }
@@ -47,17 +47,14 @@ class StationDaoTest {
         Station jamsil = new Station("잠실");
         Station yuksam = new Station("역삼");
 
-        long jamsilId = stationDao.insert(JAMSIL_NO_ID_ENTITY);
-        long yuksamId = stationDao.insert(YUKSAM_NO_ID_ENTITY);
-
-        StationEntity foundJamsil = stationDao.findById(jamsilId);
-        StationEntity foundYuksam = stationDao.findById(yuksamId);
+        StationEntity savedJamsil = stationDao.insert(JAMSIL_NO_ID_ENTITY);
+        StationEntity savedYuksam = stationDao.insert(YUKSAM_NO_ID_ENTITY);
 
         assertAll(
-                () -> assertThat(jamsilId).isPositive(),
-                () -> assertThat(foundJamsil.getName()).isEqualTo(jamsil.getName()),
-                () -> assertThat(yuksamId).isPositive(),
-                () -> assertThat(foundYuksam.getName()).isEqualTo(yuksam.getName())
+                () -> assertThat(savedJamsil.getId()).isPositive(),
+                () -> assertThat(savedJamsil.getName()).isEqualTo(jamsil.getName()),
+                () -> assertThat(savedYuksam.getId()).isPositive(),
+                () -> assertThat(savedYuksam.getName()).isEqualTo(yuksam.getName())
         );
 
     }

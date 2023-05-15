@@ -1,11 +1,11 @@
 package subway.persistence.dao.entity;
 
 public class StationEntity {
-    private final Long stationId;
+    private final Long id;
     private final String name;
 
     public StationEntity(Long stationId, String name) {
-        this.stationId = stationId;
+        this.id = stationId;
         this.name = name;
     }
 
@@ -13,8 +13,8 @@ public class StationEntity {
         this(null, name);
     }
 
-    public long getStationId() {
-        return stationId;
+    public long getId() {
+        return id;
     }
 
     public String getName() {
@@ -24,7 +24,7 @@ public class StationEntity {
     @Override
     public String toString() {
         return "StationEntity{" +
-                "stationId=" + stationId +
+                "stationId=" + id +
                 ", name='" + name + '\'' +
                 '}';
     }
