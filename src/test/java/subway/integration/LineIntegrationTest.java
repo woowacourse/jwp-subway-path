@@ -244,6 +244,37 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
+    @DisplayName("이미 등록된 역을 노선에 등록한다.")
+    void insertAlreadyExistingStation() {
+        //given
+        ExtractableResponse<Response> createResponse = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(createLineRequest("2호선", "#00A84D"))
+                .when().post("/lines")
+                .then().extract();
+
+        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        Long stationId = createStation("건대");
+        RestAssured
+                .given()
+                .contentType(ContentType.JSON)
+                .body(new StationInsertRequest(stationId, lineId, stationId1, "DOWN", 1))
+                .when().post("/lines/stations");
+        //when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(ContentType.JSON)
+                .body(new StationInsertRequest(stationId, lineId, stationId1, "UP", 1))
+                .when().post("/lines/stations")
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(400);
+    }
+
+    @Test
     @DisplayName("노선의 역을 삭제한다.")
     void deleteStation() {
         //given
@@ -271,6 +302,36 @@ public class LineIntegrationTest extends IntegrationTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @Test
+    @DisplayName("노선에 존재하지 않는 역을 삭제한다.")
+    void deleteStationDoesNotExist() {
+        //given
+        ExtractableResponse<Response> createResponse = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(createLineRequest("2호선", "#00A84D"))
+                .when().post("/lines")
+                .then().extract();
+        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        Long stationId = createStation("성수");
+        RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(new StationInsertRequest(stationId, lineId, stationId1, "DOWN", 1))
+                .when().post("/lines/stations");
+
+        //when
+        Long stationToDelete = createStation("석촌");
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .when().delete("/lines/{lineId}/{stationId}", lineId, stationToDelete)
+                .then().log().all()
+                .extract();
+
+        //then
+        assertThat(response.statusCode()).isEqualTo(404);
     }
 
     @Test
