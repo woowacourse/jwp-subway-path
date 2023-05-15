@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.application.dto.SectionDto;
 import subway.dao.SectionDao;
 import subway.domain.Line;
@@ -25,6 +26,7 @@ import subway.repository.StationRepository;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
 
+@Sql("/truncate.sql")
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
 
