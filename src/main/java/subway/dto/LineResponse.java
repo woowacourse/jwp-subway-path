@@ -3,6 +3,7 @@ package subway.dto;
 import subway.entity.LineEntity;
 
 public class LineResponse {
+
     private final Long id;
     private final String name;
     private final String color;

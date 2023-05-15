@@ -15,7 +15,7 @@ public class LineEntity {
     }
 
     public LineEntity(String name, String color, Long headStation) {
-        this.id=0L;
+        this.id = 0L;
         this.name = name;
         this.color = color;
         this.headStation = headStation;

@@ -74,11 +74,6 @@ public class LineDao {
             rs.getBoolean("IS_UP_END_STATION"), lineId, name));
     }
 
-//    public void update(Line newLine) {
-//        String sql = "update LINE set name = ?, color = ? where id = ?";
-//        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
-//    }
-
     public int updateHeadStation(Long lineId, Long headStation) {
         String sql = "update LINE set head_station = ? where id = ?";
         return jdbcTemplate.update(sql, headStation, lineId);

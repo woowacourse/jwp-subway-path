@@ -33,6 +33,7 @@ public class LineController {
 
     /**
      * 노선도에 있는 모든 노선들의 정보를 조회
+     *
      * @return
      */
     @GetMapping
@@ -42,6 +43,7 @@ public class LineController {
 
     /**
      * 특정 노선의 정보 조회
+     *
      * @param lineId
      * @return
      */
@@ -50,12 +52,6 @@ public class LineController {
         return ResponseEntity.ok(lineService.findLineResponseById(lineId));
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-//        lineService.updateLine(id, lineUpdateRequest);
-//        return ResponseEntity.ok().build();
-//    }
-//
     @DeleteMapping("/{lineId}")
     public ResponseEntity<Void> deleteLine(@PathVariable Long lineId) {
         lineService.deleteLineById(lineId);

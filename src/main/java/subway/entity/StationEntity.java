@@ -17,6 +17,7 @@ public class StationEntity {
         this.distance = distance;
         this.lineId = lineId;
     }
+
     public StationEntity(String name, Long next, Integer distance, Long lineId) {
         this.id = 0L;
         this.name = name;
@@ -47,12 +48,16 @@ public class StationEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         StationEntity that = (StationEntity) o;
         return Objects.equals(id, that.id) && Objects.equals(name, that.name)
-                && Objects.equals(next, that.next) && Objects.equals(distance, that.distance)
-                && Objects.equals(lineId, that.lineId);
+            && Objects.equals(next, that.next) && Objects.equals(distance, that.distance)
+            && Objects.equals(lineId, that.lineId);
     }
 
     @Override

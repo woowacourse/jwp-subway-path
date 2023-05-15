@@ -1,6 +1,7 @@
 package subway.dto;
 
 public class LineRequest {
+
     private String name;
     private String color;
     private String upStation;
@@ -10,12 +11,13 @@ public class LineRequest {
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, String upStation, String downStation, int distance) {
+    public LineRequest(String name, String color, String upStation, String downStation,
+        int distance) {
         this.name = name;
         this.color = color;
-        this.upStation=upStation;
-        this.downStation=downStation;
-        this.distance=distance;
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
     }
 
     public String getName() {

@@ -10,7 +10,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleValidationException(Exception exception) {
-        ErrorResponse errorResponse = new ErrorResponse("[ERROR] "+exception.getMessage());
+        ErrorResponse errorResponse = new ErrorResponse("[ERROR] " + exception.getMessage());
         return ResponseEntity.badRequest().body(errorResponse);
     }
 }

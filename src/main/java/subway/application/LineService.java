@@ -42,19 +42,19 @@ public class LineService {
     }
 
     private void validateExistLine(LineRequest request) {
-        if(lineDao.isExist(request.getName())){
+        if (lineDao.isExist(request.getName())) {
             throw new IllegalArgumentException("이미 같은 이름의 노선이 존재합니다");
         }
     }
 
     private static void validateSameStationName(LineRequest request) {
-        if(request.getUpStation().equals(request.getDownStation())){
+        if (request.getUpStation().equals(request.getDownStation())) {
             throw new IllegalArgumentException("상행역과 하행역은 같은 이름을 가질 수 없습니다.");
         }
     }
 
     private static void validatePositiveDistance(LineRequest request) {
-        if(request.getDistance()< MIN_DISTANCE_VALUE){
+        if (request.getDistance() < MIN_DISTANCE_VALUE) {
             throw new IllegalArgumentException("거리는 양의 정수여야 합니다");
         }
     }
@@ -68,6 +68,7 @@ public class LineService {
             request.getDistance(), newLineId);
         return stationDao.insert(upEndStation);
     }
+
     public List<LineResponse> findLineResponses() {
         List<LineEntity> persistLines = lineDao.findAll();
         return persistLines.stream()
@@ -79,10 +80,6 @@ public class LineService {
         LineEntity persistLine = lineDao.findById(id);
         return LineResponse.of(persistLine);
     }
-
-//    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-//        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-//    }
 
     public void deleteLineById(Long id) {
         stationDao.deleteByLineId(id);
