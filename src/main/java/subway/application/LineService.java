@@ -4,6 +4,7 @@ import static subway.exception.line.LineExceptionType.NOT_FOUND_LINE;
 import static subway.exception.station.StationExceptionType.NOT_FOUND_STATION;
 
 import java.util.UUID;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.dto.AddStationToLineCommand;
@@ -16,6 +17,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.domain.event.ChangeLineEvent;
 import subway.domain.service.RemoveStationFromLineService;
 import subway.exception.line.LineException;
 import subway.exception.station.StationException;
@@ -28,15 +30,18 @@ public class LineService {
     private final StationRepository stationRepository;
     private final LineValidator lineValidator;
     private final RemoveStationFromLineService removeStationFromLineService;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
     public LineService(final LineRepository lineRepository,
                        final StationRepository stationRepository,
                        final LineValidator lineValidator,
-                       final RemoveStationFromLineService removeStationFromLineService) {
+                       final RemoveStationFromLineService removeStationFromLineService,
+                       final ApplicationEventPublisher applicationEventPublisher) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
         this.lineValidator = lineValidator;
         this.removeStationFromLineService = removeStationFromLineService;
+        this.applicationEventPublisher = applicationEventPublisher;
     }
 
     public UUID create(final LineCreateCommand command) {
@@ -47,6 +52,7 @@ public class LineService {
         lineValidator.validateSectionConsistency(section);
         final Line line = new Line(command.lineName(), new Sections(section));
         lineRepository.save(line);
+        applicationEventPublisher.publishEvent(new ChangeLineEvent());
         return line.id();
     }
 
@@ -63,12 +69,14 @@ public class LineService {
         lineValidator.validateSectionConsistency(section);
         line.addSection(section);
         lineRepository.update(line);
+        applicationEventPublisher.publishEvent(new ChangeLineEvent());
     }
 
     public void removeStation(final DeleteStationFromLineCommand command) {
         final Line line = findLineByName(command.lineName());
         final Station station = findStationByName(command.deleteStationName());
         removeStationFromLineService.remove(line, station);
+        applicationEventPublisher.publishEvent(new ChangeLineEvent());
     }
 
     private Line findLineByName(final String name) {

@@ -40,6 +40,7 @@ import subway.domain.service.ShortestRouteService;
 import subway.exception.BaseExceptionType;
 import subway.exception.line.LineException;
 import subway.exception.station.StationException;
+import subway.infrastructure.shortestpath.GraphCache;
 import subway.infrastructure.shortestpath.JgraphtShortestRoute;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -50,7 +51,7 @@ class LineQueryServiceTest {
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final StationRepository stationRepository = mock(StationRepository.class);
     private final PaymentPolicy paymentPolicy = mock(PaymentPolicy.class);
-    private final ShortestRouteService shortestRouteService = new JgraphtShortestRoute();
+    private final ShortestRouteService shortestRouteService = new JgraphtShortestRoute(new GraphCache());
     private final LineQueryService lineQueryService =
             new LineQueryService(lineRepository, stationRepository, shortestRouteService, paymentPolicy);
 

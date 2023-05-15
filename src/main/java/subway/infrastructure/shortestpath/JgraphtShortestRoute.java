@@ -9,8 +9,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -26,7 +24,11 @@ import subway.exception.line.LineException;
 @Component
 public class JgraphtShortestRoute implements ShortestRouteService {
 
-    private final Map<Lines, LinesGraphAdapter> cache = new ConcurrentHashMap<>();
+    private final GraphCache graphCache;
+
+    public JgraphtShortestRoute(final GraphCache graphCache) {
+        this.graphCache = graphCache;
+    }
 
     @Override
     public Lines shortestRoute(final Lines lines, final Station start, final Station end) {
@@ -45,20 +47,12 @@ public class JgraphtShortestRoute implements ShortestRouteService {
     }
 
     private List<SectionAdapter> findPath(final Lines lines, final Station start, final Station end) {
-        final LinesGraphAdapter graph = findGraph(lines);
+        final LinesGraphAdapter graph = graphCache.linesGraphAdapter(lines);
         final GraphPath<Station, SectionAdapter> path = validPath(graph, start, end);
         if (path == null) {
             throw new LineException(NO_PATH);
         }
         return path.getEdgeList();
-    }
-
-    private LinesGraphAdapter findGraph(final Lines lines) {
-        if (!cache.containsKey(lines)) {
-            cache.clear();
-            cache.put(lines, LinesGraphAdapter.adapt(lines));
-        }
-        return cache.get(lines);
     }
 
     private GraphPath<Station, SectionAdapter> validPath(

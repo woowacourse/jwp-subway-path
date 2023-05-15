@@ -3,6 +3,7 @@ package subway.application;
 import static java.util.Collections.emptyList;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.*;
 import static org.mockito.BDDMockito.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.times;
@@ -27,6 +28,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
+import org.springframework.context.ApplicationEventPublisher;
 import subway.application.dto.AddStationToLineCommand;
 import subway.application.dto.DeleteStationFromLineCommand;
 import subway.application.dto.LineCreateCommand;
@@ -37,6 +39,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
+import subway.domain.event.ChangeLineEvent;
 import subway.domain.service.RemoveStationFromLineService;
 import subway.exception.BaseExceptionType;
 import subway.exception.line.LineException;
@@ -48,11 +51,14 @@ class LineServiceTest {
 
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final StationRepository stationRepository = mock(StationRepository.class);
+    private final ApplicationEventPublisher publisher = mock(ApplicationEventPublisher.class);
     private final LineValidator lineValidator = new LineValidator(lineRepository);
     private final RemoveStationFromLineService removeStationFromLineService =
             new RemoveStationFromLineService(lineRepository);
-    private final LineService lineService =
-            new LineService(lineRepository, stationRepository, lineValidator, removeStationFromLineService);
+
+    private final LineService lineService = new LineService(
+            lineRepository, stationRepository, lineValidator, removeStationFromLineService, publisher
+    );
 
     private void 역을_저장한다(final Station station) {
         given(stationRepository.findByName(station.name()))
@@ -69,7 +75,7 @@ class LineServiceTest {
             given(lineRepository.findByName("1호선")).willReturn(Optional.empty());
             역을_저장한다(잠실);
             역을_저장한다(선릉);
-            BDDMockito.willDoNothing().given(lineRepository).save(any());
+            willDoNothing().given(lineRepository).save(any());
 
             final LineCreateCommand command = new LineCreateCommand(
                     "1호선",
@@ -82,6 +88,8 @@ class LineServiceTest {
 
             // then
             assertThat(uuid).isNotNull();
+            then(publisher).should(times(1))
+                    .publishEvent(any(ChangeLineEvent.class));
         }
 
         @Test
@@ -133,6 +141,8 @@ class LineServiceTest {
             // then
             verify(lineRepository, times(1)).update(line);
             assertThat(line.sections()).hasSize(2);
+            then(publisher).should(times(1))
+                    .publishEvent(any(ChangeLineEvent.class));
         }
 
         @Test
@@ -187,6 +197,8 @@ class LineServiceTest {
             // then
             verify(lineRepository, times(1)).update(line);
             assertThat(line.sections()).hasSize(1);
+            then(publisher).should(times(1))
+                    .publishEvent(any(ChangeLineEvent.class));
             포함된_구간들을_검증한다(line.sections(), "역1-[20km]-역3");
         }
 
