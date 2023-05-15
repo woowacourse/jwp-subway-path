@@ -57,32 +57,3 @@ public class LineService {
     }
 
 }
-
-//    public LineResponse findLineResponseById(Long id) {
-//        Line persistLine = findLineById(id);
-//        return LineResponse.of(persistLine);
-//    }
-
-//    private Line findLineById(Long lineId) {
-//        LineEntity lineEntity = lineDao.findById(lineId).orElseThrow(() -> new NotFoundException("해당 노선이 존재하지 않습니다"));
-//        List<Section> sections = sectionDao.findSectionsByLineId(lineId);
-//        return new Line(lineId, lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
-//    }
-
-//    public List<LineResponse> findLineResponses() {
-//        List<Line> persistLine = findLines();
-//        return persistLine.stream()
-//                .map(LineResponse::of)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public List<Line> findLines() {
-//        List<LineEntity> lineEntities = lineDao.findAll();
-//        return lineEntities.stream()
-//                .map(lineEntity ->
-//                        new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(),
-//                                new Sections(sectionDao.findSectionsByLineId(lineEntity.getId()))
-//                        )
-//                )
-//                .collect(Collectors.toList());
-//    }

@@ -46,7 +46,6 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    //todo 찾아볼 것 : queryForObject이 null을 반환하는 경우가 무엇인지?
     public Optional<LineEntity> findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
         try {
@@ -70,16 +69,6 @@ public class LineDao {
         String sql = "select id, name, color from LINE WHERE name = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        }
-        catch (DataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<LineEntity> findByColor(String color) {
-        String sql = "select id, name, color from LINE WHERE color = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, color));
         }
         catch (DataAccessException e) {
             return Optional.empty();

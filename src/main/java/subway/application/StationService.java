@@ -68,42 +68,10 @@ public class StationService {
         return lineRepository.findStationById(stationId, lineId);
     }
 
+    //line 도메인 이용해서 수정해야 함
     public void deleteStationBy(Long stationId, Long lineId) {
         lineRepository.deleteStationBy(stationId, lineId);
     }
-//
-//    public void updateStationBy(Long stationId, Long lineId) {
-//        lineRepository.updateStationBy(stationId, lineId);
-//    }
+
 }
 
-//    private void  checkDuplicatedStationName(StationRequest stationRequest) { //특정노선에서 역 존재하면 예외처리
-//        Line line = lineRepository.findByName(stationRequest.getLineName())
-//                .orElseThrow(()-> new IllegalStateException("해당 노선이 존재하지 않습니다"));
-//        boolean ifNewStationInLine = line.getSections().stream().
-//                filter()
-//        if(ifNewStationInLine) {
-//            throw new IllegalArgumentException("이미 존재하는 역입니다.");
-//        }
-//    }
-//
-//    public StationResponse findStationResponseById(Long id) {
-//        Station station = stationDao.findById(id).orElseThrow(() -> new NotFoundException("해당 역이 존재하지 않습니다."));
-//        return StationResponse.of(station);
-//    }
-//
-//    public List<StationResponse> findAllStationResponses() {
-//        List<Station> stations = stationDao.findAll();
-//
-//        return stations.stream()
-//                .map(StationResponse::of)
-//                .collect(Collectors.toList());
-//    }
-//
-//    public void updateStation(Long id, StationRequest stationRequest) {
-//        stationDao.update(new Station(id, stationRequest.getName()));
-//    }
-//
-//    public void deleteStationById(Long id) {
-//        stationDao.deleteById(id);
-//    }

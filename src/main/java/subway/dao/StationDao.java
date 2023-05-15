@@ -50,16 +50,6 @@ public class StationDao {
         }
     }
 
-    public void update(StationEntity newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
-    }
-
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
     public Optional<StationEntity> findByName(String name, Long lineId) {
         String sql = "select * from STATION where name = ? and line_id = ?";
         try {
@@ -67,11 +57,6 @@ public class StationDao {
         } catch (DataAccessException exception) {
             return Optional.empty();
         }
-    }
-
-    public List<StationEntity> findByLineId(Long lineId) {
-        String sql = "select * from STATION where line_id = ?";
-        return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
     public Optional<StationEntity> findByStationAndLineId(Long stationId, Long lineId) {
@@ -87,4 +72,22 @@ public class StationDao {
         String sql = "delete from STATION where station_id =? and line_id = ?";
         jdbcTemplate.update(sql, stationId, lineId);
     }
+
+    //사용하지 않는 메서드 : 리팩터링 때 삭제
+    public List<StationEntity> findByLineId(Long lineId) {
+        String sql = "select * from STATION where line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
+
+
+    public void update(StationEntity newStation) {
+        String sql = "update STATION set name = ? where id = ?";
+        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+    }
+
+    public void deleteById(Long id) {
+        String sql = "delete from STATION where id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
 }

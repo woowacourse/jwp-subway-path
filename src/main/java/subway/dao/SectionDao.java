@@ -57,6 +57,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, source, sectionRowMapper);
     }
 
+    //SectionEntity사용해야하면 바꿀 것
     public Optional<List<SectionEntity>> findByLineId(Long lineId) {
         String sql = "SELECT line_id, up_station_id, down_station_id, distance FROM SECTION WHERE line_id = :line_id";
         SqlParameterSource source = new MapSqlParameterSource()
@@ -95,22 +96,6 @@ public class SectionDao {
     public void insert(SectionEntity sectionEntity) {
         SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
         insertAction.execute(source);
-    }
-
-    public void updateByUpStationId(SectionEntity sectionEntity) {
-        String sql = "UPDATE SECTION SET down_station_id = :downStationId, distance = :distance "
-                + "WHERE line_id = :lineId AND up_station_id = :upStationId";
-
-        SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
-        jdbcTemplate.update(sql, source);
-    }
-
-    public void updateByDownStationId(SectionEntity sectionEntity) {
-        String sql = "UPDATE SECTION SET up_station_id = :upStationId, distance = :distance "
-                + "WHERE line_id = :lineId AND down_station_id = :downStationId";
-
-        SqlParameterSource source = new BeanPropertySqlParameterSource(sectionEntity);
-        jdbcTemplate.update(sql, source);
     }
 
     public void delete(SectionEntity sectionEntity) {
