@@ -10,37 +10,29 @@ import subway.line.domain.Subway;
 import subway.section.application.port.output.DeleteSectionByLineIdPort;
 import subway.section.application.port.output.SaveAllSectionPort;
 import subway.section.domain.Sections;
-import subway.station.application.port.input.AddStationUseCase;
-import subway.station.application.port.output.SaveStationPort;
+import subway.station.application.port.input.DeleteStationUseCase;
+import subway.station.application.port.output.GetStationByIdPort;
 import subway.station.domain.Station;
-import subway.station.dto.StationAddRequest;
 
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class AddStationService implements AddStationUseCase {
+public class DeleteStationService implements DeleteStationUseCase {
     private final GetAllLinePort getAllLinePort;
     private final GetLineByIdPort getLineByIdPort;
+    private final GetStationByIdPort getStationByIdPort;
     private final DeleteSectionByLineIdPort deleteSectionByLineIdPort;
-    private final SaveStationPort saveStationPort;
     private final SaveAllSectionPort saveAllSectionPort;
     
     @Override
-    public Long addStation(final StationAddRequest request) {
+    public void deleteStation(final Long lineId, final Long stationId) {
         final Subway subway = new Subway(getAllLinePort.findAll());
-        final Line lineById = getLineByIdPort.getLineById(request.getLineId());
-        final Line modifiedLine = subway.addStation(
-                lineById.getName(),
-                request.getBaseStation(),
-                request.getDirection(),
-                request.getAdditionalStation(),
-                request.getDistance()
-        );
+        final Line lineById = getLineByIdPort.getLineById(lineId);
+        final Station stationById = getStationByIdPort.getStationById(stationId);
+        final Line modifiedLine = subway.removeStation(lineById.getName(), stationById.getName());
         
-        deleteSectionByLineIdPort.deleteSectionByLineId(request.getLineId());
-        final Long stationId = saveStationPort.saveStation(new Station(request.getAdditionalStation()));
+        deleteSectionByLineIdPort.deleteSectionByLineId(lineId);
         final Sections sections = modifiedLine.getSections();
-        saveAllSectionPort.saveAll(sections.getSections(), request.getLineId());
-        return stationId;
+        saveAllSectionPort.saveAll(sections.getSections(), lineId);
     }
 }

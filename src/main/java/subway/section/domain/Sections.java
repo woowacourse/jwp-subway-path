@@ -101,16 +101,16 @@ public class Sections {
         }
     }
     
-    private void validateExistStation(final Set<Section> sectionsContainedStation) {
-        if (sectionsContainedStation.isEmpty()) {
-            throw new IllegalArgumentException("해당 노선에 삭제하려는 역이 존재하지 않습니다.");
-        }
-    }
-    
     private Set<Section> getSectionsOfContainStation(final String station) {
         return sections.stream()
                 .filter(section -> section.hasStation(station))
                 .collect(Collectors.toUnmodifiableSet());
+    }
+    
+    private void validateExistStation(final Set<Section> sectionsContainedStation) {
+        if (sectionsContainedStation.isEmpty()) {
+            throw new IllegalArgumentException("해당 노선에 삭제하려는 역이 존재하지 않습니다.");
+        }
     }
     
     private boolean isMiddleStationCase(final Set<Section> sectionsOfContainStation) {

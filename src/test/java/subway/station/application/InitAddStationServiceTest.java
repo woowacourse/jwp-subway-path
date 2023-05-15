@@ -5,7 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.line.application.port.output.FindAllLinePort;
+import subway.line.application.port.output.GetAllLinePort;
 import subway.line.application.port.output.GetLineByIdPort;
 import subway.line.domain.Line;
 import subway.section.application.port.output.SaveSectionPort;
@@ -24,7 +24,7 @@ class InitAddStationServiceTest {
     @Mock
     private SaveAllStationPort saveAllStationPort;
     @Mock
-    private FindAllLinePort findAllLinePort;
+    private GetAllLinePort getAllLinePort;
     @Mock
     private GetLineByIdPort getLineByIdPort;
     @Mock
@@ -37,7 +37,7 @@ class InitAddStationServiceTest {
     void 최초_역_등록하기() {
         // given
         final Line line = new Line("1호선", "파랑");
-        given(findAllLinePort.findAll()).willReturn(Set.of(line));
+        given(getAllLinePort.findAll()).willReturn(Set.of(line));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line);
         
         // expect
@@ -50,7 +50,7 @@ class InitAddStationServiceTest {
         // given
         final Line line = new Line("1호선", "파랑");
         line.initAddStation("잠실역", "선릉역", 3L);
-        given(findAllLinePort.findAll()).willReturn(Set.of(line));
+        given(getAllLinePort.findAll()).willReturn(Set.of(line));
         given(getLineByIdPort.getLineById(anyLong())).willReturn(line);
         
         // expect

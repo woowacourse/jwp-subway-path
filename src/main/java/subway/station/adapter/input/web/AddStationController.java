@@ -21,6 +21,6 @@ public class AddStationController {
     @PostMapping
     public ResponseEntity<Void> save(@RequestBody @Valid final StationAddRequest request) {
         final Long stationId = addStationUseCase.addStation(request);
-        return ResponseEntity.created(URI.create("/stations" + stationId)).build();
+        return ResponseEntity.created(URI.create("/stations/" + stationId)).build();
     }
 }

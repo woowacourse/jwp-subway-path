@@ -9,6 +9,7 @@ import subway.station.domain.Station;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @SuppressWarnings("NonAsciiCharacters")
@@ -33,5 +34,19 @@ class StationPersistenceAdapterTest {
         // expect
         assertThatNoException()
                 .isThrownBy(() -> adapter.saveAll(List.of(station1, station2)));
+    }
+    
+    @Test
+    void id로_역을_가져오기() {
+        // given
+        final String stationName = "잠실역";
+        final Station station = new Station(stationName);
+        final Long id = adapter.saveStation(station);
+        
+        // when
+        final Station stationById = adapter.getStationById(id);
+        
+        // then
+        assertThat(stationById).isEqualTo(new Station(stationName));
     }
 }

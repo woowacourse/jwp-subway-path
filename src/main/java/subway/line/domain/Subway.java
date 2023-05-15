@@ -61,8 +61,10 @@ public class Subway {
         return lineByLineName;
     }
     
-    public void removeStation(final String line, final String station) {
-        findLineByLineName(line).removeStation(station);
+    public Line removeStation(final String line, final String station) {
+        final Line lineByLineName = findLineByLineName(line);
+        lineByLineName.removeStation(station);
+        return lineByLineName;
     }
     
     private Line findLineByLineName(final String lineName) {

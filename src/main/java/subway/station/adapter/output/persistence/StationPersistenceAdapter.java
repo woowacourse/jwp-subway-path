@@ -2,15 +2,17 @@ package subway.station.adapter.output.persistence;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import subway.station.application.port.output.GetStationByIdPort;
 import subway.station.application.port.output.SaveAllStationPort;
 import subway.station.application.port.output.SaveStationPort;
 import subway.station.domain.Station;
 
 import java.util.List;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Repository
-public class StationPersistenceAdapter implements SaveStationPort, SaveAllStationPort {
+public class StationPersistenceAdapter implements SaveStationPort, SaveAllStationPort, GetStationByIdPort {
     private final StationDao stationDao;
     
     @Override
@@ -26,16 +28,25 @@ public class StationPersistenceAdapter implements SaveStationPort, SaveAllStatio
     }
     
     private Long saveStationIfNotExist(final String stationName) {
-        if (isNotExistStation(stationName)) {
+        if (isNotExistStationByName(stationName)) {
             return stationDao.insert(new StationEntity(stationName));
         }
         
         return stationDao.findByName(new Station(stationName)).getId();
     }
     
-    private boolean isNotExistStation(final String stationName) {
+    private boolean isNotExistStationByName(final String stationName) {
         return stationDao.findAll().stream()
                 .map(StationEntity::getName)
                 .noneMatch(perStationName -> perStationName.equals(stationName));
+    }
+    
+    @Override
+    public Station getStationById(final Long id) {
+        return stationDao.findAll().stream()
+                .filter(stationEntity -> Objects.equals(stationEntity.getId(), id))
+                .map(stationEntity -> new Station(stationEntity.getName()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("stationId에 해당하는 역이 존재하지 않습니다."));
     }
 }
