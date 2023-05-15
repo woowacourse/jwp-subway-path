@@ -20,15 +20,9 @@ public class StationService {
 	}
 
 	public StationDto saveStation(final StationDto stationDto) {
-		final StationEntity station = new StationEntity(stationDto.getName());
+		final StationEntity addStation = new StationEntity(stationDto.getName());
 
-		final StationEntity stationEntity = stationDao.insert(station);
-		return new StationDto(stationEntity);
-	}
-
-	@Transactional(readOnly = true)
-	public StationDto findStationById(final Long id) {
-		final StationEntity stationEntity = stationDao.findById(id);
+		final StationEntity stationEntity = stationDao.insert(addStation);
 		return new StationDto(stationEntity);
 	}
 
@@ -37,6 +31,12 @@ public class StationService {
 		return stationDao.findAll().stream()
 			.map(StationDto::new)
 			.collect(Collectors.toList());
+	}
+
+	@Transactional(readOnly = true)
+	public StationDto findStationById(final Long id) {
+		final StationEntity stationEntity = stationDao.findById(id);
+		return new StationDto(stationEntity);
 	}
 
 	public void updateStation(final Long id, final StationDto stationDto) {

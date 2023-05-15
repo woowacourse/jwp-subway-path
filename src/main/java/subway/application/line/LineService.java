@@ -1,14 +1,14 @@
 package subway.application.line;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import subway.application.line.dto.LineDto;
 import subway.persistence.dao.LineDao;
 import subway.persistence.entity.LineEntity;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.LineResponse;
 
 @Service
 @Transactional
@@ -19,23 +19,29 @@ public class LineService {
 		this.lineDao = lineDao;
 	}
 
-	public LineResponse saveLine(final LineRequest request) {
-		LineEntity persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
-		return LineResponse.of(persistLine);
+	public LineDto saveLine(final LineDto lineDto) {
+		final LineEntity addLine = new LineEntity(lineDto.getName(), lineDto.getColor());
+
+		LineEntity persistLine = lineDao.insert(addLine);
+		return new LineDto(persistLine);
 	}
 
 	@Transactional(readOnly = true)
-	public List<LineEntity> findLines() {
-		return lineDao.findAll();
+	public List<LineDto> findLines() {
+		return lineDao.findAll().stream()
+			.map(LineDto::new)
+			.collect(Collectors.toList());
 	}
 
 	@Transactional(readOnly = true)
-	public LineEntity findLineById(Long id) {
-		return lineDao.findById(id);
+	public LineDto findLineById(final Long id) {
+		final LineEntity lineEntity = lineDao.findById(id);
+		return new LineDto(lineEntity);
 	}
 
-	public void updateLine(Long id, LineRequest lineUpdateRequest) {
-		lineDao.update(new LineEntity(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+	public void updateLine(final Long id, final LineDto lineDto) {
+		final LineEntity newLine = new LineEntity(id, lineDto.getName(), lineDto.getColor());
+		lineDao.update(newLine);
 	}
 
 	public void deleteLineById(Long id) {

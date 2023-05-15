@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import subway.application.line.LineService;
-import subway.persistence.entity.LineEntity;
+import subway.application.line.dto.LineDto;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
 
@@ -33,25 +33,29 @@ public class LineController {
 
 	@PostMapping
 	public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
-		LineResponse line = lineService.saveLine(lineRequest);
-		return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
+		final LineDto requestDto = converToLineDto(lineRequest);
+		final LineDto lineDto = lineService.saveLine(requestDto);
+
+		final LineResponse lineResponse = LineResponse.from(lineDto);
+		return ResponseEntity.created(URI.create("/lines/" + lineResponse.getId())).body(lineResponse);
 	}
 
 	@GetMapping
 	public ResponseEntity<List<LineResponse>> findAllLines() {
-		final List<LineResponse> lineResponses = convertToResponse(lineService.findLines());
+		final List<LineResponse> lineResponses = convertToLineResponse(lineService.findLines());
 		return ResponseEntity.ok(lineResponses);
 	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
-		final LineResponse lineResponse = LineResponse.of(lineService.findLineById(id));
+		final LineResponse lineResponse = LineResponse.from(lineService.findLineById(id));
 		return ResponseEntity.ok(lineResponse);
 	}
 
 	@PutMapping("/{id}")
 	public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-		lineService.updateLine(id, lineUpdateRequest);
+		final LineDto requestDto = converToLineDto(lineUpdateRequest);
+		lineService.updateLine(id, requestDto);
 		return ResponseEntity.ok().build();
 	}
 
@@ -66,9 +70,13 @@ public class LineController {
 		return ResponseEntity.badRequest().build();
 	}
 
-	private List<LineResponse> convertToResponse(List<LineEntity> lines) {
+	private LineDto converToLineDto(final LineRequest lineRequest) {
+		return new LineDto(null, lineRequest.getName(), lineRequest.getColor());
+	}
+
+	private List<LineResponse> convertToLineResponse(List<LineDto> lines) {
 		return lines.stream()
-			.map(LineResponse::of)
+			.map(LineResponse::from)
 			.collect(Collectors.toList());
 	}
 }
