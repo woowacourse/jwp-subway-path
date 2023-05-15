@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
+import subway.persistence.dao.entity.LineEntity;
 import subway.persistence.dao.entity.SectionEntity;
 import subway.persistence.dao.entity.StationEntity;
 import subway.service.line.domain.Line;
@@ -60,7 +61,7 @@ public class SectionRepositoryImpl implements SectionRepository {
         Set<Long> uniqueStationIds = makeUniqueStationIds(sectionEntities);
 
         Map<Long, StationEntity> stationEntityMap = stationDao.findStationsById(uniqueStationIds).stream()
-                .collect(Collectors.toMap(StationEntity::getStationId, stationEntity -> stationEntity));
+                .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
         ArrayList<Section> sections = makeSections(sectionEntities, stationEntityMap);
 
         return new Sections(sections);
@@ -78,12 +79,13 @@ public class SectionRepositoryImpl implements SectionRepository {
 
         Map<Line, Sections> sectionsPerLine = new HashMap<>();
         for (Long lineId : sectionEntitiesPerLineId.keySet()) {
-            Line line = lineDao.findById(lineId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+            LineEntity lineEntity = lineDao.findLineById(lineId).orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+            Line line = toLineDomain(lineEntity);
             List<SectionEntity> entities = sectionEntitiesPerLineId.get(lineId);
             Set<Long> uniqueStationIds = makeUniqueStationIds(entities);
 
             Map<Long, StationEntity> stationEntityMap = stationDao.findStationsById(uniqueStationIds).stream()
-                    .collect(Collectors.toMap(StationEntity::getStationId, stationEntity -> stationEntity));
+                    .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
             Sections sections = new Sections(makeSections(entities, stationEntityMap));
             sectionsPerLine.put(line, sections);
         }
@@ -105,7 +107,7 @@ public class SectionRepositoryImpl implements SectionRepository {
     private ArrayList<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {
         ArrayList<Section> sections = new ArrayList<>();
         for (SectionEntity sectionEntity : sectionEntities) {
-            Section section = toDomain(sectionEntity, stationEntityMap);
+            Section section = toSectionDomain(sectionEntity, stationEntityMap);
             sections.add(section);
         }
         return sections;
@@ -133,18 +135,22 @@ public class SectionRepositoryImpl implements SectionRepository {
         );
     }
 
-    private Section toDomain(SectionEntity sectionEntity, Map<Long, StationEntity> stationEntityMap) {
+    private Section toSectionDomain(SectionEntity sectionEntity, Map<Long, StationEntity> stationEntityMap) {
 
         StationEntity upStationEntity = stationEntityMap.get(sectionEntity.getUpStationId());
-        Station upStation = new Station(upStationEntity.getStationId(), upStationEntity.getName());
+        Station upStation = new Station(upStationEntity.getId(), upStationEntity.getName());
 
         StationEntity downStationEntity = stationEntityMap.get(sectionEntity.getDownStationId());
-        Station downStation = new Station(downStationEntity.getStationId(), downStationEntity.getName());
+        Station downStation = new Station(downStationEntity.getId(), downStationEntity.getName());
         return new Section(
                 sectionEntity.getId(),
                 upStation,
                 downStation,
                 new Distance(sectionEntity.getDistance())
         );
+    }
+
+    private Line toLineDomain(LineEntity lineEntity) {
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 }

@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
-import subway.persistence.dao.LineDao;
 import subway.persistence.repository.SectionRepositoryImpl;
+import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
 import subway.service.section.domain.Section;
@@ -40,14 +40,14 @@ class SectionRepositoryTest {
     StationRepository stationRepository;
 
     @Autowired
-    LineDao lineDao;
+    LineRepository lineRepository;
 
     @Test
     void 섹션_추가() {
         Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
         Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
 
-        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedSecondLine = lineRepository.insert(SECOND_LINE_NO_ID);
 
 
         Distance seonleungJamsilDistance = new Distance(10);
@@ -68,7 +68,7 @@ class SectionRepositoryTest {
         Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
         Station savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
 
-        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedSecondLine = lineRepository.insert(SECOND_LINE_NO_ID);
 
         Section jamsilToSeonleung = new Section(savedJamsil, savedSeonleung, new Distance(10));
         Section gangnamToSeonleung = new Section(savedSeonleung, savedGangnam, new Distance(3));
@@ -102,8 +102,8 @@ class SectionRepositoryTest {
         Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
         Station savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
 
-        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
-        Line savedEightLine = lineDao.insert(EIGHT_LINE_NO_ID);
+        Line savedSecondLine = lineRepository.insert(SECOND_LINE_NO_ID);
+        Line savedEightLine = lineRepository.insert(EIGHT_LINE_NO_ID);
 
         Section seonleungToJamsilSection = new Section(savedJamsil, savedSeonleung, new Distance(10));
         Section gangnamToSeonleungSection = new Section(savedSeonleung, savedGangnam, new Distance(5));
@@ -138,8 +138,8 @@ class SectionRepositoryTest {
         Station savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
         Station savedSeokchon = stationRepository.insert(SEOKCHON);
 
-        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
-        Line savedEightLine = lineDao.insert(EIGHT_LINE_NO_ID);
+        Line savedSecondLine = lineRepository.insert(SECOND_LINE_NO_ID);
+        Line savedEightLine = lineRepository.insert(EIGHT_LINE_NO_ID);
 
         Section seonleungToJamsilSection = new Section(savedJamsil, savedSeonleung, new Distance(10));
         Section gangnamToSeonleungSection = new Section(savedSeonleung, savedGangnam, new Distance(5));
@@ -198,7 +198,7 @@ class SectionRepositoryTest {
         Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
         Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
 
-        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedSecondLine = lineRepository.insert(SECOND_LINE_NO_ID);
 
         Distance seonleungJamsilDistance = new Distance(10);
         Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
@@ -213,7 +213,7 @@ class SectionRepositoryTest {
         Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
         Station savedYuksam = stationRepository.insert(YUKSAM_NO_ID);
 
-        Line savedSecondLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedSecondLine = lineRepository.insert(SECOND_LINE_NO_ID);
 
         Distance seonleungJamsilDistance = new Distance(10);
         Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);

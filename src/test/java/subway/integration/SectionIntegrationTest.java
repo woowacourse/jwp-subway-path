@@ -11,9 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.controller.section.dto.SectionCreateControllerRequest;
-import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.entity.SectionEntity;
+import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.station.StationRepository;
 import subway.service.station.domain.Station;
@@ -35,14 +35,14 @@ public class SectionIntegrationTest extends IntegrationTest {
     SectionDao sectionDao;
 
     @Autowired
-    LineDao lineDao;
+    LineRepository lineRepository;
 
     @Autowired
     ObjectMapper objectMapper;
 
     @Test
     void 노선에_아무것도_없는_경우_섹션_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
         Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
 
@@ -67,7 +67,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 동일한_역_2개를_저장_입력으로_작성하면_예외() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
 
         SectionCreateControllerRequest requestParam = new SectionCreateControllerRequest(
@@ -94,7 +94,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 노선에_역이_있을_때_입력으로_들어온_역이_모두_노선에_존재하지_않으면_예외() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
         Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
 
@@ -127,7 +127,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 추가하려는_역이_모두_노선에_있으면_예외() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
         Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
 
@@ -158,7 +158,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 추가하려는_경로의_길이가_기존_경로의_길이보다_크면_예외() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
         Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
 
@@ -190,7 +190,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 하행종점_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
         Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
 
@@ -219,7 +219,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 상행종점_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedUpStation = stationRepository.insert(SEONLEUNG_NO_ID);
         Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
 
@@ -248,7 +248,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 상행역이_존재하고_하행역을_중간에_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
         Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
 
@@ -277,7 +277,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     void 하행역이_존재하고_상행역을_중간에_추가() throws JsonProcessingException {
-        Line savedLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line savedLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedUpStation = stationRepository.insert(JAMSIL_NO_ID);
         Station savedDownStation = stationRepository.insert(YUKSAM_NO_ID);
 

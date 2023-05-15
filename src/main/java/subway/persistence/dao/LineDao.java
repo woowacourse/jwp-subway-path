@@ -6,10 +6,9 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.service.line.domain.Line;
+import subway.persistence.dao.entity.LineEntity;
 
 import javax.sql.DataSource;
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -17,8 +16,8 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+            new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
@@ -31,35 +30,20 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
+    public LineEntity insert(LineEntity line) {
         try {
             BeanPropertySqlParameterSource parameters = new BeanPropertySqlParameterSource(line);
-
-            Long lineId = insertAction.executeAndReturnKey(parameters).longValue();
-            return new Line(lineId, line.getName(), line.getColor());
+            long lineId = insertAction.executeAndReturnKey(parameters).longValue();
+            return new LineEntity(lineId, line.getName(), line.getColor());
         } catch (DuplicateKeyException e) {
             throw new IllegalArgumentException("해당 노선은 이미 존재합니다.");
         }
-
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
-    }
-
-    public Optional<Line> findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.query(sql, rowMapper, id).stream()
+    public Optional<LineEntity> findLineById(long lineId) {
+        String sql = "SELECT * FROM line WHERE id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId).stream()
                 .findAny();
     }
 
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
-    }
-
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
-    }
 }

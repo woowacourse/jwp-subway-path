@@ -7,11 +7,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import subway.controller.section.dto.LineStationDeleteRequest;
-import subway.persistence.dao.LineDao;
-import subway.persistence.dao.SectionDao;
-import subway.persistence.dao.entity.SectionEntity;
+import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.SectionService;
+import subway.service.section.domain.Distance;
+import subway.service.section.domain.Section;
 import subway.service.section.dto.SectionCreateRequest;
 import subway.service.section.repository.SectionRepository;
 import subway.service.station.StationRepository;
@@ -42,10 +42,7 @@ class SectionServiceTest {
     SectionRepository sectionRepository;
 
     @Autowired
-    SectionDao sectionDao;
-
-    @Autowired
-    LineDao lineDao;
+    LineRepository lineRepository;
 
     @Autowired
     StationRepository stationRepository;
@@ -56,7 +53,7 @@ class SectionServiceTest {
 
     @BeforeEach
     void setUp() {
-        savedLine = lineDao.insert(EIGHT_LINE_NO_ID);
+        savedLine = lineRepository.insert(EIGHT_LINE_NO_ID);
         savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
         savedGangnam = stationRepository.insert(GANGNAM_NO_ID);
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedGangnam.getId(), 10, savedLine.getId());
@@ -121,9 +118,9 @@ class SectionServiceTest {
     @Test
     void 종점_제거() {
         Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
-        SectionEntity gangnamSeonleungEntity = new SectionEntity(savedSeonleung.getId(), savedGangnam.getId(), 3, savedLine.getId());
+        Section section = new Section(savedSeonleung, savedGangnam, new Distance(3));
 
-        sectionDao.insert(gangnamSeonleungEntity);
+        sectionRepository.insertSection(section, savedLine);
 
         sectionService.delete(new LineStationDeleteRequest(savedSeonleung.getId()));
 
@@ -158,7 +155,7 @@ class SectionServiceTest {
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(savedJamsil.getId(), savedSeonleung.getId(), 4, savedLine.getId());
         sectionService.insert(sectionCreateRequest);
 
-        Line secondLine = lineDao.insert(SECOND_LINE_NO_ID);
+        Line secondLine = lineRepository.insert(SECOND_LINE_NO_ID);
         Station savedSeokchon = stationRepository.insert(SEOKCHON_NO_ID);
 
         SectionCreateRequest seokchonJamsil = new SectionCreateRequest(savedJamsil.getId(), savedSeokchon.getId(), 15, secondLine.getId());
