@@ -6,6 +6,7 @@ import subway.exception.DomainException;
 import subway.exception.ExceptionType;
 
 public class Section {
+    public static final int MINIMUM_DISTANCE = 1;
     private final Long id;
     private final Long sourceStationId;
     private final Long targetStationId;
@@ -25,7 +26,7 @@ public class Section {
     }
 
     private Integer validate(Integer distance) {
-        if (distance < 1) {
+        if (distance < MINIMUM_DISTANCE) {
             throw new DomainException(ExceptionType.INVALID_DISTANCE);
         }
         return distance;
