@@ -35,6 +35,11 @@ public class Sections {
                 .anyMatch(section -> Objects.equals(section.getUpStation(), upStation));
     }
 
+    public boolean isDownStationPoint(Station downStation) {
+        return sections.stream()
+                .anyMatch(section -> Objects.equals(section.getDownStation(), downStation));
+    }
+
     public Section getTargtUpStationSection(Station upStation) {
         return sections.stream()
                 .filter(section -> Objects.equals(section.getUpStation(), upStation))

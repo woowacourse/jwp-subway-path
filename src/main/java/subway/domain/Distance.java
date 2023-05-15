@@ -8,16 +8,27 @@ public class Distance {
     
     private final int distance;
 
-    public Distance(int distance) {
+    private Distance(int distance) {
+        validateDistance(distance);
         this.distance = distance;
+    }
+
+    public static Distance from(final int distance) {
+        return new Distance(distance);
+    }
+
+    private static void validateDistance(int distance) {
+        if (distance < 0) {
+            throw new IllegalStateException("거리는 음수 값이 나올 수 없습니다.");
+        }
     }
 
     public static Distance zero() {
         return ZERO;
     }
 
-    public boolean isShorterThan(Distance distance) {
-        return this.distance < distance.getDistance();
+    public boolean isShorterThanAndEqual(Distance distance) {
+        return this.distance <= distance.getDistance();
     }
 
     public Distance plus(Distance distance) {

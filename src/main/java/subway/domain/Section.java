@@ -12,7 +12,7 @@ public class Section {
     }
 
     public Section(int distance, Station upStation, Station downStation, Long lineId) {
-        this(null, new Distance(distance), upStation, downStation, lineId);
+        this(null, Distance.from(distance), upStation, downStation, lineId);
     }
 
     public Section(Distance distance, Station upStation, Station downStation, Long lineId) {

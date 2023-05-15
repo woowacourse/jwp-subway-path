@@ -3,6 +3,9 @@ package subway.application;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import subway.SubwayJdbcFixture;
+import subway.application.strategy.InsertDownPointStrategy;
+import subway.application.strategy.InsertMiddlePoint;
+import subway.application.strategy.InsertUpPointStrategy;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
@@ -11,6 +14,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
+import subway.repository.SectionRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -29,7 +33,11 @@ class SectionServiceTest extends SubwayJdbcFixture {
     void init() {
         final StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
         sectionRepository = new SectionRepository(sectionDao);
-        sectionService = new SectionService(lineDao, stationDao, sectionRepository);
+
+        final InsertDownPointStrategy insertDownPointStrategy = new InsertDownPointStrategy(sectionRepository);
+        final InsertUpPointStrategy insertUpPointStrategy = new InsertUpPointStrategy(sectionRepository);
+        final InsertMiddlePoint insertMiddlePoint = new InsertMiddlePoint(List.of(insertUpPointStrategy, insertDownPointStrategy));
+        sectionService = new SectionService(lineDao, stationDao, sectionRepository, insertMiddlePoint);
     }
 
     @Test
@@ -167,7 +175,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
         assertAll(() -> assertThat(sections).hasSize(2),
                 () -> assertThat(sections.get(0).getUpStation().getId()).isEqualTo(잠실역),
                 () -> assertThat(sections.get(0).getDownStation().getId()).isEqualTo(삼성역),
-                () -> assertThat(sections.get(0).getDistance()).isEqualTo(new Distance(30))
+                () -> assertThat(sections.get(0).getDistance()).isEqualTo(Distance.from(30))
         );
     }
 }

@@ -9,6 +9,7 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.repository.SectionRepository;
 
 import java.util.List;
 import java.util.NoSuchElementException;

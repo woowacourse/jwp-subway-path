@@ -1,4 +1,4 @@
-package subway.application;
+package subway.repository;
 
 import org.springframework.stereotype.Component;
 import subway.dao.SectionDao;
@@ -14,7 +14,7 @@ import java.util.List;
 import static java.util.stream.Collectors.toList;
 
 @Component
-class SectionRepository {
+public class SectionRepository {
 
     private final SectionDao sectionDao;
 
@@ -60,7 +60,7 @@ class SectionRepository {
     protected Section mapFrom(SectionStationResultMap resultMap) {
         return new Section(
                 resultMap.getSectionId(),
-                new Distance(resultMap.getDistance()),
+                Distance.from(resultMap.getDistance()),
                 new Station(resultMap.getUpStationId(), resultMap.getUpStationName()),
                 new Station(resultMap.getDownStationId(), resultMap.getDownStationName()),
                 resultMap.getLineId()

@@ -2,6 +2,8 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.application.strategy.InsertMiddlePoint;
+import subway.application.strategy.InsertSection;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;
@@ -10,6 +12,7 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
+import subway.repository.SectionRepository;
 
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -21,19 +24,20 @@ public class SectionService {
     private final LineDao lineDao;
     private final StationDao stationDao;
     private final SectionRepository sectionRepository;
+    private final InsertMiddlePoint insertMiddlePoint;
 
-    public SectionService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository) {
+    public SectionService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository, InsertMiddlePoint insertMiddlePoint) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.sectionRepository = sectionRepository;
+        this.insertMiddlePoint = insertMiddlePoint;
     }
 
     public Long insertSection(SectionRequest request) {
-        final Station upStation = stationDao.findById(request.getUpStationId()).orElseThrow(NoSuchElementException::new);
-        final Station downStation = stationDao.findById(request.getDownStationId()).orElseThrow(NoSuchElementException::new);
-
         validateInput(request);
 
+        final Station upStation = findById(request.getUpStationId());
+        final Station downStation = findById(request.getDownStationId());
         final Sections sections = sectionRepository.findAllByLineId(request.getLineId());
 
         checkCanInsert(upStation, downStation, sections);
@@ -42,7 +46,8 @@ public class SectionService {
             return insertToEndPoint(request);
         }
 
-        return insertToMiddleSection(upStation, downStation, request, sections);
+        final InsertSection insertSection = new InsertSection(upStation, downStation, Distance.from(request.getDistance()));
+        return insertMiddlePoint.insert(sections, insertSection);
     }
 
     private void validateInput(SectionRequest request) {
@@ -60,6 +65,11 @@ public class SectionService {
         }
     }
 
+    private Station findById(Long stationId) {
+        return stationDao.findById(stationId)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 역을 찾을 수 없습니다."));
+    }
+
     private static void checkCanInsert(Station upStation, Station downStation, Sections sortedSections) {
         if (sortedSections.canInsert(upStation, downStation)) {
             throw new IllegalArgumentException("역이 존재하지 않으면 추가할 수 없습니다.");
@@ -74,40 +84,6 @@ public class SectionService {
                 request.getLineId()
         );
         return sectionRepository.insert(section);
-    }
-
-    private Long insertToMiddleSection(Station upStation, Station downStation, SectionRequest request, Sections sortedSections) {
-
-        final Distance distance = new Distance(request.getDistance());
-
-        if (sortedSections.isUpStationPoint(upStation)) {
-            final Section targetSection = sortedSections.getTargtUpStationSection(upStation);
-
-            validateDistance(targetSection.getDistance(), distance);
-
-            final Section updateSection = new Section(distance, targetSection.getUpStation().getId(), request.getDownStationId(), targetSection.getLineId());
-            final Section newSection = new Section(targetSection.getDistance().minus(distance), request.getDownStationId(), targetSection.getDownStation().getId(), targetSection.getLineId());
-            return insert(updateSection, newSection);
-        }
-
-        final Section targetSection = sortedSections.getTargtDownStationSection(downStation);
-
-        validateDistance(targetSection.getDistance(), distance);
-
-        final Section updateSection = new Section(distance, request.getUpStationId(), request.getDownStationId(), targetSection.getLineId());
-        final Section newSection = new Section(targetSection.getDistance().minus(distance), targetSection.getUpStation().getId(), request.getUpStationId(), targetSection.getLineId());
-        return insert(updateSection, newSection);
-    }
-
-    private static void validateDistance(Distance targetDistance, Distance distance) {
-        if (targetDistance.isShorterThan(distance)) {
-            throw new IllegalArgumentException("거리는 기존 구간 거리보다 클 수 없습니다.");
-        }
-    }
-
-    private Long insert(Section updateSection, Section insertSection) {
-        sectionRepository.update(updateSection);
-        return sectionRepository.insert(insertSection);
     }
 
     public void deleteStation(Long targetId, SectionDeleteRequest request) {
