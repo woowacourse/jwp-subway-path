@@ -1,0 +1,9 @@
+spring:
+  profiles:
+    active: local
+  datasource:
+    hikari:
+      jdbc-url: jdbc:h2:localhost:8082./subway
+      driver-class-name: org.h2.Driver
+      username: sa
+      password:

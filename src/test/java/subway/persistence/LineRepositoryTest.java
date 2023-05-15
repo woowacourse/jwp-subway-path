@@ -46,7 +46,7 @@ class LineRepositoryTest {
     }
 
     @Test
-    @DisplayName("")
+    @DisplayName("이름으로 라인을 조회한다.")
     void testFindByName() {
         //given
         final Line savedLine = lineRepository.save(line);
