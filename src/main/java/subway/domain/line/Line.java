@@ -1,7 +1,9 @@
 package subway.domain.line;
 
-import java.util.List;
+import subway.domain.section.Section;
 import subway.domain.section.Sections;
+
+import java.util.List;
 
 public class Line {
 
@@ -21,6 +23,24 @@ public class Line {
         this.name = name;
         this.color = color;
         this.sections = sections;
+    }
+
+    public Line (final Long id, final String name, final String color, final List<Section> sections) {
+        this(
+            id,
+            new Name(name),
+            new Color(color),
+            new Sections(sections)
+        );
+    }
+
+    public Line (final Long id, final String name, final String color) {
+        this(
+            id,
+            new Name(name),
+            new Color(color),
+            new Sections(List.of())
+        );
     }
 
     public Line(final String name, final String color) {

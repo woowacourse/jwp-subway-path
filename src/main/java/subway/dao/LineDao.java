@@ -2,7 +2,9 @@ package subway.dao;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import javax.sql.DataSource;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -10,7 +12,7 @@ import org.springframework.stereotype.Component;
 import subway.entity.LineEntity;
 
 @Component
-public class LineDao {
+public class  LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
@@ -36,6 +38,15 @@ public class LineDao {
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
         return new LineEntity(lineId, line.getName(), line.getColor());
+    }
+
+    public Optional<LineEntity> findByName(final String name) {
+        String sql = "SELECT id, name, color FROM LINE WHERE name = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, name));
+        } catch (EmptyResultDataAccessException e) {
+           return Optional.empty();
+        }
     }
 
 }
