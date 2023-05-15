@@ -47,19 +47,18 @@
 
 #### Request
 
-- 역 등록은 기준역의 다음에 새로운 역을 추가합니다.
-- 상행, 하행 방향을 지정해주어야 합니다.
+- 역 등록은 왼쪽역과 오른쪽 역을 추가합니다.
+- 등록하고자 하는 노선의 두 역 중 하나만 기존 역에 있으면 됩니다.
 
 ```http request
 POST /sections HTTP/1.1
 {
     "lineId": 1,
     "section":  {
-        "baseStationId": 1,
-        "nextStationId": 2,
+        "leftStationId": 1,
+        "rightStationId": 2,
         "distance": 2,
-    },
-    "direction": up
+    }
 }
 ```
 
