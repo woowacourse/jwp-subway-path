@@ -44,8 +44,7 @@ public class LineQueryService {
                            .map(it -> new Line(
                                    it.getId(),
                                    it.getName(),
-                                   sectionQueryService.findSectionsByLineId(it.getId()))
-                           )
+                                   sectionQueryService.findSectionsByLineId(it.getId())))
                            .collect(Collectors.toList());
     }
 
