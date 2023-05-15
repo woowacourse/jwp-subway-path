@@ -28,9 +28,7 @@ public class SectionService {
     public void saveSection(Long lineId, SectionRequest request) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
 
-        List<Section> sectionsOfLine = toSections(sectionEntities);
-
-        Sections sections = new Sections(sectionsOfLine);
+        Sections sections = new Sections(toSections(sectionEntities));
 
         Section requestSection = new Section(
                 new Station(request.getStartStation()),
@@ -62,12 +60,8 @@ public class SectionService {
     public void deleteSection(Long lineId, Long stationId) {
         List<SectionEntity> sectionEntitiesOfLine = sectionDao.findByLineId(lineId);
 
-        List<Section> sectionsOfLine = toSections(sectionEntitiesOfLine);
-
-        Sections sections = new Sections(sectionsOfLine);
-
-        Station removedStation = toStation(stationDao.findById(stationId));
-        sections.remove(removedStation);
+        Sections sections = new Sections(toSections(sectionEntitiesOfLine));
+        sections.remove(toStation(stationDao.findById(stationId)));
 
         sectionDao.deleteAllById(lineId);
         sectionDao.insertAll(toSectionEntities(lineId, sections.getSections()));
@@ -76,7 +70,7 @@ public class SectionService {
     }
 
     private void deleteStation(Long stationId) {
-        if(sectionDao.findExistStationById(stationId)){
+        if(!sectionDao.findExistStationById(stationId)){
             stationDao.deleteById(stationId);
         }
     }
@@ -100,14 +94,13 @@ public class SectionService {
                 .stream()
                 .collect(Collectors.toMap(StationEntity::getId, StationEntity::getName));
 
-        List<Section> existSections = findSections.stream()
+        return findSections.stream()
                 .map(it -> new Section(
                         new Station(stations.get(it.getStartStationId())),
                         new Station(stations.get(it.getEndStationId())),
                         new Distance(it.getDistance()))
                 )
                 .collect(Collectors.toList());
-        return existSections;
     }
 
     private Station toStation(StationEntity stationEntity) {

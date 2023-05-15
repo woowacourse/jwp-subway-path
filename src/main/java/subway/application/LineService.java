@@ -37,7 +37,6 @@ public class LineService {
         Line line = lines.addNewLine(request.getLineName(), new Sections(
                 List.of(new Section(new Station(request.getStartStation()), new Station(request.getEndStation()), new Distance(request.getDistance())))
         ));
-
         addStationOfSection(request.getStartStation(), request.getEndStation());
 
         Long savedId = lineDao.insert(new LineEntity(line.getName()));
@@ -128,13 +127,12 @@ public class LineService {
                 .stream()
                 .collect(Collectors.toMap(StationEntity::getId, StationEntity::getName));
 
-        List<Section> existSections = findSections.stream()
+        return findSections.stream()
                 .map(it -> new Section(
                         new Station(stations.get(it.getStartStationId())),
                         new Station(stations.get(it.getEndStationId())),
                         new Distance(it.getDistance()))
                 )
                 .collect(Collectors.toList());
-        return existSections;
     }
 }

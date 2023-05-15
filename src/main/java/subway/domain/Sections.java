@@ -46,7 +46,7 @@ public class Sections {
         }
 
         // 종점이 삭제될 때
-        if (removeOutsideStation(sectionsContainStation)){
+        if (removeOutsideStation(sectionsContainStation)) {
             return;
         }
 
