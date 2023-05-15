@@ -10,7 +10,7 @@ Content-Type: application/json
 
 ### 노선 수정
 
-PUT http://localhost:8080/lines/1
+PATCH http://localhost:8080/lines/1
 Content-Type: application/json
 
 {
