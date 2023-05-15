@@ -1,6 +1,5 @@
 package subway.application;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static subway.domain.SectionFixture.*;
@@ -51,7 +51,7 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(1L, 2L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
                         .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 1L, 2L),
@@ -69,7 +69,7 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(2L, 3L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
                         .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 2L, 3L),
@@ -87,7 +87,7 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(1L, 3L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
                         .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 1L, 3L),
@@ -105,7 +105,7 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(1L, 3L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
                         .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 2L, 3L),
@@ -124,7 +124,7 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(3L, 5L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
-        Assertions.assertAll(
+        assertAll(
                 () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
                         .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 3L, 4L),
@@ -188,33 +188,43 @@ class SectionServiceTest {
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
 
-        assertThatCode(() -> sectionService.deleteStation(1L, 2L))
-                .doesNotThrowAnyException();
+        assertAll(
+                () -> assertThatCode(() -> sectionService.deleteStation(1L, 2L))
+                        .doesNotThrowAnyException(),
+                () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20))),
+                () -> verify(sectionDao).deleteByStationId(1L, 2L)
+        );
     }
 
-    @DisplayName("왼쪽에 연결된 역을 삭제할 수 있다.")
+    @DisplayName("왼쪽에만 연결된 역을 삭제할 수 있다.")
     @Test
     void deleteStationLeft() {
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
 
-        assertThatCode(() -> sectionService.deleteStation(1L, 1L))
-                .doesNotThrowAnyException();
+        assertAll(
+                () -> assertThatCode(() -> sectionService.deleteStation(1L, 1L))
+                        .doesNotThrowAnyException(),
+                () -> verify(sectionDao).deleteByStationId(1L, 1L)
+        );
     }
 
-    @DisplayName("오른쪽에 연결된 역을 삭제할 수 있다.")
+    @DisplayName("오른쪽에만 연결된 역을 삭제할 수 있다.")
     @Test
     void deleteStationRight() {
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
 
-        assertThatCode(() -> sectionService.deleteStation(1L, 3L))
-                .doesNotThrowAnyException();
+        assertAll(
+                () -> assertThatCode(() -> sectionService.deleteStation(1L, 3L))
+                        .doesNotThrowAnyException(),
+                () -> verify(sectionDao).deleteByStationId(1L, 3L)
+        );
     }
 
-    @DisplayName("존재하지 않는 역을 삭제할 수 없다.")
+    @DisplayName("노선도에 존재하지 않는 역을 삭제할 수 없다.")
     @Test
     void deleteStationNonExisting() {
         when(sectionDao.findByLineId(1L)).thenReturn(
