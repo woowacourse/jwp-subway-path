@@ -46,7 +46,7 @@ public class LineServiceImpl implements LineService {
     public LineResponse createNewLine(final LineCreateRequest request) {
         // TODO: 이미 존재하는 노선을 추가로 생성하는 경우 예외 처리
         final Line line = lineRepository.save(Line.of(request.getName(), request.getColor()));
-        subway.createSectionsOf(line);
+        subway.createSectionsOf(line, graph);
         return LineResponse.of(line);
     }
 

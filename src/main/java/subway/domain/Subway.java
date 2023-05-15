@@ -11,10 +11,8 @@ import java.util.stream.Collectors;
 @Component
 public class Subway {
     private final List<Sections> sections;
-    private final Graph graph;
 
-    public Subway(final Graph graph) {
-        this.graph = graph;
+    public Subway() {
         this.sections = new ArrayList<>();
     }
 
@@ -32,7 +30,7 @@ public class Subway {
                 .collect(Collectors.toList());
     }
 
-    public void createSectionsOf(final Line line) {
+    public void createSectionsOf(final Line line, final Graph graph) {
         final Sections newSections = new Sections(line, graph);
         sections.add(newSections);
     }

@@ -13,11 +13,11 @@ public class Sections {
         this.line = line;
     }
 
-    public void createInitialSection(Station upLineStation, Station downLineStation, int distance) {
+    public void createInitialSection(Station upStation, Station downStation, int distance) {
         validateDistance(distance);
-        graph.addStation(upLineStation);
-        graph.addStation(downLineStation);
-        graph.setSectionDistance(graph.addSection(upLineStation, downLineStation), distance);
+        graph.addStation(upStation);
+        graph.addStation(downStation);
+        graph.setSectionDistance(graph.addSection(upStation, downStation), distance);
     }
 
     public Station addStation(Station upLineStation, Station downLineStation, int distance) {
