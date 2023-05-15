@@ -25,7 +25,8 @@ public class LineController {
 
     public LineController(
             final LineCommandService lineCommandService,
-            final LineQueryService lineQueryService) {
+            final LineQueryService lineQueryService
+    ) {
         this.lineCommandService = lineCommandService;
         this.lineQueryService = lineQueryService;
     }
