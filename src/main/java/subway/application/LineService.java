@@ -52,11 +52,11 @@ public class LineService {
     public void registerStation(final Long lineId, final SectionRequest request) {
         final Line line = findById(lineId);
 
-        final Section section = createSections(request);
-        final Line addedLine = line.addSection(section);
+        final Section newSection = createSection(request);
+        final Line addedLine = line.addSection(newSection);
 
         final Sections deleteSections = line.getSections().getDifferenceOfSet(addedLine.getSections());
-        final Sections insertSections = addedLine.getSections().getDifferenceOfSet(line.getSections());
+        final Sections insertSections = new Sections(List.of(newSection));
 
         sectionService.deleteSections(deleteSections);
         sectionService.insertSections(line.getId(), insertSections);
@@ -85,7 +85,7 @@ public class LineService {
         return emptyLine;
     }
 
-    private Section createSections(final SectionRequest request) {
+    private Section createSection(final SectionRequest request) {
         final Station beforeStation = stationService.findStationByName(request.getBeforeStationName());
         final Station nextStation = stationService.findStationByName(request.getNextStationName());
         return new Section(beforeStation, nextStation, new Distance(request.getDistance()));
