@@ -3,6 +3,7 @@ package subway.application;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
@@ -10,6 +11,7 @@ import subway.dao.entity.LineEntity;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
+import subway.exception.LineNotFoundException;
 
 @Service
 @Transactional
@@ -34,8 +36,12 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
-        LineEntity lineEntity = lineDao.findById(id);
-        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+        Optional<LineEntity> lineEntity = lineDao.findById(id);
+        if (lineEntity.isPresent()) {
+            LineEntity line = lineEntity.get();
+            return new LineResponse(line.getId(), line.getName(), line.getColor());
+        }
+        throw new LineNotFoundException();
     }
 
     public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {

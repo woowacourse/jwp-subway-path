@@ -40,7 +40,7 @@ class SectionControllerTest {
         willDoNothing().given(sectionService).saveSection(anyLong(), any(SectionCreateRequest.class));
 
         // expect
-        mockMvc.perform(post("/sections/{lineId}", lineId)
+        mockMvc.perform(post("/lines/{lineId}/sections", lineId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk());
@@ -54,7 +54,7 @@ class SectionControllerTest {
         SectionDeleteRequest request = new SectionDeleteRequest("잠실역");
 
         // expect
-        mockMvc.perform(delete("/sections/{lineId}", lineId)
+        mockMvc.perform(delete("/lines/{lineId}/sections", lineId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNoContent());

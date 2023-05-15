@@ -34,6 +34,8 @@ class SectionControllerIntegrationTest {
     ObjectMapper objectMapper;
 
     private Long lineId = 1L;
+    
+    private final String baseUrl = "/lines/{lineId}/sections";
 
     @Test
     @DisplayName("빈 노선에 구간을 추가하면 추가에 성공한다.")
@@ -42,7 +44,7 @@ class SectionControllerIntegrationTest {
         addSection("선릉역", "삼성역", 50);
 
         // expect
-        mockMvc.perform(get("/sections/{lineId}", lineId))
+        mockMvc.perform(get(baseUrl, lineId))
                 .andExpect(jsonPath("$[0].startStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[0].distance").value(50));
@@ -56,7 +58,7 @@ class SectionControllerIntegrationTest {
         addSection("역삼역", "선릉역", 20);
 
         // expect
-        mockMvc.perform(get("/sections/{lineId}", lineId))
+        mockMvc.perform(get(baseUrl, lineId))
                 .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
                 .andExpect(jsonPath("$[0].endStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].distance").value(20))
@@ -73,7 +75,7 @@ class SectionControllerIntegrationTest {
         addSection("교대역", "강남역", 20);
 
         // expect
-        mockMvc.perform(get("/sections/{lineId}", lineId))
+        mockMvc.perform(get(baseUrl, lineId))
                 .andExpect(jsonPath("$[0].startStationName").value("교대역"))
                 .andExpect(jsonPath("$[0].endStationName").value("강남역"))
                 .andExpect(jsonPath("$[0].distance").value(20))
@@ -90,7 +92,7 @@ class SectionControllerIntegrationTest {
         addSection("선릉역", "삼성역", 20);
 
         // expect
-        mockMvc.perform(get("/sections/{lineId}", lineId))
+        mockMvc.perform(get(baseUrl, lineId))
                 .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
                 .andExpect(jsonPath("$[0].endStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].distance").value(50))
@@ -107,7 +109,7 @@ class SectionControllerIntegrationTest {
 
         // expect
         SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("교대역", "강남역", 20);
-        mockMvc.perform(post("/sections/{lineId}", lineId)
+        mockMvc.perform(post(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(newSectionAddRequest)))
                 .andExpect(status().isBadRequest());
@@ -121,7 +123,7 @@ class SectionControllerIntegrationTest {
 
         // expect
         SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("삼성역", "선릉역", 20);
-        mockMvc.perform(post("/sections/{lineId}", lineId)
+        mockMvc.perform(post(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(newSectionAddRequest)))
                 .andExpect(status().isBadRequest());
@@ -136,7 +138,7 @@ class SectionControllerIntegrationTest {
 
         // expect
         SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("역삼역", "선릉역", distance);
-        mockMvc.perform(post("/sections/{lineId}", lineId)
+        mockMvc.perform(post(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(newSectionAddRequest)))
                 .andExpect(status().isBadRequest());
@@ -150,7 +152,7 @@ class SectionControllerIntegrationTest {
         SectionCreateRequest request = new SectionCreateRequest("선릉역", "삼성역", distance);
 
         // expect
-        mockMvc.perform(post("/sections/{lineId}", lineId)
+        mockMvc.perform(post(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -163,7 +165,7 @@ class SectionControllerIntegrationTest {
         SectionCreateRequest request = new SectionCreateRequest("장승배기역", "상도역", 10);
 
         // expect
-        mockMvc.perform(post("/sections/{lineId}", lineId)
+        mockMvc.perform(post(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -178,13 +180,13 @@ class SectionControllerIntegrationTest {
 
         // when
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest("선릉역");
-        mockMvc.perform(delete("/sections/{lineId}", lineId)
+        mockMvc.perform(delete(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(deleteRequest)))
                 .andExpect(status().isNoContent());
 
         // then
-        mockMvc.perform(get("/sections/{lineId}", lineId))
+        mockMvc.perform(get(baseUrl, lineId))
                 .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
                 .andExpect(jsonPath("$[0].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[0].distance").value(100));
@@ -199,13 +201,13 @@ class SectionControllerIntegrationTest {
 
         // when
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest(station);
-        mockMvc.perform(delete("/sections/{lineId}", lineId)
+        mockMvc.perform(delete(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(deleteRequest)))
                 .andExpect(status().isNoContent());
 
         // then
-        mockMvc.perform(get("/sections/{lineId}", lineId))
+        mockMvc.perform(get(baseUrl, lineId))
                 .andExpect(jsonPath("$.size()").value(0));
     }
 
@@ -218,13 +220,13 @@ class SectionControllerIntegrationTest {
 
         // when
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest("역삼역");
-        mockMvc.perform(delete("/sections/{lineId}", lineId)
+        mockMvc.perform(delete(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(deleteRequest)))
                 .andExpect(status().isNoContent());
 
         // then
-        mockMvc.perform(get("/sections/{lineId}", lineId))
+        mockMvc.perform(get(baseUrl, lineId))
                 .andExpect(jsonPath("$[0].startStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[0].distance").value(50));
@@ -239,13 +241,13 @@ class SectionControllerIntegrationTest {
 
         // when
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest("삼성역");
-        mockMvc.perform(delete("/sections/{lineId}", lineId)
+        mockMvc.perform(delete(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(deleteRequest)))
                 .andExpect(status().isNoContent());
 
         // then
-        mockMvc.perform(get("/sections/{lineId}", lineId))
+        mockMvc.perform(get(baseUrl, lineId))
                 .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
                 .andExpect(jsonPath("$[0].endStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].distance").value(50));
@@ -260,15 +262,23 @@ class SectionControllerIntegrationTest {
 
         // expect
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest("교대역");
-        mockMvc.perform(delete("/sections/{lineId}", lineId)
+        mockMvc.perform(delete(baseUrl, lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(deleteRequest)))
+                .andExpect(status().isBadRequest());
+    }
+    
+    @Test
+    @DisplayName("존재하지 않는 노선에 대한 요청이 오면 실패한다.")
+    void noLineIdFound_fail() throws Exception {
+        // given
+        mockMvc.perform(get(baseUrl, 2L))
                 .andExpect(status().isBadRequest());
     }
 
     void addSection(String startStationName, String endStationName, int distance) throws Exception {
         SectionCreateRequest createRequest = new SectionCreateRequest(startStationName, endStationName, distance);
-        mockMvc.perform(post("/sections/{lineId}", lineId)
+        mockMvc.perform(post(baseUrl, lineId)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .content(objectMapper.writeValueAsString(createRequest)));
     }

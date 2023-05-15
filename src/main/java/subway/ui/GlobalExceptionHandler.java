@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.exception.IllegalDistanceException;
 import subway.exception.IllegalSectionException;
+import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 
 @RestControllerAdvice
@@ -43,8 +44,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 
-    @ExceptionHandler(StationNotFoundException.class)
-    public ResponseEntity<String> handleStationNotFoundException(StationNotFoundException e) {
+    @ExceptionHandler({StationNotFoundException.class, LineNotFoundException.class})
+    public ResponseEntity<String> handleNotFoundException(RuntimeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }

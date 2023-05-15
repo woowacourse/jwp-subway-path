@@ -16,7 +16,7 @@ import subway.dto.section.SectionDeleteRequest;
 import subway.dto.section.SectionResponse;
 
 @RestController
-@RequestMapping("/sections")
+@RequestMapping("/lines/{lineId}/sections")
 public class SectionController {
 
     private final SectionService sectionService;
@@ -25,19 +25,19 @@ public class SectionController {
         this.sectionService = sectionService;
     }
 
-    @GetMapping("/{lindId}")
-    public ResponseEntity<List<SectionResponse>> findAllSectionsByLineId(@PathVariable Long lindId) {
-        return ResponseEntity.ok(sectionService.findSectionsByLineId(lindId));
+    @GetMapping
+    public ResponseEntity<List<SectionResponse>> findAllSectionsByLineId(@PathVariable Long lineId) {
+        return ResponseEntity.ok(sectionService.findSectionsByLineId(lineId));
     }
 
-    @PostMapping("/{lineId}")
+    @PostMapping
     public ResponseEntity<Void> createSection(@PathVariable Long lineId,
                                               @RequestBody @Valid SectionCreateRequest sectionCreateRequest) {
         sectionService.saveSection(lineId, sectionCreateRequest);
         return ResponseEntity.ok().build();
     }
 
-    @DeleteMapping("/{lineId}")
+    @DeleteMapping
     public ResponseEntity<Void> deleteSection(@PathVariable Long lineId,
                                               @RequestBody @Valid SectionDeleteRequest sectionDeleteRequest) {
         sectionService.deleteSection(lineId, sectionDeleteRequest);
