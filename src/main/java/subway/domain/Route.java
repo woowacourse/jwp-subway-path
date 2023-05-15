@@ -65,10 +65,10 @@ public class Route {
         return dijkstraGraph.getPath(startStation, endStation).getVertexList();
     }
 
-    public double findShortestRouteDistance(
+    public int findShortestRouteDistance(
             final String startStation,
             final String endStation
     ) {
-        return dijkstraGraph.getPathWeight(startStation, endStation);
+        return (int) dijkstraGraph.getPathWeight(startStation, endStation);
     }
 }
