@@ -4,8 +4,12 @@ import java.util.Objects;
 
 public class Station {
 
-    private final long id;
+    private long id;
     private final String name;
+
+    public Station(final String name) {
+        this.name = name;
+    }
 
     public Station(final long id, final String name) {
         this.id = id;
@@ -18,6 +22,11 @@ public class Station {
 
     public String getName() {
         return name;
+    }
+
+    public boolean hasSameName(Station station) {
+        return this.name
+                .equals(station.name);
     }
 
     @Override
