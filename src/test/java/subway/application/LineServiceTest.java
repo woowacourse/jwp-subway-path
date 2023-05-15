@@ -10,8 +10,8 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Line;
-import subway.dto.SectionRequest;
-import subway.dto.StationRequest;
+import subway.dto.request.SectionRequest;
+import subway.dto.request.StationRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;

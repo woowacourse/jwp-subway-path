@@ -4,10 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.domain.*;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.SectionRequest;
-import subway.dto.StationRequest;
+import subway.dto.request.LineRequest;
+import subway.dto.request.SectionRequest;
+import subway.dto.request.StationRequest;
+import subway.dto.response.LineResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
