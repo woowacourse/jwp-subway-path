@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.exception.NoDataFoundException;
@@ -18,7 +19,7 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(exception.getMessage());
+                .body("존재하지 않은 데이터에 접근하였습니다.");
     }
 
     @ExceptionHandler
@@ -27,7 +28,17 @@ public class GlobalExceptionHandler {
 
         return ResponseEntity
                 .status(HttpStatus.BAD_REQUEST)
-                .body(exception.getMessage());
+                .body("유효하지 않은 값이 사용되었습니다.");
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<String> handleMethodArgumentNotValidException(
+            final MethodArgumentNotValidException exception) {
+        log.warn("요청된 데이터 형식이 잘못 되었습니다. \n{}", exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body("요청된 데이터 형식이 잘못 되었습니다.");
     }
 
     @ExceptionHandler(Exception.class)

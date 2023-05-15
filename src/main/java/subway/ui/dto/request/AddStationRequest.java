@@ -1,10 +1,15 @@
 package subway.ui.dto.request;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 public class AddStationRequest {
     private final Long firstStationId;
     private final Long secondStationId;
+    @NotBlank(message = "추가하려는 역은 필수값 입니다.")
     private final String newStation;
-    private final int distance;
+    @NotNull(message = "역 간의 거리는 필수값 입니다.")
+    private final Integer distance;
 
     public AddStationRequest(
             final Long firstStationId,

@@ -1,5 +1,6 @@
 package subway.ui.controller.station;
 
+import javax.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ public class CreateInitialStationsController {
     @PostMapping("/lines/{lineId}/station/init")
     public ResponseEntity<Void> createInitialStations(
             @PathVariable final Long lineId,
-            @RequestBody final CreateInitialStationsRequest request
+            @RequestBody @Valid final CreateInitialStationsRequest request
     ) {
         final Long savedSectionId = createInitialStationsService.addInitialStations(lineId, request);
 
