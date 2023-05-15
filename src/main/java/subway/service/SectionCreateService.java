@@ -29,38 +29,16 @@ public class SectionCreateService {
         if (isEmptyLine(lineId)) {
             return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
         }
-        validateBaseStationExist(lineId, baseId);
+        final Optional<Section> upSection = sectionDao.findUpSection(lineId, baseId);
+        final Optional<Section> downSection = sectionDao.findDownSection(lineId, baseId);
+        validateBaseStationExist(upSection, downSection);
 
-        return createSectionWhenBaseStationExist(lineId, baseId, addedId, direction, distance);
+        final Optional<Section> section = getSectionByDirection(upSection, downSection, direction);
+        return createSectionWhenBaseStationExist(lineId, baseId, addedId, direction, distance, section);
     }
 
     private boolean isEmptyLine(final Long lineId) {
         return sectionDao.findByLineId(lineId).isEmpty();
-    }
-
-    private void validateBaseStationExist(final Long lineId, final Long baseId) {
-        final Optional<Section> neighborUpSection = sectionDao.findNeighborUpSection(lineId, baseId);
-        final Optional<Section> neighborDownSection = sectionDao.findNeighborDownSection(lineId, baseId);
-        if (neighborUpSection.isEmpty() && neighborDownSection.isEmpty()) {
-            throw new IllegalArgumentException("기준점이 되는 역은 이미 구간에 존재해야 합니다.");
-        }
-    }
-
-    private List<Section> createSectionWhenBaseStationExist(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
-        final Optional<Section> section = sectionDao.findNeighborSection(lineId, baseId, Direction.from(direction));
-        if (section.isEmpty()) {
-            return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
-        }
-        final Section existSection = section.get();
-        validateDistance(distance, existSection);
-
-        return divideSectionByAddedStation(lineId, addedId, direction, distance, existSection);
-    }
-
-    private void validateDistance(final Integer distance, final Section existSection) {
-        if (existSection.getDistance().getValue() <= distance) {
-            throw new IllegalArgumentException("새롭게 등록하는 구간의 거리는 기존에 존재하는 구간의 거리보다 작아야합니다.");
-        }
     }
 
     private List<Section> createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
@@ -77,6 +55,46 @@ public class SectionCreateService {
             return new Section(lineId, baseId, addedId, distance);
         }
         throw new IllegalArgumentException("존재하지 않는 방향입니다.");
+    }
+
+    private void validateBaseStationExist(final Optional<Section> upSection, final Optional<Section> downSection) {
+        if (upSection.isEmpty() && downSection.isEmpty()) {
+            throw new IllegalArgumentException("기준점이 되는 역은 이미 구간에 존재해야 합니다.");
+        }
+    }
+
+    private Optional<Section> getSectionByDirection(final Optional<Section> upSection, final Optional<Section> downSection, final Boolean direction) {
+        if (Direction.from(direction) == Direction.UP) {
+            return upSection;
+        }
+        if (Direction.from(direction) == Direction.DOWN) {
+            return downSection;
+        }
+        throw new IllegalArgumentException("존재하지 않는 방향입니다.");
+    }
+
+    private List<Section> createSectionWhenBaseStationExist(
+            final Long lineId,
+            final Long baseId,
+            final Long addedId,
+            final Boolean direction,
+            final Integer distance,
+            final Optional<Section> section
+    ) {
+        if (section.isEmpty()) {
+            return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
+        }
+
+        final Section existSection = section.get();
+        validateDistance(distance, existSection);
+
+        return divideSectionByAddedStation(lineId, addedId, direction, distance, existSection);
+    }
+
+    private void validateDistance(final Integer distance, final Section existSection) {
+        if (existSection.getDistance().getValue() <= distance) {
+            throw new IllegalArgumentException("새롭게 등록하는 구간의 거리는 기존에 존재하는 구간의 거리보다 작아야합니다.");
+        }
     }
 
     private List<Section> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final Section existSection) {

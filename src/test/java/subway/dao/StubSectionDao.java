@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.stream.Collectors;
 
-import subway.domain.Direction;
 import subway.domain.Section;
 
 public class StubSectionDao implements SectionDao {
@@ -51,15 +50,7 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<Section> findNeighborSection(final Long lineId, final Long baseId, final Direction direction) {
-        if (direction == Direction.UP) {
-            return findNeighborUpSection(lineId, baseId);
-        }
-        return findNeighborDownSection(lineId, baseId);
-    }
-
-    @Override
-    public Optional<Section> findNeighborUpSection(final Long lineId, final Long stationId) {
+    public Optional<Section> findUpSection(final Long lineId, final Long stationId) {
         return sectionMap.values()
                 .stream()
                 .filter(it -> it.getLineId().equals(lineId) && it.getDownStation().getId().equals(stationId))
@@ -67,7 +58,7 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<Section> findNeighborDownSection(final Long lineId, final Long stationId) {
+    public Optional<Section> findDownSection(final Long lineId, final Long stationId) {
         return sectionMap.values()
                 .stream()
                 .filter(it -> it.getLineId().equals(lineId) && it.getUpStation().getId().equals(stationId))

@@ -12,7 +12,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Direction;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -97,15 +96,7 @@ public class RdsSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<Section> findNeighborSection(final Long lineId, final Long baseId, final Direction direction) {
-        if (direction == Direction.UP) {
-            return findNeighborUpSection(lineId, baseId);
-        }
-        return findNeighborDownSection(lineId, baseId);
-    }
-
-    @Override
-    public Optional<Section> findNeighborUpSection(final Long lineId, final Long stationId) {
+    public Optional<Section> findUpSection(final Long lineId, final Long stationId) {
         try {
             final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and down_station_id = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));
@@ -115,7 +106,7 @@ public class RdsSectionDao implements SectionDao {
     }
 
     @Override
-    public Optional<Section> findNeighborDownSection(final Long lineId, final Long stationId) {
+    public Optional<Section> findDownSection(final Long lineId, final Long stationId) {
         try {
             final String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE line_id = ? and up_station_id = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId, stationId));

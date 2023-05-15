@@ -18,8 +18,8 @@ public class SectionDeleteService {
     }
 
     public void deleteSection(final Long lineId, final Long stationId) {
-        final Optional<Section> upSection = sectionDao.findNeighborUpSection(lineId, stationId);
-        final Optional<Section> downSection = sectionDao.findNeighborDownSection(lineId, stationId);
+        final Optional<Section> upSection = sectionDao.findUpSection(lineId, stationId);
+        final Optional<Section> downSection = sectionDao.findDownSection(lineId, stationId);
 
         validateRegistered(upSection, downSection);
         deleteSection(upSection, downSection);

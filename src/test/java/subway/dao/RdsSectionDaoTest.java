@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.domain.Direction;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -113,7 +112,7 @@ class RdsSectionDaoTest {
                 @DisplayName("아랫 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborStationDown() {
-                    final Optional<Section> section = rdsSectionDao.findNeighborSection(lineId, stationId1, Direction.DOWN);
+                    final Optional<Section> section = rdsSectionDao.findDownSection(lineId, stationId1);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -123,7 +122,7 @@ class RdsSectionDaoTest {
                 @DisplayName("특정 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborDownStation() {
-                    final Optional<Section> section = rdsSectionDao.findNeighborDownSection(lineId, stationId1);
+                    final Optional<Section> section = rdsSectionDao.findDownSection(lineId, stationId1);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -133,7 +132,7 @@ class RdsSectionDaoTest {
                 @DisplayName("윗 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborStationUp() {
-                    final Optional<Section> section = rdsSectionDao.findNeighborSection(lineId, stationId2, Direction.UP);
+                    final Optional<Section> section = rdsSectionDao.findUpSection(lineId, stationId2);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -143,7 +142,7 @@ class RdsSectionDaoTest {
                 @DisplayName("특정 방향에 인접한 역이 존재하면 그 역을 반환한다.")
                 @Test
                 void findNeighborUpStation() {
-                    final Optional<Section> section = rdsSectionDao.findNeighborUpSection(lineId, stationId2);
+                    final Optional<Section> section = rdsSectionDao.findUpSection(lineId, stationId2);
                     assertAll(
                             () -> assertThat(section).isPresent(),
                             () -> assertThat(section.get().getId()).isEqualTo(sectionId1)
@@ -153,7 +152,7 @@ class RdsSectionDaoTest {
                 @DisplayName("특정 방향에 인접한 역이 존재하지 않으면 Optional.empty 를 반환한다.")
                 @Test
                 void findNeighborStationFail() {
-                    final Optional<Section> section = rdsSectionDao.findNeighborSection(lineId, stationId1, Direction.UP);
+                    final Optional<Section> section = rdsSectionDao.findUpSection(lineId, stationId1);
                     assertThat(section).isEmpty();
                 }
             }

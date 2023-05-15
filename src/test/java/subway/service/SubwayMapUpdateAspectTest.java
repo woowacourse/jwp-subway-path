@@ -48,8 +48,8 @@ class SubwayMapUpdateAspectTest {
     @Test
     void shouldUpdateWhenDeleteSection() {
         // given
-        given(sectionDao.findNeighborUpSection(anyLong(), anyLong())).willReturn(Optional.empty());
-        given(sectionDao.findNeighborDownSection(anyLong(), anyLong())).willReturn(
+        given(sectionDao.findUpSection(anyLong(), anyLong())).willReturn(Optional.empty());
+        given(sectionDao.findDownSection(anyLong(), anyLong())).willReturn(
                 Optional.of(new Section(1L, 2L, 3L, 4L, 5))
         );
         doNothing().when(sectionDao).deleteById(anyLong());
