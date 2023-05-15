@@ -93,13 +93,13 @@ public class Path {
         if (!(o instanceof Path)) {
             return false;
         }
-        final Path path1 = (Path) o;
-        return Objects.equals(lines, path1.lines);
+        final Path path = (Path) o;
+        return Objects.equals(lines, path.lines);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lines);
+        return lines.hashCode();
     }
 
     public List<Line> lines() {

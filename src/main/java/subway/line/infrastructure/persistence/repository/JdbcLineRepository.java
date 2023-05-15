@@ -1,6 +1,7 @@
 package subway.line.infrastructure.persistence.repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -65,6 +66,9 @@ public class JdbcLineRepository implements LineRepository {
 
     private List<Section> getSections(final String name) {
         final List<SectionEntity> sectionEntities = sectionDao.findAllByLineName(name);
+        if (sectionEntities.isEmpty()) {
+            return Collections.emptyList();
+        }
         final Set<UUID> stationIds = getStationIds(sectionEntities);
         final Map<UUID, StationEntity> idStationEntityMap = stationDao.findAllByDomainIds(stationIds)
                 .stream()

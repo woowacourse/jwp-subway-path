@@ -2,6 +2,7 @@ package subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static subway.line.domain.fixture.StationFixture.역2;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +12,6 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.line.domain.Line;
 import subway.line.domain.Section;
-import subway.line.domain.Sections;
 import subway.line.domain.Station;
 import subway.line.domain.fixture.StationFixture;
 import subway.line.exception.line.LineException;
@@ -22,17 +22,17 @@ import subway.line.exception.line.LineException;
 class PathTest {
 
     private final Path path = new Path(
-            new Line("2호선", new Sections(List.of(
-                    new Section(StationFixture.선릉, StationFixture.역2, 1),
-                    new Section(StationFixture.역2, StationFixture.잠실, 7)
-            ))),
-            new Line("1호선", new Sections(List.of(
+            new Line("2호선",
+                    new Section(StationFixture.선릉, 역2, 1),
+                    new Section(역2, StationFixture.잠실, 7)
+            ),
+            new Line("1호선",
                     new Section(StationFixture.선릉, StationFixture.역4, 10),
                     new Section(StationFixture.역4, StationFixture.역5, 5)
-            ))),
-            new Line("4호선", new Sections(List.of(
+            ),
+            new Line("4호선",
                     new Section(StationFixture.역6, StationFixture.역5, 10)
-            )))
+            )
     );
 
     @Test
@@ -65,8 +65,8 @@ class PathTest {
             assertThat(result.lines())
                     .flatMap(Line::sections)
                     .containsExactly(
-                            new Section(StationFixture.잠실, StationFixture.역2, 7),
-                            new Section(StationFixture.역2, StationFixture.선릉, 1),
+                            new Section(StationFixture.잠실, 역2, 7),
+                            new Section(역2, StationFixture.선릉, 1),
                             new Section(StationFixture.선릉, StationFixture.역4, 10),
                             new Section(StationFixture.역4, StationFixture.역5, 5),
                             new Section(StationFixture.역5, StationFixture.역6, 10)
@@ -76,7 +76,7 @@ class PathTest {
         @Test
         void 주어진_역이_시작점이_될_수_없으면_예외() {
             // when
-            final List<Station> noneStartStations = List.of(StationFixture.역2, StationFixture.역4, StationFixture.역5,
+            final List<Station> noneStartStations = List.of(역2, StationFixture.역4, StationFixture.역5,
                     StationFixture.역6);
             for (final Station noneStartStation : noneStartStations) {
                 final String message = assertThrows(LineException.class, () ->

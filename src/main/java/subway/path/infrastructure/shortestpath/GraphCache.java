@@ -18,8 +18,7 @@ public class GraphCache {
     }
 
     public void updateCache(final Path path) {
-        if (!cache.containsKey(path)) {
-            cache.put(path, LinesGraphAdapter.adapt(path));
-        }
+        cache.clear();
+        cache.put(path, LinesGraphAdapter.adapt(path));
     }
 }

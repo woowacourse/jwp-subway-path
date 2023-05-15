@@ -17,23 +17,22 @@ public class Sections {
 
     private final List<Section> sections = new ArrayList<>();
 
+    public Sections() {
+    }
+
     public Sections(final Section... sections) {
         this(Arrays.asList(sections));
     }
 
     public Sections(final List<Section> sections) {
-        validateEmpty(sections);
         validateSectionsIsLinked(sections);
         this.sections.addAll(sections);
     }
 
-    private void validateEmpty(final List<Section> sections) {
-        if (sections.isEmpty()) {
-            throw new LineException("구간은 최소 한개 이상 있어야 합니다.");
-        }
-    }
-
     private void validateSectionsIsLinked(final List<Section> sections) {
+        if (sections.isEmpty()) {
+            return;
+        }
         final Iterator<Section> iter = sections.iterator();
         Section currentSection = iter.next();
         while (iter.hasNext()) {
@@ -66,6 +65,9 @@ public class Sections {
     }
 
     public List<Station> stations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
         final List<Station> stations = new ArrayList<>();
         stations.add(sections.get(0).up());
         final List<Station> collect = sections.stream()
@@ -76,6 +78,10 @@ public class Sections {
     }
 
     private boolean isAddedToTerminal(final Section addedSection) {
+        if (sections.isEmpty()) {
+            sections.add(addedSection);
+            return true;
+        }
         if (isAddedToUpTerminal(addedSection)) {
             return true;
         }

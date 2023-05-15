@@ -18,12 +18,9 @@ import subway.line.presentation.request.LineCreateRequest;
 public class LineSteps {
 
     public static ExtractableResponse<Response> 노선_생성_요청(
-            final String lineName,
-            final String upTerminalName,
-            final String downTerminalName,
-            final Integer distance
+            final String lineName
     ) {
-        final LineCreateRequest request = new LineCreateRequest(lineName, upTerminalName, downTerminalName, distance);
+        final LineCreateRequest request = new LineCreateRequest(lineName);
         return 노선_생성_요청(request);
     }
 
@@ -40,12 +37,9 @@ public class LineSteps {
     }
 
     public static UUID 노선_생성하고_아이디_반환(
-            final String lineName,
-            final String upTerminalName,
-            final String downTerminalName,
-            final Integer distance
+            final String lineName
     ) {
-        final LineCreateRequest request = new LineCreateRequest(lineName, upTerminalName, downTerminalName, distance);
+        final LineCreateRequest request = new LineCreateRequest(lineName);
         final ExtractableResponse<Response> response = 노선_생성_요청(request);
         return 응답_헤더에_담긴_노선_아이디(response);
     }

@@ -77,11 +77,7 @@ class LineServiceTest {
             역을_저장한다(선릉);
             willDoNothing().given(lineRepository).save(any());
 
-            final LineCreateCommand command = new LineCreateCommand(
-                    "1호선",
-                    "잠실",
-                    "선릉",
-                    10);
+            final LineCreateCommand command = new LineCreateCommand("1호선");
 
             // when
             final UUID uuid = lineService.create(command);
@@ -90,29 +86,6 @@ class LineServiceTest {
             assertThat(uuid).isNotNull();
             then(publisher).should(times(1))
                     .publishEvent(any(ChangeLineEvent.class));
-        }
-
-        @Test
-        void 초기_구간이_이미_다른_노선에_존재하며_해당_노선과_거리나_역의_상하관계가_일치하지_않는_경우_예외() {
-            // given
-            역을_저장한다(역1);
-            역을_저장한다(역2);
-            final Line exist = new Line("1호선", new Sections(List.of(
-                    new Section(역1, 역2, 1)
-            )));
-            given(lineRepository.findAll()).willReturn(List.of(exist));
-            given(lineRepository.findByName("2호선")).willReturn(Optional.empty());
-            final LineCreateCommand command = new LineCreateCommand(
-                    "2호선",
-                    "역1",
-                    "역2",
-                    10);
-
-            // when & then
-            final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
-                    lineService.create(command)
-            ).exceptionType();
-            assertThat(exceptionType).isEqualTo(INCONSISTENT_EXISTING_SECTION);
         }
     }
 

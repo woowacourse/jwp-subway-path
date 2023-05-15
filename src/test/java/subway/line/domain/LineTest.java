@@ -1,6 +1,7 @@
 package subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static subway.line.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
 import static subway.line.domain.fixture.StationFixture.경유역1;
@@ -64,14 +65,9 @@ class LineTest {
     }
 
     @Test
-    void 구간_없이_생성되면_예외() {
-        // when
-        final String message = assertThrows(LineException.class, () ->
-                new Line("1호선")
-        ).getMessage();
-
-        // then
-        assertThat(message).contains("구간은 최소 한개 이상 있어야 합니다.");
+    void 구간_없이_생성될_수_있다() {
+        // when & then
+        assertDoesNotThrow(() -> new Line("1호선"));
     }
 
     @Test

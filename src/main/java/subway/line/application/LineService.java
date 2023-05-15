@@ -14,7 +14,6 @@ import subway.line.domain.Line;
 import subway.line.domain.LineRepository;
 import subway.line.domain.LineValidator;
 import subway.line.domain.Section;
-import subway.line.domain.Sections;
 import subway.line.domain.Station;
 import subway.line.domain.StationRepository;
 import subway.line.domain.event.ChangeLineEvent;
@@ -46,11 +45,7 @@ public class LineService {
 
     public UUID create(final LineCreateCommand command) {
         lineValidator.validateDuplicateLineName(command.lineName());
-        final Station up = findStationByName(command.upTerminalName());
-        final Station down = findStationByName(command.downTerminalName());
-        final Section section = new Section(up, down, command.distance());
-        lineValidator.validateSectionConsistency(section);
-        final Line line = new Line(command.lineName(), new Sections(section));
+        final Line line = new Line(command.lineName());
         lineRepository.save(line);
         applicationEventPublisher.publishEvent(new ChangeLineEvent());
         return line.id();
