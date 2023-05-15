@@ -25,6 +25,3 @@ CREATE TABLE IF NOT EXISTS section
     FOREIGN KEY(source_station_id) REFERENCES station(id) ON DELETE CASCADE,
     FOREIGN KEY(target_station_id) REFERENCES station(id) ON DELETE CASCADE
 );
-
-CREATE INDEX IF NOT EXISTS idx_station_name ON STATION (name);
-CREATE INDEX IF NOT EXISTS idx_line_name ON LINE (name);
