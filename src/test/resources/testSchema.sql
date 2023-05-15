@@ -20,8 +20,5 @@ create table if not exists SECTION
     down_bound_station_id bigint not null,
     line_id bigint not null,
     distance int not null,
-    primary key(id),
-    foreign key(up_bound_station_id) references station(id) ON DELETE CASCADE,
-    foreign key(down_bound_station_id) references station(id) ON DELETE CASCADE,
-    foreign key(line_id) references line(id) ON DELETE CASCADE
+    primary key(id)
 );
