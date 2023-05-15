@@ -37,13 +37,18 @@ public class StationDao {
     }
 
     public List<StationEntity> findAll() {
-        String sql = "select * from STATION";
+        String sql = "select id, name from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public StationEntity findById(Long id) {
-        String sql = "select * from STATION where id = ?";
+        String sql = "select id, name from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public int findByName(String name) {
+        String sql = "select id from STATION where name = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, name);
     }
 
     public void update(StationEntity newStation) {

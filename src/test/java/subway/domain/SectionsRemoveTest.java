@@ -4,13 +4,11 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.exception.RemoveStationException;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class SectionsRemoveTest {
     static Line line;
@@ -40,22 +38,10 @@ public class SectionsRemoveTest {
         sections = new Sections(new ArrayList<>(List.of(section1)));
 
         //when
-        sections.removeWhenOnlyTwoStationsExist(station1);
+        sections.remove(station1);
 
         //then
         assertThat(sections.getSections().isEmpty()).isTrue();
-    }
-
-    @DisplayName("구간이 하나밖에 없지만 지울 Station 이 해당 구간에 포함되어 있지 않으면 예외를 던진다")
-    @Test
-    void removeWhenOneSectionExistsButWrongStation() {
-        //given
-        sections = new Sections(new ArrayList<>(List.of(section1)));
-
-        //when, then
-        assertThatThrownBy(() -> sections.removeWhenOnlyTwoStationsExist(station3))
-                .isInstanceOf(RemoveStationException.class)
-                .hasMessageContaining("구간 내에 포함되어 있지 않은 역은 삭제할 수 없습니다");
     }
 
     @DisplayName("상행 종점을 지운다")

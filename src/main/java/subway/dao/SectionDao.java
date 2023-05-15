@@ -6,8 +6,8 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
 import subway.entity.SectionEntity;
+import subway.entity.SectionWithStationNameEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -17,11 +17,11 @@ public class SectionDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
-            new SectionEntity(
+    private RowMapper<SectionWithStationNameEntity> rowMapper = (rs, rowNum) ->
+            new SectionWithStationNameEntity(
                     rs.getLong("line_id"),
-                    rs.getLong("pre_station_id"),
-                    rs.getLong("station_id"),
+                    rs.getString("pre_station_name"),
+                    rs.getString("station_name"),
                     rs.getLong("distance")
             );
 
@@ -32,8 +32,12 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public List<SectionEntity> findAllByLineId(Long id) {
-        String sql = "SELECT id, line_id, pre_station_id, station_id, distance FROM section WHERE line_id = ?";
+    public List<SectionWithStationNameEntity> findAllByLineId(Long id) {
+        String sql = "SELECT line_id, s1.name AS pre_station_name, s2.name AS station_name, se.distance\n" +
+                "FROM section se\n" +
+                "JOIN station s1 ON se.pre_station_id = s1.id\n" +
+                "JOIN station s2 ON se.station_id = s2.id\n" +
+                "WHERE se.line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, id);
     }
 
@@ -42,9 +46,14 @@ public class SectionDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public int updatePre(Section modified) {
+    public int updatePreStation(SectionEntity section) {
         String sql = "UPDATE section SET pre_station_id = ? WHERE station_id = ?";
-        return jdbcTemplate.update(sql, modified.getPreStationId(), modified.getStationId());
+        return jdbcTemplate.update(sql, section.getPreStationId(), section.getStationId());
+    }
+
+    public int updateStation(SectionEntity section) {
+        String sql = "UPDATE section SET station_id = ? WHERE pre_station_id = ?";
+        return jdbcTemplate.update(sql, section.getStationId(), section.getPreStationId());
     }
 
     public int remove(Long stationId) {

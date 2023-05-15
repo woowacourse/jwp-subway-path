@@ -4,7 +4,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.exception.AddStationException;
+import subway.exception.SectionException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import java.util.List;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-class SectionsTest {
+class SectionsAddTest {
     static Line line;
     static Station station1 = new Station("용산");
     static Station station2 = new Station("이촌");
@@ -111,7 +111,7 @@ class SectionsTest {
 
         //when, then
         assertThatThrownBy(() -> sections.add(newSection))
-                .isInstanceOf(AddStationException.class)
+                .isInstanceOf(SectionException.class)
                 .hasMessageContaining("기존 구간의 길이보다 큰 길이의 구간은 해당 구간 사이에 추가할 수 없습니다.");
     }
 
@@ -120,7 +120,7 @@ class SectionsTest {
     void addExistSection() {
         //given,when,then
         assertThatThrownBy(() -> sections.add(section1))
-                .isInstanceOf(AddStationException.class)
+                .isInstanceOf(SectionException.class)
                 .hasMessageContaining("추가할 수 없는 구간입니다");
     }
 }
