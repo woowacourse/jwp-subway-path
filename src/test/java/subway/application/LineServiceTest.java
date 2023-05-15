@@ -56,8 +56,20 @@ class LineServiceTest {
 			.isEqualTo(List.of(new LineResponse(1L, "2호선")));
 	}
 
+	@DisplayName("ID를 사용한 노선 조회 서비스 테스트")
 	@Test
 	void findById() {
+		// given
+		final Line line2 = new Line(1L, "2호선");
+		given(repository.findById(1L)).willReturn(line2);
+
+		// when
+		final LineResponse response = service.findById(1L);
+
+		// then
+		Assertions.assertThat(response)
+			.hasFieldOrPropertyWithValue("id", 1L)
+			.hasFieldOrPropertyWithValue("name", "2호선");
 	}
 
 	@Test
