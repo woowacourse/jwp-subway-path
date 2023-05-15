@@ -11,91 +11,95 @@ public class Sections {
         this.sections = sections;
     }
 
-    private Section getUpFinalSection() {
-        return sections.stream()
-                .filter(Section::isUpFinalStation)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("상행 종점이 존재하지 않습니다."));
-    }
-
     public void add(final Section section) {
-        if (sections.size() == 0) { // 노선에 해당하는 구간이 아무것도 없는 경우
+        if (sections.isEmpty()) { // 노선에 해당하는 구간이 아무것도 없는 경우
             sections.add(new Section(Station.empty(), section.getUpStation(), section.getDistance()));
             sections.add(section);
             sections.add(new Section(section.getDownStation(), Station.empty(), section.getDistance()));
             return;
         }
 
-        List<Section> upSections = sections.stream()
-                .filter(it -> it.containStation(section.getUpStation()))
-                .collect(Collectors.toList());
-
-        List<Section> downSections = sections.stream()
-                .filter(it -> it.containStation(section.getDownStation()))
-                .collect(Collectors.toList());
+        List<Section> upSections = findSectionsByStation(section.getUpStation());
+        List<Section> downSections = findSectionsByStation(section.getDownStation());
 
         if (upSections.isEmpty() && downSections.isEmpty()) {
             throw new IllegalArgumentException("노선에 기준이 되는 역이 존재하지 않습니다.");
         }
 
         if (upSections.isEmpty()) { // 기준이 되는 역의 상행으로 추가
-            downSections.stream()
-                    .filter(downSection -> downSection.getUpStation().isEmpty())
-                    .findAny()
-                    .ifPresent((target) -> {
-                        sections.add(new Section(Station.empty(), section.getUpStation(), section.getDistance()));
-                        sections.remove(target);
-                        sections.add(section);
-                    });
-
-            downSections.stream()
-                    .filter(downSection -> downSection.getDownStation().equals(section.getDownStation()) && !downSection.getUpStation().isEmpty())
-                    .findAny()
-                    .ifPresent((target) -> {
-                        if (section.getDistance() >= target.getDistance()) {
-                            throw new IllegalArgumentException("현재 구간보다 긴 구간을 추가할 수 없습니다.");
-                        }
-                        sections.add(new Section(target.getUpStation(), section.getUpStation(), target.getDistance() - section.getDistance()));
-                        sections.remove(target);
-                        sections.add(section);
-                    });
+            addSectionInUpDirection(section, downSections);
         }
 
         if (downSections.isEmpty()) { // 기준이 되는 역의 하행으로 추가
-            upSections.stream()
-                    .filter(upSection -> upSection.getDownStation().isEmpty())
-                    .findAny()
-                    .ifPresent((target) -> {
-                        sections.add(new Section(section.getDownStation(), Station.empty(), 0));
-                        sections.remove(target);
-                        sections.add(section);
-                    });
-
-            upSections.stream()
-                    .filter(upSection -> upSection.getUpStation().equals(section.getUpStation()) && !upSection.getDownStation().isEmpty())
-                    .findAny()
-                    .ifPresent((target) -> {
-                        if (section.getDistance() >= target.getDistance()) {
-                            throw new IllegalArgumentException("현재 구간보다 긴 구간을 추가할 수 없습니다.");
-                        }
-                        sections.add(new Section(section.getDownStation(), target.getDownStation(), target.getDistance() - section.getDistance()));
-                        sections.remove(target);
-                        sections.add(section);
-                    });
+            addSectionInDownDirection(section, upSections);
         }
     }
 
-    public void removeFinalSection(final Section deleteSection, final Station deleteStation) {
+    private List<Section> findSectionsByStation(final Station section) {
+        return sections.stream()
+                .filter(it -> it.containStation(section))
+                .collect(Collectors.toList());
+    }
 
-        if (deleteSection.getDownStation().equals(deleteStation)) { // 하행 종점인 경우
-            Station upStation = deleteSection.getUpStation();
-            sections.add(new Section(upStation, Station.empty(), 0));
-            sections.remove(deleteSection);
-            return;
-        }
-        // 상행 종점인 경우
+    private void addSectionInUpDirection(final Section section, final List<Section> downSections) {
+        downSections.stream()
+                .filter(downSection -> downSection.getUpStation().isEmpty())
+                .findAny()
+                .ifPresent((target) -> {
+                    sections.add(new Section(Station.empty(), section.getUpStation(), section.getDistance()));
+                    sections.remove(target);
+                    sections.add(section);
+                });
+
+        downSections.stream()
+                .filter(downSection -> downSection.getDownStation().equals(section.getDownStation()) && !downSection.getUpStation().isEmpty())
+                .findAny()
+                .ifPresent((target) -> {
+                    if (section.getDistance() >= target.getDistance()) {
+                        throw new IllegalArgumentException("현재 구간보다 긴 구간을 추가할 수 없습니다.");
+                    }
+                    sections.add(new Section(target.getUpStation(), section.getUpStation(), target.getDistance() - section.getDistance()));
+                    sections.remove(target);
+                    sections.add(section);
+                });
+    }
+
+    private void addSectionInDownDirection(final Section section, final List<Section> upSections) {
+        upSections.stream()
+                .filter(upSection -> upSection.getDownStation().isEmpty())
+                .findAny()
+                .ifPresent((target) -> {
+                    sections.add(new Section(section.getDownStation(), Station.empty(), 0));
+                    sections.remove(target);
+                    sections.add(section);
+                });
+
+        upSections.stream()
+                .filter(upSection -> upSection.getUpStation().equals(section.getUpStation()) && !upSection.getDownStation().isEmpty())
+                .findAny()
+                .ifPresent((target) -> {
+                    if (section.getDistance() >= target.getDistance()) {
+                        throw new IllegalArgumentException("현재 구간보다 긴 구간을 추가할 수 없습니다.");
+                    }
+                    sections.add(new Section(section.getDownStation(), target.getDownStation(), target.getDistance() - section.getDistance()));
+                    sections.remove(target);
+                    sections.add(section);
+                });
+    }
+
+
+    public void removeFinalSection(final Section deleteSection, final Station deleteStation) {
+        Station upStation = deleteSection.getUpStation();
         Station downStation = deleteSection.getDownStation();
-        sections.add(new Section(Station.empty(), downStation, 0));
+
+        if (downStation.equals(deleteStation)) { // 하행 종점인 경우
+            sections.add(new Section(upStation, Station.empty(), 0));
+        }
+
+        if (upStation.equals(deleteStation)) { // 상행 종점인 경우
+            sections.add(new Section(Station.empty(), downStation, 0));
+        }
+
         sections.remove(deleteSection);
     }
 
@@ -104,16 +108,19 @@ public class Sections {
         Section nextSection = deleteSections.get(1);
         int newDistance = previousSection.getDistance() + nextSection.getDistance();
 
+        Station upStation = Station.empty();
+        Station downStation = Station.empty();
+
         if (previousSection.getUpStation().equals(deleteStation)) {
-            Station upStation = nextSection.getUpStation();
-            Station downStation = previousSection.getDownStation();
-            sections.add(new Section(upStation, downStation, newDistance));
-            sections.removeAll(deleteSections);
-            return;
+            upStation = nextSection.getUpStation();
+            downStation = previousSection.getDownStation();
         }
 
-        Station upStation = previousSection.getUpStation();
-        Station downStation = nextSection.getDownStation();
+        if (previousSection.getDownStation().equals(deleteStation)) {
+            upStation = previousSection.getUpStation();
+            downStation = nextSection.getDownStation();
+        }
+
         sections.add(new Section(upStation, downStation, newDistance));
         sections.removeAll(deleteSections);
     }
