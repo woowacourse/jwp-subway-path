@@ -13,6 +13,22 @@ public class SubwayGraph implements Graph {
             = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
     @Override
+    public boolean isDownLastStation(final Station station) {
+        int inDegree = graph.inDegreeOf(station);
+        int outDegree = graph.outDegreeOf(station);
+
+        return inDegree == 1 && outDegree == 0;
+    }
+
+    @Override
+    public boolean isUpFirstStation(final Station station) {
+        int inDegree = graph.inDegreeOf(station);
+        int outDegree = graph.outDegreeOf(station);
+
+        return inDegree == 0 && outDegree == 1;
+    }
+
+    @Override
     public void addVertex(final Station station) {
         graph.addVertex(station);
     }

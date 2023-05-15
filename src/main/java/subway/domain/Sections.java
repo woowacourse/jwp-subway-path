@@ -25,15 +25,10 @@ public class Sections {
         validateDistance(distance);
 
         // 기존 역: upLineStation, 새로운 역: downLineStation
-        if (graph.containsVertex(upLineStation)) {
+        if (isNewStation(upLineStation)) {
 
             // upLineStation[하행종점] -> downLineStation (새 역) -> nothing!
-            int inDegree = graph.inDegreeOf(upLineStation);
-            int outDegree = graph.outDegreeOf(upLineStation);
-
-            final boolean isDownLastStation = inDegree == 1 && outDegree == 0;
-
-            if (isDownLastStation) {
+            if (graph.isDownLastStation(upLineStation)) {
                 addStationToDownLine(upLineStation, downLineStation, distance);
                 return downLineStation;
             }
@@ -45,15 +40,10 @@ public class Sections {
         }
 
         // 기존 역: downLineStation, 새로운 역: upLineStation
-        if (graph.containsVertex(downLineStation)) {
+        if (isNewStation(downLineStation)) {
 
             // nothing -> upLineStation (새 역) -> downLineStation
-            int inDegree = graph.inDegreeOf(downLineStation);
-            int outDegree = graph.outDegreeOf(downLineStation);
-
-            final boolean isUpFirstStation = inDegree == 0 && outDegree == 1;
-
-            if (isUpFirstStation) {
+            if (graph.isUpFirstStation(downLineStation)) {
                 addStationToUpLine(upLineStation, downLineStation, distance);
                 return upLineStation;
             }
@@ -66,6 +56,10 @@ public class Sections {
         }
 
         throw new IllegalArgumentException("부적절한 입력입니다.");
+    }
+
+    private boolean isNewStation(final Station station) {
+        return graph.containsVertex(station);
     }
 
     public boolean isSameLine(Line line) {

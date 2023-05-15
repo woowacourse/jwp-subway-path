@@ -19,7 +19,7 @@ import static subway.fixture.StationFixture.*;
 
 class SectionsTest {
 
-    private final Graph graph = new DefaultDirectedWeightedGraph();
+    private final Graph graph = new SubwayGraph();
 
     private Sections createSections() {
         final Sections sections = new Sections(LINE_999, graph);
