@@ -116,4 +116,11 @@ class LineTest {
         assertThat(lineNumberTwo.getSections())
                 .contains(new Section(newStation, SULLEUNG_STATION, 2));
     }
+
+    @Test
+    void Line_생성시_section이_하나도_없으면_예외를_던진다() {
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Line(new LineName("2호선"), List.of()))
+                .withMessageContaining("디버깅: section이 존재하지 않는데 종점을 추가하려고 합니다.");
+    }
 }

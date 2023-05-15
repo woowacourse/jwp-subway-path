@@ -10,20 +10,19 @@ import java.util.stream.Collectors;
 
 public class Line {
 
+    private static final int NONE = 0;
     private final LineName name;
     private final LinkedList<Section> sections;
 
     public Line(LineName name, List<Section> sections) {
+        validateEmptySection(sections);
         this.name = name;
         this.sections = new LinkedList<>(sections);
         addEmptyEndpoints(sections);
     }
 
     public Line(LineName name, Section section) {
-        this.name = name;
-        this.sections = new LinkedList<>();
-        sections.add(section);
-        addEmptyEndpoints(sections);
+        this(name, List.of(section));
     }
 
     public Line(Line otherLine) {
@@ -36,6 +35,12 @@ public class Line {
 
         this.sections.addFirst(new Section(Station.getEmptyEndpoint(), upstreamEmptyEndpoint, Integer.MAX_VALUE));
         this.sections.addLast(new Section(downstreamEmptyEndpoint, Station.getEmptyEndpoint(), Integer.MAX_VALUE));
+    }
+
+    private void validateEmptySection(List<Section> sections) {
+        if (sections.size() == NONE) {
+            throw new IllegalArgumentException("디버깅: section이 존재하지 않는데 종점을 추가하려고 합니다.");
+        }
     }
 
     public List<Section> addStation(Station newStation, Station upstream, Station downstream, int distanceToUpstream) {
