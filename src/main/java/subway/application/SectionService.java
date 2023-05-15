@@ -1,6 +1,7 @@
 package subway.application;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +28,7 @@ public class SectionService {
     public void saveSection(Long lineId, SectionRequest request) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
 
-        List<Section> sectionsOfLine = sectionEntities.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
+        List<Section> sectionsOfLine = toSections(sectionEntities);
 
         Sections sections = new Sections(sectionsOfLine);
 
@@ -46,11 +45,15 @@ public class SectionService {
     }
 
     private void addStationOfSection(Station requestStartStation, Station requestEndStation) {
-        if (!stationDao.isExistStationByName(requestStartStation.getName())) {
+        Map<String ,Long> stations = stationDao.findAll()
+                .stream()
+                .collect(Collectors.toMap(StationEntity::getName,StationEntity::getId));
+
+        if (!stations.containsKey(requestStartStation.getName())) {
             stationDao.insert(new StationEntity(requestStartStation.getName()));
         }
 
-        if (!stationDao.isExistStationByName(requestEndStation.getName())) {
+        if (!stations.containsKey(requestEndStation.getName())) {
             stationDao.insert(new StationEntity(requestEndStation.getName()));
         }
     }
@@ -59,9 +62,7 @@ public class SectionService {
     public void deleteSection(Long lineId, Long stationId) {
         List<SectionEntity> sectionEntitiesOfLine = sectionDao.findByLineId(lineId);
 
-        List<Section> sectionsOfLine = sectionEntitiesOfLine.stream()
-                .map(this::toSection)
-                .collect(Collectors.toList());
+        List<Section> sectionsOfLine = toSections(sectionEntitiesOfLine);
 
         Sections sections = new Sections(sectionsOfLine);
 
@@ -73,36 +74,40 @@ public class SectionService {
 
         deleteStation(stationId);
     }
-    private void deleteStation(Long stationId) {
-        List<SectionEntity> sectionEntities = sectionDao.findAll();
-        boolean hasStartStation = sectionEntities.stream()
-                .noneMatch(it -> it.getStartStationId().equals(stationId));
-        boolean hasEndStation = sectionEntities.stream()
-                .noneMatch(it -> it.getEndStationId().equals(stationId));
 
-        if (hasStartStation && hasEndStation) {
+    private void deleteStation(Long stationId) {
+        if(sectionDao.findExistStationById(stationId)){
             stationDao.deleteById(stationId);
         }
     }
 
-
     private List<SectionEntity> toSectionEntities(Long lineId, List<Section> sections) {
+        Map<String, Long> stations = stationDao.findAll()
+                .stream()
+                .collect(Collectors.toMap(StationEntity::getName, StationEntity::getId));
+
         return sections.stream()
                 .map(it -> {
-                    Long startStationId = stationDao.findIdByName(it.getStartStation().getName());
-                    Long endStationId = stationDao.findIdByName(it.getEndStation().getName());
-
+                    Long startStationId = stations.get(it.getStartStation().getName());
+                    Long endStationId = stations.get(it.getEndStation().getName());
                     return new SectionEntity(lineId, startStationId, endStationId, it.getDistance().getDistance());
                 })
                 .collect(Collectors.toList());
     }
 
-    private Section toSection(SectionEntity sectionEntity) {
-        Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
-        Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
-        Distance distance = new Distance(sectionEntity.getDistance());
+    private List<Section> toSections(List<SectionEntity> findSections) {
+        Map<Long, String> stations = stationDao.findAll()
+                .stream()
+                .collect(Collectors.toMap(StationEntity::getId, StationEntity::getName));
 
-        return new Section(startStation, endStation, distance);
+        List<Section> existSections = findSections.stream()
+                .map(it -> new Section(
+                        new Station(stations.get(it.getStartStationId())),
+                        new Station(stations.get(it.getEndStationId())),
+                        new Distance(it.getDistance()))
+                )
+                .collect(Collectors.toList());
+        return existSections;
     }
 
     private Station toStation(StationEntity stationEntity) {

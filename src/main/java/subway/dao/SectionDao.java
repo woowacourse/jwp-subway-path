@@ -1,10 +1,11 @@
 package subway.dao;
 
-import java.sql.PreparedStatement;
-import java.util.List;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+
+import java.sql.PreparedStatement;
+import java.util.List;
 
 @Repository
 public class SectionDao {
@@ -51,5 +52,11 @@ public class SectionDao {
     public List<SectionEntity> findAll() {
         String sql = "select * from SECTION";
         return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public Boolean findExistStationById(Long stationId) {
+        String sql = "select exists (select * from section where start_station_id = ? OR end_station_id = ?)";
+
+        return jdbcTemplate.queryForObject(sql, Boolean.class, stationId, stationId);
     }
 }

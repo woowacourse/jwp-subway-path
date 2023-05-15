@@ -10,6 +10,7 @@ import subway.dto.StationResponse;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
@@ -31,12 +32,13 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Lines lines = new Lines();
         lineDao.findAll()
-                .stream()
                 .forEach(it -> lines.addNewLine(it.getName(), new Sections(toSections(sectionDao.findAll()))));
 
         Line line = lines.addNewLine(request.getLineName(), new Sections(
                 List.of(new Section(new Station(request.getStartStation()), new Station(request.getEndStation()), new Distance(request.getDistance())))
         ));
+
+        addStationOfSection(request.getStartStation(), request.getEndStation());
 
         Long savedId = lineDao.insert(new LineEntity(line.getName()));
         sectionDao.insertAll(toSectionEntities(savedId, line.getSections().getSections()));
@@ -63,14 +65,15 @@ public class LineService {
     }
 
     private List<StationResponse> makeStationResponses(List<Station> sortedStations) {
-        List<StationResponse> stationsResponses = sortedStations.stream()
-                .map(it -> {
-                    //TODO : 여러번 db조회보다 한번에 조회
-                    Long findStationId = stationDao.findIdByName(it.getName());
-                    return new StationResponse(findStationId, it.getName());
-                })
-                .collect(Collectors.toList());
-        return stationsResponses;
+
+        Map<String, Long> stations = stationDao.findAll().stream()
+                .collect(Collectors.toMap(StationEntity::getName, StationEntity::getId));
+
+        List<StationResponse> stationResponses = sortedStations.stream()
+                .map(it -> new StationResponse(stations.get(it.getName()), it.getName()))
+        .collect(Collectors.toList());
+
+        return stationResponses;
     }
 
     private LineResponse makeLineResponse(LineEntity entities, Long lineId) {
@@ -94,44 +97,44 @@ public class LineService {
     }
 
     private List<SectionEntity> toSectionEntities(Long lineId, List<Section> sections) {
+        Map<String, Long> stations = stationDao.findAll()
+                .stream()
+                .collect(Collectors.toMap(StationEntity::getName, StationEntity::getId));
+
         return sections.stream()
-                .map(it -> {
-                    //TODO : 여러번 db조회보다 한번에 조회
-                    addStationOfSection(new Station(it.getStartStation().getName()), new Station(it.getEndStation().getName()));
-                    Long startStationId = stationDao.findIdByName(it.getStartStation().getName());
-                    Long endStationId = stationDao.findIdByName(it.getEndStation().getName());
-                    return new SectionEntity(lineId, startStationId, endStationId, it.getDistance().getDistance());
-                })
+                .map(it -> new SectionEntity(lineId,
+                        stations.get(it.getStartStation().getName()),
+                        stations.get(it.getEndStation().getName()),
+                        it.getDistance().getDistance()))
                 .collect(Collectors.toList());
     }
 
-    private void addStationOfSection(Station requestStartStation, Station requestEndStation) {
-        if (!stationDao.isExistStationByName(requestStartStation.getName())) {
-            stationDao.insert(new StationEntity(requestStartStation.getName()));
+    private void addStationOfSection(String startStation, String endStation) {
+        Map<String, Long> stations = stationDao.findAll()
+                .stream()
+                .collect(Collectors.toMap(StationEntity::getName, StationEntity::getId));
+
+        if (!stations.containsKey(startStation)) {
+            stationDao.insert(new StationEntity(startStation));
         }
 
-        if (!stationDao.isExistStationByName(requestEndStation.getName())) {
-            stationDao.insert(new StationEntity(requestEndStation.getName()));
+        if (!stations.containsKey(endStation)) {
+            stationDao.insert(new StationEntity(endStation));
         }
     }
 
     private List<Section> toSections(List<SectionEntity> findSections) {
+        Map<Long, String> stations = stationDao.findAll()
+                .stream()
+                .collect(Collectors.toMap(StationEntity::getId, StationEntity::getName));
+
         List<Section> existSections = findSections.stream()
-                .map(this::toSection)
+                .map(it -> new Section(
+                        new Station(stations.get(it.getStartStationId())),
+                        new Station(stations.get(it.getEndStationId())),
+                        new Distance(it.getDistance()))
+                )
                 .collect(Collectors.toList());
         return existSections;
-    }
-
-    private Section toSection(SectionEntity sectionEntity) {
-        //TODO : 여러번 db조회보다 한번에 조회
-        Station startStation = toStation(stationDao.findById(sectionEntity.getStartStationId()));
-        Station endStation = toStation(stationDao.findById(sectionEntity.getEndStationId()));
-        Distance distance = new Distance(sectionEntity.getDistance());
-
-        return new Section(startStation, endStation, distance);
-    }
-
-    private Station toStation(StationEntity stationEntity) {
-        return new Station(stationEntity.getName());
     }
 }
