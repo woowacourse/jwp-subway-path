@@ -10,8 +10,8 @@ import subway.persistance.StationDao;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
 @Transactional
+@Service
 public class StationService {
     private final StationDao stationDao;
 

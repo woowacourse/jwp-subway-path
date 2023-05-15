@@ -1,10 +1,12 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.response.StationResponse;
 
+@Transactional
 @Service
 public class LineStationService {
 
