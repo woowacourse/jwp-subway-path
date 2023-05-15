@@ -151,6 +151,6 @@ class SectionDaoTest {
         sectionDao.deleteById(sectionIdToDelete);
 
         // then
-        assertThat(sectionDao.selectAllSectionByLineId(INITIAL_Line2.ID)).hasSize(0);
+        assertThat(sectionDao.selectAllSectionByLineId(INITIAL_Line2.ID)).isEmpty();
     }
 }
