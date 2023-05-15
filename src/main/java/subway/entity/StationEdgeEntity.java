@@ -2,7 +2,7 @@ package subway.entity;
 
 import subway.domain.StationEdge;
 
-public class StationEdgeEntity {
+public class StationEdgeEntity implements Entity{
 
     private final Long id;
     private final Long lineId;

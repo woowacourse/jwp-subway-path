@@ -1,6 +1,5 @@
 package subway.dao;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -13,17 +12,17 @@ import java.util.Map;
 import java.util.Optional;
 
 @Component
-public class LineDao {
+public class LineDao implements Dao<LineEntity> {
 
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
-
-    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+    private static final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
             );
+
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     public LineDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -32,6 +31,7 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
+    @Override
     public Long insert(final LineEntity line) {
         final Map<String, Object> params = new HashMap<>();
         params.put("name", line.getName());
@@ -40,31 +40,32 @@ public class LineDao {
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<LineEntity> findAll() {
-        final String sql = "select id, name, color from line";
-        return jdbcTemplate.query(sql, rowMapper);
-    }
-
+    @Override
     public Optional<LineEntity> findById(final Long id) {
-        final String sql = "select id, name, color from line WHERE id = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
+        final String sql = "SELECT id, name, color FROM line WHERE id = ?";
+        return findInOptional(jdbcTemplate, sql, lineRowMapper, id);
+    }
+
+    @Override
+    public List<LineEntity> findAll() {
+        final String sql = "SELECT id, name, color FROM line";
+        return jdbcTemplate.query(sql, lineRowMapper);
+    }
+
+    @Override
+    public void update(final LineEntity lineEntity) {
+        final String sql = "UPDATE line SET name = ?, color = ? WHERE id = ?";
+        jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
     }
 
 
+    @Override
     public void deleteById(final Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+        jdbcTemplate.update("DELETE FROM Line WHERE id = ?", id);
     }
 
     public Optional<LineEntity> findByName(final String name) {
-        final String sql = "select id, name, color from line WHERE name = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
+        final String sql = "SELECT id, name, color FROM line WHERE name = ?";
+        return findInOptional(jdbcTemplate, sql, lineRowMapper, name);
     }
 }

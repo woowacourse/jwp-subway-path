@@ -1,6 +1,5 @@
 package subway.dao;
 
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -15,18 +14,17 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public class StationDao {
-    private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
+public class StationDao implements Dao<StationEntity> {
 
-    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-
-    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+    private static final RowMapper<StationEntity> stationRowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
+    private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
+    private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     public StationDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -36,37 +34,43 @@ public class StationDao {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
     }
 
+    @Override
     public Long insert(final StationEntity stationEntity) {
         final SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
-    public List<StationEntity> findAll() {
-        final String sql = "select * from station";
-        return jdbcTemplate.query(sql, rowMapper);
+    @Override
+    public Optional<StationEntity> findById(final Long id) {
+        final String sql = "SELECT * FROM station WHERE id = ?";
+        return findInOptional(jdbcTemplate, sql, stationRowMapper, id);
     }
 
-    public Optional<StationEntity> findById(final Long id) {
-        final String sql = "select * from station where id = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
+    @Override
+    public List<StationEntity> findAll() {
+        final String sql = "SELECT * FROM station";
+        return jdbcTemplate.query(sql, stationRowMapper);
+    }
+
+    @Override
+    public void update(final StationEntity stationEntity) {
+        final String sql = "UPDATE station SET name = ? WHERE id = ?";
+        jdbcTemplate.update(sql, stationEntity.getName(), stationEntity.getId());
+    }
+
+    @Override
+    public void deleteById(final Long id) {
+        jdbcTemplate.update("DELETE FROM station WHERE id = ?", id);
     }
 
     public List<StationEntity> findById(final List<Long> ids) {
-        final String sql = "select * from station where id in (:ids)";
+        final String sql = "SELECT * FROM station WHERE id IN (:ids)";
         final SqlParameterSource params = new MapSqlParameterSource("ids", ids);
-        return namedParameterJdbcTemplate.query(sql, params, rowMapper);
+        return namedParameterJdbcTemplate.query(sql, params, stationRowMapper);
     }
 
     public Optional<StationEntity> findByName(final String name) {
-        final String sql = "select * from station where name = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
-        }
+        final String sql = "SELECT * FROM station WHERE name = ?";
+        return findInOptional(jdbcTemplate, sql, stationRowMapper, name);
     }
 }

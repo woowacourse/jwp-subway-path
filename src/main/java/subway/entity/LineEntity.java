@@ -2,7 +2,7 @@ package subway.entity;
 
 import subway.domain.Line;
 
-public class LineEntity {
+public class LineEntity implements Entity{
 
     private final Long id;
     private final String name;
