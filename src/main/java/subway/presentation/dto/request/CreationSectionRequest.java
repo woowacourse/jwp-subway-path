@@ -21,16 +21,24 @@ public class CreationSectionRequest {
     private CreationSectionRequest() {
     }
 
-    private CreationSectionRequest(final Long sourceStationId, final Long targetStationId, final int distance,
-            final Direction direction) {
+    private CreationSectionRequest(
+            final Long sourceStationId,
+            final Long targetStationId,
+            final int distance,
+            final Direction direction
+    ) {
         this.sourceStationId = sourceStationId;
         this.targetStationId = targetStationId;
         this.distance = distance;
         this.direction = direction;
     }
 
-    public static CreationSectionRequest of(final Long sourceStationId, final Long targetStationId, final int distance,
-            final Direction direction) {
+    public static CreationSectionRequest of(
+            final Long sourceStationId,
+            final Long targetStationId,
+            final int distance,
+            final Direction direction
+    ) {
         return new CreationSectionRequest(sourceStationId, targetStationId, distance, direction);
     }
 

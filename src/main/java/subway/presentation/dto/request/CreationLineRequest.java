@@ -1,16 +1,14 @@
 package subway.presentation.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 public class CreationLineRequest {
 
-    private final String name;
-    private final String color;
+    private String name;
+    private String color;
 
-    @JsonCreator
-    private CreationLineRequest(@JsonProperty(value = "name") final String name,
-                                @JsonProperty(value = "color") final String color) {
+    private CreationLineRequest() {
+    }
+
+    private CreationLineRequest(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
