@@ -72,8 +72,20 @@ class LineServiceTest {
 			.hasFieldOrPropertyWithValue("name", "2호선");
 	}
 
+	@DisplayName("노선 갱신 서비스 테스트")
 	@Test
 	void updateLine() {
+		// given
+		given(repository.updateLine(anyLong(), any())).willReturn(true);
+
+		// when
+		final LineRequest request = new LineRequest("2호선");
+		final LineResponse response = service.updateLine(1L, request);
+
+		// then
+		Assertions.assertThat(response)
+			.hasFieldOrPropertyWithValue("id", 1L)
+			.hasFieldOrPropertyWithValue("name", "2호선");
 	}
 
 	@Test
