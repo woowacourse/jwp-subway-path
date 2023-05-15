@@ -43,4 +43,10 @@ public class GlobalExceptionHandler {
                 .collect(Collectors.joining("\n"));
         return ResponseEntity.badRequest().body(new ExceptionResponse(errorMessage));
     }
+
+//    @ExceptionHandler(RuntimeException.class)
+//    public ResponseEntity<ExceptionResponse> handleRuntimeException() {
+//        return ResponseEntity.internalServerError().body(new ExceptionResponse("서버 내부 오류입니다."));
+//    }
+
 }

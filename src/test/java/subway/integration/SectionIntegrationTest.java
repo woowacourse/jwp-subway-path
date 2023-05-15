@@ -7,14 +7,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import subway.presentation.dto.request.SectionRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 구간 관련 기능")
-@Sql({"/station_test_data.sql", "/section_test_data.sql", "/line_test_data.sql"})
 public class SectionIntegrationTest extends IntegrationTest {
 
     @Test

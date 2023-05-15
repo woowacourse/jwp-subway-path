@@ -2,9 +2,9 @@ package subway.business;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.business.converter.LineEntityRequestConverter;
-import subway.business.converter.SectionConverter;
-import subway.business.converter.StationDomainResponseConverter;
+import subway.business.converter.line.LineEntityRequestConverter;
+import subway.business.converter.section.SectionDomainResponseConverter;
+import subway.business.converter.station.StationDomainResponseConverter;
 import subway.business.domain.Section;
 import subway.business.domain.Station;
 import subway.business.domain.Stations;
@@ -74,7 +74,7 @@ public class LineService {
             throw new IllegalArgumentException("존재하지 않는 노선입니다.");
         }
 
-        List<Section> sections = SectionConverter.queryResultToDomains(sectionDetailEntities);
+        List<Section> sections = SectionDomainResponseConverter.queryResultToDomains(sectionDetailEntities);
 
         Map<Station, List<Object[]>> map = new HashMap<>();
 

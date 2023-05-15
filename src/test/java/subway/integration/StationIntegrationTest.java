@@ -19,7 +19,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철역 관련 기능")
-@Sql("/station_truncate_test.sql")
 public class StationIntegrationTest extends IntegrationTest {
 
     @Test

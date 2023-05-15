@@ -1,4 +1,4 @@
-package subway.business.converter;
+package subway.business.converter.station;
 
 import subway.persistence.entity.StationEntity;
 import subway.presentation.dto.request.StationRequest;

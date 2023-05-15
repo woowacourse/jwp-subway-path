@@ -31,8 +31,12 @@ public class StationDao {
 
     public StationEntity insert(final StationEntity stationEntity) {
         final SqlParameterSource params = new BeanPropertySqlParameterSource(stationEntity);
-        final long id = insertAction.executeAndReturnKey(params).longValue();
-        return new StationEntity(id, stationEntity.getName());
+        try {
+            final long id = insertAction.executeAndReturnKey(params).longValue();
+            return new StationEntity(id, stationEntity.getName());
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedStationNameException();
+        }
     }
 
     public List<StationEntity> findAll() {
@@ -53,6 +57,15 @@ public class StationDao {
         final String sql = "SELECT * FROM station WHERE name = ?";
         try {
             return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, name);
+        } catch (EmptyResultDataAccessException e) {
+            throw new StationNotFoundException();
+        }
+    }
+
+    public Long findIdByName(final String name) {
+        final String sql = "SELECT id FROM station WHERE name = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, Long.class, name);
         } catch (EmptyResultDataAccessException e) {
             throw new StationNotFoundException();
         }

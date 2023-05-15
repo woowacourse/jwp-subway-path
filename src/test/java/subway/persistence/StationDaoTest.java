@@ -63,7 +63,7 @@ class StationDaoTest {
 
         // when, then
         assertThatThrownBy(() -> stationDao.insert(stationEntity))
-                .isInstanceOf(DataIntegrityViolationException.class);
+                .isInstanceOf(DuplicatedStationNameException.class);
     }
 
     @Test
@@ -125,12 +125,36 @@ class StationDaoTest {
 
     @Test
     @DisplayName("이름으로 조회 실패 - 존재하지 않는 이름")
-    void findIdByName_fail_name_not_found() {
+    void findByName_fail_name_not_found() {
         // given
         final String name = "포비";
 
         // when, then
         assertThatThrownBy(() -> stationDao.findByName(name))
+                .isInstanceOf(StationNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("이름으로 id 조회 성공")
+    void findIdByName_success() {
+        // given
+        final String name = "잠실";
+
+        // when
+        final Long stationId = stationDao.findIdByName(name);
+
+        // then
+        assertThat(stationId).isEqualTo(1L);
+    }
+
+    @Test
+    @DisplayName("이름으로 id 조회 실패 - 존재하지 않는 이름")
+    void findIdByName_fail_name_not_found() {
+        // given
+        final String name = "포비";
+
+        // when, then
+        assertThatThrownBy(() -> stationDao.findIdByName(name))
                 .isInstanceOf(StationNotFoundException.class);
     }
 

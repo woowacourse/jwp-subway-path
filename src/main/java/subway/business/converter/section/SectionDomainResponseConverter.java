@@ -1,5 +1,8 @@
-package subway.business.converter;
+package subway.business.converter.section;
 
+import subway.business.converter.line.LineConverter;
+import subway.business.converter.station.StationEntityDomainConverter;
+import subway.business.domain.Distance;
 import subway.business.domain.Line;
 import subway.business.domain.Section;
 import subway.business.domain.Station;
@@ -9,26 +12,26 @@ import subway.presentation.dto.response.SectionResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SectionConverter {
+public class SectionDomainResponseConverter {
 
-    public static List<SectionResponse> domainToResponseDtos(final List<Section> sections) {
+    public static List<SectionResponse> toResponses(final List<Section> sections) {
         return sections.stream()
-                .map(SectionConverter::domainToResponseDto)
+                .map(SectionDomainResponseConverter::toResponse)
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    private static SectionResponse domainToResponseDto(final Section section) {
+    private static SectionResponse toResponse(final Section section) {
         return new SectionResponse(
                 section.getId(),
                 LineConverter.domainToResponseDto(section.getLine()),
-                section.getDistance(),
+                section.getDistance().getLength(),
                 StationEntityDomainConverter.domainToResponseDto(section.getPreviousStation()),
                 StationEntityDomainConverter.domainToResponseDto(section.getNextStation()));
     }
 
     public static List<Section> queryResultToDomains(final List<SectionDetailEntity> sectionDetailEntities) {
         return sectionDetailEntities.stream()
-                .map(SectionConverter::queryResultToDomain)
+                .map(SectionDomainResponseConverter::queryResultToDomain)
                 .collect(Collectors.toUnmodifiableList());
     }
 
@@ -38,7 +41,7 @@ public class SectionConverter {
                 new Line(sectionDetailEntity.getLineId(), sectionDetailEntity.getLineName(), sectionDetailEntity.getLineColor()),
                 new Station(sectionDetailEntity.getPreviousStationId(), sectionDetailEntity.getPreviousStationName()),
                 new Station(sectionDetailEntity.getNextStationId(), sectionDetailEntity.getNextStationName()),
-                sectionDetailEntity.getDistance()
+                new Distance(sectionDetailEntity.getDistance())
         );
     }
 

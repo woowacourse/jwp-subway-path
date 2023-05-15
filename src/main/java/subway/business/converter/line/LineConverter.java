@@ -1,4 +1,4 @@
-package subway.business.converter;
+package subway.business.converter.line;
 
 import subway.business.domain.Line;
 import subway.business.dto.LineDto;

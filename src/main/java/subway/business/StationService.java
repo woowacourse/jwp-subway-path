@@ -1,7 +1,7 @@
 package subway.business;
 
 import org.springframework.stereotype.Service;
-import subway.business.converter.StationEntityRequestResponseConverter;
+import subway.business.converter.station.StationEntityRequestResponseConverter;
 import subway.persistence.StationDao;
 import subway.presentation.dto.request.StationRequest;
 import subway.presentation.dto.response.StationResponse;

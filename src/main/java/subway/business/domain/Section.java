@@ -2,15 +2,14 @@ package subway.business.domain;
 
 public class Section {
 
-    private final long id;
+    private final Long id;
     private final Line line;
     private final Station previousStation;
     private final Station nextStation;
-    // TODO: 원시값 포장
-    private final int distance;
+    private final Distance distance;
 
     public Section(final long id, final Line line, final Station previousStation,
-                   final Station nextStation, final int distance) {
+                   final Station nextStation, final Distance distance) {
         this.id = id;
         this.line = line;
         this.previousStation = previousStation;
@@ -18,7 +17,26 @@ public class Section {
         this.distance = distance;
     }
 
-    public long getId() {
+    public Section(final Line line, final Station previousStation,
+                   final Station nextStation, final Distance distance) {
+        this.id = null;
+        this.line = line;
+        this.previousStation = previousStation;
+        this.nextStation = nextStation;
+        this.distance = distance;
+    }
+
+    public static Section createFrontPart(final Section standardSection,
+                                          final Station newStation, final Distance distance) {
+        return new Section(standardSection.line, standardSection.previousStation, newStation, distance);
+    }
+
+    public static Section createBackPart(final Section standardSection,
+                                          final Station newStation, final Distance distance) {
+        return new Section(standardSection.line, newStation, standardSection.nextStation, distance);
+    }
+
+    public Long getId() {
         return id;
     }
 
@@ -34,7 +52,7 @@ public class Section {
         return nextStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 }

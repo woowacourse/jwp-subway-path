@@ -1,4 +1,4 @@
-package subway.business.converter;
+package subway.business.converter.line;
 
 import subway.persistence.entity.LineEntity;
 import subway.presentation.dto.request.LineRequest;

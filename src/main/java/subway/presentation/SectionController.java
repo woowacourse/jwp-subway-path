@@ -27,13 +27,13 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<List<SectionResponse>> add(@RequestBody SectionRequest request) {
+    public ResponseEntity<List<SectionResponse>> create(@RequestBody SectionRequest request) {
         final List<SectionResponse> responses = sectionService.save(
                 new SectionInsertDto(
                         request.getLineName(),
                         SubwayDirection.from(request.getDirection()),
                         request.getStandardStationName(),
-                        request.getAdditionalStationName(),
+                        request.getNewStationName(),
                         request.getDistance())
         );
 

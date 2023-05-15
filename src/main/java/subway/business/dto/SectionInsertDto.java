@@ -7,15 +7,15 @@ public class SectionInsertDto {
     private final String lineName;
     private final SubwayDirection direction;
     private final String standardStationName;
-    private final String additionalStationName;
+    private final String newStationName;
     private final Integer distance;
 
     public SectionInsertDto(final String lineName, final SubwayDirection direction, final String standardStationName,
-                            final String additionalStationName, final Integer distance) {
+                            final String newStationName, final Integer distance) {
         this.lineName = lineName;
         this.direction = direction;
         this.standardStationName = standardStationName;
-        this.additionalStationName = additionalStationName;
+        this.newStationName = newStationName;
         this.distance = distance;
     }
 
@@ -31,8 +31,8 @@ public class SectionInsertDto {
         return standardStationName;
     }
 
-    public String getAdditionalStationName() {
-        return additionalStationName;
+    public String getNewStationName() {
+        return newStationName;
     }
 
     public Integer getDistance() {

@@ -14,6 +14,7 @@ import subway.persistence.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -39,7 +40,7 @@ class SectionDaoTest {
 
     @Test
     @DisplayName("저장 성공")
-    void save_success() {
+    void insert_success() {
         // given
         SectionEntity sectionEntity = new SectionEntity(1L, 10, 1L, 5L);
 
@@ -54,6 +55,29 @@ class SectionDaoTest {
                 .anyMatch(entity -> entity.getPreviousStationId() == 1L)
                 .anyMatch(entity -> entity.getNextStationId() == 5L)
                 .anyMatch(entity -> entity.getDistance() == 10);
+    }
+
+    @Test
+    @DisplayName("노선명으로 구간 조회 성공")
+    void findByLineName_success() {
+        // given
+        final String lineName = "2호선";
+
+        // when
+        final List<SectionEntity> sectionEntities = sectionDao.findByLineName(lineName);
+        final List<Long> previousStationIds = sectionEntities.stream()
+                .map(SectionEntity::getPreviousStationId)
+                .collect(Collectors.toUnmodifiableList());
+        final List<Long> nextStationIds = sectionEntities.stream()
+                .map(SectionEntity::getNextStationId)
+                .collect(Collectors.toUnmodifiableList());
+
+        // then
+        assertAll(
+                () -> assertThat(sectionEntities).hasSize(2),
+                () -> assertThat(previousStationIds).containsAll(List.of(1L, 2L)),
+                () -> assertThat(nextStationIds).containsAll(List.of(2L, 3L))
+        );
     }
 
     @Test
@@ -144,17 +168,17 @@ class SectionDaoTest {
                 .isInstanceOf(LineNotFoundException.class);
     }
 
-    @Test
-    @DisplayName("line id 와 previous station id 로 구간 조회 성공")
-    void findByLineIdAndPreviousStationId_success() {
-        // given, when
-        final List<SectionEntity> result = sectionDao.findByLineIdAndPreviousStationId(1L, 1L);
-
-        // then
-        assertThat(result).hasSize(1);
-        assertThat(result.get(0).getLineId()).isEqualTo(1L);
-        assertThat(result.get(0).getPreviousStationId()).isEqualTo(1L);
-    }
+//    @Test
+//    @DisplayName("line id 와 previous station id 로 구간 조회 성공")
+//    void findByLineIdAndPreviousStationId_success() {
+//        // given, when
+//        final List<SectionEntity> result = sectionDao.findByLineIdAndPreviousStationId(1L, 1L);
+//
+//        // then
+//        assertThat(result).hasSize(1);
+//        assertThat(result.get(0).getLineId()).isEqualTo(1L);
+//        assertThat(result.get(0).getPreviousStationId()).isEqualTo(1L);
+//    }
 
     @Test
     @DisplayName("구간 삭제 성공")

@@ -23,7 +23,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 노선 관련 기능")
-@Sql({"/station_test_data.sql", "/section_truncate_test.sql", "/line_truncate_test.sql"})
 public class LineIntegrationTest extends IntegrationTest {
 
     private LineRequest lineRequest1;

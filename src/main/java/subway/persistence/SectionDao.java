@@ -1,5 +1,6 @@
 package subway.persistence;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
@@ -8,12 +9,12 @@ import org.springframework.stereotype.Repository;
 import subway.exception.LineNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
-import subway.persistence.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
 
-import static subway.persistence.entity.RowMapperUtil.*;
+import static subway.persistence.entity.RowMapperUtil.sectionDetailRowMapper;
+import static subway.persistence.entity.RowMapperUtil.sectionEntityRowMapper;
 
 @Repository
 public class SectionDao {
@@ -32,6 +33,14 @@ public class SectionDao {
         final SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
         Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
         return SectionEntity.of(id, sectionEntity);
+    }
+
+    public List<SectionEntity> findByLineName(final String lineName) {
+        final String sql = "SELECT se.id, se.line_id, se.distance, se.previous_station_id, se.next_station_id " +
+                "FROM section se " +
+                "JOIN line ON se.line_id = line.id " +
+                "WHERE line.name = ?";
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineName);
     }
 
     public List<SectionEntity> findByLineIdAndPreviousStationId(final Long lineId, final Long previousStationId) {
@@ -78,6 +87,24 @@ public class SectionDao {
                 "WHERE line.id = se.line_id";
 
         return jdbcTemplate.query(sql, sectionDetailRowMapper);
+    }
+
+    public SectionDetailEntity findSectionDetailById(final long id) {
+        final String sql = "SELECT se.id, se.distance, se.line_id, " +
+                "line.name line_name, line.color line_color, " +
+                "pst.id previous_station_id, pst.name previous_station_name, " +
+                "nst.id next_station_id, nst.name next_station_name " +
+                "FROM section se " +
+                "JOIN station pst ON se.previous_station_id = pst.id " +
+                "JOIN station nst ON se.next_station_id = nst.id " +
+                "JOIN line ON se.line_id = line.id " +
+                "WHERE se.id = ?";
+
+        try {
+            return jdbcTemplate.queryForObject(sql, sectionDetailRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new RuntimeException("존재하지 않는 section id 입니다.");
+        }
     }
 
     public List<SectionDetailEntity> findSectionDetailByLineId(final long lineId) {

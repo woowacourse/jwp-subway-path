@@ -1,4 +1,4 @@
-package subway.business.converter;
+package subway.business.converter.station;
 
 import subway.business.domain.Station;
 import subway.business.domain.Stations;
