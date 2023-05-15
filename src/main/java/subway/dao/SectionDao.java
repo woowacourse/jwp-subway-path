@@ -156,7 +156,7 @@ public class SectionDao {
         final var stations = new ArrayList<Station>();
 
         var station = line.getHead();
-        while (true) {
+        while (station != null) {
             final var previousSectionOptional = findByPreviousStation(station, line);
             if (previousSectionOptional.isPresent()) {
                 final var previousSection = previousSectionOptional.get();
@@ -164,8 +164,10 @@ public class SectionDao {
                 station = previousSection.getNextStation();
                 continue;
             }
-            return stations;
+            station = null;
         }
+
+        return stations;
     }
 
     public List<Section> findAll() {
