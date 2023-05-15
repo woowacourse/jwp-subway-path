@@ -1,8 +1,9 @@
 package subway.domain;
 
+import java.util.Iterator;
 import java.util.Objects;
 
-public class Section {
+public class Section implements Iterator {
 
     private final Station left;
     private final Station right;
@@ -67,5 +68,15 @@ public class Section {
                 ", right=" + right +
                 ", distance=" + distance +
                 '}';
+    }
+
+    @Override
+    public boolean hasNext() {
+        return false;
+    }
+
+    @Override
+    public Object next() {
+        return null;
     }
 }
