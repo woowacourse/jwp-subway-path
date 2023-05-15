@@ -116,7 +116,6 @@ public class Sections {
                 .orElseThrow();
     }
 
-
     public List<Section> getSections() {
         return sections;
     }

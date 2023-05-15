@@ -7,8 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.line.usecase.FindSingleLineUseCase;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
-import subway.domain.section.Sections;
-import subway.domain.section.SortedSection;
+import subway.domain.line.LineRoutePath;
 import subway.ui.dto.response.LineResponse;
 import subway.ui.dto.response.StationResponse;
 
@@ -26,15 +25,14 @@ public class FindSingleLineService implements FindSingleLineUseCase {
     public LineResponse findSingleLine(final Long id) {
         final Line line = lineRepository.findById(id);
 
-        final Sections sections = line.getSections();
-        final SortedSection sortedSection = new SortedSection(sections);
+        final LineRoutePath lineRoutePath = new LineRoutePath(line);
 
-        final List<StationResponse> stationResponses = toStationResponses(sortedSection);
+        final List<StationResponse> stationResponses = toStationResponses(lineRoutePath);
         return new LineResponse(line.getLineName(), line.getLineColor(), stationResponses);
     }
 
-    private List<StationResponse> toStationResponses(final SortedSection sortedSection) {
-        return sortedSection.getStations()
+    private List<StationResponse> toStationResponses(final LineRoutePath lineRoutePath) {
+        return lineRoutePath.getStations()
                 .stream()
                 .map(StationResponse::new)
                 .collect(Collectors.toList());

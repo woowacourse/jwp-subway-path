@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.line.usecase.FindAllLinesUseCase;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
-import subway.domain.section.SortedSection;
+import subway.domain.line.LineRoutePath;
 import subway.ui.dto.response.LineResponse;
 import subway.ui.dto.response.StationResponse;
 
@@ -27,22 +27,22 @@ public class FindAllLineService implements FindAllLinesUseCase {
         final List<Line> allLines = lineRepository.findAll();
         final List<LineResponse> lineResponses = new ArrayList<>();
 
-        for (final Line allLine : allLines) {
-            lineResponses.add(toLineResponse(allLine));
+        for (final Line line : allLines) {
+            lineResponses.add(toLineResponse(line));
         }
 
         return lineResponses;
     }
 
-    private LineResponse toLineResponse(final Line allLine) {
-        final SortedSection sortedSection = new SortedSection(allLine.getSections());
-        final List<StationResponse> stationResponses = toStationResponses(sortedSection);
+    private LineResponse toLineResponse(final Line line) {
+        final LineRoutePath lineRoutePath = new LineRoutePath(line);
+        final List<StationResponse> stationResponses = toStationResponses(lineRoutePath);
 
-        return new LineResponse(allLine.getLineName(), allLine.getLineColor(), stationResponses);
+        return new LineResponse(line.getLineName(), line.getLineColor(), stationResponses);
     }
 
-    private List<StationResponse> toStationResponses(final SortedSection sortedSection) {
-        return sortedSection.getStations()
+    private List<StationResponse> toStationResponses(final LineRoutePath lineRoutePath) {
+        return lineRoutePath.getStations()
                 .stream()
                 .map(StationResponse::new)
                 .collect(Collectors.toList());

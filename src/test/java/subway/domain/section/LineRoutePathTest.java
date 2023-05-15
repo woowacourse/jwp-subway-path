@@ -4,10 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.LineRoutePath;
 import subway.domain.station.Station;
 import subway.domain.station.StationDistance;
 
-class SortedSectionTest {
+class LineRoutePathTest {
 
     @Test
     void sortedPath() {
@@ -19,10 +20,10 @@ class SortedSectionTest {
         ); // A-B-C-D
 
         //when
-        final SortedSection sortedSection = new SortedSection(new Sections(sections));
+        final LineRoutePath lineRoutePath = new LineRoutePath(new Sections(sections));
 
         //then
-        final List<Station> sortedStations = sortedSection.getStations();
+        final List<Station> sortedStations = lineRoutePath.getStations();
         assertThat(sortedStations).hasSize(4);
         assertThat(sortedStations).containsExactly(
                 new Station("A"),
