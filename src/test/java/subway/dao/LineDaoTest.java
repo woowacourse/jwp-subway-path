@@ -27,7 +27,7 @@ class LineDaoTest {
     }
 
     @Test
-    @DisplayName("저장한다.")
+    @DisplayName("LineEntity를 입력받아 저장한다.")
     void save() {
         // when
         Long newId = lineDao.save(new LineEntity("3호선"));

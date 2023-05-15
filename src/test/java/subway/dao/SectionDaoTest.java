@@ -26,7 +26,7 @@ class SectionDaoTest {
     }
 
     @Test
-    @DisplayName("저장한다.")
+    @DisplayName("SectionEntity를 입력받아 저장한다.")
     void save() {
         // when
         sectionDao.save(sectionEntity);

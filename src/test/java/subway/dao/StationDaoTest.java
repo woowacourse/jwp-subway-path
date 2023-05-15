@@ -35,7 +35,7 @@ class StationDaoTest {
     }
 
     @Test
-    @DisplayName("저장한다.")
+    @DisplayName("StationEntity를 입력받아 저장한다.")
     void save() {
         // when
         Long newId = stationDao.save(new StationEntity("잠실새내역", 1L));
