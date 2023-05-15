@@ -1,6 +1,7 @@
-package subway2.dao;
+package subway.entity;
 
 import java.util.Objects;
+import subway.domain.Section;
 
 public class SectionEntity {
 
@@ -17,6 +18,11 @@ public class SectionEntity {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public static SectionEntity of(Long lineId, Section section) {
+        return new SectionEntity(lineId, section.getUpStation().getId(), section.getDownStation().getId(),
+                section.getDistance().getValue());
     }
 
     public Long getLineId() {
