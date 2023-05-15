@@ -30,11 +30,6 @@ public class StationController {
         return ResponseEntity.ok().body(stationService.findAllStationResponses());
     }
 
-    @GetMapping("/lines/{id}")
-    public ResponseEntity<StationResponse> showStationsByLineId(@PathVariable final Long id) {
-        return ResponseEntity.ok().body(stationService.findStationResponseById(id));
-    }
-
     @GetMapping("/{id}")
     public ResponseEntity<StationResponse> showStation(@PathVariable final Long id) {
         return ResponseEntity.ok().body(stationService.findStationResponseById(id));

@@ -9,9 +9,9 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import subway.Fixture;
-import subway.persistance.entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.LineRepository;
+import subway.persistance.entity.SectionEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -75,7 +75,7 @@ class LineRepositoryImplTest {
                 List.of(new SectionEntity(Fixture.sectionAB, 2L, 0)
                 ));
         when(sectionDao.findByLineId(3L)).thenReturn(
-                        List.of(new SectionEntity(Fixture.sectionBC, 3L, 1))
+                List.of(new SectionEntity(Fixture.sectionBC, 3L, 1))
         );
         when(stationDao.findById(1L)).thenReturn(Optional.of(Fixture.stationA));
         when(stationDao.findById(2L)).thenReturn(Optional.of(Fixture.stationB));

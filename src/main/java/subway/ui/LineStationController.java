@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import subway.application.LineStationService;
 import subway.dto.CreateType;
 import subway.dto.request.ConnectRequest;
+import subway.dto.response.StationResponse;
 
 @RestController
 @RequestMapping("/lines/{lineId}/stations")
@@ -30,6 +31,11 @@ public class LineStationController {
             lineStationService.addIntermediate(lineId, stationId, request.getPrevStationId(), request.getDistance());
         }
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResponseEntity<StationResponse> showStationsByLineId(@PathVariable final Long lineId) {
+        return ResponseEntity.ok().body(lineStationService.findByLineId(lineId));
     }
 
 }

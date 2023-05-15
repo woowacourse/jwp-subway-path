@@ -3,6 +3,7 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.domain.Line;
 import subway.domain.Station;
+import subway.dto.response.StationResponse;
 
 @Service
 public class LineStationService {
@@ -43,5 +44,9 @@ public class LineStationService {
         Station prevStation = stationService.findById(prevStationId);
         line.addIntermediate(station, prevStation, distance);
         lineService.save(line);
+    }
+
+    public StationResponse findByLineId(Long id) {
+        return null;
     }
 }
