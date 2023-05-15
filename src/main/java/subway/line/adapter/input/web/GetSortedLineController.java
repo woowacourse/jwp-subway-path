@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.line.application.port.input.GetSortedLineUseCase;
 import subway.line.dto.GetSortedLineRequest;
+import subway.line.dto.SortedLineResponse;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -19,8 +20,8 @@ public class GetSortedLineController {
     private final GetSortedLineUseCase useCase;
     
     @GetMapping
-    public ResponseEntity<List<String>> save(@RequestBody @Valid final GetSortedLineRequest request) {
+    public ResponseEntity<SortedLineResponse> save(@RequestBody @Valid final GetSortedLineRequest request) {
         final List<String> sortedStations = useCase.getSortedLine(request.getLineId());
-        return ResponseEntity.ok(sortedStations);
+        return ResponseEntity.ok(new SortedLineResponse(sortedStations));
     }
 }

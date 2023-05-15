@@ -72,7 +72,7 @@ class GetSortedLineIntegratedTest extends IntegrationTest {
                 .when().get("lines")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("", contains("잠실역", "청라역", "선릉역"));
+                .body("sortedStations", contains("잠실역", "청라역", "선릉역"));
     }
     
     @Test
