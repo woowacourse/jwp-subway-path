@@ -1,9 +1,9 @@
 package subway.application.line;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.persistence.dao.LineDao;
 import subway.persistence.entity.LineEntity;
@@ -11,6 +11,7 @@ import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
 
 @Service
+@Transactional
 public class LineService {
 	private final LineDao lineDao;
 
@@ -18,27 +19,17 @@ public class LineService {
 		this.lineDao = lineDao;
 	}
 
-	public LineResponse saveLine(LineRequest request) {
+	public LineResponse saveLine(final LineRequest request) {
 		LineEntity persistLine = lineDao.insert(new LineEntity(request.getName(), request.getColor()));
 		return LineResponse.of(persistLine);
 	}
 
-	public List<LineResponse> findLineResponses() {
-		List<LineEntity> persistLines = findLines();
-		return persistLines.stream()
-			.map(LineResponse::of)
-			.collect(Collectors.toList());
-	}
-
+	@Transactional(readOnly = true)
 	public List<LineEntity> findLines() {
 		return lineDao.findAll();
 	}
 
-	public LineResponse findLineResponseById(Long id) {
-		LineEntity persistLine = findLineById(id);
-		return LineResponse.of(persistLine);
-	}
-
+	@Transactional(readOnly = true)
 	public LineEntity findLineById(Long id) {
 		return lineDao.findById(id);
 	}
