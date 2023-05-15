@@ -7,13 +7,14 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 
-@Component
+@Repository
 public class DbLineDao implements LineDao {
 
     public static final RowMapper<LineEntity> lineEntityRowMapper = (resultSet, rowNum) -> new LineEntity(

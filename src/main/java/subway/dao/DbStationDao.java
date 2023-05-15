@@ -7,12 +7,13 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.Map;
 
-@Component
+@Repository
 public class DbStationDao implements StationDao {
 
     public static final RowMapper<StationEntity> STATION_ENTITY_ROW_MAPPER = (resultSet, rowNum) ->
