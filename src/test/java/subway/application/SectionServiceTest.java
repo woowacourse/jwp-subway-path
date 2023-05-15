@@ -9,6 +9,10 @@ import subway.SubwayJdbcFixture;
 import subway.application.strategy.InsertDownPointStrategy;
 import subway.application.strategy.InsertMiddlePoint;
 import subway.application.strategy.InsertUpPointStrategy;
+import subway.application.strategy.delete.DeleteStationDownEndStation;
+import subway.application.strategy.delete.DeleteStationMiddleStation;
+import subway.application.strategy.delete.DeleteUpEndStation;
+import subway.application.strategy.delete.SectionDeleter;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
@@ -40,7 +44,13 @@ class SectionServiceTest extends SubwayJdbcFixture {
         final InsertDownPointStrategy insertDownPointStrategy = new InsertDownPointStrategy(sectionRepository);
         final InsertUpPointStrategy insertUpPointStrategy = new InsertUpPointStrategy(sectionRepository);
         final InsertMiddlePoint insertMiddlePoint = new InsertMiddlePoint(List.of(insertUpPointStrategy, insertDownPointStrategy));
-        sectionService = new SectionService(lineDao, stationDao, sectionRepository, insertMiddlePoint);
+
+        final DeleteUpEndStation deleteUpEndStation = new DeleteUpEndStation(sectionRepository);
+        final DeleteStationDownEndStation deleteStationDownEndStation = new DeleteStationDownEndStation(sectionRepository);
+        final DeleteStationMiddleStation deleteStationMiddleStation = new DeleteStationMiddleStation(sectionRepository);
+        final SectionDeleter sectionDeleter = new SectionDeleter(List.of(deleteStationMiddleStation, deleteUpEndStation, deleteStationDownEndStation));
+
+        sectionService = new SectionService(lineDao, stationDao, sectionRepository, insertMiddlePoint, sectionDeleter);
     }
 
     @Nested

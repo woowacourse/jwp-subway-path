@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.strategy.InsertMiddlePoint;
 import subway.application.strategy.InsertSection;
+import subway.application.strategy.delete.SectionDeleter;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;
@@ -25,12 +26,14 @@ public class SectionService {
     private final StationDao stationDao;
     private final SectionRepository sectionRepository;
     private final InsertMiddlePoint insertMiddlePoint;
+    private final SectionDeleter sectionDeleter;
 
-    public SectionService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository, InsertMiddlePoint insertMiddlePoint) {
+    public SectionService(LineDao lineDao, StationDao stationDao, SectionRepository sectionRepository, InsertMiddlePoint insertMiddlePoint, SectionDeleter sectionDeleter) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.sectionRepository = sectionRepository;
         this.insertMiddlePoint = insertMiddlePoint;
+        this.sectionDeleter = sectionDeleter;
     }
 
     public Long insertSection(SectionRequest request) {
@@ -97,26 +100,6 @@ public class SectionService {
             return;
         }
 
-        if (sections.isDownEndPoint(targetStation)) {
-            sectionRepository.delete(sections.findLastSectionId());
-            return;
-        }
-
-        if (sections.isUpEndPoint(targetStation)) {
-            sectionRepository.delete(sections.findFirstSectionId());
-            return;
-        }
-
-        final Sections includeTargetSection = sections.findIncludeTargetSection(targetStation);
-        final Distance newDistance = includeTargetSection.calculateTotalDistance();
-
-        final Section forwardSection = includeTargetSection.getSections().get(0);
-        final Section backwardSection = includeTargetSection.getSections().get(1);
-
-        final Section newSection = new Section(newDistance, forwardSection.getUpStation(), backwardSection.getDownStation(), request.getLineId());
-        sectionRepository.insert(newSection);
-        for (Section section : includeTargetSection.getSections()) {
-            sectionRepository.delete(section.getId());
-        }
+        sectionDeleter.delete(sections, targetStation);
     }
 }
