@@ -13,8 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway2.dto.LineRequest;
-import subway2.dto.LineResponse;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.LineResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -26,7 +26,7 @@ public class LineIntegrationTest extends IntegrationTest {
         super.setUp();
 
         lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        lineRequest2 = new LineRequest("구신분당선", "bg-red-500");
     }
 
     @DisplayName("지하철 노선을 생성한다.")

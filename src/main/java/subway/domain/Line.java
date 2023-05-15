@@ -1,5 +1,7 @@
 package subway.domain;
 
+import static java.util.Collections.EMPTY_LIST;
+
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -10,14 +12,38 @@ import java.util.stream.Collectors;
 
 public class Line {
 
+    private static final int MIN_LENGTH_NAME = 1;
+    private static final int MAX_LENGTH_NAME = 10;
+
+    private final Long id;
     private final String name;
     private final String color;
     private final List<Section> sections;
 
-    public Line(String name, String color, List<Section> sections) {
+    public Line(Long id, String name, String color, List<Section> sections) {
+        this.id = id;
         this.name = name;
         this.color = color;
-        this.sections = new LinkedList<>(sections);
+        this.sections = sections;
+        validateNameLength(name);
+    }
+
+    private void validateNameLength(String name) {
+        if(name.length()<MIN_LENGTH_NAME || name.length() > MAX_LENGTH_NAME) {
+            throw new IllegalArgumentException("노선 이름은 1 ~ 10자여야 합니다");
+        }
+    }
+
+    public void addStation(String baseStationName, String newStationName, String direction, Integer distance) {
+        Station baseStation = new Station(null, baseStationName);
+        Station newStation = new Station(null, newStationName);
+        Direction directionOfBase = Direction.findDirection(direction);
+        Distance newDistance = new Distance(distance);
+        if (sections.isEmpty()) {
+            addInitialStations(baseStation, newStation, directionOfBase, newDistance);
+            return;
+        }
+        addNewStation(baseStation, newStation, directionOfBase, newDistance);
     }
 
     public void addInitialStations(Station baseStation, Station newStation, Direction directionOfBase,
@@ -40,7 +66,8 @@ public class Line {
         }
     }
 
-    public void addStation(Station baseStation, Station newStation, Direction directionOfBase, Distance newDistance) {
+    public void addNewStation(Station baseStation, Station newStation, Direction directionOfBase,
+            Distance newDistance) {
         validateSectionToAdd(baseStation, newStation, directionOfBase, newDistance);
         if (directionOfBase == Direction.LEFT) {
             addNewStationToRight(baseStation, newStation, newDistance, directionOfBase);
@@ -129,6 +156,9 @@ public class Line {
     }
 
     public List<Station> findAllStations() {
+        if(sections.isEmpty()) {
+            return EMPTY_LIST;
+        }
         Station startStation = findFirstStation();
         List<Station> stations = new LinkedList<>(List.of(startStation));
         while (stations.size() <= sections.size()) {
@@ -150,6 +180,16 @@ public class Line {
                 .orElseThrow(() -> new IllegalStateException("상행 종점을 찾을 수 없습니다"));
     }
 
+    public List<Section> findSectionsByStationName(String stationName) {
+        return sections.stream()
+                .filter(section -> section.hasStationInSection(new Station(null, stationName)))
+                .collect(Collectors.toList());
+    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -167,6 +207,10 @@ public class Line {
         return Objects.hash(name, color);
     }
 
+    public Long getId() {
+        return id;
+    }
+
     public String getName() {
         return name;
     }
@@ -174,4 +218,9 @@ public class Line {
     public String getColor() {
         return color;
     }
+
+    public List<Section> getSections() {
+        return new LinkedList<>(sections);
+    }
+
 }
