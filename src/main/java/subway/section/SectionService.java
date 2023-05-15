@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.line.domain.Line;
 import subway.line.persistence.LineDao;
 import subway.line.persistence.LineEntity;
 import subway.section.domain.Section;
@@ -42,9 +43,9 @@ public class SectionService {
 
         final Section section = createSection(sectionCreateDto, upStationEntity, downStationEntity);
 
-        final Sections sections = generateSections(lineEntity.getId());
-        addSectionByCondition(section, sections);
-        updateLine(lineEntity.getId(), sections);
+        final Line line = new Line(lineEntity.getId(), lineEntity.getLineName(), generateSections(lineEntity.getId()));
+        addSectionByCondition(section, line);
+        updateLine(line);
     }
 
     private static Section createSection(SectionCreateDto sectionCreateDto, StationEntity upStationEntity,
@@ -77,19 +78,19 @@ public class SectionService {
                 , sectionStationDto.getDistance())).collect(Collectors.toList());
     }
 
-    private void addSectionByCondition(Section section, Sections sections) {
-        if (sections.isEmpty()) {
-            sections.initializeSections(section.getUpStation(), section.getDownStation(), section.getDistance());
+    private void addSectionByCondition(Section section, Line line) {
+        if (line.isEmpty()) {
+            line.initializeLine(section.getUpStation(), section.getDownStation(), section.getDistance());
             return;
         }
-        sections.addSection(section.getUpStation(), section.getDownStation(), section.getDistance());
+        line.addStation(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
-    private void updateLine(final Long lineId, final Sections sections) {
-        sectionDao.deleteAllByLineId(lineId);
-        sections.getSections().forEach((section) -> sectionDao.insert(
+    private void updateLine(Line line) {
+        sectionDao.deleteAllByLineId(line.getId());
+        line.getSections().forEach((section) -> sectionDao.insert(
                 new SectionEntity(
-                    lineId,
+                    line.getId(),
                     stationDao.findIdByName(section.getUpStation().getName()),
                     stationDao.findIdByName(section.getDownStation().getName()),
                     section.getDistance())
@@ -124,9 +125,8 @@ public class SectionService {
         final StationEntity stationEntity = stationDao.findById(stationId)
             .orElseThrow(() -> new IllegalArgumentException("해당 역은 존재하지 않습니다."));
 
-        final Sections sections = generateSections(lineEntity.getId());
-
-        sections.removeStation(new Station(stationEntity.getId(), stationEntity.getStationName()));
-        updateLine(lineEntity.getId(), sections);
+        final Line line = new Line(lineEntity.getId(), lineEntity.getLineName(), generateSections(lineEntity.getId()));
+        line.removeStation(new Station(stationEntity.getId(), stationEntity.getStationName()));
+        updateLine(line);
     }
 }

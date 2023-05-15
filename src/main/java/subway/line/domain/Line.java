@@ -3,6 +3,7 @@ package subway.line.domain;
 import java.util.List;
 import subway.section.domain.Section;
 import subway.section.domain.Sections;
+import subway.station.domain.Station;
 
 public class Line {
 
@@ -19,25 +20,29 @@ public class Line {
     public Line(String lineName, Sections sections) {
         this(null, lineName, sections);
     }
-//
-//    public void initializeLine(final String upStationName, final String downStationName, final int distance) {
-//        sections.initializeSections(upStationName, downStationName, distance);
-//    }
-//
-//    public void addStation(final String upStationName, final String downStationName, final int distance) {
-//        sections.addSection(upStationName, downStationName, distance);
-//    }
-//
-//    public void removeStation(final String stationName) {
-//        sections.removeStation(lineName);
-//    }
-//
-//    public boolean hasSameName(final String name) {
-//        return this.lineName.equals(name);
-//    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
+    public void initializeLine(final Station upStation, final Station downStation, final int distance) {
+        sections.initializeSections(upStation, downStation, distance);
+    }
+
+    public void addStation(final Station upStation, final Station downStation, final int distance) {
+        sections.addSection(upStation, downStation, distance);
+    }
+
+    public void removeStation(final Station station) {
+        sections.removeStation(station);
+    }
 
     public String getLineName() {
         return lineName;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public List<Section> getSections() {
