@@ -6,6 +6,8 @@ create table if not exists STATION
 (
     id bigint auto_increment not null,
     name varchar(255) not null unique,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp,
     primary key(id)
 );
 
@@ -14,6 +16,8 @@ create table if not exists LINE
     id bigint auto_increment not null,
     name varchar(255) not null unique,
     color varchar(20) not null,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp,
     primary key(id)
 );
 
@@ -25,6 +29,8 @@ create table if not exists SECTIONS
     line_id bigint not null,
     distance int not null,
     next_id bigint null,
+    created_at timestamp default current_timestamp,
+    updated_at timestamp default current_timestamp on update current_timestamp,
     primary key(id),
     FOREIGN KEY (up_id) REFERENCES STATION(id) ON DELETE CASCADE,
     FOREIGN KEY (down_id) REFERENCES STATION(id) ON DELETE CASCADE,
