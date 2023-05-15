@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.common.exception.SubwayException;
+import subway.common.exception.SubwayIllegalArgumentException;
 import subway.fixture.SectionFixture.이호선_역삼_삼성_3;
 import subway.fixture.StationFixture.건대역;
 import subway.fixture.StationFixture.삼성역;
@@ -43,7 +43,7 @@ class SectionsTest {
             sections.add(section);
 
             assertThatThrownBy(() -> sections.add(section))
-                    .isInstanceOf(SubwayException.class)
+                    .isInstanceOf(SubwayIllegalArgumentException.class)
                     .hasMessage("이미 존재하는 구간입니다.");
         }
 
@@ -54,7 +54,7 @@ class SectionsTest {
             sections.add(section);
 
             assertThatThrownBy(() -> sections.add(new Section(건대역.STATION, 역삼역.STATION, 2)))
-                    .isInstanceOf(SubwayException.class)
+                    .isInstanceOf(SubwayIllegalArgumentException.class)
                     .hasMessage("하나의 역은 반드시 노선에 존재해야합니다.");
         }
 
@@ -87,7 +87,7 @@ class SectionsTest {
                         sections.add(section);
 
                         assertThatThrownBy(() -> sections.add(new Section(삼성역.STATION, 잠실역.STATION, distance)))
-                                .isInstanceOf(SubwayException.class)
+                                .isInstanceOf(SubwayIllegalArgumentException.class)
                                 .hasMessage("거리는 기존 구간보다 짧아야합니다.");
                     }
 
@@ -134,7 +134,7 @@ class SectionsTest {
                         sections.add(section);
 
                         assertThatThrownBy(() -> sections.add(new Section(잠실역.STATION, 건대역.STATION, distance)))
-                                .isInstanceOf(SubwayException.class)
+                                .isInstanceOf(SubwayIllegalArgumentException.class)
                                 .hasMessage("거리는 기존 구간보다 짧아야합니다.");
                     }
 
@@ -166,7 +166,7 @@ class SectionsTest {
             Sections sections = new Sections();
 
             assertThatThrownBy(() -> sections.remove(역삼역.STATION))
-                    .isInstanceOf(SubwayException.class)
+                    .isInstanceOf(SubwayIllegalArgumentException.class)
                     .hasMessage("해당 역이 노선에 존재하지 않습니다.");
         }
 
@@ -177,7 +177,7 @@ class SectionsTest {
             sections.add(section);
 
             assertThatThrownBy(() -> sections.remove(잠실역.STATION))
-                    .isInstanceOf(SubwayException.class)
+                    .isInstanceOf(SubwayIllegalArgumentException.class)
                     .hasMessage("해당 역이 노선에 존재하지 않습니다.");
         }
 

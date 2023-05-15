@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.common.exception.SubwayException;
+import subway.common.exception.SubwayIllegalArgumentException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -30,7 +30,7 @@ class LineTest {
         String color = "GREEN";
 
         assertThatThrownBy(() -> new Line(name, color))
-                .isInstanceOf(SubwayException.class)
+                .isInstanceOf(SubwayIllegalArgumentException.class)
                 .hasMessage("이름은 50자 이하여야합니다.");
     }
 
@@ -40,7 +40,7 @@ class LineTest {
         String color = "a".repeat(21);
 
         assertThatThrownBy(() -> new Line(name, color))
-                .isInstanceOf(SubwayException.class)
+                .isInstanceOf(SubwayIllegalArgumentException.class)
                 .hasMessage("색상은 20자 이하여야합니다.");
     }
 
@@ -49,7 +49,7 @@ class LineTest {
     @ValueSource(strings = {" ", "   ", "\t", "\n"})
     void 이름은_공백일_수_없다(String name) {
         assertThatThrownBy(() -> new Line(name, "GREEN"))
-                .isInstanceOf(SubwayException.class)
+                .isInstanceOf(SubwayIllegalArgumentException.class)
                 .hasMessage("이름은 비어있을 수 없습니다.");
     }
 
@@ -58,7 +58,7 @@ class LineTest {
     @ValueSource(strings = {" ", "   ", "\t", "\n"})
     void 색상은_공백일_수_없다(String color) {
         assertThatThrownBy(() -> new Line("2호선", color))
-                .isInstanceOf(SubwayException.class)
+                .isInstanceOf(SubwayIllegalArgumentException.class)
                 .hasMessage("색상은 비어있을 수 없습니다.");
     }
 

@@ -11,7 +11,7 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import subway.common.exception.SubwayException;
+import subway.common.exception.SubwayIllegalArgumentException;
 import subway.common.exception.SubwayNoSuchResourceException;
 
 @RestControllerAdvice
@@ -19,9 +19,9 @@ public class ExceptionAdvice {
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    @ExceptionHandler(SubwayException.class)
-    private ResponseEntity<ErrorResponse> handleApiIllegalArgumentException(SubwayException exception) {
-        logger.warn("[SubwayException]", exception);
+    @ExceptionHandler(SubwayIllegalArgumentException.class)
+    private ResponseEntity<ErrorResponse> handleApiIllegalArgumentException(SubwayIllegalArgumentException exception) {
+        logger.warn("[SubwayIllegalArgumentException]", exception);
 
         return ResponseEntity.badRequest()
                 .body(new ErrorResponse(exception.getMessage()));

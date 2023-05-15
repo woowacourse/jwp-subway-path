@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
-import subway.common.exception.SubwayException;
+import subway.common.exception.SubwayIllegalArgumentException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -28,7 +28,7 @@ public class StationTest {
         String name = "a".repeat(51);
 
         assertThatThrownBy(() -> new Station(name))
-                .isInstanceOf(SubwayException.class)
+                .isInstanceOf(SubwayIllegalArgumentException.class)
                 .hasMessage("이름은 50자 이하여야합니다.");
     }
 
@@ -37,7 +37,7 @@ public class StationTest {
     @ValueSource(strings = {" ", "   ", "\t", "\n"})
     void 이름은_공백일_수_없다(String name) {
         assertThatThrownBy(() -> new Station(name))
-                .isInstanceOf(SubwayException.class)
+                .isInstanceOf(SubwayIllegalArgumentException.class)
                 .hasMessage("이름은 비어있을 수 없습니다.");
     }
 

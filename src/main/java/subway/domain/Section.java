@@ -1,6 +1,6 @@
 package subway.domain;
 
-import subway.common.exception.SubwayException;
+import subway.common.exception.SubwayIllegalArgumentException;
 
 public class Section {
 
@@ -25,7 +25,7 @@ public class Section {
 
     private void validateStations(final Station upStation, final Station downStation) {
         if (upStation.equals(downStation)) {
-            throw new SubwayException("상행역과 하행역은 달라야합니다.");
+            throw new SubwayIllegalArgumentException("상행역과 하행역은 달라야합니다.");
         }
     }
 
