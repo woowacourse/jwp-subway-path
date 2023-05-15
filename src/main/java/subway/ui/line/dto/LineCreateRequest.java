@@ -1,6 +1,7 @@
 package subway.ui.line.dto;
 
 public class LineCreateRequest {
+
     private final String lineName;
     private final String upStation;
     private final String downStation;

@@ -28,6 +28,6 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> unexpectedException(Exception e) {
         log.error("Error from UnExpectedException = ", e);
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
+        return ResponseEntity.internalServerError().body(new ErrorResponse(e.getMessage()));
     }
 }

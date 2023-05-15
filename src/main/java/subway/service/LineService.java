@@ -65,12 +65,12 @@ public class LineService {
         return findLine;
     }
 
-    public Line getLine(final Long lineId) {
+    public Line findLineById(final Long lineId) {
         return lineDao.findById(lineId)
-                .orElseThrow(() -> new IllegalArgumentException("!"));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
     }
 
-    public List<Station> findLineById(final Long lineId) {
+    public List<Station> getStations(final Long lineId) {
         final Line findLine = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
         final List<Edge> findEdges = edgeDao.findAllByLineId(findLine.getId());

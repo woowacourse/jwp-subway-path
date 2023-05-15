@@ -1,21 +1,6 @@
 # jwp-subway-path
 
 ## API 설계
-- [x] 역 등록 API (post - "/stations")
-request
-```JSON
-  {
-    "stationName" : "잠실"
-  }
-```
-response
-```JSON
-  {
-  "stationId" : 1,
-  "stationName" : "잠실"
-  }
-```
-
 - [x] 최초 노선 등록 API (post - "/lines")
 request
 ```JSON
@@ -35,14 +20,6 @@ request
     "newStationName" : "잠실나루",
     "direction" : "UP",
     "distance" : 5
-  }
-```
-response
-```JSON
-  {
-  "lineId" : 1,
-  "lineName" : "2호선",
-  "stationIds" : [1, 2, 3]
   }
 ```
 
@@ -67,46 +44,43 @@ response
 - [x] 모든 노선의 모든 역 조회 API (get - "/lines")
 response
 ```JSON
-  [
-    {
-      "lineId" : 1,
-      "lineName": "2호선",
-      "stations" : [
-        {
-          "stationId" : 1,
-          "stationName" : "잠실"
-        },
-        {
-          "stationId" : 2,
-          "stationName" : "잠실새내"
-        }
-      ]
-    },
-    {
-      "lineId" : 2,
-      "lineName": "3호선",
-      "stations" : [
-        {
-          "stationId" : 3,
-          "stationName" : "경복궁"
-        },
-        {
-          "stationId" : 4,
-          "stationName" : "안국"
-        }
-      ]
-    }
-  ]
+  {
+    "response" : [
+      {
+        "lineId" : 1,
+        "lineName": "2호선",
+        "stations" : [
+          {
+            "stationId" : 1,
+            "stationName" : "잠실"
+          },
+          {
+            "stationId" : 2,
+            "stationName" : "잠실새내"
+          }
+        ]
+      },
+      {
+        "lineId" : 2,
+        "lineName": "3호선",
+        "stations" : [
+          {
+            "stationId" : 3,
+            "stationName" : "경복궁"
+          },
+          {
+            "stationId" : 4,
+            "stationName" : "안국"
+          }
+        ]
+      }
+    ]
+  }
+  
 ```
 
 - [x] 노선에 역 제거 API (delete - "/lines/{lineId}/stations/{stationId}")
-response
-```JSON
-  {
-  "lineId" : 1,
-  "lineName" : "2호선",
-  "stationIds" : [1, 2, 3]
-  }
+
 ```
 
 ## 요구사항 정리

@@ -1,10 +1,11 @@
 package subway.ui.line.dto;
 
 public class StationDto {
+
     private final Long stationId;
     private final String stationName;
 
-    public StationDto(Long stationId, String stationName) {
+    public StationDto(final Long stationId, final String stationName) {
         this.stationId = stationId;
         this.stationName = stationName;
     }

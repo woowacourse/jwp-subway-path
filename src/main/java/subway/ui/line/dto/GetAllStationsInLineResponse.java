@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class GetAllStationsInLineResponse {
+
     private final Long lineId;
     private final String lineName;
     private final List<StationDto> stations;

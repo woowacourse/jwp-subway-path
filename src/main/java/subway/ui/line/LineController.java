@@ -47,8 +47,8 @@ public class LineController {
 
     @GetMapping("/{lineId}")
     public ResponseEntity<GetAllStationsInLineResponse> findLineById(@PathVariable Long lineId) {
-        final Line line = lineService.getLine(lineId);
-        final List<Station> stations = lineService.findLineById(lineId);
+        final Line line = lineService.findLineById(lineId);
+        final List<Station> stations = lineService.getStations(lineId);
         final GetAllStationsInLineResponse response = new GetAllStationsInLineResponse(line, stations);
 
         return ResponseEntity.ok(response);
