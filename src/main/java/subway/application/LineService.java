@@ -2,7 +2,6 @@ package subway.application;
 
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.Stations;
 import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
@@ -57,25 +57,14 @@ public class LineService {
     }
 
     public LineStationsResponse findLineStationsResponseById(Long id) {
-        List<Station> stations = stationDao.findAll();
+        Stations stations = new Stations(stationDao.findAll());
         List<Section> allSections = sectionDao.findAllSectionByLineId(id);
         Line persistLine = lineDao.findById(id)
                 .orElseThrow(() -> new DomainException(ExceptionType.UN_EXISTED_LINE));
-
         Sections sections = new Sections(allSections);
-        List<Station> orderedStations = getOrderedStations(stations, sections);
 
+        List<Station> orderedStations = stations.generateSortedStations(sections.findOrderedStationIds());
         return LineStationsResponse.of(persistLine, orderedStations);
-    }
-
-    private List<Station> getOrderedStations(List<Station> stations, Sections sections) {
-        Map<Long, Station> idToStations = stations.stream()
-                .collect(Collectors.toMap(Station::getId, Function.identity()));
-
-        return sections.findOrderedStationIds()
-                .stream()
-                .map(idToStations::get)
-                .collect(Collectors.toList());
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
