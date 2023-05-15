@@ -10,9 +10,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import subway.exception.InvalidLineNameException;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
+import subway.exception.LineNotFoundException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -44,8 +44,8 @@ class SubwayTest {
 
         // expect
         assertThatThrownBy(() -> subway.add("1호선", "B", "Y", 5, LEFT))
-                .isInstanceOf(InvalidLineNameException.class)
-                .hasMessage("존재하지 않는 노선 이름입니다.");
+                .isInstanceOf(LineNotFoundException.class)
+                .hasMessage("노선을 찾을 수 없습니다.");
     }
 
     @Test
@@ -82,8 +82,8 @@ class SubwayTest {
 
         // expect
         assertThatThrownBy(() -> subway.remove("1호선", "B"))
-                .isInstanceOf(InvalidLineNameException.class)
-                .hasMessage("존재하지 않는 노선 이름입니다.");
+                .isInstanceOf(LineNotFoundException.class)
+                .hasMessage("노선을 찾을 수 없습니다.");
     }
 
     @Test

@@ -2,7 +2,6 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import subway.exception.InvalidLineNameException;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotFoundException;
 
@@ -25,24 +24,14 @@ public class Subway {
         final Station additional = new Station(additionalStationName);
         final Distance distance = new Distance(distanceValue);
 
-        if (lines.stream().anyMatch(line -> line.containsAll(base, additional))) {
-            throw new InvalidSectionException("지하철 전체 노선에 이미 존재하는 구간입니다.");
-        }
+        validateExistLine(base, additional);
 
-        final Line findLine = lines.stream()
-                .filter(line -> line.isSameName(lineName))
-                .findFirst()
-                .orElseThrow(InvalidLineNameException::new);
-
+        final Line findLine = findLineByLineName(lineName);
         findLine.add(base, additional, distance, direction);
     }
 
     public void remove(final String lineName, final String stationName) {
-        final Line findLine = lines.stream()
-                .filter(line -> line.isSameName(lineName))
-                .findFirst()
-                .orElseThrow(InvalidLineNameException::new);
-
+        final Line findLine = findLineByLineName(lineName);
         findLine.remove(new Station(stationName));
     }
 
@@ -58,16 +47,16 @@ public class Subway {
         final Station left = new Station(leftStationName);
         final Station right = new Station(rightStationName);
 
-        if (lines.stream().anyMatch(line -> line.containsAll(left, right))) {
+        validateExistLine(left, right);
+
+        final Line findLine = findLineByLineName(lineName);
+        findLine.initialAdd(new Section(left, right, new Distance((distance))));
+    }
+
+    private void validateExistLine(Station base, Station additional) {
+        if (lines.stream().anyMatch(line -> line.containsAll(base, additional))) {
             throw new InvalidSectionException("지하철 전체 노선에 이미 존재하는 구간입니다.");
         }
-
-        final Line findLine = lines.stream()
-                .filter(line -> line.isSameName(lineName))
-                .findFirst()
-                .orElseThrow(InvalidLineNameException::new);
-
-        findLine.initialAdd(new Section(left, right, new Distance((distance))));
     }
 
     public Line findLineByLineName(final String lineName) {
