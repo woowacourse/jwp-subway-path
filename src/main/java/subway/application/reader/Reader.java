@@ -11,5 +11,6 @@ public abstract class Reader {
     public Reader(SectionDao sectionDao) {
         this.sectionDao = sectionDao;
     }
+
     abstract public List<Section> read(final CaseDto caseDto) throws IllegalAccessException;
 }

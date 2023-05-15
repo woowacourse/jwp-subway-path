@@ -76,8 +76,10 @@ public class LineController {
     @PostMapping("/{id}/stations")
     public ResponseEntity<List<AddStationResponse>> addStation(@PathVariable Long id,
                                                                @Valid @RequestBody AddStationRequest addStationRequest) throws IllegalAccessException {
-        final List<AddStationResponse> addStationResponses = sectionService.addStationByLineId(id, addStationRequest)
-                .stream().map(section -> new AddStationResponse(id,section.getDeparture().getName(),section.getArrival().getName(),section.getDistance().getDistance())).collect(Collectors.toList());
+        final List<AddStationResponse> addStationResponses = sectionService.addStationByLineId(id, addStationRequest.getDepartureStation(), addStationRequest.getArrivalStation(), addStationRequest.getDistance())
+                .stream()
+                .map(section -> new AddStationResponse(id, section.getDepartureValue(), section.getArrivalValue(), section.getDistanceValue()))
+                .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.CREATED).body(addStationResponses);
     }
 
@@ -93,11 +95,11 @@ public class LineController {
     }
 
     private SectionResponse getSectionResponse(final Section section) {
-        final Station departure = section.getDeparture();
-        final Station arrival = section.getArrival();
-        final Distance distance = section.getDistance();
 
-        return new SectionResponse(section.getId(), departure.getName(), arrival.getName(),
-                distance.getDistance());
+        return new SectionResponse(
+                section.getId(),
+                section.getDepartureValue(),
+                section.getArrivalValue(),
+                section.getDistanceValue());
     }
 }

@@ -104,7 +104,7 @@ public class SectionDao {
                 + "LEFT JOIN station AS arrival_station ON arrival_station.id = sections.arrival_id "
                 + "WHERE sections.line_id = ? AND sections.departure_id =? OR sections.arrival_id = ?";
         return jdbcTemplate.query(sql, sectionRowMapper
-                , lineId, stationId,stationId);
+                , lineId, stationId, stationId);
     }
 
     public void deleteSection(Long sectionId) {

@@ -2,10 +2,6 @@ package subway.application.reader;
 
 import subway.domain.Section;
 
-import java.util.List;
-
-import static java.util.stream.Collectors.toList;
-
 public class CaseDto {
     private final Long lineId;
     private final String departure;
@@ -13,11 +9,14 @@ public class CaseDto {
     private final int distance;
     private CaseType caseType;
     private Section deleteSection;
-    public CaseDto(Long lineId, String departure, String arrival, int distance) {
-        this.lineId = lineId;
-        this.departure = departure;
-        this.arrival = arrival;
-        this.distance = distance;
+
+    private CaseDto(Builder builder) {
+        this.lineId = builder.lineId;
+        this.departure = builder.departure;
+        this.arrival = builder.arrival;
+        this.distance = builder.distance;
+        this.caseType = builder.caseType;
+        this.deleteSection = builder.deleteSection;
     }
 
     public Long getLineId() {
@@ -44,41 +43,47 @@ public class CaseDto {
         return deleteSection;
     }
 
-    public void setCase(final List<Section> allSection){
-        if(allSection.isEmpty()){
-            caseType = CaseType.NON_DELETE_SAVE_CASE;
-            return;
+    public static class Builder {
+        private Long lineId;
+        private String departure;
+        private String arrival;
+        private int distance;
+        private CaseType caseType;
+        private Section deleteSection;
+
+        public Builder lineId(final long id) {
+            this.lineId = id;
+            return this;
         }
-        List<Section> departureMatch = allSection.stream()
-                .filter(section -> section.getDeparture().getName().equals(this.departure))
-                .collect(toList());
-        List<Section> crossMatch = allSection.stream()
-                .filter(section -> section.getDeparture().getName().equals(this.arrival)||
-                        section.getArrival().getName().equals(this.departure))
-                .collect(toList());
-        List<Section> arrivalMatch = allSection.stream()
-                .filter(section -> section.getArrival().getName().equals(this.arrival))
-                .collect(toList());
-        this.caseType = findCase(departureMatch,crossMatch,arrivalMatch);
-    }
-    public CaseType findCase(final List<Section> departureMatch,
-                         final List<Section> crossMatch,
-                         final List<Section> arrivalMatch){
-        if(crossMatch.size()>1||(!departureMatch.isEmpty()&!arrivalMatch.isEmpty())){
-            return CaseType.EXCEPTION_CASE;
+
+        public Builder departure(final String departure) {
+            this.departure = departure;
+            return this;
         }
-        if(crossMatch.size()==1 & departureMatch.isEmpty() & arrivalMatch.isEmpty()){
-            return CaseType.NON_DELETE_SAVE_CASE;
+
+        public Builder arrival(final String arrival) {
+            this.arrival = arrival;
+            return this;
         }
-        if(!departureMatch.isEmpty()&arrivalMatch.isEmpty()){
-            deleteSection = departureMatch.get(0);
-            return CaseType.UPPER;
+
+        public Builder distance(final int distance) {
+            this.distance = distance;
+            return this;
         }
-        if(departureMatch.isEmpty()&!arrivalMatch.isEmpty()){
-            deleteSection = arrivalMatch.get(0);
-            return CaseType.LOWER;
+
+        public Builder caseType(final CaseType caseType) {
+            this.caseType = caseType;
+            return this;
         }
-        return CaseType.EXCEPTION_CASE;
+
+        public Builder deleteSection(final Section deleteSection) {
+            this.deleteSection = deleteSection;
+            return this;
+        }
+
+        public CaseDto build() {
+            return new CaseDto(this);
+        }
     }
 }
 

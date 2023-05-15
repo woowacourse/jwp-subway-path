@@ -8,12 +8,12 @@ import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.SectionSorter;
-import subway.dto.AddStationRequest;
 
 import java.util.List;
 import java.util.Map;
 
 import static java.util.stream.Collectors.toMap;
+import static subway.application.reader.CaseTypeSetter.setCase;
 
 @Service
 public class SectionService {
@@ -24,10 +24,15 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public List<Section> addStationByLineId(final Long id, AddStationRequest addStationRequest) throws IllegalAccessException {
+    public List<Section> addStationByLineId(final Long id, final String departure, final String arrival, final int distance) throws IllegalAccessException {
         final List<Section> allSections = sectionDao.findSectionsByLineId(id);
-        CaseDto caseDto = new CaseDto(id,addStationRequest.getDepartureStation(),addStationRequest.getArrivalStation(),addStationRequest.getDistance());
-        caseDto.setCase(allSections);
+        CaseDto caseDto = new CaseDto.Builder()
+                .lineId(id)
+                .departure(departure)
+                .arrival(arrival)
+                .distance(distance)
+                .build();
+        caseDto = setCase(caseDto, allSections);
         Reader reader = new FirstFindCase(sectionDao);
         return reader.read(caseDto);
     }
@@ -55,8 +60,8 @@ public class SectionService {
         if (sections.size() == 2) {
             sectionDao.deleteSection(sections.get(1).getId());
             sectionDao.saveSection(lineId,
-                    sections.get(0).getDistance().getDistance() + sections.get(1).getDistance().getDistance(),
-                    sortedSections.get(0).getDeparture().getName(), sortedSections.get(1).getArrival().getName());
+                    sections.get(0).getDistanceValue()+ sections.get(1).getDistanceValue(),
+                    sortedSections.get(0).getDepartureValue(), sortedSections.get(1).getArrivalValue());
         }
     }
 }

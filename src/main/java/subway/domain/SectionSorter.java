@@ -1,8 +1,9 @@
 package subway.domain;
 
-import java.util.*;
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class SectionSorter {
     private static List<Section> line;
@@ -37,7 +38,7 @@ public class SectionSorter {
     }
 
     private static Station getFirstKey(Map<Station, Section> sectionsMap) {
-        return (Station)sectionsMap.keySet().toArray()[0];
+        return (Station) sectionsMap.keySet().toArray()[0];
     }
 
     private static Map<Station, Section> makeHashWith(List<Section> sections) {
@@ -57,16 +58,17 @@ public class SectionSorter {
         }
         return src;
     }
-    private static List<Section> copy(List<Section> input){
+
+    private static List<Section> copy(List<Section> input) {
         List<Section> newList = new ArrayList<>();
-        for(Section section : input){
+        for (Section section : input) {
             addNonNullSection(newList, section);
         }
         return newList;
     }
 
     private static void addNonNullSection(List<Section> newList, Section section) {
-        if(section !=null){
+        if (section != null) {
             newList.add(section);
         }
     }
