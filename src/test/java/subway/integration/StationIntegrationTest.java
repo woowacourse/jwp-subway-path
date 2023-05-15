@@ -13,13 +13,11 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역을 생성한다.")
     void createStation() {
         // given
@@ -38,7 +36,6 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("빈 이름으로 지하철 역을 생성한다")
     void createStation_empty_name() {
         // given
@@ -58,7 +55,6 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("기존에 존재하는 지하철역 이름으로 지하철역을 생성한다.")
     void createStation_duplicate_name() {
         // given
@@ -79,7 +75,6 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역 목록을 조회한다.")
     void getStations() {
         /// given
@@ -102,7 +97,6 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역을 조회한다.")
     void getStationById() {
         /// given
@@ -120,7 +114,6 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역을 수정한다.")
     void updateStation() {
         // given
@@ -142,7 +135,6 @@ public class StationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철역을 제거한다.")
     void deleteStation() {
         // given

@@ -14,7 +14,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import subway.application.dto.LineRequest;
 import subway.application.dto.SectionRequest;
 
@@ -27,7 +26,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선을 생성한다.")
     void createLine() {
         RestAssured
@@ -41,7 +39,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("빈 이름과 빈 색상으로 노선을 생성한다.")
     void createLine_blank_name_and_color() {
         // when
@@ -57,7 +54,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     void createLine_duplicate_name() {
         // given
@@ -77,7 +73,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("기존에 존재하는 역을 이용하여 지하철 노선을 생성한다.")
     void createSection() {
         // given
@@ -104,7 +99,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선 생성 시 노선 아이디, 시작역 아이디, 끝역 아이디, 거리 정보를 빈 값으로 추가한다.")
     void createSection_empty_section_request() {
         final SectionRequest sectionRequest = new SectionRequest(null, null, null, null);
@@ -121,7 +115,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선 생성 시 올바르지 않은 타입의 노선 아이디, 시작역 아이디, 끝역 아이디, 거리 정보를 추가한다.")
     void createSection_invalid_type_section_request() {
         final SectionRequest sectionRequest = new SectionRequest(0L, 0L, 0L, 0);
@@ -138,7 +131,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선 전체 목록을 조회한다.")
     void getAllLines() {
         // given
@@ -186,7 +178,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선 목록을 조회한다.")
     void getLineById() {
         // given
@@ -217,7 +208,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선을 수정한다.")
     void updateLine() {
         // given
@@ -235,7 +225,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선을 제거한다.")
     void deleteLine() {
         // given
@@ -251,7 +240,6 @@ public class LineIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @Sql("classpath:/init.sql")
     @DisplayName("지하철 노선의 역을 제거한다.")
     void deleteStationInLine() {
         // given
