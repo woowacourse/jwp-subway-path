@@ -1,8 +1,8 @@
 package subway.ui.line.dto;
 
-import subway.domain.edge.DownDirection;
-import subway.domain.edge.MyDirection;
-import subway.domain.edge.UpDirection;
+import subway.domain.edge.DirectionStrategy;
+import subway.domain.edge.DownDirectionStrategy;
+import subway.domain.edge.UpDirectionStrategy;
 import subway.domain.line.Direction;
 
 public class AddStationToLineRequest {
@@ -35,12 +35,12 @@ public class AddStationToLineRequest {
         return distance;
     }
 
-    public MyDirection myDirection() {
+    public DirectionStrategy myDirection() {
         if (Direction.UP == direction) {
-            return new UpDirection();
+            return new UpDirectionStrategy();
         }
         if (Direction.DOWN == direction) {
-            return new DownDirection();
+            return new DownDirectionStrategy();
         }
         throw new IllegalStateException();
     }

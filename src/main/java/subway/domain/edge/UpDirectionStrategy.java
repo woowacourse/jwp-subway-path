@@ -6,11 +6,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 
-public class UpDirection implements MyDirection {
+public class UpDirectionStrategy implements DirectionStrategy {
 
     @Override
-    public Edges calculate(final Optional<Edge> existEdgeOptional, final List<Edge> edges,
-                           final Station existStation, final Station newStation, final Integer distance) {
+    public Edges calculate(final List<Edge> edges, final Station existStation, final Station newStation, final Integer distance) {
+
+        final Optional<Edge> existEdgeOptional = edges.stream()
+                .filter(edge -> edge.getDownStation().equals(existStation))
+                .findFirst();
+
         if (existEdgeOptional.isPresent()) {
             final Edge existEdge = existEdgeOptional.get();
             if (existEdge.getDistance() <= distance) {
@@ -27,15 +31,5 @@ public class UpDirection implements MyDirection {
             edges.add(0, new Edge(newStation, existStation, distance));
         }
         return new Edges(new LinkedList<>(edges));
-    }
-
-    @Override
-    public boolean isUp() {
-        return true;
-    }
-
-    @Override
-    public boolean isDown() {
-        return false;
     }
 }

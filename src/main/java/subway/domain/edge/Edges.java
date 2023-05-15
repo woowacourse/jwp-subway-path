@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,24 +34,9 @@ public class Edges {
         return result;
     }
 
-    public Edges add(final Station existStation, final Station newStation, final MyDirection direction, final Integer distance) {
-        final Optional<Edge> existEdgeOptional = findTargetEdge(existStation, direction);
+    public Edges add(final Station existStation, final Station newStation, final DirectionStrategy strategy, final Integer distance) {
 
-        return direction.calculate(existEdgeOptional, edges, existStation, newStation, distance);
-    }
-
-    public Optional<Edge> findTargetEdge(final Station existStation, final MyDirection direction) {
-        if (direction.isUp()) {
-            return edges.stream()
-                    .filter(edge -> edge.getDownStation().equals(existStation))
-                    .findFirst();
-        }
-        if (direction.isDown()) {
-            return edges.stream()
-                    .filter(edge -> edge.getUpStation().equals(existStation))
-                    .findFirst();
-        }
-        throw new UnsupportedOperationException();
+        return strategy.calculate(edges, existStation, newStation, distance);
     }
 
     public Edges remove(final Station station) {

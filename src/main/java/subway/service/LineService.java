@@ -7,7 +7,6 @@ import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.edge.Edge;
 import subway.domain.edge.Edges;
-import subway.domain.edge.MyDirection;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.ui.line.dto.AddStationToLineRequest;
@@ -59,8 +58,7 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
 
         final Edges originalEdges = new Edges(edgeDao.findAllByLineId(lineId));
-        final MyDirection directionStrategy = request.myDirection();
-        final Edges newEdges = originalEdges.add(existStation, newStation, directionStrategy, request.getDistance());
+        final Edges newEdges = originalEdges.add(existStation, newStation, request.myDirection(), request.getDistance());
         edgeDao.deleteAllByLineId(lineId);
         edgeDao.insertAllByLineId(lineId, newEdges.getEdges());
 
