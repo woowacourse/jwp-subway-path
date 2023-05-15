@@ -1,7 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.assertj.core.api.Assertions.tuple;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -23,25 +23,19 @@ class LineTest {
         final Line line = new Line(1L, new LineName("2호선"));
         final Section newSection = new Section(STATION_B, STATION_D, new Distance(3));
 
-        final Line newLine = line.addSection(SECTION_1)
-                .addSection(SECTION_2)
+        final Line newLine = line.addSection(SECTION_2)
+                .addSection(SECTION_1)
                 .addSection(newSection);
 
         final List<Section> sections = newLine.getSections().getSections();
-        assertAll(
-                () -> assertThat(sections)
-                        .extracting(Section::getPrevStation)
-                        .extracting(Station::getName)
-                        .containsExactly("a", "b", "d"),
-                () -> assertThat(sections)
-                        .extracting(Section::getNextStation)
-                        .extracting(Station::getName)
-                        .containsExactly("b", "d", "c"),
-                () -> assertThat(sections)
-                        .extracting(Section::getDistance)
-                        .extracting(Distance::getValue)
-                        .containsExactly(7, 3, 7)
-        );
+
+        assertThat(sections)
+                .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
+                .containsExactly(
+                        tuple(STATION_A, STATION_B, new Distance(7)),
+                        tuple(STATION_B, STATION_D, new Distance(3)),
+                        tuple(STATION_D, STATION_C, new Distance(7))
+                );
     }
 
     @Nested
@@ -57,20 +51,12 @@ class LineTest {
 
             final Line removedLine = newLine.removeStation(STATION_A);
             final List<Section> sections = removedLine.getSections().getSections();
-            assertAll(
-                    () -> assertThat(sections)
-                            .extracting(Section::getPrevStation)
-                            .extracting(Station::getName)
-                            .containsExactly("b"),
-                    () -> assertThat(sections)
-                            .extracting(Section::getNextStation)
-                            .extracting(Station::getName)
-                            .containsExactly("c"),
-                    () -> assertThat(sections)
-                            .extracting(Section::getDistance)
-                            .extracting(Distance::getValue)
-                            .containsExactly(10)
-            );
+
+            assertThat(sections)
+                    .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_B, STATION_C, new Distance(10))
+                    );
         }
 
         @DisplayName("하행 종점을 제거하는 경우")
@@ -83,20 +69,11 @@ class LineTest {
             final Line removedLine = newLine.removeStation(STATION_C);
             final List<Section> sections = removedLine.getSections().getSections();
 
-            assertAll(
-                    () -> assertThat(sections)
-                            .extracting(Section::getPrevStation)
-                            .extracting(Station::getName)
-                            .containsExactly("a"),
-                    () -> assertThat(sections)
-                            .extracting(Section::getNextStation)
-                            .extracting(Station::getName)
-                            .containsExactly("b"),
-                    () -> assertThat(sections)
-                            .extracting(Section::getDistance)
-                            .extracting(Distance::getValue)
-                            .containsExactly(7)
-            );
+            assertThat(sections)
+                    .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_A, STATION_B, new Distance(7))
+                    );
         }
 
         @DisplayName("중간 역을 제거하는 경우")
@@ -109,20 +86,11 @@ class LineTest {
             final Line removedLine = newLine.removeStation(STATION_B);
             final List<Section> sections = removedLine.getSections().getSections();
 
-            assertAll(
-                    () -> assertThat(sections)
-                            .extracting(Section::getPrevStation)
-                            .extracting(Station::getName)
-                            .containsExactly("a"),
-                    () -> assertThat(sections)
-                            .extracting(Section::getNextStation)
-                            .extracting(Station::getName)
-                            .containsExactly("c"),
-                    () -> assertThat(sections)
-                            .extracting(Section::getDistance)
-                            .extracting(Distance::getValue)
-                            .containsExactly(17)
-            );
+            assertThat(sections)
+                    .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_A, STATION_C, new Distance(17))
+                    );
         }
 
         @DisplayName("역이 두개만 있을 때 하나를 제거하는 경우")
