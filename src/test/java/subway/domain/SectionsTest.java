@@ -14,17 +14,17 @@ class SectionsTest {
     void create_sorted_success() {
         // given
         Sections sections = new Sections(new ArrayList<>(List.of(
-                new Section(new Station("samsung"), new Station("busan"), 1),
-                new Section(new Station("gangnam"), new Station("eulji"), 1),
-                new Section(new Station("busan"), new Station("gangnam"), 1),
-                new Section(new Station("jamsil"), new Station("samsung"), 1))));
+                new Section(new Station("강남역"), new Station("역삼역"), 1),
+                new Section(new Station("선릉역"), new Station("삼성역"), 1),
+                new Section(new Station("역삼역"), new Station("선릉역"), 1),
+                new Section(new Station("교대역"), new Station("강남역"), 1))));
 
         // expect
         assertThat(sections.getSections()).usingRecursiveComparison()
                 .isEqualTo(List.of(
-                        new Section(new Station("jamsil"), new Station("samsung"), 1),
-                        new Section(new Station("samsung"), new Station("busan"), 1),
-                        new Section(new Station("busan"), new Station("gangnam"), 1),
-                        new Section(new Station("gangnam"), new Station("eulji"), 1)));
+                        new Section(new Station("교대역"), new Station("강남역"), 1),
+                        new Section(new Station("강남역"), new Station("역삼역"), 1),
+                        new Section(new Station("역삼역"), new Station("선릉역"), 1),
+                        new Section(new Station("선릉역"), new Station("삼성역"), 1)));
     }
 }

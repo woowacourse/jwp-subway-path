@@ -39,11 +39,11 @@ class SectionControllerIntegrationTest {
     @DisplayName("빈 노선에 구간을 추가하면 추가에 성공한다.")
     void addSection_toEmptyLine_success() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
+        addSection("선릉역", "삼성역", 50);
 
         // expect
         mockMvc.perform(get("/sections/{lineId}", lineId))
-                .andExpect(jsonPath("$[0].startStationName").value("잠실역"))
+                .andExpect(jsonPath("$[0].startStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[0].distance").value(50));
     }
@@ -52,15 +52,15 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 두 역 사이에 역을 추가하면 추가에 성공한다.")
     void addSection_betweenStation_success() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
-        addSection("잠실역", "대구역", 20);
+        addSection("역삼역", "삼성역", 50);
+        addSection("역삼역", "선릉역", 20);
 
         // expect
         mockMvc.perform(get("/sections/{lineId}", lineId))
-                .andExpect(jsonPath("$[0].startStationName").value("잠실역"))
-                .andExpect(jsonPath("$[0].endStationName").value("대구역"))
+                .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
+                .andExpect(jsonPath("$[0].endStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].distance").value(20))
-                .andExpect(jsonPath("$[1].startStationName").value("대구역"))
+                .andExpect(jsonPath("$[1].startStationName").value("선릉역"))
                 .andExpect(jsonPath("$[1].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[1].distance").value(30));
     }
@@ -69,16 +69,16 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 상행 종점 역 앞에 새로운 역을 추가하면 추가에 성공한다.")
     void addSection_frontOfStartStation_success() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
-        addSection("대구역", "잠실역", 20);
+        addSection("강남역", "역삼역", 50);
+        addSection("교대역", "강남역", 20);
 
         // expect
         mockMvc.perform(get("/sections/{lineId}", lineId))
-                .andExpect(jsonPath("$[0].startStationName").value("대구역"))
-                .andExpect(jsonPath("$[0].endStationName").value("잠실역"))
+                .andExpect(jsonPath("$[0].startStationName").value("교대역"))
+                .andExpect(jsonPath("$[0].endStationName").value("강남역"))
                 .andExpect(jsonPath("$[0].distance").value(20))
-                .andExpect(jsonPath("$[1].startStationName").value("잠실역"))
-                .andExpect(jsonPath("$[1].endStationName").value("삼성역"))
+                .andExpect(jsonPath("$[1].startStationName").value("강남역"))
+                .andExpect(jsonPath("$[1].endStationName").value("역삼역"))
                 .andExpect(jsonPath("$[1].distance").value(50));
     }
 
@@ -86,16 +86,16 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 하행 종점 역 뒤에 역을 추가하면 추가에 성공한다.")
     void addSection_behindEndStation_success() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
-        addSection("삼성역", "대구역", 20);
+        addSection("역삼역", "선릉역", 50);
+        addSection("선릉역", "삼성역", 20);
 
         // expect
         mockMvc.perform(get("/sections/{lineId}", lineId))
-                .andExpect(jsonPath("$[0].startStationName").value("잠실역"))
-                .andExpect(jsonPath("$[0].endStationName").value("삼성역"))
+                .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
+                .andExpect(jsonPath("$[0].endStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].distance").value(50))
-                .andExpect(jsonPath("$[1].startStationName").value("삼성역"))
-                .andExpect(jsonPath("$[1].endStationName").value("대구역"))
+                .andExpect(jsonPath("$[1].startStationName").value("선릉역"))
+                .andExpect(jsonPath("$[1].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[1].distance").value(20));
     }
 
@@ -103,10 +103,10 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 두 역 사이에 역을 추가할 때, 기준이 되는 역이 없다면 추가에 실패한다.")
     void addSection_betweenStation_noStandard_fail() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
+        addSection("역삼역", "선릉역", 50);
 
         // expect
-        SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("포항역", "대구역", 20);
+        SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("교대역", "강남역", 20);
         mockMvc.perform(post("/sections/{lineId}", lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(newSectionAddRequest)))
@@ -117,10 +117,10 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선의 두 역 사이에 역을 추가할 때, 모든 역이 노선에 존재한다면 추가에 실패한다.")
     void addSection_betweenStation_allInLine_fail() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
+        addSection("선릉역", "삼성역", 50);
 
         // expect
-        SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("삼성역", "잠실역", 20);
+        SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("삼성역", "선릉역", 20);
         mockMvc.perform(post("/sections/{lineId}", lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(newSectionAddRequest)))
@@ -132,10 +132,10 @@ class SectionControllerIntegrationTest {
     @DisplayName("기존 구간에 역을 추가할 때, 기존 구간보다 길이가 같거나 길다면 추가에 실패한다.")
     void addSection_betweenSection_overExistingSectionDistance(int distance) throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
+        addSection("역삼역", "삼성역", 50);
 
         // expect
-        SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("잠실역", "대구역", distance);
+        SectionCreateRequest newSectionAddRequest = new SectionCreateRequest("역삼역", "선릉역", distance);
         mockMvc.perform(post("/sections/{lineId}", lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(newSectionAddRequest)))
@@ -147,7 +147,7 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선에 구간을 추가할 때, 구간의 길이가 0이하라면 추가에 실패한다.")
     void addSection_notPositiveDistance_fail(int distance) throws Exception {
         // given
-        SectionCreateRequest request = new SectionCreateRequest("잠실역", "삼성역", distance);
+        SectionCreateRequest request = new SectionCreateRequest("선릉역", "삼성역", distance);
 
         // expect
         mockMvc.perform(post("/sections/{lineId}", lineId)
@@ -173,11 +173,11 @@ class SectionControllerIntegrationTest {
     @DisplayName("구간의 중간에 있는 역을 삭제할 때, 두 구간이 합쳐진다.")
     void deleteStation_mergeSection_success() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
-        addSection("삼성역", "대구역", 50);
+        addSection("역삼역", "선릉역", 50);
+        addSection("선릉역", "삼성역", 50);
 
         // when
-        SectionDeleteRequest deleteRequest = new SectionDeleteRequest("삼성역");
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest("선릉역");
         mockMvc.perform(delete("/sections/{lineId}", lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(deleteRequest)))
@@ -185,17 +185,17 @@ class SectionControllerIntegrationTest {
 
         // then
         mockMvc.perform(get("/sections/{lineId}", lineId))
-                .andExpect(jsonPath("$[0].startStationName").value("잠실역"))
-                .andExpect(jsonPath("$[0].endStationName").value("대구역"))
+                .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
+                .andExpect(jsonPath("$[0].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[0].distance").value(100));
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"잠실역", "삼성역"})
+    @ValueSource(strings = {"선릉역", "삼성역"})
     @DisplayName("노선에 구간이 1개일 때, 모든 구간이 삭제된다.")
     void deleteStation_singleSection_success(String station) throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
+        addSection("선릉역", "삼성역", 50);
 
         // when
         SectionDeleteRequest deleteRequest = new SectionDeleteRequest(station);
@@ -213,11 +213,11 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선에 구간이 여러 개 일 때, 상행 종점 역을 지울 수 있다.")
     void deleteStation_multipleSection_startStation_success() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
-        addSection("삼성역", "대구역", 50);
+        addSection("역삼역", "선릉역", 50);
+        addSection("선릉역", "삼성역", 50);
 
         // when
-        SectionDeleteRequest deleteRequest = new SectionDeleteRequest("잠실역");
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest("역삼역");
         mockMvc.perform(delete("/sections/{lineId}", lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(deleteRequest)))
@@ -225,8 +225,8 @@ class SectionControllerIntegrationTest {
 
         // then
         mockMvc.perform(get("/sections/{lineId}", lineId))
-                .andExpect(jsonPath("$[0].startStationName").value("삼성역"))
-                .andExpect(jsonPath("$[0].endStationName").value("대구역"))
+                .andExpect(jsonPath("$[0].startStationName").value("선릉역"))
+                .andExpect(jsonPath("$[0].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[0].distance").value(50));
     }
 
@@ -234,11 +234,11 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선에 구간이 여러 개 일 때, 하행 종점 역을 지울 수 있다.")
     void deleteStation_multipleSection_endStation_success() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
-        addSection("삼성역", "대구역", 50);
+        addSection("역삼역", "선릉역", 50);
+        addSection("선릉역", "삼성역", 50);
 
         // when
-        SectionDeleteRequest deleteRequest = new SectionDeleteRequest("대구역");
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest("삼성역");
         mockMvc.perform(delete("/sections/{lineId}", lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(deleteRequest)))
@@ -246,8 +246,8 @@ class SectionControllerIntegrationTest {
 
         // then
         mockMvc.perform(get("/sections/{lineId}", lineId))
-                .andExpect(jsonPath("$[0].startStationName").value("잠실역"))
-                .andExpect(jsonPath("$[0].endStationName").value("삼성역"))
+                .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
+                .andExpect(jsonPath("$[0].endStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].distance").value(50));
     }
 
@@ -255,11 +255,11 @@ class SectionControllerIntegrationTest {
     @DisplayName("노선에 없는 역을 지우면 삭제에 실패한다.")
     void deleteStation_noStation_inLine_fail() throws Exception {
         // given
-        addSection("잠실역", "삼성역", 50);
-        addSection("삼성역", "대구역", 50);
+        addSection("역삼역", "선릉역", 50);
+        addSection("선릉역", "삼성역", 50);
 
         // expect
-        SectionDeleteRequest deleteRequest = new SectionDeleteRequest("포항역");
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest("교대역");
         mockMvc.perform(delete("/sections/{lineId}", lineId)
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(deleteRequest)))
