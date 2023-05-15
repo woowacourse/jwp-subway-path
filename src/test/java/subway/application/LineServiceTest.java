@@ -52,7 +52,7 @@ class LineServiceTest {
     void 이미_존재하는_이름의_노선을_추가하면_예외가_발생한다() {
         // given
         LineRequest request = new LineRequest("2호선", "A", "B", 10);
-        SaveResponse saveResponse = lineService.saveLine(request);
+        lineService.saveLine(request);
 
         // when
         LineRequest secondRequest = new LineRequest("2호선", "B", "C", 10);

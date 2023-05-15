@@ -113,10 +113,6 @@ public class Line {
         findTarget.ifPresent(sections::remove);
     }
 
-    public boolean isEmpty() {
-        return sections.isEmpty();
-    }
-
     public List<Station> getStations() {
         Map<Station, Station> sourceToTarget = sections.stream()
                 .collect(Collectors.toMap(Section::getSource, Section::getTarget));
