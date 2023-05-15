@@ -4,12 +4,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Direction;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.domain.Subway;
+import subway.domain.*;
 import subway.dto.SectionRequest;
 
 @Service
@@ -23,103 +18,26 @@ public class SectionService {
         this.stationDao = stationDao;
     }
 
-    public void addStations(SectionRequest sectionRequest) {
+    public void addSection(SectionRequest sectionRequest) {
         Long lineId = sectionRequest.getLineId();
         List<Section> sections = sectionDao.findByLineId(lineId);
-        if (sectionRequest.baseStationId() == null || sectionRequest.nextStationId() == null) {
-            throw new IllegalArgumentException("올바른 값을 입력해주세요.");
+        if (sectionRequest.leftStationId() == null || sectionRequest.rightStationId() == null) {
+            throw new IllegalArgumentException("올바른 역 번호를 입력해주세요.");
         }
 
-        Station baseStation = stationDao.findById(sectionRequest.baseStationId());
-        Station nextStation = stationDao.findById(sectionRequest.nextStationId());
-        Integer addingDistance = sectionRequest.getSectionStations().getDistance();
+        saveSection(sectionRequest, lineId, sections);
+    }
 
-        if (sections.isEmpty()) {
-            insertSectionToEmpty(sectionRequest, lineId, baseStation, nextStation, addingDistance);
-            return;
-        }
-
+    private void saveSection(SectionRequest sectionRequest, Long lineId, List<Section> sections) {
         Subway subway = Subway.of(new Line(lineId), sections);
-        validateExistingNextStation(nextStation, subway);
-        validateNonExistingBaseStation(subway, baseStation);
+        Station baseStation = stationDao.findById(sectionRequest.leftStationId());
+        Station nextStation = stationDao.findById(sectionRequest.rightStationId());
+        Integer distance = sectionRequest.distance();
+        Sections addedSections = subway.addSection(new Section(baseStation, nextStation, new Distance(distance)));
 
-        if (sectionRequest.direction().equals(Direction.DOWN)) {
-            if (!subway.hasRightSection(baseStation)) {
-                insertSection(lineId, baseStation, nextStation, addingDistance);
-                return;
-            }
-            splitAndInsertSectionDown(baseStation, nextStation, addingDistance, subway);
-            return;
-        }
-
-        if (sections.isEmpty()) {
-            insertSection(lineId, nextStation, baseStation, addingDistance);
-            return;
-        }
-
-        if (!subway.hasLeftSection(baseStation)) {
-            insertSection(lineId, nextStation, baseStation, addingDistance);
-            return;
-        }
-        splitAndInsertSectionUp(baseStation, nextStation, addingDistance, subway);
-    }
-
-    private void insertSectionToEmpty(final SectionRequest sectionRequest, final Long lineId, final Station baseStation,
-                                      final Station nextStation, final Integer addingDistance) {
-        if (sectionRequest.direction().equals(Direction.DOWN)) {
-            insertSection(lineId, baseStation, nextStation, addingDistance);
-            return;
-        }
-        insertSection(lineId, nextStation, baseStation, addingDistance);
-        return;
-    }
-
-    private void insertSection(final Long lineId, final Station leftStation, final Station rightStation,
-                               final Integer addingDistance) {
-        sectionDao.insert(lineId, new Section(leftStation, rightStation, new Distance(addingDistance)));
-    }
-
-    private void splitAndInsertSectionDown(final Station baseStation, final Station nextStation,
-                                           final Integer addingDistance, final Subway subway) {
-        Section existingSection = subway.findRightSection(baseStation);
-        int existingDistance = existingSection.getDistance();
-        if (addingDistance >= existingDistance) {
-            throw new IllegalArgumentException("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
-        }
-        Long lineId = subway.getLine().getId();
-        Section leftSplited = new Section(baseStation, nextStation, new Distance(addingDistance));
-        Section rightSplited = new Section(nextStation, existingSection.getRight(),
-                new Distance(existingDistance - addingDistance));
-        sectionDao.deleteByLeftStationIdAndRightStationId(lineId, leftSplited.getLeftId(), rightSplited.getRightId());
-        sectionDao.insert(lineId, leftSplited);
-        sectionDao.insert(lineId, rightSplited);
-    }
-
-    private void splitAndInsertSectionUp(final Station baseStation, final Station nextStation,
-                                         final Integer addingDistance, final Subway subway) {
-        Section existingSection = subway.findLeftSection(baseStation);
-        int existingDistance = existingSection.getDistance();
-        if (addingDistance >= existingDistance) {
-            throw new IllegalArgumentException("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
-        }
-        Long lineId = subway.getLine().getId();
-        Section leftSplited = new Section(existingSection.getLeft(), nextStation,
-                new Distance(existingDistance - addingDistance));
-        Section rightSplited = new Section(nextStation, baseStation, new Distance(addingDistance));
-        sectionDao.deleteByLeftStationIdAndRightStationId(lineId, leftSplited.getLeftId(), rightSplited.getRightId());
-        sectionDao.insert(lineId, leftSplited);
-        sectionDao.insert(lineId, rightSplited);
-    }
-
-    private void validateExistingNextStation(final Station nextStation, final Subway subway) {
-        if (subway.hasStation(nextStation)) {
-            throw new IllegalArgumentException("노선에 이미 존재하는 역을 등록할 수 없습니다.");
-        }
-    }
-
-    private void validateNonExistingBaseStation(final Subway subway, final Station baseStation) {
-        if (!subway.hasStation(baseStation)) {
-            throw new IllegalArgumentException("존재하지 않는 역과의 구간을 등록할 수 없습니다.");
+        sectionDao.deleteByLeftStationIdAndRightStationId(lineId, addedSections.getLeftStationId(), addedSections.getRightStationId());
+        for (Section section : addedSections.getSections()) {
+            sectionDao.insert(lineId, section);
         }
     }
 
@@ -140,7 +58,7 @@ public class SectionService {
             Station left = leftSection.getLeft();
             int leftDistance = leftSection.getDistance();
             int rightDistance = rightSection.getDistance();
-            insertSection(lineId, left, right, leftDistance + rightDistance);
+            sectionDao.insert(lineId, new Section(left, right, new Distance(leftDistance + rightDistance)));
         }
         sectionDao.deleteByStationId(lineId, stationId);
     }

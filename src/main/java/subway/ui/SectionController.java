@@ -23,7 +23,7 @@ public class SectionController {
 
     @PostMapping
     public ResponseEntity<Void> addStations(@RequestBody SectionRequest sectionRequest) {
-        sectionService.addStations(sectionRequest);
+        sectionService.addSection(sectionRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 

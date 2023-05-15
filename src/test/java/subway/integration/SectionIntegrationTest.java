@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.dto.SectionDirection;
 import subway.dto.SectionRequest;
 import subway.dto.SectionStations;
 
@@ -23,12 +22,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @DisplayName("지하철역을 노선에 등록한다.(하행)")
+    @DisplayName("비어있는 지하철 노선도에 새로운 노선을 등록할 수 있다.")
     @Test
-    void addStationsDownDirection() {
+    void addStations_empty() {
         // given
-        SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 2L, 10),
-                new SectionDirection("down"));
+        SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 2L, 10));
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -49,14 +47,13 @@ public class SectionIntegrationTest extends IntegrationTest {
         );
     }
 
-    @DisplayName("지하철역을 노선에 등록한다. (상행)")
+    @DisplayName("비어있지 않은 지하철 노선도의 종점에 노선을 등록할 수 있다.")
     @Test
-    void addStationsUpDirection() {
+    void addStations_end() {
         // given
         jdbcTemplate.update(
                 "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (1L, 1L, 2L, 16)");
-        SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 3L, 10),
-                new SectionDirection("up"));
+        SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(2L, 3L, 10));
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -69,7 +66,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         // then
         Integer updatedDistance = jdbcTemplate.queryForObject(
-                "select distance FROM SECTIONS WHERE left_station_id = 3 and right_station_id = 1", Integer.class);
+                "select distance FROM SECTIONS WHERE left_station_id = 2 and right_station_id = 3", Integer.class);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
@@ -77,14 +74,40 @@ public class SectionIntegrationTest extends IntegrationTest {
         );
     }
 
-    @DisplayName("지하철역을 노선의 중간에 등록하면, 거리를 조정해준다. (하행)")
+    @DisplayName("비어있지 않은 지하철 노선도의 시작점에 노선을 등록할 수 있다.")
+    @Test
+    void addStations_start() {
+        // given
+        jdbcTemplate.update(
+                "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (1L, 2L, 3L, 16)");
+        SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 2L, 10));
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .body(sectionRequest)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .post("/sections")
+                .then().log().all()
+                .extract();
+
+        // then
+        Integer updatedDistance = jdbcTemplate.queryForObject(
+                "select distance FROM SECTIONS WHERE left_station_id = 1 and right_station_id = 2", Integer.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(updatedDistance).isEqualTo(10)
+        );
+    }
+
+    @DisplayName("지하철역을 노선의 중간에 등록하면 기존 노선의 거리를 조정한다.")
     @Test
     void addStationsInBetweenDownDirection() {
         // given
         jdbcTemplate.update(
                 "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (1L, 1L, 2L, 16)");
-        SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 3L, 10),
-                new SectionDirection("down"));
+        SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 3L, 10));
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -98,38 +121,14 @@ public class SectionIntegrationTest extends IntegrationTest {
         // then
         Integer updatedDistance = jdbcTemplate.queryForObject(
                 "select distance FROM SECTIONS WHERE left_station_id = 3 and right_station_id = 2", Integer.class);
-
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(updatedDistance).isEqualTo(6)
-        );
-    }
-
-    @DisplayName("지하철역을 노선의 중간에 등록하면, 거리를 조정해준다. (상행)")
-    @Test
-    void addStationsInBetweenUpDirection() {
-        // given
-        jdbcTemplate.update(
-                "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (1L, 1L, 2L, 16)");
-        SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(2L, 3L, 10),
-                new SectionDirection("up"));
-
-        // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(sectionRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/sections")
-                .then().log().all()
-                .extract();
-
-        // then
-        Integer updatedDistance = jdbcTemplate.queryForObject(
+        Integer newDistance = jdbcTemplate.queryForObject(
                 "select distance FROM SECTIONS WHERE left_station_id = 1 and right_station_id = 3", Integer.class);
 
+
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
-                () -> assertThat(updatedDistance).isEqualTo(6)
+                () -> assertThat(updatedDistance).isEqualTo(6),
+                () -> assertThat(newDistance).isEqualTo(10)
         );
     }
 

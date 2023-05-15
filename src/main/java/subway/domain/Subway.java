@@ -99,8 +99,8 @@ public class Subway {
         Section newSection = new Section(left, right, new Distance(distance));
         Station baseStation = findBaseStationBySide(left, right, findingSide);
         if (hasSectionBySide(baseStation, findingSide)) {
-            Section baseSection = findBaseSectionBySide(baseStation, findingSide);
-            Section updatedSection = getUpdatedSection(baseSection, left, right, distance, findingSide);
+            Section existedSection = findExistedSectionBySide(baseStation, findingSide);
+            Section updatedSection = getUpdatedSection(existedSection, left, right, distance, findingSide);
             return new Sections(List.of(newSection, updatedSection));
         }
         return new Sections(List.of(newSection));
@@ -138,7 +138,7 @@ public class Subway {
         return !stations.incomingEdgesOf(station).isEmpty();
     }
 
-    private Section findBaseSectionBySide(final Station station, final Side side) {
+    private Section findExistedSectionBySide(final Station station, final Side side) {
         if (side.isRight()) {
             return findRightSection(station);
         }
@@ -147,7 +147,6 @@ public class Subway {
 
     public Section findRightSection(final Station station) {
         Set<DefaultWeightedEdge> edge = stations.outgoingEdgesOf(station);
-        validate(edge);
         return edge.stream()
                 .map(x -> new Section(station, stations.getEdgeTarget(x),
                         new Distance((int) stations.getEdgeWeight(x))))
@@ -157,7 +156,6 @@ public class Subway {
 
     public Section findLeftSection(final Station station) {
         Set<DefaultWeightedEdge> edge = stations.incomingEdgesOf(station);
-        validate(edge);
         return edge.stream()
                 .map(x -> new Section(stations.getEdgeSource(x), station,
                         new Distance((int) stations.getEdgeWeight(x))))
@@ -181,20 +179,6 @@ public class Subway {
         }
     }
 
-    private void validate(final Set<DefaultWeightedEdge> edge) {
-        if (edge.size() != 1) {
-            throw new IllegalArgumentException("구간을 찾을 수 없습니다.");
-        }
-    }
-
-    public Station getStart() {
-        return start;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
     public List<Station> getOrderedStations() {
         List<Station> orderedStations = new ArrayList<>();
         if (isStationEmpty()) {
@@ -207,5 +191,13 @@ public class Subway {
         }
         orderedStations.add(station);
         return orderedStations;
+    }
+
+    public Station getStart() {
+        return start;
+    }
+
+    public Line getLine() {
+        return line;
     }
 }
