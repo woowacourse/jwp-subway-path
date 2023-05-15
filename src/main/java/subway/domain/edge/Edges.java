@@ -1,6 +1,5 @@
 package subway.domain.edge;
 
-import subway.domain.line.Direction;
 import subway.domain.station.Station;
 
 import java.util.ArrayList;
@@ -36,54 +35,19 @@ public class Edges {
         return result;
     }
 
-    public Edges add(final Station existStation, final Station newStation, final Direction direction, final Integer distance) {
+    public Edges add(final Station existStation, final Station newStation, final MyDirection direction, final Integer distance) {
         final Optional<Edge> existEdgeOptional = findTargetEdge(existStation, direction);
-        if (direction == Direction.UP) {
-            if (existEdgeOptional.isPresent()) {
-                final Edge existEdge = existEdgeOptional.get();
-                if (existEdge.getDistance() <= distance) {
-                    throw new IllegalArgumentException("추가하려는 구간의 길이가 기존 구간의 길이보다 깁니다.");
-                }
-                final Edge edge1 = new Edge(existEdge.getUpStation(), newStation, existEdge.getDistance() - distance);
-                final Edge edge2 = new Edge(newStation, existStation, distance);
-                final int existIndex = edges.indexOf(existEdge);
-                edges.remove(existIndex);
-                edges.add(existIndex, edge2);
-                edges.add(existIndex, edge1);
-            }
-            if (existEdgeOptional.isEmpty()) {
-                edges.add(0, new Edge(newStation, existStation, distance));
-            }
-            return new Edges(new LinkedList<>(edges));
-        }
-        if (direction == Direction.DOWN) {
-            if (existEdgeOptional.isPresent()) {
-                final Edge existEdge = existEdgeOptional.get();
-                if (existEdge.getDistance() <= distance) {
-                    throw new IllegalArgumentException("추가하려는 구간의 길이가 기존 구간의 길이보다 깁니다.");
-                }
-                final Edge edge1 = new Edge(newStation, existEdge.getDownStation(), existEdge.getDistance() - distance);
-                final Edge edge2 = new Edge(existStation, newStation, distance);
-                final int existIndex = edges.indexOf(existEdge);
-                edges.remove(existIndex);
-                edges.add(existIndex, edge1);
-                edges.add(existIndex, edge2);
-            }
-            if (existEdgeOptional.isEmpty()) {
-                edges.add(new Edge(existStation, newStation, distance));
-            }
-            return new Edges(new LinkedList<>(edges));
-        }
-        throw new UnsupportedOperationException();
+
+        return direction.calculate(existEdgeOptional, edges, existStation, newStation, distance);
     }
 
-    public Optional<Edge> findTargetEdge(final Station existStation, final Direction direction) {
-        if (direction == Direction.UP) {
+    public Optional<Edge> findTargetEdge(final Station existStation, final MyDirection direction) {
+        if (direction.isUp()) {
             return edges.stream()
                     .filter(edge -> edge.getDownStation().equals(existStation))
                     .findFirst();
         }
-        if (direction == Direction.DOWN) {
+        if (direction.isDown()) {
             return edges.stream()
                     .filter(edge -> edge.getUpStation().equals(existStation))
                     .findFirst();

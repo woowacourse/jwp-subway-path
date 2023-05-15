@@ -12,7 +12,6 @@ import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.service.LineService;
 import subway.ui.line.dto.AddStationToLineRequest;
-import subway.ui.line.dto.AddStationToLineResponse;
 import subway.ui.line.dto.GetAllStationsInLineResponse;
 import subway.ui.line.dto.GetAllStationsInLineResponses;
 import subway.ui.line.dto.LineCreateRequest;
@@ -39,8 +38,8 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/stations")
-    public ResponseEntity<AddStationToLineResponse> addStationToLine(@PathVariable Long lineId,
-                                                                     @RequestBody AddStationToLineRequest addStationToLineRequest) {
+    public ResponseEntity<Void> addStationToLine(@PathVariable Long lineId,
+                                                 @RequestBody AddStationToLineRequest addStationToLineRequest) {
         Line line = lineService.addStationToLine(lineId, addStationToLineRequest);
 
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).build();
