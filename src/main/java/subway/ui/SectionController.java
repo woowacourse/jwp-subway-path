@@ -36,9 +36,7 @@ public class SectionController {
     @PostMapping
     public ResponseEntity<List<SectionAddResponse>> addSection(@RequestBody SectionAddRequest sectionAddRequest) {
         List<SectionAddResponse> sectionAddResponse = sectionService.addSection(sectionAddRequest);
-        return ResponseEntity.created(
-                URI.create("/sections/" + sectionAddResponse.get(0).getId()))
-            .body(sectionAddResponse);
+        return ResponseEntity.created(URI.create("/lines/" + sectionAddRequest.getLineId())).body(sectionAddResponse);
     }
 
     @DeleteMapping
