@@ -52,4 +52,15 @@ public class SectionDao {
 
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
+
+    public boolean existStartStationByStationId(Long stationId) {
+        String sql = "select exist(select * from SECTION where station_id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId));
+    }
+
+    public boolean existEndStationByStationId(final Long stationId) {
+        String sql = "select exist(select * from SECTION where station_id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId));
+    }
+
 }

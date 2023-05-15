@@ -1,10 +1,8 @@
 package subway.application;
 
-import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
-import subway.dao.SectionEntity;
 import subway.dao.StationDao;
 
 @Transactional(readOnly = true)
@@ -21,16 +19,10 @@ public class StationService {
 
     @Transactional
     public void deleteStation(Long stationId) {
-        List<SectionEntity> sectionEntities = sectionDao.findAll();
-        long startStationCount = sectionEntities.stream()
-                .filter(it -> it.getStartStationId().equals(stationId))
-                .count();
+        boolean isExistStartStationInSections = sectionDao.existStartStationByStationId(stationId);
+        boolean isExistEndStationInSections = sectionDao.existEndStationByStationId(stationId);
 
-        long endStationCount = sectionEntities.stream()
-                .filter(it -> it.getStartStationId().equals(stationId))
-                .count();
-
-        if (startStationCount == 0 || endStationCount == 0) {
+        if (!isExistStartStationInSections && !isExistEndStationInSections) {
             stationDao.deleteById(stationId);
         }
     }
