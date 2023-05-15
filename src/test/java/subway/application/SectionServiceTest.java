@@ -24,6 +24,7 @@ import subway.dto.SectionDirection;
 import subway.dto.SectionRequest;
 import subway.dto.SectionStations;
 
+// TODO SubwayTest로 옮길 것 옮기기
 @ExtendWith(MockitoExtension.class)
 class SectionServiceTest {
 
@@ -94,7 +95,7 @@ class SectionServiceTest {
 
         assertThatThrownBy(() -> sectionService.addStations(sectionRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("동일한 역 간 구간을 생성할 수 없습니다.");
+                .hasMessageContaining("기준 역과 등록할 역은 동일할 수 없습니다.");
     }
 
     @DisplayName("빈 노선에 동일한 두 역의 노선을 저장할 수 없다.")
@@ -110,7 +111,7 @@ class SectionServiceTest {
 
         assertThatThrownBy(() -> sectionService.addStations(sectionRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("노선에 이미 존재하는 역을 등록할 수 없습니다.");
+                .hasMessageContaining("해당 역이 노선에 이미 존재합니다.");
     }
 
     @DisplayName("등록되지 않은 역과 등록된 역의 순서로 입력한 경우 두 역의 노선을 저장할 수 없다.")
@@ -126,7 +127,7 @@ class SectionServiceTest {
 
         assertThatThrownBy(() -> sectionService.addStations(sectionRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("노선에 이미 존재하는 역을 등록할 수 없습니다.");
+                .hasMessageContaining("해당 역이 노선에 이미 존재합니다.");
     }
 
     @DisplayName("삽입할 거리가 기존 역 사이의 길이보다 크거나 같은 경우 두 역의 노선을 저장할 수 없다.")
@@ -142,7 +143,7 @@ class SectionServiceTest {
 
         assertThatThrownBy(() -> sectionService.addStations(sectionRequest))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
+                .hasMessageContaining("거리는 양의 정수여야 합니다.");
     }
 
     @DisplayName("양 쪽에 연결된 역을 삭제할 수 있다.")
@@ -187,7 +188,7 @@ class SectionServiceTest {
 
         assertThatThrownBy(() -> sectionService.deleteStation(1L, 4L))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("역이 존재하지 않습니다.");
+                .hasMessageContaining("해당 역이 노선에 존재하지 않습니다.");
     }
 
     @DisplayName("노선에 역이 두 개 있으면 모두 삭제한다.")

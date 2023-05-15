@@ -17,6 +17,14 @@ public class Distance {
         }
     }
 
+    public Distance minus(Distance distance) {
+        return new Distance(value - distance.value);
+    }
+
+    public Distance plus(Distance distance) {
+        return new Distance(value + distance.value);
+    }
+
     public int getValue() {
         return value;
     }
@@ -36,5 +44,12 @@ public class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public String toString() {
+        return "Distance{" +
+                "value=" + value +
+                '}';
     }
 }
