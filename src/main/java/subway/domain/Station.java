@@ -4,9 +4,11 @@ import java.util.Objects;
 
 public class Station {
 
+    private final Long id;
     private final String name;
 
-    public Station(String name) {
+    public Station(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 
@@ -25,6 +27,10 @@ public class Station {
     @Override
     public int hashCode() {
         return Objects.hash(name);
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {

@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway2.dto.StationResponse;
+import subway.ui.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
@@ -72,7 +72,8 @@ public class StationIntegrationTest extends IntegrationTest {
     void getStations() {
         /// given
         Map<String, String> params1 = new HashMap<>();
-        params1.put("name", "강남역");
+        params1.put("lineName", "1호선");
+
         ExtractableResponse<Response> createResponse1 = RestAssured.given().log().all()
                 .body(params1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
