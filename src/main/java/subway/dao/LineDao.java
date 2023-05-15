@@ -52,11 +52,6 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public LineEntity findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
-
     public Optional<LineEntity> findByName(final String name) {
         String sql = "SELECT id, name, color, upbound_station_id, downbound_station_id FROM LINE WHERE name = ?";
         try {
@@ -69,9 +64,5 @@ public class LineDao {
     public void updateBoundStations(LineEntity newLine) {
         String sql = "update LINE set  upbound_station_id= ?, downbound_station_id = ? where id = ?";
         jdbcTemplate.update(sql, new Object[]{newLine.getUpBoundStationId(), newLine.getDownBoundStationId(), newLine.getId()});
-    }
-
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }

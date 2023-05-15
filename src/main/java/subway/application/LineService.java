@@ -42,10 +42,6 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public List<LineEntity> findLines() {
-        return lineRepository.findAll();
-    }
-
     public void registerInitStations(final String name, final RegisterStationsRequest registerStationsRequest) {
         Line line = lineRepository.findByName(name);
 
