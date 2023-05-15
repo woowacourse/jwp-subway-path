@@ -1,5 +1,7 @@
 package subway.application;
 
+import static subway.application.StationService.EMPTY_STATION_ID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
@@ -16,7 +18,6 @@ import subway.entity.StationEntity;
 @Service
 public class LineService {
 
-    public static final int MIN_DISTANCE_VALUE = 1;
     private final StationDao stationDao;
     private final LineDao lineDao;
 
@@ -27,7 +28,6 @@ public class LineService {
 
     public Long saveLine(LineRequest request) {
         validateNewLine(request);
-
         LineEntity newLine = new LineEntity(request.getName(), request.getColor(), null);
         Long newLineId = lineDao.insert(newLine);
         Long upEndStationId = insertEndStations(request, newLineId);
@@ -54,13 +54,13 @@ public class LineService {
     }
 
     private static void validatePositiveDistance(LineRequest request) {
-        if (request.getDistance() < MIN_DISTANCE_VALUE) {
+        if (request.getDistance() < StationService.MIN_DISTANCE_VALUE) {
             throw new IllegalArgumentException("거리는 양의 정수여야 합니다");
         }
     }
 
     private Long insertEndStations(LineRequest request, Long newLineId) {
-        StationEntity downEndStation = new StationEntity(request.getDownStation(), 0L, null,
+        StationEntity downEndStation = new StationEntity(request.getDownStation(), EMPTY_STATION_ID, null,
             newLineId);
         Long downEndStationId = stationDao.insert(downEndStation);
 

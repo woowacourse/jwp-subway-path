@@ -17,8 +17,9 @@ import java.util.stream.Collectors;
 @Service
 public class StationService {
 
-    public static final int MIN_STATION_COUNT = 2;
+    private static final int MIN_STATION_COUNT = 2;
     public static final long EMPTY_STATION_ID = 0L;
+    public static final int MIN_DISTANCE_VALUE = 1;
     private final StationDao stationDao;
     private final LineDao lineDao;
 
@@ -40,22 +41,31 @@ public class StationService {
     }
 
     private void validateBothExist(Long lineId, StationRequest request) {
-        if (stationDao.isExist(lineId, request.getUpStation()) && stationDao.isExist(lineId,
-            request.getDownStation())) {
+        if (isExistBoth(lineId, request)) {
             throw new IllegalArgumentException("이미 존재하는 역입니다.");
         }
     }
 
+    private boolean isExistBoth(Long lineId, StationRequest request) {
+        return stationDao.isExist(lineId, request.getUpStation())
+            && stationDao.isExist(lineId, request.getDownStation());
+    }
+
     private void validateBothNotExist(Long lineId, StationRequest request) {
-        if (!stationDao.isExist(lineId, request.getUpStation()) && !stationDao.isExist(lineId,
-            request.getDownStation())) {
+        if (isNotExistBoth(lineId, request)) {
             throw new IllegalArgumentException("해당 노선에 기준이 될 역이 없습니다");
         }
     }
 
+    private boolean isNotExistBoth(Long lineId, StationRequest request) {
+        return !stationDao.isExist(lineId, request.getUpStation())
+            && !stationDao.isExist(lineId, request.getDownStation());
+    }
+
     private Long saveDownEndStation(Long lineId, StationRequest request) {
         Long originTailId = stationDao.findTailStationByLineId(lineId);
-        StationEntity newStation = new StationEntity(request.getDownStation(), 0L, null, lineId);
+        StationEntity newStation = new StationEntity(request.getDownStation(),
+            EMPTY_STATION_ID, null, lineId);
         Long newHeadId = stationDao.insert(newStation);
         stationDao.updateDistanceById(originTailId, request.getDistance());
         stationDao.updateNextStationById(originTailId, newHeadId);
@@ -87,7 +97,7 @@ public class StationService {
     }
 
     private void validateDistance(StationEntity upStationOfNew, StationRequest request) {
-        if (upStationOfNew.getDistance() - request.getDistance() < 1) {
+        if (upStationOfNew.getDistance() - request.getDistance() < MIN_DISTANCE_VALUE) {
             throw new IllegalArgumentException("추가하려는 역이 기존 목적지 역보다 멀리 있습니다");
         }
     }
