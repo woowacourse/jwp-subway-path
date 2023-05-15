@@ -13,19 +13,19 @@ public class StationName {
     }
 
     private void validateName(final String name) {
-        validateMaxLength(name);
         validateEmptyName(name);
+        validateMaxLength(name);
+    }
+
+    private void validateEmptyName(final String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("역 이름은 공백일 수 없습니다.");
+        }
     }
 
     private void validateMaxLength(final String name) {
         if (name.length() > MAX_STATION_NAME) {
             throw new IllegalArgumentException("역 이름은 " + MAX_STATION_NAME + "글자 보다 작아야합니다.");
-        }
-    }
-
-    private void validateEmptyName(final String name) {
-        if (name.isBlank()) {
-            throw new IllegalArgumentException("역 이름은 공백일 수 없습니다.");
         }
     }
 
