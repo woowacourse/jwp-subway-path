@@ -24,6 +24,21 @@ public class Sections {
         return sections.get(sections.size() - 1).getNextStation().equals(station);
     }
 
+    public void validateDuplicate(final Section newSection) {
+        if (newSection.getBeforeStation().equals(newSection.getNextStation())) {
+            throw new IllegalArgumentException("이전 역과 다음 역은 동일할 수 없습니다.");
+        }
+        if (isExist(newSection.getBeforeStation()) && isExist(newSection.getNextStation())) {
+            throw new IllegalArgumentException("이미 존재하는 역입니다.");
+        }
+    }
+
+    private boolean isExist(final Station station) {
+        return (sections.size() > 0 && sections.get(0).getBeforeStation().equals(station)) ||
+                sections.stream()
+                        .anyMatch(section -> section.getNextStation().equals(station));
+    }
+
     public Sections addHead(final Section section) {
         final List<Section> newSections = new LinkedList<>(sections);
         newSections.add(0, section);

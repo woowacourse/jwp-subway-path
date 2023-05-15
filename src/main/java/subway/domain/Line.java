@@ -36,6 +36,7 @@ public class Line {
     }
 
     public Line addSection(final Section newSection) {
+        sections.validateDuplicate(newSection);
         if (sections.isHeadStation(newSection.getNextStation())) {
             final Sections addedSections = sections.addHead(newSection);
             return new Line(name, addedSections);
