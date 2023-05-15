@@ -1,5 +1,7 @@
 package subway.ui.dto;
 
+import subway.application.section.dto.SectionDto;
+
 public class SectionResponse {
 
 	private Long id;
@@ -12,6 +14,11 @@ public class SectionResponse {
 		this.departure = departure;
 		this.arrival = arrival;
 		this.distance = distance;
+	}
+
+	public static SectionResponse from(final SectionDto sectionDto) {
+		return new SectionResponse(sectionDto.getId(), sectionDto.getDeparture(), sectionDto.getArrival(),
+			sectionDto.getDistance());
 	}
 
 	public Long getId() {

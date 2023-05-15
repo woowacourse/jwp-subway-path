@@ -2,6 +2,10 @@ package subway.persistence.entity;
 
 import java.util.Objects;
 
+import subway.domain.Distance;
+import subway.domain.Section;
+import subway.domain.Station;
+
 public class SectionEntity {
 
 	private Long id;
@@ -13,10 +17,6 @@ public class SectionEntity {
 	public SectionEntity() {
 	}
 
-	public SectionEntity(final Long lineId, final Long departureId, final Long arrivalId, final Integer distance) {
-		this(null, lineId, departureId, arrivalId, distance);
-	}
-
 	public SectionEntity(final Long id, final Long lineId, final Long departureId, final Long arrivalId,
 		final Integer distance) {
 		this.id = id;
@@ -24,6 +24,13 @@ public class SectionEntity {
 		this.departureId = departureId;
 		this.arrivalId = arrivalId;
 		this.distance = distance;
+	}
+
+	public static SectionEntity of(final Long lineId, final Section section) {
+		final Station departure = section.getDeparture();
+		final Station arrival = section.getArrival();
+		final Distance distance = section.getDistance();
+		return new SectionEntity(section.getId(), lineId, departure.getId(), arrival.getId(), distance.getValue());
 	}
 
 	public Long getId() {

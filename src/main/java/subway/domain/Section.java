@@ -64,6 +64,10 @@ public final class Section {
 		return arrival;
 	}
 
+	public Distance getDistance() {
+		return distance;
+	}
+
 	@Override
 	public boolean equals(final Object o) {
 		if (this == o)

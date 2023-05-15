@@ -1,16 +1,19 @@
 package subway.domain;
 
+import java.util.List;
 import java.util.Map;
-
-import subway.domain.Sections.Sections;
 
 public interface SectionRepository {
 
-	Sections addStationByLineId(final Long lineId, final Section newSection);
+	Map<Long, List<Section>> findAllSections();
 
-	Map<Long, Sections> findAllSections();
+	List<Section> findSectionsByLineId(final Long id);
 
-	Sections findSectionsByLineId();
+	List<Section> findSectionsByLineIdAndStationId(final Long lineId, final Long StationId);
 
-	void deleteSectionByLineIdAndSectionId(final Long lineId, final Long sectionId);
+	Section findByStationNames(final String departure, final String arrival, final Integer distance);
+
+	List<Section> addStation(final Long lineId, final List<Section> sections);
+
+	void removeStation(final Long lineId, final List<Section> sections);
 }
