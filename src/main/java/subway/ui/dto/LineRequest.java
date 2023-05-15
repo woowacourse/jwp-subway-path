@@ -1,10 +1,24 @@
-package subway.dto;
+package subway.ui.dto;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class LineRequest {
+
+    @NotBlank(message = "name 필드가 있어야 합니다.")
     private String name;
+
+    @NotBlank(message = "color 필드가 있어야 합니다.")
     private String color;
+
+    @NotNull(message = "상행 역을 등록해야 합니다.")
     private Long upStationId;
+
+    @NotNull(message = "하행 역을 등록해야 합니다.")
     private Long downStationId;
+
+    @Positive(message = "역간 거리는 양의 정수여야 합니다.")
     private int distance;
 
     public LineRequest() {
