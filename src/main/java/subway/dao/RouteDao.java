@@ -1,15 +1,18 @@
 package subway.dao;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.*;
-
-import javax.sql.DataSource;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import subway.domain.Line;
+import subway.domain.Route;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
 
 @Repository
 public class RouteDao {
@@ -19,6 +22,7 @@ public class RouteDao {
 
     private static RowMapper<Section> SECTION_ROW_MAPPER = (rs, rowNum) ->
             new Section(
+                    rs.getLong("line_id"),
                     new Station(rs.getLong("from_id"), rs.getString("from_name")),
                     new Station(rs.getLong("to_id"), rs.getString("to_name")),
                     rs.getInt("distance")
@@ -38,12 +42,13 @@ public class RouteDao {
                 "    f.name AS from_name,\n" +
                 "    s.to_id,\n" +
                 "    t.name AS to_name,\n" +
-                "    s.distance\n" +
+                "    s.distance,\n" +
+                "    s.line_id\n" +
                 "FROM\n" +
                 "    SECTION s\n" +
                 "    INNER JOIN STATION f ON s.from_id = f.id\n" +
                 "    INNER JOIN STATION t ON s.to_id = t.id\n" +
-                "    INNER JOIN LINE l ON s.line_id = l.id AND line_id=?;";
+                "    INNER JOIN LINE l ON s.line_id = l.id AND l.id=?;";
 
         final Map<Line, Sections> sectionsByLine = new HashMap<>();
         for (Line line : lines) {

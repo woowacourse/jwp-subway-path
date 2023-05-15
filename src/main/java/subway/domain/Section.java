@@ -4,11 +4,13 @@ import java.util.Objects;
 
 public class Section {
 
+    private final Long lineId;
     private Station from;
     private Station to;
     private final Distance distance;
 
-    public Section(final Station from, final Station to, final int distance) {
+    public Section(Long lineId, final Station from, final Station to, final int distance) {
+        this.lineId = lineId;
         validate(from, to);
         this.from = from;
         this.to = to;
@@ -38,11 +40,11 @@ public class Section {
     }
 
     public Section changeLeft(Station otherStation, int otherDistance) {
-        return new Section(otherStation, to, distance.subtract(otherDistance));
+        return new Section(lineId, otherStation, to, distance.subtract(otherDistance));
     }
 
     public Section changeRight(final Station otherStation, final int otherDistance) {
-        return new Section(from, otherStation, distance.subtract(otherDistance));
+        return new Section(lineId, from, otherStation, distance.subtract(otherDistance));
     }
 
     public void updateStation(final Station targetStation, final Station updateStation) {
@@ -74,7 +76,8 @@ public class Section {
             return false;
         }
         final Section section = (Section) o;
-        return Objects.equals(from, section.from) && Objects.equals(to, section.to) && Objects.equals(distance, section.distance);
+        return Objects.equals(from, section.from) && Objects.equals(to, section.to) && Objects.equals(distance,
+                section.distance);
     }
 
     @Override
