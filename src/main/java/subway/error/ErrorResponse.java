@@ -13,8 +13,8 @@ public class ErrorResponse {
     @Override
     public String toString() {
         return "{\n" +
-                "\t\"status\": " + status +
-                ",\t\"description\": \"" + massage + '\"' +
+                "\t\"STATUS\": " + status +
+                ",\t\"MESSAGE\": \"" + massage + '\"' +
                 "\n}";
     }
 

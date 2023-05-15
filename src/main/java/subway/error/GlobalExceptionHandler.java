@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<ErrorResponse> handlingApplicationException(final SubwayException exception) {
         final ErrorCode errorCode = exception.getErrorCode();
-        log.error("\nSTATUS : {} \nDESCRIPTION : {}\n",
+        log.error("\nSTATUS : {} \nMESSAGE : {}\n",
                 errorCode.getStatus(), errorCode.getMessage());
 
         return new ResponseEntity<>(
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<ErrorResponse> handlingAnotherException(final RuntimeException exception) {
-        log.error("\nSTATUS : {} \nDESCRIPTION : {}\n", 500, exception.getMessage());
+        log.error("\nSTATUS : {} \nMESSAGE : {}\n", 500, exception.getMessage());
         return new ResponseEntity<>(
                 new ErrorResponse(500, "알 수 없는 예외가 발생했습니다."),
                 HttpStatus.INTERNAL_SERVER_ERROR

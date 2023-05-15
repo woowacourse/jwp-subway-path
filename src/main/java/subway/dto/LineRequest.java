@@ -4,10 +4,13 @@ import subway.domain.Line;
 
 public class LineRequest {
 
-    private final String name;
-    private final String color;
+    private String name;
+    private String color;
 
-    public LineRequest(String name, String color) {
+    public LineRequest() {
+    }
+
+    public LineRequest(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
