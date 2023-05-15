@@ -21,8 +21,8 @@ public class SectionService {
 
 	public void createSection(final Long lineId, final SectionCreateRequest sectionCreateRequest) {
 		final Section section = Section.of(
-			sectionCreateRequest.getUpStation(),
-			sectionCreateRequest.getDownStation(),
+			sectionCreateRequest.getUpStationName(),
+			sectionCreateRequest.getDownStationName(),
 			sectionCreateRequest.getDistance()
 		);
 
