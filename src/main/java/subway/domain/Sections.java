@@ -1,6 +1,7 @@
 package subway.domain;
 
 import subway.exception.AddStationException;
+import subway.exception.RemoveStationException;
 
 import java.util.List;
 import java.util.Objects;
@@ -82,32 +83,39 @@ public class Sections {
     }
 
 
-//    public void removeWhenOnlyTwoStationsExist(Long stationId) {
-//        sections.clear();
-//    }
-//
-//    public Section remove(Long stationId) {
-//        Optional<Section> preSection = sections.stream()
-//                .filter(section -> section.getStationId() == stationId).findFirst();
-//        Optional<Section> postSection = sections.stream()
-//                .filter(section -> section.getPreStationId() == stationId).findFirst();
-//
-//
-//        // 상행 종점 지울 때
-//        if (preSection.isEmpty() && postSection.isPresent()) {
-//            return null;
-//        }
-//
-//        // 하행 종점 지울 때
-//        if (postSection.isEmpty() && preSection.isPresent()) {
-//            return null;
-//        }
-//
-//        Long preStationId = preSection.get().getPreStationId();
-//        Long postStationId = postSection.get().getStationId();
-//        Long distance = preSection.get().getDistance() + postSection.get().getDistance();
-//        Long lineId = preSection.get().getLineId();
-//
-//        return new Section(lineId, preStationId, postStationId, distance);
-//    }
+    public void removeWhenOnlyTwoStationsExist(Station station) {
+        if (isExistStation(station)) {
+            sections.clear();
+            return;
+        }
+        throw new RemoveStationException("구간 내에 포함되어 있지 않은 역은 삭제할 수 없습니다");
+    }
+
+
+    public Section remove(Station station) {
+        if (!isExistStation(station)) {
+            throw new RemoveStationException("구간 내에 포함되어 있지 않은 역은 삭제할 수 없습니다");
+        }
+
+        if (isUpEndStation(station) || isDownEndStation(station)) {
+            sections.removeIf(section -> Objects.equals(section.getPreStation(), station) ||
+                    Objects.equals(section.getStation(), station));
+            return null;
+        }
+
+        Section preSection = sections.stream()
+                .filter(section -> Objects.equals(section.getStation(), station))
+                .findFirst().orElseThrow(() -> new RemoveStationException("해당 역의 구간을 찾을 수 없습니다"));
+        Section postSection = sections.stream()
+                .filter(section -> Objects.equals(section.getPreStation(), station))
+                .findFirst().orElseThrow(() -> new RemoveStationException("해당 역의 구간을 찾을 수 없습니다"));
+
+        sections.remove(preSection);
+        sections.remove(postSection);
+
+        Section newSection = new Section(preSection.getLine(), preSection.getPreStation(),
+                postSection.getStation(), preSection.getDistance() + postSection.getDistance());
+        sections.add(newSection);
+        return newSection;
+    }
 }
