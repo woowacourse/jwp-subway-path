@@ -1,48 +1,27 @@
 # jwp-subway-path
 
-- Line에 Station 등록 API - 초기 노선 등록
-  - [x] 통합 테스트 작성
-  - [x] Dao 단위 테스트 작성
-  - [x] Dao 프로덕션 코드 작성
-  - [x] Service 단위 테스트
-  - [x] Service 프로덕션 코드 작성 
-  - [x] Controller 단위 테스트
-  - [x] Controller 프로덕션 코드 작성
+- Domain
 
-- Line에 Station 등록 API - 기존 노선에 역 추가
-  - [x] 통합 테스트 작성
-  - [x] Dao 단위 테스트 작성
-  - [x] Dao 프로덕션 코드 작성
-  - [ ] Service 단위 테스트
-  - [x] Service 프로덕션 코드 작성
-  - [ ] Controller 단위 테스트
-  - [x] Controller 프로덕션 코드 작성
+### Subway
+- [ ] Line, Stations, Sections 를 가진다.
+- [ ] 단일 노선 조회가 가능하다.
+- [ ] 노선 전체 조회가 가능하다.
 
-- Line에 Station 제거 API
-    - [ ] 통합 테스트 작성
-    - [ ] Dao 단위 테스트 작성
-    - [x] Dao 프로덕션 코드 작성
-    - [ ] Service 단위 테스트
-    - [x] Service 프로덕션 코드 작성
-    - [ ] Controller 단위 테스트
-    - [x] Controller 프로덕션 코드 작성
+### Line
+- [ ] 이름, 색깔을 가진다.
+- [ ] 중복된 이름, 중복된 색깔은 가질 수 없다.
 
-- Line 조회 API
-    - [ ] 통합 테스트 작성
-    - [ ] Dao 단위 테스트 작성
-    - [ ] Dao 프로덕션 코드 회성
-    - [ ] Service 단위 테스트
-    - [ ] Service 프로덕션 코드 작성
-    - [ ] Controller 단위 테스트
-    - [ ] Controller 프로덕션 코드 작성
+### Section
+- [ ] 라인에 포함되어 있다.
+- [ ] 이전 역, 다음 역을 가진다.
+- [ ] 거리를 가진다.
+  - [ ] 거리는 양수여야 한다.
 
-- Line 목록 조회 API
-    - [ ] 통합 테스트 작성
-    - [ ] Dao 단위 테스트 작성
-    - [ ] Dao 프로덕션 코드 작성
-    - [ ] Service 단위 테스트
-    - [ ] Service 프로덕션 코드 작성
-    - [ ] Controller 단위 테스트
-    - [ ] Controller 프로덕션 코드 작성
+### Station
+- [ ] 중복된 Station 의 이름은 존재할 수 없다.
 
-- [ ] 모든 request body 에 valid 적용
+### Direction
+- [ ] Up, Down 이라는 값만이 존재한다.
+
+### Distance
+- [ ] 거리를 양수로만 가질 수 있다.
