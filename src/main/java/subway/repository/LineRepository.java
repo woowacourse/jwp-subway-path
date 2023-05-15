@@ -7,7 +7,6 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
-import subway.domain.station.Station;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.exception.InvalidLineException;
@@ -74,9 +73,8 @@ public class LineRepository {
     }
 
     private List<SectionEntity> generateSectionEntities(final Line line) {
-        final List<Section> sections = line.getSections();
-        sections.removeIf(section -> section.getDownward() == Station.TERMINAL);
-        return sections.stream()
+        return line.getSections()
+                .stream()
                 .map(section -> SectionEntity.of(line.getId(), section))
                 .collect(Collectors.toUnmodifiableList());
     }

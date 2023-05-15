@@ -77,13 +77,10 @@ class LineRepositoryTest {
                     () -> assertThat(result.getId()).isEqualTo(line.getId()),
                     () -> assertThat(result.getName()).isEqualTo(line.getName()),
                     () -> assertThat(result.getColor()).isEqualTo(line.getColor()),
-                    () -> assertThat(sections).hasSize(2),
+                    () -> assertThat(sections).hasSize(1),
                     () -> assertThat(sections.get(0).getUpward().getName()).isEqualTo("잠실역"),
                     () -> assertThat(sections.get(0).getDownward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10),
-                    () -> assertThat(sections.get(1).getUpward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(1).getDownward().getName()).isEqualTo(Station.TERMINAL.getName()),
-                    () -> assertThat(sections.get(1).getDistance()).isEqualTo(0)
+                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10)
             );
         }
 
@@ -105,13 +102,10 @@ class LineRepositoryTest {
                     () -> assertThat(lines).hasSize(1),
                     () -> assertThat(lines.get(0).getName()).isEqualTo("2호선"),
                     () -> assertThat(lines.get(0).getColor()).isEqualTo("초록색"),
-                    () -> assertThat(sections).hasSize(2),
+                    () -> assertThat(sections).hasSize(1),
                     () -> assertThat(sections.get(0).getUpward().getName()).isEqualTo("잠실역"),
                     () -> assertThat(sections.get(0).getDownward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10),
-                    () -> assertThat(sections.get(1).getUpward().getName()).isEqualTo("잠실새내역"),
-                    () -> assertThat(sections.get(1).getDownward().getName()).isEqualTo(Station.TERMINAL.getName()),
-                    () -> assertThat(sections.get(1).getDistance()).isEqualTo(0)
+                    () -> assertThat(sections.get(0).getDistance()).isEqualTo(10)
             );
         }
     }
