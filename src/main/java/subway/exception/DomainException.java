@@ -10,4 +10,9 @@ public class DomainException extends RuntimeException {
     public ExceptionType getExceptionType() {
         return exceptionType;
     }
+
+    @Override
+    public String getMessage() {
+        return exceptionType.name();
+    }
 }
