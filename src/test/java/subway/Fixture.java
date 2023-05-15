@@ -1,6 +1,10 @@
 package subway;
 
-import subway.domain.*;
+import subway.domain.Distance;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
 
 import java.util.List;
 
