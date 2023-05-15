@@ -2,25 +2,28 @@ package subway.domain;
 
 import java.util.Objects;
 
-import subway.domain.Sections.FilledSections;
-import subway.domain.Sections.Sections;
-
 public final class Line {
 
-	private final LineInfo lineInfo;
-	private final Sections sections;
+	private final Long id;
+	private final String name;
+	private final String color;
 
-	public Line(final LineInfo lineInfo, final FilledSections sections) {
-		this.lineInfo = lineInfo;
-		this.sections = sections;
+	public Line(final Long id, final String name, final String color) {
+		this.id = id;
+		this.name = name;
+		this.color = color;
 	}
 
-	public LineInfo getLineInfo() {
-		return lineInfo;
+	public Long getId() {
+		return id;
 	}
 
-	public Sections getSections() {
-		return sections;
+	public String getName() {
+		return name;
+	}
+
+	public String getColor() {
+		return color;
 	}
 
 	@Override
@@ -30,11 +33,12 @@ public final class Line {
 		if (o == null || getClass() != o.getClass())
 			return false;
 		final Line line = (Line)o;
-		return Objects.equals(lineInfo, line.lineInfo) && Objects.equals(sections, line.sections);
+		return Objects.equals(id, line.id) && Objects.equals(name, line.name)
+			&& Objects.equals(color, line.color);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(lineInfo, sections);
+		return Objects.hash(id, name, color);
 	}
 }
