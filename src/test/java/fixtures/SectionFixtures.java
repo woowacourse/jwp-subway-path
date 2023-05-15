@@ -76,12 +76,16 @@ public class SectionFixtures {
         }
     }
 
-    public static class SECTION_D_TO_C {
+    public static class SECTION_B_TO_D {
         public static final Distance DISTANCE = new Distance(3);
 
         public static Section createSectionToInsert(Station upStation, Station downStation, Line line) {
             NearbyStations nearbyStations = NearbyStations.createByUpStationAndDownStation(upStation, downStation);
             return new Section(null, nearbyStations, line, DISTANCE);
+        }
+
+        public static Section createDummy(Station upStation, Station downStation, Line line) {
+            return new Section(-1L, NearbyStations.createByUpStationAndDownStation(upStation, downStation), line, DISTANCE);
         }
     }
 }

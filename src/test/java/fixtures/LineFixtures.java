@@ -1,5 +1,7 @@
 package fixtures;
 
+import static fixtures.StationFixtures.*;
+
 import java.util.List;
 
 import subway.domain.line.Line;
@@ -11,16 +13,42 @@ public class LineFixtures {
         public static final Long ID = 1L;
         public static final String NAME = "2호선";
         public static final Line FIND_LINE = new Line(ID, NAME);
-        public static final LineFindResponse FIND_RESPONSE = new LineFindResponse(NAME, List.of("잠실역", "강변역", "건대역"));
     }
 
     public static class Line7 {
+        public static final Long DUMMY_ID = -1L;
         public static final String NAME = "7호선";
-        public static final Line DUMMY_LINE7 = new Line(100L, NAME);
+        public static final Line DUMMY_LINE7 = new Line(DUMMY_ID, NAME);
         public static final Line INSERT_ENTITY = new Line(null, NAME);
-        public static final LineFindResponse FIND_RESPONSE = new LineFindResponse(NAME, List.of("온수역", "대림역", "논현역", "장암역"));
 
     }
 
-    public static final List<LineFindResponse> ALL_Line_FIND_RESPONSE = List.of(INITIAL_Line2.FIND_RESPONSE, Line7.FIND_RESPONSE);
+    /**
+     * Response
+     */
+    public static class LINE_FIND_RESPONSE_LINE2_A_TO_C_AND_C_TO_E {
+
+        public static final LineFindResponse RESPONSE =
+                new LineFindResponse(
+                        INITIAL_Line2.NAME,
+                        List.of(INITIAL_STATION_A.NAME, INITIAL_STATION_C.NAME, STATION_E.NAME)
+                );
+    }
+
+    public static class LINE_FIND_RESPONSE_LINE7_B_TO_D {
+
+        public static final LineFindResponse RESPONSE =
+                new LineFindResponse(
+                        Line7.NAME,
+                        List.of(STATION_B.NAME, STATION_D.NAME)
+                );
+    }
+
+    public static class ALL_LINE_FIND_RESPONSE_LINE2_AND_LINE7 {
+        public static final List<LineFindResponse> RESPONSE =
+                List.of(
+                        LINE_FIND_RESPONSE_LINE2_A_TO_C_AND_C_TO_E.RESPONSE,
+                        LINE_FIND_RESPONSE_LINE7_B_TO_D.RESPONSE
+                );
+    }
 }
