@@ -37,17 +37,54 @@ class ShortestControllerTest {
     void getDijkstraShortestPath() {
         //given
         Long lineId = lineService.saveLine(new LineRequest("1호선", "red")).getId();
+
         Long stationId1 = stationService.saveStation(new StationRequest("광안역")).getId();
         Long stationId2 = stationService.saveStation(new StationRequest("전포역")).getId();
         Long stationId3 = stationService.saveStation(new StationRequest("노포역")).getId();
+
         lineService.addPathToLine(lineId, new PathRequest(stationId1, stationId2, 5));
         lineService.addPathToLine(lineId, new PathRequest(stationId2, stationId3, 5));
+
 
         //when, then
         RestAssured.given()
                 .get("/paths/start/{start-station-id}/end/{end-station-id}", stationId1, stationId3)
-                .then()
+                .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("totalDistance", equalTo(10));
+    }
+
+    /**
+     * 광안 <-5-> 전포 <-5-> 노포
+     * 광안 <-1-> 부산 <-1-> 해운대 <-1-> 노포
+     * expect: 3
+     */
+    @DisplayName("여러 경로 중 최단 경로를 조회할 수 있다")
+    @Test
+    void getDijkstraShortestPath2() {
+        //given
+        Long lineId1 = lineService.saveLine(new LineRequest("1호선", "red")).getId();
+        Long lineId2 = lineService.saveLine(new LineRequest("2호선", "blue")).getId();
+
+        Long stationId1 = stationService.saveStation(new StationRequest("광안역")).getId();
+        Long stationId2 = stationService.saveStation(new StationRequest("전포역")).getId();
+        Long stationId3 = stationService.saveStation(new StationRequest("부산역")).getId();
+        Long stationId4 = stationService.saveStation(new StationRequest("해운대역")).getId();
+
+        Long destination = stationService.saveStation(new StationRequest("노포역")).getId();
+
+        lineService.addPathToLine(lineId1, new PathRequest(stationId1, stationId2, 5));
+        lineService.addPathToLine(lineId1, new PathRequest(stationId2, destination, 5));
+
+        lineService.addPathToLine(lineId2, new PathRequest(stationId1, stationId3, 1));
+        lineService.addPathToLine(lineId2, new PathRequest(stationId3, stationId4, 1));
+        lineService.addPathToLine(lineId2, new PathRequest(stationId4, destination, 1));
+
+        //when, then
+        RestAssured.given()
+                .get("/paths/start/{start-station-id}/end/{end-station-id}", stationId1, destination)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("totalDistance", equalTo(3));
     }
 }

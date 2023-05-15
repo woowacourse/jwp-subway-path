@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 public final class Paths {
@@ -91,7 +91,7 @@ public final class Paths {
     private List<Path> findAffectedPaths(final Station station) {
         return this.paths.stream()
                 .filter(path -> path.contains(station))
-                .collect(toList());
+                .collect(Collectors.toList());
     }
 
     public List<Path> getOrderedPaths() {
@@ -127,5 +127,9 @@ public final class Paths {
                 .filter(before::isDownPath)
                 .findAny()
                 .orElseThrow(IllegalStateException::new);
+    }
+
+    public List<Path> toList() {
+        return new ArrayList<>(paths);
     }
 }
