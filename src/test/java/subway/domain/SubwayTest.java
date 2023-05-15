@@ -2,6 +2,7 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.Direction.LEFT;
 
 import java.util.Collections;
@@ -146,5 +147,33 @@ class SubwayTest {
         assertThatThrownBy(() -> subway.initialAdd("2호선", "A", "A", 4))
                 .isInstanceOf(InvalidSectionException.class)
                 .hasMessage("동일한 이름을 가진 역을 구간에 추가할 수 없습니다.");
+    }
+
+    @Test
+    void 입력받은_라인_이름으로_라인을_찾는다() {
+        // given
+        final Subway subway = new Subway(List.of(
+                new Line("1호선", "RED", List.of(
+                        new Section("A", "B", 5),
+                        new Section("B", "C", 5)
+                )),
+                new Line("2호선", "BLUE", List.of(
+                        new Section("Z", "B", 5),
+                        new Section("B", "Y", 5)
+                ))
+        ));
+
+        // when
+        Line line = subway.findLineByLineName("2호선");
+
+        // then
+        assertAll(
+                () -> assertThat(line.getName()).isEqualTo("2호선"),
+                () -> assertThat(line.getColor()).isEqualTo("BLUE"),
+                () -> assertThat(line.getSections()).containsAll(List.of(
+                        new Section("Z", "B", 5),
+                        new Section("B", "Y", 5)
+                ))
+        );
     }
 }

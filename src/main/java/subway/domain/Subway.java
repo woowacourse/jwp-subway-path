@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import subway.exception.InvalidLineNameException;
 import subway.exception.InvalidSectionException;
+import subway.exception.LineNotFoundException;
 
 public class Subway {
 
@@ -67,6 +68,13 @@ public class Subway {
                 .orElseThrow(InvalidLineNameException::new);
 
         findLine.initialAdd(new Section(left, right, new Distance((distance))));
+    }
+
+    public Line findLineByLineName(final String lineName) {
+        return lines.stream()
+                .filter(line -> line.isSameName(lineName))
+                .findFirst()
+                .orElseThrow(LineNotFoundException::new);
     }
 
     public List<Line> getLines() {
