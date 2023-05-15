@@ -34,7 +34,7 @@ public class StationService {
         final Line line = lineMakerService.mapToLineFrom(lineName);
         line.add(mapToSectionFrom(stationRegisterRequest));
 
-        sectionService.updateLine(lineMakerService.getLineEntity(lineName), line);
+        sectionService.updateLine(lineMakerService.getLineEntityByName(lineName), line);
     }
 
     private Section mapToSectionFrom(final StationRegisterRequest stationRegisterRequest) {
@@ -50,7 +50,7 @@ public class StationService {
     public void deleteStation(final StationDeleteRequest stationDeleteRequest) {
 
         final String lineName = stationDeleteRequest.getLineName();
-        final LineEntity lineEntity = lineMakerService.getLineEntity(lineName);
+        final LineEntity lineEntity = lineMakerService.getLineEntityByName(lineName);
         final Line line = lineMakerService.mapToLineFrom(lineName);
 
         line.delete(new Station(stationDeleteRequest.getStationName()));

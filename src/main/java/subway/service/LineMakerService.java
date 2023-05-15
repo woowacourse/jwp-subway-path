@@ -44,8 +44,14 @@ public class LineMakerService {
         return line;
     }
 
-    public LineEntity getLineEntity(final String lineName) {
+    public LineEntity getLineEntityByName(final String lineName) {
         return lineDao.findLineByName(lineName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
     }
+
+    public LineEntity getLineEntityById(final long lineId) {
+        return lineDao.findLineById(lineId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 노선은 존재하지 않습니다."));
+    }
+
 }

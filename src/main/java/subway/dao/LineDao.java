@@ -39,6 +39,17 @@ public class LineDao {
         );
     }
 
+    public Optional<LineEntity> findLineById(final long lineId) {
+        final String sql = "SELECT * FROM line l WHERE l.id = ?";
+
+        return Optional.ofNullable(
+                jdbcTemplate.queryForObject(
+                        sql,
+                        rowMapper,
+                        lineId)
+        );
+    }
+
     public List<LineEntity> findAll() {
         final String sql = "SELECT * FROM line";
 

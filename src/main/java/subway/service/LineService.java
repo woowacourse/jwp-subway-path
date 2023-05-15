@@ -6,7 +6,6 @@ import subway.dao.LineEntity;
 import subway.domain.Line;
 import subway.service.dto.LineResponse;
 import subway.service.dto.RegisterLineRequest;
-import subway.service.dto.SearchAllSectionLineRequest;
 import subway.service.dto.SectionInLineResponse;
 
 import java.util.List;
@@ -30,16 +29,7 @@ public class LineService {
         this.sectionService = sectionService;
     }
 
-    public List<LineResponse> searchAllSectionInLines(final SearchAllSectionLineRequest searchAllSectionLineRequest) {
-
-        if (searchAllSectionLineRequest == null) {
-            return searchSectionsAllLine();
-        }
-
-        return List.of(searchSectionsSpecificLine(searchAllSectionLineRequest));
-    }
-
-    private List<LineResponse> searchSectionsAllLine() {
+    public List<LineResponse> searchAllLines() {
 
         final List<LineEntity> lineEntities = lineDao.findAll();
 
@@ -55,11 +45,9 @@ public class LineService {
                            .collect(Collectors.toList());
     }
 
-    private LineResponse searchSectionsSpecificLine(
-            final SearchAllSectionLineRequest searchAllSectionLineRequest
-    ) {
-        final String lineName = searchAllSectionLineRequest.getLineName();
-        final Line line = lineMakerService.mapToLineFrom(lineName);
+    public LineResponse searchLine(final long lineId) {
+        LineEntity lineEntity = lineMakerService.getLineEntityById(lineId);
+        final Line line = lineMakerService.mapToLineFrom(lineEntity.getName());
 
         final List<SectionInLineResponse> sectionInLineResponses =
                 sectionService.mapToSectionInLineResponseFrom(line);

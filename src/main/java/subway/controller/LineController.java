@@ -5,11 +5,11 @@ import org.springframework.web.bind.annotation.*;
 import subway.service.LineService;
 import subway.service.dto.LineResponse;
 import subway.service.dto.RegisterLineRequest;
-import subway.service.dto.SearchAllSectionLineRequest;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
@@ -19,18 +19,20 @@ public class LineController {
     }
 
     @ResponseStatus(value = HttpStatus.OK)
-    @GetMapping("/lines")
-    public List<LineResponse> searchLines(
-            @RequestBody(required = false) SearchAllSectionLineRequest searchAllSectionLineRequest
-    ) {
-        return lineService.searchAllSectionInLines(searchAllSectionLineRequest);
+    @GetMapping
+    public List<LineResponse> searchAllLines() {
+        return lineService.searchAllLines();
+    }
+
+    @ResponseStatus(value = HttpStatus.OK)
+    @GetMapping("/{id}")
+    public LineResponse searchLine(@PathVariable long id) {
+        return lineService.searchLine(id);
     }
 
     @ResponseStatus(value = HttpStatus.CREATED)
-    @PostMapping("/lines")
-    public String registerLine(
-            @RequestBody RegisterLineRequest registerLineRequest
-    ) {
+    @PostMapping
+    public String registerLine(@RequestBody RegisterLineRequest registerLineRequest) {
         lineService.registerLine(registerLineRequest);
         return "redirect:/lines";
     }
