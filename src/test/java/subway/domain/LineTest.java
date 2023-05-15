@@ -89,7 +89,7 @@ class LineTest {
         final Line line = new Line("8호선", "분홍색", List.of(section));
 
         // expect
-        assertThatThrownBy(() -> line.register(new Station("송파역"), new Station("잠실역"), distance))
+        assertThatThrownBy(() -> line.register(new Station("송파역"), new Station("석촌역"), distance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
     }

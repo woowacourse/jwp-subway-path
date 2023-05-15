@@ -109,7 +109,7 @@ public class Line {
     }
 
     private boolean isSourceDistanceUnRegistrable(final Station existence, final int distance) {
-        final Optional<Section> foundSection = findSourceSection(existence);
+        final Optional<Section> foundSection = findTargetSection(existence);
         return foundSection.map(section -> section.isLongOrEqualThan(distance))
                 .orElse(false);
     }
