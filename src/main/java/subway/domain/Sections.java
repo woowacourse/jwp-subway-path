@@ -198,4 +198,8 @@ public class Sections {
         }
         return size() + 1;
     }
+
+    public List<Section> getValue() {
+        return List.copyOf(value);
+    }
 }

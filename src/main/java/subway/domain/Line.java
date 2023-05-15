@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.List;
 import java.util.Objects;
 import subway.domain.vo.Distance;
 import subway.exception.BusinessException;
@@ -95,6 +96,10 @@ public class Line {
     @Override
     public int hashCode() {
         return Objects.hash(getName());
+    }
+
+    public List<Section> getAllSection() {
+        return List.copyOf(sections.getValue());
     }
 
     public int getStationsSize() {
