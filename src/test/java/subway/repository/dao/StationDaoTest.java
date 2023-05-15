@@ -50,7 +50,7 @@ class StationDaoTest {
     @Test
     void 노선에_속한_모든_역을_조회한다() {
         // given
-        final Line line = new Line(null, "2호선", List.of(new Section("교대역", "강남역", 5), new Section("강남역", "역삼역", 7)));
+        final Line line = new Line("2호선", List.of(new Section("교대역", "강남역", 5), new Section("강남역", "역삼역", 7)));
         final Long saveId = lineRepository.save(line);
 
         // when
