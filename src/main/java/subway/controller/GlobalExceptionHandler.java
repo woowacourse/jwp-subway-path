@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.controller;
 
 import java.sql.SQLException;
 import org.slf4j.Logger;

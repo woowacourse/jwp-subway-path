@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.controller;
 
 import java.net.URI;
 import org.springframework.http.ResponseEntity;
@@ -7,8 +7,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.domain.Station;
-import subway.dto.StationCreateRequest;
-import subway.dto.StationCreateResponse;
+import subway.dto.request.StationCreateRequest;
+import subway.dto.response.StationCreateResponse;
 import subway.service.StationService;
 
 @RestController

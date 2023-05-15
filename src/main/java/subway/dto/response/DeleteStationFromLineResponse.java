@@ -1,21 +1,21 @@
-package subway.dto;
+package subway.dto.response;
 
 import java.util.List;
 import subway.domain.Line;
 
-public class AddStationToLineResponse {
+public class DeleteStationFromLineResponse {
     private final Long lineId;
     private final String lineName;
     private final List<Long> stationIds;
 
-    private AddStationToLineResponse(Long lineId, String lineName, List<Long> stationIds) {
+    private DeleteStationFromLineResponse(Long lineId, String lineName, List<Long> stationIds) {
         this.lineId = lineId;
         this.lineName = lineName;
         this.stationIds = stationIds;
     }
 
-    public static AddStationToLineResponse fromDomain(Line line) {
-        return new AddStationToLineResponse(line.getId(), line.getName(), line.getStationIds());
+    public static DeleteStationFromLineResponse fromDomain(Line line) {
+        return new DeleteStationFromLineResponse(line.getId(), line.getName(), line.getStationIds());
     }
 
     public Long getLineId() {

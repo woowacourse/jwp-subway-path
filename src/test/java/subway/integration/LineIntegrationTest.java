@@ -15,8 +15,8 @@ import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.dto.AddStationToLineRequest;
-import subway.dto.LineCreateRequest;
+import subway.dto.request.AddStationToLineRequest;
+import subway.dto.request.LineCreateRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {

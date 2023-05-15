@@ -1,13 +1,10 @@
-package subway.dto;
+package subway.dto.request;
 
 public class LineCreateRequest {
     private String lineName;
-    private long upStationId;
-    private long downStationId;
-    private int distance;
-
-    public LineCreateRequest() {
-    }
+    private Long upStationId;
+    private Long downStationId;
+    private Integer distance;
 
     public LineCreateRequest(String lineName, long upStationId, long downStationId, int distance) {
         this.lineName = lineName;
