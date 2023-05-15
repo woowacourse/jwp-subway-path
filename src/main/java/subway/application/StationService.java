@@ -1,44 +1,55 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Line;
+import subway.domain.Subway;
+import subway.dto.StationDeleteRequest;
+import subway.dto.StationInitialSaveRequest;
+import subway.dto.StationSaveRequest;
+import subway.repository.LineRepository;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@Transactional
 @Service
 public class StationService {
-    private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    private final LineRepository lineRepository;
+
+    public StationService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public void initialSave(final StationInitialSaveRequest request) {
+        final Subway subway = new Subway(lineRepository.findAll());
+        subway.initialAdd(
+                request.getLineName(),
+                request.getLeftStationName(),
+                request.getRightStationName(),
+                request.getDistance()
+        );
+        saveLine(subway, request.getLineName());
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    private void saveLine(final Subway subway, final String request) {
+        final Line line = subway.findLineByName(request);
+        lineRepository.save(line);
     }
 
-    public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+    public void save(final StationSaveRequest request) {
+        final Subway subway = new Subway(lineRepository.findAll());
+        subway.add(
+                request.getLineName(),
+                request.getBaseStationName(),
+                request.getAdditionalStationName(),
+                request.getDistance(),
+                request.getDirection()
+        );
+        saveLine(subway, request.getLineName());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
-    }
-
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    public void delete(final StationDeleteRequest request) {
+        final Subway subway = new Subway(lineRepository.findAll());
+        subway.remove(request.getLineName(), request.getStationName());
+        saveLine(subway, request.getLineName());
     }
 }
