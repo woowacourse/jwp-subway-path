@@ -1,12 +1,7 @@
 package subway.integration;
 
-import io.restassured.RestAssured;
-import io.restassured.specification.RequestSpecification;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
@@ -19,21 +14,9 @@ import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@DisplayName("구간 추가 관련 기능")
 @Sql("/truncate.sql")
-public class SectionInsertionIntegrationTest {
-    @LocalServerPort
-    int port;
-
-    public static RequestSpecification given() {
-        return RestAssured.given().log().all();
-    }
-
-    @BeforeEach
-    void setUp() {
-        RestAssured.port = port;
-    }
-
+public class SectionInsertionIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선에 지하철 역이 없을 때 둘 다 추가")
     @Test
     void addStationFirst() {
@@ -162,86 +145,5 @@ public class SectionInsertionIntegrationTest {
                 post("/lines/" + id + "/stations").
                 then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-
-    private void createStation(String name) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/stations").
-                then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value());
-    }
-
-    private void createLine(String name, String color) {
-        Map<String, String> params = new HashMap<>();
-        params.put("name", name);
-        params.put("color", color);
-
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/lines").
-                then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value());
-    }
-
-
-    private void createLineStation(Long id, String preStationId, String stationId, String distance) {
-        Map<String, String> params = new HashMap<>();
-        params.put("lineId", String.valueOf(id));
-        params.put("preStationId", preStationId);
-        params.put("stationId", stationId);
-        params.put("distance", distance);
-
-        given().
-                body(params).
-                contentType(MediaType.APPLICATION_JSON_VALUE).
-                accept(MediaType.APPLICATION_JSON_VALUE).
-                when().
-                post("/lines/" + id + "/stations").
-                then().
-                log().all().
-                statusCode(HttpStatus.CREATED.value());
-    }
-
-    private List<LineResponse> getLines() {
-        return
-                given().
-                        when().
-                        get("/lines").
-                        then().
-                        log().all().
-                        extract().
-                        jsonPath().getList(".", LineResponse.class);
-    }
-
-    private LineResponse getLine(Long id) {
-        return given().when().
-                get("/lines/" + id).
-                then().
-                log().all().
-                extract().as(LineResponse.class);
-    }
-
-    private List<Station> getLineStations(Long id) {
-        return given().
-                when().
-                get("/lines/" + id + "/stations").
-                then().
-                log().all().
-                statusCode(HttpStatus.OK.value()).
-                extract().
-                jsonPath().getList("stations", Station.class);
     }
 }
