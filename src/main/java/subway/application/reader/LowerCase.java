@@ -1,5 +1,6 @@
 package subway.application.reader;
 
+import subway.application.exception.AddSectionException;
 import subway.dao.SectionDao;
 import subway.domain.Section;
 
@@ -11,7 +12,7 @@ public class LowerCase extends Reader {
     }
 
     @Override
-    public List<Section> read(CaseDto caseDto) throws IllegalAccessException {
+    public List<Section> read(CaseDto caseDto){
         if (caseDto.getCaseType().equals(CaseType.LOWER)) {
             final Section deleteSection = caseDto.getDeleteSection();
             validateDistance(caseDto.getDistance(), deleteSection.getDistanceValue());

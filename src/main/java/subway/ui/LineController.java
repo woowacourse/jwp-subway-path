@@ -5,16 +5,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.application.SectionService;
-import subway.application.reader.AddSectionException;
-import subway.domain.Distance;
+import subway.domain.Line;
 import subway.domain.Section;
-import subway.domain.Station;
 import subway.dto.*;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -40,8 +38,7 @@ public class LineController {
         final List<LineStationResponse> lineStationResponses = sectionService.findSections()
                 .entrySet()
                 .stream()
-                .map(entry -> new LineStationResponse(new LineResponse(entry.getKey()),
-                        getSectionResponses(entry.getValue())))
+                .map(this::getLineStationResponse)
                 .collect(Collectors.toList());
 
         return ResponseEntity.ok(lineStationResponses);
@@ -78,7 +75,7 @@ public class LineController {
                                                                @Valid @RequestBody AddStationRequest addStationRequest) throws IllegalAccessException {
         final List<AddStationResponse> addStationResponses = sectionService.addStationByLineId(id, addStationRequest.getDepartureStation(), addStationRequest.getArrivalStation(), addStationRequest.getDistance())
                 .stream()
-                .map(section -> new AddStationResponse(id, section.getDepartureValue(), section.getArrivalValue(), section.getDistanceValue()))
+                .map(section -> getAddStationResponse(id, section))
                 .collect(Collectors.toList());
         return ResponseEntity.status(HttpStatus.CREATED).body(addStationResponses);
     }
@@ -89,10 +86,7 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler({SQLException.class, IllegalArgumentException.class, AddSectionException.class})
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
+
 
     private SectionResponse getSectionResponse(final Section section) {
 
@@ -101,5 +95,14 @@ public class LineController {
                 section.getDepartureValue(),
                 section.getArrivalValue(),
                 section.getDistanceValue());
+    }
+
+    private LineStationResponse getLineStationResponse(Map.Entry<Line, List<Section>> entry) {
+        return new LineStationResponse(new LineResponse(entry.getKey()),
+                getSectionResponses(entry.getValue()));
+    }
+
+    private AddStationResponse getAddStationResponse(Long id, Section section) {
+        return new AddStationResponse(id, section.getDepartureValue(), section.getArrivalValue(), section.getDistanceValue());
     }
 }

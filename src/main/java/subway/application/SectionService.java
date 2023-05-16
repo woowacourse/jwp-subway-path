@@ -1,6 +1,8 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.application.exception.AddSectionException;
 import subway.application.reader.CaseDto;
 import subway.application.reader.FirstFindCase;
 import subway.application.reader.Reader;
@@ -9,6 +11,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.SectionSorter;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +27,7 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional(rollbackFor = {AddSectionException.class, SQLException.class})
     public List<Section> addStationByLineId(final Long id, final String departure, final String arrival, final int distance) throws IllegalAccessException {
         final List<Section> allSections = sectionDao.findSectionsByLineId(id);
         CaseDto caseDto = new CaseDto.Builder()

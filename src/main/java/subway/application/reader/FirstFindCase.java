@@ -11,7 +11,7 @@ public class FirstFindCase extends Reader {
     }
 
     @Override
-    public List<Section> read(final CaseDto caseDto) throws IllegalAccessException {
+    public List<Section> read(final CaseDto caseDto){
         if (caseDto.getCaseType().equals(CaseType.NON_DELETE_SAVE_CASE)) {
             final long sectionId = sectionDao.saveSection(
                     caseDto.getLineId(),

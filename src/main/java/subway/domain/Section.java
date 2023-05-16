@@ -2,13 +2,11 @@ package subway.domain;
 
 public class Section {
 
-    private Long id;
-    private Station departure;
-    private Station arrival;
-    private Distance distance;
+    private final Long id;
+    private final Station departure;
+    private final Station arrival;
+    private final Distance distance;
 
-    public Section() {
-    }
 
     public Section(final Long id, final Station departure, final Station arrival, final Distance distance) {
         this.id = id;

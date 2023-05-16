@@ -4,12 +4,9 @@ import java.util.Objects;
 
 public class Line {
     private Long id;
-    private String name;
-    private String color;
+    private final String name;
+    private final String color;
 
-    //Todo: 기본생성자를 public으로 설정한 이유
-    public Line() {
-    }
 
     public Line(String name, String color) {
         this.name = name;

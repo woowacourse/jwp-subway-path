@@ -1,4 +1,4 @@
-package subway.application.reader;
+package subway.application.exception;
 
 public class AddSectionException extends RuntimeException {
     public AddSectionException(final String message) {
