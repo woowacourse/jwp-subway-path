@@ -3,12 +3,18 @@ package subway.domain;
 import subway.exception.IllegalDistanceException;
 
 public class Section {
+    private final Long id;
     private final Station startStation;
     private final Station endStation;
     private final int distance;
 
     public Section(Station startStation, Station endStation, int distance) {
+        this(null, startStation, endStation, distance);
+    }
+
+    public Section(Long id, Station startStation, Station endStation, int distance) {
         validateDistance(distance);
+        this.id = id;
         this.startStation = startStation;
         this.endStation = endStation;
         this.distance = distance;

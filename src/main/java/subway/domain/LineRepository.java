@@ -26,7 +26,7 @@ public class LineRepository {
             throw new LineNotFoundException();
         }
         LineEntity lineEntity = optionalLineEntity.get();
-        return new Line(lineEntity.getName(), lineEntity.getColor(), findSectionsInLine(id));
+        return new Line(id, lineEntity.getName(), lineEntity.getColor(), findSectionsInLine(id));
     }
 
     private Sections findSectionsInLine(Long lineId) {

@@ -1,6 +1,8 @@
 package subway.dao;
 
 import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -31,9 +33,13 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findByName(String stationName) {
+    public Optional<StationEntity> findByName(String stationName) {
         String sql = "select * from STATION where name = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, stationName);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationName));
+        } catch (DataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     public StationEntity findById(Long id) {

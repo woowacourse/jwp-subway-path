@@ -4,9 +4,15 @@ import java.util.Objects;
 import subway.dao.entity.StationEntity;
 
 public class Station {
+    private final Long id;
     private final String name;
 
     public Station(String name) {
+        this(null, name);
+    }
+
+    public Station(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 

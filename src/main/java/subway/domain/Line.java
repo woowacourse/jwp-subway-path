@@ -3,11 +3,17 @@ package subway.domain;
 import java.util.Objects;
 
 public class Line {
+    private Long id;
     private final String name;
     private final String color;
     private final Sections sections;
 
     public Line(String name, String color, Sections sections) {
+        this(null, name, color, sections);
+    }
+
+    public Line(Long id, String name, String color, Sections sections) {
+        this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
