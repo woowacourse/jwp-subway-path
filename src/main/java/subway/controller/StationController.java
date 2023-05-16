@@ -2,7 +2,6 @@ package subway.controller;
 
 import org.springframework.web.bind.annotation.*;
 import subway.service.StationService;
-import subway.service.dto.StationDeleteRequest;
 import subway.service.dto.StationRegisterRequest;
 
 @RestController
@@ -20,8 +19,8 @@ public class StationController {
         stationService.registerStation(stationRegisterRequest);
     }
 
-    @DeleteMapping("/{id}/{station}")
-    public void deleteStation(@PathVariable long id, @PathVariable String station) {
-        stationService.deleteStation(id, station);
+    @DeleteMapping("/{lineId}/{station}")
+    public void deleteStationInLine(@PathVariable long lineId, @PathVariable String station) {
+        stationService.deleteTargetStationInLine(lineId, station);
     }
 }

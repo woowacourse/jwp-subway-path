@@ -40,7 +40,7 @@ public class Line {
         starter = newSection;
     }
 
-    public void delete(final Station deletedStation) {
+    public void deleteTargetStation(final Station deletedStation) {
         final Section target = starter.findPreSectionOnDelete(deletedStation);
 
         if (canDeleteLine(target)) {

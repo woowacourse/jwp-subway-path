@@ -165,7 +165,7 @@ class LineTest {
         line.add(section3);
 
         //when
-        line.delete(new Station("B"));
+        line.deleteTargetStation(new Station("B"));
 
         //then
         assertAll(
@@ -202,7 +202,7 @@ class LineTest {
         line.add(section3);
 
         //when
-        line.delete(new Station("A"));
+        line.deleteTargetStation(new Station("A"));
 
         //then
         assertAll(
@@ -237,7 +237,7 @@ class LineTest {
         line.add(section3);
 
         //when
-        line.delete(new Station("D"));
+        line.deleteTargetStation(new Station("D"));
 
         //then
         assertNull(section2.getTo());
@@ -258,7 +258,7 @@ class LineTest {
         line.add(new Section(stations));
 
         //when
-        line.delete(new Station("B"));
+        line.deleteTargetStation(new Station("B"));
 
         //then
         assertNull(line.getStarter());
