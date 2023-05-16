@@ -56,7 +56,7 @@ class GetAllSortedLineControllerTest {
                 .then().log().all()
                 .contentType(ContentType.JSON)
                 .status(HttpStatus.OK)
-                .body("allSortedLines", hasSize(1))
+                .body("allSortedLines.size()", is(1))
                 .body("allSortedLines[0].sortedStations", contains("잠실역", "청라역", "선릉역"));
     }
 }

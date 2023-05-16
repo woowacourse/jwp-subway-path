@@ -47,7 +47,6 @@ class GetAllSortedLineIntegratedTest extends IntegrationTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .header("Location", is("/stations"));
         
-        // expect
         params.clear();
         params.put("lineId", Long.parseLong(lineId));
         params.put("baseStation", "잠실역");
@@ -69,7 +68,7 @@ class GetAllSortedLineIntegratedTest extends IntegrationTest {
                 .then().log().all()
                 .contentType(ContentType.JSON)
                 .statusCode(HttpStatus.OK.value())
-                .body("allSortedLines", hasSize(1))
+                .body("allSortedLines.size()", is(1))
                 .body("allSortedLines[0].sortedStations", contains("잠실역", "청라역", "선릉역"));
     }
 }
