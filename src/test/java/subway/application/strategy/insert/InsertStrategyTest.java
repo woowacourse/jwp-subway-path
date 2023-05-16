@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.application.strategy.StrategyFixture;
 import subway.dao.SectionDao;
+import subway.dao.SectionStationDao;
 import subway.domain.Distance;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -31,7 +32,7 @@ class InsertStrategyTest extends StrategyFixture {
 
     @BeforeEach
     void init() {
-        final SectionRepository sectionRepository = new SectionRepository(new SectionDao(jdbcTemplate, dataSource));
+        final SectionRepository sectionRepository = new SectionRepository(new SectionDao(jdbcTemplate, dataSource), new SectionStationDao(jdbcTemplate));
         final InsertTerminal insertTerminal = new InsertTerminal(sectionRepository);
         final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
         final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);

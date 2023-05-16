@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
+import subway.dao.SectionStationDao;
 import subway.dao.StationDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
@@ -28,6 +29,7 @@ public abstract class SubwayJdbcFixture {
 
     protected StationDao stationDao;
     protected SectionDao sectionDao;
+    protected SectionStationDao sectionStationDao;
     protected LineDao lineDao;
     protected Long 이호선;
     protected Long 팔호선;
@@ -43,6 +45,7 @@ public abstract class SubwayJdbcFixture {
         sectionDao = new SectionDao(jdbcTemplate, dataSource);
         stationDao = new StationDao(jdbcTemplate, dataSource);
         lineDao = new LineDao(jdbcTemplate, dataSource);
+        sectionStationDao = new SectionStationDao(jdbcTemplate);
         save();
     }
 

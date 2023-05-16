@@ -30,7 +30,7 @@ class SectionDaoTest extends SubwayJdbcFixture {
     @Test
     void LineId로_구간을_조회한다() {
         // when
-        final List<SectionStationResultMap> sections = sectionDao.findAllByLineId(이호선);
+        final List<SectionStationResultMap> sections = sectionStationDao.findAllByLineId(이호선);
 
         // then
         assertThat(sections).hasSize(3);

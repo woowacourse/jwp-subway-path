@@ -2,6 +2,7 @@ package subway.repository;
 
 import org.springframework.stereotype.Component;
 import subway.dao.SectionDao;
+import subway.dao.SectionStationDao;
 import subway.dao.dto.SectionStationResultMap;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
@@ -17,9 +18,11 @@ import static java.util.stream.Collectors.toList;
 public class SectionRepository {
 
     private final SectionDao sectionDao;
+    private final SectionStationDao sectionStationDao;
 
-    public SectionRepository(SectionDao sectionDao) {
+    public SectionRepository(SectionDao sectionDao, SectionStationDao sectionStationDao) {
         this.sectionDao = sectionDao;
+        this.sectionStationDao = sectionStationDao;
     }
 
     public Long insert(Section section) {
@@ -46,7 +49,7 @@ public class SectionRepository {
     }
 
     public Sections findAllByLineId(Long lineId) {
-        final List<SectionStationResultMap> sectionEntities = sectionDao.findAllByLineId(lineId);
+        final List<SectionStationResultMap> sectionEntities = sectionStationDao.findAllByLineId(lineId);
         final List<Section> sections = sectionEntities.stream()
                 .map(this::mapFrom)
                 .collect(toList());

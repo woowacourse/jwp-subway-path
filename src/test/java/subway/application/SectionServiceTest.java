@@ -45,7 +45,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
         final LineRepository lineRepository = new LineRepository(lineDao);
         final StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
         final StationRepository stationRepository = new StationRepository(stationDao);
-        sectionRepository = new SectionRepository(sectionDao);
+        sectionRepository = new SectionRepository(sectionDao, sectionStationDao);
 
         final SectionInserter sectionInserter = createBetweenStationInserter();
 
@@ -70,7 +70,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
     }
 
     @Nested
-    class 종점에_구간을_추가한다{
+    class 종점에_구간을_추가한다 {
 
         @Test
         void 하행역_종점에_구간을_추가한다() {
@@ -215,7 +215,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
             //then
             assertAll(
                     () -> assertThat(lineDao.findById(삼호선)).isEmpty(),
-                    () -> assertThat(sectionDao.findAllByLineId(삼호선)).isEmpty()
+                    () -> assertThat(sectionStationDao.findAllByLineId(삼호선)).isEmpty()
             );
         }
 
@@ -225,7 +225,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
             sectionService.deleteStation(잠실역, new SectionDeleteRequest(이호선));
 
             //then
-            assertThat(sectionDao.findAllByLineId(이호선)).hasSize(2);
+            assertThat(sectionStationDao.findAllByLineId(이호선)).hasSize(2);
         }
 
         @Test
@@ -234,7 +234,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
             sectionService.deleteStation(선릉역, new SectionDeleteRequest(이호선));
 
             //then
-            assertThat(sectionDao.findAllByLineId(이호선)).hasSize(2);
+            assertThat(sectionStationDao.findAllByLineId(이호선)).hasSize(2);
         }
 
         @Test
