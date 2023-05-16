@@ -72,7 +72,7 @@ public class StationControllerTest {
             mockMvc.perform(post("/stations")
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
         }
 
         @Test
@@ -148,7 +148,7 @@ public class StationControllerTest {
 
             // when, then
             mockMvc.perform(get("/stations/{id}", id))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
         }
 
     }
@@ -187,7 +187,7 @@ public class StationControllerTest {
             mockMvc.perform(put("/stations/{id}", id)
                             .content(requestBody)
                             .contentType(MediaType.APPLICATION_JSON_VALUE))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
         }
 
     }
@@ -218,7 +218,7 @@ public class StationControllerTest {
 
             // when, then
             mockMvc.perform(delete("/stations/{id}", id))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
         }
 
     }

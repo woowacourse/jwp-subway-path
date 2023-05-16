@@ -147,7 +147,7 @@ class LineControllerTest {
 
             // then
             mockMvc.perform(get("/lines/{id}", lineId))
-                    .andExpect(status().isBadRequest());
+                    .andExpect(status().isNotFound());
         }
     }
 
