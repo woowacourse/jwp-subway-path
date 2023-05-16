@@ -1,44 +1,48 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Station;
+import subway.domain.repository.StationRepository;
+import subway.dto.station.StationCreateRequest;
+import subway.dto.station.StationResponse;
+import subway.dto.station.StationUpdateRequest;
+import subway.exception.IllegalStationException;
 
 @Service
+@Transactional
 public class StationService {
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public StationResponse saveStation(StationCreateRequest stationCreateRequest) {
+        Station station = new Station(stationCreateRequest.getStationName());
+        if (stationRepository.isDuplicateStation(station)) {
+            throw new IllegalStationException("이미 존재하는 역입니다.");
+        }
+        Long savedId = stationRepository.save(station);
+        return StationResponse.from(stationRepository.findById(savedId));
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
-    }
-
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll();
-
-        return stations.stream()
-                .map(StationResponse::of)
+        return stationRepository.findAll()
+                .stream()
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+    public StationResponse updateStation(Long id, StationUpdateRequest stationUpdateRequest) {
+        return StationResponse.from(stationRepository.update(new Station(id, stationUpdateRequest.getStationName())));
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        Station station = stationRepository.findById(id);
+        stationRepository.delete(station);
     }
 }

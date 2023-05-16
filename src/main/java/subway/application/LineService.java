@@ -1,53 +1,73 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Line;
+import subway.domain.repository.LineRepository;
+import subway.domain.Section;
+import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineDetailResponse;
+import subway.dto.line.LineResponse;
+import subway.dto.line.LineUpdateRequest;
+import subway.dto.section.SectionResponse;
+import subway.exception.IllegalLineException;
 
 @Service
+@Transactional
 public class LineService {
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    public LineResponse saveLine(LineCreateRequest request) {
+        Line line = new Line(request.getLineName(), request.getColor());
+        if (lineRepository.isDuplicateLine(line)) {
+            throw new IllegalLineException("해당 노선의 색, 또는 이름이 중복됩니다.");
+        }
+        long savedId = lineRepository.save(line);
+        return LineResponse.from(lineRepository.findById(savedId));
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+        List<Line> lines = lineRepository.findAllWithNoSections();
+        return lines.stream()
+                .map(LineResponse::from)
+                .collect(toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    @Transactional(readOnly = true)
+    public List<LineDetailResponse> findDetailLineResponses() {
+        return lineRepository.findAll()
+                .stream()
+                .map(line -> new LineDetailResponse(LineResponse.from(line), mapToSectionResponses(line.getSections())))
+                .collect(toList());
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    @Transactional(readOnly = true)
+    public LineDetailResponse findDetailLineResponse(Long id) {
+        Line line = lineRepository.findById(id);
+        return new LineDetailResponse(LineResponse.from(line), mapToSectionResponses(line.getSections()));
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
+    private List<SectionResponse> mapToSectionResponses(List<Section> sections) {
+        return sections.stream()
+                .map(SectionResponse::from)
+                .collect(toList());
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public LineResponse updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
+        return LineResponse.from(
+                lineRepository.update(new Line(id, lineUpdateRequest.getLineName(), lineUpdateRequest.getColor())));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        Line line = lineRepository.findByIdWithNoSections(id);
+        lineRepository.delete(line);
     }
-
 }

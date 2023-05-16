@@ -1,58 +1,74 @@
 package subway.dao;
 
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
+import subway.dao.entity.StationEntity;
 
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private static final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
 
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+                .usingGeneratedKeyColumns("id")
+                .withTableName("STATION");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public Long insert(StationEntity station) {
+        return insertAction.executeAndReturnKey(Map.of("name", station.getName()))
+                .longValue();
     }
 
-    public List<Station> findAll() {
+    public List<StationEntity> findAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<StationEntity> findByName(String stationName) {
+        String sql = "select * from STATION where name = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationName));
+        } catch (DataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
-    public void update(Station newStation) {
+    public Optional<StationEntity> findById(Long id) {
+        String sql = "SELECT * FROM STATION WHERE id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (DataAccessException exception) {
+            return Optional.empty();
+        }
+    }
+
+    public void update(StationEntity station) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        jdbcTemplate.update(sql, station.getName(), station.getId());
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(Long stationId) {
         String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+        jdbcTemplate.update(sql, stationId);
+    }
+
+    public boolean existsByName(String stationName) {
+        String sql = "SELECT COUNT(*) FROM STATION WHERE name = ? LIMIT 1";
+        return jdbcTemplate.queryForObject(sql, Long.class, stationName) > 0;
     }
 }

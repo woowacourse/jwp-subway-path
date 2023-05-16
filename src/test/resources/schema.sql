@@ -29,11 +29,3 @@ create table SECTION
     foreign key (start_station_id) REFERENCES STATION (id),
     foreign key (end_station_id) REFERENCES STATION (id)
 );
-
-INSERT INTO STATION (name) VALUES ('교대역');
-INSERT INTO STATION (name) VALUES ('강남역');
-INSERT INTO STATION (name) VALUES ('역삼역');
-INSERT INTO STATION (name) VALUES ('선릉역');
-INSERT INTO STATION (name) VALUES ('삼성역');
-INSERT INTO STATION (name) VALUES ('종합운동장역');
-INSERT INTO LINE (name, color) VALUES ('2호선', 'green');
