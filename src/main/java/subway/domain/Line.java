@@ -47,19 +47,21 @@ public class Line {
         return new Line(id, name, color, stationEdges);
     }
 
-    public void insertUpStation(
-            final Long insertStationId,
+    public void insertStation(
+            final Long insertedStationId,
             final Long adjacentStationId,
+            final LineDirection adjacentToInsertedStationDirection,
             final int distance
     ) {
-        validateIsNotExist(insertStationId);
+        validateIsNotExist(insertedStationId);
+        validateAdjacentDirection(adjacentToInsertedStationDirection);
 
-        final StationEdge adjacentDownStationEdge = getStationEdge(adjacentStationId);
-        final int adjacentDownStationIndex = stationEdges.indexOf(adjacentDownStationEdge);
-
-        final List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distance);
-        stationEdges.remove(adjacentDownStationIndex);
-        stationEdges.addAll(adjacentDownStationIndex, splitEdges);
+        if (adjacentToInsertedStationDirection == LineDirection.UP) {
+            insertUpStation(insertedStationId, adjacentStationId, distance);
+        }
+        if (adjacentToInsertedStationDirection == LineDirection.DOWN) {
+            insertDownStation(insertedStationId, adjacentStationId, distance);
+        }
     }
 
     private void validateIsNotExist(final Long insertStationId) {
@@ -68,13 +70,30 @@ public class Line {
         }
     }
 
-    public void insertDownStation(
+    private static void validateAdjacentDirection(final LineDirection adjacentToInsertedStationId) {
+        if (adjacentToInsertedStationId == null) {
+            throw new IllegalArgumentException("인접한 방향이 null일 수 없습니다.");
+        }
+    }
+
+    private void insertUpStation(
             final Long insertStationId,
             final Long adjacentStationId,
             final int distance
     ) {
-        validateIsNotExist(insertStationId);
+        final StationEdge adjacentDownStationEdge = getStationEdge(adjacentStationId);
+        final int adjacentDownStationIndex = stationEdges.indexOf(adjacentDownStationEdge);
 
+        final List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distance);
+        stationEdges.remove(adjacentDownStationIndex);
+        stationEdges.addAll(adjacentDownStationIndex, splitEdges);
+    }
+
+    private void insertDownStation(
+            final Long insertStationId,
+            final Long adjacentStationId,
+            final int distance
+    ) {
         final StationEdge adjacentUpStationEdge = getStationEdge(adjacentStationId);
         if (isLastEdge(adjacentUpStationEdge)) {
             insertToLastEdge(insertStationId, distance);

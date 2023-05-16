@@ -2,6 +2,8 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
@@ -33,41 +35,28 @@ class LineTest {
                 .isNotNull();
     }
 
-    @Test
-    @DisplayName("상행 방향으로 역을 추가한다.")
-    void insertUpStation() {
+    @ParameterizedTest(name = "역 추가 방향 : {1}")
+    @DisplayName("노선에 역을 추가한다")
+    @CsvSource(value = {"2:UP:3:2", "1:DOWN:2:3"}, delimiter = ':')
+    void insertStation(
+            final Long adjacentStationId,
+            final LineDirection lineDirection,
+            final int expectedMiddleEdgeDistance,
+            final int expectedDownEndEdgeDistance
+    ) {
         //given
         Line line = createLine();
 
         //when
         Long newStationId = 3L;
-        line.insertUpStation(newStationId, stationId2, 2);
+        line.insertStation(newStationId, adjacentStationId, lineDirection, 2);
         final StationEdge middle = line.getStationEdges().get(1);
         final StationEdge downEnd = line.getStationEdges().get(2);
 
         //then
         assertSoftly(softly -> {
-            softly.assertThat(middle.getDistance()).isEqualTo(3);
-            softly.assertThat(downEnd.getDistance()).isEqualTo(2);
-        });
-    }
-
-    @Test
-    @DisplayName("하행 방향으로 역을 추가한다.")
-    void insertDownStation() {
-        //given
-        Line line = createLine();
-
-        //when
-        Long newStationId = 3L;
-        line.insertDownStation(newStationId, stationId1, 2);
-        final StationEdge middle = line.getStationEdges().get(1);
-        final StationEdge downEnd = line.getStationEdges().get(2);
-
-        //then
-        assertSoftly(softly -> {
-            softly.assertThat(middle.getDistance()).isEqualTo(2);
-            softly.assertThat(downEnd.getDistance()).isEqualTo(3);
+            softly.assertThat(middle.getDistance()).isEqualTo(expectedMiddleEdgeDistance);
+            softly.assertThat(downEnd.getDistance()).isEqualTo(expectedDownEndEdgeDistance);
         });
     }
 
@@ -83,7 +72,7 @@ class LineTest {
 
         //when
         Long newStationId = 3L;
-        line.insertDownStation(newStationId, stationId2, 2);
+        line.insertStation(newStationId, stationId2, LineDirection.DOWN, 2);
         final StationEdge downEnd = line.getStationEdges().get(2);
         //then
         assertThat(downEnd.getDistance()).isEqualTo(2);
@@ -94,7 +83,7 @@ class LineTest {
     void deleteStation() {
         //given
         final Line line = createLine();
-        line.insertDownStation(3L, stationId1, 2);
+        line.insertStation(3L, stationId1, LineDirection.DOWN, 2);
 
         //when
         StationEdge changedStationEdge = line.deleteStation(3L);

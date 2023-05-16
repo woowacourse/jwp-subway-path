@@ -63,11 +63,7 @@ public class LineService {
         final LineDirection direction = LineDirection.valueOf(stationInsertRequest.getDirection());
         final int distance = stationInsertRequest.getDistance();
 
-        if (direction == LineDirection.UP) {
-            line.insertUpStation(stationId, adjacentStationId, distance);
-            return;
-        }
-        line.insertDownStation(stationId, adjacentStationId, distance);
+        line.insertStation(stationId, adjacentStationId, direction, distance);
     }
 
     @Transactional

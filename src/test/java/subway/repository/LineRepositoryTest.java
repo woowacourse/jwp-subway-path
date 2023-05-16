@@ -10,6 +10,7 @@ import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dao.StationEdgeDao;
 import subway.domain.Line;
+import subway.domain.LineDirection;
 import subway.domain.Station;
 import subway.domain.StationEdge;
 
@@ -21,7 +22,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 @JdbcTest
 class LineRepositoryTest {
 
-    private static int INITIAL_DISTANCE = 5;
+    private final static int INITIAL_DISTANCE = 5;
 
     private LineRepository lineRepository;
     private StationRepository stationRepository;
@@ -84,7 +85,7 @@ class LineRepositoryTest {
 
         Long middleStationId = stationRepository.create(new Station("middle"));
         Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        createdLine.insertUpStation(middleStationId, downStationId, 2);
+        createdLine.insertStation(middleStationId, downStationId, LineDirection.UP, 2);
 
         //when
         lineRepository.updateStationEdges(createdLine);
@@ -116,7 +117,7 @@ class LineRepositoryTest {
 
         Long middleStationId = stationRepository.create(new Station("middle"));
         Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        createdLine.insertUpStation(middleStationId, downStationId, 2);
+        createdLine.insertStation(middleStationId, downStationId, LineDirection.UP, 2);
         lineRepository.updateStationEdges(createdLine);
         return createdLine;
     }
