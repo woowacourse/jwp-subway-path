@@ -15,17 +15,14 @@ import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
 public class LineRoute {
 
-    private final Line line;
-    // TODO 일급 컬렉션 분리해야 할까?
     private final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations;
 
-    private LineRoute(final Line line, final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
-        this.line = line;
+    private LineRoute(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
         this.stations = stations;
     }
 
-    public static LineRoute of(final Line line, final List<Section> sections) {
-        return new LineRoute(line, RoutedStationsFactory.create(sections));
+    public static LineRoute of(final List<Section> sections) {
+        return new LineRoute(RoutedStationsFactory.create(sections));
     }
 
     public void add(final Station base,
@@ -150,10 +147,6 @@ public class LineRoute {
                 .map(edge -> new Section(stations.getEdgeSource(edge), stations.getEdgeTarget(edge),
                         new Distance((int) stations.getEdgeWeight(edge))))
                 .collect(Collectors.toList());
-    }
-
-    public Line getLine() {
-        return line;
     }
 
     public List<Station> getOrderedStations() {

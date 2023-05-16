@@ -7,7 +7,6 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Direction;
 import subway.domain.Distance;
-import subway.domain.Line;
 import subway.domain.LineRoute;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -39,8 +38,7 @@ public class SectionService {
         Distance addingDistance = new Distance(sectionRequest.getSectionStations().getDistance());
         Direction direction = sectionRequest.getSectionDirection().getDirection();
 
-        // TODO LineRoute가 꼭 line을 객체로 가져야 할까?
-        LineRoute lineRoute = LineRoute.of(new Line(lineId), sections);
+        LineRoute lineRoute = LineRoute.of(sections);
         lineRoute.add(baseStation, nextStation, addingDistance, direction);
 
         sectionDao.deleteByLineId(lineId);
@@ -54,7 +52,7 @@ public class SectionService {
         Station station = stationDao.findById(stationId)
                 .orElseThrow(() -> new IllegalArgumentException(EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
 
-        LineRoute lineRoute = LineRoute.of(new Line(lineId), sections);
+        LineRoute lineRoute = LineRoute.of(sections);
         lineRoute.delete(station);
 
         sectionDao.deleteByLineId(lineId);

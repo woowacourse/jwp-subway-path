@@ -43,11 +43,11 @@ public class LineService {
 
     private List<StationResponse> createStationResponse(final Line persistLine) {
         List<Section> sections = sectionDao.findByLineId(persistLine.getId());
-        return extractStationResponses(persistLine, sections);
+        return extractStationResponses(sections);
     }
 
-    private List<StationResponse> extractStationResponses(final Line persistLine, final List<Section> sections) {
-        LineRoute lineRoute = LineRoute.of(persistLine, sections);
+    private List<StationResponse> extractStationResponses(final List<Section> sections) {
+        LineRoute lineRoute = LineRoute.of(sections);
         List<Station> orderedStations = lineRoute.getOrderedStations();
         List<StationResponse> stationResponses = orderedStations.stream()
                 .map(StationResponse::of)
