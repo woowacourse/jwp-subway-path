@@ -61,12 +61,6 @@ public class LineService {
                 .collect(toList());
     }
 
-    @Transactional(readOnly = true)
-    public LineResponse findLineResponseById(Long id) {
-        Line line = lineRepository.findByIdWithNoSections(id);
-        return LineResponse.from(line);
-    }
-
     public LineResponse updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
         return LineResponse.from(
                 lineRepository.update(new Line(id, lineUpdateRequest.getLineName(), lineUpdateRequest.getColor())));

@@ -81,24 +81,6 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, Long.class, lineId) == 0;
     }
 
-    public Optional<SectionEntity> findByStartStationIdAndLineId(Long startStationId, Long lineId) {
-        String sql = "SELECT id, line_id, start_station_id, end_station_id, distance FROM SECTION WHERE start_station_id = ? AND line_id = ?";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, startStationId, lineId));
-        } catch (DataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
-    public Optional<SectionEntity> findByEndStationIdAndLineId(Long endStationId, Long lineId) {
-        String sql = "SELECT id, line_id, start_station_id, end_station_id, distance FROM SECTION WHERE end_station_id = ? AND line_id = ?";
-        try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, endStationId, lineId));
-        } catch (DataAccessException e) {
-            return Optional.empty();
-        }
-    }
-
     public void deleteById(Long id) {
         String sql = "DELETE FROM SECTION WHERE id = ?";
         jdbcTemplate.update(sql, id);
