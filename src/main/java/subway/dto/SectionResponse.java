@@ -2,6 +2,7 @@ package subway.dto;
 
 import subway.application.dto.ShortestPathResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,23 +10,26 @@ public class SectionResponse {
     private final StationResponse startingStation;
     private final StationResponse destinationStation;
     private final List<StationResponse> shortestStationPath;
-    private final double distance;
+    private final double shortestDistance;
+    private final BigDecimal fare;
 
-    public SectionResponse(StationResponse startingStation, StationResponse destinationStation, List<StationResponse> shortestStationPath, double distance) {
+    public SectionResponse(StationResponse startingStation, StationResponse destinationStation, List<StationResponse> shortestStationPath, double shortestDistance, BigDecimal fare) {
         this.startingStation = startingStation;
         this.destinationStation = destinationStation;
         this.shortestStationPath = shortestStationPath;
-        this.distance = distance;
+        this.shortestDistance = shortestDistance;
+        this.fare = fare;
     }
 
-    public static SectionResponse of(ShortestPathResponse shortestPath) {
+    public static SectionResponse of(ShortestPathResponse shortestPath, BigDecimal fare) {
         return new SectionResponse(
                 StationResponse.of(shortestPath.getStartingStation()),
                 StationResponse.of(shortestPath.getDestinationStation()),
                 shortestPath.getShortestPath()
                         .stream().map(StationResponse::of)
                         .collect(Collectors.toList()),
-                shortestPath.getShortestDistance()
+                shortestPath.getShortestDistance(),
+                fare
         );
     }
 
@@ -41,7 +45,11 @@ public class SectionResponse {
         return shortestStationPath;
     }
 
-    public double getDistance() {
-        return distance;
+    public double getShortestDistance() {
+        return shortestDistance;
+    }
+
+    public BigDecimal getFare() {
+        return fare;
     }
 }

@@ -14,11 +14,17 @@ import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class LineService {
+    public static final int DEFAULT_FARE = 1250;
+    public static final int MIN_5KM_FARE_DISTANCE = 10;
+    public static final int MAX_5KM_FARE_DISTANCE = 50;
+    public static final int MIN_8KM_FARE_DISTANCE = 51;
+    public static final int SURCHARGE = 100;
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -101,5 +107,24 @@ public class LineService {
                 graph.addEdge(section.getPreviousStation(), section.getNextStation()),
                 section.getDistance().getValue()
         );
+    }
+
+    public BigDecimal calculateFare(double km) {
+        var fare = new BigDecimal(DEFAULT_FARE);
+        if (MIN_5KM_FARE_DISTANCE <= km && km <= MAX_5KM_FARE_DISTANCE) {
+            fare = calculate5kmFare(km, fare);
+        }
+        if (MIN_8KM_FARE_DISTANCE <= km) {
+            fare = calculate8kmFare(km, fare);
+        }
+        return fare;
+    }
+
+    private static BigDecimal calculate5kmFare(double km, BigDecimal fare) {
+        return fare.add(new BigDecimal(SURCHARGE * Math.floor((km - 10) / 5)));
+    }
+
+    private static BigDecimal calculate8kmFare(double km, BigDecimal fare) {
+        return fare.add(new BigDecimal(SURCHARGE * Math.floor((km - 10) / 8)));
     }
 }

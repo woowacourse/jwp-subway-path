@@ -66,6 +66,7 @@ public class LineController {
     @GetMapping("/section")
     public ResponseEntity<SectionResponse> findShortestPath(@RequestBody SectionRequest sectionRequest) {
         final var shortestPath = lineService.findShortestPath(sectionRequest.getStartingStation(), sectionRequest.getDestinationStation());
-        return ResponseEntity.ok().body(SectionResponse.of(shortestPath));
+        final var fare = lineService.calculateFare(shortestPath.getShortestDistance());
+        return ResponseEntity.ok().body(SectionResponse.of(shortestPath, fare));
     }
 }
