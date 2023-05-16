@@ -36,7 +36,15 @@ class SubwayMapUpdateAspectTest {
     void shouldUpdateWhenCreateSection() {
         // given
         given(sectionDao.findByLineId(anyLong())).willReturn(Collections.emptyList());
-        given(sectionDao.insert(any())).willReturn(new Section(1L, 2L, 3L, 4L, 5));
+        given(sectionDao.insert(any())).willReturn(
+                Section.builder()
+                        .id(1L)
+                        .lineId(2L)
+                        .upStation(3L)
+                        .downStation(4L)
+                        .distance(5)
+                        .build()
+        );
 
         // when
         final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 1L, 2L, true, 10);
@@ -52,7 +60,15 @@ class SubwayMapUpdateAspectTest {
         // given
         given(sectionDao.findUpSection(anyLong(), anyLong())).willReturn(Optional.empty());
         given(sectionDao.findDownSection(anyLong(), anyLong())).willReturn(
-                Optional.of(new Section(1L, 2L, 3L, 4L, 5))
+                Optional.of(
+                        Section.builder()
+                                .id(1L)
+                                .lineId(2L)
+                                .upStation(3L)
+                                .downStation(4L)
+                                .distance(5)
+                                .build()
+                )
         );
         doNothing().when(sectionDao).deleteById(anyLong());
 

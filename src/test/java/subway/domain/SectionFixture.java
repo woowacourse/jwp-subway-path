@@ -21,44 +21,74 @@ public class SectionFixture {
     public static final Station STATION12 = new Station(12L, "12L");
 
     public static final List<Section> SECTIONS1 = List.of(
-            new Section(1L, 1L, STATION1, STATION2, new Distance(3)),
-            new Section(2L, 1L, STATION2, STATION3, new Distance(3)),
-            new Section(3L, 1L, STATION3, STATION4, new Distance(3)),
-            new Section(4L, 1L, STATION4, STATION5, new Distance(3)),
-            new Section(5L, 1L, STATION5, STATION6, new Distance(3)),
-            new Section(6L, 1L, STATION6, STATION7, new Distance(3))
+            Section.builder().lineId(1L).distance(3)
+                    .id(1L).upStation(STATION1).downStation(STATION2).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(2L).upStation(STATION2).downStation(STATION3).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(3L).upStation(STATION3).downStation(STATION4).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(4L).upStation(STATION4).downStation(STATION5).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(5L).upStation(STATION5).downStation(STATION6).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(6L).upStation(STATION6).downStation(STATION7).build()
     );
 
     public static final List<Section> SECTIONS2 = List.of(
-            new Section(4L, 1L, STATION4, STATION5, new Distance(3)),
-            new Section(6L, 1L, STATION6, STATION7, new Distance(3)),
-            new Section(2L, 1L, STATION2, STATION3, new Distance(3)),
-            new Section(5L, 1L, STATION5, STATION6, new Distance(3)),
-            new Section(1L, 1L, STATION1, STATION2, new Distance(3)),
-            new Section(3L, 1L, STATION3, STATION4, new Distance(3))
+            Section.builder().lineId(1L).distance(3)
+                    .id(4L).upStation(STATION4).downStation(STATION5).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(6L).upStation(STATION6).downStation(STATION7).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(2L).upStation(STATION2).downStation(STATION3).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(5L).upStation(STATION5).downStation(STATION6).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(1L).upStation(STATION1).downStation(STATION2).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(3L).upStation(STATION3).downStation(STATION4).build()
     );
 
     public static final List<Section> SECTIONS3 = List.of(
-            new Section(1L, 1L, STATION4, STATION5, new Distance(3)),
-            new Section(2L, 1L, STATION6, STATION7, new Distance(3)),
-            new Section(3L, 1L, STATION2, STATION3, new Distance(3)),
-            new Section(4L, 1L, STATION5, STATION6, new Distance(3)),
-            new Section(5L, 1L, STATION1, STATION2, new Distance(3)),
-            new Section(6L, 1L, STATION3, STATION4, new Distance(3))
+            Section.builder().lineId(1L).distance(3)
+                    .id(1L).upStation(STATION4).downStation(STATION5).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(2L).upStation(STATION6).downStation(STATION7).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(3L).upStation(STATION2).downStation(STATION3).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(4L).upStation(STATION5).downStation(STATION6).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(5L).upStation(STATION1).downStation(STATION2).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(6L).upStation(STATION3).downStation(STATION4).build()
     );
 
     public static final List<Section> SECTIONS4 = List.of(
-            new Section(1L, 1L, STATION1, STATION2, new Distance(3)),
-            new Section(2L, 1L, STATION2, STATION3, new Distance(3)),
-            new Section(3L, 1L, STATION3, STATION4, new Distance(3)),
-            new Section(4L, 1L, STATION4, STATION5, new Distance(3)),
-            new Section(5L, 1L, STATION5, STATION6, new Distance(3)),
-            new Section(6L, 1L, STATION6, STATION7, new Distance(3)),
+            Section.builder().lineId(1L).distance(3)
+                    .id(1L).upStation(STATION1).downStation(STATION2).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(2L).upStation(STATION2).downStation(STATION3).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(3L).upStation(STATION3).downStation(STATION4).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(4L).upStation(STATION4).downStation(STATION5).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(5L).upStation(STATION5).downStation(STATION6).build(),
+            Section.builder().lineId(1L).distance(3)
+                    .id(6L).upStation(STATION6).downStation(STATION7).build(),
 
-            new Section(7L, 2L, STATION8, STATION9, new Distance(3)),
-            new Section(8L, 2L, STATION9, STATION10, new Distance(3)),
-            new Section(9L, 2L, STATION10, STATION4, new Distance(3)),
-            new Section(10L, 2L, STATION4, STATION11, new Distance(3)),
-            new Section(11L, 2L, STATION11, STATION12, new Distance(3))
+
+            Section.builder().lineId(2L).distance(3)
+                    .id(7L).upStation(STATION8).downStation(STATION9).build(),
+            Section.builder().lineId(2L).distance(3)
+                    .id(8L).upStation(STATION9).downStation(STATION10).build(),
+            Section.builder().lineId(2L).distance(3)
+                    .id(9L).upStation(STATION10).downStation(STATION4).build(),
+            Section.builder().lineId(2L).distance(3)
+                    .id(10L).upStation(STATION4).downStation(STATION11).build(),
+            Section.builder().lineId(2L).distance(3)
+                    .id(11L).upStation(STATION11).downStation(STATION12).build()
     );
 }

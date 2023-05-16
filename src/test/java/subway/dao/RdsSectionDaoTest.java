@@ -57,7 +57,14 @@ class RdsSectionDaoTest {
         @DisplayName("구간을 저장한다.")
         @Test
         void insert() {
-            final Section section = rdsSectionDao.insert(new Section(null, lineId, stationId1, stationId2, 1));
+            final Section section = rdsSectionDao.insert(
+                    Section.builder()
+                            .lineId(lineId)
+                            .upStation(stationId1)
+                            .downStation(stationId2)
+                            .distance(1)
+                            .build()
+            );
             assertThat(section.getId()).isPositive();
         }
 
@@ -70,8 +77,22 @@ class RdsSectionDaoTest {
 
             @BeforeEach
             void setUp() {
-                final Section section1 = rdsSectionDao.insert(new Section(null, lineId, stationId1, stationId2, 1));
-                final Section section2 = rdsSectionDao.insert(new Section(null, lineId, stationId2, stationId3, 1));
+                final Section section1 = rdsSectionDao.insert(
+                        Section.builder()
+                                .lineId(lineId)
+                                .upStation(stationId1)
+                                .downStation(stationId2)
+                                .distance(1)
+                                .build()
+                );
+                final Section section2 = rdsSectionDao.insert(
+                        Section.builder()
+                                .lineId(lineId)
+                                .upStation(stationId2)
+                                .downStation(stationId3)
+                                .distance(1)
+                                .build()
+                );
 
                 sectionId1 = section1.getId();
                 sectionId2 = section2.getId();

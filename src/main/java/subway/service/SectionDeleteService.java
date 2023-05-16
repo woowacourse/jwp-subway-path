@@ -40,12 +40,12 @@ public class SectionDeleteService {
     }
 
     private void insertNewSection(final Long lineId, final Section upSection, final Section downSection) {
-        final Section section = new Section(
-                lineId,
-                upSection.getUpStation().getId(),
-                downSection.getDownStation().getId(),
-                upSection.getDistance().getValue() + downSection.getDistance().getValue()
-        );
+        final Section section = Section.builder()
+                .lineId(lineId)
+                .upStation(upSection.getUpStation().getId())
+                .downStation(downSection.getDownStation().getId())
+                .distance(upSection.getDistance().getValue() + downSection.getDistance().getValue())
+                .build();
 
         sectionDao.insert(section);
     }

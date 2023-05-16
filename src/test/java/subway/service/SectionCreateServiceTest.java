@@ -32,7 +32,15 @@ class SectionCreateServiceTest {
     void createSectionToUpInEmptyLine() {
         final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 2L, 3L, true, 5);
         final List<Section> sections = sectionCreateService.createSection(sectionCreateRequest);
-        assertThat(sections).containsExactly(new Section(1L, 1L, 3L, 2L, 5));
+        assertThat(sections).containsExactly(
+                Section.builder()
+                        .id(1L)
+                        .lineId(1L)
+                        .upStation(3L)
+                        .downStation(2L)
+                        .distance(5)
+                        .build()
+        );
     }
 
     @DisplayName("노선이 비어있을 때 새로운 역을 아래로 추가하면 (baseId, addedId) 인 구간이 추가된다.")
@@ -40,7 +48,15 @@ class SectionCreateServiceTest {
     void createSectionToDownInEmptyLine() {
         final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 2L, 3L, false, 5);
         final List<Section> sections = sectionCreateService.createSection(sectionCreateRequest);
-        assertThat(sections).containsExactly(new Section(1L, 1L, 2L, 3L, 5));
+        assertThat(sections).containsExactly(
+                Section.builder()
+                        .id(1L)
+                        .lineId(1L)
+                        .upStation(2L)
+                        .downStation(3L)
+                        .distance(5)
+                        .build()
+        );
     }
 
     @DisplayName("구간이 저장되어 있을 때")
@@ -49,7 +65,14 @@ class SectionCreateServiceTest {
 
         @BeforeEach
         void setUp() {
-            stubSectionDao.insert(new Section(1L, 1L, 2L, 4));
+            stubSectionDao.insert(
+                    Section.builder()
+                            .lineId(1L)
+                            .upStation(1L)
+                            .downStation(2L)
+                            .distance(4)
+                            .build()
+            );
         }
 
         @DisplayName("노선이 비어있지 않을 때 baseId를 포함한 구간이 없으면 예외를 발생시킨다.")
@@ -69,10 +92,30 @@ class SectionCreateServiceTest {
             final List<Section> sections = stubSectionDao.findByLineId(1L);
 
             assertAll(
-                    () -> assertThat(result).containsExactly(new Section(2L, 1L, 2L, 3L, 5)),
+                    () -> assertThat(result).containsExactly(
+                            Section.builder()
+                                    .id(2L)
+                                    .lineId(1L)
+                                    .upStation(2L)
+                                    .downStation(3L)
+                                    .distance(5)
+                                    .build()
+                    ),
                     () -> assertThat(sections).contains(
-                            new Section(1L, 1L, 1L, 2L, 4),
-                            new Section(2L, 1L, 2L, 3L, 5)
+                            Section.builder()
+                                    .id(1L)
+                                    .lineId(1L)
+                                    .upStation(1L)
+                                    .downStation(2L)
+                                    .distance(4)
+                                    .build(),
+                            Section.builder()
+                                    .id(2L)
+                                    .lineId(1L)
+                                    .upStation(2L)
+                                    .downStation(3L)
+                                    .distance(5)
+                                    .build()
                     )
             );
         }
@@ -84,10 +127,30 @@ class SectionCreateServiceTest {
             final List<Section> result = sectionCreateService.createSection(sectionCreateRequest);
             final List<Section> sections = stubSectionDao.findByLineId(1L);
             assertAll(
-                    () -> assertThat(result).containsExactly(new Section(2L, 1L, 3L, 1L, 5)),
+                    () -> assertThat(result).containsExactly(
+                            Section.builder()
+                                    .id(2L)
+                                    .lineId(1L)
+                                    .upStation(3L)
+                                    .downStation(1L)
+                                    .distance(5)
+                                    .build()
+                    ),
                     () -> assertThat(sections).contains(
-                            new Section(2L, 1L, 3L, 1L, 5),
-                            new Section(1L, 1L, 1L, 2L, 4)
+                            Section.builder()
+                                    .id(2L)
+                                    .lineId(1L)
+                                    .upStation(3L)
+                                    .downStation(1L)
+                                    .distance(5)
+                                    .build(),
+                            Section.builder()
+                                    .id(1L)
+                                    .lineId(1L)
+                                    .upStation(1L)
+                                    .downStation(2L)
+                                    .distance(4)
+                                    .build()
                     )
             );
         }
@@ -108,8 +171,20 @@ class SectionCreateServiceTest {
             final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 2L, 3L, true, 3);
             final List<Section> sections = sectionCreateService.createSection(sectionCreateRequest);
             assertThat(sections).containsExactly(
-                    new Section(2L, 1L, 1L, 3L, 1),
-                    new Section(3L, 1L, 3L, 2L, 3)
+                    Section.builder()
+                            .id(2L)
+                            .lineId(1L)
+                            .upStation(1L)
+                            .downStation(3L)
+                            .distance(1)
+                            .build(),
+                    Section.builder()
+                            .id(3L)
+                            .lineId(1L)
+                            .upStation(3L)
+                            .downStation(2L)
+                            .distance(3)
+                            .build()
             );
         }
 
@@ -120,8 +195,20 @@ class SectionCreateServiceTest {
             final SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(1L, 1L, 3L, false, 3);
             final List<Section> sections = sectionCreateService.createSection(sectionCreateRequest);
             assertThat(sections).containsExactly(
-                    new Section(2L, 1L, 1L, 3L, 3),
-                    new Section(3L, 1L, 3L, 2L, 1)
+                    Section.builder()
+                            .id(2L)
+                            .lineId(1L)
+                            .upStation(1L)
+                            .downStation(3L)
+                            .distance(3)
+                            .build(),
+                    Section.builder()
+                            .id(3L)
+                            .lineId(1L)
+                            .upStation(3L)
+                            .downStation(2L)
+                            .distance(1)
+                            .build()
             );
         }
     }

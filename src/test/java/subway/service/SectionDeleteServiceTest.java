@@ -41,7 +41,14 @@ class SectionDeleteServiceTest {
 
         @BeforeEach
         void setUp() {
-            sectionId = stubSectionDao.insert(new Section(1L, 1L, 2L, 4)).getId();
+            sectionId = stubSectionDao.insert(
+                    Section.builder()
+                            .lineId(1L)
+                            .upStation(1L)
+                            .downStation(2L)
+                            .distance(4)
+                            .build()
+            ).getId();
         }
 
         @DisplayName("아랫쪽 구간만 존재하면 그 구간을 지운다.")
@@ -63,7 +70,14 @@ class SectionDeleteServiceTest {
         @DisplayName("윗 아래 모두 구간이 존재하면 두 구간을 합친다.")
         @Test
         void deleteSection() {
-            final Long sectionId2 = stubSectionDao.insert(new Section(1L, 2L, 3L, 5)).getId();
+            final Long sectionId2 = stubSectionDao.insert(
+                    Section.builder()
+                            .lineId(1L)
+                            .upStation(2L)
+                            .downStation(3L)
+                            .distance(5)
+                            .build()
+            ).getId();
 
             assertThatCode(() -> sectionDeleteService.deleteSection(1L, 2L))
                     .doesNotThrowAnyException();
@@ -73,7 +87,13 @@ class SectionDeleteServiceTest {
                     () -> assertThat(stubSectionDao.findById(sectionId)).isEmpty(),
                     () -> assertThat(stubSectionDao.findById(sectionId2)).isEmpty(),
                     () -> assertThat(result).containsExactly(
-                            new Section(3L, 1L, 1L, 3L, 9)
+                            Section.builder()
+                                    .id(3L)
+                                    .lineId(1L)
+                                    .upStation(1L)
+                                    .downStation(3L)
+                                    .distance(9)
+                                    .build()
                     )
             );
         }

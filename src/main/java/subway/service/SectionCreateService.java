@@ -60,10 +60,20 @@ public class SectionCreateService {
 
     private Section createSectionByDirection(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
         if (Direction.from(direction) == Direction.UP) {
-            return new Section(lineId, addedId, baseId, distance);
+            return Section.builder()
+                    .lineId(lineId)
+                    .upStation(addedId)
+                    .downStation(baseId)
+                    .distance(distance)
+                    .build();
         }
         if (Direction.from(direction) == Direction.DOWN) {
-            return new Section(lineId, baseId, addedId, distance);
+            return Section.builder()
+                    .lineId(lineId)
+                    .upStation(baseId)
+                    .downStation(addedId)
+                    .distance(distance)
+                    .build();
         }
         throw new IllegalArgumentException("존재하지 않는 방향입니다.");
     }
@@ -120,20 +130,40 @@ public class SectionCreateService {
 
     private Section createUpSectionByDirection(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final Section existSection) {
         if (Direction.from(direction) == Direction.UP) {
-            return new Section(lineId, existSection.getUpStation().getId(), addedId, existSection.getDistance().getValue() - distance);
+            return Section.builder()
+                    .lineId(lineId)
+                    .upStation(existSection.getUpStation().getId())
+                    .downStation(addedId)
+                    .distance(existSection.getDistance().getValue() - distance)
+                    .build();
         }
         if (Direction.from(direction) == Direction.DOWN) {
-            return new Section(lineId, existSection.getUpStation().getId(), addedId, distance);
+            return Section.builder()
+                    .lineId(lineId)
+                    .upStation(existSection.getUpStation().getId())
+                    .downStation(addedId)
+                    .distance(distance)
+                    .build();
         }
         throw new IllegalArgumentException("존재하지 않는 방향입니다.");
     }
 
     private Section createDownSectionByDirection(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final Section existSection) {
         if (Direction.from(direction) == Direction.UP) {
-            return new Section(lineId, addedId, existSection.getDownStation().getId(), distance);
+            return Section.builder()
+                    .lineId(lineId)
+                    .upStation(addedId)
+                    .downStation(existSection.getDownStation().getId())
+                    .distance(distance)
+                    .build();
         }
         if (Direction.from(direction) == Direction.DOWN) {
-            return new Section(lineId, addedId, existSection.getDownStation().getId(), existSection.getDistance().getValue() - distance);
+            return Section.builder()
+                    .lineId(lineId)
+                    .upStation(addedId)
+                    .downStation(existSection.getDownStation().getId())
+                    .distance(existSection.getDistance().getValue() - distance)
+                    .build();
         }
         throw new IllegalArgumentException("존재하지 않는 방향입니다.");
     }

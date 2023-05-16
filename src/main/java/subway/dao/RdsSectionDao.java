@@ -23,22 +23,22 @@ public class RdsSectionDao implements SectionDao {
     private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<Section> rowMapper = (rs, rowNum) ->
-            new Section(
-                    rs.getLong("id"),
-                    rs.getLong("line_id"),
-                    rs.getLong("up_station_id"),
-                    rs.getLong("down_station_id"),
-                    rs.getInt("distance")
-            );
+            Section.builder()
+                    .id(rs.getLong("id"))
+                    .lineId(rs.getLong("line_id"))
+                    .upStation(rs.getLong("up_station_id"))
+                    .downStation(rs.getLong("down_station_id"))
+                    .distance(rs.getInt("distance"))
+                    .build();
 
     private final RowMapper<Section> sectionRowMapper = (rs, rowNum) ->
-            new Section(
-                    rs.getLong("id"),
-                    rs.getLong("line_id"),
-                    new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")),
-                    new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")),
-                    new Distance(rs.getInt("distance"))
-            );
+            Section.builder()
+                    .id(rs.getLong("id"))
+                    .lineId(rs.getLong("line_id"))
+                    .upStation(new Station(rs.getLong("up_station_id"), rs.getString("up_station_name")))
+                    .downStation(new Station(rs.getLong("down_station_id"), rs.getString("down_station_name")))
+                    .distance(new Distance(rs.getInt("distance")))
+                    .build();
 
     public RdsSectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
