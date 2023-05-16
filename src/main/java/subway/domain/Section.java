@@ -29,6 +29,25 @@ public class Section {
         return this.distance.sub(distance);
     }
 
+    public Section deleteStation(Section upIsStation) {
+        if (!down.equals(upIsStation.up)) {
+            throw new RuntimeException("삭제하려는 두 구간이 이어져있지 않습니다.");
+        }
+        return new Section(up, upIsStation.down, distance.sum(upIsStation.distance));
+    }
+
+    public boolean contains(Station station) {
+        return up.equals(station) || down.equals(station);
+    }
+
+    public boolean isUp(Station station) {
+        return up.equals(station);
+    }
+
+    public boolean isDown(Station station) {
+        return down.equals(station);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

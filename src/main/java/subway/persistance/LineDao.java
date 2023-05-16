@@ -16,7 +16,7 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
             new Line(
                     rs.getLong("line_id"),
                     rs.getString("name"),

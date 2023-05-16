@@ -2,6 +2,9 @@ package subway.domain;
 
 import subway.dto.request.LineRequest;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class Line {
     private final Long id;
     private String name;
@@ -41,9 +44,23 @@ public class Line {
         sections.addIntermediate(station, prevStation, new Distance(distance));
     }
 
+    public void deleteSections(Station station) {
+        sections.delete(station);
+    }
+
     public void update(String name, String color) {
         this.name = name;
         this.color = color;
+    }
+
+    public List<Station> getAllStations() {
+        return sections.getAllStations();
+    }
+
+    public List<Integer> getAllDistances() {
+        return sections.getAllDistances().stream()
+                .map(Distance::getValue)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {

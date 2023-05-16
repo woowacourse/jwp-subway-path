@@ -32,7 +32,8 @@ public class LineRepositoryImpl implements LineRepository {
     @Override
     public Optional<Line> findById(Long id) {
         try {
-            Line line = lineDao.findById(id).get();
+            Line line = lineDao.findById(id)
+                    .orElseThrow(NoSuchElementException::new);
 
             List<SectionEntity> sectionEntities = sectionDao.findByLineId(line.getId());
 

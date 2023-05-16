@@ -4,7 +4,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.Station;
-import subway.dto.response.StationResponse;
+import subway.dto.response.LineStationResponse;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional
 @Service
@@ -48,7 +51,36 @@ public class LineStationService {
         lineService.save(line);
     }
 
-    public StationResponse findByLineId(Long id) {
-        return null;
+    public void deleteStationById(final Long id, final Long stationId) {
+        Line line = lineService.findById(id);
+        Station station = stationService.findById(stationId);
+        line.deleteSections(station);
+        lineService.save(line);
+    }
+
+    public List<LineStationResponse> findAll() {
+        List<Line> lines = lineService.findAll();
+
+        return lines.stream()
+                .map(this::mapToResponse)
+                .collect(Collectors.toList());
+    }
+
+    public LineStationResponse findByLineId(Long id) {
+        Line line = lineService.findById(id);
+
+        return mapToResponse(line);
+    }
+
+    private LineStationResponse mapToResponse(Line line) {
+        List<String> stations = stationsToString(line.getAllStations());
+        List<Integer> getDistances = line.getAllDistances();
+        return new LineStationResponse(stations, getDistances);
+    }
+
+    private List<String> stationsToString(List<Station> stations) {
+        return stations.stream()
+                .map(Station::getName)
+                .collect(Collectors.toList());
     }
 }

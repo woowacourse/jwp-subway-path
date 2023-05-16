@@ -10,13 +10,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineStationService;
 import subway.dto.request.ConnectRequest;
+import subway.dto.response.LineStationResponse;
 import subway.dto.response.StationResponse;
+
+import java.util.List;
 
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(LineStationController.class)
@@ -118,11 +122,20 @@ class LineStationControllerTest {
     @Test
     @DisplayName("get /lines/{lineId}/stations : 라인에 해당하는 모든 역을 조회한다.")
     void showStationsByLineId() throws Exception {
-        when(lineStationService.findByLineId(1L)).thenReturn(new StationResponse(1L, "잠실역"));
+        // given
+        List<String> stations = List.of("선릉역", "강남역", "잠실역");
+        List<Integer> distances = List.of(1, 3);
+        LineStationResponse response = new LineStationResponse(stations, distances);
+        String jsonResponse = objectMapper.writeValueAsString(response);
 
+        when(lineStationService.findByLineId(1L)).thenReturn(response);
+
+
+        // when & then
         mockMvc.perform(get("/lines/1/stations")
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(content().json(jsonResponse));
 
         verify(lineStationService, times(1)).findByLineId(1L);
     }

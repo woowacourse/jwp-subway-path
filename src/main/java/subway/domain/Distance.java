@@ -20,6 +20,10 @@ public class Distance {
         return new Distance(value - distance.value);
     }
 
+    public Distance sum(Distance distance) {
+        return new Distance(value + distance.value);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

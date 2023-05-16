@@ -59,4 +59,7 @@ public class LineService {
                 .orElseThrow(() -> new IllegalArgumentException("id에 해당하는 라인이 존재하지 않습니다."));
     }
 
+    public List<Line> findAll() {
+        return lineRepository.findAll();
+    }
 }

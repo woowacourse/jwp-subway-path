@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class Sections {
@@ -46,7 +47,7 @@ public class Sections {
     public void addIntermediate(Station station, Station prevStation, Distance distance) {
         validateHasSize();
 
-        Section prevToNext = findSectionByUp(prevStation);
+        Section prevToNext = getSectionUpIs(prevStation);
         Section prevToThis = prevToNext.connectIntermediate(station, distance);
         Section thisToNext = new Section(station, prevToNext.getDown(), prevToNext.subDistance(distance)); // 42
 
@@ -63,11 +64,57 @@ public class Sections {
         }
     }
 
-    private Section findSectionByUp(Station prevStation) {
+    public void delete(Station station) {
+        if (sections.size() == 1) {
+            sections.clear();
+            return;
+        }
+
+        if (isMid(station)) {
+            deleteMidStation(station);
+            return;
+        }
+
+        Section found = getSectionContains(station);
+        sections.remove(found);
+    }
+
+    private boolean isMid(Station station) {
         return sections.stream()
-                .filter(section -> section.getUp().equals(prevStation))
+                .skip(1)
+                .anyMatch(section -> section.isUp(station));
+    }
+
+    private void deleteMidStation(Station station) {
+        Section upIsStation = getSectionUpIs(station);
+        Section downIsStation = getSectionDownIs(station);
+
+        Section section = downIsStation.deleteStation(upIsStation);
+        int index = getIndex(downIsStation);
+        sections.remove(index + 1);
+        sections.remove(index);
+        sections.add(index, section);
+    }
+
+    private Section getSectionContains(Station station) {
+        return sections.stream()
+                .filter(section -> section.contains(station))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 이전역입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("역을 포함하고 있는 구간이 존재하지 않습니다."));
+    }
+
+    private Section getSectionUpIs(Station station) {
+        return sections.stream()
+                .filter(section -> section.isUp(station))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 역입니다."));
+    }
+
+    private Section getSectionDownIs(Station station) {
+        return sections.stream()
+                .filter(section -> section.isDown(station))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("라인에 등록되지 않은 역입니다."));
     }
 
     private int getIndex(Section section) {
@@ -79,5 +126,21 @@ public class Sections {
 
     public List<Section> getSections() {
         return List.copyOf(sections);
+    }
+
+    public List<Station> getAllStations() {
+        List<Station> stations = sections.stream()
+                .map(Section::getDown)
+                .collect(Collectors.toList());
+
+        stations.add(0, sections.get(0).getUp());
+
+        return stations;
+    }
+
+    public List<Distance> getAllDistances() {
+        return sections.stream()
+                .map(Section::getDistance)
+                .collect(Collectors.toList());
     }
 }

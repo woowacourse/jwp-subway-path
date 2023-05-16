@@ -95,6 +95,10 @@ class StationServiceTest {
     @Test
     @DisplayName("id에 해당하는 역을 조회한다")
     void findById() {
+        // given
+        Station station = new Station(1L, "잠실역");
+        when(stationDao.findById(1L)).thenReturn(Optional.of(station));
+
         // when
         stationService.findById(1L);
 

@@ -59,7 +59,7 @@ Content-Type: application/json
 
 
 ### 하행 종점 등록
-PATCH http://localhost:8080/lines/3/stations/4?type=down
+PATCH http://localhost:8080/lines/6/stations/2?type=down
 Content-Type: application/json
 
 {
@@ -76,4 +76,13 @@ Content-Type: application/json
 }
 
 ### 역 삭제
-DELETE http://localhost:8080/stations/5
+DELETE http://localhost:8080/stations/1
+
+### 라인에 등록된 역 삭제
+DELETE http://localhost:8080/lines/7/stations/1
+
+### 라인에 해당하는 모든 역 조회
+GET http://localhost:8080/lines/4/stations
+
+### 라인에 해당하는 모든 역 조회
+GET http://localhost:8080/lines/stations
