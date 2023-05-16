@@ -21,10 +21,14 @@ public class StationEdges {
         validateNew(newStationId);
 
         StationEdge adjacentDownStationEdge = getStationEdge(adjacentStationId);
-        int adjacentDownStationIndex = stationEdges.indexOf(adjacentDownStationEdge);
-
         Distance newEdgeDistance = adjacentDownStationEdge.getDistance().minus(distanceFromAdjacentStation);
+
         List<StationEdge> splitEdges = adjacentDownStationEdge.split(newEdgeDistance, newStationId);
+        replaceBySplitEdges(adjacentDownStationEdge, splitEdges);
+    }
+
+    private void replaceBySplitEdges(StationEdge targetEdge, List<StationEdge> splitEdges) {
+        int adjacentDownStationIndex = stationEdges.indexOf(targetEdge);
         stationEdges.remove(adjacentDownStationIndex);
         stationEdges.addAll(adjacentDownStationIndex, splitEdges);
     }
@@ -36,18 +40,26 @@ public class StationEdges {
     ) {
         validateNew(newStationId);
 
-        final int adjacentDownStationIndex = stationEdges.indexOf(getStationEdge(adjacentStationId)) + 1;
-        boolean isLastEdge = adjacentDownStationIndex == stationEdges.size();
-        if (isLastEdge) {
+        if (isLastStation(adjacentStationId)) {
             StationEdge insertedStationEdge = new StationEdge(newStationId, newStationDistance);
             stationEdges.add(insertedStationEdge);
             return;
         }
 
-        StationEdge adjacentDownStationEdge = stationEdges.get(adjacentDownStationIndex);
-        List<StationEdge> splitEdges = adjacentDownStationEdge.split(newStationDistance, newStationId);
-        stationEdges.remove(adjacentDownStationIndex);
-        stationEdges.addAll(adjacentDownStationIndex, splitEdges);
+        StationEdge adjacentStationEdge = getStationEdge(adjacentStationId);
+        StationEdge nextStationEdge = next(adjacentStationEdge);
+
+        List<StationEdge> splitEdges = nextStationEdge.split(newStationDistance, newStationId);
+        replaceBySplitEdges(nextStationEdge, splitEdges);
+    }
+
+    public StationEdge next(StationEdge stationEdge) {
+        final int adjacentDownStationIndex = stationEdges.indexOf(stationEdge) + 1;
+        return stationEdges.get(adjacentDownStationIndex);
+    }
+
+    private boolean isLastStation(Long stationId) {
+        return stationEdges.get(stationEdges.size()-1).getDownStationId() == stationId;
     }
 
     private void validateNew(Long stationId) {
@@ -57,9 +69,6 @@ public class StationEdges {
     }
 
     public StationEdge deleteStation(long stationId) {
-        if (!contains(stationId)) {
-            throw new StationNotFoundException();
-        }
         StationEdge stationEdge = getStationEdge(stationId);
 
         int edgeIndex = stationEdges.indexOf(stationEdge);
