@@ -15,7 +15,7 @@ public class LineColor {
         }
     }
 
-    public String getColor() {
+    public String color() {
         return color;
     }
 }

@@ -27,7 +27,7 @@ public class LineName {
         }
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 }

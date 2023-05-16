@@ -29,7 +29,7 @@ public class StationName {
         }
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
