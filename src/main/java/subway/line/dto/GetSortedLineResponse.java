@@ -8,6 +8,6 @@ import java.util.List;
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
-public class SortedLineResponse {
+public class GetSortedLineResponse {
     private final List<String> sortedStations;
 }

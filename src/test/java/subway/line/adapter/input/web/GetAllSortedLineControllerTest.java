@@ -16,7 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
-import subway.line.application.port.input.GetSortedLineUseCase;
+import subway.line.application.port.input.GetAllSortedLineUseCase;
+import subway.line.dto.GetAllSortedLineResponse;
 import subway.line.dto.GetSortedLineResponse;
 
 import java.util.HashMap;
@@ -24,45 +25,38 @@ import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
 import static org.mockito.BDDMockito.given;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ContextConfiguration(classes = TestConfig.class)
-@WebMvcTest(GetSortedLineController.class)
-class GetSortedLineControllerTest { // TODO
+@WebMvcTest(GetAllSortedLineController.class)
+class GetAllSortedLineControllerTest {
     @MockBean
-    private GetSortedLineUseCase useCase;
+    private GetAllSortedLineUseCase useCase;
     
     @BeforeEach
     void setUp() {
         final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
         RestAssuredMockMvc.standaloneSetup(
-                MockMvcBuilders.standaloneSetup(new GetSortedLineController(useCase))
+                MockMvcBuilders.standaloneSetup(new GetAllSortedLineController(useCase))
                         .setControllerAdvice(new GlobalExceptionHandler(logger))
         );
     }
     
     @Test
-    void lineId로_해당_노선의_정렬된_역들을_가져오기() {
+    void 모든_노선의_역을_정렬하기() {
         // given
-        given(useCase.getSortedLine(1L)).willReturn(new GetSortedLineResponse(List.of("잠실역", "선릉역")));
+        final GetAllSortedLineResponse response = new GetAllSortedLineResponse(List.of(new GetSortedLineResponse(List.of("잠실역", "청라역", "선릉역"))));
+        given(useCase.getAllSortedLine()).willReturn(response);
         
         // expect
         RestAssuredMockMvc.given().log().all()
-                .when().get("/lines/1")
+                .when().get("/lines")
                 .then().log().all()
-                .assertThat()
+                .contentType(ContentType.JSON)
                 .status(HttpStatus.OK)
-                .body("sortedStations", contains("잠실역", "선릉역"));
-    }
-    
-    @Test
-    void lineId가_null이면_예외_발생() {
-        // expect
-        RestAssuredMockMvc.given().log().all()
-                .when().get("/lines/" + null)
-                .then().log().all()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("message", is("[ERROR] 서버가 응답할 수 없습니다."));
+                .body("allSortedLines", hasSize(1))
+                .body("allSortedLines[0].sortedStations", contains("잠실역", "청라역", "선릉역"));
     }
 }

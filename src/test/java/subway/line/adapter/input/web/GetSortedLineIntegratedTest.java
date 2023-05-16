@@ -62,14 +62,9 @@ class GetSortedLineIntegratedTest extends IntegrationTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .header("Location", startsWith("/stations"));
         
-        params.clear();
-        params.put("lineId", Long.parseLong(lineId));
-        
         // expect
         RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().get("lines")
+                .when().get("/lines/" + Long.parseLong(lineId))
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("sortedStations", contains("잠실역", "청라역", "선릉역"));
@@ -122,16 +117,11 @@ class GetSortedLineIntegratedTest extends IntegrationTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .header("Location", startsWith("/stations"));
         
-        params.clear();
-        params.put("lineId", null);
-        
         // expect
         RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().get("lines")
+                .when().get("/lines/" + null)
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", is("[ERROR] lineId는 null일 수 없습니다."));
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .body("message", is("[ERROR] 서버가 응답할 수 없습니다."));
     }
 }

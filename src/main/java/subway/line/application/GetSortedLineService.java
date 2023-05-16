@@ -8,6 +8,7 @@ import subway.line.application.port.output.GetAllLinePort;
 import subway.line.application.port.output.GetLineByIdPort;
 import subway.line.domain.Line;
 import subway.line.domain.Subway;
+import subway.line.dto.GetSortedLineResponse;
 
 import java.util.List;
 
@@ -19,9 +20,9 @@ public class GetSortedLineService implements GetSortedLineUseCase {
     private final GetLineByIdPort getLineByIdPort;
     
     @Override
-    public List<String> getSortedLine(final Long lineId) {
+    public GetSortedLineResponse getSortedLine(final Long lineId) {
         final Subway subway = new Subway(getAllLinePort.getAll());
         final Line lineById = getLineByIdPort.getLineById(lineId);
-        return subway.getSortedStations(lineById.getName());
+        return new GetSortedLineResponse(subway.getSortedStations(lineById.getName()));
     }
 }

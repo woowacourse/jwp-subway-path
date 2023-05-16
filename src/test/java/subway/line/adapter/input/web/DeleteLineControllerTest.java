@@ -1,7 +1,6 @@
 package subway.line.adapter.input.web;
 
 import config.TestConfig;
-import io.restassured.http.ContentType;
 import io.restassured.module.mockmvc.RestAssuredMockMvc;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,9 +13,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import subway.advice.GlobalExceptionHandler;
 import subway.line.application.port.input.DeleteLineUseCase;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
 
@@ -38,15 +34,9 @@ class DeleteLineControllerTest {
     
     @Test
     void lineId로_노선을_삭제한다() {
-        // given
-        final Map<String, Object> params = new HashMap<>();
-        params.put("lineId", 1L);
-        
         // expect
         RestAssuredMockMvc.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().delete("/lines")
+                .when().delete("/lines/1")
                 .then().log().all()
                 .assertThat()
                 .status(HttpStatus.NO_CONTENT);
@@ -54,17 +44,11 @@ class DeleteLineControllerTest {
     
     @Test
     void lineId가_null일_시_예외_발생() {
-        // given
-        final Map<String, Object> params = new HashMap<>();
-        params.put("lineId", null);
-        
         // expect
         RestAssuredMockMvc.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().delete("/lines")
+                .when().delete("/lines/" + null)
                 .then().log().all()
-                .status(HttpStatus.BAD_REQUEST)
-                .body("message", is("[ERROR] lineId는 null일 수 없습니다."));
+                .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                .body("message", is("[ERROR] 서버가 응답할 수 없습니다."));
     }
 }

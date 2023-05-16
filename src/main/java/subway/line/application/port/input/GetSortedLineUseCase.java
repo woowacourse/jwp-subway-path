@@ -1,7 +1,7 @@
 package subway.line.application.port.input;
 
-import java.util.List;
+import subway.line.dto.GetSortedLineResponse;
 
 public interface GetSortedLineUseCase {
-    List<String> getSortedLine(Long lineId);
+    GetSortedLineResponse getSortedLine(Long lineId);
 }

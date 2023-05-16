@@ -35,14 +35,10 @@ class DeleteLineIntegratedTest extends IntegrationTest {
                 .extract();
         
         final String lineId = response.header("Location").substring(locationStartsWith.length());
-        params.clear();
-        params.put("lineId", lineId);
         
         // expect
         RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().delete("/lines")
+                .when().delete("/lines/" + Long.parseLong(lineId))
                 .then().log().all()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -66,14 +62,10 @@ class DeleteLineIntegratedTest extends IntegrationTest {
                 .extract();
         
         final String lineId = response.header("Location").substring(locationStartsWith.length());
-        params.clear();
-        params.put("lineId", Long.parseLong(lineId) + 1L);
         
         // expect
         RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().delete("/lines")
+                .when().delete("/lines/" + Long.parseLong(lineId) + 1L)
                 .then().log().all()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
                 .body("message", is("[ERROR] 존재하지 않는 노선을 지정하셨습니다."));
@@ -96,16 +88,11 @@ class DeleteLineIntegratedTest extends IntegrationTest {
                 .statusCode(HttpStatus.CREATED.value())
                 .header("Location", startsWith(locationStartsWith));
         
-        params.clear();
-        params.put("lineId", null);
-        
         // expect
         RestAssured.given().log().all()
-                .contentType(ContentType.JSON)
-                .body(params)
-                .when().delete("/lines")
+                .when().delete("/lines/" + null)
                 .then().log().all()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .body("message", is("[ERROR] lineId는 null일 수 없습니다."));
+                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                .body("message", is("[ERROR] 서버가 응답할 수 없습니다."));
     }
 }

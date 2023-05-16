@@ -3,11 +3,14 @@ package subway.line.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import subway.line.dto.GetAllSortedLineResponse;
+import subway.line.dto.GetSortedLineResponse;
 import subway.section.domain.Direction;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 @ToString
@@ -77,5 +80,14 @@ public class Subway {
     
     public List<String> getSortedStations(final String lineName) {
         return findLineByLineName(lineName).getSortedStations();
+    }
+    
+    public GetAllSortedLineResponse getAllSortedStations() {
+        return new GetAllSortedLineResponse(
+                lines.stream()
+                .map(line -> getSortedStations(line.getName()))
+                .map(GetSortedLineResponse::new)
+                .collect(Collectors.toUnmodifiableList())
+        );
     }
 }

@@ -8,6 +8,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.line.application.port.output.GetAllLinePort;
 import subway.line.application.port.output.GetLineByIdPort;
 import subway.line.domain.Line;
+import subway.line.dto.GetSortedLineResponse;
 import subway.section.domain.Direction;
 import subway.section.domain.Section;
 
@@ -52,9 +53,9 @@ class GetSortedLineServiceTest {
         given(getLineByIdPort.getLineById(1L)).willReturn(line1);
         
         // when
-        final List<String> sortedLine = getSortedLineService.getSortedLine(1L);
+        final GetSortedLineResponse response = getSortedLineService.getSortedLine(1L);
         
         // then
-        assertThat(sortedLine).containsExactly("잠실역", "가양역", "화정역", "종합운동장", "선릉역");
+        assertThat(response.getSortedStations()).containsExactly("잠실역", "가양역", "화정역", "종합운동장", "선릉역");
     }
 }
