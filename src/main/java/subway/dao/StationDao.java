@@ -1,16 +1,19 @@
 package subway.dao;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.StationEntity;
 
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
+    private final SimpleJdbcInsert insertAction;
 
     private static final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
@@ -21,11 +24,14 @@ public class StationDao {
 
     public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+        this.insertAction = new SimpleJdbcInsert(jdbcTemplate)
+                .usingGeneratedKeyColumns("id")
+                .withTableName("STATION");
     }
 
-    public void insert(StationEntity station) {
-        String sql = "INSERT INTO STATION (name) VALUES (?)";
-        jdbcTemplate.update(sql, station.getName());
+    public Long insert(StationEntity station) {
+        return insertAction.executeAndReturnKey(Map.of("name", station.getName()))
+                .longValue();
     }
 
     public List<StationEntity> findAll() {
@@ -42,9 +48,13 @@ public class StationDao {
         }
     }
 
-    public StationEntity findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         String sql = "SELECT * FROM STATION WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (DataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     public void update(StationEntity station) {

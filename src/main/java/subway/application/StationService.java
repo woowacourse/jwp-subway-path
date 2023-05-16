@@ -4,44 +4,44 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.StationDao;
-import subway.dao.entity.StationEntity;
 import subway.domain.Station;
+import subway.domain.StationRepository;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationResponse;
 import subway.dto.station.StationUpdateRequest;
+import subway.exception.IllegalStationException;
 
 @Service
 @Transactional
 public class StationService {
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public void saveStation(StationCreateRequest stationCreateRequest) {
-        stationDao.insert(new StationEntity(stationCreateRequest.getStationName()));
+        Station station = new Station(stationCreateRequest.getStationName());
+        if (stationRepository.isDuplicateStation(station)) {
+            throw new IllegalStationException("이미 존재하는 역입니다.");
+        }
+        stationRepository.save(station);
     }
 
     @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
-        List<Station> stations = stationDao.findAll()
+        return stationRepository.findAll()
                 .stream()
-                .map(entity -> new Station(entity.getName()))
-                .collect(Collectors.toList());
-        return stations.stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
     public void updateStation(Long id, StationUpdateRequest stationUpdateRequest) {
-        StationEntity station = stationDao.findById(id);
-        StationEntity stationEntity = new StationEntity(station.getId(), stationUpdateRequest.getStationName());
-        stationDao.update(stationEntity);
+        stationRepository.update(new Station(id, stationUpdateRequest.getStationName()));
     }
 
     public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+        Station station = stationRepository.findById(id);
+        stationRepository.delete(station);
     }
 }

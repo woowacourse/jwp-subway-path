@@ -27,4 +27,8 @@ public class StationEntity {
     public String getName() {
         return name;
     }
+
+    public void updateName(String name) {
+        this.name = name;
+    }
 }
