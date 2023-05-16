@@ -8,10 +8,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.station.domain.Station;
 
-import java.util.Comparator;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiPredicate;
 import java.util.stream.Collectors;
 
@@ -130,6 +127,10 @@ public class Sections {
     }
     
     public List<String> getSortedStations() {
+        if (sections.isEmpty()) {
+            return Collections.emptyList();
+        }
+        
         final Set<Station> stations = new HashSet<>();
         sections.forEach(section -> section.putStationIfNotExist(stations));
         final Station frontStation = getStationOfMatchMostDirection(stations, Section::isLeftStation);

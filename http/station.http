@@ -1,0 +1,50 @@
+###
+# @name initAddStations
+# @description Initialize the addition of multiple stations
+POST http://localhost:8080/stations/init
+Content-Type: application/json
+
+{
+  "firstStation": "잠실역",
+  "secondStation": "선릉역",
+  "distance": 5,
+  "lineId": 1
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/stations
+
+
+###
+# @name addStation
+# @description Create a new station
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineId": 1,
+  "baseStation": "선릉역",
+  "direction": "LEFT",
+  "additionalStation": "청라역",
+  "distance": 3
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/stations/{stationId}
+
+
+###
+# @name deleteStation
+# @description Delete a specific station
+DELETE http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineId": 1,
+  "stationId": 2
+}
+
+> Expected response:
+> Status: 204 No Content

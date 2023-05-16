@@ -1,0 +1,61 @@
+###
+# @name addLine
+# @description Create a new line
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "1호선",
+  "color": "파랑"
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/lines/{lineId}
+
+
+###
+# @name deleteLine
+# @description Delete a line with specified ID
+DELETE http://localhost:8080/lines/1
+
+> Expected response:
+> Status: 204 No Content
+
+
+###
+# @name getAllSortedLine
+# @description Retrieve all sorted lines
+GET http://localhost:8080/lines
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+> "allSortedLines": [
+>     {
+>       "sortedStations": [
+>         "잠실역",
+>         "청라역"
+>       ]
+>     }
+>   ]
+> }
+
+
+###
+# @name getSortedLine
+# @description Retrieve a sorted line with specified ID
+GET http://localhost:8080/lines/1
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "sortedStations": [
+>     "잠실역",
+>     "청라역"
+>   ]
+> }

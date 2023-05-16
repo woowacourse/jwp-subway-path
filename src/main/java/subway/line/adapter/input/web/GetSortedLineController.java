@@ -16,7 +16,7 @@ public class GetSortedLineController {
     private final GetSortedLineUseCase useCase;
     
     @GetMapping
-    public ResponseEntity<GetSortedLineResponse> save(@PathVariable final Long lineId) {
+    public ResponseEntity<GetSortedLineResponse> getSortedLine(@PathVariable final Long lineId) {
         final GetSortedLineResponse response = useCase.getSortedLine(lineId);
         return ResponseEntity.ok(response);
     }

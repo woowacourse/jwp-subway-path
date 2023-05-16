@@ -1,0 +1,250 @@
+###
+# @name addLine
+# @description Create a new line
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "1호선",
+  "color": "파랑"
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/lines/{lineId}
+
+
+###
+# @name initAddStations
+# @description Initialize the addition of multiple stations
+POST http://localhost:8080/stations/init
+Content-Type: application/json
+
+{
+  "firstStation": "잠실역",
+  "secondStation": "선릉역",
+  "distance": 5,
+  "lineId": 1
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/stations
+
+
+###
+# @name addStation
+# @description Create a new station
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineId": 1,
+  "baseStation": "선릉역",
+  "direction": "LEFT",
+  "additionalStation": "청라역",
+  "distance": 3
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/stations/{stationId}
+
+
+###
+# @name getSortedLine
+# @description Retrieve a sorted line with specified ID
+GET http://localhost:8080/lines/1
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "sortedStations": [
+>     "잠실역",
+>     "청라역",
+>     "선릉역"
+>   ]
+> }
+
+
+###
+# @name addStation
+# @description Create a new station
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineId": 1,
+  "baseStation": "선릉역",
+  "direction": "RIGHT",
+  "additionalStation": "가정역",
+  "distance": 3
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/stations/{stationId}
+
+
+###
+# @name addLine
+# @description Create a new line
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name": "2호선",
+  "color": "초록"
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/lines/{lineId}
+
+
+###
+# @name initAddStations
+# @description Initialize the addition of multiple stations
+POST http://localhost:8080/stations/init
+Content-Type: application/json
+
+{
+  "firstStation": "화정역",
+  "secondStation": "신도림역",
+  "distance": 6,
+  "lineId": 2
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/stations
+
+
+###
+# @name addStation
+# @description Create a new station
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineId": 2,
+  "baseStation": "신도림역",
+  "direction": "RIGHT",
+  "additionalStation": "신길역",
+  "distance": 7
+}
+
+> Expected response:
+> Status: 201 Created
+> Headers: Location: http://localhost:8080/stations/{stationId}
+
+
+###
+# @name getAllSortedLine
+# @description Retrieve all sorted lines
+GET http://localhost:8080/lines
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "allSortedLines": [
+>     {
+>       "sortedStations": [
+>         "잠실역",
+>         "청라역",
+>         "선릉역",
+>         "가정역"
+>       ]
+>     },
+>     {
+>       "sortedStations": [
+>         "화정역",
+>         "신도림역",
+>         "신길역"
+>       ]
+>     }
+>   ]
+> }
+
+
+
+###
+# @name deleteStation
+# @description Delete a specific station
+DELETE http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "lineId": 1,
+  "stationId": 2
+}
+
+
+> Expected response:
+> Status: 204 No Content
+> 1호선 선릉역 삭제
+
+
+###
+# @name getAllSortedLine
+# @description Retrieve all sorted lines
+GET http://localhost:8080/lines
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "allSortedLines": [
+>     {
+>       "sortedStations": [
+>         "잠실역",
+>         "청라역",
+>         "가정역"
+>       ]
+>     },
+>     {
+>       "sortedStations": [
+>         "화정역",
+>         "신도림역",
+>         "신길역"
+>       ]
+>     }
+>   ]
+> }
+
+
+###
+# @name deleteLine
+# @description Delete a line with specified ID
+DELETE http://localhost:8080/lines/1
+
+> Expected response:
+> Status: 204 No Content
+> 1호선 삭제
+
+
+###
+# @name getAllSortedLine
+# @description Retrieve all sorted lines
+GET http://localhost:8080/lines
+Accept: application/json
+
+> Expected response:
+> Status: 200 OK
+> Body:
+> {
+>   "allSortedLines": [
+>     {
+>       "sortedStations": [
+>         "화정역",
+>         "신도림역",
+>         "신길역"
+>       ]
+>     }
+>   ]
+> }

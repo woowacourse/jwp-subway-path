@@ -19,7 +19,7 @@ public class InitAddStationController {
     private final InitAddStationUseCase initAddStationUseCase;
     
     @PostMapping
-    public ResponseEntity<Void> initSave(@RequestBody @Valid final InitAddStationRequest request) {
+    public ResponseEntity<Void> initAdd(@RequestBody @Valid final InitAddStationRequest request) {
         initAddStationUseCase.initAddStations(request);
         return ResponseEntity.created(URI.create("/stations")).build();
     }

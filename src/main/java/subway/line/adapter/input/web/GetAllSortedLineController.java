@@ -15,7 +15,7 @@ public class GetAllSortedLineController {
     private final GetAllSortedLineUseCase useCase;
     
     @GetMapping
-    public ResponseEntity<GetAllSortedLineResponse> save() {
+    public ResponseEntity<GetAllSortedLineResponse> getAllSortedLine() {
         final GetAllSortedLineResponse response = useCase.getAllSortedLine();
         return ResponseEntity.ok(response);
     }
