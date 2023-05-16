@@ -29,26 +29,19 @@ public class LineService {
         return LineResponse.from(persistLine);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::from)
-                .collect(Collectors.toList());
-    }
-
-    public List<Line> findLines() {
-        return lineDao.findAll()
-                .stream()
-                .map(line -> findLineById(line.getId()))
-                .collect(Collectors.toList());
-    }
-
-    public LineResponse findLineResponseById(final Long id) {
-        Line persistLine = findLineById(id);
+    public LineResponse findLineById(final Long id) {
+        Line persistLine = configureLine(id);
         return LineResponse.from(persistLine);
     }
 
-    public Line findLineById(final Long id) {
+    public List<LineResponse> findLines() {
+        return lineDao.findAll()
+                .stream()
+                .map(line -> LineResponse.from(configureLine(line.getId())))
+                .collect(Collectors.toList());
+    }
+
+    private Line configureLine(final Long id) {
         Line rawLine = lineDao.findById(id);
         List<SectionDto> sectionsDtos = sectionDao.findAllByLineId(id);
         if (sectionsDtos.isEmpty()) {
@@ -81,32 +74,22 @@ public class LineService {
     }
 
     public void registerStation(final Long id, final StationRegisterRequest request) {
-        Line line = findLineById(id);
+        Line line = configureLine(id);
         Station station = stationDao.findById(request.getUpperStation());
         Station base = stationDao.findById(request.getLowerStation());
 
         line.insert(station, base, new Distance(request.getDistance()));
 
         sectionDao.deleteAllByLineId(line.getId());
-        sectionDao.insertAll(toSectionDtos(line));
+        sectionDao.insertAll(SectionDto.makeList(line.getId(), line.getSections()));
     }
 
     public void deleteStation(final Long lineId, final StationDeleteRequest request) {
-        Line line = findLineById(lineId);
+        Line line = configureLine(lineId);
         Station station = stationDao.findById(request.getStationId());
         line.delete(station);
 
         sectionDao.deleteAllByLineId(line.getId());
-        sectionDao.insertAll(toSectionDtos(line));
-    }
-
-    private List<SectionDto> toSectionDtos(final Line line) {
-        return line.getSections().stream()
-                .map(section -> new SectionDto(
-                        line.getId(),
-                        section.getUpper().getId(),
-                        section.getLower().getId(),
-                        section.getDistance().getValue()))
-                .collect(Collectors.toList());
+        sectionDao.insertAll(SectionDto.makeList(line.getId(), line.getSections()));
     }
 }

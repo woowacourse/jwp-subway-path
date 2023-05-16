@@ -6,8 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 class LineTest {
@@ -25,7 +24,7 @@ class LineTest {
         this.line = new Line("1호선", "blue");
     }
 
-    @DisplayName("한 번에 두 역을 등록했을 때 그 호선에 두 개의 역만 존재한다")
+    @DisplayName("한 번에 두 역을 등록했을 때 그 호선에는 두 개의 역만 존재한다")
     @Test
     void insertTwoStationsAndStoreTwoStations() {
         line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
@@ -106,6 +105,24 @@ class LineTest {
         });
     }
 
+    @DisplayName("잘못된 거리 정보를 가진 역을 등록하려고 하면 예외가 발생한다")
+    @Test
+    void throwExceptionWhenInsertWrongDistance() {
+        line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_5);
+
+        assertThatThrownBy(() -> line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL, DISTANCE_6))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("이미 존재하는 역을 등록하려고 하면 예외가 발생한다")
+    @Test
+    void throwExceptionWhenInsertExistedStation() {
+        line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
+
+        assertThatThrownBy(() -> line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_6))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("상행 종점을 제거한다")
     @Test
     void deleteTop() {
@@ -155,6 +172,15 @@ class LineTest {
         line.delete(STATION_JAMSIL_SAENAE);
 
         assertThat(line.getStations()).isEmpty();
+    }
+
+    @DisplayName("존재하지 않는 역을 제거하려는 경우 예외가 발생한다")
+    @Test
+    void throwExceptionWhenNotExistedStation() {
+        line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
+
+        assertThatThrownBy(() -> line.delete(STATION_JAMSIL))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("두 역 사이의 거리를 알 수 있다")
