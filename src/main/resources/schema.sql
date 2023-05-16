@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS STATION
     name    VARCHAR(255)          NOT NULL,
     line_id BIGINT                NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (line_id) REFERENCES LINE (id)
+    FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS SECTION
@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS SECTION
     distance         INT                   NOT NULL,
     line_id          BIGINT                NOT NULL,
     PRIMARY KEY (id),
-    FOREIGN KEY (start_station_id) REFERENCES STATION (id),
-    FOREIGN KEY (end_station_id) REFERENCES STATION (id),
-    FOREIGN KEY (line_id) REFERENCES LINE (id)
+    FOREIGN KEY (start_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
+    FOREIGN KEY (end_station_id) REFERENCES STATION (id) ON DELETE CASCADE,
+    FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
 );
