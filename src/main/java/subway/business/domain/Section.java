@@ -19,19 +19,12 @@ public class Section {
         return new Section(null, upwardStation, downwardStation, distance);
     }
 
-    public static Section ofDirection(Station station, Station neighborhoodStation, int distance, Direction direction) {
-        if (direction.equals(UPWARD)) {
-            return new Section(null, station, neighborhoodStation, distance);
-        }
-        return new Section(null, neighborhoodStation, station, distance);
-    }
-
     public int calculateRemainingDistance(int distanceToSubtract) {
         return this.distance - distanceToSubtract;
     }
 
-    public boolean hasStation(Station station) {
-        return upwardStation.equals(station) || downwardStation.equals(station);
+    public boolean hasStationNameOf(Station station) {
+        return upwardStation.haveSameNameWith(station) || downwardStation.haveSameNameWith(station);
     }
 
     public boolean isUpwardStation(Station station) {
@@ -44,9 +37,9 @@ public class Section {
 
     public boolean hasStationOfDirection(Station station, Direction direction) {
         if (direction.equals(UPWARD)) {
-            return this.upwardStation.equals(station);
+            return this.upwardStation.haveSameNameWith(station);
         }
-        return this.downwardStation.equals(station);
+        return this.downwardStation.haveSameNameWith(station);
     }
 
     public Long getId() {
@@ -63,12 +56,5 @@ public class Section {
 
     public int getDistance() {
         return distance;
-    }
-
-    public Station getStationOfDirection(Direction direction) {
-        if (direction.equals(UPWARD)) {
-            return this.upwardStation;
-        }
-        return this.downwardStation;
     }
 }

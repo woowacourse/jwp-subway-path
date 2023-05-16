@@ -43,7 +43,7 @@ public class LineControllerTest {
         Line line = new Line(
                 1L,
                 "2호선",
-                List.of(new Section(1L, new Station("잠실역"), new Station("몽촌토성역"), 5)));
+                List.of(new Section(1L, Station.from("잠실역"), Station.from("몽촌토성역"), 5)));
         given(lineService.createLine(any())).willReturn(LineResponse.from(line));
 
         LineSaveRequest lineSaveRequest = new LineSaveRequest(
@@ -98,7 +98,7 @@ public class LineControllerTest {
         Line line = new Line(
                 1L,
                 "2호선",
-                List.of(new Section(1L, new Station("몽촌토성역"), new Station("잠실역"), 5)));
+                List.of(new Section(1L, Station.from("몽촌토성역"), Station.from("잠실역"), 5)));
         given(lineService.findLineResponseById(any())).willReturn(LineResponse.from(line));
 
         mockMvc.perform(get("/lines/1"))
@@ -114,11 +114,11 @@ public class LineControllerTest {
         Line line1 = new Line(
                 1L,
                 "1호선",
-                List.of(new Section(1L, new Station("인천역"), new Station("부평역"), 5)));
+                List.of(new Section(1L, Station.from("인천역"), Station.from("부평역"), 5)));
         Line line2 = new Line(
                 2L,
                 "2호선",
-                List.of(new Section(2L, new Station("몽촌토성역"), new Station("잠실역"), 5)));
+                List.of(new Section(2L, Station.from("몽촌토성역"), Station.from("잠실역"), 5)));
         given(lineService.findLineResponses()).willReturn(List.of(LineResponse.from(line1), LineResponse.from(line2)));
 
         mockMvc.perform(get("/lines"))

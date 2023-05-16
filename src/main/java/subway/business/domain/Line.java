@@ -23,17 +23,17 @@ public class Line {
     }
 
     public static Line createToSave(String name, String upwardStationName, String downwardStationName, int distance) {
-        Station upwardStation = new Station(upwardStationName);
-        Station downwardStation = new Station(downwardStationName);
+        Station upwardStation = Station.from(upwardStationName);
+        Station downwardStation = Station.from(downwardStationName);
         List<Section> sections = new LinkedList<>();
         sections.add(Section.createToSave(upwardStation, downwardStation, distance));
         return new Line(name, sections);
     }
 
     public void addStation(String stationName, String neighborhoodStationName, Direction direction, int distance) {
-        Station station = new Station(stationName);
-        Station neighborhoodStation = new Station(neighborhoodStationName);
-        validateAlreadyExist(station);
+        Station station = Station.from(stationName);
+        validateStationNameAlreadyExist(station);
+        Station neighborhoodStation = findStationByName(neighborhoodStationName);
 
         if (isTerminusOfDirection(neighborhoodStation, direction)) {
             addTerminus(station, neighborhoodStation, direction, distance);
@@ -44,7 +44,7 @@ public class Line {
     }
 
     public void deleteStation(String stationName) {
-        Station station = new Station(stationName);
+        Station station = Station.from(stationName);
         validateNotExist(station);
         validateOnlyTwoStations();
 
@@ -53,6 +53,21 @@ public class Line {
             return;
         }
         deleteStationWhenIsNotTerminus(station);
+    }
+
+    private Station findStationByName(String stationName) {
+        Station station = Station.from(stationName);
+        for (Section section : sections) {
+            if (section.getUpwardStation().haveSameNameWith(station)) {
+                return section.getUpwardStation();
+            }
+        }
+        Station downwardTerminus = sections.get(sections.size() - 1).getDownwardStation();
+        if (downwardTerminus.haveSameNameWith(station)) {
+            return downwardTerminus;
+        }
+        throw new IllegalArgumentException(String.format("존재하지 않는 이름의 역입니다. "
+                + "(입력한 역 이름 : %s)", stationName));
     }
 
     private void deleteStationWhenIsNotTerminus(Station stationToDelete) {
@@ -81,10 +96,10 @@ public class Line {
     private boolean isTerminusOfDirection(Station station, Direction direction) {
         if (direction.equals(UPWARD)) {
             Section upwardEndSection = sections.get(0);
-            return upwardEndSection.getUpwardStation().equals(station);
+            return upwardEndSection.getUpwardStation().haveSameNameWith(station);
         }
         Section downwardEndSection = getDownwardEndSection();
-        return downwardEndSection.getDownwardStation().equals(station);
+        return downwardEndSection.getDownwardStation().haveSameNameWith(station);
     }
 
     private Section getDownwardEndSection() {
@@ -93,12 +108,12 @@ public class Line {
 
     private boolean isTerminus(Station station) {
         Section upwardEndSection = sections.get(0);
-        if (upwardEndSection.getUpwardStation().equals(station)) {
+        if (upwardEndSection.getUpwardStation().haveSameNameWith(station)) {
             return true;
         }
 
         Section downwardEndSection = getDownwardEndSection();
-        return downwardEndSection.getDownwardStation().equals(station);
+        return downwardEndSection.getDownwardStation().haveSameNameWith(station);
     }
 
     private void addTerminus(Station station, Station neighborhoodStation, Direction direction, int distance) {
@@ -186,16 +201,16 @@ public class Line {
 
     private boolean isUpwardTerminus(Station station) {
         Section upwardEndSection = sections.get(0);
-        return upwardEndSection.getUpwardStation().equals(station);
+        return upwardEndSection.getUpwardStation().haveSameNameWith(station);
     }
 
     private boolean isDownwardTerminus(Station station) {
         Section downwardEndSection = getDownwardEndSection();
-        return downwardEndSection.getDownwardStation().equals(station);
+        return downwardEndSection.getDownwardStation().haveSameNameWith(station);
     }
 
-    private void validateAlreadyExist(Station station) {
-        if (isStationExist(station)) {
+    private void validateStationNameAlreadyExist(Station station) {
+        if (isStationNameExist(station)) {
             throw new IllegalArgumentException(String.format(
                     "이미 노선에 존재하는 역은 추가할 수 없습니다. " +
                             "(추가하려는 노선 : %s 추가하려는 역 : %s)", name, station.getName()));
@@ -210,24 +225,24 @@ public class Line {
         }
     }
 
-    private boolean isStationExist(Station station) {
+    private boolean isStationNameExist(Station station) {
         for (Section section : sections) {
-            if (section.hasStation(station)) {
+            if (section.hasStationNameOf(station)) {
                 return true;
             }
         }
         return false;
     }
 
-    private void validateNotExist(Station stationToDelete) {
+    private void validateNotExist(Station station) {
         for (Section section : sections) {
-            if (section.hasStation(stationToDelete)) {
+            if (section.hasStationNameOf(station)) {
                 return;
             }
         }
         throw new IllegalArgumentException(
                 String.format("삭제하려는 역이 노선에 존재하지 않습니다. " +
-                        "(삭제하려는 역 : %s)", stationToDelete.getName()));
+                        "(삭제하려는 역 : %s)", station.getName()));
     }
 
     private void validateOnlyTwoStations() {

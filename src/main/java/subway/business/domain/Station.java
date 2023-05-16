@@ -3,10 +3,20 @@ package subway.business.domain;
 import java.util.Objects;
 
 public class Station {
-    private String name;
+    private final Long id;
+    private final String name;
 
-    public Station(String name) {
+    public Station(Long id, String name) {
+        this.id = id;
         this.name = name;
+    }
+
+    public static Station from(String name) {
+        return new Station(null, name);
+    }
+
+    public boolean haveSameNameWith(Station station) {
+        return this.name.equals(station.name);
     }
 
     public String getName() {
@@ -15,6 +25,9 @@ public class Station {
 
     @Override
     public boolean equals(Object o) {
+        if (this.id == null) {
+            throw new IllegalStateException("ID가 존재하지 않는 Station을 기준으로 비교했습니다.");
+        }
         if (this == o) {
             return true;
         }
@@ -22,11 +35,14 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return name.equals(station.name);
+        if (station.id == null) {
+            throw new IllegalStateException("ID가 존재하지 않는 Station을 인자로 넣어 비교했습니다.");
+        }
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id);
     }
 }

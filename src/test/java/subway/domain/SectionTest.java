@@ -11,40 +11,40 @@ public class SectionTest {
     @DisplayName("거리를 받아 전체 거리에서 뺀 거리를 계산한다.")
     @Test
     void shouldReturnRemainingDistanceWhenInputDistance() {
-        Station upwardStation = new Station("잠실역");
-        Station downwardStation = new Station("몽촌토성역");
+        Station upwardStation = Station.from("잠실역");
+        Station downwardStation = Station.from("몽촌토성역");
         Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         int remainingDistance = section.calculateRemainingDistance(3);
         assertThat(remainingDistance).isEqualTo(2);
     }
 
-    @DisplayName("이미 구간에 포함된 역이면 true를 반환한다.")
+    @DisplayName("이미 구간에 포함된 역의 이름이면 true를 반환한다.")
     @Test
     void shouldReturnTrueWhenAlreadyHasStation() {
-        Station upwardStation = new Station("잠실역");
-        Station downwardStation = new Station("몽촌토성역");
+        Station upwardStation = new Station(1L, "잠실역");
+        Station downwardStation = new Station(2L, "몽촌토성역");
         Section section = new Section(1L, upwardStation, downwardStation, 5);
 
-        assertThat(section.hasStation(upwardStation)).isTrue();
+        assertThat(section.hasStationNameOf(upwardStation)).isTrue();
     }
 
-    @DisplayName("구간에 포함되지 않은 역이면 false를 반환한다.")
+    @DisplayName("구간에 포함되지 않은 역의 이름이면 false를 반환한다.")
     @Test
     void shouldReturnFalseWhenDoesNotHaveStation() {
-        Station upwardStation = new Station("잠실역");
-        Station downwardStation = new Station("몽촌토성역");
+        Station upwardStation = new Station(1L, "잠실역");
+        Station downwardStation = new Station(2L, "몽촌토성역");
         Section section = new Section(1L, upwardStation, downwardStation, 5);
 
-        Station station = new Station("강남역");
-        assertThat(section.hasStation(station)).isFalse();
+        Station station = new Station(3L, "강남역");
+        assertThat(section.hasStationNameOf(station)).isFalse();
     }
 
     @DisplayName("입력 받은 역이 상행역이면 true를 반환한다.")
     @Test
     void shouldReturnTrueWhenInputStationIsSameWithUpwardStation() {
-        Station upwardStation = new Station("잠실역");
-        Station downwardStation = new Station("몽촌토성역");
+        Station upwardStation = new Station(1L, "잠실역");
+        Station downwardStation = new Station(2L, "몽촌토성역");
         Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         assertThat(section.isUpwardStation(upwardStation)).isTrue();
@@ -53,18 +53,18 @@ public class SectionTest {
     @DisplayName("입력 받은 역이 상행역이 아니면 false를 반환한다.")
     @Test
     void shouldReturnFalseWhenInputStationIsDifferentWithUpwardStation() {
-        Station upwardStation = new Station("잠실역");
-        Station downwardStation = new Station("몽촌토성역");
+        Station upwardStation = new Station(1L, "잠실역");
+        Station downwardStation = new Station(2L, "몽촌토성역");
         Section section = new Section(1L, upwardStation, downwardStation, 5);
 
-        assertThat(section.isUpwardStation(new Station("강남역"))).isFalse();
+        assertThat(section.isUpwardStation(new Station(3L, "강남역"))).isFalse();
     }
 
     @DisplayName("입력 받은 역이 하행역이면 true를 반환한다.")
     @Test
     void shouldReturnTrueWhenInputStationIsSameWithDownwardStation() {
-        Station upwardStation = new Station("잠실역");
-        Station downwardStation = new Station("몽촌토성역");
+        Station upwardStation = new Station(1L, "잠실역");
+        Station downwardStation = new Station(2L, "몽촌토성역");
         Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         assertThat(section.isDownwardStation(downwardStation)).isTrue();
@@ -73,10 +73,10 @@ public class SectionTest {
     @DisplayName("입력 받은 역이 하행역이 아니면 false를 반환한다.")
     @Test
     void shouldReturnFalseWhenInputStationIsDifferentWithDownwardStation() {
-        Station upwardStation = new Station("잠실역");
-        Station downwardStation = new Station("몽촌토성역");
+        Station upwardStation = new Station(1L, "잠실역");
+        Station downwardStation = new Station(2L, "몽촌토성역");
         Section section = new Section(1L, upwardStation, downwardStation, 5);
 
-        assertThat(section.isDownwardStation(new Station("강남역"))).isFalse();
+        assertThat(section.isDownwardStation(new Station(3L, "강남역"))).isFalse();
     }
 }
