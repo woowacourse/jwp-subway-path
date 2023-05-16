@@ -276,7 +276,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         //when, then
         RestAssured.given()
-                .when().delete("/lines/stations/{station-id}", lineId, stationId)
+                .when().delete("/lines/{id}/stations/{station-id}", lineId, stationId)
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }

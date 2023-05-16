@@ -75,15 +75,10 @@ public class LineService {
     }
 
     @Transactional
-    public void deletePathByStationId(final Long stationId) {
+    public void deletePath(final Long lineId, final Long stationId) {
         final Station station = stationDao.findById(stationId);
+        final Paths paths = pathDao.findByLineId(lineId);
 
-        final List<Long> lineIds = pathDao.findAllLineIdsByStationId(stationId);
-        for (final Long lineId : lineIds) {
-            Paths paths = pathDao.findByLineId(lineId);
-            paths = paths.removePath(station);
-
-            pathDao.save(paths, lineId);
-        }
+        pathDao.save(paths.removePath(station), lineId);
     }
 }

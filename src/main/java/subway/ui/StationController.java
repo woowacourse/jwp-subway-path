@@ -32,12 +32,12 @@ public final class StationController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<StationResponse> showStation(@PathVariable Long id) {
+    public ResponseEntity<StationResponse> showStation(@PathVariable final Long id) {
         return ResponseEntity.ok().body(stationService.findStationById(id));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id,
+    public ResponseEntity<Void> updateStation(@PathVariable final Long id,
                                               @RequestBody @Valid final StationRequest stationRequest) {
         stationService.updateStation(id, stationRequest);
 
@@ -45,7 +45,7 @@ public final class StationController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
         stationService.deleteStationById(id);
 
         return ResponseEntity.noContent().build();

@@ -4,7 +4,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import subway.domain.Line;
 import subway.domain.Path;
 import subway.domain.Paths;
 import subway.domain.Station;
@@ -30,10 +29,6 @@ public class PathDao {
         return new Path(rs.getLong("id"), upStation, downStation, rs.getInt("distance"));
     };
 
-    public Paths findByLine(final Line line) {
-        return findByLineId(line.getId());
-    }
-
     public Paths findByLineId(final Long lineId) {
         final String sql = "SELECT p.id, up_station_id, s1.name AS upName, down_station_id, s2.name AS downName, distance\n" +
                 "FROM PATH p\n" +
@@ -53,12 +48,6 @@ public class PathDao {
 
         List<Path> paths = jdbcTemplate.query(sql, rowMapper);
         return new Paths(paths);
-    }
-
-    public List<Long> findAllLineIdsByStationId(final Long stationId) {
-        final String sql = "SELECT DISTINCT line_id FROM path WHERE up_station_id = ? OR down_station_id = ?";
-
-        return jdbcTemplate.query(sql, (rs, rowNum) -> rs.getLong("line_id"), stationId, stationId);
     }
 
     public void save(final Paths paths, final Long lineId) {
