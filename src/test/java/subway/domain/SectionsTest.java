@@ -93,4 +93,14 @@ class SectionsTest {
                 () -> assertThat(result.get(1).getDownStation()).isEqualTo(삼성역)
         );
     }
+
+    @Test
+    void 구간이_이미_존재하는지_확인한다() {
+        // when, then
+        assertAll(
+                () -> assertThat(sections.hasSection(잠실새내역, 잠실역)).isTrue(),
+                () -> assertThat(sections.hasSection(잠실역, 잠실새내역)).isTrue(),
+                () -> assertThat(sections.hasSection(잠실역, 삼성역)).isFalse()
+        );
+    }
 }

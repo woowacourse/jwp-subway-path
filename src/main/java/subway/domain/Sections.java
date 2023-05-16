@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -102,7 +103,14 @@ public class Sections {
                 .collect(toSet());
     }
 
+    public boolean hasSection(Station upStation, Station downStation) {
+        return sections.stream()
+                .anyMatch(section -> section.hasSameSection(upStation, downStation)
+                        || section.hasSameSection(downStation, upStation)
+                );
+    }
+
     public List<Section> getSections() {
-        return sections;
+        return new ArrayList<>(sections);
     }
 }

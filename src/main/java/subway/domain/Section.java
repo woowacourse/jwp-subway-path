@@ -27,6 +27,10 @@ public class Section {
         this.lineId = lineId;
     }
 
+    public boolean hasSameSection(Station upStation, Station downStation) {
+        return this.upStation.equals(upStation) && this.downStation.equals(downStation) ;
+    }
+
     public Long getId() {
         return id;
     }

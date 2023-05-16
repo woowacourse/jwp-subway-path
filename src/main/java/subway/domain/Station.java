@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class Station {
     private static final String INITIAL_VALUE = "기본역";
+
     private Long id;
     private Name name;
 

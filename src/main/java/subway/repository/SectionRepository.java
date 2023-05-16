@@ -22,10 +22,6 @@ public class SectionRepository {
         this.sectionDao = sectionDao;
     }
 
-    public boolean exists(Long upStationId, Long downStationId) {
-        return sectionDao.exists(upStationId, downStationId);
-    }
-
     public Long insert(Section section) {
         final SectionEntity sectionEntity = mapToEntity(section);
         return sectionDao.insert(sectionEntity);

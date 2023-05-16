@@ -41,7 +41,7 @@ public class SectionService {
         final Station downStation = findById(request.getDownStationId());
         final Sections sections = sectionRepository.findAllByLineId(request.getLineId());
 
-        checkCanInsert(upStation, downStation, sections);
+        validateInsert(upStation, downStation, sections);
 
         if (sections.isUpTerminal(downStation) || sections.inDownTerminal(upStation)) {
             return insertToTerminal(request);
@@ -59,18 +59,17 @@ public class SectionService {
         if (Objects.equals(request.getUpStationId(), request.getDownStationId())) {
             throw new IllegalArgumentException("같은 역을 구간으로 등록할 수 없습니다.");
         }
-
-        if (sectionRepository.exists(request.getDownStationId(), request.getUpStationId())
-                || sectionRepository.exists(request.getUpStationId(), request.getDownStationId())) {
-            throw new IllegalArgumentException("동일한 구간을 추가할 수 없습니다.");
-        }
     }
 
     private Station findById(Long stationId) {
         return stationRepository.findById(stationId);
     }
 
-    private static void checkCanInsert(Station upStation, Station downStation, Sections sortedSections) {
+    private void validateInsert(Station upStation, Station downStation, Sections sortedSections) {
+        if (sortedSections.hasSection(upStation, downStation)) {
+            throw new IllegalArgumentException("동일한 구간을 추가할 수 없습니다.");
+        }
+
         if (sortedSections.canInsert(upStation, downStation)) {
             throw new IllegalArgumentException("역이 존재하지 않으면 추가할 수 없습니다.");
         }
