@@ -36,7 +36,7 @@ public class SectionJdbcRepository implements SectionRepository {
 
     @Override
     public void createSection(final String lineName, final List<Section> sections) {
-        jdbcTemplate.update("delete from section where line = ?", lineName);
+        jdbcTemplate.update("DELETE FROM section WHERE line = ?", lineName);
         List<SectionEntity> sectionEntities = SectionEntity.of(sections);
 
         final BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
@@ -53,25 +53,25 @@ public class SectionJdbcRepository implements SectionRepository {
 
     @Override
     public List<Section> findAllByLineName(final String lineName) {
-        String sql = "select * from section where line = ?";
+        String sql = "SELECT * FROM section WHERE line = ?";
         return jdbcTemplate.query(sql, sectionRowMapper, lineName);
     }
 
     @Override
     public void deleteBySection(final String lineName, final String upStation, final String downStation) {
-        String sql = "delete from section where line = ? and up_station = ? and down_station = ?";
+        String sql = "DELETE FROM section WHERE line = ? AND up_station = ? AND down_station = ?";
         jdbcTemplate.update(sql, lineName, upStation, downStation);
     }
 
     @Override
     public Section findIdByUpDown(final String upStation, final String downStation) {
-        String sql = "SELECT * from section WHERE up_station = ? and down_station = ?";
+        String sql = "SELECT * FROM section WHERE up_station = ? AND down_station = ?";
         return jdbcTemplate.queryForObject(sql, sectionRowMapper, upStation, downStation);
     }
 
     @Override
     public List<Section> findSectionsContainStation(final Station station) {
-        String sql = "SELECT * from section WHERE up_station = ? or down_station = ?";
+        String sql = "SELECT * FROM section WHERE up_station = ? OR down_station = ?";
         return jdbcTemplate.query(sql, sectionRowMapper, station.getName(), station.getName());
     }
 }

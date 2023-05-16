@@ -40,13 +40,13 @@ public class StationJdbcRepository implements StationRepository {
 
 	@Override
 	public List<Station> findAll() {
-		String sql = "select * from station";
+		String sql = "SELECT * FROM station";
 		return jdbcTemplate.query(sql, stationRowMapper);
 	}
 
 	@Override
 	public Station findById(final Long stationIdRequest) {
-		String sql = "select * from station where id = ?";
+		String sql = "SELECT * FROM station WHERE id = ?";
 		return jdbcTemplate.queryForObject(sql, stationRowMapper, stationIdRequest);
 	}
 
@@ -60,7 +60,7 @@ public class StationJdbcRepository implements StationRepository {
 
 	@Override
 	public boolean deleteById(final Long stationId) {
-		String sql = "delete from station where id = ?";
+		String sql = "DELETE FROM station WHERE id = ?";
 		final int deleteCount = jdbcTemplate.update(sql, stationId);
 
 		return deleteCount == DELETED_COUNT;
