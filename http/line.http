@@ -1,0 +1,35 @@
+### 노선 등록(1)
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+  "name" : "경의중앙선",
+  "color" : "청록"
+}
+
+### 노선 등록(2)
+POST http://localhost:8080/lines
+Content-Type: application/json
+
+{
+"name" : "2호선",
+"color" : "초록"
+}
+
+### 전체 노선 조회
+GET http://localhost:8080/lines
+
+### 노선 조회
+GET http://localhost:8080/lines/1
+
+### 노선 삭제
+DELETE http://localhost:8080/lines/2
+
+### 노선 정보 업데이트
+PUT http://localhost:8080/lines/3
+Content-Type: application/json
+
+{
+  "name" : "2호선",
+  "color" : "green"
+}

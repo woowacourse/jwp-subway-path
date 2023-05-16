@@ -1,0 +1,40 @@
+### 역 등록(1)
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name" : "용산"
+}
+
+### 역 등록(2)
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name" : "이촌"
+}
+
+### 역 등록(3)
+POST http://localhost:8080/stations
+Content-Type: application/json
+
+{
+  "name" : "서빙고"
+}
+
+### 전체 역 조회
+GET http://localhost:8080/stations
+
+### 역 조회
+GET http://localhost:8080/stations/1
+
+### 역 삭제
+DELETE http://localhost:8080/stations/1
+
+### 역 정보 업데이트
+PUT http://localhost:8080/stations/2
+Content-Type: application/json
+
+{
+  "name" : "효창공원역"
+}
