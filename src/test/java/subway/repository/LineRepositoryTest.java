@@ -1,10 +1,5 @@
 package subway.repository;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
-import java.util.List;
-import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +12,11 @@ import subway.dao.StationEdgeDao;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.StationEdge;
-import subway.domain.dto.InsertionResult;
+
+import java.util.Optional;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 @JdbcTest
 class LineRepositoryTest {
@@ -85,11 +84,10 @@ class LineRepositoryTest {
 
         Long middleStationId = stationRepository.create(new Station("middle"));
         Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        InsertionResult insertionResult = createdLine.insertUpStation(middleStationId, downStationId, 2);
+        createdLine.insertUpStation(middleStationId, downStationId, 2);
 
         //when
-        lineRepository.insertStationEdge(createdLine, insertionResult.getInsertedEdge());
-        lineRepository.updateStationEdge(createdLine, insertionResult.getUpdatedEdge());
+        lineRepository.updateStationEdges(createdLine);
 
         //then
         Line actualLine = lineRepository.findById(createdLine.getId()).get();
@@ -105,7 +103,7 @@ class LineRepositoryTest {
 
         //when
         line.deleteStation(middleStationId);
-        lineRepository.deleteStation(line, middleStationId);
+        lineRepository.updateStationEdges(line);
 
         //then
         Line actualLine = lineRepository.findById(line.getId()).get();
@@ -118,8 +116,8 @@ class LineRepositoryTest {
 
         Long middleStationId = stationRepository.create(new Station("middle"));
         Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        InsertionResult insertionResult = createdLine.insertUpStation(middleStationId, downStationId, 2);
-        lineRepository.insertStationEdge(createdLine, insertionResult.getInsertedEdge());
+        createdLine.insertUpStation(middleStationId, downStationId, 2);
+        lineRepository.updateStationEdges(createdLine);
         return createdLine;
     }
 

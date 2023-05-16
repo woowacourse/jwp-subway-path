@@ -5,17 +5,15 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.LineDirection;
 import subway.domain.Station;
-import subway.domain.dto.InsertionResult;
-import subway.ui.dto.LineRequest;
-import subway.ui.dto.StationInsertRequest;
 import subway.exception.DuplicatedLineNameException;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
+import subway.ui.dto.LineRequest;
+import subway.ui.dto.StationInsertRequest;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LineService {
@@ -49,16 +47,13 @@ public class LineService {
         findStationById(stationInsertRequest.getAdjacentStationId());
 
         final Line line = findLineById(stationInsertRequest.getLineId());
-        final InsertionResult insertionResult = insertStationAndReturnEdgesToSave(stationInsertRequest, line);
+        insertStationInLine(stationInsertRequest, line);
 
-        lineRepository.insertStationEdge(line, insertionResult.getInsertedEdge());
-        if (insertionResult.getUpdatedEdge() != null) {
-            lineRepository.updateStationEdge(line, insertionResult.getUpdatedEdge());
-        }
+        lineRepository.updateStationEdges(line);
     }
 
 
-    private InsertionResult insertStationAndReturnEdgesToSave(
+    private void insertStationInLine(
             final StationInsertRequest stationInsertRequest,
             final Line line
     ) {
@@ -68,9 +63,10 @@ public class LineService {
         final int distance = stationInsertRequest.getDistance();
 
         if (direction == LineDirection.UP) {
-            return line.insertUpStation(stationId, adjacentStationId, distance);
+            line.insertUpStation(stationId, adjacentStationId, distance);
+            return;
         }
-        return line.insertDownStation(stationId, adjacentStationId, distance);
+        line.insertDownStation(stationId, adjacentStationId, distance);
     }
 
     public Line findLineById(final Long id) {
@@ -89,9 +85,9 @@ public class LineService {
             lineRepository.deleteById(line.getId());
             return;
         }
-        Optional.ofNullable(line.deleteStation(stationId))
-                .ifPresent(stationEdge -> lineRepository.updateStationEdge(line, stationEdge));
-        lineRepository.deleteStation(line, stationId);
+
+        line.deleteStation(stationId);
+        lineRepository.updateStationEdges(line);
     }
 
     public List<Line> findAll() {

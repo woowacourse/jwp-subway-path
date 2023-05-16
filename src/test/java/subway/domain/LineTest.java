@@ -1,11 +1,10 @@
 package subway.domain;
 
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.dto.InsertionResult;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 class LineTest {
 
@@ -29,7 +28,7 @@ class LineTest {
         final var line = Line.of(name, color, stationId, stationId2, distance);
 
         //then
-        Assertions.assertThat(line)
+        assertThat(line)
                 .isInstanceOf(Line.class)
                 .isNotNull();
     }
@@ -42,11 +41,14 @@ class LineTest {
 
         //when
         Long newStationId = 3L;
-        InsertionResult changedEdges = line.insertUpStation(newStationId, stationId2, 2);
+        line.insertUpStation(newStationId, stationId2, 2);
+        final StationEdge middle = line.getStationEdges().get(1);
+        final StationEdge downEnd = line.getStationEdges().get(2);
+
         //then
         assertSoftly(softly -> {
-            softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(3);
-            softly.assertThat(changedEdges.getUpdatedEdge().getDistance()).isEqualTo(2);
+            softly.assertThat(middle.getDistance()).isEqualTo(3);
+            softly.assertThat(downEnd.getDistance()).isEqualTo(2);
         });
     }
 
@@ -58,17 +60,19 @@ class LineTest {
 
         //when
         Long newStationId = 3L;
-        InsertionResult changedEdges = line.insertDownStation(newStationId, stationId1, 2);
+        line.insertDownStation(newStationId, stationId1, 2);
+        final StationEdge middle = line.getStationEdges().get(1);
+        final StationEdge downEnd = line.getStationEdges().get(2);
+
         //then
         assertSoftly(softly -> {
-            softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(2);
-            softly.assertThat(changedEdges.getUpdatedEdge().getDistance()).isEqualTo(3);
+            softly.assertThat(middle.getDistance()).isEqualTo(2);
+            softly.assertThat(downEnd.getDistance()).isEqualTo(3);
         });
     }
 
     private Line createLine() {
-        Line line = Line.of(name, color, stationId1, stationId2, distance);
-        return line;
+        return Line.of(name, color, stationId1, stationId2, distance);
     }
 
     @Test
@@ -79,12 +83,10 @@ class LineTest {
 
         //when
         Long newStationId = 3L;
-        InsertionResult changedEdges = line.insertDownStation(newStationId, stationId2, 2);
+        line.insertDownStation(newStationId, stationId2, 2);
+        final StationEdge downEnd = line.getStationEdges().get(2);
         //then
-        assertSoftly(softly -> {
-            softly.assertThat(changedEdges.getInsertedEdge().getDistance()).isEqualTo(2);
-            softly.assertThat(changedEdges.getUpdatedEdge()).isNull();
-        });
+        assertThat(downEnd.getDistance()).isEqualTo(2);
     }
 
     @Test
@@ -112,6 +114,6 @@ class LineTest {
         //when
         boolean contains = line.contains(stationId1);
         //then
-        Assertions.assertThat(contains).isTrue();
+        assertThat(contains).isTrue();
     }
 }

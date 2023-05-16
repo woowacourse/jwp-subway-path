@@ -1,6 +1,5 @@
 package subway.domain;
 
-import subway.domain.dto.InsertionResult;
 import subway.exception.StationAlreadyExistsException;
 import subway.exception.StationNotFoundException;
 
@@ -48,7 +47,7 @@ public class Line {
         return new Line(id, name, color, stationEdges);
     }
 
-    public InsertionResult insertUpStation(
+    public void insertUpStation(
             final Long insertStationId,
             final Long adjacentStationId,
             final int distance
@@ -61,7 +60,6 @@ public class Line {
         final List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distance);
         stationEdges.remove(adjacentDownStationIndex);
         stationEdges.addAll(adjacentDownStationIndex, splitEdges);
-        return new InsertionResult(splitEdges.get(0), splitEdges.get(1));
     }
 
     private void validateIsNotExist(final Long insertStationId) {
@@ -70,7 +68,7 @@ public class Line {
         }
     }
 
-    public InsertionResult insertDownStation(
+    public void insertDownStation(
             final Long insertStationId,
             final Long adjacentStationId,
             final int distance
@@ -79,7 +77,8 @@ public class Line {
 
         final StationEdge adjacentUpStationEdge = getStationEdge(adjacentStationId);
         if (isLastEdge(adjacentUpStationEdge)) {
-            return insertToLastEdge(insertStationId, distance);
+            insertToLastEdge(insertStationId, distance);
+            return;
         }
 
         final int adjacentDownStationIndex = stationEdges.indexOf(adjacentUpStationEdge) + 1;
@@ -90,17 +89,15 @@ public class Line {
         final List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distanceFromDown);
         stationEdges.remove(adjacentDownStationIndex);
         stationEdges.addAll(adjacentDownStationIndex, splitEdges);
-        return new InsertionResult(splitEdges.get(0), splitEdges.get(1));
     }
 
     private boolean isLastEdge(final StationEdge stationEdge) {
         return (stationEdges.indexOf(stationEdge) + 1) == stationEdges.size();
     }
 
-    private InsertionResult insertToLastEdge(final Long insertStationId, final int distance) {
+    private void insertToLastEdge(final Long insertStationId, final int distance) {
         StationEdge insertedStationEdge = new StationEdge(insertStationId, distance);
         stationEdges.add(insertedStationEdge);
-        return new InsertionResult(insertedStationEdge, null);
     }
 
     public StationEdge deleteStation(final Long stationId) {

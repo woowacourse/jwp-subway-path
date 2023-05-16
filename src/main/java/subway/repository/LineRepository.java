@@ -1,9 +1,9 @@
 package subway.repository;
 
+import subway.domain.Line;
+
 import java.util.List;
 import java.util.Optional;
-import subway.domain.Line;
-import subway.domain.StationEdge;
 
 public interface LineRepository {
 
@@ -15,11 +15,7 @@ public interface LineRepository {
 
     Long create(final Line line);
 
-    Long insertStationEdge(final Line line, final StationEdge stationEdge);
-
-    void updateStationEdge(final Line line, final StationEdge stationEdge);
-
-    void deleteStation(final Line line, final Long stationId);
+    void updateStationEdges(final Line line);
 
     void deleteById(final Long id);
 }

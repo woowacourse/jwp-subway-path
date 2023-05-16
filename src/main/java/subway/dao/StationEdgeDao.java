@@ -84,4 +84,9 @@ public class StationEdgeDao implements Dao<StationEdgeEntity> {
         final String sql = "DELETE FROM station_edge WHERE line_id = ? AND down_station_id = ?";
         jdbcTemplate.update(sql, lineId, stationId);
     }
+
+    public void deleteByLineId(final Long lineId) {
+        final String sql = "DELETE FROM station_edge WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
 }
