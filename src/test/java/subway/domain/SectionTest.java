@@ -19,7 +19,7 @@ class SectionTest {
         var section = new Section(잠실나루역, 잠실역, 10);
         var otherSection = new Section(잠실역, 잠실새내역, 5);
 
-        assertThat(section.canConnect(otherSection)).isTrue();
+        assertThat(section.hasLinkWith(otherSection)).isTrue();
     }
 
     @DisplayName("일부 구간을 포함하는지 알 수 있다")
@@ -28,8 +28,8 @@ class SectionTest {
         var parent = new Section(잠실나루역, 잠실새내역, 15);
         var contained = new Section(잠실역, 잠실새내역, 5);
 
-        assertThat(parent.covers(contained)).isTrue();
-        assertThat(contained.covers(parent)).isFalse();
+        assertThat(parent.hasOverlapWith(contained)).isTrue();
+        assertThat(contained.hasOverlapWith(parent)).isFalse();
     }
 
     @DisplayName("어떤 역을 포함하는지 알 수 있다")
@@ -40,23 +40,37 @@ class SectionTest {
         assertThat(section.contains(잠실역)).isTrue();
     }
 
-    @DisplayName("일부 구간으로 전체의 나머지 구간을 구한다")
+    @DisplayName("한 구간을 두 부분으로 쪼갠다")
     @Test
-    void getPartOtherThanGivenPart() {
+    void splitIntoOneAndOtherPart() {
         var parent = new Section(잠실나루역, 잠실새내역, 15);
         var part = new Section(잠실나루역, 잠실역, 10);
         var expectedPart = new Section(잠실역, 잠실새내역, 5);
 
-        assertThat(parent.getPartOtherThan(part)).isEqualTo(expectedPart);
+        assertThat(parent.splitIntoOneAnd(part)).contains(expectedPart);
     }
 
-    @DisplayName("일부가 아닌 구간으로 나머지 구간을 구하면 예외를 던진다")
+    @DisplayName("상행 역 기준으로 정렬되어 반환된다.")
     @Test
-    void getPartOtherThanNotCoveredPart_throws() {
+    void splitIntoOneAndOtherPart_orderedByUpperToLower() {
         var parent = new Section(잠실나루역, 잠실새내역, 15);
-        var notPart = new Section(잠실새내역, 종합운동장역, 5);
+        var upperPart = new Section(잠실나루역, 잠실역, 10);
+        var lowerPart = new Section(잠실역, 잠실새내역, 5);
 
-        assertThatThrownBy(() -> parent.getPartOtherThan(notPart))
+        assertThat(parent.splitIntoOneAnd(lowerPart))
+                .containsExactly(
+                        upperPart,
+                        lowerPart
+                );
+    }
+
+    @DisplayName("제공한 부분이 일부가 아니면 예외를 던진다")
+    @Test
+    void splitIntoOneAndOther_givenNotOverlapped_throws() {
+        var section = new Section(잠실나루역, 잠실새내역, 15);
+        var notOverlappedSection = new Section(잠실새내역, 종합운동장역, 5);
+
+        assertThatThrownBy(() -> section.splitIntoOneAnd(notOverlappedSection))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -15,13 +15,13 @@ public class Section {
         this.distance = distance;
     }
 
-    public boolean canConnect(Section other) {
-        return upperStation.equals(other.lowerStation) || lowerStation.equals(other.upperStation);
+    public boolean hasLinkWith(Section other) {
+        return hasUpperLinkWith(other) || hasLowerLinkWith(other);
     }
 
-    public boolean covers(Section other) {
+    public boolean hasOverlapWith(Section other) {
         if (other.distance <= distance) {
-            return upperStation.equals(other.upperStation) || lowerStation.equals(other.lowerStation);
+            return hasUpperOverlapWith(other) || hasLowerOverlapWith(other);
         }
         return false;
     }
@@ -30,32 +30,52 @@ public class Section {
         return upperStation.equals(station) || lowerStation.equals(station);
     }
 
-    public Section getPartOtherThan(Section part) {
-        validateThisCovers(part);
-        if (part.contains(upperStation)) {
-            return new Section(part.lowerStation, lowerStation, distance - part.distance);
+    public List<Section> splitIntoOneAnd(Section other) {
+        validateHasOverlapWith(other);
+        if (hasUpperOverlapWith(other)) {
+            return List.of(
+                    other,
+                    new Section(other.lowerStation, lowerStation, distance - other.distance));
         }
-        return new Section(upperStation, part.upperStation, distance - part.distance);
+        return List.of(
+                new Section(upperStation, other.upperStation, distance - other.distance),
+                other);
     }
 
     public Section mergeWith(Section other) {
-        validateConnectedWith(other);
-        if (this.contains(other.upperStation)) {
-            return new Section(this.upperStation, other.lowerStation, this.distance + other.distance);
+        validateHasLinkWith(other);
+        if (hasUpperLinkWith(other)) {
+            return new Section(this.lowerStation, other.upperStation, this.distance + other.distance);
         }
-        return new Section(this.lowerStation, other.upperStation, this.distance + other.distance);
+        return new Section(this.upperStation, other.lowerStation, this.distance + other.distance);
     }
 
-    private void validateConnectedWith(Section section) {
-        if (!this.canConnect(section)) {
+    private void validateHasLinkWith(Section other) {
+        if (!this.hasLinkWith(other)) {
             throw new IllegalArgumentException("연결되는 구간이 아닙니다");
         }
     }
 
-    private void validateThisCovers(Section other) {
-        if (!this.covers(other)) {
+    private void validateHasOverlapWith(Section other) {
+        if (!this.hasOverlapWith(other)) {
             throw new IllegalArgumentException("겹치는 구간이 아닙니다");
         }
+    }
+
+    private boolean hasLowerLinkWith(Section other) {
+        return lowerStation.equals(other.upperStation);
+    }
+
+    private boolean hasUpperLinkWith(Section other) {
+        return upperStation.equals(other.lowerStation);
+    }
+
+    private boolean hasUpperOverlapWith(Section other) {
+        return upperStation.equals(other.upperStation);
+    }
+
+    private boolean hasLowerOverlapWith(Section other) {
+        return lowerStation.equals(other.lowerStation);
     }
 
     public int getDistance() {
