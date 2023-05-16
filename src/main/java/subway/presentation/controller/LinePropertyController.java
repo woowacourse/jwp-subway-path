@@ -47,9 +47,4 @@ public class LinePropertyController {
         linePropertyService.deleteLineById(id);
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
 }
