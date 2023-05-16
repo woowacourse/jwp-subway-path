@@ -97,12 +97,11 @@ public class Section {
         Section section = (Section) o;
         return Objects.equals(line, section.line)
                 && Objects.equals(upward, section.upward)
-                && Objects.equals(downward, section.downward)
-                && Objects.equals(distance, section.distance);
+                && Objects.equals(downward, section.downward);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(line, upward, downward, distance);
+        return Objects.hash(line, upward, downward);
     }
 }
