@@ -1,15 +1,21 @@
 package subway.ui;
 
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import subway.application.LineService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
-import subway.dto.StationAddRequest;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import subway.application.LineService;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
 
 @RestController
 @RequestMapping("/lines")
@@ -47,13 +53,6 @@ public class LineController {
     public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
         lineService.deleteLineById(id);
         return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{id}")
-    public ResponseEntity<Void> addStation(@PathVariable Long id,
-                           @RequestBody StationAddRequest stationAddRequest) {
-        lineService.initStation(id, stationAddRequest);
-        return ResponseEntity.created(URI.create("/lines/" + id)).build();
     }
 
     @ExceptionHandler(SQLException.class)
