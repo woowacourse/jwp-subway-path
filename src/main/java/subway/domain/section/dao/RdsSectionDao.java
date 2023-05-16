@@ -97,4 +97,10 @@ public class RdsSectionDao implements SectionDao {
             return Optional.empty();
         }
     }
+
+    @Override
+    public void updateStationInSection(final SectionEntity sectionEntity) {
+        final String sql = "update section set line_id = ? , up_station_id = ?, down_station_id = ?, distance = ? where id = ?";
+        jdbcTemplate.update(sql, sectionEntity.getLineId(), sectionEntity.getUpStationId(), sectionEntity.getDownStationId(), sectionEntity.getDistance(), sectionEntity.getId());
+    }
 }

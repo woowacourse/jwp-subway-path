@@ -51,6 +51,11 @@ public class StubSectionDao implements SectionDao {
         return findNeighborDownSection(lineId, baseId);
     }
 
+    @Override
+    public void updateStationInSection(final SectionEntity sectionEntity) {
+
+    }
+
     public Optional<SectionEntity> findById(final Long id) {
         final SectionEntity sectionEntity = sectionMap.get(id);
         if (sectionEntity == null) {

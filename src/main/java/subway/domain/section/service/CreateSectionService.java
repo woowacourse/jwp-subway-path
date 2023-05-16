@@ -58,19 +58,17 @@ public class CreateSectionService {
     }
 
     private List<SectionEntity> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSectionEntity) {
-        sectionDao.deleteById(existSectionEntity.getId());
-
         if (Direction.from(direction) == Direction.UP) {
             final SectionEntity upSectionEntity = new SectionEntity(lineId, existSectionEntity.getUpStationId(), addedId, existSectionEntity.getDistance() - distance);
-            final SectionEntity upSavedSectionEntity = sectionDao.insert(upSectionEntity);
+            sectionDao.updateStationInSection(upSectionEntity);
             final SectionEntity downSectionEntity = new SectionEntity(lineId, addedId, existSectionEntity.getDownStationId(), distance);
             final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
-            return List.of(upSavedSectionEntity, downSavedSectionEntity);
+            return List.of(upSectionEntity, downSavedSectionEntity);
         }
         final SectionEntity upSectionEntity = new SectionEntity(lineId, existSectionEntity.getUpStationId(), addedId, distance);
-        final SectionEntity upSavedSectionEntity = sectionDao.insert(upSectionEntity);
+        sectionDao.updateStationInSection(upSectionEntity);
         final SectionEntity downSectionEntity = new SectionEntity(lineId, addedId, existSectionEntity.getDownStationId(), existSectionEntity.getDistance() - distance);
         final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
-        return List.of(upSavedSectionEntity, downSavedSectionEntity);
+        return List.of(upSectionEntity, downSavedSectionEntity);
     }
 }
