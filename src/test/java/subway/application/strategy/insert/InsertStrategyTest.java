@@ -44,7 +44,7 @@ class InsertStrategyTest extends StrategyFixture {
     @Test
     void 중간에_추가하는데_상행역_기준인_경우() {
         // given
-        final Station 하행역 = stationDao.insert(new Station("하행역"));
+        final Station 하행역 = createStation("하행역");
         final InsertSection insertSection = new InsertSection(잠실역, 하행역, Distance.from(3));
 
         // when
@@ -58,7 +58,7 @@ class InsertStrategyTest extends StrategyFixture {
     @ValueSource(ints = {10, 11})
     void 중간에_추가하는데_상행역_기준이면서_거리가_기존_보다_클_때(final int newDistance) {
         // given
-        final Station 하행역 = stationDao.insert(new Station("하행역"));
+        final Station 하행역 = createStation("하행역");
         final InsertSection insertSection = new InsertSection(잠실역, 하행역, Distance.from(newDistance));
 
         // when, then
@@ -69,7 +69,7 @@ class InsertStrategyTest extends StrategyFixture {
     @Test
     void 중간에_추가하는데_하행역_기준인_경우() {
         // given
-        final Station 상행역 = stationDao.insert(new Station("상행역"));
+        final Station 상행역 = createStation("상행역");
         final InsertSection insertSection = new InsertSection(상행역, 잠실새내역, Distance.from(3));
 
         // when
@@ -83,7 +83,7 @@ class InsertStrategyTest extends StrategyFixture {
     @ValueSource(ints = {10, 11})
     void 중간에_추가하는데_하행역_기준이면서_기존_거리보다_클_때(final int distance) {
         // given
-        final Station 상행역 = stationDao.insert(new Station("상행역"));
+        final Station 상행역 = createStation("상행역");
         final InsertSection insertSection = new InsertSection(상행역, 잠실새내역, Distance.from(distance));
 
         // when, then

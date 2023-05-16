@@ -14,7 +14,6 @@ import subway.dto.SectionRequest;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
-import java.util.NoSuchElementException;
 import java.util.Objects;
 
 @Service
@@ -68,8 +67,7 @@ public class SectionService {
     }
 
     private Station findById(Long stationId) {
-        return stationRepository.findById(stationId)
-                .orElseThrow(() -> new NoSuchElementException("해당하는 역을 찾을 수 없습니다."));
+        return stationRepository.findById(stationId);
     }
 
     private static void checkCanInsert(Station upStation, Station downStation, Sections sortedSections) {
@@ -89,7 +87,7 @@ public class SectionService {
     }
 
     public void deleteStation(Long targetId, SectionDeleteRequest request) {
-        final Station targetStation = stationRepository.findById(targetId).orElseThrow(NoSuchElementException::new);
+        final Station targetStation = stationRepository.findById(targetId);
         final Sections sections = sectionRepository.findAllByLineId(request.getLineId());
 
         sectionDeleter.delete(sections, targetStation);

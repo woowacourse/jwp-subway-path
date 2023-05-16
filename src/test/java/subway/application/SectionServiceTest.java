@@ -19,7 +19,7 @@ import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.StationEntity;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
 import subway.repository.SectionRepository;
@@ -193,7 +193,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
     }
 
     private Long 역을_추가한다(String name) {
-        return stationDao.insert(new Station(name)).getId();
+        return stationDao.insert(new StationEntity(name)).getId();
     }
 
     @Nested

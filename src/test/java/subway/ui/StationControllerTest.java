@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.StationEntity;
 import subway.dto.StationRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -57,7 +57,7 @@ class StationControllerTest {
     @Test
     void 역을_수정한다() {
         // given
-        final Long id = stationDao.insert(new Station("수정전역")).getId();
+        final Long id = stationDao.insert(new StationEntity("수정전역")).getId();
         final StationRequest 수정후역 = new StationRequest("수정후역");
 
         // when, then
@@ -72,7 +72,7 @@ class StationControllerTest {
     @Test
     void 역을_삭제한다() {
         // given
-        final Long id = stationDao.insert(new Station("수정전역")).getId();
+        final Long id = stationDao.insert(new StationEntity("수정전역")).getId();
 
         // when, then
         RestAssured.given().log().all()
@@ -83,7 +83,7 @@ class StationControllerTest {
 
     @Test
     void 역을_조회한다() {
-        final Long id = stationDao.insert(new Station("조회역")).getId();
+        final Long id = stationDao.insert(new StationEntity("조회역")).getId();
 
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when().get("/stations/" + id)
@@ -97,9 +97,9 @@ class StationControllerTest {
 
     @Test
     void 역을_전체_조회한다() {
-        stationDao.insert(new Station("조회역"));
-        stationDao.insert(new Station("강남역"));
-        stationDao.insert(new Station("잠실역"));
+        stationDao.insert(new StationEntity("조회역"));
+        stationDao.insert(new StationEntity("강남역"));
+        stationDao.insert(new StationEntity("잠실역"));
 
         final ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .when().get("/stations")

@@ -3,8 +3,9 @@ package subway.domain;
 import java.util.Objects;
 
 public class Station {
+    private static final String INITIAL_VALUE = "기본역";
     private Long id;
-    private String name;
+    private Name name;
 
     private Station() {
     }
@@ -14,7 +15,7 @@ public class Station {
      * TODO 삭제하기 -> insert문 두 개로
      */
     public Station(Long id) {
-        this(id, null);
+        this(id, INITIAL_VALUE);
     }
 
     public Station(String name) {
@@ -23,7 +24,20 @@ public class Station {
 
     public Station(Long id, String name) {
         this.id = id;
-        this.name = name;
+        this.name = Name.from(name);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Station station = (Station) o;
+        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name);
     }
 
     public Long getId() {
@@ -31,18 +45,6 @@ public class Station {
     }
 
     public String getName() {
-        return name;
-    }
-
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name);
+        return name.getName();
     }
 }

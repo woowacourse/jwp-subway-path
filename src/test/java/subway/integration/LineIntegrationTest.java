@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import subway.dao.StationDao;
-import subway.domain.Station;
+import subway.domain.StationEntity;
 import subway.dto.LineRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,10 +27,10 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @BeforeEach
     public void setUp() {
-        final Long 잠실역 = stationDao.insert(new Station("잠실역")).getId();
-        final Long 선릉역 = stationDao.insert(new Station("선릉역")).getId();
-        final Long 강남역 = stationDao.insert(new Station("강남역")).getId();
-        final Long 역삼역 = stationDao.insert(new Station("역삼역")).getId();
+        final Long 잠실역 = stationDao.insert(new StationEntity("잠실역")).getId();
+        final Long 선릉역 = stationDao.insert(new StationEntity("선릉역")).getId();
+        final Long 강남역 = stationDao.insert(new StationEntity("강남역")).getId();
+        final Long 역삼역 = stationDao.insert(new StationEntity("역삼역")).getId();
 
         lineRequest = new LineRequest("신분당선", "bg-red-600", 잠실역, 선릉역, 10);
         lineRequest2 = new LineRequest("2호선", "초록색", 역삼역, 강남역, 10);

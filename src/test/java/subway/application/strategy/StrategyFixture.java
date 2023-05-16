@@ -11,6 +11,7 @@ import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Station;
+import subway.domain.StationEntity;
 
 import javax.sql.DataSource;
 
@@ -47,13 +48,18 @@ public abstract class StrategyFixture {
     private void save() {
         이호선 = lineDao.insert(new Line("2호선", "초록색"));
 
-        잠실역 = stationDao.insert(new Station("잠실역"));
-        잠실새내역 = stationDao.insert(new Station("잠실새내역"));
-        삼성역 = stationDao.insert(new Station("삼성역"));
-        선릉역 = stationDao.insert(new Station("선릉역"));
+        잠실역 = createStation("잠실역");
+        잠실새내역 = createStation("잠실새내역");
+        삼성역 = createStation("삼성역");
+        선릉역 = createStation("선릉역");
 
         sectionDao.insert(new SectionEntity(10, 잠실역.getId(), 잠실새내역.getId(), 이호선));
         sectionDao.insert(new SectionEntity(20, 잠실새내역.getId(), 삼성역.getId(), 이호선));
         sectionDao.insert(new SectionEntity(15, 삼성역.getId(), 선릉역.getId(), 이호선));
+    }
+
+    protected Station createStation(String name) {
+        final StationEntity entity = stationDao.insert(new StationEntity(name));
+        return new Station(entity.getId(), entity.getName());
     }
 }

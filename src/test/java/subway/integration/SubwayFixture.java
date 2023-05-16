@@ -7,7 +7,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.StationEntity;
 import subway.repository.SectionRepository;
 
 public abstract class SubwayFixture extends IntegrationTest {
@@ -50,12 +50,12 @@ public abstract class SubwayFixture extends IntegrationTest {
         이호선 = lineDao.insert(new Line("2호선", "초록색"));
         팔호선 = lineDao.insert(new Line("8호선", "분홍색"));
 
-        잠실역 = stationDao.insert(new Station("잠실역")).getId();
-        잠실새내역 = stationDao.insert(new Station("잠실새내역")).getId();
-        삼성역 = stationDao.insert(new Station("삼성역")).getId();
-        선릉역 = stationDao.insert(new Station("선릉역")).getId();
-        몽촌토성역 = stationDao.insert(new Station("몽촌토성역")).getId();
-        석촌역 = stationDao.insert(new Station("석촌역")).getId();
+        잠실역 = stationDao.insert(new StationEntity("잠실역")).getId();
+        잠실새내역 = stationDao.insert(new StationEntity("잠실새내역")).getId();
+        삼성역 = stationDao.insert(new StationEntity("삼성역")).getId();
+        선릉역 = stationDao.insert(new StationEntity("선릉역")).getId();
+        몽촌토성역 = stationDao.insert(new StationEntity("몽촌토성역")).getId();
+        석촌역 = stationDao.insert(new StationEntity("석촌역")).getId();
 
         sectionDao.insert(new SectionEntity(10, 잠실역, 잠실새내역, 이호선));
         sectionDao.insert(new SectionEntity(20, 잠실새내역, 삼성역, 이호선));
