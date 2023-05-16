@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import subway.domain.station.domain.Station;
 import subway.domain.station.service.StationService;
 import subway.global.common.ResultResponse;
-import subway.global.common.SuccessCode;
 import subway.domain.station.dto.StationRequest;
 import subway.domain.station.dto.StationResponse;
 
@@ -26,7 +25,7 @@ public class StationController {
     @PostMapping
     public ResponseEntity<ResultResponse> createStation(@RequestBody final StationRequest stationRequest) {
         Station station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(new ResultResponse(SuccessCode.CREATE_STATION, station));
+        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(new ResultResponse(201,"역 추가 성공", station));
     }
 
     @GetMapping
@@ -37,24 +36,24 @@ public class StationController {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-        return ResponseEntity.ok().body(new ResultResponse(SuccessCode.SELECT_STATIONS, StationResponses));
+        return ResponseEntity.ok().body(new ResultResponse(200,"전체 역 조회 성공", StationResponses));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<ResultResponse> showStation(@PathVariable final Long id) {
         Station station = stationService.findStationById(id);
-        return ResponseEntity.ok().body(new ResultResponse(SuccessCode.SELECT_STATION, StationResponse.of(station)));
+        return ResponseEntity.ok().body(new ResultResponse(200,"단일 역 조회 성공", StationResponse.of(station)));
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<ResultResponse> updateStation(@PathVariable final Long id, @RequestBody final StationRequest stationRequest) {
         stationService.updateStation(id, stationRequest);
-        return ResponseEntity.ok().body(new ResultResponse(SuccessCode.UPDATE_STATION, id));
+        return ResponseEntity.ok().body(new ResultResponse(200,"역 업데이트 성공", id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<ResultResponse> deleteStation(@PathVariable final Long id) {
         stationService.deleteStationById(id);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResultResponse(SuccessCode.DELETE_STATION, id));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResultResponse(204,"역 삭제 성공", id));
     }
 }

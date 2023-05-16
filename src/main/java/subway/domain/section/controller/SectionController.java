@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.*;
 import subway.domain.section.dto.SectionResponse;
 import subway.domain.section.entity.SectionEntity;
 import subway.global.common.ResultResponse;
-import subway.global.common.SuccessCode;
 import subway.domain.section.dto.SectionCreateRequest;
 import subway.domain.section.dto.SectionDeleteRequest;
 import subway.domain.section.service.SectionService;
@@ -36,12 +35,12 @@ public class SectionController {
         final List<SectionResponse> sectionResponses = sectionEntities.stream()
                 .map(SectionResponse::of)
                 .collect(Collectors.toList());
-        return ResponseEntity.status(HttpStatus.CREATED).body(new ResultResponse(SuccessCode.CREATE_SECTION,sectionResponses));
+        return ResponseEntity.status(HttpStatus.CREATED).body(new ResultResponse(201,"구간 추가 성공",sectionResponses));
     }
 
     @DeleteMapping
     public ResponseEntity<ResultResponse> deleteSection(@RequestBody final SectionDeleteRequest sectionDeleteRequest) {
         sectionService.deleteSection(sectionDeleteRequest.getLineId(), sectionDeleteRequest.getStationId());
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResultResponse(SuccessCode.DELETE_SECTION,sectionDeleteRequest.getStationId()));
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body(new ResultResponse(204,"구간 삭제 성공",sectionDeleteRequest.getStationId()));
     }
 }
