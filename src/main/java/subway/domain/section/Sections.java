@@ -45,12 +45,12 @@ public class Sections {
 
     }
 
-    private boolean isAddableOnFrontOfUpTerminal(final Section section) {
-        return sections.get(0).isAssemblableOnFront(section);
+    private boolean isAddableOnFrontOfUpTerminal(final Section other) {
+        return sections.get(0).isAssemblableOnFront(other);
     }
 
-    private boolean isAddableOnBackOfDownTerminal(final Section section) {
-        return sections.get(sections.size() - 1).isAssemblableOnBack(section);
+    private boolean isAddableOnBackOfDownTerminal(final Section other) {
+        return sections.get(sections.size() - 1).isAssemblableOnBack(other);
     }
 
     public boolean isEmpty() {
