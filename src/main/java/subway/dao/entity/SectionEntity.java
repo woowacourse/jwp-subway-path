@@ -51,14 +51,4 @@ public class SectionEntity {
         this.distance = distance;
     }
 
-    @Override
-    public String toString() {
-        return "SectionEntity{" +
-                "id=" + id +
-                ", lineId=" + lineId +
-                ", startStationId=" + startStationId +
-                ", endStationId=" + endStationId +
-                ", distance=" + distance +
-                '}';
-    }
 }

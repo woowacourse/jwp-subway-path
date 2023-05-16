@@ -14,7 +14,9 @@ public class SectionResponse {
     }
 
     public static SectionResponse from(Section section) {
-        return new SectionResponse(section.getStartStation().getName(), section.getEndStation().getName(),
+        return new SectionResponse(
+                section.getStartStation().getName(),
+                section.getEndStation().getName(),
                 section.getDistance());
     }
 
