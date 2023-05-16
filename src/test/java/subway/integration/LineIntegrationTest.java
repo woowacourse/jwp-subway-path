@@ -259,7 +259,7 @@ class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("역이 등록된 노선에 이미 등록된 두 역을 등록하면 예외가 발생한다")
@@ -334,7 +334,7 @@ class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("노선에서 기준 역의 하행에 하나의 역을 등록한다")
@@ -359,7 +359,7 @@ class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
     @DisplayName("노선에 잘못된 거리 정보를 가지는 하나의 역을 등록하면 예외가 발생한다.")

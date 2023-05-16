@@ -43,7 +43,7 @@ class LineControllerTest {
         this.mockMvc.perform(post("/lines/1/station")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @DisplayName("노선에 역을 두 개 등록한다")
@@ -55,7 +55,7 @@ class LineControllerTest {
         this.mockMvc.perform(post("/lines/1/station")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
-                .andExpect(status().isOk());
+                .andExpect(status().isCreated());
     }
 
     @DisplayName("노선에 역을 제거한다")
