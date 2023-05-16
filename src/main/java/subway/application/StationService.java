@@ -9,6 +9,8 @@ import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
 
 @Service
 public class StationService {
@@ -19,7 +21,11 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        String name = stationRequest.getName();
+        if (stationDao.findByName(name) != null) {
+            throw new DomainException(ExceptionType.STATION_ALREADY_EXIST);
+        }
+        Station station = stationDao.insert(new Station(name));
         return StationResponse.of(station);
     }
 
@@ -36,10 +42,16 @@ public class StationService {
     }
 
     public void updateStation(Long id, StationRequest stationRequest) {
+        if (stationDao.findById(id) == null) {
+            throw new DomainException(ExceptionType.STATION_DOES_NOT_EXIST);
+        }
         stationDao.update(new Station(id, stationRequest.getName()));
     }
 
     public void deleteStationById(Long id) {
+        if (stationDao.findById(id) == null) {
+            throw new DomainException(ExceptionType.STATION_DOES_NOT_EXIST);
+        }
         stationDao.deleteById(id);
     }
 }

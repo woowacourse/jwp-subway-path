@@ -18,6 +18,8 @@ import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationsResponse;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
 
 @Service
 public class LineService {
@@ -32,7 +34,14 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        String name = request.getName();
+        String color = request.getColor();
+
+        if (lineDao.findByProperties(name, color) != null) {
+            throw new DomainException(ExceptionType.LINE_ALREADY_EXIST);
+        }
+
+        Line persistLine = lineDao.insert(new Line(name, color));
         return LineResponse.of(persistLine);
     }
 
@@ -77,7 +86,7 @@ public class LineService {
         return sections.findOrderedStationIds()
             .stream()
             .map(idToStations::get)
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public Line findLineById(Long id) {
@@ -85,10 +94,16 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        if (lineDao.findById(id) == null) {
+            throw new DomainException(ExceptionType.LINE_DOES_NOT_EXIST);
+        }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
+        if (lineDao.findById(id) == null) {
+            throw new DomainException(ExceptionType.LINE_DOES_NOT_EXIST);
+        }
         lineDao.deleteById(id);
     }
 

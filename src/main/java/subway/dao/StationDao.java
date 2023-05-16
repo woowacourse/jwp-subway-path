@@ -56,4 +56,9 @@ public class StationDao {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    public Station findByName(String name) {
+        String sql = "select * from LINE WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name);
+    }
 }

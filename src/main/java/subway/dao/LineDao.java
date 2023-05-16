@@ -18,7 +18,7 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Line> rowMapper = (rs, rowNum) ->
         new Line(
             rs.getLong("id"),
             rs.getString("name"),
@@ -48,16 +48,21 @@ public class LineDao {
     }
 
     public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
+        String sql = "select * from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
     public void update(Line newLine) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[] {newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
     }
 
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
+    }
+
+    public Line findByProperties(String name, String color) {
+        String sql = "select * from LINE WHERE name = ?, color = ?";
+        return jdbcTemplate.queryForObject(sql, rowMapper, name, color);
     }
 }
