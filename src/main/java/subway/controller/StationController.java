@@ -7,6 +7,7 @@ import subway.dto.StationDeleteRequest;
 import subway.dto.StationResponse;
 import subway.service.StationService;
 
+import javax.validation.Valid;
 import java.net.URI;
 
 @RestController
@@ -18,7 +19,7 @@ public class StationController {
     }
 
     @PostMapping("/stations")
-    public ResponseEntity<StationResponse> createStation(@RequestBody StationAddRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@Valid @RequestBody StationAddRequest stationRequest) {
         StationResponse station = stationService.addStation(stationRequest);
         return ResponseEntity
                 .created(URI.create("/stations/" + station.getId()))
@@ -26,7 +27,7 @@ public class StationController {
     }
 
     @DeleteMapping("/stations/station")
-    public ResponseEntity<StationResponse> deleteStation(@RequestBody StationDeleteRequest stationDeleteRequest) {
+    public ResponseEntity<StationResponse> deleteStation(@Valid @RequestBody StationDeleteRequest stationDeleteRequest) {
         StationResponse stationResponse = stationService.deleteStation(stationDeleteRequest);
         return ResponseEntity
                 .ok()

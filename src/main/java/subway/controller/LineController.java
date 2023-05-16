@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import subway.dto.*;
 import subway.service.LineService;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -18,7 +19,7 @@ public class LineController {
     }
 
     @PostMapping("/lines")
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineCreateRequest lineCreateRequest) {
+    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineCreateRequest lineCreateRequest) {
         final LineResponse lineResponse = lineService.createLine(lineCreateRequest);
         return ResponseEntity
                 .created(URI.create("/lines/" + lineResponse.getId()))
