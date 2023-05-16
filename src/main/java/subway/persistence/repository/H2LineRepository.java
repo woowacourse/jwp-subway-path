@@ -74,14 +74,19 @@ public class H2LineRepository implements LineRepository {
         return linePropertyRows.stream()
                 .map(propertyRow -> new Line(
                         new LineProperty(propertyRow.getId(), propertyRow.getName(), propertyRow.getColor()),
-                        sectionRows.stream()
-                                .filter(sectionRow -> propertyRow.getId().equals(sectionRow.getLineId()))
-                                .map(sectionRow -> new Section(
-                                        new Station(stationIds.get(sectionRow.getUpBound()), sectionRow.getUpBound()),
-                                        new Station(stationIds.get(sectionRow.getDownBound()), sectionRow.getDownBound()),
-                                        new Distance(sectionRow.getDistance())
-                                )).collect(Collectors.toList()))
+                        findSectionsHasSamePropertyId(sectionRows, stationIds, propertyRow))
                 ).collect(Collectors.toList());
+    }
+
+    private List<Section> findSectionsHasSamePropertyId(List<SectionRow> sectionRows,
+                                                        Map<String, Long> stationIds, LinePropertyRow propertyRow) {
+        return sectionRows.stream()
+                .filter(sectionRow -> propertyRow.getId().equals(sectionRow.getLineId()))
+                .map(sectionRow -> new Section(
+                        new Station(stationIds.get(sectionRow.getUpBound()), sectionRow.getUpBound()),
+                        new Station(stationIds.get(sectionRow.getDownBound()), sectionRow.getDownBound()),
+                        new Distance(sectionRow.getDistance())
+                )).collect(Collectors.toList());
     }
 
     public void insert(Line line) {
