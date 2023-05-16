@@ -12,6 +12,8 @@ import subway.application.service.LineService;
 import subway.presentation.controller.LineController;
 import subway.presentation.dto.StationEnrollRequest;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
@@ -31,34 +33,31 @@ class LineControllerTest {
     @Test
     @DisplayName("/subway/{lineId}로 POST 요청을 보낼 수 있다")
     void enrollStation() throws Exception {
-        //given
-        Integer lineId = 1;
-        Long from = 1L;
-        Long to = 2L;
-        Integer distance = 1;
+        // given
+        StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(1L, 2L, 1);
+        String body = objectMapper.writeValueAsString(stationEnrollRequest);
+        doNothing().when(lineService).enrollStation(any(), any());
 
-        String body = objectMapper.writeValueAsString(new StationEnrollRequest(from, to, distance));
-
-        //when
-        mockMvc.perform(post("/subway/{lineId}", lineId)
+        // when
+        mockMvc.perform(post("/subway/{lineId}", 1)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(body))
 
-                //then
+                // then
                 .andExpect(status().isCreated());
     }
 
     @Test
     @DisplayName("/subway/{lineId}로 DELETE 요청을 보낼 수 있다")
     void deleteStation() throws Exception {
-        //given
+        // given
+        doNothing().when(lineService).deleteStation(any(), any());
         Integer lineId = 1;
-        Integer stationId = 2;
 
-        //when
-        mockMvc.perform(delete("/subway/{lineId}/{stationId}", lineId, stationId))
+        // when
+        mockMvc.perform(delete("/subway/{lineId}/{stationId}", lineId, 2))
 
-                //then
+                // then
                 .andExpect(status().isNoContent())
                 .andExpect(header().string("Location", "/line/" + lineId));
     }
