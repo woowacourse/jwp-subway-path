@@ -3,13 +3,13 @@ package subway.domain.section.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.domain.section.dto.SectionResponse;
-import subway.domain.section.entity.SectionEntity;
-import subway.domain.section.service.DeleteSectionService;
-import subway.global.common.ResultResponse;
 import subway.domain.section.dto.SectionCreateRequest;
 import subway.domain.section.dto.SectionDeleteRequest;
+import subway.domain.section.dto.SectionResponse;
+import subway.domain.section.entity.SectionEntity;
 import subway.domain.section.service.CreateSectionService;
+import subway.domain.section.service.DeleteSectionService;
+import subway.global.common.ResultResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;

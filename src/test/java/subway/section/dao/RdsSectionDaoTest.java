@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.section.dao.RdsSectionDao;
 import subway.domain.section.domain.Direction;
-import subway.domain.section.domain.Section;
+import subway.domain.section.entity.SectionDetailEntity;
 import subway.domain.section.entity.SectionEntity;
 
 import javax.sql.DataSource;
@@ -49,18 +49,18 @@ class RdsSectionDaoTest {
     @DisplayName("lineId로 구간들을 검색한다.")
     @Test
     void findSectionsByLineId() {
-        final List<Section> sections = rdsSectionDao.findSectionsByLineId(1L);
+        final List<SectionDetailEntity> sectionDetailEntities = rdsSectionDao.findSectionsByLineId(1L);
         assertAll(
-                () -> assertThat(sections.get(0).getId()).isPositive(),
-                () -> assertThat(sections.get(0).getUpStation().getId()).isPositive(),
-                () -> assertThat(sections.get(0).getUpStation().getName()).isEqualTo("신림역"),
-                () -> assertThat(sections.get(0).getDownStation().getId()).isPositive(),
-                () -> assertThat(sections.get(0).getDownStation().getName()).isEqualTo("봉천역"),
-                () -> assertThat(sections.get(1).getId()).isPositive(),
-                () -> assertThat(sections.get(1).getUpStation().getId()).isPositive(),
-                () -> assertThat(sections.get(1).getUpStation().getName()).isEqualTo("봉천역"),
-                () -> assertThat(sections.get(1).getDownStation().getId()).isPositive(),
-                () -> assertThat(sections.get(1).getDownStation().getName()).isEqualTo("서울대입구역")
+                () -> assertThat(sectionDetailEntities.get(0).getId()).isPositive(),
+                () -> assertThat(sectionDetailEntities.get(0).getUpStation().getId()).isPositive(),
+                () -> assertThat(sectionDetailEntities.get(0).getUpStation().getName()).isEqualTo("신림역"),
+                () -> assertThat(sectionDetailEntities.get(0).getDownStation().getId()).isPositive(),
+                () -> assertThat(sectionDetailEntities.get(0).getDownStation().getName()).isEqualTo("봉천역"),
+                () -> assertThat(sectionDetailEntities.get(1).getId()).isPositive(),
+                () -> assertThat(sectionDetailEntities.get(1).getUpStation().getId()).isPositive(),
+                () -> assertThat(sectionDetailEntities.get(1).getUpStation().getName()).isEqualTo("봉천역"),
+                () -> assertThat(sectionDetailEntities.get(1).getDownStation().getId()).isPositive(),
+                () -> assertThat(sectionDetailEntities.get(1).getDownStation().getName()).isEqualTo("서울대입구역")
         );
     }
 

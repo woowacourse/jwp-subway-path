@@ -2,7 +2,7 @@ package subway.section.dao;
 
 import subway.domain.section.dao.SectionDao;
 import subway.domain.section.domain.Direction;
-import subway.domain.section.domain.Section;
+import subway.domain.section.entity.SectionDetailEntity;
 import subway.domain.section.entity.SectionEntity;
 
 import java.util.HashMap;
@@ -39,7 +39,7 @@ public class StubSectionDao implements SectionDao {
     }
 
     @Override
-    public List<Section> findSectionsByLineId(final Long lineId) {
+    public List<SectionDetailEntity> findSectionsByLineId(final Long lineId) {
         return null;
     }
 
