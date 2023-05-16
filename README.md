@@ -6,8 +6,8 @@
 
 | Method | URI                        | Description                 |
 |--------|----------------------------|-----------------------------|
-| POST   | /lines/{lineId}/register   | 노선에 역을 등록하는 API             |
-| DELETE | /lines/{lineId}/unregister | 노선의 역을 삭제하는 API             |
+| PATCH  | /lines/{lineId}/register   | 노선에 역을 등록하는 API             |
+| PATCH  | /lines/{lineId}/unregister | 노선의 역을 삭제하는 API             |
 | GET    | /lines/{id}                | 노선의 역들을 조회하는 API            |
 | GET    | /lines                     | 모든 노선과 노선에 포함된 역들을 조회하는 API |
 

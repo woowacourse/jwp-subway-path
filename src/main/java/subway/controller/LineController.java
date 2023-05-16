@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -61,14 +62,14 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{lineId}/register")
+    @PatchMapping("/{lineId}/register")
     public ResponseEntity<Void> registerStation(@PathVariable final Long lineId,
                                                 @Valid @RequestBody final SectionRequest request) {
         lineService.registerStation(lineId, request);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
-    @DeleteMapping("/{lineId}/unregister")
+    @PatchMapping("/{lineId}/unregister")
     public ResponseEntity<Void> unregisterStation(@PathVariable final Long lineId,
                                                   @Valid @RequestBody final StationRequest request) {
         lineService.unregisterStation(lineId, request);

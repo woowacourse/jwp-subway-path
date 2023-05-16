@@ -162,7 +162,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_2.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_2.getId())
                     .then().statusCode(HttpStatus.CREATED.value());
         }
 
@@ -175,7 +175,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
@@ -188,7 +188,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
@@ -201,7 +201,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().statusCode(HttpStatus.BAD_REQUEST.value());
         }
 
@@ -214,7 +214,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             given().body(json)
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .when().post("/lines/{lineId}/register", LINE_3.getId())
+                    .when().patch("/lines/{lineId}/register", LINE_3.getId())
                     .then().log().all().statusCode(HttpStatus.BAD_REQUEST.value());
         }
     }
@@ -226,7 +226,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         given().body(jsonSerialize(stationRequest))
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/" + LINE_3.getId() + "/unregister")
+                .when().patch("/lines/" + LINE_3.getId() + "/unregister")
                 .then().statusCode(HttpStatus.NO_CONTENT.value());
     }
 }
