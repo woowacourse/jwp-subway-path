@@ -1,7 +1,10 @@
 package subway.ui;
 
 import java.util.Arrays;
+
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,10 +14,9 @@ import subway.ui.dto.ErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    @ExceptionHandler(Exception.class)
-    public ErrorResponse handleException(Exception exception) {
-        System.out.println(exception.getMessage());
-        return new ErrorResponse(Arrays.toString(exception.getStackTrace()));
+    @ExceptionHandler(DataAccessException.class)
+    public ResponseEntity<ErrorResponse> handleException(Exception exception) {
+        System.out.println(exception.getMessage()); // log 대신 출력
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Internal Server Error"));
     }
 }
