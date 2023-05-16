@@ -5,11 +5,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
-import subway.dto.LineSection;
+import subway.domain.*;
+import subway.domain.LineSection;
 
 import java.sql.PreparedStatement;
 import java.util.List;
@@ -94,7 +91,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionRowMapper, id);
     }
 
-    public List<Section> findSectionByLineIdAndStationId(Long lineId, Long stationId) {
+    public RequestInclusiveSections findSectionByLineIdAndStationId(Long lineId, Long stationId) {
         String sql = "SELECT sections.id, sections.line_id, " +
                 "departure_station.id AS departure_id, departure_station.name AS departure_name, " +
                 "arrival_station.id AS arrival_id, arrival_station.name AS arrival_name, " +
@@ -103,8 +100,8 @@ public class SectionDao {
                 + "LEFT JOIN station AS departure_station ON departure_station.id = sections.departure_id "
                 + "LEFT JOIN station AS arrival_station ON arrival_station.id = sections.arrival_id "
                 + "WHERE sections.line_id = ? AND sections.departure_id =? OR sections.arrival_id = ?";
-        return jdbcTemplate.query(sql, sectionRowMapper
-                , lineId, stationId, stationId);
+        return new RequestInclusiveSections(jdbcTemplate.query(sql, sectionRowMapper
+                , lineId, stationId, stationId));
     }
 
     public void deleteSection(Long sectionId) {

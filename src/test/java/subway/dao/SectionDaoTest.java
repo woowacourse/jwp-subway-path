@@ -36,7 +36,7 @@ class SectionDaoTest {
 
     @Test
     void findSectionByLineIdAndStationId() {
-        Assertions.assertThat(sectionDao.findSectionByLineIdAndStationId(1l,2l)).hasSize(2);
+        Assertions.assertThat(sectionDao.findSectionByLineIdAndStationId(1l,2l).isSizeTwo()).isTrue();
     }
 
     @Test

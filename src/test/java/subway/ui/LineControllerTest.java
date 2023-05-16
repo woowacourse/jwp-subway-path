@@ -15,10 +15,7 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.dto.AddStationRequest;
 
 import java.util.HashMap;
@@ -118,7 +115,7 @@ class LineControllerTest {
 
     @Test
     void deleteTerminalStation() {
-        Mockito.lenient().when(sectionDao.findSectionByLineIdAndStationId(1l, 1l)).thenReturn(List.of(new Section(1l, new Station(1l, "신림"), new Station(1l, "봉천"), new Distance(1))));
+        Mockito.lenient().when(sectionDao.findSectionByLineIdAndStationId(1l, 1l)).thenReturn(new RequestInclusiveSections(List.of(new Section(1l, new Station(1l, "신림"), new Station(1l, "봉천"), new Distance(1)))));
         RestAssured.given()
                 .when().delete("/lines/1/stations/1")
                 .then().log().all()
@@ -129,9 +126,9 @@ class LineControllerTest {
     void deleteNonTerminalStation() {
         Mockito.lenient()
                 .when(sectionDao.findSectionByLineIdAndStationId(1l, 2l))
-                .thenReturn(List.of(new Section(1l, new Station(1l, "신림"), new Station(1l, "봉천"), new Distance(1)),
+                .thenReturn(new RequestInclusiveSections(List.of(new Section(1l, new Station(1l, "신림"), new Station(1l, "봉천"), new Distance(1)),
                         new Section(2l, new Station(1l, "봉천"), new Station(1l, "서울대입구"), new Distance(1))
-                ));
+                )));
         Mockito.lenient().when(sectionDao.saveSection(1l, 2, "신림", "서울대입구")).thenReturn(3l);
         RestAssured.given()
                 .when().delete("/lines/1/stations/2")

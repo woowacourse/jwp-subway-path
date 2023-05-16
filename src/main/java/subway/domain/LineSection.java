@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.domain;
 
 import subway.domain.Line;
 import subway.domain.Section;
