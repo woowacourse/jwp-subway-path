@@ -25,6 +25,7 @@ create table if not exists `SECTION`
     FOREIGN KEY (line_id) REFERENCES LINE (id) ON DELETE CASCADE
 );
 
-ALTER TABLE `section`
-ADD CONSTRAINT IF NOT EXISTS different_stations
-CHECK (start_station_id <> end_station_id);
+-- 한번만 실행 후 주석
+-- ALTER TABLE `section`
+-- ADD CONSTRAINT IF NOT EXISTS different_stations
+-- CHECK (start_station_id <> end_station_id);
