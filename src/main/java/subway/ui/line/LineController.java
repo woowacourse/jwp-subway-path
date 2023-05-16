@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
@@ -16,7 +15,6 @@ import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.GetAllStationsInLineResponse;
 import subway.ui.line.dto.GetAllStationsInLineResponses;
 import subway.ui.line.dto.LineCreateRequest;
-import subway.ui.line.dto.ShortestPathResponse;
 
 import java.net.URI;
 import java.util.List;
@@ -68,13 +66,5 @@ public class LineController {
         lineService.deleteStationFromLine(lineId, stationId);
 
         return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/findPath")
-    public ResponseEntity<ShortestPathResponse> getShortestPath(@RequestParam Long fromId,
-                                                                @RequestParam Long toId) {
-        final ShortestPathResponse response = lineService.getShortestPath(fromId, toId);
-
-        return ResponseEntity.ok(response);
     }
 }

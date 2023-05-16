@@ -1,4 +1,4 @@
-package subway.integration;
+package subway.integration.line;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.domain.section.Direction;
+import subway.integration.IntegrationTestSetUp;
 import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.LineCreateRequest;
 

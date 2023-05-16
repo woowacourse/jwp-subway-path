@@ -2,8 +2,6 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.fare.DistanceFarePolicy;
-import subway.domain.graph.SubwayGraph;
 import subway.domain.line.Line;
 import subway.domain.section.Distance;
 import subway.domain.section.Section;
@@ -17,7 +15,6 @@ import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.LineCreateRequest;
-import subway.ui.line.dto.ShortestPathResponse;
 
 import java.util.List;
 
@@ -90,20 +87,5 @@ public class LineService {
         line.delete(station);
         sectionRepository.deleteAllByLineId(lineId);
         sectionRepository.insertAllByLineId(lineId, line.getSections());
-    }
-
-    public ShortestPathResponse getShortestPath(final Long fromId, final Long toId) {
-        final Station fromStation = stationRepository.findById(fromId)
-                .orElseThrow(() -> new StationNotFoundException(fromId));
-        final Station toStation = stationRepository.findById(toId)
-                .orElseThrow(() -> new StationNotFoundException(toId));
-
-        final List<Line> lines = lineRepository.findAllWithSections();
-
-        final SubwayGraph subwayGraph = SubwayGraph.of(lines, new DistanceFarePolicy());
-        final double pathWeight = subwayGraph.getShortestPathDistance(fromStation, toStation);
-        final List<Station> stations = subwayGraph.getShortestPath(fromStation, toStation);
-
-        return new ShortestPathResponse(pathWeight, stations);
     }
 }
