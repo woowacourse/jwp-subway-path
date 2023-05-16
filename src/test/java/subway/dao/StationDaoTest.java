@@ -1,105 +1,116 @@
-//package subway.dao;
-//
-//import org.junit.jupiter.api.BeforeEach;
-//import org.junit.jupiter.api.DisplayNameGeneration;
-//import org.junit.jupiter.api.DisplayNameGenerator;
-//import org.junit.jupiter.api.Test;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-//import org.springframework.jdbc.core.JdbcTemplate;
-//import org.springframework.test.context.jdbc.Sql;
-//import subway.domain.Station;
-//
-//import javax.sql.DataSource;
-//import java.util.List;
-//
-//import static org.assertj.core.api.Assertions.assertThat;
-//import static org.assertj.core.api.SoftAssertions.assertSoftly;
-//
-//@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-//@SuppressWarnings("NonAsciiCharacters")
-//@JdbcTest
-//@Sql("classpath:test_data.sql")
-//class StationDaoTest {
-//
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
-//    @Autowired
-//    private DataSource dataSource;
-//
-//    private StationDao stationDao;
-//
-//    @BeforeEach
-//    void setUp() {
-//        stationDao = new StationDao(jdbcTemplate, dataSource);
-//    }
-//
-//    @Test
-//    void 역_정보를_삽입한다() {
-//        // given
-//        final Station huchu = new Station("huchu");
-//        // when
-//        final Station insertedStation = stationDao.insert(huchu);
-//        // then
-//        assertSoftly(softly -> {
-//            softly.assertThat(insertedStation.getName()).isEqualTo("huchu");
-//        });
-//    }
-//
-//    @Test
-//    void 전체_역_정보를_조회한다() {
-//        // given
-//        final Station huchu = new Station("huchu");
-//        final Station dino = new Station("dino");
-//        stationDao.insert(huchu);
-//        stationDao.insert(dino);
-//        // when
-//        final List<Station> allStations = stationDao.findAll();
-//        // then
-//        assertSoftly(softly -> {
-//            softly.assertThat(allStations).hasSize(2);
-//            final Station firstStation = allStations.get(0);
-//            softly.assertThat(firstStation.getName()).isEqualTo("huchu");
-//            final Station secondStation = allStations.get(1);
-//            softly.assertThat(secondStation.getName()).isEqualTo("dino");
-//        });
-//    }
-//
-//    @Test
-//    void id로_역_정보를_조회한다() {
-//        // given
-//        final Station huchu = new Station("huchu");
-//        final Long id = stationDao.insert(huchu).getId();
-//        // when
-//        final Station actualStation = stationDao.findById(id);
-//        // then
-//        assertThat(actualStation.getName()).isEqualTo("huchu");
-//    }
-//
-//    @Test
-//    void 역_정보를_수정한다() {
-//        // given
-//        final Station huchu = new Station("huchu");
-//        final Long id = stationDao.insert(huchu).getId();
-//        // when
-//        stationDao.update(new Station(id, "dino"));
-//        // then
-//        final Station station = stationDao.findById(id);
-//        assertThat(station.getName()).isEqualTo("dino");
-//    }
-//
-//    @Test
-//    void 역_정보를_삭제한다() {
-//        // given
-//        final Station huchu = new Station("huchu");
-//        final Long id = stationDao.insert(huchu).getId();
-//        final List<Station> beforeStations = stationDao.findAll();
-//
-//        // when
-//        stationDao.deleteById(id);
-//        // then
-//        final List<Station> afterStations = stationDao.findAll();
-//        assertThat(beforeStations).hasSize(afterStations.size() + 1);
-//    }
-//
-//}
+package subway.dao;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
+
+import javax.sql.DataSource;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import static subway.fixture.EntityFixture.디노_Entity;
+import static subway.fixture.EntityFixture.후추_Entity;
+
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
+@JdbcTest
+@Sql("classpath:test_data.sql")
+class StationDaoTest {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+    @Autowired
+    private DataSource dataSource;
+
+    private StationDao stationDao;
+
+    @BeforeEach
+    void setUp() {
+        stationDao = new StationDao(jdbcTemplate, dataSource);
+    }
+
+    @Test
+    void 역_정보를_삽입한다() {
+        // when
+        final StationEntity stationEntity = stationDao.insert(후추_Entity);
+
+        // then
+        assertThat(stationEntity.getName()).isEqualTo("후추");
+    }
+
+    @Test
+    void 전체_역_정보를_조회한다() {
+        // given
+        stationDao.insert(후추_Entity);
+        stationDao.insert(디노_Entity);
+
+        // when
+        final List<StationEntity> stationEntities = stationDao.findAll();
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(stationEntities).hasSize(2);
+            final StationEntity firstStation = stationEntities.get(0);
+            final StationEntity secondStation = stationEntities.get(1);
+            softly.assertThat(firstStation.getName()).isEqualTo("후추");
+            softly.assertThat(secondStation.getName()).isEqualTo("디노");
+        });
+    }
+
+    @Test
+    void id로_역_정보를_조회한다() {
+        // given
+        final Long id = stationDao.insert(후추_Entity).getId();
+
+        // when
+        final StationEntity stationEntity = stationDao.findById(id);
+
+        // then
+        assertThat(stationEntity.getName()).isEqualTo("후추");
+    }
+
+    @Test
+    void id로_역_정보를_조회할_때_역이_존재하지_않는_경우_예외를_던진다() {
+        // given
+        final Long wrongId = Long.MIN_VALUE;
+
+        // expect
+        assertThatThrownBy(() -> stationDao.findById(wrongId))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 역입니다.");
+    }
+
+    @Test
+    void 역_정보를_수정한다() {
+        // given
+        final Long id = stationDao.insert(후추_Entity).getId();
+
+        // when
+        stationDao.update(new StationEntity(id, "디노"));
+
+        // then
+        final StationEntity station = stationDao.findById(id);
+        assertThat(station.getName()).isEqualTo("디노");
+    }
+
+    @Test
+    void 역_정보를_삭제한다() {
+        // given
+        final Long id = stationDao.insert(후추_Entity).getId();
+
+        // when
+        stationDao.deleteById(id);
+
+        // then
+        final List<StationEntity> stationEntities = stationDao.findAll();
+        assertThat(stationEntities).hasSize(0);
+    }
+
+}
