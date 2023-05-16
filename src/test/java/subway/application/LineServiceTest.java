@@ -46,7 +46,7 @@ class LineServiceTest {
         lineService.deletePathByStationId(station2.getId());
 
         //then
-        assertThat(lineService.findLines())
+        assertThat(lineService.findAllLines())
                 .map(LineResponse::getPaths)
                 .allMatch(List::isEmpty);
     }
