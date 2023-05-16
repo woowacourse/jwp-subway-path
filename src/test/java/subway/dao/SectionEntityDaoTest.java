@@ -1,5 +1,6 @@
 package subway.dao;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -10,8 +11,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.entity.LineEntity;
 import subway.domain.entity.SectionEntity;
+import subway.domain.entity.StationEntity;
+import subway.exception.SectionNotFoundException;
 import subway.fixture.StationFixture.GangnamStation;
 import subway.fixture.StationFixture.JamsilStation;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,6 +54,121 @@ class SectionEntityDaoTest {
 
         //then
         assertThat(id).isPositive();
+    }
+
+    @Test
+    void 상행역의_아이디를_받아_구간을_조회한다() {
+        // given
+        final Long lineId = lineDao.insert(LineEntity.of("2호선", "초록"));
+        final Long stationId1 = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
+        final Long stationId2 = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
+
+        final SectionEntity sectionEntity = SectionEntity.of(lineId, stationId1, stationId2, 3);
+        sectionDao.insert(sectionEntity);
+
+        // when
+        SectionEntity section = sectionDao.findByUpStationId(stationId1)
+                .orElseThrow(() -> SectionNotFoundException.THROW);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(section.getDistance()).isEqualTo(3),
+                () -> assertThat(section.getUpStationId()).isEqualTo(stationId1),
+                () -> assertThat(section.getDownStationId()).isEqualTo(stationId2),
+                () -> assertThat(section.getLineId()).isEqualTo(lineId)
+        );
+    }
+
+    @Test
+    void 모든_구간을_조회한다() {
+        // given
+        final Long lineId = lineDao.insert(LineEntity.of("2호선", "초록"));
+        final Long stationId1 = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
+        final Long stationId2 = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
+
+        final SectionEntity sectionEntity1 = SectionEntity.of(lineId, stationId1, stationId2, 3);
+        sectionDao.insert(sectionEntity1);
+
+        final Long stationId3 = stationDao.insert(StationEntity.of("선릉역"));
+        SectionEntity stationEntity2 = SectionEntity.of(lineId, stationId2, stationId3, 10);
+        sectionDao.insert(stationEntity2);
+
+        // when
+        List<SectionEntity> sections = sectionDao.findAll();
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(sections).extracting(SectionEntity::getDistance)
+                        .contains(3, 10),
+                () -> assertThat(sections).extracting(SectionEntity::getLineId).contains(lineId),
+                () -> assertThat(sections).extracting(SectionEntity::getUpStationId)
+                        .contains(stationId1, stationId2),
+                () -> assertThat(sections).extracting(SectionEntity::getDownStationId)
+                        .contains(stationId2, stationId3)
+        );
+    }
+
+    @Test
+    void 역의_아이디를_입력받아_왼쪽_구간을_조회한다() {
+        // given
+        final Long lineId = lineDao.insert(LineEntity.of("2호선", "초록"));
+        final Long stationId1 = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
+        final Long stationId2 = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
+
+        final SectionEntity sectionEntity = SectionEntity.of(lineId, stationId1, stationId2, 3);
+        sectionDao.insert(sectionEntity);
+
+        // when
+        SectionEntity section = sectionDao.findLeftSectionByStationId(stationId2)
+                .orElseThrow(() -> SectionNotFoundException.THROW);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(section.getUpStationId()).isEqualTo(stationId1),
+                () -> assertThat(section.getDownStationId()).isEqualTo(stationId2),
+                () -> assertThat(section.getDistance()).isEqualTo(3)
+        );
+    }
+
+    @Test
+    void 역의_아이디를_입력받아_오른쪽_구간을_조회한다() {
+        // given
+        final Long lineId = lineDao.insert(LineEntity.of("2호선", "초록"));
+        final Long stationId1 = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
+        final Long stationId2 = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
+
+        final SectionEntity sectionEntity = SectionEntity.of(lineId, stationId1, stationId2, 3);
+        sectionDao.insert(sectionEntity);
+
+        // when
+        SectionEntity section = sectionDao.findRightSectionByStationId(stationId1)
+                .orElseThrow(() -> SectionNotFoundException.THROW);
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(section.getUpStationId()).isEqualTo(stationId1),
+                () -> assertThat(section.getDownStationId()).isEqualTo(stationId2),
+                () -> assertThat(section.getDistance()).isEqualTo(3)
+        );
+    }
+
+    @Test
+    void 구간의_아이디를_입력받아_구간을_삭제한다() {
+        // given
+        final Long lineId = lineDao.insert(LineEntity.of("2호선", "초록"));
+        final Long stationId1 = stationDao.insert(GangnamStation.GANGNAM_STATION_ENTITY);
+        final Long stationId2 = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
+
+        final SectionEntity sectionEntity = SectionEntity.of(lineId, stationId1, stationId2, 3);
+        Long sectionId = sectionDao.insert(sectionEntity);
+
+        String sql = "DELETE FROM SECTIONS WHERE id=?";
+
+        // when
+        sectionDao.deleteById(sectionId);
+
+        // then
+        assertThat(sectionDao.findAll().size()).isEqualTo(0);
     }
 
 }

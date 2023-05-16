@@ -30,12 +30,8 @@ public class StationFacade {
     }
 
     public StationEntity findById(final Long stationId) {
-        return stationDao.findById(stationId);
-    }
-
-    @Transactional
-    public void deleteById(final Long stationId) {
-        stationDao.deleteById(stationId);
+        return stationDao.findById(stationId)
+                .orElseThrow(() -> StationNotFoundException.THROW);
     }
 
     public List<StationEntity> findAll(final Long lineId, final List<SectionEntity> sectionEntities) {
@@ -62,6 +58,19 @@ public class StationFacade {
             beforeStationId = stationEntity.getId();
         }
         return beforeStationId;
+    }
+
+    @Transactional
+    public void updateById(final Long stationId, final String name) {
+        StationEntity stationEntity = stationDao.findById(stationId)
+                .orElseThrow(() -> StationNotFoundException.THROW);
+        stationEntity.updateName(name);
+        stationDao.updateById(stationId, stationEntity);
+    }
+
+    @Transactional
+    public void deleteById(final Long stationId) {
+        stationDao.deleteById(stationId);
     }
 
 }

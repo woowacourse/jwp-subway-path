@@ -1,10 +1,9 @@
 package subway.dto;
 
-import subway.domain.entity.LineEntity;
-
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
+import java.util.Objects;
 
 public class LineRequest {
 
@@ -39,8 +38,16 @@ public class LineRequest {
         return distance;
     }
 
-    public LineEntity toEntity() {
-        return LineEntity.of(name, color);
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final LineRequest request = (LineRequest) o;
+        return distance == request.distance && Objects.equals(name, request.name) && Objects.equals(color, request.color);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, color, distance);
+    }
 }

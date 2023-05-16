@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,7 +26,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> registerStation(
+    public ResponseEntity<Void> createStation(
             @RequestParam String name
     ) {
         Long stationId = stationService.createStation(name);
@@ -34,7 +35,16 @@ public class StationController {
 
     @GetMapping("/{lineId}")
     public ResponseEntity<List<StationResponse>> showStations(@PathVariable Long lineId) {
-        return ResponseEntity.ok().body(stationService.getAllStationResponses(lineId));
+        return ResponseEntity.ok().body(stationService.getAllByLineId(lineId));
+    }
+
+    @PutMapping("/{stationId}")
+    public ResponseEntity<Void> updateStation(
+            @PathVariable Long stationId,
+            @RequestParam String name
+    ) {
+        stationService.updateById(stationId, name);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{lineId}/{stationId}")
@@ -42,7 +52,7 @@ public class StationController {
             @PathVariable Long lineId,
             @PathVariable Long stationId
     ) {
-        stationService.deleteStationById(lineId, stationId);
+        stationService.deleteById(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 

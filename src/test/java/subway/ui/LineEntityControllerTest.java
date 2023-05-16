@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @AutoConfigureMockMvc
 @ExtendWith(MockitoExtension.class)
-@SpringBootTest()
+@SpringBootTest
 class LineEntityControllerTest {
 
     @MockBean
@@ -49,11 +49,11 @@ class LineEntityControllerTest {
     @Test
     void saveRequest를_받아_호선을_생성한다() throws Exception {
         // given
-        final LineRequest saveRequest = new LineRequest("2호선", "초록");
+        final LineRequest saveRequest = new LineRequest("2호선", "초록", 10);
         final String request = objectMapper.writeValueAsString(saveRequest);
 
         // when, then
-        mockMvc.perform(post("/lines")
+        mockMvc.perform(post("/lines/" + 1L + "/" + 2L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(request))
                 .andExpect(status().isCreated())
@@ -68,7 +68,7 @@ class LineEntityControllerTest {
                 new LineResponse(1L, "1호선", "파랑"),
                 new LineResponse(2L, "2호선", "초록")
         );
-        when(lineService.findLineResponses()).thenReturn(responses);
+        when(lineService.getAll()).thenReturn(responses);
         final String responseJson = objectMapper.writeValueAsString(responses);
 
         // when, then
@@ -85,7 +85,7 @@ class LineEntityControllerTest {
         final Long id = 1L;
         final LineResponse lineResponse = new LineResponse(id, "1호선", "파랑");
 
-        when(lineService.findLineResponseById(id)).thenReturn(lineResponse);
+        when(lineService.getLineResponseById(id)).thenReturn(lineResponse);
         final String responseJson = objectMapper.writeValueAsString(lineResponse);
 
         // when, then
@@ -100,9 +100,8 @@ class LineEntityControllerTest {
     void id와_saveRequest를_받아_해당_호선을_수정한다() throws Exception {
         // given
         final Long id = 1L;
-        final LineRequest line = new LineRequest("2호선", "검정");
-        final String requestJson = objectMapper.writeValueAsString(line);
-        lineService.createLine(line);
+        final LineRequest request = new LineRequest("2호선", "검정", 10);
+        final String requestJson = objectMapper.writeValueAsString(request);
 
         // when, then
         mockMvc.perform(put("/lines/" + id)
@@ -111,15 +110,15 @@ class LineEntityControllerTest {
                 .andExpect(status().isOk())
                 .andDo(print());
 
-        verify(lineService, times(1)).updateLine(id, line);
+        verify(lineService, times(1)).updateLine(id, request);
     }
 
     @Test
     void id를_받아_해당_호선을_삭제한다() throws Exception {
         // given
         final Long id = 1L;
-        final LineRequest line = new LineRequest("1호선", "파랑");
-        lineService.createLine(line);
+        final LineRequest request = new LineRequest("1호선", "파랑", 10);
+        lineService.createLine(request, 1L, 2L);
 
         // when, then
         mockMvc.perform(delete("/lines/" + id)

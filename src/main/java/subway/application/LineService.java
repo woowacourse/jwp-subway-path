@@ -38,11 +38,11 @@ public class LineService {
         sectionFacade.saveSection(SectionSaveRequest.of(sectionEntity));
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<LineResponse> getAll() {
         return lineFacade.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineResponse getLineResponseById(Long id) {
         return lineFacade.findById(id);
     }
 

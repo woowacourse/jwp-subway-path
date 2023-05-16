@@ -50,9 +50,13 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public StationEntity findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         String sql = "select * from STATIONS where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public void updateById(Long id, StationEntity newStationEntity) {

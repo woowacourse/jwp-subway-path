@@ -53,11 +53,6 @@ public class SectionDao {
         }
     }
 
-    public void deleteById(final Long id) {
-        String sql = "DELETE FROM SECTIONS WHERE id=?";
-        jdbcTemplate.update(sql, id);
-    }
-
     public List<SectionEntity> findAll() {
         String sql = "select * from SECTIONS";
         return jdbcTemplate.query(sql, sectionRowMapper);
@@ -81,6 +76,11 @@ public class SectionDao {
         } catch (DataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public void deleteById(final Long id) {
+        String sql = "DELETE FROM SECTIONS WHERE id=?";
+        jdbcTemplate.update(sql, id);
     }
 
 }

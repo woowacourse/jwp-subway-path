@@ -32,15 +32,21 @@ public class StationService {
         return stationFacade.insert(StationEntity.of(name));
     }
 
-    public List<StationResponse> getAllStationResponses(final Long lineId) {
-        List<StationEntity> stations = stationFacade.findAll(lineId, sectionFacade.findAll());
+    public List<StationResponse> getAllByLineId(final Long lineId) {
+        List<SectionEntity> sections = sectionFacade.findAll();
+        List<StationEntity> stations = stationFacade.findAll(lineId, sections);
         return stations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
 
     @Transactional
-    public void deleteStationById(final Long lineId, final Long stationId) {
+    public void updateById(final Long stationId, final String name) {
+        stationFacade.updateById(stationId, name);
+    }
+
+    @Transactional
+    public void deleteById(final Long lineId, final Long stationId) {
         StationEntity stationEntity = stationFacade.findById(stationId);
         if (finalStationFactory.getFinalStation(lineId).isFinalStation(stationEntity.getName())) {
             stationFacade.deleteById(stationId);

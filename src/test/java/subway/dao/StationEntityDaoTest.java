@@ -6,12 +6,12 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.entity.LineEntity;
 import subway.domain.entity.SectionEntity;
 import subway.domain.entity.StationEntity;
+import subway.exception.StationNotFoundException;
 import subway.fixture.StationFixture.GangnamStation;
 import subway.fixture.StationFixture.JamsilStation;
 
@@ -19,7 +19,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -79,7 +79,8 @@ class StationEntityDaoTest {
         final Long id = stationDao.insert(JamsilStation.JAMSIL_STATION_ENTITY);
 
         // when
-        final StationEntity result = stationDao.findById(id);
+        final StationEntity result = stationDao.findById(id)
+                .orElseThrow(() -> StationNotFoundException.THROW);
 
         // then
         assertThat(result.getName()).isEqualTo("잠실역");
@@ -93,7 +94,8 @@ class StationEntityDaoTest {
 
         // when
         stationDao.updateById(id, 선릉역);
-        final StationEntity result = stationDao.findById(id);
+        final StationEntity result = stationDao.findById(id)
+                .orElseThrow(() -> StationNotFoundException.THROW);
 
         // then
         assertThat(result.getName()).isEqualTo("선릉역");
@@ -108,9 +110,7 @@ class StationEntityDaoTest {
         stationDao.deleteById(id);
 
         // then
-        assertThrows(
-                DataAccessException.class, () -> stationDao.findById(id)
-        );
+        assertDoesNotThrow(() -> stationDao.findById(id));
     }
 
     @Test
@@ -128,8 +128,10 @@ class StationEntityDaoTest {
         sectionDao.insert(sectionEntity2);
 
         // when
-        final StationEntity upTerminalStationEntity = stationDao.findFinalUpStation(lineId1);
-        final StationEntity downTerminalStationEntity = stationDao.findFinalDownStation(lineId1);
+        final StationEntity upTerminalStationEntity = stationDao.findFinalUpStation(lineId1)
+                .orElseThrow(() -> StationNotFoundException.THROW);
+        final StationEntity downTerminalStationEntity = stationDao.findFinalDownStation(lineId1)
+                .orElseThrow(() -> StationNotFoundException.THROW);
 
         // then
         assertThat(upTerminalStationEntity.getName()).isEqualTo("강남역");

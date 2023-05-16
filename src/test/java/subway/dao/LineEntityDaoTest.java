@@ -1,21 +1,21 @@
 package subway.dao;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.entity.LineEntity;
+import subway.exception.LineNotFoundException;
 
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -74,7 +74,8 @@ class LineEntityDaoTest {
         final Long id = lineDao.insert(lineEntity);
 
         // when
-        final LineEntity result = lineDao.findById(id);
+        final LineEntity result = lineDao.findById(id)
+                .orElseThrow(() -> LineNotFoundException.THROW);
 
         // then
         assertAll(
@@ -91,7 +92,8 @@ class LineEntityDaoTest {
 
         // when
         lineDao.updateById(id, LineEntity.of("2호선", "검정"));
-        final LineEntity result = lineDao.findById(id);
+        final LineEntity result = lineDao.findById(id)
+                .orElseThrow(() -> LineNotFoundException.THROW);
 
         // then
         assertAll(
@@ -108,9 +110,7 @@ class LineEntityDaoTest {
         lineDao.deleteById(id);
 
         // when, then
-        assertThrows(
-                DataAccessException.class, () -> lineDao.findById(id)
-        );
+        Assertions.assertDoesNotThrow(() -> lineDao.findById(id));
     }
 
 }
