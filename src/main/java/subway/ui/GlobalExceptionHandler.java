@@ -15,7 +15,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
     @ExceptionHandler({InValidDistanceException.class, InValidLineNameException.class, InvalidSectionException.class,
-            InValidStationNameException.class})
+            InValidStationNameException.class,InvalidStationException.class})
     public ResponseEntity<String> handleInvalidException(Exception e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }

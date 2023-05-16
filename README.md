@@ -3,6 +3,12 @@
 ## 기능 요구 사항
 
 ### Domain
+- [x] Lines
+  - [x] line 중복 검증
+
+- [ ] Graph
+  - [x] 경로 탐색
+  - [ ] 거리 탐색
 
 - [x] Line (1호선, 2호선, ...)
     - LineInfo
@@ -145,4 +151,30 @@ Response Body {[
         }
    ]}
 ]}
+```
+
+경로 조회 
+```text
+GET /subway/path/startStation/{startStationId}/endStation/{endStationId}
+
+Response Headers {
+    Status : 200
+}
+
+Response Body {
+    {
+    "stations": [
+        {
+            "id": 8,
+            "name": "방배"
+        },
+        {
+            "id": 9,
+            "name": "교대"
+        }
+    ],
+    "distance": 6,
+    "cost": 
+    }
+}
 ```

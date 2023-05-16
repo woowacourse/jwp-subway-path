@@ -20,4 +20,8 @@ public class Lines {
             throw new DuplicateLineNameException();
         }
     }
+
+    public List<Line> getLines() {
+        return lines;
+    }
 }
