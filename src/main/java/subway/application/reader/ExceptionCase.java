@@ -18,4 +18,9 @@ public class ExceptionCase extends Reader {
         }
         throw new AddSectionException("type이 지정되지 않았습니다.");
     }
+
+    @Override
+    public List<Section> initializeSave(CaseDto caseDto, List<Section> allSection) throws IllegalAccessException {
+        throw new IllegalAccessException("이미 type을 선언했습니다.");
+    }
 }

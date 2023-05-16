@@ -4,10 +4,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.exception.AddSectionException;
 import subway.application.reader.CaseDto;
+import subway.application.reader.InitializationReader;
 import subway.application.reader.NonDeleteSaveCase;
 import subway.application.reader.Reader;
 import subway.dao.SectionDao;
 import subway.domain.Line;
+import subway.domain.RequestInclusiveSections;
 import subway.domain.Section;
 import subway.domain.SectionSorter;
 
@@ -29,7 +31,7 @@ public class SectionService {
         this.sectionDao = sectionDao;
     }
 
-    public List<Section> addStationByLineId(final Long id, final String departure, final String arrival, final int distance) {
+    public List<Section> addStationByLineId(final Long id, final String departure, final String arrival, final int distance) throws IllegalAccessException {
         final List<Section> allSections = sectionDao.findSectionsByLineId(id);
         CaseDto caseDto = new CaseDto.Builder()
                 .lineId(id)
@@ -38,8 +40,8 @@ public class SectionService {
                 .distance(distance)
                 .build();
         caseDto = setCase(caseDto, allSections);
-        Reader reader = new NonDeleteSaveCase(sectionDao);
-        return reader.save(caseDto);
+        Reader reader = new InitializationReader(sectionDao);
+        return reader.initializeSave(caseDto,allSections);
     }
 
     public Map<Line, List<Section>> findSections() {
@@ -55,19 +57,15 @@ public class SectionService {
     }
 
     public void deleteSectionByLineIdAndSectionId(Long lineId, Long sectionId) {
-        final List<Section> sections = sectionDao.findSectionByLineIdAndStationId(lineId, sectionId);
+        final RequestInclusiveSections sections = sectionDao.findSectionByLineIdAndStationId(lineId, sectionId);
 
-        final List<Section> sortedSections = SectionSorter.sorting(sections);
         if (sections.isEmpty()) {
             throw new IllegalArgumentException("해당하는 역이 없습니다.");
         }
-        sectionDao.deleteSection(sections.get(0).getId());
-
-        if (sections.size() == NON_TERMINAL_SECTION_SIZE) {
-            sectionDao.deleteSection(sections.get(1).getId());
-            sectionDao.saveSection(lineId,
-                    sections.get(0).getDistanceValue()+ sections.get(1).getDistanceValue(),
-                    sortedSections.get(0).getDepartureValue(), sortedSections.get(1).getArrivalValue());
+        sectionDao.deleteSection(sections.getDepartureId());
+        if (sections.isSizeTwo()) {
+            sectionDao.deleteSection(sections.getArrivalId());
+            sectionDao.saveSection(lineId, sections.getDistance(), sections.getDeparture(),sections.getArrival());
         }
     }
 }

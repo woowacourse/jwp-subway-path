@@ -12,5 +12,6 @@ public abstract class Reader {
         this.sectionDao = sectionDao;
     }
 
-    abstract public List<Section> save(final CaseDto caseDto);
+    abstract public List<Section> save(final CaseDto caseDto) throws IllegalAccessException;
+    abstract public List<Section> initializeSave(final CaseDto caseDto, final List<Section> allSection) throws IllegalAccessException;
 }

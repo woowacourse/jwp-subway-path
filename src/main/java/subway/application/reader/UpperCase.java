@@ -34,6 +34,11 @@ public class UpperCase extends Reader {
         return new LowerCase(sectionDao).save(caseDto);
     }
 
+    @Override
+    public List<Section> initializeSave(CaseDto caseDto, List<Section> allSection) throws IllegalAccessException {
+        throw new IllegalAccessException("이미 type을 선언했습니다.");
+    }
+
     private void validateDistance(final int requestDistance, final int distance) {
         if (requestDistance >= distance) {
             throw new AddSectionException("입력 거리가 기존 존재하는 거리보다 작아야합니다.");
