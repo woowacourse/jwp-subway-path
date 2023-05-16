@@ -6,13 +6,11 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class JgraphtTest {
 
     @Test
-    @DisplayName("")
     void testJgrapht() {
         //given
         final Graph<String, DefaultWeightedEdge> graph

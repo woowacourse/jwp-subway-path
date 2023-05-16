@@ -35,30 +35,24 @@ public class Sections {
     }
 
     private Section findTopSection() {
-        for (final Section section : value) {
-            if (isTopSection(section)) {
-                return section;
-            }
-        }
-        throw new BusinessException(NOT_EXIST_SECTION_MESSAGE);
+        return value.stream()
+            .filter(this::isTopSection)
+            .findAny()
+            .orElseThrow(() -> new BusinessException(NOT_EXIST_SECTION_MESSAGE));
     }
 
     private Section findBottomSection() {
-        for (final Section section : value) {
-            if (isBottomSection(section)) {
-                return section;
-            }
-        }
-        throw new BusinessException(NOT_EXIST_SECTION_MESSAGE);
+        return value.stream()
+            .filter(this::isBottomSection)
+            .findAny()
+            .orElseThrow(() -> new BusinessException(NOT_EXIST_SECTION_MESSAGE));
     }
 
     private Section findNextSection(final Section currentSection) {
-        for (final Section section : value) {
-            if (currentSection.getDownStation().equals(section.getUpStation())) {
-                return section;
-            }
-        }
-        throw new BusinessException(NOT_EXIST_SECTION_MESSAGE);
+        return value.stream()
+            .filter(section -> currentSection.getDownStation().equals(section.getUpStation()))
+            .findAny()
+            .orElseThrow(() -> new BusinessException(NOT_EXIST_SECTION_MESSAGE));
     }
 
     private boolean isTopSection(final Section section) {
@@ -144,11 +138,7 @@ public class Sections {
         }
         return value.get(index - 1).getDownStation();
     }
-
-    public void clear() {
-        value.clear();
-    }
-
+    
     public void remove(final Station station) {
         final Optional<Section> optionalUpSection = findSectionByUpStation(station);
         final Optional<Section> optionalDownSection = findSectionByDownStation(station);
