@@ -9,9 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.lineDetail.dao.LineDetailDao;
-import subway.domain.lineDetail.entity.LineDetailEntity;
 import subway.domain.lineDetail.dto.LineDetailRequest;
 import subway.domain.lineDetail.dto.LineDetailResponse;
+import subway.domain.lineDetail.entity.LineDetailEntity;
 import subway.domain.lineDetail.service.LineDetailService;
 
 import java.util.Optional;
@@ -80,7 +80,8 @@ class LineDetailServiceTest {
         LineDetailEntity lineDetailEntity = new LineDetailEntity(lineDetailRequest.getName(), lineDetailRequest.getColor());
         given(lineDetailDao.insert(lineDetailEntity)).willReturn(lineDetailEntity);
         //when
-        LineDetailResponse lineDetailResponse = lineDetailService.saveLine(lineDetailRequest);
+        LineDetailEntity savelineDetailEntity = lineDetailService.saveLine(lineDetailRequest);
+        LineDetailResponse lineDetailResponse = LineDetailResponse.of(savelineDetailEntity);
 
         //then
         verify(lineDetailDao).insert(any());

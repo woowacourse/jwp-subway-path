@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.domain.lineDetail.dto.LineDetailRequest;
 import subway.domain.lineDetail.dto.LineDetailResponse;
+import subway.domain.lineDetail.entity.LineDetailEntity;
 import subway.domain.lineDetail.service.LineDetailService;
 import subway.global.common.ResultResponse;
 
@@ -22,8 +23,9 @@ public class LineDetailController {
 
     @PostMapping
     public ResponseEntity<ResultResponse> createLine(@RequestBody final LineDetailRequest lineDetailRequest) {
-        final LineDetailResponse line = lineDetailService.saveLine(lineDetailRequest);
-        return ResponseEntity.created(URI.create("/line-detail/" + line.getId())).body(new ResultResponse(201, "노선 추가 성공", line));
+        LineDetailEntity lineDetailEntity = lineDetailService.saveLine(lineDetailRequest);
+        LineDetailResponse lineDetailResponse = LineDetailResponse.of(lineDetailEntity);
+        return ResponseEntity.created(URI.create("/line-detail/" + lineDetailResponse.getId())).body(new ResultResponse(201, "노선 추가 성공", lineDetailResponse));
     }
 
     @PutMapping("/{id}")
