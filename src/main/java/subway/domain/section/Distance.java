@@ -45,8 +45,8 @@ public class Distance {
         if (other == null || getClass() != other.getClass()) {
             return false;
         }
-        final Distance distance1 = (Distance) other;
-        return Objects.equals(distance, distance1.distance);
+        final Distance otherDistance = (Distance) other;
+        return Objects.equals(distance, otherDistance.distance);
     }
 
     @Override

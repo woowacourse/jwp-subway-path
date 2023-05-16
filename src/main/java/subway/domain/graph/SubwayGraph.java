@@ -19,7 +19,6 @@ public class SubwayGraph {
         this.farePolicy = farePolicy;
     }
 
-
     public static SubwayGraph of(final List<Line> lines, final FarePolicy farePolicy) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
         for (final Line line : lines) {
