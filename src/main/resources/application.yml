@@ -8,8 +8,3 @@ spring:
     driver-class-name: org.h2.Driver
     username: sa
     password:
-  sql:
-    init:
-      schema-locations: classpath:schema.sql
-      mode: always
-
