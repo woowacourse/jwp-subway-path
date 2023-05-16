@@ -70,4 +70,20 @@ public class H2LineDao implements LineDao {
     public int deleteById(final long id) {
         return jdbcTemplate.update("delete from Line where id = ?", id);
     }
+
+    @Override
+    public int countByName(final String name) {
+        String sql = "SELECT COUNT(*) AS count " +
+                "FROM LINE " +
+                "WHERE name = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, name);
+    }
+
+    @Override
+    public int countByColor(final String color) {
+        String sql = "SELECT COUNT(*) AS count " +
+                "FROM LINE " +
+                "WHERE color = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, color);
+    }
 }

@@ -235,4 +235,14 @@ public class Line {
     public boolean isSameId(final long id) {
         return this.id == id;
     }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", sections=" + sections +
+                '}';
+    }
 }

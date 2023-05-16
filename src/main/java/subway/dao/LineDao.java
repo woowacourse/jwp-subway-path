@@ -16,4 +16,8 @@ public interface LineDao {
     int update(final LineEntity lineEntity);
 
     int deleteById(final long id);
+
+    int countByName(final String name);
+
+    int countByColor(final String color);
 }

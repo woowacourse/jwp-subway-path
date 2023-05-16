@@ -64,4 +64,12 @@ public class LineRepository {
         sectionDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
+
+    public int countByName(final String name){
+        return lineDao.countByName(name);
+    }
+
+    public int countByColor(final String color){
+        return lineDao.countByColor(color);
+    }
 }
