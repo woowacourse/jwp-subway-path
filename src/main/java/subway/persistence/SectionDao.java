@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.exception.DuplicatedSectionException;
 import subway.exception.LineNotFoundException;
+import subway.exception.LineOrStationNotFoundException;
 import subway.exception.SectionNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
@@ -54,23 +55,30 @@ public class SectionDao {
         return result;
     }
 
-    public SectionEntity findById(final long id) {
-        final String sql = "SELECT * FROM section WHERE id = ?";
-        try {
-            return jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, id);
-        } catch (EmptyResultDataAccessException e) {
-            throw new SectionNotFoundException();
-        }
-    }
-
-    public List<SectionEntity> findByLineIdAndNextStationId(final Long lineId, final Long nextStationId) {
-        final String sql = "SELECT * FROM section WHERE line_id = ? AND next_station_id = ?";
-        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, nextStationId);
-    }
-
     public void delete(final SectionEntity sectionEntity) {
         final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.update(sql, sectionEntity.getId());
+    }
+
+    public List<SectionEntity> findByLineIdAndPreviousStationNameOrNextStationName(
+            final long lineId, final String stationName) {
+        final String sql = "SELECT se.id, se.line_id, se.distance, se.previous_station_id, se.next_station_id " +
+                "FROM section se " +
+                "JOIN station pst ON se.previous_station_id = pst.id " +
+                "JOIN station nst ON se.next_station_id = nst.id " +
+                "WHERE se.line_id = ? AND (pst.name = ? OR nst.name = ?)";
+        final List<SectionEntity> result =  jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationName, stationName);
+        validateFindByLineIdAndPreviousStationNameOrNextStationNameResult(result);
+        return result;
+    }
+
+    private void validateFindByLineIdAndPreviousStationNameOrNextStationNameResult(final List<SectionEntity> sectionEntities) {
+        if (sectionEntities.isEmpty()) {
+            throw new LineOrStationNotFoundException();
+        }
+        if (sectionEntities.size() > 2) {
+            throw new RuntimeException("한 노선에 어떤 역이 2개 이상 존재합니다.");
+        }
     }
 
     public List<SectionDetailEntity> findSectionDetail() {
@@ -117,24 +125,6 @@ public class SectionDao {
                 "WHERE se.line_id = ?";
 
         final List<SectionDetailEntity> result = jdbcTemplate.query(sql, sectionDetailRowMapper, lineId);
-        if (result.isEmpty()) {
-            throw new LineNotFoundException();
-        }
-        return result;
-    }
-
-    public List<SectionDetailEntity> findSectionDetailByLineName(final String lineName) {
-        final String sql = "SELECT se.id, se.distance, se.line_id, " +
-                "line.name line_name, line.color line_color, " +
-                "pst.id previous_station_id, pst.name previous_station_name, " +
-                "nst.id next_station_id, nst.name next_station_name " +
-                "FROM section se " +
-                "JOIN station pst ON se.previous_station_id = pst.id " +
-                "JOIN station nst ON se.next_station_id = nst.id " +
-                "JOIN line ON se.line_id = line.id " +
-                "WHERE line.name = ?";
-
-        final List<SectionDetailEntity> result = jdbcTemplate.query(sql, sectionDetailRowMapper, lineName);
         if (result.isEmpty()) {
             throw new LineNotFoundException();
         }

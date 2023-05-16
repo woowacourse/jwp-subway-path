@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.exception.DuplicatedSectionException;
 import subway.exception.LineNotFoundException;
-import subway.exception.SectionNotFoundException;
+import subway.exception.LineOrStationNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 
@@ -105,38 +105,7 @@ class SectionDaoTest {
     }
 
     @Test
-    @DisplayName("id로 노선 조회 성공")
-    void findById_success() {
-        // given
-        final long id = 1L;
-
-        // when
-        final SectionEntity sectionEntity = sectionDao.findById(id);
-
-        // then
-        assertAll(
-                () -> assertThat(sectionEntity.getId()).isEqualTo(1L),
-                () -> assertThat(sectionEntity.getLineId()).isEqualTo(1L),
-                () -> assertThat(sectionEntity.getPreviousStationId()).isEqualTo(1L),
-                () -> assertThat(sectionEntity.getNextStationId()).isEqualTo(2L),
-                () -> assertThat(sectionEntity.getDistance()).isEqualTo(3)
-        );
-    }
-
-    @Test
-    @DisplayName("id로 노선 조회 실패 - 존재하지 않는 id")
-    void findById_fail_id_not_found() {
-        // given
-        final long id = 111L;
-
-        // when, then
-        assertThatThrownBy(() -> sectionDao.findById(id))
-                .isInstanceOf(SectionNotFoundException.class);
-    }
-
-    @Test
     @DisplayName("구간 삭제 성공")
-    @Sql("/section_test_data.sql")
     void delete_success() {
 //        // given
 //        final String selectSql = "SELECT id FROM section";
@@ -149,6 +118,64 @@ class SectionDaoTest {
 //        // then
 //        List<Long> resultAfterRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
 //        assertThat(resultAfterRemove.size()).isEqualTo(resultBeforeRemove.size() - 1);
+    }
+
+    @Test
+    @DisplayName("노선 id와 역 이름으로 구간 목록 조회 성공 - 중간역인 경우")
+    void findByLineIdAndPreviousStationNameOrNextStationName_success_mid_station() {
+        // given
+        final long lineId = 1L;
+        final String stationName = "잠실새내";
+
+        // when
+        final List<SectionEntity> sectionEntities =
+                sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, stationName);
+
+        // then
+        assertAll(
+                () -> assertThat(sectionEntities).hasSize(2),
+                () -> assertThat(sectionEntities.stream()
+                        .map(entity -> entity.getLineId())
+                        .distinct()
+                        .count()).isEqualTo(1),
+                () -> assertThat(sectionEntities.stream()
+                        .map(entity -> entity.getNextStationId())
+                        .collect(Collectors.toUnmodifiableList())).contains(2L),
+                () -> assertThat(sectionEntities.stream()
+                        .map(entity -> entity.getPreviousStationId())
+                        .collect(Collectors.toUnmodifiableList())).contains(2L)
+        );
+    }
+
+    @Test
+    @DisplayName("노선 id와 역 이름으로 구간 목록 조회 성공 - 종점인 경우")
+    void findByLineIdAndPreviousStationNameOrNextStationName_success_end_station() {
+        // given
+        final long lineId = 1L;
+        final String stationName = "잠실";
+
+        // when
+        final List<SectionEntity> sectionEntities =
+                sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, stationName);
+
+        // then
+        assertAll(
+                () -> assertThat(sectionEntities).hasSize(1),
+                () -> assertThat(sectionEntities.get(0).getLineId()).isEqualTo(lineId),
+                () -> assertThat(sectionEntities.get(0).getPreviousStationId()).isEqualTo(1L)
+        );
+    }
+
+    @Test
+    @DisplayName("노선 id와 역 이름으로 구간 목록 조회 실패 - 노선에 없는 역인 경우")
+    void findByLineIdAndPreviousStationNameOrNextStationName_fail_result_not_found() {
+        // given
+        final long lineId = 1L;
+        final String stationName = "석촌";
+
+        // when, then
+        assertThatThrownBy(() -> sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, stationName))
+                .isInstanceOf(LineOrStationNotFoundException.class);
     }
 
     @Test
@@ -235,40 +262,6 @@ class SectionDaoTest {
 
         // when, then
         assertThatThrownBy(() -> sectionDao.findSectionDetailByLineId(lineId))
-                .isInstanceOf(LineNotFoundException.class);
-    }
-
-    @Test
-    @DisplayName("노선 이름에 해당하는 구간 조회 성공")
-    void findSectionDetailByLineName_success() {
-        // given
-        final String lineName = "2호선";
-
-        // when
-        final List<SectionDetailEntity> sectionDetailEntities = sectionDao.findSectionDetailByLineName(lineName);
-
-        // then
-        assertAll(
-                () -> assertThat(sectionDetailEntities).hasSize(2),
-                () -> assertThat(sectionDetailEntities.get(0).getDistance()).isEqualTo(3),
-                () -> assertThat(sectionDetailEntities.get(0).getLineId()).isEqualTo(1L),
-                () -> assertThat(sectionDetailEntities.get(0).getLineName()).isEqualTo("2호선"),
-                () -> assertThat(sectionDetailEntities.get(0).getLineColor()).isEqualTo("bg-green-600"),
-                () -> assertThat(sectionDetailEntities.get(0).getPreviousStationId()).isEqualTo(1L),
-                () -> assertThat(sectionDetailEntities.get(0).getPreviousStationName()).isEqualTo("잠실"),
-                () -> assertThat(sectionDetailEntities.get(0).getNextStationId()).isEqualTo(2L),
-                () -> assertThat(sectionDetailEntities.get(0).getNextStationName()).isEqualTo("잠실새내")
-        );
-    }
-
-    @Test
-    @DisplayName("노선 이름에 해당하는 구간 조회 실패 - 존재하지 않는 노선 이름")
-    void findSectionDetailByLineName_fail_line_not_found() {
-        // given
-        final String lineName = "22호선";
-
-        // when, then
-        assertThatThrownBy(() -> sectionDao.findSectionDetailByLineName(lineName))
                 .isInstanceOf(LineNotFoundException.class);
     }
 
