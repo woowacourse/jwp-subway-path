@@ -10,6 +10,7 @@ import subway.domain.Line;
 import subway.domain.StationEntity;
 import subway.repository.SectionRepository;
 
+@SuppressWarnings("NonAsciiCharacters")
 public abstract class SubwayFixture extends IntegrationTest {
 
     @Autowired

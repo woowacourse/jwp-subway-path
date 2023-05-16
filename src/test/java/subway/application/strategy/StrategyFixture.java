@@ -15,6 +15,7 @@ import subway.domain.StationEntity;
 
 import javax.sql.DataSource;
 
+@SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 @Sql("classpath:/remove-section-line.sql")
 public abstract class StrategyFixture {
