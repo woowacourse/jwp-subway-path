@@ -52,8 +52,4 @@ public class Section {
     public boolean containStation(final Station station) {
         return isEqualPrevStation(station) || isEqualNextStation(station);
     }
-
-    public boolean isEndPointConnected(final Section head, final Section tail) {
-        return this.nextStation.equals(head.getPrevStation()) || this.prevStation.equals(tail.getNextStation());
-    }
 }
