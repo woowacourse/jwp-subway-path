@@ -5,6 +5,7 @@ import subway.dao.LineStationDao;
 import subway.dao.StationDao;
 import subway.domain.station.Station;
 import subway.entity.StationEntity;
+import subway.exception.NoSuchStationException;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +22,7 @@ public class StationRepository {
     }
 
     public Station findByName(String stationName) {
-        StationEntity stationEntity = stationDao.findByName(stationName).orElseThrow(RuntimeException::new);
+        StationEntity stationEntity = stationDao.findByName(stationName).orElseThrow(NoSuchStationException::new);
 
         return new Station(stationEntity.getId(), stationEntity.getName());
     }
@@ -31,7 +32,7 @@ public class StationRepository {
     }
 
     public Station findById(Long id) {
-        StationEntity stationEntity = stationDao.findById(id).orElseThrow(RuntimeException::new);
+        StationEntity stationEntity = stationDao.findById(id).orElseThrow(NoSuchStationException::new);
 
         return new Station(stationEntity.getId(), stationEntity.getName());
     }

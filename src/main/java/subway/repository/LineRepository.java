@@ -9,6 +9,7 @@ import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.entity.LineEntity;
 import subway.entity.LineStationEntity;
+import subway.exception.NoSuchLineException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class LineRepository {
     }
 
     public Line findByName(final String name) {
-        LineEntity lineEntity = lineDao.findByName(name).orElseThrow(RuntimeException::new);
+        LineEntity lineEntity = lineDao.findByName(name).orElseThrow(NoSuchLineException::new);
         Station upBoundStation = fetchStationById(lineEntity.getUpBoundStationId());
         Station downBoundStation = fetchStationById(lineEntity.getDownBoundStationId());
         List<Section> sections = sectionRepository.findByLineId(lineEntity.getId());
@@ -118,7 +119,7 @@ public class LineRepository {
     }
 
     public Line findById(Long lineId) {
-        LineEntity lineEntity = lineDao.findById(lineId).orElseThrow(RuntimeException::new);
+        LineEntity lineEntity = lineDao.findById(lineId).orElseThrow(NoSuchLineException::new);
         Station upBoundStation = fetchStationById(lineEntity.getUpBoundStationId());
         Station downBoundStation = fetchStationById(lineEntity.getDownBoundStationId());
         List<Section> sections = sectionRepository.findByLineId(lineEntity.getId());

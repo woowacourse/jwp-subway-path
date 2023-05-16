@@ -60,4 +60,9 @@ public class StationController {
     public ResponseEntity<Void> handleSQLException() {
         return ResponseEntity.badRequest().build();
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<String> handleAnotherException(RuntimeException e) {
+        return ResponseEntity.internalServerError().body(e.getMessage());
+    }
 }
