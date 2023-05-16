@@ -45,6 +45,16 @@ public class PathDao {
         return new Paths(paths);
     }
 
+    public Paths findAll() {
+        final String sql = "SELECT p.id, up_station_id, s1.name AS upName, down_station_id, s2.name AS downName, distance\n" +
+                "FROM PATH p\n" +
+                "         JOIN station s1 ON p.up_station_id = s1.id\n" +
+                "         JOIN station s2 ON p.down_station_id = s2.id\n";
+
+        List<Path> paths = jdbcTemplate.query(sql, rowMapper);
+        return new Paths(paths);
+    }
+
     public List<Long> findAllLineIdsByStationId(final Long stationId) {
         final String sql = "SELECT DISTINCT line_id FROM path WHERE up_station_id = ? OR down_station_id = ?";
 
@@ -55,7 +65,7 @@ public class PathDao {
         final String deleteLineSql = "DELETE FROM path WHERE line_id = ?";
         jdbcTemplate.update(deleteLineSql, lineId);
 
-        final List<Path> pathList = paths.getOrderedPaths();
+        final List<Path> pathList = paths.toList();
         final String sql = "INSERT INTO path (line_id, up_station_id, distance, down_station_id) VALUES (?, ?, ?, ?)";
 
         jdbcTemplate.batchUpdate(sql,
