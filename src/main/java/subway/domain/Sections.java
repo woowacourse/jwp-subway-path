@@ -3,6 +3,7 @@ package subway.domain;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.*;
+import java.util.function.Function;
 
 public class Sections {
     private final Graph graph;
@@ -35,7 +36,7 @@ public class Sections {
             }
 
             // upLineStation -> downLineStation (새 역) -> 기존 다음 역
-            final Set<DefaultWeightedEdge> outgoingEdges = graph.downStationsOf(upLineStation);
+            final Set<DefaultWeightedEdge> outgoingEdges = getDownStationsOf(upLineStation);
             addStationToDownLine(upLineStation, downLineStation, findNextStation(outgoingEdges), distance);
             return downLineStation;
         }
@@ -52,7 +53,7 @@ public class Sections {
             }
 
             // 기존 상행 역 -> upLineStation (새 역) -> downLineStation
-            final Set<DefaultWeightedEdge> defaultWeightedEdges = graph.upStationsOf(downLineStation);
+            final Set<DefaultWeightedEdge> defaultWeightedEdges = getUpStationsOf(downLineStation);
             final Station previousStation = findPreviousStation(defaultWeightedEdges);
             addStationToUpLine(previousStation, upLineStation, downLineStation, distance);
             return upLineStation;
@@ -81,7 +82,7 @@ public class Sections {
         Station startStation = findUpEndStation();
         while (startStation != null) {
             allStationsInOrder.add(startStation);
-            Set<DefaultWeightedEdge> outgoingEdges = graph.downStationsOf(startStation);
+            Set<DefaultWeightedEdge> outgoingEdges = getDownStationsOf(startStation);
             if (outgoingEdges.isEmpty()) {
                 startStation = null;
             } else {
@@ -97,7 +98,7 @@ public class Sections {
         Station currentStation = findUpEndStation();
 
         while (currentStation != null) {
-            Set<DefaultWeightedEdge> outgoingEdges = graph.downStationsOf(currentStation);
+            Set<DefaultWeightedEdge> outgoingEdges = getDownStationsOf(currentStation);
             if (outgoingEdges.isEmpty()) {
                 currentStation = null;
             } else {
@@ -219,13 +220,13 @@ public class Sections {
         int distanceBetweenUpLineStationAndStation = 0;
         int distanceBetweenStationAndDownLineStation = 0;
 
-        for (DefaultWeightedEdge edge : graph.upStationsOf(station)) {
+        for (DefaultWeightedEdge edge : getUpStationsOf(station)) {
             edgesToRemove.add(edge);
             distanceBetweenUpLineStationAndStation = (int) graph.getSectionDistance(edge);
             upLineStation = graph.getUpStation(edge);
         }
 
-        for (DefaultWeightedEdge edge : graph.downStationsOf(station)) {
+        for (DefaultWeightedEdge edge : getDownStationsOf(station)) {
             edgesToRemove.add(edge);
             distanceBetweenStationAndDownLineStation = (int) graph.getSectionDistance(edge);
             downLineStation = graph.getDownStation(edge);
@@ -246,26 +247,25 @@ public class Sections {
         return graph.stationSet().contains(station);
     }
 
-    public Station findStationBefore(final Station station) {
-        Station previousStation = null;
-        DefaultWeightedEdge previousEdge = null;
-        Set<DefaultWeightedEdge> incomingEdges = graph.upStationsOf(station);
-        if (!incomingEdges.isEmpty()) {
-            previousEdge = incomingEdges.iterator().next();
-            previousStation = graph.getUpStation(previousEdge);
-        }
-        return previousStation;
-    }
-
-    public Station findStationAfter(final Station station) {
+    public Station findAdjacentStationOf(
+            final Station station,
+            final Function<Station, Set<DefaultWeightedEdge>> method) {
         Station nextStation = null;
         DefaultWeightedEdge nextEdge = null;
-        Set<DefaultWeightedEdge> outgoingEdges = graph.downStationsOf(station);
-        if (!outgoingEdges.isEmpty()) {
-            nextEdge = outgoingEdges.iterator().next();
+        Set<DefaultWeightedEdge> edges = method.apply(station);
+        if (!edges.isEmpty()) {
+            nextEdge = edges.iterator().next();
             nextStation = graph.getDownStation(nextEdge);
         }
         return nextStation;
+    }
+
+    public Set<DefaultWeightedEdge> getUpStationsOf(final Station station) {
+        return graph.upStationsOf(station);
+    }
+
+    public Set<DefaultWeightedEdge> getDownStationsOf(final Station station) {
+        return graph.downStationsOf(station);
     }
 
     public Line getLine() {

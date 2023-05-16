@@ -31,10 +31,10 @@ public class Subway {
         sections.add(newSections);
     }
 
-    public void createNewSection(final Line line, final Station upStation, final Station downStation, final int distance) {
+    public void createNewSection(final Line line, final Section section) {
         final Sections newSections = findSectionsOf(line);
         sections.add(newSections);
-        newSections.createInitialSection(upStation, downStation, distance);
+        newSections.createInitialSection(section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
     public Station addStation(final Line line, final Station upStation, final Station downStation, final int distance) {
@@ -64,11 +64,14 @@ public class Subway {
 
     public Station findStationBefore(final Line line, final Station station) {
         final Sections sections = findSectionsOf(line);
-        return sections.findStationBefore(station);
+        return sections
+                .findAdjacentStationOf(station, element -> sections.getUpStationsOf(station));
     }
 
     public Station findStationAfter(final Line line, final Station station) {
         final Sections sections = findSectionsOf(line);
-        return sections.findStationAfter(station);
+//        return sections.findStationAfter(station);
+        return sections
+                .findAdjacentStationOf(station, element -> sections.getDownStationsOf(station));
     }
 }
