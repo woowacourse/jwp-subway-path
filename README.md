@@ -140,8 +140,8 @@ HTTP/1.1 204
     - [ ] DTO 검증 로직 추가
 
 - 피드백
-    - [ ] [LineRequest, LineResponse와 같이 외부 영역에서 정의되는 자료구조를 서비스에서 사용하면 어떤 문제가 있을까?](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192853316)
-    - [ ] [객체 id로 동일성 비교 vs 모든 필드로 동일성 비교](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192854360)
+    - [x] [LineRequest, LineResponse와 같이 외부 영역에서 정의되는 자료구조를 서비스에서 사용하면 어떤 문제가 있을까?](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192853316)
+    - [x] [객체 id로 동일성 비교 vs 모든 필드로 동일성 비교](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192854360)
     - [x] [Optional 사용하여 존재하지 않는 값 안전하게 다루기](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192856649)
     - [x] [예측하지 못한 예외 정보 콘솔 출력 대신 로그 사용하기](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192856978)
     - [x] [여러 DB 수행이 존재하는 메서드 Transaction 처리](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192857631)
