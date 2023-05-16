@@ -1,38 +1,32 @@
 package subway.domain;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
+    private final Long id;
+    private final String name;
+    private final String color;
 
-    private final LinkedList<Station> stations;
-    private final Map<Map.Entry<Station, Station>, Distance> distances;
+    private final List<Station> stations;
+    private final Sections sections;
 
-    public Line(String name, String color) {
-        this(null, name, color, new LinkedList<>(), new HashMap<>());
+    public Line(final String name, final String color) {
+        this(null, name, color, new ArrayList<>(), new Sections(new HashMap<>()));
     }
 
-    public Line(Long id, String name, String color) {
-        this(id, name, color, new LinkedList<>(), new HashMap<>());
+    public Line(final Long id, final String name, final String color) {
+        this(id, name, color, new ArrayList<>(), new Sections(new HashMap<>()));
     }
 
-    public Line(Long id, String name, String color, LinkedList<Station> stations, Map<Map.Entry<Station, Station>, Distance> distances) {
+    public Line(final Long id, final String name, final String color, final List<Station> stations, final Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stations = stations;
-        this.distances = distances;
+        this.sections = sections;
     }
 
-    public void insert(Station upper, Station lower, Distance distance) {
+    public void insert(final Station upper, final Station lower, final Distance distance) {
         if (stations.isEmpty()) {
             insertBoth(upper, lower, distance);
             return;
@@ -48,119 +42,99 @@ public class Line {
             return;
         }
 
+        if (!stations.contains(upper) && !stations.contains(lower)) {
+            throw new IllegalArgumentException("역이 존재하는 노선에 두 역을 한 번에 등록할 수 없습니다.");
+        }
+
         throw new IllegalArgumentException("이미 등록된 역을 등록할 수 없습니다.");
     }
 
-    private void insertBoth(Station top, Station bottom, Distance distance) {
+    private void insertBoth(final Station top, final Station bottom, final Distance distance) {
         stations.add(top);
         stations.add(bottom);
-
-        insertDistanceBetween(top, bottom, distance);
+        sections.insertSectionBetween(top, bottom, distance);
     }
 
-    private void insertUpper(Station station, Station base, Distance distance) {
+    private void insertUpper(final Station station, final Station base, final Distance distance) {
         stations.add(stations.indexOf(base), station);
-        insertDistanceBetween(station, base, distance);
+        sections.insertSectionBetween(station, base, distance);
 
         if (isTop(station)) {
             return;
         }
 
-        Distance previousDistance = getDistanceBetween(getUpperOf(station), base);
+        Distance previousDistance = sections.getDistanceBetween(getUpperOf(station), base);
         Distance upperDistance = previousDistance.minus(distance);
-
-        insertDistanceBetween(getUpperOf(station), station, upperDistance);
-        deleteDistanceBetween(getUpperOf(station), base);
+        sections.insertSectionBetween(getUpperOf(station), station, upperDistance);
     }
 
-    private void insertLower(Station station, Station base, Distance distance) {
+    private void insertLower(final Station station, final Station base, final Distance distance) {
         stations.add(stations.indexOf(base) + 1, station);
-        insertDistanceBetween(base, station, distance);
 
         if (isBottom(station)) {
+            sections.insertSectionBetween(base, station, distance);
             return;
         }
 
-        Distance previousDistance = getDistanceBetween(getLowerOf(station), base);
+        Distance previousDistance = sections.getDistanceBetween(base, getLowerOf(station));
         Distance lowerDistance = previousDistance.minus(distance);
-
-        insertDistanceBetween(station, getLowerOf(station), lowerDistance);
-        deleteDistanceBetween(base, getLowerOf(station));
+        sections.insertSectionBetween(base, station, distance);
+        sections.insertSectionBetween(station, getLowerOf(station), lowerDistance);
     }
 
-    public void delete(Station station) {
+    public void delete(final Station station) {
         if (!stations.contains(station)) {
             throw new IllegalArgumentException("등록되지 않은 역입니다.");
         }
 
         if (stations.size() == 2) {
             stations.clear();
-            distances.clear();
+            sections.clear();
             return;
         }
 
         if (isTop(station)) {
-            deleteDistanceBetween(station, getLowerOf(station));
+            sections.deleteSection(station);
             stations.remove(station);
             return;
         }
 
         if (isBottom(station)) {
-            deleteDistanceBetween(getUpperOf(station), station);
+            sections.deleteSection(getUpperOf(station));
             stations.remove(station);
             return;
         }
 
-        Distance upperDistance = getDistanceBetween(station, getUpperOf(station));
-        Distance lowerDistance = getDistanceBetween(station, getLowerOf(station));
-        deleteDistanceBetween(getUpperOf(station), station);
-        deleteDistanceBetween(station, getLowerOf(station));
-        insertDistanceBetween(getUpperOf(station), getLowerOf(station), upperDistance.plus(lowerDistance));
+        Distance upperDistance = sections.getDistanceBetween(getUpperOf(station), station);
+        Distance lowerDistance = sections.getDistanceBetween(station, getLowerOf(station));
+        sections.deleteSection(getUpperOf(station));
+        sections.deleteSection(station);
+        sections.insertSectionBetween(getUpperOf(station), getLowerOf(station), upperDistance.plus(lowerDistance));
         stations.remove(station);
     }
 
-    public Distance getDistanceBetween(Station from, Station to) {
-        int startInclusive = Math.min(stations.indexOf(from), stations.indexOf(to));
-        int endInclusive = Math.max(stations.indexOf(from), stations.indexOf(to));
-
-        if (distances.get(Map.entry(stations.get(startInclusive), stations.get(endInclusive))) != null) {
-            return distances.get(Map.entry(stations.get(startInclusive), stations.get(endInclusive)));
-        }
-
-        int distance = 0;
-        for (int i = startInclusive; i < endInclusive; i++) {
-            Station station = stations.get(i);
-            Station other = stations.get(i + 1);
-            distance += distances.get(Map.entry(station, other)).getValue();
-        }
-
-        return new Distance(distance);
+    private boolean isTop(final Station station) {
+        return stations.get(0).equals(station);
     }
 
-    private void insertDistanceBetween(Station upper, Station lower, Distance distance) {
-        distances.put(Map.entry(upper, lower), distance);
+    private boolean isBottom(final Station station) {
+        return stations.get(stations.size() - 1).equals(station);
     }
 
-    private void deleteDistanceBetween(Station upper, Station lower) {
-        distances.remove(Map.entry(upper, lower));
-    }
-
-    private boolean isTop(Station station) {
-        return stations.getFirst().equals(station);
-    }
-
-    private boolean isBottom(Station station) {
-        return stations.getLast().equals(station);
-    }
-
-    private Station getUpperOf(Station station) {
+    private Station getUpperOf(final Station station) {
         int index = stations.indexOf(station);
         return stations.get(index - 1);
     }
 
-    private Station getLowerOf(Station station) {
+    private Station getLowerOf(final Station station) {
         int index = stations.indexOf(station);
         return stations.get(index + 1);
+    }
+
+    public int getDistanceBetween(final Station from, final Station to) {
+        Station upper = stations.get(Math.min(stations.indexOf(from), stations.indexOf(to)));
+        Station lower = stations.get(Math.max(stations.indexOf(from), stations.indexOf(to)));
+        return sections.getDistanceBetween(upper, lower).getValue();
     }
 
     public Long getId() {
@@ -179,8 +153,8 @@ public class Line {
         return Collections.unmodifiableList(stations);
     }
 
-    public Set<Map.Entry<Station, Station>> getAdjacentStations() {
-        return distances.keySet();
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     @Override

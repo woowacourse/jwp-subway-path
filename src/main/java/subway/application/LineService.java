@@ -4,15 +4,11 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Distance;
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.dto.*;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,7 +17,7 @@ public class LineService {
     private final StationDao stationDao;
     private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
+    public LineService(final LineDao lineDao, final StationDao stationDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.stationDao = stationDao;
         this.sectionDao = sectionDao;
@@ -46,21 +42,24 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineResponse findLineResponseById(final Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
-    public Line findLineById(Long id) {
+    public Line findLineById(final Long id) {
         Line rawLine = lineDao.findById(id);
         List<SectionDto> sections = sectionDao.findAllByLineId(id);
         if (sections.isEmpty()) {
             return rawLine;
         }
 
-        Map<Map.Entry<Station, Station>, Distance> distances = new HashMap<>();
-        sections.forEach(section ->
-                distances.put(Map.entry(stationDao.findById(section.getStationId()), stationDao.findById(section.getNextStationId())), new Distance(section.getDistance())));
+        Sections distances = new Sections(sections
+                .stream()
+                .collect(Collectors.toMap(
+                        section -> stationDao.findById(section.getStationId()),
+                        section -> new Section(stationDao.findById(section.getStationId()), stationDao.findById(section.getNextStationId()), new Distance(section.getDistance()))
+                )));
 
         SectionDto section = sections.remove(0);
         LinkedList<Long> stationIds = new LinkedList<>(List.of(section.getStationId(), section.getNextStationId()));
@@ -87,15 +86,15 @@ public class LineService {
         return new Line(rawLine.getId(), rawLine.getName(), rawLine.getColor(), new LinkedList<>(stations), distances);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    public void deleteLineById(Long id) {
+    public void deleteLineById(final Long id) {
         lineDao.deleteById(id);
     }
 
-    public void registerStation(Long id, StationRegisterRequest request) {
+    public void registerStation(final Long id, final StationRegisterRequest request) {
         Line line = findLineById(id);
         Station station = stationDao.findById(request.getUpperStation());
         Station base = stationDao.findById(request.getLowerStation());
@@ -106,7 +105,7 @@ public class LineService {
         sectionDao.insertAll(toSectionDtos(line));
     }
 
-    public void deleteStation(Long lineId, StationDeleteRequest request) {
+    public void deleteStation(final Long lineId, final StationDeleteRequest request) {
         Line line = findLineById(lineId);
         Station station = stationDao.findById(request.getStationId());
         line.delete(station);
@@ -115,16 +114,13 @@ public class LineService {
         sectionDao.insertAll(toSectionDtos(line));
     }
 
-    private List<SectionDto> toSectionDtos(Line line) {
-        return line.getAdjacentStations().stream()
-                .map(entry -> toSectionDto(
-                        line,
-                        entry.getKey(),
-                        entry.getValue()))
+    private List<SectionDto> toSectionDtos(final Line line) {
+        return line.getSections().stream()
+                .map(section -> new SectionDto(
+                        line.getId(),
+                        section.getUpper().getId(),
+                        section.getLower().getId(),
+                        section.getDistance().getValue()))
                 .collect(Collectors.toList());
-    }
-
-    private SectionDto toSectionDto(Line line, Station station, Station nextStation) {
-        return new SectionDto(line.getId(), station.getId(), nextStation.getId(), line.getDistanceBetween(station, nextStation).getValue());
     }
 }

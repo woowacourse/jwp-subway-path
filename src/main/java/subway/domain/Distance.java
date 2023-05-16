@@ -17,11 +17,11 @@ public class Distance {
     }
 
     public Distance plus(final Distance distance) {
-        return new Distance(this.value + distance.getValue());
+        return new Distance(value + distance.getValue());
     }
 
     public Distance minus(final Distance distance) {
-        return new Distance(this.value - distance.getValue());
+        return new Distance(value - distance.getValue());
     }
 
     public Integer getValue() {

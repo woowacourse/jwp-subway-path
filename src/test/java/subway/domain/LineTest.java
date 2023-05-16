@@ -1,13 +1,14 @@
 package subway.domain;
 
-import static org.assertj.core.api.Assertions.*;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
-
-import java.util.List;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 class LineTest {
     private static final Station STATION_JAMSIL_NARU = new Station("잠실나루");
@@ -37,9 +38,9 @@ class LineTest {
     @Test
     void insertTwoStationsAndStoreDistanceBetweenTwoStations() {
         line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
-        Distance distance = line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE);
+        int distance = line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE);
 
-        assertThat(distance.getValue()).isEqualTo(10);
+        assertThat(distance).isEqualTo(10);
     }
 
     @DisplayName("빈 라인에만 한 번에 두 역을 등록할 수 있다")
@@ -55,13 +56,12 @@ class LineTest {
     @Test
     void insertStationTop() {
         line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
-
         line.insert(STATION_JAMSIL, STATION_JAMSIL_NARU, DISTANCE_5);
 
         assertSoftly(softly -> {
             softly.assertThat(line.getStations()).first().isEqualTo(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU).getValue()).isEqualTo(5);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE).getValue()).isEqualTo(15);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(5);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(15);
         });
     }
 
@@ -69,14 +69,13 @@ class LineTest {
     @Test
     void insertStationUpper() {
         line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
-
         line.insert(STATION_JAMSIL, STATION_JAMSIL_SAENAE, DISTANCE_6);
 
         assertSoftly(softly -> {
             softly.assertThat(line.getStations()).contains(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU).getValue()).isEqualTo(4);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE).getValue()).isEqualTo(6);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE).getValue()).isEqualTo(10);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(4);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(6);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE)).isEqualTo(10);
         });
     }
 
@@ -84,13 +83,12 @@ class LineTest {
     @Test
     void insertStationBottom() {
         line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
-
         line.insert(STATION_JAMSIL_SAENAE, STATION_JAMSIL, DISTANCE_5);
 
         assertSoftly(softly -> {
             softly.assertThat(line.getStations()).last().isEqualTo(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE).getValue()).isEqualTo(5);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU).getValue()).isEqualTo(15);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(5);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(15);
         });
     }
 
@@ -98,14 +96,13 @@ class LineTest {
     @Test
     void insertStationLower() {
         line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
-
         line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL, DISTANCE_6);
 
         assertSoftly(softly -> {
             softly.assertThat(line.getStations()).contains(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU).getValue()).isEqualTo(6);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE).getValue()).isEqualTo(4);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE).getValue()).isEqualTo(10);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(6);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(4);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE)).isEqualTo(10);
         });
     }
 
@@ -119,7 +116,7 @@ class LineTest {
 
         assertSoftly(softly -> {
             softly.assertThat(line.getStations()).doesNotContain(STATION_JAMSIL_NARU);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE).getValue()).isEqualTo(4);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_SAENAE)).isEqualTo(4);
         });
     }
 
@@ -133,7 +130,7 @@ class LineTest {
 
         assertSoftly(softly -> {
             softly.assertThat(line.getStations()).doesNotContain(STATION_JAMSIL_SAENAE);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU).getValue()).isEqualTo(6);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL, STATION_JAMSIL_NARU)).isEqualTo(6);
         });
     }
 
@@ -147,7 +144,7 @@ class LineTest {
 
         assertSoftly(softly -> {
             softly.assertThat(line.getStations()).doesNotContain(STATION_JAMSIL);
-            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE).getValue()).isEqualTo(10);
+            softly.assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE)).isEqualTo(10);
         });
     }
 
@@ -155,7 +152,6 @@ class LineTest {
     @Test
     void deleteStationWhenTwoStationsLeft() {
         line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
-
         line.delete(STATION_JAMSIL_SAENAE);
 
         assertThat(line.getStations()).isEmpty();
@@ -164,13 +160,9 @@ class LineTest {
     @DisplayName("두 역 사이의 거리를 알 수 있다")
     @Test
     void getDistanceBetweenTwoStations() {
-        line.insert(
-                STATION_JAMSIL_NARU,
-                STATION_JAMSIL_SAENAE,
-                DISTANCE_10);
-
+        line.insert(STATION_JAMSIL_NARU, STATION_JAMSIL_SAENAE, DISTANCE_10);
         line.insert(STATION_JAMSIL, STATION_JAMSIL_SAENAE, DISTANCE_6);
 
-        assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL).getValue()).isEqualTo(4);
+        assertThat(line.getDistanceBetween(STATION_JAMSIL_NARU, STATION_JAMSIL)).isEqualTo(4);
     }
 }
