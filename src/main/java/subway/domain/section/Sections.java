@@ -19,7 +19,7 @@ public class Sections {
         this.sections = new LinkedList<>(sections);
     }
 
-    public List<Station> getStations() {
+    public List<Station> getOrderedStations() {
         final Map<Station, Station> stationToStation = sections.stream()
                 .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
         final Set<Station> upStations = new HashSet<>(stationToStation.keySet());

@@ -63,7 +63,7 @@ public class Line {
     }
 
     public List<Station> stations() {
-        return sections.getStations();
+        return sections.getOrderedStations();
     }
 
     @Override
