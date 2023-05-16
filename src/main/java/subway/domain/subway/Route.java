@@ -43,7 +43,7 @@ public class Route {
         return graph;
     }
 
-    private static void fillGraph(final WeightedMultigraph<String, DefaultWeightedEdge> graph, final Line line) {
+    private void fillGraph(final WeightedMultigraph<String, DefaultWeightedEdge> graph, final Line line) {
         for (Section section : line.getSections()) {
             String upStation = section.getUpStation().getName();
             String downStation = section.getDownStation().getName();
