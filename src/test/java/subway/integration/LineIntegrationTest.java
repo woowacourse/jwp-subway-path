@@ -81,7 +81,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("지하철 노선 목록을 조회한다.")
-    @Sql("/line_truncate_test.sql")
+    @Sql({"/line_truncate_test.sql", "/section_truncate_test.sql"})
     void getLines() {
         // given
         final LineRequest lineRequest1 = new LineRequest("3호선", "bg-purple-600", 2, "잠실새내", "송파");

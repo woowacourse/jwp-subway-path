@@ -56,7 +56,7 @@ public class SectionService {
             return StationLocation.BOTTOM;
         }
         if (previousStationIds.contains(standardStationId) && nextStationIds.contains(standardStationId)) {
-            return StationLocation.BETWEEN;
+            return StationLocation.MID;
         }
         throw new StationNotFoundException();
     }
@@ -166,6 +166,6 @@ public class SectionService {
     }
 
     private enum StationLocation {
-        TOP, BETWEEN, BOTTOM
+        TOP, MID, BOTTOM
     }
 }

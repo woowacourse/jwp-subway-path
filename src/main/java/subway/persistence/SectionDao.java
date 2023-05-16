@@ -1,11 +1,13 @@
 package subway.persistence;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.exception.DuplicatedSectionException;
 import subway.exception.LineNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
@@ -31,8 +33,12 @@ public class SectionDao {
 
     public SectionEntity insert(final SectionEntity sectionEntity) {
         final SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
-        Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return SectionEntity.of(id, sectionEntity);
+        try {
+            Long id = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+            return SectionEntity.of(id, sectionEntity);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicatedSectionException();
+        }
     }
 
     public List<SectionEntity> findByLineName(final String lineName) {
@@ -41,16 +47,6 @@ public class SectionDao {
                 "JOIN line ON se.line_id = line.id " +
                 "WHERE line.name = ?";
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineName);
-    }
-
-    public List<SectionEntity> findByLineIdAndPreviousStationId(final Long lineId, final Long previousStationId) {
-        final String sql = "SELECT * FROM section WHERE line_id = ? AND previous_station_id = ?";
-        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, previousStationId);
-    }
-
-    public List<SectionEntity> findByLineIdAndNextStationId(final Long lineId, final Long nextStationId) {
-        final String sql = "SELECT * FROM section WHERE line_id = ? AND next_station_id = ?";
-        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, nextStationId);
     }
 
     public void delete(final SectionEntity sectionEntity) {

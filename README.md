@@ -103,8 +103,8 @@
   - [x] Dao 프로덕션 코드 작성
   - [x] Service 단위 테스트
   - [x] Service 프로덕션 코드 작성 
-  - [ ] Controller 단위 테스트
-  - [ ] Controller 프로덕션 코드 작성
+  - [x] Controller 단위 테스트
+  - [x] Controller 프로덕션 코드 작성
 
 
 - Line 에서 Station 제거 API

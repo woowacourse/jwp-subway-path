@@ -8,6 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.business.dto.SectionInsertDto;
+import subway.exception.LineNotFoundException;
 import subway.persistence.SectionDao;
 import subway.persistence.StationDao;
 import subway.persistence.entity.SectionDetailEntity;
@@ -18,9 +19,11 @@ import subway.presentation.query_option.SubwayDirection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 @DisplayName("구간 Service")
@@ -265,6 +268,42 @@ class SectionServiceTest {
                     () -> assertThat(responses.get(1).getNextStation().getId()).isEqualTo(insertedBackSectionDetailEntity.getNextStationId()),
                     () -> assertThat(responses.get(1).getNextStation().getName()).isEqualTo(insertedBackSectionDetailEntity.getNextStationName())
             );
+        }
+
+        @Test
+        @DisplayName("실패 - 존재하지 않는 노선 입력")
+        void save_fail_station_not_found_in_line() {
+            // given
+            final String lineName = "22호선";
+            final String standardStationName = "석촌";
+            final String originalPreviousStationName = "잠실";
+            final String newStationName = "송파";
+            final int distance = 2;
+            final int frontDistance = 1;
+
+            final SectionEntity frontSectionEntity = new SectionEntity(1L, frontDistance, 1L, 5L);
+            final SectionEntity backSectionEntity = new SectionEntity(1L, distance, 5L, 2L);
+            final SectionEntity insertedFrontSectionEntity = new SectionEntity(5L, 1L, frontDistance, 1L, 5L);
+            final SectionEntity insertedBackSectionEntity = new SectionEntity(6L, 1L, distance, 5L, 2L);
+            final SectionDetailEntity insertedFrontSectionDetailEntity = new SectionDetailEntity(
+                    insertedFrontSectionEntity.getId(), frontDistance, insertedFrontSectionEntity.getLineId(), "2호선", "bg-green-600",
+                    insertedFrontSectionEntity.getPreviousStationId(), originalPreviousStationName,
+                    insertedFrontSectionEntity.getNextStationId(), newStationName
+            );
+            final SectionDetailEntity insertedBackSectionDetailEntity = new SectionDetailEntity(
+                    insertedBackSectionEntity.getId(), distance, insertedBackSectionEntity.getLineId(), "2호선", "bg-green-600",
+                    insertedBackSectionEntity.getPreviousStationId(), newStationName,
+                    insertedBackSectionEntity.getNextStationId(), standardStationName
+            );
+
+            given(sectionDao.findByLineName(lineName)).willThrow(LineNotFoundException.class);
+
+            // when, then
+            final SectionInsertDto sectionInsertDto = new SectionInsertDto(
+                    lineName, SubwayDirection.DOWN, standardStationName, newStationName, distance
+            );
+            assertThatThrownBy(() -> sectionService.save(sectionInsertDto))
+                    .isInstanceOf(LineNotFoundException.class);
         }
 
     }

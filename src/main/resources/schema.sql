@@ -20,5 +20,6 @@ create table if not exists SECTION
     distance int not null,
     previous_station_id bigint not null,
     next_station_id bigint not null,
-    primary key(id)
+    primary key(id),
+    UNIQUE KEY uk_line_previous_next (line_id, previous_station_id, next_station_id)
 );

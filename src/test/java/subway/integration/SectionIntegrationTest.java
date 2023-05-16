@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.presentation.dto.request.LineRequest;
+import org.springframework.test.context.jdbc.Sql;
 import subway.presentation.dto.request.SectionRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,6 +24,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("노선에 구간을 추가한다.")
+    @Sql({"/line_test_data.sql", "/station_test_data.sql", "/section_test_data.sql"})
     void createSection() {
         // given
         final SectionRequest sectionRequest = new SectionRequest("2호선", "UP", "잠실", "석촌", 1);

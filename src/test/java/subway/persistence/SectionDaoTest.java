@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.exception.DuplicatedSectionException;
 import subway.exception.LineNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
@@ -42,19 +43,30 @@ class SectionDaoTest {
     @DisplayName("저장 성공")
     void insert_success() {
         // given
-        SectionEntity sectionEntity = new SectionEntity(1L, 10, 1L, 5L);
+        final SectionEntity sectionEntity = new SectionEntity(1L, 10, 1L, 5L);
 
         // when
         sectionDao.insert(sectionEntity);
 
         // then
-        String sql = "SELECT * FROM section WHERE previous_station_id = ? AND next_station_id = ?";
+        final String sql = "SELECT * FROM section WHERE previous_station_id = ? AND next_station_id = ?";
         List<SectionEntity> response = jdbcTemplate.query(sql, sectionEntityRowMapper, 1, 5);
         assertThat(response).hasSize(1)
                 .anyMatch(entity -> entity.getLineId() == 1L)
                 .anyMatch(entity -> entity.getPreviousStationId() == 1L)
                 .anyMatch(entity -> entity.getNextStationId() == 5L)
                 .anyMatch(entity -> entity.getDistance() == 10);
+    }
+
+    @Test
+    @DisplayName("저장 실패 - 중복된 구간")
+    void insert_fail_duplicated_section() {
+        // given
+        SectionEntity sectionEntity = new SectionEntity(1L, 10, 1L, 2L);
+
+        // when, then
+        assertThatThrownBy(() -> sectionDao.insert(sectionEntity))
+                .isInstanceOf(DuplicatedSectionException.class);
     }
 
     @Test
@@ -81,6 +93,23 @@ class SectionDaoTest {
     }
 
     @Test
+    @DisplayName("구간 삭제 성공")
+    @Sql("/section_test_data.sql")
+    void delete_success() {
+//        // given
+//        final String selectSql = "SELECT id FROM section";
+//        List<Long> resultBeforeRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
+//        final SectionEntity sectionEntity = new SectionEntit;
+//
+//        // when
+//        sectionDao.delete(sectionEntity);
+//
+//        // then
+//        List<Long> resultAfterRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
+//        assertThat(resultAfterRemove.size()).isEqualTo(resultBeforeRemove.size() - 1);
+    }
+
+    @Test
     @DisplayName("구간 전체 조회 성공")
     void findAll_success() {
         // given, when
@@ -98,6 +127,39 @@ class SectionDaoTest {
                 () -> assertThat(sectionDetailEntities.get(0).getNextStationId()).isEqualTo(2L),
                 () -> assertThat(sectionDetailEntities.get(0).getNextStationName()).isEqualTo("잠실새내")
         );
+    }
+
+    @Test
+    @DisplayName("구간 상세 조회 성공")
+    void findSectionDetailById_success() {
+        // given
+        final long id = 1L;
+
+        // when
+        final SectionDetailEntity sectionDetailEntity = sectionDao.findSectionDetailById(id);
+
+        // then
+        assertAll(
+                () -> assertThat(sectionDetailEntity.getDistance()).isEqualTo(3),
+                () -> assertThat(sectionDetailEntity.getLineId()).isEqualTo(1L),
+                () -> assertThat(sectionDetailEntity.getLineName()).isEqualTo("2호선"),
+                () -> assertThat(sectionDetailEntity.getLineColor()).isEqualTo("bg-green-600"),
+                () -> assertThat(sectionDetailEntity.getPreviousStationId()).isEqualTo(1L),
+                () -> assertThat(sectionDetailEntity.getPreviousStationName()).isEqualTo("잠실"),
+                () -> assertThat(sectionDetailEntity.getNextStationId()).isEqualTo(2L),
+                () -> assertThat(sectionDetailEntity.getNextStationName()).isEqualTo("잠실새내")
+        );
+    }
+
+    @Test
+    @DisplayName("구간 상세 조회 실패 - 존재하지 않는 id")
+    void findSectionDetailById_fail_invalid_id() {
+        // given
+        final long id = 111L;
+
+        // when, then
+        assertThatThrownBy(() -> sectionDao.findSectionDetailById(id))
+                .isInstanceOf(RuntimeException.class);
     }
 
     @Test
@@ -166,35 +228,6 @@ class SectionDaoTest {
         // when, then
         assertThatThrownBy(() -> sectionDao.findSectionDetailByLineName(lineName))
                 .isInstanceOf(LineNotFoundException.class);
-    }
-
-//    @Test
-//    @DisplayName("line id 와 previous station id 로 구간 조회 성공")
-//    void findByLineIdAndPreviousStationId_success() {
-//        // given, when
-//        final List<SectionEntity> result = sectionDao.findByLineIdAndPreviousStationId(1L, 1L);
-//
-//        // then
-//        assertThat(result).hasSize(1);
-//        assertThat(result.get(0).getLineId()).isEqualTo(1L);
-//        assertThat(result.get(0).getPreviousStationId()).isEqualTo(1L);
-//    }
-
-    @Test
-    @DisplayName("구간 삭제 성공")
-    @Sql("/section_test_data.sql")
-    void delete_success() {
-//        // given
-//        final String selectSql = "SELECT id FROM section";
-//        List<Long> resultBeforeRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
-//        final SectionEntity sectionEntity = new SectionEntit;
-//
-//        // when
-//        sectionDao.delete(sectionEntity);
-//
-//        // then
-//        List<Long> resultAfterRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
-//        assertThat(resultAfterRemove.size()).isEqualTo(resultBeforeRemove.size() - 1);
     }
 
 }
