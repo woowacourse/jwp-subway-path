@@ -2,9 +2,7 @@ package subway.ui;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.doNothing;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.willReturn;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.delete;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.put;
@@ -60,9 +58,8 @@ class LineControllerTest {
     void createLine_success() throws Exception {
         // given
         LineCreateRequest request = new LineCreateRequest("2호선", "bg-red-600");
-        willReturn(1L)
-                .given(lineService)
-                .saveLine(any(LineCreateRequest.class));
+        given(lineService.saveLine(any(LineCreateRequest.class)))
+                .willReturn(1L);
 
         // expect
         mockMvc.perform(post("/lines")
@@ -148,12 +145,14 @@ class LineControllerTest {
                 new LineResponse(2L, "2호선", "bg-green-300"),
                 new LineResponse(3L, "3호선", "bg-yellow-300")
         );
-        willReturn(response).given(lineService).findLineResponses();
+        given(lineService.findLineResponses())
+                .willReturn(response);
 
         // expect
         mockMvc.perform(get("/lines")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.result.size()").value(3))
                 .andDo(prettyDocument("lines/inquiry"));
     }
 
@@ -164,7 +163,8 @@ class LineControllerTest {
         List<LineResponse> response = List.of(
                 new LineResponse(1L, "1호선", "bg-blue-300")
         );
-        willReturn(response).given(lineService).findLineResponses();
+        given(lineService.findLineResponses())
+                .willReturn(response);
         given(sectionService.findSectionsByLineId(anyLong()))
                 .willReturn(SectionResponsesFixture());
 
@@ -179,9 +179,8 @@ class LineControllerTest {
     @DisplayName("/lines/:lineId로 GET 요청을 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void findLineDetailById_success() throws Exception {
         // given
-        willReturn(new LineResponse(1L, "1호선", "bg-blue-300"))
-                .given(lineService)
-                .findLineResponseById(anyLong());
+        given(lineService.findLineResponseById(anyLong()))
+                .willReturn(new LineResponse(1L, "1호선", "bg-blue-300"));
         given(sectionService.findSectionsByLineId(anyLong()))
                 .willReturn(SectionResponsesFixture());
 
@@ -200,9 +199,6 @@ class LineControllerTest {
     void updateLine_success() throws Exception {
         // given
         LineUpdateRequest request = new LineUpdateRequest("2호선", "bg-green-300");
-        doNothing()
-                .when(lineService)
-                .updateLine(anyLong(), any(LineUpdateRequest.class));
 
         // expect
         mockMvc.perform(put("/lines/{lineId}", 1L)
@@ -223,11 +219,6 @@ class LineControllerTest {
     @Test
     @DisplayName("/lines/:lineId로 DELETE 요청을 보내면, HTTP 200 코드와 응답이 반환되어야 한다.")
     void deleteLine_success() throws Exception {
-        // given
-        doNothing()
-                .when(lineService)
-                .deleteLineById(anyLong());
-
         // expect
         mockMvc.perform(delete("/lines/{lineId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
