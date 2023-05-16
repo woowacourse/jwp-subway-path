@@ -5,6 +5,7 @@ import static java.util.stream.Collectors.*;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
@@ -58,8 +59,8 @@ public class SectionJdbcRepository implements SectionRepository {
 
 	@Override
 	public Section findByStationNames(final String departure, final String arrival, final Integer distance) {
-		final Station departureStation = convertToStation(stationDao.findByName(departure));
-		final Station arrivalStation = convertToStation(stationDao.findByName(arrival));
+		final Station departureStation = findStationByName(departure);
+		final Station arrivalStation = findStationByName(arrival);
 
 		return new Section(null, departureStation, arrivalStation, new Distance(distance));
 	}
@@ -88,6 +89,12 @@ public class SectionJdbcRepository implements SectionRepository {
 		sectionDao.deleteById(sections.get(0).getId());
 		sectionDao.deleteById(sections.get(1).getId());
 		sectionDao.insert(SectionEntity.of(lineId, sections.get(2)));
+	}
+
+	private Station findStationByName(final String departure) {
+		final Optional<StationEntity> optionalDeparture = stationDao.findByName(departure);
+		return optionalDeparture.map(this::convertToStation)
+			.orElseGet(() -> convertToStation(stationDao.insert(new StationEntity(departure))));
 	}
 
 	private Map<Long, Station> mapToStations(final List<StationEntity> allStations) {

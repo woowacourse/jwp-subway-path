@@ -35,7 +35,8 @@ public class StationService {
 
 	@Transactional(readOnly = true)
 	public StationDto findStationById(final Long id) {
-		final StationEntity stationEntity = stationDao.findById(id);
+		final StationEntity stationEntity = stationDao.findById(id)
+			.orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
 		return new StationDto(stationEntity);
 	}
 

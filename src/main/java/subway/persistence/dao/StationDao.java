@@ -1,9 +1,11 @@
 package subway.persistence.dao;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -42,14 +44,25 @@ public class StationDao {
 		return jdbcTemplate.query(sql, rowMapper);
 	}
 
-	public StationEntity findById(Long id) {
+	public Optional<StationEntity> findById(Long id) {
 		final String sql = "select * from STATION where id = ?";
-		return jdbcTemplate.queryForObject(sql, rowMapper, id);
+
+		try {
+			final StationEntity stationEntity = jdbcTemplate.queryForObject(sql, rowMapper, id);
+			return Optional.ofNullable(stationEntity);
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		}
 	}
 
-	public StationEntity findByName(final String name) {
+	public Optional<StationEntity> findByName(final String name) {
 		final String sql = "select * from STATION where name = ?";
-		return jdbcTemplate.queryForObject(sql, rowMapper, name);
+		try {
+			final StationEntity stationEntity = jdbcTemplate.queryForObject(sql, rowMapper, name);
+			return Optional.ofNullable(stationEntity);
+		} catch (EmptyResultDataAccessException e) {
+			return Optional.empty();
+		}
 	}
 
 	public void update(final StationEntity newStation) {
