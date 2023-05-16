@@ -16,19 +16,19 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Station;
 
 @JdbcTest
-class StationDaoTest {
+class RdsStationDaoTest {
 
-    private StationDao stationDao;
+    private RdsStationDao rdsStationDao;
 
     @Autowired
     void setUp(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
-        stationDao = new StationDao(jdbcTemplate, dataSource);
+        rdsStationDao = new RdsStationDao(jdbcTemplate, dataSource);
     }
 
     @DisplayName("역을 저장하면 id와 함께 역을 반환한다.")
     @Test
     void insert() {
-        final Station result = stationDao.insert(new Station("잠실역"));
+        final Station result = rdsStationDao.insert(new Station("잠실역"));
         assertAll(
                 () -> assertThat(result.getId()).isPositive(),
                 () -> assertThat(result.getName()).isEqualTo("잠실역")
@@ -39,7 +39,7 @@ class StationDaoTest {
     @Test
     @Sql({"classpath:station.sql"})
     void findAll() {
-        final List<Station> result = stationDao.findAll();
+        final List<Station> result = rdsStationDao.findAll();
         assertThat(result).containsExactly(
                 new Station(1L),
                 new Station(2L),
@@ -58,9 +58,9 @@ class StationDaoTest {
     @DisplayName("id로 역을 조회한다.")
     @Test
     void findById() {
-        final Station station = stationDao.insert(new Station("잠실역"));
+        final Station station = rdsStationDao.insert(new Station("잠실역"));
         final Long stationId = station.getId();
-        final Station result = stationDao.findById(stationId);
+        final Station result = rdsStationDao.findById(stationId);
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(stationId),
                 () -> assertThat(result.getName()).isEqualTo("잠실역")
@@ -70,10 +70,10 @@ class StationDaoTest {
     @DisplayName("역을 업데이트 한다.")
     @Test
     void update() {
-        final Station station = stationDao.insert(new Station("잠실역"));
+        final Station station = rdsStationDao.insert(new Station("잠실역"));
         final Long stationId = station.getId();
-        stationDao.update(new Station(stationId, "선릉역"));
-        final Station result = stationDao.findById(stationId);
+        rdsStationDao.update(new Station(stationId, "선릉역"));
+        final Station result = rdsStationDao.findById(stationId);
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(stationId),
                 () -> assertThat(result.getName()).isEqualTo("선릉역")
@@ -83,9 +83,9 @@ class StationDaoTest {
     @DisplayName("역을 삭제한다.")
     @Test
     void deleteById() {
-        final Station station = stationDao.insert(new Station("잠실역"));
+        final Station station = rdsStationDao.insert(new Station("잠실역"));
         final Long stationId = station.getId();
-        assertThatCode(() -> stationDao.deleteById(stationId))
+        assertThatCode(() -> rdsStationDao.deleteById(stationId))
                 .doesNotThrowAnyException();
     }
 }

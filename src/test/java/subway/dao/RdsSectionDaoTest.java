@@ -23,13 +23,13 @@ class RdsSectionDaoTest {
 
     private RdsSectionDao rdsSectionDao;
     private RdsLineDao rdsLineDao;
-    private StationDao stationDao;
+    private RdsStationDao rdsStationDao;
 
     @Autowired
     void setUp(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         rdsSectionDao = new RdsSectionDao(jdbcTemplate, dataSource);
         rdsLineDao = new RdsLineDao(jdbcTemplate, dataSource);
-        stationDao = new StationDao(jdbcTemplate, dataSource);
+        rdsStationDao = new RdsStationDao(jdbcTemplate, dataSource);
     }
 
     @DisplayName("라인과 역이 저장되어 있을 때")
@@ -46,11 +46,11 @@ class RdsSectionDaoTest {
             final Line line = rdsLineDao.insert(new Line("2호선", "초록색"));
             lineId = line.getId();
 
-            final Station station1 = stationDao.insert(new Station("사당역"));
+            final Station station1 = rdsStationDao.insert(new Station("사당역"));
             stationId1 = station1.getId();
-            final Station station2 = stationDao.insert(new Station("잠실역"));
+            final Station station2 = rdsStationDao.insert(new Station("잠실역"));
             stationId2 = station2.getId();
-            final Station station3 = stationDao.insert(new Station("선릉역"));
+            final Station station3 = rdsStationDao.insert(new Station("선릉역"));
             stationId3 = station3.getId();
         }
 
