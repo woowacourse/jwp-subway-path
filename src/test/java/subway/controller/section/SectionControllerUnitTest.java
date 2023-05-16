@@ -13,6 +13,7 @@ import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 import subway.exception.*;
 import subway.service.SectionService;
+import subway.service.SubwayMapService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
@@ -26,6 +27,9 @@ public class SectionControllerUnitTest {
 
     @MockBean
     private SectionService sectionService;
+
+    @MockBean
+    private SubwayMapService subwayMapService;
 
     @Autowired
     private MockMvc mockMvc;

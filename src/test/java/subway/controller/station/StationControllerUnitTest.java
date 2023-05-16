@@ -18,6 +18,7 @@ import subway.dto.station.StationsResponse;
 import subway.exception.StationNotFoundException;
 import subway.repository.StationRepository;
 import subway.service.StationService;
+import subway.service.SubwayMapService;
 
 import java.util.List;
 import java.util.Objects;
@@ -38,6 +39,9 @@ public class StationControllerUnitTest {
 
     @MockBean
     private StationRepository stationRepository;
+
+    @MockBean
+    private SubwayMapService subwayMapService;
 
     @Autowired
     private MockMvc mockMvc;
