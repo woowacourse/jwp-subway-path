@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import subway.domain.subway.Station;
 import subway.dto.station.StationCreateRequest;
 import subway.dto.station.StationEditRequest;
@@ -32,6 +33,9 @@ public class StationServiceUnitTest {
 
     @Mock
     private StationRepository stationRepository;
+
+    @Mock
+    private ApplicationEventPublisher publisher;
 
     @Test
     @DisplayName("역을 저장한다.")
@@ -91,7 +95,7 @@ public class StationServiceUnitTest {
 
     @Test
     @DisplayName("역을 수정한다.")
-    void edit_station_success() {
+    void edit_station_success() throws Exception {
         // given
         Long id = 1L;
         StationEditRequest stationEditRequest = new StationEditRequest("판교역");
@@ -101,6 +105,7 @@ public class StationServiceUnitTest {
 
         // when
         stationService.editStation(id, stationEditRequest);
+        Thread.sleep(1000);
 
         // then
         verify(stationRepository).update(id, station);

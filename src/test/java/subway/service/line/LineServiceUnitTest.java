@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineEditRequest;
 import subway.dto.line.LinesResponse;
@@ -35,6 +36,9 @@ class LineServiceUnitTest {
 
     @Mock
     private LineRepository lineRepository;
+
+    @Mock
+    private ApplicationEventPublisher publisher;
 
     @Test
     @DisplayName("노선을 저장한다.")
@@ -69,7 +73,7 @@ class LineServiceUnitTest {
 
     @Test
     @DisplayName("노선을 수정한다.")
-    void edit_line_success() {
+    void edit_line_success() throws Exception {
         // given
         Long id = 1L;
         LineEditRequest lineEditRequest = new LineEditRequest("2호선", 2, "blue");
@@ -79,6 +83,7 @@ class LineServiceUnitTest {
 
         // when
         lineService.editLineById(id, lineEditRequest);
+        Thread.sleep(1000);
 
         // then
         assertThat(lineEntity.getColor()).isEqualTo(lineEditRequest.getColor());
@@ -97,12 +102,13 @@ class LineServiceUnitTest {
 
     @Test
     @DisplayName("노선을 삭제한다.")
-    void delete_line_success() {
+    void delete_line_success() throws Exception {
         // given
         Long id = 1L;
 
         // when
         lineService.deleteLineById(id);
+        Thread.sleep(1000);
 
         // then
         verify(lineRepository).deleteLineById(id);

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 import subway.domain.subway.Line;
 import subway.domain.subway.Sections;
 import subway.dto.section.SectionCreateRequest;
@@ -34,9 +35,12 @@ public class SectionServiceUnitTest {
     @Mock
     private LineRepository lineRepository;
 
+    @Mock
+    private ApplicationEventPublisher publisher;
+
     @Test
     @DisplayName("구간을 삽입한다.")
-    void save_section_success() {
+    void save_section_success() throws Exception {
         // given
         SectionCreateRequest req = new SectionCreateRequest("2호선", "종합운동장역", "삼성역", 3);
         Sections sections = createSections();
@@ -47,6 +51,7 @@ public class SectionServiceUnitTest {
 
         // when
         sectionService.insertSection(req);
+        Thread.sleep(1000);
 
         // then
         verify(lineRepository).insertSectionInLine(sections, line.getLineNumber());
@@ -102,7 +107,7 @@ public class SectionServiceUnitTest {
 
     @Test
     @DisplayName("구간을 삭제한다.")
-    void delete_section_success() {
+    void delete_section_success() throws Exception {
         // given
         SectionDeleteRequest req = new SectionDeleteRequest(2, "종합운동장역");
         Sections sections = createSections();
@@ -110,6 +115,7 @@ public class SectionServiceUnitTest {
 
         // when
         sectionService.deleteSection(req);
+        Thread.sleep(1000);
 
         // then
         verify(lineRepository).insertSectionInLine(sections, req.getLineNumber());

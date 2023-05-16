@@ -2,11 +2,14 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionalEventListener;
+import subway.domain.cache.RouteCache;
 import subway.domain.subway.*;
 import subway.dto.route.ShortestPathRequest;
 import subway.dto.route.ShortestPathResponse;
 import subway.dto.station.LineMapResponse;
 import subway.dto.station.StationResponse;
+import subway.event.RouteUpdateEvent;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 
@@ -38,14 +41,15 @@ public class SubwayMapService {
 
     @Transactional(readOnly = true)
     public ShortestPathResponse findShortestPath(final ShortestPathRequest req) {
-        Route route = Route.from(makeAllLines());
+        Route route = RouteCache.getRoute();
 
         Map<Station, Set<String>> StationWithLinesMap = route.findShortestPath(req.getStart(), req.getDestination());
 
         return ShortestPathResponse.from(StationWithLinesMap, route.getFee());
     }
 
-    private Lines makeAllLines() {
+    @TransactionalEventListener
+    public void updateRoute(final RouteUpdateEvent event) {
         List<Line> lines = lineRepository.findAll().stream()
                 .map(lineEntity -> {
                     Sections sections = sectionRepository.findSectionsByLineNumber(lineEntity.getLineNumber());
@@ -53,6 +57,6 @@ public class SubwayMapService {
                 })
                 .collect(Collectors.toList());
 
-        return new Lines(lines);
+        RouteCache.update(new Lines(lines));
     }
 }

@@ -7,12 +7,14 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.subway.Station;
 import subway.dto.route.ShortestPathRequest;
 import subway.dto.route.ShortestPathResponse;
 import subway.dto.station.LineMapResponse;
 import subway.entity.LineEntity;
+import subway.event.RouteUpdateEvent;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 import subway.service.SubwayMapService;
@@ -36,6 +38,9 @@ class SubwayMapServiceIntegrationTest {
 
     @Autowired
     private LineRepository lineRepository;
+
+    @Autowired
+    private ApplicationEventPublisher publisher;
 
     @BeforeEach
     void setUp() {
@@ -75,6 +80,7 @@ class SubwayMapServiceIntegrationTest {
         lineRepository.insertSectionInLine(createSections(), 2);
 
         ShortestPathRequest req = new ShortestPathRequest("잠실역", "종합운동장역");
+        subwayMapService.updateRoute(new RouteUpdateEvent());
 
         // when
         ShortestPathResponse result = subwayMapService.findShortestPath(req);
