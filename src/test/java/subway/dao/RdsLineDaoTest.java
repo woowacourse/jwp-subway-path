@@ -16,19 +16,19 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Line;
 
 @JdbcTest
-class LineDaoTest {
+class RdsLineDaoTest {
 
-    private LineDao lineDao;
+    private RdsLineDao rdsLineDao;
 
     @Autowired
     void setUp(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
-        lineDao = new LineDao(jdbcTemplate, dataSource);
+        rdsLineDao = new RdsLineDao(jdbcTemplate, dataSource);
     }
 
     @DisplayName("노선을 저장하면 id와 함께 노선을 반환한다.")
     @Test
     void insert() {
-        final Line result = lineDao.insert(new Line("2호선", "초록색"));
+        final Line result = rdsLineDao.insert(new Line("2호선", "초록색"));
         assertAll(
                 () -> assertThat(result.getId()).isPositive(),
                 () -> assertThat(result.getName()).isEqualTo("2호선"),
@@ -40,7 +40,7 @@ class LineDaoTest {
     @Test
     @Sql({"classpath:line.sql"})
     void findAll() {
-        final List<Line> result = lineDao.findAll();
+        final List<Line> result = rdsLineDao.findAll();
         assertThat(result).containsExactly(
                 new Line(1L, null, null),
                 new Line(2L, null, null)
@@ -50,9 +50,9 @@ class LineDaoTest {
     @DisplayName("id로 노선을 조회한다.")
     @Test
     void findById() {
-        final Line line = lineDao.insert(new Line("1호선", "파란색"));
+        final Line line = rdsLineDao.insert(new Line("1호선", "파란색"));
         final Long lineId = line.getId();
-        final Line result = lineDao.findById(lineId);
+        final Line result = rdsLineDao.findById(lineId);
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(lineId),
                 () -> assertThat(result.getName()).isEqualTo("1호선"),
@@ -63,10 +63,10 @@ class LineDaoTest {
     @DisplayName("노선을 업데이트 한다.")
     @Test
     void update() {
-        final Line line = lineDao.insert(new Line("1호선", "파란색"));
+        final Line line = rdsLineDao.insert(new Line("1호선", "파란색"));
         final Long lineId = line.getId();
-        lineDao.update(new Line(lineId, "2호선", "초록색"));
-        final Line result = lineDao.findById(lineId);
+        rdsLineDao.update(new Line(lineId, "2호선", "초록색"));
+        final Line result = rdsLineDao.findById(lineId);
         assertAll(
                 () -> assertThat(result.getId()).isEqualTo(lineId),
                 () -> assertThat(result.getName()).isEqualTo("2호선"),
@@ -77,9 +77,9 @@ class LineDaoTest {
     @DisplayName("노선을 삭제한다.")
     @Test
     void deleteById() {
-        final Line line = lineDao.insert(new Line("1호선", "파란색"));
+        final Line line = rdsLineDao.insert(new Line("1호선", "파란색"));
         final Long lineId = line.getId();
-        assertThatCode(() -> lineDao.deleteById(lineId))
+        assertThatCode(() -> rdsLineDao.deleteById(lineId))
                 .doesNotThrowAnyException();
     }
 }

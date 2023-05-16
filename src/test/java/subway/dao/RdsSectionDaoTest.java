@@ -22,13 +22,13 @@ import subway.domain.Station;
 class RdsSectionDaoTest {
 
     private RdsSectionDao rdsSectionDao;
-    private LineDao lineDao;
+    private RdsLineDao rdsLineDao;
     private StationDao stationDao;
 
     @Autowired
     void setUp(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         rdsSectionDao = new RdsSectionDao(jdbcTemplate, dataSource);
-        lineDao = new LineDao(jdbcTemplate, dataSource);
+        rdsLineDao = new RdsLineDao(jdbcTemplate, dataSource);
         stationDao = new StationDao(jdbcTemplate, dataSource);
     }
 
@@ -43,7 +43,7 @@ class RdsSectionDaoTest {
 
         @BeforeEach
         void setUp() {
-            final Line line = lineDao.insert(new Line("2호선", "초록색"));
+            final Line line = rdsLineDao.insert(new Line("2호선", "초록색"));
             lineId = line.getId();
 
             final Station station1 = stationDao.insert(new Station("사당역"));
