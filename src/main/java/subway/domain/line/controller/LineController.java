@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Controller
-@RequestMapping("/subway-map")
+@RequestMapping("/line")
 public class LineController {
 
     private final LineService lineService;
@@ -33,7 +33,7 @@ public class LineController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<ResultResponse> findSubwayMapByLineId(@PathVariable final Long id) {
+    public ResponseEntity<ResultResponse> findLineById(@PathVariable final Long id) {
         Line line = lineService.findById(id);
         return ResponseEntity.ok().body(new ResultResponse(200, "단일 노선도 조회 성공", LineDto.of(line)));
     }

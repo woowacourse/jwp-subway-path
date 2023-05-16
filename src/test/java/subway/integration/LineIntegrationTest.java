@@ -26,7 +26,7 @@ class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/subway-map/{lineId}", 1L)
+                .when().get("/line/{lineId}", 1L)
                 .then().log().all()
                 .extract();
 
@@ -54,7 +54,7 @@ class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/subway-map")
+                .when().get("/line")
                 .then().log().all()
                 .extract();
 
