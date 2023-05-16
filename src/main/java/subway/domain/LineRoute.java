@@ -79,8 +79,7 @@ public class LineRoute {
         return findLeftSection(base);
     }
 
-    // TODO 공개 메서드로 사용해야 할까?
-    public Optional<Section> findRightSection(Station station) {
+    private Optional<Section> findRightSection(Station station) {
         try {
             DefaultWeightedEdge edge = stations.outgoingEdgesOf(station).iterator().next();
             return Optional.of(
@@ -91,7 +90,7 @@ public class LineRoute {
         }
     }
 
-    public Optional<Section> findLeftSection(Station station) {
+    private Optional<Section> findLeftSection(Station station) {
         try {
             DefaultWeightedEdge edge = stations.incomingEdgesOf(station).iterator().next();
             return Optional.of(
@@ -108,6 +107,7 @@ public class LineRoute {
     }
 
     private void updateIntersectionEdgesForStations(final Section currentSection, final Section addingSection) {
+        // TODO 예외 메시지 작성
         Section subtractedFromCurrent = currentSection.subtract(addingSection)
                 .orElseThrow(() -> new IllegalArgumentException(""));
         // TODO Distance 범위 예외 커스텀으로 만든 뒤 여기서 예외 변환, 메시지 적절하게 작성 (기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.)
@@ -134,6 +134,7 @@ public class LineRoute {
         if (leftFound.isPresent() && rightFound.isPresent()) {
             Section leftSection = leftFound.get();
             Section rightSection = rightFound.get();
+            // TODO 예외 메시지 작성
             Section merged = leftSection.merge(rightSection)
                     .orElseThrow(() -> new IllegalArgumentException(""));
 

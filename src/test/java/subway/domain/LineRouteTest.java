@@ -37,16 +37,12 @@ class LineRouteTest {
         LineRoute lineRoute = LineRoute.of(FIXTURE_LINE_1, Collections.emptyList());
 
         Station adding = new Station(7L, "추가역");
-        lineRoute.add(FIXTURE_STATION_1, new Station(7L, "추가역"), new Distance(6), DOWN);
+        lineRoute.add(FIXTURE_STATION_1, adding, new Distance(6), DOWN);
 
-        assertThat(lineRoute.getOrderedStations())
-                .containsExactly(FIXTURE_STATION_1, adding);
-
-        assertThat(lineRoute.findRightSection(FIXTURE_STATION_1)
-                .get()
-                .getDistance()
-                .getValue())
-                .isEqualTo(6);
+        assertThat(lineRoute.extractSections())
+                .containsExactly(
+                        new Section(FIXTURE_STATION_1, adding, new Distance(6))
+                );
     }
 
     @DisplayName("기존 역 간 거리를 조정하여 새 역을 등록할 수 있다")
@@ -63,24 +59,15 @@ class LineRouteTest {
         Station adding = new Station(7L, "추가역");
         lineRoute.add(FIXTURE_STATION_1, new Station(7L, "추가역"), new Distance(6), DOWN);
 
-        assertThat(lineRoute.getOrderedStations())
-                .containsExactly(
-                        FIXTURE_STATION_1,
-                        adding,
-                        FIXTURE_STATION_2,
-                        FIXTURE_STATION_3,
-                        FIXTURE_STATION_4,
-                        FIXTURE_STATION_5,
-                        FIXTURE_STATION_6
+        assertThat(lineRoute.extractSections())
+                .containsOnly(
+                        new Section(FIXTURE_STATION_1, adding, new Distance(6)),
+                        new Section(adding, FIXTURE_STATION_2, new Distance(4)),
+                        SECTION_MIDDLE_1,
+                        SECTION_MIDDLE_2,
+                        SECTION_MIDDLE_3,
+                        SECTION_END
                 );
-
-        assertThat(lineRoute.findLeftSection(adding).get()
-                .getDistance()
-                .getValue()).isEqualTo(6);
-        assertThat(lineRoute.findRightSection(adding).get()
-                .getDistance()
-                .getValue())
-                .isEqualTo(4);
     }
 
     @DisplayName("새 역을 기존 하행 종점 앞에 등록할 수 있다")
@@ -97,21 +84,15 @@ class LineRouteTest {
         Station adding = new Station(7L, "추가역");
         lineRoute.add(FIXTURE_STATION_1, new Station(7L, "추가역"), new Distance(6), UP);
 
-        assertThat(lineRoute.getOrderedStations())
-                .containsExactly(
-                        adding,
-                        FIXTURE_STATION_1,
-                        FIXTURE_STATION_2,
-                        FIXTURE_STATION_3,
-                        FIXTURE_STATION_4,
-                        FIXTURE_STATION_5,
-                        FIXTURE_STATION_6
+        assertThat(lineRoute.extractSections())
+                .containsOnly(
+                        new Section(adding, FIXTURE_STATION_1, new Distance(6)),
+                        SECTION_START,
+                        SECTION_MIDDLE_1,
+                        SECTION_MIDDLE_2,
+                        SECTION_MIDDLE_3,
+                        SECTION_END
                 );
-        assertThat(lineRoute.findRightSection(adding)
-                .get()
-                .getDistance()
-                .getValue())
-                .isEqualTo(6);
     }
 
     @DisplayName("새 역을 기존 상행 종점 다음에 등록할 수 있다")
@@ -128,21 +109,15 @@ class LineRouteTest {
         Station adding = new Station(7L, "추가역");
         lineRoute.add(FIXTURE_STATION_6, new Station(7L, "추가역"), new Distance(6), DOWN);
 
-        assertThat(lineRoute.getOrderedStations())
-                .containsExactly(
-                        FIXTURE_STATION_1,
-                        FIXTURE_STATION_2,
-                        FIXTURE_STATION_3,
-                        FIXTURE_STATION_4,
-                        FIXTURE_STATION_5,
-                        FIXTURE_STATION_6,
-                        adding
+        assertThat(lineRoute.extractSections())
+                .containsOnly(
+                        SECTION_START,
+                        SECTION_MIDDLE_1,
+                        SECTION_MIDDLE_2,
+                        SECTION_MIDDLE_3,
+                        SECTION_END,
+                        new Section(FIXTURE_STATION_6, adding, new Distance(6))
                 );
-        assertThat(lineRoute.findLeftSection(adding)
-                .get()
-                .getDistance()
-                .getValue())
-                .isEqualTo(6);
     }
 
     @DisplayName("기존 역 간 거리를 조정하여 역을 삭제할 수 있다")
@@ -158,19 +133,13 @@ class LineRouteTest {
 
         lineRoute.delete(FIXTURE_STATION_2);
 
-        assertThat(lineRoute.getOrderedStations())
-                .containsExactly(
-                        FIXTURE_STATION_1,
-                        FIXTURE_STATION_3,
-                        FIXTURE_STATION_4,
-                        FIXTURE_STATION_5,
-                        FIXTURE_STATION_6
+        assertThat(lineRoute.extractSections())
+                .containsOnly(
+                        new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20)),
+                        SECTION_MIDDLE_2,
+                        SECTION_MIDDLE_3,
+                        SECTION_END
                 );
-        assertThat(lineRoute.findRightSection(FIXTURE_STATION_1)
-                .get()
-                .getDistance()
-                .getValue())
-                .isEqualTo(20);
     }
 
     @DisplayName("하행 종점의 역을 삭제할 수 있다")
@@ -186,13 +155,12 @@ class LineRouteTest {
 
         lineRoute.delete(FIXTURE_STATION_1);
 
-        assertThat(lineRoute.getOrderedStations())
-                .containsExactly(
-                        FIXTURE_STATION_2,
-                        FIXTURE_STATION_3,
-                        FIXTURE_STATION_4,
-                        FIXTURE_STATION_5,
-                        FIXTURE_STATION_6
+        assertThat(lineRoute.extractSections())
+                .containsOnly(
+                        SECTION_MIDDLE_1,
+                        SECTION_MIDDLE_2,
+                        SECTION_MIDDLE_3,
+                        SECTION_END
                 );
     }
 
@@ -209,13 +177,12 @@ class LineRouteTest {
 
         lineRoute.delete(FIXTURE_STATION_6);
 
-        assertThat(lineRoute.getOrderedStations())
-                .containsExactly(
-                        FIXTURE_STATION_1,
-                        FIXTURE_STATION_2,
-                        FIXTURE_STATION_3,
-                        FIXTURE_STATION_4,
-                        FIXTURE_STATION_5
+        assertThat(lineRoute.extractSections())
+                .containsOnly(
+                        SECTION_START,
+                        SECTION_MIDDLE_1,
+                        SECTION_MIDDLE_2,
+                        SECTION_MIDDLE_3
                 );
     }
 
@@ -228,7 +195,7 @@ class LineRouteTest {
 
         lineRoute.delete(FIXTURE_STATION_1);
 
-        assertThat(lineRoute.getOrderedStations())
+        assertThat(lineRoute.extractSections())
                 .isEmpty();
     }
 
