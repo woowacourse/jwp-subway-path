@@ -10,11 +10,13 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import subway.domain.Line;
 import subway.domain.LineRepository;
 import subway.domain.StationRepository;
 import subway.presentation.dto.request.SectionRequest;
 
+@ActiveProfiles("test")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class SectionIntegrationTest {
     @Autowired
