@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.dao.dto.SectionDto;
 import subway.dao.entity.SectionEntity;
 
 @JdbcTest
@@ -34,7 +35,7 @@ class SectionDaoTest {
     @DisplayName("노선의 구간 갯수가 정확하게 반환되어야 한다.")
     void countByLineId_success() {
         // given
-        sectionDao.insert(new SectionEntity(lineId, 1L,2L, 1));
+        sectionDao.insert(new SectionEntity(lineId, 1L, 2L, 1));
         sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
 
         // when
@@ -109,4 +110,23 @@ class SectionDaoTest {
         assertThat(sectionDao.isEmptyByLineId(lineId))
                 .isFalse();
     }
+
+    @Test
+    @DisplayName("노선에 속해있는 구간 역들의 이름을 조회한다.")
+    void findAllSectionNamesByLineId_success() {
+        // given
+        sectionDao.insert(new SectionEntity(lineId, 1L, 2L, 1));
+        sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
+
+        // when
+        List<SectionDto> sectionNames = sectionDao.findAllSectionNamesByLineId(lineId);
+
+        // then
+        assertThat(sectionNames).usingRecursiveComparison()
+                .isEqualTo(List.of(
+                        new SectionDto("삼성역", "선릉역", 1),
+                        new SectionDto("선릉역", "역삼역", 1)
+                ));
+    }
+
 }

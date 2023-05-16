@@ -5,10 +5,12 @@ import java.util.Objects;
 public class Line {
     private final String name;
     private final String color;
+    private final Sections sections;
 
-    public Line(String name, String color) {
+    public Line(String name, String color, Sections sections) {
         this.name = name;
         this.color = color;
+        this.sections = sections;
     }
 
     public String getName() {

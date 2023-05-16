@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.dao.dto.SectionDto;
 import subway.dao.entity.SectionEntity;
 
 @Repository
@@ -51,6 +52,19 @@ public class SectionDao {
     public List<SectionEntity> findAllByLineId(Long lineId) {
         String sql = "SELECT id, line_id, start_station_id, end_station_id, distance FROM SECTION WHERE line_id = ?";
         return jdbcTemplate.query(sql, rowMapper, lineId);
+    }
+
+    public List<SectionDto> findAllSectionNamesByLineId(Long lineId) {
+        String sql = "SELECT start_station.name AS start_station_name, end_station.name AS end_station_name, section.distance FROM section "
+                        + "JOIN station AS start_station ON section.start_station_id = start_station.id "
+                        + "JOIN station AS end_station ON section.end_station_id = end_station.id WHERE section.line_id = ?";
+
+        return jdbcTemplate.query(sql, (rs, rowNum) ->
+                new SectionDto(
+                        rs.getString("start_station_name"),
+                        rs.getString("end_station_name"),
+                        rs.getInt("distance")
+                ), lineId);
     }
 
     public boolean isStationInLineById(Long lineId, long stationId) {
