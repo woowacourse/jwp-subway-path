@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.domain.station.Station;
 import subway.entity.StationEntity;
 
 import java.util.Optional;
@@ -53,5 +54,21 @@ class StationDaoTest {
 
         // then
         assertThat(findStationEntity).contains(ENTITY_건대역_FIND);
+    }
+
+    @Test
+    @DisplayName("역 id에 해당하는 행을 삭제한다.")
+    void deleteByIdTest() {
+        // given
+        Station station = STATION_잠실역;
+        Long stationId = station.getId();
+        Long lineId = station.getLineId();
+
+        // when
+        stationDao.deleteById(stationId);
+
+        // then
+        assertThat(stationDao.findByStationIdAndLineId(stationId, lineId))
+                .isEmpty();
     }
 }

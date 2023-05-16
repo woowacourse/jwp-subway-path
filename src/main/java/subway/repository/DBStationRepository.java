@@ -7,7 +7,6 @@ import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -34,8 +33,7 @@ public class DBStationRepository implements StationRepository {
                 "line.name AS line_name " +
                 "FROM STATION " +
                 "INNER JOIN line ON station.line_id = line.id " +
-                "WHERE station_id = ?";
-        List<Station> findStation = jdbcTemplate.query(sql, stationRowMapper, stationId);
-        return findStation.stream().findAny();
+                "WHERE station.id = ?";
+        return jdbcTemplate.queryForObject(sql, stationRowMapper, stationId);
     }
 }

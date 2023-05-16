@@ -33,43 +33,43 @@ public class DBSectionRepository implements SectionRepository {
         String upStationName = sectionToAdd.getUpStation().getName();
         String downStationName = sectionToAdd.getDownStation().getName();
         Long lineId = sectionToAdd.getLineId();
-        String sql = "SELECT\n" +
-                "ss.id AS section_id,\n" +
-                "us.id AS up_station_id,\n" +
-                "us.name AS up_station_name,\n" +
-                "ds.id AS down_station_id,\n" +
-                "ds.name AS down_station_name,\n" +
-                "ss.distance\n" +
-                "ss.line_id,\n" +
-                "line.name AS line_name\n" +
-                "FROM\n" +
-                "section ss\n" +
-                "INNER JOIN station us ON us.line_id = ss.line_id AND us.id = ss.up_station_id\n" +
-                "INNER JOIN station ds ON ds.line_id = ss.line_id AND ds.id = ss.down_station_id\n" +
-                "INNER JOIN line ss.line_id == line.id\n" +
-                "WHERE (up_station_name = ? OR up_station_name = ? OR down_station_name = ? OR down_station_name = ?) " +
-                "AND line_id = ?";
+        String sql = "SELECT " +
+                "ss.id AS section_id, " +
+                "us.id AS up_station_id, " +
+                "us.name AS up_station_name, " +
+                "ds.id AS down_station_id, " +
+                "ds.name AS down_station_name, " +
+                "ss.distance, " +
+                "ss.line_id, " +
+                "line.name AS line_name " +
+                "FROM " +
+                "section ss " +
+                "INNER JOIN station us ON us.line_id = ss.line_id AND us.id = ss.up_station_id " +
+                "INNER JOIN station ds ON ds.line_id = ss.line_id AND ds.id = ss.down_station_id " +
+                "INNER JOIN line ON ss.line_id = line.id " +
+                "WHERE (us.name = ? OR us.name = ? OR ds.name = ? OR ds.name = ?) " +
+                "AND line.id = ?";
 
         return jdbcTemplate.query(sql, sectionRowMapper, upStationName, downStationName, upStationName, downStationName, lineId);
     }
 
     @Override
     public List<Section> findSectionsByLineId(Long lineId) {
-        String sql = "SELECT\n" +
-                "ss.id AS section_id,\n" +
-                "us.id AS up_station_id,\n" +
-                "us.name AS up_station_name,\n" +
-                "ds.id AS down_station_id,\n" +
-                "ds.name AS down_station_name,\n" +
-                "ss.distance\n" +
-                "ss.line_id,\n" +
-                "line.name AS line_name\n" +
-                "FROM\n" +
-                "section ss\n" +
-                "INNER JOIN station us ON us.line_id = ss.line_id AND us.id = ss.up_station_id\n" +
-                "INNER JOIN station ds ON ds.line_id = ss.line_id AND ds.id = ss.down_station_id\n" +
-                "INNER JOIN line ss.line_id == line.id\n" +
-                "WHERE line_id = ?";
+        String sql = "SELECT " +
+                "ss.id AS section_id, " +
+                "us.id AS up_station_id, " +
+                "us.name AS up_station_name, " +
+                "ds.id AS down_station_id, " +
+                "ds.name AS down_station_name, " +
+                "ss.distance, " +
+                "ss.line_id, " +
+                "line.name AS line_name " +
+                "FROM " +
+                "section ss " +
+                "INNER JOIN station us ON us.line_id = ss.line_id AND us.id = ss.up_station_id " +
+                "INNER JOIN station ds ON ds.line_id = ss.line_id AND ds.id = ss.down_station_id " +
+                "INNER JOIN line ON ss.line_id = line.id " +
+                "WHERE line.id = ?";
 
         return jdbcTemplate.query(sql, sectionRowMapper, lineId);
     }

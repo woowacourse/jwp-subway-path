@@ -44,7 +44,7 @@ public class LineDao {
     }
 
     public LineEntity findById(Long id) {
-        String sql = "SELECT id, line_name from LINE WHERE id = ?";
+        String sql = "SELECT id, name from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, lineEntityRowMapper, id);
     }
 
