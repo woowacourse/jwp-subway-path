@@ -18,7 +18,9 @@ public class SubwayGuide {
         return path.getShortestPathStations(from, to);
     }
 
-    public int getFare(final Station from, final Station to) {
-        return Fare.from(path.getShortestPathDistance(from, to)).getFare();
+    public int getFare(final Station from, final Station to, final Age age) {
+        return Fare.from(path.getShortestPathDistance(from, to))
+                .applyDiscountRateOfAge(age)
+                .getFare();
     }
 }

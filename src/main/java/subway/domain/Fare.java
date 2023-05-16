@@ -37,6 +37,11 @@ public class Fare {
         return (int) ((Math.ceil((leftDistance -1) / specified) + 1) * ADDITIONAL_FARE);
     }
 
+    public Fare applyDiscountRateOfAge(final Age age){
+        int discountedFare = (int)((fare - 350) * age.getDiscountRate());
+        return new Fare(discountedFare);
+    }
+
     public int getFare() {
         return fare;
     }
