@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.exception.InvalidDistanceException;
 
 class DistanceTest {
 
@@ -26,7 +27,7 @@ class DistanceTest {
     void createDistanceFailWithWrongValue(int value) {
         // when, then
         assertThatThrownBy(() -> new Distance(value))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidDistanceException.class)
                 .hasMessageContaining("역 간의 거리는 0~100 사이만 가능합니다.");
     }
 }

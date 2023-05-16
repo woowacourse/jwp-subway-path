@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.exception.InvalidFormatException;
 
 class StationTest {
 
@@ -29,7 +30,7 @@ class StationTest {
     void createStationFailWithBlankName(String name) {
         // when, then
         assertThatThrownBy(() -> new Station(null, name))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidFormatException.class)
                 .hasMessageContaining("역 이름에는 공백이 허용되지 않습니다.");
     }
 
@@ -39,7 +40,7 @@ class StationTest {
     void createStationFailWithWrongLength(String name) {
         // when, then
         assertThatThrownBy(() -> new Station(null, name))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(InvalidFormatException.class)
                 .hasMessageContaining("역 이름은 2~10자까지 가능합니다.");
     }
 
