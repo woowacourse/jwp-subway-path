@@ -26,17 +26,18 @@ class InsertStrategyTest extends StrategyFixture {
     private JdbcTemplate jdbcTemplate;
     @Autowired
     private DataSource dataSource;
-    private BetweenStationInserter betweenStationInserter;
+    private SectionInserter sectionInserter;
     private Sections sections;
 
     @BeforeEach
     void init() {
         final SectionRepository sectionRepository = new SectionRepository(new SectionDao(jdbcTemplate, dataSource));
+        final InsertTerminal insertTerminal = new InsertTerminal(sectionRepository);
         final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
         final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);
-        final List<InsertStrategy> strategies = List.of(insertUpwardStation, insertDownwardStation);
+        final List<InsertStrategyInterface> strategies = List.of(insertTerminal, insertUpwardStation, insertDownwardStation);
 
-        betweenStationInserter = new BetweenStationInserter(strategies);
+        sectionInserter = new SectionInserter(strategies);
 
         sections = sectionRepository.findAllByLineId(이호선);
     }
@@ -45,10 +46,10 @@ class InsertStrategyTest extends StrategyFixture {
     void 중간에_추가하는데_상행역_기준인_경우() {
         // given
         final Station 하행역 = createStation("하행역");
-        final InsertSection insertSection = new InsertSection(잠실역, 하행역, Distance.from(3));
+        final InsertSection insertSection = new InsertSection(잠실역, 하행역, Distance.from(3), 1L);
 
         // when
-        final Long id = betweenStationInserter.insert(sections, insertSection);
+        final Long id = sectionInserter.insert(sections, insertSection);
 
         // then
         assertThat(id).isNotNull();
@@ -59,10 +60,10 @@ class InsertStrategyTest extends StrategyFixture {
     void 중간에_추가하는데_상행역_기준이면서_거리가_기존_보다_클_때(final int newDistance) {
         // given
         final Station 하행역 = createStation("하행역");
-        final InsertSection insertSection = new InsertSection(잠실역, 하행역, Distance.from(newDistance));
+        final InsertSection insertSection = new InsertSection(잠실역, 하행역, Distance.from(newDistance), 1L);
 
         // when, then
-        assertThatThrownBy(() -> betweenStationInserter.insert(sections, insertSection))
+        assertThatThrownBy(() -> sectionInserter.insert(sections, insertSection))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -70,10 +71,10 @@ class InsertStrategyTest extends StrategyFixture {
     void 중간에_추가하는데_하행역_기준인_경우() {
         // given
         final Station 상행역 = createStation("상행역");
-        final InsertSection insertSection = new InsertSection(상행역, 잠실새내역, Distance.from(3));
+        final InsertSection insertSection = new InsertSection(상행역, 잠실새내역, Distance.from(3), 1L);
 
         // when
-        final Long id = betweenStationInserter.insert(sections, insertSection);
+        final Long id = sectionInserter.insert(sections, insertSection);
 
         // then
         assertThat(id).isNotNull();
@@ -84,10 +85,10 @@ class InsertStrategyTest extends StrategyFixture {
     void 중간에_추가하는데_하행역_기준이면서_기존_거리보다_클_때(final int distance) {
         // given
         final Station 상행역 = createStation("상행역");
-        final InsertSection insertSection = new InsertSection(상행역, 잠실새내역, Distance.from(distance));
+        final InsertSection insertSection = new InsertSection(상행역, 잠실새내역, Distance.from(distance), 1L);
 
         // when, then
-        assertThatThrownBy(() -> betweenStationInserter.insert(sections, insertSection))
+        assertThatThrownBy(() -> sectionInserter.insert(sections, insertSection))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

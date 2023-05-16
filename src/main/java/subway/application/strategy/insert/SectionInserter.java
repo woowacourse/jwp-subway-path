@@ -6,20 +6,21 @@ import subway.domain.Sections;
 import java.util.List;
 
 @Component
-public class BetweenStationInserter {
+public class SectionInserter {
 
-    private final List<InsertStrategy> strategies;
+    private final List<InsertStrategyInterface> strategies;
 
-    public BetweenStationInserter(List<InsertStrategy> strategies) {
+    public SectionInserter(List<InsertStrategyInterface> strategies) {
         this.strategies = strategies;
     }
 
     public Long insert(Sections sections, InsertSection insertSection) {
         Long newSectionId = null;
 
-        for (InsertStrategy strategy : strategies) {
+        for (InsertStrategyInterface strategy : strategies) {
             if (strategy.support(sections, insertSection)) {
                 newSectionId = strategy.insert(sections, insertSection);
+                break;
             }
         }
 

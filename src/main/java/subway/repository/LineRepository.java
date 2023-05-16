@@ -46,4 +46,8 @@ public class LineRepository {
     public void deleteById(Long id) {
         lineDao.deleteById(id);
     }
+
+    public boolean exists(Long lineId) {
+        return lineDao.exists(lineId);
+    }
 }

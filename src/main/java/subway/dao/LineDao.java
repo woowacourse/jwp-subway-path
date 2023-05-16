@@ -56,4 +56,9 @@ public class LineDao {
     public void deleteById(Long id) {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
+
+    public boolean exists(Long lineId) {
+        final String sql = "select exists (select 1 from LINE where id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, lineId));
+    }
 }

@@ -11,9 +11,10 @@ import subway.application.strategy.delete.DeleteDownTerminal;
 import subway.application.strategy.delete.DeleteInitialSection;
 import subway.application.strategy.delete.DeleteUpTerminal;
 import subway.application.strategy.delete.SectionDeleter;
-import subway.application.strategy.insert.BetweenStationInserter;
 import subway.application.strategy.insert.InsertDownwardStation;
+import subway.application.strategy.insert.InsertTerminal;
 import subway.application.strategy.insert.InsertUpwardStation;
+import subway.application.strategy.insert.SectionInserter;
 import subway.dao.StationDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
@@ -22,6 +23,7 @@ import subway.domain.Distance;
 import subway.domain.Section;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
+import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
 
@@ -40,21 +42,23 @@ class SectionServiceTest extends SubwayJdbcFixture {
 
     @BeforeEach
     void init() {
+        final LineRepository lineRepository = new LineRepository(lineDao);
         final StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
         final StationRepository stationRepository = new StationRepository(stationDao);
         sectionRepository = new SectionRepository(sectionDao);
 
-        final BetweenStationInserter betweenStationInserter = createBetweenStationInserter();
+        final SectionInserter sectionInserter = createBetweenStationInserter();
 
         final SectionDeleter sectionDeleter = createSectionDeleter();
 
-        sectionService = new SectionService(lineDao, stationRepository, sectionRepository, betweenStationInserter, sectionDeleter);
+        sectionService = new SectionService(lineRepository, stationRepository, sectionRepository, sectionInserter, sectionDeleter);
     }
 
-    private BetweenStationInserter createBetweenStationInserter() {
+    private SectionInserter createBetweenStationInserter() {
+        final InsertTerminal insertTerminal = new InsertTerminal(sectionRepository);
         final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);
         final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
-        return new BetweenStationInserter(List.of(insertUpwardStation, insertDownwardStation));
+        return new SectionInserter(List.of(insertTerminal, insertUpwardStation, insertDownwardStation));
     }
 
     private SectionDeleter createSectionDeleter() {
