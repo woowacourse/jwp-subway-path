@@ -3,9 +3,10 @@ package subway.domain;
 import java.util.Objects;
 
 public class Line {
+
+    private final Long id;
     private final String name;
     private final String color;
-    private final Long id;
 
     public Line(final String name, final String color) {
         this(null, name, color);
@@ -38,11 +39,11 @@ public class Line {
             return false;
         }
         final Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
+        return Objects.equals(id, line.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(id);
     }
 }
