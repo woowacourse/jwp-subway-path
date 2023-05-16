@@ -32,7 +32,8 @@ public class RouteIntegrationTest extends IntegrationTest {
         Assertions.assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.body().jsonPath().getInt("distance")).isEqualTo(20),
-                () -> assertThat(response.body().jsonPath().getInt("price")).isEqualTo(1450)
+                () -> assertThat(response.body().jsonPath().getInt("price")).isEqualTo(1450),
+                () -> assertThat(response.body().jsonPath().getList("path")).containsExactly("신도림", "영등포구청", "신림")
         );
     }
 
