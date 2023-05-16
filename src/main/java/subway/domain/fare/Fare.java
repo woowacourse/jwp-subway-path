@@ -3,13 +3,18 @@ package subway.domain.fare;
 import java.util.Objects;
 
 public class Fare {
-    private final int fare;
-    public Fare(final int fare) {
+    private final double fare;
+
+    public Fare(final double fare) {
         this.fare = fare;
     }
 
     public Fare add(final Fare fare) {
         return new Fare(this.fare + fare.fare);
+    }
+
+    public Fare subtract(final Fare fare) {
+        return new Fare(this.fare - fare.fare);
     }
 
     public Fare multiply(final Fare fare) {
@@ -34,6 +39,6 @@ public class Fare {
     }
 
     public int fare() {
-        return fare;
+        return (int) fare;
     }
 }

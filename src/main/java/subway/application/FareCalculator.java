@@ -7,8 +7,10 @@ import subway.domain.fare.TotalDistance;
 @Component
 public class FareCalculator {
 
+    private static final int TEENAGER_DISCOUNT_RATE = 20, CHILD_DISCOUNT_RATE = 50;
     private static final Fare BASIC_FARE = new Fare(1250);
     private static final Fare EXTRA_FARE = new Fare(100);
+    private static final Fare TAX = new Fare(350);
     private static final TotalDistance EXTRA_FARE_SECTION_TEN = new TotalDistance(10);
     private static final TotalDistance EXTRA_FARE_SECTION_FIFTY = new TotalDistance(50);
     private static final TotalDistance FARE_SECTION_UNIT_FIVE = new TotalDistance(5);
@@ -27,6 +29,16 @@ public class FareCalculator {
         final Fare extraFare = calculateByDistance(fareSectionDistance, FARE_SECTION_UNIT_FIVE)
             .add(calculateByDistance(extraDistance, FARE_SECTION_UNIT_EIGHT));
         return BASIC_FARE.add(extraFare);
+    }
+
+    public Fare calculateTeenagerFare(final Fare fare) {
+        final Fare deductedFare = fare.subtract(TAX);
+        return deductedFare.multiply(new Fare((100 - TEENAGER_DISCOUNT_RATE) * 0.01));
+    }
+
+    public Fare calculateChildFare(final Fare fare) {
+        final Fare deductedFare = fare.subtract(TAX);
+        return deductedFare.multiply(new Fare((100 - CHILD_DISCOUNT_RATE) * 0.01));
     }
 
     private Fare calculateByDistance(final TotalDistance distance, final TotalDistance unitDistance) {

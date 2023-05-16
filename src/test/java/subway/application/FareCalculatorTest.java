@@ -61,4 +61,32 @@ class FareCalculatorTest {
         assertThat(result.fare())
             .isEqualTo(fare);
     }
+
+    @Test
+    @DisplayName("청소년 요금 할인 정책을 적용한 요금을 반환한다.")
+    void calculateTeenagerFare() {
+        // given
+        final Fare fare = new Fare(1000);
+
+        // when
+        final Fare teenagerFare = fareCalculator.calculateTeenagerFare(fare);
+
+        // then
+        assertThat(teenagerFare.fare())
+            .isEqualTo(520);
+    }
+
+    @Test
+    @DisplayName("어린이 요금 할인 정책을 적용한 요금을 반환한다.")
+    void calculateChildFare() {
+        // given
+        final Fare fare = new Fare(1000);
+
+        // when
+        final Fare teenagerFare = fareCalculator.calculateChildFare(fare);
+
+        // then
+        assertThat(teenagerFare.fare())
+            .isEqualTo(325);
+    }
 }

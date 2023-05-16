@@ -16,6 +16,7 @@ import subway.application.dto.StationRequest;
 
 @DisplayName("경로 조회 기능")
 public class RouteIntegrationTest extends IntegrationTest {
+
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -25,8 +26,8 @@ public class RouteIntegrationTest extends IntegrationTest {
     @DisplayName("주어진 출발역에서 도착역까지 가기 위한 최소 경로 및 최소 비용을 반환한다.")
     void getShortestRoute() {
         // given
-        saveLine(new LineRequest("이호선", "green"));
-        saveLine(new LineRequest("팔호선", "pink"));
+        saveLine(new LineRequest("이호선", "green", 500));
+        saveLine(new LineRequest("팔호선", "pink", 1000));
 
         saveStation(new StationRequest("잠실역"));
         saveStation(new StationRequest("선릉역"));
@@ -53,7 +54,9 @@ public class RouteIntegrationTest extends IntegrationTest {
             .get("/routes")
             .then().log().all()
             .statusCode(HttpStatus.OK.value())
-            .body("fare", equalTo(1450))
+            .body("fare.normalFare", equalTo(2450))
+            .body("fare.teenagerFare", equalTo(1680))
+            .body("fare.childFare", equalTo(1050))
             .body("stations[0].id", equalTo(1))
             .body("stations[0].name", equalTo("잠실역"))
             .body("stations[1].id", equalTo(2))

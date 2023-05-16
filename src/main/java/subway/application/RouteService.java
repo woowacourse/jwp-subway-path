@@ -11,6 +11,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.application.dto.FareResponse;
 import subway.application.dto.RouteResponse;
 import subway.application.dto.StationResponse;
 import subway.application.mapper.SectionProvider;
@@ -46,12 +47,15 @@ public class RouteService {
 
         final List<LineWithSectionRes> possibleSections = lineRepository.getPossibleSections(
             sourceStationId, targetStationId);
+
         final Map<Long, List<LineWithSectionRes>> sectionsByLineId = possibleSections.stream()
             .collect(Collectors.groupingBy(LineWithSectionRes::getLineId));
         final List<Station> shortestRoute = getShortestRoute(sourceStation, targetStation, sectionsByLineId);
         final TotalDistance shortestDistance = getShortestDistance(sectionsByLineId, shortestRoute);
-        final Fare fare = fareCalculator.calculateFare(shortestDistance);
-        return new RouteResponse(getStationResponses(possibleSections, shortestRoute), fare.fare());
+
+        final Fare normalFare = fareCalculator.calculateFare(shortestDistance);
+        final Fare totalFare = normalFare.add(getMaxExtraFare(possibleSections));
+        return new RouteResponse(getStationResponses(possibleSections, shortestRoute), getFareResponse(totalFare));
     }
 
     private List<Station> getShortestRoute(final Station sourceStation, final Station targetStation,
@@ -101,6 +105,13 @@ public class RouteService {
             .reduce(new TotalDistance(0), TotalDistance::add);
     }
 
+    private Fare getMaxExtraFare(final List<LineWithSectionRes> possibleSections) {
+        final int maxFare = possibleSections.stream()
+            .mapToInt(LineWithSectionRes::getExtraFare)
+            .max().orElse(0);
+        return new Fare(maxFare);
+    }
+
     private List<Section> getAllSections(final Map<Long, List<LineWithSectionRes>> sectionsByLineId) {
         return sectionsByLineId.values().stream()
             .map(SectionProvider::createSections)
@@ -114,5 +125,11 @@ public class RouteService {
             .map(station -> new StationResponse(
                 SectionProvider.getStationIdByName(station.getName(), possibleSections), station.getName().name()
             )).collect(Collectors.toUnmodifiableList());
+    }
+
+    private FareResponse getFareResponse(final Fare totalFare) {
+        final Fare teenagerFare = fareCalculator.calculateTeenagerFare(totalFare);
+        final Fare childFare = fareCalculator.calculateChildFare(totalFare);
+        return new FareResponse(totalFare.fare(), teenagerFare.fare(), childFare.fare());
     }
 }

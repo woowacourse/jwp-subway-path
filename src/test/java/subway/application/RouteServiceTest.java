@@ -16,6 +16,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.application.dto.FareResponse;
 import subway.application.dto.RouteResponse;
 import subway.application.dto.StationResponse;
 import subway.domain.fare.Fare;
@@ -38,7 +39,7 @@ class RouteServiceTest {
     private RouteService routeService;
 
     @Test
-    @DisplayName("요청받은 출발역에서 도착역까지 도달하는데 사용되는 최소 비용의 구간 및 비용 정보를 반환한다.")
+    @DisplayName("요청받은 출발역에서 도착역까지 도달하는데 사용되는 최소 비용의 구간 및 연령별 비용 정보를 계산하여 반환한다.")
     void getShortestRouteAndFare() {
         // given
         doReturn(잠실역)
@@ -49,6 +50,10 @@ class RouteServiceTest {
             .thenReturn(잠실_신림_이동_가능한_구간들());
         when(fareCalculator.calculateFare(any()))
             .thenReturn(new Fare(1450));
+        when(fareCalculator.calculateTeenagerFare(any()))
+            .thenReturn(new Fare(880));
+        when(fareCalculator.calculateChildFare(any()))
+            .thenReturn(new Fare(550));
 
         // when
         final RouteResponse routeResponse = routeService.getShortestRouteAndFare(1L, 5L);
@@ -62,8 +67,8 @@ class RouteServiceTest {
                 tuple(6L, "남위례역"),
                 tuple(4L, "신림역"));
 
-        assertThat(routeResponse)
-            .extracting(RouteResponse::getFare)
-            .isEqualTo(1450);
+        assertThat(routeResponse.getFare())
+            .extracting(FareResponse::getNormalFare, FareResponse::getTeenagerFare, FareResponse::getChildFare)
+            .containsExactly(1450, 880, 550);
     }
 }
