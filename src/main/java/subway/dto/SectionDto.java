@@ -7,7 +7,7 @@ public class SectionDto {
     private Long nextStationId;
     private Integer distance;
 
-    public SectionDto(Long lineId, Long stationId, Long nextStationId, Integer distance) {
+    public SectionDto(final Long lineId, final Long stationId, final Long nextStationId, final Integer distance) {
         this.lineId = lineId;
         this.stationId = stationId;
         this.nextStationId = nextStationId;

@@ -15,10 +15,10 @@ create table if not exists LINE
 
 create table if not exists SECTION
 (
-    id bigint not null auto_increment,
+    id bigint auto_increment not null,
     line_id bigint not null,
     station_id bigint not null,
-    next_station_id bigint,
+    next_station_id bigint not null,
     distance int not null,
     primary key (id),
     constraint not_same_station check (station_id != next_station_id)

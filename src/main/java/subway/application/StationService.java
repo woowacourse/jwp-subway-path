@@ -13,32 +13,32 @@ import java.util.stream.Collectors;
 public class StationService {
     private final StationDao stationDao;
 
-    public StationService(StationDao stationDao) {
+    public StationService(final StationDao stationDao) {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
+    public StationResponse saveStation(final StationRequest stationRequest) {
         Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+        return StationResponse.from(station);
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+    public StationResponse findStationResponseById(final Long id) {
+        return StationResponse.from(stationDao.findById(id));
     }
 
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
+    public void updateStation(final Long id, final StationRequest stationRequest) {
         stationDao.update(new Station(id, stationRequest.getName()));
     }
 
-    public void deleteStationById(Long id) {
+    public void deleteStationById(final Long id) {
         stationDao.deleteById(id);
     }
 }

@@ -6,7 +6,7 @@ public class StationDeleteRequest {
     public StationDeleteRequest() {
     }
 
-    public StationDeleteRequest(Long stationId) {
+    public StationDeleteRequest(final Long stationId) {
         this.stationId = stationId;
     }
 

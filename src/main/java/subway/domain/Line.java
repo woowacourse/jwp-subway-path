@@ -33,7 +33,7 @@ public class Line {
         }
 
         if (stations.contains(upper) && !stations.contains(lower)) {
-            insertLower(lower, upper ,distance);
+            insertLower(lower, upper, distance);
             return;
         }
 
@@ -163,7 +163,7 @@ public class Line {
             return true;
         if (o == null || getClass() != o.getClass())
             return false;
-        Line line = (Line)o;
+        Line line = (Line) o;
         return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
     }
 
