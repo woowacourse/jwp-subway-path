@@ -184,6 +184,8 @@ public final class Line {
     }
 
     public List<Section> getSections() {
-        return sections.getValue();
+        final List<Section> sections = this.sections.getValue();
+        sections.removeIf(section -> section.getDownward() == Station.TERMINAL);
+        return sections;
     }
 }

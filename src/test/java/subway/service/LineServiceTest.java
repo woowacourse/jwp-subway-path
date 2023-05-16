@@ -170,7 +170,7 @@ class LineServiceTest {
             lineService.createSection(1L, request);
 
             //then
-            assertThat(line.getSections()).hasSize(3);
+            assertThat(line.getSections()).hasSize(2);
         }
 
         @Test

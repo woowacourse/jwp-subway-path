@@ -27,7 +27,6 @@ public final class DijkstraSubwayRouteMap implements SubwayRouteMap {
         for (Line line : lines) {
             addSectionsIntoGraph(line.getSections(), graph);
         }
-        graph.removeVertex(Station.TERMINAL);
         return graph;
     }
 
