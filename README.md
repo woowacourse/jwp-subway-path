@@ -34,6 +34,8 @@
           "downBoundStationId" : ~
           "distance" : ~
     - [x] 제거 DELETE "/lines/{line_id}"/stations/{station_id}
+- [ ] 경로조회와 요금계산
+    - [ ] 경로조회와 요금계산 POST "/paths"
 
 
 ### 도메인
@@ -42,3 +44,5 @@
 - [x] Section: 역 + 연결(거리) + 역
 - [x] Sections: Section 여러 개
 - [x] LineStation: 특정 노선에 해당하는 Section 저장
+- [ ] Path: 최단거리
+- [ ] FeePolicy: 요금 계산
