@@ -46,10 +46,7 @@ class StationDaoTest {
 
         StationEntity findStationEntity = stationDao.findById(savedStationEntity.getId()).get();
 
-        assertAll(
-                () -> assertThat(findStationEntity.getId()).isEqualTo(savedStationEntity.getId()),
-                () -> assertThat(findStationEntity.getName()).isEqualTo(savedStationEntity.getName())
-        );
+        assertThat(findStationEntity).isEqualTo(savedStationEntity);
     }
 
     @Test
@@ -60,10 +57,7 @@ class StationDaoTest {
 
         StationEntity findStationEntity = stationDao.findByName(savedStationEntity.getName()).get();
 
-        assertAll(
-                () -> assertThat(findStationEntity.getId()).isEqualTo(savedStationEntity.getId()),
-                () -> assertThat(findStationEntity.getName()).isEqualTo(savedStationEntity.getName())
-        );
+        assertThat(findStationEntity).isEqualTo(savedStationEntity);
     }
 
     @Test
@@ -71,12 +65,12 @@ class StationDaoTest {
     void findAll() {
         StationEntity stationEntity1 = new StationEntity(null, "부산역");
         StationEntity stationEntity2 = new StationEntity(null, "서면역");
-        stationDao.insert(stationEntity1);
-        stationDao.insert(stationEntity2);
+        StationEntity savedStationEntity1 = stationDao.insert(stationEntity1);
+        StationEntity savedStationEntity2 = stationDao.insert(stationEntity2);
 
         List<StationEntity> stations = stationDao.findAll();
 
-        assertThat(stations).hasSize(2);
+        assertThat(stations).containsExactly(savedStationEntity1, savedStationEntity2);
     }
 
     @Test
