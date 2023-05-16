@@ -7,6 +7,7 @@ import subway.dto.*;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
 import subway.repository.StationRepository;
+import subway.exeption.StationNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -88,7 +89,7 @@ public class LineServiceImpl implements LineService {
         final Station downStation = stationRepository.findById(request.getDownStationId());
 
         if (upStation == null || downStation == null) {
-            throw new IllegalArgumentException("존재하는 역의 id를 입력해 주세요.");
+            throw new StationNotFoundException("존재하는 역의 id를 입력해 주세요.");
         }
 
         final int distance = request.getDistance();
@@ -111,7 +112,7 @@ public class LineServiceImpl implements LineService {
         final Station downStation = stationRepository.findById(request.getDownStationId());
 
         if (upStation == null || downStation == null) {
-            throw new IllegalArgumentException("존재하는 역의 id를 입력해 주세요.");
+            throw new StationNotFoundException("존재하는 역의 id를 입력해 주세요.");
         }
 
         final int distance = request.getDistance(); // upStation ~ newStation

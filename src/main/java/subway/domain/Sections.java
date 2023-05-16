@@ -1,6 +1,8 @@
 package subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.exeption.InvalidDistanceException;
+import subway.exeption.InvalidStationException;
 
 import java.util.*;
 import java.util.function.Function;
@@ -59,7 +61,7 @@ public class Sections {
             return upLineStation;
         }
 
-        throw new IllegalArgumentException("부적절한 입력입니다.");
+        throw new InvalidStationException("부적절한 입력입니다.");
     }
 
     private boolean isNewStation(final Station station) {
@@ -120,13 +122,13 @@ public class Sections {
 
     private void validateDistance(final int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("역 사이 거리는 양의 정수로 입력해 주세요.");
+            throw new InvalidDistanceException("역 사이 거리는 양의 정수로 입력해 주세요.");
         }
     }
 
     private void validateStations(final Station upLineStation, final Station downLineStation) {
         if (upLineStation.equals(downLineStation)) {
-            throw new IllegalArgumentException("서로 다른 역을 입력해 주세요.");
+            throw new InvalidStationException("서로 다른 역을 입력해 주세요.");
         }
     }
 
@@ -135,7 +137,7 @@ public class Sections {
             final DefaultWeightedEdge closestEdge = defaultWeightedEdges.iterator().next();
             return graph.getUpStation(closestEdge);
         }
-        throw new IllegalStateException("이전 역이 존재하지 않습니다.");
+        throw new InvalidStationException("이전 역이 존재하지 않습니다.");
     }
 
     private Station findNextStation(final Set<DefaultWeightedEdge> outgoingEdges) {
@@ -143,7 +145,7 @@ public class Sections {
             final DefaultWeightedEdge closestEdge = outgoingEdges.iterator().next();
             return graph.getDownStation(closestEdge);
         }
-        throw new IllegalStateException("다음 역이 존재하지 않습니다.");
+        throw new InvalidStationException("다음 역이 존재하지 않습니다.");
     }
 
     private void addStationToUpLine(final Station newStation, final Station downLineStation, final int distance) {
@@ -162,7 +164,7 @@ public class Sections {
         final DefaultWeightedEdge edge = graph.getSection(downLinePreviousStation, downLineStation);
         final int distanceBetweenDownLinePreviousStationAndDownLineStation = (int) graph.getSectionDistance(edge);
         if (distanceBetweenDownLinePreviousStationAndDownLineStation <= distance) {
-            throw new IllegalArgumentException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
+            throw new InvalidDistanceException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
         }
 
         final int distanceBetweenDownLinePreviousStationAndNewStation = distanceBetweenDownLinePreviousStationAndDownLineStation - distance;
@@ -183,7 +185,7 @@ public class Sections {
         DefaultWeightedEdge edge = graph.getSection(upLineStation, upLineNextStation);
         int distanceBetweenUpLineStationAndUpLineNextStation = (int) graph.getSectionDistance(edge);
         if (distanceBetweenUpLineStationAndUpLineNextStation <= distance) {
-            throw new IllegalArgumentException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
+            throw new InvalidDistanceException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
         }
 
         final int distanceBetweenNewStationAndUpLineNextStation = distanceBetweenUpLineStationAndUpLineNextStation - distance;

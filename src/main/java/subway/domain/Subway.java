@@ -1,9 +1,10 @@
 package subway.domain;
 
+import subway.exeption.LineNotFoundException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 public class Subway {
@@ -49,7 +50,7 @@ public class Subway {
     public Sections findSectionsOf(final Line line) {
         return sections.stream().filter(element -> element.isSameLine(line))
                 .findFirst()
-                .orElseThrow(() -> new NoSuchElementException("해당 노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new LineNotFoundException("해당 노선이 존재하지 않습니다."));
     }
 
     public List<Station> findStationsInOrder(final Line line) {

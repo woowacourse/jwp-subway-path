@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.exeption.InvalidDistanceException;
+import subway.exeption.InvalidStationException;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +15,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.mockito.Mockito.mock;
 import static subway.fixture.LineFixture.LINE_999;
 import static subway.fixture.StationFixture.*;
 
@@ -136,7 +137,7 @@ class SectionsTest {
 
             assertThatThrownBy(
                     () -> sections.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(InvalidDistanceException.class)
                     .hasMessageContaining("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
         }
 
@@ -156,7 +157,7 @@ class SectionsTest {
 
             assertThatThrownBy(
                     () -> sections.addStation(NEW_STATION, SAPYEONG_STATION, distance))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(InvalidDistanceException.class)
                     .hasMessageContaining("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
         }
     }
@@ -172,7 +173,7 @@ class SectionsTest {
             sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 4);
             assertThatThrownBy(
                     () -> sections.addStation(SAPYEONG_STATION, SAPYEONG_STATION, 2))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(InvalidStationException.class)
                     .hasMessageContaining("서로 다른 역을 입력해 주세요.");
         }
 
@@ -183,7 +184,7 @@ class SectionsTest {
             final Sections sections = new Sections(LINE_999, graph);
             assertThatThrownBy(
                     () -> sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, distance))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(InvalidDistanceException.class)
                     .hasMessageContaining("역 사이 거리는 양의 정수로 입력해 주세요.");
         }
 
@@ -194,7 +195,7 @@ class SectionsTest {
             final Sections sections = createSections();
             assertThatThrownBy(
                     () -> sections.createInitialSection(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, distance))
-                    .isInstanceOf(IllegalArgumentException.class)
+                    .isInstanceOf(InvalidDistanceException.class)
                     .hasMessageContaining("역 사이 거리는 양의 정수로 입력해 주세요.");
         }
     }

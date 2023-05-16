@@ -3,8 +3,9 @@
 ### 1단계 리팩터링 목록
 
 - [x] README 문서 업데이트
-- [ ] [`IllegalArgumentException`에 대한 처리 400대 VS 500대](https://github.com/woowacourse/jwp-subway-path/pull/35#discussion_r1193146265)
+- [x] [`IllegalArgumentException`에 대한 처리 400대 VS 500대](https://github.com/woowacourse/jwp-subway-path/pull/35#discussion_r1193146265)
 - [ ] domain Line이 Station과의 관계를 드러낼 수 있도록 수정하기 => 계층적 구조 드러내기
+  - Line이 Sections를 가지고, Sections는 Graph만 가지도록 수정하려고 했지만.... 너무 대 공사가 되어서, 이번 리뷰요청에서 하지 못했어요ㅠㅠ
 - [ ] 도메인 내 주석 없애기 => 최대한 코드만으로 표현하자!
 - [ ] Sections 중복 코드 없애기
 - [ ] MockMVC 사용한 테스트 코드 작성
