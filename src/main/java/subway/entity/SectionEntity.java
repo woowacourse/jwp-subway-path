@@ -20,13 +20,6 @@ public class SectionEntity {
         this.distance = distance;
     }
 
-//    public static List<SectionEntity> of(Line line, Long id) {
-//        return line.getSections().stream()
-//                .map((section -> new SectionEntity(section.getSource().getName(), section.getTarget().getName(), id,
-//                        section.getDistance())))
-//                .collect(Collectors.toList());
-//    }
-
     public Long getId() {
         return id;
     }
