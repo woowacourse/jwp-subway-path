@@ -14,8 +14,7 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
-
-    private RowMapper<SectionEntity> sectionMapper = (rs, rowNum) ->
+    private final RowMapper<SectionEntity> sectionMapper = (rs, rowNum) ->
             new SectionEntity(
                     rs.getLong("line_id"),
                     rs.getLong("left_station_id"),
@@ -32,8 +31,9 @@ public class SectionDao {
 
     public SectionEntity insert(SectionEntity sectionEntity) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(sectionEntity);
-        long savedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
-        return new SectionEntity(savedId, sectionEntity.getLeftStationId(), sectionEntity.getRightStationId(),
+        simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        return new SectionEntity(sectionEntity.getLineId(), sectionEntity.getLeftStationId(),
+                sectionEntity.getRightStationId(),
                 sectionEntity.getDistance());
     }
 
