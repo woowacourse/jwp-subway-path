@@ -107,6 +107,10 @@ public class Line {
         return sections.isSizeOne();
     }
 
+    public List<Station> sortStation() {
+        return sections.sortStation();
+    }
+
     public Long getId() {
         return id;
     }

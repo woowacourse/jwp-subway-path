@@ -133,4 +133,28 @@ class SectionsTest {
         assertThat(result.getRightStation()).isEqualTo(sections.get(1).getRightStation());
         assertThat(result.getDistance()).isEqualTo(sections.get(0).getDistance() + sections.get(1).getDistance());
     }
+
+    @Test
+    @DisplayName("정렬된 순서로 역들을 반환한다.(상향종점 -> 하향종점)")
+    void sort_station() {
+        // given
+        List<Section> sections = List.of(
+                new Section(new Station(1L, "잠실"), new Station(2L, "선릉"), 10),
+                new Section(new Station(3L, "강남"), new Station(4L, "을지로"), 10),
+        new Section(new Station(2L, "선릉"), new Station(3L, "강남"), 10)
+        );
+        Sections lineSection = new Sections(sections);
+
+        List<Station> expect = List.of(
+                new Station(1L, "잠실"),
+                new Station(2L, "선릉"),
+                new Station(3L, "강남"),
+                new Station(4L,"을지로"));
+
+        // when
+        List<Station> result = lineSection.sortStation();
+
+        // then
+        assertThat(result).usingRecursiveComparison().isEqualTo(expect);
+    }
 }

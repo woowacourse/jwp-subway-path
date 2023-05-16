@@ -56,6 +56,28 @@ public class LineRepository {
             return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
         }
 
+        List<Section> sections = getSections(sectionStationEntities);
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+    }
+
+    public Line findByStationId(Long id) {
+        LineEntity lineEntity = lineDao.findByStationId(id).orElseThrow(NotFoundLineException::new);
+        List<SectionStationEntity> sectionStationEntities = sectionDao.findByLineId(lineEntity.getId());
+
+        List<Section> sections = getSections(sectionStationEntities);
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+    }
+
+    public Line findById(Long id) {
+        LineEntity lineEntity = lineDao.findById(id)
+                .orElseThrow(NotFoundLineException::new);
+        List<SectionStationEntity> sectionStationEntities = sectionDao.findByLineId(lineEntity.getId());
+
+        List<Section> sections = getSections(sectionStationEntities);
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+    }
+
+    private static List<Section> getSections(List<SectionStationEntity> sectionStationEntities) {
         List<Section> sections = new ArrayList<>();
         for (SectionStationEntity sectionStationEntity : sectionStationEntities) {
             sections.add(new Section(
@@ -65,7 +87,12 @@ public class LineRepository {
                     sectionStationEntity.getDistance())
             );
         }
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+        return sections;
+    }
+
+    public Station findByNameAndLineId(String baseStation, Long lineId) {
+        StationEntity stationEntity = stationDao.findByNameAndLineId(baseStation, lineId).orElseThrow(NotFoundStationException::new);
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
     public List<Station> saveInitStations(Section section, Long lineId) {
@@ -86,11 +113,6 @@ public class LineRepository {
                         insertedStationEntities.get(DOWNBOUND_STATION_INDEX).getName()));
     }
 
-    public Station findByNameAndLineId(String baseStation, Long lineId) {
-        StationEntity stationEntity = stationDao.findByNameAndLineId(baseStation, lineId).orElseThrow(NotFoundStationException::new);
-        return new Station(stationEntity.getId(), stationEntity.getName());
-    }
-
     public Station saveStation(final Station insertStation, final Long lineId) {
         StationEntity insertedStation = stationDao.insert(new StationEntity(insertStation.getName(), lineId));
         return new Station(insertedStation.getId(), insertedStation.getName());
@@ -107,25 +129,9 @@ public class LineRepository {
     public void updateInterSection(final Long lineId, final Section deleteSection, final List<Section> sections) {
         sectionDao.deleteById(deleteSection.getId());
         List<SectionEntity> sectionEntities = sections.stream()
-            .map(section -> new SectionEntity(section.getLeftStation().getId(), section.getRightStation().getId(), lineId, section.getDistance()))
-            .collect(Collectors.toList());
+                .map(section -> new SectionEntity(section.getLeftStation().getId(), section.getRightStation().getId(), lineId, section.getDistance()))
+                .collect(Collectors.toList());
         sectionDao.insertBoth(sectionEntities);
-    }
-
-    public Line findByStationId(Long id) {
-        LineEntity lineEntity = lineDao.findByStationId(id).orElseThrow(NotFoundLineException::new);
-        List<SectionStationEntity> sectionStationEntities = sectionDao.findByLineId(lineEntity.getId());
-
-        List<Section> sections = new ArrayList<>();
-        for (SectionStationEntity sectionStationEntity : sectionStationEntities) {
-            sections.add(new Section(
-                    sectionStationEntity.getId(),
-                    new Station(sectionStationEntity.getLeftStationId(), sectionStationEntity.getLeftStationName()),
-                    new Station(sectionStationEntity.getRightStationId(), sectionStationEntity.getRightStationName()),
-                    sectionStationEntity.getDistance())
-            );
-        }
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
     }
 
     public Station findStationById(Long stationId) {

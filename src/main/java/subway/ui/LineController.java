@@ -22,4 +22,10 @@ public class LineController {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<LineResponse> readLine(@PathVariable final Long id) {
+        LineResponse line = lineService.readLine(id);
+        return ResponseEntity.ok(line);
+    }
 }

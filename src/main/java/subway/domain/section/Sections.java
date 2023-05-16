@@ -2,6 +2,7 @@ package subway.domain.section;
 
 import subway.domain.station.Station;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -109,6 +110,21 @@ public class Sections {
 
     public boolean isSizeOne() {
         return sections.size() == 1;
+    }
+
+    public List<Station> sortStation() {
+        if (sections.isEmpty()) {
+            return List.of();
+        }
+        List<Station> sortedStation = new ArrayList<>();
+        Station station = findUpBoundStation();
+        sortedStation.add(station);
+        while(sortedStation.size() <= sections.size()) {
+            Section section = findSection(station, "right");
+            sortedStation.add(section.getRightStation());
+            station = section.getRightStation();
+        }
+        return sortedStation;
     }
 
     public List<Section> getSections() {

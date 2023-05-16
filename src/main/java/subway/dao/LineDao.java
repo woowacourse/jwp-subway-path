@@ -60,4 +60,13 @@ public class  LineDao {
             return Optional.empty();
         }
     }
+
+    public Optional<LineEntity> findById(Long id) {
+        String sql = "SELECT id, name, color FROM LINE WHERE id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
 }
