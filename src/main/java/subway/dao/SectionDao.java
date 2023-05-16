@@ -44,8 +44,8 @@ public class SectionDao {
         return jdbcTemplate.query(sql, sectionMapper, lineId);
     }
 
-    public void deleteByStationId(Long leftStationId, Long rightStationId) {
-        String sql = "DELETE FROM SECTION WHERE LEFT_STATION_ID = ? AND RIGHT_STATION_ID = ?";
-        jdbcTemplate.update(sql, leftStationId, rightStationId);
+    public void deleteByStationId(Long id) {
+        String sql = "DELETE FROM SECTION WHERE ID = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

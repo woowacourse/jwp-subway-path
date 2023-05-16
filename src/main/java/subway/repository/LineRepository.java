@@ -75,11 +75,11 @@ public class LineRepository {
         lineDao.deleteById(id);
     }
 
-    public void saveSection(SectionEntity sectionEntity) {
-        sectionDao.insert(sectionEntity);
+    public SectionEntity saveSection(SectionEntity sectionEntity) {
+        return sectionDao.insert(sectionEntity);
     }
 
-    public void deleteSection(Long leftStationId, Long rightStationId) {
-        sectionDao.deleteByStationId(leftStationId, rightStationId);
+    public void deleteSection(Long sectionId) {
+        sectionDao.deleteByStationId(sectionId);
     }
 }

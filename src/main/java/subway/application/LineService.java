@@ -109,7 +109,6 @@ public class LineService {
 
     private void leftStationUpdate(Line line, Station leftStation, Station rightStation, int distance) {
         Section section = line.findSectionByLeftStation(leftStation);
-        Station originLeft = section.getLeft();
         Station originRight = section.getRight();
         int originDistance = section.getDistance();
 
@@ -117,7 +116,7 @@ public class LineService {
             throw new InvalidDistanceException("기존 거리보다 멀 수 없습니다.");
         }
 
-        lineRepository.deleteSection(originLeft.getId(), originRight.getId());
+        lineRepository.deleteSection(section.getId());
         lineRepository.saveSection(
                 new SectionEntity(null, line.getId(), leftStation.getId(), rightStation.getId(), distance));
         lineRepository.saveSection(new SectionEntity(null, line.getId(), rightStation.getId(), originRight.getId(),
@@ -127,14 +126,13 @@ public class LineService {
     private void rightStationUpdate(Line line, Station leftStation, Station rightStation, int distance) {
         Section section = line.findSectionByRightStation(rightStation);
         Station originLeft = section.getLeft();
-        Station originRight = section.getRight();
         int originDistance = section.getDistance();
 
         if (distance >= originDistance) {
             throw new InvalidDistanceException("기존 거리보다 멀 수 없습니다.");
         }
 
-        lineRepository.deleteSection(originLeft.getId(), originRight.getId());
+        lineRepository.deleteSection(section.getId());
         lineRepository.saveSection(new SectionEntity(null, line.getId(), originLeft.getId(), leftStation.getId(),
                 originDistance - distance));
         lineRepository.saveSection(
@@ -152,7 +150,7 @@ public class LineService {
 
         if (line.hasOneSection()) {
             Section section = line.getSections().get(0);
-            lineRepository.deleteSection(section.getLeft().getId(), section.getRight().getId());
+            lineRepository.deleteSection(section.getId());
             return;
         }
 
@@ -178,8 +176,8 @@ public class LineService {
         Section leftSection = line.findSectionByRightStation(station);
         Section rightSection = line.findSectionByLeftStation(station);
 
-        lineRepository.deleteSection(leftSection.getLeft().getId(), leftSection.getRight().getId());
-        lineRepository.deleteSection(rightSection.getLeft().getId(), rightSection.getRight().getId());
+        lineRepository.deleteSection(leftSection.getId());
+        lineRepository.deleteSection(rightSection.getId());
 
         int newDistance = leftSection.getDistance() + rightSection.getDistance();
         lineRepository.saveSection(
@@ -189,11 +187,11 @@ public class LineService {
 
     private void deleteLastSectionAtLeft(Line line, Station station) {
         Section section = line.findSectionByLeftStation(station);
-        lineRepository.deleteSection(section.getLeft().getId(), section.getRight().getId());
+        lineRepository.deleteSection(section.getId());
     }
 
     private void deleteLastSectionAtRight(Line line, Station station) {
         Section section = line.findSectionByRightStation(station);
-        lineRepository.deleteSection(section.getLeft().getId(), section.getRight().getId());
+        lineRepository.deleteSection(section.getId());
     }
 }

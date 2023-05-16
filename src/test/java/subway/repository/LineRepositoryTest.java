@@ -157,10 +157,11 @@ class LineRepositoryTest {
         Line savedLine = lineRepository.save(line);
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "잠실역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "강남역"));
-        lineRepository.saveSection(new SectionEntity(null, savedLine.getId(), stationEntity1.getId(),
-                stationEntity2.getId(), 10));
+        SectionEntity savedSection = lineRepository.saveSection(
+                new SectionEntity(null, savedLine.getId(), stationEntity1.getId(),
+                        stationEntity2.getId(), 10));
 
-        lineRepository.deleteSection(stationEntity1.getId(), stationEntity2.getId());
+        lineRepository.deleteSection(savedSection.getId());
 
         assertThat(lineRepository.findById(savedLine.getId()).getSections()).hasSize(0);
     }

@@ -80,8 +80,7 @@ class SectionDaoTest {
                 stationEntity2.getId(), 10);
         SectionEntity savedSectionEntity = sectionDao.insert(sectionEntity);
 
-        sectionDao.deleteByStationId(savedSectionEntity.getLeftStationId(),
-                savedSectionEntity.getRightStationId());
+        sectionDao.deleteByStationId(savedSectionEntity.getId());
 
         assertThat(sectionDao.findByLineId(lineEntity.getId()).isEmpty()).isTrue();
     }
