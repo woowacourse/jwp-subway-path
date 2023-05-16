@@ -3,20 +3,11 @@ package subway.domain;
 import java.util.Objects;
 
 public class Station {
-    private static final String INITIAL_VALUE = "기본역";
 
     private Long id;
     private Name name;
 
     private Station() {
-    }
-
-    /**
-     * insert를 할 떄
-     * TODO 삭제하기 -> insert문 두 개로
-     */
-    public Station(Long id) {
-        this(id, INITIAL_VALUE);
     }
 
     public Station(String name) {

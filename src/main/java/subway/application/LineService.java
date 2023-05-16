@@ -19,23 +19,23 @@ import static java.util.stream.Collectors.toList;
 public class LineService {
 
     private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
     public LineService(LineRepository lineRepository, StationRepository stationRepository, SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
     }
 
     public Long saveLine(LineRequest request) {
         final Line line = new Line(request.getName(), request.getColor());
-        final Long lineId = lineRepository.insert(line);
 
-        final Section section = new Section(
-                request.getDistance(),
-                new Station(request.getUpStationId()),
-                new Station(request.getDownStationId()),
-                lineId
-        );
+        final Long lineId = lineRepository.insert(line);
+        final Station upStation = stationRepository.findById(request.getUpStationId());
+        final Station downStation = stationRepository.findById(request.getDownStationId());
+
+        final Section section = new Section(request.getDistance(), upStation, downStation, lineId);
         sectionRepository.insert(section);
 
         return lineId;
