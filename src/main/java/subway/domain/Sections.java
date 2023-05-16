@@ -106,13 +106,8 @@ public class Sections {
     }
 
     private void validateConnection(Section section) {
-        boolean isPresentSameStartStation = sections.stream()
-                .anyMatch(it -> it.isSameStartStation(section.getStartStation()) ||
-                        it.isSameStartStation(section.getEndStation()));
-
-        boolean isPresentSameEndStation = sections.stream()
-                .anyMatch(it -> it.isSameEndStation(section.getStartStation()) ||
-                        it.isSameEndStation(section.getEndStation()));
+        boolean isPresentSameStartStation = isPresentSameStartStation(section);
+        boolean isPresentSameEndStation = isPresentSameEndStation(section);
 
         if (isPresentSameStartStation && isPresentSameEndStation) {
             throw new GlobalException("이미 연결되어 있는 구간입니다.");
@@ -121,6 +116,18 @@ public class Sections {
         if (!isPresentSameStartStation && !isPresentSameEndStation) {
             throw new GlobalException("연결되어 있지 않은 구간입니다.");
         }
+    }
+
+    private boolean isPresentSameStartStation(Section section) {
+        return sections.stream()
+                .anyMatch(it -> it.isSameStartStation(section.getStartStation()) ||
+                        it.isSameStartStation(section.getEndStation()));
+    }
+
+    private boolean isPresentSameEndStation(Section section) {
+        return sections.stream()
+                .anyMatch(it -> it.isSameEndStation(section.getStartStation()) ||
+                        it.isSameEndStation(section.getEndStation()));
     }
 
     private Section findSectionForAdd(Section newSection) {
@@ -182,41 +189,31 @@ public class Sections {
     }
 
     public Station getDownStation() {
-        for (Section savedSection : sections) {
-            int count = 0;
-            for (Section section : sections) {
-                if (section.equals(savedSection)) {
-                    continue;
-                }
-                if (section.getStartStation().equals(savedSection.getEndStation())) {
-                    count++;
-                    break;
-                }
-            }
-            if (count == 0) {
-                return savedSection.getEndStation();
-            }
-        }
-        throw new GlobalException("하행 종점이 존재하지 않습니다.");
+        return sections.stream()
+                .filter(this::isSectionHavingDownStation)
+                .findAny()
+                .orElseThrow(() -> new GlobalException("하행 종점이 존재하지 않습니다."))
+                .getEndStation();
+    }
+
+    private boolean isSectionHavingDownStation(Section targetSection) {
+        return sections.stream()
+                .noneMatch(section -> !section.equals(targetSection) &&
+                        section.getStartStation().equals(targetSection.getEndStation()));
     }
 
     public Station getUpStation() {
-        for (Section savedSection : sections) {
-            int count = 0;
-            for (Section section : sections) {
-                if (section.equals(savedSection)) {
-                    continue;
-                }
-                if (section.getEndStation().equals(savedSection.getStartStation())) {
-                    count++;
-                    break;
-                }
-            }
-            if (count == 0) {
-                return savedSection.getStartStation();
-            }
-        }
-        throw new GlobalException("상행 종점이 존재하지 않습니다.");
+        return sections.stream()
+                .filter(this::isSectionHavingUpStation)
+                .findAny()
+                .orElseThrow(() -> new GlobalException("상행 종점이 존재하지 않습니다."))
+                .getStartStation();
+    }
+
+    private boolean isSectionHavingUpStation(Section targetSection) {
+        return sections.stream()
+                .noneMatch(section -> !section.equals(targetSection) &&
+                        section.getEndStation().equals(targetSection.getStartStation()));
     }
 
     public boolean isEmpty() {
