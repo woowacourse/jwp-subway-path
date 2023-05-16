@@ -7,6 +7,6 @@ INSERT INTO station(name) VALUES ('잠실');
 INSERT INTO station(name) VALUES ('잠실새내');
 INSERT INTO station(name) VALUES ('종합운동장');
 
-INSERT INTO station(name) VALUES ('노량진');
-INSERT INTO station(name) VALUES ('용산');
 INSERT INTO station(name) VALUES ('서울역');
+INSERT INTO station(name) VALUES ('용산');
+INSERT INTO station(name) VALUES ('노량진');

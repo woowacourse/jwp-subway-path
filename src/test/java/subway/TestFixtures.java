@@ -11,9 +11,9 @@ public class TestFixtures {
     public static final long 잠실새내 = 4L;
     public static final long 종합운동장 = 5L;
 
-    public static final long 노량진 = 6L;
+    public static final long 서울역 = 6L;
     public static final long 용산 = 7L;
-    public static final long 서울역 = 8L;
+    public static final long 노량진 = 8L;
 
 
 }
