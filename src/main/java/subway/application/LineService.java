@@ -35,9 +35,10 @@ public class LineService {
         return LineResponse.from(persistLine);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
+    public List<LineResponse> findLines() {
+        final List<Line> lines = lineDao.findAll();
+
+        return lines.stream()
                 .map(line -> {
                     final Paths paths = pathDao.findByLineId(line.getId());
                     return LineResponse.of(line, paths);
@@ -45,11 +46,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
-
-    public LineResponse findLineResponseById(Long id) {
+    public LineResponse findLineById(Long id) {
         final Line line = lineDao.findById(id);
         final Paths paths = pathDao.findByLineId(id);
 
