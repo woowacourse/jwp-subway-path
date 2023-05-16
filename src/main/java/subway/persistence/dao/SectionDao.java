@@ -14,7 +14,7 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
 
-    private final RowMapper<SectionRow> sectionMapper = (rs, cn) -> new SectionRow(
+    private final RowMapper<SectionRow> rowMapper = (rs, cn) -> new SectionRow(
             rs.getLong("id"),
             rs.getLong("line_id"),
             rs.getString("up_bound"),
@@ -28,7 +28,7 @@ public class SectionDao {
 
     public List<SectionRow> selectAllOfLinePropertyId(Long linePropertyId) {
         String sectionSql = "select id, line_id, up_bound, down_bound, distance from section where line_id = ?";
-        return jdbcTemplate.query(sectionSql, sectionMapper, linePropertyId);
+        return jdbcTemplate.query(sectionSql, rowMapper, linePropertyId);
     }
 
     public void insertAll(List<SectionRow> rows) {
@@ -46,5 +46,10 @@ public class SectionDao {
     public void removeSections(Long lineId) {
         String sql = "delete from section where line_id = ?";
         jdbcTemplate.update(sql, lineId);
+    }
+
+    public List<SectionRow> selectAll() {
+        String sql = "select * from section";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 }

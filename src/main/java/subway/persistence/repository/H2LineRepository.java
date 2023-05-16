@@ -67,9 +67,21 @@ public class H2LineRepository implements LineRepository {
     }
 
     public List<Line> findAll() {
-        return linePropertyDao.selectAll().stream()
-                .map(row -> findById(row.getId()))
-                .collect(Collectors.toList());
+        List<LinePropertyRow> linePropertyRows = linePropertyDao.selectAll();
+        List<SectionRow> sectionRows = sectionDao.selectAll();
+        Map<String, Long> stationIds = getStationNameIdSet(sectionRows);
+
+        return linePropertyRows.stream()
+                .map(propertyRow -> new Line(
+                        new LineProperty(propertyRow.getId(), propertyRow.getName(), propertyRow.getColor()),
+                        sectionRows.stream()
+                                .filter(sectionRow -> propertyRow.getId().equals(sectionRow.getLineId()))
+                                .map(sectionRow -> new Section(
+                                        new Station(stationIds.get(sectionRow.getUpBound()), sectionRow.getUpBound()),
+                                        new Station(stationIds.get(sectionRow.getDownBound()), sectionRow.getDownBound()),
+                                        new Distance(sectionRow.getDistance())
+                                )).collect(Collectors.toList()))
+                ).collect(Collectors.toList());
     }
 
     public void insert(Line line) {
