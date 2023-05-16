@@ -2,6 +2,7 @@ package subway.controller;
 
 import java.net.URI;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +28,7 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@RequestBody LineRequest lineRequest) {
+    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineRequest lineRequest) {
         LineResponse line = lineService.saveLine(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
@@ -49,14 +50,15 @@ public class LineController {
     }
 
     @PostMapping("/{id}/sections")
-    public ResponseEntity<Void> createSection1(@PathVariable Long id, @RequestBody SectionCreateRequest request) {
+    public ResponseEntity<Void> createSection(@PathVariable Long id,
+                                              @RequestBody @Valid SectionCreateRequest request) {
         lineService.createSection(id, request);
         return ResponseEntity.created(URI.create("/sections")).build();
     }
 
     @DeleteMapping("/{id}/sections")
-    public ResponseEntity<Void> deleteSection2(@PathVariable Long id,
-                                               @RequestBody SectionDeleteRequest request) {
+    public ResponseEntity<Void> deleteSection(@PathVariable Long id,
+                                              @RequestBody @Valid SectionDeleteRequest request) {
         lineService.deleteSection(id, request);
         return ResponseEntity.noContent().build();
     }
