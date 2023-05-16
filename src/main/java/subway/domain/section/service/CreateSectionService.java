@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.section.dao.SectionDao;
 import subway.domain.section.domain.Direction;
+import subway.domain.section.dto.SectionCreateRequest;
 import subway.domain.section.entity.SectionEntity;
 
 import java.util.List;
@@ -19,50 +20,87 @@ public class CreateSectionService {
     }
 
     @Transactional
-    public List<SectionEntity> createSection(
-            final Long lineId,
-            final Long baseId,
-            final Long addedId,
-            final Boolean direction,
-            final Integer distance
-    ) {
-        final Optional<SectionEntity> section = sectionDao.findNeighborSection(lineId, baseId, Direction.from(direction));
+    public List<SectionEntity> createSection(SectionCreateRequest sectionCreateRequest) {
+        final Optional<SectionEntity> section = sectionDao.findNeighborSection(
+                sectionCreateRequest.getLineId(),
+                sectionCreateRequest.getBaseId(),
+                Direction.from(sectionCreateRequest.getDirection())
+        );
 
         if (section.isEmpty()) {
-            return createSectionWhenNoNeighbor(lineId, baseId, addedId, direction, distance);
+            return createSectionWhenNoNeighbor(sectionCreateRequest);
         }
 
         final SectionEntity existSectionEntity = section.get();
 
-        if (existSectionEntity.getDistance() <= distance) {
+        if (existSectionEntity.getDistance() <= sectionCreateRequest.getDistance()) {
             throw new IllegalArgumentException("새롭게 등록하는 구간의 거리는 기존에 존재하는 구간의 거리보다 작아야합니다.");
         }
 
-        return divideSectionByAddedStation(lineId, addedId, direction, distance, existSectionEntity);
+        return divideSectionByAddedStation(sectionCreateRequest, existSectionEntity);
     }
 
-    private List<SectionEntity> createSectionWhenNoNeighbor(final Long lineId, final Long baseId, final Long addedId, final Boolean direction, final Integer distance) {
-        if (Direction.from(direction) == Direction.UP) {
-            final SectionEntity newSectionEntity = new SectionEntity(lineId, addedId, baseId, distance);
+    private List<SectionEntity> createSectionWhenNoNeighbor(final SectionCreateRequest request) {
+        if (Direction.from(request.getDirection()) == Direction.UP) {
+            final SectionEntity newSectionEntity = new SectionEntity.Builder()
+                    .setLineId(request.getLineId())
+                    .setUpStationId(request.getAddedId())
+                    .setDownStationId(request.getBaseId())
+                    .setDistance(request.getDistance())
+                    .build();
+
             final SectionEntity savedSectionEntity = sectionDao.insert(newSectionEntity);
             return List.of(savedSectionEntity);
         }
-        final SectionEntity newSectionEntity = new SectionEntity(lineId, baseId, addedId, distance);
+
+        final SectionEntity newSectionEntity = new SectionEntity.Builder()
+                .setLineId(request.getLineId())
+                .setUpStationId(request.getBaseId())
+                .setDownStationId(request.getAddedId())
+                .setDistance(request.getDistance())
+                .build();
+
         final SectionEntity savedSectionEntity = sectionDao.insert(newSectionEntity);
         return List.of(savedSectionEntity);
     }
 
-    private List<SectionEntity> divideSectionByAddedStation(final Long lineId, final Long addedId, final Boolean direction, final Integer distance, final SectionEntity existSectionEntity) {
-        if (Direction.from(direction) == Direction.UP) {
-            final SectionEntity upSectionEntity = new SectionEntity(lineId, existSectionEntity.getUpStationId(), addedId, existSectionEntity.getDistance() - distance);
+    private List<SectionEntity> divideSectionByAddedStation(final SectionCreateRequest request, final SectionEntity existSectionEntity) {
+        if (Direction.from(request.getDirection()) == Direction.UP) {
+            final SectionEntity upSectionEntity = new SectionEntity.Builder()
+                    .setLineId(request.getLineId())
+                    .setUpStationId(existSectionEntity.getUpStationId())
+                    .setDownStationId(request.getAddedId())
+                    .setDistance(existSectionEntity.getDistance() - request.getDistance())
+                    .build();
             sectionDao.updateStationInSection(upSectionEntity);
-            final SectionEntity downSectionEntity = new SectionEntity(lineId, addedId, existSectionEntity.getDownStationId(), distance);
+
+            final SectionEntity downSectionEntity = new SectionEntity.Builder()
+                    .setLineId(request.getLineId())
+                    .setUpStationId(request.getAddedId())
+                    .setDownStationId(existSectionEntity.getDownStationId())
+                    .setDistance(request.getDistance())
+                    .build();
+
             final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
             return List.of(upSectionEntity, downSavedSectionEntity);
         }
-        final SectionEntity upSectionEntity = new SectionEntity(lineId, existSectionEntity.getUpStationId(), addedId, distance);
+
+        final SectionEntity upSectionEntity = new SectionEntity.Builder()
+                .setLineId(request.getLineId())
+                .setUpStationId(existSectionEntity.getUpStationId())
+                .setDownStationId(request.getAddedId())
+                .setDistance(request.getDistance())
+                .build();
+
         sectionDao.updateStationInSection(upSectionEntity);
-        final SectionEntity downSectionEntity = new SectionEntity(lineId, addedId, existSectionEntity.getDownStationId(), existSectionEntity.getDistance() - distance);
+
+        final SectionEntity downSectionEntity = new SectionEntity.Builder()
+                .setLineId(request.getLineId())
+                .setUpStationId(request.getAddedId())
+                .setDownStationId(existSectionEntity.getDownStationId())
+                .setDistance(existSectionEntity.getDistance() - request.getDistance())
+                .build();
+
         final SectionEntity downSavedSectionEntity = sectionDao.insert(downSectionEntity);
         return List.of(upSectionEntity, downSavedSectionEntity);
     }

@@ -9,6 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.section.dao.SectionDao;
+import subway.domain.section.dto.SectionCreateRequest;
 import subway.domain.section.entity.SectionEntity;
 import subway.domain.section.service.CreateSectionService;
 
@@ -37,7 +38,7 @@ class CreateSectionServiceTest {
             final SectionEntity inputSectionEntity = invocation.getArgument(0);
             return inputSectionEntity;
         });
-        final List<SectionEntity> sectionEntities = createSectionService.createSection(1L, 2L, 3L, true, 5);
+        final List<SectionEntity> sectionEntities = createSectionService.createSection(new SectionCreateRequest(1L, 2L, 3L, true, 5));
         assertThat(sectionEntities).containsExactly(new SectionEntity(null, 1L, 3L, 2L, 5));
     }
 
@@ -49,7 +50,7 @@ class CreateSectionServiceTest {
             final SectionEntity inputSectionEntity = invocation.getArgument(0);
             return inputSectionEntity;
         });
-        final List<SectionEntity> sectionEntities = createSectionService.createSection(1L, 2L, 3L, false, 5);
+        final List<SectionEntity> sectionEntities = createSectionService.createSection(new SectionCreateRequest(1L, 2L, 3L, false, 5));
         assertThat(sectionEntities).containsExactly(new SectionEntity(null, 1L, 2L, 3L, 5));
     }
 
@@ -59,7 +60,7 @@ class CreateSectionServiceTest {
     void throwExceptionWhenExistDistanceIsLowerThanAddedDistance(final int distance) {
         given(sectionDao.findNeighborSection(anyLong(), anyLong(), any())).willReturn(Optional.of(new SectionEntity(1L, 2L, 3L, 5)));
 
-        assertThatThrownBy(() -> createSectionService.createSection(1L, 2L, 3L, true, distance))
+        assertThatThrownBy(() -> createSectionService.createSection(new SectionCreateRequest(1L, 2L, 3L, true, distance)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("새롭게 등록하는 구간의 거리는 기존에 존재하는 구간의 거리보다 작아야합니다.");
     }
@@ -73,7 +74,7 @@ class CreateSectionServiceTest {
             return inputSectionEntity;
         });
 
-        final List<SectionEntity> sectionEntities = createSectionService.createSection(1L, 3L, 4L, true, 4);
+        final List<SectionEntity> sectionEntities = createSectionService.createSection(new SectionCreateRequest(1L, 3L, 4L, true, 4));
         assertThat(sectionEntities).containsExactly(
                 new SectionEntity(1L, 2L, 4L, 1),
                 new SectionEntity(1L, 4L, 3L, 4)
@@ -89,7 +90,7 @@ class CreateSectionServiceTest {
             return inputSectionEntity;
         });
 
-        final List<SectionEntity> sectionEntities = createSectionService.createSection(1L, 2L, 4L, false, 4);
+        final List<SectionEntity> sectionEntities = createSectionService.createSection(new SectionCreateRequest(1L, 2L, 4L, false, 4));
         assertThat(sectionEntities).containsExactly(
                 new SectionEntity(1L, 2L, 4L, 4),
                 new SectionEntity(1L, 4L, 3L, 1)

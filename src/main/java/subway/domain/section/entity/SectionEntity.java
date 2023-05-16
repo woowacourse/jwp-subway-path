@@ -67,4 +67,48 @@ public class SectionEntity {
     public int hashCode() {
         return Objects.hash(id);
     }
+
+    public static class Builder {
+
+        private Long id;
+        private Long lineId;
+        private Long upStationId;
+        private Long downStationId;
+        private int distance;
+
+        public Builder() {
+        }
+
+        public Builder setId(Long id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder setLineId(Long lineId) {
+            this.lineId = lineId;
+            return this;
+        }
+
+        public Builder setUpStationId(final Long upStationId) {
+            this.upStationId = upStationId;
+            return this;
+        }
+
+        public Builder setDownStationId(final Long downStationId) {
+            this.downStationId = downStationId;
+            return this;
+        }
+
+        public Builder setDistance(final int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public SectionEntity build() {
+            if (id == null) {
+                return new SectionEntity(null, lineId, upStationId, downStationId, distance);
+            }
+            return new SectionEntity(id, lineId, upStationId, downStationId, distance);
+        }
+    }
 }
