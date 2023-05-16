@@ -9,19 +9,16 @@ import subway.domain.LineName;
 import subway.domain.Section;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
-import subway.persistence.dao.StationDao;
 
 @Repository
 public class LineRepository {
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private final StationDao stationDao;
 
-    public LineRepository(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
+    public LineRepository(final LineDao lineDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
     }
 
     public Line insert(final LineName lineName) {
