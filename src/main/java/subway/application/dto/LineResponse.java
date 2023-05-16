@@ -2,6 +2,8 @@ package subway.application.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import subway.domain.Line;
 
 public class LineResponse {
@@ -41,5 +43,28 @@ public class LineResponse {
 
     public List<StationResponse> getStationResponses() {
         return stationResponses;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LineResponse that = (LineResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(color, that.color) && Objects.equals(stationResponses, that.stationResponses);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color, stationResponses);
+    }
+
+    @Override
+    public String toString() {
+        return "LineResponse{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", stationResponses=" + stationResponses +
+                '}';
     }
 }
