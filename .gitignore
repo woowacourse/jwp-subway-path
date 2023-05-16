@@ -33,4 +33,4 @@ out/
 .vscode/
 
 ### DOCS ###
-src/main/resources/static/docs/html5/index.html
+src/main/resources/static/docs/html5/*
