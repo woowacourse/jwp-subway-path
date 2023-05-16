@@ -1,5 +1,7 @@
 package subway.presentation.query_option;
 
+import subway.exception.InvalidDirectionException;
+
 import java.util.Arrays;
 
 public enum SubwayDirection {
@@ -10,7 +12,7 @@ public enum SubwayDirection {
         return Arrays.stream(SubwayDirection.values())
                 .filter(value -> input.toUpperCase().equals(value.name()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("잘못된 방향입니다."));
+                .orElseThrow(InvalidDirectionException::new);
     }
 
 }

@@ -1,6 +1,9 @@
 package subway.presentation.dto.request;
 
+import org.springframework.format.annotation.NumberFormat;
+
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 
 public class LineRequest {
 
@@ -9,6 +12,7 @@ public class LineRequest {
     @NotNull(message = "color 가 null 이면 안됩니다.")
     private final String color;
     @NotNull(message = "distance 가 null 이면 안됩니다.")
+    @Positive(message = "거리는 양의 정수만 가능합니다.")
     private final Integer distance;
     @NotNull(message = "firstStation 이 null 이면 안됩니다.")
     private final String firstStation;

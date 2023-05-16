@@ -13,6 +13,7 @@ import subway.presentation.dto.request.SectionRequest;
 import subway.presentation.dto.response.SectionResponse;
 import subway.presentation.query_option.SubwayDirection;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<List<SectionResponse>> create(@RequestBody SectionRequest request) {
+    public ResponseEntity<List<SectionResponse>> create(@RequestBody @Valid SectionRequest request) {
         final List<SectionResponse> responses = sectionService.save(
                 new SectionInsertDto(
                         request.getLineName(),

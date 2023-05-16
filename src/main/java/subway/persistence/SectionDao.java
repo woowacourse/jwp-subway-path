@@ -46,7 +46,11 @@ public class SectionDao {
                 "FROM section se " +
                 "JOIN line ON se.line_id = line.id " +
                 "WHERE line.name = ?";
-        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineName);
+        final List<SectionEntity> result = jdbcTemplate.query(sql, sectionEntityRowMapper, lineName);
+        if (result.isEmpty()) {
+            throw new LineNotFoundException();
+        }
+        return result;
     }
 
     public void delete(final SectionEntity sectionEntity) {
