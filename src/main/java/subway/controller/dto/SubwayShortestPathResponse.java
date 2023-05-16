@@ -1,6 +1,9 @@
 package subway.controller.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import subway.domain.Path;
+import subway.domain.subway.billing_policy.Fare;
 
 public class SubwayShortestPathResponse {
 
@@ -12,6 +15,20 @@ public class SubwayShortestPathResponse {
         this.stations = stations;
         this.distance = distance;
         this.fare = fare;
+    }
+
+    public static SubwayShortestPathResponse of(Path path, Fare fare) {
+        return new SubwayShortestPathResponse(
+                generateStaionResponses(path),
+                path.getDistance().getValue(),
+                fare.getValue()
+        );
+    }
+
+    private static List<StationResponse> generateStaionResponses(final Path path) {
+        return path.getStations().stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toUnmodifiableList());
     }
 
     public List<StationResponse> getStations() {
