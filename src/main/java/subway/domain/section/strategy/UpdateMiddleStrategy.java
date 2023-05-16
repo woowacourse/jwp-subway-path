@@ -1,9 +1,5 @@
 package subway.domain.section.strategy;
 
-import static subway.domain.section.SectionFactory.createAddConnectedNextCase;
-import static subway.domain.section.SectionFactory.createAddConnectedPrevCase;
-import static subway.domain.section.SectionFactory.createRemoveMiddleCase;
-
 import java.util.List;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -27,12 +23,10 @@ public class UpdateMiddleStrategy implements UpdateSectionsStrategy {
 
         final int originIndex = sections.indexOf(originSection);
         if (isEqualPrev(section, originSection)) {
-            sections.add(originIndex, createAddConnectedPrevCase(section, originSection));
-            sections.add(originIndex, section);
+            sections.addAll(originIndex, originSection.splitByPrev(section));
         }
         if (isEqualNext(section, originSection)) {
-            sections.add(originIndex, section);
-            sections.add(originIndex, createAddConnectedNextCase(section, originSection));
+            sections.addAll(originIndex, originSection.splitByNext(section));
         }
         sections.remove(originSection);
         return sections;
@@ -56,17 +50,17 @@ public class UpdateMiddleStrategy implements UpdateSectionsStrategy {
 
     @Override
     public List<Section> removeStation(final List<Section> sections, final Station station) {
-        final Section beforeSection = findBeforeSection(sections, station);
+        final Section prevSection = findPrevSection(sections, station);
         final Section nextSection = findNextSection(sections, station);
-        final int index = sections.indexOf(beforeSection);
+        final int index = sections.indexOf(prevSection);
 
-        sections.remove(beforeSection);
+        sections.remove(prevSection);
         sections.remove(nextSection);
-        sections.add(index, createRemoveMiddleCase(beforeSection, nextSection));
+        sections.add(index, prevSection.concatSection(nextSection));
         return sections;
     }
 
-    private static Section findBeforeSection(final List<Section> newSections, final Station station) {
+    private static Section findPrevSection(final List<Section> newSections, final Station station) {
         return newSections.stream()
                 .filter(section -> section.isEqualNextStation(station))
                 .findAny()

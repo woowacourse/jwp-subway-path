@@ -1,5 +1,7 @@
 package subway.domain;
 
+import java.util.List;
+
 public class Section {
 
     private final Long id;
@@ -51,5 +53,23 @@ public class Section {
 
     public boolean containStation(final Station station) {
         return isEqualPrevStation(station) || isEqualNextStation(station);
+    }
+
+    public Section concatSection(final Section nextSection) {
+        return new Section(prevStation, nextSection.nextStation, distance.plusValue(nextSection.distance));
+    }
+
+    public List<Section> splitByPrev(final Section section) {
+        return List.of(
+                section,
+                new Section(section.nextStation, nextStation, distance.minusValue(section.distance))
+        );
+    }
+
+    public List<Section> splitByNext(final Section section) {
+        return List.of(
+                new Section(prevStation, section.prevStation, distance.minusValue(section.distance))
+                , section
+        );
     }
 }
