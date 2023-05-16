@@ -58,6 +58,12 @@ public class LineStationService {
         lineService.save(line);
     }
 
+    public void deleteStation(final Long stationId) {
+        List<Line> lines = lineService.findAll();
+        lines.forEach(line -> deleteStationById(line.getId(), stationId));
+        stationService.deleteStationById(stationId);
+    }
+
     public List<LineStationResponse> findAll() {
         List<Line> lines = lineService.findAll();
 

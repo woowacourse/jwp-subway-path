@@ -65,7 +65,7 @@ public class Sections {
     }
 
     public void delete(Station station) {
-        if (sections.size() == 1) {
+        if (isInit(station)) {
             sections.clear();
             return;
         }
@@ -75,14 +75,24 @@ public class Sections {
             return;
         }
 
-        Section found = getSectionContains(station);
-        sections.remove(found);
+        if (isEndpoint(station)) {
+            Section found = getSectionContains(station);
+            sections.remove(found);
+        }
+    }
+
+    private boolean isInit(Station station) {
+        return sections.size() == 1 && sections.get(0).isUp(station);
     }
 
     private boolean isMid(Station station) {
         return sections.stream()
                 .skip(1)
                 .anyMatch(section -> section.isUp(station));
+    }
+
+    private boolean isEndpoint(Station station) {
+        return sections.get(0).isUp(station) || sections.get(sections.size() - 1).isDown(station);
     }
 
     private void deleteMidStation(Station station) {

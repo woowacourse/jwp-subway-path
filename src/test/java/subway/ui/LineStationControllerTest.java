@@ -11,7 +11,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineStationService;
 import subway.dto.request.ConnectRequest;
 import subway.dto.response.LineStationResponse;
-import subway.dto.response.StationResponse;
 
 import java.util.List;
 

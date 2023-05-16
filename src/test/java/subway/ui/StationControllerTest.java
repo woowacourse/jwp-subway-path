@@ -8,6 +8,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import subway.application.LineStationService;
 import subway.application.StationService;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
@@ -35,6 +36,8 @@ class StationControllerTest {
     private ObjectMapper objectMapper;
     @MockBean
     private StationService stationService;
+    @MockBean
+    private LineStationService lineStationService;
 
     @Test
     @DisplayName("post /stations : created를 반환하고 Location에 uri를 저장한")
@@ -122,6 +125,6 @@ class StationControllerTest {
         mockMvc.perform(delete("/stations/1"))
                 .andExpect(status().isNoContent());
 
-        verify(stationService, times(1)).deleteStationById(1L);
+        verify(lineStationService, times(1)).deleteStation(1L);
     }
 }

@@ -32,6 +32,7 @@ Content-Type: application/json
   "name": "건대입구역"
 }
 
+
 ###
 POST http://localhost:8080/stations
 Content-Type: application/json
@@ -40,49 +41,7 @@ Content-Type: application/json
   "name": "구의역"
 }
 
-### 초기 두 역 등록
-PATCH http://localhost:8080/lines/1/stations/1?type=init
-Content-Type: application/json
 
-{
-  "nextStationId": "2",
-  "distance": "3"
-}
+### 역, 라인에 등록된 역 정보 삭제
+DELETE http://localhost:8080/stations/2
 
-### 상행 종점 등록
-PATCH http://localhost:8080/lines/2/stations/3?type=up
-Content-Type: application/json
-
-{
-  "distance": "1"
-}
-
-
-### 하행 종점 등록
-PATCH http://localhost:8080/lines/6/stations/2?type=down
-Content-Type: application/json
-
-{
-  "distance": "1"
-}
-
-### 중간역 등록
-PATCH http://localhost:8080/lines/4/stations/5?type=mid
-Content-Type: application/json
-
-{
-  "distance": "1",
-  "prevStationId": "1"
-}
-
-### 역 삭제
-DELETE http://localhost:8080/stations/1
-
-### 라인에 등록된 역 삭제
-DELETE http://localhost:8080/lines/7/stations/1
-
-### 라인에 해당하는 모든 역 조회
-GET http://localhost:8080/lines/4/stations
-
-### 라인에 해당하는 모든 역 조회
-GET http://localhost:8080/lines/stations

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import subway.application.LineStationService;
 import subway.application.StationService;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
@@ -20,11 +21,12 @@ import java.util.List;
 @RequestMapping("/stations")
 public class StationController {
     private final StationService stationService;
+    private final LineStationService lineStationService;
 
-    public StationController(final StationService stationService) {
+    public StationController(StationService stationService, LineStationService lineStationService) {
         this.stationService = stationService;
+        this.lineStationService = lineStationService;
     }
-
 
     @PostMapping
     public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest stationRequest) {
@@ -50,7 +52,7 @@ public class StationController {
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
-        stationService.deleteStationById(id);
+        lineStationService.deleteStation(id);
         return ResponseEntity.noContent().build();
     }
 
