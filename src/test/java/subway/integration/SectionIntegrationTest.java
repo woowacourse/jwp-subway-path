@@ -35,12 +35,12 @@ public class SectionIntegrationTest extends IntegrationTest {
         super.setUp();
 
         line = lineRepository.save(new Line(null, "1호선", null));
-        stationRepository.save(new Station("강남역"));
-        stationRepository.save(new Station("잠실역"));
-        stationRepository.save(new Station("역삼역"));
-        stationRepository.save(new Station("선릉역"));
-        stationRepository.save(new Station("사당역"));
-        stationRepository.save(new Station("서초역"));
+        stationRepository.save(new Station(1L, "강남역"));
+        stationRepository.save(new Station(2L, "잠실역"));
+        stationRepository.save(new Station(3L, "역삼역"));
+        stationRepository.save(new Station(4L, "선릉역"));
+        stationRepository.save(new Station(5L, "사당역"));
+        stationRepository.save(new Station(6L, "서초역"));
     }
 
     @DisplayName("노선에 역을 추가한다.")

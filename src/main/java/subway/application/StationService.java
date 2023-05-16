@@ -18,7 +18,7 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationRepository.save(new Station(stationRequest.getName()));
+        Station station = stationRepository.save(new Station(null, stationRequest.getName()));
         return StationResponse.of(station);
     }
 

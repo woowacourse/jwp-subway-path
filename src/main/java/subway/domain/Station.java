@@ -8,17 +8,12 @@ public class Station {
 
     private static final String BLANK = " ";
 
-    private Long id;
-    private String name;
+    private final Long id;
+    private final String name;
 
     public Station(Long id, String name) {
         validateName(name);
         this.id = id;
-        this.name = name;
-    }
-
-    public Station(String name) {
-        validateName(name);
         this.name = name;
     }
 
@@ -60,11 +55,11 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        return Objects.equals(getId(), station.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(getId());
     }
 }

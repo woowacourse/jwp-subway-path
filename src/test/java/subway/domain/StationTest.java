@@ -17,7 +17,7 @@ class StationTest {
         String name = "잠실역";
 
         // when
-        Station station = new Station(name);
+        Station station = new Station(null, name);
 
         // then
         assertThat(station.getName()).isEqualTo(name);
@@ -28,7 +28,7 @@ class StationTest {
     @ValueSource(strings = {"", " ", "   ", "잠실 새내역"})
     void createStationFailWithBlankName(String name) {
         // when, then
-        assertThatThrownBy(() -> new Station(name))
+        assertThatThrownBy(() -> new Station(null, name))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("역 이름에는 공백이 허용되지 않습니다.");
     }
@@ -38,7 +38,7 @@ class StationTest {
     @ValueSource(strings = {"강", "우아한테코크스백엔드역"})
     void createStationFailWithWrongLength(String name) {
         // when, then
-        assertThatThrownBy(() -> new Station(name))
+        assertThatThrownBy(() -> new Station(null, name))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("역 이름은 2~10자까지 가능합니다.");
     }

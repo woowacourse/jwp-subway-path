@@ -11,8 +11,8 @@ class SectionTest {
     @Test
     void createSection() {
         // given
-        Station leftStation = new Station("잠실역");
-        Station rightStation = new Station("강남역");
+        Station leftStation = new Station(1L, "잠실역");
+        Station rightStation = new Station(2L, "강남역");
         Distance distance = new Distance(5);
 
         // when

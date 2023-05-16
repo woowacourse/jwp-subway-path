@@ -59,9 +59,9 @@ public class LineIntegrationTest extends IntegrationTest {
         lineRequest1 = new LineRequest("신분당선");
         lineRequest2 = new LineRequest("구신분당선");
 
-        station1 = stationRepository.save(new Station("강남역"));
-        station2 = stationRepository.save(new Station("서초역"));
-        station3 = stationRepository.save(new Station("선릉역"));
+        station1 = stationRepository.save(new Station(1L, "강남역"));
+        station2 = stationRepository.save(new Station(2L, "서초역"));
+        station3 = stationRepository.save(new Station(3L, "선릉역"));
 
         line1 = lineRepository.save(new Line(null, lineName1, null));
 
@@ -201,7 +201,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void findAllLinesAndStations() {
         // given
-        station4 = stationRepository.save(new Station("잠실역"));
+        station4 = stationRepository.save(new Station(4L, "잠실역"));
         line2 = lineRepository.save(new Line(null, lineName2, null));
         sectionDao.insert(new SectionEntity(line2.getId(), station3.getId(), station4.getId(), 6));
 
