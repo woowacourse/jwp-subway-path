@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -20,6 +21,7 @@ import subway.domain.Station;
 import java.util.List;
 
 @JdbcTest
+@Sql("/schema.sql")
 class SectionRepositoryTest {
 
     private SectionRepository sectionRepository;
