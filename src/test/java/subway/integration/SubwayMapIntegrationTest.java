@@ -1,4 +1,4 @@
-package subway.subwayMap.controller;
+package subway.integration;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.integration.IntegrationTest;
 import subway.line.dto.LineResponse;
 import subway.station.domain.Station;
 import subway.subwayMap.dto.SubwayMapForLineResponse;
@@ -19,7 +18,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하철 지도 관련 기능")
-class SectionToStationConverterControllerTest extends IntegrationTest {
+class SubwayMapIntegrationTest extends IntegrationTest {
 
     @DisplayName("지하철 노선을 조회한다.")
     @Test

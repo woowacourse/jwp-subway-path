@@ -1,7 +1,6 @@
-package subway.section.domain;
+package subway.section.entity;
 
 import org.junit.jupiter.api.Test;
-import subway.section.entity.SectionEntity;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

@@ -1,10 +1,9 @@
-package subway.line.domain;
+package subway.subwayMap.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.section.domain.Section;
 import subway.station.domain.Station;
-import subway.subwayMap.domain.SectionToStationConverter;
 
 import java.util.List;
 
