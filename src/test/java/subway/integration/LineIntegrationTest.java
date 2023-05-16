@@ -13,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.presentation.dto.request.LineRequest;
+import subway.presentation.dto.request.SectionRequest;
+import subway.presentation.dto.request.StationDeleteInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 
 import java.util.List;
@@ -172,56 +174,31 @@ public class LineIntegrationTest extends IntegrationTest {
         );
     }
 
-    @DisplayName("지하철 노선을 수정한다.")
     @Test
-    void updateLine() {
+    @DisplayName("노선의 역을 삭제한다.")
+    @Sql({"/line_test_data.sql", "/station_test_data.sql", "/section_test_data.sql"})
+    void deleteSection() {
         // given
-        final LineRequest lineRequest1 = new LineRequest("6호선", "bg-purple-600", 2, "잠실새내", "송파");
-        final LineRequest lineRequest2 = new LineRequest("7호선", "bg-brown-600", 2, "잠실새내", "송파");
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+        final long lineId = 1L;
+        final StationDeleteInLineRequest request = new StationDeleteInLineRequest("잠실");
 
         // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
+        final ExtractableResponse<Response> response = RestAssured
+                .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().put("/lines/{lineId}", lineId)
-                .then().log().all()
+                .body(request)
+                .when().patch("/lines/{id}/unregister", lineId)
+                .then()
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        final Configuration conf = Configuration.defaultConfiguration();
+        final DocumentContext documentContext = JsonPath.using(conf).parse(response.asString());
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value())
+//                () -> assertThat(documentContext.read("$"))
+        );
     }
 
-    @DisplayName("지하철 노선을 제거한다.")
-    @Test
-    void deleteLine() {
-        // given
-        final LineRequest lineRequest1 = new LineRequest("9호선", "bg-purple-600", 2, "잠실새내", "송파");
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .when().delete("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-    }
 }

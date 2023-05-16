@@ -2,10 +2,10 @@ package subway.presentation;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.business.SectionService;
 import subway.business.dto.SectionInsertDto;
@@ -28,7 +28,7 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<List<SectionResponse>> create(@RequestBody @Valid SectionRequest request) {
+    public ResponseEntity<List<SectionResponse>> create(@RequestBody @Valid final SectionRequest request) {
         final List<SectionResponse> responses = sectionService.save(
                 new SectionInsertDto(
                         request.getLineName(),
@@ -39,12 +39,6 @@ public class SectionController {
         );
 
         return ResponseEntity.created(URI.create("/sections")).body(responses);
-    }
-
-    @DeleteMapping
-    public ResponseEntity<Void> remove(@RequestParam("lineid") Long lineId, @RequestParam("stationid") Long stationId) {
-        sectionService.remove(lineId, stationId);
-        return ResponseEntity.noContent().build();
     }
 
 }

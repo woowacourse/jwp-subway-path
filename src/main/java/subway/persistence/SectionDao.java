@@ -10,12 +10,12 @@ import org.springframework.stereotype.Repository;
 import subway.exception.DuplicatedSectionException;
 import subway.exception.LineNotFoundException;
 import subway.exception.LineOrStationNotFoundException;
-import subway.exception.SectionNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static subway.persistence.entity.RowMapperUtil.sectionDetailRowMapper;
 import static subway.persistence.entity.RowMapperUtil.sectionEntityRowMapper;
@@ -67,7 +67,7 @@ public class SectionDao {
                 "JOIN station pst ON se.previous_station_id = pst.id " +
                 "JOIN station nst ON se.next_station_id = nst.id " +
                 "WHERE se.line_id = ? AND (pst.name = ? OR nst.name = ?)";
-        final List<SectionEntity> result =  jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationName, stationName);
+        final List<SectionEntity> result = jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationName, stationName);
         validateFindByLineIdAndPreviousStationNameOrNextStationNameResult(result);
         return result;
     }

@@ -1,24 +1,18 @@
 package subway.presentation;
 
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.business.LineService;
 import subway.business.dto.LineDto;
 import subway.business.dto.SectionCreateDto;
-import subway.exception.DuplicatedLineNameException;
-import subway.exception.LineNotFoundException;
-import subway.exception.StationNotFoundException;
 import subway.presentation.dto.request.LineRequest;
-import subway.presentation.dto.response.ExceptionResponse;
+import subway.presentation.dto.request.StationDeleteInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 
 import javax.validation.Valid;
@@ -54,16 +48,10 @@ public class LineController {
         return ResponseEntity.ok(lineService.findById(id));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
-        lineService.updateLine(id, lineUpdateRequest);
-        return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
-        return ResponseEntity.noContent().build();
+    @PatchMapping("{id}/unregister")
+    public ResponseEntity<LineDetailResponse> deleteStation(@PathVariable Long id,
+            @RequestBody @Valid final StationDeleteInLineRequest request) {
+        return ResponseEntity.ok(lineService.deleteStation(id, request));
     }
 
 }
