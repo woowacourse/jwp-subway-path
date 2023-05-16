@@ -33,7 +33,7 @@ public class LineRepository {
 
     public Line save(final Line line) {
         final Optional<LineEntity> lineEntity = lineDao.findByName(line.getName());
-        lineEntity.ifPresent(entity -> deleteAllByLineId(entity.getId()));
+        lineEntity.ifPresent(entity -> lineDao.deleteById(entity.getId()));
         final LineEntity newLineEntity = lineDao.insert(new LineEntity(line.getName(), line.getColor()));
         final List<StationEntity> stations = StationEntity.of(line, newLineEntity.getId());
         stationDao.insertAll(stations);
@@ -44,12 +44,6 @@ public class LineRepository {
 
     public void deleteById(final Long id) {
         lineDao.findById(id).orElseThrow(LineNotFoundException::new);
-        deleteAllByLineId(id);
-    }
-
-    private void deleteAllByLineId(final Long id) {
-        sectionDao.deleteAll(id);
-        stationDao.deleteByLineId(id);
         lineDao.deleteById(id);
     }
 
