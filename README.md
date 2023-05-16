@@ -81,3 +81,8 @@ DELETE /sections/{lineId}/{stationId} HTTP/1.1
 ```http request
 HTTP/1.1 204
 ```
+
+
+### checkList
+- 매개변수의 final 키워드 통일
+- 상수화

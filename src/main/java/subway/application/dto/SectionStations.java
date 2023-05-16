@@ -5,8 +5,11 @@ import javax.validation.constraints.NotNull;
 
 public class SectionStations {
 
+    @NotNull
     private final Long leftStationId;
+    @NotNull
     private final Long rightStationId;
+    @NotNull
     private final Integer distance;
 
     public SectionStations(final Long leftStationId, final Long rightStationId, final Integer distance) {
