@@ -23,26 +23,26 @@ public class SubwayController {
 
     private final SubwayService subwayService;
 
-    public SubwayController(SubwayService subwayService) {
+    public SubwayController(final SubwayService subwayService) {
         this.subwayService = subwayService;
     }
 
-    @PostMapping("/{lineId}")
-    public ResponseEntity<Void> enrollStation(@PathVariable Long lineId,
-                                              @RequestBody StationEnrollRequest request) {
+    @PostMapping("/lines/{lineId}")
+    public ResponseEntity<Void> enrollStation(@PathVariable final Long lineId,
+                                              @RequestBody final StationEnrollRequest request) {
         subwayService.enrollStation(lineId, request);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
-    @DeleteMapping("/{lineId}/{stationId}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long lineId, @PathVariable Long stationId) {
+    @DeleteMapping("/lines/{lineId}/stations/{stationId}")
+    public ResponseEntity<Void> deleteStation(@PathVariable final Long lineId, @PathVariable final Long stationId) {
         subwayService.deleteStation(lineId, stationId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT)
                 .header("Location", "/line/" + lineId).build();
     }
 
-    @GetMapping("/{lineId}")
-    public ResponseEntity<List<StationResponse>> getRouteMap(@PathVariable Long lineId) {
+    @GetMapping("/lines/{lineId}")
+    public ResponseEntity<List<StationResponse>> getRouteMap(@PathVariable final Long lineId) {
         return ResponseEntity.ok(subwayService.findRouteMap(lineId));
     }
 

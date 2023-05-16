@@ -17,15 +17,15 @@ import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("지하설 노선에 역 추가/삭제/조회 관련 기능")
-public class SubwayIntegrationTest extends IntegrationTest {
+class SubwayIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("지하철 노선에 역을 추가할 수 있다")
     void test_addStationToLine() {
         //given
-        LineRequest lineRequest = new LineRequest("2호선", "초록");
+        final LineRequest lineRequest = new LineRequest("2호선", "초록");
 
-        long lineId = RestAssured.given()
+        final long lineId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest)
 
@@ -36,10 +36,10 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong("id");
 
-        StationRequest jamsilRequest = new StationRequest("잠실역");
-        StationRequest bangbaeRequest = new StationRequest("방배역");
+        final StationRequest jamsilRequest = new StationRequest("잠실역");
+        final StationRequest bangbaeRequest = new StationRequest("방배역");
 
-        long jamsilStationId = RestAssured.given()
+        final long jamsilStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(jamsilRequest)
 
@@ -50,7 +50,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong("id");
 
-        long bangbaeStationId = RestAssured.given()
+        final long bangbaeStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(bangbaeRequest)
 
@@ -60,7 +60,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .extract()
                 .jsonPath().getLong("id");
 
-        StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
+        final StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
                 jamsilStationId, bangbaeStationId, 3);
 
         //when, then
@@ -68,7 +68,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(stationEnrollRequest)
 
-                .when().post("/subway/{lineId}", lineId)
+                .when().post("/subway/lines/{lineId}", lineId)
 
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
@@ -78,9 +78,9 @@ public class SubwayIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선에서 역을 삭제할 수 있다")
     void test_deleteStationFromLine() {
         //given
-        LineRequest lineRequest = new LineRequest("2호선", "초록");
+        final LineRequest lineRequest = new LineRequest("2호선", "초록");
 
-        long lineId = RestAssured.given()
+        final long lineId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest)
 
@@ -91,10 +91,10 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong("id");
 
-        StationRequest jamsilRequest = new StationRequest("잠실역");
-        StationRequest bangbaeRequest = new StationRequest("방배역");
+        final StationRequest jamsilRequest = new StationRequest("잠실역");
+        final StationRequest bangbaeRequest = new StationRequest("방배역");
 
-        long jamsilStationId = RestAssured.given()
+        final long jamsilStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(jamsilRequest)
 
@@ -105,7 +105,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong("id");
 
-        long bangbaeStationId = RestAssured.given()
+        final long bangbaeStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(bangbaeRequest)
 
@@ -115,18 +115,18 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .extract()
                 .jsonPath().getLong("id");
 
-        StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
+        final StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
                 jamsilStationId, bangbaeStationId, 3);
 
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(stationEnrollRequest)
 
-                .when().post("/subway/{lineId}", lineId);
+                .when().post("/subway/lines/{lineId}", lineId);
 
         // when, then
         RestAssured.given()
-                .when().delete("/subway/{lineId}/{stationId}", lineId, jamsilStationId)
+                .when().delete("/subway/lines/{lineId}/stations/{stationId}", lineId, jamsilStationId)
 
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
@@ -136,9 +136,9 @@ public class SubwayIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선의 역들을 조회할 수 있다.")
     void test_findStationFromLine() {
         //given
-        LineRequest lineRequest = new LineRequest("2호선", "초록");
+        final LineRequest lineRequest = new LineRequest("2호선", "초록");
 
-        long lineId = RestAssured.given()
+        final long lineId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineRequest)
 
@@ -149,10 +149,10 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong("id");
 
-        StationRequest jamsilRequest = new StationRequest("잠실역");
-        StationRequest bangbaeRequest = new StationRequest("방배역");
+        final StationRequest jamsilRequest = new StationRequest("잠실역");
+        final StationRequest bangbaeRequest = new StationRequest("방배역");
 
-        long jamsilStationId = RestAssured.given()
+        final long jamsilStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(jamsilRequest)
 
@@ -163,7 +163,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong("id");
 
-        long bangbaeStationId = RestAssured.given()
+        final long bangbaeStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(bangbaeRequest)
 
@@ -173,18 +173,18 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .extract()
                 .jsonPath().getLong("id");
 
-        StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
+        final StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
                 jamsilStationId, bangbaeStationId, 3);
 
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(stationEnrollRequest)
 
-                .when().post("/subway/{lineId}", lineId);
+                .when().post("/subway/lines/{lineId}", lineId);
 
         // when, then
-        List<StationResponse> routeMap = RestAssured.given()
-                .when().get("/subway/{lineId}", lineId)
+        final List<StationResponse> routeMap = RestAssured.given()
+                .when().get("/subway/lines/{lineId}", lineId)
 
                 .then()
                 .extract()
@@ -205,16 +205,16 @@ public class SubwayIntegrationTest extends IntegrationTest {
     @DisplayName("모든 지하철 노선의 역들을 조회할 수 있다.")
     void test_findAllStationFromLine() {
         //given
-        LineRequest lineOneRequest = new LineRequest("1호선", "파랑");
+        final LineRequest lineOneRequest = new LineRequest("1호선", "파랑");
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineOneRequest)
 
                 .when().post("/lines");
 
-        LineRequest lineTwoRequest = new LineRequest("2호선", "초록");
+        final LineRequest lineTwoRequest = new LineRequest("2호선", "초록");
 
-        long lineTwoId = RestAssured.given()
+        final long lineTwoId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineTwoRequest)
 
@@ -225,10 +225,10 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong("id");
 
-        StationRequest jamsilRequest = new StationRequest("잠실역");
-        StationRequest bangbaeRequest = new StationRequest("방배역");
+        final StationRequest jamsilRequest = new StationRequest("잠실역");
+        final StationRequest bangbaeRequest = new StationRequest("방배역");
 
-        long jamsilStationId = RestAssured.given()
+        final long jamsilStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(jamsilRequest)
 
@@ -239,7 +239,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .jsonPath()
                 .getLong("id");
 
-        long bangbaeStationId = RestAssured.given()
+        final long bangbaeStationId = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(bangbaeRequest)
 
@@ -249,7 +249,7 @@ public class SubwayIntegrationTest extends IntegrationTest {
                 .extract()
                 .jsonPath().getLong("id");
 
-        StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
+        final StationEnrollRequest stationEnrollRequest = new StationEnrollRequest(
                 jamsilStationId, bangbaeStationId, 3);
 
         RestAssured.given()

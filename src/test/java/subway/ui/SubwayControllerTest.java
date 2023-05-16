@@ -28,34 +28,34 @@ class SubwayControllerTest {
     private SubwayService subwayService;
 
     @Test
-    @DisplayName("/subway/{lineId}로 POST 요청을 보낼 수 있다")
+    @DisplayName("/subway/lines/{lineId}로 POST 요청을 보낼 수 있다")
     void enrollStation() throws Exception {
         //given
-        Integer lineId = 1;
-        Long from = 1L;
-        Long to = 2L;
-        Integer distance = 1;
+        final Integer lineId = 1;
+        final Long from = 1L;
+        final Long to = 2L;
+        final Integer distance = 1;
 
-        String body = objectMapper.writeValueAsString(new StationEnrollRequest(from, to, distance));
+        final String body = objectMapper.writeValueAsString(new StationEnrollRequest(from, to, distance));
 
         //when
-        mockMvc.perform(post("/subway/{lineId}", lineId)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(body))
+        mockMvc.perform(post("/subway/lines/{lineId}", lineId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(body))
 
                 //then
                 .andExpect(status().isCreated());
     }
 
     @Test
-    @DisplayName("/subway/{lineId}로 DELETE 요청을 보낼 수 있다")
+    @DisplayName("/subway/lines/{lineId/stations/{stationId}로 DELETE 요청을 보낼 수 있다")
     void deleteStation() throws Exception {
         //given
-        Integer lineId = 1;
-        Integer stationId = 2;
+        final Integer lineId = 1;
+        final Integer stationId = 2;
 
         //when
-        mockMvc.perform(delete("/subway/{lineId}/{stationId}", lineId, stationId))
+        mockMvc.perform(delete("/subway/lines/{lineId}/stations/{stationId}", lineId, stationId))
 
                 //then
                 .andExpect(status().isNoContent())
