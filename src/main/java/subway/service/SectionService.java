@@ -21,8 +21,8 @@ public class SectionService {
         this.stationDao = stationDao;
     }
 
-    public void saveSection(final SectionCreationRequest request) {
-        Line line = findLineByLineId(request.getLineId());
+    public void saveSection(final long lineId, final SectionCreationRequest request) {
+        Line line = findLineByLineId(lineId);
         Station upwardStation = findStationByStationId(request.getUpwardStationId());
         Station downwardStation = findStationByStationId(request.getDownwardStationId());
         line.addSection(upwardStation, downwardStation, request.getDistance());

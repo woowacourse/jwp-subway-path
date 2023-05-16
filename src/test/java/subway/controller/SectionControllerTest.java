@@ -49,7 +49,7 @@ class SectionControllerTest {
         @DisplayName("노선에 두 역을 최초로 추가할 때, 정상 추가가 되었다면 상태코드 201 Created 를 반환하는지 확인한다")
         @Test
         void successTest1() {
-            SectionCreationRequest request = new SectionCreationRequest(이_호선, 강변, 잠실, 10);
+            SectionCreationRequest request = new SectionCreationRequest(강변, 잠실, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(request)
@@ -62,7 +62,7 @@ class SectionControllerTest {
         @Test
         void successTest2() {
             //given
-            SectionCreationRequest initRequest = new SectionCreationRequest(이_호선, 강변, 잠실, 10);
+            SectionCreationRequest initRequest = new SectionCreationRequest(강변, 잠실, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(initRequest)
@@ -70,7 +70,7 @@ class SectionControllerTest {
                     .then()
                     .statusCode(HttpStatus.CREATED.value());
             //then
-            SectionCreationRequest mainRequest = new SectionCreationRequest(이_호선, 잠실, 잠실새내, 10);
+            SectionCreationRequest mainRequest = new SectionCreationRequest(잠실, 잠실새내, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(mainRequest)
@@ -83,7 +83,7 @@ class SectionControllerTest {
         @Test
         void successTest3() {
             //given
-            SectionCreationRequest initRequest = new SectionCreationRequest(이_호선, 잠실나루, 잠실, 10);
+            SectionCreationRequest initRequest = new SectionCreationRequest(잠실나루, 잠실, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(initRequest)
@@ -91,7 +91,7 @@ class SectionControllerTest {
                     .then()
                     .statusCode(HttpStatus.CREATED.value());
             //then
-            SectionCreationRequest mainRequest = new SectionCreationRequest(이_호선, 강변, 잠실나루, 10);
+            SectionCreationRequest mainRequest = new SectionCreationRequest(강변, 잠실나루, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(mainRequest)
@@ -104,7 +104,7 @@ class SectionControllerTest {
         @Test
         void successTest4() {
             //given
-            SectionCreationRequest initRequest = new SectionCreationRequest(이_호선, 강변, 잠실, 10);
+            SectionCreationRequest initRequest = new SectionCreationRequest(강변, 잠실, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(initRequest)
@@ -112,7 +112,7 @@ class SectionControllerTest {
                     .then()
                     .statusCode(HttpStatus.CREATED.value());
             //then
-            SectionCreationRequest mainRequest = new SectionCreationRequest(이_호선, 잠실나루, 잠실, 6);
+            SectionCreationRequest mainRequest = new SectionCreationRequest(잠실나루, 잠실, 6);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(mainRequest)
@@ -125,7 +125,7 @@ class SectionControllerTest {
         @Test
         void successTest5() {
             //given
-            SectionCreationRequest initRequest = new SectionCreationRequest(이_호선, 강변, 잠실, 10);
+            SectionCreationRequest initRequest = new SectionCreationRequest(강변, 잠실, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(initRequest)
@@ -133,7 +133,7 @@ class SectionControllerTest {
                     .then()
                     .statusCode(HttpStatus.CREATED.value());
             //then
-            SectionCreationRequest mainRequest = new SectionCreationRequest(이_호선, 강변, 잠실나루, 6);
+            SectionCreationRequest mainRequest = new SectionCreationRequest(강변, 잠실나루, 6);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(mainRequest)
@@ -146,7 +146,7 @@ class SectionControllerTest {
         @Test
         void failTest1() {
             //given
-            SectionCreationRequest initRequest = new SectionCreationRequest(이_호선, 강변, 잠실, 10);
+            SectionCreationRequest initRequest = new SectionCreationRequest(강변, 잠실, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(initRequest)
@@ -154,7 +154,7 @@ class SectionControllerTest {
                     .then()
                     .statusCode(HttpStatus.CREATED.value());
             //then
-            SectionCreationRequest mainRequest = new SectionCreationRequest(이_호선, 잠실새내, 종합운동장, 10);
+            SectionCreationRequest mainRequest = new SectionCreationRequest(잠실새내, 종합운동장, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(mainRequest)
@@ -168,7 +168,7 @@ class SectionControllerTest {
         @ValueSource(ints = {10, 11, 0, -1})
         void failTest2(int input) {
             //given
-            SectionCreationRequest initRequest = new SectionCreationRequest(이_호선, 강변, 잠실, 10);
+            SectionCreationRequest initRequest = new SectionCreationRequest(강변, 잠실, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(initRequest)
@@ -176,7 +176,7 @@ class SectionControllerTest {
                     .then()
                     .statusCode(HttpStatus.CREATED.value());
             //then
-            SectionCreationRequest mainRequest = new SectionCreationRequest(이_호선, 잠실나루, 잠실, input);
+            SectionCreationRequest mainRequest = new SectionCreationRequest(잠실나루, 잠실, input);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(mainRequest)
@@ -206,7 +206,7 @@ class SectionControllerTest {
         @Test
         void successTest1() {
             //given
-            SectionCreationRequest initRequest = new SectionCreationRequest(이_호선, 강변, 잠실, 10);
+            SectionCreationRequest initRequest = new SectionCreationRequest(강변, 잠실, 10);
             RestAssured.given()
                     .contentType(MediaType.APPLICATION_JSON_VALUE)
                     .body(initRequest)
