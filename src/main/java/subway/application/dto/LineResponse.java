@@ -11,18 +11,18 @@ public class LineResponse {
     private String color;
     private List<StationResponse> stationResponses;
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stationResponses) {
+    public LineResponse(final Long id, final String name, final String color, final List<StationResponse> stationResponses) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.stationResponses = stationResponses;
     }
 
-    public static LineResponse of(Line line) {
+    public static LineResponse of(final Line line) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), new ArrayList<>());
     }
 
-    public static LineResponse of(Line line, List<StationResponse> stationResponses) {
+    public static LineResponse of(final Line line, final List<StationResponse> stationResponses) {
         return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
     }
 

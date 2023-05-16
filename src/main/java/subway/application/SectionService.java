@@ -18,20 +18,20 @@ public class SectionService {
     private final StationDao stationDao;
     private final LineDao lineDao;
 
-    public SectionService(final SectionDao sectionDao, final StationDao stationDao, LineDao lineDao) {
+    public SectionService(final SectionDao sectionDao, final StationDao stationDao, final LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.lineDao = lineDao;
     }
 
-    public void addSection(SectionRequest sectionRequest) {
+    public void addSection(final SectionRequest sectionRequest) {
         Long lineId = sectionRequest.getLineId();
         List<Section> sections = sectionDao.findByLineId(lineId);
 
         saveSection(sectionRequest, lineId, sections);
     }
 
-    private void saveSection(SectionRequest sectionRequest, Long lineId, List<Section> sections) {
+    private void saveSection(final SectionRequest sectionRequest, final Long lineId, final List<Section> sections) {
         Line line = getLineById(lineId);
         Subway subway = Subway.of(line, sections);
         Station baseStation = getStationById(sectionRequest.leftStationId());
@@ -45,7 +45,7 @@ public class SectionService {
         }
     }
 
-    private Line getLineById(Long lineId) {
+    private Line getLineById(final Long lineId) {
         try {
             return lineDao.findById(lineId);
         } catch (DataAccessException exception) {
@@ -53,7 +53,7 @@ public class SectionService {
         }
     }
 
-    private Station getStationById(Long stationId) {
+    private Station getStationById(final Long stationId) {
         try {
             return stationDao.findById(stationId);
         } catch (DataAccessException exception) {
@@ -61,7 +61,7 @@ public class SectionService {
         }
     }
 
-    public void deleteStation(Long lineId, Long stationId) {
+    public void deleteStation(final Long lineId, final Long stationId) {
         Line line = getLineById(lineId);
         Station station = getStationById(stationId);
         List<Section> sections = sectionDao.findByLineId(lineId);

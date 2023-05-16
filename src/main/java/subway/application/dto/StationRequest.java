@@ -11,7 +11,7 @@ public class StationRequest {
     private final String name;
 
     @JsonCreator
-    public StationRequest(String name) {
+    public StationRequest(final String name) {
         this.name = name;
     }
 

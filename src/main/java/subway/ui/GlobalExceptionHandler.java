@@ -23,13 +23,13 @@ import subway.ui.dto.ErrorResponse;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(SubwayServiceException.class)
-    public ResponseEntity<ErrorResponse> handleServiceException(Exception exception) {
+    public ResponseEntity<ErrorResponse> handleServiceException(final Exception exception) {
         System.out.println(exception.getMessage()); // log 대신 출력
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(BindException.class)
-    public ResponseEntity<Map<String, String>> handleBindingException(BindException exception) {
+    public ResponseEntity<Map<String, String>> handleBindingException(final BindException exception) {
         Map<String, String> errors = exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
@@ -39,7 +39,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler({DataAccessException.class, IllegalArgumentException.class, SubwayInternalServerException.class})
-    public ResponseEntity<ErrorResponse> handleInternalServerException(Exception exception) {
+    public ResponseEntity<ErrorResponse> handleInternalServerException(final Exception exception) {
         System.out.println(exception.getMessage()); // log 대신 출력
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Internal Server Error"));
     }

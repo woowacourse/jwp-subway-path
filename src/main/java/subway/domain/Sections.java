@@ -9,7 +9,7 @@ public class Sections {
 
     private final List<Section> sections;
 
-    public Sections(List<Section> sections) {
+    public Sections(final List<Section> sections) {
         if (sections.size() > 2) {
             throw new SubwayInternalServerException("구간의 크기가 2를 초과합니다.");
         }

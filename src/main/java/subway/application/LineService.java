@@ -19,12 +19,12 @@ public class LineService {
     private final LineDao lineDao;
     private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao, final SectionDao sectionDao) {
+    public LineService(final LineDao lineDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
     }
 
-    public LineResponse saveLine(LineRequest request) {
+    public LineResponse saveLine(final LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }
@@ -36,7 +36,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineResponse findLineResponseById(final Long id) {
         Line persistLine = findLineById(id);
         List<StationResponse> stationResponses = createStationResponse(persistLine);
         return LineResponse.of(persistLine, stationResponses);
@@ -56,15 +56,15 @@ public class LineService {
         return stationResponses;
     }
 
-    public Line findLineById(Long id) {
+    public Line findLineById(final Long id) {
         return lineDao.findById(id);
     }
 
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(final Long id, LineRequest lineUpdateRequest) {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
-    public void deleteLineById(Long id) {
+    public void deleteLineById(final Long id) {
         lineDao.deleteById(id);
     }
 

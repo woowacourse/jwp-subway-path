@@ -24,7 +24,7 @@ public class SectionDao {
         this.jdbcTemplate = jdbcTemplate;
     }
 
-    public void insert(Long lineId, Section section) {
+    public void insert(final Long lineId, final Section section) {
         String sql = "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (?, ?, ?, ?)";
         jdbcTemplate.update(sql, lineId, section.getLeftId(), section.getRightId(), section.getDistance());
     }
@@ -39,7 +39,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public List<Section> findByLineId(Long lineId) {
+    public List<Section> findByLineId(final Long lineId) {
         String sql =
                 "select left_station_id, left_st.name as left_station_name, right_station_id, right_st.name as right_station_name, distance from SECTIONS as se"
                         + " LEFT JOIN STATION as left_st"
@@ -50,7 +50,7 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public Section findById(Long id) {
+    public Section findById(final Long id) {
         String sql =
                 "select left_station_id, left_st.name as left_station_name, right_station_id, right_st.name as right_station_name, distance from SECTIONS as se"
                         + " LEFT JOIN STATION as left_st"
@@ -61,12 +61,12 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void deleteByStationId(Long lineId, Long stationId) {
+    public void deleteByStationId(final Long lineId, final Long stationId) {
         String sql = "delete from SECTIONS where (left_station_id = ? or right_station_id = ?) and line_id = ?";
         jdbcTemplate.update(sql, stationId, stationId, lineId);
     }
 
-    public void deleteByLeftStationIdAndRightStationId(Long lineId, Long leftStationId, Long rightStationId) {
+    public void deleteByLeftStationIdAndRightStationId(final Long lineId, final Long leftStationId, final Long rightStationId) {
         String sql = "delete from SECTIONS where (left_station_id = ? and right_station_id = ?) and line_id = ?";
         jdbcTemplate.update(sql, leftStationId, rightStationId, lineId);
     }

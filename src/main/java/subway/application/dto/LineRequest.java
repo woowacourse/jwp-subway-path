@@ -11,7 +11,7 @@ public class LineRequest {
     @NotBlank(message = "호선의 색을 입력해주세요.")
     private final String color;
 
-    public LineRequest(String name, String color) {
+    public LineRequest(final String name, final String color) {
         this.name = name;
         this.color = color;
     }

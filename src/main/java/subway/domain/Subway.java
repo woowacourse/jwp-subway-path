@@ -45,7 +45,7 @@ public class Subway {
         return stations;
     }
 
-    private static Station findStartStation(SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
+    private static Station findStartStation(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
         Station station = getBaseStationForFindingStart(stations);
         while (station != null && !stations.incomingEdgesOf(station).isEmpty()) {
             station = stations.incomingEdgesOf(station)
@@ -57,7 +57,7 @@ public class Subway {
         return station;
     }
 
-    private static Station getBaseStationForFindingStart(SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
+    private static Station getBaseStationForFindingStart(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
         return stations.edgeSet()
                 .stream()
                 .map(stations::getEdgeSource)
@@ -65,7 +65,7 @@ public class Subway {
                 .orElse(null);
     }
 
-    public Sections findAddSections(Section section) {
+    public Sections findAddSections(final Section section) {
         Station left = section.getLeft();
         Station right = section.getRight();
         int distance = section.getDistance();
@@ -74,7 +74,7 @@ public class Subway {
         return getSections(left, right, distance);
     }
 
-    private void validateStation(Station left, Station right) {
+    private void validateStation(final Station left, final Station right) {
         if (hasStation(left) && hasStation(right)) {
             throw new SubwayServiceException("노선에 이미 존재하는 두 역을 등록할 수 없습니다.");
         }
@@ -83,7 +83,7 @@ public class Subway {
         }
     }
 
-    private Sections getSections(Station left, Station right, int distance) {
+    private Sections getSections(final Station left, final Station right, final int distance) {
         if (hasStation(left) && !hasStation(right)) {
             return getSectionsInBetween(left, right, distance, RIGHT);
         }
@@ -97,7 +97,7 @@ public class Subway {
         return stations.edgeSet().isEmpty();
     }
 
-    private Sections getSectionsInBetween(Station left, Station right, int distance, Side findingSide) {
+    private Sections getSectionsInBetween(final Station left, final Station right, final int distance, final Side findingSide) {
         Section newSection = new Section(left, right, new Distance(distance));
         Station baseStation = findBaseStationBySide(left, right, findingSide);
         if (hasSectionBySide(baseStation, findingSide)) {
@@ -108,7 +108,7 @@ public class Subway {
         return new Sections(List.of(newSection));
     }
 
-    private Station findBaseStationBySide(Station left, Station right, Side side) {
+    private Station findBaseStationBySide(final Station left, final Station right, final Side side) {
         if (side.isRight()) {
             return left;
         }

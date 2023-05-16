@@ -24,13 +24,13 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addStations(@Valid @RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> addStations(@Valid @RequestBody final SectionRequest sectionRequest) {
         sectionService.addSection(sectionRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @DeleteMapping("/{lineId}/{stationId}")
-    public ResponseEntity<Void> deleteStation(@PathVariable Long lineId, @PathVariable Long stationId) {
+    public ResponseEntity<Void> deleteStation(@PathVariable final Long lineId, @PathVariable final Long stationId) {
         sectionService.deleteStation(lineId, stationId);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
