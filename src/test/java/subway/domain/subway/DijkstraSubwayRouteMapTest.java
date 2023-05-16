@@ -48,7 +48,7 @@ class DijkstraSubwayRouteMapTest {
             //then
             assertAll(
                     () -> assertThat(shortestPath.getStations()).containsExactly(upward, middle, downward),
-                    () -> assertThat(shortestPath.getDistance()).isEqualTo(7)
+                    () -> assertThat(shortestPath.getDistance().getValue()).isEqualTo(7)
             );
         }
 

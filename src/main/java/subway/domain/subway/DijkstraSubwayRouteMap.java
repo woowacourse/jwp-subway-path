@@ -30,8 +30,8 @@ public final class DijkstraSubwayRouteMap implements SubwayRouteMap {
         return graph;
     }
 
-    private static void addSectionsIntoGraph(final List<Section> sections,
-                                             final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+    private void addSectionsIntoGraph(final List<Section> sections,
+                                      final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         for (Section section : sections) {
             final Station upward = section.getUpward();
             final Station downward = section.getDownward();
