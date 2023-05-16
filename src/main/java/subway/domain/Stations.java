@@ -10,11 +10,15 @@ public class Stations {
         this.stations = stations;
     }
 
-    public void addStation(Station station){
+    public void addStation(Station station) {
         stations.add(station);
     }
 
     public List<Station> getStations() {
         return stations;
+    }
+
+    public int getStationsSize() {
+        return stations.size();
     }
 }
