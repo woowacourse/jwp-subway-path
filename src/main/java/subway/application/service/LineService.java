@@ -53,10 +53,10 @@ public class LineService {
         List<Line> allLines = lineRepository.findAll();
 
         return allLines.stream()
-                .collect(Collectors.toMap(Line::getName, LineService::makeRouteMapResponseOf));
+                .collect(Collectors.toMap(Line::getName, this::makeRouteMapResponseOf));
     }
 
-    private static List<StationResponse> makeRouteMapResponseOf(Line line) {
+    private List<StationResponse> makeRouteMapResponseOf(Line line) {
         return line.routeMap().value().stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
