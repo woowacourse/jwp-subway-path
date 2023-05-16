@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineStationService;
-import subway.dto.CreateType;
 import subway.dto.request.ConnectRequest;
 import subway.dto.response.LineStationResponse;
 

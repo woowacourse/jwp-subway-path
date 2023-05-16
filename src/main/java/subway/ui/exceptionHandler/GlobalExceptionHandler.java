@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.ui.exceptionHandler;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;

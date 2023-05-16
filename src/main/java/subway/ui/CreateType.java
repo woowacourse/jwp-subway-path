@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.ui;
 
 import java.util.Arrays;
 
