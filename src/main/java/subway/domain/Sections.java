@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.application.exception.SubwayServiceException;
+
 import java.util.List;
 
 public class Sections {
@@ -42,6 +44,6 @@ public class Sections {
         if (isPresent()) {
             return sections.get(0);
         }
-        throw new IllegalArgumentException("구간이 존재하지 않습니다.");
+        throw new SubwayServiceException("구간이 존재하지 않습니다.");
     }
 }

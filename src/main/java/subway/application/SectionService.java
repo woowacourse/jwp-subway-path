@@ -1,6 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.application.exception.SubwayServiceException;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.*;
@@ -23,7 +24,7 @@ public class SectionService {
         Long lineId = sectionRequest.getLineId();
         List<Section> sections = sectionDao.findByLineId(lineId);
         if (sectionRequest.leftStationId() == null || sectionRequest.rightStationId() == null) { // TODO: sectionRequest에서 null 체크
-            throw new IllegalArgumentException("올바른 역 번호를 입력해주세요.");
+            throw new SubwayServiceException("올바른 역 번호를 입력해주세요.");
         }
 
         saveSection(sectionRequest, lineId, sections);

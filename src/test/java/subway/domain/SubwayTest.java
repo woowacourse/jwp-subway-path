@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.application.exception.SubwayServiceException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -128,7 +129,7 @@ class SubwayTest {
 
         assertThatThrownBy(() ->
                 subway.findAddSections(new Section(FIXTURE_STATION_5, FIXTURE_STATION_6, new Distance(3))))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("존재하지 않는 역들과의 구간을 등록할 수 없습니다.");
     }
 
@@ -142,7 +143,7 @@ class SubwayTest {
 
         assertThatThrownBy(() ->
                 subway.findAddSections(new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(3))))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("노선에 이미 존재하는 두 역을 등록할 수 없습니다.");
     }
 
@@ -156,7 +157,7 @@ class SubwayTest {
 
         assertThatThrownBy(() ->
                 subway.findAddSections(new Section(FIXTURE_STATION_3, FIXTURE_STATION_1, new Distance(3))))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("노선에 이미 존재하는 두 역을 등록할 수 없습니다.");
     }
 
@@ -170,7 +171,7 @@ class SubwayTest {
 
         assertThatThrownBy(() ->
                 subway.findAddSections(new Section(FIXTURE_STATION_2, FIXTURE_STATION_4, new Distance(10))))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
     }
 
@@ -217,7 +218,7 @@ class SubwayTest {
         ));
 
         assertThatThrownBy(() -> subway.findDeleteSections(FIXTURE_STATION_4))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("역이 존재하지 않습니다.");
     }
 

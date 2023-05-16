@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
+import subway.application.exception.SubwayServiceException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,10 +75,10 @@ public class Subway {
 
     private void validateStation(Station left, Station right) {
         if (hasStation(left) && hasStation(right)) {
-            throw new IllegalArgumentException("노선에 이미 존재하는 두 역을 등록할 수 없습니다.");
+            throw new SubwayServiceException("노선에 이미 존재하는 두 역을 등록할 수 없습니다.");
         }
         if (!hasStation(left) && !hasStation(right) && !isStationEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 역들과의 구간을 등록할 수 없습니다.");
+            throw new SubwayServiceException("존재하지 않는 역들과의 구간을 등록할 수 없습니다.");
         }
     }
 
@@ -122,7 +123,7 @@ public class Subway {
 
     public boolean hasRightSection(final Station station) {
         if (!hasStation(station)) {
-            throw new IllegalArgumentException("아직 역이 노선에 없습니다.");
+            throw new SubwayServiceException("아직 역이 노선에 없습니다.");
         }
         return !stations.outgoingEdgesOf(station).isEmpty();
     }
@@ -133,7 +134,7 @@ public class Subway {
 
     public boolean hasLeftSection(final Station station) {
         if (!hasStation(station)) {
-            throw new IllegalArgumentException("아직 역이 노선에 없습니다.");
+            throw new SubwayServiceException("아직 역이 노선에 없습니다.");
         }
         return !stations.incomingEdgesOf(station).isEmpty();
     }
@@ -151,7 +152,7 @@ public class Subway {
                 .map(x -> new Section(station, stations.getEdgeTarget(x),
                         new Distance((int) stations.getEdgeWeight(x))))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("구간을 찾을 수 없습니다."));
+                .orElseThrow(() -> new SubwayServiceException("구간을 찾을 수 없습니다."));
     }
 
     public Section findLeftSection(final Station station) {
@@ -160,7 +161,7 @@ public class Subway {
                 .map(x -> new Section(stations.getEdgeSource(x), station,
                         new Distance((int) stations.getEdgeWeight(x))))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("구간을 찾을 수 없습니다."));
+                .orElseThrow(() -> new SubwayServiceException("구간을 찾을 수 없습니다."));
     }
 
     private Section getUpdatedSection(Section baseSection, Station left, Station right, int newDistance, Side side) {
@@ -175,7 +176,7 @@ public class Subway {
 
     private static void validateDistance(int newDistance, int existedDistance) {
         if (existedDistance - newDistance <= 0) {
-            throw new IllegalArgumentException("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
+            throw new SubwayServiceException("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
         }
     }
 
@@ -194,7 +195,7 @@ public class Subway {
 
     private void validateStation(Station station) {
         if (!hasStation(station)) {
-            throw new IllegalArgumentException("역이 존재하지 않습니다.");
+            throw new SubwayServiceException("역이 존재하지 않습니다.");
         }
     }
 

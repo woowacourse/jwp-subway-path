@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import subway.application.exception.SubwayServiceException;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;
@@ -51,9 +52,9 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(1L, 2L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
+        sectionService.addSection(sectionRequest);
+
         assertAll(
-                () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
-                        .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 1L, 2L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_1, FIXTURE_STATION_2, new Distance(3)))
         );
@@ -69,9 +70,9 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(2L, 3L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
+        sectionService.addSection(sectionRequest);
+
         assertAll(
-                () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
-                        .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 2L, 3L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_2, FIXTURE_STATION_3, new Distance(3)))
         );
@@ -87,9 +88,9 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(1L, 3L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
+        sectionService.addSection(sectionRequest);
+
         assertAll(
-                () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
-                        .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 1L, 3L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3)))
         );
@@ -105,9 +106,9 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(1L, 3L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
+        sectionService.addSection(sectionRequest);
+
         assertAll(
-                () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
-                        .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 2L, 3L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(3))),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_2, FIXTURE_STATION_1, new Distance(7)))
@@ -124,9 +125,9 @@ class SectionServiceTest {
         SectionStations sectionStations = new SectionStations(3L, 5L, 3);
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
+        sectionService.addSection(sectionRequest);
+
         assertAll(
-                () -> assertThatCode(() -> sectionService.addSection(sectionRequest))
-                        .doesNotThrowAnyException(),
                 () -> verify(sectionDao).deleteByLeftStationIdAndRightStationId(1L, 3L, 4L),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_3, FIXTURE_STATION_5, new Distance(3))),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_5, FIXTURE_STATION_4, new Distance(7)))
@@ -145,7 +146,7 @@ class SectionServiceTest {
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
         assertThatThrownBy(() -> sectionService.addSection(sectionRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("노선에 이미 존재하는 두 역을 등록할 수 없습니다.");
     }
 
@@ -161,7 +162,7 @@ class SectionServiceTest {
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
         assertThatThrownBy(() -> sectionService.addSection(sectionRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("존재하지 않는 역들과의 구간을 등록할 수 없습니다.");
     }
 
@@ -177,7 +178,7 @@ class SectionServiceTest {
         SectionRequest sectionRequest = new SectionRequest(1L, sectionStations);
 
         assertThatThrownBy(() -> sectionService.addSection(sectionRequest))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.");
     }
 
@@ -188,9 +189,9 @@ class SectionServiceTest {
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
 
+        sectionService.deleteStation(1L, 2L);
+
         assertAll(
-                () -> assertThatCode(() -> sectionService.deleteStation(1L, 2L))
-                        .doesNotThrowAnyException(),
                 () -> verify(sectionDao).insert(1L, new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20))),
                 () -> verify(sectionDao).deleteByStationId(1L, 2L)
         );
@@ -203,11 +204,9 @@ class SectionServiceTest {
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
 
-        assertAll(
-                () -> assertThatCode(() -> sectionService.deleteStation(1L, 1L))
-                        .doesNotThrowAnyException(),
-                () -> verify(sectionDao).deleteByStationId(1L, 1L)
-        );
+        sectionService.deleteStation(1L, 1L);
+
+        verify(sectionDao).deleteByStationId(1L, 1L);
     }
 
     @DisplayName("오른쪽에만 연결된 역을 삭제할 수 있다.")
@@ -217,11 +216,9 @@ class SectionServiceTest {
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
 
-        assertAll(
-                () -> assertThatCode(() -> sectionService.deleteStation(1L, 3L))
-                        .doesNotThrowAnyException(),
-                () -> verify(sectionDao).deleteByStationId(1L, 3L)
-        );
+        sectionService.deleteStation(1L, 3L);
+
+        verify(sectionDao).deleteByStationId(1L, 3L);
     }
 
     @DisplayName("노선도에 존재하지 않는 역을 삭제할 수 없다.")
@@ -232,7 +229,7 @@ class SectionServiceTest {
         when(stationDao.findById(4L)).thenReturn(FIXTURE_STATION_4);
 
         assertThatThrownBy(() -> sectionService.deleteStation(1L, 4L))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayServiceException.class)
                 .hasMessageContaining("역이 존재하지 않습니다.");
     }
 
