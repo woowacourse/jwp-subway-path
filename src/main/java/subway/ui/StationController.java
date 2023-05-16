@@ -36,7 +36,7 @@ public class StationController {
     }
 
     @GetMapping
-    public ResponseEntity<Response> showStations() {
+    public ResponseEntity<Response> findAllStations() {
         List<StationResponse> stations = stationService.findAllStationResponses();
         return Response.ok()
                 .message(stations.size() + "개의 역이 조회되었습니다.")
