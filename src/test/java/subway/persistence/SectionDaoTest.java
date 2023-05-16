@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.exception.DuplicatedSectionException;
 import subway.exception.LineNotFoundException;
+import subway.exception.SectionNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 
@@ -90,6 +91,47 @@ class SectionDaoTest {
                 () -> assertThat(previousStationIds).containsAll(List.of(1L, 2L)),
                 () -> assertThat(nextStationIds).containsAll(List.of(2L, 3L))
         );
+    }
+
+    @Test
+    @DisplayName("노선명으로 구간 조회 실패 - 존재하지 않는 노선")
+    void findByLineName_fail_name_not_found() {
+        // given
+        final String lineName = "ditoo";
+
+        // when, then
+        assertThatThrownBy(() -> sectionDao.findByLineName(lineName))
+                .isInstanceOf(LineNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("id로 노선 조회 성공")
+    void findById_success() {
+        // given
+        final long id = 1L;
+
+        // when
+        final SectionEntity sectionEntity = sectionDao.findById(id);
+
+        // then
+        assertAll(
+                () -> assertThat(sectionEntity.getId()).isEqualTo(1L),
+                () -> assertThat(sectionEntity.getLineId()).isEqualTo(1L),
+                () -> assertThat(sectionEntity.getPreviousStationId()).isEqualTo(1L),
+                () -> assertThat(sectionEntity.getNextStationId()).isEqualTo(2L),
+                () -> assertThat(sectionEntity.getDistance()).isEqualTo(3)
+        );
+    }
+
+    @Test
+    @DisplayName("id로 노선 조회 실패 - 존재하지 않는 id")
+    void findById_fail_id_not_found() {
+        // given
+        final long id = 111L;
+
+        // when, then
+        assertThatThrownBy(() -> sectionDao.findById(id))
+                .isInstanceOf(SectionNotFoundException.class);
     }
 
     @Test
