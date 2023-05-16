@@ -11,6 +11,7 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import subway.domain.station.Station;
 import subway.domain.station.StationName;
+import subway.fixture.SectionsFixture.AB;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -61,25 +62,19 @@ class SectionsTest {
     @Test
     void 새로운_구간을_제일_앞에_추가한다() {
         // given
-        final Station stationA = new Station(new StationName("종합운동장"));
-        final Station stationB = new Station(new StationName("잠실새내"));
-        final Distance distance = new Distance(5);
-        final Section section = new Section(stationA, stationB, distance);
-
-        final Station stationC = new Station(new StationName("삼성"));
+        final Station stationC = new Station(new StationName("C"));
         final Distance otherDistance = new Distance(5);
-        final Section other = new Section(stationC, stationA, otherDistance);
+        final Section other = new Section(stationC, AB.stationA, otherDistance);
 
         // when
-        final Sections sections = emptySections().addSection(section);
-        final Sections updatedSections = sections.addSection(other);
+        final Sections updatedSections = AB.sections.addSection(other);
 
         // then
         final List<Section> linkedSections = updatedSections.getSections();
         assertAll(
                 () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(stationC)).isTrue(),
-                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(stationA)).isTrue(),
-                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(stationB)).isTrue()
+                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(AB.stationA)).isTrue(),
+                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(AB.stationB)).isTrue()
         );
     }
 
@@ -90,24 +85,18 @@ class SectionsTest {
     @Test
     void 새로운_구간을_제일_뒤에_추가한다() {
         // given
-        final Station stationA = new Station(new StationName("종합운동장"));
-        final Station stationB = new Station(new StationName("잠실새내"));
-        final Distance distance = new Distance(5);
-        final Section section = new Section(stationA, stationB, distance);
-
-        final Station stationC = new Station(new StationName("잠실"));
+        final Station stationC = new Station(new StationName("C"));
         final Distance otherDistance = new Distance(5);
-        final Section other = new Section(stationB, stationC, otherDistance);
+        final Section other = new Section(AB.stationB, stationC, otherDistance);
 
         // when
-        final Sections sections = emptySections().addSection(section);
-        final Sections updatedSections = sections.addSection(other);
+        final Sections updatedSections = AB.sections.addSection(other);
 
         // then
         final List<Section> linkedSections = updatedSections.getSections();
         assertAll(
-                () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(stationA)).isTrue(),
-                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(stationB)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(AB.stationA)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(AB.stationB)).isTrue(),
                 () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(stationC)).isTrue()
         );
     }
