@@ -12,7 +12,7 @@ public class Distance {
     }
 
     private void validate(final int value) {
-        if (value <= 0) {
+        if (value < 0) {
             throw new IllegalArgumentException("길이는 1이상이어야 합니다.");
         }
     }
@@ -27,6 +27,10 @@ public class Distance {
 
     public boolean isOver(final Distance other) {
         return this.value > other.value;
+    }
+
+    public Distance quotient(final Distance otherDistance) {
+        return new Distance(value / otherDistance.value);
     }
 
     public int getValue() {
