@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.domain.Distance;
 import subway.application.domain.Line;
 import subway.application.domain.Section;
-import subway.application.repository.LinePropertyRepository;
 import subway.application.repository.LineRepository;
 import subway.application.repository.StationRepository;
 import subway.presentation.dto.StationEnrollRequest;
@@ -21,13 +20,10 @@ public class LineService {
 
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
-    private final LinePropertyRepository linePropertyRepository;
 
-    public LineService(LineRepository lineRepository, StationRepository stationRepository,
-                       LinePropertyRepository linePropertyRepository) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
-        this.linePropertyRepository = linePropertyRepository;
     }
 
     public void enrollStation(Long lineId, StationEnrollRequest request) {
@@ -50,15 +46,19 @@ public class LineService {
 
     public List<StationResponse> findRouteMap(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        return line.routeMap().value().stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
-                .collect(Collectors.toList());
+        return makeRouteMapResponseOf(line);
     }
 
     public Map<String, List<StationResponse>> findAllRouteMap() {
         List<Line> allLines = lineRepository.findAll();
 
         return allLines.stream()
-                .collect(Collectors.toMap(Line::getName, line -> findRouteMap(line.getId())));
+                .collect(Collectors.toMap(Line::getName, LineService::makeRouteMapResponseOf));
+    }
+
+    private static List<StationResponse> makeRouteMapResponseOf(Line line) {
+        return line.routeMap().value().stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
     }
 }
