@@ -14,28 +14,33 @@ import subway.domain.Path;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
+import subway.domain.subway.routeMap.DijkstraRouteMap;
 import subway.exception.InvalidStationException;
 
-class DijkstraSubwayRouteMapTest {
+class DijkstraRouteMapTest {
 
     @Nested
     @DisplayName("최단 거리를 가지는 경로를 계산할 시")
     class FindShortestPath {
 
-        final Station upward = new Station(1L, "잠실역");
-        final Station middle = new Station(2L, "사당역");
-        final Station downward = new Station(3L, "서울역");
-        DijkstraSubwayRouteMap routeMap;
+        private Station upward;
+        private Station middle;
+        private Station downward;
+        private DijkstraRouteMap routeMap;
 
         @BeforeEach
         void setUp() {
+            upward = new Station(1L, "잠실역");
+            middle = new Station(2L, "사당역");
+            downward = new Station(3L, "서울역");
+
             final List<Section> sectionForLineTwo = List.of(new Section(upward, middle, 3));
             final List<Section> sectionsForLineFour = List.of(new Section(middle, downward, 4));
 
             final Line lineTwo = new Line(1L, "2호선", "초록색", new LinkedList<>(sectionForLineTwo));
             final Line lineFour = new Line(2L, "4호선", "하늘색", new LinkedList<>(sectionsForLineFour));
 
-            routeMap = new DijkstraSubwayRouteMap(List.of(lineTwo, lineFour));
+            routeMap = new DijkstraRouteMap(List.of(lineTwo, lineFour));
         }
 
         @Test

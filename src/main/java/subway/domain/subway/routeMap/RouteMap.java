@@ -1,9 +1,9 @@
-package subway.domain.subway;
+package subway.domain.subway.routeMap;
 
 import subway.domain.Path;
 import subway.domain.station.Station;
 
-public interface SubwayRouteMap {
+public interface RouteMap {
 
     Path findShortestPath(Station source, Station destination);
 }

@@ -1,4 +1,4 @@
-package subway.domain.subway;
+package subway.domain.subway.routeMap;
 
 import java.util.List;
 import org.jgrapht.GraphPath;
@@ -11,12 +11,12 @@ import subway.domain.section.Section;
 import subway.domain.station.Station;
 import subway.exception.InvalidStationException;
 
-public final class DijkstraSubwayRouteMap implements SubwayRouteMap {
+public final class DijkstraRouteMap implements RouteMap {
 
     private final List<Line> lines;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> paths;
 
-    public DijkstraSubwayRouteMap(final List<Line> lines) {
+    public DijkstraRouteMap(final List<Line> lines) {
         this.lines = lines;
         this.paths = new DijkstraShortestPath<>(setUpGraph());
     }

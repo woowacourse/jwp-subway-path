@@ -4,13 +4,14 @@ import subway.domain.Path;
 import subway.domain.station.Station;
 import subway.domain.subway.billing_policy.BillingPolicy;
 import subway.domain.subway.billing_policy.Fare;
+import subway.domain.subway.routeMap.RouteMap;
 
 public final class Subway {
 
-    private final SubwayRouteMap routeMap;
+    private final RouteMap routeMap;
     private final BillingPolicy billingPolicy;
 
-    public Subway(final SubwayRouteMap routeMap, final BillingPolicy billingPolicy) {
+    public Subway(final RouteMap routeMap, final BillingPolicy billingPolicy) {
         this.routeMap = routeMap;
         this.billingPolicy = billingPolicy;
     }
