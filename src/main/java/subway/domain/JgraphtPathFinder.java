@@ -9,6 +9,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
+import subway.exception.NotFoundPathException;
 
 @Component
 public class JgraphtPathFinder implements PathFinder {
@@ -16,7 +17,7 @@ public class JgraphtPathFinder implements PathFinder {
     @Override
     public Path find(final Station startStation, final Station endStation, List<Line> lines) {
         DijkstraShortestPath path = getPath(lines);
-        GraphPath<Station, SectionProxy> shortestPath = path.getPath(startStation, endStation);
+        GraphPath<Station, SectionProxy> shortestPath = findShortestPath(startStation, endStation, path);
         Sections sections = shortestPath.getEdgeList().stream()
                 .map(SectionProxy::toSection)
                 .collect(collectingAndThen(toList(), Sections::new));
@@ -38,5 +39,13 @@ public class JgraphtPathFinder implements PathFinder {
         }
 
         return new DijkstraShortestPath(graph);
+    }
+
+    private static GraphPath findShortestPath(Station startStation, Station endStation, DijkstraShortestPath path) {
+        GraphPath shortestPath = path.getPath(startStation, endStation);
+        if (shortestPath == null) {
+            throw new NotFoundPathException();
+        }
+        return shortestPath;
     }
 }

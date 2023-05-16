@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.exception.NotFoundPathException;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -53,5 +55,28 @@ class JgraphtPathFinderTest {
                 "1번역-[5km]-지름길",
                 "지름길-[10km]-6번역"
         );
+    }
+
+    @Test
+    void 이어지지않은_경로를_요청시_예외() {
+        // given
+        List<Section> sections1 = List.of(
+                new Section(ONE, TWO, 10),
+                new Section(TWO, THREE, 11),
+                new Section(THREE, FOUR, 12)
+        );
+
+        List<Section> sections2 = List.of(
+                new Section(지름길, FIVE, 15)
+        );
+
+        List<Line> lines = List.of(
+                new Line("1호선", new Sections(sections1)),
+                new Line("2호선", new Sections(sections2))
+        );
+
+        // when & then
+        assertThatThrownBy(() -> jgraphtPathFinder.find(ONE, FIVE, lines))
+                .isInstanceOf(NotFoundPathException.class);
     }
 }
