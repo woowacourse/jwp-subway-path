@@ -1,4 +1,4 @@
-package subway.application.feepolicy;
+package subway.application.feecalculator;
 
 import org.springframework.stereotype.Component;
 

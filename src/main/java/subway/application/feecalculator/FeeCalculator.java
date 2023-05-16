@@ -1,4 +1,4 @@
-package subway.application.feepolicy;
+package subway.application.feecalculator;
 
 public interface FeeCalculator {
 

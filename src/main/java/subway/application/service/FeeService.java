@@ -2,7 +2,7 @@ package subway.application.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.feepolicy.FeeCalculator;
+import subway.application.feecalculator.FeeCalculator;
 import subway.domain.Line;
 import subway.domain.ShortestWayCalculator;
 import subway.domain.Station;
@@ -17,11 +17,11 @@ import java.util.List;
 public class FeeService {
 
     private final SubwayRepository subwayRepository;
-    private final FeeCalculator feePolicy;
+    private final FeeCalculator feeCalculator;
 
-    public FeeService(final SubwayRepository subwayRepository, final FeeCalculator feePolicy) {
+    public FeeService(final SubwayRepository subwayRepository, final FeeCalculator feeCalculator) {
         this.subwayRepository = subwayRepository;
-        this.feePolicy = feePolicy;
+        this.feeCalculator = feeCalculator;
     }
 
     @Transactional(readOnly = true)
@@ -31,7 +31,7 @@ public class FeeService {
         final Station end = subwayRepository.findStationById(endStationId);
 
         final ShortestWayCalculator calculator = new ShortestWayCalculator().calculate(start, end, lines);
-        final int fee = feePolicy.calculateFee(calculator.getDistance());
+        final int fee = feeCalculator.calculateFee(calculator.getDistance());
 
         return new ShortestWayResponse(fee, StationResponse.of(calculator.getWay()));
     }
