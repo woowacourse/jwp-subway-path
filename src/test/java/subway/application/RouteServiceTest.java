@@ -2,7 +2,6 @@ package subway.application;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doReturn;
@@ -11,14 +10,12 @@ import static subway.fixture.LineFixture.잠실_신림_이동_가능한_구간�
 import static subway.fixture.StationFixture.신림역;
 import static subway.fixture.StationFixture.잠실역;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.application.dto.RouteRequest;
 import subway.application.dto.RouteResponse;
 import subway.application.dto.StationResponse;
 import subway.domain.fare.Fare;
@@ -51,12 +48,10 @@ class RouteServiceTest {
         when(lineRepository.getPossibleSections(anyLong(), anyLong()))
             .thenReturn(잠실_신림_이동_가능한_구간들());
         when(fareCalculator.calculateFare(any()))
-            .thenReturn(new Fare(1550));
-
-        final RouteRequest routeRequest = new RouteRequest(1L, 5L);
+            .thenReturn(new Fare(1450));
 
         // when
-        final RouteResponse routeResponse = routeService.getShortestRouteAndFare(routeRequest);
+        final RouteResponse routeResponse = routeService.getShortestRouteAndFare(1L, 5L);
 
         // then
         assertThat(routeResponse.getStations())
@@ -69,6 +64,6 @@ class RouteServiceTest {
 
         assertThat(routeResponse)
             .extracting(RouteResponse::getFare)
-            .isEqualTo(1550);
+            .isEqualTo(1450);
     }
 }

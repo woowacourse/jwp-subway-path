@@ -6,13 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import javax.validation.Valid;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.dto.RouteRequest;
 import subway.application.dto.RouteResponse;
 import subway.application.dto.StationResponse;
 import subway.application.mapper.SectionProvider;
@@ -42,9 +40,7 @@ public class RouteService {
         this.stationRepository = stationRepository;
     }
 
-    public RouteResponse getShortestRouteAndFare(final @Valid RouteRequest routeRequest) {
-        final Long sourceStationId = routeRequest.getSourceStationId();
-        final Long targetStationId = routeRequest.getTargetStationId();
+    public RouteResponse getShortestRouteAndFare(final Long sourceStationId, final Long targetStationId) {
         final Station sourceStation = stationRepository.findById(sourceStationId);
         final Station targetStation = stationRepository.findById(targetStationId);
 

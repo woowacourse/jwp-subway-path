@@ -6,8 +6,6 @@ import static subway.exception.ErrorCode.INVALID_REQUEST;
 import static subway.exception.ErrorCode.LINE_NAME_DUPLICATED;
 
 import io.restassured.RestAssured;
-import java.util.HashMap;
-import java.util.Map;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.application.dto.LineRequest;
 import subway.application.dto.SectionRequest;
+import subway.application.dto.StationRequest;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -76,16 +75,9 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("기존에 존재하는 역을 이용하여 지하철 노선을 생성한다.")
     void createSection() {
         // given
-        final LineRequest lineRequest = new LineRequest("이호선", "bg-green-600");
-        saveLine(lineRequest);
-
-        final Map<String, String> stationRequest1 = new HashMap<>();
-        stationRequest1.put("name", "강남역");
-        saveStation(stationRequest1);
-
-        final Map<String, String> stationRequest2 = new HashMap<>();
-        stationRequest2.put("name", "역삼역");
-        saveStation(stationRequest2);
+        saveLine(new LineRequest("이호선", "bg-green-600"));
+        saveStation(new StationRequest("강남역"));
+        saveStation(new StationRequest("역삼역"));
 
         // expected
         final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 10);
@@ -134,31 +126,14 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선 전체 목록을 조회한다.")
     void getAllLines() {
         // given
-        final LineRequest lineRequest1 = new LineRequest("이호선", "bg-green-600");
-        final LineRequest lineRequest2 = new LineRequest("팔호선", "bg-pink-600");
-        saveLine(lineRequest1);
-        saveLine(lineRequest2);
-
-        final Map<String, String> stationRequest1 = new HashMap<>();
-        stationRequest1.put("name", "강남역");
-        saveStation(stationRequest1);
-
-        final Map<String, String> stationRequest2 = new HashMap<>();
-        stationRequest2.put("name", "역삼역");
-        saveStation(stationRequest2);
-
-        final Map<String, String> stationRequest3 = new HashMap<>();
-        stationRequest3.put("name", "남위례역");
-        saveStation(stationRequest3);
-
-        final Map<String, String> stationRequest4 = new HashMap<>();
-        stationRequest4.put("name", "산성역");
-        saveStation(stationRequest4);
-
-        final SectionRequest sectionRequest1 = new SectionRequest(1L, 1L, 2L, 10);
-        saveSection(sectionRequest1);
-        final SectionRequest sectionRequest2 = new SectionRequest(2L, 3L, 4L, 10);
-        saveSection(sectionRequest2);
+        saveLine(new LineRequest("이호선", "bg-green-600"));
+        saveLine(new LineRequest("팔호선", "bg-pink-600"));
+        saveStation(new StationRequest("강남역"));
+        saveStation(new StationRequest("역삼역"));
+        saveStation(new StationRequest("남위례역"));
+        saveStation(new StationRequest("산성역"));
+        saveSection(new SectionRequest(1L, 1L, 2L, 10));
+        saveSection(new SectionRequest(2L, 3L, 4L, 10));
 
         // expected
         RestAssured
@@ -181,19 +156,10 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선 목록을 조회한다.")
     void getLineById() {
         // given
-        final LineRequest lineRequest = new LineRequest("이호선", "bg-green-600");
-        saveLine(lineRequest);
-
-        final Map<String, String> stationRequest1 = new HashMap<>();
-        stationRequest1.put("name", "강남역");
-        saveStation(stationRequest1);
-
-        final Map<String, String> stationRequest2 = new HashMap<>();
-        stationRequest2.put("name", "역삼역");
-        saveStation(stationRequest2);
-
-        final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 10);
-        saveSection(sectionRequest);
+        saveLine(new LineRequest("이호선", "bg-green-600"));
+        saveStation(new StationRequest("강남역"));
+        saveStation(new StationRequest("역삼역"));
+        saveSection(new SectionRequest(1L, 1L, 2L, 10));
 
         // expected
         RestAssured
@@ -243,19 +209,10 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선의 역을 제거한다.")
     void deleteStationInLine() {
         // given
-        final LineRequest lineRequest = new LineRequest("이호선", "bg-green-600");
-        saveLine(lineRequest);
-
-        final Map<String, String> stationRequest1 = new HashMap<>();
-        stationRequest1.put("name", "강남역");
-        saveStation(stationRequest1);
-
-        final Map<String, String> stationRequest2 = new HashMap<>();
-        stationRequest2.put("name", "역삼역");
-        saveStation(stationRequest2);
-
-        final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 10);
-        saveSection(sectionRequest);
+        saveLine(new LineRequest("이호선", "bg-green-600"));
+        saveStation(new StationRequest("강남역"));
+        saveStation(new StationRequest("역삼역"));
+        saveSection(new SectionRequest(1L, 1L, 2L, 10));
 
         // expected
         RestAssured
@@ -274,7 +231,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .then().log().all();
     }
 
-    private void saveStation(final Map<String, String> stationRequest) {
+    private void saveStation(final StationRequest stationRequest) {
         RestAssured.given().log().all()
             .body(stationRequest)
             .contentType(MediaType.APPLICATION_JSON_VALUE)
