@@ -160,11 +160,11 @@ public class Line {
         return result;
     }
 
-    public void initialAdd(final Section section) {
+    public void initialAdd(final Station left, final Station right, final Distance distance) {
         if (!sections.isEmpty()) {
             throw new LineNotEmptyException();
         }
-        sections.add(section);
+        sections.add(new Section(left, right, distance));
     }
 
     @Override

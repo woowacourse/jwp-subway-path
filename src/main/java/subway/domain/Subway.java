@@ -39,18 +39,19 @@ public class Subway {
             final String lineName,
             final String leftStationName,
             final String rightStationName,
-            final Integer distance
+            final Integer distanceValue
     ) {
         if (leftStationName.equals(rightStationName)) {
             throw new InvalidSectionException("동일한 이름을 가진 역을 구간에 추가할 수 없습니다.");
         }
         final Station left = new Station(leftStationName);
         final Station right = new Station(rightStationName);
+        final Distance distance = new Distance(distanceValue);
 
         validateExistLine(left, right);
 
         final Line findLine = findLineByLineName(lineName);
-        findLine.initialAdd(new Section(left, right, new Distance((distance))));
+        findLine.initialAdd(left, right, distance);
     }
 
     private void validateExistLine(Station base, Station additional) {

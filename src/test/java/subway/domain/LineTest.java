@@ -299,7 +299,7 @@ class LineTest {
         final Line line = new Line("2호선", "RED", Collections.emptyList());
 
         // when
-        line.initialAdd(new Section("A", "B", 3));
+        line.initialAdd(new Station("A"), new Station("B"), new Distance(3));
 
         // then
         assertThat(line.getSections()).contains(new Section("A", "B", 3));
@@ -313,7 +313,7 @@ class LineTest {
         ));
 
         // expect
-        assertThatThrownBy(() -> line.initialAdd(new Section("A", "B", 3)))
+        assertThatThrownBy(() -> line.initialAdd(new Station("A"), new Station("B"), new Distance(3)))
                 .isInstanceOf(LineNotEmptyException.class)
                 .hasMessage("노선이 비어있지 않습니다.");
     }
