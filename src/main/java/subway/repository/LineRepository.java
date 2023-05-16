@@ -5,29 +5,20 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.EdgeDao;
 import subway.dao.LineDao;
-import subway.dao.StationDao;
 import subway.domain.Edge;
 import subway.domain.Line;
-import subway.domain.Station;
 
 @Repository
 public class LineRepository {
 
     public static final int INITIAL_EDGE = 0;
-    private final StationDao stationDao;
+
     private final LineDao lineDao;
     private final EdgeDao edgeDao;
 
-
-    public LineRepository(StationDao stationDao, LineDao lineDao, EdgeDao edgeDao) {
-        this.stationDao = stationDao;
+    public LineRepository(LineDao lineDao, EdgeDao edgeDao) {
         this.lineDao = lineDao;
         this.edgeDao = edgeDao;
-    }
-
-    public Station getStation(Long stationId) {
-        return stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
     }
 
     public Line getLine(Long lineId) {
@@ -55,7 +46,9 @@ public class LineRepository {
 
     public void checkLineIsExist(String lineName) {
         lineDao.findByName(lineName)
-                .ifPresent(line -> {throw new IllegalArgumentException("이미 존재하는 노선입니다.");});
+                .ifPresent(line -> {
+                    throw new IllegalArgumentException("이미 존재하는 노선입니다.");
+                });
     }
 
     private Line assembleLine(Long lineId) {

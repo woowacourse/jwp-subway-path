@@ -1,24 +1,22 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.request.StationCreateRequest;
+import subway.repository.StationRepository;
 
 @Service
 public class StationService {
 
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public StationService(StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public Station saveStation(StationCreateRequest createRequest) {
-        if (stationDao.findByName(createRequest.getStationName()).isPresent()) {
-            throw new IllegalArgumentException("이미 존재하는 지하철역 이름입니다.");
-        }
+        stationRepository.checkStationIsExist(createRequest.getStationName());
         Station station = new Station(createRequest.getStationName());
-        return stationDao.insert(station);
+        return stationRepository.insert(station);
     }
 }

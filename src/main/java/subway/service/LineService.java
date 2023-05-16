@@ -8,21 +8,24 @@ import subway.domain.Station;
 import subway.dto.AddStationToExistLineDto;
 import subway.dto.CreateNewLineDto;
 import subway.repository.LineRepository;
+import subway.repository.StationRepository;
 
 @Service
 @Transactional
 public class LineService {
 
-    public final LineRepository lineRepository;
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
-    public LineService(LineRepository lineRepository) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository) {
         this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
     }
 
     public Line createNewLine(CreateNewLineDto dto) {
         lineRepository.checkLineIsExist(dto.getLineName());
-        Station upStation = lineRepository.getStation(dto.getUpStationId());
-        Station downStation = lineRepository.getStation(dto.getDownStationId());
+        Station upStation = stationRepository.getStation(dto.getUpStationId());
+        Station downStation = stationRepository.getStation(dto.getDownStationId());
 
         Line createdLine = Line.createLine(dto.getLineName(), upStation, downStation, dto.getDistance());
 
@@ -31,8 +34,8 @@ public class LineService {
 
     public Line addStationToExistLine(AddStationToExistLineDto dto) {
         Line line = lineRepository.getLine(dto.getLineId());
-        Station upStation = lineRepository.getStation(dto.getUpStationId());
-        Station downStation = lineRepository.getStation(dto.getDownStationId());
+        Station upStation = stationRepository.getStation(dto.getUpStationId());
+        Station downStation = stationRepository.getStation(dto.getDownStationId());
 
         line.addEdge(upStation, downStation, dto.getDistance());
 
@@ -41,7 +44,7 @@ public class LineService {
 
     public Line deleteStationFromLine(Long lineId, Long stationId) {
         Line line = lineRepository.getLine(lineId);
-        Station station = lineRepository.getStation(stationId);
+        Station station = stationRepository.getStation(stationId);
 
         line.deleteStation(station);
 
