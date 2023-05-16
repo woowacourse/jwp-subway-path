@@ -34,7 +34,8 @@ public class JgraphRouteFinderBuilder implements RouteFinderBuilder<RouteSegment
             subwayGraph.addVertex(section.getUpstream());
             subwayGraph.addVertex(section.getDownstream());
 
-            final WeightedEdgeWithLineInfo weightedEdgeWithLineInfo = new WeightedEdgeWithLineInfo(line.getId(), line.getName());
+            final WeightedEdgeWithLineInfo weightedEdgeWithLineInfo = new WeightedEdgeWithLineInfo(line.getId(), line.getName(), section.getDistance());
+            subwayGraph.setEdgeWeight(weightedEdgeWithLineInfo, section.getDistance());
             subwayGraph.addEdge(section.getUpstream(), section.getDownstream(), weightedEdgeWithLineInfo);
         }
     }

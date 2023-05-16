@@ -26,10 +26,10 @@ class JgraphRouteFinderBuilderTest {
                                               .get(0);
 
         assertAll(
-                () -> assertThat(route.getSourceId()).isEqualTo(JAMSIL_STATION.getId()),
-                () -> assertThat(route.getDestinationId()).isEqualTo(JAMSIL_NARU_STATION.getId()),
-                () -> assertThat(route.getSourceName()).isEqualTo(JAMSIL_STATION.getName()),
-                () -> assertThat(route.getDestinationName()).isEqualTo(JAMSIL_NARU_STATION.getName()),
+                () -> assertThat(route.getUpstreamId()).isEqualTo(JAMSIL_STATION.getId()),
+                () -> assertThat(route.getDownstreamId()).isEqualTo(JAMSIL_NARU_STATION.getId()),
+                () -> assertThat(route.getUpstreamName()).isEqualTo(JAMSIL_STATION.getName()),
+                () -> assertThat(route.getDownstreamName()).isEqualTo(JAMSIL_NARU_STATION.getName()),
                 () -> assertThat(route.getLineId()).isEqualTo(LINE_NUMBER_TWO.getId()),
                 () -> assertThat(route.getLineName()).isEqualTo(LINE_NUMBER_TWO.getName()),
                 () -> assertThat(route.getDistance()).isEqualTo(DISTANCE)
