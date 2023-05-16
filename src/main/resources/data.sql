@@ -13,5 +13,3 @@ INSERT INTO paths (line_id, up_station_id, down_station_id, distance)
 VALUES (1, 1, 2, 5),
        (2, 3, 1, 5),
        (2, 1, 4, 7);
-
-
