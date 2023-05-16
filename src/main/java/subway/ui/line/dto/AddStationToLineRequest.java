@@ -1,6 +1,6 @@
 package subway.ui.line.dto;
 
-import subway.domain.edge.Direction;
+import subway.domain.section.Direction;
 
 public class AddStationToLineRequest {
 

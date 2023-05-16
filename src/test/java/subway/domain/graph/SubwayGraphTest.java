@@ -3,10 +3,10 @@ package subway.domain.graph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.edge.Distance;
-import subway.domain.edge.Edge;
-import subway.domain.edge.Edges;
 import subway.domain.line.Line;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
 import subway.domain.station.Station;
 
 import java.util.List;
@@ -26,24 +26,24 @@ class SubwayGraphTest {
 
     // given
     final List<Line> lines = List.of(
-            new Line(1L, "1호선", new Edges(
+            new Line(1L, "1호선", new Sections(
                     List.of(
-                            new Edge(1L, A, B, new Distance(3)),
-                            new Edge(2L, B, C, new Distance(4)),
-                            new Edge(3L, C, D, new Distance(5)),
-                            new Edge(4L, D, E, new Distance(5))
+                            new Section(1L, A, B, new Distance(3)),
+                            new Section(2L, B, C, new Distance(4)),
+                            new Section(3L, C, D, new Distance(5)),
+                            new Section(4L, D, E, new Distance(5))
 
                     )
             )),
-            new Line(2L, "2호선", new Edges(
+            new Line(2L, "2호선", new Sections(
                     List.of(
-                            new Edge(5L, B, C, new Distance(3)),
-                            new Edge(6L, C, D, new Distance(1)),
-                            new Edge(7L, D, H, new Distance(5))
+                            new Section(5L, B, C, new Distance(3)),
+                            new Section(6L, C, D, new Distance(1)),
+                            new Section(7L, D, H, new Distance(5))
                     )
             ))
     );
-    final DijkstraShortestPath<Station, Edge> shortestPath = SubwayGraph.getShortestPath(lines);
+    final DijkstraShortestPath<Station, Section> shortestPath = SubwayGraph.getShortestPath(lines);
 
 
     @DisplayName("A에서 H로 간다.")

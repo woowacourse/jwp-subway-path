@@ -1,4 +1,4 @@
-package subway.domain.edge;
+package subway.domain.section;
 
 import java.util.Objects;
 

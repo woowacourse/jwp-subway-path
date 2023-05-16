@@ -41,7 +41,7 @@ public class LineController {
     @PostMapping("/{lineId}/stations")
     public ResponseEntity<Void> addStationToLine(@PathVariable Long lineId,
                                                  @RequestBody AddStationToLineRequest addStationToLineRequest) {
-        Line line = lineService.addStationToLine(lineId, addStationToLineRequest);
+        final Line line = lineService.addStationToLine(lineId, addStationToLineRequest);
 
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).build();
     }

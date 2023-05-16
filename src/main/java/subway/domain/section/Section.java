@@ -1,25 +1,27 @@
-package subway.domain.edge;
+package subway.domain.section;
 
 import subway.domain.station.Station;
 
-public class Edge {
+import java.util.Objects;
+
+public class Section {
 
     private Long id;
     private Station upStation;
     private Station downStation;
     private Distance distance;
 
-    private Edge() {
+    private Section() {
     }
 
-    public Edge(final Long id, final Station upStation, final Station downStation, final Distance distance) {
+    public Section(final Long id, final Station upStation, final Station downStation, final Distance distance) {
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
     }
 
-    public Edge(final Station upStation, final Station downStation, final Distance distance) {
+    public Section(final Station upStation, final Station downStation, final Distance distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
@@ -49,9 +51,27 @@ public class Edge {
         return distance.getDistance();
     }
 
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Section section = (Section) o;
+        return Objects.equals(id, section.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
     @Override
     public String toString() {
-        return "Edge{" +
+        return "section{" +
                 "id=" + id +
                 ", upStation=" + upStation +
                 ", downStation=" + downStation +

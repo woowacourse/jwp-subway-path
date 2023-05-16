@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.edge.Direction;
+import subway.domain.section.Direction;
 import subway.ui.line.dto.AddStationToLineRequest;
 import subway.ui.line.dto.LineCreateRequest;
 
@@ -83,7 +83,7 @@ public class AddStationToLineTest extends IntegrationTestSetUp {
                 .body("stations[2].stationName", equalTo("B"));
     }
 
-    @DisplayName("B-C를 UP 방향으로 추가하되, distance가 기존의 edge보다 길다면 BAD_REQUEST가 반환된다.")
+    @DisplayName("B-C를 UP 방향으로 추가하되, distance가 기존의 section보다 길다면 BAD_REQUEST가 반환된다.")
     @Test
     void addStationToLine2_fail() {
         // when
@@ -133,7 +133,7 @@ public class AddStationToLineTest extends IntegrationTestSetUp {
                 .body("stations[2].stationName", equalTo("B"));
     }
 
-    @DisplayName("A-C를 DOWN 방향으로 추가추가하되, distance가 기존의 edge보다 길다면 BAD_REQUEST가 반환된다.")
+    @DisplayName("A-C를 DOWN 방향으로 추가추가하되, distance가 기존의 section보다 길다면 BAD_REQUEST가 반환된다.")
     @Test
     void addStationToLine3_fail() {
         final AddStationToLineRequest request = new AddStationToLineRequest(1L, "C", Direction.DOWN, 11);

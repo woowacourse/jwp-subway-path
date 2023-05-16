@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
-import subway.domain.edge.Distance;
-import subway.domain.edge.Edge;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
 import subway.domain.station.Station;
 
 import javax.sql.DataSource;
@@ -17,60 +17,60 @@ import java.sql.SQLException;
 import java.util.List;
 
 @Component
-public class EdgeDao {
+public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert jdbcInsert;
 
-    public EdgeDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public SectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.jdbcInsert = new SimpleJdbcInsert(dataSource)
-                .withTableName("edge")
+                .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Edge insert(final Long lineId, final Edge edge) {
+    public Section insert(final Long lineId, final Section section) {
         final SqlParameterSource params = new MapSqlParameterSource()
                 .addValue("line_id", lineId)
-                .addValue("upstation_id", edge.getUpStation().getId())
-                .addValue("downstation_id", edge.getDownStation().getId())
-                .addValue("distance", edge.getDistanceValue());
+                .addValue("upstation_id", section.getUpStation().getId())
+                .addValue("downstation_id", section.getDownStation().getId())
+                .addValue("distance", section.getDistanceValue());
         final Long id = jdbcInsert.executeAndReturnKey(params).longValue();
 
-        return new Edge(id, edge.getUpStation(), edge.getDownStation(), edge.getDistance());
+        return new Section(id, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
-    public void insertAllByLineId(final Long lineId, final List<Edge> edges) {
-        final String sql = "INSERT INTO edge(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
+    public void insertAllByLineId(final Long lineId, final List<Section> sections) {
+        final String sql = "INSERT INTO section(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                final Edge edge = edges.get(i);
+                final Section section = sections.get(i);
                 ps.setLong(1, lineId);
-                ps.setLong(2, edge.getUpStation().getId());
-                ps.setLong(3, edge.getDownStation().getId());
-                ps.setInt(4, edge.getDistanceValue());
+                ps.setLong(2, section.getUpStation().getId());
+                ps.setLong(3, section.getDownStation().getId());
+                ps.setInt(4, section.getDistanceValue());
             }
 
             @Override
             public int getBatchSize() {
-                return edges.size();
+                return sections.size();
             }
         });
     }
 
-    public List<Edge> findAllByLineId(final Long lineId) {
+    public List<Section> findAllByLineId(final Long lineId) {
         final String sql =
-                "SELECT e.id, "
+                "SELECT s.id, "
                         + "s1.id AS upstation_id, s1.name AS upstation_name, "
                         + "s2.id AS downstation_id, s2.name AS downstation_name, "
-                        + "e.distance "
-                        + "FROM edge e "
-                        + "JOIN station s1 ON e.upstation_id = s1.id "
-                        + "JOIN station s2 ON e.downstation_id = s2.id "
-                        + "WHERE e.line_id = ?";
+                        + "s.distance "
+                        + "FROM section s "
+                        + "JOIN station s1 ON s.upstation_id = s1.id "
+                        + "JOIN station s2 ON s.downstation_id = s2.id "
+                        + "WHERE s.line_id = ?";
 
-        final RowMapper<Edge> mapper =
+        final RowMapper<Section> mapper =
                 (resultSet, rowNum) -> {
                     final Station upStation = new Station(
                             resultSet.getLong("upstation_id"),
@@ -79,14 +79,14 @@ public class EdgeDao {
                             resultSet.getLong("downstation_id"),
                             resultSet.getString("downstation_name"));
                     final Distance distance = new Distance(resultSet.getInt("distance"));
-                    return new Edge(resultSet.getLong("id"), upStation, downStation, distance);
+                    return new Section(resultSet.getLong("id"), upStation, downStation, distance);
                 };
 
         return jdbcTemplate.query(sql, mapper, lineId);
     }
 
     public void deleteAllByLineId(final Long lineId) {
-        String sql = "DELETE FROM edge WHERE line_id = ?";
+        final String sql = "DELETE FROM section WHERE line_id = ?";
 
         jdbcTemplate.update(sql, lineId);
     }

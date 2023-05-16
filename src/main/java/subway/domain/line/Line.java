@@ -1,9 +1,9 @@
 package subway.domain.line;
 
-import subway.domain.edge.DirectionStrategy;
-import subway.domain.edge.Distance;
-import subway.domain.edge.Edge;
-import subway.domain.edge.Edges;
+import subway.domain.section.DirectionStrategy;
+import subway.domain.section.Distance;
+import subway.domain.section.Section;
+import subway.domain.section.Sections;
 import subway.domain.station.Station;
 
 import java.util.List;
@@ -13,7 +13,7 @@ public class Line {
 
     private Long id;
     private String name;
-    private Edges edges;
+    private Sections sections;
 
     private Line() {
     }
@@ -22,9 +22,9 @@ public class Line {
         this.name = name;
     }
 
-    public Line(final String name, final Edges edges) {
+    public Line(final String name, final Sections sections) {
         this.name = name;
-        this.edges = edges;
+        this.sections = sections;
     }
 
     public Line(final Long id, final String name) {
@@ -32,18 +32,18 @@ public class Line {
         this.name = name;
     }
 
-    public Line(final Long id, final String name, final Edges edges) {
+    public Line(final Long id, final String name, final Sections sections) {
         this.id = id;
         this.name = name;
-        this.edges = edges;
+        this.sections = sections;
     }
 
-    public void addEdge(final Station existStation, final Station newStation, final DirectionStrategy directionStrategy, final Distance distance) {
-        this.edges = edges.add(existStation, newStation, directionStrategy, distance);
+    public void addSection(final Station existStation, final Station newStation, final DirectionStrategy directionStrategy, final Distance distance) {
+        this.sections = sections.add(existStation, newStation, directionStrategy, distance);
     }
 
     public void delete(final Station station) {
-        this.edges = edges.delete(station);
+        this.sections = sections.delete(station);
     }
 
     public Long getId() {
@@ -54,16 +54,16 @@ public class Line {
         return name;
     }
 
-    public Edges getEdges() {
-        return edges;
+    public Sections getSections() {
+        return sections;
     }
 
-    public List<Edge> edges() {
-        return edges.getEdges();
+    public List<Section> sections() {
+        return sections.getSections();
     }
 
     public List<Station> stations() {
-        return edges.getStations();
+        return sections.getStations();
     }
 
     @Override
@@ -88,7 +88,7 @@ public class Line {
         return "Line{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", edges=" + edges +
+                ", sections=" + sections +
                 '}';
     }
 }
