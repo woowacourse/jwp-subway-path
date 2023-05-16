@@ -2,7 +2,6 @@ package subway.controller.dto;
 
 public class SectionCreateRequest {
 
-    private Long lineId;
     private String leftStationName;
     private String rightStationName;
     private Integer distance;
@@ -10,15 +9,10 @@ public class SectionCreateRequest {
     private SectionCreateRequest() {
     }
 
-    public SectionCreateRequest(Long lineId, String leftStationName, String rightStationName, Integer distance) {
-        this.lineId = lineId;
+    public SectionCreateRequest(String leftStationName, String rightStationName, Integer distance) {
         this.leftStationName = leftStationName;
         this.rightStationName = rightStationName;
         this.distance = distance;
-    }
-
-    public Long getLineId() {
-        return lineId;
     }
 
     public String getLeftStationName() {

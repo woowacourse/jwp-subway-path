@@ -2,19 +2,13 @@ package subway.controller.dto;
 
 public class SectionDeleteRequest {
 
-    private Long lineId;
     private String stationName;
 
     private SectionDeleteRequest() {
     }
 
-    public SectionDeleteRequest(Long lineId, String stationName) {
-        this.lineId = lineId;
+    public SectionDeleteRequest(String stationName) {
         this.stationName = stationName;
-    }
-
-    public Long getLineId() {
-        return lineId;
     }
 
     public String getStationName() {
