@@ -24,4 +24,4 @@ create table if not exists SECTION
     foreign key (source_station_id) references STATION(id),
     foreign key (target_station_id) references STATION(id),
     foreign key (line_id) references LINE(id)
-);
+    );

@@ -1,52 +1,114 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import subway.dao.LineDao;
+import subway.dao.SectionDao;
+import subway.dao.StationDao;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
+import subway.domain.Station;
+import subway.domain.Subway;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
+import subway.dto.LineStationsResponse;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
+
+@Transactional(readOnly = true)
 @Service
 public class LineService {
     private final LineDao lineDao;
+    private final StationDao stationDao;
+    private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao) {
+    public LineService(LineDao lineDao, StationDao stationDao, SectionDao sectionDao) {
         this.lineDao = lineDao;
+        this.stationDao = stationDao;
+        this.sectionDao = sectionDao;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        String name = request.getName();
+        String color = request.getColor();
+
+        if (lineDao.checkExistenceByNameAndColor(name, color)) {
+            throw new DomainException(ExceptionType.LINE_ALREADY_EXIST);
+        }
+
+        Line persistLine = lineDao.insert(new Line(name, color));
         return LineResponse.of(persistLine);
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<LineStationsResponse> findLineStationsResponses() {
         List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+        List<Station> persistStations = stationDao.findAll();
+        List<Section> persistSections = sectionDao.findAll();
+
+        Subway subway = new Subway(persistLines, persistStations, persistSections);
+        Map<Line, List<Station>> lineMap = subway.getLineMap();
+
+        return getResponses(lineMap);
+    }
+
+    private List<LineStationsResponse> getResponses(Map<Line, List<Station>> lineMap) {
+        return lineMap.entrySet()
+            .stream()
+            .map(entry -> LineStationsResponse.of(entry.getKey(), entry.getValue()))
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public List<Line> findLines() {
         return lineDao.findAll();
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineStationsResponse findLineStationsResponseById(Long id) {
+        List<Station> stations = stationDao.findAll();
+        List<Section> allSections = sectionDao.findAllSectionByLineId(id);
+
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+
+        Sections sections = new Sections(allSections);
+        List<Station> orderedStations = getOrderedStations(stations, sections);
+
+        return LineStationsResponse.of(persistLine, orderedStations);
+    }
+
+    private List<Station> getOrderedStations(List<Station> stations, Sections sections) {
+        Map<Long, Station> idToStations = stations.stream()
+            .collect(Collectors.toMap(Station::getId, Function.identity()));
+
+        return sections.findOrderedStationIds()
+            .stream()
+            .map(idToStations::get)
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public Line findLineById(Long id) {
         return lineDao.findById(id);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
+        if (!lineDao.checkExistenceById(id)) {
+            throw new DomainException(ExceptionType.LINE_DOES_NOT_EXIST);
+        }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
+        if (!lineDao.checkExistenceById(id)) {
+            throw new DomainException(ExceptionType.LINE_DOES_NOT_EXIST);
+        }
         lineDao.deleteById(id);
     }
 

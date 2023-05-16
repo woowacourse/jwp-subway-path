@@ -1,14 +1,19 @@
 package subway.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.exception.DomainException;
+import subway.exception.ExceptionType;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
+@Transactional(readOnly = true)
 @Service
 public class StationService {
     private final StationDao stationDao;
@@ -17,8 +22,13 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
+        String name = stationRequest.getName();
+        if (stationDao.checkExistenceByName(name)) {
+            throw new DomainException(ExceptionType.STATION_ALREADY_EXIST);
+        }
+        Station station = stationDao.insert(new Station(name));
         return StationResponse.of(station);
     }
 
@@ -30,15 +40,23 @@ public class StationService {
         List<Station> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationResponse::of)
-                .collect(Collectors.toList());
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 
+    @Transactional
     public void updateStation(Long id, StationRequest stationRequest) {
+        if (!stationDao.checkExistenceById(id)) {
+            throw new DomainException(ExceptionType.STATION_DOES_NOT_EXIST);
+        }
         stationDao.update(new Station(id, stationRequest.getName()));
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
+        if (!stationDao.checkExistenceById(id)) {
+            throw new DomainException(ExceptionType.STATION_DOES_NOT_EXIST);
+        }
         stationDao.deleteById(id);
     }
 }
