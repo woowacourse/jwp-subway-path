@@ -3,7 +3,7 @@ package subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
@@ -61,7 +61,7 @@ class SectionRepositoryTest {
 
         sectionRepository.saveAll(LINE_ID, sectionsToSave);
 
-        verify(sectionDao, times(1)).deleteAllByLineId(anyLong());
+        verify(sectionDao, times(1)).deleteAllByLineId(eq(LINE_ID));
         verify(sectionDao, times(1)).insertAll(anyList());
     }
 
@@ -82,5 +82,15 @@ class SectionRepositoryTest {
                 잠실나루역_잠실역,
                 잠실역_잠실새내역
         );
+    }
+
+    @DisplayName("호선에 맞는 구간들을 제거한다")
+    @Test
+    void deleteAllByLineId() {
+        doReturn(1).when(sectionDao).deleteAllByLineId(any());
+
+        sectionRepository.deleteAllBy(LINE_ID);
+
+        verify(sectionDao, times(1)).deleteAllByLineId(eq(LINE_ID));
     }
 }

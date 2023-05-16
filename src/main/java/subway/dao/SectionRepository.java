@@ -24,12 +24,16 @@ public class SectionRepository {
     }
 
     public void saveAll(Long lineId, List<Section> sections) {
-        sectionDao.deleteAllByLineId(lineId);
+        deleteAllBy(lineId);
         sectionDao.insertAll(toDtos(lineId, sections));
     }
 
     public List<Section> findAllBy(Long lineId) {
         return toSections(sectionDao.findAllByLineId(lineId));
+    }
+
+    public void deleteAllBy(Long lineId) {
+        sectionDao.deleteAllByLineId(lineId);
     }
 
     private SectionDto toDto(Long lineId, Section section) {
