@@ -24,8 +24,8 @@ public class SectionRepository {
         ));
     }
 
-    public void delete(Long id) {
-        sectionDao.deleteById(id);
+    public void delete(Section section) {
+        sectionDao.deleteById(section.getId());
     }
 
     public Sections findSectionsByLineId(Long lineId) {

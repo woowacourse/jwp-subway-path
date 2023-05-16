@@ -6,17 +6,10 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
-import subway.dao.entity.LineEntity;
-import subway.dao.entity.SectionEntity;
-import subway.dao.entity.StationEntity;
 import subway.domain.Line;
 import subway.domain.LineRepository;
 import subway.domain.Section;
 import subway.domain.SectionRepository;
-import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.StationRepository;
 import subway.dto.section.SectionCreateRequest;
@@ -24,24 +17,16 @@ import subway.dto.section.SectionDeleteRequest;
 import subway.dto.section.SectionResponse;
 import subway.exception.IllegalDistanceException;
 import subway.exception.IllegalSectionException;
-import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 
 @Service
 @Transactional
 public class SectionService {
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
-    private final LineDao lineDao;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
-    public SectionService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao, LineRepository lineRepository,
-                          StationRepository stationRepository, SectionRepository sectionRepository) {
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
-        this.lineDao = lineDao;
+    public SectionService(LineRepository lineRepository, StationRepository stationRepository, SectionRepository sectionRepository) {
         this.lineRepository = lineRepository;
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
@@ -50,7 +35,6 @@ public class SectionService {
     public void saveSection(Long lineId, SectionCreateRequest sectionCreateRequest) {
         Station startStation = stationRepository.findByName(sectionCreateRequest.getStartStationName());
         Station endStation = stationRepository.findByName(sectionCreateRequest.getEndStationName());
-
         Line line = lineRepository.findById(lineId);
         addSection(line, new Section(startStation, endStation, sectionCreateRequest.getDistance()));
     }
@@ -60,11 +44,13 @@ public class SectionService {
             sectionRepository.save(line.getId(), sectionToAdd);
             return;
         }
+        addSectionByExistence(line, sectionToAdd);
+    }
 
+    private void addSectionByExistence(Line line, Section sectionToAdd) {
         boolean isStartStationAddRequest = line.hasStationInLine(sectionToAdd.getEndStation());
         boolean isEndStationAddRequest = line.hasStationInLine(sectionToAdd.getStartStation());
-        validateHasStation(isStartStationAddRequest, isEndStationAddRequest);
-
+        validateAddableSection(isStartStationAddRequest, isEndStationAddRequest);
         if (isStartStationAddRequest) {
             addStartStation(line, sectionToAdd);
         }
@@ -73,22 +59,7 @@ public class SectionService {
         }
     }
 
-    private LineEntity findLineById(Long id) {
-        Optional<LineEntity> lineEntity = lineDao.findById(id);
-        if (lineEntity.isPresent()) {
-            return lineEntity.get();
-        }
-        throw new LineNotFoundException();
-    }
-
-    private StationEntity findStationByName(String name) {
-        if (stationDao.existsByName(name)) {
-            return stationDao.findByName(name).get(); // TODO: 2023-05-15 if 분기 없애고 하나로 합치기
-        }
-        throw new StationNotFoundException();
-    }
-
-    private void validateHasStation(boolean hasStartStation, boolean hasEndStation) {
+    private void validateAddableSection(boolean hasStartStation, boolean hasEndStation) {
         if (hasStartStation && hasEndStation) {
             throw new IllegalSectionException("이미 노선에 추가할 역이 존재합니다.");
         }
@@ -97,17 +68,25 @@ public class SectionService {
         }
     }
 
-    private void validateDistance(int distance, int newDistance) {
-        if (distance <= newDistance) {
-            throw new IllegalDistanceException("새로운 구간의 길이는 기존 구간의 길이보다 작아야 합니다.");
-        }
+    private void addStartStation(Line line, Section sectionToAdd) {
+        Optional<Section> prevExistingSection = line.findSectionWithEndStation(sectionToAdd.getEndStation());
+        prevExistingSection.ifPresent(prevSection -> {
+            validateDistance(prevSection.getDistance(), sectionToAdd.getDistance());
+            sectionRepository.delete(prevSection);
+            sectionRepository.save(line.getId(), new Section(
+                    prevSection.getStartStation(),
+                    sectionToAdd.getStartStation(),
+                    prevSection.getDistance() - sectionToAdd.getDistance()
+            ));
+        });
+        sectionRepository.save(line.getId(), sectionToAdd);
     }
 
     private void addEndStation(Line line, Section sectionToAdd) {
         Optional<Section> prevExistingSection = line.findSectionWithStartStation(sectionToAdd.getStartStation());
         prevExistingSection.ifPresent(prevSection -> {
             validateDistance(prevSection.getDistance(), sectionToAdd.getDistance());
-            sectionRepository.delete(prevSection.getId());
+            sectionRepository.delete(prevSection);
             sectionRepository.save(line.getId(), new Section(
                     sectionToAdd.getEndStation(),
                     prevSection.getEndStation(),
@@ -117,47 +96,36 @@ public class SectionService {
         sectionRepository.save(line.getId(), sectionToAdd);
     }
 
-    private void addStartStation(Line line, Section sectionToAdd) {
-        Optional<Section> prevExistingSection = line.findSectionWithEndStation(sectionToAdd.getEndStation());
-        prevExistingSection.ifPresent(prevSection -> {
-            validateDistance(prevSection.getDistance(), sectionToAdd.getDistance());
-            sectionRepository.delete(prevSection.getId());
-            sectionRepository.save(line.getId(), new Section(
-                            prevSection.getStartStation(),
-                            sectionToAdd.getStartStation(),
-                            prevSection.getDistance() - sectionToAdd.getDistance()
-                    ));
-                }
-        );
-        sectionRepository.save(line.getId(), sectionToAdd);
+    private void validateDistance(int distance, int newDistance) {
+        if (distance <= newDistance) {
+            throw new IllegalDistanceException("새로운 구간의 길이는 기존 구간의 길이보다 작아야 합니다.");
+        }
     }
 
     public void deleteSection(Long lineId, SectionDeleteRequest sectionDeleteRequest) {
-        LineEntity line = findLineById(lineId);
-        String stationName = sectionDeleteRequest.getStationName();
-        StationEntity station = findStationByName(stationName);
-        validateStationInLine(line.getId(), station);
-        Optional<SectionEntity> startSection = sectionDao.findByEndStationIdAndLineId(station.getId(), line.getId());
-        Optional<SectionEntity> endSection = sectionDao.findByStartStationIdAndLineId(station.getId(), line.getId());
-        if (startSection.isPresent() && endSection.isPresent()) {
-            mergeSection(startSection.get(), endSection.get());
+        Line line = lineRepository.findById(lineId);
+        Station station = stationRepository.findByName(sectionDeleteRequest.getStationName());
+        validateStationInLine(line, station);
+        Optional<Section> backSection = line.findSectionWithStartStation(station);
+        Optional<Section> frontSection = line.findSectionWithEndStation(station);
+        if (backSection.isPresent() && frontSection.isPresent()) {
+            mergeSection(lineId, frontSection.get(), backSection.get());
+        }
+        frontSection.ifPresent(sectionRepository::delete);
+        backSection.ifPresent(sectionRepository::delete);
+    }
+
+    private void validateStationInLine(Line line, Station station) {
+        if (line.hasStationInLine(station)) {
             return;
         }
-        endSection.ifPresent(section -> sectionDao.deleteById(section.getId()));
-        startSection.ifPresent(section -> sectionDao.deleteById(section.getId()));
+        throw new StationNotFoundException();
     }
 
-    private void validateStationInLine(Long lineId, StationEntity station) {
-        if (!sectionDao.isStationInLineById(lineId, station.getId())) {
-            throw new StationNotFoundException();
-        }
-    }
-
-    private void mergeSection(SectionEntity startSection, SectionEntity endSection) {
-        sectionDao.deleteById(startSection.getId());
-        endSection.updateDistance(startSection.getDistance() + endSection.getDistance());
-        endSection.updateStartStationId(startSection.getStartStationId());
-        sectionDao.update(endSection);
+    private void mergeSection(Long lineId, Section frontSection, Section backSection) {
+        Section mergedSection = new Section(frontSection.getStartStation(), backSection.getEndStation(),
+                frontSection.getDistance() + backSection.getDistance());
+        sectionRepository.save(lineId, mergedSection);
     }
 
     @Transactional(readOnly = true)
