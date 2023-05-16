@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.graph.SubwayGraph;
@@ -100,7 +101,7 @@ public class LineService {
 
         final List<Line> lines = lineRepository.findAllWithSections();
 
-        final DijkstraShortestPath<Station, Section> shortestPath = SubwayGraph.getShortestPath(lines);
+        final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = SubwayGraph.getShortestPath(lines);
         final double pathWeight = shortestPath.getPathWeight(fromStation, toStation);
         final List<Station> stations = shortestPath.getPath(fromStation, toStation).getVertexList();
 

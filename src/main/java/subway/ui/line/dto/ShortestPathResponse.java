@@ -13,7 +13,7 @@ public class ShortestPathResponse {
     public ShortestPathResponse(final double pathWeight, final List<Station> stations) {
         this.totalDistance = pathWeight;
         this.stations = stations.stream()
-                .map(m -> new StationDto(m.getId(), m.getName()))
+                .map(station -> new StationDto(station.getId(), station.getName()))
                 .collect(Collectors.toList());
     }
 
