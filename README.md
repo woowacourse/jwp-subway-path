@@ -1,5 +1,13 @@
 # jwp-subway-path
 
+### 1단계 리팩터링 목록
+
+- [ ] README 문서 업데이트
+- [ ] [`IllegalArgumentException`에 대한 처리 400대 VS 500대](https://github.com/woowacourse/jwp-subway-path/pull/35#discussion_r1193146265)
+- [ ] domain Line이 Station과의 관계를 드러낼 수 있도록 수정하기 => 계층적 구조 드러내기
+- [ ] 도메인 내 주석 없애기 => 최대한 코드만으로 표현하자!
+- [ ] Sections 중복 코드 없애기
+
 # API 설계
 
 | HttpMethod | URL                                  | HttpStatus | Description         |
@@ -32,7 +40,6 @@ BODY
   "id": 1,
   "name": "2호선",
   "color": "GREEN"
-  
 }
 ```
 
