@@ -32,7 +32,7 @@ public class DistanceFeePolicy implements FeePolicy {
                 .mapToInt(Section::getDistance)
                 .sum();
         int fee = DEFAULT_FEE;
-        for(DistanceFee distanceFee : distanceFees) {
+        for (DistanceFee distanceFee : distanceFees) {
             fee = fee + distanceFee.calculateSectionFee(totalDistance);
         }
         return fee;
