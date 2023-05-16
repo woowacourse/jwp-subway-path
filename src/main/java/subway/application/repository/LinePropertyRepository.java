@@ -8,9 +8,9 @@ public interface LinePropertyRepository {
 
     LineProperty insert(LineProperty lineProperty);
 
-    List<LineProperty> findAll();
-
     LineProperty findById(Long id);
+
+    List<LineProperty> findAll();
 
     void update(LineProperty lineProperty);
 

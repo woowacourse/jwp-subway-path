@@ -8,9 +8,9 @@ public interface StationRepository {
 
     Station insert(Station station);
 
-    List<Station> findAll();
-
     Station findById(Long id);
+
+    List<Station> findAll();
 
     void update(Station newStation);
 

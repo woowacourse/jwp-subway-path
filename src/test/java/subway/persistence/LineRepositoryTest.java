@@ -64,7 +64,7 @@ class LineRepositoryTest {
         // when
 
         linePropertyRepository.insert(lineProperty);
-        lineRepository.save(line);
+        lineRepository.insert(line);
 
         List<SectionRow> actual = jdbcTemplate.query(sectionSql, sectionMapper, 1);
 
@@ -99,7 +99,7 @@ class LineRepositoryTest {
 
         linePropertyRepository.insert(lineProperty);
 
-        lineRepository.save(line);
+        lineRepository.insert(line);
 
         Line actualLine = lineRepository.findById(1L);
         List<Section> sections = actualLine.getSections();

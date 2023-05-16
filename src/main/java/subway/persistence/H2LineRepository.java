@@ -93,7 +93,7 @@ public class H2LineRepository implements LineRepository {
         jdbcTemplate.update(sql, lineId);
     }
 
-    public void save(Line line) {
+    public void insert(Line line) {
         String sectionSql = "insert into section (line_id, up_bound, down_bound, distance) values (?, ?, ?, ?)";
 
         List<SectionRow> sections = line.getSections().stream()

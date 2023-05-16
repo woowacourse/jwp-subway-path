@@ -39,7 +39,7 @@ public class LineService {
         );
         line.addSection(section);
         lineRepository.removeSections(lineId);
-        lineRepository.save(line);
+        lineRepository.insert(line);
     }
 
     public void deleteStation(Long lineId, Long stationId) {
@@ -47,7 +47,7 @@ public class LineService {
 
         line.deleteStation(stationRepository.findById(stationId));
         lineRepository.removeSections(lineId);
-        lineRepository.save(line);
+        lineRepository.insert(line);
     }
 
     public List<StationResponse> findRouteMap(Long lineId) {
