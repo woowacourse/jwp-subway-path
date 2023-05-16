@@ -1,8 +1,8 @@
 package subway.domain.section.strategy;
 
 import java.util.List;
-import subway.domain.section.Section;
 import subway.domain.Station;
+import subway.domain.section.Section;
 
 public class UpdateMiddleStrategy implements UpdateSectionsStrategy {
 
@@ -20,7 +20,6 @@ public class UpdateMiddleStrategy implements UpdateSectionsStrategy {
     @Override
     public List<Section> addSection(final List<Section> sections, final Section section) {
         final Section originSection = findOriginSection(section, sections);
-
         final int originIndex = sections.indexOf(originSection);
         if (isEqualPrev(section, originSection)) {
             sections.addAll(originIndex, originSection.splitByPrev(section));

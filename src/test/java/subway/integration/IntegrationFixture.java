@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.LineName;
-import subway.domain.section.Section;
 import subway.domain.Station;
+import subway.domain.section.Section;
 
 public class IntegrationFixture {
 
@@ -16,7 +16,7 @@ public class IntegrationFixture {
     public static final Station GANGNAM = new Station(2L, "강남");
     public static final Station SEONGLENUG = new Station(3L, "선릉");
     public static final Station SAMSUNG = new Station(4L, "삼성");
-    public static final Section SECTION_1 = new Section(1L, SEONGLENUG, SAMSUNG, new Distance(5));
+    public static final Section SECTION_1 = new Section(1L, SAMSUNG, GANGNAM, new Distance(5));
     public static final Section SECTION_2 = new Section(2L, GANGNAM, SEONGLENUG, new Distance(5));
 
     public static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
