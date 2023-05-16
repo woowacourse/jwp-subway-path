@@ -28,14 +28,17 @@ create table if not exists SECTION
 
 INSERT INTO LINE(name, color) VALUES ('1호선', 'blue');
 INSERT INTO LINE(name, color) VALUES ('2호선', 'green');
-INSERT INTO LINE(name, color) VALUES ('3호선', 'pink');
+INSERT INTO LINE(name, color) VALUES ('신분당선', 'red');
 
 INSERT INTO STATION(name) VALUES ('서울역');
 INSERT INTO STATION(name) VALUES ('천안역');
 
-INSERT INTO STATION(name) VALUES ('잠실역');
-INSERT INTO STATION(name) VALUES ('선릉역');
 INSERT INTO STATION(name) VALUES ('강남역');
+INSERT INTO STATION(name) VALUES ('선릉역');
+INSERT INTO STATION(name) VALUES ('잠실역');
+
+INSERT INTO STATION(name) VALUES ('신논현역');
+INSERT INTO STATION(name) VALUES ('판교역');
 
 INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, null, 1, 0);
 INSERT INTO SECTION(line_id, up_station_id, down_station_id, distance) VALUES (1, 1, 2, 4);

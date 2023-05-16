@@ -35,6 +35,11 @@ public class LineService {
     }
 
     public void saveStationInLine(final Long lineId, final StationRegistrationRequest stationRegistrationRequest) {
+        // 예외: 2개의 역이 동일한 역인 경우
+        if (Objects.equals(stationRegistrationRequest.getUpStationId(), stationRegistrationRequest.getDownStationId())) {
+            throw new IllegalArgumentException("구간은 서로 다른 역이여야 합니다.");
+        }
+
         // 예외: sectionRequest에 들어온 호선이 존재하지 않는 경우
         LineEntity lineEntity = lineDao.findById(lineId)
                 .orElseThrow(() -> new NoSuchElementException("해당하는 호선이 존재하지 않습니다."));
@@ -50,8 +55,6 @@ public class LineService {
                 .ifPresent(section -> {
                     throw new IllegalArgumentException("이미 존재하는 구간입니다.");
                 });
-
-        // 예외: 2개의 역이 동일한 역인 경우
 
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
 
