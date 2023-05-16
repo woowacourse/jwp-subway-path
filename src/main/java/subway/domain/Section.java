@@ -1,9 +1,11 @@
 package subway.domain;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+
 import java.util.List;
 import java.util.Objects;
 
-public class Section {
+public class Section extends DefaultWeightedEdge {
 
     private final Long id;
     private final Distance distance;
@@ -118,6 +120,23 @@ public class Section {
         return Objects.equals(downStation, otherStation);
     }
 
+    public Section sortBy(final Station station) {
+        if (isSameUpStationBy(station)) {
+            return this;
+        }
+        return new Section(id, distance, isStart, downStation, upStation);
+    }
+
+    public Station findSameStationBy(final Section otherSection) {
+        if (upStation.equals(otherSection.upStation)) {
+            return upStation;
+        }
+        if (upStation.equals(otherSection.downStation)) {
+            return upStation;
+        }
+        return downStation;
+}
+
     public Long getId() {
         return id;
     }
@@ -136,6 +155,11 @@ public class Section {
 
     public boolean getStart() {
         return isStart;
+    }
+
+    @Override
+    protected double getWeight() {
+        return distance.getValue();
     }
 
     @Override
