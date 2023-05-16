@@ -30,10 +30,10 @@ public class StationService {
                                 .orElseThrow(() -> new StationNotFoundException("존재하지 않는 역 ID입니다."));
     }
 
-    public long createStationIfNotExist(String stationName) {
+    public Station createStationIfNotExist(String stationName) {
         final Station stationToInsert = new Station(stationName);
 
-        return stationRepository.findIdByName(stationName)
+        return stationRepository.findStationByName(stationName)
                                 .orElseGet(() -> stationRepository.createStation(stationToInsert));
     }
 }

@@ -29,7 +29,7 @@ public class StationRepository {
                          .map(EntityMapper::toDomain);
     }
 
-    public long createStation(Station stationToInsert) {
+    public Station createStation(Station stationToInsert) {
         stationDao.findByName(stationToInsert.getName())
                   .ifPresent(ignored -> {
                       throw new IllegalStateException("디버깅: 추가하려는 역이 이미 존재합니다");
@@ -37,7 +37,7 @@ public class StationRepository {
 
         final StationEntity stationEntity = EntityMapper.toEntity(stationToInsert);
 
-        return stationDao.insert(stationEntity).getId();
+        return EntityMapper.toDomain(stationDao.insert(stationEntity));
     }
 
     public Optional<Long> findIdByName(String stationName) {

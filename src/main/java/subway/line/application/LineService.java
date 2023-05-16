@@ -13,7 +13,6 @@ import subway.line.domain.MiddleSection;
 import subway.line.exception.LineNotFoundException;
 import subway.line.repository.LineRepository;
 import subway.line.ui.dto.LineDto;
-import subway.line.ui.dto.SectionDto;
 import subway.station.application.StationService;
 import subway.station.domain.Station;
 
@@ -34,8 +33,7 @@ public class LineService {
     }
 
     public long addStationToLine(StationAdditionToLineDto stationAdditionToLineDto) {
-        final long stationId = stationService.createStationIfNotExist(stationAdditionToLineDto.getStationName());
-        final Station stationToAdd = new Station(stationAdditionToLineDto.getStationName());
+        final Station stationToAdd = stationService.createStationIfNotExist(stationAdditionToLineDto.getStationName());
 
         final Line line = findLineOrThrow(stationAdditionToLineDto.getLineId());
         final Station upstream = findExistingStationByName(stationAdditionToLineDto.getUpstreamName());
@@ -44,7 +42,7 @@ public class LineService {
         line.addStation(stationToAdd, upstream, downstream, stationAdditionToLineDto.getDistanceToUpstream());
         lineRepository.updateLine(line);
 
-        return stationId;
+        return stationToAdd.getId();
     }
 
     private Station findExistingStationByName(String stationName) {
@@ -67,10 +65,8 @@ public class LineService {
     }
 
     public long createLine(LineCreationDto lineCreationDto) {
-        stationService.createStationIfNotExist(lineCreationDto.getUpstreamName());
-        stationService.createStationIfNotExist(lineCreationDto.getDownstreamName());
-        Station upstream = new Station(lineCreationDto.getUpstreamName());
-        Station downstream = new Station(lineCreationDto.getDownstreamName());
+        Station upstream = stationService.createStationIfNotExist(lineCreationDto.getUpstreamName());
+        Station downstream = stationService.createStationIfNotExist(lineCreationDto.getDownstreamName());
 
         MiddleSection section = new MiddleSection(upstream, downstream, lineCreationDto.getDistance());
         Line lineToAdd = new Line(lineCreationDto.getLineName(), List.of(section));
@@ -83,16 +79,7 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineDto findLineById(long id) {
-        return toLineDto(findLineOrThrow(id));
-    }
-
-    @Transactional(readOnly = true)
-    public List<LineDto> findAllLines() {
-        return lineRepository.findAllLines()
-                             .getLines()
-                             .stream()
-                             .map(this::toLineDto)
-                             .collect(Collectors.toUnmodifiableList());
+        return DtoMapper.toLineDto(findLineOrThrow(id));
     }
 
     private Line findLineOrThrow(long stationRemovalFromLineDto) {
@@ -100,17 +87,12 @@ public class LineService {
                              .orElseThrow(() -> new LineNotFoundException("존재하지 않는 노선입니다"));
     }
 
-    private LineDto toLineDto(Line line) {
-        return new LineDto(toSectionDtos(line.getSections()), line.getName());
-    }
-
-    private List<SectionDto> toSectionDtos(List<MiddleSection> sections) {
-        return sections.stream()
-                       .map(section -> new SectionDto(
-                               section.getUpstreamName(),
-                               section.getDownstreamName(),
-                               section.getDistance())
-                       )
-                       .collect(Collectors.toUnmodifiableList());
+    @Transactional(readOnly = true)
+    public List<LineDto> findAllLines() {
+        return lineRepository.findAllLines()
+                             .getLines()
+                             .stream()
+                             .map(DtoMapper::toLineDto)
+                             .collect(Collectors.toUnmodifiableList());
     }
 }
