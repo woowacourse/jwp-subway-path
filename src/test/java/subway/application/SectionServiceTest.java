@@ -3,11 +3,13 @@ package subway.application;
 import java.util.List;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.domain.Section;
 import subway.persistence.SectionJdbcRepository;
@@ -16,6 +18,7 @@ import subway.ui.dto.request.SectionRequest;
 import subway.ui.dto.response.SectionResponse;
 
 @SpringBootTest
+@Transactional
 @Sql("/test-data.sql")
 class SectionServiceTest {
 
@@ -23,17 +26,24 @@ class SectionServiceTest {
 	SectionService sectionService;
 	@Autowired
 	SectionJdbcRepository sectionRepository;
+
 	@Autowired
 	StationJdbcRepository stationRepository;
+
+	String lineName;
+	String jamsil;
+	String yeoksam;
+
+	@BeforeEach
+	void setUp() {
+		lineName = "2호선";
+		jamsil = "잠실";
+		yeoksam = "역삼";
+	}
 
 	@DisplayName("구간 생성 서비스 테스트")
 	@Test
 	void createSection() {
-		// given
-		final String lineName = "2호선";
-		final String jamsil = "잠실";
-		final String yeoksam = "역삼";
-
 		// when
 		final SectionRequest request = new SectionRequest(lineName, jamsil, yeoksam, 10L);
 		final SectionResponse response = sectionService.createSection(request);
@@ -47,12 +57,7 @@ class SectionServiceTest {
 
 	@DisplayName("전체 구간 조회 서비스 테스트")
 	@Test
-	void findAll(){
-		// given
-		final String lineName = "2호선";
-		final String jamsil = "잠실";
-		final String yeoksam = "역삼";
-
+	void findAll() {
 		// when
 		final SectionRequest request = new SectionRequest(lineName, jamsil, yeoksam, 10L);
 		final SectionResponse response = sectionService.createSection(request);

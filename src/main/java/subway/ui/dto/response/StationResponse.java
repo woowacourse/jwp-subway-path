@@ -6,10 +6,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class StationResponse {
-	private final long id;
+	private final Long id;
 	private final String name;
 
-	public StationResponse(final long id, final String name) {
+	public StationResponse(final Long id, final String name) {
 		this.id = id;
 		this.name = name;
 	}
@@ -20,7 +20,7 @@ public class StationResponse {
 			.collect(Collectors.toList());
 	}
 
-	public long getId() {
+	public Long getId() {
 		return id;
 	}
 

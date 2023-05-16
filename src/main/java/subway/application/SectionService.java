@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -17,6 +18,7 @@ import subway.ui.dto.response.SectionResponse;
 import subway.ui.dto.response.StationResponse;
 
 @Service
+@Transactional
 public class SectionService {
 	private final SectionRepository sectionRepository;
 	private final LineRepository lineRepository;
