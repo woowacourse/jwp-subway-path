@@ -90,4 +90,47 @@ class SectionsTest {
         assertThat(result.getLeftStation()).isEqualTo(sections.get(0).getLeftStation());
         assertThat(result.getRightStation()).isEqualTo(sections.get(0).getRightStation());
     }
+
+    @Test
+    @DisplayName("중간역이 주어지면 중간역을 포함하는 구간을 모두 찾아낸다.")
+    void find_inter_section_by_inter_station() {
+        // given
+        List<Section> sections = List.of(
+                new Section(new Station(1L, "잠실"), new Station(2L, "선릉"), 10),
+                new Section(new Station(2L, "선릉"), new Station(3L, "강남"), 10)
+        );
+        Sections lineSection = new Sections(sections);
+
+        Station station = new Station(2L, "선릉");
+
+        // when
+        List<Section> result = lineSection.findInterSections(station);
+
+        // then
+        assertThat(result.get(0).getLeftStation()).isEqualTo(sections.get(0).getLeftStation());
+        assertThat(result.get(0).getRightStation()).isEqualTo(sections.get(0).getRightStation());
+        assertThat(result.get(0).getDistance()).isEqualTo(sections.get(0).getDistance());
+        assertThat(result.get(1).getLeftStation()).isEqualTo(sections.get(1).getLeftStation());
+        assertThat(result.get(1).getRightStation()).isEqualTo(sections.get(1).getRightStation());
+        assertThat(result.get(1).getDistance()).isEqualTo(sections.get(1).getDistance());
+    }
+
+    @Test
+    @DisplayName("두개의 구간이 주어지면 하나의 구간으로 합쳐준다.")
+    void combine_section_by_given_sections() {
+        // given
+        List<Section> sections = List.of(
+                new Section(new Station(1L, "잠실"), new Station(2L, "선릉"), 10),
+                new Section(new Station(2L, "선릉"), new Station(3L, "강남"), 10)
+        );
+        Sections lineSection = new Sections(sections);
+
+        // when
+        Section result = lineSection.linkSections(sections);
+
+        // then
+        assertThat(result.getLeftStation()).isEqualTo(sections.get(0).getLeftStation());
+        assertThat(result.getRightStation()).isEqualTo(sections.get(1).getRightStation());
+        assertThat(result.getDistance()).isEqualTo(sections.get(0).getDistance() + sections.get(1).getDistance());
+    }
 }
