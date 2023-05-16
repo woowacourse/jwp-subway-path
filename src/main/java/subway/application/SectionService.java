@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
+import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -37,7 +38,8 @@ public class SectionService {
         if (upBoundStation.isEmpty() || downBoundStation.isEmpty()) {
             throw new IllegalSectionException("추가하려는 역이 존재하지 않습니다.");
         }
-        addSection(lineId, new Section(upBoundStation.get(), downBoundStation.get(), request.getDistance()));
+        addSection(lineId,
+                new Section(upBoundStation.get(), downBoundStation.get(), new Distance(request.getDistance())));
     }
 
     private void addSection(Long lineId, Section newSection) {
@@ -67,14 +69,16 @@ public class SectionService {
 
     private void addDownBoundSection(Long lineId, Section newSection) {
         sectionDao.findByStartStationNameAndLineId(newSection.getUpBoundStationName(), lineId)
-            .ifPresentOrElse(section -> {
-                int distance = section.getDistance();
-                int newDistance = newSection.getDistance();
-                validateDistance(distance, newDistance);
-                Station newStation = newSection.getDownBoundStation();
-                sectionDao.update(section.getId(), new Section(section.getUpBoundStation(), newStation, newDistance));
-                sectionDao.insert(lineId, new Section(newStation, section.getDownBoundStation(), distance - newDistance));
-            }, () -> sectionDao.insert(lineId, newSection));
+                .ifPresentOrElse(section -> {
+                    int distance = section.getDistance();
+                    int newDistance = newSection.getDistance();
+                    validateDistance(distance, newDistance);
+                    Station newStation = newSection.getDownBoundStation();
+                    sectionDao.update(section.getId(),
+                            new Section(section.getUpBoundStation(), newStation, new Distance(newDistance)));
+                    sectionDao.insert(lineId, new Section(newStation, section.getDownBoundStation(),
+                            new Distance(distance - newDistance)));
+                }, () -> sectionDao.insert(lineId, newSection));
     }
 
     private void addUpBoundSection(Long lineId, Section newSection) {
@@ -84,8 +88,10 @@ public class SectionService {
                     int newDistance = newSection.getDistance();
                     validateDistance(distance, newDistance);
                     Station newStation = newSection.getUpBoundStation();
-                    sectionDao.update(section.getId(), new Section(newStation, section.getDownBoundStation(), newDistance));
-                    sectionDao.insert(lineId, new Section(section.getUpBoundStation(), newStation, distance - newDistance));
+                    sectionDao.update(section.getId(),
+                            new Section(newStation, section.getDownBoundStation(), new Distance(newDistance)));
+                    sectionDao.insert(lineId,
+                            new Section(section.getUpBoundStation(), newStation, new Distance(distance - newDistance)));
                 }, () -> sectionDao.insert(lineId, newSection));
     }
 
@@ -116,8 +122,9 @@ public class SectionService {
 
     private void mergeSection(SectionEntity leftSection, SectionEntity rightSection) {
         sectionDao.deleteBy(leftSection);
-        sectionDao.update(rightSection.getId(), new Section(leftSection.getUpBoundStation(), rightSection.getDownBoundStation(),
-                leftSection.getDistance() + rightSection.getDistance()));
+        sectionDao.update(rightSection.getId(),
+                new Section(leftSection.getUpBoundStation(), rightSection.getDownBoundStation(),
+                        new Distance(leftSection.getDistance() + rightSection.getDistance())));
     }
 
     @Transactional(readOnly = true)

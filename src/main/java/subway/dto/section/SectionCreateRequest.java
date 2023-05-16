@@ -1,8 +1,8 @@
 package subway.dto.section;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.Range;
 
 public class SectionCreateRequest {
     @NotBlank(message = "상행역은 비어있을 수 없습니다.")
@@ -19,7 +19,11 @@ public class SectionCreateRequest {
     )
     private String downBoundStationName;
 
-    @Positive(message = "구간의 길이는 양수여야 합니다.")
+    @Range(
+            min = 1,
+            max = 100,
+            message = "구간의 길이는 {min}~{max} 사이여야 합니다."
+    )
     private int distance;
 
     public SectionCreateRequest(String upBoundStationName, String downBoundStationName, int distance) {

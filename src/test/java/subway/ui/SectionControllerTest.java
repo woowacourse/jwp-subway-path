@@ -18,6 +18,8 @@ import static subway.helper.SubwayPathFixture.sectionResponsesFixture;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -64,7 +66,7 @@ class SectionControllerTest {
                                 fieldWithPath("downBoundStationName").description("구간의 하행역")
                                         .attributes(constraint("10글자 이내")),
                                 fieldWithPath("distance").description("구간의 길이")
-                                        .attributes(constraint("1 이상의 양수"))
+                                        .attributes(constraint("1~100 사이의 값"))
                         )));
     }
 
@@ -81,6 +83,21 @@ class SectionControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.validation.upBoundStationName").exists())
                 .andExpect(jsonPath("$.validation.downBoundStationName").exists());
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {-1, 0, 101})
+    @DisplayName("구간을 생성할 때 길이가 1 미만 또는 100을 초과하면 예외가 발생해야 한다.")
+    void addSection_distanceLessThan1(int distance) throws Exception {
+        // given
+        SectionCreateRequest request = new SectionCreateRequest("잠실역", "잠실나루역", distance);
+
+        // expect
+        mockMvc.perform(post("/sections/{lineId}", LINE_ID)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.validation.distance").value("구간의 길이는 1~100 사이여야 합니다."));
     }
 
     @Test

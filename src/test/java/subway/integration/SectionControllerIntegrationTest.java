@@ -157,7 +157,7 @@ class SectionControllerIntegrationTest {
 
     @ParameterizedTest
     @ValueSource(ints = {-1, 0})
-    @DisplayName("노선에 구간을 추가할 때, 구간의 길이가 0이하라면 추가에 실패한다.")
+    @DisplayName("노선에 구간을 추가할 때, 구간의 길이가 0 이하면 추가에 실패한다.")
     void addSection_notPositiveDistance_fail(int distance) throws Exception {
         // given
         SectionCreateRequest request = new SectionCreateRequest("잠실역", "삼성역", distance);
@@ -167,7 +167,7 @@ class SectionControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.validation.distance").value("구간의 길이는 양수여야 합니다."));
+                .andExpect(jsonPath("$.validation.distance").value("구간의 길이는 1~100 사이여야 합니다."));
     }
 
     @Test
