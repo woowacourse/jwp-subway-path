@@ -6,10 +6,8 @@ import static subway.integration.TestFixture.GANGNAM;
 import static subway.integration.TestFixture.JAMSIL;
 import static subway.integration.TestFixture.LINE_2;
 import static subway.integration.TestFixture.LINE_3;
-import static subway.integration.TestFixture.SAMSUNG;
 import static subway.integration.TestFixture.SECTION_1;
 import static subway.integration.TestFixture.SECTION_2;
-import static subway.integration.TestFixture.SEONGLENUG;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -50,15 +48,16 @@ class SectionDaoTest {
                 .contains(tuple(JAMSIL, GANGNAM, new Distance(1)));
     }
 
-    @DisplayName("lineId로 List<Section>을 반환하는 기능 테스트")
-    void findByLineId() {
-        final List<Section> foundSections = sectionDao.findByLineId(LINE_3.getId());
+    @DisplayName("저장된 모든 Section을 조회하는 기능 테스트")
+    @Test
+    void findAll() {
+        final List<Section> all = sectionDao.findAll();
 
-        assertThat(foundSections)
+        assertThat(all)
                 .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
                 .contains(
-                        tuple(GANGNAM, SEONGLENUG, new Distance(5)),
-                        tuple(SEONGLENUG, SAMSUNG, new Distance(5))
+                        tuple(SECTION_1.getPrevStation(), SECTION_1.getNextStation(), SECTION_1.getDistance()),
+                        tuple(SECTION_2.getPrevStation(), SECTION_2.getNextStation(), SECTION_2.getDistance())
                 );
     }
 }
