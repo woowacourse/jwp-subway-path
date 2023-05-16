@@ -115,18 +115,34 @@ class SectionDaoTest {
     @DisplayName("노선에 속해있는 구간 역들의 이름을 조회한다.")
     void findAllSectionNamesByLineId_success() {
         // given
-        sectionDao.insert(new SectionEntity(lineId, 1L, 2L, 1));
-        sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
+        long savedId1 = sectionDao.insert(new SectionEntity(lineId, 1L, 2L, 1));
+        long savedId2 = sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
 
         // when
-        List<SectionDto> sectionNames = sectionDao.findAllSectionNamesByLineId(lineId);
+        List<SectionDto> sections = sectionDao.findAllSectionsByLineId(lineId);
 
         // then
-        assertThat(sectionNames).usingRecursiveComparison()
+        assertThat(sections).usingRecursiveComparison()
                 .isEqualTo(List.of(
-                        new SectionDto("삼성역", "선릉역", 1),
-                        new SectionDto("선릉역", "역삼역", 1)
+                        new SectionDto(savedId1, 1L, 2L, "삼성역", "선릉역", 1),
+                        new SectionDto(savedId2, 2L, 3L, "선릉역", "역삼역", 1)
                 ));
+    }
+
+    @Test
+    @DisplayName("구간이 삭제되면 더 이상 조회되지 않는다.")
+    void deleteSection_success() {
+        // given
+        Long savedId1 = sectionDao.insert(new SectionEntity(lineId, 1L, 2L, 1));
+        Long savedId2 = sectionDao.insert(new SectionEntity(lineId, 2L, 3L, 1));
+
+        // when
+        sectionDao.deleteById(savedId1);
+
+        // then
+        assertThat(sectionDao.findAllByLineId(lineId))
+                .usingRecursiveComparison()
+                .isEqualTo(List.of(new SectionEntity(savedId2, lineId, 2L, 3L, 1)));
     }
 
 }

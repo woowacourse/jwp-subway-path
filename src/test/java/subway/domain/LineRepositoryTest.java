@@ -33,18 +33,19 @@ class LineRepositoryTest {
     @DisplayName("완성된 Line 도메인을 조회한다.")
     void findById_success() {
         // given
-        given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity("3호선", "orange")));
-        given(sectionDao.findAllSectionNamesByLineId(anyLong())).willReturn(List.of(
-                new SectionDto("양재역", "남부터미널역", 10),
-                new SectionDto("남부터미널역", "교대역", 10)));
+        given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(2L, "3호선", "orange")));
+        given(sectionDao.findAllSectionsByLineId(anyLong())).willReturn(List.of(
+                new SectionDto(1L, 1L, 2L, "양재역", "남부터미널역", 10),
+                new SectionDto(2L, 2L, 3L, "남부터미널역", "교대역", 10)));
         // when
         Line line = lineRepository.findById(2L);
 
         // then
         assertThat(line).usingRecursiveComparison()
-                .isEqualTo(new Line("3호선", "orange", new Sections(List.of(
-                        new Section(new Station("양재역"), new Station("남부터미널역"), 10),
-                        new Section(new Station("남부터미널역"), new Station("교대역"), 10)
+                .ignoringFields("id")
+                .isEqualTo(new Line(2L, "3호선", "orange", new Sections(List.of(
+                        new Section(1L, new Station(1L, "양재역"), new Station(2L, "남부터미널역"), 10),
+                        new Section(2L, new Station(2L, "남부터미널역"), new Station(3L, "교대역"), 10)
                 ))));
     }
 

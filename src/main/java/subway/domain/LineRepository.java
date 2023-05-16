@@ -30,7 +30,7 @@ public class LineRepository {
     }
 
     private Sections findSectionsInLine(Long lineId) {
-        List<SectionDto> foundSections = sectionDao.findAllSectionNamesByLineId(lineId);
+        List<SectionDto> foundSections = sectionDao.findAllSectionsByLineId(lineId);
         return new Sections(foundSections.stream()
                 .map(SectionDto::toDomain)
                 .collect(Collectors.toList()));

@@ -54,13 +54,17 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public List<SectionDto> findAllSectionNamesByLineId(Long lineId) {
-        String sql = "SELECT start_station.name AS start_station_name, end_station.name AS end_station_name, section.distance FROM section "
-                        + "JOIN station AS start_station ON section.start_station_id = start_station.id "
-                        + "JOIN station AS end_station ON section.end_station_id = end_station.id WHERE section.line_id = ?";
+    public List<SectionDto> findAllSectionsByLineId(Long lineId) {
+        String sql = "SELECT section.id AS id, start_station.id AS start_station_id, end_station.id AS end_station_id, "
+                + "start_station.name AS start_station_name, end_station.name AS end_station_name, section.distance FROM section "
+                + "JOIN station AS start_station ON section.start_station_id = start_station.id "
+                + "JOIN station AS end_station ON section.end_station_id = end_station.id WHERE section.line_id = ?";
 
         return jdbcTemplate.query(sql, (rs, rowNum) ->
                 new SectionDto(
+                        rs.getLong("id"),
+                        rs.getLong("start_station_id"),
+                        rs.getLong("end_station_id"),
                         rs.getString("start_station_name"),
                         rs.getString("end_station_name"),
                         rs.getInt("distance")
@@ -95,8 +99,8 @@ public class SectionDao {
         }
     }
 
-    public void deleteBy(SectionEntity sectionEntity) {
+    public void deleteById(Long id) {
         String sql = "DELETE FROM SECTION WHERE id = ?";
-        jdbcTemplate.update(sql, sectionEntity.getId());
+        jdbcTemplate.update(sql, id);
     }
 }

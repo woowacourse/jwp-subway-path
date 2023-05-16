@@ -26,6 +26,18 @@ public class Section {
         }
     }
 
+    public boolean hasStation(Station station) {
+        return startStation.equals(station) || endStation.equals(station);
+    }
+
+    public boolean hasStationInStartPosition(Station station) {
+        return startStation.equals(station);
+    }
+
+    public boolean hasStationInEndPosition(Station station) {
+        return endStation.equals(station);
+    }
+
     public Station getStartStation() {
         return startStation;
     }
@@ -42,7 +54,19 @@ public class Section {
         return endStation.getName();
     }
 
+    public Long getStartStationId() {
+        return startStation.getId();
+    }
+
+    public Long getEndStationId() {
+        return endStation.getId();
+    }
+
     public int getDistance() {
         return distance;
+    }
+
+    public Long getId() {
+        return id;
     }
 }

@@ -3,6 +3,7 @@ package subway.integration;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -51,20 +52,39 @@ class SectionControllerIntegrationTest {
     }
 
     @Test
-    @DisplayName("노선의 두 역 사이에 역을 추가하면 추가에 성공한다.")
-    void addSection_betweenStation_success() throws Exception {
+    @DisplayName("노선의 두 역 사이에 하행역을 추가하면 추가에 성공한다.")
+    void addSection_betweenStation_endStation_success() throws Exception {
         // given
         addSection("역삼역", "삼성역", 50);
         addSection("역삼역", "선릉역", 20);
 
         // expect
         mockMvc.perform(get(baseUrl, lineId))
+                .andDo(print())
                 .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
                 .andExpect(jsonPath("$[0].endStationName").value("선릉역"))
                 .andExpect(jsonPath("$[0].distance").value(20))
                 .andExpect(jsonPath("$[1].startStationName").value("선릉역"))
                 .andExpect(jsonPath("$[1].endStationName").value("삼성역"))
                 .andExpect(jsonPath("$[1].distance").value(30));
+    }
+
+    @Test
+    @DisplayName("노선의 두 역 사이에 상행역을 추가하면 추가에 성공한다.")
+    void addSection_betweenStation_startStation_success() throws Exception {
+        // given
+        addSection("역삼역", "삼성역", 50);
+        addSection("강남역", "삼성역", 20);
+
+        // expect
+        mockMvc.perform(get(baseUrl, lineId))
+                .andDo(print())
+                .andExpect(jsonPath("$[0].startStationName").value("역삼역"))
+                .andExpect(jsonPath("$[0].endStationName").value("강남역"))
+                .andExpect(jsonPath("$[0].distance").value(30))
+                .andExpect(jsonPath("$[1].startStationName").value("강남역"))
+                .andExpect(jsonPath("$[1].endStationName").value("삼성역"))
+                .andExpect(jsonPath("$[1].distance").value(20));
     }
 
     @Test

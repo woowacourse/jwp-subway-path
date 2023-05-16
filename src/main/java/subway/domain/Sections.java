@@ -46,4 +46,25 @@ public class Sections {
     public List<Section> getSections() {
         return Collections.unmodifiableList(sections);
     }
+
+    public boolean containsStation(Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.hasStation(station));
+    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
+
+    public Optional<Section> findSectionWithEndStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.hasStationInEndPosition(station))
+                .findAny();
+    }
+
+    public Optional<Section> findSectionWithStartStation(Station station) {
+        return sections.stream()
+                .filter(section -> section.hasStationInStartPosition(station))
+                .findAny();
+    }
 }
