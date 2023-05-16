@@ -37,8 +37,8 @@ public class Distance {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final Distance 거리10 = (Distance) o;
-        return value == 거리10.value;
+        final Distance distance = (Distance) o;
+        return value == distance.value;
     }
 
     @Override
