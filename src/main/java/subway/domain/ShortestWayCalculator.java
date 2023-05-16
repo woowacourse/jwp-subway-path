@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.domain.dijkstra.Dijkstra;
+
 import java.util.List;
 import java.util.stream.Collectors;
 

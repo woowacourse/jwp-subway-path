@@ -1,6 +1,6 @@
 package subway.application.feepolicy;
 
-public interface FeePolicy {
+public interface FeeCalculator {
 
     int calculateFee(final int distance);
 }

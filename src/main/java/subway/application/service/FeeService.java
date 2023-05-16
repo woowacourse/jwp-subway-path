@@ -2,7 +2,7 @@ package subway.application.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.application.feepolicy.FeePolicy;
+import subway.application.feepolicy.FeeCalculator;
 import subway.domain.Line;
 import subway.domain.ShortestWayCalculator;
 import subway.domain.Station;
@@ -17,9 +17,9 @@ import java.util.List;
 public class FeeService {
 
     private final SubwayRepository subwayRepository;
-    private final FeePolicy feePolicy;
+    private final FeeCalculator feePolicy;
 
-    public FeeService(final SubwayRepository subwayRepository, final FeePolicy feePolicy) {
+    public FeeService(final SubwayRepository subwayRepository, final FeeCalculator feePolicy) {
         this.subwayRepository = subwayRepository;
         this.feePolicy = feePolicy;
     }
