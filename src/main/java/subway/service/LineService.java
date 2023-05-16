@@ -13,7 +13,8 @@ import subway.dto.LineResponse;
 import subway.dto.StationResponse;
 import subway.entity.EdgeEntity;
 import subway.entity.LineEntity;
-import subway.exception.LineException;
+import subway.exception.LineAlreadyExistException;
+import subway.exception.LineNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +40,7 @@ public class LineService {
         final Line line = new Line(lineCreateRequest.getLineName());
 
         if (dbLineDao.findByName(line.getName()).isPresent()) {
-            throw new LineException("해당 노선이 이미 존재합니다.");
+            throw new LineAlreadyExistException();
         }
 
         final Station upLineStation = new Station(lineCreateRequest.getUpLineStationName());
@@ -76,7 +77,7 @@ public class LineService {
     @Transactional
     public String deleteLine(Long lineId) {
         Line line = dbLineDao.findById(lineId)
-                .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다"))
+                .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
         subwayGraphs.remove(line);
         edgeDao.deleteAllEdgesOf(lineId);
@@ -86,7 +87,7 @@ public class LineService {
 
     public LineResponse findLine(Long lineId) {
         Line line = dbLineDao.findById(lineId)
-                .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다"))
+                .orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
         List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 

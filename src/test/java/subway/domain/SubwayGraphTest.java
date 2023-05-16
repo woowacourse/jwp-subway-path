@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.exception.StationAlreadyExistException;
 
 import java.util.List;
 
@@ -189,8 +190,8 @@ class SubwayGraphTest {
             final SubwayGraph subwayGraph = new SubwayGraph(LINE_999);
             subwayGraph.createInitStations(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 5);
             assertThatThrownBy(
-                    () -> subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 2)).isInstanceOf(IllegalArgumentException.class)
-                    .hasMessageContaining("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
+                    () -> subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, SAPYEONG_STATION, 2)).isInstanceOf(StationAlreadyExistException.class)
+                    .hasMessageContaining("해당 역이 이미 존재 합니다.");
         }
 
         @ParameterizedTest

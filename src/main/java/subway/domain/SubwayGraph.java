@@ -3,6 +3,8 @@ package subway.domain;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import subway.entity.EdgeEntity;
+import subway.exception.LineAlreadyExistException;
+import subway.exception.StationAlreadyExistException;
 
 import java.util.*;
 
@@ -17,7 +19,7 @@ public class SubwayGraph {
     public void createInitStations(Station upLineEndStation, Station downLineEndStation, int distance) {
         validateDistance(distance);
         if (!graph.vertexSet().isEmpty()) {
-            throw new IllegalStateException("이미 역이 존재합니다.");
+            throw new LineAlreadyExistException();
         }
         graph.addVertex(upLineEndStation);
         graph.addVertex(downLineEndStation);
@@ -62,7 +64,7 @@ public class SubwayGraph {
             return upLineStation;
         }
 
-        throw new IllegalArgumentException("부적절한 입력입니다.");
+        throw new IllegalArgumentException();
     }
 
     private void validateStations(final Station upLineStation, final Station downLineStation) {
@@ -75,7 +77,7 @@ public class SubwayGraph {
         }
 
         if (!isNewStation(upLineStation) && !isNewStation(downLineStation)) {
-            throw new IllegalArgumentException("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
+            throw new StationAlreadyExistException();
         }
     }
 

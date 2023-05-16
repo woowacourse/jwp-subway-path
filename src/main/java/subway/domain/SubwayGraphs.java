@@ -3,7 +3,7 @@ package subway.domain;
 import org.springframework.stereotype.Component;
 import subway.dto.LineDto;
 import subway.entity.EdgeEntity;
-import subway.exception.LineException;
+import subway.exception.LineNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +49,7 @@ public class SubwayGraphs {
         final SubwayGraph lineGraph = subwayGraphs.stream()
                 .filter(s -> s.isSameLine(line))
                 .findFirst()
-                .orElseThrow(() -> new LineException("해당 노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new LineNotFoundException());
         return lineGraph;
     }
 

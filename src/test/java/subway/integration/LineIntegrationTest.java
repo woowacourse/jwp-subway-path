@@ -17,7 +17,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
     private LineCreateRequest lineCreateRequest;
 
@@ -58,15 +57,15 @@ public class LineIntegrationTest extends IntegrationTest {
     void findLine() {
 
         ExtractableResponse<Response> createResponse = createLine(lineCreateRequest);
-        Long id = createResponse.response().jsonPath().getLong("id");
         LineResponse lineResponse = createResponse.as(LineResponse.class);
-        Long id1 = lineResponse.getId();
+        Long id = lineResponse.getId();
+
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(lineCreateRequest)
-                .when().get("/lines/" + id1)
+                .when().get("/lines/" + id)
                 .then().log().all().
                 extract();
 
@@ -104,4 +103,20 @@ public class LineIntegrationTest extends IntegrationTest {
         assertThat(lineResponses.get(1).getStations().get(0).getName()).isEqualTo("1번");
         assertThat(lineResponses.get(1).getStations().get(1).getName()).isEqualTo("2번");
     }
+
+    @Test
+    @DisplayName("중복된 노선을 생성하는 경우 CONFLICT 에러가 발생한다.")
+    void createDuplicateLine() {
+        createLine(lineCreateRequest);
+        LineCreateRequest lineCreateRequest1 = new LineCreateRequest(
+                "2호선",
+                "1번",
+                "2번",
+                5);
+        ExtractableResponse<Response> response = createLine(lineCreateRequest1);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CONFLICT.value());
+    }
+
+
 }
