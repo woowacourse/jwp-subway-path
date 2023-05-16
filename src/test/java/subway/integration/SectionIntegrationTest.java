@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.*;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -124,7 +125,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         final var sectionResponse = response.as(SectionResponse.class);
         assertThat(sectionResponse.getStartingStation().getName()).isEqualTo("강남역");
         assertThat(sectionResponse.getDestinationStation().getName()).isEqualTo("서울시민의 숲");
-        assertThat(sectionResponse.getDistance()).isEqualTo(8);
+        assertThat(sectionResponse.getShortestDistance()).isEqualTo(8);
         assertThat(sectionResponse.getShortestStationPath())
                 .extracting(StationResponse::getName)
                 .containsExactly("강남역", "양재역", "서울시민의 숲");
@@ -147,7 +148,7 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         saveSection("반포역", "논현역", 3, line7Id, true);
         saveSection("논현역", "학동역", 4, line7Id, true);
-        saveSection("학동역", "강남구청", 3, line7Id, true);
+        saveSection("학동역", "강남구청", 40, line7Id, true);
         saveSection("강남구청", "청담역", 4, line7Id, true);
 
         saveSection("강남구청", "압구정로데오", 4, lineBDId, true);
@@ -167,10 +168,12 @@ public class SectionIntegrationTest extends IntegrationTest {
         final var sectionResponse = response.as(SectionResponse.class);
         assertThat(sectionResponse.getStartingStation().getName()).isEqualTo("논현역");
         assertThat(sectionResponse.getDestinationStation().getName()).isEqualTo("서울숲");
-        assertThat(sectionResponse.getDistance()).isEqualTo(16);
+        assertThat(sectionResponse.getShortestDistance()).isEqualTo(53);
         assertThat(sectionResponse.getShortestStationPath())
                 .extracting(StationResponse::getName)
                 .containsExactly("논현역", "학동역", "강남구청", "압구정로데오", "서울숲");
+        assertThat(sectionResponse.getFare())
+                .isEqualTo(new BigDecimal(1750));
     }
 
     private static String saveLine(String name, String color) {
