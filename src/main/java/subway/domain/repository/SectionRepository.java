@@ -12,7 +12,7 @@ public interface SectionRepository {
 
     List<Section> findAllByLineName(String lineName);
 
-    void deleteBySection(Long lineId, Section section);
+    void deleteBySection(String lineName, String upStation, String downStation);
 
     Section findIdByUpDown(String upStation, String downStation);
 }

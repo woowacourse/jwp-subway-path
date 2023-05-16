@@ -13,7 +13,6 @@ import subway.domain.repository.SectionRepository;
 import subway.persistence.StationJdbcRepository;
 import subway.ui.dto.request.SectionDeleteRequest;
 import subway.ui.dto.request.SectionRequest;
-import subway.ui.dto.response.LineResponse;
 import subway.ui.dto.response.SectionResponse;
 import subway.ui.dto.response.StationResponse;
 
@@ -62,12 +61,8 @@ public class SectionService {
 		return StationResponse.of(stations);
 	}
 
-	public void deleteSection(final Long lineId, final SectionDeleteRequest sectionDeleteRequest) {
-		final Section section = Section.of(
-			sectionDeleteRequest.getUpStationName(),
-			sectionDeleteRequest.getDownStationName()
-		);
-
-		sectionRepository.deleteBySection(lineId, section);
+	public void deleteSection(final Long lineId, final SectionDeleteRequest deleteRequest) {
+		final String lineName = lineRepository.findById(lineId).getName();
+		sectionRepository.deleteBySection(lineName, deleteRequest.getUpStationName(), deleteRequest.getDownStationName());
 	}
 }

@@ -57,9 +57,9 @@ public class SectionJdbcRepository implements SectionRepository {
     }
 
     @Override
-    public void deleteBySection(final Long lineId, final Section section) {
-        String sql = "delete from section where lineId = ? and up_station = ? or down_station = ?";
-        jdbcTemplate.update(sql, lineId, section.getUpStation(), section.getDownStation());
+    public void deleteBySection(final String lineName, final String upStation, final String downStation) {
+        String sql = "delete from section where line = ? and up_station = ? and down_station = ?";
+        jdbcTemplate.update(sql, lineName, upStation, downStation);
     }
 
     @Override
