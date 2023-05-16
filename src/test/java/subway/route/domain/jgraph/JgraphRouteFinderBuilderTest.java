@@ -22,7 +22,7 @@ class JgraphRouteFinderBuilderTest {
 
         final JgraphRouteFinder routeFinder = (JgraphRouteFinder) routeFinderBuilder.buildRouteFinder(lineNumberTwo);
 
-        final RouteSegment route = routeFinder.getRoute(JAMSIL_STATION.getId(), JAMSIL_NARU_STATION.getId())
+        final RouteSegment route = routeFinder.getRoute(JAMSIL_STATION, JAMSIL_NARU_STATION)
                                               .get(0);
 
         assertAll(

@@ -3,6 +3,7 @@ package subway.route.application;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 import subway.line.domain.Lines;
 import subway.line.repository.LineRepository;
 import subway.route.application.dto.RouteDto;
@@ -12,6 +13,8 @@ import subway.route.domain.RouteFinderBuilder;
 import subway.route.domain.RouteSegment;
 import subway.route.domain.jgraph.DistanceFareCalculator;
 import subway.route.domain.jgraph.JgraphRouteFinderBuilder;
+import subway.station.application.StationService;
+import subway.station.domain.Station;
 
 import java.util.List;
 
@@ -19,23 +22,35 @@ import java.util.List;
 @Transactional
 public class RouteService {
 
+    private final StationService stationService;
     private final LineRepository lineRepository;
 
     @Autowired
-    public RouteService(LineRepository lineRepository) {
+    public RouteService(StationService stationService, LineRepository lineRepository) {
+        this.stationService = stationService;
         this.lineRepository = lineRepository;
     }
 
-    public RouteDto findRoute(Long source, Long destination) {
-        final RouteFinderBuilder<RouteSegment> routeFinderBuilder = new JgraphRouteFinderBuilder();
-        final Lines allLines = lineRepository.findAllLines();
-        final RouteFinder<RouteSegment> routeFinder = routeFinderBuilder.buildRouteFinder(allLines.getLines());
+    public RouteDto findRoute(@RequestParam("source") Long sourceStationId, @RequestParam("destination") Long destinationStationId) {
+        final Station source = stationService.findStationById(sourceStationId);
+        final Station destination = stationService.findStationById(destinationStationId);
 
+        final RouteFinder<RouteSegment> routeFinder = getRouteFinder();
         final List<RouteSegment> route = routeFinder.getRoute(source, destination);
-        final FareCalculator fareCalculator = new DistanceFareCalculator();
-        final int totalWeight = routeFinder.getTotalWeight(source, destination);
-        final int fare = fareCalculator.calculate(totalWeight);
+        final int fare = calculateFare(source, destination, routeFinder);
 
         return DtoMapper.toRouteDto(route, fare);
+    }
+
+    private RouteFinder<RouteSegment> getRouteFinder() {
+        final RouteFinderBuilder<RouteSegment> routeFinderBuilder = new JgraphRouteFinderBuilder();
+        final Lines allLines = lineRepository.findAllLines();
+        return routeFinderBuilder.buildRouteFinder(allLines.getLines());
+    }
+
+    private int calculateFare(Station source, Station destination, RouteFinder<RouteSegment> routeFinder) {
+        final FareCalculator fareCalculator = new DistanceFareCalculator();
+        final int totalWeight = routeFinder.getTotalWeight(source, destination);
+        return fareCalculator.calculate(totalWeight);
     }
 }
