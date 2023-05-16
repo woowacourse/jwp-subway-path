@@ -3,7 +3,6 @@ package subway.ui;
 import java.net.URI;
 import java.sql.SQLException;
 import java.util.List;
-import javax.annotation.PostConstruct;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,12 +25,6 @@ public class LineController {
 
     public LineController(LineService lineService) {
         this.lineService = lineService;
-    }
-
-    @PostConstruct
-    public void init() {
-        lineService.saveLine(new LineRequest("1호선", "blue"));
-        lineService.saveLine(new LineRequest("2호선", "green"));
     }
 
     @PostMapping

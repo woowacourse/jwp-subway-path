@@ -145,4 +145,4 @@ HTTP/1.1 204
     - [x] [Optional 사용하여 존재하지 않는 값 안전하게 다루기](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192856649)
     - [x] [예측하지 못한 예외 정보 콘솔 출력 대신 로그 사용하기](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192856978)
     - [x] [여러 DB 수행이 존재하는 메서드 Transaction 처리](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192857631)
-    - [ ] [데이터 초기화 Controller 대신 Spring 설정 사용하기(별도 bean 분리/sql 파일 사용)](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192858741)
+    - [x] [데이터 초기화 Controller 대신 Spring 설정 사용하기(별도 bean 분리/sql 파일 사용)](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192858741)
