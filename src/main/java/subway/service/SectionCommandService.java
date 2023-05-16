@@ -31,7 +31,7 @@ public class SectionCommandService {
             final Long lineId
     ) {
 
-        final List<Section> originSections = sectionQueryService.findSectionsByLineId(lineId);
+        final List<Section> originSections = sectionQueryService.searchSectionsByLineId(lineId);
 
         final Section targetSection = new Section(
                 new Stations(
@@ -57,7 +57,7 @@ public class SectionCommandService {
 
     private boolean hasSameSection(final Section target, final List<Section> originSections) {
         return originSections.stream()
-                             .anyMatch(it -> it.isSame(target));
+                             .anyMatch(section -> section.isSame(target));
     }
 
     public void deleteAll(final Long lineId) {

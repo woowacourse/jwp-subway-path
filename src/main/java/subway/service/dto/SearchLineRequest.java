@@ -1,6 +1,6 @@
 package subway.service.dto;
 
-public class SearchAllSectionLineRequest {
+public class SearchLineRequest {
 
     private String lineName;
 

@@ -11,8 +11,8 @@ import subway.service.LineCommandService;
 import subway.service.LineQueryService;
 import subway.service.dto.LineResponse;
 import subway.service.dto.RegisterLineRequest;
-import subway.service.dto.SearchAllSectionLineRequest;
-import subway.service.dto.SectionInLineResponse;
+import subway.service.dto.SearchLineRequest;
+import subway.service.dto.SectionResponse;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,18 +33,17 @@ public class LineController {
 
     @GetMapping("/lines")
     @ResponseStatus(HttpStatus.OK)
-    public List<LineResponse> searchAllSectionInLines(
-            @RequestBody(required = false) SearchAllSectionLineRequest searchAllSectionLineRequest
+    public List<LineResponse> showLines(
+            @RequestBody(required = false) SearchLineRequest searchLineRequest
     ) {
-        final List<Line> lines = lineQueryService.searchAllSectionInLines(searchAllSectionLineRequest);
+        final List<Line> lines = lineQueryService.searchLines(searchLineRequest);
 
         return lines.stream()
                     .map(line -> {
+                        final List<SectionResponse> sectionResponse =
+                                mapToSectionResponseFrom(line);
 
-                        final List<SectionInLineResponse> sectionInLineResponses =
-                                mapToSectionInLineResponseFrom(line);
-
-                        return new LineResponse(line.getName(), sectionInLineResponses);
+                        return new LineResponse(line.getName(), sectionResponse);
                     })
                     .collect(Collectors.toList());
     }
@@ -56,21 +55,21 @@ public class LineController {
     ) {
         lineCommandService.registerLine(registerLineRequest);
 
-        final Line line = lineQueryService.findByLineName(registerLineRequest.getLineName());
+        final Line line = lineQueryService.searchByLineName(registerLineRequest.getLineName());
 
         return new LineResponse(
                 line.getName(),
-                mapToSectionInLineResponseFrom(line)
+                mapToSectionResponseFrom(line)
         );
     }
 
-    private List<SectionInLineResponse> mapToSectionInLineResponseFrom(final Line line) {
+    private List<SectionResponse> mapToSectionResponseFrom(final Line line) {
         return line.getSections()
                    .stream()
-                   .map(it -> new SectionInLineResponse(
-                           it.getStations().getCurrent().getName(),
-                           it.getStations().getNext().getName(),
-                           it.getStations().getDistance()))
+                   .map(section -> new SectionResponse(
+                           section.getStations().getCurrent().getName(),
+                           section.getStations().getNext().getName(),
+                           section.getStations().getDistance()))
                    .collect(Collectors.toList());
     }
 }

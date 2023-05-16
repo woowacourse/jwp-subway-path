@@ -27,14 +27,14 @@ public class LineCommandService {
     }
 
     public void deleteLine(final Long lineId) {
-        lineDao.deleteLineById(lineId);
+        lineDao.deleteById(lineId);
     }
 
     public void registerLine(final RegisterLineRequest registerLineRequest) {
 
         try {
             final String lineName = registerLineRequest.getLineName();
-            lineQueryService.findByLineName(lineName);
+            lineQueryService.searchByLineName(lineName);
         } catch (CanNotFoundLineException exception) {
             throw new CanNotDuplicatedLineNameException("이미 등록되어 있는 노선입니다. 노선 이름은 중복될 수 없습니다.");
         }

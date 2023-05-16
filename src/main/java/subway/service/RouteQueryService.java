@@ -24,7 +24,7 @@ public class RouteQueryService {
 
     public List<String> searchShortestRoute(final ShortestRouteRequest shortestRouteRequest) {
 
-        final List<Line> lines = lineQueryService.searchSectionsAllLine();
+        final List<Line> lines = lineQueryService.searchAllLine();
 
         final Route route = new Route(lines);
 
@@ -39,7 +39,7 @@ public class RouteQueryService {
     }
 
     public int searchShortestDistance(final ShortestRouteRequest shortestRouteRequest) {
-        final List<Line> lines = lineQueryService.searchSectionsAllLine();
+        final List<Line> lines = lineQueryService.searchAllLine();
 
         final Route route = new Route(lines);
 

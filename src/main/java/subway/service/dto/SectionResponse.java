@@ -1,12 +1,12 @@
 package subway.service.dto;
 
-public class SectionInLineResponse {
+public class SectionResponse {
 
     private final String currentStationName;
     private final String nextStationName;
     private final int distance;
 
-    public SectionInLineResponse(final String currentStationName, final String nextStationName, final int distance) {
+    public SectionResponse(final String currentStationName, final String nextStationName, final int distance) {
         this.currentStationName = currentStationName;
         this.nextStationName = nextStationName;
         this.distance = distance;

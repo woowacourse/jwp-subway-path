@@ -5,18 +5,18 @@ import java.util.List;
 public class LineResponse {
 
     private final String lineName;
-    private final List<SectionInLineResponse> sectionInLineResponses;
+    private final List<SectionResponse> sectionRespons;
 
-    public LineResponse(final String lineName, final List<SectionInLineResponse> sectionInLineResponses) {
+    public LineResponse(final String lineName, final List<SectionResponse> sectionRespons) {
         this.lineName = lineName;
-        this.sectionInLineResponses = sectionInLineResponses;
+        this.sectionRespons = sectionRespons;
     }
 
     public String getLineName() {
         return lineName;
     }
 
-    public List<SectionInLineResponse> getSectionInLineResponses() {
-        return sectionInLineResponses;
+    public List<SectionResponse> getSectionInLineResponses() {
+        return sectionRespons;
     }
 }

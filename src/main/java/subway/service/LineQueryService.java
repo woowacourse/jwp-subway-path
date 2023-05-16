@@ -6,7 +6,7 @@ import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.domain.Line;
 import subway.global.exception.line.CanNotFoundLineException;
-import subway.service.dto.SearchAllSectionLineRequest;
+import subway.service.dto.SearchLineRequest;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -26,44 +26,44 @@ public class LineQueryService {
         this.sectionQueryService = sectionQueryService;
     }
 
-    public List<Line> searchAllSectionInLines(
-            final SearchAllSectionLineRequest searchAllSectionLineRequest) {
+    public List<Line> searchLines(
+            final SearchLineRequest searchLineRequest) {
 
-        if (searchAllSectionLineRequest == null) {
-            return searchSectionsAllLine();
+        if (searchLineRequest == null) {
+            return searchAllLine();
         }
 
-        return List.of(searchSectionsSpecificLine(searchAllSectionLineRequest));
+        return List.of(searchSpecificLine(searchLineRequest));
     }
 
-    public List<Line> searchSectionsAllLine() {
+    public List<Line> searchAllLine() {
 
         final List<LineEntity> lineEntities = lineDao.findAll();
 
         return lineEntities.stream()
-                           .map(it -> new Line(
-                                   it.getId(),
-                                   it.getName(),
-                                   sectionQueryService.findSectionsByLineId(it.getId())))
+                           .map(lineEntity -> new Line(
+                                   lineEntity.getId(),
+                                   lineEntity.getName(),
+                                   sectionQueryService.searchSectionsByLineId(lineEntity.getId())))
                            .collect(Collectors.toList());
     }
 
-    private Line searchSectionsSpecificLine(
-            final SearchAllSectionLineRequest searchAllSectionLineRequest
+    private Line searchSpecificLine(
+            final SearchLineRequest searchLineRequest
     ) {
-        final String lineName = searchAllSectionLineRequest.getLineName();
-        return findByLineName(lineName);
+        final String lineName = searchLineRequest.getLineName();
+        return searchByLineName(lineName);
     }
 
-    public Line findByLineName(final String lineName) {
+    public Line searchByLineName(final String lineName) {
         final LineEntity lineEntity =
-                lineDao.findLineByName(lineName)
+                lineDao.findByLineName(lineName)
                        .orElseThrow(() -> new CanNotFoundLineException("해당 노선은 존재하지 않습니다."));
 
         return new Line(
                 lineEntity.getId(),
                 lineEntity.getName(),
-                sectionQueryService.findSectionsByLineId(lineEntity.getId())
+                sectionQueryService.searchSectionsByLineId(lineEntity.getId())
         );
     }
 }

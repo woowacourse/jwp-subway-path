@@ -19,7 +19,7 @@ public class SectionQueryService {
         this.sectionDao = sectionDao;
     }
 
-    public List<Section> findSectionsByLineId(final Long lineId) {
+    public List<Section> searchSectionsByLineId(final Long lineId) {
         return sectionDao.findSectionsByLineId(lineId)
                          .stream()
                          .map(this::mapToSectionFrom)
