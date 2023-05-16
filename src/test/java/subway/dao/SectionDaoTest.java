@@ -30,7 +30,7 @@ class SectionDaoTest {
 
     @BeforeEach
     void setUp() {
-        this.sectionDao = new SectionDao(jdbcTemplate);
+        this.sectionDao = new MySqlSectionDao(jdbcTemplate);
     }
 
     @Test
@@ -39,6 +39,7 @@ class SectionDaoTest {
         // given
         sectionDao.insert(lineId, new Section(new Station("잠실역"), new Station("삼성역"), new Distance(1)));
         sectionDao.insert(lineId, new Section(new Station("삼성역"), new Station("부산역"), new Distance(1)));
+        sectionDao.insert(2L, new Section(new Station("삼성역"), new Station("부산역"), new Distance(1)));
 
         // when
         Long count = sectionDao.countByLineId(lineId);
@@ -63,14 +64,16 @@ class SectionDaoTest {
     @DisplayName("노선의 수정이 정상적으로 되어야 한다.")
     void update_success() {
         // given
-        long sectionId = sectionDao.insert(lineId, new Section(new Station("잠실역"), new Station("삼성역"), new Distance(1)));
+        long sectionId = sectionDao.insert(lineId,
+                new Section(new Station("잠실역"), new Station("삼성역"), new Distance(1)));
 
         // when
         sectionDao.update(sectionId, new Section(new Station("삼성역"), new Station("부산역"), new Distance(1)));
 
         List<SectionEntity> sections = sectionDao.findAllByLineId(lineId);
 
-        List<SectionEntity> sectionEntities = List.of(new SectionEntity(sectionId, lineId, new Station("삼성역"), new Station("부산역"), 1));
+        List<SectionEntity> sectionEntities = List.of(
+                new SectionEntity(sectionId, lineId, new Station("삼성역"), new Station("부산역"), 1));
         assertThat(sections).usingRecursiveComparison()
                 .isEqualTo(sectionEntities);
     }
