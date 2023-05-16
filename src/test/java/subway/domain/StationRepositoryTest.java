@@ -15,6 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
+import subway.domain.repository.StationRepository;
 import subway.exception.StationNotFoundException;
 
 @ExtendWith(MockitoExtension.class)

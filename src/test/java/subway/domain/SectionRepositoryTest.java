@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.SectionDao;
 import subway.dao.dto.SectionDto;
 import subway.dao.entity.SectionEntity;
+import subway.domain.repository.SectionRepository;
 
 @ExtendWith(MockitoExtension.class)
 class SectionRepositoryTest {

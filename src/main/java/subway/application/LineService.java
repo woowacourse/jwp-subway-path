@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
-import subway.domain.LineRepository;
+import subway.domain.repository.LineRepository;
 import subway.domain.Section;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineDetailResponse;

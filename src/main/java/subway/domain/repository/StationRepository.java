@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
+import subway.domain.Station;
 import subway.exception.StationNotFoundException;
 
 @Repository

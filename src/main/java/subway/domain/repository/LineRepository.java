@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.repository;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,6 +8,8 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.dto.SectionDto;
 import subway.dao.entity.LineEntity;
+import subway.domain.Line;
+import subway.domain.Sections;
 import subway.exception.LineNotFoundException;
 
 @Repository

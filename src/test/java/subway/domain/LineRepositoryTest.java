@@ -17,6 +17,7 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.dto.SectionDto;
 import subway.dao.entity.LineEntity;
+import subway.domain.repository.LineRepository;
 import subway.exception.LineNotFoundException;
 
 @ExtendWith(MockitoExtension.class)

@@ -1,10 +1,12 @@
-package subway.domain;
+package subway.domain.repository;
 
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.SectionDao;
 import subway.dao.dto.SectionDto;
 import subway.dao.entity.SectionEntity;
+import subway.domain.Section;
+import subway.domain.Sections;
 
 @Repository
 public class SectionRepository {
