@@ -3,6 +3,7 @@ package subway.ui;
 import java.net.URI;
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,9 +37,7 @@ public class SectionController {
     @PostMapping
     public ResponseEntity<List<SectionAddResponse>> addSection(@RequestBody SectionAddRequest sectionAddRequest) {
         List<SectionAddResponse> sectionAddResponse = sectionService.addSection(sectionAddRequest);
-        return ResponseEntity.created(
-                URI.create("/sections/" + sectionAddResponse.get(0).getId()))
-            .body(sectionAddResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(sectionAddResponse);
     }
 
     @DeleteMapping

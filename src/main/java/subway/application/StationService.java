@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.StationDao;
 import subway.domain.Station;
@@ -12,6 +13,7 @@ import subway.dto.StationResponse;
 import subway.exception.DomainException;
 import subway.exception.ExceptionType;
 
+@Transactional(readOnly = true)
 @Service
 public class StationService {
     private final StationDao stationDao;
@@ -20,6 +22,7 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
+    @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         String name = stationRequest.getName();
         if (stationDao.findByName(name) != null) {
@@ -41,6 +44,7 @@ public class StationService {
             .collect(Collectors.toList());
     }
 
+    @Transactional
     public void updateStation(Long id, StationRequest stationRequest) {
         if (stationDao.findById(id) == null) {
             throw new DomainException(ExceptionType.STATION_DOES_NOT_EXIST);
@@ -48,6 +52,7 @@ public class StationService {
         stationDao.update(new Station(id, stationRequest.getName()));
     }
 
+    @Transactional
     public void deleteStationById(Long id) {
         if (stationDao.findById(id) == null) {
             throw new DomainException(ExceptionType.STATION_DOES_NOT_EXIST);

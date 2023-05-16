@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -21,6 +22,7 @@ import subway.dto.LineStationsResponse;
 import subway.exception.DomainException;
 import subway.exception.ExceptionType;
 
+@Transactional(readOnly = true)
 @Service
 public class LineService {
     private final LineDao lineDao;
@@ -33,6 +35,7 @@ public class LineService {
         this.sectionDao = sectionDao;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         String name = request.getName();
         String color = request.getColor();
@@ -93,6 +96,7 @@ public class LineService {
         return lineDao.findById(id);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         if (lineDao.findById(id) == null) {
             throw new DomainException(ExceptionType.LINE_DOES_NOT_EXIST);
@@ -100,6 +104,7 @@ public class LineService {
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         if (lineDao.findById(id) == null) {
             throw new DomainException(ExceptionType.LINE_DOES_NOT_EXIST);
