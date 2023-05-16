@@ -10,10 +10,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 
 import subway.domain.Section;
 
+@ActiveProfiles(profiles = "test")
 @Sql("/InitializeTable.sql")
 @JdbcTest
 class SectionDaoTest {
@@ -32,8 +34,6 @@ class SectionDaoTest {
 
     @Test
     void insert() {
-        StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
-        stationDao.findAll().forEach(station -> System.out.println(station.getId()));
         Section section = new Section(3L, 4L, 2L, 5);
         Long id = sectionDao.insert(section);
 
