@@ -82,12 +82,12 @@
 
 | Method | URI                    | Description |
 |--------|------------------------|-------------|
-| GET    | /lines/stations/path   | 경로 조회 API   |
-| GET    | /lines/stations/charge | 요금 조회 API   |
+| POST   | /lines/sections/path   | 경로 조회 API   |
+| POST   | /lines/sections/charge | 요금 조회 API   |
 
 ### Request Body
 
-#### [GET] /lines/stations/path && [GET] /lines/stations/charge
+#### [POST] /lines/sections/path && [POST] /lines/sections/charge
 
 ```json
 {
