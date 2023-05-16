@@ -45,14 +45,14 @@ public class LineService {
     @Transactional
     public Long save(final LineRequest request) {
         validateDuplicatedName(request);
-        final Line requestLine = new Line(request.getName(), request.getColor());
+        final Line requestLine = new Line(request.getName(), request.getColor(), request.getExtraFare());
         return lineRepository.insert(requestLine);
     }
 
     @Transactional
     public void update(final Long id, final LineRequest request) {
         validateDuplicatedName(request);
-        final Line requestLine = new Line(request.getName(), request.getColor());
+        final Line requestLine = new Line(request.getName(), request.getColor(), request.getExtraFare());
         lineRepository.updateById(id, requestLine);
     }
 
@@ -123,7 +123,7 @@ public class LineService {
     private Line createLine(final List<LineWithSectionRes> lineWithSections) {
         final Sections sections = createSections(lineWithSections);
         return new Line(lineWithSections.get(0).getLineName(),
-            lineWithSections.get(0).getLineColor(), sections);
+            lineWithSections.get(0).getLineColor(), lineWithSections.get(0).getExtraFare(), sections);
     }
 
     private Section createSection(final SectionRequest sectionRequest) {

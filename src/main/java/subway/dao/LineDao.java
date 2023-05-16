@@ -23,7 +23,8 @@ public class LineDao {
         new LineEntity(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color")
+            rs.getString("color"),
+            rs.getInt("extra_fare")
         );
 
     private final RowMapper<LineWithSection> lineWithSectionMapper = (result, count) ->
@@ -32,6 +33,7 @@ public class LineDao {
             result.getLong("line_id"),
             result.getString("line_name"),
             result.getString("line_color"),
+            result.getInt("line_extra_fare"),
             result.getLong("source_station_id"),
             result.getString("source_station_name"),
             result.getLong("target_station_id"),
@@ -51,11 +53,12 @@ public class LineDao {
         params.put("id", lineEntity.getId());
         params.put("name", lineEntity.getName());
         params.put("color", lineEntity.getColor());
+        params.put("extra_fare", lineEntity.getExtraFare());
         return insertAction.executeAndReturnKey(params).longValue();
     }
 
     public Optional<LineEntity> findById(final Long id) {
-        final String sql = "SELECT id, name, color FROM line WHERE id = ?";
+        final String sql = "SELECT id, name, color, extra_fare FROM line WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineEntityMapper, id));
         } catch (EmptyResultDataAccessException e) {
@@ -65,6 +68,7 @@ public class LineDao {
 
     public List<LineWithSection> findByLindIdWithSections(final Long id) {
         final String sql = "SELECT sec.id, l.id as line_id, l.name as line_name, l.color as line_color, "
+            + "l.extra_fare as line_extra_fare, "
             + "sec.source_station_id, sta1.name as source_station_name, "
             + "sec.target_station_id, sta2.name as target_station_name, sec.distance "
             + "FROM line l "
@@ -78,6 +82,7 @@ public class LineDao {
 
     public List<LineWithSection> findAllWithSections() {
         final String sql = "SELECT sec.id, l.id as line_id, l.name as line_name, l.color as line_color, "
+            + "l.extra_fare as line_extra_fare, "
             + "sec.source_station_id, sta1.name as source_station_name, "
             + "sec.target_station_id, sta2.name as target_station_name, sec.distance "
             + "FROM line l "
@@ -106,6 +111,7 @@ public class LineDao {
     public List<LineWithSection> getAllLineSectionsBySourceAndStationId(final Long sourceStationId,
                                                                         final Long targetStationId) {
         final String sql = "SELECT sec.id, l.id AS line_id, l.name AS line_name, l.color AS line_color, "
+            + "l.extra_fare as line_extra_fare, "
             + "sec.source_station_id, sta1.name AS source_station_name, "
             + "sec.target_station_id, sta2.name AS target_station_name, sec.distance "
             + "FROM line l "

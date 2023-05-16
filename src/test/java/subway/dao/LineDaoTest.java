@@ -34,7 +34,7 @@ public class LineDaoTest {
     @DisplayName("노선 정보를 저장한다")
     void insert() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
 
         // when
         final Long 저장된_이호선_아이디 = lineDao.insert(이호선_엔티티);
@@ -43,15 +43,15 @@ public class LineDaoTest {
         final Optional<LineEntity> line = lineDao.findById(저장된_이호선_아이디);
         final LineEntity findLine = line.get();
         assertThat(findLine)
-            .extracting(LineEntity::getName, LineEntity::getColor)
-            .containsExactly("이호선", "bg-green-600");
+            .extracting(LineEntity::getName, LineEntity::getColor, LineEntity::getExtraFare)
+            .containsExactly("이호선", "bg-green-600", 0);
     }
 
     @Test
     @DisplayName("유효한 노선 아이디가 주어지면, 노선 정보를 조회한다")
     void findById_success() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
         final Long 저장된_이호선_아이디 = lineDao.insert(이호선_엔티티);
 
         // when
@@ -60,8 +60,8 @@ public class LineDaoTest {
         // then
         final LineEntity findLine = line.get();
         assertThat(findLine)
-            .extracting(LineEntity::getName, LineEntity::getColor)
-            .containsExactly("이호선", "bg-green-600");
+            .extracting(LineEntity::getName, LineEntity::getColor, LineEntity::getExtraFare)
+            .containsExactly("이호선", "bg-green-600", 0);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class LineDaoTest {
     @DisplayName("특정 노선에 존재하는 구간 정보를 조회한다.")
     void findByLindIdWithSections() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
         final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
 
         final StationEntity 잠실역_엔티티 = new StationEntity("잠실역");
@@ -115,8 +115,8 @@ public class LineDaoTest {
     @DisplayName("모든 노선에 존재하는 구간 정보를 조회한다.")
     void findAllWithSections() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600");
-        final LineEntity 팔호선_엔티티 = new LineEntity("팔호선", "bg-pink-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
+        final LineEntity 팔호선_엔티티 = new LineEntity("팔호선", "bg-pink-600", 0);
         final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
         final Long 저장된_팔호선_엔티티_아이디 = lineDao.insert(팔호선_엔티티);
 
@@ -168,11 +168,11 @@ public class LineDaoTest {
     @DisplayName("주어진 노선 아이디에 해당하는 노선 정보를 수정한다.")
     void updateById() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
         final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
 
         // when
-        final LineEntity 수정_요청_엔티티 = new LineEntity(저장된_이호선_엔티티_아이디, "일호선", "bg-blue-600");
+        final LineEntity 수정_요청_엔티티 = new LineEntity(저장된_이호선_엔티티_아이디, "일호선", "bg-blue-600", 0);
         final int updatedCount = lineDao.update(수정_요청_엔티티);
 
         // then
@@ -181,15 +181,15 @@ public class LineDaoTest {
 
         assertThat(updatedCount).isSameAs(1);
         assertThat(findLine)
-            .extracting(LineEntity::getName, LineEntity::getColor)
-            .containsExactly("일호선", "bg-blue-600");
+            .extracting(LineEntity::getName, LineEntity::getColor, LineEntity::getExtraFare)
+            .containsExactly("일호선", "bg-blue-600", 0);
     }
 
     @Test
     @DisplayName("주어진 노선 아이디에 해당하는 노선을 삭제한다.")
     void deleteById() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
         final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
 
         // when
@@ -206,7 +206,7 @@ public class LineDaoTest {
     @CsvSource(value = {"이호선:true", "팔호선:false"}, delimiter = ':')
     void existByName(final String name, final boolean expected) {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
         lineDao.insert(이호선_엔티티);
 
         // expected
@@ -218,9 +218,9 @@ public class LineDaoTest {
     @DisplayName("출발역에서 도착역으로 갈 수 있는 노선들이 가진 모든 구간 정보를 구한다.")
     void getAllLineSectionsBySourceAndStationId() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600");
-        final LineEntity 사호선_엔티티 = new LineEntity("사호선", "bg-blue-600");
-        final LineEntity 팔호선_엔티티 = new LineEntity("팔호선", "bg-pink-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-green-600", 0);
+        final LineEntity 사호선_엔티티 = new LineEntity("사호선", "bg-blue-600", 0);
+        final LineEntity 팔호선_엔티티 = new LineEntity("팔호선", "bg-pink-600", 0);
         final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
         final Long 저장된_사호선_엔티티_아이디 = lineDao.insert(사호선_엔티티);
         final Long 저장된_팔호선_엔티티_아이디 = lineDao.insert(팔호선_엔티티);

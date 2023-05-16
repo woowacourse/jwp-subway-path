@@ -34,7 +34,7 @@ class SectionDaoTest {
     @DisplayName("특정 노선에 대한 구간 정보를 저장한다.")
     void insert() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-red-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-red-600", 0);
         final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
 
         final StationEntity 잠실역_엔티티 = new StationEntity("잠실역");
@@ -61,7 +61,7 @@ class SectionDaoTest {
     @DisplayName("특정 노선에 해당하는 특정 출발역 아이디를 기준으로 제거한다.")
     void deleteByLineIdAndSourceStationId() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-red-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-red-600", 0);
         final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
 
         final StationEntity 잠실역_엔티티 = new StationEntity("잠실역");
@@ -84,7 +84,7 @@ class SectionDaoTest {
     @DisplayName("특정 노선에 존재하는 특정 역의 구간 정보 모두를 제거한다.")
     void deleteByLineIdAndStationId() {
         // given
-        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-red-600");
+        final LineEntity 이호선_엔티티 = new LineEntity("이호선", "bg-red-600", 0);
         final Long 저장된_이호선_엔티티_아이디 = lineDao.insert(이호선_엔티티);
 
         final StationEntity 잠실역_엔티티 = new StationEntity("잠실역");

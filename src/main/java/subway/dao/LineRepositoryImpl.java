@@ -26,7 +26,7 @@ public class LineRepositoryImpl implements LineRepository {
 
     @Override
     public Long insert(final Line line) {
-        final LineEntity requestLineEntity = new LineEntity(line.getName().name(), line.getColor());
+        final LineEntity requestLineEntity = new LineEntity(line.getName().name(), line.getColor(), line.getExtraFare());
         return lineDao.insert(requestLineEntity);
     }
 
@@ -45,13 +45,13 @@ public class LineRepositoryImpl implements LineRepository {
     @Override
     public Line findById(final Long id) {
         return lineDao.findById(id)
-            .map(entity -> new Line(entity.getName(), entity.getColor()))
+            .map(entity -> new Line(entity.getName(), entity.getColor(), entity.getExtraFare()))
             .orElseThrow(() -> new NotFoundException(LINE_NOT_FOUND.getMessage() + " id = " + id));
     }
 
     @Override
     public void updateById(final Long id, final Line line) {
-        final LineEntity requestLineEntity = new LineEntity(id, line.getName().name(), line.getColor());
+        final LineEntity requestLineEntity = new LineEntity(id, line.getName().name(), line.getColor(), line.getExtraFare());
         final int updatedCount = lineDao.update(requestLineEntity);
         if (updatedCount != 1) {
             throw new DBException(DB_UPDATE_ERROR);
@@ -81,8 +81,8 @@ public class LineRepositoryImpl implements LineRepository {
     private List<LineWithSectionRes> convertLineWithSectionRes(final List<LineWithSection> lineWithSections) {
         return lineWithSections.stream()
             .map(section -> new LineWithSectionRes(section.getLineId(), section.getLineName(), section.getLineColor(),
-                section.getSourceStationId(), section.getSourceStationName(), section.getTargetStationId(),
-                section.getTargetStationName(), section.getDistance()))
+                section.getLineExtraFare(), section.getSourceStationId(), section.getSourceStationName(),
+                section.getTargetStationId(), section.getTargetStationName(), section.getDistance()))
             .collect(Collectors.toUnmodifiableList());
     }
 }

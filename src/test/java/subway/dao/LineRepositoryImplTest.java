@@ -66,13 +66,13 @@ class LineRepositoryImplTest {
         // then
         assertThat(lineWithSections)
             .extracting(LineWithSectionRes::getLineId, LineWithSectionRes::getLineName,
-                LineWithSectionRes::getLineColor,
+                LineWithSectionRes::getLineColor, LineWithSectionRes::getExtraFare,
                 LineWithSectionRes::getSourceStationId, LineWithSectionRes::getSourceStationName,
                 LineWithSectionRes::getTargetStationId, LineWithSectionRes::getTargetStationName,
                 LineWithSectionRes::getDistance)
             .contains(
-                tuple(1L, "이호선", "bg-green-600", 1L, "잠실역", 2L, "선릉역", 10),
-                tuple(1L, "이호선", "bg-green-600", 2L, "선릉역", 3L, "강남역", 10)
+                tuple(1L, "이호선", "bg-green-600", 0, 1L, "잠실역", 2L, "선릉역", 10),
+                tuple(1L, "이호선", "bg-green-600", 0, 2L, "선릉역", 3L, "강남역", 10)
             );
     }
 
@@ -89,15 +89,15 @@ class LineRepositoryImplTest {
         // then
         assertThat(lineWithSections)
             .extracting(LineWithSectionRes::getLineId, LineWithSectionRes::getLineName,
-                LineWithSectionRes::getLineColor,
+                LineWithSectionRes::getLineColor, LineWithSectionRes::getExtraFare,
                 LineWithSectionRes::getSourceStationId, LineWithSectionRes::getSourceStationName,
                 LineWithSectionRes::getTargetStationId, LineWithSectionRes::getTargetStationName,
                 LineWithSectionRes::getDistance)
             .contains(
-                tuple(1L, "이호선", "bg-green-600", 1L, "잠실역", 2L, "선릉역", 10),
-                tuple(1L, "이호선", "bg-green-600", 2L, "선릉역", 3L, "강남역", 10),
-                tuple(2L, "팔호선", "bg-pink-600", 5L, "복정역", 6L, "남위례역", 10),
-                tuple(2L, "팔호선", "bg-pink-600", 6L, "남위례역", 7L, "산성역", 10)
+                tuple(1L, "이호선", "bg-green-600", 0, 1L, "잠실역", 2L, "선릉역", 10),
+                tuple(1L, "이호선", "bg-green-600", 0, 2L, "선릉역", 3L, "강남역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 0, 5L, "복정역", 6L, "남위례역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 0, 6L, "남위례역", 7L, "산성역", 10)
             );
     }
 
@@ -113,8 +113,8 @@ class LineRepositoryImplTest {
 
         // then
         assertThat(line)
-            .extracting(Line::getName, Line::getColor)
-            .containsExactly(new LineName("이호선"), "bg-green-600");
+            .extracting(Line::getName, Line::getColor, Line::getExtraFare)
+            .containsExactly(new LineName("이호선"), "bg-green-600", 0);
     }
 
     @Test
@@ -203,15 +203,15 @@ class LineRepositoryImplTest {
         // then
         assertThat(lineWithSections)
             .extracting(LineWithSectionRes::getLineId, LineWithSectionRes::getLineName,
-                LineWithSectionRes::getLineColor,
+                LineWithSectionRes::getLineColor, LineWithSectionRes::getExtraFare,
                 LineWithSectionRes::getSourceStationId, LineWithSectionRes::getSourceStationName,
                 LineWithSectionRes::getTargetStationId, LineWithSectionRes::getTargetStationName,
                 LineWithSectionRes::getDistance)
             .contains(
-                tuple(1L, "이호선", "bg-green-600", 1L, "잠실역", 2L, "선릉역", 10),
-                tuple(1L, "이호선", "bg-green-600", 2L, "선릉역", 3L, "강남역", 10),
-                tuple(2L, "팔호선", "bg-pink-600", 5L, "복정역", 6L, "남위례역", 10),
-                tuple(2L, "팔호선", "bg-pink-600", 6L, "남위례역", 7L, "산성역", 10)
+                tuple(1L, "이호선", "bg-green-600", 0, 1L, "잠실역", 2L, "선릉역", 10),
+                tuple(1L, "이호선", "bg-green-600", 0, 2L, "선릉역", 3L, "강남역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 0, 5L, "복정역", 6L, "남위례역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 0, 6L, "남위례역", 7L, "산성역", 10)
             );
     }
 }

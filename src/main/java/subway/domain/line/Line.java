@@ -7,15 +7,17 @@ public class Line {
 
     private final LineName name;
     private final String color;
+    private final int extraFare;
     private Sections sections;
 
-    public Line(final String name, final String color) {
-        this(name, color, new Sections(Collections.emptyList()));
+    public Line(final String name, final String color, final int extraFare) {
+        this(name, color, extraFare, new Sections(Collections.emptyList()));
     }
 
-    public Line(final String name, final String color, final Sections sections) {
+    public Line(final String name, final String color, final int extraFare, final Sections sections) {
         this.name = new LineName(name);
         this.color = color;
+        this.extraFare = extraFare;
         this.sections = sections;
     }
 
@@ -33,5 +35,9 @@ public class Line {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }

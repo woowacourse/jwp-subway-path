@@ -7,6 +7,7 @@ public class LineWithSectionRes {
     private final Long lineId;
     private final String lineName;
     private final String lineColor;
+    private final Integer extraFare;
     private final Long sourceStationId;
     private final String sourceStationName;
     private final Long targetStationId;
@@ -14,11 +15,12 @@ public class LineWithSectionRes {
     private final Integer distance;
 
     public LineWithSectionRes(final Long lineId, final String lineName, final String lineColor,
-                              final Long sourceStationId, final String sourceStationName,
+                              final Integer extraFare, final Long sourceStationId, final String sourceStationName,
                               final Long targetStationId, final String targetStationName, final Integer distance) {
         this.lineId = lineId;
         this.lineName = lineName;
         this.lineColor = lineColor;
+        this.extraFare = extraFare;
         this.sourceStationId = sourceStationId;
         this.sourceStationName = sourceStationName;
         this.targetStationId = targetStationId;
@@ -61,6 +63,10 @@ public class LineWithSectionRes {
 
     public String getLineColor() {
         return lineColor;
+    }
+
+    public Integer getExtraFare() {
+        return extraFare;
     }
 
     public Long getSourceStationId() {
