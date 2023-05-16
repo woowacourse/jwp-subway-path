@@ -26,16 +26,16 @@ public class SectionIntegrationTest extends IntegrationTest {
 
     static Stream<Arguments> addInitialSectionInvalidRequest() {
         return Stream.of(
-            Arguments.of(new InitialSectionAddRequest(1L, 1L, 2L, 0)),
-            Arguments.of(new InitialSectionAddRequest(2L, 1L, 2L, 1))
+                Arguments.of(new InitialSectionAddRequest(1L, 1L, 2L, 0)),
+                Arguments.of(new InitialSectionAddRequest(2L, 1L, 2L, 1))
         );
     }
 
     static Stream<Arguments> addSectionInvalidRequest() {
         return Stream.of(
-            Arguments.of(new SectionAddRequest(2L, 4L, 1L, 2L, 10)),
-            Arguments.of(new SectionAddRequest(2L, 4L, 1L, 3L, 5)),
-            Arguments.of(new SectionAddRequest(2L, 3L, 1L, 2L, 5))
+                Arguments.of(new SectionAddRequest(2L, 4L, 1L, 2L, 10)),
+                Arguments.of(new SectionAddRequest(2L, 4L, 1L, 3L, 5)),
+                Arguments.of(new SectionAddRequest(2L, 3L, 1L, 2L, 5))
         );
     }
 
@@ -45,12 +45,12 @@ public class SectionIntegrationTest extends IntegrationTest {
         InitialSectionAddRequest initialSectionAddRequest = new InitialSectionAddRequest(1L, 1L, 2L, 1);
 
         ExtractableResponse<Response> response = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(initialSectionAddRequest)
-            .when().post("/sections/initial")
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(initialSectionAddRequest)
+                .when().post("/sections/initial")
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -61,12 +61,12 @@ public class SectionIntegrationTest extends IntegrationTest {
     @MethodSource("addInitialSectionInvalidRequest")
     void addInitialSectionTestFail(InitialSectionAddRequest initialSectionAddRequest) {
         ExtractableResponse<Response> response = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(initialSectionAddRequest)
-            .when().post("/sections/initial")
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(initialSectionAddRequest)
+                .when().post("/sections/initial")
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -78,12 +78,12 @@ public class SectionIntegrationTest extends IntegrationTest {
         SectionAddRequest sectionAddRequest = new SectionAddRequest(2L, 4L, 2L, 1L, 5);
 
         ExtractableResponse<Response> response = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(sectionAddRequest)
-            .when().post("/sections")
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionAddRequest)
+                .when().post("/sections")
+                .then().log().all()
+                .extract();
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -93,12 +93,12 @@ public class SectionIntegrationTest extends IntegrationTest {
     @MethodSource("addSectionInvalidRequest")
     void addSectionTestFail(SectionAddRequest sectionAddRequest) {
         ExtractableResponse<Response> response = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(sectionAddRequest)
-            .when().post("/sections")
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionAddRequest)
+                .when().post("/sections")
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
@@ -110,12 +110,12 @@ public class SectionIntegrationTest extends IntegrationTest {
         SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest(2L, 2L);
 
         ExtractableResponse<Response> response = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(sectionDeleteRequest)
-            .when().delete("/sections")
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionDeleteRequest)
+                .when().delete("/sections")
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -127,12 +127,12 @@ public class SectionIntegrationTest extends IntegrationTest {
         SectionDeleteRequest sectionDeleteRequest = new SectionDeleteRequest(2L, 4L);
 
         ExtractableResponse<Response> response = RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .body(sectionDeleteRequest)
-            .when().delete("/sections")
-            .then().log().all()
-            .extract();
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionDeleteRequest)
+                .when().delete("/sections")
+                .then().log().all()
+                .extract();
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
