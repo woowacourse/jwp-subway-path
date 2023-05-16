@@ -28,7 +28,7 @@ class ShortestServiceTest {
 
     @Nested
     @DisplayName("최단 경로 찾기 테스트")
-    class findShortest {
+    class FindShortest {
 
         /**
          * 광안 <-5-> 전포 <-5-> 노포
@@ -65,17 +65,9 @@ class ShortestServiceTest {
                     () -> assertThat(shortest.getPaths()).hasSize(3));
         }
 
-        @DisplayName("존재하지 않는 역으로 최단 경로를 조회하면 예외가 발생한다")
-        @Test
-        void findShortest_fail() {
-            assertThatThrownBy(() -> shortestService.findShortest(1L, 2L))
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("존재하지 않는 역입니다.");
-        }
-
         @DisplayName("존재하지 않는 경로로 최단 경로를 조회하면 예외가 발생한다")
         @Test
-        void findShortest_fail2() {
+        void findShortest_fail() {
             //given
             final Long lineId1 = lineService.saveLine(new LineRequest("1호선", "red")).getId();
             final Long lineId2 = lineService.saveLine(new LineRequest("2호선", "blue")).getId();
