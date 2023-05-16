@@ -1,24 +1,35 @@
 package subway.domain;
 
-import java.util.Objects;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class Line {
-    private Long id;
-    private String name;
-    private String color;
 
-    public Line() {
+    private final Long id;
+    private final LineInfo lineInfo;
+    private final Sections sections;
+
+    public Line(final String name, final String color) {
+        this(null, name, color, Collections.emptyList());
     }
 
-    public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
-    }
-
-    public Line(Long id, String name, String color) {
+    public Line(final Long id, final String name, final String color, final List<Section> sections) {
         this.id = id;
-        this.name = name;
-        this.color = color;
+        this.lineInfo = new LineInfo(name, color);
+        this.sections = new Sections(new ArrayList<>(sections));
+    }
+
+    public void addSection(final Section section) {
+        sections.add(section);
+    }
+
+    public void removeStation(final Station station) {
+        sections.remove(station);
+    }
+
+    public List<Station> findOrderedStation() {
+        return sections.findOrderedStation();
     }
 
     public Long getId() {
@@ -26,23 +37,14 @@ public class Line {
     }
 
     public String getName() {
-        return name;
+        return lineInfo.getName();
     }
 
     public String getColor() {
-        return color;
+        return lineInfo.getColor();
     }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Line line = (Line) o;
-        return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, color);
+    
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 }
