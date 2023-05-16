@@ -38,7 +38,7 @@ class SectionServiceTest {
 
     @BeforeEach
     void setUp() {
-        sectionService = new SectionService(sectionDao, stationDao);
+        sectionService = new SectionService(sectionDao, stationDao, lineDao);
     }
 
 
