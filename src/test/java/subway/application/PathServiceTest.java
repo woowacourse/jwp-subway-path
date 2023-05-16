@@ -1,6 +1,5 @@
 package subway.application;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,6 +13,7 @@ import subway.dto.StationResponse;
 import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -41,6 +41,6 @@ class PathServiceTest {
         when(stationDao.findById(1L)).thenReturn(Optional.of(new StationEntity("인천역")));
         when(stationDao.findById(2L)).thenReturn(Optional.of(new StationEntity("서울역")));
 
-        Assertions.assertThat(pathService.findPath(1L, 2L)).usingRecursiveComparison().isEqualTo(new PathResponse(stationResponses, 5, null));
+        assertThat(pathService.findPath(1L, 2L)).usingRecursiveComparison().isEqualTo(new PathResponse(stationResponses, 5, 5));
     }
 }

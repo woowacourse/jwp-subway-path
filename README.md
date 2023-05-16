@@ -6,9 +6,12 @@
 - [x] Lines
   - [x] line 중복 검증
 
-- [ ] Graph
+- [x] Graph
   - [x] 경로 탐색
-  - [ ] 거리 탐색
+  - [x] 거리 탐색
+
+- [x] Cost
+  - [x] 비용 계산
 
 - [x] Line (1호선, 2호선, ...)
     - LineInfo
@@ -174,7 +177,7 @@ Response Body {
         }
     ],
     "distance": 6,
-    "cost": 
+    "cost": 1250
     }
 }
 ```

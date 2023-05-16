@@ -1,6 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.common.Cost;
 import subway.dao.*;
 import subway.domain.*;
 import subway.dto.PathResponse;
@@ -16,11 +17,13 @@ public class PathService {
     private SectionDao sectionDao;
     private StationDao stationDao;
     private LineDao lineDao;
+    private Cost cost;
 
-    public PathService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
+    public PathService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao, Cost cost) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
         this.lineDao = lineDao;
+        this.cost = cost;
     }
 
     public PathResponse findPath(Long startStationId, Long endStationId) {
@@ -42,7 +45,7 @@ public class PathService {
         List<String> pathStations = graph.findPath(startStation.getName(), endStation.getName());
         double pathDistance = graph.findPathDistance(startStation.getName(), endStation.getName());
 
-        return new PathResponse(makeStationResponses(pathStations), (int) pathDistance, null);
+        return new PathResponse(makeStationResponses(pathStations), (int) pathDistance, ((int)pathDistance));
     }
 
     private List<Station> toStations(List<StationEntity> findStations) {
