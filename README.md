@@ -43,10 +43,10 @@ LineRequest에 정보를 담아 노선을 생성
 put /lines/{lineId}
 lineId, LineRequest에 정보를 담아 노선을 갱신
 
-post /lines/{name}/stations
+post /lines/{name}/init
 name, InitStationsRequest에 정보를 담아 노선에 역 두개를 추가해 초기화
 
-post /lines/{name}
+post /lines/{name}/stations
 name, RegisterStationRequest에 정보를 담아 역을 노선에 등록
 
 get /lines/{id}

@@ -51,7 +51,7 @@ public class LineService {
             throw new IllegalArgumentException("두 개의 역이 초기화 되지 않은 노선에 새로운 역을 추가할 수 없습니다.");
         }
         Station newStation = stationRepository.findByName(registerStationRequest.getNewStationName());
-        Station baseStation = stationRepository.findByName(registerStationRequest.getBaseStation());
+        Station baseStation = stationRepository.findByName(registerStationRequest.getBaseStationName());
         line.addStation(newStation, baseStation, Direction.of(registerStationRequest.getDirection()), registerStationRequest.getDistance());
         lineRepository.save(line);
     }

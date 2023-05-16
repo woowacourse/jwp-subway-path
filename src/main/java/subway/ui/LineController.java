@@ -2,7 +2,6 @@ package subway.ui;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,13 +10,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
+import subway.dto.InitStationsRequest;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.RegisterStationRequest;
-import subway.dto.InitStationsRequest;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController
@@ -42,15 +40,15 @@ public class LineController {
         return ResponseEntity.ok().body(line);
     }
 
-    @PostMapping("/{name}/stations")
+    @PostMapping("/{name}/init")
     public ResponseEntity<Void> registerStations(@PathVariable String name, @RequestBody InitStationsRequest initStationsRequest) {
         lineService.registerInitStations(name, initStationsRequest);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{name}")
+    @PostMapping("/{name}/stations")
     public ResponseEntity<Void> registerStation(@PathVariable String name,
-                                                     @RequestBody RegisterStationRequest registerStationRequest) {
+                                                @RequestBody RegisterStationRequest registerStationRequest) {
         lineService.registerStation(name, registerStationRequest);
         return ResponseEntity.noContent().build();
     }

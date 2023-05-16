@@ -3,16 +3,16 @@ package subway.dto;
 public class RegisterStationRequest {
 
     private String newStationName;
-    private String baseStation;
+    private String baseStationName;
     private String direction;
     private int distance;
 
     public RegisterStationRequest() {
     }
 
-    public RegisterStationRequest(String newStationName, String baseStation, String direction, int distance) {
+    public RegisterStationRequest(String newStationName, String baseStationName, String direction, int distance) {
         this.newStationName = newStationName;
-        this.baseStation = baseStation;
+        this.baseStationName = baseStationName;
         this.direction = direction;
         this.distance = distance;
     }
@@ -21,8 +21,8 @@ public class RegisterStationRequest {
         return newStationName;
     }
 
-    public String getBaseStation() {
-        return baseStation;
+    public String getBaseStationName() {
+        return baseStationName;
     }
 
     public String getDirection() {
