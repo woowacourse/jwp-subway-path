@@ -7,6 +7,7 @@ import subway.dao.StationDao;
 import subway.domain.*;
 import subway.dto.*;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,15 +24,15 @@ public class LineService {
         this.sectionDao = sectionDao;
     }
 
-    public LineResponse saveLine(LineRequest request) {
+    public LineResponse saveLine(final LineRequest request) {
         Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
     public List<LineResponse> findLineResponses() {
         List<Line> persistLines = findLines();
         return persistLines.stream()
-                .map(LineResponse::of)
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -44,46 +45,31 @@ public class LineService {
 
     public LineResponse findLineResponseById(final Long id) {
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
     public Line findLineById(final Long id) {
         Line rawLine = lineDao.findById(id);
-        List<SectionDto> sections = sectionDao.findAllByLineId(id);
-        if (sections.isEmpty()) {
+        List<SectionDto> sectionsDtos = sectionDao.findAllByLineId(id);
+        if (sectionsDtos.isEmpty()) {
             return rawLine;
         }
 
-        Sections distances = new Sections(sections
-                .stream()
+        Sections sections = new Sections(sectionsDtos.stream()
                 .collect(Collectors.toMap(
                         section -> stationDao.findById(section.getStationId()),
-                        section -> new Section(stationDao.findById(section.getStationId()), stationDao.findById(section.getNextStationId()), new Distance(section.getDistance()))
+                        section -> new Section(stationDao.findById(section.getStationId()),
+                                stationDao.findById(section.getNextStationId()),
+                                new Distance(section.getDistance()))
                 )));
 
-        SectionDto section = sections.remove(0);
-        LinkedList<Long> stationIds = new LinkedList<>(List.of(section.getStationId(), section.getNextStationId()));
+        List<Station> stations = new ArrayList<>(List.of(sections.getSections().get(0).getUpper()));
+        stations.addAll(sections.getSections()
+                .stream()
+                .map(Section::getLower)
+                .collect(Collectors.toList()));
 
-        while (!sections.isEmpty()) {
-            for (int i = 0; i < sections.size(); i++) {
-                section = sections.get(i);
-                if (section.getStationId().equals(stationIds.getLast())) {
-                    stationIds.addLast(section.getNextStationId());
-                    sections.remove(i);
-                    break;
-                }
-                if (section.getNextStationId().equals(stationIds.getFirst())) {
-                    stationIds.addFirst(section.getStationId());
-                    sections.remove(i);
-                }
-            }
-        }
-
-        List<Station> stations = stationIds.stream()
-                .map(stationDao::findById)
-                .collect(Collectors.toList());
-
-        return new Line(rawLine.getId(), rawLine.getName(), rawLine.getColor(), new LinkedList<>(stations), distances);
+        return new Line(rawLine.getId(), rawLine.getName(), rawLine.getColor(), new LinkedList<>(stations), sections);
     }
 
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
