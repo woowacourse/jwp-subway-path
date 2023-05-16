@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.StationDao;
 import subway.domain.Station;
-import subway.domain.Stations;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
 
@@ -42,14 +41,14 @@ public class StationService {
         Station oldStation = stationDao.findById(id)
                 .orElseThrow(() -> new IllegalStateException("[ERROR] 존재하지 않는 역을 수정할 수 없습니다."));
         Station updatedStation = Station.of(id, stationRequest.getName());
-        if(!oldStation.isSameName(updatedStation)){
+        if (!oldStation.isSameName(updatedStation)) {
             validateDuplicatedName(updatedStation);
         }
         stationDao.update(updatedStation);
     }
 
     private void validateDuplicatedName(final Station updatedStation) {
-        if(stationDao.countByName(updatedStation.getName()) != 0){
+        if (stationDao.countByName(updatedStation.getName()) != 0) {
             throw new IllegalArgumentException("[ERROR] 중복된 역 이름을 등록할 수 없습니다.");
         }
     }

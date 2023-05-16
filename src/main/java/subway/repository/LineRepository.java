@@ -65,11 +65,11 @@ public class LineRepository {
         lineDao.deleteById(id);
     }
 
-    public int countByName(final String name){
+    public int countByName(final String name) {
         return lineDao.countByName(name);
     }
 
-    public int countByColor(final String color){
+    public int countByColor(final String color) {
         return lineDao.countByColor(color);
     }
 }

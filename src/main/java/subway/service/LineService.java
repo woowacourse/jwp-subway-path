@@ -28,13 +28,13 @@ public class LineService {
     }
 
     private void validateDuplicatedName(final Line oldLine) {
-        if(lineRepository.countByName(oldLine.getName()) != 0){
+        if (lineRepository.countByName(oldLine.getName()) != 0) {
             throw new IllegalArgumentException("[Error] 중복된 노선 이름을 등록할 수 없습니다.");
         }
     }
 
     private void validateDuplicatedColor(final Line newLine) {
-        if(lineRepository.countByColor(newLine.getColor()) != 0){
+        if (lineRepository.countByColor(newLine.getColor()) != 0) {
             throw new IllegalArgumentException("[Error] 중복된 노선 색상을 등록할 수 없습니다.");
         }
     }
@@ -54,12 +54,12 @@ public class LineService {
 
     public void updateLine(final long id, final LineRequest request) {
         Line oldLine = lineRepository.findById(id)
-                .orElseThrow(()->new IllegalArgumentException("[ERROR] 존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 노선입니다."));
         Line updatedLine = Line.of(id, request.getName(), request.getColor(), oldLine.getSections());
-        if(!oldLine.isSameName(updatedLine)){
+        if (!oldLine.isSameName(updatedLine)) {
             validateDuplicatedName(updatedLine);
         }
-        if(!oldLine.isSameColor(updatedLine)){
+        if (!oldLine.isSameColor(updatedLine)) {
             validateDuplicatedColor(updatedLine);
         }
         lineRepository.update(updatedLine);
