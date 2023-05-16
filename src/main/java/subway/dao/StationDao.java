@@ -2,53 +2,58 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.entity.StationEntity;
 
-import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class StationDao {
+
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private final RowMapper<StationEntity> stationEntityRowMapper =
+            (rs, rowNum) -> new StationEntity(
                     rs.getLong("id"),
-                    rs.getString("name")
-            );
+                    rs.getString("name"),
+                    rs.getLong("line_id"));
 
-
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public StationEntity insert(StationEntity stationEntity) {
+        String stationName = stationEntity.getStationName();
+        Long lineId = stationEntity.getLineId();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("name", stationName);
+        params.put("line_id", lineId);
+
+        long insertedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        return new StationEntity(insertedId, stationName, lineId);
     }
 
-    public List<Station> findAll() {
-        String sql = "select * from STATION";
-        return jdbcTemplate.query(sql, rowMapper);
+    public Optional<StationEntity> findById(Long id) {
+        String sql = "select id, name, line_id from STATION where id = ?";
+        List<StationEntity> findStationEntity = jdbcTemplate.query(sql, stationEntityRowMapper, id);
+        return findStationEntity.stream().findAny();
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
-    }
+    public Optional<StationEntity> findByStationIdAndLineId(Long stationId, Long lineId) {
+        String sql = "SELECT id, name, line_id FROM STATION " +
+                "WHERE id = ? AND line_id = ?";
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        List<StationEntity> station = jdbcTemplate.query(sql, stationEntityRowMapper, stationId, lineId);
+        return station.stream().findAny();
     }
 
     public void deleteById(Long id) {

@@ -1,16 +1,50 @@
 package subway.dto;
 
+import java.util.Objects;
+
 public class StationRequest {
-    private String name;
+    private String upStationName;
+    private String downStationName;
+    private int distance;
+    private String lineName;
 
-    public StationRequest() {
+    public StationRequest(String upStationName, String downStationName, int distance, String lineName) {
+        this.upStationName = upStationName;
+        this.downStationName = downStationName;
+        this.distance = distance;
+        this.lineName = lineName;
     }
 
-    public StationRequest(String name) {
-        this.name = name;
+    public String getUpStationName() {
+        return upStationName;
     }
 
-    public String getName() {
-        return name;
+    public String getDownStationName() {
+        return downStationName;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public String getLineName() {
+        return lineName;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        StationRequest that = (StationRequest) o;
+        return distance == that.distance && Objects.equals(upStationName, that.upStationName) && Objects.equals(downStationName, that.downStationName) && Objects.equals(lineName, that.lineName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(upStationName, downStationName, distance, lineName);
     }
 }

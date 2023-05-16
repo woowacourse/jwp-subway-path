@@ -4,55 +4,56 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
+import subway.entity.LineEntity;
 
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Repository
 public class LineDao {
+
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
+    private final SimpleJdbcInsert simpleJdbcInsert;
+    private final RowMapper<LineEntity> lineEntityRowMapper =
+            (rs, rowNum) -> new LineEntity(rs.getLong("id"), rs.getString("name"));
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
-                    rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getString("color")
-            );
 
-    public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public LineDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
-
-        Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+    public LineEntity insert(LineEntity lineEntity) {
+        Optional<LineEntity> findLineEntity = findByLineName(lineEntity.getLineName());
+        if (findLineEntity.isPresent()) {
+            throw new IllegalArgumentException("이미 존재하는 노선입니다.");
+        }
+        Map<String, String> params = new HashMap<>();
+        params.put("name", lineEntity.getLineName());
+        Long insertedId = simpleJdbcInsert.executeAndReturnKey(params).longValue();
+        return new LineEntity(insertedId, lineEntity.getLineName());
     }
 
-    public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
-        return jdbcTemplate.query(sql, rowMapper);
+    public List<LineEntity> findAll() {
+        String sql = "SELECT id, name FROM line";
+        return jdbcTemplate.query(sql, lineEntityRowMapper);
     }
 
-    public Line findById(Long id) {
-        String sql = "select id, name, color from LINE WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public LineEntity findById(Long id) {
+        String sql = "SELECT id, line_name from LINE WHERE id = ?";
+        return jdbcTemplate.queryForObject(sql, lineEntityRowMapper, id);
     }
 
-    public void update(Line newLine) {
-        String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+    public Optional<LineEntity> findByLineName(String lineName) {
+        String sql = "SELECT id, name FROM line WHERE name = ?";
+        List<LineEntity> lineEntities = jdbcTemplate.query(sql,
+                lineEntityRowMapper, lineName
+        );
+        return lineEntities.stream().findAny();
     }
 
     public void deleteById(Long id) {
