@@ -4,6 +4,7 @@ import java.util.Objects;
 import subway.domain.Station;
 
 public class StationResponse {
+
     private Long id;
     private String name;
 

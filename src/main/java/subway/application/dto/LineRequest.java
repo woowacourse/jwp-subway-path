@@ -9,9 +9,6 @@ public class LineRequest {
     @NotNull
     private String color;
 
-    public LineRequest() {
-    }
-
     public LineRequest(String name, String color) {
         this.name = name;
         this.color = color;

@@ -7,30 +7,30 @@ public class SectionRequest {
     @NotNull
     private final Long lineId;
     @NotNull
-    private final SectionStations sectionStations;
+    private final SectionStations section;
 
-    public SectionRequest(final Long lineId, final SectionStations sectionStations) {
+    public SectionRequest(final Long lineId, final SectionStations section) {
         this.lineId = lineId;
-        this.sectionStations = sectionStations;
+        this.section = section;
     }
 
     public Long leftStationId() {
-        return sectionStations.getLeftStationId();
+        return section.getLeftStationId();
     }
 
     public Long rightStationId() {
-        return sectionStations.getRightStationId();
+        return section.getRightStationId();
     }
 
     public Integer distance() {
-        return sectionStations.getDistance();
+        return section.getDistance();
     }
 
     public Long getLineId() {
         return lineId;
     }
 
-    public SectionStations getSectionStations() {
-        return sectionStations;
+    public SectionStations getSection() {
+        return section;
     }
 }
