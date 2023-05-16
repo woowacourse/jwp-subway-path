@@ -1,0 +1,41 @@
+[[Station-API]]
+== 역
+
+[[Station-생성]]
+=== 생성
+
+*요청*
+include::{snippets}/stations/create/http-request.adoc[]
+include::{snippets}/stations/create/request-fields.adoc[]
+
+*응답*
+include::{snippets}/stations/create/http-response.adoc[]
+
+[[Station-조회]]
+=== 조화
+
+*요청*
+include::{snippets}/stations/inquiry/http-request.adoc[]
+
+*응답*
+include::{snippets}/stations/inquiry/http-response.adoc[]
+
+[[Station-수정]]
+=== 수정
+
+*요청*
+include::{snippets}/stations/update/http-request.adoc[]
+include::{snippets}/stations/update/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/stations/update/http-response.adoc[]
+
+[[Station-삭제]]
+=== 삭제
+
+*요청*
+include::{snippets}/stations/delete/http-request.adoc[]
+include::{snippets}/stations/delete/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/stations/delete/http-response.adoc[]
