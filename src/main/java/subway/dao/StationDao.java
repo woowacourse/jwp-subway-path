@@ -1,15 +1,16 @@
 package subway.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.StationEntity;
-import subway.domain.Station;
 
-import java.util.Collections;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -32,6 +33,21 @@ public class StationDao {
                     resultSet.getString("name")
             );
 
+    public void save(final List<StationEntity> stations) {
+        final String sql = "INSERT INTO stations (name) VALUES (?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                StationEntity station = stations.get(i);
+                ps.setString(1, station.getName());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return stations.size();
+            }
+        });
+    }
 
     public Long save(final String stationName) {
         final MapSqlParameterSource name = new MapSqlParameterSource().addValue("name", stationName);
@@ -62,7 +78,7 @@ public class StationDao {
     }
 
     public void deleteById(Long id) {
-        String sql = "delete from STATIONS where id = ?";
+        final String sql = "DELETE FROM stations WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
 
@@ -70,5 +86,21 @@ public class StationDao {
         final MapSqlParameterSource name = new MapSqlParameterSource()
                 .addValue("name", stationEntity.getName());
         return insertAction.executeAndReturnKeyHolder(name).getKey().longValue();
+    }
+
+    public void delete(final List<StationEntity> stations) {
+        final String sql = "DELETE FROM stations WHERE id = ?";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                StationEntity station = stations.get(i);
+                ps.setLong(1, station.getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return stations.size();
+            }
+        });
     }
 }

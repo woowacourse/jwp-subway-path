@@ -1,6 +1,7 @@
 package subway.dao.entity;
 
 import subway.domain.Distance;
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 
@@ -20,6 +21,16 @@ public class SectionEntity {
         this.downStationId = downStationId;
         this.lineId = lineId;
         this.distance = distance;
+    }
+
+    public static SectionEntity of(final Section section, final Line line) {
+        return new SectionEntity(
+                section.getId(),
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                line.getId(),
+                section.getDistance().getValue()
+        );
     }
 
     public Section convertToSection(final Map<Long, Station> stations) {

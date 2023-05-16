@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 class LineTest {
 
-    private final Section SECTION = new Section(new Station("잠실나루"), new Station("잠실새내"), new Distance(10));
+    private final Section SECTION = Section.of(new Station("잠실나루"), new Station("잠실새내"), new Distance(10));
 
     @DisplayName("생성한다")
     @Test
@@ -27,9 +27,7 @@ class LineTest {
                 () -> new Line (
                         new LineName("2호선"),
                         new LineColor("초록"),
-                        SECTION.getUpStation(),
-                        SECTION.getDownStation(),
-                        List.of(SECTION)
+                        new Sections(List.of(SECTION))
                 )
         );
     }
@@ -38,17 +36,15 @@ class LineTest {
     @Test
     void addSection() {
         //given
-        Section newSection1 = new Section(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section newSection2 = new Section(new Station("잠실"), new Station("잠실새내"), new Distance(7));
+        Section newSection1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
+        Section newSection2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
         Line line = new Line (
                 new LineName("2호선"),
                 new LineColor("초록"),
-                SECTION.getUpStation(),
-                SECTION.getDownStation(),
-                List.of(SECTION)
+                new Sections(List.of(SECTION))
         );
         //when
-        Line afterLine = line.addMiddleSection(newSection1, newSection2);
+        Line afterLine = line.addSection(newSection1, newSection2);
         //then
         assertThat(afterLine.getSections()).contains(newSection1, newSection2);
     }
@@ -61,31 +57,29 @@ class LineTest {
         Line line = new Line (
                 new LineName("2호선"),
                 new LineColor("초록"),
-                SECTION.getUpStation(),
-                SECTION.getDownStation(),
-                List.of(SECTION)
+                new Sections(List.of(SECTION))
         );
         //then
-        assertThatThrownBy(() -> line.addMiddleSection(section1, section2)).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> line.addSection(section1, section2)).isInstanceOf(IllegalArgumentException.class);
     }
 
     static Stream<Arguments> sectionsDummy() {
         return Stream.of(
                 Arguments.arguments(
-                        new Section(new Station("삼성"), new Station("잠실"), new Distance(3)),
-                        new Section(new Station("잠실"), new Station("잠실새내"), new Distance(7))
+                        Section.of(new Station("삼성"), new Station("잠실"), new Distance(3)),
+                        Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7))
                 ),
                 Arguments.arguments(
-                        new Section(new Station("잠실나루"), new Station("잠실"), new Distance(3)),
-                        new Section(new Station("잠실"), new Station("구의"), new Distance(7))
+                        Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3)),
+                        Section.of(new Station("잠실"), new Station("구의"), new Distance(7))
                 ),
                 Arguments.arguments(
-                        new Section(new Station("잠실나루"), new Station("잠실"), new Distance(2)),
-                        new Section(new Station("잠실"), new Station("잠실새내"), new Distance(7))
+                        Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(2)),
+                        Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7))
                 ),
                 Arguments.arguments(
-                        new Section(new Station("잠실나루"), new Station("잠실"), new Distance(3)),
-                        new Section(new Station("잠실"), new Station("잠실새내"), new Distance(8))
+                        Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3)),
+                        Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(8))
                 )
         );
     }
@@ -94,16 +88,14 @@ class LineTest {
     @Test
     void addFirstSection() {
         //given
-        Section newSection = new Section(new Station("삼성"), new Station("잠실나루"), new Distance(3));
+        Section newSection = Section.of(new Station("삼성"), new Station("잠실나루"), new Distance(3));
         Line line = new Line (
                 new LineName("2호선"),
                 new LineColor("초록"),
-                SECTION.getUpStation(),
-                SECTION.getDownStation(),
-                List.of(SECTION)
+                new Sections(List.of(SECTION))
         );
         //when
-        Line afterLine = line.addFirstSection(newSection);
+        Line afterLine = line.addSection(Section.EMPTY_SECTION, newSection);
         //then
         assertThat(afterLine.getFirstStation()).isEqualTo(new Station("삼성"));
     }
@@ -112,16 +104,14 @@ class LineTest {
     @Test
     void addLastSection() {
         //given
-        Section newSection = new Section(new Station("잠실새내"), new Station("구의"), new Distance(3));
+        Section newSection = Section.of(new Station("잠실새내"), new Station("구의"), new Distance(3));
         Line line = new Line (
                 new LineName("2호선"),
                 new LineColor("초록"),
-                SECTION.getUpStation(),
-                SECTION.getDownStation(),
-                List.of(SECTION)
+                new Sections(List.of(SECTION))
         );
         //when
-        Line afterLine = line.addLastSection(newSection);
+        Line afterLine = line.addSection(newSection, Section.EMPTY_SECTION);
         //then
         assertThat(afterLine.getLastStation()).isEqualTo(new Station("구의"));
     }
@@ -134,7 +124,7 @@ class LineTest {
                 new LineName("2호선"),
                 new LineColor("초록")
         );
-        Section newSection = new Section(new Station("잠실새내"), new Station("구의"), new Distance(3));
+        Section newSection = Section.of(new Station("잠실새내"), new Station("구의"), new Distance(3));
         //when
         Line afterLine = line.addInitSection(newSection);
         //then
@@ -148,14 +138,12 @@ class LineTest {
     @Test
     void removeStation() {
         //given
-        Section section1 = new Section(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section section2 = new Section(new Station("잠실"), new Station("잠실새내"), new Distance(7));
+        Section section1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
+        Section section2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
         Line line = new Line (
                 new LineName("2호선"),
                 new LineColor("초록"),
-                section1.getUpStation(),
-                section2.getDownStation(),
-                List.of(section1, section2)
+                new Sections(List.of(section1, section2))
         );
         Station target = new Station("잠실");
         //when
@@ -163,7 +151,7 @@ class LineTest {
         //then
         assertThat(afterLine.getSections())
                 .containsOnly(
-                        new Section(
+                        Section.of(
                                 new Station("잠실나루"),
                                 new Station("잠실새내"),
                                 new Distance(10)));
@@ -173,14 +161,12 @@ class LineTest {
     @Test
     void removeFirstStation() {
         //given
-        Section section1 = new Section(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section section2 = new Section(new Station("잠실"), new Station("잠실새내"), new Distance(7));
+        Section section1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
+        Section section2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
         Line line = new Line (
                 new LineName("2호선"),
                 new LineColor("초록"),
-                section1.getUpStation(),
-                section2.getDownStation(),
-                List.of(section1, section2)
+                new Sections(List.of(section1, section2))
         );
         Station target = new Station("잠실나루");
         //when
@@ -196,14 +182,12 @@ class LineTest {
     @Test
     void removeLastStation() {
         //given
-        Section section1 = new Section(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section section2 = new Section(new Station("잠실"), new Station("잠실새내"), new Distance(7));
+        Section section1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
+        Section section2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
         Line line = new Line (
                 new LineName("2호선"),
                 new LineColor("초록"),
-                section1.getUpStation(),
-                section2.getDownStation(),
-                List.of(section1, section2)
+                new Sections(List.of(section1, section2))
         );
         Station target = new Station("잠실새내");
         //when
@@ -219,13 +203,11 @@ class LineTest {
     @Test
     void removeStationWhenOnlyOneSectionExist() {
         //given
-        Section section = new Section(new Station("잠실나루"), new Station("잠실"), new Distance(3));
+        Section section = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
         Line line = new Line (
                 new LineName("2호선"),
                 new LineColor("초록"),
-                section.getUpStation(),
-                section.getDownStation(),
-                List.of(section)
+                new Sections(List.of(section))
         );
         Station target1 = new Station("잠실나루");
         Station target2 = new Station("잠실");
@@ -243,14 +225,12 @@ class LineTest {
     @Test
     void findAllStation() {
         //given
-        Section section1 = new Section(new Station("잠실나루"), new Station("잠실"), new Distance(3));
-        Section section2 = new Section(new Station("잠실"), new Station("잠실새내"), new Distance(7));
+        Section section1 = Section.of(new Station("잠실나루"), new Station("잠실"), new Distance(3));
+        Section section2 = Section.of(new Station("잠실"), new Station("잠실새내"), new Distance(7));
         Line line = new Line (
                 new LineName("2호선"),
                 new LineColor("초록"),
-                section1.getUpStation(),
-                section2.getDownStation(),
-                List.of(section1, section2)
+                new Sections(List.of(section1, section2))
         );
         //when
         List<Station> stations = line.findAllStation();

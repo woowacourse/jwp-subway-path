@@ -1,6 +1,7 @@
 package subway.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,6 +9,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.SectionEntity;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
@@ -89,11 +92,6 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, Long.class, lineId);
     }
 
-    public void delete(final Long sectionId) {
-        final String sql = "DELETE FROM sections WHERE id = ?";
-        jdbcTemplate.update(sql, sectionId);
-    }
-
     public Optional<SectionEntity> findByUpAndDown(final Long upStationId, final Long downStationId) {
         final String sql = "SELECT * " +
                 "FROm sections " +
@@ -104,5 +102,49 @@ public class SectionDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public void delete(final Long sectionId) {
+        final String sql = "DELETE FROM sections WHERE id = ?";
+        jdbcTemplate.update(sql, sectionId);
+    }
+
+    public void deleteByLineId(final Long lineId) {
+        final String sql = "DELETE FROM sections WHERE line_id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public void delete(final List<SectionEntity> sections) {
+        final String sql = "DELETE FORM sections WHERE id = ?";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                ps.setLong(1, sections.get(i).getId());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return sections.size();
+            }
+        });
+    }
+
+    public void save(final List<SectionEntity> sections) {
+        final String sql = "INSERT INTO sections (up_station_id, down_station_id, line_id, distance) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(final PreparedStatement ps, final int i) throws SQLException {
+                SectionEntity section = sections.get(i);
+                ps.setLong(1, section.getUpStationId());
+                ps.setLong(2, section.getDownStationId());
+                ps.setLong(3, section.getLineId());
+                ps.setInt(4, section.getDistance());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return sections.size();
+            }
+        });
     }
 }
