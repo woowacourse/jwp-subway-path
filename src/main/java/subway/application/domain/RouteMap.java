@@ -36,18 +36,24 @@ public class RouteMap {
     }
 
     private Station findFirstStation(List<Section> sections) {
+        List<Station> endPoints = getEndPoints(sections);
+
+        return endPoints.stream()
+                .findAny()
+                .orElseThrow(CircularRouteException::new);
+    }
+
+    private List<Station> getEndPoints(List<Section> sections) {
         List<Station> allUpBounds = sections.stream()
                 .map(Section::getUpBound)
                 .collect(Collectors.toList());
+
         List<Station> allDownBounds = sections.stream()
                 .map(Section::getDownBound)
                 .collect(Collectors.toList());
 
         allUpBounds.removeAll(allDownBounds);
-
-        return allUpBounds.stream()
-                .findAny()
-                .orElseThrow(CircularRouteException::new);
+        return allUpBounds;
     }
 
     private boolean hasNextStation(List<Section> sections, Station targetStation) {
