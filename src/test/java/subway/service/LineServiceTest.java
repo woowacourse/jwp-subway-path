@@ -1,0 +1,110 @@
+package subway.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.util.List;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
+import org.springframework.jdbc.core.JdbcTemplate;
+import subway.domain.Line;
+import subway.domain.Subway;
+import subway.dto.LineDto;
+import subway.dto.SectionDto;
+import subway.dto.response.LineResponse;
+import subway.repository.SubwayRepository;
+
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+class LineServiceTest {
+
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private LineService lineService;
+
+    @Autowired
+    private StationService stationService;
+
+    @Autowired
+    private SubwayRepository subwayRepository;
+
+
+    @BeforeEach
+    void setUp() {
+        jdbcTemplate.execute("DELETE FROM line");
+    }
+
+    @Test
+    void 노선을_등록할_수_있다() {
+        // given
+        final LineDto lineDto = new LineDto("8호선", "분홍색");
+
+        // when
+        lineService.register(lineDto);
+
+        // then
+        final Subway subway = subwayRepository.findSubway();
+        assertThat(subway.getLines()).contains(new Line("8호선", "분홍색"));
+    }
+
+    @Test
+    void 존재하는_노선_이름으로_등록시_예외가_발생한다() {
+        // given
+        subwayRepository.registerLine("8호선", "분홍색");
+
+        // expect
+        assertThatThrownBy(() -> lineService.register(new LineDto("8호선", "분홍색")))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("중복된 이름의 노선이 존재합니다.");
+    }
+
+    @Test
+    void id로_노선의_역들을_조회할_수_있다() {
+        // given
+        final Long lineId = lineService.register(new LineDto("8호선", "분홍색"));
+        stationService.register(new SectionDto(lineId, "잠실역", "석촌역", 10));
+
+        // when
+        final LineResponse lineResponse = lineService.read(lineId);
+
+        // then
+        assertAll(
+                () -> assertThat(lineResponse.getName()).isEqualTo("8호선"),
+                () -> assertThat(lineResponse.getColor()).isEqualTo("분홍색"),
+                () -> assertThat(lineResponse.getStations()).hasSize(2)
+                );
+    }
+
+    @Test
+    void 모든_노선을_조회할_수_있다() {
+        // given
+        final Long eightLineId = lineService.register(new LineDto("8호선", "분홍색"));
+        final Long twoLineId = lineService.register(new LineDto("2호선", "초록색"));
+
+        stationService.register(new SectionDto(eightLineId, "잠실역", "석촌역", 10));
+        stationService.register(new SectionDto(twoLineId, "잠실역", "신천역", 10));
+
+        // when
+        final List<LineResponse> lineResponses = lineService.readAll();
+
+        // then
+        assertAll(
+                () -> assertThat(lineResponses).hasSize(2),
+                () -> assertThat(lineResponses.get(0).getName()).contains("8호선"),
+                () -> assertThat(lineResponses.get(0).getStations()).containsExactly("잠실역", "석촌역"),
+                () -> assertThat(lineResponses.get(0).getColor()).contains("분홍색"),
+                () -> assertThat(lineResponses.get(1).getName()).contains("2호선"),
+                () -> assertThat(lineResponses.get(1).getStations()).containsExactly("잠실역", "신천역"),
+                () -> assertThat(lineResponses.get(1).getColor()).contains("초록색")
+        );
+    }
+}

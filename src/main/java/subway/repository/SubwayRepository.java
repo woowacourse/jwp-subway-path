@@ -30,6 +30,11 @@ public class SubwayRepository {
         this.sectionDao = sectionDao;
     }
 
+    public boolean isDuplicatedName(final String name) {
+        final Optional<LineEntity> lineEntity = lineDao.findByName(name);
+        return lineEntity.isPresent();
+    }
+
     public Line findLineByName(final String name) {
         final LineEntity lineEntity = findLineEntityByName(name);
         return new Line(lineEntity.getName(), lineEntity.getColor());
@@ -44,17 +49,19 @@ public class SubwayRepository {
         return lineDao.insert(name, color);
     }
 
-    public void updateLine(final Line line) {
+    public Line updateLine(final Line line) {
         final LineEntity lineEntity = findLineEntityByName(line.getName());
         sectionDao.deleteByLineId(lineEntity.getId());
-        insertSectionsToLine(line.sections(), lineEntity.getId());
+        final List<SectionEntity> sectionEntities = registerSections(line.sections(), lineEntity.getId());
+        return toLine(lineEntity.getName(), lineEntity.getColor(), sectionEntities);
     }
 
-    private void insertSectionsToLine(final List<Section> sections, final Long lineId) {
+    private List<SectionEntity> registerSections(final List<Section> sections, final Long lineId) {
         final List<SectionEntity> sectionEntities = sections.stream()
                 .map(section -> toSectionEntity(section, lineId))
                 .collect(Collectors.toList());
         sectionDao.insertAll(sectionEntities);
+        return sectionEntities;
     }
 
     private SectionEntity toSectionEntity(final Section section, final Long lineId) {
@@ -107,7 +114,7 @@ public class SubwayRepository {
         return new Station(stationEntity.getName());
     }
 
-    public Subway getSubway() {
+    public Subway findSubway() {
         final List<LineEntity> lineEntities = lineDao.findAll();
         final List<Line> lines = lineEntities.stream()
                 .map(lineEntity -> toLine(lineEntity.getName(), lineEntity.getColor(), sectionDao.findByLineId(lineEntity.getId())))
