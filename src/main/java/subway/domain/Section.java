@@ -21,10 +21,6 @@ public class Section {
         }
     }
 
-    public boolean existById(final Long stationId) {
-        return existLeftById(stationId) || existRightById(stationId);
-    }
-
     public boolean existLeftById(final Long stationId) {
         return stationId.equals(from.getId());
     }
@@ -47,14 +43,6 @@ public class Section {
 
     public boolean isInsertable(final int otherDistance) {
         return distance.isLongerThan(otherDistance);
-    }
-
-    public void updateStation(final Station targetStation, final Station updateStation) {
-        if (from.equals(targetStation)) {
-            from = updateStation;
-            return;
-        }
-        to = updateStation;
     }
 
     public Station getFrom() {
@@ -95,4 +83,5 @@ public class Section {
                 ", distance=" + distance +
                 '}';
     }
+
 }

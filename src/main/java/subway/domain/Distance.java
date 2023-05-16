@@ -21,10 +21,6 @@ public class Distance {
         return distance > otherDistance;
     }
 
-    public int subtract(int otherDistance) {
-        return distance - otherDistance;
-    }
-
     public int getDistance() {
         return distance;
     }
@@ -52,4 +48,5 @@ public class Distance {
                 "distance=" + distance +
                 '}';
     }
+
 }
