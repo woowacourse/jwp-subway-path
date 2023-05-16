@@ -309,8 +309,8 @@ HTTP/1.1 204 No Content
 ## 1단계 리팩토링 요구사항
 
 - [x] API 명세 정리
-- [ ] Section ID 정보 삭제
-- [ ] 초기 데이터를 가지지 않도록 schema.sql에서 INSERT문 제거
+- [x] Section ID 정보 삭제
+- [x] 초기 데이터를 가지지 않도록 schema.sql에서 INSERT문 제거
 - [ ] Service 내 메서드의 역할과 책임 분리
 - [ ] Collections.emptyList() 활용
 - [ ] exists 쿼리 활용
