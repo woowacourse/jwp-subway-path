@@ -40,7 +40,7 @@ public class Section {
     }
 
     public boolean isGreaterThanOtherDistance(Section otherSection) {
-        return this.distance.isBiggerThanOtherDistance(otherSection.distance);
+        return this.distance.isBiggerThan(otherSection.distance);
     }
 
     public boolean hasStation(Station otherStation) {

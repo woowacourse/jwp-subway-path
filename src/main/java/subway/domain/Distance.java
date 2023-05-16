@@ -26,8 +26,12 @@ public class Distance {
         return new Distance(this.distance - otherDistance.distance);
     }
 
-    public boolean isBiggerThanOtherDistance(Distance otherDistance) {
+    public boolean isBiggerThan(Distance otherDistance) {
         return this.distance > otherDistance.distance;
+    }
+
+    public boolean isLessThanOrEqualTo(Distance otherDistance) {
+        return this.distance <= otherDistance.distance;
     }
 
     public int getDistance() {
