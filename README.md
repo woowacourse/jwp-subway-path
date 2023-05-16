@@ -16,6 +16,10 @@
 
 - [x] 도메인 로직 구현
     - [x] Graph 구현
+    - [x] Route 구현
+
+- [x] 이벤트 구현
+  - [x] 성능 개선을 위해서 Route 캐싱처리 및 이벤트 작동시에만 Route(노선맵)을 업데이트 시켜서 잦은 조회 줄임
 
 ## API 명세서
 [http-request.http](http-request.http)
