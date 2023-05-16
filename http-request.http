@@ -1,9 +1,10 @@
-### 노선에 역 등록 API: POST /lines/{lineId}/stations/{stationId}
+### 노선에 역 등록 API: POST /lines/{lineId}/stations
 Request:
-POST /lines/1/stations/3
+POST /lines/1/stations
 
 {
   "upStationId": 2,
+  "downStationId": 3,
   "distance": 5
 }
 
@@ -24,19 +25,24 @@ GET /lines/1/stations
 Response:
 Status: 200 OK
 
-[
+{
+  "lineResponse": {
+    "id": 1,
+    "name": "신분당선",
+    "color": "bg-red-600"
+  },
+  "stationResponses": [
   {
-    "stationId": 2,
-    "upStationId": 1,
-    "distance": 3
+    "id": 1,
+    "name": "강남역"
   },
   {
-    "stationId": 3,
-    "upStationId": 2,
-    "distance": 5
-  },
-  ...
-]
+     "id": 2,
+     "name": "판교역"
+   },
+   ...
+  ]
+}
 
 ### 모든 노선 조회 API: GET /lines/stations
 Request:
@@ -47,25 +53,38 @@ Status: 200 OK
 
 [
   {
-    "lineId": 1,
-    "stations": [
+    "lineResponse": {
+      "id": 1,
+      "name": "신분당선",
+      "color": "bg-red-600"
+    },
+    "stationResponses": [
       {
-        "stationId": 2,
-        "upStationId": 1,
-        "distance": 3
+        "id": 1,
+        "name": "강남역"
       },
       {
-        "stationId": 3,
-        "upStationId": 2,
-        "distance": 5
+        "id": 2,
+        "name": "판교역"
       },
       ...
     ]
   },
   {
-    "lineId": 2,
-    "stations": [
-      ...
+    "lineResponse": {
+      "id": 2,
+      "name": "2호선",
+      "color": "bg-green-600"
+    },
+    "stationResponses": [
+      {
+        "id": 1,
+        "name": "강남역"
+      },
+      {
+        "id": 2,
+        "name": "잠실역"
+      }
     ]
   },
   ...

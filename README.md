@@ -1,11 +1,11 @@
 # jwp-subway-path
 
 ## API 기능 요구 사항
-- [ ] 노선에 역 등록 API 신규 구현
-- [ ] 노선에 역 제거 API 신규 구현
-- [ ] 노선 조회 API 수정
+- [x] 노선에 역 등록 API 신규 구현
+- [x] 노선에 역 제거 API 신규 구현
+- [x] 노선 조회 API 수정
   - 노선에 포함된 역을 순서대로 보여주도록 응답 개선
-- [ ] 노선 목록 조회 API 수정
+- [x] 노선 목록 조회 API 수정
   - 노선에 포함된 역을 순서대로 보여주도록 응답 개선
 
 ## API 명세
@@ -41,36 +41,3 @@
     - A - C의 거리는 A - B, B - C 의 거리 합으로 정합니다.
   - 노선에 두 개 역
     - 노선에 등록된 역이 2개 인 경우 하나의 역을 제거할 때 두 역이 모두 제거되어야 합니다.
-
-## 도메인 
-- Station
-  - 역 이름
-
-- Line
-  - 노선 이름
-  - 노선 색
-
-- Section
-  - 노선
-  - 상행역
-  - 하행역
-  - 거리
-
-- Distance
-
-## 엔티티
-- Station
-  - id
-  - name
-
-- Line
-  - id
-  - name
-  - color
-
-- Section
-  - id
-  - line_id
-  - up_station_id
-  - down_station_id
-  - distance
