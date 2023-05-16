@@ -5,6 +5,7 @@ import subway.service.section.domain.Section;
 import subway.service.section.domain.Sections;
 import subway.service.station.domain.Station;
 
+import java.util.List;
 import java.util.Map;
 
 public interface SectionRepository {
@@ -17,4 +18,6 @@ public interface SectionRepository {
     void deleteSection(Section section);
 
     boolean isLastSectionInLine(Line line);
+
+    List<Section> findAll();
 }

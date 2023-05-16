@@ -7,6 +7,7 @@ import subway.persistence.repository.SectionRepositoryImpl;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
+import subway.service.section.domain.JgraphtRoute;
 import subway.service.section.domain.Section;
 import subway.service.section.domain.Sections;
 import subway.service.section.dto.AddResult;
@@ -90,6 +91,15 @@ public class SectionService {
         return stationsInOrder.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void calculateShortestPathFee(Station source, Station target) {
+        List<Section> sections = sectionRepository.findAll();
+        JgraphtRoute shortestPath = JgraphtRoute.from(sections, source, target);
+//        Route jgraphtRoute = new JgraphtRoute(new WeightedMultigraph<Station, SectionEdge>(SectionEdge.class));
+//        List<SectionEdge> edges = jgraphtRoute.calculateShortestRoute(sections, source, target);
+
+
     }
 
     private void deleteStationsInLastSection(Station station, Section lastSection) {

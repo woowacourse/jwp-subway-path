@@ -35,7 +35,7 @@ import static subway.domain.StationFixture.YUKSAM_NO_ID;
 class SectionRepositoryTest {
 
     @Autowired
-    SectionRepositoryImpl sectionRepositoryImpl;
+    SectionRepositoryImpl sectionRepository;
     @Autowired
     StationRepository stationRepository;
 
@@ -53,7 +53,7 @@ class SectionRepositoryTest {
         Distance seonleungJamsilDistance = new Distance(10);
         Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
 
-        Section savedSection = sectionRepositoryImpl.insertSection(seonleungJamsilSection, savedSecondLine);
+        Section savedSection = sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
         assertAll(
                 () -> assertThat(savedSection.getId()).isPositive(),
                 () -> assertThat(savedSection.getUpStation()).isEqualTo(savedJamsil),
@@ -73,10 +73,10 @@ class SectionRepositoryTest {
         Section jamsilToSeonleung = new Section(savedJamsil, savedSeonleung, new Distance(10));
         Section gangnamToSeonleung = new Section(savedSeonleung, savedGangnam, new Distance(3));
 
-        sectionRepositoryImpl.insertSection(jamsilToSeonleung, savedSecondLine);
-        sectionRepositoryImpl.insertSection(gangnamToSeonleung, savedSecondLine);
+        sectionRepository.insertSection(jamsilToSeonleung, savedSecondLine);
+        sectionRepository.insertSection(gangnamToSeonleung, savedSecondLine);
 
-        Sections sectionsByLine = sectionRepositoryImpl.findSectionsByLine(savedSecondLine);
+        Sections sectionsByLine = sectionRepository.findSectionsByLine(savedSecondLine);
 
         Section findSeonleungJamsilSection = sectionsByLine.getSections().stream()
                 .filter(section -> section.contains(savedJamsil) && section.contains(savedSeonleung))
@@ -111,14 +111,14 @@ class SectionRepositoryTest {
         Section eightLineSection = new Section(savedJamsil, savedGangnam, new Distance(7));
 
 
-        Section savedSeonleungToJamsilSection = sectionRepositoryImpl.insertSection(seonleungToJamsilSection, savedSecondLine);
-        Section savedGangnamToSeonleungSection = sectionRepositoryImpl.insertSection(gangnamToSeonleungSection, savedSecondLine);
-        Section savedSectionInEightLine = sectionRepositoryImpl.insertSection(eightLineSection, savedEightLine);
+        Section savedSeonleungToJamsilSection = sectionRepository.insertSection(seonleungToJamsilSection, savedSecondLine);
+        Section savedGangnamToSeonleungSection = sectionRepository.insertSection(gangnamToSeonleungSection, savedSecondLine);
+        Section savedSectionInEightLine = sectionRepository.insertSection(eightLineSection, savedEightLine);
 
         //when
-        sectionRepositoryImpl.deleteSection(savedSeonleungToJamsilSection);
+        sectionRepository.deleteSection(savedSeonleungToJamsilSection);
 
-        Sections sectionsByLine = sectionRepositoryImpl.findSectionsByLine(savedSecondLine);
+        Sections sectionsByLine = sectionRepository.findSectionsByLine(savedSecondLine);
 
         //then
         assertAll(
@@ -146,12 +146,12 @@ class SectionRepositoryTest {
 
         Section seokchonToJamsil = new Section(savedJamsil, savedSeokchon, new Distance(7));
 
-        sectionRepositoryImpl.insertSection(seonleungToJamsilSection, savedSecondLine);
-        sectionRepositoryImpl.insertSection(seokchonToJamsil, savedEightLine);
-        sectionRepositoryImpl.insertSection(gangnamToSeonleungSection, savedSecondLine);
+        sectionRepository.insertSection(seonleungToJamsilSection, savedSecondLine);
+        sectionRepository.insertSection(seokchonToJamsil, savedEightLine);
+        sectionRepository.insertSection(gangnamToSeonleungSection, savedSecondLine);
 
         // when
-        Map<Line, Sections> sectionsPerLine = sectionRepositoryImpl.findSectionsByStation(savedJamsil);
+        Map<Line, Sections> sectionsPerLine = sectionRepository.findSectionsByStation(savedJamsil);
 
         // 2호선 역 아이디 추출
         Sections secondSections = sectionsPerLine.get(savedSecondLine);
@@ -203,8 +203,8 @@ class SectionRepositoryTest {
         Distance seonleungJamsilDistance = new Distance(10);
         Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
 
-        sectionRepositoryImpl.insertSection(seonleungJamsilSection, savedSecondLine);
-        assertThat(sectionRepositoryImpl.isLastSectionInLine(savedSecondLine)).isTrue();
+        sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
+        assertThat(sectionRepository.isLastSectionInLine(savedSecondLine)).isTrue();
     }
 
     @Test
@@ -219,8 +219,26 @@ class SectionRepositoryTest {
         Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
         Section seonleungYuksamSection = new Section(savedYuksam, savedSeonleung, new Distance(3));
 
-        sectionRepositoryImpl.insertSection(seonleungJamsilSection, savedSecondLine);
-        sectionRepositoryImpl.insertSection(seonleungYuksamSection, savedSecondLine);
-        assertThat(sectionRepositoryImpl.isLastSectionInLine(savedSecondLine)).isFalse();
+        sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
+        sectionRepository.insertSection(seonleungYuksamSection, savedSecondLine);
+        assertThat(sectionRepository.isLastSectionInLine(savedSecondLine)).isFalse();
+    }
+
+    @Test
+    void 모든_섹션_조회() {
+        Station savedJamsil = stationRepository.insert(JAMSIL_NO_ID);
+        Station savedSeonleung = stationRepository.insert(SEONLEUNG_NO_ID);
+        Station savedYuksam = stationRepository.insert(YUKSAM_NO_ID);
+
+        Line savedSecondLine = lineRepository.insert(SECOND_LINE_NO_ID);
+        Line savedEightLine = lineRepository.insert(EIGHT_LINE_NO_ID);
+
+        Distance seonleungJamsilDistance = new Distance(10);
+        Section seonleungJamsilSection = new Section(savedJamsil, savedSeonleung, seonleungJamsilDistance);
+        Section seonleungYuksamSection = new Section(savedYuksam, savedSeonleung, new Distance(3));
+
+        Section savedSeonleungJamsil = sectionRepository.insertSection(seonleungJamsilSection, savedSecondLine);
+        Section savedSeonleungYuksam = sectionRepository.insertSection(seonleungYuksamSection, savedEightLine);
+        assertThat(sectionRepository.findAll()).containsExactlyInAnyOrder(savedSeonleungJamsil, savedSeonleungYuksam);
     }
 }

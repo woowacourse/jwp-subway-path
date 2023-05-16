@@ -62,7 +62,7 @@ public class SectionRepositoryImpl implements SectionRepository {
 
         Map<Long, StationEntity> stationEntityMap = stationDao.findStationsById(uniqueStationIds).stream()
                 .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
-        ArrayList<Section> sections = makeSections(sectionEntities, stationEntityMap);
+        List<Section> sections = makeSections(sectionEntities, stationEntityMap);
 
         return new Sections(sections);
     }
@@ -104,7 +104,18 @@ public class SectionRepositoryImpl implements SectionRepository {
         return sectionsByLine.size() == 1;
     }
 
-    private ArrayList<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {
+    @Override
+    public List<Section> findAll() {
+        List<SectionEntity> sectionEntities = sectionDao.findAll();
+        Set<Long> uniqueStationIds = makeUniqueStationIds(sectionEntities);
+
+        Map<Long, StationEntity> stationEntityMap = stationDao.findStationsById(uniqueStationIds).stream()
+                .collect(Collectors.toMap(StationEntity::getId, stationEntity -> stationEntity));
+
+        return makeSections(sectionEntities, stationEntityMap);
+    }
+
+    private List<Section> makeSections(List<SectionEntity> sectionEntities, Map<Long, StationEntity> stationEntityMap) {
         ArrayList<Section> sections = new ArrayList<>();
         for (SectionEntity sectionEntity : sectionEntities) {
             Section section = toSectionDomain(sectionEntity, stationEntityMap);

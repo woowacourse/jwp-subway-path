@@ -69,4 +69,10 @@ public class SectionDao {
 
         return jdbcTemplate.query(sql, rowMapper, stationId, stationId);
     }
+
+    public List<SectionEntity> findAll() {
+        String sql = "SELECT * FROM section";
+
+        return jdbcTemplate.query(sql, rowMapper);
+    }
 }
