@@ -1,9 +1,10 @@
 package subway.domain;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class Sections {
 
@@ -21,126 +22,87 @@ public class Sections {
         sections.add(new Section(from, to, distance));
     }
 
-    public void insert(final Station from, final Station to, final int distance) {
+    public Section makeCombineSection() {
+        List<Station> stations = new Sections(sections).showStations();
+        return new Section(stations.get(0), stations.get(2),
+                sections.get(0).getDistanceValue() + sections.get(1).getDistanceValue());
+    }
+
+    public List<Section> insert(final Long fromId, final Long toId, final int distance) {
+        List<Section> querySections = new ArrayList<>();
         // 역 존재
-        if (exist(from) == exist(to)) {
+        if (isExist(fromId) == isExist(toId)) {
             throw new IllegalArgumentException("해당 조건으로 역을 설치할 수 없습니다.");
         }
-
-        if (exist(from)) {
-            // 추가 - 사이 오른쪽에 넣기
-            if (!isRightEnd(from)) {
-                final Section changedSection = sections.stream()
-                        .filter(section -> section.existLeft(from) && section.isInsertable(distance))
-                        .map(section -> section.changeLeft(to, distance))
+        if (isExist(fromId)) {
+            if (!isRightEndId(fromId)) { // 오른쪽 끝이 아니면
+                final Section deleteSection = sections.stream()
+                        .filter(section -> section.existLeftById(fromId) && section.isInsertable(distance))
                         .findAny()
                         .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
 
-
-                final Section pastSection = sections.stream()
-                        .filter(section -> section.existLeft(from))
-                        .findAny()
-                        .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
-
-                sections.remove(pastSection);
-                sections.add(changedSection);
+                querySections.add(new Section(new Station(toId, "to_name"), deleteSection.getTo(),
+                        deleteSection.getDistanceValue() - distance));
+                querySections.add(deleteSection);
             }
-            //추가 - 오른쪽 끝에 넣기
-            sections.add(new Section(from, to, distance));
-            return;
+            querySections.add(new Section(new Station(fromId, "from_name"), new Station(toId, "to_name"), distance));
+            return querySections;
         }
 
-        // 추가 - 사이 왼쪽에 넣기
-        if (exist(to)) {
-            if (!isLeftEnd(to)) {
-                final Section changedSection2 = sections.stream()
-                        .filter(section -> section.existRight(to) && section.isInsertable(distance))
-                        .map(section -> section.changeRight(from, distance))
+        if (isExist(toId)) {
+            if (!isLeftEndId(toId)) { // 왼쪽 끝이 아니면
+                final Section deleteSection = sections.stream()
+                        .filter(section -> section.existRightById(toId) && section.isInsertable(distance))
                         .findAny()
                         .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
 
-                final Section pastSection2 = sections.stream()
-                        .filter(section -> section.existRight(to))
-                        .findAny()
-                        .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
-
-                System.out.println("changedSection2 = " + changedSection2);
-
-                sections.remove(pastSection2);
-                sections.add(changedSection2);
+                querySections.add(new Section(deleteSection.getFrom(), new Station(fromId, "from_name"),
+                        deleteSection.getDistanceValue() - distance));
+                querySections.add(deleteSection);
             }
-            sections.add(new Section(from, to, distance));
-            return;
+            querySections.add(new Section(new Station(fromId, "from_name"), new Station(toId, "to_name"), distance));
+            return querySections;
+        }
+
+        throw new UnsupportedOperationException("처리할 수 없는 요청입니다.");
+    }
+
+    public List<Station> showStations() {
+        final Map<Station, Integer> stationCount = new HashMap<>();
+        for (Section section : sections) {
+            Station from = section.getFrom();
+            Station to = section.getTo();
+            if (stationCount.containsKey(from)) {
+                stationCount.put(from, stationCount.get(from) + 1);
+            }
+            if (stationCount.containsKey(to)) {
+                stationCount.put(to, stationCount.get(to) + 1);
+            }
+            if (!stationCount.containsKey(from)) {
+                stationCount.put(from, 1);
+            }
+            if (!stationCount.containsKey(to)) {
+                stationCount.put(to, 1);
+            }
+        }
+        final List<Station> endPointStations = getKeysByValue(stationCount, 1);
+
+        for (Station station : endPointStations) {
+            if (isHead(station)) {
+                return getOrderedStations(station);
+            }
         }
         throw new UnsupportedOperationException("처리할 수 없는 요청입니다.");
     }
 
-    private boolean isLeftEnd(final Station to) {
-        return sections.stream()
-                .noneMatch(section -> section.existRight(to));
-    }
-
-    private boolean isRightEnd(final Station from) {
-        return sections.stream()
-                .noneMatch(section -> section.existLeft(from));
-    }
-
-    private boolean exist(final Station station) {
-        return sections.stream()
-                .anyMatch(section -> section.exist(station));
-    }
-
-    public boolean isEmpty() {
-        return sections.size() == 0;
-    }
-
-    public boolean hasStation(final Station station) {
-        return sections.stream()
-                .anyMatch(section -> section.exist(station));
-    }
-
-    public void updateStation(final Station targetStation, final Station updateStation) {
-        sections.stream()
-                .filter(section -> section.exist(targetStation))
-                .forEach(section -> section.updateStation(targetStation, updateStation));
-    }
-
-    public void deleteSection(final Station targetStation) {
-        final List<Section> targetSection = sections.stream()
-                .filter(section -> section.exist(targetStation))
-                .collect(Collectors.toUnmodifiableList());
-
-        if (targetSection.size() == 1) {
-            sections.remove(targetSection.get(0));
-        }
-
-        if (targetSection.size() == 2) {
-            Station leftStation = null;
-            Station rightStation = null;
-            int distance = 0;
-
-            for (Section section : targetSection) {
-                if (section.existRight(targetStation)) {
-                    leftStation = section.getFrom();
-                    distance += section.getDistanceValue();
-                }
-                if (section.existLeft(targetStation)) {
-                    rightStation = section.getTo();
-                    distance += section.getDistanceValue();
-                }
-                sections.remove(section);
+    public <K, V> List<K> getKeysByValue(Map<K, V> map, V value) {
+        List<K> keyList = new ArrayList<>();
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            if (entry.getValue().equals(value)) {
+                keyList.add(entry.getKey());
             }
-            sections.add(new Section(leftStation, rightStation, distance));
         }
-    }
-
-    public List<Section> getSections() {
-        return sections;
-    }
-
-    public boolean isHead(final Station station) {
-        return sections.stream()
-                .anyMatch(section -> section.existLeft(station));
+        return keyList;
     }
 
     public List<Station> getOrderedStations(final Station station) {
@@ -164,10 +126,46 @@ public class Sections {
         return orderedStations;
     }
 
+    private boolean isRightEndId(final Long id) {
+        return sections.stream()
+                .noneMatch(section -> section.existLeftById(id));
+    }
+
+    private boolean isLeftEndId(final Long id) {
+        return sections.stream()
+                .noneMatch(section -> section.existRightById(id));
+    }
+
+    public boolean isEmpty() {
+        return sections.size() == 0;
+    }
+
+    public boolean isHead(final Station station) {
+        return sections.stream()
+                .anyMatch(section -> section.existLeft(station));
+    }
+
+    public boolean isExist(Long stationId) {
+        return sections.stream()
+                .anyMatch(section -> section.getFrom().getId() == stationId || section.getTo().getId() == stationId);
+    }
+
+    public int getSize() {
+        return sections.size();
+    }
+
+    public List<Section> getSections() {
+        return sections;
+    }
+
     @Override
     public boolean equals(final Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         final Sections sections1 = (Sections) o;
         return Objects.equals(sections, sections1.sections);
     }

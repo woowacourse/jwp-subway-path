@@ -7,6 +7,8 @@ public class Line {
     private String name;
     private String color;
 
+    private Sections sections;
+
     public Line() {
     }
 
@@ -15,11 +17,16 @@ public class Line {
     }
 
     public Line(Long id, String name, String color) {
+        this(id, name, color, new Sections());
+    }
+
+    public Line(Long id, String name, String color, Sections sections) {
         validateName(name);
         validateColor(color);
         this.id = id;
         this.name = name;
         this.color = color;
+        this.sections = sections;
     }
 
     private void validateName(final String name) {
@@ -48,8 +55,12 @@ public class Line {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Line line = (Line) o;
         return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
     }
@@ -58,4 +69,5 @@ public class Line {
     public int hashCode() {
         return Objects.hash(id, name, color);
     }
+
 }

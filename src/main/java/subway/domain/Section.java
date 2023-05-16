@@ -21,6 +21,18 @@ public class Section {
         }
     }
 
+    public boolean existById(final Long stationId) {
+        return existLeftById(stationId) || existRightById(stationId);
+    }
+
+    public boolean existLeftById(final Long stationId) {
+        return stationId.equals(from.getId());
+    }
+
+    public boolean existRightById(final Long stationId) {
+        return stationId.equals(to.getId());
+    }
+
     public boolean exist(final Station station) {
         return existLeft(station) || existRight(station);
     }
@@ -74,7 +86,8 @@ public class Section {
             return false;
         }
         final Section section = (Section) o;
-        return Objects.equals(from, section.from) && Objects.equals(to, section.to) && Objects.equals(distance, section.distance);
+        return Objects.equals(from, section.from) && Objects.equals(to, section.to) && Objects.equals(distance,
+                section.distance);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package subway.ui;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -10,11 +11,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.application.RouteService;
+import subway.application.SectionService;
+import subway.domain.Line;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
+import subway.dto.SectionRequest;
 import subway.dto.StationsByLineResponse;
 
 @RestController
@@ -22,11 +26,11 @@ import subway.dto.StationsByLineResponse;
 public class LineController {
 
     private final LineService lineService;
-    private final RouteService routeService;
+    private final SectionService sectionService;
 
-    public LineController(LineService lineService, final RouteService routeService) {
+    public LineController(LineService lineService, final SectionService sectionService) {
         this.lineService = lineService;
-        this.routeService = routeService;
+        this.sectionService = sectionService;
     }
 
     @PostMapping
@@ -35,26 +39,42 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
+    // GET /lines : 전체 노선 조회
     @GetMapping
     public ResponseEntity<List<StationsByLineResponse>> findAllLines() {
-        return ResponseEntity.ok(routeService.findAllStationsByLineResponses());
+        List<Line> lines = lineService.findLines();
+        List<StationsByLineResponse> stationsByLineResponses = new ArrayList<>();
+        for (Line targetLine : lines) {
+            stationsByLineResponses.add(sectionService.showStations(targetLine));
+        }
+        return ResponseEntity.ok(stationsByLineResponses);
     }
 
+    // GET /lines : 특정 노선 조회
     @GetMapping("/{lineId}")
     public ResponseEntity<StationsByLineResponse> findLineById(@PathVariable Long lineId) {
-        return ResponseEntity.ok(routeService.findStationByLineResponseById(lineId));
+        Line targetLine = lineService.findLineById(lineId);
+        return ResponseEntity.ok(sectionService.showStations(targetLine));
+    }
+
+    // POST /lines : 특정 호선에 역 추가
+    @PostMapping("/{lineId}")
+    public ResponseEntity<Void> addStationAtLine(@PathVariable Long lineId,
+                                                 @RequestBody SectionRequest sectionRequest) {
+        sectionService.addSection(lineId, sectionRequest);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteStationAtLine(@PathVariable Long lineId, @RequestParam Long stationId) {
+        sectionService.deleteStationById(lineId, stationId);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> updateLine(@PathVariable Long id, @RequestBody LineRequest lineUpdateRequest) {
         lineService.updateLine(id, lineUpdateRequest);
         return ResponseEntity.ok().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteLine(@PathVariable Long id) {
-        lineService.deleteLineById(id);
-        return ResponseEntity.noContent().build();
     }
 
 }
