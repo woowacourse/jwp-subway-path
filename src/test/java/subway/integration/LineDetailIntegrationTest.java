@@ -8,23 +8,23 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.line.dto.LineRequest;
+import subway.domain.lineDetail.dto.LineDetailRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 노선 관련 기능")
-public class LineIntegrationTest extends IntegrationTest {
+public class LineDetailIntegrationTest extends IntegrationTest {
 
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
+    private LineDetailRequest lineDetailRequest1;
+    private LineDetailRequest lineDetailRequest2;
 
     @Override
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        lineDetailRequest1 = new LineDetailRequest("신분당선", "bg-red-600");
+        lineDetailRequest2 = new LineDetailRequest("구신분당선", "bg-red-600");
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -34,8 +34,8 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
+                .body(lineDetailRequest1)
+                .when().post("/line-detail")
                 .then().log().all().
                 extract();
 
@@ -51,8 +51,8 @@ public class LineIntegrationTest extends IntegrationTest {
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
+                .body(lineDetailRequest1)
+                .when().post("/line-detail")
                 .then().log().all().
                 extract();
 
@@ -60,8 +60,8 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
+                .body(lineDetailRequest1)
+                .when().post("/line-detail")
                 .then().log().all().
                 extract();
 
@@ -76,8 +76,8 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
+                .body(lineDetailRequest1)
+                .when().post("/line-detail")
                 .then().log().all().
                 extract();
 
@@ -86,8 +86,8 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().put("/lines/{lineId}", lineId)
+                .body(lineDetailRequest2)
+                .when().put("/line-detail/{lineId}", lineId)
                 .then().log().all()
                 .extract();
 
@@ -102,8 +102,8 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> createResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
+                .body(lineDetailRequest1)
+                .when().post("/line-detail")
                 .then().log().all().
                 extract();
 
@@ -111,7 +111,7 @@ public class LineIntegrationTest extends IntegrationTest {
         final Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
-                .when().delete("/lines/{lineId}", lineId)
+                .when().delete("/line-detail/{lineId}", lineId)
                 .then().log().all()
                 .extract();
 

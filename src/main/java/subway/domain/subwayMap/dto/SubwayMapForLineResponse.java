@@ -1,25 +1,25 @@
 package subway.domain.subwayMap.dto;
 
-import subway.domain.line.dto.LineResponse;
+import subway.domain.lineDetail.dto.LineDetailResponse;
 import subway.domain.station.domain.Station;
 
 import java.util.List;
 
 public class SubwayMapForLineResponse {
 
-    private LineResponse lineResponse;
+    private LineDetailResponse lineDetailResponse;
     private List<Station> stations;
 
     private SubwayMapForLineResponse() {
     }
 
-    public SubwayMapForLineResponse(LineResponse lineResponse, final List<Station> stations) {
-        this.lineResponse = lineResponse;
+    public SubwayMapForLineResponse(LineDetailResponse lineDetailResponse, final List<Station> stations) {
+        this.lineDetailResponse = lineDetailResponse;
         this.stations = stations;
     }
 
-    public LineResponse getLineResponse() {
-        return lineResponse;
+    public LineDetailResponse getLineDetailResponse() {
+        return lineDetailResponse;
     }
 
     public List<Station> getStations() {

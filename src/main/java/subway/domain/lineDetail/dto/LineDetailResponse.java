@@ -1,26 +1,26 @@
-package subway.domain.line.dto;
+package subway.domain.lineDetail.dto;
 
-import subway.domain.line.domain.Line;
+import subway.domain.lineDetail.domain.LineDetail;
 
 import java.util.Objects;
 
-public class LineResponse {
+public class LineDetailResponse {
 
     private Long id;
     private String name;
     private String color;
 
-    private LineResponse() {
+    private LineDetailResponse() {
     }
 
-    public LineResponse(final Long id, final String name, final String color) {
+    public LineDetailResponse(final Long id, final String name, final String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
 
-    public static LineResponse of(final Line line) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor());
+    public static LineDetailResponse of(final LineDetail lineDetail) {
+        return new LineDetailResponse(lineDetail.getId(), lineDetail.getName(), lineDetail.getColor());
     }
 
     public Long getId() {
@@ -39,7 +39,7 @@ public class LineResponse {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LineResponse that = (LineResponse) o;
+        LineDetailResponse that = (LineDetailResponse) o;
         return Objects.equals(id, that.id);
     }
 

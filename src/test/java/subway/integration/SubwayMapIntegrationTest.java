@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.domain.line.dto.LineResponse;
+import subway.domain.lineDetail.dto.LineDetailResponse;
 import subway.domain.station.domain.Station;
 import subway.domain.subwayMap.dto.SubwayMapForLineResponse;
 import subway.domain.subwayMap.dto.SubwayMapResponse;
@@ -35,7 +35,7 @@ class SubwayMapIntegrationTest extends IntegrationTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         final SubwayMapForLineResponse subwayMapForLineResponse = response.jsonPath().getObject("data.", SubwayMapForLineResponse.class);
-        assertThat(subwayMapForLineResponse.getLineResponse()).isEqualTo(new LineResponse(1L, "2호선", "초록색"));
+        assertThat(subwayMapForLineResponse.getLineDetailResponse()).isEqualTo(new LineDetailResponse(1L, "2호선", "초록색"));
         assertThat(subwayMapForLineResponse.getStations()).containsExactly(
                 new Station(1L, "신림역"),
                 new Station(2L, "봉천역"),
@@ -61,12 +61,12 @@ class SubwayMapIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
-        final SubwayMapResponse subwayMapResponse = new SubwayMapResponse(response.jsonPath().getList("data.subwayMapResponses.", SubwayMapForLineResponse.class));
+        final SubwayMapResponse subwayMapResponse = new SubwayMapResponse(response.jsonPath().getList("data.subwayMapResponse.", SubwayMapForLineResponse.class));
 
-        List<SubwayMapForLineResponse> result = subwayMapResponse.getSubwayMapResponses();
+        List<SubwayMapForLineResponse> result = subwayMapResponse.getSubwayMapResponse();
 
         assertAll(
-                () -> assertThat(result.get(0).getLineResponse()).isEqualTo(new LineResponse(1L, "2호선", "초록색")),
+                () -> assertThat(result.get(0).getLineDetailResponse()).isEqualTo(new LineDetailResponse(1L, "2호선", "초록색")),
                 () -> assertThat(result.get(0).getStations()).containsExactly(
                         new Station(1L, "신림역"),
                         new Station(2L, "봉천역"),
@@ -76,7 +76,7 @@ class SubwayMapIntegrationTest extends IntegrationTest {
                         new Station(6L, "방배역"),
                         new Station(7L, "서초역")
                 ),
-                () -> assertThat(result.get(1).getLineResponse()).isEqualTo(new LineResponse(2L, "3호선", "파란색")),
+                () -> assertThat(result.get(1).getLineDetailResponse()).isEqualTo(new LineDetailResponse(2L, "3호선", "파란색")),
                 () -> assertThat(result.get(1).getStations()).containsExactly(
                         new Station(8L, "교대역"),
                         new Station(9L, "강남역"),
@@ -86,5 +86,4 @@ class SubwayMapIntegrationTest extends IntegrationTest {
                 )
         );
     }
-
 }

@@ -4,16 +4,16 @@ import java.util.List;
 
 public class SubwayMapResponse {
 
-    private List<SubwayMapForLineResponse> subwayMapForLineRespons;
+    private List<SubwayMapForLineResponse> subwayMapForLineResponse;
 
     public SubwayMapResponse() {
     }
 
-    public SubwayMapResponse(final List<SubwayMapForLineResponse> subwayMapForLineRespons) {
-        this.subwayMapForLineRespons = subwayMapForLineRespons;
+    public SubwayMapResponse(final List<SubwayMapForLineResponse> subwayMapForLineResponse) {
+        this.subwayMapForLineResponse = subwayMapForLineResponse;
     }
 
-    public List<SubwayMapForLineResponse> getSubwayMapResponses() {
-        return subwayMapForLineRespons;
+    public List<SubwayMapForLineResponse> getSubwayMapResponse() {
+        return subwayMapForLineResponse;
     }
 }

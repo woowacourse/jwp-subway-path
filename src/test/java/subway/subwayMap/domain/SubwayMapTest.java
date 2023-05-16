@@ -2,7 +2,7 @@ package subway.subwayMap.domain;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
-import subway.domain.line.domain.Line;
+import subway.domain.lineDetail.domain.LineDetail;
 import subway.domain.station.domain.Station;
 import subway.domain.subwayMap.domain.SubwayMap;
 
@@ -13,20 +13,20 @@ import java.util.List;
 class SubwayMapTest {
 
     private SubwayMap subwayMap;
-    private Line line;
+    private LineDetail lineDetail;
 
     @BeforeEach
     void init() {
-        line = new Line("2호선", "초록색");
+        lineDetail = new LineDetail("2호선", "초록색");
         List<Station> stations = List.of(new Station("a"), new Station("b"), new Station("c"));
         subwayMap = new SubwayMap();
-        subwayMap.put(line, stations);
+        subwayMap.put(lineDetail, stations);
     }
 
     @Test
     void SubwayMap_에서_좌측_끝에_역_추가_테스트() {
-        subwayMap.addStation(line, new Station("a"), new Station("d"), false);
-        List<Station> subwayMapByLine = subwayMap.getSubwayMapByLine(line);
+        subwayMap.addStation(lineDetail, new Station("a"), new Station("d"), false);
+        List<Station> subwayMapByLine = subwayMap.getSubwayMapByLine(lineDetail);
 
         Assertions.assertThat(subwayMapByLine).containsExactly(
                 new Station("d"),
@@ -38,8 +38,8 @@ class SubwayMapTest {
 
     @Test
     void SubwayMap_에서_우측_끝에_역_추가_테스트() {
-        subwayMap.addStation(line, new Station("c"), new Station("d"), true);
-        List<Station> subwayMapByLine = subwayMap.getSubwayMapByLine(line);
+        subwayMap.addStation(lineDetail, new Station("c"), new Station("d"), true);
+        List<Station> subwayMapByLine = subwayMap.getSubwayMapByLine(lineDetail);
 
         Assertions.assertThat(subwayMapByLine).containsExactly(
                 new Station("a"),
@@ -51,8 +51,8 @@ class SubwayMapTest {
 
     @Test
     void SubwayMap_에서_역사이에_역_추가_테스트() {
-        subwayMap.addStation(line, new Station("a"), new Station("d"), true);
-        List<Station> subwayMapByLine = subwayMap.getSubwayMapByLine(line);
+        subwayMap.addStation(lineDetail, new Station("a"), new Station("d"), true);
+        List<Station> subwayMapByLine = subwayMap.getSubwayMapByLine(lineDetail);
 
         Assertions.assertThat(subwayMapByLine).containsExactly(
                 new Station("a"),
@@ -64,8 +64,8 @@ class SubwayMapTest {
 
     @Test
     void SubwayMap_에서_역_삭제_테스트() {
-        subwayMap.deleteStation(line, new Station("b"));
-        Assertions.assertThat(subwayMap.getSubwayMapByLine(line))
+        subwayMap.deleteStation(lineDetail, new Station("b"));
+        Assertions.assertThat(subwayMap.getSubwayMapByLine(lineDetail))
                 .containsExactly(new Station("a"), new Station("b"));
     }
 }
