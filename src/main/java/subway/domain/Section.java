@@ -10,6 +10,7 @@ public class Section {
     private final int distance;
 
     public Section(final Long id, final Station upStation, final Station downStation, final int distance) {
+        validateDistance(distance);
         this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -17,10 +18,13 @@ public class Section {
     }
 
     public Section(final Station upStation, final Station downStation, final int distance) {
-        this.id = null;
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+        this(null, upStation, downStation, distance);
+    }
+
+    private void validateDistance(final int distance) {
+        if (distance < 0) {
+            throw new IllegalArgumentException("거리는 음의 정수가 될 수 없습니다.");
+        }
     }
 
     public boolean containStation(final Station station) {
