@@ -15,10 +15,10 @@ import subway.application.strategy.insert.BetweenStationInserter;
 import subway.application.strategy.insert.InsertDownwardStation;
 import subway.application.strategy.insert.InsertUpwardStation;
 import subway.dao.StationDao;
+import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.Distance;
-import subway.domain.Line;
 import subway.domain.Section;
 import subway.dto.SectionDeleteRequest;
 import subway.dto.SectionRequest;
@@ -202,7 +202,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
         @Test
         void 구간이_한_개이면_구간과_노선이_모두_삭제된다() {
             //given
-            final Long 삼호선 = lineDao.insert(new Line("3호선", "노란색"));
+            final Long 삼호선 = lineDao.insert(new LineEntity("3호선", "노란색"));
             sectionDao.insert(new SectionEntity(10, 잠실역, 선릉역, 삼호선));
 
             //when

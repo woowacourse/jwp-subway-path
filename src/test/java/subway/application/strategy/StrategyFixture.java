@@ -8,9 +8,9 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
-import subway.domain.Line;
 import subway.domain.Station;
 
 import javax.sql.DataSource;
@@ -47,7 +47,7 @@ public abstract class StrategyFixture {
      * 이호선 : 잠실 -- 10 -- 잠실새내 -- 20 -- 삼성 -- 15 -- 선릉
      */
     private void save() {
-        이호선 = lineDao.insert(new Line("2호선", "초록색"));
+        이호선 = lineDao.insert(new LineEntity("2호선", "초록색"));
 
         잠실역 = createStation("잠실역");
         잠실새내역 = createStation("잠실새내역");
