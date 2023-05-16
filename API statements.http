@@ -21,9 +21,9 @@ Content-Type: application/json
 {
   "newStationId": 3,
   "upStationId": 1,
-  "nextStationId": 2,
+  "downStationId": 2,
   "upStationDistance": 4,
-  "ownStationDistance": 6
+  "downStationDistance": 6
 }
 
 ### 노선에 역 제거
