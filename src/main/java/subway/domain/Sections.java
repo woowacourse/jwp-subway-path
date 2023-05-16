@@ -75,4 +75,34 @@ public class Sections {
         }
         sections.add(new Section(previousSection.getUpStation(), section.getUpStation(), dividedDistance));
     }
+
+    public void removeSectionByStation(final Station station) {
+        final List<Section> relatedSections = sections.stream()
+                .filter(it -> it.getUpStation().getId().equals(station.getId()) ||
+                        it.getDownStation().getId().equals(station.getId()))
+                .collect(Collectors.toList());
+        validateEmptySections(relatedSections);
+
+        if (relatedSections.size() == 1) {
+            sections.remove(relatedSections.get(0));
+            return;
+        }
+
+        final Section upSection = relatedSections.stream()
+                .filter(it -> it.getDownStation().getId().equals(station.getId()))
+                .findAny().orElseThrow(IllegalStateException::new);
+        final Section downSection = relatedSections.stream()
+                .filter(it -> it.getUpStation().getId().equals(station.getId()))
+                .findAny().orElseThrow(IllegalStateException::new);
+        final int newDistance = upSection.getDistance() + downSection.getDistance();
+        sections.remove(upSection);
+        sections.remove(downSection);
+        sections.add(new Section(upSection.getUpStation(), downSection.getDownStation(), newDistance));
+    }
+
+    private void validateEmptySections(final List<Section> relatedSections) {
+        if (relatedSections.isEmpty()) {
+            throw new IllegalArgumentException("구간이 존재하지 않습니다.");
+        }
+    }
 }

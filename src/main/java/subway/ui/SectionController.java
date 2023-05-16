@@ -4,7 +4,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.SectionService;
 import subway.dto.SectionRequest;
-import subway.dto.SectionResponse;
 
 import java.net.URI;
 
@@ -26,7 +25,7 @@ public class SectionController {
 
     @DeleteMapping
     public ResponseEntity<Void> deleteSection(@RequestParam final Long lineId, @RequestParam final Long stationId) {
-        sectionService.deleteByLineIdAndStationId(lineId, stationId);
+        sectionService.delete(lineId, stationId);
         return ResponseEntity.noContent().build();
     }
 }
