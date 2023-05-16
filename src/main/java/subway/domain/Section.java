@@ -3,13 +3,14 @@ package subway.domain;
 import java.util.Objects;
 
 public class Section {
+    public static final Section EMPTY_SECTION = new Section(Station.EMPTY_STATION, Station.EMPTY_STATION, Distance.EMPTY_DISTANCE);
 
     private final Long id;
     private final Station upStation;
     private final Station downStation;
     private final Distance distance;
 
-    public Section(final Station upStation, final Station downStation, final Distance distance) {
+    private Section(final Station upStation, final Station downStation, final Distance distance) {
         this(null, upStation, downStation, distance);
     }
 
@@ -19,6 +20,14 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section of(final Station upStation, final Station downStation, final Distance distance) {
+        if ((upStation == null || upStation.equals(Station.EMPTY_STATION)) ||
+                (downStation == null || downStation.equals(Station.EMPTY_STATION))) {
+            return EMPTY_SECTION;
+        }
+        return new Section(upStation, downStation, distance);
     }
 
     private void validate(final Station upStation, final Station downStation, final Distance distance) {

@@ -17,14 +17,14 @@ class SectionTest {
     @DisplayName("생성한다")
     @Test
     void create() {
-        assertDoesNotThrow(() -> new Section(UP_STATION, DOWN_STATION, DISTANCE));
+        assertDoesNotThrow(() -> Section.of(UP_STATION, DOWN_STATION, DISTANCE));
     }
 
     @DisplayName("upStation이 null이면 예외를 발생한다.")
     @Test
     void throwExceptionWhenStationIsNull() {
 
-        assertThatThrownBy(() -> new Section(null, DOWN_STATION, DISTANCE))
+        assertThatThrownBy(() -> Section.of(null, DOWN_STATION, DISTANCE))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -32,7 +32,7 @@ class SectionTest {
     @Test
     void throwExceptionWhenLineIsNull() {
 
-        assertThatThrownBy(() -> new Section(UP_STATION, null, DISTANCE))
+        assertThatThrownBy(() -> Section.of(UP_STATION, null, DISTANCE))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -40,7 +40,7 @@ class SectionTest {
     @Test
     void throwExceptionWhenDistanceIsNull() {
 
-        assertThatThrownBy(() -> new Section(UP_STATION, DOWN_STATION, null))
+        assertThatThrownBy(() -> Section.of(UP_STATION, DOWN_STATION, null))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -48,11 +48,11 @@ class SectionTest {
     @Test
     void isPossibleDivideTo() {
         //given
-        Section targetSection = new Section(UP_STATION, DOWN_STATION, DISTANCE);
+        Section targetSection = Section.of(UP_STATION, DOWN_STATION, DISTANCE);
 
         Station station = new Station("잠실");
-        Section upSection = new Section(UP_STATION, station, new Distance(7));
-        Section downSection = new Section(station, DOWN_STATION, new Distance(3));
+        Section upSection = Section.of(UP_STATION, station, new Distance(7));
+        Section downSection = Section.of(station, DOWN_STATION, new Distance(3));
         //when
         boolean possibleDivide = targetSection.isPossibleDivideTo(upSection, downSection);
         //then
@@ -63,11 +63,11 @@ class SectionTest {
     @Test
     void whenUnavailableDistanceIsNotPossibleDivideTo() {
         //given
-        Section targetSection = new Section(UP_STATION, DOWN_STATION, DISTANCE);
+        Section targetSection = Section.of(UP_STATION, DOWN_STATION, DISTANCE);
 
         Station station = new Station("잠실");
-        Section upSection = new Section(UP_STATION, station, new Distance(7));
-        Section downSection = new Section(station, DOWN_STATION, new Distance(2));
+        Section upSection = Section.of(UP_STATION, station, new Distance(7));
+        Section downSection = Section.of(station, DOWN_STATION, new Distance(2));
         //when
         boolean possibleDivide = targetSection.isPossibleDivideTo(upSection, downSection);
         //then
@@ -78,12 +78,12 @@ class SectionTest {
     @Test
     void whenWrongDownStationIsNotPossibleDivideTo() {
         //given
-        Section targetSection = new Section(UP_STATION, DOWN_STATION, DISTANCE);
+        Section targetSection = Section.of(UP_STATION, DOWN_STATION, DISTANCE);
 
         Station station = new Station("잠실");
         Station downStation = new Station("잠실새내아님");
-        Section upSection = new Section(UP_STATION, station, new Distance(7));
-        Section downSection = new Section(station, downStation, new Distance(3));
+        Section upSection = Section.of(UP_STATION, station, new Distance(7));
+        Section downSection = Section.of(station, downStation, new Distance(3));
         //when
         boolean possibleDivide = targetSection.isPossibleDivideTo(upSection, downSection);
         //then
@@ -94,12 +94,12 @@ class SectionTest {
     @Test
     void mergeWith() {
         //given
-        Section upSection = new Section(UP_STATION, DOWN_STATION, DISTANCE);
-        Section downSection = new Section(DOWN_STATION, new Station("구의"), new Distance(10));
+        Section upSection = Section.of(UP_STATION, DOWN_STATION, DISTANCE);
+        Section downSection = Section.of(DOWN_STATION, new Station("구의"), new Distance(10));
         //when
         Section mergedSection = upSection.mergeWith(downSection);
         //then
         assertThat(mergedSection)
-                .isEqualTo(new Section(new Station("잠실나루"), new Station("구의"), new Distance(20)));
+                .isEqualTo(Section.of(new Station("잠실나루"), new Station("구의"), new Distance(20)));
     }
 }

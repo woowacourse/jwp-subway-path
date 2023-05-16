@@ -3,8 +3,13 @@ package subway.domain;
 import java.util.Objects;
 
 public class Distance {
+    public static final Distance EMPTY_DISTANCE = new Distance();
 
     private final int value;
+
+    private Distance() {
+        this.value = 0;
+    }
 
     public Distance(final int value) {
         validate(value);
