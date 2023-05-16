@@ -1,4 +1,4 @@
-package subway.subwayMap.domain;
+package subway.line.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
