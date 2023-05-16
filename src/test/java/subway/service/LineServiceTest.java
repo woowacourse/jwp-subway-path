@@ -2,8 +2,8 @@ package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static subway.integration.IntegrationFixture.GANGNAM;
-import static subway.integration.IntegrationFixture.JAMSIL;
+import static subway.integration.TestFixture.GANGNAM;
+import static subway.integration.TestFixture.JAMSIL;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

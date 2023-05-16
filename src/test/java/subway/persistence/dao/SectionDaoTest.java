@@ -2,14 +2,14 @@ package subway.persistence.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static subway.integration.IntegrationFixture.GANGNAM;
-import static subway.integration.IntegrationFixture.JAMSIL;
-import static subway.integration.IntegrationFixture.LINE_2;
-import static subway.integration.IntegrationFixture.LINE_3;
-import static subway.integration.IntegrationFixture.SAMSUNG;
-import static subway.integration.IntegrationFixture.SECTION_1;
-import static subway.integration.IntegrationFixture.SECTION_2;
-import static subway.integration.IntegrationFixture.SEONGLENUG;
+import static subway.integration.TestFixture.GANGNAM;
+import static subway.integration.TestFixture.JAMSIL;
+import static subway.integration.TestFixture.LINE_2;
+import static subway.integration.TestFixture.LINE_3;
+import static subway.integration.TestFixture.SAMSUNG;
+import static subway.integration.TestFixture.SECTION_1;
+import static subway.integration.TestFixture.SECTION_2;
+import static subway.integration.TestFixture.SEONGLENUG;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
