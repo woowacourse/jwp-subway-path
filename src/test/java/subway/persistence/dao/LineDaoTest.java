@@ -14,18 +14,22 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.vo.Distance;
+import subway.persistence.entity.LineEntity;
+import subway.persistence.entity.LineSectionStationJoinDto;
+import subway.persistence.entity.SectionEntity;
+import subway.persistence.entity.StationEntity;
 
 @JdbcTest(includeFilters = {
     @Filter(type = FilterType.ANNOTATION, value = Repository.class)
 })
 class LineDaoTest {
 
-    private final Station topStation = new Station(1L, "topStation");
-    private final Station midUpStation = new Station(2L, "midUpStation");
-    private final Station midDownStation = new Station(3L, "midDownStation");
-    private final Station bottomStation = new Station(4L, "bottomStation");
+    private final StationEntity topStationEntity = StationEntity.from(new Station(1L, "topStation"));
+    private final StationEntity midUpStationEntity = StationEntity.from(new Station(2L, "midUpStation"));
+    private final StationEntity midDownStationEntity = StationEntity.from(new Station(3L, "midDownStation"));
+    private final StationEntity bottomStationEntity = StationEntity.from(new Station(4L, "bottomStation"));
     private final Distance distance = new Distance(10L);
-    private final Line line = new Line("lineName", "lineColor");
+    private final LineEntity lineEntity = LineEntity.from(new Line("lineName", "lineColor"));
     @Autowired
     private LineDao lineDao;
     @Autowired
@@ -38,30 +42,35 @@ class LineDaoTest {
     void testInsert() {
         //given
         //when
-        final Line insertedLine = lineDao.insert(line);
+        final LineEntity insertedLineEntity = lineDao.insert(lineEntity);
 
         //then
-        assertThat(insertedLine).isNotNull();
+        assertThat(insertedLineEntity).isNotNull();
     }
 
     @Test
     @DisplayName("이름으로 Line을 조회한다.")
     void testFindByName() {
         //given
-        final Line insertedLine = lineDao.insert(line);
-        final Station insertedTopStation = stationDao.insert(topStation);
-        final Station insertedMidUpStation = stationDao.insert(midUpStation);
-        final Station insertedMidDownStation = stationDao.insert(midDownStation);
-        final Station insertedBottomStation = stationDao.insert(bottomStation);
-        final Section topSection = new Section(insertedTopStation, insertedMidUpStation, distance);
-        final Section midSection = new Section(insertedMidUpStation, insertedMidDownStation, distance);
-        final Section bottomSection = new Section(insertedMidDownStation, insertedBottomStation, distance);
-        sectionDao.insert(topSection, insertedLine.getId());
-        sectionDao.insert(midSection, insertedLine.getId());
-        sectionDao.insert(bottomSection, insertedLine.getId());
+        final LineEntity insertLineEntity = lineDao.insert(lineEntity);
+        final StationEntity insertedTopStationEntity = stationDao.insert(topStationEntity);
+        final StationEntity insertedMidUpStationEntity = stationDao.insert(midUpStationEntity);
+        final StationEntity insertedMidDownStationEntity = stationDao.insert(midDownStationEntity);
+        final StationEntity insertedBottomStationEntity = stationDao.insert(bottomStationEntity);
+        final Station topStation = new Station(insertedTopStationEntity.getId(), insertedTopStationEntity.getName());
+        final Station midUpStation = new Station(insertedMidUpStationEntity.getId(), insertedMidUpStationEntity.getName());
+        final Station midDownStation = new Station(insertedMidDownStationEntity.getId(),
+            insertedMidDownStationEntity.getName());
+        final Station bottomStation = new Station(insertedBottomStationEntity.getId(), insertedBottomStationEntity.getName());
+        final Section topSection = new Section(topStation, midUpStation, distance);
+        final Section midSection = new Section(midUpStation, midDownStation, distance);
+        final Section bottomSection = new Section(midDownStation, bottomStation, distance);
+        sectionDao.insert(SectionEntity.from(topSection), insertLineEntity.getId());
+        sectionDao.insert(SectionEntity.from(midSection), insertLineEntity.getId());
+        sectionDao.insert(SectionEntity.from(bottomSection), insertLineEntity.getId());
 
         //when
-        final List<LineSectionStationJoinDto> joinDtos = lineDao.findByName(insertedLine.getName());
+        final List<LineSectionStationJoinDto> joinDtos = lineDao.findByName(insertLineEntity.getName());
 
         //then
         assertThat(joinDtos).hasSize(3);

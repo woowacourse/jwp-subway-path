@@ -11,7 +11,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.vo.Distance;
-import subway.persistence.dao.LineSectionStationJoinDto;
+import subway.persistence.entity.LineSectionStationJoinDto;
 
 class LineConverterTest {
 
@@ -23,7 +23,6 @@ class LineConverterTest {
     private final Section topSection = new Section(1L, topStation, midUpStation, distance);
     private final Section midSection = new Section(2L, midUpStation, midDownStation, distance);
     private final Section bottomSection = new Section(3L, midDownStation, bottomStation, distance);
-
     private final LineConverter lineConverter = new LineConverter();
 
 

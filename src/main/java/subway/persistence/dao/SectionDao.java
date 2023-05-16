@@ -5,7 +5,7 @@ import java.util.Map;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
+import subway.persistence.entity.SectionEntity;
 
 @Repository
 public class SectionDao {
@@ -20,14 +20,15 @@ public class SectionDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public Section insert(final Section section, final long lindId) {
+    public SectionEntity insert(final SectionEntity sectionEntity, final long lindId) {
         final Map<String, Object> params = new HashMap<>();
-        params.put("distance", section.getDistance().getValue());
+        params.put("distance", sectionEntity.getDistance());
         params.put("line_id", lindId);
-        params.put("up_station_id", section.getUpStation().getId());
-        params.put("down_station_id", section.getDownStation().getId());
+        params.put("up_station_id", sectionEntity.getUpStationId());
+        params.put("down_station_id", sectionEntity.getDownStationId());
         final Long sectionId = insertAction.executeAndReturnKey(params).longValue();
-        return new Section(sectionId, section.getUpStation(), section.getDownStation(), section.getDistance());
+        return new SectionEntity(sectionId, sectionEntity.getUpStationId(),
+            sectionEntity.getDownStationId(), sectionEntity.getDistance());
     }
 
     public void deleteAllByLineId(final Long lineId) {

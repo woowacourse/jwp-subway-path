@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import subway.domain.vo.Distance;
@@ -20,11 +21,11 @@ public class Line {
     }
 
     public Line(final String name, final String color) {
-        this(null, name, color, null);
+        this(null, name, color, new Sections(new ArrayList<>()));
     }
 
     public Line(final Long id, final String name, final String color) {
-        this(id, name, color, null);
+        this(id, name, color, new Sections(new ArrayList<>()));
     }
 
     public Line(final String name, final String color, final Sections sections) {

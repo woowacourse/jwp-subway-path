@@ -3,6 +3,7 @@ package subway.persistence;
 import org.springframework.stereotype.Repository;
 import subway.domain.Section;
 import subway.persistence.dao.SectionDao;
+import subway.persistence.entity.SectionEntity;
 
 @Repository
 public class SectionRepositoryImpl implements SectionRepository {
@@ -15,6 +16,9 @@ public class SectionRepositoryImpl implements SectionRepository {
 
     @Override
     public Section save(final Section section, final Long lineId) {
-        return sectionDao.insert(section, lineId);
+        final SectionEntity sectionEntity = SectionEntity.from(section);
+        final SectionEntity savedSectionEntity = sectionDao.insert(sectionEntity, lineId);
+        return new Section(savedSectionEntity.getId(), section.getUpStation(),
+            section.getDownStation(), section.getDistance());
     }
 }

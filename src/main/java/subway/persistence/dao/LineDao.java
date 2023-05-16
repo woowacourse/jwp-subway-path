@@ -1,6 +1,5 @@
 package subway.persistence.dao;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,20 +7,19 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
-import subway.domain.Sections;
+import subway.persistence.entity.LineEntity;
+import subway.persistence.entity.LineSectionStationJoinDto;
 
 @Repository
 public class LineDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-    private final RowMapper<Line> lineRowMapper = (rs, rowNum) ->
-        new Line(
+    private final RowMapper<LineEntity> lineRowMapper = (rs, rowNum) ->
+        new LineEntity(
             rs.getLong("id"),
             rs.getString("name"),
-            rs.getString("color"),
-            new Sections(new ArrayList<>())
+            rs.getString("color")
         );
 
     private final RowMapper<LineSectionStationJoinDto> lineSectionStationJoinRowMapper = (rs, rowNum) ->
@@ -44,12 +42,12 @@ public class LineDao {
             .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(final Line line) {
+    public LineEntity insert(final LineEntity lineEntity) {
         final Map<String, Object> params = new HashMap<>();
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
+        params.put("name", lineEntity.getName());
+        params.put("color", lineEntity.getColor());
         final Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new LineEntity(lineId, lineEntity.getName(), lineEntity.getColor());
     }
 
     public List<LineSectionStationJoinDto> findAll() {
@@ -93,9 +91,9 @@ public class LineDao {
         return jdbcTemplate.query(sql, lineSectionStationJoinRowMapper, id);
     }
 
-    public void update(final Line newLine) {
+    public void update(final LineEntity lineEntity) {
         final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, newLine.getName(), newLine.getColor(), newLine.getId());
+        jdbcTemplate.update(sql, lineEntity.getName(), lineEntity.getColor(), lineEntity.getId());
     }
 
     public void deleteById(final Long id) {
@@ -123,28 +121,28 @@ public class LineDao {
         return jdbcTemplate.query(sql, lineSectionStationJoinRowMapper, name);
     }
 
-    public void delete(final Line line) {
+    public void delete(final LineEntity lineEntity) {
         final String sql = "DELETE "
             + "FROM LINE "
             + "WHERE id = ?";
-        jdbcTemplate.update(sql, line.getId());
+        jdbcTemplate.update(sql, lineEntity.getId());
     }
 
-    public Line findOnlyLineById(final Long id) {
+    public LineEntity findOnlyLineById(final Long id) {
         final String sql = "SELECT id, name, color "
             + "FROM LINE "
             + "WHERE id = ?;";
         return jdbcTemplate.queryForObject(sql, lineRowMapper, id);
     }
 
-    public Line findOnlyLineByName(final String name) {
+    public LineEntity findOnlyLineByName(final String name) {
         final String sql = "SELECT id, name, color "
             + "FROM LINE "
             + "WHERE name = ?;";
         return jdbcTemplate.queryForObject(sql, lineRowMapper, name);
     }
 
-    public List<Line> findOnlyLines() {
+    public List<LineEntity> findOnlyLines() {
         final String sql = "SELECT id, name, color "
             + "FROM LINE;";
         return jdbcTemplate.query(sql, lineRowMapper);

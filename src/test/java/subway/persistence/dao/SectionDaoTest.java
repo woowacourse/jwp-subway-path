@@ -13,6 +13,9 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.vo.Distance;
+import subway.persistence.entity.LineEntity;
+import subway.persistence.entity.SectionEntity;
+import subway.persistence.entity.StationEntity;
 
 @JdbcTest(includeFilters = {
     @Filter(type = FilterType.ANNOTATION, value = Repository.class)
@@ -34,32 +37,36 @@ class SectionDaoTest {
     @DisplayName("구간을 삽입한다.")
     void testInsert() {
         //given
-        final Line savedLine = lineDao.insert(line);
-        final Station savedUpStation = stationDao.insert(upStation);
-        final Station savedDownStation = stationDao.insert(downStation);
-        final Section section = new Section(savedUpStation, savedDownStation, distance);
+        final LineEntity insertLineEntity = lineDao.insert(LineEntity.from(line));
+        final StationEntity insertedUpStationEntity = stationDao.insert(StationEntity.from(upStation));
+        final StationEntity insertedDownStationEntity = stationDao.insert(StationEntity.from(downStation));
+        final Station upStation = new Station(insertedUpStationEntity.getId(), insertedUpStationEntity.getName());
+        final Station downStation = new Station(insertedDownStationEntity.getId(), insertedDownStationEntity.getName());
+        final Section section = new Section(upStation, downStation, distance);
 
         //when
-        final Section savedSection = sectionDao.insert(section, savedLine.getId());
+        final SectionEntity insertedSection = sectionDao.insert(SectionEntity.from(section), insertLineEntity.getId());
 
         //then
-        assertThat(sectionDao.containId(savedSection.getId())).isTrue();
+        assertThat(sectionDao.containId(insertedSection.getId())).isTrue();
     }
 
     @Test
     @DisplayName("호선 id로 구간을 삭제한다.")
     void testDeleteAllByLineId() {
         //given
-        final Line savedLine = lineDao.insert(line);
-        final Station savedUpStation = stationDao.insert(upStation);
-        final Station savedDownStation = stationDao.insert(downStation);
-        final Section section = new Section(savedUpStation, savedDownStation, distance);
-        final Section savedSection = sectionDao.insert(section, savedLine.getId());
+        final LineEntity insertLineEntity = lineDao.insert(LineEntity.from(line));
+        final StationEntity insertedUpStationEntity = stationDao.insert(StationEntity.from(upStation));
+        final StationEntity insertedDownStationEntity = stationDao.insert(StationEntity.from(downStation));
+        final Station upStation = new Station(insertedUpStationEntity.getId(), insertedUpStationEntity.getName());
+        final Station downStation = new Station(insertedDownStationEntity.getId(), insertedDownStationEntity.getName());
+        final Section section = new Section(upStation, downStation, distance);
+        final SectionEntity insertedSection = sectionDao.insert(SectionEntity.from(section), insertLineEntity.getId());
 
         //when
-        sectionDao.deleteAllByLineId(savedLine.getId());
+        sectionDao.deleteAllByLineId(insertLineEntity.getId());
 
         //then
-        assertThat(sectionDao.containId(savedSection.getId())).isFalse();
+        assertThat(sectionDao.containId(insertedSection.getId())).isFalse();
     }
 }

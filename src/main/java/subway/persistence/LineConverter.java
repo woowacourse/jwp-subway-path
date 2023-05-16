@@ -12,7 +12,7 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.domain.vo.Distance;
 import subway.exception.BusinessException;
-import subway.persistence.dao.LineSectionStationJoinDto;
+import subway.persistence.entity.LineSectionStationJoinDto;
 
 public class LineConverter {
 
