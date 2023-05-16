@@ -56,9 +56,9 @@ public class RdsLineDao implements LineDao {
     }
 
     @Override
-    public void update(final Line newLine) {
+    public void update(final Line line) {
         final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, new Object[]{line.getName(), line.getColor(), line.getId()});
     }
 
     @Override

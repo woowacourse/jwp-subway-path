@@ -12,6 +12,10 @@ public class Line {
         this(null, name, color);
     }
 
+    public Line(final Long id, final Line line) {
+        this(id, line.name, line.color);
+    }
+
     public Line(final Long id, final String name, final String color) {
         this.id = id;
         this.name = name;

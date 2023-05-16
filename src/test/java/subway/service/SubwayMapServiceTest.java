@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.dao.StubLineDao;
 import subway.dao.StubSectionDao;
+import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineSearchResponse;
 
@@ -20,6 +21,8 @@ class SubwayMapServiceTest {
     @BeforeEach
     void setUp() {
         final StubLineDao stubLineDao = new StubLineDao();
+        stubLineDao.insert(new Line(1L, "1호선", "파란색"));
+        stubLineDao.insert(new Line(2L, "2호선", "초록색"));
         final StubSectionDao stubSectionDao = new StubSectionDao();
         subwayMapService = new SubwayMapService(stubLineDao, stubSectionDao);
     }
