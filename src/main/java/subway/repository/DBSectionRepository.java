@@ -2,6 +2,7 @@ package subway.repository;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.stereotype.Repository;
 import subway.domain.line.Line;
 import subway.domain.section.Section;
 import subway.domain.section.SectionRepository;
@@ -9,6 +10,7 @@ import subway.domain.station.Station;
 
 import java.util.List;
 
+@Repository
 public class DBSectionRepository implements SectionRepository {
 
     private final JdbcTemplate jdbcTemplate;
