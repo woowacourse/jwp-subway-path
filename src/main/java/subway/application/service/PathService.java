@@ -7,6 +7,8 @@ import subway.domain.Line;
 import subway.domain.Station;
 import subway.persistence.repository.SubwayRepository;
 
+import java.util.List;
+
 @Transactional
 @Service
 public class PathService {
@@ -40,4 +42,12 @@ public class PathService {
         subwayRepository.saveLine(line);
     }
 
+    public void removeStationFromLines(final Long stationId) {
+        final List<Line> lines = subwayRepository.findLines();
+        final Station station = subwayRepository.findStationById(stationId);
+        for (Line line : lines) {
+            line.removeStation(station);
+            subwayRepository.saveLine(line);
+        }
+    }
 }

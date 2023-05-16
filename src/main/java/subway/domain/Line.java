@@ -74,9 +74,6 @@ public class Line {
     public void removeStation(final Station station) {
         final List<Station> stations = sortStations();
         final int index = stations.indexOf(station);
-        if (index == -1) {
-            throw new IllegalArgumentException("삭제할 수 없는 역입니다.");
-        }
         if (paths.size() == 1) {
             paths.clear();
             return;
@@ -85,16 +82,22 @@ public class Line {
             paths.remove(station);
             return;
         }
-        if (index == stations.size() - 1) {
+        if (isEndOfTheLine(stations, index)) {
             paths.remove(stations.get(index - 1));
             return;
         }
-        final Station stationBefore = stations.get(index - 1);
-        final Path pathBefore = paths.get(stationBefore);
-        final Path path = paths.get(station);
-        final int distance = path.sumDistance(pathBefore);
-        paths.remove(station);
-        paths.put(stationBefore, new Path(path.getNext(), distance));
+        if (index > 0) {
+            final Station stationBefore = stations.get(index - 1);
+            final Path pathBefore = paths.get(stationBefore);
+            final Path path = paths.get(station);
+            final int distance = path.sumDistance(pathBefore);
+            paths.remove(station);
+            paths.put(stationBefore, new Path(path.getNext(), distance));
+        }
+    }
+
+    private boolean isEndOfTheLine(final List<Station> stations, final int index) {
+        return index == stations.size() - 1 && !stations.isEmpty();
     }
 
     public Long getId() {

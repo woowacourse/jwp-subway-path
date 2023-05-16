@@ -1,15 +1,14 @@
-package subway.ui;
+package subway.integration;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.integration.IntegrationTest;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
 
-class FeeControllerTest extends IntegrationTest {
+class FeeIntegrationTest extends IntegrationTest {
 
     @DisplayName("최단 거리를 조회한다.")
     @Test

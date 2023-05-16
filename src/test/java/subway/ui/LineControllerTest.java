@@ -2,12 +2,8 @@ package subway.ui;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.test.web.servlet.MockMvc;
-import subway.application.service.LineService;
 import subway.dto.response.LineWithStationResponse;
 import subway.dto.response.StationResponse;
 
@@ -22,13 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(LineController.class)
-class LineControllerTest {
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @MockBean
-    private LineService lineService;
+class LineControllerTest extends ControllerTest {
 
     @DisplayName("노선을 조회해서 역을 순서대로 보여준다.")
     @Test
