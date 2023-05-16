@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.application.exception.AddSectionException;
 import subway.application.reader.CaseDto;
-import subway.application.reader.FirstFindCase;
+import subway.application.reader.NonDeleteSaveCase;
 import subway.application.reader.Reader;
 import subway.dao.SectionDao;
 import subway.domain.Line;
@@ -19,16 +19,17 @@ import static java.util.stream.Collectors.toMap;
 import static subway.application.reader.CaseTypeSetter.setCase;
 
 @Service
+@Transactional(rollbackFor = {AddSectionException.class, SQLException.class})
 public class SectionService {
 
     private final SectionDao sectionDao;
+    private final int NON_TERMINAL_SECTION_SIZE = 2;
 
     public SectionService(final SectionDao sectionDao) {
         this.sectionDao = sectionDao;
     }
 
-    @Transactional(rollbackFor = {AddSectionException.class, SQLException.class})
-    public List<Section> addStationByLineId(final Long id, final String departure, final String arrival, final int distance) throws IllegalAccessException {
+    public List<Section> addStationByLineId(final Long id, final String departure, final String arrival, final int distance) {
         final List<Section> allSections = sectionDao.findSectionsByLineId(id);
         CaseDto caseDto = new CaseDto.Builder()
                 .lineId(id)
@@ -37,8 +38,8 @@ public class SectionService {
                 .distance(distance)
                 .build();
         caseDto = setCase(caseDto, allSections);
-        Reader reader = new FirstFindCase(sectionDao);
-        return reader.read(caseDto);
+        Reader reader = new NonDeleteSaveCase(sectionDao);
+        return reader.save(caseDto);
     }
 
     public Map<Line, List<Section>> findSections() {
@@ -57,11 +58,12 @@ public class SectionService {
         final List<Section> sections = sectionDao.findSectionByLineIdAndStationId(lineId, sectionId);
 
         final List<Section> sortedSections = SectionSorter.sorting(sections);
-        if (sections.size() == 0) {
+        if (sections.isEmpty()) {
             throw new IllegalArgumentException("해당하는 역이 없습니다.");
         }
         sectionDao.deleteSection(sections.get(0).getId());
-        if (sections.size() == 2) {
+
+        if (sections.size() == NON_TERMINAL_SECTION_SIZE) {
             sectionDao.deleteSection(sections.get(1).getId());
             sectionDao.saveSection(lineId,
                     sections.get(0).getDistanceValue()+ sections.get(1).getDistanceValue(),

@@ -12,5 +12,5 @@ public abstract class Reader {
         this.sectionDao = sectionDao;
     }
 
-    abstract public List<Section> read(final CaseDto caseDto);
+    abstract public List<Section> save(final CaseDto caseDto);
 }

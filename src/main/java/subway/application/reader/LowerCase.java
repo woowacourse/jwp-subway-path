@@ -12,7 +12,7 @@ public class LowerCase extends Reader {
     }
 
     @Override
-    public List<Section> read(CaseDto caseDto){
+    public List<Section> save(CaseDto caseDto){
         if (caseDto.getCaseType().equals(CaseType.LOWER)) {
             final Section deleteSection = caseDto.getDeleteSection();
             validateDistance(caseDto.getDistance(), deleteSection.getDistanceValue());
@@ -31,7 +31,7 @@ public class LowerCase extends Reader {
             return List.of(new Section(upSectionId, departure, middle, firstSectionDistance),
                     new Section(downSectionId, middle, arrival, secondSectionDistance));
         }
-        return new ExceptionCase(sectionDao).read(caseDto);
+        return new ExceptionCase(sectionDao).save(caseDto);
     }
 
     private void validateDistance(final int requestDistance, final int distance) {

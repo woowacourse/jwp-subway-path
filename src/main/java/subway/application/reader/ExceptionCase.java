@@ -12,7 +12,7 @@ public class ExceptionCase extends Reader {
     }
 
     @Override
-    public List<Section> read(CaseDto caseDto){
+    public List<Section> save(CaseDto caseDto){
         if (caseDto.getCaseType().equals(CaseType.EXCEPTION_CASE)) {
             throw new AddSectionException("역을 추가할 수 없습니다.");
         }
