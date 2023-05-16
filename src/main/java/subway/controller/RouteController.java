@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RestController;
 import subway.service.RouteQueryService;
-import subway.service.dto.LeastCostRouteResponse;
 import subway.service.dto.ShortestRouteRequest;
 import subway.service.dto.ShortestRouteResponse;
 
@@ -17,16 +16,10 @@ public class RouteController {
         this.routeQueryService = routeQueryService;
     }
 
-    @GetMapping("/shortest-route")
-    public ShortestRouteResponse showShortestRoute(@ModelAttribute final ShortestRouteRequest shortestRouteRequest) {
-        return new ShortestRouteResponse(routeQueryService.searchShortestRoute(shortestRouteRequest));
-    }
-
-    @GetMapping("/least-cost")
-    public LeastCostRouteResponse showLeastCostRoute(@ModelAttribute final ShortestRouteRequest shortestRouteRequest) {
-        return new LeastCostRouteResponse(
-                shortestRouteRequest.getStartStation(),
-                shortestRouteRequest.getEndStation(),
+    @GetMapping("/route")
+    public ShortestRouteResponse showShortestRoute(@ModelAttribute ShortestRouteRequest shortestRouteRequest) {
+        return new ShortestRouteResponse(
+                routeQueryService.searchShortestRoute(shortestRouteRequest),
                 routeQueryService.searchLeastCost(shortestRouteRequest),
                 routeQueryService.searchShortestDistance(shortestRouteRequest)
         );
