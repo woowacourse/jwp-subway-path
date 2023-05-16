@@ -9,14 +9,14 @@ import subway.dao.entity.StationEntity;
 
 @Repository
 public class StationDao {
+    private static final int EXISTED_STATION = 1;
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
     private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
-                    rs.getString("name"),
-                    rs.getLong("line_id")
+                    rs.getString("name")
             );
 
     public StationDao(JdbcTemplate jdbcTemplate) {
@@ -35,14 +35,16 @@ public class StationDao {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(stationEntity)).longValue();
     }
 
+    public boolean exists(final StationEntity stationEntity) {
+        final String sql = "SELECT EXISTS(SELECT * FROM station WHERE id = ?)";
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, stationEntity.getId());
+
+        return result == EXISTED_STATION;
+    }
+
     public StationEntity findByName(final String name) {
         final String sql = "SELECT * FROM station WHERE name = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, name);
-    }
-
-    public int deleteByLineId(final Long lineId) {
-        final String sql = "DELETE FROM station WHERE line_id = ?";
-        return jdbcTemplate.update(sql, lineId);
     }
 
     public int deleteByName(final String name) {
