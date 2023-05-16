@@ -2,10 +2,10 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.controller.dto.AddInitStationToLineRequest;
-import subway.controller.dto.AddStationToBetweenLineRequest;
-import subway.controller.dto.AddStationToEndLineRequest;
-import subway.controller.dto.RemoveStationOnLineRequest;
+import subway.controller.dto.request.AddInitStationToLineRequest;
+import subway.controller.dto.request.AddStationToBetweenLineRequest;
+import subway.controller.dto.request.AddStationToEndLineRequest;
+import subway.controller.dto.request.RemoveStationOnLineRequest;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.vo.Distance;

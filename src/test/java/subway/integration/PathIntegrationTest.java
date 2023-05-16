@@ -13,14 +13,14 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.controller.dto.AddInitStationToLineRequest;
 import subway.controller.dto.AddStationLocation;
-import subway.controller.dto.AddStationToLineRequest;
-import subway.controller.dto.FindShortestPathRequest;
-import subway.controller.dto.FindShortestPathResponse;
-import subway.controller.dto.LineRequest;
-import subway.controller.dto.LineResponse;
-import subway.controller.dto.StationResponse;
+import subway.controller.dto.request.AddInitStationToLineRequest;
+import subway.controller.dto.request.AddStationToLineRequest;
+import subway.controller.dto.request.FindShortestPathRequest;
+import subway.controller.dto.request.LineRequest;
+import subway.controller.dto.response.FindShortestPathResponse;
+import subway.controller.dto.response.LineResponse;
+import subway.controller.dto.response.StationResponse;
 
 public class PathIntegrationTest extends IntegrationTest {
 

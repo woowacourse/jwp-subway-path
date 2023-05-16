@@ -1,27 +1,18 @@
-package subway.controller.dto;
+package subway.controller.dto.request;
 
-import javax.validation.constraints.NotBlank;
+public class AddStationToBetweenLineRequest {
 
-public class AddStationToLineRequest {
-
-    @NotBlank
-    private AddStationLocation addStationLocation;
-    @NotBlank
     private String lineName;
-    @NotBlank
     private String stationName;
     private String upStationName;
     private String downStationName;
-    @NotBlank
     private Long distance;
 
-    private AddStationToLineRequest() {
+    private AddStationToBetweenLineRequest() {
     }
 
-    public AddStationToLineRequest(final AddStationLocation addStationLocation, final String lineName,
-        final String stationName,
-        final String upStationName, final String downStationName, final Long distance) {
-        this.addStationLocation = addStationLocation;
+    public AddStationToBetweenLineRequest(final String lineName, final String stationName, final String upStationName,
+        final String downStationName, final Long distance) {
         this.lineName = lineName;
         this.stationName = stationName;
         this.upStationName = upStationName;
@@ -29,8 +20,10 @@ public class AddStationToLineRequest {
         this.distance = distance;
     }
 
-    public AddStationLocation getAddStationLocation() {
-        return addStationLocation;
+    public static AddStationToBetweenLineRequest from(final AddStationToLineRequest addStationToLineRequest) {
+        return new AddStationToBetweenLineRequest(addStationToLineRequest.getLineName(),
+            addStationToLineRequest.getStationName(), addStationToLineRequest.getUpStationName(),
+            addStationToLineRequest.getDownStationName(), addStationToLineRequest.getDistance());
     }
 
     public String getLineName() {

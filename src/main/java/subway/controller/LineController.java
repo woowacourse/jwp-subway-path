@@ -14,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.controller.dto.LineRequest;
-import subway.controller.dto.LineResponse;
+import subway.controller.dto.request.LineRequest;
+import subway.controller.dto.response.LineResponse;
 
 @RestController
 @RequestMapping("/lines")

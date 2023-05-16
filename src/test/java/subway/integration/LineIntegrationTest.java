@@ -13,8 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.controller.dto.LineRequest;
-import subway.controller.dto.LineResponse;
+import subway.controller.dto.request.LineRequest;
+import subway.controller.dto.response.LineResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {

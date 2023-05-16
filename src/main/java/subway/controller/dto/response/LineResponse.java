@@ -1,4 +1,4 @@
-package subway.controller.dto;
+package subway.controller.dto.response;
 
 import java.util.Collections;
 import java.util.List;

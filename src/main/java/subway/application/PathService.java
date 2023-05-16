@@ -2,8 +2,8 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.controller.dto.FindShortestPathRequest;
-import subway.controller.dto.FindShortestPathResponse;
+import subway.controller.dto.request.FindShortestPathRequest;
+import subway.controller.dto.response.FindShortestPathResponse;
 import subway.domain.CostPolicy;
 import subway.domain.Lines;
 import subway.domain.Navigation;
