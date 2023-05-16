@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.dto.SectionRequest;
-import subway.dto.SectionStations;
+import subway.application.dto.SectionRequest;
+import subway.application.dto.SectionStations;
 
 public class SectionIntegrationTest extends IntegrationTest {
 

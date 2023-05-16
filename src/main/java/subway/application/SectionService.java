@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.*;
-import subway.dto.SectionRequest;
+import subway.application.dto.SectionRequest;
 
 import java.util.List;
 

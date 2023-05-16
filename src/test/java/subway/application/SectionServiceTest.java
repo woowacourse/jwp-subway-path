@@ -10,8 +10,8 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;
 import subway.domain.Section;
-import subway.dto.SectionRequest;
-import subway.dto.SectionStations;
+import subway.application.dto.SectionRequest;
+import subway.application.dto.SectionStations;
 
 import java.util.ArrayList;
 import java.util.List;

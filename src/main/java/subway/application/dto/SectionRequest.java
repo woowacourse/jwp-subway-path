@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.application.dto;
 
 public class SectionRequest {
 

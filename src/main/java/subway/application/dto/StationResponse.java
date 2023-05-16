@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.application.dto;
 
 import java.util.Objects;
 import subway.domain.Station;

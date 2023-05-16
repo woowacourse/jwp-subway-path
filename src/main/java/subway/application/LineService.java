@@ -9,9 +9,9 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.Subway;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.StationResponse;
+import subway.application.dto.LineRequest;
+import subway.application.dto.LineResponse;
+import subway.application.dto.StationResponse;
 
 @Service
 public class LineService {
