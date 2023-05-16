@@ -6,7 +6,6 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 import subway.domain.*;
-import subway.domain.LineSection;
 
 import java.sql.PreparedStatement;
 import java.util.List;

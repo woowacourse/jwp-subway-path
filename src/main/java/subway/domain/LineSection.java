@@ -1,8 +1,5 @@
 package subway.domain;
 
-import subway.domain.Line;
-import subway.domain.Section;
-
 public class LineSection {
 
     private Line line;

@@ -87,7 +87,6 @@ public class LineController {
     }
 
 
-
     private SectionResponse getSectionResponse(final Section section) {
 
         return new SectionResponse(

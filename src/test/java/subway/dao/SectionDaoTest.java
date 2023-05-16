@@ -20,12 +20,12 @@ class SectionDaoTest {
 
     @Test
     void saveSection() {
-       sectionDao.saveSection(1l, 1, "신림", "봉천");
+        sectionDao.saveSection(1l, 1, "신림", "봉천");
     }
 
     @Test
     void findSections() {
-        Line keyLine = new Line(1l,"testName1", "testColor1");
+        Line keyLine = new Line(1l, "testName1", "testColor1");
         Assertions.assertThat(sectionDao.findSections().get(keyLine)).hasSize(4);
     }
 
@@ -36,12 +36,12 @@ class SectionDaoTest {
 
     @Test
     void findSectionByLineIdAndStationId() {
-        Assertions.assertThat(sectionDao.findSectionByLineIdAndStationId(1l,2l).isSizeTwo()).isTrue();
+        Assertions.assertThat(sectionDao.findSectionByLineIdAndStationId(1l, 2l).isSizeTwo()).isTrue();
     }
 
     @Test
     void deleteSection() {
         Assertions.assertThatNoException()
-                .isThrownBy(()-> sectionDao.deleteSection(1l));
+                .isThrownBy(() -> sectionDao.deleteSection(1l));
     }
 }

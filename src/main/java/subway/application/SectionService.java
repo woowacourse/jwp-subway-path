@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.exception.AddSectionException;
 import subway.application.reader.CaseDto;
 import subway.application.reader.InitializationReader;
-import subway.application.reader.NonDeleteSaveCase;
 import subway.application.reader.Reader;
 import subway.dao.SectionDao;
 import subway.domain.Line;
@@ -41,7 +40,7 @@ public class SectionService {
                 .build();
         caseDto = setCase(caseDto, allSections);
         Reader reader = new InitializationReader(sectionDao);
-        return reader.initializeSave(caseDto,allSections);
+        return reader.initializeSave(caseDto, allSections);
     }
 
     public Map<Line, List<Section>> findSections() {
@@ -65,7 +64,7 @@ public class SectionService {
         sectionDao.deleteSection(sections.getDepartureId());
         if (sections.isSizeTwo()) {
             sectionDao.deleteSection(sections.getArrivalId());
-            sectionDao.saveSection(lineId, sections.getDistance(), sections.getDeparture(),sections.getArrival());
+            sectionDao.saveSection(lineId, sections.getDistance(), sections.getDeparture(), sections.getArrival());
         }
     }
 }

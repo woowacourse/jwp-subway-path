@@ -11,7 +11,7 @@ public class NonDeleteSaveCase extends Reader {
     }
 
     @Override
-    public List<Section> save(final CaseDto caseDto){
+    public List<Section> save(final CaseDto caseDto) {
         if (caseDto.getCaseType().equals(CaseType.NON_DELETE_SAVE_CASE)) {
             final long sectionId = sectionDao.saveSection(
                     caseDto.getLineId(),

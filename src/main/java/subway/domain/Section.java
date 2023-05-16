@@ -37,13 +37,16 @@ public class Section {
     public Distance getDistance() {
         return distance;
     }
-    public String getDepartureValue(){
+
+    public String getDepartureValue() {
         return departure.getName();
     }
-    public String getArrivalValue(){
+
+    public String getArrivalValue() {
         return arrival.getName();
     }
-    public int getDistanceValue(){
+
+    public int getDistanceValue() {
         return distance.getDistance();
     }
 }

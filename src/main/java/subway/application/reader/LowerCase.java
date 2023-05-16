@@ -12,7 +12,7 @@ public class LowerCase extends Reader {
     }
 
     @Override
-    public List<Section> save(CaseDto caseDto){
+    public List<Section> save(CaseDto caseDto) {
         if (caseDto.getCaseType().equals(CaseType.LOWER)) {
             final Section deleteSection = caseDto.getDeleteSection();
             validateDistance(caseDto.getDistance(), deleteSection.getDistanceValue());

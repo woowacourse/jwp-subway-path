@@ -7,7 +7,6 @@ import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
 import java.net.URI;
-import java.sql.SQLException;
 import java.util.List;
 
 @RestController

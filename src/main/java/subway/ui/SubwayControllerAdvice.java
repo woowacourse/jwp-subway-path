@@ -16,16 +16,19 @@ public class SubwayControllerAdvice {
         final String message = exception.getAllErrors().get(0).getDefaultMessage();
         return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
     }
+
     @ExceptionHandler(SQLException.class)
     public ResponseEntity<ErrorResponseDto> handleSQLException(final SQLException exception) {
         final String message = exception.getMessage();
         return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
     }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponseDto> handleIllegalArgumentException(final IllegalArgumentException exception) {
         final String message = exception.getMessage();
         return ResponseEntity.badRequest().body(new ErrorResponseDto(message));
     }
+
     @ExceptionHandler(AddSectionException.class)
     public ResponseEntity<ErrorResponseDto> handleAddSectionException(final AddSectionException exception) {
         final String message = exception.getMessage();

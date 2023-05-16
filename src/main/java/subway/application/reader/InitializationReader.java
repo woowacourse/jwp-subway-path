@@ -5,7 +5,7 @@ import subway.domain.Section;
 
 import java.util.List;
 
-public class InitializationReader extends Reader{
+public class InitializationReader extends Reader {
     public InitializationReader(SectionDao sectionDao) {
         super(sectionDao);
     }
@@ -17,6 +17,6 @@ public class InitializationReader extends Reader{
 
     @Override
     public List<Section> initializeSave(CaseDto caseDto, List<Section> allSection) {
-        return new NonDeleteSaveCase(sectionDao).save(CaseTypeSetter.setCase(caseDto,allSection));
+        return new NonDeleteSaveCase(sectionDao).save(CaseTypeSetter.setCase(caseDto, allSection));
     }
 }
