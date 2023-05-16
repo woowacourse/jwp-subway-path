@@ -9,11 +9,14 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class Sections {
+
     private List<Section> sections;
+    private final SectionChange sectionChange;
 
     public Sections(List<Section> sections) {
         this.sections = sections;
         sort();
+        sectionChange = new SectionChange();
     }
 
     private void sort() {
@@ -74,26 +77,27 @@ public class Sections {
                 .orElseThrow(() -> new NotFoundException("다음 역 간 연결 정보를 찾을 수 없습니다."));
     }
 
-    public SectionChange addSection(Section newSection) {
+    public void addSection(Section newSection) {
         if (sections.isEmpty()) {
-            return addSectionFirst(newSection);
+            addSectionFirst(newSection);
+            return;
         }
         if (existBothStationAlready(newSection)) {
             throw new InvalidDataException("두 역이 이미 노선에 존재합니다.");
         }
         if (existDownBoundStation(newSection)) {
-            return addSectionToUp(newSection);
+            addSectionToUp(newSection);
+            return;
         }
         if (existUpBoundStation(newSection)) {
-            return addSectionToDown(newSection);
+            addSectionToDown(newSection);
+            return;
         }
         throw new InvalidDataException("노선에 이미 역들이 존재해 두개의 역을 추가할 수 없습니다.");
     }
 
-    private SectionChange addSectionFirst(Section newSection) {
-        SectionChange sectionChange = new SectionChange();
+    private void addSectionFirst(Section newSection) {
         sectionChange.addNewSection(newSection);
-        return sectionChange;
     }
 
     private boolean existBothStationAlready(Section newSection) {
@@ -116,14 +120,13 @@ public class Sections {
                         section.isUpSection(downBoundStationId));
     }
 
-    private SectionChange addSectionToUp(Section newSection) {
+    private void addSectionToUp(Section newSection) {
         Long existStationId = newSection.getDownBoundStationId();
         Section upEndPointSection = findUpEndPointSection();
-        SectionChange sectionChange = new SectionChange();
 
         if (upEndPointSection.isDownSection(existStationId)) {
             sectionChange.addNewSection(newSection);
-            return sectionChange;
+            return;
         }
 
         Section upBoundSection = findUpBoundSection(existStationId);
@@ -137,17 +140,15 @@ public class Sections {
         );
         sectionChange.addNewSection(newSection);
         sectionChange.addUpdatedSection(updatedSection);
-        return sectionChange;
     }
 
-    private SectionChange addSectionToDown(Section newSection) {
+    private void addSectionToDown(Section newSection) {
         Long existStationId = newSection.getUpBoundStationId();
         Section downEndPointSection = findDownEndPointSection();
-        SectionChange sectionChange = new SectionChange();
 
         if (downEndPointSection.isUpSection(existStationId)) {
             sectionChange.addNewSection(newSection);
-            return sectionChange;
+            return;
         }
 
         Section downBoundSection = findDownBoundSection(existStationId);
@@ -160,7 +161,6 @@ public class Sections {
                 downBoundSection.getDistance() - newSection.getDistance());
         sectionChange.addNewSection(newSection);
         sectionChange.addUpdatedSection(updatedSection);
-        return sectionChange;
     }
 
     private Section findUpBoundSection(Long downBoundStationId) {
@@ -184,7 +184,7 @@ public class Sections {
         }
     }
 
-    public SectionChange removeStation(Long stationId) {
+    public void removeStation(Long stationId) {
         if (sections.isEmpty()) {
             throw new InvalidDataException("노선에 아무 역도 존재하지 않습니다.");
         }
@@ -196,16 +196,14 @@ public class Sections {
         Section downEndPointSection = findDownEndPointSection();
 
         if (upEndPointSection.isDownSection(stationId)) {
-            SectionChange sectionChange = new SectionChange();
             sectionChange.addDeletedSection(upEndPointSection);
-            return sectionChange;
+            return;
         }
         if (downEndPointSection.isUpSection(stationId)) {
-            SectionChange sectionChange = new SectionChange();
             sectionChange.addDeletedSection(downEndPointSection);
-            return sectionChange;
+            return;
         }
-        return removeMiddleStation(stationId);
+        removeMiddleStation(stationId);
     }
 
     private boolean notExistInLine(Long stationId) {
@@ -214,11 +212,9 @@ public class Sections {
                         section.isUpSection(stationId));
     }
 
-    private SectionChange removeMiddleStation(Long stationId) {
+    private void removeMiddleStation(Long stationId) {
         Section upBoundSection = findUpBoundSection(stationId);
         Section downBoundSection = findDownBoundSection(stationId);
-
-        SectionChange sectionChange = new SectionChange();
 
         int newDistance = upBoundSection.getDistance() + downBoundSection.getDistance();
         Section updatedSection = new Section(upBoundSection.getId(),
@@ -228,7 +224,27 @@ public class Sections {
 
         sectionChange.addUpdatedSection(updatedSection);
         sectionChange.addDeletedSection(downBoundSection);
-        return sectionChange;
+    }
+
+    public void reflectSectionChange() {
+        for (Section section : sectionChange.getUpdatedSections()) {
+            for (int idx = 0; idx < sections.size(); idx++) {
+                if (section.equals(sections.get(idx))) {
+                    sections.set(idx, section);
+                }
+            }
+        }
+        for (Section section : sectionChange.getNewSections()) {
+            sections.add(section);
+        }
+        for (Section section : sectionChange.getDeletedSections()) {
+            for (int idx = 0; idx < sections.size(); idx++) {
+                if (section.equals(sections.get(idx))) {
+                    sections.remove(idx);
+                }
+            }
+        }
+        sort();
     }
 
     public List<Long> getStationsWithUpToDownDirection() {
@@ -243,5 +259,9 @@ public class Sections {
         Section lastSection = sections.get(sections.size() - 1);
         stations.add(lastSection.getDownBoundStationId());
         return stations;
+    }
+
+    public SectionChange findSectionChange() {
+        return sectionChange;
     }
 }

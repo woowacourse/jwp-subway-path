@@ -49,7 +49,8 @@ public class SectionsTest {
         Section newSection = new Section(sadang.getId(), bangbae.getId(), lineId, 10);
 
         // when
-        SectionChange sectionChange = emptySections.addSection(newSection);
+        emptySections.addSection(newSection);
+        SectionChange sectionChange = emptySections.findSectionChange();
 
         // then
         assertThat(sectionChange.getNewSections().get(0)).isEqualTo(newSection);
@@ -75,7 +76,8 @@ public class SectionsTest {
         Section newSection = new Section(firstNewStation.getId(), sadang.getId(), lineId, 10);
 
         // when
-        SectionChange sectionChange = sections.addSection(newSection);
+        sections.addSection(newSection);
+        SectionChange sectionChange = sections.findSectionChange();
 
         // then
         assertThat(sectionChange.getNewSections().size()).isEqualTo(1);
@@ -91,7 +93,8 @@ public class SectionsTest {
         Section newSection = new Section(kangnam.getId(), firstNewStation.getId(), lineId, 10);
 
         // when
-        SectionChange sectionChange = sections.addSection(newSection);
+        sections.addSection(newSection);
+        SectionChange sectionChange = sections.findSectionChange();
 
         // then
         assertThat(sectionChange.getNewSections().size()).isEqualTo(1);
@@ -109,7 +112,8 @@ public class SectionsTest {
         Section updatedSection = new Section(firstNewStation.getId(), bangbae.getId(), lineId, 5);
 
         // when
-        SectionChange sectionChange = sections.addSection(section);
+        sections.addSection(section);
+        SectionChange sectionChange = sections.findSectionChange();
 
         // then
         assertThat(sectionChange.getNewSections().size()).isEqualTo(1);
@@ -128,7 +132,8 @@ public class SectionsTest {
         Section updatedSection = new Section(sadang.getId(), firstNewStation.getId(), lineId, 6);
 
         // when
-        SectionChange sectionChange = sections.addSection(section);
+        sections.addSection(section);
+        SectionChange sectionChange = sections.findSectionChange();
 
         // then
         assertThat(sectionChange.getNewSections().size()).isEqualTo(1);
@@ -187,7 +192,8 @@ public class SectionsTest {
         Station sadang = new Station(1L, "사당");
 
         // when
-        SectionChange sectionChange = sections.removeStation(sadang.getId());
+        sections.removeStation(sadang.getId());
+        SectionChange sectionChange = sections.findSectionChange();
 
         // then
         assertThat(sectionChange.getDeletedSections().size()).isEqualTo(1);
@@ -202,7 +208,8 @@ public class SectionsTest {
         Station kangnam = new Station(5L, "강남");
 
         // when
-        SectionChange sectionChange = sections.removeStation(kangnam.getId());
+        sections.removeStation(kangnam.getId());
+        SectionChange sectionChange = sections.findSectionChange();
 
         // then
         assertThat(sectionChange.getDeletedSections().size()).isEqualTo(1);
@@ -220,7 +227,8 @@ public class SectionsTest {
         Section expectedUpdateSection = new Section(sadang.getId(), seocho.getId(), lineId, 20);
 
         // when
-        SectionChange sectionChange = sections.removeStation(bangbae.getId());
+        sections.removeStation(bangbae.getId());
+        SectionChange sectionChange = sections.findSectionChange();
         Section actualUpdateSection = sectionChange.getUpdatedSections().get(0);
 
         // then

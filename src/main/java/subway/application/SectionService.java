@@ -44,9 +44,9 @@ public class SectionService {
         Section newSection = new Section(upBoundStationId, downBoundStationId, lineId, distance);
 
         Sections sections = new Sections(sectionDao.findByLineId(lineId));
-        SectionChange sectionChange = sections.addSection(newSection);
+        sections.addSection(newSection);
 
-        saveSectionChange(sectionChange);
+        saveSectionChange(sections.findSectionChange());
         return SectionResponse.of(
                 sectionDao.findByStationsIdAndLineId(upBoundStationId, downBoundStationId, lineId)
         );
@@ -59,9 +59,9 @@ public class SectionService {
                 .orElseThrow(() -> new NotFoundException("해당하는 라인이 존재하지 않습니다."));
 
         Sections sections = new Sections(sectionDao.findByLineId(lineId));
-        SectionChange sectionChange = sections.removeStation(stationId);
+        sections.removeStation(stationId);
 
-        saveSectionChange(sectionChange);
+        saveSectionChange(sections.findSectionChange());
     }
 
     public void saveSectionChange(SectionChange sectionChange) {
