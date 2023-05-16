@@ -34,17 +34,15 @@ public class LineServiceImpl implements LineService {
         List<Sections> subwaySections = new ArrayList<>();
 
         for (final Line line : lines) {
-            final List<Section> sectionsOfLine = sectionRepository.findAllSectionOf(line);
+            final List<Section> sections = sectionRepository.findAllSectionOf(line);
             final Graph newGraph = new SubwayGraph();
 
-            final List<Long> allStationIds = sectionRepository.findAllStationIdsOf(line);
-
-            for (final Long stationId : allStationIds) {
+            for (final Long stationId : sectionRepository.findAllStationIds(line)) {
                 final Station station = stationRepository.findById(stationId);
                 newGraph.addStation(station);
             }
 
-            for (final Section section : sectionsOfLine) {
+            for (final Section section : sections) {
                 final Station upStation = section.getUpStation();
                 final Station downStation = section.getDownStation();
                 final int distance = section.getDistance();
@@ -53,9 +51,7 @@ public class LineServiceImpl implements LineService {
                 newGraph.setSectionDistance(edge, distance);
             }
 
-            Sections sections = new Sections(line, newGraph);
-            subwaySections.add(sections);
-            System.out.println("graph = " + newGraph);
+            subwaySections.add(new Sections(line, newGraph));
         }
 
         return new Subway(subwaySections);
@@ -108,6 +104,7 @@ public class LineServiceImpl implements LineService {
     @Override
     public LineResponse addStation(final Long id, final SectionCreateRequest request) {
         final Subway subway = findSubway();
+
         final Line line = lineRepository.findById(id);
 
         final Station upStation = stationRepository.findById(request.getUpStationId());
@@ -124,11 +121,8 @@ public class LineServiceImpl implements LineService {
         final int currentDistance = subway.findDistanceBetween(line, upStation, downStation); // upStation ~ downStation
         final int updatedDistance = currentDistance - distance; // newStation ~ downStation
 
-        // add new sections created
         sectionRepository.save(line.getId(), new Section(id, upStation, newStation, distance));
         sectionRepository.save(line.getId(), new Section(id, newStation, downStation, updatedDistance));
-
-        // delete old section
         sectionRepository.delete(line.getId(), new Section(id, upStation, downStation, currentDistance));
 
         // query stations in order to create line response

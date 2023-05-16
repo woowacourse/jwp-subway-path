@@ -70,7 +70,7 @@ public class DbSectionRepository implements SectionRepository {
     }
 
     @Override
-    public List<Long> findAllStationIdsOf(final Line line) {
+    public List<Long> findAllStationIds(final Line line) {
         return new ArrayList<>(sectionDao.findAllStationIdsOf(line.getId()));
     }
 }

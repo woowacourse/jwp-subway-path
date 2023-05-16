@@ -9,10 +9,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @Repository
 public class SectionH2Dao implements SectionDao {
@@ -92,20 +90,13 @@ public class SectionH2Dao implements SectionDao {
     }
 
     @Override
-    public Set<Long> findAllStationIdsOf(final Long lineId) {
-        final String sql = "SELECT up_station_id, down_station_id FROM section WHERE line_id = :lineId";
+    public List<Long> findAllStationIdsOf(final Long lineId) {
+        final String sql = "SELECT DISTINCT station_id FROM (" +
+                "SELECT up_station_id AS station_id FROM section WHERE line_id = :lineId  UNION " +
+                "SELECT down_station_id AS station_id FROM section WHERE line_id = :lineId" +
+                ") AS all_station_ids";
         final Map<String, Long> parameter = Map.of("lineId", lineId);
-        final List<List<Long>> stationIds = namedParameterJdbcTemplate.query(sql, parameter, (resultSet, rowNum) -> {
-            final long upStationId = resultSet.getLong("up_station_id");
-            final long downStationId = resultSet.getLong("down_station_id");
-            return List.of(upStationId, downStationId);
-        });
-        Set<Long> allStationIds = new HashSet<>();
-
-        for (final List<Long> stationId : stationIds) {
-            allStationIds.addAll(stationId);
-        }
-
-        return allStationIds;
+        final List<Long> stationIds = namedParameterJdbcTemplate.queryForList(sql, parameter, Long.class);
+        return stationIds;
     }
 }

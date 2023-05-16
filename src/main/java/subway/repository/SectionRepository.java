@@ -18,6 +18,6 @@ public interface SectionRepository {
 
     Long findStationIdAfter(Long lineId, Long stationId);
 
-    List<Long> findAllStationIdsOf(Line line);
+    List<Long> findAllStationIds(Line line);
 
 }

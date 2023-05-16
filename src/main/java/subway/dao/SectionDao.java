@@ -3,7 +3,6 @@ package subway.dao;
 import subway.entity.SectionEntity;
 
 import java.util.List;
-import java.util.Set;
 
 public interface SectionDao {
     SectionEntity insert(SectionEntity sectionEntity);
@@ -18,5 +17,5 @@ public interface SectionDao {
 
     Long findStationIdAfter(Long lineId, Long stationId);
 
-    Set<Long> findAllStationIdsOf(Long lineId);
+    List<Long> findAllStationIdsOf(Long lineId);
 }
