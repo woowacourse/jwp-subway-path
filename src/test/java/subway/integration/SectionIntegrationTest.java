@@ -1,4 +1,4 @@
-package subway.controller;
+package subway.integration;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,17 +9,19 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.request.EndSectionRequest;
-import subway.dto.request.InitSectionRequest;
 import subway.dto.request.SectionRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/schema.sql")
-@DisplayName("SectionController는 ")
-class SectionControllerTest {
+@DisplayName("노선을 구성하는 구간들에 대한 기능")
+class SectionIntegrationTest {
 
     @LocalServerPort
-    int port;
+    private int port;
+    private long 잠실나루 = 1L;
+    private long 잠실 = 2L;
+    private long 강변 = 3L;
+    private long _2호선 = 2L;
 
     @BeforeEach
     public void setUp() {
@@ -29,47 +31,39 @@ class SectionControllerTest {
     @DisplayName("처음 노선에 구간을 등록할 수 있다.")
     @Test
     void createInitSections() {
-        InitSectionRequest request = new InitSectionRequest(2L, 1L, 2L, 10);
+        SectionRequest request = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().post("/lines/2/init-sections")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("노선에 역을 추가할 수 있다.")
+    @DisplayName("노선을 구성하는 역 사이에 역을 추가할 수 있다.")
     @Test
     void createSection() {
-        // 3L 강변
-        // 2L 잠실
-        // 1L 잠실나루
-
-        InitSectionRequest initRequest = new InitSectionRequest(2L, 3L, 2L, 10);
+        //given
+        SectionRequest initRequest = new SectionRequest(_2호선, 강변, 잠실, 10);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
-                .when().post("/lines/2/init-sections")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        SectionRequest mainRequest = new SectionRequest(
-                2L,
-                1L,
-                3L,
-                2L,
-                3,
-                7);
+        // then
+        SectionRequest mainRequest = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
-                .when().post("/lines/2/section")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
@@ -77,73 +71,58 @@ class SectionControllerTest {
     @DisplayName("노선에 종착역을 추가할 수 있다.")
     @Test
     void createEndSection() {
-        // 3L 강변
-        // 2L 잠실
-        // 1L 잠실나루
-
-        InitSectionRequest initRequest = new InitSectionRequest(2L, 1L, 2L, 10);
+        // given
+        SectionRequest initRequest = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest)
-                .when().post("/lines/2/init-sections")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        EndSectionRequest mainRequest = new EndSectionRequest(
-                2L,
-                3L,
-                1L,
-                5
-        );
+        // then
+        SectionRequest mainRequest = new SectionRequest(_2호선, 강변, 잠실나루, 3);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(mainRequest)
-                .when().post("/lines/2/end-section")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
     }
 
-    @DisplayName("노선에서 하나의 역을 제거할 수 있다.")
+    @DisplayName("노선에서 중간에 위치하는 하나의 역을 제거할 수 있다.")
     @Test
     void deleteSection() {
-        // 3L 강변
-        // 2L 잠실
-        // 1L 잠실나루
-
-        InitSectionRequest initRequest1 = new InitSectionRequest(2L, 3L, 2L, 10);
+        // given
+        SectionRequest initRequest1 = new SectionRequest(_2호선, 강변, 잠실, 10);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post("/lines/2/init-sections")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        SectionRequest initRequest2 = new SectionRequest(
-                2L,
-                1L,
-                3L,
-                2L,
-                3,
-                7);
+        SectionRequest mainRequest = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(initRequest2)
-                .when().post("/lines/2/section")
+                .body(mainRequest)
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
+        // then
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/2/section?station-id=1")
+                .when().delete(String.format("/lines/%d/sections?station-id=%d", _2호선, 잠실나루))
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -152,40 +131,32 @@ class SectionControllerTest {
     @DisplayName("노선에서 하나의 종착역을 제거할 수 있다.")
     @Test
     void deleteEndSection() {
-        // 3L 강변
-        // 2L 잠실
-        // 1L 잠실나루
-
-        InitSectionRequest initRequest1 = new InitSectionRequest(2L, 3L, 2L, 10);
+        // given
+        SectionRequest initRequest1 = new SectionRequest(_2호선, 강변, 잠실, 10);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post("/lines/2/init-sections")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        SectionRequest initRequest2 = new SectionRequest(
-                2L,
-                1L,
-                3L,
-                2L,
-                3,
-                7);
+        SectionRequest mainRequest = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(initRequest2)
-                .when().post("/lines/2/section")
+                .body(mainRequest)
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
+        // then
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/2/end-section?station-id=3")
+                .when().delete(String.format("/lines/%d/sections?station-id=%d", _2호선, 강변))
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }
@@ -193,24 +164,22 @@ class SectionControllerTest {
     @DisplayName("노선에서 마지막 남은 두개의 역을 제거할 수 있다.")
     @Test
     void deleteLastSection() {
-        // 3L 강변
-        // 2L 잠실
-        // 1L 잠실나루
-
-        InitSectionRequest initRequest1 = new InitSectionRequest(2L, 3L, 2L, 10);
+        // given
+        SectionRequest initRequest1 = new SectionRequest(_2호선, 강변, 잠실, 10);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post("/lines/2/init-sections")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
+        // then
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().delete("/lines/2/last-sections?upward-id=3&downward-id=2")
+                .when().delete(String.format("/lines/%d/sections?station-id=%d", _2호선, 강변))
                 .then()
                 .statusCode(HttpStatus.NO_CONTENT.value());
     }

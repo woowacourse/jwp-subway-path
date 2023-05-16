@@ -21,6 +21,14 @@ public class Distance {
         }
     }
 
+    public boolean isGreaterThan(Distance other) {
+        return distance > other.distance;
+    }
+
+    public Distance add(Distance distance) {
+        return new Distance(this.distance + distance.distance);
+    }
+
     public int getDistance() {
         return distance;
     }

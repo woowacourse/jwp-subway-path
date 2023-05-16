@@ -5,12 +5,12 @@ import java.util.Objects;
 public class SectionEntity {
 
     private final Long id;
+    private final long lineId;
     private final Long upwardId;
     private final Long downwardId;
     private final Integer distance;
-    private final long lineId;
 
-    public SectionEntity(Long id, Long upwardId, Long downwardId, Integer distance, long lineId) {
+    public SectionEntity(Long id, long lineId, Long upwardId, Long downwardId, Integer distance) {
         this.id = id;
         this.upwardId = upwardId;
         this.downwardId = downwardId;
@@ -36,17 +36,6 @@ public class SectionEntity {
 
     public long getLineId() {
         return lineId;
-    }
-
-    @Override
-    public String toString() {
-        return "SectionEntity{" +
-                "id=" + id +
-                ", upwardId=" + upwardId +
-                ", downwardId=" + downwardId +
-                ", distance=" + distance +
-                ", lineId=" + lineId +
-                '}';
     }
 
     @Override

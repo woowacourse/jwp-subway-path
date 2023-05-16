@@ -1,4 +1,4 @@
-package subway.controller;
+package subway.integration;
 
 import io.restassured.RestAssured;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,16 +9,23 @@ import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
-import subway.dto.request.InitSectionRequest;
 import subway.dto.request.SectionRequest;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/schema.sql")
 @DisplayName("LineStationsController는 ")
-class LineStationsControllerTest {
+class LineStationsIntegrationTest {
 
     @LocalServerPort
     int port;
+    private long 잠실나루 = 1L;
+    private long 잠실 = 2L;
+    private long 강변 = 3L;
+    private long 노량진 = 4L;
+    private long 용산 = 5L;
+    private long 서울역 = 6L;
+    private long _1호선 = 1L;
+    private long _2호선 = 2L;
 
     @BeforeEach
     public void setUp() {
@@ -28,103 +35,81 @@ class LineStationsControllerTest {
     @DisplayName("노선을 순서대로 조회할 수 있다.")
     @Test
     void readLineStations() {
-        InitSectionRequest initRequest = new InitSectionRequest(2L, 3L, 2L, 10);
+        //given
+        SectionRequest initRequest1 = new SectionRequest(_2호선, 강변, 잠실, 10);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(initRequest)
-                .when().post("/lines/2/init-sections")
+                .body(initRequest1)
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        SectionRequest mainRequest = new SectionRequest(
-                2L,
-                1L,
-                3L,
-                2L,
-                3,
-                7);
+        SectionRequest initRequest2 = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
 
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(mainRequest)
-                .when().post("/lines/2/section")
+                .body(initRequest2)
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
+        //then
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/line-stations/2")
-                .then().log().all()
+                .when().get(String.format("/line-stations/%d", _2호선))
+                .then()
                 .statusCode(HttpStatus.OK.value());
     }
 
     @DisplayName("전체 노선을 순서대로 조회할 수 있다.")
     @Test
     void readAllLinesStations() {
-
-        //4L 노량진 하행
-        //5L 용산
-        //6L 서울역 상행
-        InitSectionRequest initRequest1 = new InitSectionRequest(1L, 6L, 4L, 10);
-
+        //given
+        SectionRequest initRequest1 = new SectionRequest(_1호선, 서울역, 노량진, 10);
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest1)
-                .when().post("/lines/1/init-sections")
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        SectionRequest initRequest2 = new SectionRequest(
-                1L,
-                5L,
-                6L,
-                4L,
-                3,
-                7);
-
+        SectionRequest initRequest2 = new SectionRequest(_1호선, 용산, 노량진, 7);
         RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest2)
-                .when().post("/lines/1/section")
+                .when().post(String.format("/lines/%d/sections", _1호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        InitSectionRequest initRequest3 = new InitSectionRequest(2L, 3L, 2L, 10);
-
+        SectionRequest initRequest3 = new SectionRequest(_2호선, 강변, 잠실, 10);
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest3)
-                .when().post("/lines/2/init-sections")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
-        SectionRequest initRequest4 = new SectionRequest(
-                2L,
-                1L,
-                3L,
-                2L,
-                3,
-                7);
-
+        SectionRequest initRequest4 = new SectionRequest(_2호선, 잠실나루, 잠실, 7);
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(initRequest4)
-                .when().post("/lines/2/section")
+                .when().post(String.format("/lines/%d/sections", _2호선))
                 .then()
                 .statusCode(HttpStatus.CREATED.value());
 
+        //then
         RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/line-stations")
-                .then().log().all()
+                .then()
                 .statusCode(HttpStatus.OK.value());
     }
 }

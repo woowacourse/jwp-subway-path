@@ -1,28 +1,20 @@
 package subway.dto.request;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategies;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
-@JsonNaming(PropertyNamingStrategies.KebabCaseStrategy.class)
 public class SectionDeleteRequest {
 
-    private Long stationId;
     private Long lineId;
+    private Long stationId;
 
-    public SectionDeleteRequest() {
-
-    }
-
-    public SectionDeleteRequest(Long stationId, Long lineId) {
-        this.stationId = stationId;
+    public SectionDeleteRequest(Long lineId, Long stationId) {
         this.lineId = lineId;
-    }
-
-    public Long getStationId() {
-        return stationId;
+        this.stationId = stationId;
     }
 
     public Long getLineId() {
         return lineId;
+    }
+
+    public Long getStationId() {
+        return stationId;
     }
 }

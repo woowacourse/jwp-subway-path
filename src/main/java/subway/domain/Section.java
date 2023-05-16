@@ -5,43 +5,37 @@ import java.util.Objects;
 public class Section {
 
     private final Long id;
+    private final Line line;
     private final Station upward;
     private final Station downward;
     private final Distance distance;
-    private final Line line;
 
-    private Section(Long id, Station upward, Station downward, Distance distance, Line line) {
+    private Section(Long id, Line line, Station upward, Station downward, Distance distance) {
         validateCorrectStationInputs(upward, downward);
         validateSameStations(upward, downward);
         this.id = id;
+        this.line = line;
         this.upward = upward;
         this.downward = downward;
         this.distance = distance;
-        this.line = line;
     }
 
-    public static Section of(long id, Station upward, Station downward, int distance, Line line) {
-        return new Section(id, upward, downward, Distance.from(distance), line);
+    public static Section of(long id, Line line, Station upward, Station downward, int distance) {
+        return new Section(id, line, upward, downward, Distance.from(distance));
     }
 
-    public static Section of(Station upward, Station downward, int distance, Line line) {
-        return new Section(null, upward, downward, Distance.from(distance), line);
+    public static Section of(Line line, Station upward, Station downward, int distance) {
+        return new Section(null, line, upward, downward, Distance.from(distance));
     }
 
-    public static Section ofEmptyUpwardSection(Station downward, Line line) {
-        return new Section(null, makeEmptyUpwardStation(line), downward, Distance.from(0), line);
-    }
-
-    private static Station makeEmptyUpwardStation(Line line) {
-        return Station.from(line.getName() + " 상행 종착역");
-    }
-
-    public static Section ofEmptyDownwardSection(Station upward, Line line) {
-        return new Section(null, upward, makeEmptyDownwardStation(line), Distance.from(0), line);
-    }
-
-    private static Station makeEmptyDownwardStation(Line line) {
-        return Station.from(line.getName() + " 하행 종착역");
+    public static Section ofCombinedTwoSection(Line line, Section upwardSection, Section downwardSection) {
+        return new Section(
+                null,
+                line,
+                upwardSection.upward,
+                downwardSection.downward,
+                upwardSection.distance.add(downwardSection.distance)
+        );
     }
 
     private void validateCorrectStationInputs(Station upward, Station downward) {
@@ -60,12 +54,28 @@ public class Section {
         return this.upward.equals(upward) && this.downward.equals(downward);
     }
 
-    public boolean isSameDistance(int distance) {
-        return this.distance.equals(Distance.from(distance));
+    public boolean isSameLine(Line line) {
+        return this.line.equals(line);
+    }
+
+    public boolean isUpward(Station station) {
+        return this.upward.equals(station);
+    }
+
+    public boolean isDownward(Station station) {
+        return this.downward.equals(station);
+    }
+
+    public boolean hasGreaterDistanceThan(int distance) {
+        return this.distance.isGreaterThan(Distance.from(distance));
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Line getLine() {
+        return line;
     }
 
     public Station getUpward() {
@@ -80,46 +90,19 @@ public class Section {
         return distance.getDistance();
     }
 
-    public Line getLine() {
-        return line;
-    }
-
-    public boolean isSameLine(Line line) {
-        return this.line.equals(line);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Section section = (Section) o;
-        return Objects.equals(upward, section.upward)
+        return Objects.equals(line, section.line)
+                && Objects.equals(upward, section.upward)
                 && Objects.equals(downward, section.downward)
-                && Objects.equals(distance, section.distance)
-                && Objects.equals(line, section.line);
+                && Objects.equals(distance, section.distance);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(upward, downward, distance, line);
-    }
-
-    @Override
-    public String toString() {
-        return "Section{" +
-                "id=" + id +
-                ", upward=" + upward +
-                ", downward=" + downward +
-                ", distance=" + distance +
-                ", line=" + line +
-                '}';
-    }
-
-    public boolean isUpward(Station station) {
-        return this.upward.equals(station);
-    }
-
-    public boolean isDownward(Station station) {
-        return this.downward.equals(station);
+        return Objects.hash(line, upward, downward, distance);
     }
 }

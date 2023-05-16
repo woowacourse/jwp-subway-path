@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.dto.response.LineStationsResponse;
-import subway.dto.response.StationResponse;
 import subway.service.SectionService;
 
 import java.util.List;
@@ -22,9 +21,9 @@ public class LineStationsController {
     }
 
     @GetMapping("/{lineId}")
-    public ResponseEntity<List<StationResponse>> readAllStationsOfLine(@PathVariable("lineId") Long lineId) {
-        List<StationResponse> stationResponses = sectionService.readAllStationsOfLine(lineId);
-        return ResponseEntity.ok().body(stationResponses);
+    public ResponseEntity<LineStationsResponse> readAllStationsOfLine(@PathVariable Long lineId) {
+        LineStationsResponse lineStationsResponse = sectionService.readAllStationsOfLine(lineId);
+        return ResponseEntity.ok().body(lineStationsResponse);
     }
 
     @GetMapping
