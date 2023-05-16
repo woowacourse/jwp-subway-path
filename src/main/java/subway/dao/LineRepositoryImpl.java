@@ -33,21 +33,13 @@ public class LineRepositoryImpl implements LineRepository {
     @Override
     public List<LineWithSectionRes> findWithSectionsByLineId(final Long id) {
         final List<LineWithSection> lineWithSections = lineDao.findByLindIdWithSections(id);
-        return lineWithSections.stream()
-            .map(section -> new LineWithSectionRes(section.getLineId(), section.getLineName(), section.getLineColor(),
-                section.getSourceStationId(), section.getSourceStationName(), section.getTargetStationId(),
-                section.getTargetStationName(), section.getDistance()))
-            .collect(Collectors.toUnmodifiableList());
+        return convertLineWithSectionRes(lineWithSections);
     }
 
     @Override
     public List<LineWithSectionRes> findAllWithSections() {
         final List<LineWithSection> lineWithSections = lineDao.findAllWithSections();
-        return lineWithSections.stream()
-            .map(section -> new LineWithSectionRes(section.getLineId(), section.getLineName(), section.getLineColor(),
-                section.getSourceStationId(), section.getSourceStationName(), section.getTargetStationId(),
-                section.getTargetStationName(), section.getDistance()))
-            .collect(Collectors.toUnmodifiableList());
+        return convertLineWithSectionRes(lineWithSections);
     }
 
     @Override
@@ -77,5 +69,20 @@ public class LineRepositoryImpl implements LineRepository {
     @Override
     public boolean existByName(final String name) {
         return lineDao.existByName(name);
+    }
+
+    @Override
+    public List<LineWithSectionRes> getPossibleSections(final Long sourceStationId, final Long targetStationId) {
+        final List<LineWithSection> lineWithSections = lineDao.getAllLineSectionsBySourceAndStationId(
+            sourceStationId, targetStationId);
+        return convertLineWithSectionRes(lineWithSections);
+    }
+
+    private List<LineWithSectionRes> convertLineWithSectionRes(final List<LineWithSection> lineWithSections) {
+        return lineWithSections.stream()
+            .map(section -> new LineWithSectionRes(section.getLineId(), section.getLineName(), section.getLineColor(),
+                section.getSourceStationId(), section.getSourceStationName(), section.getTargetStationId(),
+                section.getTargetStationName(), section.getDistance()))
+            .collect(Collectors.toUnmodifiableList());
     }
 }

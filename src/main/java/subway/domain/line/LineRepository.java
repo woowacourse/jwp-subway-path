@@ -17,4 +17,6 @@ public interface LineRepository {
     Line findById(final Long id);
 
     boolean existByName(final String name);
+
+    List<LineWithSectionRes> getPossibleSections(final Long sourceStationId, final Long targetStationId);
 }

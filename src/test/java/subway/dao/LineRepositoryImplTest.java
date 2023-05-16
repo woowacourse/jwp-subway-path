@@ -189,4 +189,29 @@ class LineRepositoryImplTest {
         assertThat(lineRepository.existByName(name))
             .isSameAs(expected);
     }
+
+    @Test
+    @DisplayName("출발역에서 도착역으로 갈 수 있는 노선들이 가진 모든 구간 정보를 구한다.")
+    void getPossibleSections() {
+        // given
+        when(lineDao.getAllLineSectionsBySourceAndStationId(anyLong(), anyLong()))
+            .thenReturn(이호선_팔호선_구간());
+
+        // when
+        final List<LineWithSectionRes> lineWithSections = lineRepository.getPossibleSections(1L, 7L);
+
+        // then
+        assertThat(lineWithSections)
+            .extracting(LineWithSectionRes::getLineId, LineWithSectionRes::getLineName,
+                LineWithSectionRes::getLineColor,
+                LineWithSectionRes::getSourceStationId, LineWithSectionRes::getSourceStationName,
+                LineWithSectionRes::getTargetStationId, LineWithSectionRes::getTargetStationName,
+                LineWithSectionRes::getDistance)
+            .contains(
+                tuple(1L, "이호선", "bg-green-600", 1L, "잠실역", 2L, "선릉역", 10),
+                tuple(1L, "이호선", "bg-green-600", 2L, "선릉역", 3L, "강남역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 5L, "복정역", 6L, "남위례역", 10),
+                tuple(2L, "팔호선", "bg-pink-600", 6L, "남위례역", 7L, "산성역", 10)
+            );
+    }
 }

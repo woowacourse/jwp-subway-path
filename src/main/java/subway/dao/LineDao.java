@@ -19,11 +19,24 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<LineEntity> lineEntityMapper = (rs, rowNum) ->
         new LineEntity(
             rs.getLong("id"),
             rs.getString("name"),
             rs.getString("color")
+        );
+
+    private final RowMapper<LineWithSection> lineWithSectionMapper = (result, count) ->
+        new LineWithSection(
+            result.getLong("id"),
+            result.getLong("line_id"),
+            result.getString("line_name"),
+            result.getString("line_color"),
+            result.getLong("source_station_id"),
+            result.getString("source_station_name"),
+            result.getLong("target_station_id"),
+            result.getString("target_station_name"),
+            result.getInt("distance")
         );
 
     public LineDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
@@ -44,7 +57,7 @@ public class LineDao {
     public Optional<LineEntity> findById(final Long id) {
         final String sql = "SELECT id, name, color FROM line WHERE id = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, lineEntityMapper, id));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
@@ -60,17 +73,7 @@ public class LineDao {
             + "INNER JOIN station sta2 ON sec.target_station_id = sta2.id "
             + "WHERE line_id = ?";
 
-        return jdbcTemplate.query(sql, (result, count) ->
-            new LineWithSection(
-                result.getLong("id"),
-                result.getLong("line_id"),
-                result.getString("line_name"),
-                result.getString("line_color"),
-                result.getLong("source_station_id"),
-                result.getString("source_station_name"),
-                result.getLong("target_station_id"),
-                result.getString("target_station_name"),
-                result.getInt("distance")), id);
+        return jdbcTemplate.query(sql, lineWithSectionMapper, id);
     }
 
     public List<LineWithSection> findAllWithSections() {
@@ -82,17 +85,7 @@ public class LineDao {
             + "INNER JOIN station sta1 ON sec.source_station_id = sta1.id "
             + "INNER JOIN station sta2 ON sec.target_station_id = sta2.id ";
 
-        return jdbcTemplate.query(sql, (result, count) ->
-            new LineWithSection(
-                result.getLong("id"),
-                result.getLong("line_id"),
-                result.getString("line_name"),
-                result.getString("line_color"),
-                result.getLong("source_station_id"),
-                result.getString("source_station_name"),
-                result.getLong("target_station_id"),
-                result.getString("target_station_name"),
-                result.getInt("distance")));
+        return jdbcTemplate.query(sql, lineWithSectionMapper);
     }
 
     public int update(final LineEntity lineEntity) {
@@ -108,5 +101,22 @@ public class LineDao {
         final String sql = "SELECT COUNT(*) FROM line WHERE name = ?";
         final long count = jdbcTemplate.queryForObject(sql, Long.class, name);
         return count > 0;
+    }
+
+    public List<LineWithSection> getAllLineSectionsBySourceAndStationId(final Long sourceStationId,
+                                                                        final Long targetStationId) {
+        final String sql = "SELECT sec.id, l.id AS line_id, l.name AS line_name, l.color AS line_color, "
+            + "sec.source_station_id, sta1.name AS source_station_name, "
+            + "sec.target_station_id, sta2.name AS target_station_name, sec.distance "
+            + "FROM line l "
+            + "INNER JOIN section sec ON l.id = sec.line_id "
+            + "INNER JOIN station sta1 ON sec.source_station_id = sta1.id "
+            + "INNER JOIN station sta2 ON sec.target_station_id = sta2.id "
+            + "WHERE line_id IN ( "
+            + "    SELECT DISTINCT s.line_id "
+            + "    FROM section s "
+            + "    WHERE s.source_station_id = ? OR s.target_station_id = ?)";
+
+        return jdbcTemplate.query(sql, lineWithSectionMapper, sourceStationId, targetStationId);
     }
 }
