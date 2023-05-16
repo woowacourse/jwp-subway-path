@@ -1,11 +1,10 @@
 package subway.domain;
 
-import subway.domain.Section;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class SectionChange {
+
     private List<Section> newSections;
     private List<Section> updatedSections;
     private List<Section> deletedSections;
