@@ -298,4 +298,14 @@ class SectionsTest {
         Section _2호선_신림_낙성대_거리10 = sections.getSections().get(0);
         assertThat(_2호선_신림_낙성대_거리10.getDistance()).isEqualTo(new Distance(10));
     }
+
+    @Test
+    void 두_Sections에서_중복을_제거한다() {
+        Sections sections = new Sections(List.of(_2호선_신림_봉천_거리5, _2호선_봉천_낙성대_거리5));
+        Sections otherSections = new Sections(List.of(_2호선_서울대입구_신림_거리10, _2호선_신림_봉천_거리5, _2호선_봉천_낙성대_거리5));
+
+        List<Section> nonDuplicateSections = sections.removeDuplicate(otherSections);
+
+        assertThat(nonDuplicateSections).containsExactly(_2호선_서울대입구_신림_거리10);
+    }
 }

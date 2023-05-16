@@ -39,7 +39,7 @@ public class Sections {
         return newSection;
     }
 
-    public void addTwoSections(final Section upSection, final Section downSection) {
+    public Sections addTwoSections(final Section upSection, final Section downSection) {
         validateTwoSection(upSection, downSection);
 
         Section originSection = findSectionBy(upSection, downSection);
@@ -48,7 +48,7 @@ public class Sections {
             sections.remove(originSection);
             sections.add(upSection);
             sections.add(downSection);
-            return;
+            return new Sections(this.sections);
         }
         throw new IllegalAddSectionException();
     }
@@ -248,6 +248,13 @@ public class Sections {
                 .findFirst();
 
         return foundSection.orElseThrow(SectionNotFoundException::new);
+    }
+
+    public List<Section> removeDuplicate(final Sections other) {
+        Set<Section> nonDuplicateSections = new HashSet<>(other.sections);
+        nonDuplicateSections.removeAll(this.sections);
+
+        return List.copyOf(nonDuplicateSections);
     }
 
     public List<Section> getSections() {
