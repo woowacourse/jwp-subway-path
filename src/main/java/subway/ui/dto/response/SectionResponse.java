@@ -25,10 +25,6 @@ public class SectionResponse {
 		return new SectionResponse(null, lineName, upStationName, downStationName, distance);
 	}
 
-	public static SectionResponse of2(final String lineName, final String upStationName, final String downStationName, final long distance){
-		return new SectionResponse(1L, lineName, upStationName, downStationName, distance);
-	}
-
 	public static List<SectionResponse> of(List<Section> sections) {
 		return sections.stream()
 			.map(section -> new SectionResponse(

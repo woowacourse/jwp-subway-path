@@ -30,17 +30,17 @@ public class SectionService {
 	}
 
 	public SectionResponse createSection(final SectionRequest sectionRequest) {
+		final Sections sections = new Sections(sectionRepository.findAllByLineName(sectionRequest.getLineName()));
 		final Section section = Section.of(
 			sectionRequest.getLineName(),
 			sectionRequest.getUpStationName(),
 			sectionRequest.getDownStationName(),
 			sectionRequest.getDistance()
 		);
-		final Sections sections = new Sections(sectionRepository.findAllByLineName(section.getLine().getName()));
 		sections.addSection(section);
-		sectionRepository.createSection(section.getLine().getName(), sections.getSections());
-		final Long sectionId = sectionRepository.findIdByUpDown(section.getUpStation().getName(),
-			section.getDownStation().getName()).getId();
+		sectionRepository.createSection(sectionRequest.getLineName(), sections.getSections());
+		final Long sectionId = sectionRepository.findIdByUpDown(sectionRequest.getUpStationName(),
+			sectionRequest.getDownStationName()).getId();
 		return new SectionResponse(sectionId, section.getLine().getName(), section.getUpStation().getName(),
 			section.getDownStation().getName(), section.getDistance());
 	}
@@ -63,6 +63,7 @@ public class SectionService {
 
 	public void deleteSection(final Long lineId, final SectionDeleteRequest deleteRequest) {
 		final String lineName = lineRepository.findById(lineId).getName();
-		sectionRepository.deleteBySection(lineName, deleteRequest.getUpStationName(), deleteRequest.getDownStationName());
+		sectionRepository.deleteBySection(lineName, deleteRequest.getUpStationName(),
+			deleteRequest.getDownStationName());
 	}
 }
