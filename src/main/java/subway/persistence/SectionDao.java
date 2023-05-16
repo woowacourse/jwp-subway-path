@@ -9,6 +9,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.exception.DuplicatedSectionException;
 import subway.exception.LineNotFoundException;
+import subway.exception.SectionNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 
@@ -53,26 +54,23 @@ public class SectionDao {
         return result;
     }
 
+    public SectionEntity findById(final long id) {
+        final String sql = "SELECT * FROM section WHERE id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, id);
+        } catch (EmptyResultDataAccessException e) {
+            throw new SectionNotFoundException();
+        }
+    }
+
+    public List<SectionEntity> findByLineIdAndNextStationId(final Long lineId, final Long nextStationId) {
+        final String sql = "SELECT * FROM section WHERE line_id = ? AND next_station_id = ?";
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, nextStationId);
+    }
+
     public void delete(final SectionEntity sectionEntity) {
         final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.update(sql, sectionEntity.getId());
-    }
-
-    public List<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(final Long lineId, final Long stationId) {
-        final String sql = "SELECT * FROM section WHERE line_id = ? AND previous_station_id = ? OR next_station_id = ?";
-        List<SectionEntity> result = jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationId, stationId);
-        validateSection(result);
-        return result;
-    }
-
-    private static void validateSection(final List<SectionEntity> result) {
-        if (result.isEmpty()) {
-            throw new IllegalArgumentException("해당 노선에 해당 역이 존재하지 않습니다.");
-        }
-
-        if (result.size() > 2) {
-            throw new RuntimeException("간선의 정보가 잘못되었습니다.");
-        }
     }
 
     public List<SectionDetailEntity> findSectionDetail() {
