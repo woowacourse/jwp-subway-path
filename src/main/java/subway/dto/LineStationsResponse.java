@@ -1,28 +1,31 @@
 package subway.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import subway.domain.Line;
 import subway.domain.Station;
 
 public class LineStationsResponse {
-    private final Line line;
-    private final List<Station> lineStations;
+    private final LineResponse line;
+    private final List<StationResponse> lineStations;
 
     private LineStationsResponse(Line line, List<Station> lineStations) {
-        this.line = line;
-        this.lineStations = lineStations;
+        this.line = LineResponse.of(line);
+        this.lineStations = lineStations.stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toUnmodifiableList());
     }
 
     public static LineStationsResponse of(Line line, List<Station> lineStations) {
         return new LineStationsResponse(line, lineStations);
     }
 
-    public Line getLine() {
+    public LineResponse getLine() {
         return line;
     }
 
-    public List<Station> getLineStations() {
+    public List<StationResponse> getLineStations() {
         return lineStations;
     }
 }

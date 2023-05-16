@@ -109,7 +109,7 @@ public class SectionService {
         Section splitTargetSection = sections.findSection(sourceStationId, targetStationId);
 
         if (splitTargetSection.hasShorterOrSameDistanceThan(distance)) {
-            throw new DomainException(ExceptionType.SECTION_CAN_NOT_BE_SPLITED);
+            throw new DomainException(ExceptionType.SECTION_CAN_NOT_BE_SPLIT);
         }
 
         sectionDao.deleteById(splitTargetSection.getId());
