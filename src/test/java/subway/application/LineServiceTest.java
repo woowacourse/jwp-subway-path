@@ -1,27 +1,21 @@
 package subway.application;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.context.annotation.Import;
 import subway.domain.Line;
-import subway.persistence.dao.LineDao;
-import subway.persistence.dao.SectionDao;
-import subway.persistence.dao.StationDao;
-import subway.persistence.repository.LineRepository;
-import subway.persistence.repository.StationRepository;
+import subway.integration.IntegrationTest;
 import subway.ui.request.SectionRequest;
 import subway.ui.request.StationRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static subway.integration.IntegrationFixture.*;
 
-@JdbcTest
-@Import({LineService.class, StationService.class, LineRepository.class, StationRepository.class, LineDao.class, StationDao.class, SectionDao.class})
-class LineServiceTest {
+class LineServiceTest extends IntegrationTest {
 
     @Autowired
     private LineService lineService;
@@ -31,15 +25,15 @@ class LineServiceTest {
     void registerLine() {
         final long lineId = 1L;
         final SectionRequest sectionRequest =
-                new SectionRequest("잠실", "강남", 10);
+                new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
 
         lineService.registerStation(lineId, sectionRequest);
 
         final Line line = lineService.findById(lineId);
         assertAll(
-                () -> assertThat(line.getSections().getSections().get(0).getBeforeStation().getName()).isEqualTo("잠실"),
-                () -> assertThat(line.getSections().getSections().get(0).getNextStation().getName()).isEqualTo("강남"),
-                () -> assertThat(line.getSections().getSections().get(0).getDistance().getValue()).isEqualTo(10)
+                () -> assertThat(line.getSections().getSections().get(0).getBeforeStation().getName()).isEqualTo(STATION_A.getName()),
+                () -> assertThat(line.getSections().getSections().get(0).getNextStation().getName()).isEqualTo(STATION_B.getName()),
+                () -> assertThat(line.getSections().getSections().get(0).getDistance().getValue()).isEqualTo(DISTANCE9.getValue())
         );
     }
 
@@ -48,9 +42,9 @@ class LineServiceTest {
     void unregisterLine() {
         final long lineId = 1L;
         final SectionRequest sectionRequest =
-                new SectionRequest("잠실", "강남", 10);
+                new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
         lineService.registerStation(lineId, sectionRequest);
-        final StationRequest stationRequest = new StationRequest("잠실");
+        final StationRequest stationRequest = new StationRequest(STATION_A.getName());
 
         lineService.unregisterStation(lineId, stationRequest);
 
@@ -67,8 +61,8 @@ class LineServiceTest {
         @Test
         void headDuplicate() {
             final long lineId = 1L;
-            final SectionRequest sectionRequest = new SectionRequest("잠실", "강남", 10);
-            final SectionRequest duplicateRequest = new SectionRequest("강남", "잠실", 8);
+            final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
+            final SectionRequest duplicateRequest = new SectionRequest(STATION_B.getName(), STATION_A.getName(), DISTANCE8.getValue());
 
             lineService.registerStation(lineId, sectionRequest);
 
@@ -79,8 +73,8 @@ class LineServiceTest {
         @Test
         void centralDuplicate() {
             final long lineId = 1L;
-            final SectionRequest sectionRequest = new SectionRequest("잠실", "강남", 10);
-            final SectionRequest duplicateRequest = new SectionRequest("잠실", "강남", 8);
+            final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
+            final SectionRequest duplicateRequest = new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE8.getValue());
 
             lineService.registerStation(lineId, sectionRequest);
 
@@ -91,9 +85,9 @@ class LineServiceTest {
         @Test
         void tailDuplicate() {
             final long lineId = 1L;
-            final SectionRequest sectionRequest1 = new SectionRequest("잠실", "강남", 10);
-            final SectionRequest sectionRequest2 = new SectionRequest("강남", "선릉", 7);
-            final SectionRequest duplicateRequest = new SectionRequest("선릉", "강남", 8);
+            final SectionRequest sectionRequest1 = new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE9.getValue());
+            final SectionRequest sectionRequest2 = new SectionRequest(STATION_B.getName(), STATION_C.getName(), DISTANCE7.getValue());
+            final SectionRequest duplicateRequest = new SectionRequest(STATION_C.getName(), STATION_B.getName(), DISTANCE8.getValue());
 
             lineService.registerStation(lineId, sectionRequest1);
             lineService.registerStation(lineId, sectionRequest2);
@@ -105,7 +99,7 @@ class LineServiceTest {
         @Test
         void duplicateNameRegister() {
             final long lineId = 1L;
-            final SectionRequest sectionRequest = new SectionRequest("잠실", "잠실", 10);
+            final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName(), STATION_A.getName(), DISTANCE9.getValue());
 
             assertThrows(IllegalArgumentException.class, () -> lineService.registerStation(lineId, sectionRequest));
         }
