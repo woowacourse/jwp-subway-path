@@ -1,5 +1,7 @@
 package subway.domain.fare;
 
+import java.util.Objects;
+
 public class SumDistance {
     private final int distance;
 
@@ -26,6 +28,23 @@ public class SumDistance {
 
     public boolean lessAndEqualsThan(final SumDistance distance) {
         return this.distance <= distance.distance;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final SumDistance that = (SumDistance) o;
+        return distance == that.distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
     }
 
     public int distance() {

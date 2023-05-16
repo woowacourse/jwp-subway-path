@@ -2,6 +2,7 @@ package subway.domain.section;
 
 import static subway.exception.ErrorCode.SECTION_DISTANCE;
 
+import java.util.Objects;
 import subway.exception.BadRequestException;
 
 public class SectionDistance {
@@ -40,6 +41,23 @@ public class SectionDistance {
         if (distance < MIN_DISTANCE || distance > MAX_DISTANCE) {
             throw new BadRequestException(SECTION_DISTANCE);
         }
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final SectionDistance that = (SectionDistance) o;
+        return distance == that.distance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(distance);
     }
 
     public int distance() {
