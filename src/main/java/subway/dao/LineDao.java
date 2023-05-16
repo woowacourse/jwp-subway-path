@@ -6,6 +6,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+import subway.dao.entity.LineEntity;
 import subway.domain.Line;
 import subway.domain.LineColor;
 import subway.domain.LineName;
@@ -27,26 +28,22 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
-                    rs.getLong("id"),
-                    new LineName(rs.getString("name")),
-                    new LineColor(rs.getString("color")),
-                    null,
-                    null,
-                    Collections.EMPTY_LIST
-            );
+    private RowMapper<LineEntity> rowMapper = (resultSet, rowNumber) -> new LineEntity(
+            resultSet.getLong("id"),
+            resultSet.getString("name"),
+            resultSet.getString("color")
+    );
 
     public Long save(final String lineName, final String lineColor) {
         return insertAction.executeAndReturnKey(new MapSqlParameterSource("name", lineName).addValue("color", lineColor)).longValue();
     }
 
-    public List<Line> findAll() {
+    public List<LineEntity> findAll() {
         String sql = "select id, name, color from lines";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Line> findById(Long id) {
+    public Optional<LineEntity> findById(Long id) {
         String sql = "select id, name, color from lines WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -55,7 +52,7 @@ public class LineDao {
         }
     }
 
-    public Optional<Line> findByName(final String lineName) {
+    public Optional<LineEntity> findByName(final String lineName) {
         final String sql = "SELECT id, name, color FROM lines WHERE name = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineName));
