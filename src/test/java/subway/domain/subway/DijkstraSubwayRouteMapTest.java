@@ -20,7 +20,7 @@ class DijkstraSubwayRouteMapTest {
 
     @Nested
     @DisplayName("최단 거리를 가지는 경로를 계산할 시")
-    class findShortestPath {
+    class FindShortestPath {
 
         final Station upward = new Station(1L, "잠실역");
         final Station middle = new Station(2L, "사당역");
@@ -40,7 +40,7 @@ class DijkstraSubwayRouteMapTest {
 
         @Test
         @DisplayName("올바른 역 정보가 전달되면 해당 경로 정보를 반환한다.")
-        void findShortestPathWithValidStations() {
+        void findShortestPath() {
             //given
             //when
             final Path shortestPath = routeMap.findShortestPath(upward, downward);
