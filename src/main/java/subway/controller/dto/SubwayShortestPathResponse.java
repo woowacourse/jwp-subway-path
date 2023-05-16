@@ -19,13 +19,13 @@ public class SubwayShortestPathResponse {
 
     public static SubwayShortestPathResponse of(Path path, Fare fare) {
         return new SubwayShortestPathResponse(
-                generateStaionResponses(path),
+                generateStationResponses(path),
                 path.getDistance().getValue(),
                 fare.getValue()
         );
     }
 
-    private static List<StationResponse> generateStaionResponses(final Path path) {
+    private static List<StationResponse> generateStationResponses(final Path path) {
         return path.getStations().stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toUnmodifiableList());
