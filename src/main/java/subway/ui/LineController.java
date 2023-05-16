@@ -6,7 +6,7 @@ import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
-import subway.dto.RegistStationRequest;
+import subway.dto.RegisterStationRequest;
 
 import javax.validation.Valid;
 import java.net.URI;
@@ -31,10 +31,10 @@ public class LineController {
     @PostMapping("/{id}/stations")
     public ResponseEntity<Long> registerStation(
             @PathVariable final Long id,
-            @RequestBody final RegistStationRequest registStationRequest
+            @RequestBody final RegisterStationRequest registerStationRequest
     ) {
-        lineService.saveStationInLine(id, registStationRequest);
-        return ResponseEntity.created(URI.create("/lines/" + id + "/stations/" )).body(1L);
+        lineService.saveStationInLine(id, registerStationRequest);
+        return ResponseEntity.created(URI.create("/lines/" + id + "/stations/")).body(1L);
     }
 
     @GetMapping

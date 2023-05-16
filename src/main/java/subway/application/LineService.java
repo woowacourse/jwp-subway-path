@@ -34,39 +34,47 @@ public class LineService {
         return persistLine.getId();
     }
 
-    public void saveStationInLine(final Long lineId, final RegistStationRequest registStationRequest) {
-        // 예외: 2개의 역이 동일한 역인 경우
-        if (Objects.equals(registStationRequest.getUpStationId(), registStationRequest.getDownStationId())) {
-            throw new IllegalArgumentException("구간은 서로 다른 역이여야 합니다.");
-        }
-
+    public void saveStationInLine(final Long lineId, final RegisterStationRequest registerStationRequest) {
+        validateDifferentStation(registerStationRequest);
         // 예외: sectionRequest에 들어온 호선이 존재하지 않는 경우
         LineEntity lineEntity = lineDao.findById(lineId)
                 .orElseThrow(() -> new NoSuchElementException("해당하는 호선이 존재하지 않습니다."));
-
-        // 예외: sectionRequest에 들어온 2개의 역이 모두 Station에 존재하는 역인지 검증
-        stationDao.findById(registStationRequest.getUpStationId())
-                .orElseThrow(() -> new NoSuchElementException("해당하는 상행역이 존재하지 않습니다."));
-        stationDao.findById(registStationRequest.getDownStationId())
-                .orElseThrow(() -> new NoSuchElementException("해당하는 하행역이 존재하지 않습니다."));
-
-        // 예외: sectionRequest에 들어온 2개의 역이 이미 구간이 있는지 검증
-        sectionDao.findByStationIds(registStationRequest.getUpStationId(), registStationRequest.getDownStationId())
-                .ifPresent(section -> {
-                    throw new IllegalArgumentException("이미 존재하는 구간입니다.");
-                });
+        validateExistStation(registerStationRequest);
+        validateAlreadyExistSection(registerStationRequest);
 
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
-
         Map<Long, Station> stationMap = makeStationMap(stationDao.findAll());
-        Station upStation = stationMap.get(registStationRequest.getUpStationId());
-        Station downStation = stationMap.get(registStationRequest.getDownStationId());
+        Station upStation = stationMap.get(registerStationRequest.getUpStationId());
+        Station downStation = stationMap.get(registerStationRequest.getDownStationId());
         List<Section> sections = toDomain(sectionEntities, stationMap);
 
         Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections));
-        Section section = new Section(upStation, downStation, registStationRequest.getDistance());
+        Section section = new Section(upStation, downStation, registerStationRequest.getDistance());
         line.add(section);
-        sync(lineId, line.getSections()); // TODO: 라인도 삭제해야하는가?
+        sync(lineId, line.getSections());
+    }
+
+    private void validateDifferentStation(final RegisterStationRequest registerStationRequest) {
+        // 예외: 2개의 역이 동일한 역인 경우
+        if (Objects.equals(registerStationRequest.getUpStationId(), registerStationRequest.getDownStationId())) {
+            throw new IllegalArgumentException("구간은 서로 다른 역이여야 합니다.");
+        }
+    }
+
+    private void validateExistStation(final RegisterStationRequest registerStationRequest) {
+        // 예외: sectionRequest에 들어온 2개의 역이 모두 Station에 존재하는 역인지 검증
+        stationDao.findById(registerStationRequest.getUpStationId())
+                .orElseThrow(() -> new NoSuchElementException("해당하는 상행역이 존재하지 않습니다."));
+        stationDao.findById(registerStationRequest.getDownStationId())
+                .orElseThrow(() -> new NoSuchElementException("해당하는 하행역이 존재하지 않습니다."));
+    }
+
+    private void validateAlreadyExistSection(final RegisterStationRequest registerStationRequest) {
+        // 예외: sectionRequest에 들어온 2개의 역이 이미 구간이 있는지 검증
+        sectionDao.findByStationIds(registerStationRequest.getUpStationId(), registerStationRequest.getDownStationId())
+                .ifPresent(section -> {
+                    throw new IllegalArgumentException("이미 존재하는 구간입니다.");
+                });
     }
 
     public List<LineResponse> findLineResponses() {
