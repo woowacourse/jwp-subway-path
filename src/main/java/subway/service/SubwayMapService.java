@@ -43,9 +43,13 @@ public class SubwayMapService {
         // 1. 데이터셋
         List<Line> lines = makeAllLines();
 
+
         // 2. 라이브러리로 최단 경로 조회
         Map<String, Set<String>> lineMapInPath = new LinkedHashMap<>();
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = findShortestPathGraph(lines, lineMapInPath);
+        Map<String, Long> stationWithIdMap = new LinkedHashMap<>();
+
+        WeightedMultigraph<String, DefaultWeightedEdge> graph = findShortestPathGraph(lines, lineMapInPath, stationWithIdMap);
+
 
         // 3. 데이터 메이킹 ()
         DijkstraShortestPath shortestPath = new DijkstraShortestPath(graph);
@@ -57,36 +61,35 @@ public class SubwayMapService {
         int distance = (int) path.getWeight();
         int fee = calculateFee(distance);
 
-        System.out.println("shortestPath: " + shortestPathList);
-        System.out.println("shortestPathWithLine: " + shortestPathWithLineNames + " distance: " + fee);
-        System.out.println("map = " + lineMapInPath);
 
         List<StationResponse> shortestPathResponse = shortestPathList.stream()
-                .map(it -> StationResponse.from(new Station(it)))
+                .map(station -> StationResponse.from(new Station(stationWithIdMap.get(station), station)))
                 .collect(Collectors.toList());
 
         List<StationResponse> shortestPathWithLineResponse = shortestPathWithLineNames.stream()
-                .map(it -> StationResponse.from(new Station(it)))
+                .map(station -> StationResponse.from(new Station(station)))
                 .collect(Collectors.toList());
 
         return RouteShortCutResponse.from(shortestPathResponse, shortestPathWithLineResponse, fee, distance);
     }
 
-    private WeightedMultigraph<String, DefaultWeightedEdge> findShortestPathGraph(final List<Line> lines, final Map<String, Set<String>> lineMapInPath) {
+    private WeightedMultigraph<String, DefaultWeightedEdge> findShortestPathGraph(final List<Line> lines, final Map<String, Set<String>> lineMapInPath, final Map<String, Long> stationWithIdMap) {
         WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+
         for (Line line : lines) {
-            Sections sections = line.getSections();
-            for (Section section : sections.getSections()) {
+            for (Section section : line.getSections()) {
                 String upStation = section.getUpStation().getName();
                 String downStation = section.getDownStation().getName();
 
+                stationWithIdMap.put(upStation, section.getUpStation().getId());
+                stationWithIdMap.put(downStation, section.getDownStation().getId());
+
                 graph.addVertex(upStation);
                 graph.addVertex(downStation);
+                graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
 
                 lineMapInPath.computeIfAbsent(line.getName(), station -> new LinkedHashSet<>()).
                         addAll(Arrays.asList(upStation, downStation));
-
-                graph.setEdgeWeight(graph.addEdge(upStation, downStation), section.getDistance());
             }
         }
         return graph;
@@ -94,22 +97,18 @@ public class SubwayMapService {
     }
 
     private List<String> makeShortestPathWithLineName(final Map<String, Set<String>> lineMapInPath, final List<String> shortestPathList) {
-        List<String> shortestPathWithLineNames = new ArrayList<>();
-        for (String station : shortestPathList) {
-            List<String> lineNames = new ArrayList<>();
-            for (Map.Entry<String, Set<String>> entry : lineMapInPath.entrySet()) {
-                String lineName = entry.getKey();
-                Set<String> stations = entry.getValue();
-                if (stations.contains(station)) {
-                    lineNames.add(lineName);
-                }
-            }
+        return shortestPathList.stream()
+                .map(station -> {
+                    List<String> lineNames = lineMapInPath.entrySet().stream()
+                            .filter(entry -> entry.getValue().contains(station))
+                            .map(Map.Entry::getKey)
+                            .collect(Collectors.toList());
 
-            String stationWithLineNames = station + " (" + String.join(", ", lineNames) + ")";
-            shortestPathWithLineNames.add(stationWithLineNames);
-        }
-        return shortestPathWithLineNames;
+                    return station + " (" + String.join(", ", lineNames) + ")";
+                })
+                .collect(Collectors.toList());
     }
+
 
     private List<Line> makeAllLines() {
         return lineRepository.findAll().stream()

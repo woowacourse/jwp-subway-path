@@ -4,6 +4,8 @@ import subway.domain.common.Color;
 import subway.domain.common.LineNumber;
 import subway.domain.common.Name;
 
+import java.util.List;
+
 public class Line {
 
     private final Sections sections;
@@ -26,8 +28,8 @@ public class Line {
         this.sections.addSection(section);
     }
 
-    public Sections getSections() {
-        return sections;
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 
     public String getName() {
