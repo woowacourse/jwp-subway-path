@@ -1,0 +1,26 @@
+### 역 등록 API - 2호선
+POST http://localhost:8080/stations
+Content-Type: application/json
+Accept: application/json
+
+{
+  "upStationName" : "A역",
+  "downStationName" : "C역",
+  "distance" : 10,
+  "lineName" : "2호선"
+}
+
+### 역 등록 API - 7호선
+POST http://localhost:8080/stations
+Content-Type: application/json
+Accept: application/json
+
+{
+  "upStationName" : "B역",
+  "downStationName" : "D역",
+  "distance" : 4,
+  "lineName" : "7호선"
+}
+
+### 역 제거 API
+DELETE http://localhost:8080/stations/1
