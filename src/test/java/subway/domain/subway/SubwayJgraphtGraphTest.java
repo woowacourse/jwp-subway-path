@@ -14,16 +14,16 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
-import subway.exception.InvalidStationNameException;
+import subway.exception.InvalidStationException;
 
-class SubwayTest {
+class SubwayJgraphtGraphTest {
 
     @Nested
-    @DisplayName("getShortestPath 메서드는 ")
+    @DisplayName("findShortestPath 메서드는 ")
     class GetShortestPath {
 
         @Test
-        @DisplayName("지하철 상의 최단 경로를 반환한다.")
+        @DisplayName("호선 정보를 통해 최단 경로를 반환한다.")
         void getShortestPath() {
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
             final Line lineOfThree = new Line(3L, "3호선", "주황색");
@@ -33,45 +33,45 @@ class SubwayTest {
             lineOfThree.addSection(NAMBU, YANGJAE, 5);
             lineOfNew.addSection(GANGNAM, YANGJAE, 5);
 
-            final Subway subway = new Subway(List.of(lineOfTwo, lineOfThree, lineOfNew));
-            final List<Station> result = subway.getShortestPath(GYODAE, GANGNAM);
+            final SubwayGraph subwayGraph = new SubwayJgraphtGraph(List.of(lineOfTwo, lineOfThree, lineOfNew));
+            final List<Station> result = subwayGraph.findShortestPath(GYODAE, GANGNAM);
 
             assertThat(result).containsExactly(GYODAE, NAMBU, YANGJAE, GANGNAM);
         }
 
         @Test
-        @DisplayName("출발역이 지하철에 등록되어 있지 않은 경우 예외를 던진다.")
+        @DisplayName("출발역이 등록되어 있지 않은 경우 예외를 던진다.")
         void getShortestPathWithInvalidStartStation() {
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
             lineOfTwo.addSection(GYODAE, GANGNAM, 20);
 
-            final Subway subway = new Subway(List.of(lineOfTwo));
+            final SubwayGraph subwayGraph = new SubwayJgraphtGraph(List.of(lineOfTwo));
 
-            assertThatThrownBy(() -> subway.getShortestPath(JAMSIL, GANGNAM))
-                    .isInstanceOf(InvalidStationNameException.class)
+            assertThatThrownBy(() -> subwayGraph.findShortestPath(JAMSIL, GANGNAM))
+                    .isInstanceOf(InvalidStationException.class)
                     .hasMessage("노선 구간에 등록되지 않은 역 이름을 통해 경로를 조회할 수 없습니다.");
         }
 
         @Test
-        @DisplayName("도착역이 지하철에 등록되어 있지 않은 경우 예외를 던진다.")
+        @DisplayName("도착역이 등록되어 있지 않은 경우 예외를 던진다.")
         void getShortestPathWithInvalidEndStation() {
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
             lineOfTwo.addSection(GYODAE, GANGNAM, 20);
 
-            final Subway subway = new Subway(List.of(lineOfTwo));
+            final SubwayGraph subwayGraph = new SubwayJgraphtGraph(List.of(lineOfTwo));
 
-            assertThatThrownBy(() -> subway.getShortestPath(GANGNAM, JAMSIL))
-                    .isInstanceOf(InvalidStationNameException.class)
+            assertThatThrownBy(() -> subwayGraph.findShortestPath(GANGNAM, JAMSIL))
+                    .isInstanceOf(InvalidStationException.class)
                     .hasMessage("노선 구간에 등록되지 않은 역 이름을 통해 경로를 조회할 수 없습니다.");
         }
     }
 
     @Nested
-    @DisplayName("getShortestDistance 메서드는 ")
+    @DisplayName("calculateShortestDistance 메서드는 ")
     class GetShortestDistance {
 
         @Test
-        @DisplayName("지하철 상의 최단 거리를 반환한다.")
+        @DisplayName("호선 정보를 통해 최단 거리를 반환한다.")
         void getShortestDistance() {
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
             final Line lineOfThree = new Line(3L, "3호선", "주황색");
@@ -81,35 +81,35 @@ class SubwayTest {
             lineOfThree.addSection(NAMBU, YANGJAE, 5);
             lineOfNew.addSection(GANGNAM, YANGJAE, 5);
 
-            final Subway subway = new Subway(List.of(lineOfTwo, lineOfThree, lineOfNew));
-            final int result = subway.getShortestDistance(GYODAE, GANGNAM);
+            final SubwayGraph subwayGraph = new SubwayJgraphtGraph(List.of(lineOfTwo, lineOfThree, lineOfNew));
+            final long result = subwayGraph.calculateShortestDistance(GYODAE, GANGNAM);
 
             assertThat(result).isEqualTo(15);
         }
 
         @Test
-        @DisplayName("출발역이 지하철에 등록되어 있지 않은 경우 예외를 던진다.")
+        @DisplayName("출발역이 등록되어 있지 않은 경우 예외를 던진다.")
         void getShortestDistanceWithInvalidStartStation() {
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
             lineOfTwo.addSection(GYODAE, GANGNAM, 20);
 
-            final Subway subway = new Subway(List.of(lineOfTwo));
+            final SubwayGraph subwayGraph = new SubwayJgraphtGraph(List.of(lineOfTwo));
 
-            assertThatThrownBy(() -> subway.getShortestDistance(JAMSIL, GANGNAM))
-                    .isInstanceOf(InvalidStationNameException.class)
+            assertThatThrownBy(() -> subwayGraph.calculateShortestDistance(JAMSIL, GANGNAM))
+                    .isInstanceOf(InvalidStationException.class)
                     .hasMessage("노선 구간에 등록되지 않은 역 이름을 통해 경로를 조회할 수 없습니다.");
         }
 
         @Test
-        @DisplayName("도착역이 지하철에 등록되어 있지 않은 경우 예외를 던진다.")
+        @DisplayName("도착역이 등록되어 있지 않은 경우 예외를 던진다.")
         void getShortestDistanceWithInvalidEndStation() {
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
             lineOfTwo.addSection(GYODAE, GANGNAM, 20);
 
-            final Subway subway = new Subway(List.of(lineOfTwo));
+            final SubwayGraph subwayGraph = new SubwayJgraphtGraph(List.of(lineOfTwo));
 
-            assertThatThrownBy(() -> subway.getShortestDistance(GANGNAM, JAMSIL))
-                    .isInstanceOf(InvalidStationNameException.class)
+            assertThatThrownBy(() -> subwayGraph.calculateShortestDistance(GANGNAM, JAMSIL))
+                    .isInstanceOf(InvalidStationException.class)
                     .hasMessage("노선 구간에 등록되지 않은 역 이름을 통해 경로를 조회할 수 없습니다.");
         }
     }
