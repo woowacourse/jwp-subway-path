@@ -45,6 +45,12 @@ public class SubwayGraphs {
         return new LineDto(line, allStationsInOrder);
     }
 
+    public Station createStation(final Line line, final Station upLineStation, final Station downLineStation, final int distance) {
+        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
+
+        return subwayGraph.addStation(upLineStation, downLineStation, distance);
+    }
+
     private SubwayGraph findSubwayGraphOf(final Line line) {
         final SubwayGraph lineGraph = subwayGraphs.stream()
                 .filter(s -> s.isSameLine(line))
@@ -53,16 +59,14 @@ public class SubwayGraphs {
         return lineGraph;
     }
 
-    public Station createStation(final Line line, final Station upLineStation, final Station downLineStation, final int distance) {
-        final SubwayGraph subwayGraph = findSubwayGraphOf(line);
-
-        return subwayGraph.addStation(upLineStation, downLineStation, distance);
-    }
-
     public Optional<Station> findStationByName(Line line, String name) {
         final SubwayGraph subwayGraph = findSubwayGraphOf(line);
-
         return subwayGraph.findStationByName(name);
+    }
+
+    public boolean isStationExistInAnyLine(Station station) {
+        return subwayGraphs.stream()
+                .anyMatch(subwayGraph -> subwayGraph.isStationExist(station));
     }
 
     public void remove(Line line) {
@@ -72,6 +76,13 @@ public class SubwayGraphs {
 
     public void deleteStation(Line line, Station station) {
         SubwayGraph subwayGraph = findSubwayGraphOf(line);
-        subwayGraph.remove(station);
+        subwayGraph.delete(station);
+    }
+
+    public List<Station> deleteAll(Line line) {
+        SubwayGraph subwayGraph = findSubwayGraphOf(line);
+        List<Station> removedStations = subwayGraph.clear();
+        subwayGraphs.remove(subwayGraph);
+        return removedStations;
     }
 }

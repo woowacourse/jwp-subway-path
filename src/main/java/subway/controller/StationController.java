@@ -9,6 +9,7 @@ import subway.service.StationService;
 
 import javax.validation.Valid;
 import java.net.URI;
+import java.util.List;
 
 @RestController
 public class StationController {
@@ -27,11 +28,11 @@ public class StationController {
     }
 
     @DeleteMapping("/stations/station")
-    public ResponseEntity<StationResponse> deleteStation(@Valid @RequestBody StationDeleteRequest stationDeleteRequest) {
-        StationResponse stationResponse = stationService.deleteStation(stationDeleteRequest);
+    public ResponseEntity<List<StationResponse>> deleteStation(@Valid @RequestBody StationDeleteRequest stationDeleteRequest) {
+        List<StationResponse> stationResponses = stationService.deleteStation(stationDeleteRequest);
         return ResponseEntity
                 .ok()
-                .body(stationResponse);
+                .body(stationResponses);
     }
 
 }

@@ -16,6 +16,7 @@ import subway.entity.StationEntity;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -65,28 +66,55 @@ public class StationService {
     }
 
     @Transactional
-    public StationResponse deleteStation(StationDeleteRequest stationDeleteRequest) {
+    public List<StationResponse> deleteStation(StationDeleteRequest stationDeleteRequest) {
         Line line = dbLineDao.findByName(stationDeleteRequest.getLineName()).
                 orElseThrow(() -> new LineNotFoundException())
                 .toDomain();
 
         Station targetStation = stationDao.findByName(stationDeleteRequest.getStationName()).
-                orElseThrow(()-> new StationNotFoundException())
+                orElseThrow(() -> new StationNotFoundException())
                 .toDomain();
 
-        subwayGraphs.deleteStation(line, targetStation);
+        if (subwayGraphs.findAllStationsInOrderOf(line).size() == 2) {
+            return deleteLine(line);
+        }
+        return deleteStation(line, targetStation);
+    }
+
+    private List<StationResponse> deleteLine(Line line) {
+        List<Station> removedStations = subwayGraphs.deleteAll(line);
+
+        dbEdgeDao.deleteAllEdgesOf(line.getId());
+
+        List<StationResponse> stationResponses = new ArrayList<>();
+
+        for (Station removedStation : removedStations) {
+            stationResponses.add(StationResponse.of(removedStation));
+            if (!subwayGraphs.isStationExistInAnyLine(removedStation)) {
+                stationDao.delete(removedStation.getId());
+            }
+        }
+        dbLineDao.deleteLine(line.getId());
+
+        return stationResponses;
+    }
+
+    private List<StationResponse> deleteStation(Line line, Station station) {
+        subwayGraphs.deleteStation(line, station);
 
         List<Station> allStationsInOrder = subwayGraphs.findAllStationsInOrderOf(line);
 
         dbEdgeDao.deleteAllEdgesOf(line.getId());
 
-        for (Station station : allStationsInOrder) {
-            EdgeEntity edgeEntity = subwayGraphs.findEdge(line, station);
+        for (Station remainStation : allStationsInOrder) {
+            EdgeEntity edgeEntity = subwayGraphs.findEdge(line, remainStation);
             dbEdgeDao.save(edgeEntity);
         }
 
-        stationDao.delete(targetStation.getId());
+        if (!subwayGraphs.isStationExistInAnyLine(station)) {
+            stationDao.delete(station.getId());
+        }
 
-        return StationResponse.of(targetStation);
+        return List.of(StationResponse.of(station));
     }
 }

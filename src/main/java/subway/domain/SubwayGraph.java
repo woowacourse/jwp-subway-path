@@ -6,6 +6,7 @@ import subway.entity.EdgeEntity;
 import subway.exception.LineAlreadyExistException;
 import subway.exception.StationAlreadyExistException;
 
+import java.nio.channels.UnsupportedAddressTypeException;
 import java.util.*;
 
 public class SubwayGraph {
@@ -197,7 +198,20 @@ public class SubwayGraph {
         }
     }
 
-    public void remove(Station station) {
+    public List<Station> clear() {
+        List<Station> allStationsInOrder = findAllStationsInOrder();
+        graph.removeAllVertices(allStationsInOrder);
+        return allStationsInOrder;
+    }
+
+    public int getStationSize() {
+        return graph.vertexSet().size();
+    }
+
+    public void delete(Station station) {
+        if (graph.vertexSet().size() == 2) {
+            throw new IllegalStateException("한개의 역만 지울 수 없음");
+        }
         List<DefaultWeightedEdge> adjacentEdges = new ArrayList<>(graph.edgesOf(station));
 
         if (adjacentEdges.size() == 2) {
@@ -208,6 +222,7 @@ public class SubwayGraph {
             graph.removeEdge(adjacentEdges.get(0));
             graph.removeVertex(station);
         }
+
     }
 
     private void removeMiddleStation(Station station) {
@@ -230,5 +245,9 @@ public class SubwayGraph {
         return graph.vertexSet().stream()
                 .filter(s -> s.isSameName(name))
                 .findAny();
+    }
+
+    public boolean isStationExist(Station station) {
+        return graph.vertexSet().contains(station);
     }
 }

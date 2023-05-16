@@ -224,7 +224,7 @@ class SubwayGraphTest {
         subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
         // 고속터미널 -> 새 역 -> 사평역
 
-        subwayGraph.remove(SAPYEONG_STATION);
+        subwayGraph.delete(SAPYEONG_STATION);
         // 고속터미널 -> 새 역
 
         assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
@@ -238,7 +238,7 @@ class SubwayGraphTest {
         subwayGraph.addStation(EXPRESS_BUS_TERMINAL_STATION, NEW_STATION, 3);
         // 고속터미널 -> (3) 새 역 -> (2) 사평역
 
-        subwayGraph.remove(NEW_STATION);
+        subwayGraph.delete(NEW_STATION);
         // 고속터미널 -> (5) 사평역
 
         assertThat(subwayGraph.findAllStationsInOrder()).containsExactly(
