@@ -5,11 +5,11 @@ import javax.validation.constraints.NotNull;
 
 public class SectionStations {
 
-    @NotNull
+    @NotNull(message = "노선의 좌측 역의 번호를 입력해주세요.")
     private final Long leftStationId;
-    @NotNull
+    @NotNull(message = "노선의 우측 역의 번호를 입력해주세요.")
     private final Long rightStationId;
-    @NotNull
+    @NotNull(message = "노선의 거리를 입력해주세요.")
     private final Integer distance;
 
     public SectionStations(final Long leftStationId, final Long rightStationId, final Integer distance) {

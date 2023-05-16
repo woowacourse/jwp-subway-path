@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 
 public class StationRequest {
 
-    @NotNull
+    @NotNull(message = "역의 이름을 입력해주세요.")
     private String name;
 
     @JsonCreator
