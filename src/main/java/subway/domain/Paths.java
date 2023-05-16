@@ -49,7 +49,7 @@ public final class Paths {
         }
     }
 
-    private long countStationsInOriginalPaths(Path newPath) {
+    private long countStationsInOriginalPaths(final Path newPath) {
         final Station up = newPath.getUp();
         final Station down = newPath.getDown();
 
@@ -83,11 +83,11 @@ public final class Paths {
                 .collect(Collectors.toList());
     }
 
-    private boolean isStationBetween(List<Path> affectedPaths) {
+    private boolean isStationBetween(final List<Path> affectedPaths) {
         return affectedPaths.size() == 2;
     }
 
-    private void mergeBothSides(List<Path> result, List<Path> affectedPaths) {
+    private void mergeBothSides(final List<Path> result, final List<Path> affectedPaths) {
         final Path previous = affectedPaths.get(0);
         final Path next = affectedPaths.get(1);
 

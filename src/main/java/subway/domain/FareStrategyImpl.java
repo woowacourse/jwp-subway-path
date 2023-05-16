@@ -16,7 +16,7 @@ public final class FareStrategyImpl implements FareStrategy {
     private static final int UNIT_OF_SECOND_EXCESS_DISTANCE = 8;
 
     @Override
-    public int calculate(long distance) {
+    public int calculate(final long distance) {
         int fare = BASE_FARE;
 
         if (distance > BASE_DISTANCE) {

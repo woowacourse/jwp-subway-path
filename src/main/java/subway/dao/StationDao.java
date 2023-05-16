@@ -17,7 +17,7 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
                     rs.getLong("id"),
                     rs.getString("name")
@@ -31,7 +31,7 @@ public class StationDao {
     }
 
     public Station insert(final Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+        final SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         try {
             final Long id = insertAction.executeAndReturnKey(params).longValue();
 
@@ -42,13 +42,13 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        final String sql = "select * from STATION";
+        final String sql = "SELECT * FROM station";
 
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Station findById(final Long id) {
-        final String sql = "select * from STATION where id = ?";
+        final String sql = "SELECT * FROM station WHERE id = ?";
 
         try {
             return jdbcTemplate.queryForObject(sql, rowMapper, id);
@@ -57,14 +57,14 @@ public class StationDao {
         }
     }
 
-    public void update(final Station newStation) {
-        final String sql = "update STATION set name = ? where id = ?";
+    public void update(final Station station) {
+        final String sql = "UPDATE station SET name = ? WHERE id = ?";
 
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        jdbcTemplate.update(sql, station.getName(), station.getId());
     }
 
     public void deleteById(final Long id) {
-        final String sql = "delete from STATION where id = ?";
+        final String sql = "DELETE FROM station WHERE id = ?";
 
         jdbcTemplate.update(sql, id);
     }
