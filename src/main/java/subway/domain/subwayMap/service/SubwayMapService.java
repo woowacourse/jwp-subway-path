@@ -9,7 +9,7 @@ import subway.domain.line.domain.Line;
 import subway.domain.line.dto.LineResponse;
 import subway.domain.line.service.LineService;
 import subway.domain.section.domain.Section;
-import subway.domain.section.service.SectionService;
+import subway.domain.section.service.CreateSectionService;
 import subway.domain.subwayMap.domain.SubwayMap;
 
 import javax.annotation.PostConstruct;
@@ -21,13 +21,13 @@ public class SubwayMapService {
 
     private final LineService lineService;
     private final StationService stationService;
-    private final SectionService sectionService;
+    private final CreateSectionService createSectionService;
     private final SubwayMap subwayMap;
 
-    public SubwayMapService(final LineService lineService, final StationService stationService, final SectionService sectionService, final SubwayMap subwayMap) {
+    public SubwayMapService(final LineService lineService, final StationService stationService, final CreateSectionService createSectionService, final SubwayMap subwayMap) {
         this.lineService = lineService;
         this.stationService = stationService;
-        this.sectionService = sectionService;
+        this.createSectionService = createSectionService;
         this.subwayMap = subwayMap;
     }
 
@@ -63,7 +63,7 @@ public class SubwayMapService {
     private void initialize() {
         final List<Line> lines = lineService.findAllLine();
         for (Line line : lines) {
-            final List<Section> sections = sectionService.findSectionsByLineId(line.getId());
+            final List<Section> sections = createSectionService.findSectionsByLineId(line.getId());
             final SectionToStationConverter sectionToStationConverter = SectionToStationConverter.of(sections);
             final List<Station> stations = sectionToStationConverter.getSortedStation();
             subwayMap.put(line, stations);

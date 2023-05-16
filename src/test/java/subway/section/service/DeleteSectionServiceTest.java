@@ -8,7 +8,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import subway.domain.section.service.SectionService;
+import subway.domain.section.service.DeleteSectionService;
 import subway.section.dao.StubSectionDao;
 import subway.domain.section.entity.SectionEntity;
 
@@ -19,10 +19,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ExtendWith(MockitoExtension.class)
-public class SectionEntityDeleteServiceTest {
+public class DeleteSectionServiceTest {
 
     private StubSectionDao stubSectionDao;
-    private SectionService sectionService;
+    private DeleteSectionService deleteSectionService;
 
     @Mock
     private ApplicationEventPublisher publisher;
@@ -30,13 +30,13 @@ public class SectionEntityDeleteServiceTest {
     @BeforeEach
     void setUp() {
         stubSectionDao = new StubSectionDao();
-        sectionService = new SectionService(stubSectionDao, publisher);
+        deleteSectionService = new DeleteSectionService(stubSectionDao);
     }
 
     @DisplayName("위 아래 모두 구간이 존재하지않으면 예외를 발생시킨다.")
     @Test
     void deleteSectionWhenNoSection() {
-        assertThatThrownBy(() -> sectionService.deleteSection(1L, 2L))
+        assertThatThrownBy(() -> deleteSectionService.deleteSection(1L, 2L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등록되어있지 않은 역은 지울 수 없습니다.");
     }
@@ -46,7 +46,7 @@ public class SectionEntityDeleteServiceTest {
     void deleteSectionWhenNoUpSection() {
         final SectionEntity saved = stubSectionDao.insert(new SectionEntity(1L, 2L, 3L, 4));
         final Long sectionId = saved.getId();
-        sectionService.deleteSection(1L, 2L);
+        deleteSectionService.deleteSection(1L, 2L);
         final Optional<SectionEntity> result = stubSectionDao.findById(sectionId);
         Assertions.assertThat(result).isEmpty();
     }
@@ -56,7 +56,7 @@ public class SectionEntityDeleteServiceTest {
     void deleteSectionWhenNoDownSection() {
         final SectionEntity saved = stubSectionDao.insert(new SectionEntity(1L, 2L, 3L, 4));
         final Long sectionId = saved.getId();
-        sectionService.deleteSection(1L, 3L);
+        deleteSectionService.deleteSection(1L, 3L);
         final Optional<SectionEntity> result = stubSectionDao.findById(sectionId);
         Assertions.assertThat(result).isEmpty();
     }
@@ -67,7 +67,7 @@ public class SectionEntityDeleteServiceTest {
         stubSectionDao.insert(new SectionEntity(1L, 2L, 3L, 4));
         stubSectionDao.insert(new SectionEntity(1L, 3L, 4L, 5));
 
-        sectionService.deleteSection(1L, 3L);
+        deleteSectionService.deleteSection(1L, 3L);
 
         final Optional<SectionEntity> section = stubSectionDao.findNeighborUpSection(1L, 4L);
         assertAll(
