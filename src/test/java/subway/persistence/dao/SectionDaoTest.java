@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import subway.domain.Distance;
-import subway.domain.Section;
+import subway.domain.section.Section;
 
 @JdbcTest
 @Import(SectionDao.class)

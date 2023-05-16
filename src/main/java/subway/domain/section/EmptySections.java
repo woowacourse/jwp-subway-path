@@ -2,7 +2,6 @@ package subway.domain.section;
 
 import java.util.Collections;
 import java.util.List;
-import subway.domain.Section;
 import subway.domain.Station;
 
 public class EmptySections extends Sections {

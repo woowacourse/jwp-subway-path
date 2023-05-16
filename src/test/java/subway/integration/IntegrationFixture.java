@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.LineName;
-import subway.domain.Section;
+import subway.domain.section.Section;
 import subway.domain.Station;
 
 public class IntegrationFixture {

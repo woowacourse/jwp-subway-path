@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.domain.section.EmptySections;
+import subway.domain.section.Section;
 import subway.domain.section.Sections;
 
 class SectionsTest {

@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
-import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.section.strategy.UpdateHeadStrategy;
 import subway.domain.section.strategy.UpdateMiddleStrategy;

@@ -6,7 +6,7 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
 import subway.domain.LineName;
-import subway.domain.Section;
+import subway.domain.section.Section;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 

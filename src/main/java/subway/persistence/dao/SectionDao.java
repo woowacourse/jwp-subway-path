@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Distance;
-import subway.domain.Section;
+import subway.domain.section.Section;
 import subway.domain.Station;
 
 @Repository

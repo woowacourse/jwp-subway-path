@@ -1,6 +1,8 @@
-package subway.domain;
+package subway.domain.section;
 
 import java.util.List;
+import subway.domain.Distance;
+import subway.domain.Station;
 
 public class Section {
 

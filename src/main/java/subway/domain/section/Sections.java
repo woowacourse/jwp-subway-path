@@ -1,7 +1,6 @@
 package subway.domain.section;
 
 import java.util.List;
-import subway.domain.Section;
 import subway.domain.Station;
 
 public abstract class Sections {

@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.LineName;
-import subway.domain.Section;
+import subway.domain.section.Section;
 import subway.domain.Station;
 import subway.domain.section.Sections;
 import subway.persistence.repository.LineRepository;
