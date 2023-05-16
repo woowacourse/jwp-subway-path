@@ -50,7 +50,7 @@ public class LineService {
         final Line addedLine = line.addSection(newSection);
 
         final Sections deleteSections = line.getSections().getDifferenceOfSet(addedLine.getSections());
-        final Sections insertSections = new Sections(List.of(newSection));
+        final Sections insertSections = addedLine.getSections().getDifferenceOfSet(line.getSections());
 
         lineRepository.deleteSections(deleteSections);
         lineRepository.insertSections(lineId, insertSections);
