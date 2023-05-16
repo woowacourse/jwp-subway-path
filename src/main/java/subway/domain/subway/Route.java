@@ -5,6 +5,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import subway.domain.common.Fee;
+import subway.exception.LinesEmptyException;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -12,7 +13,7 @@ import java.util.Set;
 
 public class Route {
 
-    private final Lines lines;
+    private Lines lines;
     private final Fee fee;
 
     private Route(final Lines lines, final Fee fee) {
@@ -25,12 +26,20 @@ public class Route {
     }
 
     public Map<Station, Set<String>> findShortestPath(final String start, final String destination) {
+        validateEmptyLines();
+
         WeightedMultigraph<String, DefaultWeightedEdge> graph = initGraph();
 
         GraphPath<String, DefaultWeightedEdge> path = calculateShortestPath(graph, start, destination);
         fee.calculateFromDistance((int) path.getWeight());
 
         return getStationWithLineNames(path);
+    }
+
+    private void validateEmptyLines() {
+        if(this.lines == null) {
+            throw new LinesEmptyException();
+        }
     }
 
     private WeightedMultigraph<String, DefaultWeightedEdge> initGraph() {
@@ -72,6 +81,10 @@ public class Route {
     ) {
         DijkstraShortestPath<String, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
         return shortestPath.getPath(start, destination);
+    }
+
+    public void update(final Lines lines) {
+        this.lines = lines;
     }
 
     public int getFee() {
