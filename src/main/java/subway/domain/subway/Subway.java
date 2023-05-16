@@ -17,8 +17,9 @@ public class Subway {
         this.dijkstraShortestPath = new DijkstraShortestPath(generateGraph(lines));
     }
 
-    private WeightedMultigraph<String, DefaultWeightedEdge> generateGraph(final List<Line> lines) {
-        final WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, DefaultWeightedEdge> generateGraph(final List<Line> lines) {
+        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(
+                DefaultWeightedEdge.class);
 
         for (final Line line : lines) {
             drawGraph(graph, line);
@@ -26,23 +27,17 @@ public class Subway {
         return graph;
     }
 
-    private void drawGraph(final WeightedMultigraph<String, DefaultWeightedEdge> graph, final Line line) {
+    private void drawGraph(final WeightedMultigraph<Station, DefaultWeightedEdge> graph, final Line line) {
         for (final Section section : line.getSections()) {
             final Station upward = section.getUpward();
             final Station downward = section.getDownward();
-            addVertex(graph, upward.getName());
-            addVertex(graph, downward.getName());
-            graph.setEdgeWeight(graph.addEdge(upward.getName(), downward.getName()), section.getDistance());
+            graph.addVertex(upward);
+            graph.addVertex(downward);
+            graph.setEdgeWeight(graph.addEdge(upward, downward), section.getDistance());
         }
     }
 
-    private void addVertex(final WeightedMultigraph<String, DefaultWeightedEdge> graph, final String stationName) {
-        if (!graph.containsVertex(stationName)) {
-            graph.addVertex(stationName);
-        }
-    }
-
-    public List<String> getShortestPath(final String start, final String end) {
+    public List<Station> getShortestPath(final Station start, final Station end) {
         try {
             return dijkstraShortestPath.getPath(start, end).getVertexList();
         } catch (IllegalArgumentException e) {
@@ -50,7 +45,7 @@ public class Subway {
         }
     }
 
-    public int getShortestDistance(final String start, final String end) {
+    public int getShortestDistance(final Station start, final Station end) {
         try {
             return (int) dijkstraShortestPath.getPath(start, end).getWeight();
         } catch (IllegalArgumentException e) {

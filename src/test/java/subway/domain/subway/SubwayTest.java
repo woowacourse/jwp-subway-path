@@ -1,5 +1,10 @@
 package subway.domain.subway;
 
+import static fixtures.SubwayFixtures.GANGNAM;
+import static fixtures.SubwayFixtures.GYODAE;
+import static fixtures.SubwayFixtures.JAMSIL;
+import static fixtures.SubwayFixtures.NAMBU;
+import static fixtures.SubwayFixtures.YANGJAE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -20,35 +25,29 @@ class SubwayTest {
         @Test
         @DisplayName("지하철 상의 최단 경로를 반환한다.")
         void getShortestPath() {
-            final Station gangnam = new Station(1L, "강남역");
-            final Station yangjae = new Station(2L, "양재역");
-            final Station gyodae = new Station(3L, "교대역");
-            final Station nambu = new Station(4L, "남부터미널역");
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
             final Line lineOfThree = new Line(3L, "3호선", "주황색");
             final Line lineOfNew = new Line(9L, "9호선", "빨간색");
-            lineOfTwo.addSection(gyodae, gangnam, 20);
-            lineOfThree.addSection(gyodae, nambu, 5);
-            lineOfThree.addSection(nambu, yangjae, 5);
-            lineOfNew.addSection(gangnam, yangjae, 5);
+            lineOfTwo.addSection(GYODAE, GANGNAM, 20);
+            lineOfThree.addSection(GYODAE, NAMBU, 5);
+            lineOfThree.addSection(NAMBU, YANGJAE, 5);
+            lineOfNew.addSection(GANGNAM, YANGJAE, 5);
 
             final Subway subway = new Subway(List.of(lineOfTwo, lineOfThree, lineOfNew));
-            final List<String> result = subway.getShortestPath(gyodae.getName(), gangnam.getName());
+            final List<Station> result = subway.getShortestPath(GYODAE, GANGNAM);
 
-            assertThat(result).containsExactly("교대역", "남부터미널역", "양재역", "강남역");
+            assertThat(result).containsExactly(GYODAE, NAMBU, YANGJAE, GANGNAM);
         }
 
         @Test
         @DisplayName("출발역이 지하철에 등록되어 있지 않은 경우 예외를 던진다.")
         void getShortestPathWithInvalidStartStation() {
-            final Station gangnam = new Station(1L, "강남역");
-            final Station gyodae = new Station(2L, "교대역");
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
-            lineOfTwo.addSection(gyodae, gangnam, 20);
+            lineOfTwo.addSection(GYODAE, GANGNAM, 20);
 
             final Subway subway = new Subway(List.of(lineOfTwo));
 
-            assertThatThrownBy(() -> subway.getShortestPath("잠실역", gangnam.getName()))
+            assertThatThrownBy(() -> subway.getShortestPath(JAMSIL, GANGNAM))
                     .isInstanceOf(InvalidStationNameException.class)
                     .hasMessage("노선 구간에 등록되지 않은 역 이름을 통해 경로를 조회할 수 없습니다.");
         }
@@ -56,14 +55,12 @@ class SubwayTest {
         @Test
         @DisplayName("도착역이 지하철에 등록되어 있지 않은 경우 예외를 던진다.")
         void getShortestPathWithInvalidEndStation() {
-            final Station gangnam = new Station(1L, "강남역");
-            final Station gyodae = new Station(2L, "교대역");
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
-            lineOfTwo.addSection(gyodae, gangnam, 20);
+            lineOfTwo.addSection(GYODAE, GANGNAM, 20);
 
             final Subway subway = new Subway(List.of(lineOfTwo));
 
-            assertThatThrownBy(() -> subway.getShortestPath(gangnam.getName(), "잠실역"))
+            assertThatThrownBy(() -> subway.getShortestPath(GANGNAM, JAMSIL))
                     .isInstanceOf(InvalidStationNameException.class)
                     .hasMessage("노선 구간에 등록되지 않은 역 이름을 통해 경로를 조회할 수 없습니다.");
         }
@@ -76,20 +73,16 @@ class SubwayTest {
         @Test
         @DisplayName("지하철 상의 최단 거리를 반환한다.")
         void getShortestDistance() {
-            final Station gangnam = new Station(1L, "강남역");
-            final Station yangjae = new Station(2L, "양재역");
-            final Station gyodae = new Station(3L, "교대역");
-            final Station nambu = new Station(4L, "남부터미널역");
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
             final Line lineOfThree = new Line(3L, "3호선", "주황색");
             final Line lineOfNew = new Line(9L, "9호선", "빨간색");
-            lineOfTwo.addSection(gyodae, gangnam, 20);
-            lineOfThree.addSection(gyodae, nambu, 5);
-            lineOfThree.addSection(nambu, yangjae, 5);
-            lineOfNew.addSection(gangnam, yangjae, 5);
+            lineOfTwo.addSection(GYODAE, GANGNAM, 20);
+            lineOfThree.addSection(GYODAE, NAMBU, 5);
+            lineOfThree.addSection(NAMBU, YANGJAE, 5);
+            lineOfNew.addSection(GANGNAM, YANGJAE, 5);
 
             final Subway subway = new Subway(List.of(lineOfTwo, lineOfThree, lineOfNew));
-            final int result = subway.getShortestDistance(gyodae.getName(), gangnam.getName());
+            final int result = subway.getShortestDistance(GYODAE, GANGNAM);
 
             assertThat(result).isEqualTo(15);
         }
@@ -97,14 +90,12 @@ class SubwayTest {
         @Test
         @DisplayName("출발역이 지하철에 등록되어 있지 않은 경우 예외를 던진다.")
         void getShortestDistanceWithInvalidStartStation() {
-            final Station gangnam = new Station(1L, "강남역");
-            final Station gyodae = new Station(2L, "교대역");
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
-            lineOfTwo.addSection(gyodae, gangnam, 20);
+            lineOfTwo.addSection(GYODAE, GANGNAM, 20);
 
             final Subway subway = new Subway(List.of(lineOfTwo));
 
-            assertThatThrownBy(() -> subway.getShortestDistance("잠실역", gangnam.getName()))
+            assertThatThrownBy(() -> subway.getShortestDistance(JAMSIL, GANGNAM))
                     .isInstanceOf(InvalidStationNameException.class)
                     .hasMessage("노선 구간에 등록되지 않은 역 이름을 통해 경로를 조회할 수 없습니다.");
         }
@@ -112,14 +103,12 @@ class SubwayTest {
         @Test
         @DisplayName("도착역이 지하철에 등록되어 있지 않은 경우 예외를 던진다.")
         void getShortestDistanceWithInvalidEndStation() {
-            final Station gangnam = new Station(1L, "강남역");
-            final Station gyodae = new Station(2L, "교대역");
             final Line lineOfTwo = new Line(2L, "2호선", "초록색");
-            lineOfTwo.addSection(gyodae, gangnam, 20);
+            lineOfTwo.addSection(GYODAE, GANGNAM, 20);
 
             final Subway subway = new Subway(List.of(lineOfTwo));
 
-            assertThatThrownBy(() -> subway.getShortestDistance(gangnam.getName(), "잠실역"))
+            assertThatThrownBy(() -> subway.getShortestDistance(GANGNAM, JAMSIL))
                     .isInstanceOf(InvalidStationNameException.class)
                     .hasMessage("노선 구간에 등록되지 않은 역 이름을 통해 경로를 조회할 수 없습니다.");
         }
