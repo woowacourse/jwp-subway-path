@@ -16,19 +16,13 @@ public class SectionCreateRequest {
     @Positive(message = "거리는 양수여야 합니다.")
     private Integer distance;
 
-    @NotNull(message = "노선 아이디는 필수 입력값입니다.")
-    @Positive(message = "노선 아이디는 양수여야 합니다.")
-    private Long lineId;
-
     private SectionCreateRequest() {
     }
 
-    public SectionCreateRequest(final Long upStationId, final Long downStationId, final Integer distance,
-                                final Long lineId) {
+    public SectionCreateRequest(final Long upStationId, final Long downStationId, final Integer distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
-        this.lineId = lineId;
     }
 
     public Long getUpStationId() {
@@ -41,9 +35,5 @@ public class SectionCreateRequest {
 
     public Integer getDistance() {
         return distance;
-    }
-
-    public Long getLineId() {
-        return lineId;
     }
 }

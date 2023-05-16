@@ -6,41 +6,25 @@ import javax.validation.constraints.Positive;
 
 public class StationCreateRequest {
     @NotBlank(message = "역 이름은 공백일 수 없습니다.")
-    private String upStation;
-    @NotBlank(message = "역 이름은 공백일 수 없습니다.")
-    private String downStation;
-    @NotNull(message = "거리는 필수 입력값입니다.")
-    @Positive(message = "거리는 양수여야 합니다.")
-    private Integer distance;
-    @NotNull(message = "노선 아이디는 필수 입력값입니다.")
-    @Positive(message = "노선 아이디는 양수여야 합니다.")
+    private String name;
+
+    @NotNull(message = "라인 ID는 필수 입력 값입니다.")
+    @Positive
     private Long lineId;
 
     private StationCreateRequest() {
-
     }
 
-    public StationCreateRequest(final String upStation, final String downStation, final int distance,
-                                final long lineId) {
-        this.upStation = upStation;
-        this.downStation = downStation;
-        this.distance = distance;
+    public StationCreateRequest(final String name, final Long lineId) {
+        this.name = name;
         this.lineId = lineId;
     }
 
-    public String getUpStation() {
-        return upStation;
+    public String getName() {
+        return name;
     }
 
-    public String getDownStation() {
-        return downStation;
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public long getLineId() {
+    public Long getLineId() {
         return lineId;
     }
 }
