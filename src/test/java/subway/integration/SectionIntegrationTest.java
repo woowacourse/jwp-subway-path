@@ -6,39 +6,28 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import subway.ui.dto.request.SectionRequest;
-import subway.ui.dto.request.LineRequest;
 
 @DisplayName("지하철 구간 관련 기능")
+@Sql("/test-data.sql")
 public class SectionIntegrationTest extends IntegrationTest{
 
-	private LineRequest lineRequest1;
 	private SectionRequest sectionRequest1;
 
 	@BeforeEach
 	public void setUp(){
 		super.setUp();
-		lineRequest1 = new LineRequest("2호선");
-
-		sectionRequest1 = new SectionRequest("2호선","잠실역","역삼역", 5L);
+		sectionRequest1 = new SectionRequest("2호선","잠실","역삼", 5L);
 	}
 
 	@DisplayName("지하철 구간을 생성한다")
 	@Test
 	void createSection(){
-		// when
-		ExtractableResponse<Response> lineResponse = RestAssured
-			.given().log().all()
-			.contentType(MediaType.APPLICATION_JSON_VALUE)
-			.body(lineRequest1)
-			.when().post("/lines")
-			.then().log().all().
-			extract();
-
 		ExtractableResponse<Response> response = RestAssured.given().log().all()
 			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.body(sectionRequest1)
