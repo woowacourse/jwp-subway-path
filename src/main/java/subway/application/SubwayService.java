@@ -48,6 +48,7 @@ public class SubwayService {
         subwayDao.save(line);
     }
 
+    @Transactional(readOnly = true)
     public List<StationResponse> findRouteMap(Long lineId) {
         Line line = subwayDao.findById(lineId);
         return line.routeMap()
@@ -59,6 +60,7 @@ public class SubwayService {
                 )).collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Map<String, List<StationResponse>> findAllRouteMap() {
         List<Line> allLines = lineDao.findAll().stream()
                 .map(line -> subwayDao.findById(line.getId()))
