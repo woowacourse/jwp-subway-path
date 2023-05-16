@@ -45,7 +45,7 @@ public class LineControllerIntegrationTest extends IntegrationTest {
         lineTwo = lineRepository.save(new Line(lineEntity.getName(), lineEntity.getColor()));
         upward = stationDao.save(new StationEntity("잠실역"));
         downward = stationDao.save(new StationEntity("잠실새내역"));
-        lineTwo.addSection(Station.from(upward), Station.from(downward), 10);
+        lineTwo.addSection(generateStation(upward), generateStation(downward), 10);
         lineRepository.update(lineTwo);
     }
 
@@ -129,7 +129,7 @@ public class LineControllerIntegrationTest extends IntegrationTest {
         final Line lineFour = lineRepository.save(new Line(lineEntity.getName(), lineEntity.getColor()));
         final StationEntity lineFourUpward = stationDao.save(new StationEntity("이수역"));
         final StationEntity lineFourDownward = stationDao.save(new StationEntity("서울역"));
-        lineFour.addSection(Station.from(lineFourUpward), Station.from(lineFourDownward), 10);
+        lineFour.addSection(generateStation(lineFourUpward), generateStation(lineFourDownward), 10);
         lineRepository.update(lineFour);
 
         mockMvc.perform(get("/lines"))
@@ -256,5 +256,9 @@ public class LineControllerIntegrationTest extends IntegrationTest {
                     .andDo(print())
                     .andExpect(status().isBadRequest());
         }
+    }
+
+    private Station generateStation(final StationEntity stationEntity) {
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 }

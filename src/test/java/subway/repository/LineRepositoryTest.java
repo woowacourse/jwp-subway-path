@@ -147,7 +147,7 @@ class LineRepositoryTest {
                     )
             );
             final Line line = generateLine(lineEntity, List.of(sectionEntity));
-            line.addSection(Station.from(upward), Station.from(middle), 3);
+            line.addSection(generateStation(upward), generateStation(middle), 3);
 
             //when
             lineRepository.update(line);
@@ -182,7 +182,7 @@ class LineRepositoryTest {
                     )
             );
             final Line line = generateLine(lineEntity, List.of(sectionEntity));
-            line.deleteStation(Station.from(upward));
+            line.deleteStation(generateStation(upward));
 
             //when
             lineRepository.update(line);
@@ -192,6 +192,10 @@ class LineRepositoryTest {
             final List<Station> stations = result.getStations();
             assertThat(stations).isEmpty();
         }
+    }
+
+    private Station generateStation(final StationEntity stationEntity) {
+        return new Station(stationEntity.getId(), stationEntity.getName());
     }
 
     private Line generateLine(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
