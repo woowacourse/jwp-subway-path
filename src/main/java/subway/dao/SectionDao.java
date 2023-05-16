@@ -40,9 +40,9 @@ public class SectionDao {
         return new Section(id, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
-    public void insertAllByLineId(final Long lineId, final List<Section> sections) {
+    public int[] insertAllByLineId(final Long lineId, final List<Section> sections) {
         final String sql = "INSERT INTO section(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
-        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+        return jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(final PreparedStatement ps, final int i) throws SQLException {
                 final Section section = sections.get(i);

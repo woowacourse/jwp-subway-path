@@ -23,16 +23,16 @@ public class LineRepository {
         this.sectionDao = sectionDao;
     }
 
-    public Optional<Line> findLineByName(final Line line) {
-
-        return lineDao.findByName(line.getName());
-    }
-
     public Line saveWithSections(final Line line) {
         final Line insertedLine = lineDao.insert(line.getName());
         sectionDao.insertAllByLineId(insertedLine.getId(), line.sections());
 
-        return insertedLine;
+        return findLineWithSectionsByLineId(insertedLine.getId()).get();
+    }
+
+    public Optional<Line> findLineByName(final Line line) {
+
+        return lineDao.findByName(line.getName());
     }
 
     public Optional<Line> findLineWithSectionsByLineId(final Long lineId) {
@@ -44,6 +44,7 @@ public class LineRepository {
     }
 
     public Optional<Line> findById(final Long lineId) {
+
         return lineDao.findById(lineId);
     }
 

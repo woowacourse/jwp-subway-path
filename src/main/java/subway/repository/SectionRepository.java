@@ -13,13 +13,13 @@ public class SectionRepository {
         this.sectionDao = sectionDao;
     }
 
-    public void deleteAllByLineId(final Long lineId) {
-
-        sectionDao.deleteAllByLineId(lineId);
-    }
-
     public void insertAllByLineId(final Long lineId, final Sections sections) {
 
         sectionDao.insertAllByLineId(lineId, sections.getSections());
+    }
+
+    public void deleteAllByLineId(final Long lineId) {
+
+        sectionDao.deleteAllByLineId(lineId);
     }
 }

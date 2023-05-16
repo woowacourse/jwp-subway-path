@@ -1,15 +1,16 @@
-package subway.dao;
+package subway.repository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
+import subway.dao.StationDao;
 import subway.domain.station.Station;
-import subway.repository.StationRepository;
 
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @JdbcTest
 @Import({StationRepository.class, StationDao.class})
@@ -30,7 +31,10 @@ class StationRepositoryTest {
         final Station saved = repository.save(station);
 
         // then
-        assertThat(saved.getId()).isEqualTo(1L);
+        assertAll(
+                () -> assertThat(saved.getId()).isNotNull(),
+                () -> assertThat(saved.getName()).isEqualTo("A")
+        );
     }
 
     @Test
