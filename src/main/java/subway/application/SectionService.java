@@ -71,27 +71,26 @@ public class SectionService {
     private void addStartStation(Line line, Section sectionToAdd) {
         Optional<Section> prevExistingSection = line.findSectionWithEndStation(sectionToAdd.getEndStation());
         prevExistingSection.ifPresent(prevSection -> {
-            validateDistance(prevSection.getDistance(), sectionToAdd.getDistance());
-            sectionRepository.delete(prevSection);
-            sectionRepository.save(line.getId(), new Section(
-                    prevSection.getStartStation(),
-                    sectionToAdd.getStartStation(),
-                    prevSection.getDistance() - sectionToAdd.getDistance()
-            ));
+            changePrevSectionToNewSection(prevSection, sectionToAdd);
+            saveStation(line.getId(), prevSection.getStartStation(), sectionToAdd.getStartStation(), prevSection.getDistance() - sectionToAdd.getDistance());
         });
         sectionRepository.save(line.getId(), sectionToAdd);
     }
 
+    private void changePrevSectionToNewSection(Section prevSection, Section newSection) {
+        validateDistance(prevSection.getDistance(), newSection.getDistance());
+        sectionRepository.delete(prevSection);
+    }
+
+    private void saveStation(Long lineId, Station startStation, Station endStation, int distance) {
+        sectionRepository.save(lineId, new Section(startStation, endStation, distance));
+    }
+
     private void addEndStation(Line line, Section sectionToAdd) {
-        Optional<Section> prevExistingSection = line.findSectionWithStartStation(sectionToAdd.getStartStation());
+        Optional<Section> prevExistingSection = line.findSectionWithStartStation(sectionToAdd.getStartStation()); // 로직 다름
         prevExistingSection.ifPresent(prevSection -> {
-            validateDistance(prevSection.getDistance(), sectionToAdd.getDistance());
-            sectionRepository.delete(prevSection);
-            sectionRepository.save(line.getId(), new Section(
-                    sectionToAdd.getEndStation(),
-                    prevSection.getEndStation(),
-                    prevSection.getDistance() - sectionToAdd.getDistance()
-            ));
+            changePrevSectionToNewSection(prevSection, sectionToAdd);
+            saveStation(line.getId(), sectionToAdd.getEndStation(), prevSection.getEndStation(),prevSection.getDistance() - sectionToAdd.getDistance());
         });
         sectionRepository.save(line.getId(), sectionToAdd);
     }
