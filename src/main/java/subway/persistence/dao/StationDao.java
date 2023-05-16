@@ -1,6 +1,7 @@
 package subway.persistence.dao;
 
-import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -8,41 +9,43 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.persistence.entity.SectionEntity;
+import subway.persistence.entity.StationEntity;
 
 @Repository
-public class SectionDao {
+public class StationDao {
     private final SimpleJdbcInsert simpleJdbcInsert;
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
-    private final RowMapper<SectionEntity> rowMapper = (resultSet, rowNumber) -> new SectionEntity(
+    private final RowMapper<StationEntity> rowMapper = (resultSet, rowNumber) -> new StationEntity(
             resultSet.getLong("id"),
             resultSet.getLong("line_id"),
-            resultSet.getLong("upward_station_id"),
-            resultSet.getLong("downward_station_id"),
-            resultSet.getInt("distance")
+            resultSet.getString("name")
     );
 
-    public SectionDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
+    public StationDao(NamedParameterJdbcTemplate namedParameterJdbcTemplate) {
         this.namedParameterJdbcTemplate = namedParameterJdbcTemplate;
         this.simpleJdbcInsert = new SimpleJdbcInsert(namedParameterJdbcTemplate.getJdbcTemplate())
-                .withTableName("section")
-                .usingColumns("line_id", "upward_station_id", "downward_station_id", "distance")
+                .withTableName("station")
+                .usingColumns("line_id", "name")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public long insert(SectionEntity sectionEntity) {
-        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(sectionEntity);
+    public long insert(StationEntity stationEntity) {
+        SqlParameterSource sqlParameterSource = new BeanPropertySqlParameterSource(stationEntity);
         return simpleJdbcInsert.executeAndReturnKey(sqlParameterSource).longValue();
     }
 
-    public List<SectionEntity> findAllByLineId(Long id) {
-        String sql = "SELECT id, line_id, upward_station_id, downward_station_id, distance FROM section WHERE line_id=:lineId";
-        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", id);
-        return namedParameterJdbcTemplate.query(sql, sqlParameterSource, rowMapper);
+    public Optional<StationEntity> findById(long id) {
+        String sql = "SELECT id, line_id, name FROM station WHERE id=:id";
+        SqlParameterSource sqlParameterSource = new MapSqlParameterSource("id", id);
+        try {
+            return Optional.of(namedParameterJdbcTemplate.queryForObject(sql, sqlParameterSource, rowMapper));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public void deleteAllByLineId(Long id) {
-        String sql = "DELETE FROM section WHERE line_id=:lineId";
+        String sql = "DELETE FROM station WHERE line_id=:lineId";
         SqlParameterSource sqlParameterSource = new MapSqlParameterSource("lineId", id);
         namedParameterJdbcTemplate.update(sql, sqlParameterSource);
     }

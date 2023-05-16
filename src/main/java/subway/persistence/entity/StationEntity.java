@@ -2,21 +2,27 @@ package subway.persistence.entity;
 
 import java.util.Objects;
 
-public class LineEntity {
+public class StationEntity {
     private final Long id;
+    private final Long lineId;
     private final String name;
 
-    public LineEntity(String name) {
-        this(null, name);
+    public StationEntity(Long lineId, String name) {
+        this(null, lineId, name);
     }
 
-    public LineEntity(Long id, String name) {
+    public StationEntity(Long id, Long lineId, String name) {
         this.id = id;
+        this.lineId = lineId;
         this.name = name;
     }
 
     public Long getId() {
         return id;
+    }
+
+    public Long getLineId() {
+        return lineId;
     }
 
     public String getName() {
@@ -31,7 +37,7 @@ public class LineEntity {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        LineEntity that = (LineEntity) o;
+        StationEntity that = (StationEntity) o;
         return Objects.equals(id, that.id);
     }
 

@@ -85,14 +85,6 @@ public class Line {
         sections.remove(upwardSection);
     }
 
-    public Station getUpwardTerminus() {
-        return sections.get(0).getUpwardStation();
-    }
-
-    public Station getDownwardTerminus() {
-        return getDownwardEndSection().getDownwardStation();
-    }
-
     private boolean isTerminusOfDirection(Station station, Direction direction) {
         if (direction.equals(UPWARD)) {
             Section upwardEndSection = sections.get(0);
