@@ -1,15 +1,23 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.dao.LineDao;
+import subway.dao.entity.LineEntity;
+import subway.domain.Line;
+import subway.domain.LineColor;
+import subway.domain.LineName;
+import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineResponse;
+import subway.dto.line.LineUpdateRequest;
+import subway.exception.DuplicateLineException;
+import subway.exception.LineNotFoundException;
 
 @Service
+@Transactional
 public class LineService {
     private final LineDao lineDao;
 
@@ -17,37 +25,43 @@ public class LineService {
         this.lineDao = lineDao;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    public long saveLine(LineCreateRequest request) {
+        LineName lineName = new LineName(request.getLineName());
+        LineColor lineColor = new LineColor(request.getColor());
+        if (lineDao.existsByName(request.getLineName())) {
+            throw new DuplicateLineException();
+        }
+        return lineDao.insert(new Line(lineName, lineColor));
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
+        List<LineEntity> lines = lineDao.findAll();
+        return lines.stream()
+                .map(LineResponse::from)
+                .collect(toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
-    }
-
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+        LineEntity lineEntity = lineDao.findById(id)
+                .orElseThrow(LineNotFoundException::new);
+        return new LineResponse(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
     }
 
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public void updateLine(Long id, LineUpdateRequest request) {
+        LineName lineName = new LineName(request.getLineName());
+        LineColor lineColor = new LineColor(request.getColor());
+        if (lineDao.doesNotExistById(id)) {
+            throw new LineNotFoundException();
+        }
+        lineDao.update(id, new Line(lineName, lineColor));
     }
 
     public void deleteLineById(Long id) {
+        if (lineDao.doesNotExistById(id)) {
+            throw new LineNotFoundException();
+        }
         lineDao.deleteById(id);
     }
-
 }

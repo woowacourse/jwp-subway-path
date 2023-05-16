@@ -1,39 +1,28 @@
 package subway.dao;
 
+import java.util.List;
+import java.util.Optional;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
-
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
+    private static final RowMapper<Station> rowMapper = (rs, rowNum) ->
             new Station(
-                    rs.getLong("id"),
                     rs.getString("name")
             );
 
-
-    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.insertAction = new SimpleJdbcInsert(dataSource)
-                .withTableName("station")
-                .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
-        Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+    public void insert(Station station) {
+        String sql = "INSERT INTO STATION (name) VALUES (?)";
+        jdbcTemplate.update(sql, station.getName());
     }
 
     public List<Station> findAll() {
@@ -41,18 +30,31 @@ public class StationDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    public Optional<Station> findByName(String stationName) {
+        String sql = "select * from STATION where name = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, stationName));
+        } catch (DataAccessException e) {
+            return Optional.empty();
+        }
     }
 
-    public void update(Station newStation) {
-        String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+    public void update(String prevStationName, Station station) {
+        String sql = "update STATION set name = ? where name = ?";
+        jdbcTemplate.update(sql, station.getName(), prevStationName);
     }
 
-    public void deleteById(Long id) {
-        String sql = "delete from STATION where id = ?";
-        jdbcTemplate.update(sql, id);
+    public void deleteByName(String stationName) {
+        String sql = "delete from STATION where name = ?";
+        jdbcTemplate.update(sql, stationName);
+    }
+
+    public boolean existsBy(String stationName) {
+        String sql = "SELECT COUNT(*) FROM STATION WHERE name = ? LIMIT 1";
+        return jdbcTemplate.queryForObject(sql, Long.class, stationName) > 0;
+    }
+
+    public boolean doesNotExistBy(String stationName) {
+        return !existsBy(stationName);
     }
 }

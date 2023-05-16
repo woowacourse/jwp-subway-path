@@ -1,15 +1,19 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.StationDao;
-import subway.domain.Station;
-import subway.dto.StationRequest;
-import subway.dto.StationResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.dao.StationDao;
+import subway.domain.Station;
+import subway.dto.station.StationCreateRequest;
+import subway.dto.station.StationResponse;
+import subway.dto.station.StationUpdateRequest;
+import subway.exception.DuplicateStationException;
+import subway.exception.StationNotFoundException;
 
 @Service
+@Transactional
 public class StationService {
     private final StationDao stationDao;
 
@@ -17,28 +21,29 @@ public class StationService {
         this.stationDao = stationDao;
     }
 
-    public StationResponse saveStation(StationRequest stationRequest) {
-        Station station = stationDao.insert(new Station(stationRequest.getName()));
-        return StationResponse.of(station);
+    public void saveStation(StationCreateRequest stationCreateRequest) {
+        if (stationDao.existsBy(stationCreateRequest.getStationName())) {
+            throw new DuplicateStationException();
+        }
+        stationDao.insert(new Station(stationCreateRequest.getStationName()));
     }
 
-    public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
-    }
-
+    @Transactional(readOnly = true)
     public List<StationResponse> findAllStationResponses() {
         List<Station> stations = stationDao.findAll();
-
         return stations.stream()
-                .map(StationResponse::of)
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationRequest stationRequest) {
-        stationDao.update(new Station(id, stationRequest.getName()));
+    public void updateStation(String prevStationName, StationUpdateRequest stationUpdateRequest) {
+        if (stationDao.doesNotExistBy(prevStationName)) {
+            throw new StationNotFoundException();
+        }
+        stationDao.update(prevStationName, new Station(stationUpdateRequest.getStationName()));
     }
 
-    public void deleteStationById(Long id) {
-        stationDao.deleteById(id);
+    public void deleteStationByName(String stationName) {
+        stationDao.deleteByName(stationName);
     }
 }

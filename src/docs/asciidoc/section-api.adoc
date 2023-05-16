@@ -1,0 +1,33 @@
+[[Section-API]]
+== 구간
+
+[[Section-추가]]
+=== 생성
+
+*요청*
+include::{snippets}/section/create/http-request.adoc[]
+include::{snippets}/section/create/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/section/create/http-response.adoc[]
+
+[[Section-삭제]]
+=== 삭제
+
+*요청*
+include::{snippets}/section/delete/http-request.adoc[]
+include::{snippets}/section/delete/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/section/delete/http-response.adoc[]
+
+[[Section-조회]]
+=== 조회
+
+*요청*
+include::{snippets}/section/inquiry/http-request.adoc[]
+include::{snippets}/section/inquiry/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/section/inquiry/http-response.adoc[]
+

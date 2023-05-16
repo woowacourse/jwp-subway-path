@@ -1,0 +1,15 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+= Subway Path
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:sectlinks:
+
+include::line-api.adoc[]
+
+include::station-api.adoc[]
+
+include::section-api.adoc[]

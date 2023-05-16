@@ -1,0 +1,60 @@
+[[Line-API]]
+== 노선
+
+[[Line-생성]]
+=== 생성
+
+*요청*
+include::{snippets}/lines/create/http-request.adoc[]
+include::{snippets}/lines/create/request-fields.adoc[]
+
+*응답*
+include::{snippets}/lines/create/http-response.adoc[]
+
+[[Line-조회]]
+=== 조회
+
+*요청*
+include::{snippets}/lines/inquiry/http-request.adoc[]
+
+*응답*
+include::{snippets}/lines/inquiry/http-response.adoc[]
+
+[[Line-상세-조회]]
+=== 상세 조회
+
+*요청*
+include::{snippets}/lines/detail-inquiry/http-request.adoc[]
+
+*응답*
+include::{snippets}/lines/detail-inquiry/http-response.adoc[]
+
+[[Line-상세-조회-단건]]
+=== 상세 조회(단건)
+
+*요청*
+include::{snippets}/lines/detail-inquiry-single/http-request.adoc[]
+include::{snippets}/lines/detail-inquiry-single/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/lines/detail-inquiry-single/http-response.adoc[]
+
+[[Line-수정]]
+=== 수정
+
+*요청*
+include::{snippets}/lines/update/http-request.adoc[]
+include::{snippets}/lines/update/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/lines/update/http-response.adoc[]
+
+[[Line-삭제]]
+=== 삭제
+
+*요청*
+include::{snippets}/lines/delete/http-request.adoc[]
+include::{snippets}/lines/delete/path-parameters.adoc[]
+
+*응답*
+include::{snippets}/lines/delete/http-response.adoc[]
