@@ -1,6 +1,8 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.controller.exception.SectionException;
+import subway.controller.exception.StationException;
 
 public class Section {
     private static final int MIN_DISTANCE = 1;
@@ -21,11 +23,11 @@ public class Section {
     }
 
     private void validate(final Station source, final Station target, final int distance) {
-        if (source.equals(target)) {
-            throw new IllegalArgumentException("출발역과 도착역은 동일할 수 없습니다.");
-        }
         if (distance < MIN_DISTANCE) {
-            throw new IllegalArgumentException(String.format("거리 정보는 %d 이상이어야 합니다.", MIN_DISTANCE));
+            throw new SectionException(String.format("거리 정보는 %d 이상이어야 합니다.", MIN_DISTANCE));
+        }
+        if (source.equals(target)) {
+            throw new StationException("출발역과 도착역은 동일할 수 없습니다.");
         }
     }
 

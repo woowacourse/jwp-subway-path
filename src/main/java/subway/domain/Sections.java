@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import subway.controller.exception.SectionException;
+import subway.controller.exception.StationException;
 
 public class Sections {
     private static final int CLEAR_SECTIONS_SIZE = 1;
@@ -33,10 +35,10 @@ public class Sections {
 
     private void validateRegister(final Station source, final Station target) {
         if (doesNotHave(source) && doesNotHave(target)) {
-            throw new IllegalArgumentException("기준역이 존재하지 않아 추가할 수 없습니다.");
+            throw new StationException("기준역이 존재하지 않아 추가할 수 없습니다.");
         }
         if (have(source) && have(target)) {
-            throw new IllegalArgumentException("두 역 모두 노선에 존재하는 역입니다.");
+            throw new StationException("두 역 모두 노선에 존재하는 역입니다.");
         }
     }
 
@@ -58,7 +60,7 @@ public class Sections {
 
     private void registerTargetStation(final Station existence, final Station additional, final int distance) {
         if (isTargetDistanceUnRegistrable(existence, distance)) {
-            throw new IllegalArgumentException("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
+            throw new SectionException("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
         }
         final Optional<Section> foundSection = findSourceSection(existence);
         if (foundSection.isPresent()) {
@@ -86,7 +88,7 @@ public class Sections {
 
     private void registerSourceStation(final Station existence, final Station additional, final int distance) {
         if (isSourceDistanceUnRegistrable(existence, distance)) {
-            throw new IllegalArgumentException("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
+            throw new SectionException("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
         }
         final Optional<Section> foundSection = findTargetSection(existence);
         if (foundSection.isPresent()) {
@@ -109,12 +111,16 @@ public class Sections {
 
     public void delete(final Station station) {
         if (doesNotHave(station)) {
-            throw new IllegalArgumentException("존재하지 않는 역을 삭제할 수 없습니다.");
+            throw new StationException("존재하지 않는 역을 삭제할 수 없습니다.");
         }
         if (sections.size() == CLEAR_SECTIONS_SIZE) {
             sections.clear();
             return;
         }
+        handleSections(station);
+    }
+
+    private void handleSections(final Station station) {
         final Optional<Section> foundTargetSection = findTargetSection(station);
         final Optional<Section> foundSourceSection = findSourceSection(station);
         if (foundSourceSection.isPresent() && foundTargetSection.isPresent()) {

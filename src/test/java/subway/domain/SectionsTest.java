@@ -9,6 +9,8 @@ import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.controller.exception.SectionException;
+import subway.controller.exception.StationException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -34,7 +36,7 @@ class SectionsTest {
 
         // expect
         assertThatThrownBy(() -> sections.register(new Station("송파역"), new Station("몽촌토성역"), 3))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(StationException.class)
                 .hasMessageContaining("기준역이 존재하지 않아 추가할 수 없습니다.");
     }
 
@@ -46,7 +48,7 @@ class SectionsTest {
 
         // expect
         assertThatThrownBy(() -> sections.register(new Station("잠실역"), new Station("석촌역"), 2))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(StationException.class)
                 .hasMessageContaining("두 역 모두 노선에 존재하는 역입니다");
     }
 
@@ -60,7 +62,7 @@ class SectionsTest {
 
         // expect
         assertThatThrownBy(() -> sections.register(new Station("잠실역"), new Station("송파역"), distance))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SectionException.class)
                 .hasMessageContaining("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
     }
 
@@ -74,7 +76,7 @@ class SectionsTest {
 
         // expect
         assertThatThrownBy(() -> sections.register(new Station("송파역"), new Station("석촌역"), distance))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SectionException.class)
                 .hasMessageContaining("등록하려는 구간의 거리는 기존 구간의 거리보다 짧아야 합니다.");
     }
 
@@ -185,7 +187,7 @@ class SectionsTest {
 
         // expect
         assertThatThrownBy(() -> sections.delete(new Station("강남역")))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(StationException.class)
                 .hasMessageContaining("존재하지 않는 역을 삭제할 수 없습니다.");
     }
 
