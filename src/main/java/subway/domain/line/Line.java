@@ -49,22 +49,21 @@ public class Line {
         downBoundStation = rightStation;
     }
 
-    public void addLastStation(Station baseStation, Station newStation, int distance) {
-        if (baseStation.equals(upBoundStation)) {
+    public void addStation(Station newStation, Station baseStation, Direction direction, int distance) {
+        if (upBoundStation.equals(baseStation) && Direction.LEFT.equals(direction)) {
             sections.addSection(new Section(newStation, baseStation, distance));
             upBoundStation = newStation;
             return;
         }
-        if (baseStation.equals(downBoundStation)) {
+        if (downBoundStation.equals(baseStation) && Direction.RIGHT.equals(direction)) {
             sections.addSection(new Section(baseStation, newStation, distance));
             downBoundStation = newStation;
             return;
         }
-        throw new IllegalArgumentException("기준점이 종점이 아닙니다.");
-    }
+        if (Direction.LEFT.equals(direction)) {
 
-    public void addInnerStation(Station leftBaseStation, int leftDistance, Station rightBaseStation, int rightDistance, Station newStation) {
-        sections.split(newStation, leftBaseStation, leftDistance, rightBaseStation, rightDistance);
+        }
+        sections.split(newStation, baseStation, direction, distance);
     }
 
     public void deleteStation(Station deleteStation) {

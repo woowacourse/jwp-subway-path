@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.domain.station.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.exception.AlreadyExistStationException;
 import subway.repository.StationRepository;
 
 import java.util.List;
@@ -19,6 +20,9 @@ public class StationService {
     }
 
     public StationResponse saveStation(StationRequest stationRequest) {
+        if (stationRepository.existByName(stationRequest.getName())) {
+            throw new AlreadyExistStationException();
+        }
         Station station = stationRepository.save(new Station(stationRequest.getName()));
         return StationResponse.of(station);
     }

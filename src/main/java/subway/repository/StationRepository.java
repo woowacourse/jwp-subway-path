@@ -53,4 +53,8 @@ public class StationRepository {
     public void deleteById(Long id) {
         stationDao.deleteById(id);
     }
+
+    public boolean existByName(String name) {
+        return stationDao.existsByName(name);
+    }
 }

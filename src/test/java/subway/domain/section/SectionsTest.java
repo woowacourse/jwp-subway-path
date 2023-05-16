@@ -2,6 +2,7 @@ package subway.domain.section;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.Direction;
 import subway.domain.station.Station;
 
 import java.util.List;
@@ -58,7 +59,7 @@ class SectionsTest {
 
         //when
         int beforeSize = sections.size();
-        sections.split(innerStation, leftStation, 5, rightStation, 5);
+        sections.split(innerStation, leftStation, Direction.RIGHT, 5);
         int afterSize = sections.size();
 
         //then

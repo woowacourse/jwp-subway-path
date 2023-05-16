@@ -126,4 +126,8 @@ public class LineRepository {
 
         return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections), upBoundStation, downBoundStation);
     }
+
+    public boolean existsByName(String name) {
+        return lineDao.existsByName(name);
+    }
 }

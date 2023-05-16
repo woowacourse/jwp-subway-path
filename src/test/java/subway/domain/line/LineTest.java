@@ -53,7 +53,7 @@ class LineTest {
         line.initStations(leftStation, rightStation, 10);
 
         // when
-        line.addLastStation(rightStation, lastStation, 10);
+        line.addStation(lastStation, rightStation, Direction.RIGHT, 5);
 
         // then
         assertEquals(lineName, line.getName());
@@ -74,7 +74,7 @@ class LineTest {
         line.initStations(leftStation, rightStation, 10);
 
         // when
-        line.addInnerStation(leftStation, 5, rightStation, 5, centerStation);
+        line.addStation(centerStation, leftStation, Direction.RIGHT, 5);
 
         // then
         assertEquals(lineName, line.getName());
@@ -93,7 +93,7 @@ class LineTest {
         Station rightStation = new Station(2L, "right");
         Station centerStation = new Station(3L, "last");
         line.initStations(leftStation, rightStation, 10);
-        line.addInnerStation(leftStation, 5, rightStation, 5, centerStation);
+        line.addStation(centerStation, leftStation,Direction.RIGHT,5);
 
         // when
         line.deleteStation(centerStation);

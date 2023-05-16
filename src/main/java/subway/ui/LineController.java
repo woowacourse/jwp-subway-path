@@ -13,9 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.RegisterInnerStationRequest;
-import subway.dto.RegisterLastStationRequest;
-import subway.dto.RegisterStationsRequest;
+import subway.dto.RegisterStationRequest;
+import subway.dto.InitStationsRequest;
 
 import java.net.URI;
 import java.sql.SQLException;
@@ -44,21 +43,15 @@ public class LineController {
     }
 
     @PostMapping("/{name}/stations")
-    public ResponseEntity<Void> registerStations(@PathVariable String name, @RequestBody RegisterStationsRequest registerStationsRequest) {
-        lineService.registerInitStations(name, registerStationsRequest);
+    public ResponseEntity<Void> registerStations(@PathVariable String name, @RequestBody InitStationsRequest initStationsRequest) {
+        lineService.registerInitStations(name, initStationsRequest);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/{name}/last-station")
-    public ResponseEntity<Void> registerLastStation(@PathVariable String name, @RequestBody RegisterLastStationRequest registerLastStationRequest) {
-        lineService.registerLastStation(name, registerLastStationRequest);
-        return ResponseEntity.noContent().build();
-    }
-
-    @PostMapping("/{name}/inner-station")
-    public ResponseEntity<Void> registerInnerStation(@PathVariable String name,
-                                                     @RequestBody RegisterInnerStationRequest registerInnerStationRequest) {
-        lineService.registerInnerStation(name, registerInnerStationRequest);
+    @PostMapping("/{name}")
+    public ResponseEntity<Void> registerStation(@PathVariable String name,
+                                                     @RequestBody RegisterStationRequest registerStationRequest) {
+        lineService.registerStation(name, registerStationRequest);
         return ResponseEntity.noContent().build();
     }
 
@@ -82,15 +75,5 @@ public class LineController {
     public ResponseEntity<Void> deleteLineById(@PathVariable Long lineId) {
         lineService.deleteLineById(lineId);
         return ResponseEntity.noContent().build();
-    }
-
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<String> handleSQLException(SQLException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<String> handleAnotherException(RuntimeException e) {
-        return ResponseEntity.internalServerError().body(e.getMessage());
     }
 }

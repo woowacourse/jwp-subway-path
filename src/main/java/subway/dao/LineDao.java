@@ -86,4 +86,9 @@ public class LineDao {
             return Optional.empty();
         }
     }
+
+    public boolean existsByName(String name) {
+        String sql = "select count(*) from LINE where name = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, name) >= 1;
+    }
 }

@@ -1,14 +1,15 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.domain.line.Direction;
 import subway.domain.line.Line;
 import subway.domain.station.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.dto.RegisterInnerStationRequest;
-import subway.dto.RegisterLastStationRequest;
-import subway.dto.RegisterStationsRequest;
+import subway.dto.RegisterStationRequest;
+import subway.dto.InitStationsRequest;
 import subway.dto.StationResponse;
+import subway.exception.AlreadyExistLineException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -27,38 +28,31 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        if (lineRepository.existsByName(request.getName())) {
+            throw new AlreadyExistLineException();
+        }
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor()));
         return LineResponse.of(persistLine);
     }
 
-    public void registerInitStations(final String lineName, final RegisterStationsRequest registerStationsRequest) {
+    public void registerInitStations(final String lineName, final InitStationsRequest initStationsRequest) {
         Line line = lineRepository.findByName(lineName);
 
-        Station leftStation = stationRepository.findByName(registerStationsRequest.getLeftStationName());
-        Station rightStation = stationRepository.findByName(registerStationsRequest.getRightStationName());
-        line.initStations(leftStation, rightStation, registerStationsRequest.getDistance());
+        Station leftStation = stationRepository.findByName(initStationsRequest.getLeftStationName());
+        Station rightStation = stationRepository.findByName(initStationsRequest.getRightStationName());
+        line.initStations(leftStation, rightStation, initStationsRequest.getDistance());
 
         lineRepository.save(line);
     }
 
-    public void registerLastStation(String lineName, RegisterLastStationRequest registerLastStationRequest) {
+    public void registerStation(String lineName, RegisterStationRequest registerStationRequest) {
         Line line = lineRepository.findByName(lineName);
-
-        Station baseStation = stationRepository.findByName(registerLastStationRequest.getBaseStationName());
-        Station newStation = stationRepository.findByName(registerLastStationRequest.getNewStationName());
-
-        line.addLastStation(baseStation, newStation, registerLastStationRequest.getDistance());
-        lineRepository.save(line);
-    }
-
-    public void registerInnerStation(final String lineName, final RegisterInnerStationRequest registerInnerStationRequest) {
-        Line line = lineRepository.findByName(lineName);
-
-        Station leftBaseStation = stationRepository.findByName(registerInnerStationRequest.getLeftBaseStationName());
-        Station rightBaseStation = stationRepository.findByName(registerInnerStationRequest.getRightBaseStationName());
-        Station newStation = stationRepository.findByName(registerInnerStationRequest.getNewStationName());
-
-        line.addInnerStation(leftBaseStation, registerInnerStationRequest.getLeftDistance(), rightBaseStation, registerInnerStationRequest.getRightDistance(), newStation);
+        if (line.getSections().isEmpty()) {
+            throw new IllegalArgumentException("두 개의 역이 초기화 되지 않은 노선에 새로운 역을 추가할 수 없습니다.");
+        }
+        Station newStation = stationRepository.findByName(registerStationRequest.getNewStationName());
+        Station baseStation = stationRepository.findByName(registerStationRequest.getBaseStation());
+        line.addStation(newStation, baseStation, Direction.of(registerStationRequest.getDirection()), registerStationRequest.getDistance());
         lineRepository.save(line);
     }
 

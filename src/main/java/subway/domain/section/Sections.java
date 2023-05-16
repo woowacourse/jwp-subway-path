@@ -1,5 +1,6 @@
 package subway.domain.section;
 
+import subway.domain.line.Direction;
 import subway.domain.station.Station;
 
 import java.util.HashMap;
@@ -54,16 +55,24 @@ public class Sections {
         throw new IllegalArgumentException(CAT_NOT_EXIST_FORK);
     }
 
-    public void split(Station newStation, Station leftBaseStation, int leftDistance, Station rightBaseStation, int rightDistance) {
-        Section section = sections.get(leftBaseStation.getId());
-        if (section.getRightStation().equals(rightBaseStation)) {
-            Queue<Section> splitSections = section.split(newStation, leftDistance, rightDistance);
-            sections.remove(leftBaseStation.getId());
-            addSplitSections(splitSections);
-            return;
+    public void split(Station newStation, Station baseStation, Direction direction, int distance) {
+        Section section = null;
+        int leftDistance = -1;
+        int rightDistance = -1;
+        if (Direction.RIGHT.equals(direction)) {
+            section = getSectionByLeftStation(baseStation);
+            leftDistance = distance;
+            rightDistance = section.getDistance().getDistance() - leftDistance;
+        }
+        if (Direction.LEFT.equals(direction)) {
+            section = getSectionByRightStation(baseStation);
+            rightDistance = distance;
+            leftDistance = section.getDistance().getDistance() - rightDistance;
         }
 
-        throw new IllegalArgumentException("분할하려는 영역이 존재하지 않습니다.");
+        Queue<Section> splitSections = section.split(newStation, leftDistance, rightDistance);
+        sections.remove(section.getLeftStation().getId());
+        addSplitSections(splitSections);
     }
 
     private void addSplitSections(Queue<Section> splitSections) {
@@ -100,9 +109,9 @@ public class Sections {
         throw new IllegalArgumentException("연결되지 않은 구간을 합칠 수 없습니다.");
     }
 
-    public Section getSectionByRightStation(Station deleteStation) {
+    public Section getSectionByRightStation(Station station) {
         for (final Map.Entry<Long, Section> section : sections.entrySet()) {
-            if (section.getValue().getRightStation().equals(deleteStation)) {
+            if (section.getValue().getRightStation().equals(station)) {
                 return section.getValue();
             }
         }

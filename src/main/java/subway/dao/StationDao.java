@@ -78,4 +78,9 @@ public class StationDao {
         String sql = "DELETE FROM STATION WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    public boolean existsByName(String name) {
+        String sql = "select count(*) from STATION where name = ?";
+        return jdbcTemplate.queryForObject(sql, Integer.class, name) >= 1;
+    }
 }

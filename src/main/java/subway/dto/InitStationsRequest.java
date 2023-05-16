@@ -1,15 +1,15 @@
 package subway.dto;
 
-public class RegisterStationsRequest {
+public class InitStationsRequest {
 
     private String leftStationName;
     private String rightStationName;
     private int distance;
 
-    public RegisterStationsRequest() {
+    public InitStationsRequest() {
     }
 
-    public RegisterStationsRequest(final String leftStationName, final String rightStationName, final int distance) {
+    public InitStationsRequest(final String leftStationName, final String rightStationName, final int distance) {
         this.leftStationName = leftStationName;
         this.rightStationName = rightStationName;
         this.distance = distance;
