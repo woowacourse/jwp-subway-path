@@ -144,6 +144,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .body("size", Matchers.is(2))
             .body("[0].name", equalTo("이호선"))
             .body("[0].color", equalTo("bg-green-600"))
+            .body("[0].extraFare", equalTo(0))
             .body("[0].stationResponses[0].name", equalTo("강남역"))
             .body("[0].stationResponses[1].name", equalTo("역삼역"))
             .body("[1].name", equalTo("팔호선"))
@@ -156,7 +157,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선 목록을 조회한다.")
     void getLineById() {
         // given
-        saveLine(new LineRequest("이호선", "bg-green-600"));
+        saveLine(new LineRequest("이호선", "bg-green-600", 1000));
         saveStation(new StationRequest("강남역"));
         saveStation(new StationRequest("역삼역"));
         saveSection(new SectionRequest(1L, 1L, 2L, 10));
@@ -169,6 +170,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .then().log().all()
             .body("name", equalTo("이호선"))
             .body("color", equalTo("bg-green-600"))
+            .body("extraFare", equalTo(1000))
             .body("stationResponses[0].name", equalTo("강남역"))
             .body("stationResponses[1].name", equalTo("역삼역"));
     }
