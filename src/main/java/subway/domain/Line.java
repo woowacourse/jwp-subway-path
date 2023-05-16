@@ -61,6 +61,7 @@ public class Line {
 
         if (deleteMiddleStation.size() == 2) {
             sections.remove(deleteSections.getSections(), deleteStation);
+            return;
         }
 
         // 종점을 삭제하는 경우

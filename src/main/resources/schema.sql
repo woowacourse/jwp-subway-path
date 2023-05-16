@@ -26,9 +26,9 @@ create table if not exists SECTION
     foreign key (down_station_id) references STATION (id)
 );
 
-INSERT INTO LINE(name, color) VALUES ('1호선', 'blue');
-INSERT INTO LINE(name, color) VALUES ('2호선', 'green');
-INSERT INTO LINE(name, color) VALUES ('신분당선', 'red');
+INSERT INTO LINE(name, color) VALUES ('1호선', 'bg-blue-500');
+INSERT INTO LINE(name, color) VALUES ('2호선', 'bg-green-500');
+INSERT INTO LINE(name, color) VALUES ('신분당선', 'bg-red-500');
 
 INSERT INTO STATION(name) VALUES ('서울역');
 INSERT INTO STATION(name) VALUES ('천안역');
