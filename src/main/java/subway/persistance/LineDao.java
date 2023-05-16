@@ -40,6 +40,11 @@ public class LineDao {
         return new Line(lineId, line.getName(), line.getColor());
     }
 
+    public void update(Line line) {
+        String sql = "UPDATE LINE SET name = ?, color = ? WHERE line_id = ?";
+        jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());
+    }
+
     public List<Line> findAll() {
         String sql = "select line_id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);

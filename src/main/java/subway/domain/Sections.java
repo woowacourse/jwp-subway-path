@@ -65,7 +65,7 @@ public class Sections {
     }
 
     public void delete(Station station) {
-        if (isInit(station)) {
+        if (isInit()) {
             sections.clear();
             return;
         }
@@ -81,9 +81,8 @@ public class Sections {
         }
     }
 
-    private boolean isInit(Station station) {
-        return sections.size() == 1
-                && (sections.get(0).isUp(station) || sections.get(0).isDown(station));
+    private boolean isInit() {
+        return sections.size() < 2;
     }
 
     private boolean isMid(Station station) {

@@ -18,7 +18,6 @@ import java.util.stream.IntStream;
 
 @Repository
 public class LineRepositoryImpl implements LineRepository {
-
     private final LineDao lineDao;
     private final SectionDao sectionDao;
     private final StationDao stationDao;
@@ -36,16 +35,19 @@ public class LineRepositoryImpl implements LineRepository {
                     .orElseThrow(NoSuchElementException::new);
 
             List<SectionEntity> sectionEntities = sectionDao.findByLineId(line.getId());
-
-            List<Section> sections = sectionEntities.stream()
-                    .sorted(Comparator.comparingInt(SectionEntity::getListOrder))
-                    .map(this::entityToSection)
-                    .collect(Collectors.toList());
+            List<Section> sections = mapToSections(sectionEntities);
 
             return Optional.of(new Line(line.getId(), line.getName(), line.getColor(), new Sections(sections)));
         } catch (NoSuchElementException e) {
             return Optional.empty();
         }
+    }
+
+    private List<Section> mapToSections(List<SectionEntity> sectionEntities) {
+        return sectionEntities.stream()
+                .sorted(Comparator.comparingInt(SectionEntity::getListOrder))
+                .map(this::entityToSection)
+                .collect(Collectors.toList());
     }
 
     private Section entityToSection(SectionEntity sectionEntity) {
@@ -64,19 +66,29 @@ public class LineRepositoryImpl implements LineRepository {
 
     @Override
     public Line save(Line line) {
-        delete(line);
+        Line insertedLine = updateIfExistOrElseInsert(line);
 
-        Line insertedLine = lineDao.insert(line);
+        sectionDao.deleteByLineId(line.getId());
 
         List<Section> sections = line.getSections().getSections();
-
-        List<SectionEntity> sectionEntities = IntStream.range(0, sections.size())
-                .mapToObj(i -> new SectionEntity(sections.get(i), insertedLine.getId(), i))
-                .collect(Collectors.toList());
-
+        List<SectionEntity> sectionEntities = mapToSectionEntities(insertedLine, sections);
         sectionEntities.forEach(sectionDao::insertSection);
 
         return new Line(insertedLine.getId(), line.getName(), line.getColor(), line.getSections());
+    }
+
+    private Line updateIfExistOrElseInsert(Line line) {
+        if (line.getId() == null) {
+            return lineDao.insert(line);
+        }
+        lineDao.update(line);
+        return line;
+    }
+
+    private List<SectionEntity> mapToSectionEntities(Line insertedLine, List<Section> sections) {
+        return IntStream.range(0, sections.size())
+                .mapToObj(i -> new SectionEntity(sections.get(i), insertedLine.getId(), i))
+                .collect(Collectors.toList());
     }
 
     @Override
