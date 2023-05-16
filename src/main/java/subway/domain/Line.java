@@ -2,6 +2,8 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import subway.exception.ErrorCode;
+import subway.exception.InvalidException;
 
 public class Line {
     private final String name;
@@ -25,6 +27,9 @@ public class Line {
     }
 
     public void deleteStation(final Station station) {
+        if (sections.isEmpty()) {
+            throw new InvalidException(ErrorCode.INVALID_DELETE_SECTION_REQUEST);
+        }
         sections.deleteStation(station);
     }
 
