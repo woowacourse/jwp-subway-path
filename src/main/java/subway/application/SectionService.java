@@ -14,6 +14,9 @@ import java.util.List;
 @Service
 public class SectionService {
 
+    private static final String INVALID_LINE_MESSAGE = "기존에 저장된 호선 번호를 입력해주세요.";
+    private static final String INVALID_STATION_MESSAGE = "기존에 저장된 역 번호를 입력해주세요.";
+
     private final SectionDao sectionDao;
     private final StationDao stationDao;
     private final LineDao lineDao;
@@ -49,7 +52,7 @@ public class SectionService {
         try {
             return lineDao.findById(lineId);
         } catch (DataAccessException exception) {
-            throw new SubwayServiceException("기존에 저장된 호선 번호를 입력해주세요.");
+            throw new SubwayServiceException(INVALID_LINE_MESSAGE);
         }
     }
 
@@ -57,7 +60,7 @@ public class SectionService {
         try {
             return stationDao.findById(stationId);
         } catch (DataAccessException exception) {
-            throw new SubwayServiceException("기존에 저장된 역 번호를 입력해주세요.");
+            throw new SubwayServiceException(INVALID_STATION_MESSAGE);
         }
     }
 

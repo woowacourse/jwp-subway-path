@@ -6,6 +6,9 @@ import java.util.Objects;
 
 public class Distance {
 
+    private static final String INVALID_DISTANCE_MESSAGE = "거리는 양의 정수여야 합니다.";
+    private static final int MIN_DISTANCE = 0;
+
     private final int value;
 
     public Distance(final int value) {
@@ -14,8 +17,8 @@ public class Distance {
     }
 
     private void validate(final int value) {
-        if (value <= 0) {
-            throw new SubwayServiceException("거리는 양의 정수여야 합니다.");
+        if (value <= MIN_DISTANCE) {
+            throw new SubwayServiceException(INVALID_DISTANCE_MESSAGE);
         }
     }
 

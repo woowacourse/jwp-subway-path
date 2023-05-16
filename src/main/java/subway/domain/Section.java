@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class Section implements Iterator {
 
+    public static final String INVALID_SECTION_MESSAGE = "동일한 역 간 구간을 생성할 수 없습니다.";
     private final Station left;
     private final Station right;
     private final Distance distance;
@@ -20,7 +21,7 @@ public class Section implements Iterator {
 
     private void validate(final Station left, final Station right) {
         if (left.equals(right)) {
-            throw new SubwayServiceException("동일한 역 간 구간을 생성할 수 없습니다.");
+            throw new SubwayServiceException(INVALID_SECTION_MESSAGE);
         }
     }
 
