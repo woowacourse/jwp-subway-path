@@ -10,26 +10,21 @@ public class RouteShortCutResponse {
     private final StationsResponse path;
     private final StationsResponse pathWithLineName;
     private final int fee;
-    private final int distance;
 
-
-    public RouteShortCutResponse(final StationsResponse path, final StationsResponse pathWithLineName, final int fee, final int distance) {
+    public RouteShortCutResponse(final StationsResponse path, final StationsResponse pathWithLineName, final int fee) {
         this.path = path;
         this.pathWithLineName = pathWithLineName;
         this.fee = fee;
-        this.distance = distance;
     }
 
     public static RouteShortCutResponse from(final List<StationResponse> shortestPathResponse,
                                              final List<StationResponse> shortestPathWithLineResponse,
-                                             final int fee,
-                                             final int distance
+                                             final int fee
     ) {
         return new RouteShortCutResponse(
                 StationsResponse.from(shortestPathResponse),
                 StationsResponse.from(shortestPathWithLineResponse),
-                fee,
-                distance
+                fee
         );
     }
 
@@ -43,9 +38,5 @@ public class RouteShortCutResponse {
 
     public int getFee() {
         return fee;
-    }
-
-    public int getDistance() {
-        return distance;
     }
 }
