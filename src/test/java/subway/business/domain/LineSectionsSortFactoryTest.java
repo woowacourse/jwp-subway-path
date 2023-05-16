@@ -14,7 +14,6 @@ class LineSectionsSortFactoryTest {
     @DisplayName("정상적으로 정렬되는지 확인")
     void sort() {
         // given
-        final Line line = new Line(1L, "2호선", "bg-green-600");
         final Distance distance = new Distance(1);
 
         final Station station1 = new Station(1L, "잠실");
@@ -26,18 +25,18 @@ class LineSectionsSortFactoryTest {
         final Station station7 = new Station(7L, "강남");
         final Station station8 = new Station(8L, "교대");
 
-        final Section section1 = new Section(1L, line, station3, station4, distance);
-        final Section section2 = new Section(2L, line, station6, station7, distance);
-        final Section section3 = new Section(3L, line, station1, station2, distance);
-        final Section section4 = new Section(4L, line, station7, station8, distance);
-        final Section section5 = new Section(5L, line, station4, station5, distance);
-        final Section section6 = new Section(6L, line, station2, station3, distance);
-        final Section section7 = new Section(7L, line, station5, station6, distance);
+        final LineSection section1 = new LineSection(1L, station3, station4, distance);
+        final LineSection section2 = new LineSection(2L, station6, station7, distance);
+        final LineSection section3 = new LineSection(3L, station1, station2, distance);
+        final LineSection section4 = new LineSection(4L, station7, station8, distance);
+        final LineSection section5 = new LineSection(5L, station4, station5, distance);
+        final LineSection section6 = new LineSection(6L, station2, station3, distance);
+        final LineSection section7 = new LineSection(7L, station5, station6, distance);
 
-        final List<Section> unsortedSections = List.of(section1, section2, section3, section4, section5, section6, section7);
+        final List<LineSection> unsortedSections = List.of(section1, section2, section3, section4, section5, section6, section7);
 
         // when
-        final List<Section> sortedSections = LineSectionsSortFactory.sort(unsortedSections);
+        final List<LineSection> sortedSections = LineSectionsSortFactory.sort(unsortedSections);
 
         // then
         assertAll(

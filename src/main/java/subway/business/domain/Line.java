@@ -2,7 +2,6 @@ package subway.business.domain;
 
 public class Line {
 
-    // TODO: id 빼는거 고려
     private final long id;
     private final String name;
     private final String color;
