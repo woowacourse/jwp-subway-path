@@ -12,10 +12,12 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.jdbc.Sql;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
+@Sql({"classpath:delete.sql"})
 class StationControllerTest extends ControllerTest {
 
     private StationRequest stationRequest1;

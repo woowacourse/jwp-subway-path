@@ -1,12 +1,12 @@
 package subway.dao;
 
 import javax.sql.DataSource;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.domain.Station;
@@ -27,11 +27,13 @@ public class StationDao {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
-                .usingGeneratedKeyColumns("id");
+                .usingGeneratedKeyColumns("id")
+                .usingColumns("name");
     }
 
     public Station insert(final Station station) {
-        final SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+        final Map<String, Object> params = new HashMap<>();
+        params.put("name", station.getName());
         final Long id = insertAction.executeAndReturnKey(params).longValue();
         return new Station(id, station.getName());
     }

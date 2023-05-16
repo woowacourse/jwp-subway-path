@@ -1,25 +1,28 @@
-create table STATION
+create table if not exists STATION
 (
     id   bigint auto_increment not null,
     name varchar(255) not null unique,
+    create_at timestamp default current_timestamp,
     primary key (id)
 );
 
-create table LINE
+create table if not exists LINE
 (
     id    bigint auto_increment not null,
     name  varchar(255) not null unique,
     color varchar(20)  not null,
+    create_at timestamp default current_timestamp,
     primary key (id)
 );
 
-create table SECTION
+create table if not exists SECTION
 (
     id              bigint auto_increment not null,
     line_id         bigint not null,
     up_station_id   bigint not null,
     down_station_id bigint not null,
     distance        int    not null,
+    create_at timestamp default current_timestamp,
     primary key (id),
     foreign key (line_id) references LINE (id),
     foreign key (up_station_id) references STATION (id),

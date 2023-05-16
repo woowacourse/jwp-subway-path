@@ -44,7 +44,8 @@ public class RdsSectionDao implements SectionDao {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("section")
-                .usingGeneratedKeyColumns("id");
+                .usingGeneratedKeyColumns("id")
+                .usingColumns("line_id", "up_station_id", "down_station_id", "distance");
     }
 
     @Override
