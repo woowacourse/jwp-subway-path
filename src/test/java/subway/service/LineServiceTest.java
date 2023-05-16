@@ -16,16 +16,19 @@ import subway.domain.Section;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
+import subway.persistence.repository.LineRepository;
 import subway.service.dto.SectionRequest;
 import subway.service.dto.StationRequest;
 
 @JdbcTest
 @Import({LineService.class, LineDao.class, StationDao.class, SectionDao.class, StationService.class,
-        SectionService.class})
+        SectionService.class, LineRepository.class})
 class LineServiceTest {
 
     @Autowired
     private LineService lineService;
+    @Autowired
+    private LineRepository repository;
 
     @DisplayName("노선에 역을 등록한다.")
     @Test
@@ -36,7 +39,7 @@ class LineServiceTest {
 
         lineService.registerStation(lineId, sectionRequest);
 
-        final Line line = lineService.findById(lineId);
+        final Line line = repository.findById(lineId);
 
         assertThat(line.getSections().getSections())
                 .extracting(Section::getPrevStation, Section::getNextStation, Section::getDistance)
@@ -55,7 +58,7 @@ class LineServiceTest {
 
         lineService.unregisterStation(lineId, stationRequest);
 
-        final Line line = lineService.findById(lineId);
+        final Line line = repository.findById(lineId);
         assertThat(line.getSections().getSections())
                 .isEmpty();
     }

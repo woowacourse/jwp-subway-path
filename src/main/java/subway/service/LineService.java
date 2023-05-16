@@ -10,7 +10,7 @@ import subway.domain.LineName;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.section.Sections;
-import subway.persistence.dao.LineDao;
+import subway.persistence.repository.LineRepository;
 import subway.service.dto.LineRequest;
 import subway.service.dto.LineResponse;
 import subway.service.dto.SectionRequest;
@@ -21,42 +21,36 @@ public class LineService {
 
     private final StationService stationService;
     private final SectionService sectionService;
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
 
     public LineService(final StationService stationService, final SectionService sectionService,
-                       final LineDao lineDao) {
+                       final LineRepository lineRepository) {
         this.stationService = stationService;
         this.sectionService = sectionService;
-        this.lineDao = lineDao;
+        this.lineRepository = lineRepository;
     }
 
     @Transactional
     public LineResponse saveLine(final LineRequest request) {
-        final Line persistLine = lineDao.insert(new LineName(request.getName()));
+        final Line persistLine = lineRepository.insert(new LineName(request.getName()));
         return LineResponse.from(persistLine);
     }
 
     public List<LineResponse> findLineResponses() {
-        final List<Line> persistLines = findLines();
+        final List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll().stream()
-                .map(line -> findById(line.getId()))
-                .collect(Collectors.toList());
-    }
-
     public LineResponse findLineResponseById(final Long id) {
-        final Line line = findById(id);
+        final Line line = lineRepository.findById(id);
         return LineResponse.from(line);
     }
 
     @Transactional
     public void registerStation(final Long lineId, final SectionRequest request) {
-        final Line line = findById(lineId);
+        final Line line = lineRepository.findById(lineId);
 
         final Section section = createSections(request);
         final Line addedLine = line.addSection(section);
@@ -70,7 +64,7 @@ public class LineService {
 
     @Transactional
     public void unregisterStation(final Long id, final StationRequest request) {
-        final Line line = findById(id);
+        final Line line = lineRepository.findById(id);
 
         final Station station = stationService.findStationByName(request.getName());
         final Line deletedLine = line.removeStation(station);
@@ -82,14 +76,6 @@ public class LineService {
         sectionService.insertSections(line.getId(), insertSections);
     }
 
-    Line findById(final Long id) {
-        Line line = lineDao.findById(id);
-        for (final Section section : sectionService.findByLineId(id)) {
-            line = line.addSection(section);
-        }
-        return line;
-    }
-
     private Section createSections(final SectionRequest request) {
         final Station beforeStation = stationService.findStationByName(request.getPrevStationName());
         final Station nextStation = stationService.findStationByName(request.getNextStationName());
@@ -98,11 +84,11 @@ public class LineService {
 
     @Transactional
     public void updateLine(final Long id, final LineRequest lineUpdateRequest) {
-        lineDao.updateName(id, new LineName(lineUpdateRequest.getName()));
+        lineRepository.updateName(id, new LineName(lineUpdateRequest.getName()));
     }
 
     @Transactional
     public void deleteLineById(final Long id) {
-        lineDao.deleteById(id);
+        lineRepository.deleteById(id);
     }
 }
