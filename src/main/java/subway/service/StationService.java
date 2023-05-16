@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
 import subway.exception.DuplicatedStationNameException;
 import subway.repository.StationRepository;
@@ -16,6 +17,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public Long create(final String name) {
         stationRepository.findByName(name)
                 .ifPresent(station -> {
@@ -25,10 +27,12 @@ public class StationService {
         return stationRepository.create(new Station(name));
     }
 
+    @Transactional
     public List<Station> findById(final List<Long> ids) {
         return stationRepository.findById(ids);
     }
 
+    @Transactional
     public List<Station> findAll() {
         return stationRepository.findAll();
     }

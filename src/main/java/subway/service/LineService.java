@@ -27,6 +27,7 @@ public class LineService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public Long create(final LineRequest lineRequest) {
         final Station upStation = findStationById(lineRequest.getUpStationId());
         final Station downStation = findStationById(lineRequest.getDownStationId());
@@ -69,6 +70,7 @@ public class LineService {
         line.insertDownStation(stationId, adjacentStationId, distance);
     }
 
+    @Transactional
     public Line findLineById(final Long id) {
         return lineRepository.findById(id)
                 .orElseThrow(LineNotFoundException::new);
@@ -79,6 +81,7 @@ public class LineService {
                 .orElseThrow(StationNotFoundException::new);
     }
 
+    @Transactional
     public void deleteStation(final Long lineId, final Long stationId) {
         final Line line = findLineById(lineId);
         if (line.size() == 2 && line.contains(stationId)) {
@@ -90,6 +93,7 @@ public class LineService {
         lineRepository.updateStationEdges(line);
     }
 
+    @Transactional
     public List<Line> findAll() {
         return lineRepository.findAll();
     }
