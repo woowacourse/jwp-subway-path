@@ -21,9 +21,54 @@ public class Section {
     public Section(final Line line, final Station upStation, final Station downStation, final Distance distance) {
         this(null, line, upStation, downStation, distance);
     }
+    
+    public static Section combineSection(final Section upSection, final Section downSection) {
+        return new Section(
+                upSection.line,
+                upSection.upStation,
+                downSection.downStation,
+                upSection.distance.add(downSection.distance)
+        );
+    }
 
     public Section reverseDirection() {
         return new Section(id, line, downStation, upStation, distance);
+    }
+
+    public boolean isReverseDirection(final Section otherSection) {
+        return upStation.equals(otherSection.downStation) && downStation.equals(otherSection.upStation);
+    }
+
+    public boolean isSameDirection(final Section otherSection) {
+        return upStation.equals(otherSection.upStation) && downStation.equals(otherSection.downStation);
+    }
+
+    public boolean isSameLine(final Line otherLine) {
+        return this.line.equals(otherLine);
+    }
+
+    public boolean isSameLine(final Section otherSection) {
+        return line.equals(otherSection.line);
+    }
+
+    public boolean isSameUpStation(final Line otherLine, final Station upStation) {
+        return this.upStation.equals(upStation) && this.line.equals(otherLine);
+    }
+
+    public boolean isSameDownStation(final Line otherLine, final Station downStation) {
+        return this.downStation.equals(downStation) && this.line.equals(otherLine);
+    }
+
+    public boolean isSameDistance(final Section upSection, final Section downSection) {
+        return this.distance.equals(upSection.distance.add(downSection.distance));
+    }
+
+    public boolean isForkRoadCondition(final Section otherSection) {
+        return this.line.equals(otherSection.line) && this.upStation.equals(otherSection.upStation);
+    }
+
+    public boolean hasSameStation(final Line otherLine, final Station otherStation) {
+        return this.line.equals(otherLine) && (this.upStation.equals(otherStation) || this.downStation.equals(otherStation));
     }
 
     public Long getId() {
