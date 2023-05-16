@@ -1,6 +1,7 @@
 package subway.application;
 
 import static subway.application.mapper.SectionProvider.createSections;
+import static subway.exception.ErrorCode.ROUTE_NOT_EXISTS;
 
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import subway.domain.section.SectionDistance;
 import subway.domain.section.Sections;
 import subway.domain.station.Station;
 import subway.domain.station.StationRepository;
+import subway.exception.BadRequestException;
 
 @Service
 @Transactional(readOnly = true)
@@ -50,6 +52,7 @@ public class RouteService {
 
         final Map<Long, List<LineWithSectionRes>> sectionsByLineId = possibleSections.stream()
             .collect(Collectors.groupingBy(LineWithSectionRes::getLineId));
+
         final List<Station> shortestRoute = getShortestRoute(sourceStation, targetStation, sectionsByLineId);
         final TotalDistance shortestDistance = getShortestDistance(sectionsByLineId, shortestRoute);
 
@@ -61,8 +64,10 @@ public class RouteService {
     private List<Station> getShortestRoute(final Station sourceStation, final Station targetStation,
                                            final Map<Long, List<LineWithSectionRes>> sectionsByLineId) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> routeGraph = getPossibleRouteGraph(sectionsByLineId);
-        final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
-            routeGraph);
+        if (!routeGraph.containsVertex(sourceStation) || !routeGraph.containsVertex(targetStation)) {
+            throw new BadRequestException(ROUTE_NOT_EXISTS);
+        }
+        final DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(routeGraph);
         return dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList();
     }
 

@@ -14,6 +14,7 @@ public enum ErrorCode {
     SECTION_ADD_STATION_NOT_EXISTS("존재하지 않는 역을 추가할 수 없습니다."),
     SECTION_ALREADY_ADD("이미 추가된 구간입니다."),
     SECTION_TOO_FAR_DISTANCE("거리가 너무 커서 역을 추가할 수 없습니다."),
+    ROUTE_NOT_EXISTS("목적지로 이동할 수 없습니다."),
     INTERNAL_SERVER_ERROR("서버에서 예기치 못한 오류가 발생하였습니다.");
 
     private final String message;
