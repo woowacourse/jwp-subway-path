@@ -2,16 +2,28 @@ package subway.presentation.advice;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.application.exception.ExpectedException;
 import subway.presentation.dto.ExceptionResponse;
 
+import java.sql.SQLException;
+
 @RestControllerAdvice
 public class ExceptionAdvice {
 
     private static final Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
+
+    @ExceptionHandler({DataAccessException.class, SQLException.class})
+    public ResponseEntity<ExceptionResponse> dataException(DataAccessException e) {
+        logger.warn(e.getMessage(), e);
+
+        return ResponseEntity.badRequest()
+                .build();
+    }
 
     @ExceptionHandler(ExpectedException.class)
     public ResponseEntity<ExceptionResponse> expectedException(ExpectedException e) {
