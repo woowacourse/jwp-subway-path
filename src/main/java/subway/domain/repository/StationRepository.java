@@ -13,7 +13,7 @@ public interface StationRepository {
 
 	boolean updateStation(long stationId, Station station);
 
-	boolean deleteById(Long stationIdRequest);
+	boolean deleteById(Long stationId);
 
 	Station findStationWithId(Station station);
 }

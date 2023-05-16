@@ -49,12 +49,12 @@ public class StationService {
 		return new StationResponse(stationId, request.getName());
 	}
 
-	public long deleteById(final Long stationIdRequest) {
-		final boolean isDelete = stationRepository.deleteById(stationIdRequest);
+	public long deleteById(final Long stationId) {
+		final boolean isDelete = stationRepository.deleteById(stationId);
 
 		if (!isDelete) {
 			throw new NullPointerException("역 삭제에 실패했습니다");
 		}
-		return stationIdRequest;
+		return stationId;
 	}
 }

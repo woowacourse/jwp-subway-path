@@ -59,9 +59,9 @@ public class StationJdbcRepository implements StationRepository {
 	}
 
 	@Override
-	public boolean deleteById(final Long stationIdRequest) {
+	public boolean deleteById(final Long stationId) {
 		String sql = "delete from station where id = ?";
-		final int deleteCount = jdbcTemplate.update(sql, stationIdRequest);
+		final int deleteCount = jdbcTemplate.update(sql, stationId);
 
 		return deleteCount == DELETED_COUNT;
 	}
