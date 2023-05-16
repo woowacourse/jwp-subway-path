@@ -4,13 +4,15 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.Line;
+import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationResponse;
 import subway.dto.StationResponse;
-import subway.entity.Line;
-import subway.entity.Section;
-import subway.entity.Station;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 
 import java.util.*;
 
@@ -26,49 +28,49 @@ public class LineService {
         this.stationDao = stationDao;
     }
 
-    public Long save(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return persistLine.getId();
+    public Long save(final LineRequest request) {
+        final Line line = new Line(request.getName(), request.getColor());
+        return lineDao.insert(LineEntity.toEntity(line));
     }
 
+    // TODO
     public List<LineStationResponse> findAll() {
-        List<Line> lines = lineDao.findAll();
-        List<Section> sections = sectionDao.findAll();
-        List<Station> stations = stationDao.findAll();
+        List<LineEntity> lines = lineDao.findAll();
+        List<SectionEntity> sections = sectionDao.findAll();
+        List<StationEntity> stations = stationDao.findAll();
 
-        Map<Long, List<Section>> sectionsByLine = sortSectionsByLine(sections);
+        Map<Long, List<SectionEntity>> sectionsByLine = sortSectionsByLine(sections);
 
         List<LineStationResponse> lineStationResponses = new ArrayList<>();
-        for (Line line : lines) {
+        for (LineEntity line : lines) {
             List<StationResponse> stationResponses = linkStationsByLine(sectionsByLine.get(line.getId()), stations);
             lineStationResponses.add(LineStationResponse.from(LineResponse.of(line), stationResponses));
         }
         return lineStationResponses;
     }
 
-    private Map<Long, List<Section>> sortSectionsByLine(final List<Section> sections) {
-        Map<Long, List<Section>> sectionsByLine = new HashMap<>();
-        for (Section section : sections) {
-            List<Section> sectionEntities = sectionsByLine.getOrDefault(section.getLineId(), new ArrayList<>());
+    private Map<Long, List<SectionEntity>> sortSectionsByLine(final List<SectionEntity> sections) {
+        Map<Long, List<SectionEntity>> sectionsByLine = new HashMap<>();
+        for (SectionEntity section : sections) {
+            List<SectionEntity> sectionEntities = sectionsByLine.getOrDefault(section.getLineId(), new ArrayList<>());
             sectionEntities.add(section);
             sectionsByLine.put(section.getLineId(), sectionEntities);
         }
         return sectionsByLine;
     }
 
+    // TODO
     public LineStationResponse findById(Long id) {
-        Optional<Line> line = lineDao.findById(id);
-        if (line.isEmpty()) {
-            throw new NoSuchElementException("해당하는 ID가 없습니다.");
-        }
-        List<Section> sections = sectionDao.findByLineId(id);
-        List<Station> stations = stationDao.findAll();
+        final LineEntity lineEntity = lineDao.findById(id)
+                .orElseThrow(() -> new NoSuchElementException("해당하는 ID가 없습니다."));
+        List<SectionEntity> sections = sectionDao.findByLineId(id);
+        List<StationEntity> stations = stationDao.findAll();
 
         List<StationResponse> stationResponses = linkStationsByLine(sections, stations);
-        return LineStationResponse.from(LineResponse.of(line.get()), stationResponses);
+        return LineStationResponse.from(LineResponse.of(lineEntity), stationResponses);
     }
 
-    private List<StationResponse> linkStationsByLine(final List<Section> sections, final List<Station> stations) {
+    private List<StationResponse> linkStationsByLine(final List<SectionEntity> sections, final List<StationEntity> stations) {
         if (sections == null) {
             return new ArrayList<>();
         }
@@ -93,11 +95,12 @@ public class LineService {
         return stationResponses;
     }
 
-    public void update(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(id, new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    public void update(final Long id, final LineRequest lineUpdateRequest) {
+        final Line line = new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
+        lineDao.update(id, LineEntity.toEntity(line));
     }
 
-    public void deleteById(Long id) {
+    public void deleteById(final Long id) {
         lineDao.deleteById(id);
     }
 }

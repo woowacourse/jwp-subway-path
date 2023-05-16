@@ -311,6 +311,7 @@ HTTP/1.1 204 No Content
 - [x] API 명세 정리
 - [x] Section ID 정보 삭제
 - [x] 초기 데이터를 가지지 않도록 schema.sql에서 INSERT문 제거
+- [x] Domain, Entity 분리
 - [ ] Service 내 메서드의 역할과 책임 분리
 - [ ] Collections.emptyList() 활용
 - [ ] exists 쿼리 활용

@@ -19,9 +19,9 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<SectionResponse> createSection(@RequestBody final SectionRequest sectionRequest) {
-        Long sectionId = sectionService.save(sectionRequest);
-        return ResponseEntity.created(URI.create("/sections/" + sectionId)).body(new SectionResponse(sectionId));
+    public ResponseEntity<Void> createSection(@RequestBody final SectionRequest sectionRequest) {
+        sectionService.save(sectionRequest);
+        return ResponseEntity.created(URI.create("/sections")).build();
     }
 
     @DeleteMapping

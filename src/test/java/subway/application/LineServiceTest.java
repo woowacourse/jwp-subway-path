@@ -11,9 +11,9 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dto.LineRequest;
 import subway.dto.LineStationResponse;
-import subway.entity.Line;
-import subway.entity.Section;
-import subway.entity.Station;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,8 +49,8 @@ class LineServiceTest {
     void save() {
         // given
         LineRequest lineRequest = new LineRequest("1호선", "bg-blue-500");
-        Line line = new Line(1L, lineRequest.getName(), lineRequest.getColor());
-        given(lineDao.insert(any(Line.class))).willReturn(line);
+        LineEntity line = new LineEntity(1L, lineRequest.getName(), lineRequest.getColor());
+        given(lineDao.insert(any(LineEntity.class))).willReturn(line);
 
         // when, then
         assertThat(lineService.save(lineRequest)).isEqualTo(1L);
@@ -59,28 +59,28 @@ class LineServiceTest {
     @DisplayName("모든 노선의 정보와 각 노선에 있는 구간을 조회하여 순서대로 반환한다.")
     @Test
     void findAll() {
-        Line 호선1 = new Line(1L, "1호선", "bg-blue-500");
-        Line 호선2 = new Line(2L, "2호선", "bg-green-500");
+        LineEntity 호선1 = new LineEntity(1L, "1호선", "bg-blue-500");
+        LineEntity 호선2 = new LineEntity(2L, "2호선", "bg-green-500");
         given(lineDao.findAll()).willReturn(List.of(호선1, 호선2));
 
-        Station 서울역 = new Station(1L, "서울역");
-        Station 수원역 = new Station(2L, "수원역");
-        Station 천안역 = new Station(3L, "천안역");
+        StationEntity 서울역 = new StationEntity(1L, "서울역");
+        StationEntity 수원역 = new StationEntity(2L, "수원역");
+        StationEntity 천안역 = new StationEntity(3L, "천안역");
 
-        Station 선릉역 = new Station(4L, "선릉역");
-        Station 강남역 = new Station(5L, "강남역");
-        Station 잠실역 = new Station(6L, "잠실역");
+        StationEntity 선릉역 = new StationEntity(4L, "선릉역");
+        StationEntity 강남역 = new StationEntity(5L, "강남역");
+        StationEntity 잠실역 = new StationEntity(6L, "잠실역");
         given(stationDao.findAll()).willReturn(List.of(서울역, 수원역, 천안역, 선릉역, 강남역, 잠실역));
 
-        Section null_서울역 = new Section(1L, 1L, null, 1L, 0);
-        Section 서울역_수원역 = new Section(2L, 1L, 1L, 2L, 3);
-        Section 수원역_천안역 = new Section(3L, 1L, 2L, 3L, 4);
-        Section 천안역_null = new Section(4L, 1L, 3L, null, 0);
+        SectionEntity null_서울역 = new SectionEntity(1L, 1L, null, 1L, 0);
+        SectionEntity 서울역_수원역 = new SectionEntity(2L, 1L, 1L, 2L, 3);
+        SectionEntity 수원역_천안역 = new SectionEntity(3L, 1L, 2L, 3L, 4);
+        SectionEntity 천안역_null = new SectionEntity(4L, 1L, 3L, null, 0);
 
-        Section null_선릉역 = new Section(5L, 2L, null, 4L, 0);
-        Section 선릉역_강남역 = new Section(6L, 2L, 4L, 5L, 3);
-        Section 강남역_잠실역 = new Section(7L, 2L, 5L, 6L, 4);
-        Section 잠실역_null = new Section(8L, 2L, 6L, null, 0);
+        SectionEntity null_선릉역 = new SectionEntity(5L, 2L, null, 4L, 0);
+        SectionEntity 선릉역_강남역 = new SectionEntity(6L, 2L, 4L, 5L, 3);
+        SectionEntity 강남역_잠실역 = new SectionEntity(7L, 2L, 5L, 6L, 4);
+        SectionEntity 잠실역_null = new SectionEntity(8L, 2L, 6L, null, 0);
 
         given(sectionDao.findAll()).willReturn(List.of(
                 null_서울역, 서울역_수원역, 수원역_천안역, 천안역_null,
@@ -108,18 +108,18 @@ class LineServiceTest {
     @Test
     void findById() {
         // given
-        Line 호선1 = new Line(1L, "1호선", "bg-blue-500");
+        LineEntity 호선1 = new LineEntity(1L, "1호선", "bg-blue-500");
         given(lineDao.findById(anyLong())).willReturn(Optional.of(호선1));
 
-        Station 서울역 = new Station(1L, "서울역");
-        Station 수원역 = new Station(2L, "수원역");
-        Station 천안역 = new Station(3L, "천안역");
+        StationEntity 서울역 = new StationEntity(1L, "서울역");
+        StationEntity 수원역 = new StationEntity(2L, "수원역");
+        StationEntity 천안역 = new StationEntity(3L, "천안역");
         given(stationDao.findAll()).willReturn(List.of(서울역, 수원역, 천안역));
 
-        Section null_서울역 = new Section(1L, 1L, null, 1L, 0);
-        Section 서울역_수원역 = new Section(1L, 1L, 1L, 2L, 3);
-        Section 수원역_천안역 = new Section(1L, 1L, 2L, 3L, 4);
-        Section 천안역_null = new Section(1L, 1L, 3L, null, 0);
+        SectionEntity null_서울역 = new SectionEntity(1L, 1L, null, 1L, 0);
+        SectionEntity 서울역_수원역 = new SectionEntity(1L, 1L, 1L, 2L, 3);
+        SectionEntity 수원역_천안역 = new SectionEntity(1L, 1L, 2L, 3L, 4);
+        SectionEntity 천안역_null = new SectionEntity(1L, 1L, 3L, null, 0);
         given(sectionDao.findByLineId(1L)).willReturn(List.of(null_서울역, 서울역_수원역, 수원역_천안역, 천안역_null));
 
         // when
@@ -137,12 +137,12 @@ class LineServiceTest {
     void update() {
         // given
         LineRequest lineRequest = new LineRequest("1호선", "bg-blue-500");
-        Line line = new Line(1L, lineRequest.getName(), lineRequest.getColor());
+        LineEntity line = new LineEntity(1L, lineRequest.getName(), lineRequest.getColor());
 
-        given(lineDao.insert(any(Line.class))).willReturn(line);
+        given(lineDao.insert(any(LineEntity.class))).willReturn(line);
         lineService.save(lineRequest);
 
-        willDoNothing().given(lineDao).update(anyLong(), any(Line.class));
+        willDoNothing().given(lineDao).update(anyLong(), any(LineEntity.class));
 
         // when, then
         LineRequest lineUpdateRequest = new LineRequest("2호선", "bg-green-500");
@@ -154,9 +154,9 @@ class LineServiceTest {
     void deleteById() {
         // given
         LineRequest lineRequest = new LineRequest("1호선", "bg-blue-500");
-        Line line = new Line(1L, lineRequest.getName(), lineRequest.getColor());
+        LineEntity line = new LineEntity(1L, lineRequest.getName(), lineRequest.getColor());
 
-        given(lineDao.insert(any(Line.class))).willReturn(line);
+        given(lineDao.insert(any(LineEntity.class))).willReturn(line);
         lineService.save(lineRequest);
 
         willDoNothing().given(lineDao).deleteById(anyLong());

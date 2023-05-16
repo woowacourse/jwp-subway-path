@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.StationDao;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.entity.Station;
+import subway.entity.StationEntity;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -45,7 +45,7 @@ class StationServiceTest {
     @Test
     void findById() {
         // given
-        given(stationDao.findById(anyLong())).willReturn(Optional.of(new Station("강남역")));
+        given(stationDao.findById(anyLong())).willReturn(Optional.of(new StationEntity("강남역")));
         // when
         StationResponse stationResponse = stationService.findById(1L);
         // then
@@ -65,8 +65,8 @@ class StationServiceTest {
     @Test
     void findAll() {
         // given
-        final Station station1 = new Station("강남역");
-        final Station station2 = new Station("선릉역");
+        final StationEntity station1 = new StationEntity("강남역");
+        final StationEntity station2 = new StationEntity("선릉역");
         given(stationDao.findAll()).willReturn(List.of(station1, station2));
         // when
         List<StationResponse> stationResponse = stationService.findAll();
@@ -81,10 +81,10 @@ class StationServiceTest {
         // given
         given(stationDao.insert(any())).willReturn(1L);
         Long id = stationService.save(new StationRequest("강남역"));
-        willDoNothing().given(stationDao).update(anyLong(), any(Station.class));
+        willDoNothing().given(stationDao).update(anyLong(), any(StationEntity.class));
         // when
         stationService.update(id, new StationRequest("서울역"));
-        given(stationDao.findById(id)).willReturn(Optional.of(new Station("서울역")));
+        given(stationDao.findById(id)).willReturn(Optional.of(new StationEntity("서울역")));
         // then
         assertThat(stationService.findById(id).getName()).isEqualTo("서울역");
     }
