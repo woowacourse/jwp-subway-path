@@ -10,7 +10,6 @@ import java.util.Map;
 import static java.util.List.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.ShortestWayCalculator.from;
 
 class ShortestWayCalculatorTest {
 
@@ -29,7 +28,7 @@ class ShortestWayCalculatorTest {
         );
 
         //when
-        final ShortestWayCalculator shortestWayCalculator = from(stationA, stationC, of(line));
+        final var shortestWayCalculator = new ShortestWayCalculator().calculate(stationA, stationC, of(line));
         final double distance = shortestWayCalculator.getDistance();
 
         //then
@@ -51,7 +50,7 @@ class ShortestWayCalculatorTest {
         );
 
         //when
-        final ShortestWayCalculator shortestWayCalculator = from(stationA, stationC, of(line));
+        final var shortestWayCalculator = new ShortestWayCalculator().calculate(stationA, stationC, of(line));
         final List<Station> way = shortestWayCalculator.getWay();
 
         //then
@@ -78,7 +77,7 @@ class ShortestWayCalculatorTest {
         );
 
         //when
-        final ShortestWayCalculator shortestWayCalculator = from(stationA, stationC, of(line, line2));
+        final var shortestWayCalculator = new ShortestWayCalculator().calculate(stationA, stationC, of(line, line2));
         final double distance = shortestWayCalculator.getDistance();
 
         //then
@@ -105,7 +104,7 @@ class ShortestWayCalculatorTest {
         );
 
         //when,then
-        assertThatThrownBy(() -> from(stationB, stationD, of(line, line2)))
+        assertThatThrownBy(() -> new ShortestWayCalculator().calculate(stationB, stationD, of(line, line2)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

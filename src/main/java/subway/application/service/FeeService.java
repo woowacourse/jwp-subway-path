@@ -30,7 +30,7 @@ public class FeeService {
         final Station start = subwayRepository.findStationById(startStationId);
         final Station end = subwayRepository.findStationById(endStationId);
 
-        final ShortestWayCalculator calculator = ShortestWayCalculator.from(start, end, lines);
+        final ShortestWayCalculator calculator = new ShortestWayCalculator().calculate(start, end, lines);
         final int fee = feePolicy.calculateFee(calculator.getDistance());
 
         return new ShortestWayResponse(fee, StationResponse.of(calculator.getWay()));

@@ -1,62 +1,42 @@
 package subway.domain;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-public class ShortestWayCalculator {
+public class ShortestWayCalculator extends Dijkstra {
 
-    private final int distance;
+    private final Integer distance;
     private final List<Station> way;
 
-    public ShortestWayCalculator(final int distance, final List<Station> way) {
+    public ShortestWayCalculator(final Integer distance, final List<Station> way) {
         this.distance = distance;
         this.way = way;
     }
 
-    public static ShortestWayCalculator from(final Station start, final Station end, final List<Line> lines) {
+    public ShortestWayCalculator() {
+        this(null, null);
+    }
+
+    public ShortestWayCalculator calculate(final Station start, final Station end, final List<Line> lines) {
         final List<Station> stations = integrateStations(lines);
 
-        final var graph = new WeightedMultigraph<Station, DefaultWeightedEdge>(DefaultWeightedEdge.class);
+        final var result = shortestPath(stations, lines, start, end);
 
-        for (final Station station : stations) {
-            graph.addVertex(station);
-        }
-
-        addEdges(lines, graph);
-
-        final var dijkPath = new DijkstraShortestPath<>(graph)
-                .getPath(start, end);
         try {
-            return new ShortestWayCalculator(((int) dijkPath.getWeight()), dijkPath.getVertexList());
+            return new ShortestWayCalculator(((int) result.getWeight()), result.getVertexList());
         } catch (NullPointerException e) {
             throw new IllegalArgumentException("갈 수 없는 경로입니다.");
         }
     }
 
-    private static List<Station> integrateStations(final List<Line> lines) {
+    private List<Station> integrateStations(final List<Line> lines) {
         return lines.stream()
                 .map(Line::sortStations)
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
     }
 
-    private static void addEdges(final List<Line> lines, final WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        lines.stream()
-                .map(Line::getPaths)
-                .map(Map::entrySet)
-                .flatMap(Collection::stream)
-                .forEach(entry -> graph.setEdgeWeight(
-                        graph.addEdge(entry.getKey(), entry.getValue().getNext()), entry.getValue().getDistance())
-                );
-    }
-
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 
