@@ -18,7 +18,10 @@ public class LineRepository {
         if (section1.isEqualNextStation(section2.getPrevStation())) {
             return -1;
         }
-        return 1;
+        if (section1.isEqualPrevStation(section2.getNextStation())) {
+            return 1;
+        }
+        return 0;
     };
 
     private final LineDao lineDao;
