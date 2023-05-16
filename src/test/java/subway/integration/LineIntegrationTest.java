@@ -1,43 +1,64 @@
 package subway.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.is;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.dao.StationDao;
+import subway.domain.Station;
+import subway.dto.request.AddStationToLineRequest;
+import subway.dto.request.LineCreateRequest;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
+
+    private Station line_3_initialUpStation;
+    private Station line_3_initialDownStation;
+    private Station line_3_newStation;
+    private Station line_2_initialUpStation;
+    private Station line_2_initialDownStation;
+
+    private LineCreateRequest line_3_lineCreateRequest;
+    private LineCreateRequest line_2_lineCreateRequest;
+    private AddStationToLineRequest line_3_addStationToLineRequest;
+
+    @Autowired
+    private StationDao stationDao;
 
     @BeforeEach
     public void setUp() {
         super.setUp();
 
-        lineRequest1 = new LineRequest("신분당선", "bg-red-600");
-        lineRequest2 = new LineRequest("구신분당선", "bg-red-600");
+        line_3_initialUpStation = stationDao.insert(new Station("경복궁"));
+        line_3_initialDownStation = stationDao.insert(new Station("안국"));
+        line_3_newStation = stationDao.insert(new Station("충무로"));
+
+        line_3_lineCreateRequest = new LineCreateRequest("3호선", line_3_initialUpStation.getId(), line_3_initialDownStation.getId(), 10);
+        line_3_addStationToLineRequest = new AddStationToLineRequest(line_3_initialUpStation.getId(), line_3_newStation.getId(), 5);
+
+        line_2_initialUpStation = stationDao.insert(new Station("잠실"));
+        line_2_initialDownStation = stationDao.insert(new Station("잠실새내"));
+
+        line_2_lineCreateRequest = new LineCreateRequest("2호선", line_2_initialUpStation.getId(), line_2_initialDownStation.getId(), 5);
     }
 
-    @DisplayName("지하철 노선을 생성한다.")
     @Test
+    @DisplayName("새로운 노선 생성 API")
     void createLine() {
+        // given
         // when
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(line_3_lineCreateRequest)
                 .when().post("/lines")
                 .then().log().all().
                 extract();
@@ -45,146 +66,145 @@ public class LineIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
+        assertThat(response.jsonPath().getString("lineName")).isEqualTo("3호선");
+        assertThat(response.jsonPath().getList("stationIds")).isEqualTo(
+                List.of(line_3_initialUpStation.getId().intValue(), line_3_initialDownStation.getId().intValue()));
     }
 
-    @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
+    @DisplayName("기존 노선에 역 추가 API")
     @Test
-    void createLineWithDuplicateName() {
+    void addStationToLine() {
+        // given
+        ExtractableResponse<Response> initialResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_lineCreateRequest)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+        String location = initialResponse.header("Location");
+        Long lineId = Long.parseLong(location.split("/")[2]);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_addStationToLineRequest)
+                .when().post("/lines/{lineId}/stations", lineId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getLong("lineId")).isEqualTo(lineId);
+        assertThat(response.jsonPath().getString("lineName")).isEqualTo("3호선");
+        assertThat(response.jsonPath().getList("stationIds")).isEqualTo(
+                List.of(line_3_initialUpStation.getId().intValue(), line_3_newStation.getId().intValue(), line_3_initialDownStation.getId().intValue()));
+    }
+
+    @DisplayName("기존 노선에 존재하는 역 제거 API")
+    @Test
+    void deleteStationFromLine() {
+        // given
+        ExtractableResponse<Response> initialResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_lineCreateRequest)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+        String location = initialResponse.header("Location");
+        Long lineId = Long.parseLong(location.split("/")[2]);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_addStationToLineRequest)
+                .when().post("/lines/{lineId}/stations", lineId)
+                .then().log().all();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete("/lines/{lineId}/stations/{stationId}", lineId, line_3_initialDownStation.getId())
+                .then().log().all().
+                extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.jsonPath().getLong("lineId")).isEqualTo(lineId);
+        assertThat(response.jsonPath().getString("lineName")).isEqualTo("3호선");
+        assertThat(response.jsonPath().getList("stationIds")).isEqualTo(
+                List.of(line_3_initialUpStation.getId().intValue(), line_3_newStation.getId().intValue()));
+    }
+
+    @Test
+    @DisplayName("특정 노선의 모든 역 조회 API")
+    void findLineById() {
+        // given
+        ExtractableResponse<Response> initialResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_lineCreateRequest)
+                .when().post("/lines")
+                .then().log().all().
+                extract();
+        String location = initialResponse.header("Location");
+        Long lineId = Long.parseLong(location.split("/")[2]);
+
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(line_3_addStationToLineRequest)
+                .when().post("/lines/{lineId}/stations", lineId)
+                .then().log().all();
+
+        // when
+        // then
+        RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines/{lineId}", lineId)
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value())
+                .body("lineId", is(lineId.intValue()))
+                .body("lineName", is("3호선"))
+                .body("stations[0].stationName", is("경복궁"))
+                .body("stations[1].stationName", is("충무로"))
+                .body("stations[2].stationName", is("안국"));
+    }
+
+    @Test
+    @DisplayName("모든 노선의 모든 역 조회 API")
+    void findAllLines() {
         // given
         RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(line_3_lineCreateRequest)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all();
 
-        // when
-        ExtractableResponse<Response> response = RestAssured
+        RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(line_2_lineCreateRequest)
                 .when().post("/lines")
-                .then().log().all().
-                extract();
+                .then().log().all();
 
+        // when
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @DisplayName("지하철 노선 목록을 조회한다.")
-    @Test
-    void getLines() {
-        // given
-        ExtractableResponse<Response> createResponse1 = RestAssured
+        RestAssured
                 .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        ExtractableResponse<Response> createResponse2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines")
                 .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-        assertThat(resultLineIds).containsAll(expectedLineIds);
-    }
-
-    @DisplayName("지하철 노선을 조회한다.")
-    @Test
-    void getLine() {
-        // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
-        assertThat(resultResponse.getId()).isEqualTo(lineId);
-    }
-
-    @DisplayName("지하철 노선을 수정한다.")
-    @Test
-    void updateLine() {
-        // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().put("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @DisplayName("지하철 노선을 제거한다.")
-    @Test
-    void deleteLine() {
-        // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
-
-        // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .when().delete("/lines/{lineId}", lineId)
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+                .statusCode(HttpStatus.OK.value())
+                .body("[0].lineName", is(line_3_lineCreateRequest.getLineName()))
+                .body("[0].stations[0].stationName", is("경복궁"))
+                .body("[0].stations[1].stationName", is("안국"))
+                .body("[1].lineName", is(line_2_lineCreateRequest.getLineName()))
+                .body("[1].stations[0].stationName", is("잠실"))
+                .body("[1].stations[1].stationName", is("잠실새내"));
     }
 }
