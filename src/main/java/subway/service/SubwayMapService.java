@@ -38,20 +38,21 @@ public class SubwayMapService {
 
     @Transactional(readOnly = true)
     public ShortestPathResponse findShortestPath(final ShortestPathRequest req) {
-        Lines lines = new Lines(makeAllLines());
-        Route route = Route.from(lines);
+        Route route = Route.from(makeAllLines());
 
         Map<Station, Set<String>> StationWithLinesMap = route.findShortestPath(req.getStart(), req.getDestination());
 
         return ShortestPathResponse.from(StationWithLinesMap, route.getFee());
     }
 
-    private List<Line> makeAllLines() {
-        return lineRepository.findAll().stream()
+    private Lines makeAllLines() {
+        List<Line> lines = lineRepository.findAll().stream()
                 .map(lineEntity -> {
                     Sections sections = sectionRepository.findSectionsByLineNumber(lineEntity.getLineNumber());
                     return lineRepository.findByLineNameAndSections(lineEntity.getName(), sections);
                 })
                 .collect(Collectors.toList());
+
+        return new Lines(lines);
     }
 }
