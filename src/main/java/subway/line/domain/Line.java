@@ -12,13 +12,19 @@ import java.util.stream.Collectors;
 
 public class Line {
 
+    private final Long id;
     private final LineName name;
     private final LinkedList<AbstractSection> sections;
 
-    public Line(String name, List<MiddleSection> sections) {
+    public Line(Long id, String name, List<MiddleSection> sections) {
+        this.id = id;
         this.name = new LineName(name);
         this.sections = new LinkedList<>(sections);
         addTerminalSections();
+    }
+
+    public Line(String name, List<MiddleSection> sections) {
+        this(null, name, sections);
     }
 
     public Line(Line otherLine) {
@@ -115,6 +121,10 @@ public class Line {
 
     public boolean isLineEmpty() {
         return getSections().size() == 0;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
