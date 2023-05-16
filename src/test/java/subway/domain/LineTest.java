@@ -3,6 +3,7 @@ package subway.domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.StationFixture;
 import subway.application.domain.Distance;
 import subway.application.domain.Line;
 import subway.application.domain.LineProperty;
@@ -32,14 +33,14 @@ class LineTest {
     void addSection_exception_nonExists() {
         //given
         line.addSection(new Section(
-                new Station("푸우"),
-                new Station("테오"),
+                StationFixture.ofNullId("푸우"),
+                StationFixture.ofNullId("테오"),
                 new Distance(3)
         ));
 
         Section section = new Section(
-                new Station("시카"),
-                new Station("제이온"),
+                StationFixture.ofNullId("시카"),
+                StationFixture.ofNullId("제이온"),
                 new Distance(1)
         );
 
@@ -53,20 +54,20 @@ class LineTest {
     void addSection_exception_alreadyExist() {
         //given
         line.addSection(new Section(
-                new Station("푸우"),
-                new Station("테오"),
+                StationFixture.ofNullId("푸우"),
+                StationFixture.ofNullId("테오"),
                 new Distance(3)
         ));
 
         line.addSection(new Section(
-                new Station(1L, "테오"),
-                new Station(2L, "제이온"),
+                StationFixture.ofNullId("테오"),
+                StationFixture.ofNullId("제이온"),
                 new Distance(1)
         ));
 
         Section section = new Section(
-                new Station("푸우"),
-                new Station("제이온"),
+                StationFixture.ofNullId("푸우"),
+                StationFixture.ofNullId("제이온"),
                 new Distance(1)
         );
 
@@ -80,13 +81,13 @@ class LineTest {
     void addSection_exception_overLength() {
         //given
         line.addSection(new Section(
-                new Station("푸우"),
-                new Station("테오"),
+                StationFixture.ofNullId("푸우"),
+                StationFixture.ofNullId("테오"),
                 new Distance(1)
         ));
         Section overLengthSection = new Section(
-                new Station("푸우"),
-                new Station("시카"),
+                StationFixture.ofNullId("푸우"),
+                StationFixture.ofNullId("시카"),
                 new Distance(100)
         );
 
@@ -100,13 +101,13 @@ class LineTest {
     void addSection_insideSection() {
         //given
         line.addSection(new Section(
-                new Station("푸우"),
-                new Station("테오"),
+                StationFixture.ofNullId("푸우"),
+                StationFixture.ofNullId("테오"),
                 new Distance(100)
         ));
         Section newSection = new Section(
-                new Station("푸우"),
-                new Station("시카"),
+                StationFixture.ofNullId("푸우"),
+                StationFixture.ofNullId("시카"),
                 new Distance(1)
         );
 
@@ -119,13 +120,13 @@ class LineTest {
     void addSection_endPoint() {
         //given
         line.addSection(new Section(
-                new Station("푸우"),
-                new Station("테오"),
+                StationFixture.ofNullId("푸우"),
+                StationFixture.ofNullId("테오"),
                 new Distance(100)
         ));
         Section overLengthSection = new Section(
-                new Station("테오"),
-                new Station("시카"),
+                StationFixture.ofNullId("테오"),
+                StationFixture.ofNullId("시카"),
                 new Distance(1000)
         );
 
@@ -138,7 +139,7 @@ class LineTest {
     @DisplayName("아무 역이 존재하지 않을 때 삭제하려고 하면 예외를 던진다")
     void deleteSection_exception_whenEmpty() {
         //given
-        Station station = new Station("테오");
+        Station station = StationFixture.ofNullId("테오");
 
         //when, then
         assertThatThrownBy(() -> line.deleteStation(station))
@@ -150,13 +151,13 @@ class LineTest {
     void deleteSection_exception_whenNotExists() {
         //given
         Section section = new Section(
-                new Station("테오"),
-                new Station("시카"),
+                StationFixture.ofNullId("테오"),
+                StationFixture.ofNullId("시카"),
                 new Distance(1000)
         );
         line.addSection(section);
 
-        Station station = new Station("푸우");
+        Station station = StationFixture.ofNullId("푸우");
 
         //when, then
         assertThatThrownBy(() -> line.deleteStation(station))
@@ -168,17 +169,17 @@ class LineTest {
     void deleteSection_middle() {
         //given
         line.addSection(new Section(
-                new Station("테오"),
-                new Station("시카"),
+                StationFixture.ofNullId("테오"),
+                StationFixture.ofNullId("시카"),
                 new Distance(1000)
         ));
         line.addSection(new Section(
-                new Station("시카"),
-                new Station("제이온"),
+                StationFixture.ofNullId("시카"),
+                StationFixture.ofNullId("제이온"),
                 new Distance(1000)
         ));
 
-        Station station = new Station("시카");
+        Station station = StationFixture.ofNullId("시카");
 
         //when, then
         assertThatCode(() -> line.deleteStation(station))
@@ -190,17 +191,17 @@ class LineTest {
     void deleteSection_endPoint() {
         //given
         line.addSection(new Section(
-                new Station("테오"),
-                new Station("시카"),
+                StationFixture.ofNullId("테오"),
+                StationFixture.ofNullId("시카"),
                 new Distance(1000)
         ));
         line.addSection(new Section(
-                new Station("시카"),
-                new Station("제이온"),
+                StationFixture.ofNullId("시카"),
+                StationFixture.ofNullId("제이온"),
                 new Distance(1000)
         ));
 
-        Station station = new Station("테오");
+        Station station = StationFixture.ofNullId("테오");
 
         //when, then
         assertThatCode(() -> line.deleteStation(station))

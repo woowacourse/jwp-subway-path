@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.StationFixture;
 import subway.application.domain.Distance;
 import subway.application.domain.RouteMap;
 import subway.application.domain.Section;
@@ -36,8 +37,8 @@ class RouteMapTest {
     void getRouteMap_exception_unlinkedLine() {
         //given
         List<Section> sections = List.of(
-                new Section(new Station("A"), new Station("B"), new Distance(1)),
-                new Section(new Station("D"), new Station("E"), new Distance(1))
+                new Section(StationFixture.ofNullId("A"), StationFixture.ofNullId("B"), new Distance(1)),
+                new Section(StationFixture.ofNullId("D"), StationFixture.ofNullId("E"), new Distance(1))
         );
 
         //when, then
@@ -50,9 +51,9 @@ class RouteMapTest {
     void getRouteMap_exception_innerCircle() {
         //given
         List<Section> sections = List.of(
-                new Section(new Station("A"), new Station("B"), new Distance(1)),
-                new Section(new Station("B"), new Station("C"), new Distance(1)),
-                new Section(new Station("C"), new Station("A"), new Distance(1))
+                new Section(StationFixture.ofNullId("A"), StationFixture.ofNullId("B"), new Distance(1)),
+                new Section(StationFixture.ofNullId("B"), StationFixture.ofNullId("C"), new Distance(1)),
+                new Section(StationFixture.ofNullId("C"), StationFixture.ofNullId("A"), new Distance(1))
         );
 
         //when, then
@@ -65,8 +66,8 @@ class RouteMapTest {
     void getRouteMap() {
         //given
         List<Section> sections = List.of(
-                new Section(new Station("A"), new Station("B"), new Distance(1)),
-                new Section(new Station("B"), new Station("C"), new Distance(1))
+                new Section(StationFixture.ofNullId("A"), StationFixture.ofNullId("B"), new Distance(1)),
+                new Section(StationFixture.ofNullId("B"), StationFixture.ofNullId("C"), new Distance(1))
         );
 
         //when
@@ -74,9 +75,9 @@ class RouteMapTest {
 
         //then
         assertThat(routeMap).containsExactly(
-                new Station("A"),
-                new Station("B"),
-                new Station("C")
+                StationFixture.ofNullId("A"),
+                StationFixture.ofNullId("B"),
+                StationFixture.ofNullId("C")
         );
     }
 }

@@ -7,11 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import subway.StationFixture;
 import subway.application.domain.Distance;
 import subway.application.domain.Line;
 import subway.application.domain.LineProperty;
 import subway.application.domain.Section;
-import subway.application.domain.Station;
 import subway.persistence.row.SectionRow;
 
 import javax.sql.DataSource;
@@ -56,9 +56,9 @@ class LineRepositoryTest {
         LineProperty lineProperty = new LineProperty(1L, "2호선", "red");
 
         Line line = new Line(lineProperty, List.of(
-                new Section(new Station("푸우"), new Station("테오"), new Distance(1)),
-                new Section(new Station("테오"), new Station("제이온"), new Distance(2)),
-                new Section(new Station("제이온"), new Station("시카"), new Distance(3))
+                new Section(StationFixture.ofNullId("푸우"), StationFixture.ofNullId("테오"), new Distance(1)),
+                new Section(StationFixture.ofNullId("테오"), StationFixture.ofNullId("제이온"), new Distance(2)),
+                new Section(StationFixture.ofNullId("제이온"), StationFixture.ofNullId("시카"), new Distance(3))
         ));
 
         // when
@@ -86,16 +86,16 @@ class LineRepositoryTest {
         //given
         LineProperty lineProperty = new LineProperty(1L, "2호선", "red");
         Line line = new Line(lineProperty, List.of(
-                new Section(new Station("푸우"), new Station("테오"), new Distance(1)),
-                new Section(new Station("테오"), new Station("제이온"), new Distance(2)),
-                new Section(new Station("제이온"), new Station("시카"), new Distance(3))
+                new Section(StationFixture.of(1L, "푸우"), StationFixture.of(2L, "테오"), new Distance(1)),
+                new Section(StationFixture.of(2L, "테오"), StationFixture.of(3L, "제이온"), new Distance(2)),
+                new Section(StationFixture.of(3L, "제이온"), StationFixture.of(4L, "시카"), new Distance(3))
         ));
 
         //when
-        stationRepository.insert(new Station("푸우"));
-        stationRepository.insert(new Station("테오"));
-        stationRepository.insert(new Station("제이온"));
-        stationRepository.insert(new Station("시카"));
+        stationRepository.insert(StationFixture.ofNullId("푸우"));
+        stationRepository.insert(StationFixture.ofNullId("테오"));
+        stationRepository.insert(StationFixture.ofNullId("제이온"));
+        stationRepository.insert(StationFixture.ofNullId("시카"));
 
         linePropertyRepository.insert(lineProperty);
 
