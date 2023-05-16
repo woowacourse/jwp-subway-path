@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import subway.domain.line.Line;
+import subway.exception.StationNotFoundException;
 
 public class StationsByLine {
 
@@ -52,7 +53,7 @@ public class StationsByLine {
 
     private void validateStationStatus(Optional<Station> requestUpStation, Optional<Station> requestDownStation) {
         if (requestUpStation.isEmpty() && requestDownStation.isEmpty()) {
-            throw new IllegalArgumentException("두개의 역 모두가 존재하지 않습니다.");
+            throw new StationNotFoundException("두개의 역 모두가 존재하지 않습니다.");
         }
 
         if (requestUpStation.isPresent() && requestDownStation.isPresent()) {

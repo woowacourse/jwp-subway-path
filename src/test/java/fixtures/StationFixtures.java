@@ -85,6 +85,10 @@ public class StationFixtures {
         public static final StationRequest REQUEST = new StationRequest(INITIAL_STATION_C.NAME, STATION_E.NAME, SECTION_C_TO_E.DISTANCE.getDistance(), INITIAL_Line2.NAME);
     }
 
+    public static class NOT_EXIST_ALL_STATION_REQUEST_D_TO_E {
+        public static final StationRequest REQUEST = new StationRequest(STATION_D.NAME, STATION_E.NAME, 5, INITIAL_Line2.NAME);
+    }
+
     /**
      * Response
      */
@@ -104,15 +108,15 @@ public class StationFixtures {
         static Line line2 = INITIAL_Line2.FIND_LINE;
         public static final StationSaveResponse RESPONSE =
                 new StationSaveResponse(
-                LineDto.from(line2),
-                List.of(
-                        StationDto.from(dummyStationB)
-                ),
-                List.of(
-                        SectionDto.from(SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
-                        SectionDto.from(SECTION_B_TO_C.createDummy(dummyStationB, stationC, line2))
-                )
-        );
+                        LineDto.from(line2),
+                        List.of(
+                                StationDto.from(dummyStationB)
+                        ),
+                        List.of(
+                                SectionDto.from(SECTION_A_TO_B.createDummy(stationA, dummyStationB, line2)),
+                                SectionDto.from(SECTION_B_TO_C.createDummy(dummyStationB, stationC, line2))
+                        )
+                );
     }
 
     public static class UP_END_SAVE_STATION_RESPONSE_D_TO_A {
