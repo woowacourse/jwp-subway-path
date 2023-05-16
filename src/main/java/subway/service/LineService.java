@@ -2,7 +2,7 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import subway.persistence.dao.H2LineDao;
-import subway.domain.Line;
+import subway.domain.line.Line;
 import subway.dto.request.LineRequest;
 import subway.dto.response.LineResponse;
 

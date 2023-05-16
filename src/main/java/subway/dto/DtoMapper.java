@@ -1,7 +1,7 @@
 package subway.dto;
 
-import subway.domain.Line;
-import subway.domain.Station;
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 import subway.dto.response.LineResponse;
 import subway.dto.response.LineStationsResponse;
 import subway.dto.response.StationResponse;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class DtoMapper {
 
     public static StationResponse convertToStationResponse(Station station) {
-        return new StationResponse(station.getId(), station.getName());
+        return new StationResponse(station.getId(), station.getStationName());
     }
 
     public static LineResponse convertToLineResponse(Line line) {

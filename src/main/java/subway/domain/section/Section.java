@@ -1,4 +1,7 @@
-package subway.domain;
+package subway.domain.section;
+
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 
 import java.util.Objects;
 
@@ -20,7 +23,7 @@ public class Section {
         this.distance = distance;
     }
 
-    public static Section of(long id, Line line, Station upward, Station downward, int distance) {
+    public static Section of(Long id, Line line, Station upward, Station downward, int distance) {
         return new Section(id, line, upward, downward, Distance.from(distance));
     }
 

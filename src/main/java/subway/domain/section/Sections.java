@@ -1,4 +1,7 @@
-package subway.domain;
+package subway.domain.section;
+
+import subway.domain.line.Line;
+import subway.domain.station.Station;
 
 import java.util.ArrayList;
 import java.util.HashMap;

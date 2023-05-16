@@ -5,6 +5,8 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.line.Line;
+import subway.domain.line.Lines;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package subway.dto.response;
 
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 public class StationResponse {
     private Long id;
@@ -12,7 +12,7 @@ public class StationResponse {
     }
 
     public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getName());
+        return new StationResponse(station.getId(), station.getStationName());
     }
 
     public Long getId() {

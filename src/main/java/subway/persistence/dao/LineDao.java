@@ -1,6 +1,6 @@
 package subway.persistence.dao;
 
-import subway.domain.Line;
+import subway.domain.line.Line;
 
 import java.util.List;
 

@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Station;
+import subway.domain.station.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -33,7 +33,7 @@ public class H2StationDao implements StationDao {
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         long id = insertAction.executeAndReturnKey(params).longValue();
-        return Station.of(id, station.getName());
+        return Station.of(id, station.getStationName());
     }
 
     public List<Station> findAll() {
@@ -48,7 +48,7 @@ public class H2StationDao implements StationDao {
 
     public void update(Station newStation) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        jdbcTemplate.update(sql, new Object[]{newStation.getStationName(), newStation.getId()});
     }
 
     public void deleteById(Long id) {

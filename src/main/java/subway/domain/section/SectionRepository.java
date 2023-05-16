@@ -1,4 +1,6 @@
-package subway.domain;
+package subway.domain.section;
+
+import subway.domain.line.Line;
 
 import java.util.List;
 

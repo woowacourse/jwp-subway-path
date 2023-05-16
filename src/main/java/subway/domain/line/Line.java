@@ -1,16 +1,16 @@
-package subway.domain;
+package subway.domain.line;
 
 import java.util.Objects;
 
 public class Line {
     private final Long id;
-    private final String name;
-    private final String color;
+    private final LineName name;
+    private final LineColor color;
 
     private Line(Long id, String name, String color) {
         this.id = id;
-        this.name = name;
-        this.color = color;
+        this.name = LineName.from(name);
+        this.color = LineColor.from(color);
     }
 
     public static Line of(Long id, String name, String color) {
@@ -34,11 +34,11 @@ public class Line {
     }
 
     public String getName() {
-        return name;
+        return name.getLineName();
     }
 
     public String getColor() {
-        return color;
+        return color.getLineColor();
     }
 
     @Override

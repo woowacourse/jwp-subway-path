@@ -1,14 +1,14 @@
-package subway.domain;
+package subway.domain.station;
 
 import java.util.Objects;
 
 public class Station {
     private final Long id;
-    private final String name;
+    private final StationName stationName;
 
     private Station(Long id, String name) {
         this.id = id;
-        this.name = name;
+        this.stationName = StationName.from(name);
     }
 
     public static Station from(String name) {
@@ -20,15 +20,15 @@ public class Station {
     }
 
     public boolean isSameName(Station other) {
-        return this.name.equals(other.name);
+        return this.stationName.equals(other.stationName);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getName() {
-        return name;
+    public String getStationName() {
+        return stationName.getStationName();
     }
 
     @Override
@@ -36,19 +36,11 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return name.equals(station.name);
+        return stationName.equals(station.stationName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
-    }
-
-    @Override
-    public String toString() {
-        return "Station{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                '}';
+        return Objects.hash(stationName);
     }
 }
