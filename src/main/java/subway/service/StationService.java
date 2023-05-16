@@ -6,6 +6,6 @@ import subway.dto.StationResponse;
 
 public interface StationService {
 
-    @Transactional
+    @Transactional(readOnly = true)
     StationResponse createStation(StationCreateRequest request);
 }

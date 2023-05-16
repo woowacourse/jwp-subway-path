@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface LineService {
 
-    @Transactional
+    @Transactional(readOnly = true)
     List<LineResponse> findAll();
 
     @Transactional
