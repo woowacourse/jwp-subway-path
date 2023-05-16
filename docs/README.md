@@ -45,7 +45,7 @@
   - DELETE /lines/{lineId}/stations/{stationId}
 
 - Response
-  - 400 BAD REQUEST
+  - 404 NOT FOUND
     - (lineId가 존재하지 않는 경우)
     - (stationId가 Line에 존재하지 않는 경우)
   - 204 NO-CONTENT
@@ -56,7 +56,7 @@
   - GET /lines/{lineId}
 
 - Response
-  - 400 BAD REQUEST
+  - 404 NOT FOUND
     - (lineId가 존재하지 않는 경우)
   - 200 OK
 
@@ -68,6 +68,24 @@
 - Response
   - 200 OK
 
+### 경로 조회 
+- Request
+  - GET /routes
+  - Parameters
+    - from(required): 시작 역의 id
+    - to(required): 도착 역의 id
+
+- Response
+  - 200 OK
+    - route(section의 배열)
+      - section: fromId, fromName, toId, toName, lineId, lineName, distance
+    - totalDistance
+    - fare 
+
+  - 400 BAD REQUEST
+    - from, to의 parameter가 없을 때 
+  - 404 NOT FOUND
+    - 역 id가 존재하지 않는 경우
 
 ## 도메인
 
@@ -94,3 +112,13 @@
   - [x] Station을 삭제할 수 있다.
     - [x] Line에 존재하지 않는 Station을 삭제할 경우 예외를 던진다.
   - [x] 역이 두개 뿐이면 한 역을 삭제하면 노선 자체를 삭제한다. 
+
+- [ ] RouteFinderBuilder
+  - [ ] RouteFinder를 생성한다. 
+
+- [ ] RouteFinder
+  - [ ] 최적의 경로를 찾아낸다. 
+  - [ ] 경로의 전체 거리를 계산한다.
+
+- [ ] FareCalculator
+  - [ ] 요금을 계산한다. 
