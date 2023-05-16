@@ -44,6 +44,6 @@ public class SectionController {
             @RequestBody final DeleteSectionRequest deleteSectionRequest) {
         this.sectionService.validate(deleteSectionRequest);
         this.sectionService.deleteSection(deleteSectionRequest);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
