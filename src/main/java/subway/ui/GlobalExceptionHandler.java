@@ -1,6 +1,8 @@
 package subway.ui;
 
 import java.util.Arrays;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -11,10 +13,13 @@ import subway.dto.ErrorResponse;
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class.getName());
+
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse handleException(Exception exception) {
-        System.out.println(exception.getMessage());
-        return new ErrorResponse(Arrays.toString(exception.getStackTrace()));
+        logger.error(exception.getMessage());
+        logger.error(Arrays.toString(exception.getStackTrace()));
+        return new ErrorResponse("internal server error");
     }
 }
