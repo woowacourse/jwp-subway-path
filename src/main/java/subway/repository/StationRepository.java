@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
 import subway.domain.Station;
+import subway.exception.StationNotFoundException;
 
 @Repository
 public class StationRepository {
@@ -23,14 +24,14 @@ public class StationRepository {
 
     public Station findById(Long id) {
         StationEntity stationEntity = stationDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new StationNotFoundException("존재하지 않는 역입니다."));
 
         return Station.from(stationEntity);
     }
 
     public Station findByName(String name) {
         StationEntity stationEntity = stationDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
+                .orElseThrow(() -> new StationNotFoundException("존재하지 않는 역입니다."));
 
         return Station.from(stationEntity);
     }

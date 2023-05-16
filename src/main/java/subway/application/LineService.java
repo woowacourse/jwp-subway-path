@@ -12,6 +12,10 @@ import subway.dao.entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.exception.InvalidDistanceException;
+import subway.exception.LineNameException;
+import subway.exception.LineStationAdditionException;
+import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 
@@ -30,7 +34,7 @@ public class LineService {
     @Transactional
     public LineResponse saveLine(LineRequest request) {
         if (lineRepository.existsByName(request.getName())) {
-            throw new IllegalArgumentException("동일한 이름을 가진 노선이 존재합니다.");
+            throw new LineNameException("동일한 이름을 가진 노선이 존재합니다.");
         }
 
         Line line = lineRepository.save(new Line(null, request.getName(), null));
@@ -71,7 +75,7 @@ public class LineService {
 
     private void updateSection(Line line, Station leftStation, Station rightStation, int distance) {
         if (line.hasStation(leftStation) == line.hasStation(rightStation)) {
-            throw new IllegalArgumentException("잘못된 입력입니다.");
+            throw new LineStationAdditionException("해당 역을 추가할 수 없습니다.");
         }
 
         insertOrUpdateSection(line, leftStation, rightStation, distance);
@@ -110,7 +114,7 @@ public class LineService {
         int originDistance = section.getDistance();
 
         if (distance >= originDistance) {
-            throw new IllegalArgumentException("기존 거리보다 멀 수 없습니다.");
+            throw new InvalidDistanceException("기존 거리보다 멀 수 없습니다.");
         }
 
         lineRepository.deleteSection(originLeft.getId(), originRight.getId());
@@ -127,7 +131,7 @@ public class LineService {
         int originDistance = section.getDistance();
 
         if (distance >= originDistance) {
-            throw new IllegalArgumentException("기존 거리보다 멀 수 없습니다.");
+            throw new InvalidDistanceException("기존 거리보다 멀 수 없습니다.");
         }
 
         lineRepository.deleteSection(originLeft.getId(), originRight.getId());
@@ -143,7 +147,7 @@ public class LineService {
         Station station = stationRepository.findByName(deleteRequest.getStationName());
 
         if (!line.hasStation(station)) {
-            throw new IllegalArgumentException("노선에 해당 역이 존재하지 않습니다.");
+            throw new StationNotFoundException("노선에 해당 역이 존재하지 않습니다.");
         }
 
         if (line.hasOneSection()) {

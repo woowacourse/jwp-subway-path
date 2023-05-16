@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.Objects;
 import subway.dao.entity.StationEntity;
+import subway.exception.InvalidFormatException;
 
 public class Station {
 
@@ -32,13 +33,13 @@ public class Station {
 
     private void validateBlank(String name) {
         if (name.isBlank() || name.contains(BLANK)) {
-            throw new IllegalArgumentException("역 이름에는 공백이 허용되지 않습니다.");
+            throw new InvalidFormatException("역 이름에는 공백이 허용되지 않습니다.");
         }
     }
 
     private void validateLength(String name) {
         if (name.length() < 2 || name.length() > 10) {
-            throw new IllegalArgumentException("역 이름은 2~10자까지 가능합니다.");
+            throw new InvalidFormatException("역 이름은 2~10자까지 가능합니다.");
         }
     }
 

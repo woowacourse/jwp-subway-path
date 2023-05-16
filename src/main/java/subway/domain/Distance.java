@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.exception.InvalidDistanceException;
 
 public class Distance {
 
@@ -13,7 +14,7 @@ public class Distance {
 
     private void validate(int value) {
         if (value <= 0 || value >= 100) {
-            throw new IllegalArgumentException("역 간의 거리는 0~100 사이만 가능합니다.");
+            throw new InvalidDistanceException("역 간의 거리는 0~100 사이만 가능합니다.");
         }
     }
 

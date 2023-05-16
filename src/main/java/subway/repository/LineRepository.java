@@ -14,6 +14,7 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.exception.LineNotFoundException;
 
 @Repository
 public class LineRepository {
@@ -35,7 +36,7 @@ public class LineRepository {
 
     public Line findById(Long id) {
         LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 노선이 존재하지 않습니다."));
+                .orElseThrow(() -> new LineNotFoundException("일치하는 노선이 존재하지 않습니다."));
 
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
         LinkedList<Section> sections = convertToSections(sectionEntities);

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import subway.exception.StationNotFoundException;
 
 public class Sections {
 
@@ -32,14 +33,14 @@ public class Sections {
         return sections.stream()
                 .filter(section -> section.getLeft().equals(station))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 없습니다."));
+                .orElseThrow(() -> new StationNotFoundException("일치하는 역이 없습니다."));
     }
 
     public Section findSectionByRightStation(Station station) {
         return sections.stream()
                 .filter(section -> section.getRight().equals(station))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 없습니다."));
+                .orElseThrow(() -> new StationNotFoundException("일치하는 역이 없습니다."));
     }
 
     public boolean hasOneSection() {
@@ -97,7 +98,7 @@ public class Sections {
 
         return leftStations.stream()
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("종점을 찾을 수 없습니다."));
+                .orElseThrow(() -> new StationNotFoundException("종점을 찾을 수 없습니다."));
     }
 
     private List<Station> findLeftStations() {
