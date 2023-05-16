@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.Entity.EntityMapper;
@@ -6,6 +6,9 @@ import subway.Entity.SectionEntity;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.SectionRepository;
+import subway.persistence.dao.LineDao;
+import subway.persistence.dao.SectionDao;
+import subway.persistence.dao.StationDao;
 
 import java.util.List;
 import java.util.stream.Collectors;

@@ -2,8 +2,8 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.StationDao;
+import subway.persistence.dao.LineDao;
+import subway.persistence.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.SectionRepository;
 import subway.domain.Sections;

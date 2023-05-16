@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence.dao;
 
 import subway.Entity.SectionEntity;
 
