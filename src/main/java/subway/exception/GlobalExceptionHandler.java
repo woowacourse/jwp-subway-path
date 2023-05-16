@@ -9,8 +9,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity<String> handleDataIntegrityViolationException(
-        DataIntegrityViolationException e) {
+    public ResponseEntity<String> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+        return ResponseEntity.badRequest().body(e.getMessage());
+    }
+
+    @ExceptionHandler(IllegalAddSectionException.class)
+    public ResponseEntity<String> handleIllegalAddSectionException(final IllegalAddSectionException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 }
