@@ -59,4 +59,18 @@ class LineRepositoryTest {
         assertThatThrownBy(() -> lineRepository.findById(2L))
                 .isInstanceOf(LineNotFoundException.class);
     }
+
+    @Test
+    @DisplayName("구간 정보가 없는 노선을 조회할 수 있다.")
+    void findByIdWithNoSections_success() {
+        // given
+        given(lineDao.findById(anyLong())).willReturn(Optional.of(new LineEntity(2L, "3호선", "orange")));
+
+        // when
+        Line line = lineRepository.findByIdWithNoSections(2L);
+
+        // then
+        assertThat(line).usingRecursiveComparison()
+                .isEqualTo(new Line(2L, "3호선", "orange"));
+    }
 }

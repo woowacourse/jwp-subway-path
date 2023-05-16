@@ -50,6 +50,11 @@ public class LineDao {
         }
     }
 
+    public boolean existsByNameAndColor(String color, String name) {
+        String sql = "SELECT COUNT(*) FROM LINE WHERE color = ? OR name = ? LIMIT 1";
+        return jdbcTemplate.queryForObject(sql, Long.class, color, name) > 0;
+    }
+
     public void update(LineEntity line) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
         jdbcTemplate.update(sql, line.getName(), line.getColor(), line.getId());

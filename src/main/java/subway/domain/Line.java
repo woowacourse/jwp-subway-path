@@ -7,9 +7,17 @@ import java.util.Optional;
 
 public class Line {
     private Long id;
-    private final String name;
-    private final String color;
+    private String name;
+    private String color;
     private final Sections sections;
+
+    public Line(String name, String color) {
+        this(null, name, color, null);
+    }
+
+    public Line(Long id, String name, String color) {
+        this(id, name, color, null);
+    }
 
     public Line(Long id, String name, String color, Sections sections) {
         this.id = id;

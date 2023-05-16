@@ -3,32 +3,35 @@ package subway.application;
 import static java.util.stream.Collectors.toList;
 
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.entity.LineEntity;
+import subway.domain.Line;
+import subway.domain.LineRepository;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
-import subway.exception.LineNotFoundException;
+import subway.exception.IllegalLineException;
 
 @Service
 @Transactional
 public class LineService {
-    private final LineDao lineDao;
+    private final LineRepository lineRepository;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    public LineService(LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public long saveLine(LineCreateRequest request) {
-        return lineDao.insert(new LineEntity(request.getLineName(), request.getColor()));
+        Line line = new Line(request.getLineName(), request.getColor());
+        if (lineRepository.isDuplicateLine(line)) {
+            throw new IllegalLineException("해당 노선의 색, 또는 이름이 중복됩니다.");
+        }
+        return lineRepository.save(line);
     }
 
     @Transactional(readOnly = true)
     public List<LineResponse> findLineResponses() {
-        List<LineEntity> lines = lineDao.findAll();
+        List<Line> lines = lineRepository.findAllWithNoSections();
         return lines.stream()
                 .map(LineResponse::from)
                 .collect(toList());
@@ -36,19 +39,16 @@ public class LineService {
 
     @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
-        Optional<LineEntity> lineEntity = lineDao.findById(id);
-        if (lineEntity.isPresent()) {
-            LineEntity line = lineEntity.get();
-            return new LineResponse(line.getId(), line.getName(), line.getColor());
-        }
-        throw new LineNotFoundException();
+        Line line = lineRepository.findByIdWithNoSections(id);
+        return LineResponse.from(line);
     }
 
-    public void updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
-        lineDao.update(new LineEntity(id, lineUpdateRequest.getLineName(), lineUpdateRequest.getColor()));
+    public Line updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
+        return lineRepository.update(new Line(id, lineUpdateRequest.getLineName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
+        Line line = lineRepository.findByIdWithNoSections(id);
+        lineRepository.delete(line);
     }
 }
