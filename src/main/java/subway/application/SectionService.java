@@ -72,20 +72,17 @@ public class SectionService {
     }
 
     public Distance findDistanceBetween(Station stationA, Station stationB, Line line) {
-        // 두 역이 current, next 나란히 있는 경우
         Optional<Section> subwayMapOptional = sectionDao.findByPreviousStation(stationA, line);
         if (subwayMapOptional.isPresent() && subwayMapOptional.get().getNextStation().equals(stationB)) {
             return subwayMapOptional.get().getDistance();
         }
 
-        // 두 역이 next, current 이렇게 나란히 있는 경우
         Optional<Section> subwayMapOptional1 = sectionDao.findByNextStation(stationA, line);
         if (subwayMapOptional1.isPresent() && subwayMapOptional1.get().getPreviousStation().equals(stationB)) {
             return subwayMapOptional1.get().getDistance();
         }
 
         throw new StationNotConnectedException(ExceptionMessages.STATION_NOT_CONNECTED);
-        // TODO: 아직까지 이웃하지 않은 역의 거리를 조회하지는 않는다고 가정합니다.
     }
 
     public List<Station> findAllStationsOrderByUp(Line line) {
