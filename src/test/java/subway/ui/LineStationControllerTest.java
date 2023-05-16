@@ -17,6 +17,7 @@ import java.util.List;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.patch;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -118,6 +119,15 @@ class LineStationControllerTest {
                 );
     }
 
+    @DisplayName("lineId와 stationId에 해당하는 역 연결 정보를 삭제한다")
+    @Test
+    void deleteStationById() throws Exception {
+        mockMvc.perform(delete("/lines/1/stations/1"))
+                .andExpect(status().isNoContent());
+
+        verify(lineStationService, times(1)).deleteStationById(1L, 1L);
+    }
+
     @Test
     @DisplayName("get /lines/{lineId}/stations : 라인에 해당하는 모든 역을 조회한다.")
     void showStationsByLineId() throws Exception {
@@ -129,7 +139,6 @@ class LineStationControllerTest {
 
         when(lineStationService.findByLineId(1L)).thenReturn(response);
 
-
         // when & then
         mockMvc.perform(get("/lines/1/stations")
                         .accept(MediaType.APPLICATION_JSON))
@@ -137,5 +146,26 @@ class LineStationControllerTest {
                 .andExpect(content().json(jsonResponse));
 
         verify(lineStationService, times(1)).findByLineId(1L);
+    }
+
+    @DisplayName("get /lines/stations : 모든 역을 조회한다")
+    @Test
+    void showStations() throws Exception {
+        // given
+        List<String> stations1 = List.of("선릉역", "강남역", "잠실역");
+        List<Integer> distances1 = List.of(1, 3);
+        List<String> stations2 = List.of("구의역", "건대입구역", "신도림역");
+        List<Integer> distances2 = List.of(5, 8);
+        LineStationResponse response = new LineStationResponse(stations1, distances1);
+        LineStationResponse response2 = new LineStationResponse(stations2, distances2);
+        List<LineStationResponse> responses = List.of(response, response2);
+        String jsonResponse = objectMapper.writeValueAsString(responses);
+
+        when(lineStationService.findAll()).thenReturn(responses);
+
+        // when & then
+        mockMvc.perform(get("/lines/stations")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(content().json(jsonResponse));
     }
 }
