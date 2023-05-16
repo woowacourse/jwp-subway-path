@@ -15,7 +15,9 @@ import subway.persistence.SectionDao;
 import subway.persistence.StationDao;
 import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionDetailEntity;
+import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
+import subway.presentation.dto.request.StationDeleteInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 
 import java.util.List;
@@ -25,6 +27,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -142,6 +145,36 @@ class LineServiceTest {
         // then
         assertThatThrownBy(() -> lineService.findById(invalidLineId))
                 .isInstanceOf(LineNotFoundException.class);
+    }
+
+    @Test
+    @DisplayName("노선에 역 삭제 성공")
+    void deleteStation_success() {
+        // given
+        final long lineId = 1L;
+        final String stationName = "잠실새내";
+        final StationDeleteInLineRequest request = new StationDeleteInLineRequest("잠실새내");
+        final SectionEntity frontSection = new SectionEntity(1L, lineId, 3, 1L, 2L);
+        final SectionEntity backSection = new SectionEntity(2L, lineId, 3, 2L, 3L);
+        final List<SectionEntity> entities = List.of(frontSection, backSection);
+        final List<SectionDetailEntity> sectionDetailEntities = List.of(
+                new SectionDetailEntity(1L, 6, lineId, "2호선", "bg-green-600", 1L, "잠실", 3L, "종합운동장")
+        );
+
+        given(sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(1L, stationName)).willReturn(entities);
+        doNothing().when(sectionDao).delete(frontSection);
+        doNothing().when(sectionDao).delete(backSection);
+        given(sectionDao.insert(any())).willReturn(any());
+        given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
+
+        // when
+        final LineDetailResponse response = lineService.deleteStation(lineId, request);
+
+        // then
+        assertAll(
+                () -> assertThat(response.getStations()).hasSize(2),
+                () -> assertThat(response.getName()).isEqualTo("2호선")
+        );
     }
 
 }
