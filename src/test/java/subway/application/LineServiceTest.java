@@ -12,6 +12,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -88,5 +89,36 @@ class LineServiceTest {
         assertThat(lineService.findShortestPath("논현역", "서울숲").getShortestPath())
                 .extracting(Station::getName)
                 .containsExactly("논현역", "학동역", "강남구청", "압구정로데오", "서울숲");
+    }
+
+    @Test
+    @DisplayName("10km 이내의 거리에 대한 요금은 기본 운임으로 계산한다.")
+    void defaultFare() {
+        assertThat(lineService.calculateFare(9))
+                .isEqualTo(new BigDecimal("1,250"));
+    }
+
+    @Test
+    @DisplayName("10km 이상의 거리에 대한 요금은 기본 운임 + 5km마다 100월씩 추가해 계산한다.")
+    void middleFare1() {
+        assertThat(lineService.calculateFare(11))
+                .as("5km마다 추가요금이 부과되므로 아직 추가요금은 없다.")
+                .isEqualTo(new BigDecimal("1250"));
+    }
+
+    @Test
+    @DisplayName("50km 이하의 거리에 대한 요금은 기본 운임 + 5km마다 100월씩 추가해 계산한다.")
+    void middleFare2() {
+        assertThat(lineService.calculateFare(49))
+                .as("10km + 5km*7 + 4km = 49km이므로 추가요금 700원이 부과된다.")
+                .isEqualTo(new BigDecimal("1950"));
+    }
+
+    @Test
+    @DisplayName("50km를 초과하는 거리에 대한 요금은 기본 운임 + 8km마다 100원씩 추가하여 부과한다.")
+    void maxFare() {
+        assertThat(lineService.calculateFare(51))
+                .as("10km + 8km*5 + 1km = 51km이므로 추가요금 500원이 부과된다.")
+                .isEqualTo(new BigDecimal("1750"));
     }
 }
