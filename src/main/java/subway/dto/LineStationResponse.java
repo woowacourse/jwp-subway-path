@@ -2,12 +2,12 @@ package subway.dto;
 
 import java.util.List;
 
-public class LineResponse {
+public class LineStationResponse {
     private Long id;
     private final String name;
     private final List<StationResponse> stations;
 
-    public LineResponse(Long id, String name, List<StationResponse> stations) {
+    public LineStationResponse(Long id, String name, List<StationResponse> stations) {
         this.id = id;
         this.name = name;
         this.stations = stations;

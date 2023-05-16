@@ -16,8 +16,8 @@ import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
-import subway.dto.LineResponse;
 import subway.dto.LineSaveDto;
+import subway.dto.LineStationResponse;
 import subway.dto.StationResponse;
 
 @Transactional(readOnly = true)
@@ -34,13 +34,13 @@ public class LineService {
     }
 
     @Transactional
-    public LineResponse saveLine(LineSaveDto request) {
+    public LineStationResponse saveLine(LineSaveDto request) {
         Long savedId = lineDao.insert(new LineEntity(request.getLineName()));
 
-        return new LineResponse(savedId, request.getLineName(), null);
+        return new LineStationResponse(savedId, request.getLineName(), null);
     }
 
-    public List<LineResponse> findLineResponses() {
+    public List<LineStationResponse> findLineResponses() {
         List<LineEntity> persistLines = lineDao.findAll();
         return persistLines.stream()
                 .map(entities -> {
@@ -50,14 +50,14 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    private LineResponse getLineResponse(LineEntity entities, Long lineId) {
+    private LineStationResponse getLineResponse(LineEntity entities, Long lineId) {
         List<SectionEntity> findSections = sectionDao.findByLineId(lineId);
         List<Section> collect = findSections.stream()
                 .map(this::toSection)
                 .collect(Collectors.toList());
 
         if (collect.isEmpty()) {
-            return new LineResponse(entities.getId(), entities.getName(), new ArrayList<StationResponse>());
+            return new LineStationResponse(entities.getId(), entities.getName(), new ArrayList<StationResponse>());
         }
 
         Sections sections = new Sections(collect);
@@ -71,7 +71,7 @@ public class LineService {
                 })
                 .collect(Collectors.toList());
 
-        return new LineResponse(entities.getId(), entities.getName(), stationsResponses);
+        return new LineStationResponse(entities.getId(), entities.getName(), stationsResponses);
     }
 
     private Section toSection(SectionEntity sectionEntity) {
@@ -82,7 +82,7 @@ public class LineService {
         return new Section(startStation, endStation, distance);
     }
 
-    public LineResponse findLineResponseById(Long id) {
+    public LineStationResponse findLineResponseById(Long id) {
         LineEntity findEntity = findLineById(id);
         return getLineResponse(findEntity, id);
     }

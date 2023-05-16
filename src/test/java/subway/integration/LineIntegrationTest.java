@@ -13,8 +13,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.dto.LineResponse;
 import subway.dto.LineSaveDto;
+import subway.dto.LineStationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -102,8 +102,8 @@ public class LineIntegrationTest extends IntegrationTest {
         List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
                 .map(it -> Long.parseLong(it.header("Location").split("/")[3]))
                 .collect(Collectors.toList());
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
+        List<Long> resultLineIds = response.jsonPath().getList(".", LineStationResponse.class).stream()
+                .map(LineStationResponse::getId)
                 .collect(Collectors.toList());
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
@@ -131,7 +131,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
+        LineStationResponse resultResponse = response.as(LineStationResponse.class);
         assertThat(resultResponse.getId()).isEqualTo(lineId);
     }
 }
