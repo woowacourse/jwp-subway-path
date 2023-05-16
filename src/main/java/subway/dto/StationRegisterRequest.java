@@ -1,9 +1,9 @@
 package subway.dto;
 
 public class StationRegisterRequest {
-    private Long upperStation;
-    private Long lowerStation;
-    private Integer distance;
+    private final Long upperStation;
+    private final Long lowerStation;
+    private final Integer distance;
 
     public StationRegisterRequest(final Long upperStation, final Long lowerStation, final Integer distance) {
         this.upperStation = upperStation;

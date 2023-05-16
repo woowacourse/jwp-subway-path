@@ -1,5 +1,10 @@
 package subway.dto;
 
+import subway.domain.Section;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 public class SectionDto {
 
     private final Long lineId;
@@ -12,6 +17,16 @@ public class SectionDto {
         this.upperStation = upperStation;
         this.lowerStation = lowerStation;
         this.distance = distance;
+    }
+
+    public static List<SectionDto> makeList(final Long lineId, List<Section> sections) {
+        return sections.stream()
+                .map(section -> new SectionDto(
+                        lineId,
+                        section.getUpper().getId(),
+                        section.getLower().getId(),
+                        section.getDistance().getValue()))
+                .collect(Collectors.toList());
     }
 
     public Long getLineId() {
