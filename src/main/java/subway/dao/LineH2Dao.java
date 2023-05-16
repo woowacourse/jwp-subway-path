@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +24,10 @@ public class LineH2Dao implements LineDao {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertLine;
 
-    public LineH2Dao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public LineH2Dao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        this.insertLine = new SimpleJdbcInsert(dataSource)
+        this.insertLine = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("line")
                 .usingGeneratedKeyColumns("id");
     }

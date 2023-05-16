@@ -8,8 +8,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.Line;
 import subway.entity.LineEntity;
 
-import javax.sql.DataSource;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.fixture.LineFixture.LINE_2;
 import static subway.fixture.LineFixture.LINE_999;
@@ -20,14 +18,11 @@ class LineH2DaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private DataSource dataSource;
-
     private LineDao lineDao;
 
     @BeforeEach
     void setUp() {
-        lineDao = new LineH2Dao(jdbcTemplate, dataSource);
+        lineDao = new LineH2Dao(jdbcTemplate);
     }
 
     @Test

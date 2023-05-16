@@ -27,10 +27,10 @@ public class SectionH2Dao implements SectionDao {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertSection;
 
-    public SectionH2Dao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public SectionH2Dao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        this.insertSection = new SimpleJdbcInsert(dataSource)
+        this.insertSection = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("section")
                 .usingGeneratedKeyColumns("id");
     }

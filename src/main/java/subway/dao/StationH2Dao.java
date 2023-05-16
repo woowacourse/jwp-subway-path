@@ -21,9 +21,9 @@ public class StationH2Dao implements StationDao {
     private final NamedParameterJdbcTemplate namedParameterJdbcTemplate;
     private final SimpleJdbcInsert insertStation;
 
-    public StationH2Dao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
+    public StationH2Dao(final JdbcTemplate jdbcTemplate) {
         this.namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(jdbcTemplate);
-        this.insertStation = new SimpleJdbcInsert(dataSource)
+        this.insertStation = new SimpleJdbcInsert(jdbcTemplate)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }

@@ -8,8 +8,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.entity.SectionEntity;
 
-import javax.sql.DataSource;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -19,14 +17,11 @@ class SectionH2DaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    @Autowired
-    private DataSource dataSource;
-
     private SectionDao sectionDao;
 
     @BeforeEach
     void setUp() {
-        sectionDao = new SectionH2Dao(jdbcTemplate, dataSource);
+        sectionDao = new SectionH2Dao(jdbcTemplate);
     }
 
     @Test
