@@ -65,7 +65,6 @@ public class SectionService {
         Line line = getLineById(lineId);
         Station station = getStationById(stationId);
         List<Section> sections = sectionDao.findByLineId(lineId);
-
         Subway subway = Subway.of(line, sections);
         Sections deleteSections = subway.findDeleteSections(station);
 

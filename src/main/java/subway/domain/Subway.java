@@ -2,6 +2,7 @@ package subway.domain;
 
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
+import subway.application.exception.SubwayInternalServerException;
 import subway.application.exception.SubwayServiceException;
 
 import java.util.ArrayList;
@@ -122,9 +123,7 @@ public class Subway {
     }
 
     public boolean hasRightSection(final Station station) {
-        if (!hasStation(station)) {
-            throw new SubwayServiceException("아직 역이 노선에 없습니다.");
-        }
+        validateStation(station);
         return !stations.outgoingEdgesOf(station).isEmpty();
     }
 
@@ -133,9 +132,7 @@ public class Subway {
     }
 
     public boolean hasLeftSection(final Station station) {
-        if (!hasStation(station)) {
-            throw new SubwayServiceException("아직 역이 노선에 없습니다.");
-        }
+        validateStation(station);
         return !stations.incomingEdgesOf(station).isEmpty();
     }
 
@@ -152,7 +149,7 @@ public class Subway {
                 .map(x -> new Section(station, stations.getEdgeTarget(x),
                         new Distance((int) stations.getEdgeWeight(x))))
                 .findFirst()
-                .orElseThrow(() -> new SubwayServiceException("구간을 찾을 수 없습니다."));
+                .orElseThrow(() -> new SubwayInternalServerException("오른쪽 구간을 찾을 수 없습니다."));
     }
 
     public Section findLeftSection(final Station station) {
@@ -161,7 +158,7 @@ public class Subway {
                 .map(x -> new Section(stations.getEdgeSource(x), station,
                         new Distance((int) stations.getEdgeWeight(x))))
                 .findFirst()
-                .orElseThrow(() -> new SubwayServiceException("구간을 찾을 수 없습니다."));
+                .orElseThrow(() -> new SubwayInternalServerException("왼쪽 구간을 찾을 수 없습니다."));
     }
 
     private Section getUpdatedSection(Section baseSection, Station left, Station right, int newDistance, Side side) {
@@ -183,10 +180,11 @@ public class Subway {
     public Sections findDeleteSections(Station station) {
         validateStation(station);
         if (hasRightSection(station) && hasLeftSection(station)) {
-            Section rightSection = findRightSection(station);
             Section leftSection = findLeftSection(station);
-            Station right = rightSection.getRight();
+            Section rightSection = findRightSection(station);
+
             Station left = leftSection.getLeft();
+            Station right = rightSection.getRight();
             Distance distance = new Distance(leftSection.getDistance() + rightSection.getDistance());
             return new Sections(List.of(new Section(left, right, distance)));
         }
@@ -195,7 +193,7 @@ public class Subway {
 
     private void validateStation(Station station) {
         if (!hasStation(station)) {
-            throw new SubwayServiceException("역이 존재하지 않습니다.");
+            throw new SubwayServiceException("역이 노선에 없습니다.");
         }
     }
 
@@ -211,10 +209,6 @@ public class Subway {
         }
         orderedStations.add(station);
         return orderedStations;
-    }
-
-    public Station getStart() {
-        return start;
     }
 
     public Line getLine() {

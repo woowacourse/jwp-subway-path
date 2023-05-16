@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+import subway.application.exception.SubwayInternalServerException;
 import subway.application.exception.SubwayServiceException;
 import subway.ui.dto.ErrorResponse;
 
@@ -37,7 +38,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
-    @ExceptionHandler({DataAccessException.class, IllegalArgumentException.class})
+    @ExceptionHandler({DataAccessException.class, IllegalArgumentException.class, SubwayInternalServerException.class})
     public ResponseEntity<ErrorResponse> handleInternalServerException(Exception exception) {
         System.out.println(exception.getMessage()); // log 대신 출력
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(new ErrorResponse("Internal Server Error"));

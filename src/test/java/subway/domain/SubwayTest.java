@@ -219,7 +219,7 @@ class SubwayTest {
 
         assertThatThrownBy(() -> subway.findDeleteSections(FIXTURE_STATION_4))
                 .isInstanceOf(SubwayServiceException.class)
-                .hasMessageContaining("역이 존재하지 않습니다.");
+                .hasMessageContaining("역이 노선에 없습니다.");
     }
 
     @DisplayName("한 노선에 대해 역들 간의 순서에 맞게 역을 반환한다.")

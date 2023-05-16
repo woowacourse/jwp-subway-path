@@ -248,7 +248,7 @@ class SectionServiceTest {
 
         assertThatThrownBy(() -> sectionService.deleteStation(1L, 4L))
                 .isInstanceOf(SubwayServiceException.class)
-                .hasMessageContaining("역이 존재하지 않습니다.");
+                .hasMessageContaining("역이 노선에 없습니다.");
     }
 
     @DisplayName("노선에 역이 두 개 있으면 모두 삭제한다.")
