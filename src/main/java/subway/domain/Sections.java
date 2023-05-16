@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -38,16 +39,15 @@ public class Sections {
             targetStations.put(section.getTargetStationId(), section);
         }
 
-        Section source = findSource(unorderedSections, targetStations);
+        Section source = findSource(sourceStations, targetStations);
 
         return lineUpSections(unorderedSections, sourceStations, source);
     }
 
-    private Section findSource(List<Section> sections, Map<Long, Section> targetStations) {
-        return sections.stream()
-            .filter(section -> !targetStations.containsKey(section.getSourceStationId()))
-            .findFirst()
-            .orElseThrow(() -> new DomainException(ExceptionType.NO_SOURCE));
+    private Section findSource(Map<Long, Section> sourceStations, Map<Long, Section> targetStations) {
+        HashSet<Section> sections = new HashSet<>(sourceStations.values());
+        sections.removeAll(new HashSet<>(targetStations.values()));
+        return sections.stream().findFirst().orElseThrow(() -> new DomainException(ExceptionType.NO_SOURCE));
     }
 
     private LinkedList<Section> lineUpSections(List<Section> unorderedSections, Map<Long, Section> sourceStations,
@@ -95,7 +95,9 @@ public class Sections {
         if (stationIds.isEmpty()) {
             return stationIds;
         }
-        stationIds.add(sections.get(sections.size() - 1).getTargetStationId());
+
+        int lastStationIndex = sections.size() - 1;
+        stationIds.add(sections.get(lastStationIndex).getTargetStationId());
         return stationIds;
     }
 }
