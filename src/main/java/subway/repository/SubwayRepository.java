@@ -30,8 +30,43 @@ public class SubwayRepository {
         this.sectionDao = sectionDao;
     }
 
-    public Optional<LineEntity> findLineByName(final String name) {
-        return lineDao.findByName(name);
+    public Line findLineByName(final String name) {
+        final LineEntity lineEntity = findLineEntityByName(name);
+        return new Line(lineEntity.getName(), lineEntity.getColor());
+    }
+
+    private LineEntity findLineEntityByName(final String name) {
+        return lineDao.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이름을 가진 노선이 존재하지 않습니다."));
+    }
+
+    public Long registerLine(final String name, final String color) {
+        return lineDao.insert(name, color);
+    }
+
+    public void updateLine(final Line line) {
+        final LineEntity lineEntity = findLineEntityByName(line.getName());
+        sectionDao.deleteByLineId(lineEntity.getId());
+        insertSectionsToLine(line.sections(), lineEntity.getId());
+    }
+
+    private void insertSectionsToLine(final List<Section> sections, final Long lineId) {
+        final List<SectionEntity> sectionEntities = sections.stream()
+                .map(section -> toSectionEntity(section, lineId))
+                .collect(Collectors.toList());
+        sectionDao.insertAll(sectionEntities);
+    }
+
+    private SectionEntity toSectionEntity(final Section section, final Long lineId) {
+        final Long sourceId = findStationIdByName(section.getSource().getName());
+        final Long targetId = findStationIdByName(section.getTarget().getName());
+        return new SectionEntity(lineId, sourceId, targetId, section.getDistance());
+    }
+
+    private Long findStationIdByName(final String name) {
+        final StationEntity stationEntity = stationDao.findByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("해당 이름을 가진 역이 존재하지 않습니다."));
+        return stationEntity.getId();
     }
 
     public List<Station> findStations() {
@@ -41,40 +76,17 @@ public class SubwayRepository {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public Line getSectionsByLineName(final String name) {
-        final LineEntity lineEntity = lineDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
-        final List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineEntity.getId());
-        return toLine(name, lineEntity.getColor(), sectionEntities);
+    public void registerStation(final Station station) {
+        final Optional<StationEntity> stationEntity = stationDao.findByName(station.getName());
+        if (stationEntity.isEmpty()) {
+            stationDao.insert(station.getName());
+        }
     }
 
-    public Line getLineByName(final String name) {
-        final LineEntity lineEntity = lineDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
-        List<SectionEntity> sectionsOfLineName = sectionDao.findByLineId(lineEntity.getId());
-        return toLine(name, lineEntity.getColor(), sectionsOfLineName);
-    }
-
-    public void addStation(final Station station) {
-        stationDao.insert(station.getName());
-    }
-
-    private SectionEntity toSectionEntity(final Section section, long lineId) {
-        final Long sourceId = findStationIdByName(section.getSource().getName());
-        final Long targetId = findStationIdByName(section.getTarget().getName());
-        return new SectionEntity(lineId, sourceId, targetId, section.getDistance());
-    }
-
-    public Long findStationIdByName(final String name) {
-        final StationEntity stationEntity = stationDao.findByName(name)
-                .orElseThrow(() -> new IllegalArgumentException("해당 역을 가지지 않았습니다"));
-        return stationEntity.getId();
-    }
-
-    public Line getLineById(final Long id) {
+    public Line findLineById(final Long id) {
         final List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
         final LineEntity lineEntity = lineDao.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(() -> new IllegalArgumentException("노선 정보가 잘못되었습니다."));
         return toLine(lineEntity.getName(), lineEntity.getColor(), sectionEntities);
     }
 
@@ -91,43 +103,15 @@ public class SubwayRepository {
 
     private Station toStation(final Long stationId) {
         final StationEntity stationEntity = stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException("서버에러: 해당 id를 가진 역이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("역 정보가 잘못되엇습니다."));
         return new Station(stationEntity.getName());
     }
 
     public Subway getSubway() {
         final List<LineEntity> lineEntities = lineDao.findAll();
         final List<Line> lines = lineEntities.stream()
-                .map(lineEntity -> toLine(
-                        lineEntity.getName(),
-                        lineEntity.getColor(),
-                        sectionDao.findByLineId(lineEntity.getId())
-                ))
+                .map(lineEntity -> toLine(lineEntity.getName(), lineEntity.getColor(), sectionDao.findByLineId(lineEntity.getId())))
                 .collect(Collectors.toList());
         return new Subway(lines);
-    }
-
-    public Long addNewLine(final Line line) {
-        addLine(line.getName(), line.getColor());
-        return updateLine(line);
-    }
-
-    public Long addLine(final String name, final String color) {
-        return lineDao.insert(name, color);
-    }
-
-    public Long updateLine(final Line line) {
-        final LineEntity lineEntity = lineDao.findByName(line.getName())
-                .orElseThrow(() -> new IllegalArgumentException("서버 에러: 노선 이름에 해당하는 노선이 없습니다."));
-        sectionDao.deleteByLineId(lineEntity.getId());
-        addSectionsToLine(line.sections(), lineEntity.getId());
-        return lineEntity.getId();
-    }
-
-    private void addSectionsToLine(final List<Section> sections, final Long lineId) {
-        List<SectionEntity> sectionEntities = sections.stream()
-                .map(section -> toSectionEntity(section, lineId))
-                .collect(Collectors.toList());
-        sectionDao.insertAll(sectionEntities);
     }
 }
