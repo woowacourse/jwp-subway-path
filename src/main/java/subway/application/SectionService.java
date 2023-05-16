@@ -36,7 +36,7 @@ public class SectionService {
                 .orElseThrow(() -> new RequestDataNotFoundException("다음 역: " + EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
 
         Distance addingDistance = new Distance(sectionRequest.getSectionStations().getDistance());
-        Direction direction = sectionRequest.getSectionDirection().getDirection();
+        Direction direction = sectionRequest.getDirection();
 
         LineRoute lineRoute = LineRoute.of(sections);
         lineRoute.add(baseStation, nextStation, addingDistance, direction);

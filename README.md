@@ -84,12 +84,12 @@
 POST /sections HTTP/1.1
 {
     "lineId": 1,
-    "section":  {
+    "sectionStations": {
         "baseStationId": 1,
         "nextStationId": 2,
-        "distance": 2,
+        "distance": 2
     },
-    "direction": up
+    "direction": "up"
 }
 ```
 
@@ -137,9 +137,11 @@ HTTP/1.1 204
     - [x] 테스트를 위한 메서드 삭제
     - [x] 테스트코드 중복코드 수정, 가독성 개선
     - [x] 커스텀 예외 정의, 예외 처리 기능 추가
-    - [ ] DTO 검증 로직 추가
-    - [ ] 역 연결 그래프 일급 콜렉션으로 분리? 분리하는 의미가 없는 것 같다.
-    - [ ] API 명세 잘못된 형식 등 수정, 기존 API 명세도 작성 / 자동화 도구 사용?
+    - [x] DTO 검증 로직 추가
+        - not null 외의 검증은 도메인 책임으로 판단함
+    - [x] 역 연결 그래프 일급 콜렉션으로 분리? 분리하는 의미가 없는 것 같아 진행하지 않음
+    - [ ] 인수 테스트 잘못된 요청 값에 대한 응답 관련 테스트 추가
+    - [ ] API 문서 자동화 도구 사용하기
 
 - 피드백
     - [x] [LineRequest, LineResponse와 같이 외부 영역에서 정의되는 자료구조를 서비스에서 사용하면 어떤 문제가 있을까?](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192853316)

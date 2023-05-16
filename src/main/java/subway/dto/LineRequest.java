@@ -1,11 +1,13 @@
 package subway.dto;
 
-public class LineRequest {
-    private String name;
-    private String color;
+import javax.validation.constraints.NotNull;
 
-    public LineRequest() {
-    }
+public class LineRequest {
+    
+    @NotNull
+    private String name;
+    @NotNull
+    private String color;
 
     public LineRequest(String name, String color) {
         this.name = name;

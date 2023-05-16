@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.dto.SectionDirection;
 import subway.dto.SectionRequest;
 import subway.dto.SectionStations;
 
@@ -28,7 +27,7 @@ public class SectionIntegrationTest extends IntegrationTest {
     void addStationsDownDirection() {
         // given
         SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 2L, 10),
-                new SectionDirection("down"));
+                "down");
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -56,7 +55,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         jdbcTemplate.update(
                 "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (1L, 1L, 2L, 16)");
         SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 3L, 10),
-                new SectionDirection("up"));
+                "up");
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -84,7 +83,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         jdbcTemplate.update(
                 "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (1L, 1L, 2L, 16)");
         SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(1L, 3L, 10),
-                new SectionDirection("down"));
+                "down");
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
@@ -112,7 +111,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         jdbcTemplate.update(
                 "insert into SECTIONS (line_id, left_station_id, right_station_id, distance) VALUES (1L, 1L, 2L, 16)");
         SectionRequest sectionRequest = new SectionRequest(1L, new SectionStations(2L, 3L, 10),
-                new SectionDirection("up"));
+                "up");
 
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()

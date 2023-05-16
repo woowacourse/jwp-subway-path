@@ -1,5 +1,6 @@
 package subway.ui;
 
+import javax.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,7 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addStations(@RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> addStations(@RequestBody @Valid SectionRequest sectionRequest) {
         sectionService.addStations(sectionRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
