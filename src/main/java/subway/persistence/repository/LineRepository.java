@@ -2,6 +2,7 @@ package subway.persistence.repository;
 
 import static java.util.stream.Collectors.toUnmodifiableList;
 
+import java.util.Comparator;
 import java.util.List;
 import org.springframework.stereotype.Repository;
 import subway.domain.Line;
@@ -12,6 +13,13 @@ import subway.persistence.dao.SectionDao;
 
 @Repository
 public class LineRepository {
+
+    private static final Comparator<Section> SECTION_COMPARATOR = (section1, section2) -> {
+        if (section1.isEqualNextStation(section2.getPrevStation())) {
+            return -1;
+        }
+        return 1;
+    };
 
     private final LineDao lineDao;
     private final SectionDao sectionDao;
@@ -33,7 +41,9 @@ public class LineRepository {
 
     public Line findById(final Long id) {
         Line line = lineDao.findById(id);
-        for (final Section section : sectionDao.findByLineId(id)) {
+        final List<Section> sections = sectionDao.findByLineId(id);
+        sections.sort(SECTION_COMPARATOR);
+        for (final Section section : sections) {
             line = line.addSection(section);
         }
         return line;
