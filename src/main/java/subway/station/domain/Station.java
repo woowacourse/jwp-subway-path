@@ -42,18 +42,19 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return Objects.equals(name, station.name);
+        return Objects.equals(id, station.id) && Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(id, name);
     }
 
     @Override
     public String toString() {
         return "Station{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ", name='" + name + '\'' +
                 '}';
     }
 }

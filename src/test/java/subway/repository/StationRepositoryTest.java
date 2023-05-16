@@ -66,7 +66,7 @@ class StationRepositoryTest {
     @Test
     @DisplayName("이름에 해당하는 역의 id를 Optional 객체로 반환한다")
     void findIdByName() {
-        doReturn(Optional.of(JAMSIL_STATION_ENTITY)).when(stationDao).findById(1L);
+        doReturn(Optional.of(JAMSIL_STATION_ENTITY)).when(stationDao).findById(JAMSIL_STATION.getId());
 
         assertThat(stationRepository.findStationById(1L)).isEqualTo(Optional.of(JAMSIL_STATION));
     }
@@ -85,7 +85,7 @@ class StationRepositoryTest {
         doReturn(Optional.empty()).when(stationDao).findByName(JAMSIL_STATION.getName());
         doReturn(JAMSIL_STATION_ENTITY).when(stationDao).insert(NO_ID_JAMSIL_STATION_ENTITY);
 
-        assertThat(stationRepository.createStation(JAMSIL_STATION)).isEqualTo(JAMSIL_STATION_ENTITY.getId());
+        assertThat(stationRepository.createStation(JAMSIL_STATION)).isEqualTo(JAMSIL_STATION);
     }
 
     @Test

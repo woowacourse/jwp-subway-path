@@ -16,14 +16,12 @@ import subway.line.domain.MiddleSection;
 import subway.line.repository.LineRepository;
 import subway.station.application.StationService;
 import subway.station.domain.Station;
-import subway.station.exception.NameLengthException;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 import static subway.utils.LineFixture.LINE_NUMBER_TWO;
 import static subway.utils.SectionFixture.DISTANCE;
@@ -45,13 +43,13 @@ class LineServiceTest {
     @Test
     @DisplayName("노선에 새로운 역을 추가할 수 있다")
     void addStationToLine1() {
-        final Station newStation = new Station("서울대입구");
+        final Station newStation = new Station(1L, "서울대입구");
         final int distanceToUpstream = 3;
         final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(1, newStation.getName(), JAMSIL_STATION.getName(), JAMSIL_NARU_STATION.getName(), distanceToUpstream);
         final Line line = new Line(LINE_NUMBER_TWO);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
-        doReturn(1L).when(stationService).createStationIfNotExist(newStation.getName());
+        doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
         doReturn(JAMSIL_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getUpstreamName());
         doReturn(JAMSIL_NARU_STATION).when(stationService)
                                      .findStationByName(stationAdditionToLineDto.getDownstreamName());
@@ -70,13 +68,13 @@ class LineServiceTest {
     @Test
     @DisplayName("노선 상행 종점에 새로운 역을 추가할 수 있다")
     void addStationToLine2() {
-        final Station newStation = new Station("서울대입구");
+        final Station newStation = new Station(1L, "서울대입구");
         final int distanceToUpstream = 3;
         final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(1, newStation.getName(), DummyTerminalStation.STATION_NAME, SULLEUNG_STATION.getName(), distanceToUpstream);
         final Line line = new Line(LINE_NUMBER_TWO);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
-        doReturn(1L).when(stationService).createStationIfNotExist(newStation.getName());
+        doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
         doReturn(SULLEUNG_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getDownstreamName());
 
         final LineService lineService = new LineService(lineRepository, stationService);
@@ -93,13 +91,13 @@ class LineServiceTest {
     @Test
     @DisplayName("노선 하행 종점에 새로운 역을 추가할 수 있다")
     void addStationToLine3() {
-        final Station newStation = new Station("서울대입구");
+        final Station newStation = new Station(1L, "서울대입구");
         final int distanceToUpstream = 3;
         final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(1, newStation.getName(), JAMSIL_NARU_STATION.getName(), DummyTerminalStation.STATION_NAME, distanceToUpstream);
         final Line line = new Line(LINE_NUMBER_TWO);
 
         doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
-        doReturn(1L).when(stationService).createStationIfNotExist(newStation.getName());
+        doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
         doReturn(JAMSIL_NARU_STATION).when(stationService)
                                      .findStationByName(stationAdditionToLineDto.getUpstreamName());
 
@@ -171,12 +169,12 @@ class LineServiceTest {
     @Test
     @DisplayName("새로운 노선을 생성할 수 있다")
     void createLine1() {
-        final Station upstream = new Station("서울대입구");
-        final Station downstream = new Station("잠실나루");
+        final Station upstream = new Station(1L, "서울대입구");
+        final Station downstream = new Station(2L, "잠실나루");
         final LineCreationDto lineCreationDto = new LineCreationDto("2호선", upstream.getName(), downstream.getName(), DISTANCE);
 
-        doReturn(1L).when(stationService).createStationIfNotExist(upstream.getName());
-        doReturn(2L).when(stationService).createStationIfNotExist(downstream.getName());
+        doReturn(upstream).when(stationService).createStationIfNotExist(upstream.getName());
+        doReturn(downstream).when(stationService).createStationIfNotExist(downstream.getName());
         doReturn(new Lines(new ArrayList<>())).when(lineRepository).findAllLines();
 
         final LineService lineService = new LineService(lineRepository, stationService);
@@ -186,29 +184,5 @@ class LineServiceTest {
         final Line expectedLine = new Line(lineCreationDto.getLineName(), List.of(new MiddleSection(upstream, downstream, DISTANCE)));
 
         verify(lineRepository, times(1)).createLine(expectedLine);
-    }
-
-    @Test
-    @DisplayName("상하행역이 빈문자열이면 예외를 던진다")
-    void createLineFail1() {
-        final Station downstream = new Station("잠실나루");
-        final LineCreationDto lineCreationDto = new LineCreationDto("2호선", "", downstream.getName(), DISTANCE);
-
-        final LineService lineService = new LineService(lineRepository, stationService);
-
-        assertThatThrownBy(() -> lineService.createLine(lineCreationDto))
-                .isInstanceOf(NameLengthException.class);
-    }
-
-    @Test
-    @DisplayName("상하행역이 빈문자열이면 예외를 던진다")
-    void createLineFail2() {
-        final Station upstream = new Station("잠실나루");
-        final LineCreationDto lineCreationDto = new LineCreationDto("2호선", upstream.getName(), "", DISTANCE);
-
-        final LineService lineService = new LineService(lineRepository, stationService);
-
-        assertThatThrownBy(() -> lineService.createLine(lineCreationDto))
-                .isInstanceOf(NameLengthException.class);
     }
 }

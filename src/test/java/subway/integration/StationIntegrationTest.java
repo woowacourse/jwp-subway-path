@@ -67,8 +67,8 @@ public class StationIntegrationTest {
         downstream = JAMSIL_NARU_STATION;
         line = new Line(VALID_LINE_NAME, List.of(JAMSIL_TO_JAMSILNARU));
 
-        upstreamId = stationRepository.createStation(upstream);
-        downstreamId = stationRepository.createStation(downstream);
+        upstreamId = stationRepository.createStation(upstream).getId();
+        downstreamId = stationRepository.createStation(downstream).getId();
         lineId = lineRepository.createLine(line);
     }
 
@@ -160,7 +160,7 @@ public class StationIntegrationTest {
     @DisplayName("상행역과 하행역이 Section을 이루지 않는 경우 추가할 수 없다.")
     void addStationFail6() {
         Line newLine = new Line(line);
-        Station newStation = new Station("건대입구");
+        Station newStation = new Station(3L, "건대입구");
         newLine.addStation(newStation, downstream, DummyTerminalStation.getInstance(), DISTANCE);
         stationRepository.createStation(newStation);
         lineRepository.updateLine(newLine);

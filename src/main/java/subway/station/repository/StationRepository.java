@@ -36,11 +36,6 @@ public class StationRepository {
                   });
 
         final StationEntity stationEntity = EntityMapper.toEntity(stationToInsert);
-
         return EntityMapper.toDomain(stationDao.insert(stationEntity));
-    }
-
-    public Optional<Long> findIdByName(String stationName) {
-        return stationDao.findIdByName(stationName);
     }
 }

@@ -10,7 +10,6 @@ class EntityMapper {
 
     public static StationEntity toEntity(Station station) {
         return new StationEntity.Builder()
-                .id(station.getId())
                 .name(station.getName())
                 .build();
     }

@@ -21,10 +21,10 @@ class EntityMapper {
                                        .build();
     }
 
-    public static List<SectionEntity> toSectionEntities(Line line) {
+    public static List<SectionEntity> toSectionEntities(Line line, long lineId) {
         return line.getSections()
                    .stream()
-                   .map(section -> toSectionEntity(section, line.getId()))
+                   .map(section -> toSectionEntity(section, lineId))
                    .collect(Collectors.toUnmodifiableList());
     }
 
@@ -39,12 +39,12 @@ class EntityMapper {
                                           .build();
     }
 
-    public static Line toLine(String lineName, List<SectionEntity> sectionEntities, List<StationEntity> stationEntities) {
+    public static Line toLine(String lineName, List<SectionEntity> sectionEntities, List<StationEntity> stationEntities, long lineId) {
         return sectionEntities.stream()
                               .map(sectionEntity -> toMiddleSection(sectionEntity, stationEntities))
                               .collect(collectingAndThen(
                                       toList(),
-                                      (sections) -> new Line(lineName, sections)
+                                      (sections) -> new Line(lineId, lineName, sections)
                               ));
     }
 

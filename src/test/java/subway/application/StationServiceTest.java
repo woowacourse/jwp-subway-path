@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.station.application.StationService;
+import subway.station.domain.Station;
 import subway.station.exception.StationNotFoundException;
 import subway.station.repository.StationRepository;
 
@@ -67,22 +68,23 @@ class StationServiceTest {
     @Test
     @DisplayName("역이 존재하지 않으면 역을 저장한다")
     void createStationIfNotExistSuccess() {
-        doReturn(Optional.empty()).when(stationRepository).findIdByName(JAMSIL_STATION.getName());
+        final Station station = new Station(JAMSIL_STATION.getName());
+        doReturn(Optional.empty()).when(stationRepository).findStationByName(JAMSIL_STATION.getName());
 
         final StationService stationService = new StationService(stationRepository);
 
         stationService.createStationIfNotExist(JAMSIL_STATION.getName());
 
-        verify(stationRepository, times(1)).createStation(JAMSIL_STATION);
+        verify(stationRepository, times(1)).createStation(station);
     }
 
     @Test
     @DisplayName("역이 존재하지 않으면 역을 저장한다")
     void createStationIfNotExistFail() {
-        doReturn(Optional.of(1L)).when(stationRepository).findIdByName(JAMSIL_STATION.getName());
+        doReturn(Optional.of(JAMSIL_STATION)).when(stationRepository).findStationByName(JAMSIL_STATION.getName());
 
         final StationService stationService = new StationService(stationRepository);
 
-        assertThat(stationService.createStationIfNotExist(JAMSIL_STATION.getName())).isEqualTo(1L);
+        assertThat(stationService.createStationIfNotExist(JAMSIL_STATION.getName())).isEqualTo(JAMSIL_STATION);
     }
 }

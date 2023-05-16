@@ -38,7 +38,7 @@ public class LineRepository {
         });
 
         final long lineId = lineDao.insert(EntityMapper.toLineEntity(lineToCreate));
-        sectionDao.insertSections(EntityMapper.toSectionEntities(lineToCreate));
+        sectionDao.insertSections(EntityMapper.toSectionEntities(lineToCreate, lineId));
 
         return lineId;
     }
@@ -48,7 +48,7 @@ public class LineRepository {
                              .orElseThrow(() -> new NoSuchElementException("디버깅: 노선 이름에 해당하는 노선이 없습니다. line이름: " + line.getName()));
 
         sectionDao.deleteSectionsByLineId(lineEntity.getId());
-        sectionDao.insertSections(EntityMapper.toSectionEntities(line));
+        sectionDao.insertSections(EntityMapper.toSectionEntities(line, lineEntity.getId()));
 
         return lineEntity.getId();
     }
@@ -58,7 +58,7 @@ public class LineRepository {
         final List<StationEntity> allStations = stationDao.findAllStations();
 
         return lineDao.findLineById(lineId)
-                      .map(lineEntity -> EntityMapper.toLine(lineEntity.getName(), sectionsOfLine, allStations));
+                      .map(lineEntity -> EntityMapper.toLine(lineEntity.getName(), sectionsOfLine, allStations, lineId));
     }
 
     public Lines findAllLines() {
@@ -66,11 +66,9 @@ public class LineRepository {
 
         return lineDao.findAll()
                       .stream()
-                      .map(lineEntity -> EntityMapper.toLine(lineEntity.getName(), sectionDao.findSectionsByLineId(lineEntity.getId()), allStations))
+                      .map(lineEntity -> EntityMapper.toLine(lineEntity.getName(), sectionDao.findSectionsByLineId(lineEntity.getId()), allStations, lineEntity.getId()))
                       .collect(collectingAndThen(toList(), Lines::new));
     }
-
-
 
     public void deleteLine(Line lineToDelete) {
         lineDao.deleteLineByName(lineToDelete.getName());
