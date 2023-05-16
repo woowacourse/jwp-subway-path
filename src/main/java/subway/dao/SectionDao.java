@@ -27,7 +27,7 @@ public class SectionDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    private RowMapper<SectionEntity> rowMapper = (resultSet, rowNumber) -> {
+    private final RowMapper<SectionEntity> rowMapper = (resultSet, rowNumber) -> {
         return new SectionEntity(
                 resultSet.getLong("id"),
                 resultSet.getLong("up_station_id"),
@@ -115,11 +115,12 @@ public class SectionDao {
     }
 
     public void delete(final List<SectionEntity> sections) {
-        final String sql = "DELETE FORM sections WHERE id = ?";
+        final String sql = "DELETE FROM sections WHERE id = ?";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(final PreparedStatement ps, final int i) throws SQLException {
-                ps.setLong(1, sections.get(i).getId());
+                SectionEntity section = sections.get(i);
+                ps.setLong(1, section.getId());
             }
 
             @Override

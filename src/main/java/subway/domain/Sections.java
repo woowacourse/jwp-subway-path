@@ -63,7 +63,7 @@ public class Sections {
                 .findAny();
         List<Section> editSections = new ArrayList<>(sections);
         if (maybeUpSection.isEmpty() && maybeDownSection.isEmpty()) {
-            throw new IllegalArgumentException("삭제할 구간이 없습니다.");
+            return new Sections(editSections);
         }
         if (maybeUpSection.isEmpty()) {
             Section downSection = maybeDownSection.get();
@@ -87,10 +87,12 @@ public class Sections {
     public List<Station> findAllStationUpToDown() {
         Map<Station, Section> upStationToDownStation = getUpToDown();
         List<Station> stations = new ArrayList<>();
+        if (sections.isEmpty()) {
+            return stations;
+        }
         Station station = getFirstStation();
         stations.add(station);
         while (upStationToDownStation.containsKey(station)) {
-            System.out.println(station);
             station = upStationToDownStation.get(station).getDownStation();
             stations.add(station);
         }
@@ -103,7 +105,7 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !downToUp.containsKey(section.getUpStation()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("하행의 끝역이 존재하지 않습니다."))
+                .orElse(Section.EMPTY_SECTION)
                 .getUpStation();
     }
 
@@ -113,14 +115,11 @@ public class Sections {
         return sections.stream()
                 .filter(section -> !upToDown.containsKey(section.getDownStation()))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("상행의 끝역이 존재하지 않습니다."))
+                .orElse(Section.EMPTY_SECTION)
                 .getDownStation();
     }
 
     private Map<Station, Section> getUpToDown() {
-        if (sections == null || sections.isEmpty()) {
-            throw new IllegalArgumentException("해당 노선은 비어있습니다.");
-        }
         Map<Station, Section> upStationToDownStation = new HashMap<>();
         for (Section section : sections) {
             upStationToDownStation.put(section.getUpStation(), section);
@@ -129,6 +128,6 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return sections;
+        return new ArrayList<>(sections);
     }
 }

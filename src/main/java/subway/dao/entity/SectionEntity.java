@@ -34,7 +34,8 @@ public class SectionEntity {
     }
 
     public Section convertToSection(final Map<Long, Station> stations) {
-        return Section.of(
+        return new Section(
+                this.id,
                 stations.get(this.upStationId),
                 stations.get(this.downStationId),
                 new Distance(this.distance));

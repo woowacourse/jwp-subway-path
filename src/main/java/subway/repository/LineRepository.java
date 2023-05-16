@@ -56,38 +56,4 @@ public class LineRepository {
         }
         return allSectionsByLindId;
     }
-
-    public void update(final Line before, final Line update) {
-        List<Section> beforeSections = before.getSections();
-        beforeSections.removeAll(update.getSections());
-        List<SectionEntity> beforeSectionEntities = convertToSectionEntities(before, beforeSections);
-        sectionDao.delete(beforeSectionEntities);
-
-        List<Station> beforeStation = before.findAllStation();
-        beforeStation.removeAll(update.findAllStation());
-        List<StationEntity> beforeStationEntities = convertToStationEntities(beforeStation);
-        stationDao.delete(beforeStationEntities);
-
-        List<Station> updateStations = update.findAllStation();
-        updateStations.removeAll(before.findAllStation());
-        List<StationEntity> updateStationEntities = convertToStationEntities(updateStations);
-        stationDao.save(updateStationEntities);
-
-        List<Section> updateSections = update.getSections();
-        updateSections.removeAll(before.getSections());
-        List<SectionEntity> updateSectionEntities = convertToSectionEntities(update, updateSections);
-        sectionDao.save(updateSectionEntities);
-    }
-
-    private List<StationEntity> convertToStationEntities(final List<Station> stations) {
-        return stations.stream()
-                .map(StationEntity::from)
-                .collect(Collectors.toList());
-    }
-
-    private List<SectionEntity> convertToSectionEntities(final Line line, final List<Section> sections) {
-        return sections.stream()
-                .map(section -> SectionEntity.of(section, line))
-                .collect(Collectors.toList());
-    }
 }
