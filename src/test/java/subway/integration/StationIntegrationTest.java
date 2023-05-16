@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
@@ -155,6 +156,21 @@ public class StationIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    @Test
+    void 지하철_역을_삭제한다() {
+        given().log().all()
+                .when()
+                .delete("/stations/1")
+                .then().log().all()
+                .statusCode(SC_NO_CONTENT);
+
+        given().log().all()
+                .when()
+                .get("/stations/1")
+                .then().log().all()
+                .statusCode(SC_BAD_REQUEST);
     }
 
 }

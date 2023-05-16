@@ -1,5 +1,6 @@
 package subway.ui;
 
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -23,6 +24,11 @@ public class ExceptionController extends ResponseEntityExceptionHandler {
     @ExceptionHandler
     public ResponseEntity<String> handleDuplicatedNameException(final DuplicatedNameException exception) {
         return ResponseEntity.badRequest().body(exception.getMessage());
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<Void> handleNotFound(final EmptyResultDataAccessException exception) {
+        return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler
