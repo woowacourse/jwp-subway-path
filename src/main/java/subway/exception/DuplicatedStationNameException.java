@@ -1,6 +1,6 @@
 package subway.exception;
 
-public class DuplicatedStationNameException extends IllegalArgumentException {
+public class DuplicatedStationNameException extends BadRequestException {
 
     private static final String MESSAGE = "이미 존재하는 역입니다.";
 
