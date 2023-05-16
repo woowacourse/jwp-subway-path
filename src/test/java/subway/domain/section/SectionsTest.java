@@ -258,7 +258,7 @@ class SectionsTest {
         assertAll(
             () -> assertThat(newSection.get().getSource().equals(잠실역)),
             () -> assertThat(newSection.get().getTarget().equals(강남역)),
-            () -> assertThat(newSection.get().getDistance().getDistance() == 20)
+            () -> assertThat(newSection.get().getDistance().distance() == 20)
         );
     }
 }

@@ -1,10 +1,10 @@
 package subway.fixture;
 
 import java.util.List;
+import subway.application.dto.StationRequest;
 import subway.dao.entity.StationEntity;
 import subway.domain.station.Station;
 import subway.domain.station.dto.StationRes;
-import subway.application.dto.StationRequest;
 
 public final class StationFixture {
 

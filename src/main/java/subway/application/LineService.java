@@ -1,5 +1,7 @@
 package subway.application;
 
+import static subway.application.mapper.SectionProvider.createSections;
+import static subway.application.mapper.SectionProvider.getStationIdByName;
 import static subway.exception.ErrorCode.LINE_NAME_DUPLICATED;
 import static subway.exception.ErrorCode.STATION_NOT_FOUND;
 
@@ -8,6 +10,10 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.application.dto.LineRequest;
+import subway.application.dto.LineResponse;
+import subway.application.dto.SectionRequest;
+import subway.application.dto.StationResponse;
 import subway.domain.line.Line;
 import subway.domain.line.LineRepository;
 import subway.domain.line.LineWithSectionRes;
@@ -17,12 +23,7 @@ import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
 import subway.domain.section.dto.SectionSaveReq;
 import subway.domain.station.Station;
-import subway.domain.station.StationName;
 import subway.domain.station.StationRepository;
-import subway.application.dto.LineRequest;
-import subway.application.dto.LineResponse;
-import subway.application.dto.SectionRequest;
-import subway.application.dto.StationResponse;
 import subway.exception.BadRequestException;
 import subway.exception.NotFoundException;
 
@@ -119,15 +120,6 @@ public class LineService {
         }
     }
 
-    private Sections createSections(final List<LineWithSectionRes> lineWithSections) {
-        final List<Section> sections = lineWithSections.stream().map(res -> {
-            final Station sourceStation = new Station(res.getSourceStationName());
-            final Station targetStation = new Station(res.getTargetStationName());
-            return new Section(sourceStation, targetStation, res.getDistance());
-        }).collect(Collectors.toList());
-        return new Sections(sections);
-    }
-
     private Line createLine(final List<LineWithSectionRes> lineWithSections) {
         final Sections sections = createSections(lineWithSections);
         return new Line(lineWithSections.get(0).getLineName(),
@@ -170,18 +162,10 @@ public class LineService {
         });
     }
 
-    private Long getStationIdByName(final StationName stationName, final List<LineWithSectionRes> lineWithSections) {
-        return lineWithSections.stream()
-            .filter(res -> res.isSourceOrTargetStation(stationName))
-            .findFirst()
-            .map(res -> res.getStationIdByStationName(stationName))
-            .orElseThrow(() -> new NotFoundException(STATION_NOT_FOUND.getMessage() + " name = " + stationName));
-    }
-
     private void saveSectionOf(final Long lineId, final Long sourceStationId,
                                final Long targetStationId, final SectionDistance distance) {
         final SectionSaveReq sectionSaveReq = new SectionSaveReq(lineId, sourceStationId, targetStationId,
-            distance.getDistance());
+            distance.distance());
         sectionRepository.insert(sectionSaveReq);
     }
 
@@ -192,7 +176,8 @@ public class LineService {
             final Long stationId = getStationIdByName(station.getName(), lineWithSections);
             return new StationResponse(stationId, station.getName().name());
         }).collect(Collectors.toUnmodifiableList());
-        return new LineResponse(lineWithSections.get(0).getLineId(), line.getName().name(), line.getColor(), stationResponses);
+        return new LineResponse(lineWithSections.get(0).getLineId(), line.getName().name(), line.getColor(),
+            stationResponses);
     }
 
     private Station createStation(final Long stationId, final List<LineWithSectionRes> lineWithSections) {

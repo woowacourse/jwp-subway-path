@@ -42,7 +42,7 @@ public class SectionDistance {
         }
     }
 
-    public int getDistance() {
+    public int distance() {
         return distance;
     }
 }

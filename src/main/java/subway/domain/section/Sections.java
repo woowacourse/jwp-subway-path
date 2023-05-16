@@ -120,6 +120,10 @@ public class Sections {
             .findFirst();
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public List<Station> getSortedStations() {
         return sortedStations;
     }
