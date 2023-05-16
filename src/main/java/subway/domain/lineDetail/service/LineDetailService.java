@@ -2,9 +2,9 @@ package subway.domain.lineDetail.service;
 
 import org.springframework.stereotype.Service;
 import subway.domain.lineDetail.dao.LineDetailDao;
-import subway.domain.lineDetail.entity.LineDetailEntity;
 import subway.domain.lineDetail.dto.LineDetailRequest;
 import subway.domain.lineDetail.dto.LineDetailResponse;
+import subway.domain.lineDetail.entity.LineDetailEntity;
 
 import java.util.List;
 import java.util.Optional;
