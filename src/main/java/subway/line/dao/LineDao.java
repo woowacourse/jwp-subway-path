@@ -53,10 +53,10 @@ public class LineDao {
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Long> findIdByName(String lineName) {
-        String sql = "select id from LINE where name = ?";
+    public Optional<LineEntity> findLineByName(String lineName) {
+        String sql = "select id, name from LINE where name = ?";
         try {
-            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, Long.class, lineName));
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineName));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

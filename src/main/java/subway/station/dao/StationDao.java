@@ -9,6 +9,7 @@ import subway.station.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -67,5 +68,10 @@ public class StationDao {
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }
+    }
+
+    public List<StationEntity> findAllStations() {
+        String sql = "select id, name from STATION";
+        return jdbcTemplate.query(sql, rowMapper);
     }
 }
