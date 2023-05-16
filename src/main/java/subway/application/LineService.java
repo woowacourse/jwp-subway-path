@@ -33,7 +33,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Lines lines = new Lines();
         lineDao.findAll()
-                .forEach(it -> lines.addNewLine(it.getName(), new Sections(toSections(sectionDao.findAll()))));
+                .forEach(it -> lines.addNewLine(it.getName(), new Sections(toSections(sectionDao.findByLineId(it.getId())))));
 
         Line line = lines.addNewLine(request.getLineName(), new Sections(
                 List.of(new Section(new Station(request.getStartStation()), new Station(request.getEndStation()), new Distance(request.getDistance())))

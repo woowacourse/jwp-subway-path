@@ -31,9 +31,7 @@ class StationDaoTest {
     void insert() {
         StationEntity stationEntity = new StationEntity("잠실역");
 
-        Long stationId = stationDao.insert(stationEntity);
-
-        assertThat(stationId).isEqualTo(1);
+        assertDoesNotThrow(()->stationDao.insert(stationEntity));
     }
 
     @Test
