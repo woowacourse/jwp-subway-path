@@ -4,14 +4,22 @@ import static subway.domain.section.SectionFactory.from;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.domain.section.strategy.StrategyMapper;
+import subway.domain.section.strategy.UpdateHeadStrategy;
+import subway.domain.section.strategy.UpdateMiddleStrategy;
+import subway.domain.section.strategy.UpdateSectionsStrategy;
+import subway.domain.section.strategy.UpdateTailStrategy;
 
 public class FilledSections extends Sections {
 
-    private static final StrategyMapper STRATEGY_MAPPER = new StrategyMapper();
+    private static final List<UpdateSectionsStrategy> UPDATE_SECTIONS_STRATEGIES = List.of(
+            UpdateHeadStrategy.getInstance(),
+            UpdateTailStrategy.getInstance(),
+            UpdateMiddleStrategy.getInstance()
+    );
 
     FilledSections(final List<Section> sections) {
         super(sections);
@@ -37,7 +45,8 @@ public class FilledSections extends Sections {
     public Sections addSection(final Section section) {
         validateDuplicateSection(section);
         final List<Section> sections = new LinkedList<>(this.sections);
-        return from(STRATEGY_MAPPER.findStrategy(sections, section).addSection(sections, section));
+        useAddStrategy(sections, section);
+        return from(sections);
     }
 
     private void validateDuplicateSection(final Section newSection) {
@@ -52,11 +61,20 @@ public class FilledSections extends Sections {
                 && allStations.contains(otherSection.getNextStation());
     }
 
+    private void useAddStrategy(final List<Section> sections, final Section section) {
+        UPDATE_SECTIONS_STRATEGIES.stream()
+                .filter(strategy -> strategy.supportAddSection(sections, section))
+                .findAny()
+                .orElseThrow(NoSuchElementException::new)
+                .addSection(sections, section);
+    }
+
     @Override
     public Sections removeStation(final Station station) {
         validateIsExist(station);
         final List<Section> sections = new LinkedList<>(this.sections);
-        return from(STRATEGY_MAPPER.findStrategy(sections, station).removeStation(sections, station));
+        useRemoveStrategy(sections, station);
+        return from(sections);
     }
 
     private void validateIsExist(final Station station) {
@@ -67,5 +85,13 @@ public class FilledSections extends Sections {
 
     private boolean notContainStation(final Station station) {
         return !getAllStations().contains(station);
+    }
+
+    private void useRemoveStrategy(final List<Section> sections, final Station station) {
+        UPDATE_SECTIONS_STRATEGIES.stream()
+                .filter(strategy -> strategy.supportRemoveStation(sections, station))
+                .findAny()
+                .orElseThrow(NoSuchElementException::new)
+                .removeStation(sections, station);
     }
 }

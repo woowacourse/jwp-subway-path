@@ -10,6 +10,17 @@ import subway.domain.Station;
 
 public class UpdateMiddleStrategy implements UpdateSectionsStrategy {
 
+    private static final UpdateMiddleStrategy INSTANCE = new UpdateMiddleStrategy();
+    private static final UpdateTailStrategy UPDATE_TAIL_STRATEGY = UpdateTailStrategy.getInstance();
+    private static final UpdateHeadStrategy UPDATE_HEAD_STRATEGY = UpdateHeadStrategy.getInstance();
+
+    private UpdateMiddleStrategy() {
+    }
+
+    public static UpdateMiddleStrategy getInstance() {
+        return INSTANCE;
+    }
+
     @Override
     public List<Section> addSection(final List<Section> sections, final Section section) {
         final Section originSection = findOriginSection(section, sections);
@@ -67,5 +78,17 @@ public class UpdateMiddleStrategy implements UpdateSectionsStrategy {
                 .filter(section -> section.isEqualPrevStation(station))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 역을 찾을 수 없습니다."));
+    }
+
+    @Override
+    public boolean supportAddSection(final List<Section> sections, final Section section) {
+        return !UPDATE_HEAD_STRATEGY.supportAddSection(sections, section)
+                && !UPDATE_TAIL_STRATEGY.supportAddSection(sections, section);
+    }
+
+    @Override
+    public boolean supportRemoveStation(final List<Section> sections, final Station station) {
+        return !UPDATE_HEAD_STRATEGY.supportRemoveStation(sections, station)
+                && !UPDATE_TAIL_STRATEGY.supportRemoveStation(sections, station);
     }
 }
