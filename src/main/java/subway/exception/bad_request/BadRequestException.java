@@ -1,4 +1,4 @@
-package subway.exception;
+package subway.exception.bad_request;
 
 public class BadRequestException extends IllegalArgumentException {
 

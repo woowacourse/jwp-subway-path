@@ -8,7 +8,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.business.dto.SectionInsertDto;
-import subway.exception.LineNotFoundException;
+import subway.exception.not_found.LineNotFoundException;
 import subway.persistence.SectionDao;
 import subway.persistence.StationDao;
 import subway.persistence.entity.SectionDetailEntity;

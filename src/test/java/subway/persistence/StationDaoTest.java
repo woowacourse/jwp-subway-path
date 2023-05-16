@@ -9,8 +9,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.exception.DuplicatedStationNameException;
-import subway.exception.StationNotFoundException;
+import subway.exception.bad_request.DuplicatedStationNameException;
+import subway.exception.not_found.StationNotFoundException;
 import subway.persistence.entity.StationEntity;
 
 import javax.sql.DataSource;

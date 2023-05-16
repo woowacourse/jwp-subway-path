@@ -1,6 +1,6 @@
 package subway.business.domain;
 
-import subway.exception.InvalidDistanceException;
+import subway.exception.bad_request.InvalidDistanceException;
 
 public final class Distance {
 

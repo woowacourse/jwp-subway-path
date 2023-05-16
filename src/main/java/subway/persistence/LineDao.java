@@ -7,8 +7,8 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.exception.DuplicatedLineNameException;
-import subway.exception.LineNotFoundException;
+import subway.exception.bad_request.DuplicatedLineNameException;
+import subway.exception.not_found.LineNotFoundException;
 import subway.persistence.entity.LineEntity;
 
 import javax.sql.DataSource;

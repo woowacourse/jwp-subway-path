@@ -11,7 +11,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.business.StationService;
-import subway.exception.StationNotFoundException;
+import subway.exception.not_found.StationNotFoundException;
 import subway.presentation.dto.request.StationRequest;
 import subway.presentation.dto.response.StationResponse;
 

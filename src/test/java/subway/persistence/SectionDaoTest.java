@@ -8,9 +8,9 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.exception.DuplicatedSectionException;
-import subway.exception.LineNotFoundException;
-import subway.exception.LineOrStationNotFoundException;
+import subway.exception.bad_request.DuplicatedSectionException;
+import subway.exception.not_found.LineNotFoundException;
+import subway.exception.not_found.LineOrStationNotFoundException;
 import subway.persistence.entity.SectionDetailEntity;
 import subway.persistence.entity.SectionEntity;
 

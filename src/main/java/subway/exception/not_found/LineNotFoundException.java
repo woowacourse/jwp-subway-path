@@ -1,4 +1,4 @@
-package subway.exception;
+package subway.exception.not_found;
 
 public class LineNotFoundException extends NotFoundException {
 

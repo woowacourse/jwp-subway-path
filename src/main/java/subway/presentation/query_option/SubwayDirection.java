@@ -1,6 +1,6 @@
 package subway.presentation.query_option;
 
-import subway.exception.InvalidDirectionException;
+import subway.exception.bad_request.InvalidDirectionException;
 
 import java.util.Arrays;
 

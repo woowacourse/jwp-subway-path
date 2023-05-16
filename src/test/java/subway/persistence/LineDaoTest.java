@@ -8,8 +8,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.exception.DuplicatedLineNameException;
-import subway.exception.LineNotFoundException;
+import subway.exception.bad_request.DuplicatedLineNameException;
+import subway.exception.not_found.LineNotFoundException;
 import subway.persistence.entity.LineEntity;
 
 import javax.sql.DataSource;

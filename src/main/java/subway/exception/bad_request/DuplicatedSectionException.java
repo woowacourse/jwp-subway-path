@@ -1,4 +1,6 @@
-package subway.exception;
+package subway.exception.bad_request;
+
+import subway.exception.bad_request.BadRequestException;
 
 public class DuplicatedSectionException extends BadRequestException {
 
