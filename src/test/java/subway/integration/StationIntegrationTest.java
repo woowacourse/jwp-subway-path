@@ -1,6 +1,7 @@
 package subway.integration;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -8,11 +9,11 @@ import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.StationCreateRequest;
-import subway.dto.StationDeleteRequest;
 
 @DisplayName("지하철역 관련 기능")
 public class StationIntegrationTest extends IntegrationTest {
@@ -33,7 +34,7 @@ public class StationIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-        stationCreateRequest = new StationCreateRequest("잠실역", "잠실새내역", 10, 1);
+        stationCreateRequest = new StationCreateRequest("잠실역", 1L);
     }
 
     @DisplayName("지하철역을 생성한다.")
@@ -49,33 +50,9 @@ public class StationIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    @DisplayName("역이 두 개 존재하는 노선의 지하철역을 제거한다.")
-    @Test
-    void deleteStation() {
-        // given
-        StationDeleteRequest stationDeletedRequest = new StationDeleteRequest("잠실역");
-
-        RestAssured.given().log().all()
-                .body(stationCreateRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .post("/stations")
-                .then().log().all()
-                .extract();
-
-        // when
-        ExtractableResponse<Response> response = RestAssured.given().log().all()
-                .body(stationDeletedRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when()
-                .delete("/stations")
-                .then().log().all()
-                .extract();
-
-        // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header(HttpHeaders.LOCATION)).isEqualTo("/stations/1")
+        );
     }
 }

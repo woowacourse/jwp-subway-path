@@ -57,7 +57,7 @@ class SectionTest {
 
         // expected
         assertThatThrownBy(() -> originalSection.getDividedSection(
-                    new Section(
+                new Section(
                         new Station("잠실새내역"),
                         new Station("신림역"),
                         20)))
