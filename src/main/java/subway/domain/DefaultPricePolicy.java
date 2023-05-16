@@ -1,62 +1,48 @@
 package subway.domain;
 
 import org.springframework.stereotype.Component;
-import subway.global.exception.pricepolicy.CanNotDistanceEqualZeroException;
+
+import java.math.BigDecimal;
+
+import static subway.domain.Distance.DEFAULT_DISTANCE;
+import static subway.domain.Distance.MID_DISTANCE;
 
 @Component
 public class DefaultPricePolicy implements SubwayPricePolicy {
 
-    private static final int DEFAULT_PRICE = 1250;
-    private static final int DEFAULT_DISTANCE = 10;
-
-    private static final int MID_DISTANCE = 40;
+    private static final BigDecimal DEFAULT_PRICE = BigDecimal.valueOf(1250);
+    private static final BigDecimal ADDITIONAL_FEE = BigDecimal.valueOf(100);
     private static final int MID_DISTANCE_RATE = 5;
-
-    private static final int LONG_DISTANCE = 50;
     private static final int LONG_DISTANCE_RATE = 8;
 
-    private static final int ADDITIONAL_FEE = 100;
 
     @Override
     public int calculate(final int distance) {
-        validateDistance(distance);
+        final Distance distanceValue = new Distance(distance);
 
-        if (isDefaultDistance(distance)) {
-            return DEFAULT_PRICE;
+        if (distanceValue.isDefaultDistance()) {
+            return DEFAULT_PRICE.intValue();
         }
 
-        if (isLongDistance(distance)) {
-            return DEFAULT_PRICE +
-                    calculateMidDistance(MID_DISTANCE) +
-                    calculateLongDistance(distance - MID_DISTANCE - DEFAULT_DISTANCE);
+        if (distanceValue.isLongDistance()) {
+            return DEFAULT_PRICE.add(calculateMidDistance(MID_DISTANCE))
+                                .add(calculateLongDistance(distanceValue.minus(MID_DISTANCE)
+                                                                        .minus(DEFAULT_DISTANCE)))
+                                .intValue();
         }
 
-        return DEFAULT_PRICE + calculateMidDistance(distance - DEFAULT_DISTANCE);
+        return DEFAULT_PRICE.add(calculateMidDistance(distanceValue.minus(DEFAULT_DISTANCE))).intValue();
     }
 
-    private void validateDistance(final int distance) {
-        if (distance <= 0) {
-            throw new CanNotDistanceEqualZeroException("목적지에 갈 수 없습니다.");
-        }
-    }
-
-    private boolean isDefaultDistance(final int distance) {
-        return distance <= DEFAULT_DISTANCE;
-    }
-
-    private boolean isLongDistance(final int distance) {
-        return distance > LONG_DISTANCE;
-    }
-
-    private int calculateMidDistance(final int distance) {
+    private BigDecimal calculateMidDistance(final Distance distance) {
         return calculatePriceBracket(distance, MID_DISTANCE_RATE);
     }
 
-    private int calculateLongDistance(final int distance) {
+    private BigDecimal calculateLongDistance(final Distance distance) {
         return calculatePriceBracket(distance, LONG_DISTANCE_RATE);
     }
 
-    private int calculatePriceBracket(final int distance, final int rate) {
-        return (((distance - 1) / rate) + 1) * ADDITIONAL_FEE;
+    private BigDecimal calculatePriceBracket(final Distance distance, final int rate) {
+        return BigDecimal.valueOf(distance.calculateDistanceUnit(rate).getValue()).multiply(ADDITIONAL_FEE);
     }
 }
