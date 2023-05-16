@@ -4,10 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.LineService;
 import subway.application.SectionService;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-import subway.dto.SectionSavingRequest;
-import subway.dto.StationRequest;
+import subway.dto.*;
 
 import java.net.URI;
 import java.util.List;
@@ -54,7 +51,7 @@ public class LineController {
     }
 
     @PostMapping("/{lineId}/section")
-    public ResponseEntity<Void> initializeSection(@PathVariable long lineId, @RequestBody SectionSavingRequest sectionSavingRequest) {
+    public ResponseEntity<Void> insertSection(@PathVariable long lineId, @RequestBody SectionSavingRequest sectionSavingRequest) {
         long savedId = sectionService.insert(lineId, sectionSavingRequest.getPreviousStationName(),
                 sectionSavingRequest.getNextStationName(), sectionSavingRequest.getDistance(), sectionSavingRequest.isDown());
         return ResponseEntity.created(URI.create(String.format("/lines/%d/%d", lineId, savedId))).build();
@@ -64,5 +61,11 @@ public class LineController {
     public ResponseEntity<Void> deleteSection(@PathVariable long lineId, @RequestBody StationRequest stationRequest) {
         sectionService.deleteStation(lineId, stationRequest.getName());
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/section")
+    public ResponseEntity<SectionResponse> findShortestPath(@RequestBody SectionRequest sectionRequest) {
+        final var shortestPath = lineService.findShortestPath(sectionRequest.getStartingStation(), sectionRequest.getDestinationStation());
+        return ResponseEntity.ok().body(SectionResponse.of(shortestPath));
     }
 }

@@ -63,14 +63,30 @@ class LineServiceTest {
     @Test
     @DisplayName("같은 노선 위에 있는 두 역의 최단거리를 구할 수 있다.")
     void shortestDistance() {
-        assertThat(lineService.findShortestDistance("반포역", "청담역"))
+        assertThat(lineService.findShortestPath("반포역", "청담역").getShortestDistance())
                 .isEqualTo(14);
     }
 
     @Test
     @DisplayName("서로 다른 노선 위에 있는 두 역의 최단거리를 구할 수 있다.")
     void shortestDistanceOnDifferentLine() {
-        assertThat(lineService.findShortestDistance("논현역", "서울숲"))
+        assertThat(lineService.findShortestPath("논현역", "서울숲").getShortestDistance())
                 .isEqualTo(16);
+    }
+
+    @Test
+    @DisplayName("같은 노선 위에 있는 두 역의 최단 경로를 구할 수 있다.")
+    void shortestPath() {
+        assertThat(lineService.findShortestPath("반포역", "청담역").getShortestPath())
+                .extracting(Station::getName)
+                .containsExactly("반포역", "논현역", "학동역", "강남구청", "청담역");
+    }
+
+    @Test
+    @DisplayName("다른 노선 위에 있는 두 역의 최단 경로를 구할 수 있다.")
+    void shortestPathOnDifferent() {
+        assertThat(lineService.findShortestPath("논현역", "서울숲").getShortestPath())
+                .extracting(Station::getName)
+                .containsExactly("논현역", "학동역", "강남구청", "압구정로데오", "서울숲");
     }
 }

@@ -4,6 +4,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
+import subway.application.dto.ShortestPathResponse;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -64,17 +65,17 @@ public class LineService {
         lineDao.deleteById(id);
     }
 
-    public double findShortestDistance(String startingStationName, String destinationStationName) {
+    public ShortestPathResponse findShortestPath(String startingStationName, String destinationStationName) {
         final var startingStation = stationDao.findByName(startingStationName);
         final var destinationStation = stationDao.findByName(destinationStationName);
-        return findShortestDistance(startingStation, destinationStation);
+        return findShortestPath(startingStation, destinationStation);
     }
 
-    public double findShortestDistance(Station startingStation, Station destinationStation) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = makeGraph();
-
-        final var shortestPath = new DijkstraShortestPath<>(graph);
-        return shortestPath.getPath(startingStation, destinationStation).getWeight();
+    private ShortestPathResponse findShortestPath(Station startingStation, Station destinationStation) {
+        final var graph = makeGraph();
+        final var shortestPath = new DijkstraShortestPath<>(graph)
+                .getPath(startingStation, destinationStation);
+        return new ShortestPathResponse(startingStation, destinationStation, shortestPath.getVertexList(), shortestPath.getWeight());
     }
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph() {

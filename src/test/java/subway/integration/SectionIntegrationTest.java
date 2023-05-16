@@ -107,8 +107,8 @@ public class SectionIntegrationTest extends IntegrationTest {
         saveStation("강남역");
         saveStation("양재역");
         saveStation("서울시민의 숲");
-        saveSection("강남역", "양재역", 4, lineIdSBD + "/section", true);
-        saveSection("양재역", "서울시민의 숲", 4, lineIdSBD + "/section", true);
+        saveSection("강남역", "양재역", 4, lineIdSBD, true);
+        saveSection("양재역", "서울시민의 숲", 4, lineIdSBD, true);
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -127,7 +127,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         assertThat(sectionResponse.getDistance()).isEqualTo(8);
         assertThat(sectionResponse.getShortestStationPath())
                 .extracting(StationResponse::getName)
-                .containsExactly("강남역", "양재역", "서울시민의숲");
+                .containsExactly("강남역", "양재역", "서울시민의 숲");
     }
 
     @Test
@@ -145,13 +145,13 @@ public class SectionIntegrationTest extends IntegrationTest {
         saveStation("압구정로데오");
         saveStation("서울숲");
 
-        saveSection("반포역", "논현역", 3, line7Id + "/section", true);
-        saveSection("논현역", "학동역", 4, line7Id + "/section", true);
-        saveSection("학동역", "강남구청", 3, line7Id + "/section", true);
-        saveSection("강남구청", "청담역", 4, line7Id + "/section", true);
+        saveSection("반포역", "논현역", 3, line7Id, true);
+        saveSection("논현역", "학동역", 4, line7Id, true);
+        saveSection("학동역", "강남구청", 3, line7Id, true);
+        saveSection("강남구청", "청담역", 4, line7Id, true);
 
-        saveSection("강남구청", "압구정로데오", 4, lineBDId + "/section", true);
-        saveSection("압구정로데오", "서울숲", 5, lineBDId + "/section", true);
+        saveSection("강남구청", "압구정로데오", 4, lineBDId, true);
+        saveSection("압구정로데오", "서울숲", 5, lineBDId, true);
 
         // when
         ExtractableResponse<Response> response = RestAssured
@@ -165,12 +165,12 @@ public class SectionIntegrationTest extends IntegrationTest {
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         final var sectionResponse = response.as(SectionResponse.class);
-        assertThat(sectionResponse.getStartingStation().getName()).isEqualTo("강남역");
-        assertThat(sectionResponse.getDestinationStation().getName()).isEqualTo("서울시민의 숲");
+        assertThat(sectionResponse.getStartingStation().getName()).isEqualTo("논현역");
+        assertThat(sectionResponse.getDestinationStation().getName()).isEqualTo("서울숲");
         assertThat(sectionResponse.getDistance()).isEqualTo(16);
         assertThat(sectionResponse.getShortestStationPath())
                 .extracting(StationResponse::getName)
-                .containsExactly("학동역", "강남구청", "압구정로데오");
+                .containsExactly("논현역", "학동역", "강남구청", "압구정로데오", "서울숲");
     }
 
     private static String saveLine(String name, String color) {
