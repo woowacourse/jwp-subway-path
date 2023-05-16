@@ -1,7 +1,10 @@
 package subway.domain;
 
 
+import org.springframework.stereotype.Component;
+
 //TODO: 상수명 및 클래스 명 변경
+@Component
 public class DefaultFeePolicy implements FeePolicy {
 
     private static final int MAXIMUM_DISTANCE_TO_DEFAULT_FEE = 10;
