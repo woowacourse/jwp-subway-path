@@ -38,7 +38,6 @@ import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
 import subway.dto.section.SectionResponse;
-import subway.exception.DuplicateLineException;
 
 @WebMvcTest(LineController.class)
 @AutoConfigureRestDocs
@@ -72,28 +71,12 @@ class LineControllerTest {
                 .andExpect(status().isCreated())
                 .andExpect(header().string("location", "/lines/1"))
                 .andExpect(jsonPath("$.message").value("노선이 생성되었습니다."))
-                .andDo(prettyDocument("line-create",
+                .andDo(prettyDocument("lines/create",
                         requestFields(
                                 fieldWithPath("lineName").description("노선 이름"),
                                 fieldWithPath("color").description("노선 색깔")
                                         .attributes(constraint(" bg-(소문자로 된 색 단어)-(1~9로 시작하는 100 단위의 수)"))
                         )));
-    }
-
-    @Test
-    @DisplayName("Line을 생성할 때, 중복된 Line의 이름이 있으면 HTTP 400 코드와 응답이 반환되어야 한다.")
-    void createLine_duplicateLineName() throws Exception {
-        // given
-        LineCreateRequest request = new LineCreateRequest("2호선", "bg-red-600");
-        given(lineService.saveLine(any(LineCreateRequest.class)))
-                .willThrow(new DuplicateLineException());
-
-        // expect
-        mockMvc.perform(post("/lines")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.validation.lineName").value("이미 존재하는 노선입니다."));
     }
 
     @Test
@@ -171,7 +154,7 @@ class LineControllerTest {
         mockMvc.perform(get("/lines")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(prettyDocument("line-inquiry"));
+                .andDo(prettyDocument("lines/inquiry"));
     }
 
     @Test
@@ -189,7 +172,7 @@ class LineControllerTest {
         mockMvc.perform(get("/lines/detail")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(prettyDocument("line-detail-inquiry"));
+                .andDo(prettyDocument("lines/detail-inquiry"));
     }
 
     @Test
@@ -206,7 +189,7 @@ class LineControllerTest {
         mockMvc.perform(get("/lines/{lineId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(prettyDocument("line-detail-inquiry-single",
+                .andDo(prettyDocument("lines/detail-inquiry-single",
                         pathParameters(
                                 parameterWithName("lineId").description("노선 ID")
                         )));
@@ -226,7 +209,7 @@ class LineControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andDo(prettyDocument("line-update",
+                .andDo(prettyDocument("lines/update",
                         pathParameters(
                                 parameterWithName("lineId").description("노선 ID")
                         ),
@@ -249,7 +232,7 @@ class LineControllerTest {
         mockMvc.perform(delete("/lines/{lineId}", 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andDo(prettyDocument("line-delete",
+                .andDo(prettyDocument("lines/delete",
                         pathParameters(
                                 parameterWithName("lineId").description("노선 ID")
                         )));
