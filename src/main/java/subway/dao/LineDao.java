@@ -43,7 +43,7 @@ public class LineDao {
     }
 
     public List<Line> findAll() {
-        String sql = "select id, name, color from LINE";
+        String sql = "select * from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
@@ -61,8 +61,13 @@ public class LineDao {
         jdbcTemplate.update("delete from Line where id = ?", id);
     }
 
-    public Line findByProperties(String name, String color) {
-        String sql = "select * from LINE WHERE name = ?, color = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, name, color);
+    public boolean checkExistenceByNameAndColor(String name, String color) {
+        String sql = "select exists(select * from LINE WHERE name = ? AND color = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, boolean.class, name, color));
+    }
+
+    public boolean checkExistenceById(Long id) {
+        String sql = "select exists(select * from LINE WHERE id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, boolean.class, id));
     }
 }

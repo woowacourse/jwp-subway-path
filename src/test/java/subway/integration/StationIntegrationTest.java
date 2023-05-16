@@ -161,7 +161,7 @@ public class StationIntegrationTest extends IntegrationTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(otherParams)
             .when()
-            .put(uri)
+            .patch(uri)
             .then().log().all()
             .extract();
 

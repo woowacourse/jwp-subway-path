@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import subway.exception.DomainException;
@@ -31,32 +32,38 @@ public class Sections {
     }
 
     private LinkedList<Section> getOrderedSections(List<Section> unorderedSections) {
-        Map<Long, Section> sourceStations = new HashMap<>();
-        Map<Long, Section> targetStations = new HashMap<>();
+        Map<Long, Section> sourceIdsToSections = new HashMap<>();
+        Map<Long, Section> targetIdsToSections = new HashMap<>();
 
         for (Section section : unorderedSections) {
-            sourceStations.put(section.getSourceStationId(), section);
-            targetStations.put(section.getTargetStationId(), section);
+            sourceIdsToSections.put(section.getSourceStationId(), section);
+            targetIdsToSections.put(section.getTargetStationId(), section);
         }
 
-        Section source = findSource(sourceStations, targetStations);
-
-        return lineUpSections(unorderedSections, sourceStations, source);
+        Long upLineLastStopId = getUpLineLastStopId(sourceIdsToSections, targetIdsToSections);
+        return lineUpSections(unorderedSections, sourceIdsToSections, upLineLastStopId);
     }
 
-    private Section findSource(Map<Long, Section> sourceStations, Map<Long, Section> targetStations) {
-        HashSet<Section> sections = new HashSet<>(sourceStations.values());
-        sections.removeAll(new HashSet<>(targetStations.values()));
-        return sections.stream().findFirst().orElseThrow(() -> new DomainException(ExceptionType.NO_SOURCE));
+    private Long getUpLineLastStopId(Map<Long, Section> sourceIdsToSections, Map<Long, Section> targetIdsToSections) {
+        Set<Long> sourceIds = new HashSet<>(sourceIdsToSections.keySet());
+        Set<Long> targetIds = new HashSet<>(targetIdsToSections.keySet());
+
+        sourceIds.removeAll(targetIds);
+
+        return sourceIds.stream()
+            .findFirst()
+            .orElseThrow(() -> new DomainException(ExceptionType.NO_SOURCE));
     }
 
-    private LinkedList<Section> lineUpSections(List<Section> unorderedSections, Map<Long, Section> sourceStations,
-        Section source) {
+    private LinkedList<Section> lineUpSections(List<Section> unorderedSections, Map<Long, Section> sourceIdsToSections,
+        Long upLineLastStopId) {
         LinkedList<Section> linedUpSections = new LinkedList<>();
 
+        Section persistSection = sourceIdsToSections.get(upLineLastStopId);
+
         while (linedUpSections.size() != unorderedSections.size()) {
-            linedUpSections.add(source);
-            source = sourceStations.get(source.getTargetStationId());
+            linedUpSections.add(persistSection);
+            persistSection = sourceIdsToSections.get(persistSection.getTargetStationId());
         }
 
         return linedUpSections;

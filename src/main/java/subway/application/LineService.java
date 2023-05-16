@@ -40,7 +40,7 @@ public class LineService {
         String name = request.getName();
         String color = request.getColor();
 
-        if (lineDao.findByProperties(name, color) != null) {
+        if (lineDao.checkExistenceByNameAndColor(name, color)) {
             throw new DomainException(ExceptionType.LINE_ALREADY_EXIST);
         }
 
@@ -98,7 +98,7 @@ public class LineService {
 
     @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        if (lineDao.findById(id) == null) {
+        if (!lineDao.checkExistenceById(id)) {
             throw new DomainException(ExceptionType.LINE_DOES_NOT_EXIST);
         }
         lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
@@ -106,7 +106,7 @@ public class LineService {
 
     @Transactional
     public void deleteLineById(Long id) {
-        if (lineDao.findById(id) == null) {
+        if (!lineDao.checkExistenceById(id)) {
             throw new DomainException(ExceptionType.LINE_DOES_NOT_EXIST);
         }
         lineDao.deleteById(id);

@@ -25,7 +25,7 @@ public class StationService {
     @Transactional
     public StationResponse saveStation(StationRequest stationRequest) {
         String name = stationRequest.getName();
-        if (stationDao.findByName(name) != null) {
+        if (stationDao.checkExistenceByName(name)) {
             throw new DomainException(ExceptionType.STATION_ALREADY_EXIST);
         }
         Station station = stationDao.insert(new Station(name));
@@ -46,7 +46,7 @@ public class StationService {
 
     @Transactional
     public void updateStation(Long id, StationRequest stationRequest) {
-        if (stationDao.findById(id) == null) {
+        if (!stationDao.checkExistenceById(id)) {
             throw new DomainException(ExceptionType.STATION_DOES_NOT_EXIST);
         }
         stationDao.update(new Station(id, stationRequest.getName()));
@@ -54,7 +54,7 @@ public class StationService {
 
     @Transactional
     public void deleteStationById(Long id) {
-        if (stationDao.findById(id) == null) {
+        if (!stationDao.checkExistenceById(id)) {
             throw new DomainException(ExceptionType.STATION_DOES_NOT_EXIST);
         }
         stationDao.deleteById(id);

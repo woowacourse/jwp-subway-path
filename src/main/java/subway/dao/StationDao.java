@@ -57,8 +57,13 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Station findByName(String name) {
-        String sql = "select * from LINE WHERE name = ?";
-        return jdbcTemplate.queryForObject(sql, rowMapper, name);
+    public boolean checkExistenceByName(String name) {
+        String sql = "select exists(select * from STATION WHERE name = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, boolean.class, name));
+    }
+
+    public boolean checkExistenceById(Long id) {
+        String sql = "select exists(select * from STATION WHERE id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, boolean.class, id));
     }
 }

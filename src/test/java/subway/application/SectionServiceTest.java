@@ -28,24 +28,16 @@ class SectionServiceTest {
     @InjectMocks
     private SectionService sectionService;
     @Mock
-    private LineDao lineDao;
-    @Mock
-    private StationDao stationDao;
-    @Mock
     private SectionDao sectionDao;
 
     @Test
     @DisplayName("구간이 등록되지 않은 라인에 구간을 추가한다.")
     void addInitialSectionTest() {
-        Long station1Id = 1L;
-        Long station2Id = 2L;
-        Long lineId = 1L;
         when(sectionDao.findAllSectionByLineId(1L)).thenReturn(new ArrayList<>());
-        when(sectionDao.insert(new Section(null, station1Id, station2Id, lineId, 2))).thenReturn(1L);
 
         SectionAddResponse result = sectionService.addSection(new InitialSectionAddRequest(1L, 1L, 2L, 2));
 
-        assertThat(result.getId()).isEqualTo(1L);
+        verify(sectionDao, times(1)).insert(any(Section.class));
     }
 
     @Test
@@ -78,14 +70,30 @@ class SectionServiceTest {
     }
 
     @Test
-    @DisplayName("구간이 등록된 라인에 구간을 추가한다. - 종점 다음에 역을 넣는다.")
-    void addSectionTest() {
+    @DisplayName("구간이 등록된 라인에 구간을 추가한다. - 상행선 종점 앞에 역을 넣는다.")
+    void addSectionUpLineLastStopTest() {
         Long station1Id = 1L;
         Long station2Id = 2L;
         Long newStationId = 3L;
         Long lineId = 1L;
         Section section = new Section(1L, station1Id, station2Id, lineId, 10);
-        SectionAddRequest sectionAddRequest = new SectionAddRequest(lineId, newStationId, station1Id, null, 3);
+        SectionAddRequest sectionAddRequest = new SectionAddRequest(lineId, newStationId, null, station1Id, 3);
+        when(sectionDao.findAllSectionByLineId(lineId)).thenReturn(List.of(section));
+
+        List<SectionAddResponse> result = sectionService.addSection(sectionAddRequest);
+
+        assertThat(result).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("구간이 등록된 라인에 구간을 추가한다. - 하행선 종점 뒤에 역을 넣는다.")
+    void addSectionDownLineLastStopTest() {
+        Long station1Id = 1L;
+        Long station2Id = 2L;
+        Long newStationId = 3L;
+        Long lineId = 1L;
+        Section section = new Section(1L, station1Id, station2Id, lineId, 10);
+        SectionAddRequest sectionAddRequest = new SectionAddRequest(lineId, newStationId, station2Id, null, 3);
         when(sectionDao.findAllSectionByLineId(lineId)).thenReturn(List.of(section));
 
         List<SectionAddResponse> result = sectionService.addSection(sectionAddRequest);

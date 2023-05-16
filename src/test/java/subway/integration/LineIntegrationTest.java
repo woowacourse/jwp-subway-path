@@ -19,6 +19,7 @@ import io.restassured.response.Response;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineStationsResponse;
+import subway.dto.StationResponse;
 
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
@@ -103,16 +104,21 @@ public class LineIntegrationTest extends IntegrationTest {
                 .get()
                 .getLineStations()).hasSize(0),
 
-            () -> assertThat(result.stream()
-                .filter(lineStationsResponse -> lineStationsResponse.getLine().getId() == 2L)
-                .findFirst()
-                .get()
-                .getLineStations())
-                .containsExactly(
-                    new Station(1L, "신도림"),
-                    new Station(2L, "영등포구청"),
-                    new Station(3L, "신대방")
-                ));
+            () -> {
+                List<StationResponse> lineStations = result.stream()
+                    .filter(lineStationsResponse -> lineStationsResponse.getLine().getId() == 2L)
+                    .findFirst()
+                    .get()
+                    .getLineStations();
+                assertAll(
+                    () -> assertThat(lineStations.get(0).getId()).isEqualTo(1L),
+                    () -> assertThat(lineStations.get(0).getName()).isEqualTo("신도림"),
+                    () -> assertThat(lineStations.get(1).getId()).isEqualTo(2L),
+                    () -> assertThat(lineStations.get(1).getName()).isEqualTo("영등포구청"),
+                    () -> assertThat(lineStations.get(2).getId()).isEqualTo(3L),
+                    () -> assertThat(lineStations.get(2).getName()).isEqualTo("신대방")
+                    );
+            });
     }
 
     @Sql("/InitializeTable.sql")
@@ -132,11 +138,17 @@ public class LineIntegrationTest extends IntegrationTest {
 
         assertAll(
             () -> assertThat(resultResponse.getLine().getId()).isEqualTo(2L),
-            () -> assertThat(resultResponse.getLineStations()).containsExactly(
-                new Station(1L, "신도림"),
-                new Station(2L, "영등포구청"),
-                new Station(3L, "신대방")
-            ));
+            () -> {
+                List<StationResponse> lineStations = resultResponse.getLineStations();
+                assertAll(
+                    () -> assertThat(lineStations.get(0).getId()).isEqualTo(1L),
+                    () -> assertThat(lineStations.get(0).getName()).isEqualTo("신도림"),
+                    () -> assertThat(lineStations.get(1).getId()).isEqualTo(2L),
+                    () -> assertThat(lineStations.get(1).getName()).isEqualTo("영등포구청"),
+                    () -> assertThat(lineStations.get(2).getId()).isEqualTo(3L),
+                    () -> assertThat(lineStations.get(2).getName()).isEqualTo("신대방")
+                );
+            });
     }
 
     @DisplayName("지하철 노선을 수정한다.")
@@ -157,7 +169,7 @@ public class LineIntegrationTest extends IntegrationTest {
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(lineRequest2)
-            .when().put("/lines/{lineId}", lineId)
+            .when().patch("/lines/{lineId}", lineId)
             .then().log().all()
             .extract();
 
