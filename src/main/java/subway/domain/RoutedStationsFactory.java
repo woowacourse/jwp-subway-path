@@ -7,15 +7,16 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
 public class RoutedStationsFactory {
 
-    public static SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> create(List<Section> sections) {
+    private RoutedStationsFactory() {
+    }
+
+    public static RoutedStations create(List<Section> sections) {
         validate(sections);
 
-        SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations = new SimpleDirectedWeightedGraph<>(
-                DefaultWeightedEdge.class);
+        RoutedStations stations = new RoutedStations(DefaultWeightedEdge.class);
         addVertex(sections, stations);
         addEdge(sections, stations);
 
@@ -63,7 +64,7 @@ public class RoutedStationsFactory {
     }
 
     private static void addVertex(final List<Section> sections,
-                                  final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
+                                  final RoutedStations stations) {
         for (Station station : getAllStations(sections)) {
             stations.addVertex(station);
         }
@@ -77,7 +78,7 @@ public class RoutedStationsFactory {
     }
 
     private static void addEdge(final List<Section> sections,
-                                final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
+                                final RoutedStations stations) {
         for (Section section : sections) {
             stations.setEdgeWeight(
                     stations.addEdge(section.getLeft(), section.getRight()), section.getDistance().getValue());

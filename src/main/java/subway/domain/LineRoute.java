@@ -11,14 +11,13 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
 public class LineRoute {
 
-    private final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations;
+    private final RoutedStations routedStations;
 
-    private LineRoute(final SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> stations) {
-        this.stations = stations;
+    private LineRoute(final RoutedStations routedStations) {
+        this.routedStations = routedStations;
     }
 
     public static LineRoute of(final List<Section> sections) {
@@ -46,11 +45,11 @@ public class LineRoute {
             throw new IllegalArgumentException("기준 역과 등록할 역은 동일할 수 없습니다.");
         }
         if (isStationsEmpty()) {
-            stations.addVertex(base);
+            routedStations.addVertex(base);
         }
         validateExisting(base);
         validateNonExisting(adding);
-        stations.addVertex(adding);
+        routedStations.addVertex(adding);
     }
 
     private void validateNonExisting(final Station station) {
@@ -66,7 +65,7 @@ public class LineRoute {
     }
 
     private boolean hasStation(final Station station) {
-        return stations.containsVertex(station);
+        return routedStations.containsVertex(station);
     }
 
     private Optional<Section> findExistingSectionByDirection(final Station base, final Direction direction) {
@@ -78,9 +77,10 @@ public class LineRoute {
 
     private Optional<Section> findRightSection(Station station) {
         try {
-            DefaultWeightedEdge edge = stations.outgoingEdgesOf(station).iterator().next();
+            DefaultWeightedEdge edge = routedStations.outgoingEdgesOf(station).iterator().next();
             return Optional.of(
-                    new Section(station, stations.getEdgeTarget(edge), new Distance((int) stations.getEdgeWeight(edge)))
+                    new Section(station, routedStations.getEdgeTarget(edge),
+                            new Distance((int) routedStations.getEdgeWeight(edge)))
             );
         } catch (NoSuchElementException exception) {
             return Optional.empty();
@@ -89,9 +89,10 @@ public class LineRoute {
 
     private Optional<Section> findLeftSection(Station station) {
         try {
-            DefaultWeightedEdge edge = stations.incomingEdgesOf(station).iterator().next();
+            DefaultWeightedEdge edge = routedStations.incomingEdgesOf(station).iterator().next();
             return Optional.of(
-                    new Section(stations.getEdgeSource(edge), station, new Distance((int) stations.getEdgeWeight(edge)))
+                    new Section(routedStations.getEdgeSource(edge), station,
+                            new Distance((int) routedStations.getEdgeWeight(edge)))
             );
         } catch (NoSuchElementException exception) {
             return Optional.empty();
@@ -99,7 +100,7 @@ public class LineRoute {
     }
 
     private void updateSimpleAddingEdgeForStations(final Section addingSection) {
-        stations.setEdgeWeight(stations.addEdge(addingSection.getLeft(), addingSection.getRight()),
+        routedStations.setEdgeWeight(routedStations.addEdge(addingSection.getLeft(), addingSection.getRight()),
                 addingSection.getDistance().getValue());
     }
 
@@ -109,19 +110,20 @@ public class LineRoute {
                 .orElseThrow(() -> new IllegalArgumentException(""));
         // TODO Distance 범위 예외 커스텀으로 만든 뒤 여기서 예외 변환, 메시지 적절하게 작성 (기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.)
 
-        stations.removeAllEdges(currentSection.getLeft(), currentSection.getRight());
-        stations.setEdgeWeight(stations.addEdge(addingSection.getLeft(), addingSection.getRight()),
+        routedStations.removeAllEdges(currentSection.getLeft(), currentSection.getRight());
+        routedStations.setEdgeWeight(routedStations.addEdge(addingSection.getLeft(), addingSection.getRight()),
                 addingSection.getDistance().getValue());
-        stations.setEdgeWeight(stations.addEdge(subtractedFromCurrent.getLeft(), subtractedFromCurrent.getRight()),
+        routedStations.setEdgeWeight(
+                routedStations.addEdge(subtractedFromCurrent.getLeft(), subtractedFromCurrent.getRight()),
                 subtractedFromCurrent.getDistance().getValue());
     }
 
     public void delete(final Station station) {
         validateExisting(station);
 
-        Set<Station> allStations = new HashSet<>(stations.vertexSet());
+        Set<Station> allStations = new HashSet<>(routedStations.vertexSet());
         if (allStations.size() == 2) {
-            stations.removeAllVertices(allStations);
+            routedStations.removeAllVertices(allStations);
             return;
         }
 
@@ -135,17 +137,17 @@ public class LineRoute {
             Section merged = leftSection.merge(rightSection)
                     .orElseThrow(() -> new IllegalArgumentException(""));
 
-            stations.setEdgeWeight(stations.addEdge(merged.getLeft(), merged.getRight()),
+            routedStations.setEdgeWeight(routedStations.addEdge(merged.getLeft(), merged.getRight()),
                     merged.getDistance().getValue());
         }
-        stations.removeVertex(station);
+        routedStations.removeVertex(station);
     }
 
     public List<Section> extractSections() {
-        return stations.edgeSet()
+        return routedStations.edgeSet()
                 .stream()
-                .map(edge -> new Section(stations.getEdgeSource(edge), stations.getEdgeTarget(edge),
-                        new Distance((int) stations.getEdgeWeight(edge))))
+                .map(edge -> new Section(routedStations.getEdgeSource(edge), routedStations.getEdgeTarget(edge),
+                        new Distance((int) routedStations.getEdgeWeight(edge))))
                 .collect(Collectors.toList());
     }
 
@@ -157,7 +159,7 @@ public class LineRoute {
 
         Station station = findStart()
                 .orElseThrow(() -> new IllegalArgumentException("하행 종점을 찾을 수 없습니다."));
-        while (!stations.outgoingEdgesOf(station).isEmpty()) {
+        while (!routedStations.outgoingEdgesOf(station).isEmpty()) {
             orderedStations.add(station);
             Section rightSection = findRightSection(station).get();
             station = rightSection.getRight();
@@ -168,13 +170,13 @@ public class LineRoute {
     }
 
     private Optional<Station> findStart() {
-        return stations.vertexSet()
+        return routedStations.vertexSet()
                 .stream()
-                .filter(station -> stations.incomingEdgesOf(station).isEmpty())
+                .filter(station -> routedStations.incomingEdgesOf(station).isEmpty())
                 .findFirst();
     }
 
     private boolean isStationsEmpty() {
-        return stations.edgeSet().isEmpty();
+        return routedStations.edgeSet().isEmpty();
     }
 }
