@@ -4,6 +4,7 @@ import static subway.domain.Direction.DOWN;
 
 import java.util.Objects;
 import java.util.Optional;
+import subway.domain.exception.IllegalSectionArgumentException;
 
 public class Section {
 
@@ -30,7 +31,7 @@ public class Section {
 
     private void validate(final Station left, final Station right) {
         if (Objects.equals(left, right)) {
-            throw new IllegalArgumentException("동일한 역 간 구간을 생성할 수 없습니다.");
+            throw new IllegalSectionArgumentException("동일한 역 간 구간을 생성할 수 없습니다.");
         }
     }
 

@@ -11,6 +11,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import subway.domain.exception.EmptyRoutedStationsSearchResult;
+import subway.domain.exception.EmptySectionOperationException;
+import subway.domain.exception.IllegalDistanceArgumentException;
+import subway.domain.exception.IllegalLineRouteArgumentException;
 
 public class LineRoute {
 
@@ -37,12 +41,12 @@ public class LineRoute {
             updateSimpleAddingEdgeForStations(addingSection);
             return;
         }
-        updateIntersectionEdgesForStations(existingSection.get(), addingSection);
+        updateOverlappingEdgesForStations(existingSection.get(), addingSection);
     }
 
     private void updateVertexForStations(final Station base, final Station adding) {
         if (Objects.equals(base, adding)) {
-            throw new IllegalArgumentException("기준 역과 등록할 역은 동일할 수 없습니다.");
+            throw new IllegalLineRouteArgumentException("기준 역과 등록할 역은 동일할 수 없습니다.");
         }
         if (isStationsEmpty()) {
             routedStations.addVertex(base);
@@ -54,13 +58,13 @@ public class LineRoute {
 
     private void validateNonExisting(final Station station) {
         if (hasStation(station)) {
-            throw new IllegalArgumentException(station.getName() + ": 해당 역이 노선에 이미 존재합니다.");
+            throw new IllegalLineRouteArgumentException(station.getName() + ": 해당 역이 노선에 이미 존재합니다.");
         }
     }
 
     private void validateExisting(final Station station) {
         if (!hasStation(station)) {
-            throw new IllegalArgumentException(station.getName() + ": 해당 역이 노선에 존재하지 않습니다.");
+            throw new IllegalLineRouteArgumentException(station.getName() + ": 해당 역이 노선에 존재하지 않습니다.");
         }
     }
 
@@ -104,11 +108,8 @@ public class LineRoute {
                 addingSection.getDistance().getValue());
     }
 
-    private void updateIntersectionEdgesForStations(final Section currentSection, final Section addingSection) {
-        // TODO 예외 메시지 작성
-        Section subtractedFromCurrent = currentSection.subtract(addingSection)
-                .orElseThrow(() -> new IllegalArgumentException(""));
-        // TODO Distance 범위 예외 커스텀으로 만든 뒤 여기서 예외 변환, 메시지 적절하게 작성 (기존 역 사이 길이보다 크거나 같은 길이의 구간을 등록할 수 없습니다.)
+    private void updateOverlappingEdgesForStations(final Section currentSection, final Section addingSection) {
+        Section subtractedFromCurrent = subtractAddingFromCurrent(currentSection, addingSection);
 
         routedStations.removeAllEdges(currentSection.getLeft(), currentSection.getRight());
         routedStations.setEdgeWeight(routedStations.addEdge(addingSection.getLeft(), addingSection.getRight()),
@@ -116,6 +117,15 @@ public class LineRoute {
         routedStations.setEdgeWeight(
                 routedStations.addEdge(subtractedFromCurrent.getLeft(), subtractedFromCurrent.getRight()),
                 subtractedFromCurrent.getDistance().getValue());
+    }
+
+    private Section subtractAddingFromCurrent(final Section currentSection, final Section addingSection) {
+        try {
+            return currentSection.subtract(addingSection)
+                    .orElseThrow(() -> new EmptySectionOperationException("겹치는 영역이 없는 구간의 뺀 값을 구할 수 없습니다."));
+        } catch (IllegalDistanceArgumentException exception) {
+            throw new IllegalDistanceArgumentException("기존 역 간 거리보다 큰 거리에 위치하는 새 역을 등록할 수 없습니다.");
+        }
     }
 
     public void delete(final Station station) {
@@ -133,9 +143,8 @@ public class LineRoute {
         if (leftFound.isPresent() && rightFound.isPresent()) {
             Section leftSection = leftFound.get();
             Section rightSection = rightFound.get();
-            // TODO 예외 메시지 작성
             Section merged = leftSection.merge(rightSection)
-                    .orElseThrow(() -> new IllegalArgumentException(""));
+                    .orElseThrow(() -> new EmptySectionOperationException("교차점이 없는 두 구간의 합친 값을 구할 수 없습니다."));
 
             routedStations.setEdgeWeight(routedStations.addEdge(merged.getLeft(), merged.getRight()),
                     merged.getDistance().getValue());
@@ -157,8 +166,7 @@ public class LineRoute {
             return orderedStations;
         }
 
-        Station station = findStart()
-                .orElseThrow(() -> new IllegalArgumentException("하행 종점을 찾을 수 없습니다."));
+        Station station = findStart().orElseThrow(() -> new EmptyRoutedStationsSearchResult("하행 종점을 찾을 수 없습니다."));
         while (!routedStations.outgoingEdgesOf(station).isEmpty()) {
             orderedStations.add(station);
             Section rightSection = findRightSection(station).get();

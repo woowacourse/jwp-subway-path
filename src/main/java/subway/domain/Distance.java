@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.domain.exception.IllegalDistanceArgumentException;
 
 public class Distance {
 
@@ -13,7 +14,7 @@ public class Distance {
 
     private void validate(final int value) {
         if (value <= 0) {
-            throw new IllegalArgumentException("거리는 양의 정수여야 합니다.");
+            throw new IllegalDistanceArgumentException("거리는 양의 정수여야 합니다.");
         }
     }
 

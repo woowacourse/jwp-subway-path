@@ -10,6 +10,7 @@ import subway.domain.Distance;
 import subway.domain.LineRoute;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.exception.RequestDataNotFoundException;
 import subway.dto.SectionRequest;
 
 @Service
@@ -29,11 +30,10 @@ public class SectionService {
         Long lineId = sectionRequest.getLineId();
         List<Section> sections = sectionDao.findByLineId(lineId);
 
-        // TODO 커스텀 예외 적용
         Station baseStation = stationDao.findById(sectionRequest.baseStationId())
-                .orElseThrow(() -> new IllegalArgumentException("기준 역: " + EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
+                .orElseThrow(() -> new RequestDataNotFoundException("기준 역: " + EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
         Station nextStation = stationDao.findById(sectionRequest.nextStationId())
-                .orElseThrow(() -> new IllegalArgumentException("다음 역: " + EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
+                .orElseThrow(() -> new RequestDataNotFoundException("다음 역: " + EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
 
         Distance addingDistance = new Distance(sectionRequest.getSectionStations().getDistance());
         Direction direction = sectionRequest.getSectionDirection().getDirection();
@@ -50,7 +50,7 @@ public class SectionService {
         List<Section> sections = sectionDao.findByLineId(lineId);
 
         Station station = stationDao.findById(stationId)
-                .orElseThrow(() -> new IllegalArgumentException(EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
+                .orElseThrow(() -> new RequestDataNotFoundException(EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
 
         LineRoute lineRoute = LineRoute.of(sections);
         lineRoute.delete(station);

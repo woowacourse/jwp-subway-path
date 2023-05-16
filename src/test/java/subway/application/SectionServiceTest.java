@@ -22,6 +22,7 @@ import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;
 import subway.domain.Section;
+import subway.domain.exception.RequestDataNotFoundException;
 import subway.dto.SectionDirection;
 import subway.dto.SectionRequest;
 import subway.dto.SectionStations;
@@ -68,7 +69,7 @@ class SectionServiceTest {
 
         assertThatThrownBy(() -> sectionService.addStations(
                 new SectionRequest(1L, new SectionStations(1L, 3L, 6), new SectionDirection("down"))))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(RequestDataNotFoundException.class)
                 .hasMessageContaining("기준 역: 해당 Id를 가진 역 정보가 존재하지 않습니다.");
     }
 
@@ -80,7 +81,7 @@ class SectionServiceTest {
 
         assertThatThrownBy(() -> sectionService.addStations(
                 new SectionRequest(1L, new SectionStations(1L, 3L, 6), new SectionDirection("down"))))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(RequestDataNotFoundException.class)
                 .hasMessageContaining("다음 역: 해당 Id를 가진 역 정보가 존재하지 않습니다.");
     }
 
@@ -105,7 +106,7 @@ class SectionServiceTest {
         when(stationDao.findById(3L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> sectionService.deleteStation(1L, 3L))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(RequestDataNotFoundException.class)
                 .hasMessageContaining("해당 Id를 가진 역 정보가 존재하지 않습니다.");
     }
 }

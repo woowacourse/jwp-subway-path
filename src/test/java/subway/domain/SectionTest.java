@@ -12,6 +12,8 @@ import static subway.domain.StationFixture.FIXTURE_STATION_3;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import subway.domain.exception.IllegalDistanceArgumentException;
+import subway.domain.exception.IllegalSectionArgumentException;
 
 class SectionTest {
 
@@ -19,7 +21,7 @@ class SectionTest {
     @Test
     void createFail() {
         assertThatThrownBy(() -> new Section(FIXTURE_STATION_1, FIXTURE_STATION_1, new Distance(1)))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalSectionArgumentException.class)
                 .hasMessageContaining("동일한 역 간 구간을 생성할 수 없습니다.");
     }
 
@@ -52,7 +54,8 @@ class SectionTest {
 
         assertThatThrownBy(() -> SECTION_START.subtract(
                 new Section(FIXTURE_STATION_1, adding, new Distance(10))))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalDistanceArgumentException.class)
+                .hasMessageContaining("거리는 양의 정수여야 합니다.");
     }
 
     @DisplayName("전달받은 구간과 겹치는 영역이 없으면 빈 값을 반환한다")

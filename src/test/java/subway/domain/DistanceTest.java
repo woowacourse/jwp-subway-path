@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.domain.exception.IllegalDistanceArgumentException;
 
 class DistanceTest {
 
@@ -15,7 +16,7 @@ class DistanceTest {
     @ValueSource(ints = {-1, 0})
     void createFail(int value) {
         assertThatThrownBy(() -> new Distance(value))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(IllegalDistanceArgumentException.class)
                 .hasMessageContaining("거리는 양의 정수여야 합니다.");
     }
 
