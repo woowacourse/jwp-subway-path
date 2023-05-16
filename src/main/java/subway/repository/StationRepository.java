@@ -6,6 +6,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
 import subway.domain.Station;
+import subway.exception.StationNameException;
 import subway.exception.StationNotFoundException;
 
 @Repository
@@ -18,6 +19,11 @@ public class StationRepository {
     }
 
     public Station save(Station station) {
+        stationDao.findByName(station.getName()).ifPresent(
+                stationEntity -> {
+                    throw new StationNameException("해당 이름을 가진 역이 이미 존재합니다.");
+                }
+        );
         StationEntity savedStationEntity = stationDao.insert(new StationEntity(null, station.getName()));
         return Station.from(savedStationEntity);
     }

@@ -12,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.StationDao;
 import subway.domain.Station;
+import subway.exception.StationNameException;
 import subway.exception.StationNotFoundException;
 
 @JdbcTest
@@ -38,6 +39,17 @@ class StationRepositoryTest {
                 () -> assertThat(savedStation.getId()).isNotNull(),
                 () -> assertThat(savedStation.getName()).isEqualTo(station.getName())
         );
+    }
+
+    @Test
+    @DisplayName("동일한 이름을 가진 역이 있으면 예외를 발생한다.")
+    void saveFail() {
+        Station station = new Station(null, "잠실역");
+        stationRepository.save(station);
+
+        assertThatThrownBy(() -> stationRepository.save(station))
+                .isInstanceOf(StationNameException.class)
+                .hasMessageContaining("해당 이름을 가진 역이 이미 존재합니다.");
     }
 
     @Test
