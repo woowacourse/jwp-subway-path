@@ -215,7 +215,7 @@ response
 ```http request
 200 OK
 {
-    "path" : [
+    "stations" : [
         {
             "id" : 1,
             "name" "잠실역"
