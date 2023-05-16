@@ -7,10 +7,10 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.line.dto.LineResponse;
-import subway.station.domain.Station;
-import subway.subwayMap.dto.SubwayMapForLineResponse;
-import subway.subwayMap.dto.SubwayMapResponse;
+import subway.domain.line.dto.LineResponse;
+import subway.domain.station.domain.Station;
+import subway.domain.subwayMap.dto.SubwayMapForLineResponse;
+import subway.domain.subwayMap.dto.SubwayMapResponse;
 
 import java.util.List;
 

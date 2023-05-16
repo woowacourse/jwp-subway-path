@@ -7,7 +7,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
-import subway.line.domain.Line;
+import subway.domain.line.dao.LineDao;
+import subway.domain.line.domain.Line;
 
 import javax.sql.DataSource;
 import java.util.List;

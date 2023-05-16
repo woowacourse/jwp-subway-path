@@ -8,8 +8,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
+import subway.domain.section.service.SectionService;
 import subway.section.dao.StubSectionDao;
-import subway.section.entity.SectionEntity;
+import subway.domain.section.entity.SectionEntity;
 
 import java.util.Optional;
 

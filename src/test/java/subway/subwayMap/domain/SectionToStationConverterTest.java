@@ -2,8 +2,9 @@ package subway.subwayMap.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.section.domain.Section;
-import subway.station.domain.Station;
+import subway.domain.section.domain.Section;
+import subway.domain.station.domain.Station;
+import subway.domain.subwayMap.domain.SectionToStationConverter;
 
 import java.util.List;
 

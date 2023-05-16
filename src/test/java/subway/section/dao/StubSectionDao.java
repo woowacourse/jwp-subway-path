@@ -1,8 +1,9 @@
 package subway.section.dao;
 
-import subway.section.domain.Direction;
-import subway.section.domain.Section;
-import subway.section.entity.SectionEntity;
+import subway.domain.section.dao.SectionDao;
+import subway.domain.section.domain.Direction;
+import subway.domain.section.domain.Section;
+import subway.domain.section.entity.SectionEntity;
 
 import java.util.HashMap;
 import java.util.List;

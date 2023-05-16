@@ -8,9 +8,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.section.dto.SectionCreateRequest;
-import subway.section.dto.SectionDeleteRequest;
-import subway.section.dto.SectionResponse;
+import subway.domain.section.dto.SectionCreateRequest;
+import subway.domain.section.dto.SectionDeleteRequest;
+import subway.domain.section.dto.SectionResponse;
 
 import java.util.List;
 

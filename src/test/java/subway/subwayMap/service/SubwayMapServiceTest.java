@@ -6,9 +6,9 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import subway.line.domain.Line;
-import subway.station.domain.Station;
-import subway.subwayMap.domain.SubwayMap;
+import subway.domain.line.domain.Line;
+import subway.domain.station.domain.Station;
+import subway.domain.subwayMap.domain.SubwayMap;
 
 import java.util.List;
 

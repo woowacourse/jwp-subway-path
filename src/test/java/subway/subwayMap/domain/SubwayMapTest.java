@@ -2,8 +2,9 @@ package subway.subwayMap.domain;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
-import subway.line.domain.Line;
-import subway.station.domain.Station;
+import subway.domain.line.domain.Line;
+import subway.domain.station.domain.Station;
+import subway.domain.subwayMap.domain.SubwayMap;
 
 import java.util.List;
 

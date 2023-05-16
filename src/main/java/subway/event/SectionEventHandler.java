@@ -2,7 +2,7 @@ package subway.event;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import subway.subwayMap.service.SubwayMapService;
+import subway.domain.subwayMap.service.SubwayMapService;
 
 @Component
 public class SectionEventHandler {

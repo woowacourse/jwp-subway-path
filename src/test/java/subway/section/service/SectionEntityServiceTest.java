@@ -9,8 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.context.ApplicationEventPublisher;
-import subway.section.dao.SectionDao;
-import subway.section.entity.SectionEntity;
+import subway.domain.section.dao.SectionDao;
+import subway.domain.section.entity.SectionEntity;
+import subway.domain.section.service.SectionService;
 
 import java.util.List;
 import java.util.Optional;
