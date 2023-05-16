@@ -1,7 +1,5 @@
 package subway.ui;
 
-import static java.util.stream.Collectors.toList;
-
 import java.net.URI;
 import java.util.List;
 import javax.validation.Valid;
@@ -15,29 +13,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineService;
-import subway.application.SectionService;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineDetailResponse;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
-import subway.dto.section.SectionResponse;
 
 @RestController
 @RequestMapping("/lines")
 public class LineController {
 
     private final LineService lineService;
-    private final SectionService sectionService;
 
-    public LineController(LineService lineService, SectionService sectionService) {
+    public LineController(LineService lineService) {
         this.lineService = lineService;
-        this.sectionService = sectionService;
     }
 
     @PostMapping
-    public ResponseEntity<Void> createLine(@RequestBody @Valid LineCreateRequest lineRequest) {
-        long lineId = lineService.saveLine(lineRequest);
-        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
+    public ResponseEntity<LineResponse> createLine(@RequestBody @Valid LineCreateRequest lineRequest) {
+        LineResponse lineResponse = lineService.saveLine(lineRequest);
+        return ResponseEntity.created(URI.create("/lines/" + lineResponse.getLineId())).body(lineResponse);
     }
 
     @GetMapping
@@ -47,25 +41,19 @@ public class LineController {
 
     @GetMapping("/detail")
     public ResponseEntity<List<LineDetailResponse>> findAllDetailLines() {
-        List<LineDetailResponse> lineDetailResponses = lineService.findLineResponses()
-                .stream()
-                .map(line -> new LineDetailResponse(line, sectionService.findSectionsByLineId(line.getLineId())))
-                .collect(toList());
-        return ResponseEntity.ok(lineDetailResponses);
+        return ResponseEntity.ok(lineService.findDetailLineResponses());
     }
 
     @GetMapping("/{lineId}")
     public ResponseEntity<LineDetailResponse> findLineDetailById(@PathVariable Long lineId) {
-        LineResponse lineResponse = lineService.findLineResponseById(lineId);
-        List<SectionResponse> sectionResponses = sectionService.findSectionsByLineId(lineId);
-        return ResponseEntity.ok(new LineDetailResponse(lineResponse, sectionResponses));
+        return ResponseEntity.ok(lineService.findDetailLineResponse(lineId));
     }
 
     @PutMapping("/{lineId}")
-    public ResponseEntity<Void> updateLine(@PathVariable Long lineId,
+    public ResponseEntity<LineResponse> updateLine(@PathVariable Long lineId,
                                            @RequestBody @Valid LineUpdateRequest lineUpdateRequest) {
-        lineService.updateLine(lineId, lineUpdateRequest);
-        return ResponseEntity.ok().build();
+        LineResponse lineResponse = lineService.updateLine(lineId, lineUpdateRequest);
+        return ResponseEntity.ok().body(lineResponse);
     }
 
     @DeleteMapping("/{lineId}")

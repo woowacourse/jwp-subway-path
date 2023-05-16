@@ -20,12 +20,13 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public void saveStation(StationCreateRequest stationCreateRequest) {
+    public StationResponse saveStation(StationCreateRequest stationCreateRequest) {
         Station station = new Station(stationCreateRequest.getStationName());
         if (stationRepository.isDuplicateStation(station)) {
             throw new IllegalStationException("이미 존재하는 역입니다.");
         }
-        stationRepository.save(station);
+        Long savedId = stationRepository.save(station);
+        return StationResponse.from(stationRepository.findById(savedId));
     }
 
     @Transactional(readOnly = true)
@@ -36,8 +37,8 @@ public class StationService {
                 .collect(Collectors.toList());
     }
 
-    public void updateStation(Long id, StationUpdateRequest stationUpdateRequest) {
-        stationRepository.update(new Station(id, stationUpdateRequest.getStationName()));
+    public StationResponse updateStation(Long id, StationUpdateRequest stationUpdateRequest) {
+        return StationResponse.from(stationRepository.update(new Station(id, stationUpdateRequest.getStationName())));
     }
 
     public void deleteStationById(Long id) {

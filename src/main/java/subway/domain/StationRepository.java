@@ -28,8 +28,8 @@ public class StationRepository {
         return stationDao.existsByName(station.getName());
     }
 
-    public void save(Station station) {
-        stationDao.insert(new StationEntity(station.getName()));
+    public Long save(Station station) {
+        return stationDao.insert(new StationEntity(station.getName()));
     }
 
     public List<Station> findAll() {

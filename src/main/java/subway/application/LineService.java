@@ -7,9 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Line;
 import subway.domain.LineRepository;
+import subway.domain.Section;
 import subway.dto.line.LineCreateRequest;
+import subway.dto.line.LineDetailResponse;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
+import subway.dto.section.SectionResponse;
 import subway.exception.IllegalLineException;
 
 @Service
@@ -21,12 +24,13 @@ public class LineService {
         this.lineRepository = lineRepository;
     }
 
-    public long saveLine(LineCreateRequest request) {
+    public LineResponse saveLine(LineCreateRequest request) {
         Line line = new Line(request.getLineName(), request.getColor());
         if (lineRepository.isDuplicateLine(line)) {
             throw new IllegalLineException("해당 노선의 색, 또는 이름이 중복됩니다.");
         }
-        return lineRepository.save(line);
+        long savedId = lineRepository.save(line);
+        return LineResponse.from(lineRepository.findById(savedId));
     }
 
     @Transactional(readOnly = true)
@@ -38,13 +42,34 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
+    public List<LineDetailResponse> findDetailLineResponses() {
+        return lineRepository.findAll()
+                .stream()
+                .map(line -> new LineDetailResponse(LineResponse.from(line), mapToSectionResponses(line.getSections())))
+                .collect(toList());
+    }
+
+    @Transactional(readOnly = true)
+    public LineDetailResponse findDetailLineResponse(Long id) {
+        Line line = lineRepository.findById(id);
+        return new LineDetailResponse(LineResponse.from(line), mapToSectionResponses(line.getSections()));
+    }
+
+    private List<SectionResponse> mapToSectionResponses(List<Section> sections) {
+        return sections.stream()
+                .map(SectionResponse::from)
+                .collect(toList());
+    }
+
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line line = lineRepository.findByIdWithNoSections(id);
         return LineResponse.from(line);
     }
 
-    public Line updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
-        return lineRepository.update(new Line(id, lineUpdateRequest.getLineName(), lineUpdateRequest.getColor()));
+    public LineResponse updateLine(Long id, LineUpdateRequest lineUpdateRequest) {
+        return LineResponse.from(
+                lineRepository.update(new Line(id, lineUpdateRequest.getLineName(), lineUpdateRequest.getColor())));
     }
 
     public void deleteLineById(Long id) {

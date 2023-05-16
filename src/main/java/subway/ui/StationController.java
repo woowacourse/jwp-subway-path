@@ -26,9 +26,9 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
-        stationService.saveStation(stationCreateRequest);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid StationCreateRequest stationCreateRequest) {
+        StationResponse stationResponse = stationService.saveStation(stationCreateRequest);
+        return ResponseEntity.ok().body(stationResponse);
     }
 
     @GetMapping
@@ -37,10 +37,10 @@ public class StationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable Long id,
+    public ResponseEntity<StationResponse> updateStation(@PathVariable Long id,
                                               @RequestBody @Valid StationUpdateRequest stationUpdateRequest) {
-        stationService.updateStation(id, stationUpdateRequest);
-        return ResponseEntity.ok().build();
+        StationResponse stationResponse = stationService.updateStation(id, stationUpdateRequest);
+        return ResponseEntity.ok().body(stationResponse);
     }
 
     @DeleteMapping("/{id}")

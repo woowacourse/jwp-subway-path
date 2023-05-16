@@ -10,7 +10,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import subway.exception.IllegalDistanceException;
+import subway.exception.IllegalLineException;
 import subway.exception.IllegalSectionException;
+import subway.exception.IllegalStationException;
 import subway.exception.LineNotFoundException;
 import subway.exception.StationNotFoundException;
 
@@ -34,13 +36,8 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(validation);
     }
 
-    @ExceptionHandler(IllegalSectionException.class)
-    public ResponseEntity<String> handleIllegalSectionException(IllegalSectionException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
-    }
-
-    @ExceptionHandler(IllegalDistanceException.class)
-    public ResponseEntity<String> handleIllegalDistanceSectionException(IllegalDistanceException e) {
+    @ExceptionHandler({IllegalSectionException.class, IllegalDistanceException.class, IllegalStationException.class, IllegalLineException.class})
+    public ResponseEntity<String> handleIllegalException(RuntimeException e) {
         return ResponseEntity.badRequest().body(e.getMessage());
     }
 

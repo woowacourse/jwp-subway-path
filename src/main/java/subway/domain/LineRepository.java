@@ -29,6 +29,13 @@ public class LineRepository {
         return new Line(id, lineEntity.getName(), lineEntity.getColor(), findSectionsInLine(id));
     }
 
+    public List<Line> findAll() {
+        List<LineEntity> lineEntities = lineDao.findAll();
+        return lineEntities.stream()
+                .map(entity -> findById(entity.getId()))
+                .collect(Collectors.toList());
+    }
+
     private Sections findSectionsInLine(Long lineId) {
         List<SectionDto> foundSections = sectionDao.findAllSectionsByLineId(lineId);
         return new Sections(foundSections.stream()
