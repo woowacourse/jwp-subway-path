@@ -33,7 +33,13 @@ public class SectionDao {
     }
 
     public List<SectionEntity> findByLineId(final Long lineId) {
-        final String sql = "SELECT * FROM section WHERE line_id = ?";
+        final String sql = "SELECT " +
+                "section_id, " +
+                "up_station_id, " +
+                "down_station_id," +
+                " distance, line_id, " +
+                "list_order " +
+                "FROM section WHERE line_id = ?";
 
         return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId);
     }

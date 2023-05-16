@@ -37,12 +37,12 @@ public class StationDao {
     }
 
     public List<Station> findAll() {
-        final String sql = "select * from STATION";
+        final String sql = "select station_id, name from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
     public Optional<Station> findById(final Long id) {
-        final String sql = "select * from STATION where station_id = ?";
+        final String sql = "select station_id, name from STATION where station_id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
         } catch (EmptyResultDataAccessException e) {
