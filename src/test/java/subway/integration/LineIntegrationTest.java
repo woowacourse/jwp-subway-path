@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.presentation.dto.request.LineRequest;
-import subway.presentation.dto.request.SectionRequest;
 import subway.presentation.dto.request.StationDeleteInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 
@@ -37,7 +36,7 @@ public class LineIntegrationTest extends IntegrationTest {
     @DisplayName("지하철 노선을 생성한다.")
     void createLine() {
         // given
-        final LineRequest lineRequest = new LineRequest("1호선", "bg-pink-600", 10, "잠실", "석촌");
+        final LineRequest lineRequest = new LineRequest("11호선", "bg-pink-600", 10, "잠실", "석촌");
 
         // when
         final ExtractableResponse<Response> response = RestAssured
@@ -186,9 +185,9 @@ public class LineIntegrationTest extends IntegrationTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(request)
+                .body(request).log().all()
                 .when().patch("/lines/{id}/unregister", lineId)
-                .then()
+                .then().log().all()
                 .extract();
 
         // then

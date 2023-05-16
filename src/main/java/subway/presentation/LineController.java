@@ -48,7 +48,7 @@ public class LineController {
         return ResponseEntity.ok(lineService.findById(id));
     }
 
-    @PatchMapping("{id}/unregister")
+    @PatchMapping("/{id}/unregister")
     public ResponseEntity<LineDetailResponse> deleteStation(@PathVariable Long id,
             @RequestBody @Valid final StationDeleteInLineRequest request) {
         return ResponseEntity.ok(lineService.deleteStation(id, request));

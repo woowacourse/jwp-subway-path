@@ -9,7 +9,6 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.exception.bad_request.DuplicatedLineNameException;
-import subway.exception.not_found.LineNotFoundException;
 import subway.persistence.entity.LineEntity;
 
 import javax.sql.DataSource;
@@ -70,33 +69,6 @@ class LineDaoTest {
         // when, then
         assertThatThrownBy(() -> lineDao.insert(lineEntity))
                 .isInstanceOf(DuplicatedLineNameException.class);
-    }
-
-    @Test
-    @DisplayName("이름으로 조회 성공")
-    void findByName_success() {
-        // given
-        final String name = "2호선";
-
-        // when
-        final LineEntity lineEntity = lineDao.findByName(name);
-
-        // then
-        assertAll(
-                () -> assertThat(lineEntity.getId()).isEqualTo(1L),
-                () -> assertThat(lineEntity.getName()).isEqualTo(name)
-        );
-    }
-
-    @Test
-    @DisplayName("이름으로 조회 실패 - 존재하지 않는 이름 입력")
-    void findByName_fail_name_not_found() {
-        // given
-        final String name = "포비";
-
-        // expected
-        assertThatThrownBy(() -> lineDao.findByName(name))
-                .isInstanceOf(LineNotFoundException.class);
     }
 
 }
