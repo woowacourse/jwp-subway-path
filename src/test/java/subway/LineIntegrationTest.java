@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.domain.Graph;
+import subway.domain.SubwayGraph;
 import subway.dto.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -19,7 +21,6 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static subway.fixture.StationFixture.EXPRESS_BUS_TERMINAL_STATION;
 import static subway.fixture.StationFixture.SAPYEONG_STATION;
 import static subway.steps.LineSteps.*;
-import static subway.steps.StationSteps.역_생성_요청;
 import static subway.steps.StationSteps.역_생성하고_아이디_반환;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -42,9 +43,9 @@ class LineIntegrationTest {
 
     @AfterEach
     void tearDown() {
-        jdbcTemplate.update("TRUNCATE TABLE station");
-        jdbcTemplate.update("TRUNCATE TABLE line");
-        jdbcTemplate.update("TRUNCATE TABLE section");
+        jdbcTemplate.update("DELETE FROM station");
+        jdbcTemplate.update("DELETE FROM line");
+        jdbcTemplate.update("DELETE FROM section");
     }
 
     @Test
@@ -84,14 +85,14 @@ class LineIntegrationTest {
 
     @Test
     void createInitialSectionTest() {
-        final StationResponse stationResponse1 = 역_생성_요청(EXPRESS_BUS_TERMINAL_REQUEST).as(StationResponse.class);
-        final StationResponse stationResponse2 = 역_생성_요청(SAPYEONG_STATION_REQUEST).as(StationResponse.class);
+        final long station1Id = 역_생성하고_아이디_반환(EXPRESS_BUS_TERMINAL_REQUEST);
+        final long station2Id = 역_생성하고_아이디_반환(SAPYEONG_STATION_REQUEST);
         final long lineId = 노선_생성하고_아이디_반환(LINE_NINE_CREATE_REQUEST);
 
         final ExtractableResponse<Response> response = 노선에_최초의_역_2개_추가_요청(
                 lineId,
                 new InitialSectionCreateRequest(
-                        lineId, stationResponse1.getId(), stationResponse2.getId(), 5
+                        lineId, station1Id, station2Id, 5
                 ));
 
         assertThat(response.statusCode()).isEqualTo(CREATED.value());

@@ -10,23 +10,19 @@ import subway.repository.StationRepository;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
 public class LineServiceImpl implements LineService {
 
-    private final Graph graph;
     private final LineRepository lineRepository;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
 
     public LineServiceImpl(
-            final Graph graph,
             final LineRepository lineRepository,
             final StationRepository stationRepository,
             final SectionRepository sectionRepository) {
-        this.graph = graph;
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
@@ -39,10 +35,12 @@ public class LineServiceImpl implements LineService {
 
         for (final Line line : lines) {
             final List<Section> sectionsOfLine = sectionRepository.findAllSectionOf(line);
-            final Graph newGraph = graph.getInstance();
-            final Set<Station> allStations = findAllStations(sectionsOfLine);
+            final Graph newGraph = new SubwayGraph();
 
-            for (final Station station : allStations) {
+            final List<Long> allStationIds = sectionRepository.findAllStationIdsOf(line);
+
+            for (final Long stationId : allStationIds) {
+                final Station station = stationRepository.findById(stationId);
                 newGraph.addStation(station);
             }
 
@@ -51,30 +49,16 @@ public class LineServiceImpl implements LineService {
                 final Station downStation = section.getDownStation();
                 final int distance = section.getDistance();
 
-                final DefaultWeightedEdge edge = graph.addSection(upStation, downStation);
-                graph.setSectionDistance(edge, distance);
+                final DefaultWeightedEdge edge = newGraph.addSection(upStation, downStation);
+                newGraph.setSectionDistance(edge, distance);
             }
 
-            Sections sections = new Sections(line, graph);
+            Sections sections = new Sections(line, newGraph);
             subwaySections.add(sections);
+            System.out.println("graph = " + newGraph);
         }
 
         return new Subway(subwaySections);
-    }
-
-    private static Set<Station> findAllStations(final List<Section> sectionsOfLine) {
-        final Set<Station> stations1 = sectionsOfLine.stream()
-                .map(Section::getUpStation)
-                .collect(Collectors.toSet());
-
-        final Set<Station> stations2 = sectionsOfLine.stream()
-                .map(Section::getDownStation)
-                .collect(Collectors.toSet());
-
-        stations1.addAll(stations2);
-
-        final Set<Station> allStations = stations1;
-        return allStations;
     }
 
     @Override
@@ -94,14 +78,15 @@ public class LineServiceImpl implements LineService {
         final Subway subway = findSubway();
         // TODO: 이미 존재하는 노선을 추가로 생성하는 경우 예외 처리
         final Line line = lineRepository.save(Line.of(request.getName(), request.getColor()));
-        subway.createSectionsOf(line, graph);
+        subway.createSectionsOf(line, new SubwayGraph());
         return LineResponse.of(line);
     }
 
     @Override
-    public LineResponse createInitialSection(final Long id, final InitialSectionCreateRequest request) {
+    public LineResponse createInitialSection(final Long lineId, final InitialSectionCreateRequest request) {
         final Subway subway = findSubway();
-        final Line line = lineRepository.findById(id);
+
+        final Line line = lineRepository.findById(lineId);
 
         final Station upStation = stationRepository.findById(request.getUpStationId());
         final Station downStation = stationRepository.findById(request.getDownStationId());
@@ -112,10 +97,10 @@ public class LineServiceImpl implements LineService {
 
         final int distance = request.getDistance();
 
-        subway.createNewSection(line, upStation, downStation, distance);
+        final Section section = new Section(lineId, upStation, downStation, distance);
+        final Section savedSection = sectionRepository.save(lineId, section);
 
-        final Section section = new Section(upStation, downStation, distance);
-        sectionRepository.save(line.getId(), section);
+        subway.createNewSection(line, savedSection);
 
         return LineResponse.of(line, mapToStationResponse(line));
     }
@@ -140,11 +125,11 @@ public class LineServiceImpl implements LineService {
         final int updatedDistance = currentDistance - distance; // newStation ~ downStation
 
         // add new sections created
-        sectionRepository.save(line.getId(), new Section(upStation, newStation, distance));
-        sectionRepository.save(line.getId(), new Section(newStation, downStation, updatedDistance));
+        sectionRepository.save(line.getId(), new Section(id, upStation, newStation, distance));
+        sectionRepository.save(line.getId(), new Section(id, newStation, downStation, updatedDistance));
 
         // delete old section
-        sectionRepository.delete(new Section(upStation, downStation, currentDistance));
+        sectionRepository.delete(line.getId(), new Section(id, upStation, downStation, currentDistance));
 
         // query stations in order to create line response
         final List<StationResponse> stationResponse = mapToStationResponse(line);
@@ -164,11 +149,14 @@ public class LineServiceImpl implements LineService {
         final Station previousStation = subway.findStationBefore(line, station);
         final Station nextStation = subway.findStationAfter(line, station);
 
+        final Long previousStationId = sectionRepository.findStationIdBefore(lineId, stationId);
+        final Long nextStationId = sectionRepository.findStationIdAfter(lineId, stationId);
+
         if (previousStation != null) {
-            sectionRepository.deleteSection(lineId, previousStation, stationId);
+            sectionRepository.deleteSection(lineId, previousStationId, stationId);
         }
         if (nextStation != null) {
-            sectionRepository.deleteSection(lineId, stationId, nextStation);
+            sectionRepository.deleteSection(lineId, stationId, nextStationId);
         }
 
         sections.deleteStation(station);
@@ -180,7 +168,8 @@ public class LineServiceImpl implements LineService {
         final List<Station> stationsInOrder = subway.findStationsInOrderOf(line);
 
         return stationsInOrder.stream()
-                .map(stationRepository::findByName)
+                .map(Station::getId)
+                .map(stationRepository::findById)
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
     }

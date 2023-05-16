@@ -1,22 +1,16 @@
 package subway.domain;
 
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 
-@Component
 public class SubwayGraph implements Graph {
 
     private final DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> graph
             = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
 
-    @Override
-    public Graph getInstance() {
-        return new SubwayGraph();
-    }
 
     @Override
     public void createInitialSection(final Section section) {
@@ -124,5 +118,12 @@ public class SubwayGraph implements Graph {
     @Override
     public void removeAllSections(final Set<DefaultWeightedEdge> edges) {
         graph.removeAllEdges(edges);
+    }
+
+    @Override
+    public String toString() {
+        return "SubwayGraph{" +
+                "graph=" + graph +
+                '}';
     }
 }

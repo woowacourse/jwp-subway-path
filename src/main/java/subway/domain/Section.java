@@ -6,14 +6,20 @@ import java.util.Objects;
 
 public class Section extends DefaultWeightedEdge {
 
+    private final Long id;
     private final Station upStation;
     private final Station downStation;
     private final int distance;
 
-    public Section(final Station upStation, final Station downStation, final int distance) {
+    public Section(final Long id, final Station upStation, final Station downStation, final int distance) {
+        this.id = id;
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(final Station upStation, final Station downStation, final int distance) {
+        this(null, upStation, downStation, distance);
     }
 
     public Station getUpStation() {

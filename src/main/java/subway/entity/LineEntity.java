@@ -34,12 +34,12 @@ public class LineEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         final LineEntity that = (LineEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(color, that.color);
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, color);
+        return Objects.hash(id);
     }
 
     @Override

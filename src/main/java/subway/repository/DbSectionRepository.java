@@ -9,6 +9,7 @@ import subway.domain.Section;
 import subway.domain.Station;
 import subway.entity.SectionEntity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,30 +27,25 @@ public class DbSectionRepository implements SectionRepository {
     }
 
     @Override
-    public void save(final Long lineId, final Section section) {
+    public Section save(final Long lineId, final Section section) {
         final SectionEntity sectionEntity = new SectionEntity(
                 lineId,
                 section.getUpStation().getId(),
                 section.getDownStation().getId(),
                 section.getDistance());
-        sectionDao.insert(sectionEntity);
+
+        final Long id = sectionDao.insert(sectionEntity).getId();
+        return new Section(id, section.getUpStation(), section.getDownStation(), section.getDistance());
     }
 
     @Override
-    public void delete(final Section section) {
-
+    public void delete(final Long lineId, final Section section) {
+        sectionDao.delete(lineId, section.getUpStation().getId(), section.getDownStation().getId());
     }
 
     @Override
-    public void deleteSection(final Long lineId, final Station previousStation, final Long deletedStationId) {
-        final Long previousStationId = stationDao.findBy(previousStation.getName()).getId();
-        sectionDao.delete(lineId, previousStationId, deletedStationId);
-    }
-
-    @Override
-    public void deleteSection(final Long lineId, final Long deletedStationId, final Station nextStation) {
-        final Long nextStationId = stationDao.findBy(nextStation.getName()).getId();
-        sectionDao.delete(lineId, deletedStationId, nextStationId);
+    public void deleteSection(final Long lineId, final Long upStationId, final Long downStationId) {
+        sectionDao.delete(lineId, upStationId, downStationId);
     }
 
     @Override
@@ -61,5 +57,20 @@ public class DbSectionRepository implements SectionRepository {
                         Station.from(stationDao.findBy(sectionEntity.getDownStationId())),
                         sectionEntity.getDistance()))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Long findStationIdBefore(final Long lineId, final Long stationId) {
+        return sectionDao.findStationIdBefore(lineId, stationId);
+    }
+
+    @Override
+    public Long findStationIdAfter(final Long lineId, final Long stationId) {
+        return sectionDao.findStationIdAfter(lineId, stationId);
+    }
+
+    @Override
+    public List<Long> findAllStationIdsOf(final Line line) {
+        return new ArrayList<>(sectionDao.findAllStationIdsOf(line.getId()));
     }
 }

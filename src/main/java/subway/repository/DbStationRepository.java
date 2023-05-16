@@ -23,9 +23,4 @@ public class DbStationRepository implements StationRepository {
     public Station findById(final Long id) {
         return Station.from(stationDao.findBy(id));
     }
-
-    @Override
-    public Station findByName(final Station station) {
-        return Station.from(stationDao.findBy(station.getName()));
-    }
 }
