@@ -4,14 +4,20 @@ import java.util.Objects;
 
 public class Section {
 
+    private final Long id;
     private final Station left;
     private final Station right;
     private final Distance distance;
 
-    public Section(Station left, Station right, Distance distance) {
+    public Section(Long id, Station left, Station right, Distance distance) {
+        this.id = id;
         this.left = left;
         this.right = right;
         this.distance = distance;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Station getLeft() {
@@ -35,12 +41,11 @@ public class Section {
             return false;
         }
         Section section = (Section) o;
-        return Objects.equals(getLeft(), section.getLeft()) && Objects.equals(getRight(),
-                section.getRight()) && Objects.equals(getDistance(), section.getDistance());
+        return Objects.equals(getId(), section.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLeft(), getRight(), getDistance());
+        return Objects.hash(getId());
     }
 }

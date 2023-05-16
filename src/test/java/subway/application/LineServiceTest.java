@@ -124,7 +124,8 @@ class LineServiceTest {
     void createSectionFail() {
         Station station1 = new Station(1L, "부산역");
         Station station2 = new Station(2L, "서면역");
-        Sections sections = new Sections(new LinkedList<>(List.of(new Section(station1, station2, new Distance(10)))));
+        Sections sections = new Sections(
+                new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
         given(stationRepository.findByName("잠실역")).willReturn(new Station(3L, "잠실역"));
@@ -140,7 +141,8 @@ class LineServiceTest {
     void createSectionFail2() {
         Station station1 = new Station(1L, "부산역");
         Station station2 = new Station(2L, "서면역");
-        Sections sections = new Sections(new LinkedList<>(List.of(new Section(station1, station2, new Distance(10)))));
+        Sections sections = new Sections(
+                new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
         given(stationRepository.findByName("부산역")).willReturn(new Station(1L, "부산역"));
@@ -157,8 +159,9 @@ class LineServiceTest {
         Station station1 = new Station(1L, "부산역");
         Station station2 = new Station(2L, "서면역");
         Station station3 = new Station(3L, "동래역");
-        Sections sections = new Sections(new LinkedList<>(List.of(new Section(station1, station2, new Distance(10)),
-                new Section(station2, station3, new Distance(5)))));
+        Sections sections = new Sections(
+                new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)),
+                        new Section(null, station2, station3, new Distance(5)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
         given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
@@ -173,8 +176,9 @@ class LineServiceTest {
         Station station1 = new Station(1L, "부산역");
         Station station2 = new Station(2L, "서면역");
         Station station3 = new Station(3L, "동래역");
-        Sections sections = new Sections(new LinkedList<>(List.of(new Section(station1, station2, new Distance(10)),
-                new Section(station2, station3, new Distance(5)))));
+        Sections sections = new Sections(
+                new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)),
+                        new Section(null, station2, station3, new Distance(5)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
         given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
@@ -190,7 +194,8 @@ class LineServiceTest {
     void createSectionEndOfUpLines() {
         Station station1 = new Station(1L, "부산역");
         Station station2 = new Station(2L, "서면역");
-        Sections sections = new Sections(new LinkedList<>(List.of(new Section(station1, station2, new Distance(10)))));
+        Sections sections = new Sections(
+                new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
         given(stationRepository.findByName("부산역")).willReturn(new Station(1L, "부산역"));
@@ -204,7 +209,8 @@ class LineServiceTest {
     void createSectionEndOfDownLine() {
         Station station1 = new Station(1L, "부산역");
         Station station2 = new Station(2L, "서면역");
-        Sections sections = new Sections(new LinkedList<>(List.of(new Section(station1, station2, new Distance(10)))));
+        Sections sections = new Sections(
+                new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
         given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
@@ -218,7 +224,8 @@ class LineServiceTest {
     void deleteSection() {
         Station station1 = new Station(1L, "부산역");
         Station station2 = new Station(2L, "서면역");
-        Sections sections = new Sections(new LinkedList<>(List.of(new Section(station1, station2, new Distance(10)))));
+        Sections sections = new Sections(
+                new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
         given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));
@@ -231,7 +238,8 @@ class LineServiceTest {
     void deleteSectionFail() {
         Station station1 = new Station(1L, "부산역");
         Station station2 = new Station(2L, "서면역");
-        Sections sections = new Sections(new LinkedList<>(List.of(new Section(station1, station2, new Distance(10)))));
+        Sections sections = new Sections(
+                new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
         given(stationRepository.findByName("강남역")).willReturn(new Station(3L, "서면역"));
@@ -247,8 +255,9 @@ class LineServiceTest {
         Station station1 = new Station(1L, "부산역");
         Station station2 = new Station(2L, "서면역");
         Station station3 = new Station(3L, "동래역");
-        Sections sections = new Sections(new LinkedList<>(List.of(new Section(station1, station2, new Distance(10)),
-                new Section(station2, station3, new Distance(5)))));
+        Sections sections = new Sections(
+                new LinkedList<>(List.of(new Section(null, station1, station2, new Distance(10)),
+                        new Section(null, station2, station3, new Distance(5)))));
 
         given(lineRepository.findById(any())).willReturn(new Line(1L, "1호선", sections));
         given(stationRepository.findByName("서면역")).willReturn(new Station(2L, "서면역"));

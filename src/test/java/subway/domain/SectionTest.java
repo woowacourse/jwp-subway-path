@@ -16,7 +16,7 @@ class SectionTest {
         Distance distance = new Distance(5);
 
         // when
-        Section section = new Section(leftStation, rightStation, distance);
+        Section section = new Section(null, leftStation, rightStation, distance);
 
         // then
         assertSoftly(softly -> {

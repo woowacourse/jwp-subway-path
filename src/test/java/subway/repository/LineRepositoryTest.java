@@ -65,7 +65,7 @@ class LineRepositoryTest {
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "강남역"));
         Station station1 = stationRepository.findById(stationEntity1.getId());
         Station station2 = stationRepository.findById(stationEntity2.getId());
-        Section section = new Section(station1, station2, new Distance(5));
+        Section section = new Section(null, station1, station2, new Distance(5));
         LinkedList<Section> sections = new LinkedList<>(List.of(section));
 
         Line line = new Line(null, "1호선", new Sections(sections));
@@ -93,8 +93,8 @@ class LineRepositoryTest {
         Station station1 = stationRepository.findById(stationEntity1.getId());
         Station station2 = stationRepository.findById(stationEntity2.getId());
         Station station3 = stationRepository.findById(stationEntity3.getId());
-        Section section1 = new Section(station1, station2, new Distance(5));
-        Section section2 = new Section(station3, station2, new Distance(10));
+        Section section1 = new Section(null, station1, station2, new Distance(5));
+        Section section2 = new Section(null, station3, station2, new Distance(10));
         LinkedList<Section> sections1 = new LinkedList<>(List.of(section1));
         LinkedList<Section> sections2 = new LinkedList<>(List.of(section2));
         Line line1 = new Line(null, "1호선", new Sections(sections1));
@@ -144,7 +144,7 @@ class LineRepositoryTest {
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "잠실역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "강남역"));
 
-        lineRepository.saveSection(new SectionEntity(savedLine.getId(), stationEntity1.getId(),
+        lineRepository.saveSection(new SectionEntity(null, savedLine.getId(), stationEntity1.getId(),
                 stationEntity2.getId(), 10));
 
         assertThat(lineRepository.findById(savedLine.getId()).getSections()).hasSize(1);
@@ -157,7 +157,7 @@ class LineRepositoryTest {
         Line savedLine = lineRepository.save(line);
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "잠실역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "강남역"));
-        lineRepository.saveSection(new SectionEntity(savedLine.getId(), stationEntity1.getId(),
+        lineRepository.saveSection(new SectionEntity(null, savedLine.getId(), stationEntity1.getId(),
                 stationEntity2.getId(), 10));
 
         lineRepository.deleteSection(stationEntity1.getId(), stationEntity2.getId());

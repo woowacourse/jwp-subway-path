@@ -4,16 +4,22 @@ import java.util.Objects;
 
 public class SectionEntity {
 
+    private final Long id;
     private final Long lineId;
     private final Long leftStationId;
     private final Long rightStationId;
     private final Integer distance;
 
-    public SectionEntity(Long lineId, Long leftStationId, Long rightStationId, Integer distance) {
+    public SectionEntity(Long id, Long lineId, Long leftStationId, Long rightStationId, Integer distance) {
+        this.id = id;
         this.lineId = lineId;
         this.leftStationId = leftStationId;
         this.rightStationId = rightStationId;
         this.distance = distance;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public Long getLineId() {
@@ -41,13 +47,11 @@ public class SectionEntity {
             return false;
         }
         SectionEntity that = (SectionEntity) o;
-        return Objects.equals(getLineId(), that.getLineId()) && Objects.equals(getLeftStationId(),
-                that.getLeftStationId()) && Objects.equals(getRightStationId(), that.getRightStationId())
-                && Objects.equals(getDistance(), that.getDistance());
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLineId(), getLeftStationId(), getRightStationId(), getDistance());
+        return Objects.hash(getId());
     }
 }

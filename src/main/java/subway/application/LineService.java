@@ -102,7 +102,7 @@ public class LineService {
     }
 
     private void insertSection(Long lineId, Station leftStation, Station rightStation, int distance) {
-        SectionEntity sectionEntity = new SectionEntity(lineId, leftStation.getId(), rightStation.getId(),
+        SectionEntity sectionEntity = new SectionEntity(null, lineId, leftStation.getId(), rightStation.getId(),
                 distance);
         lineRepository.saveSection(sectionEntity);
     }
@@ -119,8 +119,8 @@ public class LineService {
 
         lineRepository.deleteSection(originLeft.getId(), originRight.getId());
         lineRepository.saveSection(
-                new SectionEntity(line.getId(), leftStation.getId(), rightStation.getId(), distance));
-        lineRepository.saveSection(new SectionEntity(line.getId(), rightStation.getId(), originRight.getId(),
+                new SectionEntity(null, line.getId(), leftStation.getId(), rightStation.getId(), distance));
+        lineRepository.saveSection(new SectionEntity(null, line.getId(), rightStation.getId(), originRight.getId(),
                 originDistance - distance));
     }
 
@@ -135,10 +135,10 @@ public class LineService {
         }
 
         lineRepository.deleteSection(originLeft.getId(), originRight.getId());
-        lineRepository.saveSection(new SectionEntity(line.getId(), originLeft.getId(), leftStation.getId(),
+        lineRepository.saveSection(new SectionEntity(null, line.getId(), originLeft.getId(), leftStation.getId(),
                 originDistance - distance));
         lineRepository.saveSection(
-                new SectionEntity(line.getId(), leftStation.getId(), rightStation.getId(), distance));
+                new SectionEntity(null, line.getId(), leftStation.getId(), rightStation.getId(), distance));
     }
 
     @Transactional
@@ -183,7 +183,7 @@ public class LineService {
 
         int newDistance = leftSection.getDistance() + rightSection.getDistance();
         lineRepository.saveSection(
-                new SectionEntity(line.getId(), leftSection.getLeft().getId(), rightSection.getRight().getId(),
+                new SectionEntity(null, line.getId(), leftSection.getLeft().getId(), rightSection.getRight().getId(),
                         newDistance));
     }
 

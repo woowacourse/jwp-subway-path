@@ -2,6 +2,7 @@ package subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -36,12 +37,18 @@ class SectionDaoTest {
         LineEntity lineEntity = lineDao.insert(new LineEntity(null, "1호선"));
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "서울대입구역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "신림역"));
-        SectionEntity sectionEntity = new SectionEntity(lineEntity.getId(), stationEntity1.getId(),
+        SectionEntity sectionEntity = new SectionEntity(null, lineEntity.getId(), stationEntity1.getId(),
                 stationEntity2.getId(), 10);
 
         SectionEntity savedSectionEntity = sectionDao.insert(sectionEntity);
 
-        assertThat(savedSectionEntity).isEqualTo(sectionEntity);
+        Assertions.assertAll(
+                () -> assertThat(savedSectionEntity.getId()).isNotNull(),
+                () -> assertThat(savedSectionEntity.getLineId()).isEqualTo(sectionEntity.getLineId()),
+                () -> assertThat(savedSectionEntity.getLeftStationId()).isEqualTo(sectionEntity.getLeftStationId()),
+                () -> assertThat(savedSectionEntity.getRightStationId()).isEqualTo(sectionEntity.getRightStationId()),
+                () -> assertThat(savedSectionEntity.getDistance()).isEqualTo(sectionEntity.getDistance())
+        );
     }
 
     @Test
@@ -51,9 +58,9 @@ class SectionDaoTest {
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "서울대입구역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "신림역"));
         StationEntity stationEntity3 = stationDao.insert(new StationEntity(null, "강남역"));
-        SectionEntity sectionEntity1 = new SectionEntity(lineEntity.getId(), stationEntity1.getId(),
+        SectionEntity sectionEntity1 = new SectionEntity(null, lineEntity.getId(), stationEntity1.getId(),
                 stationEntity2.getId(), 10);
-        SectionEntity sectionEntity2 = new SectionEntity(lineEntity.getId(), stationEntity2.getId(),
+        SectionEntity sectionEntity2 = new SectionEntity(null, lineEntity.getId(), stationEntity2.getId(),
                 stationEntity3.getId(), 7);
 
         SectionEntity savedSectionEntity1 = sectionDao.insert(sectionEntity1);
@@ -69,7 +76,7 @@ class SectionDaoTest {
         LineEntity lineEntity = lineDao.insert(new LineEntity(null, "1호선"));
         StationEntity stationEntity1 = stationDao.insert(new StationEntity(null, "서울대입구역"));
         StationEntity stationEntity2 = stationDao.insert(new StationEntity(null, "신림역"));
-        SectionEntity sectionEntity = new SectionEntity(lineEntity.getId(), stationEntity1.getId(),
+        SectionEntity sectionEntity = new SectionEntity(null, lineEntity.getId(), stationEntity1.getId(),
                 stationEntity2.getId(), 10);
         SectionEntity savedSectionEntity = sectionDao.insert(sectionEntity);
 

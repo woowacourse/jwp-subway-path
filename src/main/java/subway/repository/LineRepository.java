@@ -63,6 +63,7 @@ public class LineRepository {
     private LinkedList<Section> convertToSections(List<SectionEntity> sectionEntities) {
         return sectionEntities.stream()
                 .map(sectionDto -> new Section(
+                        sectionDto.getId(),
                         stationRepository.findById(sectionDto.getLeftStationId()),
                         stationRepository.findById(sectionDto.getRightStationId()),
                         new Distance(sectionDto.getDistance())
