@@ -34,13 +34,10 @@ public class LineH2Dao implements LineDao {
 
     @Override
     public LineEntity insert(final LineEntity line) {
-        final String name = line.getName();
-        final String color = line.getColor();
-
         final SqlParameterSource parameters = new BeanPropertySqlParameterSource(line);
 
         final long id = insertLine.executeAndReturnKey(parameters).longValue();
-        return new LineEntity(id, name, color);
+        return new LineEntity(id, line.getName(), line.getColor());
     }
 
     @Override

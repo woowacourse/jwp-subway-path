@@ -1,19 +1,15 @@
 package subway.domain;
 
-import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
-@Component
 public class Subway {
     private final List<Sections> sections;
 
-    public Subway() {
-        this.sections = new ArrayList<>();
+    public Subway(final List<Sections> sections) {
+        this.sections = sections;
     }
 
     public Map<Line, List<Station>> findAll() {

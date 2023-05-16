@@ -5,6 +5,9 @@ import subway.dao.LineDao;
 import subway.domain.Line;
 import subway.entity.LineEntity;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Repository
 public class DbLineRepository implements LineRepository {
 
@@ -12,6 +15,13 @@ public class DbLineRepository implements LineRepository {
 
     public DbLineRepository(final LineDao lineDao) {
         this.lineDao = lineDao;
+    }
+
+    @Override
+    public List<Line> findAllLines() {
+        return lineDao.findAll().stream()
+                .map(Line::from)
+                .collect(Collectors.toList());
     }
 
     @Override

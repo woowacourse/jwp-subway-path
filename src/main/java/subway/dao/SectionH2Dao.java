@@ -9,7 +9,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
 
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Map;
 
@@ -61,5 +60,12 @@ public class SectionH2Dao implements SectionDao {
                 "upStationId", upStationId,
                 "downStationId", downStationId);
         namedParameterJdbcTemplate.update(sql, parameters);
+    }
+
+    @Override
+    public List<SectionEntity> findBy(final Long lineId) {
+        final String sql = "SELECT * FROM section WHERE line_id = :lineId";
+        final Map<String, Long> parameter = Map.of("lineId", lineId);
+        return namedParameterJdbcTemplate.query(sql, parameter, SECTION_ENTITY_ROW_MAPPER);
     }
 }
