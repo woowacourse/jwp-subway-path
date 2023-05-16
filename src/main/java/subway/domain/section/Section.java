@@ -28,6 +28,10 @@ public class Section {
         return target.equals(newStation);
     }
 
+    public boolean isSameSection(final Section section) {
+        return equalToSource(section.source) && equalToTarget(section.target);
+    }
+
     public Station getSource() {
         return source;
     }

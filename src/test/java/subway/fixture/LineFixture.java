@@ -5,6 +5,7 @@ import static subway.fixture.StationFixture.남위례역_엔티티;
 import static subway.fixture.StationFixture.복정역_엔티티;
 import static subway.fixture.StationFixture.산성역_엔티티;
 import static subway.fixture.StationFixture.선릉역_엔티티;
+import static subway.fixture.StationFixture.신림역_엔티티;
 import static subway.fixture.StationFixture.잠실역_엔티티;
 
 import java.util.List;
@@ -46,6 +47,23 @@ public final class LineFixture {
         final LineWithSectionRes 남위례_산성 = new LineWithSectionRes(팔호선_엔티티.getId(), 팔호선_엔티티.getName(),
             팔호선_엔티티.getColor(), 남위례역_엔티티.getId(), 남위례역_엔티티.getName(), 산성역_엔티티.getId(), 산성역_엔티티.getName(), 10);
         return List.of(선릉_강남, 잠실_선릉, 남위례_산성, 복정_남위례);
+    }
+
+    public static List<LineWithSectionRes> 잠실_신림_이동_가능한_구간들() {
+        final LineWithSectionRes 잠실_선릉 = new LineWithSectionRes(이호선_엔티티.getId(), 이호선_엔티티.getName(),
+            이호선_엔티티.getColor(), 잠실역_엔티티.getId(), 잠실역_엔티티.getName(), 선릉역_엔티티.getId(), 선릉역_엔티티.getName(), 10);
+        final LineWithSectionRes 선릉_강남 = new LineWithSectionRes(이호선_엔티티.getId(), 이호선_엔티티.getName(),
+            이호선_엔티티.getColor(), 선릉역_엔티티.getId(), 선릉역_엔티티.getName(), 강남역_엔티티.getId(), 강남역_엔티티.getName(), 7);
+        final LineWithSectionRes 강남_복정 = new LineWithSectionRes(이호선_엔티티.getId(), 이호선_엔티티.getName(),
+            이호선_엔티티.getColor(), 강남역_엔티티.getId(), 강남역_엔티티.getName(), 복정역_엔티티.getId(), 복정역_엔티티.getName(), 5);
+        final LineWithSectionRes 복정_신림 = new LineWithSectionRes(이호선_엔티티.getId(), 이호선_엔티티.getName(),
+            이호선_엔티티.getColor(), 복정역_엔티티.getId(), 복정역_엔티티.getName(), 신림역_엔티티.getId(), 신림역_엔티티.getName(), 3);
+
+        final LineWithSectionRes 선릉_남위례 = new LineWithSectionRes(팔호선_엔티티.getId(), 팔호선_엔티티.getName(),
+            팔호선_엔티티.getColor(), 선릉역_엔티티.getId(), 선릉역_엔티티.getName(), 남위례역_엔티티.getId(), 남위례역_엔티티.getName(), 8);
+        final LineWithSectionRes 남위례_신림 = new LineWithSectionRes(팔호선_엔티티.getId(), 팔호선_엔티티.getName(),
+            팔호선_엔티티.getColor(), 남위례역_엔티티.getId(), 남위례역_엔티티.getName(), 신림역_엔티티.getId(), 신림역_엔티티.getName(), 2);
+        return List.of(선릉_강남, 잠실_선릉, 강남_복정, 복정_신림, 남위례_신림, 선릉_남위례);
     }
 
     public static List<LineWithSection> 이호선_팔호선_구간() {

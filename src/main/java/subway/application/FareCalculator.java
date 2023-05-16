@@ -5,7 +5,7 @@ import subway.domain.fare.Fare;
 import subway.domain.fare.TotalDistance;
 
 @Component
-public final class FareCalculator {
+public class FareCalculator {
 
     private static final Fare BASIC_FARE = new Fare(1250);
     private static final Fare EXTRA_FARE = new Fare(100);

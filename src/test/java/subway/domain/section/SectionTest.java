@@ -3,6 +3,8 @@ package subway.domain.section;
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.fixture.SectionFixture.잠실_선릉;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import subway.domain.station.Station;
@@ -20,6 +22,19 @@ class SectionTest {
     @CsvSource(value = {"선릉역:true", "잠실역:false"}, delimiter = ':')
     void equalToTarget(final String name, final boolean expected) {
         assertThat(잠실_선릉.equalToTarget(new Station(name)))
+            .isSameAs(expected);
+    }
+
+    @ParameterizedTest(name = "두 구간이 동일한 구간이면 true, 아니면 false를 반환한다.")
+    @CsvSource(value = {"잠실역:선릉역:true", "잠실역:강남역:false", "강남역:선릉역:false"}, delimiter = ':')
+    void isSameSection(final String sourceName, final String targetName, final boolean expected) {
+        // given
+        final Station sourceStation = new Station(sourceName);
+        final Station targetStation = new Station(targetName);
+        final Section section = new Section(sourceStation, targetStation, SectionDistance.zero());
+
+        // expected
+        assertThat(잠실_선릉.isSameSection(section))
             .isSameAs(expected);
     }
 }
