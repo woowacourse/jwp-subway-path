@@ -22,7 +22,7 @@ public class RouteController {
     }
 
     @GetMapping
-    public ResponseEntity<ShortestPathResponse> findShortCutRoute(@RequestBody @Valid final ShortestPathRequest shortestPathRequest) {
+    public ResponseEntity<ShortestPathResponse> findShortestPath(@RequestBody @Valid final ShortestPathRequest shortestPathRequest) {
         return ResponseEntity.ok(subwayMapService.findShortestPath(shortestPathRequest));
     }
 }
