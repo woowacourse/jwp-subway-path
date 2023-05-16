@@ -36,7 +36,8 @@ import subway.path.exception.PathException;
 @DisplayName("JgraphtShortestRoute 은(는)")
 class JgraphtShortestRouteTest {
 
-    private final ShortestRouteService shortestRouteService = new JgraphtShortestRoute(new GraphCache());
+    private final ShortestRouteService shortestRouteService = new JgraphtShortestRoute(
+            new LineDispatcher(), new GraphCache());
 
     private final Path path = new Path(
             new Line("1호선", new Sections(List.of(

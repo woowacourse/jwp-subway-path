@@ -44,15 +44,6 @@ class PathTest {
         assertThat(totalDistance).isEqualTo(33);
     }
 
-    @Test
-    void 비었는지_확인한다() {
-        // given
-        final Path path = new Path();
-
-        // when & then
-        assertThat(path.isEmpty()).isTrue();
-    }
-
     @Nested
     class 주어진_역으로_시작해서_목적지까지_연속적인_노선들을_구할_때 {
 

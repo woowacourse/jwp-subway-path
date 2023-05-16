@@ -35,10 +35,6 @@ public class Path {
         return linkLines(start);
     }
 
-    public boolean isEmpty() {
-        return lines.isEmpty();
-    }
-
     private void validateStartStation(final Station start) {
         if (!isStartStationIsUpTerminal(start) && !isStartStationIsDownTerminal(start)) {
             throw new LineException("경로가 주어진 역으로 시작할 수 없습니다.");
@@ -49,25 +45,26 @@ public class Path {
         return firstLine().upTerminalIsEqualTo(start);
     }
 
-    private boolean isStartStationIsDownTerminal(final Station start) {
-        return firstLine().downTerminalIsEqualTo(start);
-    }
-
     private Line firstLine() {
         return lines.get(0);
     }
 
+    private boolean isStartStationIsDownTerminal(final Station start) {
+        return firstLine().downTerminalIsEqualTo(start);
+    }
+
     private Path linkLines(final Station start) {
         final Deque<Line> sorted = new ArrayDeque<>();
+        final ArrayList<Line> lines = new ArrayList<>(this.lines);
         final Line startLine = lines.remove(0);
-        sorted.addLast(lineWithStartStation(start, startLine));
+        sorted.addLast(lineWithStartStation(startLine, start));
         for (final Line line : lines) {
-            sorted.addLast(lineWithStartStation(sorted.peekLast().downTerminal(), line));
+            sorted.addLast(lineWithStartStation(line, sorted.peekLast().downTerminal()));
         }
         return new Path(new ArrayList<>(sorted));
     }
 
-    private Line lineWithStartStation(final Station start, Line line) {
+    private Line lineWithStartStation(final Line line, final Station start) {
         validateLinked(line, start);
         if (line.downTerminalIsEqualTo(start)) {
             return line.reverse();

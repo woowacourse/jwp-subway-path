@@ -41,6 +41,7 @@ import subway.path.domain.payment.PaymentPolicy;
 import subway.path.exception.PathException;
 import subway.path.infrastructure.shortestpath.GraphCache;
 import subway.path.infrastructure.shortestpath.JgraphtShortestRoute;
+import subway.path.infrastructure.shortestpath.LineDispatcher;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -50,7 +51,8 @@ class PathServiceTest {
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final StationRepository stationRepository = mock(StationRepository.class);
     private final PaymentPolicy paymentPolicy = mock(PaymentPolicy.class);
-    private final ShortestRouteService shortestRouteService = new JgraphtShortestRoute(new GraphCache());
+    private final ShortestRouteService shortestRouteService =
+            new JgraphtShortestRoute(new LineDispatcher(), new GraphCache());
     private final PathService pathService =
             new PathService(stationRepository, lineRepository, shortestRouteService, paymentPolicy);
 
