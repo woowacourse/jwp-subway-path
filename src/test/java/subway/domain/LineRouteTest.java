@@ -219,6 +219,19 @@ class LineRouteTest {
                 );
     }
 
+    @DisplayName("노선의 역이 두 개이면, 역을 삭제할 때 모두 삭제한다")
+    @Test
+    void deleteAllWhenTwoStationsLeft() {
+        LineRoute lineRoute = LineRoute.of(FIXTURE_LINE_1, List.of(
+                SECTION_START
+        ));
+
+        lineRoute.delete(FIXTURE_STATION_1);
+
+        assertThat(lineRoute.getOrderedStations())
+                .isEmpty();
+    }
+
     @DisplayName("하행 기준으로 순서에 맞게 역의 목록을 반환할 수 있다")
     @Test
     void getOrderedStations() {

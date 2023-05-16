@@ -3,10 +3,12 @@ package subway.domain;
 import static subway.domain.Direction.DOWN;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.SimpleDirectedWeightedGraph;
@@ -119,6 +121,12 @@ public class LineRoute {
 
     public void delete(final Station station) {
         validateExisting(station);
+
+        Set<Station> allStations = new HashSet<>(stations.vertexSet());
+        if (allStations.size() == 2) {
+            stations.removeAllVertices(allStations);
+            return;
+        }
 
         Optional<Section> leftFound = findLeftSection(station);
         Optional<Section> rightFound = findRightSection(station);
