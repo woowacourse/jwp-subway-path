@@ -53,7 +53,6 @@ public class PathService {
         return new PathAndFee(shortestStationPath, fee);
     }
 
-
     private Path getPath(List<Station> stations, List<Section> sections) {
         Path path = new Path();
 
