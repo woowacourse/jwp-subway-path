@@ -10,8 +10,8 @@ import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.dao.entity.SectionEntity;
+import subway.dao.entity.StationEntity;
 import subway.domain.Line;
-import subway.domain.StationEntity;
 
 import javax.sql.DataSource;
 

@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.dao.entity;
 
 public class StationEntity {
     private Long id;

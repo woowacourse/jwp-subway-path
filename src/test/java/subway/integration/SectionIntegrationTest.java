@@ -9,10 +9,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpHeaders;
+import subway.dao.entity.StationEntity;
 import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
-import subway.domain.StationEntity;
 import subway.dto.SectionRequest;
 
 import java.util.List;
