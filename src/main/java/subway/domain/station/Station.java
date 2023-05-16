@@ -25,4 +25,12 @@ public class Station {
     public boolean isSameStation(final Station downStation) {
         return this.name.equals(downStation.name);
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public StationName getName() {
+        return name;
+    }
 }

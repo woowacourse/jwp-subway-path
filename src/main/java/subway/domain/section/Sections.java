@@ -1,6 +1,7 @@
 package subway.domain.section;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Sections {
@@ -20,6 +21,36 @@ public class Sections {
         if (sections == null) {
             throw new IllegalArgumentException("노선에 구간들은 없을 수 없습니다.");
         }
+    }
+
+    public Sections addSection(final Section section) {
+        if (isEmpty()) {
+            sections.add(section);
+            return new Sections(sections);
+        }
+
+        if (isAddableOnFrontOfUpTerminal(section)) {
+            final List<Section> updatedSections = new LinkedList<>(sections);
+            updatedSections.add(0, section);
+            return new Sections(updatedSections);
+        }
+
+        if (isAddableOnBackOfDownTerminal(section)) {
+            final List<Section> updatedSections = new LinkedList<>(sections);
+            updatedSections.add(sections.size(), section);
+            return new Sections(updatedSections);
+        }
+
+        throw new IllegalArgumentException("기준역을 먼저 구간에 추가 후 시도해 주세요");
+
+    }
+
+    private boolean isAddableOnFrontOfUpTerminal(final Section section) {
+        return sections.get(0).isAssemblableOnFront(section);
+    }
+
+    private boolean isAddableOnBackOfDownTerminal(final Section section) {
+        return sections.get(sections.size() - 1).isAssemblableOnBack(section);
     }
 
     public boolean isEmpty() {

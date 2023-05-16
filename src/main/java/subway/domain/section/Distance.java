@@ -15,4 +15,8 @@ public class Distance {
             throw new IllegalArgumentException("길이는 1 이상이어야합니다.");
         }
     }
+
+    public int distance() {
+        return distance;
+    }
 }

@@ -2,11 +2,15 @@ package subway.domain.section;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.domain.section.Sections.emptySections;
 
+import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.domain.station.Station;
+import subway.domain.station.StationName;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -22,5 +26,89 @@ class SectionsTest {
     @Test
     void 구간들은_비어있는_상태로_생성될_수_있다() {
         assertThat(emptySections().isEmpty()).isTrue();
+    }
+
+    @Test
+    void 구간들이_비어있을_때_새로운_구간을_추가할_수_있다() {
+        // given
+        final StationName stationNameA = new StationName("종합운동장");
+        final StationName stationNameB = new StationName("잠실새내");
+
+        final Station stationA = new Station(stationNameA);
+        final Station stationB = new Station(stationNameB);
+
+        final Distance distance = new Distance(5);
+
+        final Section section = new Section(stationA, stationB, distance);
+
+        // when
+        final Sections updatedSections = emptySections().addSection(section);
+
+        // then
+        final List<Section> sections = updatedSections.getSections();
+        assertAll(
+                () -> assertThat(sections).hasSize(1),
+                () -> assertThat(sections.get(0).getUpStation().getName().name()).isEqualTo("종합운동장"),
+                () -> assertThat(sections.get(0).getDownStation().getName().name()).isEqualTo("잠실새내"),
+                () -> assertThat(sections.get(0).getDistance().distance()).isEqualTo(5)
+        );
+    }
+
+    /*
+       기존 단일 구간: A-B
+       새로운 구간 연결: C-A-B
+    */
+    @Test
+    void 새로운_구간을_제일_앞에_추가한다() {
+        // given
+        final Station stationA = new Station(new StationName("종합운동장"));
+        final Station stationB = new Station(new StationName("잠실새내"));
+        final Distance distance = new Distance(5);
+        final Section section = new Section(stationA, stationB, distance);
+
+        final Station stationC = new Station(new StationName("삼성"));
+        final Distance otherDistance = new Distance(5);
+        final Section other = new Section(stationC, stationA, otherDistance);
+
+        // when
+        final Sections sections = emptySections().addSection(section);
+        final Sections updatedSections = sections.addSection(other);
+
+        // then
+        final List<Section> linkedSections = updatedSections.getSections();
+        assertAll(
+                () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(stationC)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(stationA)).isTrue(),
+                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(stationB)).isTrue()
+        );
+    }
+
+    /*
+       기존 단일 구간: A-B
+       새로운 구간 연결: A-B-C
+    */
+    @Test
+    void 새로운_구간을_제일_뒤에_추가한다() {
+        // given
+        final Station stationA = new Station(new StationName("종합운동장"));
+        final Station stationB = new Station(new StationName("잠실새내"));
+        final Distance distance = new Distance(5);
+        final Section section = new Section(stationA, stationB, distance);
+
+        final Station stationC = new Station(new StationName("잠실"));
+        final Distance otherDistance = new Distance(5);
+        final Section other = new Section(stationB, stationC, otherDistance);
+
+        // when
+        final Sections sections = emptySections().addSection(section);
+        final Sections updatedSections = sections.addSection(other);
+
+        // then
+        final List<Section> linkedSections = updatedSections.getSections();
+        assertAll(
+                () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(stationA)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(stationB)).isTrue(),
+                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(stationC)).isTrue()
+        );
     }
 }
