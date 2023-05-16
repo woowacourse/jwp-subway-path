@@ -11,5 +11,7 @@ public class Fixture {
     public static final Section sectionAB = new Section(stationA, stationB, 10);
     public static final Section sectionBC = new Section(stationB, stationC, 10);
     public static final Section sectionCD = new Section(stationC, stationD, 10);
+    public static final Section sectionAC = new Section(stationA, stationC, 5);
+    public static final Section sectionCB = new Section(stationC, stationB, 5);
 
 }
