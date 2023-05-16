@@ -1,4 +1,4 @@
-package subway;
+package subway.helper;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 

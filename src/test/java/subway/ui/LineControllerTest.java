@@ -14,8 +14,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static subway.RestDocsHelper.constraint;
-import static subway.RestDocsHelper.prettyDocument;
+import static subway.helper.RestDocsHelper.constraint;
+import static subway.helper.RestDocsHelper.prettyDocument;
+import static subway.helper.SubwayPathFixture.sectionResponsesFixture;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
@@ -35,7 +36,6 @@ import subway.application.SectionService;
 import subway.dto.line.LineCreateRequest;
 import subway.dto.line.LineResponse;
 import subway.dto.line.LineUpdateRequest;
-import subway.dto.section.SectionResponse;
 
 @WebMvcTest(LineController.class)
 @AutoConfigureRestDocs
@@ -166,7 +166,7 @@ class LineControllerTest {
         given(lineService.findLineResponses())
                 .willReturn(response);
         given(sectionService.findSectionsByLineId(anyLong()))
-                .willReturn(SectionResponsesFixture());
+                .willReturn(sectionResponsesFixture());
 
         // expect
         mockMvc.perform(get("/lines/detail")
@@ -182,7 +182,7 @@ class LineControllerTest {
         given(lineService.findLineResponseById(anyLong()))
                 .willReturn(new LineResponse(1L, "1호선", "bg-blue-300"));
         given(sectionService.findSectionsByLineId(anyLong()))
-                .willReturn(SectionResponsesFixture());
+                .willReturn(sectionResponsesFixture());
 
         // expect
         mockMvc.perform(get("/lines/{lineId}", 1L)
@@ -227,13 +227,5 @@ class LineControllerTest {
                         pathParameters(
                                 parameterWithName("lineId").description("노선 ID")
                         )));
-    }
-
-    private List<SectionResponse> SectionResponsesFixture() {
-        return List.of(
-                new SectionResponse("서울역", "용산역", 10),
-                new SectionResponse("용산역", "노량진역", 10),
-                new SectionResponse("노량진역", "대방역", 10)
-        );
     }
 }

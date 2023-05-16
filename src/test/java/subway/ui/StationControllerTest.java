@@ -15,13 +15,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static subway.RestDocsHelper.constraint;
-import static subway.RestDocsHelper.prettyDocument;
+import static subway.helper.RestDocsHelper.constraint;
+import static subway.helper.RestDocsHelper.prettyDocument;
+import static subway.helper.SubwayPathFixture.stationResponsesFixture;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.StationService;
 import subway.dto.station.StationCreateRequest;
-import subway.dto.station.StationResponse;
 import subway.dto.station.StationUpdateRequest;
 
 @WebMvcTest(StationController.class)
@@ -106,11 +105,7 @@ class StationControllerTest {
     void findAllStations_success() throws Exception {
         // given
         given(stationService.findAllStationResponses())
-                .willReturn(List.of(
-                        new StationResponse("서울역"),
-                        new StationResponse("용산역"),
-                        new StationResponse("노량진역")
-                ));
+                .willReturn(stationResponsesFixture());
 
         // expect
         mockMvc.perform(get("/stations")
