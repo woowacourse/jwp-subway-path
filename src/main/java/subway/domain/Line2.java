@@ -8,12 +8,25 @@ import java.util.stream.Collectors;
 public class Line2 {
 
     private static final int FIRST = 0;
+
+    private final Long id;
     private final String name;
+    private final String color;
     private final List<Section> sections;
 
-    public Line2(String name) {
+    public Line2(String name, String color) {
+        this(null, name, color, new ArrayList<>());
+    }
+
+    public Line2(Long id, String name, String color) {
+        this(id, name, color, new ArrayList<>());
+    }
+
+    public Line2(Long id, String name, String color, List<Section> sections) {
+        this.id = id;
         this.name = name;
-        this.sections = new ArrayList<>();
+        this.color = color;
+        this.sections = sections;
     }
 
     public void add(Section section) {
@@ -119,7 +132,19 @@ public class Line2 {
                 .collect(Collectors.toList());
     }
 
+    public Long getId() {
+        return id;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public List<Section> getSections() {
-        return sections;
+        return new ArrayList<>(sections);
     }
 }
