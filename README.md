@@ -6,35 +6,51 @@
 
 - [x] POST '/stations' uri 맵핑
     - Request
+        - 노선 이름
         - 상행 역 이름
         - 하행 역 이름
         - 두 역 사이의 거리
-        - 등록할 호선 색상
-    - Response X
+    - Response 
+      - 노선 정보
+        - ID
+        - 이름
+      - 등록한 역 정보 리스트
+        - ID
+        - 이름
+      - 등록한 구간 정보 리스트
+        - ID
+        - 상행역 이름
+        - 하행역 이름
+        - 거리
 
 ### 2. 노선 역 제거 API
 
-- [ ] DELETE '/stations/{stationId}' uri 맵핑
+- [x] DELETE '/stations/{id}' uri 맵핑
 - Request
     - @PathVariable
 - Response
-    - 제거 Message
+    - Void
 
 ### 3. 노선 조회 API
 
-- [ ] GET '/lines/{color}'
+- [x] GET '/lines/{id}'
     - Request
-        - @Pathvariable 노선 색상
-    - Response
-        - List<StationName>
-        - 역 이름은 순서대로 보여준다. (상행종점 -> 하행종점)
+        - @Pathvariable 노선 ID
+    - Response 
+      - 역 정보 
+        - String lineName 
+        - List<String> stationNames
+          - 역 이름은 순서대로 보여준다. (상행종점 -> 하행종점)
 
 ### 4. 노선 목록 조회 API
 
-- [ ] GET '/lines'
+- [x] GET '/lines'
     - Request X
     - Response
-        - Map<Color, List<StationName>>
+        - 노선별 역 정보 (List)
+          - String lineName
+          - List<String> stationNames
+            - 역 이름은 순서대로 보여준다. (상행종점 -> 하행종점)
 
 ---
 
@@ -70,7 +86,7 @@
 ### 테스트 시 DB Situation
 ```java
 * Default Situation
-- 테스트 실행 시test-data.sql에서 '2호선 / A역 & C역 / A-C 구간'이 등록된다.
+`test-schema.sql` & `test-data.sql`을 적용하면 '2호선 / A역 & C역 / A-C 구간'이 등록된다.
 - 이후 Case들은 TestFixtures를 이용하여 테스트한다.
         
 Case 1 (가운데 역 등록) : A-B 등록 요청으로 B역이 등록된다.
