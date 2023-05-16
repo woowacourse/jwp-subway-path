@@ -6,5 +6,5 @@ public interface RouteFinder <T> {
 
     List<T> getRoute(long source, long destination);
 
-    int getTotalWeight();
+    int getTotalWeight(long source, long destination);
 }
