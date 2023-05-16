@@ -14,16 +14,68 @@ public class SubwayGraph {
         this.line = line;
     }
 
-    public void createNewLine(Station upLineStation, Station downLineStation, int distance) {
+    public void createInitStations(Station upLineEndStation, Station downLineEndStation, int distance) {
         validateDistance(distance);
-        graph.addVertex(upLineStation);
-        graph.addVertex(downLineStation);
-        graph.setEdgeWeight(graph.addEdge(upLineStation, downLineStation), distance);
+        if (!graph.vertexSet().isEmpty()) {
+            throw new IllegalStateException("이미 역이 존재합니다.");
+        }
+        graph.addVertex(upLineEndStation);
+        graph.addVertex(downLineEndStation);
+        linkStation(upLineEndStation, downLineEndStation, distance);
     }
 
-    private static void validateDistance(final int distance) {
+    private void validateDistance(final int distance) {
         if (distance <= 0) {
             throw new IllegalArgumentException("역 사이 거리는 양의 정수로 입력해 주세요.");
+        }
+    }
+
+    public Station addStation(Station upLineStation, Station downLineStation, int distance) {
+        validateStations(upLineStation, downLineStation);
+        validateDistance(distance);
+
+        // A-B -> A-B=N
+        if (isNewStation(downLineStation) && isDownEndStation(upLineStation)) {
+            graph.addVertex(downLineStation);
+            linkStation(upLineStation, downLineStation, distance);
+            return downLineStation;
+        }
+
+        // A-B -> N=A-B
+        if (isNewStation(upLineStation) && isUpEndStation(downLineStation)) {
+            graph.addVertex(upLineStation);
+            linkStation(upLineStation, downLineStation, distance);
+            return upLineStation;
+        }
+
+        // A-B -> A=N-B
+        if (isNewStation(downLineStation) && !isDownEndStation(upLineStation)) {
+            Station upLineNextStation = findNextStation(upLineStation);
+            addStationToUpLine(upLineStation, downLineStation, upLineNextStation, distance);
+            return downLineStation;
+        }
+
+        // A-B -> A-N=B
+        if (isNewStation(upLineStation) && !isUpEndStation(downLineStation)) {
+            Station previousStation = findPreviousStation(downLineStation);
+            addStationToDownLine(previousStation, upLineStation, downLineStation, distance);
+            return upLineStation;
+        }
+
+        throw new IllegalArgumentException("부적절한 입력입니다.");
+    }
+
+    private void validateStations(final Station upLineStation, final Station downLineStation) {
+        if (upLineStation.equals(downLineStation)) {
+            throw new IllegalArgumentException("서로 다른 역을 입력해 주세요.");
+        }
+
+        if (isNewStation(upLineStation) && isNewStation(downLineStation)) {
+            throw new IllegalArgumentException("모두 새로운 역입니다. 새로운 역과 기존 역을 입력해 주세요.");
+        }
+
+        if (!isNewStation(upLineStation) && !isNewStation(downLineStation)) {
+            throw new IllegalArgumentException("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
         }
     }
 
@@ -35,16 +87,16 @@ public class SubwayGraph {
         return findAllStationsInOrder().indexOf(station);
     }
 
-    public EdgeEntity findEdge(Station station) {
-        return new EdgeEntity(line.getId(), station.getId(), findOrderOf(station), findWeight(station));
+    public EdgeEntity findEdgeEntity(Station station) {
+        return new EdgeEntity(line.getId(), station.getId(), findOrderOf(station), findDistance(station));
     }
 
-    public Station findNextStation(Station station) {
-        Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(station);
-        return findNextStation(outgoingEdges);
+    public int findDistance(Station sourceStation, Station targetStation) {
+        final DefaultWeightedEdge edge = graph.getEdge(sourceStation, targetStation);
+        return (int) graph.getEdgeWeight(edge);
     }
 
-    public Integer findWeight(Station station) {
+    public Integer findDistance(Station station) {
         Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(station);
         if (outgoingEdges.isEmpty()) {
             return null;
@@ -52,104 +104,15 @@ public class SubwayGraph {
         return (int) graph.getEdgeWeight(outgoingEdges.iterator().next());
     }
 
-
     public Station findUpEndStation() {
         return graph.vertexSet().stream()
-                .filter(vertex -> this.graph.incomingEdgesOf(vertex).isEmpty())
-                .findFirst()
-                .orElse(null);
+                .filter(vertex -> graph.incomingEdgesOf(vertex).isEmpty())
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("상행종점이 존재하지 않습니다."));
     }
 
-    public List<Station> findAllStationsInOrder() {
-        List<Station> allStationsInOrder = new ArrayList<>();
-        Station startStation = findUpEndStation();
-        while (startStation != null) {
-            allStationsInOrder.add(startStation);
-            Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(startStation);
-            if (outgoingEdges.isEmpty()) {
-                startStation = null;
-            } else {
-                startStation = graph.getEdgeTarget(outgoingEdges.iterator().next());
-            }
-        }
-        return allStationsInOrder;
-    }
-
-    public int findDistanceBetween(Station upLineStation, Station downLineStation) {
-        final DefaultWeightedEdge edge = graph.getEdge(upLineStation, downLineStation);
-        return (int) graph.getEdgeWeight(edge);
-    }
-
-    public Station addStation(Station upLineStation, Station downLineStation, int distance) {
-        validateStations(upLineStation, downLineStation);
-        validateDistance(distance);
-
-        // 기존 역: upLineStation, 새로운 역: downLineStation
-        if (graph.containsVertex(upLineStation)) {
-
-            // upLineStation[하행종점] -> downLineStation (새 역) -> nothing!
-            int inDegree = graph.inDegreeOf(upLineStation);
-            int outDegree = graph.outDegreeOf(upLineStation);
-
-            final boolean isDownLastStation = inDegree == 1 && outDegree == 0;
-
-            if (isDownLastStation) {
-                addStationToDownLine(upLineStation, downLineStation, distance);
-                return downLineStation;
-            }
-
-            // upLineStation -> downLineStation (새 역) -> 기존 다음 역
-            final Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(upLineStation);
-            addStationToDownLine(upLineStation, downLineStation, findNextStation(outgoingEdges), distance);
-            return downLineStation;
-        }
-
-        // 기존 역: downLineStation, 새로운 역: upLineStation
-        if (graph.containsVertex(downLineStation)) {
-            graph.addVertex(upLineStation);
-
-            // nothing -> upLineStation (새 역) -> downLineStation
-            int inDegree = graph.inDegreeOf(downLineStation);
-            int outDegree = graph.outDegreeOf(downLineStation);
-
-            final boolean isUpFirstStation = inDegree == 0 && outDegree == 1;
-
-            if (isUpFirstStation) {
-                addStationToUpLine(upLineStation, downLineStation, distance);
-                return upLineStation;
-            }
-            // 기존 상행 역 -> upLineStation (새 역) -> downLineStation
-            final Set<DefaultWeightedEdge> defaultWeightedEdges = graph.incomingEdgesOf(downLineStation);
-            final Station previousStation = findPreviousStation(defaultWeightedEdges);
-            addStationToUpLine(previousStation, upLineStation, downLineStation, distance);
-            return upLineStation;
-        }
-        throw new IllegalArgumentException("부적절한 입력입니다.");
-    }
-
-    private void validateStations(final Station upLineStation, final Station downLineStation) {
-        if (upLineStation.equals(downLineStation)) {
-            throw new IllegalArgumentException("서로 다른 역을 입력해 주세요.");
-        }
-
-        if (!graph.containsVertex(upLineStation) && !graph.containsVertex(downLineStation)) {
-            throw new IllegalArgumentException("모두 새로운 역입니다. 새로운 역과 기존 역을 입력해 주세요.");
-        }
-
-        if (graph.containsVertex(upLineStation) && graph.containsVertex(downLineStation)) {
-            throw new IllegalArgumentException("모두 이미 존재하는 역입니다. 하나의 새로운 역을 입력해 주세요.");
-        }
-    }
-
-    private Station findPreviousStation(final Set<DefaultWeightedEdge> defaultWeightedEdges) {
-        if (!defaultWeightedEdges.isEmpty()) {
-            final DefaultWeightedEdge closestEdge = defaultWeightedEdges.iterator().next();
-            return graph.getEdgeSource(closestEdge);
-        }
-        throw new IllegalStateException("이전 역이 존재하지 않습니다.");
-    }
-
-    private Station findNextStation(final Set<DefaultWeightedEdge> outgoingEdges) {
+    public Station findNextStation(Station station) {
+        Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(station);
         if (!outgoingEdges.isEmpty()) {
             final DefaultWeightedEdge closestEdge = outgoingEdges.iterator().next();
             return graph.getEdgeTarget(closestEdge);
@@ -157,100 +120,108 @@ public class SubwayGraph {
         throw new IllegalStateException("다음 역이 존재하지 않습니다.");
     }
 
-    private void addStationToUpLine(final Station newStation, final Station downLineStation, final int distance) {
-        graph.addVertex(newStation);
-        graph.setEdgeWeight(graph.addEdge(newStation, downLineStation), distance);
+    private Station findPreviousStation(Station station) {
+        final Set<DefaultWeightedEdge> defaultWeightedEdges = graph.incomingEdgesOf(station);
+        if (!defaultWeightedEdges.isEmpty()) {
+            final DefaultWeightedEdge closestEdge = defaultWeightedEdges.iterator().next();
+            return graph.getEdgeSource(closestEdge);
+        }
+        throw new IllegalStateException("이전 역이 존재하지 않습니다.");
     }
 
-    private void addStationToDownLine(final Station upLineStation, final Station newStation, final int distance) {
-        graph.addVertex(newStation);
-        graph.setEdgeWeight(graph.addEdge(upLineStation, newStation), distance);
+    public List<Station> findAllStationsInOrder() {
+        List<Station> allStationsInOrder = new ArrayList<>();
+
+        Station upEndStation = findUpEndStation();
+        while (upEndStation != null) {
+            allStationsInOrder.add(upEndStation);
+            Set<DefaultWeightedEdge> outgoingEdges = graph.outgoingEdgesOf(upEndStation);
+            if (outgoingEdges.isEmpty()) {
+                upEndStation = null;
+            } else {
+                upEndStation = graph.getEdgeTarget(outgoingEdges.iterator().next());
+            }
+        }
+        return allStationsInOrder;
     }
 
-    private void addStationToUpLine(final Station downLinePreviousStation, final Station newStation, final Station downLineStation, final int distance) {
-        // downLinePreviousStation ~ downLineStation distance <= distance => 예외 발생
-        final DefaultWeightedEdge edge = graph.getEdge(downLinePreviousStation, downLineStation);
-        final int distanceBetweenDownLinePreviousStationAndDownLineStation = (int) graph.getEdgeWeight(edge);
-        if (distanceBetweenDownLinePreviousStationAndDownLineStation <= distance) {
+    private boolean isUpEndStation(Station station) {
+        int inDegree = graph.inDegreeOf(station);
+        int outDegree = graph.outDegreeOf(station);
+
+        return inDegree == 0 && outDegree == 1;
+    }
+
+    private boolean isDownEndStation(Station station) {
+        int inDegree = graph.inDegreeOf(station);
+        int outDegree = graph.outDegreeOf(station);
+
+        return inDegree == 1 && outDegree == 0;
+    }
+
+    private boolean isNewStation(Station station) {
+        return !graph.containsVertex(station);
+    }
+
+    private void linkStation(final Station sourceStation, final Station targetStation, final int distance) {
+        graph.setEdgeWeight(graph.addEdge(sourceStation, targetStation), distance);
+    }
+
+    private void addStationToDownLine(final Station targetPreviousStation, final Station newStation, final Station targetStation, final int distance) {
+        int originDistance = findDistance(targetPreviousStation, targetStation);
+        validateAddDistance(distance, originDistance);
+
+        graph.addVertex(newStation);
+        final int remainDistance = originDistance - distance;
+        graph.removeEdge(targetPreviousStation, targetStation);
+        linkStation(newStation, targetStation, distance);
+        linkStation(targetPreviousStation, newStation, remainDistance);
+    }
+
+    private void addStationToUpLine(final Station sourceStation, final Station newStation, final Station sourceNextStation, final int distance) {
+        int originDistance = findDistance(sourceStation, sourceNextStation);
+        validateAddDistance(distance, originDistance);
+
+        graph.addVertex(newStation);
+        final int remainDistance = originDistance - distance;
+        graph.removeEdge(sourceStation, sourceNextStation);
+        linkStation(sourceStation, newStation, distance);
+        linkStation(newStation, sourceNextStation, remainDistance);
+    }
+
+    private void validateAddDistance(int distance, int originDistance) {
+        if (distance >= originDistance) {
             throw new IllegalArgumentException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
         }
-        graph.addVertex(newStation); //
-
-        final int distanceBetweenDownLinePreviousStationAndNewStation = distanceBetweenDownLinePreviousStationAndDownLineStation - distance;
-
-        // downLinePreviousStation, downLineStation 끊어줌
-        graph.removeEdge(downLinePreviousStation, downLineStation);
-
-        // downLinePreviousStation, newStation 연결 => distance: distanceBetweenDownLinePreviousStationAndNewStation
-        graph.setEdgeWeight(graph.addEdge(downLinePreviousStation, newStation), distanceBetweenDownLinePreviousStationAndNewStation);
-
-        // newStation, downLineStation 연결 => distance: 입력한 거리
-        graph.setEdgeWeight(graph.addEdge(newStation, downLineStation), distance);
-    }
-
-    private void addStationToDownLine(final Station upLineStation, final Station newStation, final Station upLineNextStation, final int distance) {
-        // upLineStation ~ upLineNextStation distance <= distance => 예외 발생
-        DefaultWeightedEdge edge = graph.getEdge(upLineStation, upLineNextStation);
-        int distanceBetweenUpLineStationAndUpLineNextStation = (int) graph.getEdgeWeight(edge);
-        if (distanceBetweenUpLineStationAndUpLineNextStation <= distance) {
-            throw new IllegalArgumentException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
-        }
-        graph.addVertex(newStation); //
-        final int distanceBetweenNewStationAndUpLineNextStation = distanceBetweenUpLineStationAndUpLineNextStation - distance;
-
-        // upLineStation, upLineNextStation 끊어줌
-        graph.removeEdge(upLineStation, upLineNextStation);
-        // upLineStation, newStation 연결 -> distance: 입력한 거리
-        graph.setEdgeWeight(graph.addEdge(upLineStation, newStation), distance);
-        // newStation, upLineNextStation 연결 -> distance: 계산한 거리
-        graph.setEdgeWeight(graph.addEdge(newStation, upLineNextStation), distanceBetweenNewStationAndUpLineNextStation);
     }
 
     public void remove(Station station) {
         List<DefaultWeightedEdge> adjacentEdges = new ArrayList<>(graph.edgesOf(station));
 
-        // 양쪽 연결된 경우
         if (adjacentEdges.size() == 2) {
             removeMiddleStation(station);
         }
 
-        // 한 쪽만 연결된 경우
         if (adjacentEdges.size() == 1) {
             graph.removeEdge(adjacentEdges.get(0));
+            graph.removeVertex(station);
         }
-
-        // Station 지우기
-        graph.removeVertex(station);
     }
 
     private void removeMiddleStation(Station station) {
-        Set<DefaultWeightedEdge> edgesToRemove = new HashSet<>();
-        Station upLineStation = null;
-        Station downLineStation = null;
-        int distanceBetweenUpLineStationAndStation = 0;
-        int distanceBetweenStationAndDownLineStation = 0;
+        Station previousStation = findPreviousStation(station);
+        Station nextStation = findNextStation(station);
 
-        for (DefaultWeightedEdge edge : graph.incomingEdgesOf(station)) {
-            edgesToRemove.add(edge);
-            distanceBetweenUpLineStationAndStation = (int) graph.getEdgeWeight(edge);
-            upLineStation = graph.getEdgeSource(edge);
-        }
+        int distanceWithPrevious = findDistance(previousStation);
+        int distanceWithNext = findDistance(station);
 
-        for (DefaultWeightedEdge edge : graph.outgoingEdgesOf(station)) {
-            edgesToRemove.add(edge);
-            distanceBetweenStationAndDownLineStation = (int) graph.getEdgeWeight(edge);
-            downLineStation = graph.getEdgeTarget(edge);
-        }
+        int distance = distanceWithPrevious + distanceWithNext;
 
-        // 거리 재배치
-        int distance = distanceBetweenUpLineStationAndStation + distanceBetweenStationAndDownLineStation;
-
-        // 연결 다시 이어주기
-        graph.setEdgeWeight(graph.addEdge(upLineStation, downLineStation), distance);
-
-        // 지우기
-        graph.removeAllEdges(edgesToRemove);
+        graph.removeEdge(previousStation, station);
+        graph.removeEdge(station, nextStation);
         graph.removeVertex(station);
+
+        linkStation(previousStation, nextStation, distance);
     }
 
     public Optional<Station> findStationByName(String name) {

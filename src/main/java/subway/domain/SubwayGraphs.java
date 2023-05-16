@@ -7,7 +7,6 @@ import subway.exception.LineException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -22,7 +21,7 @@ public class SubwayGraphs {
     // TODO: 반환 타입 어떤걸로
     public LineDto createLine(Line line, Station upLineStation, Station downLineStation, int distance) {
         final SubwayGraph newLineGraph = new SubwayGraph(line);
-        newLineGraph.createNewLine(upLineStation, downLineStation, distance);
+        newLineGraph.createInitStations(upLineStation, downLineStation, distance);
         final List<Station> allStationsInOrder = newLineGraph.findAllStationsInOrder();
         subwayGraphs.add(newLineGraph);
         return new LineDto(line, allStationsInOrder);
@@ -30,7 +29,7 @@ public class SubwayGraphs {
 
     public EdgeEntity findEdge(Line line, Station station) {
         final SubwayGraph subwayGraph = findSubwayGraphOf(line);
-        return subwayGraph.findEdge(station);
+        return subwayGraph.findEdgeEntity(station);
     }
 
     public List<Station> findAllStationsInOrderOf(Line line) {
