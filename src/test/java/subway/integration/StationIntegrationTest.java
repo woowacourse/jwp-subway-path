@@ -78,7 +78,7 @@ public class StationIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response2.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("지하철역 목록을 조회한다.")

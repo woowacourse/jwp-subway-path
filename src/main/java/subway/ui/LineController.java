@@ -23,18 +23,18 @@ public class LineController {
     }
 
     @PostMapping
-    public ResponseEntity<LineResponse> createLine(@Valid @RequestBody LineRequest lineRequest) {
+    public ResponseEntity<Void> createLine(@Valid @RequestBody LineRequest lineRequest) {
         Long lineId = lineService.save(lineRequest);
         return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
     }
 
     @PostMapping("/{id}/stations")
-    public ResponseEntity<Long> registerStation(
+    public ResponseEntity<Void> registerStation(
             @PathVariable final Long id,
             @RequestBody final RegisterStationRequest registerStationRequest
     ) {
         lineService.saveStationInLine(id, registerStationRequest);
-        return ResponseEntity.created(URI.create("/lines/" + id + "/stations/")).body(1L);
+        return ResponseEntity.created(URI.create("/lines/" + id + "/stations/")).build();
     }
 
     @GetMapping

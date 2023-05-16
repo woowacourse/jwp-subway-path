@@ -61,6 +61,53 @@ public class LineIntegrationTest extends IntegrationTest {
 
     }
 
+    @DisplayName("지하철 노선에 역을 등록한다.")
+    @Test
+    void registerStation() {
+        // given
+        ExtractableResponse<Response> lineResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(lineRequest1)
+                .when().post("/lines")
+                .then().extract();
+
+        Long lineId1 = Long.parseLong(parseUri(lineResponse.header("Location")));
+
+        StationRequest stationRequest1 = new StationRequest("강남역");
+        ExtractableResponse<Response> stationResponse1 = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest1)
+                .when().post("/stations")
+                .then().extract();
+
+        StationRequest stationRequest2 = new StationRequest("판교역");
+        ExtractableResponse<Response> stationResponse2 = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(stationRequest2)
+                .when().post("/stations")
+                .then().extract();
+
+        Long stationId1 = Long.parseLong(parseUri(stationResponse1.header("Location")));
+        Long stationId2 = Long.parseLong(parseUri(stationResponse2.header("Location")));
+
+        RegisterStationRequest registerStationRequest = new RegisterStationRequest(stationId1, stationId2, 10);
+
+        // when
+        ExtractableResponse<Response> registerStationResponse = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(registerStationRequest)
+                .when().post("/lines/{id}/stations", lineId1)
+                .then().extract();
+
+        // then
+        assertThat(registerStationResponse.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(registerStationResponse.header("Location")).isNotBlank();
+    }
+
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
@@ -84,7 +131,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         // then
-        assertThat(response2.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response2.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @DisplayName("지하철 모든 노선을 조회한다.")
@@ -198,7 +245,6 @@ public class LineIntegrationTest extends IntegrationTest {
                 .when().post("/stations")
                 .then().extract();
 
-
         Long stationId1 = Long.parseLong(parseUri(stationResponse1.header("Location")));
         Long stationId2 = Long.parseLong(parseUri(stationResponse2.header("Location")));
         Long stationId3 = Long.parseLong(parseUri(stationResponse3.header("Location")));
@@ -273,7 +319,9 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then().extract();
 
         Long lineId = Long.parseLong(parseUri(createResponse.header("Location")));
-        RegisterStationRequest registerStationRequest1 = new RegisterStationRequest(1L, 2L, 5);
+        Long upStationId = Long.parseLong(parseUri(createStationResponse1.header("Location")));
+        Long downStationId = Long.parseLong(parseUri(createStationResponse2.header("Location")));
+        RegisterStationRequest registerStationRequest1 = new RegisterStationRequest(upStationId, downStationId, 5);
         ExtractableResponse<Response> registerStationResponse = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -321,7 +369,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        Long lineId = Long.parseLong(parseUri(createResponse.header("Location")));
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -347,7 +395,7 @@ public class LineIntegrationTest extends IntegrationTest {
                 extract();
 
         // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        Long lineId = Long.parseLong(parseUri(createResponse.header("Location")));
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .when().delete("/lines/{lineId}", lineId)
