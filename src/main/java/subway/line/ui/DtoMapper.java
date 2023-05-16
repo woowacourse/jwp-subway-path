@@ -1,8 +1,10 @@
-package subway.line.ui.dto;
+package subway.line.ui;
 
 import subway.line.application.dto.LineCreationDto;
 import subway.line.application.dto.StationAdditionToLineDto;
 import subway.line.application.dto.StationDeletionFromLineDto;
+import subway.line.ui.dto.LineCreationRequest;
+import subway.line.ui.dto.StationAdditionRequest;
 
 class DtoMapper {
 
