@@ -101,8 +101,8 @@ public class LineService {
         final List<Line> lines = lineRepository.findAllWithSections();
 
         final SubwayGraph subwayGraph = SubwayGraph.of(lines, new DistanceFarePolicy());
-        final double pathWeight = subwayGraph.getPathWeight(fromStation, toStation);
-        final List<Station> stations = subwayGraph.getPath(fromStation, toStation);
+        final double pathWeight = subwayGraph.getShortestPathDistance(fromStation, toStation);
+        final List<Station> stations = subwayGraph.getShortestPath(fromStation, toStation);
 
         return new ShortestPathResponse(pathWeight, stations);
     }

@@ -38,19 +38,19 @@ public class SubwayGraph {
         return new SubwayGraph(new DijkstraShortestPath<>(graph), farePolicy);
     }
 
-    public double getPathWeight(final Station fromStation, final Station toStation) {
+    public int getShortestPathDistance(final Station fromStation, final Station toStation) {
 
-        return graph.getPathWeight(fromStation, toStation);
+        return (int) graph.getPathWeight(fromStation, toStation);
     }
 
-    public List<Station> getPath(final Station fromStation, final Station toStation) {
+    public List<Station> getShortestPath(final Station fromStation, final Station toStation) {
 
         return graph.getPath(fromStation, toStation).getVertexList();
     }
 
     public int getPathFare(final Station fromStation, final Station toStation) {
-        final double pathDistance = getPathWeight(fromStation, toStation);
+        final int pathDistance = getShortestPathDistance(fromStation, toStation);
 
-        return farePolicy.calculateOverFare(pathDistance);
+        return farePolicy.calculateFare(pathDistance);
     }
 }
