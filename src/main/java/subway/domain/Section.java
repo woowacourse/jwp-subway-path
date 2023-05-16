@@ -49,14 +49,6 @@ public class Section {
         return distance.isLongerThan(otherDistance);
     }
 
-    public Section changeLeft(Station otherStation, int otherDistance) {
-        return new Section(otherStation, to, distance.subtract(otherDistance));
-    }
-
-    public Section changeRight(final Station otherStation, final int otherDistance) {
-        return new Section(from, otherStation, distance.subtract(otherDistance));
-    }
-
     public void updateStation(final Station targetStation, final Station updateStation) {
         if (from.equals(targetStation)) {
             from = updateStation;

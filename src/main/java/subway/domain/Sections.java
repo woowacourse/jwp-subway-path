@@ -18,10 +18,6 @@ public class Sections {
         this.sections = sections;
     }
 
-    public void insertInitially(final Station from, final Station to, final int distance) {
-        sections.add(new Section(from, to, distance));
-    }
-
     public Section makeCombineSection() {
         List<Station> stations = new Sections(sections).showStations();
         return new Section(stations.get(0), stations.get(2),
@@ -29,18 +25,15 @@ public class Sections {
     }
 
     public List<Section> insert(final Long fromId, final Long toId, final int distance) {
-        List<Section> querySections = new ArrayList<>();
-        // 역 존재
+        final List<Section> querySections = new ArrayList<>();
+
         if (isExist(fromId) == isExist(toId)) {
             throw new IllegalArgumentException("해당 조건으로 역을 설치할 수 없습니다.");
         }
-        if (isExist(fromId)) {
-            if (!isRightEndId(fromId)) { // 오른쪽 끝이 아니면
-                final Section deleteSection = sections.stream()
-                        .filter(section -> section.existLeftById(fromId) && section.isInsertable(distance))
-                        .findAny()
-                        .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
 
+        if (isExist(fromId)) {
+            if (!isRightEndId(fromId)) {
+                final Section deleteSection = findDeletableSectionFromRight(fromId, distance);
                 querySections.add(new Section(new Station(toId, "to_name"), deleteSection.getTo(),
                         deleteSection.getDistanceValue() - distance));
                 querySections.add(deleteSection);
@@ -50,12 +43,8 @@ public class Sections {
         }
 
         if (isExist(toId)) {
-            if (!isLeftEndId(toId)) { // 왼쪽 끝이 아니면
-                final Section deleteSection = sections.stream()
-                        .filter(section -> section.existRightById(toId) && section.isInsertable(distance))
-                        .findAny()
-                        .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
-
+            if (!isLeftEndId(toId)) {
+                final Section deleteSection = findDeletableSectionFromLeft(toId, distance);
                 querySections.add(new Section(deleteSection.getFrom(), new Station(fromId, "from_name"),
                         deleteSection.getDistanceValue() - distance));
                 querySections.add(deleteSection);
@@ -65,6 +54,20 @@ public class Sections {
         }
 
         throw new UnsupportedOperationException("처리할 수 없는 요청입니다.");
+    }
+
+    private Section findDeletableSectionFromRight(Long fromId, int distance) {
+        return sections.stream()
+                .filter(section -> section.existLeftById(fromId) && section.isInsertable(distance))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
+    }
+
+    private Section findDeletableSectionFromLeft(Long toId, int distance) {
+        return sections.stream()
+                .filter(section -> section.existRightById(toId) && section.isInsertable(distance))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("삽입할 수 없는 거리입니다."));
     }
 
     public List<Station> showStations() {
@@ -136,10 +139,6 @@ public class Sections {
                 .noneMatch(section -> section.existRightById(id));
     }
 
-    public boolean isEmpty() {
-        return sections.size() == 0;
-    }
-
     public boolean isHead(final Station station) {
         return sections.stream()
                 .anyMatch(section -> section.existLeft(station));
@@ -159,14 +158,14 @@ public class Sections {
     }
 
     @Override
-    public boolean equals(final Object o) {
+    public boolean equals(Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        final Sections sections1 = (Sections) o;
+        Sections sections1 = (Sections) o;
         return Objects.equals(sections, sections1.sections);
     }
 
@@ -174,4 +173,12 @@ public class Sections {
     public int hashCode() {
         return Objects.hash(sections);
     }
+
+    @Override
+    public String toString() {
+        return "Sections{" +
+                "sections=" + sections +
+                '}';
+    }
+
 }

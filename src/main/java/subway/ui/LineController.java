@@ -39,7 +39,6 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
-    // GET /lines : 전체 노선 조회
     @GetMapping
     public ResponseEntity<List<StationsByLineResponse>> findAllLines() {
         List<Line> lines = lineService.findLines();
@@ -50,14 +49,12 @@ public class LineController {
         return ResponseEntity.ok(stationsByLineResponses);
     }
 
-    // GET /lines : 특정 노선 조회
     @GetMapping("/{lineId}")
     public ResponseEntity<StationsByLineResponse> findLineById(@PathVariable Long lineId) {
         Line targetLine = lineService.findLineById(lineId);
         return ResponseEntity.ok(sectionService.showStations(targetLine));
     }
 
-    // POST /lines : 특정 호선에 역 추가
     @PostMapping("/{lineId}")
     public ResponseEntity<Void> addStationAtLine(@PathVariable Long lineId,
                                                  @RequestBody SectionRequest sectionRequest) {
