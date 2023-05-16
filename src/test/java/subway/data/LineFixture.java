@@ -1,11 +1,8 @@
 package subway.data;
 
-import java.util.List;
-import subway.domain.line.Line;
-import subway.domain.section.Sections;
-import subway.domain.station.Stations;
+import subway.entity.LineEntity;
 
 public class LineFixture {
 
-    public final static Line LINE_2 = new Line(0L, "2호선", "#FFFFFF", new Stations(List.of()), new Sections(List.of()));
+    public final static LineEntity LINE_2 = new LineEntity(0L, "2호선", "#FFFFFF", null, null);
 }

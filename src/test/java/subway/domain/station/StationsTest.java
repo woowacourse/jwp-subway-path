@@ -1,15 +1,16 @@
 package subway.domain.station;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
-import java.util.List;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StationsTest {
 
@@ -21,7 +22,7 @@ class StationsTest {
 
         // when + then
         assertThatThrownBy(() -> new Stations(stations))
-            .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -32,7 +33,7 @@ class StationsTest {
 
         // when + then
         assertThatThrownBy(() -> new Stations(stations))
-            .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
@@ -40,14 +41,16 @@ class StationsTest {
     @DisplayName("stations는 0개 또는 2개 이상의 역으로 생성된다.")
     void generate_stations_success(List<Station> stations) {
         // when + then
-        assertDoesNotThrow(() -> new Stations(stations));
+        Stations stationsInstance = new Stations(stations);
+
+        assertEquals(stations.size(), stationsInstance.size());
     }
 
     private static Stream<Arguments> createStations() {
         return Stream.of(
-            Arguments.arguments(List.of()),
-            Arguments.arguments(List.of(new Station(1L, "잠실역"), new Station(2L, "선릉역"))),
-            Arguments.arguments(List.of(new Station(1L, "잠실역"), new Station(2L, "선릉역"), new Station(3L, "강남역")))
+                Arguments.arguments(List.of()),
+                Arguments.arguments(List.of(new Station(1L, "잠실역"), new Station(2L, "선릉역"))),
+                Arguments.arguments(List.of(new Station(1L, "잠실역"), new Station(2L, "선릉역"), new Station(3L, "강남역")))
         );
     }
 }

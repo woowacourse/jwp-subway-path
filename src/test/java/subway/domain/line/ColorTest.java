@@ -1,11 +1,11 @@
 package subway.domain.line;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ColorTest {
 
@@ -15,14 +15,16 @@ class ColorTest {
     void validate_hex_color_code(String color) {
         // when + then
         assertThatThrownBy(() -> new Color(color))
-            .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"#000000", "#123456", "#AAAAAA", "#FFFFFF"})
     @DisplayName("#일곱자리 16진수 색상표여야 한다.")
-    void generate_color_success(String color) {
+    void generate_color_success(String colorCode) {
         // when + then
-        assertDoesNotThrow(() -> new Color(color));
+        final Color color = new Color(colorCode);
+
+        assertEquals(colorCode, color.getColor());
     }
 }

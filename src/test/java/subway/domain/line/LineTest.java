@@ -1,54 +1,106 @@
 package subway.domain.line;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import subway.domain.section.Section;
-import subway.domain.section.Sections;
 import subway.domain.station.Station;
-import subway.domain.station.Stations;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LineTest {
 
     @Test
-    @DisplayName("역에 개수에 따른 간선의 개수가 올바르지 않으면 에러를 발생합니다.")
+    @DisplayName("라인을 처음에 이름과 색상으로 생성합니다.")
     void validate_stations_sections_size() {
         // given
-        Station lestStation = new Station("잠실역");
-        Station rightStation = new Station("삼성역");
-        Station anotherStation = new Station("강남역");
-        Stations stations = new Stations(List.of(lestStation, rightStation, anotherStation));
-        Sections sections = new Sections(List.of(new Section(1L, lestStation, rightStation, 100)));
+        String lineName = "2";
+        String colorCode = "#FFFFFF";
+        Line line = new Line(lineName, colorCode);
 
         // when + then
-        assertThatThrownBy(() -> new Line(1L, "2호선", "#111111", stations, sections))
-            .isInstanceOf(IllegalArgumentException.class);
+        assertEquals(lineName, line.getName());
+        assertEquals(colorCode, line.getColor());
     }
 
     @Test
-    @DisplayName("역에 개수에 따른 간선의 개수가 올바르면 노선이 생성됩니다.")
-    void generate_line_success() {
+    @DisplayName("역에 두개의 역을 등록해 역을 초기화합니다.")
+    void init_line_success() {
         // given
-        Station lestStation = new Station("잠실역");
+        String lineName = "2";
+        String colorCode = "#FFFFFF";
+        Line line = new Line(lineName, colorCode);
+        Station leftStation = new Station("잠실역");
         Station rightStation = new Station("삼성역");
-        Stations stations = new Stations(List.of(lestStation, rightStation));
-        Sections sections = new Sections(List.of(new Section(1L, lestStation, rightStation, 100)));
 
-        // when + then
-        assertDoesNotThrow(() -> new Line(1L, "2호선", "#111111", stations, sections));
+        // when
+        line.initStations(leftStation, rightStation, 10);
+
+        // then
+        assertEquals(lineName, line.getName());
+        assertEquals(colorCode, line.getColor());
+        assertEquals(2, line.getStations().size());
     }
 
     @Test
-    @DisplayName("역과 간선의 개수가 0개면 노선이 생성됩니다.")
-    void generate_line_no_station_success() {
+    @DisplayName("노선에 종점을 추가합니다.")
+    void add_last_station() {
         // given
-        Stations stations = new Stations(List.of());
-        Sections sections = new Sections(List.of());
+        String lineName = "2";
+        String colorCode = "#FFFFFF";
+        Line line = new Line(lineName, colorCode);
+        Station leftStation = new Station(1L, "left");
+        Station rightStation = new Station(2L, "right");
+        Station lastStation = new Station(3L, "last");
+        line.initStations(leftStation, rightStation, 10);
 
-        // when + then
-        assertDoesNotThrow(() -> new Line(1L, "2호선", "#111111", stations, sections));
+        // when
+        line.addLastStation(rightStation, lastStation, 10);
+
+        // then
+        assertEquals(lineName, line.getName());
+        assertEquals(colorCode, line.getColor());
+        assertEquals(3, line.getStations().size());
+    }
+
+    @Test
+    @DisplayName("노선에 가운데 역을 추가합니다.")
+    void add_inner_station() {
+        // given
+        String lineName = "2";
+        String colorCode = "#FFFFFF";
+        Line line = new Line(lineName, colorCode);
+        Station leftStation = new Station(1L, "left");
+        Station rightStation = new Station(2L, "right");
+        Station centerStation = new Station(3L, "last");
+        line.initStations(leftStation, rightStation, 10);
+
+        // when
+        line.addInnerStation(leftStation, 5, rightStation, 5, centerStation);
+
+        // then
+        assertEquals(lineName, line.getName());
+        assertEquals(colorCode, line.getColor());
+        assertEquals(3, line.getStations().size());
+    }
+
+    @Test
+    @DisplayName("노선의 가운데 역을 삭제합니다.")
+    void delete_station() {
+        // given
+        String lineName = "2";
+        String colorCode = "#FFFFFF";
+        Line line = new Line(lineName, colorCode);
+        Station leftStation = new Station(1L, "left");
+        Station rightStation = new Station(2L, "right");
+        Station centerStation = new Station(3L, "last");
+        line.initStations(leftStation, rightStation, 10);
+        line.addInnerStation(leftStation, 5, rightStation, 5, centerStation);
+
+        // when
+        line.deleteStation(centerStation);
+
+        // then
+        assertEquals(lineName, line.getName());
+        assertEquals(colorCode, line.getColor());
+        assertEquals(2, line.getStations().size());
     }
 }

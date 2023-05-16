@@ -1,9 +1,9 @@
 package subway.data;
 
-import subway.domain.station.Station;
+import subway.entity.StationEntity;
 
 public class StationFixture {
 
-    public final static Station JAMSIL = new Station("잠실역");
+    public final static StationEntity JAMSIL = new StationEntity(1L, "잠실역");
 
 }

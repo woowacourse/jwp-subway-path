@@ -5,18 +5,18 @@ import java.util.Objects;
 public class Station {
 
     private Long id;
-    private Name name;
+    private StationName stationName;
 
     public Station() {
     }
 
-    public Station(final Long id, final String name) {
+    public Station(final Long id, final String stationName) {
         this.id = id;
-        this.name = new Name(name);
+        this.stationName = new StationName(stationName);
     }
 
-    public Station(final String name) {
-        this(null, name);
+    public Station(final String stationName) {
+        this(null, stationName);
     }
 
     public Long getId() {
@@ -24,7 +24,7 @@ public class Station {
     }
 
     public String getName() {
-        return name.getName();
+        return stationName.getName();
     }
 
     @Override
@@ -36,11 +36,11 @@ public class Station {
             return false;
         }
         Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        return id.equals(station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }

@@ -1,12 +1,14 @@
 package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -14,6 +16,15 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
+
+    private RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+            new SectionEntity(
+                    rs.getLong("id"),
+                    rs.getLong("line_id"),
+                    rs.getLong("left_station_id"),
+                    rs.getLong("right_station_id"),
+                    rs.getInt("distance")
+            );
 
     public SectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -33,13 +44,13 @@ public class SectionDao {
         return new SectionEntity(sectionId, sectionEntity.getLineId(), sectionEntity.getLeftStationId(), sectionEntity.getRightStationId(), sectionEntity.getDistance());
     }
 
-    public void deleteById(final Long id) {
-        String sql = "DELETE FROM SECTION WHERE id = ?";
-        jdbcTemplate.update(sql, id);
-    }
-
-    public void deleteAllSectionsByLineId(Long lineId) {
+    public void deleteByLineId(final Long lineId) {
         String sql = "DELETE FROM SECTION WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
+    }
+
+    public List<SectionEntity> findByLineId(Long lineId) {
+        String sql = "SELECT id, line_id, left_station_id, right_station_id, distance FROM SECTION WHERE line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 }

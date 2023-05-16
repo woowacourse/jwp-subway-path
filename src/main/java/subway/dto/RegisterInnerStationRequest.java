@@ -12,7 +12,7 @@ public class RegisterInnerStationRequest {
     }
 
     public RegisterInnerStationRequest(final String newStationName, String leftBaseStationName, int leftDistance, String rightBaseStationName,
-        int rightDistance) {
+                                       int rightDistance) {
         this.newStationName = newStationName;
         this.leftBaseStationName = leftBaseStationName;
         this.leftDistance = leftDistance;

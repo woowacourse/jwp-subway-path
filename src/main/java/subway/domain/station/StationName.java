@@ -2,11 +2,11 @@ package subway.domain.station;
 
 import java.util.Objects;
 
-public class Name {
+public class StationName {
 
     private final String name;
 
-    public Name(final String name) {
+    public StationName(final String name) {
         validateNameIsBlank(name);
         this.name = name;
     }

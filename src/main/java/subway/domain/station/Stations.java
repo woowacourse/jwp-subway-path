@@ -3,7 +3,6 @@ package subway.domain.station;
 import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Collectors;
-import subway.domain.section.Sections;
 
 public class Stations {
 
@@ -25,8 +24,8 @@ public class Stations {
 
     private void validateStationDuplicateName(final List<Station> stations) {
         List<String> names = stations.stream()
-            .map(Station::getName)
-            .collect(Collectors.toList());
+                .map(Station::getName)
+                .collect(Collectors.toList());
 
         if (names.size() != new HashSet<>(names).size()) {
             throw new IllegalArgumentException("역 이름은 중복될 수 없습니다.");
@@ -37,23 +36,11 @@ public class Stations {
         return stations.size();
     }
 
-    public boolean isCorrectSectionsSize(final Sections sections) {
-        return stations.size() - 1 == sections.size();
-    }
-
     public boolean isEmpty() {
         return stations.isEmpty();
     }
 
     public List<Station> getStations() {
         return stations;
-    }
-
-    public Station getFirstStation() {
-        return stations.get(0);
-    }
-
-    public Station getLastStation() {
-        return stations.get(size() - 1);
     }
 }

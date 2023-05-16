@@ -2,11 +2,11 @@ package subway.domain.line;
 
 import java.util.Objects;
 
-public class Name {
+public class LineName {
 
     private final String name;
 
-    public Name(final String name) {
+    public LineName(final String name) {
         validateNameIsBlank(name);
         this.name = name;
     }
