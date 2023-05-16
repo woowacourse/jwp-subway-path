@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class Line {
 
@@ -53,12 +54,17 @@ public class Line {
             return;
         }
 
-        if (deleteSections.size() == 1) { // 종점을 삭제하는 경우
-            sections.removeFinalSection(deleteSections.getSections().get(0), deleteStation);
-            return;
+        List<Section> deleteMiddleStation = deleteSections.getSections()
+                .stream()
+                .filter(Section::isMiddleStation)
+                .collect(Collectors.toList());
+
+        if (deleteMiddleStation.size() == 2) {
+            sections.remove(deleteSections.getSections(), deleteStation);
         }
 
-        sections.remove(deleteSections.getSections(), deleteStation);
+        // 종점을 삭제하는 경우
+        sections.removeFinalSection(deleteMiddleStation.get(0), deleteStation);
     }
 
     public Long getId() {

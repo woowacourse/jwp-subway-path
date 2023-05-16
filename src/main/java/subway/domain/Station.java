@@ -7,7 +7,7 @@ public class Station {
     private final Long id;
     private final String name;
 
-    public Station() {
+    private Station() {
         this.id = null;
         this.name = null;
     }
@@ -33,7 +33,7 @@ public class Station {
     }
 
     public boolean isEmpty() {
-        return id == null && name.equals("");
+        return id == null && name == null;
     }
 
     public Long getId() {

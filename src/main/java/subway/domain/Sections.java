@@ -13,9 +13,9 @@ public class Sections {
 
     public void add(final Section section) {
         if (sections.isEmpty()) { // 노선에 해당하는 구간이 아무것도 없는 경우
-            sections.add(new Section(Station.empty(), section.getUpStation(), section.getDistance()));
+            sections.add(new Section(Station.empty(), section.getUpStation(), 0));
             sections.add(section);
-            sections.add(new Section(section.getDownStation(), Station.empty(), section.getDistance()));
+            sections.add(new Section(section.getDownStation(), Station.empty(), 0));
             return;
         }
 
@@ -46,7 +46,7 @@ public class Sections {
                 .filter(downSection -> downSection.getUpStation().isEmpty())
                 .findAny()
                 .ifPresent((target) -> {
-                    sections.add(new Section(Station.empty(), section.getUpStation(), section.getDistance()));
+                    sections.add(new Section(Station.empty(), section.getUpStation(), 0));
                     sections.remove(target);
                     sections.add(section);
                 });

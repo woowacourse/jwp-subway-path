@@ -31,12 +31,16 @@ public class Section {
         return station.equals(upStation) || station.equals(downStation);
     }
 
+    public boolean isMiddleStation() {
+        return upStation != null && downStation != null;
+    }
+
     public boolean isUpFinalStation() {
-        return upStation == null;
+        return upStation == null || upStation.isEmpty();
     }
 
     public boolean isDownFinalStation() {
-        return downStation == null;
+        return downStation == null || downStation.isEmpty();
     }
 
     public Long getId() {
