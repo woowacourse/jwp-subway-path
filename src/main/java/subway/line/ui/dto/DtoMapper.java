@@ -4,7 +4,7 @@ import subway.line.application.dto.LineCreationDto;
 import subway.line.application.dto.StationAdditionToLineDto;
 import subway.line.application.dto.StationDeletionFromLineDto;
 
-public class DtoMapper {
+class DtoMapper {
 
     private DtoMapper() {
     }
