@@ -78,6 +78,26 @@ class SectionRepositoryTest {
     }
 
     @Test
+    void 여러_Section들을_성공적으로_저장한다() {
+        // given
+        insertDummyData();
+
+        Station 낙성대역 = new Station(3L, "낙성대역");
+        stationDao.insert(낙성대역);
+
+        List<Section> sections = List.of(
+                new Section(_2호선, 신림역, 봉천역, new Distance(10)),
+                new Section(_2호선, 봉천역, 낙성대역, new Distance(9))
+        );
+
+        // when
+        sectionRepository.saveSections(sections);
+
+        // then
+        assertThat(sectionRepository.findAll()).hasSize(2);
+    }
+
+    @Test
     void 저장되어_있지_않은_Line이나_Station이_포함된_Section을_저장하면_예외가_발생한다() {
         // given
         Section section = new Section(_2호선, 신림역, 봉천역, new Distance(10));

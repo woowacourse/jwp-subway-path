@@ -25,16 +25,21 @@ public class SectionRepository {
     }
 
     public Section save(final Section section) {
-        SectionEntity sectionEntity = new SectionEntity(
-                section.getLine().getId(),
-                section.getUpStation().getId(),
-                section.getDownStation().getId(),
-                section.getDistance().getValue()
-        );
+        SectionEntity sectionEntity = toEntity(section);
 
         SectionEntity savedEntity = sectionDao.insert(sectionEntity);
 
         return toDomain(savedEntity);
+    }
+
+    public void saveSections(final List<Section> sections) {
+        List<SectionEntity> entities = sections.stream()
+                .map(this::toEntity)
+                .collect(toList());
+
+        for (final SectionEntity sectionEntity : entities) {
+            sectionDao.insert(sectionEntity);
+        }
     }
 
     public List<Section> findAll() {
@@ -56,6 +61,15 @@ public class SectionRepository {
                 stationDao.findById(sectionEntity.getUpStationId()),
                 stationDao.findById(sectionEntity.getDownStationId()),
                 new Distance(sectionEntity.getDistance())
+        );
+    }
+
+    private SectionEntity toEntity(final Section section) {
+        return new SectionEntity(
+                section.getLine().getId(),
+                section.getUpStation().getId(),
+                section.getDownStation().getId(),
+                section.getDistance().getValue()
         );
     }
 }
