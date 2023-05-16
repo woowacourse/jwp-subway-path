@@ -4,7 +4,7 @@ import subway.exception.InValidDistanceException;
 
 public class Distance {
     private static final int MIN_DISTANCE = 1;
-    private static final int MAX_DISTANCE = 10;
+    private static final int MAX_DISTANCE = 100;
 
     private final int distance;
 
