@@ -2,9 +2,11 @@ package subway.dao;
 
 import java.sql.PreparedStatement;
 import java.util.List;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import subway.exception.GlobalException;
 
 @Repository
 public class SectionDao {
@@ -32,13 +34,17 @@ public class SectionDao {
     public void insertAll(List<SectionEntity> sectionEntities) {
         String sql = "insert into SECTION (line_id, start_station_id, end_station_id, distance) values (?, ?, ?, ?)";
 
-        jdbcTemplate.batchUpdate(sql, sectionEntities, sectionEntities.size(),
-                (PreparedStatement preparedStatement, SectionEntity sectionEntity) -> {
-                    preparedStatement.setLong(1, sectionEntity.getLineId());
-                    preparedStatement.setLong(2, sectionEntity.getStartStationId());
-                    preparedStatement.setLong(3, sectionEntity.getEndStationId());
-                    preparedStatement.setInt(4, sectionEntity.getDistance());
-                });
+        try {
+            jdbcTemplate.batchUpdate(sql, sectionEntities, sectionEntities.size(),
+                    (PreparedStatement preparedStatement, SectionEntity sectionEntity) -> {
+                        preparedStatement.setLong(1, sectionEntity.getLineId());
+                        preparedStatement.setLong(2, sectionEntity.getStartStationId());
+                        preparedStatement.setLong(3, sectionEntity.getEndStationId());
+                        preparedStatement.setInt(4, sectionEntity.getDistance());
+                    });
+        } catch (DataIntegrityViolationException exception) {
+            throw new GlobalException("시작 역과 도착 역은 같을 수 없습니다.");
+        }
     }
 
     public void deleteAll() {
