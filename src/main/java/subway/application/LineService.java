@@ -7,6 +7,7 @@ import subway.domain.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
+import subway.exception.InvalidLineException;
 
 import java.util.Collections;
 import java.util.List;
@@ -58,7 +59,7 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long lineId) {
-        LineEntity findEntity = lineDao.findById(lineId);
+        LineEntity findEntity = lineDao.findById(lineId).orElseThrow(InvalidLineException::new);
 
         return makeLineResponse(findEntity, lineId);
     }

@@ -12,6 +12,7 @@ import subway.dto.LineResponse;
 import subway.dto.StationResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -74,7 +75,7 @@ class LineServiceTest {
         List<StationEntity> stationEntities = List.of(new StationEntity(1L, "인천역"), new StationEntity(2L, "서울역"));
         LineResponse lineResponse = new LineResponse(1L, "1호선",
                 List.of(new StationResponse(1L, "인천역"), new StationResponse(2L, "서울역")));
-        when(lineDao.findById(any())).thenReturn(findEntity);
+        when(lineDao.findById(any())).thenReturn(Optional.of(findEntity));
         when(sectionDao.findByLineId(any())).thenReturn(sectionEntities);
         when(stationDao.findAll()).thenReturn(stationEntities);
 

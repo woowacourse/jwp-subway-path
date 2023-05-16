@@ -11,6 +11,7 @@ import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.SectionRequest;
+import subway.exception.InvalidStationException;
 
 @Transactional(readOnly = true)
 @Service
@@ -61,7 +62,7 @@ public class SectionService {
         List<SectionEntity> sectionEntitiesOfLine = sectionDao.findByLineId(lineId);
 
         Sections sections = new Sections(toSections(sectionEntitiesOfLine));
-        sections.remove(toStation(stationDao.findById(stationId)));
+        sections.remove(toStation(stationDao.findById(stationId).orElseThrow(InvalidStationException::new)));
 
         sectionDao.deleteAllById(lineId);
         sectionDao.insertAll(toSectionEntities(lineId, sections.getSections()));

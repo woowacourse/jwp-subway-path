@@ -29,7 +29,7 @@ class LineDaoTest {
     void insert() {
         Long lineId = lineDao.insert(new LineEntity("1호선"));
 
-        assertThat(lineId).isEqualTo(lineDao.findById(lineId).getId());
+        assertThat(lineId).isEqualTo(lineDao.findById(lineId).get().getId());
     }
 
     @Test
@@ -53,7 +53,7 @@ class LineDaoTest {
     void findById() {
         Long lineId = lineDao.insert(new LineEntity("2호선"));
 
-        LineEntity line = lineDao.findById(lineId);
+        LineEntity line = lineDao.findById(lineId).get();
 
         assertAll(
                 () -> assertThat(line.getName()).isEqualTo("2호선"),

@@ -13,6 +13,7 @@ import subway.dao.StationEntity;
 import subway.dto.SectionRequest;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyList;
@@ -52,7 +53,7 @@ class SectionServiceTest {
         List<StationEntity> stationEntities = List.of(new StationEntity(1L, "인천역"), new StationEntity(2L, "서울역"));
         when(sectionDao.findByLineId(any())).thenReturn(sectionEntities);
         when(stationDao.findAll()).thenReturn(stationEntities);
-        when(stationDao.findById(any())).thenReturn(new StationEntity("서울역"));
+        when(stationDao.findById(any())).thenReturn(Optional.of(new StationEntity("서울역")));
         doNothing().when(sectionDao).deleteAllById(any());
         doNothing().when(sectionDao).insertAll(any());
 

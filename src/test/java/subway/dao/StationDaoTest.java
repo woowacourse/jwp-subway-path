@@ -42,7 +42,7 @@ class StationDaoTest {
         StationEntity stationEntity = new StationEntity("잠실역");
         Long stationId = stationDao.insert(stationEntity);
 
-        StationEntity station = stationDao.findById(stationId);
+        StationEntity station = stationDao.findById(stationId).get();
 
         assertAll(
                 () -> assertThat(station.getId()).isEqualTo(stationId),
