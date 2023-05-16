@@ -10,8 +10,9 @@ import subway.line.domain.StationRepository;
 import subway.line.exception.station.StationException;
 import subway.path.application.dto.ShortestRouteResponse;
 import subway.path.domain.Path;
+import subway.path.domain.PaymentLines;
 import subway.path.domain.ShortestRouteService;
-import subway.path.domain.payment.PaymentLines;
+import subway.path.domain.discount.DiscountPolicy;
 import subway.path.domain.payment.PaymentPolicy;
 
 @Transactional(readOnly = true)
@@ -22,15 +23,18 @@ public class PathService {
     private final LineRepository lineRepository;
     private final ShortestRouteService shortestRouteService;
     private final PaymentPolicy paymentPolicy;
+    private final DiscountPolicy discountPolicy;
 
     public PathService(final StationRepository stationRepository,
                        final LineRepository lineRepository,
                        final ShortestRouteService shortestRouteService,
-                       final PaymentPolicy paymentPolicy) {
+                       final PaymentPolicy paymentPolicy,
+                       final DiscountPolicy discountPolicy) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.shortestRouteService = shortestRouteService;
         this.paymentPolicy = paymentPolicy;
+        this.discountPolicy = discountPolicy;
     }
 
     public ShortestRouteResponse findShortestRoute(final String startStationName, final String endStationName) {
@@ -39,7 +43,7 @@ public class PathService {
         final Path path = shortestRouteService.shortestRoute(
                 new Path(lineRepository.findAll()), start, end);
         final Path continousPath = path.continuousPathWithStartStation(start);
-        final PaymentLines paymentLines = new PaymentLines(continousPath, paymentPolicy);
+        final PaymentLines paymentLines = new PaymentLines(continousPath, paymentPolicy, discountPolicy);
         return ShortestRouteResponse.from(paymentLines);
     }
 

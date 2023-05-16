@@ -37,6 +37,8 @@ import subway.line.domain.StationRepository;
 import subway.line.exception.station.StationException;
 import subway.path.application.dto.ShortestRouteResponse;
 import subway.path.domain.ShortestRouteService;
+import subway.path.domain.discount.AgeGroupDiscountPolicy;
+import subway.path.domain.discount.DiscountPolicy;
 import subway.path.domain.payment.PaymentPolicy;
 import subway.path.exception.PathException;
 import subway.path.infrastructure.shortestpath.GraphCache;
@@ -51,10 +53,11 @@ class PathServiceTest {
     private final LineRepository lineRepository = mock(LineRepository.class);
     private final StationRepository stationRepository = mock(StationRepository.class);
     private final PaymentPolicy paymentPolicy = mock(PaymentPolicy.class);
+    private final DiscountPolicy discountPolicy = new AgeGroupDiscountPolicy();
     private final ShortestRouteService shortestRouteService =
             new JgraphtShortestRoute(new LineDispatcher(), new GraphCache());
     private final PathService pathService =
-            new PathService(stationRepository, lineRepository, shortestRouteService, paymentPolicy);
+            new PathService(stationRepository, lineRepository, shortestRouteService, paymentPolicy, discountPolicy);
 
     @Nested
     class 최단_경로_조회_시 {
@@ -132,7 +135,14 @@ class PathServiceTest {
                             "3호선: 역1-[10km]-역7"
                     );
             assertThat(shortestRoute.getTransferCount()).isEqualTo(2);
-            assertThat(shortestRoute.getTotalFee()).isEqualTo(2000);
+            assertThat(shortestRoute.getFeeInfos())
+                    .extracting(it -> it.getInfo() + ": " + it.getFee())
+                    .containsExactly(
+                            "영유아: 0",
+                            "어린이: 825",
+                            "청소년: 1320",
+                            "성인: 2000",
+                            "노인: 0");
             assertThat(shortestRoute.getTransferStations())
                     .containsExactly("역3", "역1");
         }

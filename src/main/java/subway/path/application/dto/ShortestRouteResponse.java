@@ -4,40 +4,50 @@ import static java.util.stream.Collectors.toList;
 
 import java.util.ArrayList;
 import java.util.List;
-import subway.line.domain.Line;
-import subway.line.domain.Section;
 import subway.path.domain.Path;
-import subway.path.domain.payment.PaymentLines;
+import subway.path.domain.PaymentLines;
+import subway.path.domain.discount.DiscountResult;
 
 public class ShortestRouteResponse {
 
     private final List<SectionInfo> sectionInfos;
+    private final List<FeeInfo> feeInfos;
     private final List<String> transferStations;
     private final int transferCount;
     private final int totalDistance;
-    private final int totalFee;
 
     public ShortestRouteResponse(final List<SectionInfo> sectionInfos,
+                                 List<FeeInfo> feeInfos,
                                  final List<String> transferStations,
-                                 final int totalDistance,
-                                 final int totalFee) {
+                                 final int totalDistance) {
         this.sectionInfos = new ArrayList<>(sectionInfos);
+        this.feeInfos = new ArrayList<>(feeInfos);
         this.transferStations = new ArrayList<>(transferStations);
         this.totalDistance = totalDistance;
         this.transferCount = transferStations.size();
-        this.totalFee = totalFee;
     }
 
     public static ShortestRouteResponse from(final PaymentLines paymentLines) {
         final Path path = paymentLines.lines();
-        final List<SectionInfo> sectionInfoList = path.lines().stream()
+        final DiscountResult discountResult = paymentLines.discountFee();
+        return new ShortestRouteResponse(
+                toSectionInfos(path),
+                toFeeInfos(discountResult),
+                toTransferStations(path),
+                path.totalDistance());
+    }
+
+    private static List<SectionInfo> toSectionInfos(final Path path) {
+        return path.lines().stream()
                 .flatMap(it -> SectionInfo.from(it).stream())
                 .collect(toList());
-        return new ShortestRouteResponse(
-                sectionInfoList,
-                toTransferStations(path),
-                path.totalDistance(),
-                paymentLines.calculateFee());
+    }
+
+    private static List<FeeInfo> toFeeInfos(final DiscountResult discountResult) {
+        return discountResult.feeByDiscountInfo().entrySet()
+                .stream()
+                .map(it -> new FeeInfo(it.getKey(), it.getValue()))
+                .collect(toList());
     }
 
     private static List<String> toTransferStations(final Path path) {
@@ -51,6 +61,10 @@ public class ShortestRouteResponse {
         return sectionInfos;
     }
 
+    public List<FeeInfo> getFeeInfos() {
+        return feeInfos;
+    }
+
     public List<String> getTransferStations() {
         return transferStations;
     }
@@ -61,50 +75,5 @@ public class ShortestRouteResponse {
 
     public int getTotalDistance() {
         return totalDistance;
-    }
-
-    public int getTotalFee() {
-        return totalFee;
-    }
-
-    public static class SectionInfo {
-        private final String line;
-        private final String fromStation;
-        private final String toStation;
-        private final int distance;
-
-        public SectionInfo(final String line, final String fromStation, final String toStation, final int distance) {
-            this.line = line;
-            this.fromStation = fromStation;
-            this.toStation = toStation;
-            this.distance = distance;
-        }
-
-        public static SectionInfo of(final String line, final Section section) {
-            return new SectionInfo(line, section.up().name(), section.down().name(), section.distance());
-        }
-
-        public static List<SectionInfo> from(final Line line) {
-            return line.sections()
-                    .stream()
-                    .map(it -> SectionInfo.of(line.name(), it))
-                    .collect(toList());
-        }
-
-        public String getLine() {
-            return line;
-        }
-
-        public String getFromStation() {
-            return fromStation;
-        }
-
-        public String getToStation() {
-            return toStation;
-        }
-
-        public int getDistance() {
-            return distance;
-        }
     }
 }

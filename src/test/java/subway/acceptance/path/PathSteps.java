@@ -44,8 +44,10 @@ public class PathSteps {
                 .containsExactly(sectionInfos);
     }
 
-    public static void 최단경로의_요금은(final ShortestRouteResponse response, final int fee) {
-        assertThat(response.getTotalFee()).isEqualTo(fee);
+    public static void 최단경로의_요금은(final ShortestRouteResponse response, final String... feeInfos) {
+        assertThat(response.getFeeInfos())
+                .extracting(it -> it.getInfo() + ": " + it.getFee())
+                .containsExactly(feeInfos);
     }
 
     public static void 경로가_없다(final ExceptionResponse response) {
