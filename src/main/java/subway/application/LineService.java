@@ -86,4 +86,26 @@ public class LineService {
                 .map(line -> findLineResponseByName(line.getName()))
                 .collect(Collectors.toUnmodifiableList());
     }
+
+    public void deleteLineById(Long lineId) {
+        if (lineRepository.registeredStationsById(lineId)) {
+            throw new IllegalArgumentException("노선에 역이 등록되어 있으면 삭제할 수 없습니다.");
+        }
+        lineRepository.deleteById(lineId);
+    }
+
+    public LineResponse updateLine(Long lineId, LineRequest request) {
+        Line line = lineRepository.findById(lineId);
+        Line persistLine = lineRepository.save(new Line(line.getId(), request.getName(), request.getColor(), line.getSections(), line.getUpBoundStation(), line.getDownBoundStation()));
+        return LineResponse.of(persistLine);
+    }
+
+    public LineResponse findLineResponseById(Long id) {
+        Line line = lineRepository.findById(id);
+        List<StationResponse> stationResponses = line.getStations().getStations().stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toUnmodifiableList());
+
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stationResponses);
+    }
 }

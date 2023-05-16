@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,6 +37,12 @@ public class LineController {
         return ResponseEntity.created(URI.create("/lines/" + line.getId())).body(line);
     }
 
+    @PutMapping("/{lineId}")
+    public ResponseEntity<LineResponse> updateLine(@PathVariable Long lineId, @RequestBody LineRequest lineRequest) {
+        LineResponse line = lineService.updateLine(lineId, lineRequest);
+        return ResponseEntity.ok().body(line);
+    }
+
     @PostMapping("/{name}/stations")
     public ResponseEntity<Void> registerStations(@PathVariable String name, @RequestBody RegisterStationsRequest registerStationsRequest) {
         lineService.registerInitStations(name, registerStationsRequest);
@@ -55,9 +62,9 @@ public class LineController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/{name}")
-    public ResponseEntity<LineResponse> findLineByName(@PathVariable String name) {
-        return ResponseEntity.ok(lineService.findLineResponseByName(name));
+    @GetMapping("/{id}")
+    public ResponseEntity<LineResponse> findLineById(@PathVariable Long id) {
+        return ResponseEntity.ok(lineService.findLineResponseById(id));
     }
 
     @GetMapping()
@@ -68,6 +75,12 @@ public class LineController {
     @DeleteMapping("/{lineName}/stations/{stationName}")
     public ResponseEntity<Void> deleteStationInLine(@PathVariable String lineName, @PathVariable String stationName) {
         lineService.deleteStation(lineName, stationName);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/{lineId}")
+    public ResponseEntity<Void> deleteLineById(@PathVariable Long lineId) {
+        lineService.deleteLineById(lineId);
         return ResponseEntity.noContent().build();
     }
 

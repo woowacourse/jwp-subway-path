@@ -72,4 +72,18 @@ public class LineDao {
 
         return new LineEntity(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getUpBoundStationId(), lineEntity.getDownBoundStationId());
     }
+
+    public void deleteById(Long lineId) {
+        String sql = "DELETE FROM LINE WHERE id = ?";
+        jdbcTemplate.update(sql, lineId);
+    }
+
+    public Optional<LineEntity> findById(Long lineId) {
+        String sql = "SELECT id, name, color, upbound_station_id, downbound_station_id FROM LINE WHERE id = ?";
+        try {
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, lineId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
 }

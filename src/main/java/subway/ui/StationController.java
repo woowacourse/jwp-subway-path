@@ -1,8 +1,5 @@
 package subway.ui;
 
-import java.net.URI;
-import java.sql.SQLException;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,6 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.StationService;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+
+import java.net.URI;
+import java.sql.SQLException;
+import java.util.List;
 
 @RestController
 @RequestMapping("/stations")

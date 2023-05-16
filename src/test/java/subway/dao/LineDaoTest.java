@@ -119,4 +119,33 @@ public class LineDaoTest {
         assertThat(updatedLine.getName()).isEqualTo(updateName);
         assertThat(updatedLine.getColor()).isEqualTo(updateColor);
     }
+
+    @DisplayName("id로 제거한다.")
+    @Test
+    public void delete_by_id() {
+        //given
+        Long lineId = 1L;
+        lineDao.deleteById(lineId);
+
+        //when
+        Optional<LineEntity> optionalLine = lineDao.findById(lineId);
+
+        //then
+        assertThat(optionalLine.isEmpty()).isTrue();
+    }
+
+    @DisplayName("id로 조회한다.")
+    @Test
+    public void find_by_id() {
+        //given
+        LineEntity inserted = lineDao.insert(new LineEntity(null,"test", "#DDDDDD", null, null));
+        Long id = inserted.getId();
+
+        //when
+        Optional<LineEntity> optionalLine = lineDao.findById(id);
+        LineEntity line = optionalLine.get();
+
+        //then
+        assertThat(id).isEqualTo(line.getId());
+    }
 }

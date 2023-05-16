@@ -9,6 +9,8 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.jdbc.JdbcTestUtils;
 import subway.entity.LineStationEntity;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
@@ -69,5 +71,35 @@ public class LineStationDaoTest {
         assertThat(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "LINE_STATION", "LINE_ID = 1 AND STATION_ID = 1")).isEqualTo(0);
         assertThat(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "LINE_STATION", "LINE_ID = 2 AND STATION_ID = 1")).isEqualTo(1);
         assertThat(JdbcTestUtils.countRowsInTableWhere(jdbcTemplate, "LINE_STATION", "LINE_ID = 1 AND STATION_ID = 2")).isEqualTo(1);
+    }
+
+    @DisplayName("station_id로 조회한다.")
+    @Test
+    public void find_by_station_id() {
+        //given
+        Long stationId = 1L;
+        LineStationEntity lineStationEntity = new LineStationEntity(stationId, 1L);
+        lineStationDao.insert(lineStationEntity);
+
+        // when
+        List<LineStationEntity> lineStations = lineStationDao.findByStationId(stationId);
+
+        //then
+        assertThat(lineStations.size()).isEqualTo(1);
+    }
+
+    @DisplayName("line_id로 조회한다.")
+    @Test
+    public void find_by_line_id() {
+        //given
+        Long lineId = 1L;
+        LineStationEntity lineStationEntity = new LineStationEntity(1L, lineId);
+        lineStationDao.insert(lineStationEntity);
+
+        // when
+        List<LineStationEntity> lineStations = lineStationDao.findByLineId(lineId);
+
+        //then
+        assertThat(lineStations.size()).isEqualTo(1);
     }
 }

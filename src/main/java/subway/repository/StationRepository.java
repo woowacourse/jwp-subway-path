@@ -1,6 +1,7 @@
 package subway.repository;
 
 import org.springframework.stereotype.Repository;
+import subway.dao.LineStationDao;
 import subway.dao.StationDao;
 import subway.domain.station.Station;
 import subway.entity.StationEntity;
@@ -12,9 +13,11 @@ import java.util.stream.Collectors;
 public class StationRepository {
 
     private final StationDao stationDao;
+    private final LineStationDao lineStationDao;
 
-    public StationRepository(StationDao stationDao) {
+    public StationRepository(StationDao stationDao, LineStationDao lineStationDao) {
         this.stationDao = stationDao;
+        this.lineStationDao = lineStationDao;
     }
 
     public Station findByName(String stationName) {
@@ -40,5 +43,13 @@ public class StationRepository {
         }
         StationEntity inserted = stationDao.insert(new StationEntity(station.getId(), station.getName()));
         return new Station(inserted.getId(), inserted.getName());
+    }
+
+    public boolean registeredLineById(Long id) {
+        return lineStationDao.findByStationId(id).size() >= 1;
+    }
+
+    public void deleteById(Long id) {
+        stationDao.deleteById(id);
     }
 }

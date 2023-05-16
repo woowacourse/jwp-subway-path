@@ -8,20 +8,15 @@ import subway.entity.LineStationEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
 public class LineStationDao {
 
+    private static final RowMapper<LineStationEntity> rowMapper = (rs, rows) -> new LineStationEntity(rs.getLong("id"), rs.getLong("station_id"), rs.getLong("line_id"));
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-    private RowMapper<LineStationEntity> rowMapper = ((rs, rowNum) ->
-            new LineStationEntity(
-                    rs.getLong("id"),
-                    rs.getLong("station_id"),
-                    rs.getLong("line_id")
-            ));
-
 
     public LineStationDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
@@ -47,5 +42,15 @@ public class LineStationDao {
     public void deleteByLineIdAndStationId(final Long lineId, final Long stationId) {
         String sql = "DELETE FROM LINE_STATION WHERE Line_id = ? AND station_id = ?";
         jdbcTemplate.update(sql, lineId, stationId);
+    }
+
+    public List<LineStationEntity> findByStationId(Long stationId) {
+        String sql = "SELECT id, station_id, line_id FROM LINE_STATION WHERE station_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, stationId);
+    }
+
+    public List<LineStationEntity> findByLineId(Long lineId) {
+        String sql = "SELECT id, station_id, line_id FROM LINE_STATION WHERE line_id = ?";
+        return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 }

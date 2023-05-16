@@ -155,4 +155,18 @@ public class StationDaoTest {
         // then
         assertThat(exists).isFalse();
     }
+
+    @DisplayName("id로 제거한다.")
+    @Test
+    public void delete_by_id() {
+        // given
+        Long id = 1L;
+        stationDao.deleteById(id);
+
+        // when
+        Optional<StationEntity> optionalStation = stationDao.findById(id);
+
+        //then
+        assertThat(optionalStation.isEmpty()).isTrue();
+    }
 }

@@ -73,4 +73,9 @@ public class StationDao {
         String sql = "select count(*) from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, Integer.class, id) == 1;
     }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM STATION WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
 }

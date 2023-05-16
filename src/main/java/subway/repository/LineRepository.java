@@ -108,4 +108,21 @@ public class LineRepository {
         }
         return station.getId();
     }
+
+    public boolean registeredStationsById(Long lineId) {
+        return lineStationDao.findByLineId(lineId).size() >= 1;
+    }
+
+    public void deleteById(Long lineId) {
+        lineDao.deleteById(lineId);
+    }
+
+    public Line findById(Long lineId) {
+        LineEntity lineEntity = lineDao.findById(lineId).orElseThrow(RuntimeException::new);
+        Station upBoundStation = fetchStationById(lineEntity.getUpBoundStationId());
+        Station downBoundStation = fetchStationById(lineEntity.getDownBoundStationId());
+        List<Section> sections = sectionRepository.findByLineId(lineEntity.getId());
+
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), new Sections(sections), upBoundStation, downBoundStation);
+    }
 }

@@ -34,4 +34,17 @@ public class StationService {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
     }
+
+    public void updateStation(Long id, StationRequest stationRequest) {
+        Station station = stationRepository.findById(id);
+        Station update = new Station(station.getId(), stationRequest.getName());
+        stationRepository.save(update);
+    }
+
+    public void deleteStationById(Long id) {
+        if (stationRepository.registeredLineById(id)) {
+            throw new IllegalArgumentException("노선에 등록된 상태에서는 역을 제거할 수 없습니다.");
+        }
+        stationRepository.deleteById(id);
+    }
 }
