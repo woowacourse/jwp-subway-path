@@ -95,7 +95,7 @@ class LineServiceTest {
     @DisplayName("10km 이내의 거리에 대한 요금은 기본 운임으로 계산한다.")
     void defaultFare() {
         assertThat(lineService.calculateFare(9))
-                .isEqualTo(new BigDecimal("1,250"));
+                .isEqualTo(new BigDecimal("1250"));
     }
 
     @Test
