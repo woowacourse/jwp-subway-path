@@ -15,7 +15,6 @@ import subway.persistence.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static subway.persistence.entity.RowMapperUtil.sectionDetailRowMapper;
 import static subway.persistence.entity.RowMapperUtil.sectionEntityRowMapper;

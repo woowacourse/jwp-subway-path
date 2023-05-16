@@ -1,7 +1,5 @@
 package subway.presentation.dto.request;
 
-import org.springframework.format.annotation.NumberFormat;
-
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 

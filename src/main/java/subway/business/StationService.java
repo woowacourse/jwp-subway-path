@@ -3,9 +3,9 @@ package subway.business;
 import org.springframework.stereotype.Service;
 import subway.business.converter.station.StationEntityRequestResponseConverter;
 import subway.persistence.StationDao;
+import subway.persistence.entity.StationEntity;
 import subway.presentation.dto.request.StationRequest;
 import subway.presentation.dto.response.StationResponse;
-import subway.persistence.entity.StationEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;

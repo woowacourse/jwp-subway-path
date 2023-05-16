@@ -8,11 +8,10 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.exception.DuplicatedLineNameException;
-import subway.persistence.entity.LineEntity;
 import subway.exception.LineNotFoundException;
+import subway.persistence.entity.LineEntity;
 
 import javax.sql.DataSource;
-import java.util.List;
 
 import static subway.persistence.entity.RowMapperUtil.lineEntityRowMapper;
 

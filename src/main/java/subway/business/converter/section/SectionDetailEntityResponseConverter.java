@@ -1,7 +1,6 @@
 package subway.business.converter.section;
 
 import subway.persistence.entity.SectionDetailEntity;
-import subway.presentation.dto.response.LineDetailResponse;
 import subway.presentation.dto.response.LineResponse;
 import subway.presentation.dto.response.SectionResponse;
 import subway.presentation.dto.response.StationResponse;
