@@ -6,7 +6,9 @@ import java.util.Optional;
 
 public class SectionMap {
 
-    public static final String SECTIONMAP_EMPTY_EXCEPTION = "노선이 비어있습니다.";
+    public static final String SECTION_MAP_EMPTY_EXCEPTION = "해당 노선은 비어있습니다.";
+    public static final String STATION_NOT_EXIST_IN_LINE_EXCEPTION = "해당 역이 노선에 존재하지 않습니다.";
+    public static final String STATION_ALREADY_EXIST_IN_LINE_EXCEPTION = "해당 노선에 이미 존재하는 역입니다.";
     private final Map<Station, Section> sectionMap;
 
     public SectionMap() {
@@ -35,13 +37,17 @@ public class SectionMap {
         return sortedSectionMap;
     }
 
-    public void addInitialSection(final Station upStation, final Station downStation, final int distance) {
+    public Section addInitialSection(final Station upStation, final Station downStation, final int distance) {
         if (!sectionMap.isEmpty()) {
             throw new IllegalArgumentException("첫 역 추가 오류: 해당 노선은 비어있지 않습니다.");
         }
+        return addEndSection(upStation, downStation, distance);
+    }
 
+    private Section addEndSection(final Station upStation, final Station downStation, final int distance) {
         final Section section = new Section(upStation, downStation, distance);
         sectionMap.put(upStation, section);
+        return section;
     }
 
     public Section addSection(final Station upStation, final Station downStation, final int distance) {
@@ -49,28 +55,43 @@ public class SectionMap {
         final boolean isDownStationExist = isStationExist(downStation);
 
         if (isUpStationExist && isDownStationExist) {
-            throw new IllegalArgumentException("이미 노선에 존재하는 역입니다.");
+            throw new IllegalArgumentException(STATION_ALREADY_EXIST_IN_LINE_EXCEPTION);
+        }
+        if (upStation.equals(findDownEndstation())) {
+            return addEndSection(upStation, downStation, distance);
+        }
+        if (downStation.equals(findUpEndstation())) {
+            return addEndSection(upStation, downStation, distance);
         }
         if (isUpStationExist) {
-            return addSectionBasedUpStation(upStation, downStation, distance);
+            return addMiddleSectionBasedUpStation(upStation, downStation, distance);
         }
         if (isDownStationExist) {
-            return addSectionBasedDownStation(upStation, downStation, distance);
+            return addMiddleSectionBasedDownStation(upStation, downStation, distance);
         }
-        throw new IllegalArgumentException("해당 역이 노선에 존재하지 않습니다.");
+        throw new IllegalArgumentException(STATION_NOT_EXIST_IN_LINE_EXCEPTION);
     }
 
     private boolean isStationExist(final Station station) {
         return sectionMap.containsKey(station) || findDownEndstation().equals(station);
     }
 
-    private Section addSectionBasedUpStation(final Station upStation, final Station downStation, final int distance) {
-        if (upStation.equals(findDownEndstation())) {
-            final Section section = new Section(upStation, downStation, distance);
-            sectionMap.put(upStation, section);
-            return section;
+    private Station findDownEndstation() {
+        final Optional<Station> lastKey = sectionMap.keySet().stream()
+                .reduce((first, second) -> second);
+        if (lastKey.isEmpty()) {
+            throw new IllegalArgumentException(SECTION_MAP_EMPTY_EXCEPTION);
         }
+        return sectionMap.get(lastKey.get()).getDownStation();
+    }
 
+    private Station findUpEndstation() {
+        return sectionMap.keySet().stream()
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(SECTION_MAP_EMPTY_EXCEPTION));
+    }
+
+    private Section addMiddleSectionBasedUpStation(final Station upStation, final Station downStation, final int distance) {
         final Section oldSection = sectionMap.get(upStation);
         validateDistance(distance, oldSection.getDistance());
 
@@ -83,15 +104,8 @@ public class SectionMap {
         return newUpSection;
     }
 
-    private Section addSectionBasedDownStation(final Station upStation, final Station downStation, final int distance) {
-        if (downStation.equals(findUpEndstation())) {
-            final Section section = new Section(upStation, downStation, distance);
-            sectionMap.put(upStation, section);
-            return section;
-        }
-
-        final Station previousStation = findPreviousStation(downStation)
-                .orElseThrow(() -> new IllegalArgumentException("이전 역이 존재하지 않습니다."));
+    private Section addMiddleSectionBasedDownStation(final Station upStation, final Station downStation, final int distance) {
+        final Station previousStation = findPreviousStation(downStation);
         final Section oldSection = sectionMap.get(previousStation);
         validateDistance(distance, oldSection.getDistance());
 
@@ -104,31 +118,48 @@ public class SectionMap {
         return newDownSection;
     }
 
-    private Station findDownEndstation() {
-        final Optional<Station> lastKey = sectionMap.keySet().stream()
-                .reduce((first, second) -> second);
-        if (lastKey.isEmpty()) {
-            throw new IllegalArgumentException(SECTIONMAP_EMPTY_EXCEPTION);
-        }
-        return sectionMap.get(lastKey.get()).getDownStation();
-    }
-
     private void validateDistance(final int distance, final int oldDistance) {
         if (distance >= oldDistance) {
             throw new IllegalArgumentException("역 추가 오류 : 추가할 수 없는 거리입니다.");
         }
     }
 
-    private Station findUpEndstation() {
-        return sectionMap.keySet().stream()
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(SECTIONMAP_EMPTY_EXCEPTION));
-    }
-
-    private Optional<Station> findPreviousStation(final Station station) {
+    private Station findPreviousStation(final Station station) {
         return sectionMap.keySet().stream()
                 .filter(s -> sectionMap.get(s).getDownStation().equals(station))
-                .findFirst();
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("이전 역이 존재하지 않습니다."));
+    }
+
+    public void deleteStation(final Station station) {
+        if (!isStationExist(station)) {
+            throw new IllegalArgumentException(STATION_NOT_EXIST_IN_LINE_EXCEPTION);
+        }
+        if (sectionMap.size() == 1) {
+            sectionMap.clear();
+            return;
+        }
+        if (station.equals(findUpEndstation())) {
+            sectionMap.remove(findUpEndstation());
+            return;
+        }
+        if (station.equals(findDownEndstation())) {
+            sectionMap.remove(findPreviousStation(station));
+            return;
+        }
+        deleteMiddleStation(station);
+    }
+
+    private void deleteMiddleStation(final Station station) {
+        final Station previousStation = findPreviousStation(station);
+        final Section oldUpSection = sectionMap.get(previousStation);
+        final Section oldDownSection = sectionMap.get(station);
+
+        final int newDistance = oldUpSection.getDistance() + oldDownSection.getDistance();
+        final Section newSection = new Section(oldUpSection.getUpStation(), oldDownSection.getDownStation(), newDistance);
+
+        sectionMap.remove(station);
+        sectionMap.replace(previousStation, newSection);
     }
 
     public Map<Station, Section> getSectionMap() {
