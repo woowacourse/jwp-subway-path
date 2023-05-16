@@ -1,9 +1,9 @@
 package subway.acceptance.line;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.springframework.http.HttpStatus.CREATED;
-import static org.springframework.http.HttpStatus.OK;
 import static subway.acceptance.common.CommonSteps.발생한_예외를_검증한다;
+import static subway.acceptance.common.CommonSteps.요청_결과의_상태를_검증한다;
+import static subway.acceptance.common.CommonSteps.정상_생성;
+import static subway.acceptance.common.CommonSteps.정상_요청;
 import static subway.acceptance.common.LocationAsserter.location_헤더를_검증한다;
 import static subway.acceptance.line.LineStationSteps.노선에_역_추가_요청;
 import static subway.acceptance.line.LineSteps.노선_생성_요청;
@@ -18,9 +18,6 @@ import static subway.acceptance.station.StationSteps.역_생성_요청;
 import static subway.line.exception.line.LineExceptionType.SURCHARGE_IS_NEGATIVE;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -59,13 +56,13 @@ public class LineControllerIntegrationTest {
         노선에_역_추가_요청("1호선", "잠실역", "사당역", 5);
 
         // when
-        final ExtractableResponse<Response> response = 노선_조회_요청(생성된_노선_아이디);
+        final var 노선_조회_응답 = 노선_조회_요청(생성된_노선_아이디);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(OK.value());
-        단일_노선의_이름을_검증한다(response, "1호선");
-        단일_노선의_가격을_검증한다(response, 1000);
-        노선에_포함된_N번째_구간을_검증한다(response, 0, "잠실역", "사당역", 5);
+        요청_결과의_상태를_검증한다(노선_조회_응답, 정상_요청);
+        단일_노선의_이름을_검증한다(노선_조회_응답, "1호선");
+        단일_노선의_가격을_검증한다(노선_조회_응답, 1000);
+        노선에_포함된_N번째_구간을_검증한다(노선_조회_응답, 0, "잠실역", "사당역", 5);
     }
 
     @Test
@@ -82,11 +79,11 @@ public class LineControllerIntegrationTest {
         노선에_역_추가_요청("2호선", "건대역", "홍대역", 10);
 
         // when
-        final ExtractableResponse<Response> response = 노선_전체_조회_요청();
+        final var 노선_전체_조회_결과 = 노선_전체_조회_요청();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(OK.value());
-        final List<LineQueryResponse> result = 노선_전체_조회_결과(response);
+        요청_결과의_상태를_검증한다(노선_전체_조회_결과, 정상_요청);
+        final var result = 노선_전체_조회_결과(노선_전체_조회_결과);
 
         final LineQueryResponse 일호선_응답 = result.get(0);
         단일_노선의_이름을_검증한다(일호선_응답, "1호선");
@@ -110,11 +107,11 @@ public class LineControllerIntegrationTest {
             final LineCreateRequest request = new LineCreateRequest("1호선", 0);
 
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+            final var 노선_생성_응답 = 노선_생성_요청(request);
 
             // then
-            assertThat(response.statusCode()).isEqualTo(CREATED.value());
-            location_헤더를_검증한다(response);
+            요청_결과의_상태를_검증한다(노선_생성_응답, 정상_생성);
+            location_헤더를_검증한다(노선_생성_응답);
         }
 
         @Test
@@ -125,7 +122,7 @@ public class LineControllerIntegrationTest {
             final LineCreateRequest request = new LineCreateRequest("1호선", -1);
 
             // when
-            final ExtractableResponse<Response> response = 노선_생성_요청(request);
+            final var response = 노선_생성_요청(request);
 
             // then
             발생한_예외를_검증한다(response, SURCHARGE_IS_NEGATIVE);

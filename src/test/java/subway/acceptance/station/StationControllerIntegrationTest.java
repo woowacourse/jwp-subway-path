@@ -1,12 +1,11 @@
 package subway.acceptance.station;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static subway.acceptance.common.CommonSteps.요청_결과의_상태를_검증한다;
+import static subway.acceptance.common.CommonSteps.정상_생성;
 import static subway.acceptance.common.LocationAsserter.location_헤더를_검증한다;
 import static subway.acceptance.station.StationSteps.역_생성_요청;
 
 import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -39,10 +38,10 @@ public class StationControllerIntegrationTest {
         final StationCreateRequest request = new StationCreateRequest("오리역");
 
         // when
-        final ExtractableResponse<Response> response = 역_생성_요청(request);
+        final var 역_생성_응답 = 역_생성_요청(request);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(201);
-        location_헤더를_검증한다(response);
+        요청_결과의_상태를_검증한다(역_생성_응답, 정상_생성);
+        location_헤더를_검증한다(역_생성_응답);
     }
 }

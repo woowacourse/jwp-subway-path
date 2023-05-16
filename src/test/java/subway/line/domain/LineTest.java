@@ -37,30 +37,21 @@ import subway.line.exception.line.LineException;
 @DisplayName("Line 은(는)")
 class LineTest {
 
+    private final Sections sections = new Sections(List.of(
+            new Section(역1, 역2, 4),
+            new Section(역2, 역3, 5),
+            new Section(역3, 역4, 200)
+    ));
+    final Line line = new Line("1호선", 0, sections);
+
     @Test
     void 상행_종점이_주어진_역과_일치하는지_확인한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", 0, sections);
-
         // when & then
         assertThat(line.upTerminalIsEqualTo(역1)).isTrue();
     }
 
     @Test
     void 하행_종점이_주어진_역과_일치하는지_확인한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", 0, sections);
-
         // when & then
         assertThat(line.downTerminalIsEqualTo(역4)).isTrue();
     }
@@ -68,11 +59,6 @@ class LineTest {
     @Test
     void 특정_구간의_포함_여부를_반환한다() {
         // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5)
-        ));
-        final Line line = new Line("1호선", 0, sections);
         final Section section1 = new Section(역1, 역2, 4);
         final Section section2 = new Section(역2, 역3, 5);
         final Section section4 = new Section(역2, 역1, 4);
@@ -89,55 +75,24 @@ class LineTest {
 
     @Test
     void 노선의_총_거리를_구한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", 0, sections);
-
         // when & then
         assertThat(line.totalDistance()).isEqualTo(209);
     }
 
     @Test
     void 상행_종점을_구한다() {
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", 0, sections);
-
         // when & then
         assertThat(line.upTerminal()).isEqualTo(역1);
     }
 
     @Test
     void 하행_종점을_구한다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", 0, sections);
-
         // when & then
         assertThat(line.downTerminal()).isEqualTo(역4);
     }
 
     @Test
     void 구간들을_뒤집는다() {
-        // given
-        final Sections sections = new Sections(List.of(
-                new Section(역1, 역2, 4),
-                new Section(역2, 역3, 5),
-                new Section(역3, 역4, 200)
-        ));
-        final Line line = new Line("1호선", 0, sections);
-
         // when
         final Line reverse = line.reverse();
 
@@ -157,10 +112,6 @@ class LineTest {
 
         // when & then
         assertThat(line1).isEqualTo(line2);
-    }
-
-    private void 포함된_노선들을_검증한다(final Line line, final String... sectionStrings) {
-        포함된_구간들을_검증한다(line.sections(), sectionStrings);
     }
 
     @Nested
@@ -204,7 +155,7 @@ class LineTest {
             line.addSection(middle2);
 
             // then
-            포함된_노선들을_검증한다(line,
+            포함된_구간들을_검증한다(line.sections(),
                     "출발역-[1km]-경유역1",
                     "경유역1-[5km]-경유역2",
                     "경유역2-[4km]-종착역"
@@ -226,7 +177,7 @@ class LineTest {
             line.addSection(top);
 
             // then
-            포함된_노선들을_검증한다(line,
+            포함된_구간들을_검증한다(line.sections(),
                     "출발역-[1km]-선릉",
                     "선릉-[7km]-잠실",
                     "잠실-[10km]-종착역"
@@ -249,7 +200,7 @@ class LineTest {
             line.addSection(down);
 
             // then
-            포함된_노선들을_검증한다(line,
+            포함된_구간들을_검증한다(line.sections(),
                     "출발역-[10km]-잠실",
                     "잠실-[7km]-선릉",
                     "선릉-[1km]-종착역"
@@ -328,7 +279,7 @@ class LineTest {
             line.removeStation(잠실);
 
             // then
-            포함된_노선들을_검증한다(line,
+            포함된_구간들을_검증한다(line.sections(),
                     "출발역-[15km]-잠실나루",
                     "잠실나루-[7km]-종착역"
             );
@@ -347,7 +298,7 @@ class LineTest {
             line.removeStation(출발역);
 
             // then
-            포함된_노선들을_검증한다(line,
+            포함된_구간들을_검증한다(line.sections(),
                     "잠실-[5km]-잠실나루",
                     "잠실나루-[7km]-종착역"
             );
@@ -366,7 +317,7 @@ class LineTest {
             line.removeStation(종착역);
 
             // then
-            포함된_노선들을_검증한다(line,
+            포함된_구간들을_검증한다(line.sections(),
                     "출발역-[10km]-잠실",
                     "잠실-[5km]-잠실나루"
             );

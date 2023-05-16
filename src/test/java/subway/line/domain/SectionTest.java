@@ -3,6 +3,7 @@ package subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static subway.line.domain.fixture.StationFixture.*;
 import static subway.line.exception.line.LineExceptionType.NON_POSITIVE_DISTANCE;
 import static subway.line.exception.line.LineExceptionType.UP_AND_DOWN_STATION_IS_SAME;
 
@@ -23,10 +24,10 @@ class SectionTest {
     @Test
     void 정보가_같은_두_역은_동등하다() {
         // given
-        final Section section1 = new Section(StationFixture.역1, StationFixture.역2, 10);
-        final Section section2 = new Section(StationFixture.역1, StationFixture.역2, 10);
-        final Section section3 = new Section(StationFixture.역2, StationFixture.역1, 10);
-        final Section section4 = new Section(StationFixture.역1, StationFixture.역2, 1);
+        final Section section1 = new Section(역1, 역2, 10);
+        final Section section2 = new Section(역1, 역2, 10);
+        final Section section3 = new Section(역2, 역1, 10);
+        final Section section4 = new Section(역1, 역2, 1);
 
         // when & then
         assertAll(
@@ -39,8 +40,8 @@ class SectionTest {
     @Test
     void 상대적으로_상행_구간인지_알_수_있다() {
         // given
-        final Section up = new Section(StationFixture.잠실, StationFixture.선릉, 10);
-        final Section down = new Section(StationFixture.선릉, StationFixture.건대입구, 2);
+        final Section up = new Section(잠실, 선릉, 10);
+        final Section down = new Section(선릉, 건대입구, 2);
 
         // when & then
         assertThat(up.isUpThan(down)).isTrue();
@@ -50,8 +51,8 @@ class SectionTest {
     @Test
     void 상대적으로_하행_구간인지_알_수_있다() {
         // given
-        final Section up = new Section(StationFixture.잠실, StationFixture.선릉, 10);
-        final Section down = new Section(StationFixture.선릉, StationFixture.건대입구, 2);
+        final Section up = new Section(잠실, 선릉, 10);
+        final Section down = new Section(선릉, 건대입구, 2);
 
         // when & then
         assertThat(up.isDownThan(down)).isFalse();
@@ -61,9 +62,9 @@ class SectionTest {
     @Test
     void 상행역_혹은_하행역이_동일한지_판단한다() {
         // given
-        final Section section1 = new Section(StationFixture.잠실, StationFixture.선릉, 10);
-        final Section section2 = new Section(StationFixture.잠실, StationFixture.역1, 18);
-        final Section section3 = new Section(StationFixture.역2, StationFixture.선릉, 12);
+        final Section section1 = new Section(잠실, 선릉, 10);
+        final Section section2 = new Section(잠실, 역1, 18);
+        final Section section3 = new Section(역2, 선릉, 12);
 
         // when & then
         assertAll(
@@ -76,22 +77,22 @@ class SectionTest {
     @Test
     void 특정_역을_포함하는지_확인한다() {
         // given
-        final Section section = new Section(StationFixture.역1, StationFixture.역2, 10);
+        final Section section = new Section(역1, 역2, 10);
 
         // when & then
         assertAll(
-                () -> assertThat(section.contain(StationFixture.역1)).isTrue(),
-                () -> assertThat(section.contain(StationFixture.역2)).isTrue(),
-                () -> assertThat(section.contain(StationFixture.역3)).isFalse()
+                () -> assertThat(section.contain(역1)).isTrue(),
+                () -> assertThat(section.contain(역2)).isTrue(),
+                () -> assertThat(section.contain(역3)).isFalse()
         );
     }
 
     @Test
     void 두_구간의_역이_모두_동일한지_확인한다() {
         // given
-        final Section section1 = new Section(StationFixture.역1, StationFixture.역2, 10);
-        final Section section2 = new Section(StationFixture.역2, StationFixture.역1, 5);
-        final Section section3 = new Section(StationFixture.역3, StationFixture.역2, 10);
+        final Section section1 = new Section(역1, 역2, 10);
+        final Section section2 = new Section(역2, 역1, 5);
+        final Section section3 = new Section(역3, 역2, 10);
 
         // when & then
         assertAll(
@@ -105,15 +106,15 @@ class SectionTest {
     @Test
     void 순서를_뒤바꾼다() {
         // given
-        final Section section = new Section(StationFixture.역1, StationFixture.역2, 10);
+        final Section section = new Section(역1, 역2, 10);
 
         // when
         final Section reverse = section.reverse();
 
         // then
         assertAll(
-                () -> assertThat(reverse.up()).isEqualTo(StationFixture.역2),
-                () -> assertThat(reverse.down()).isEqualTo(StationFixture.역1),
+                () -> assertThat(reverse.up()).isEqualTo(역2),
+                () -> assertThat(reverse.down()).isEqualTo(역1),
                 () -> assertThat(reverse.distance()).isEqualTo(10)
         );
     }
@@ -153,22 +154,22 @@ class SectionTest {
         @Test
         void 합쳐진_구간의_길이는_두_구간의_길이의_합과_동일하다() {
             // given
-            final Section up = new Section(StationFixture.잠실, StationFixture.선릉, 10);
-            final Section down = new Section(StationFixture.선릉, StationFixture.건대입구, 2);
+            final Section up = new Section(잠실, 선릉, 10);
+            final Section down = new Section(선릉, 건대입구, 2);
 
             // when
             final Section addedSection = up.plus(down);
             // then
             assertThat(addedSection.distance()).isEqualTo(12);
-            assertThat(addedSection.up()).isEqualTo(StationFixture.잠실);
-            assertThat(addedSection.down()).isEqualTo(StationFixture.건대입구);
+            assertThat(addedSection.up()).isEqualTo(잠실);
+            assertThat(addedSection.down()).isEqualTo(건대입구);
         }
 
         @Test
         void 연속되지_않은_두_구간을_더할시_예외() {
             // given
-            final Section up = new Section(StationFixture.잠실, StationFixture.선릉, 10);
-            final Section down = new Section(StationFixture.잠실나루, StationFixture.건대입구, 2);
+            final Section up = new Section(잠실, 선릉, 10);
+            final Section down = new Section(잠실나루, 건대입구, 2);
 
             // when & then
             final String message = assertThrows(LineException.class, () ->
@@ -184,16 +185,16 @@ class SectionTest {
         @Test
         void 큰_구간에서_작은_구간을_뺀_나머지를_구할_수_있다() {
             // given
-            final Section section1 = new Section(StationFixture.잠실, StationFixture.선릉, 10);
-            final Section section2 = new Section(StationFixture.잠실나루, StationFixture.선릉, 8);
+            final Section section1 = new Section(잠실, 선릉, 10);
+            final Section section2 = new Section(잠실나루, 선릉, 8);
 
             // when
             final Section remain = section1.minus(section2);
 
             // then
             assertAll(
-                    () -> assertThat(remain.up()).isEqualTo(StationFixture.잠실),
-                    () -> assertThat(remain.down()).isEqualTo(StationFixture.잠실나루),
+                    () -> assertThat(remain.up()).isEqualTo(잠실),
+                    () -> assertThat(remain.down()).isEqualTo(잠실나루),
                     () -> assertThat(remain.distance()).isEqualTo(2)
             );
         }
@@ -201,8 +202,8 @@ class SectionTest {
         @Test
         void 빼려는_구간의_크기가_더_크거나_동일하다면_예외() {
             // given
-            final Section section1 = new Section(StationFixture.잠실, StationFixture.선릉, 10);
-            final Section section2 = new Section(StationFixture.잠실나루, StationFixture.선릉, 10);
+            final Section section1 = new Section(잠실, 선릉, 10);
+            final Section section2 = new Section(잠실나루, 선릉, 10);
 
             // when & then
             final BaseExceptionType exceptionType = assertThrows(LineException.class, () ->
@@ -214,8 +215,8 @@ class SectionTest {
         @Test
         void 겹치는_역이_없어_뺼_수_없다면_예외() {
             // given
-            final Section section1 = new Section(StationFixture.잠실, StationFixture.선릉, 10);
-            final Section section2 = new Section(StationFixture.없는역, StationFixture.없는역2, 1);
+            final Section section1 = new Section(잠실, 선릉, 10);
+            final Section section2 = new Section(없는역, 없는역2, 1);
 
             // when & then
             final String message = assertThrows(LineException.class, () ->

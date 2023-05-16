@@ -12,13 +12,13 @@ import subway.line.presentation.request.StationCreateRequest;
 @SuppressWarnings("NonAsciiCharacters")
 public class StationSteps {
 
-    public static ExtractableResponse<Response> 역_생성_요청(final String stationName) {
-        final StationCreateRequest request = new StationCreateRequest(stationName);
+    public static ExtractableResponse<Response> 역_생성_요청(final String 역_이름) {
+        final StationCreateRequest request = new StationCreateRequest(역_이름);
         return 역_생성_요청(request);
     }
 
-    public static ExtractableResponse<Response> 역_생성_요청(final StationCreateRequest request) {
-        final String body = toJson(request);
+    public static ExtractableResponse<Response> 역_생성_요청(final StationCreateRequest 역_생성_요청) {
+        final String body = toJson(역_생성_요청);
         return given().log().all()
                 .contentType(JSON)
                 .body(body)
@@ -29,8 +29,8 @@ public class StationSteps {
                 .extract();
     }
 
-    public static void 역들을_생성한다(final String... names) {
-        Arrays.stream(names)
+    public static void 역들을_생성한다(final String... 역_이름들) {
+        Arrays.stream(역_이름들)
                 .forEach(StationSteps::역_생성_요청);
     }
 }

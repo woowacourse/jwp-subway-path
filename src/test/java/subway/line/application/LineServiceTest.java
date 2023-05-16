@@ -11,7 +11,6 @@ import static org.mockito.BDDMockito.verify;
 import static org.mockito.BDDMockito.willDoNothing;
 import static org.mockito.Mockito.mock;
 import static subway.line.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
-import static subway.line.domain.fixture.StationFixture.건대입구;
 import static subway.line.domain.fixture.StationFixture.선릉;
 import static subway.line.domain.fixture.StationFixture.역1;
 import static subway.line.domain.fixture.StationFixture.역2;
@@ -24,6 +23,7 @@ import static subway.line.exception.line.LineExceptionType.SURCHARGE_IS_NEGATIVE
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -69,15 +69,18 @@ class LineServiceTest {
     @Nested
     class 노선_생성_시 {
 
-        @Test
-        void 노선을_생성한다() {
-            // given
+        @BeforeEach
+        void setUp() {
             given(lineRepository.findAll()).willReturn(emptyList());
             given(lineRepository.findByName("1호선")).willReturn(Optional.empty());
             역을_저장한다(잠실);
             역을_저장한다(선릉);
             willDoNothing().given(lineRepository).save(any());
+        }
 
+        @Test
+        void 노선을_생성한다() {
+            // given
             final LineCreateCommand command = new LineCreateCommand("1호선", 0);
 
             // when
@@ -92,10 +95,6 @@ class LineServiceTest {
         @Test
         void 추가요금이_음수라면_예외이다() {
             // given
-            given(lineRepository.findAll()).willReturn(emptyList());
-            given(lineRepository.findByName("1호선")).willReturn(Optional.empty());
-            역을_저장한다(잠실);
-            역을_저장한다(선릉);
             willDoNothing().given(lineRepository).save(any());
 
             final LineCreateCommand command = new LineCreateCommand("1호선", -1);
@@ -113,20 +112,25 @@ class LineServiceTest {
     @Nested
     class 노선에_역_추가_시 {
 
+        @BeforeEach
+        void setUp() {
+            역을_저장한다(역1);
+            역을_저장한다(역2);
+            역을_저장한다(역3);
+            역을_저장한다(역4);
+        }
+
         @Test
         void 노선에_역을_추가한다() {
             // given
-            역을_저장한다(잠실);
-            역을_저장한다(선릉);
-            역을_저장한다(건대입구);
-            final Section section = new Section(잠실, 선릉, 10);
+            final Section section = new Section(역1, 역2, 10);
             final Line line = new Line("1호선", 0, new Sections(section));
             given(lineRepository.findAll()).willReturn(List.of(line));
             given(lineRepository.findByName("1호선")).willReturn(Optional.of(line));
             final AddStationToLineCommand command = new AddStationToLineCommand(
                     "1호선",
-                    "잠실",
-                    "건대입구",
+                    "역1",
+                    "역3",
                     6);
 
             // when
@@ -142,11 +146,6 @@ class LineServiceTest {
         @Test
         void 추가할_구간이_이미_다른_노선에_존재하며_해당_노선과_거리나_역의_상하관계가_일치하지_않는_경우_예외() {
             // given
-            역을_저장한다(역1);
-            역을_저장한다(역2);
-            역을_저장한다(역3);
-            역을_저장한다(역4);
-
             final Line line1 = new Line("1호선", 0,
                     new Section(역1, 역2, 10),
                     new Section(역2, 역3, 10)
