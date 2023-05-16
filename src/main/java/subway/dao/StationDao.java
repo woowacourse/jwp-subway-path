@@ -10,6 +10,8 @@ import subway.domain.Station;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 public class StationDao {
@@ -54,5 +56,13 @@ public class StationDao {
     public void deleteById(Long id) {
         String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public List<Station> findByName(final Set<String> stationNames) {
+        String sql = "select * from STATION";
+        final List<Station> query = jdbcTemplate.query(sql, rowMapper);
+        return query.stream()
+                .filter(station -> stationNames.contains(station.getName()))
+                .collect(Collectors.toList());
     }
 }

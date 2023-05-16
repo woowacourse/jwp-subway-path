@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 
 public class RouteMap {
 
-    private final List<Station> routeMap;
+    private final List<Station> lineStations;
 
 
     public RouteMap(List<Section> sections) {
-        this.routeMap = stationsOf(sections);
+        this.lineStations = stationsOf(sections);
     }
 
     private List<Station> stationsOf(List<Section> sections){
@@ -53,7 +53,7 @@ public class RouteMap {
                 .filter(section -> section.getLeft().equals(targetStation))
                 .map(Section::getRight)
                 .findAny()
-                .get();
+                .orElseThrow(() -> new IllegalStateException("다음 역을 찾을 수 없습니다."));
     }
 
     private Station findFirstStation(List<Section> sections) {
@@ -76,7 +76,7 @@ public class RouteMap {
                 .anyMatch(section -> section.getLeft().equals(targetStation));
     }
 
-    public List<Station> getRouteMap() {
-        return Collections.unmodifiableList(routeMap);
+    public List<Station> getLineStations() {
+        return Collections.unmodifiableList(lineStations);
     }
 }

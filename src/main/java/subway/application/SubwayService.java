@@ -2,16 +2,18 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.StationDao;
-import subway.dao.SubwayDao;
+import subway.dao.SectionDao;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
+import subway.domain.Station;
 import subway.dto.StationEnrollRequest;
 import subway.dto.StationResponse;
+import subway.entity.SectionEntity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -20,39 +22,81 @@ import java.util.stream.Collectors;
 @Transactional
 public class SubwayService {
 
-    private final SubwayDao subwayDao;
-    private final LineDao lineDao;
-    private final StationDao stationDao;
+    private final SectionDao sectionDao;
+    private final LineService lineService;
+    private final StationService stationService;
 
-    public SubwayService(SubwayDao subwayDao, LineDao lineDao, StationDao stationDao) {
-        this.subwayDao = subwayDao;
-        this.lineDao = lineDao;
-        this.stationDao = stationDao;
+    public SubwayService(SectionDao sectionDao, LineService lineService, StationService stationService) {
+        this.sectionDao = sectionDao;
+        this.lineService = lineService;
+        this.stationService = stationService;
     }
 
     public void enrollStation(Long lineId, StationEnrollRequest request) {
-        Line line = subwayDao.findById(lineId);
+        final Line line = makeLineBy(lineId);
+
         Section section = new Section(
-                stationDao.findById(request.getFromStation()),
-                stationDao.findById(request.getToStation()),
+                stationService.findById(request.getFromStation()),
+                stationService.findById(request.getToStation()),
                 new Distance(request.getDistance())
         );
         line.addSection(section);
-        subwayDao.save(line);
+        sectionDao.save(toEntities(line.getId(), line.getSections()));
+    }
+
+    private List<SectionEntity> toEntities(final Long lineId, final List<Section> sections) {
+        return sections.stream()
+                .map(section -> new SectionEntity(
+                        lineId,
+                        section.getLeft().getName(),
+                        section.getRight().getName(),
+                        section.getDistance().getDistance())
+                )
+                .collect(Collectors.toList());
+    }
+
+    private Line makeLineBy(final Long lineId) {
+        final Line line = lineService.findLineById(lineId);
+        final List<Section> sections = findSections(lineId);
+        return new Line(line.getId(), line.getName(), line.getColor(), sections);
+    }
+
+    private List<Section> findSections(final Long lineId) {
+        final List<SectionEntity> sectionEntities = sectionDao.findById(lineId);
+        final List<Station> stations = findStationsOf(sectionEntities);
+        return sectionEntities.stream()
+                .map(sectionEntity -> toSection(sectionEntity, stations))
+                .collect(Collectors.toList());
+    }
+
+    private List<Station> findStationsOf(List<SectionEntity> sectionEntities) {
+        final HashSet<String> stationNames = new HashSet<>();
+        for (SectionEntity sectionEntity : sectionEntities) {
+            stationNames.add(sectionEntity.getLeft());
+            stationNames.add(sectionEntity.getRight());
+        }
+        return stationService.findStationsOf(stationNames);
+    }
+
+    private Section toSection(final SectionEntity sectionEntity, final List<Station> stations) {
+        final Station leftStation = stations.stream().filter(station -> station.getName().equals(sectionEntity.getLeft())).findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Section 에 등록된 역이 존재하지 않습니다."));
+        final Station rightStation = stations.stream().filter(station -> station.getName().equals(sectionEntity.getRight())).findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Section 에 등록된 역이 존재하지 않습니다."));
+        return new Section(leftStation, rightStation, new Distance(sectionEntity.getDistance()));
     }
 
     public void deleteStation(Long lineId, Long stationId) {
-        Line line = subwayDao.findById(lineId);
-
-        line.deleteStation(stationDao.findById(stationId));
-        subwayDao.save(line);
+        final Line line = makeLineBy(lineId);
+        line.deleteStation(stationService.findById(stationId));
+        sectionDao.save(toEntities(lineId, line.getSections()));
     }
 
     @Transactional(readOnly = true)
     public List<StationResponse> findRouteMap(Long lineId) {
-        Line line = subwayDao.findById(lineId);
+        Line line = makeLineBy(lineId);
         return line.routeMap()
-                .getRouteMap()
+                .getLineStations()
                 .stream()
                 .map(station -> new StationResponse(
                         station.getId(),
@@ -62,11 +106,12 @@ public class SubwayService {
 
     @Transactional(readOnly = true)
     public Map<String, List<StationResponse>> findAllRouteMap() {
-        List<Line> allLines = lineDao.findAll().stream()
-                .map(line -> subwayDao.findById(line.getId()))
-                .collect(Collectors.toList());
+        final List<Line> linesWithStations = new ArrayList<>();
+        for (Line line : lineService.findLines()) {
+            linesWithStations.add(makeLineBy(line.getId()));
+        }
         Map<String, List<StationResponse>> allRouteMap = new HashMap<>();
-        for (Line line : allLines) {
+        for (Line line : linesWithStations) {
             allRouteMap.put(line.getName(), findRouteMap(line.getId()));
         }
         return allRouteMap;

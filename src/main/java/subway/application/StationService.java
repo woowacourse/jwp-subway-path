@@ -8,6 +8,7 @@ import subway.dto.StationRequest;
 import subway.dto.StationResponse;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -44,5 +45,13 @@ public class StationService {
 
     public void deleteStationById(Long id) {
         stationDao.deleteById(id);
+    }
+
+    public List<Station> findStationsOf(final Set<String> stationNames) {
+        return stationDao.findByName(stationNames);
+    }
+
+    public Station findById(final Long fromStation) {
+        return stationDao.findById(fromStation);
     }
 }
