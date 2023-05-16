@@ -9,10 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-/**
- * 지하철 지도 서비스에서 가장 중요한 서비스는 검색
- * 검색마다 query 를 날리는것은 비효율 적이기 때문에 Bean으로 관리
- */
 @Component
 public class SubwayMap {
 
@@ -23,7 +19,7 @@ public class SubwayMap {
     }
 
     public void put(final Line line, final List<Station> sections) {
-        subwayMaps.put(line, sections);
+        subwayMaps.put(line, new ArrayList<>(sections));
     }
 
     public List<Station> getSubwayMapByLine(final Line line) {

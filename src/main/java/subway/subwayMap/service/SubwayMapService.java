@@ -46,11 +46,11 @@ public class SubwayMapService {
     public List<SubwayMapForLineResponse> findAllSubwayMap() {
         final List<Line> lines = lineService.findAllLine();
         return lines.stream()
-                .map(this::findSubwayMapByLineId)
+                .map(this::findSubwayMapByLine)
                 .collect(Collectors.toList());
     }
 
-    public SubwayMapForLineResponse findSubwayMapByLineId(final Line line) {
+    private SubwayMapForLineResponse findSubwayMapByLine(final Line line) {
         return new SubwayMapForLineResponse(new LineResponse(line.getId(), line.getName(), line.getColor()), subwayMap.getSubwayMapByLine(line));
     }
 
