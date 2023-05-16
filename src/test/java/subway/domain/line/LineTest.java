@@ -66,7 +66,7 @@ class LineTest {
     }
 
     @Test
-    @DisplayName("상행 종점에 추가할 때 상행 종점이 올바르지 않으면 에러를 발생한다.")
+    @DisplayName("상행 종점이 올바르지 않으면 false를 반환한다.")
     void check_baseStation_is_upboundStation() {
         // given
         List<Section> sections = List.of(
@@ -77,11 +77,12 @@ class LineTest {
         Line line = new Line(1L, "2호선", "#123456", sections);
 
         Station baseStation = new Station(2L, "선릉");
-        Station insertStation = new Station(4L, "강남역");
 
-        // when + then
-        assertThatThrownBy(() -> line.addUpBoundStation(baseStation, insertStation))
-                .isInstanceOf(NotUpBoundStationException.class);
+        // when
+        boolean result = line.isUpBoundStation(baseStation);
+
+        // then
+        assertThat(result).isFalse();
     }
 
     @Test
@@ -96,11 +97,12 @@ class LineTest {
         Line line = new Line(1L, "2호선", "#123456", sections);
 
         Station baseStation = new Station(2L, "선릉");
-        Station insertStation = new Station(4L, "강남역");
 
-        // when + then
-        assertThatThrownBy(() -> line.addDownBoundStation(baseStation, insertStation))
-                .isInstanceOf(NotDownBoundStationException.class);
+        // when
+        boolean result = line.isDownBoundStation(baseStation);
+
+        // then
+        assertThat(result).isFalse();
     }
 
     @Test
@@ -114,16 +116,15 @@ class LineTest {
 
         Line line = new Line(1L, "2호선", "#123456", sections);
 
-        Station baseStation = new Station(2L, "선릉");
         Station insertStation = new Station(1L, "잠실");
 
         // when + then
-        assertThatThrownBy(() -> line.addInterStation(baseStation, insertStation, "left",10))
+        assertThatThrownBy(() -> line.validateAlreadyExistStation(insertStation))
                 .isInstanceOf(AlreadyExistStationException.class);
     }
 
     @Test
-    @DisplayName("노선 중간에 역을 추가할 때 기존 구간보다 길이가 같거나 크면 에러를 발생한다.")
+    @DisplayName("역을 추가할 때 기존 구간보다 길이가 같거나 크면 에러를 발생한다.")
     void check_new_section_is_longer_than_exist_section() {
         // given
         List<Section> sections = List.of(
@@ -134,10 +135,10 @@ class LineTest {
         Line line = new Line(1L, "2호선", "#123456", sections);
 
         Station baseStation = new Station(2L, "선릉");
-        Station insertStation = new Station(1L, "건대입구");
+        Section section = line.findSection(baseStation, "left");
 
         // when + then
-        assertThatThrownBy(() -> line.addInterStation(baseStation, insertStation, "left",10))
+        assertThatThrownBy(() -> line.validateDistanceLength(section,10))
                 .isInstanceOf(InvalidDistanceException.class);
     }
 }

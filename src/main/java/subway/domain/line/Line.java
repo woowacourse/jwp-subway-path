@@ -67,29 +67,21 @@ public class Line {
         return baseStation.equals(upBoundStation) || baseStation.equals(downBoundStation);
     }
 
-    public void addUpBoundStation(Station baseStation, Station station) {
-        if (!baseStation.equals(sections.findUpBoundStation())) {
-            throw new NotUpBoundStationException();
-        }
-        validateAlreadyExistStation(station);
+    public boolean isUpBoundStation(Station baseStation) {
+        return sections.findUpBoundStation().equals(baseStation);
     }
 
-    public void addDownBoundStation(Station baseStation, Station station) {
-        if (!baseStation.equals(sections.findDownBoundStation())) {
-            throw new NotDownBoundStationException();
-        }
-        validateAlreadyExistStation(station);
+    public boolean isDownBoundStation(Station baseStation) {
+        return sections.findDownBoundStation().equals(baseStation);
     }
 
-    public void addInterStation(Station baseStation, Station station, String direction, int distance) {
-        validateAlreadyExistStation(station);
-        Section section =  sections.findSection(baseStation, direction);
+    public void validateDistanceLength(final Section section, final int distance) {
         if (section.isShort(distance)) {
             throw new InvalidDistanceException();
         }
     }
 
-    private void validateAlreadyExistStation(Station station) {
+    public void validateAlreadyExistStation(Station station) {
         if(sections.isContainStation(station)) {
             throw new AlreadyExistStationException();
         }

@@ -9,6 +9,7 @@ import subway.dto.StationInitRequest;
 import subway.dto.StationInitResponse;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
+import subway.exception.input.InvalidDirectionException;
 import subway.exception.line.LineIsInitException;
 import subway.exception.line.LineIsNotInitException;
 import subway.repository.LineRepository;
@@ -53,36 +54,63 @@ public class StationService {
         if (line.isEmpty()) {
             throw new LineIsInitException();
         }
-
+        Station insertedStation = lineRepository.saveStation(new Station(stationRequest.getRegisterStationName()), line.getId());
+        line.validateAlreadyExistStation(insertedStation);
         Station baseStation = lineRepository.findByNameAndLineId(stationRequest.getBaseStation(), line.getId());
-        Station insertStation = new Station(stationRequest.getRegisterStationName());
-        Station insertedStation = lineRepository.saveStation(insertStation, line.getId());
 
-        if (line.isBoundStation(baseStation)) {
-            updateBoundSection(stationRequest, line, baseStation, insertedStation);
+        if (line.isUpBoundStation(baseStation)) {
+            updateUpBoundSection(stationRequest, line, baseStation, insertedStation, insertedStation);
             return new StationResponse(insertedStation.getId(), insertedStation.getName());
         }
+
+        if (line.isDownBoundStation(baseStation)) {
+            updateDownBoundSection(stationRequest, line, baseStation, insertedStation, insertedStation);
+            return new StationResponse(insertedStation.getId(), insertedStation.getName());
+        }
+
         updateInterSection(stationRequest, line, baseStation, insertedStation);
         return new StationResponse(insertedStation.getId(), insertedStation.getName());
     }
 
-    private void updateBoundSection(StationRequest stationRequest, Line line, Station baseStation, Station insertedStation) {
+    private void updateUpBoundSection(StationRequest stationRequest, Line line, Station baseStation, Station insertStation, Station insertedStation) {
         if (stationRequest.getDirection().equals("left")) {
-            line.addUpBoundStation(baseStation, insertedStation);
             lineRepository.updateBoundSection(line.getId(), baseStation, insertedStation, stationRequest.getDirection(), stationRequest.getDistance());
             return;
         }
         if (stationRequest.getDirection().equals("right")) {
-            line.addDownBoundStation(baseStation, insertedStation);
+            Section boundSection = line.findSectionByBoundStation(baseStation);
+            line.validateDistanceLength(boundSection, stationRequest.getDistance());
+            List<Section> sections = List.of(
+                    new Section(boundSection.getLeftStation(), insertedStation, stationRequest.getDistance()),
+                    new Section(insertStation, boundSection.getRightStation(), boundSection.calculateDistance(stationRequest.getDistance()))
+            );
+            lineRepository.updateInterSection(line.getId(), boundSection, sections);
+            return;
+        }
+        throw new InvalidDirectionException();
+    }
+
+    private void updateDownBoundSection(StationRequest stationRequest, Line line, Station baseStation, Station insertStation, Station insertedStation) {
+        if (stationRequest.getDirection().equals("left")) {
+            Section boundSection = line.findSectionByBoundStation(baseStation);
+            line.validateDistanceLength(boundSection, stationRequest.getDistance());
+            List<Section> sections = List.of(
+                    new Section(boundSection.getLeftStation(), insertedStation, boundSection.calculateDistance(stationRequest.getDistance())),
+                    new Section(insertStation, boundSection.getRightStation(), stationRequest.getDistance())
+            );
+            lineRepository.updateInterSection(line.getId(), boundSection, sections);
+            return;
+        }
+        if (stationRequest.getDirection().equals("right")) {
             lineRepository.updateBoundSection(line.getId(), baseStation, insertedStation, stationRequest.getDirection(), stationRequest.getDistance());
             return;
         }
-        throw new IllegalArgumentException("잘못된 방향이 입력되었습니다.");
+        throw new InvalidDirectionException();
     }
 
     private void updateInterSection(StationRequest stationRequest, Line line, Station baseStation, Station insertStation) {
-        line.addInterStation(baseStation, insertStation, stationRequest.getDirection(), stationRequest.getDistance());
         Section section = line.findSection(baseStation, stationRequest.getDirection());
+        line.validateDistanceLength(section, stationRequest.getDistance());
 
         if (stationRequest.getDirection().equals("left")) {
             List<Section> sections = List.of(
@@ -100,9 +128,10 @@ public class StationService {
             lineRepository.updateInterSection(line.getId(), section, sections);
             return;
         }
-        throw new IllegalArgumentException("잘못된 방향이 입력되었습니다.");
+        throw new InvalidDirectionException();
     }
 
+    @Transactional
     public void deleteStation(Long stationId) {
         Line line = lineRepository.findByStationId(stationId);
         Station station = lineRepository.findStationById(stationId);
