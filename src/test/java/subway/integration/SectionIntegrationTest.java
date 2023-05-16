@@ -1,5 +1,8 @@
 package subway.integration;
 
+import com.jayway.jsonpath.Configuration;
+import com.jayway.jsonpath.DocumentContext;
+import com.jayway.jsonpath.JsonPath;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
@@ -43,6 +46,37 @@ public class SectionIntegrationTest extends IntegrationTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
                 () -> assertThat(response.header("Location")).isNotBlank()
         );
+    }
+
+    @Test
+    @DisplayName("구간을 삭제한다.")
+    @Sql({"/line_test_data.sql", "/station_test_data.sql", "/section_test_data.sql"})
+    void deleteSection() {
+        // given
+        final SectionRequest sectionRequest = new SectionRequest("2호선", "DOWN", "잠실", "석촌", 1);
+        final ExtractableResponse<Response> createResponse = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when().post("/sections")
+                .then()
+                .extract();
+
+        // when
+        final Configuration conf = Configuration.defaultConfiguration();
+        final DocumentContext documentContext = JsonPath.using(conf).parse(createResponse.asString());
+        final Long sectionId = documentContext.read("$[0].id", Long.class);
+
+        final ExtractableResponse<Response> response = RestAssured
+                .given()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when().delete("/sections/{id}", sectionId)
+                .then()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
 }
