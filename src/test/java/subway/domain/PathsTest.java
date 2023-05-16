@@ -26,7 +26,7 @@ class PathsTest {
         paths = paths.addPath(new Path(station, station2, 3));
 
         //then
-        assertThat(paths.getOrderedPaths()).hasSize(1);
+        assertThat(paths.toList()).hasSize(1);
     }
 
     @DisplayName("다른 경로가 있을 때 이어져있지 않은 경로를 추가하면 예외가 발생한다")
@@ -67,7 +67,7 @@ class PathsTest {
         paths = paths.addPath(path2);
 
         //then
-        assertThat(paths.getOrderedPaths()).hasSize(2);
+        assertThat(paths.toList()).hasSize(2);
     }
 
     @DisplayName("경로를 제거할 수 있다")
@@ -77,11 +77,11 @@ class PathsTest {
         final Path path = new Path(station, station2, 3);
         Paths paths = new Paths(List.of(path));
 
-        final int before = paths.getOrderedPaths().size();
+        final int before = paths.toList().size();
 
         //when
         paths = paths.removePath(path.getDown());
-        final int after = paths.getOrderedPaths().size();
+        final int after = paths.toList().size();
 
         //then
         assertAll(
@@ -99,9 +99,54 @@ class PathsTest {
         final Paths paths = new Paths(List.of(path2, path3, path1));
 
         //when
-        final List<Path> orderedPaths = paths.getOrderedPaths();
+        final List<Path> orderedPaths = paths.getOrdered();
 
         //then
         assertThat(orderedPaths).containsExactly(path1, path2, path3);
+    }
+
+    @DisplayName("포함하는 모든 역을 가져올 수 있다")
+    @Test
+    void getStations() {
+        //given
+        final Path path1 = new Path(station, station2, 3);
+        final Path path2 = new Path(station2, station3, 3);
+        final Path path3 = new Path(station3, station4, 3);
+        final Paths paths = new Paths(List.of(path2, path3, path1));
+
+        //when
+        final List<Station> stations = paths.getStations();
+
+        //then
+        assertThat(stations).hasSize(4);
+    }
+
+    @DisplayName("총 거리를 계산할 수 있다")
+    @Test
+    void getTotalDistance() {
+        //given
+        final Path path1 = new Path(station, station2, 3);
+        final Path path2 = new Path(station2, station3, 3);
+        final Path path3 = new Path(station3, station4, 3);
+        final Paths paths = new Paths(List.of(path2, path3, path1));
+
+        //when
+        final long totalDistance = paths.getTotalDistance();
+
+        //then
+        assertThat(totalDistance).isEqualTo(9);
+    }
+
+    @DisplayName("요금을 계산할 수 있다")
+    @Test
+    void calculateCost() {
+        //given
+        final Paths paths = new Paths();
+
+        //when
+        final int cost = paths.calculateCost(distance -> 5);
+
+        //then
+        assertThat(cost).isEqualTo(5);
     }
 }

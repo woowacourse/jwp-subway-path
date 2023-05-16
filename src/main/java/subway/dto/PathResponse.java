@@ -1,7 +1,6 @@
 package subway.dto;
 
 import subway.domain.Path;
-import subway.domain.PathEdge;
 
 public final class PathResponse {
     private final Long id;
@@ -20,12 +19,6 @@ public final class PathResponse {
         final StationResponse up = StationResponse.of(path.getUp());
         final StationResponse down = StationResponse.of(path.getDown());
         return new PathResponse(path.getId(), up, down, path.getDistance());
-    }
-
-    public static PathResponse from(final PathEdge path) {
-        final StationResponse up = StationResponse.of(path.getSource());
-        final StationResponse down = StationResponse.of(path.getTarget());
-        return new PathResponse(path.getId(), up, down, (int) path.getWeight());
     }
 
     public Long getId() {

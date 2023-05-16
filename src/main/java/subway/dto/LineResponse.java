@@ -33,7 +33,7 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line, Paths paths) {
-        final List<PathResponse> pathResponses = paths.getOrderedPaths().stream()
+        final List<PathResponse> pathResponses = paths.getOrdered().stream()
                 .map(PathResponse::from)
                 .collect(Collectors.toUnmodifiableList());
 

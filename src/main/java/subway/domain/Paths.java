@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -10,7 +11,7 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toUnmodifiableList;
 
 public final class Paths {
-    private List<Path> paths;
+    private final List<Path> paths;
 
     public Paths(final List<Path> paths) {
         this.paths = paths;
@@ -20,23 +21,18 @@ public final class Paths {
         paths = new ArrayList<>();
     }
 
-    public Paths addPath(final Path newPath) {
-        validate(newPath);
-        final List<Path> newPaths = new ArrayList<>(paths);
+    public Paths addPath(final Path path) {
+        validate(path);
 
-        if (isHeadOrTail(newPath)) {
-            newPaths.add(newPath);
-            return new Paths(newPaths);
-        }
+        final List<Path> result = new ArrayList<>(paths);
+        findOverlappedOriginalPath(path)
+                .ifPresentOrElse(originalPath -> {
+                            result.remove(originalPath);
+                            result.addAll(originalPath.divideBy(path));
+                        },
+                        () -> result.add(path));
 
-        paths.stream()
-                .filter(path -> path.isUpStationEquals(newPath) || path.isDownStationEquals(newPath))
-                .findAny()
-                .ifPresent(path -> {
-                    newPaths.remove(path);
-                    newPaths.addAll(path.divideBy(newPath));
-                });
-        return new Paths(newPaths);
+        return new Paths(result);
     }
 
     private void validate(final Path newPath) {
@@ -44,48 +40,41 @@ public final class Paths {
             return;
         }
 
-        validateExistedPath(newPath);
-    }
-
-    private void validateExistedPath(final Path newPath) {
-        final Station up = newPath.getUp();
-        final Station down = newPath.getDown();
-
-        final long alreadyExistedStationsCount = paths.stream()
-                .flatMap(path -> Stream.of(path.getUp(), path.getDown()))
-                .distinct()
-                .filter(station -> station.equals(up) || station.equals(down))
-                .count();
-
-        if (alreadyExistedStationsCount == 2) {
+        final long countExisted = countStationsInOriginalPaths(newPath);
+        if (countExisted == 2) {
             throw new IllegalArgumentException("이미 존재하는 경로입니다.");
         }
-        if (alreadyExistedStationsCount == 0) {
+        if (countExisted == 0) {
             throw new IllegalArgumentException("기존의 역과 이어져야 합니다.");
         }
     }
 
-    private boolean isHeadOrTail(final Path newPath) {
+    private long countStationsInOriginalPaths(Path newPath) {
+        final Station up = newPath.getUp();
+        final Station down = newPath.getDown();
+
+        return getStations().stream()
+                .filter(station -> station.equals(up) || station.equals(down))
+                .count();
+    }
+
+    private Optional<Path> findOverlappedOriginalPath(final Path newPath) {
         return paths.stream()
                 .filter(path -> path.isUpStationEquals(newPath) || path.isDownStationEquals(newPath))
-                .findAny()
-                .isEmpty();
+                .findAny();
     }
 
     public Paths removePath(final Station station) {
+        final List<Path> result = new ArrayList<>(paths);
+
         final List<Path> affectedPaths = findAffectedPaths(station);
+        result.removeAll(affectedPaths);
 
-        final List<Path> newPaths = new ArrayList<>(paths);
-        newPaths.removeAll(affectedPaths);
-
-        if (affectedPaths.size() == 1) {
-            return new Paths(newPaths);
+        if (isStationBetween(affectedPaths)) {
+            mergeBothSides(result, affectedPaths);
         }
 
-        final Path path1 = affectedPaths.get(0);
-        final Path path2 = affectedPaths.get(1);
-        newPaths.add(path1.merge(path2));
-        return new Paths(newPaths);
+        return new Paths(result);
     }
 
     private List<Path> findAffectedPaths(final Station station) {
@@ -94,7 +83,18 @@ public final class Paths {
                 .collect(Collectors.toList());
     }
 
-    public List<Path> getOrderedPaths() {
+    private boolean isStationBetween(List<Path> affectedPaths) {
+        return affectedPaths.size() == 2;
+    }
+
+    private void mergeBothSides(List<Path> result, List<Path> affectedPaths) {
+        final Path previous = affectedPaths.get(0);
+        final Path next = affectedPaths.get(1);
+
+        result.add(previous.merge(next));
+    }
+
+    public List<Path> getOrdered() {
         if (paths.isEmpty()) {
             return Collections.emptyList();
         }
@@ -106,13 +106,10 @@ public final class Paths {
     }
 
     private Path findStartPath() {
-        for (Path path : paths) {
-            if (notExistUpPath(path)) {
-                return path;
-            }
-        }
-
-        throw new IllegalStateException();
+        return paths.stream()
+                .filter(this::notExistUpPath)
+                .findAny()
+                .orElseThrow();
     }
 
     private boolean notExistUpPath(final Path path) {
@@ -126,7 +123,24 @@ public final class Paths {
         return before -> paths.stream()
                 .filter(before::isDownPath)
                 .findAny()
-                .orElseThrow(IllegalStateException::new);
+                .orElseThrow();
+    }
+
+    public List<Station> getStations() {
+        return paths.stream()
+                .flatMap(path -> Stream.of(path.getUp(), path.getDown()))
+                .distinct()
+                .collect(Collectors.toList());
+    }
+
+    public long getTotalDistance() {
+        return paths.stream()
+                .mapToLong(Path::getDistance)
+                .sum();
+    }
+
+    public int calculateCost(final FareStrategy fareStrategy) {
+        return fareStrategy.calculate(getTotalDistance());
     }
 
     public List<Path> toList() {

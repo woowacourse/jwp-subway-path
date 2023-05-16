@@ -62,7 +62,8 @@ class ShortestServiceTest {
             //then
             assertAll(
                     () -> assertThat(shortest.getTotalDistance()).isEqualTo(4),
-                    () -> assertThat(shortest.getPaths()).hasSize(3));
+                    () -> assertThat(shortest.getPaths()).hasSize(3),
+                    () -> assertThat(shortest.getTotalCost()).isEqualTo(1250));
         }
 
         @DisplayName("존재하지 않는 경로로 최단 경로를 조회하면 예외가 발생한다")
