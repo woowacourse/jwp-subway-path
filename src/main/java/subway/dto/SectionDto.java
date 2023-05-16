@@ -2,15 +2,15 @@ package subway.dto;
 
 public class SectionDto {
 
-    private Long lineId;
-    private Long stationId;
-    private Long nextStationId;
-    private Integer distance;
+    private final Long lineId;
+    private final Long upperStation;
+    private final Long lowerStation;
+    private final Integer distance;
 
-    public SectionDto(final Long lineId, final Long stationId, final Long nextStationId, final Integer distance) {
+    public SectionDto(final Long lineId, final Long upperStation, final Long lowerStation, final Integer distance) {
         this.lineId = lineId;
-        this.stationId = stationId;
-        this.nextStationId = nextStationId;
+        this.upperStation = upperStation;
+        this.lowerStation = lowerStation;
         this.distance = distance;
     }
 
@@ -18,12 +18,12 @@ public class SectionDto {
         return lineId;
     }
 
-    public Long getStationId() {
-        return stationId;
+    public Long getUpperStation() {
+        return upperStation;
     }
 
-    public Long getNextStationId() {
-        return nextStationId;
+    public Long getLowerStation() {
+        return lowerStation;
     }
 
     public Integer getDistance() {

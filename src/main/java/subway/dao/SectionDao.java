@@ -43,8 +43,8 @@ public class SectionDao {
                 sql,
                 (rs, rowNum) -> new SectionDto(
                         rs.getLong("line_id"),
-                        rs.getLong("station_id"),
-                        rs.getLong("next_station_id"),
+                        rs.getLong("upper_station"),
+                        rs.getLong("lower_station"),
                         rs.getInt("distance")
                 ),
                 lineId

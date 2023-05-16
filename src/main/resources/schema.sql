@@ -17,9 +17,9 @@ create table if not exists SECTION
 (
     id bigint auto_increment not null,
     line_id bigint not null,
-    station_id bigint not null,
-    next_station_id bigint not null,
+    upper_station bigint not null,
+    lower_station bigint not null,
     distance int not null,
     primary key (id),
-    constraint not_same_station check (station_id != next_station_id)
-)
+    constraint not_same_station check (upper_station != lower_station)
+);
