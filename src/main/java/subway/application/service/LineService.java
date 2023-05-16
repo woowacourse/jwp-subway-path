@@ -20,14 +20,14 @@ import java.util.stream.Collectors;
 public class LineService {
 
     private final LineRepository lineRepository;
-    private final LinePropertyRepository linePropertyRepository;
     private final StationRepository stationRepository;
+    private final LinePropertyRepository linePropertyRepository;
 
-    public LineService(LineRepository lineRepository, LinePropertyRepository linePropertyRepository,
-                       StationRepository stationRepository) {
+    public LineService(LineRepository lineRepository, StationRepository stationRepository,
+                       LinePropertyRepository linePropertyRepository) {
         this.lineRepository = lineRepository;
-        this.linePropertyRepository = linePropertyRepository;
         this.stationRepository = stationRepository;
+        this.linePropertyRepository = linePropertyRepository;
     }
 
     public void enrollStation(Long lineId, StationEnrollRequest request) {
@@ -38,7 +38,6 @@ public class LineService {
                 new Distance(request.getDistance())
         );
         line.addSection(section);
-        lineRepository.removeSections(lineId);
         lineRepository.insert(line);
     }
 
@@ -46,7 +45,6 @@ public class LineService {
         Line line = lineRepository.findById(lineId);
 
         line.deleteStation(stationRepository.findById(stationId));
-        lineRepository.removeSections(lineId);
         lineRepository.insert(line);
     }
 
@@ -58,9 +56,7 @@ public class LineService {
     }
 
     public Map<String, List<StationResponse>> findAllRouteMap() {
-        List<Line> allLines = linePropertyRepository.findAll().stream()
-                .map(line -> lineRepository.findById(line.getId()))
-                .collect(Collectors.toList());
+        List<Line> allLines = lineRepository.findAll();
 
         return allLines.stream()
                 .collect(Collectors.toMap(Line::getName, line -> findRouteMap(line.getId())));

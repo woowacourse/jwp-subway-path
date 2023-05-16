@@ -8,10 +8,6 @@ public class SectionRow {
     private final String right;
     private final Integer distance;
 
-    public SectionRow(Long lineId, String left, String right, Integer distance) {
-        this(null, lineId, left, right, distance);
-    }
-
     public SectionRow(Long id, Long lineId, String left, String right, Integer distance) {
         this.id = id;
         this.lineId = lineId;
@@ -28,11 +24,11 @@ public class SectionRow {
         return lineId;
     }
 
-    public String getLeft() {
+    public String getUpBound() {
         return left;
     }
 
-    public String getRight() {
+    public String getDownBound() {
         return right;
     }
 

@@ -181,7 +181,7 @@ class LineTest {
 
         Station station = StationFixture.ofNullId("시카");
 
-        //when, then
+        // when, then
         assertThatCode(() -> line.deleteStation(station))
                 .doesNotThrowAnyException();
     }

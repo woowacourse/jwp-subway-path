@@ -1,4 +1,4 @@
-package subway.persistence;
+package subway.persistence.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
@@ -6,51 +6,65 @@ import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.application.repository.StationRepository;
-import subway.application.domain.Station;
+import subway.persistence.row.StationRow;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
-public class H2StationRepository implements StationRepository {
+public class StationDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private final RowMapper<StationRow> rowMapper = (rs, rowNum) ->
+            new StationRow(
                     rs.getLong("id"),
                     rs.getString("name")
             );
 
 
-    public H2StationRepository(JdbcTemplate jdbcTemplate, DataSource dataSource) {
+    public StationDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
         this.insertAction = new SimpleJdbcInsert(dataSource)
                 .withTableName("station")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Station insert(Station station) {
-        SqlParameterSource params = new BeanPropertySqlParameterSource(station);
+    public StationRow insert(StationRow row) {
+        SqlParameterSource params = new BeanPropertySqlParameterSource(row);
         Long id = insertAction.executeAndReturnKey(params).longValue();
-        return new Station(id, station.getName());
+        return new StationRow(id, row.getName());
     }
 
-    public List<Station> findAll() {
+    public List<StationRow> selectAll() {
         String sql = "select * from STATION";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Station findById(Long id) {
+    public StationRow selectById(Long id) {
         String sql = "select * from STATION where id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(Station newStation) {
+    public Map<String, Long> selectKeyValueSetWhereNameIn(List<String> names) {
+        String inSql = String.join(",", Collections.nCopies(names.size(), "?"));
+        String sql = String.format("select id, name from station where name in (%s)", inSql);
+
+        List<Map.Entry<String, Long>> nameIdKeyValue = jdbcTemplate.query(sql,
+                (rs, cn) -> Map.entry(rs.getString("name"), rs.getLong("id")),
+                names.toArray());
+
+        return nameIdKeyValue.stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    public void update(StationRow row) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
+        jdbcTemplate.update(sql, new Object[]{row.getName(), row.getId()});
     }
 
     public void deleteById(Long id) {
