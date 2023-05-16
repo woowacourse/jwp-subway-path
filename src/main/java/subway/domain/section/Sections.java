@@ -23,4 +23,11 @@ public abstract class Sections {
     public List<Section> getSections() {
         return sections;
     }
+
+    protected static Sections from(final List<Section> sections) {
+        if (sections.isEmpty()) {
+            return new EmptySections();
+        }
+        return new FilledSections(sections);
+    }
 }

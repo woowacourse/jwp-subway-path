@@ -1,7 +1,5 @@
 package subway.domain.section;
 
-import static subway.domain.section.SectionFactory.from;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
