@@ -24,8 +24,8 @@
     - POST /lines/{id}/stations
     - Request: {upStationId, downStationId, distance}
     - Response: 201 /lines/{id}
-- [x] 노선에 역 제거
-    - DELETE /lines/{id}/stations/{station-id}
+- [x] 노선에서 역 제거
+    - DELETE /lines/stations/{station-id}
     - Response: 204
 - [x] 최단 경로 조회
     - GET /paths/start/{start-station-id}/end/{end-station-id}
