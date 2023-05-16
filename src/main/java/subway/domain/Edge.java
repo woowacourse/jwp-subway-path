@@ -27,6 +27,13 @@ public class Edge {
         return upStation.equals(station) || downStation.equals(station);
     }
 
+    public boolean isStationExistsAtDirection(Station station, Direction direction) {
+        if (direction == Direction.UP) {
+            return upStation.equals(station);
+        }
+        return downStation.equals(station);
+    }
+
     public Long getId() {
         return id;
     }

@@ -8,24 +8,15 @@ public class DownAddStrategy implements AddStrategy{
     @Override
     public void activate(List<Edge> edges, Station upStation, Station downStation, int distance) {
         // 기존 역이 upStation이다
-        Edge existingEdge = edges.stream()
-                .filter(edge -> edge.getUpStation().equals(upStation))
-                .findFirst()
-                .orElse(null);
-
-        if (existingEdge != null) {
-            if (distance < existingEdge.getDistance()) {
-                Edge newEdge1 = new Edge(upStation, downStation, distance);
-                Edge newEdge2 = new Edge(downStation, existingEdge.getDownStation(), existingEdge.getDistance() - distance);
-                int removedIndex = edges.indexOf(existingEdge);
-                edges.remove(removedIndex);
-                edges.add(removedIndex, newEdge2);
-                edges.add(removedIndex, newEdge1);
-            } else {
+        final Optional<Edge> edge = findSectionByStationExistsAtDirection(edges, upStation, Direction.UP);
+        if (edge.isPresent()) {
+            final Edge existingEdge = edge.get();
+            if (existingEdge.getDistance() < distance) {
                 throw new IllegalArgumentException("추가하려는 거리가 기존의 거리보다 깁니다.");
             }
-        } else {
-            edges.add(new Edge(upStation, downStation, distance));
+            edges.add(new Edge(downStation, existingEdge.getDownStation(), existingEdge.getDistance() - distance));
+            edges.remove(existingEdge);
         }
+        edges.add(new Edge(upStation, downStation, distance));
     }
 }
