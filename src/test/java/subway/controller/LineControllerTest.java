@@ -8,6 +8,7 @@ import java.util.List;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,6 +19,9 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineSearchResponse;
+import subway.dto.SectionCreateRequest;
+import subway.dto.SectionDeleteRequest;
+import subway.dto.SectionResponse;
 import subway.service.SubwayMapService;
 
 @DisplayName("지하철 노선 관련 기능")
@@ -201,6 +205,73 @@ class LineControllerTest extends ControllerTest {
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .when().delete("/lines/{lineId}", lineId)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("빈 노선에 역을 등록한다.")
+    @Test
+    @Sql({"classpath:line.sql", "classpath:station.sql"})
+    void createSectionToEmptyLine() {
+        // given
+        final SectionCreateRequest request = new SectionCreateRequest(1L, 1L, 2L, true, 3);
+
+        // when
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().post("/lines/stations")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        final List<SectionResponse> result = response.jsonPath().getList(".", SectionResponse.class);
+        Assertions.assertAll(
+                () -> assertThat(result.get(0).getId()).isPositive(),
+                () -> assertThat(result.get(0).getLineId()).isEqualTo(1L),
+                () -> assertThat(result.get(0).getUpStationId()).isEqualTo(2L),
+                () -> assertThat(result.get(0).getDownStationId()).isEqualTo(1L),
+                () -> assertThat(result.get(0).getDistance()).isEqualTo(3)
+        );
+    }
+
+    @DisplayName("baseId에 해당하는 역이 포함된 구간이 없으면 예외를 발생시킨다.")
+    @Test
+    @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
+    void createSectionWhenBaseIdNoExist() {
+        // given
+        final SectionCreateRequest badRequest = new SectionCreateRequest(2L, 12L, 11L, true, 3);
+
+        // when
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(badRequest)
+                .when().post("/lines/stations")
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @DisplayName("노선에서 역을 삭제한다.")
+    @Test
+    @Sql({"classpath:line.sql", "classpath:station.sql", "classpath:section.sql"})
+    void deleteSection() {
+        final SectionDeleteRequest request = new SectionDeleteRequest(1L, 1L);
+
+        // when
+        final ExtractableResponse<Response> response = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(request)
+                .when().delete("/lines/stations")
                 .then().log().all()
                 .extract();
 
