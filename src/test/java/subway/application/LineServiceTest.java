@@ -6,11 +6,13 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import subway.domain.Line;
+import subway.domain.Section;
 import subway.integration.IntegrationTest;
 import subway.ui.request.SectionRequest;
 import subway.ui.request.StationRequest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static subway.integration.IntegrationFixture.*;
@@ -102,6 +104,142 @@ class LineServiceTest extends IntegrationTest {
             final SectionRequest sectionRequest = new SectionRequest(STATION_A.getName(), STATION_A.getName(), DISTANCE9.getValue());
 
             assertThrows(IllegalArgumentException.class, () -> lineService.registerStation(lineId, sectionRequest));
+        }
+    }
+
+    @Nested
+    @DisplayName("여러 역이 등록된 노선에 대해 테스트한다")
+    class multipleStationTest {
+
+        private final Long lineId = 1L;
+
+        @BeforeEach
+        void setUp() {
+            lineService.registerStation(lineId, new SectionRequest(STATION_A.getName(), STATION_B.getName(), DISTANCE5.getValue()));
+            lineService.registerStation(lineId, new SectionRequest(STATION_B.getName(), STATION_C.getName(), DISTANCE5.getValue()));
+            lineService.registerStation(lineId, new SectionRequest(STATION_C.getName(), STATION_D.getName(), DISTANCE5.getValue()));
+        }
+
+        @DisplayName("상행 종점에 역을 추가한다.")
+        @Test
+        void addStationHead() {
+            final SectionRequest request = new SectionRequest(STATION_E.getName(), STATION_A.getName(), DISTANCE5.getValue());
+
+            lineService.registerStation(lineId, request);
+
+            final Line line = lineService.findById(lineId);
+            assertThat(line.getSections().getSections())
+                    .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_E, STATION_A, DISTANCE5),
+                            tuple(STATION_A, STATION_B, DISTANCE5),
+                            tuple(STATION_B, STATION_C, DISTANCE5),
+                            tuple(STATION_C, STATION_D, DISTANCE5)
+                    );
+        }
+
+        @DisplayName("중간에 역을 추가한다.")
+        @Test
+        void addStationCenter() {
+            final SectionRequest request = new SectionRequest(STATION_B.getName(), STATION_E.getName(), DISTANCE3.getValue());
+
+            lineService.registerStation(lineId, request);
+
+            final Line line = lineService.findById(lineId);
+            assertThat(line.getSections().getSections())
+                    .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_A, STATION_B, DISTANCE5),
+                            tuple(STATION_B, STATION_E, DISTANCE3),
+                            tuple(STATION_E, STATION_C, DISTANCE2),
+                            tuple(STATION_C, STATION_D, DISTANCE5)
+                    );
+        }
+
+        @DisplayName("하행종점에 역을 추가한다.")
+        @Test
+        void addStationTail() {
+            final SectionRequest request = new SectionRequest(STATION_D.getName(), STATION_E.getName(), DISTANCE5.getValue());
+
+            lineService.registerStation(lineId, request);
+
+            final Line line = lineService.findById(lineId);
+            assertThat(line.getSections().getSections())
+                    .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_A, STATION_B, DISTANCE5),
+                            tuple(STATION_B, STATION_C, DISTANCE5),
+                            tuple(STATION_C, STATION_D, DISTANCE5),
+                            tuple(STATION_D, STATION_E, DISTANCE5)
+                    );
+        }
+
+        @DisplayName("상행종점에 역을 삭제한다.")
+        @Test
+        void removeStationHead() {
+            final StationRequest request = new StationRequest(STATION_A.getName());
+
+            lineService.unregisterStation(lineId, request);
+
+            final Line line = lineService.findById(lineId);
+            assertThat(line.getSections().getSections())
+                    .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_B, STATION_C, DISTANCE5),
+                            tuple(STATION_C, STATION_D, DISTANCE5)
+                    );
+        }
+
+        @DisplayName("중간에 역을 삭제한다.")
+        @Test
+        void removeStationCenter() {
+            final StationRequest request = new StationRequest(STATION_C.getName());
+
+            lineService.unregisterStation(lineId, request);
+
+            final Line line = lineService.findById(lineId);
+            assertThat(line.getSections().getSections())
+                    .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_A, STATION_B, DISTANCE5),
+                            tuple(STATION_B, STATION_D, DISTANCE10)
+                    );
+        }
+
+        @DisplayName("하행종점 역을 삭제한다.")
+        @Test
+        void removeStationTail() {
+            final StationRequest request = new StationRequest(STATION_D.getName());
+
+            lineService.unregisterStation(lineId, request);
+
+            final Line line = lineService.findById(lineId);
+            assertThat(line.getSections().getSections())
+                    .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_A, STATION_B, DISTANCE5),
+                            tuple(STATION_B, STATION_C, DISTANCE5)
+                    );
+        }
+
+        @DisplayName("중간에 역을 삭제하고 추가한다.")
+        @Test
+        void removeAndAddStation() {
+            final StationRequest unregisterRequest = new StationRequest(STATION_C.getName());
+            final SectionRequest registerRequest = new SectionRequest(STATION_B.getName(), STATION_E.getName(), DISTANCE3.getValue());
+
+            lineService.unregisterStation(lineId, unregisterRequest);
+            lineService.registerStation(lineId, registerRequest);
+
+
+            final Line line = lineService.findById(lineId);
+            assertThat(line.getSections().getSections())
+                    .extracting(Section::getBeforeStation, Section::getNextStation, Section::getDistance)
+                    .containsExactly(
+                            tuple(STATION_A, STATION_B, DISTANCE5),
+                            tuple(STATION_B, STATION_E, DISTANCE3),
+                            tuple(STATION_E, STATION_D, DISTANCE7)
+                    );
         }
     }
 }
