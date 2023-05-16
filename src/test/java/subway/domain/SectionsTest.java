@@ -108,7 +108,7 @@ public class SectionsTest {
         void 상행_종점_이후에_새로운_상행_종점을_추가한다() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = line8source;
+            Sections line8 = new Sections(List.of(cheonhoJamsil10, jamsilJangji10));
 
             // when
             Station amsa = new Station(10L, "암사");
@@ -144,7 +144,7 @@ public class SectionsTest {
         void 중간_역의_상행_방향으로_역을_추가한다() {
             // given
             // 장지 - 10 - 잠실 - 10 - 천호
-            Sections line8 = line8source;
+            Sections line8 = new Sections(List.of(cheonhoJamsil10, jamsilJangji10));
 
             // when
             Station mongchon = new Station(10L, "몽촌토성");

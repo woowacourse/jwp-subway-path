@@ -23,10 +23,6 @@ public class Section {
         this(null, upStation, downStation, line, distance);
     }
 
-    public boolean hasGivenNamedStation(String name) {
-        return upStation.getName().equals(name) || downStation.getName().equals(name);
-    }
-
     public Optional<Station> getStationWithGivenId(Long id) {
         if (Objects.equals(upStation.getId(), id)) {
             return Optional.of(upStation);
