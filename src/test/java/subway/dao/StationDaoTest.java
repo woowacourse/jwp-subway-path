@@ -90,4 +90,21 @@ class StationDaoTest {
         assertThat(result.get().getName()).isEqualTo(insertedJamsil.getName());
         assertThat(result.get().getLineId()).isEqualTo(insertedJamsil.getLineId());
     }
+
+    @Test
+    @DisplayName("노선 아이디와 역 이름을 통해 역 정보를 불러온다.")
+    void station_data_load_by_line_id_and_name() {
+        // given
+        LineEntity insertedLine = lineDao.insert(LINE2_ENTITY);
+        StationEntity jamsil = new StationEntity("잠실", insertedLine.getId());
+        StationEntity insertedJamsil = stationDao.insert(jamsil);
+
+        // when
+        Optional<StationEntity> result = stationDao.findByNameAndLineId(jamsil.getName(), insertedLine.getId());
+
+        // then
+        assertThat(result.get().getId()).isEqualTo(insertedJamsil.getId());
+        assertThat(result.get().getName()).isEqualTo(insertedJamsil.getName());
+        assertThat(result.get().getLineId()).isEqualTo(insertedJamsil.getLineId());
+    }
 }

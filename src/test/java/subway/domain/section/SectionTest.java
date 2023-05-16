@@ -1,5 +1,6 @@
 package subway.domain.section;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -45,5 +46,20 @@ class SectionTest {
 
         // when + then
         assertDoesNotThrow(() -> new Section(id, leftStation, rightStation, distance));
+    }
+
+    @Test
+    @DisplayName("기존 구간의 길이보다 새로 입력받은 길이의 길이가 더 길면 true를 반환한다.")
+    void check_section_is_short_than_new_distance() {
+        // given
+        Section section = new Section(new Station("잠실"), new Station("선릉"), 10);
+
+        int inputDistance = 11;
+
+        // when
+        boolean result = section.isShort(inputDistance);
+
+        // then
+        assertThat(result).isTrue();
     }
 }

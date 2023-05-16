@@ -1,5 +1,6 @@
 package subway.dao;
 
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -8,6 +9,8 @@ import subway.entity.SectionEntity;
 import subway.entity.SectionStationEntity;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,11 +60,34 @@ public class SectionDao {
                 section.getDistance());
     }
 
+    public void insertBoth(final List<SectionEntity> sections) {
+        String sql = "INSERT INTO SECTION(left_station_id, right_station_id, line_id, distance) VALUES (?, ?, ?, ?)";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setLong(1, sections.get(i).getLeftStationId());
+                ps.setLong(2, sections.get(i).getRightStationId());
+                ps.setLong(3, sections.get(i).getLineId());
+                ps.setInt(4, sections.get(i).getDistance());
+            }
+
+            @Override
+            public int getBatchSize() {
+                return sections.size();
+            }
+        });
+    }
+
     public List<SectionStationEntity> findByLineId(final Long lindId) {
         String sql = "SELECT s.id, s.left_station_id, t1.name, s.right_station_id, t2.name, s.distance FROM SECTION s " +
                 "JOIN station t1 ON s.left_station_id = t1.id " +
                 "JOIN station t2 ON s.right_station_id = t2.id " +
                 "WHERE s.line_id= ? ";
         return jdbcTemplate.query(sql, sectionStationrowMapper, lindId);
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM SECTION WHERE id = ?";
+        jdbcTemplate.update(sql, id);
     }
 }

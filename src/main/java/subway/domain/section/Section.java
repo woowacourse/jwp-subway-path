@@ -29,6 +29,14 @@ public class Section {
         }
     }
 
+    public boolean isShort(int distance) {
+        return distance >= this.distance.getDistance();
+    }
+
+    public int calculateDistance(int distance) {
+        return this.distance.getDistance() - distance;
+    }
+
     public Long getId() {
         return id;
     }

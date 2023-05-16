@@ -1,16 +1,14 @@
 package subway.dao;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.*;
-import javax.sql.DataSource;
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Component;
 import subway.entity.StationEntity;
+
+import javax.sql.DataSource;
+import java.util.*;
 
 @Component
 public class StationDao {
@@ -58,6 +56,15 @@ public class StationDao {
         String sql = "SELECT id, name, line_id FROM STATION WHERE id = ?";
         try {
             return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, id));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<StationEntity> findByNameAndLineId(String baseStation, Long lineId) {
+        String sql = "SELECT id, name, line_id FROM STATION WHERE name = ? AND line_id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, baseStation, lineId));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

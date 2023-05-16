@@ -2,6 +2,11 @@ package subway.domain.line;
 
 import subway.domain.section.Section;
 import subway.domain.section.Sections;
+import subway.domain.station.Station;
+import subway.exception.line.AlreadyExistStationException;
+import subway.exception.line.InvalidDistanceException;
+import subway.exception.line.NotDownBoundStationException;
+import subway.exception.line.NotUpBoundStationException;
 
 import java.util.List;
 
@@ -54,6 +59,44 @@ public class Line {
 
     public boolean isEmpty() {
         return sections.isEmpty();
+    }
+
+    public boolean isBoundStation(Station baseStation) {
+        Station upBoundStation = sections.findUpBoundStation();
+        Station downBoundStation = sections.findDownBoundStation();
+        return baseStation.equals(upBoundStation) || baseStation.equals(downBoundStation);
+    }
+
+    public void addUpBoundStation(Station baseStation, Station station) {
+        if (!baseStation.equals(sections.findUpBoundStation())) {
+            throw new NotUpBoundStationException();
+        }
+        validateAlreadyExistStation(station);
+    }
+
+    public void addDownBoundStation(Station baseStation, Station station) {
+        if (!baseStation.equals(sections.findDownBoundStation())) {
+            throw new NotDownBoundStationException();
+        }
+        validateAlreadyExistStation(station);
+    }
+
+    public void addInterStation(Station baseStation, Station station, String direction, int distance) {
+        validateAlreadyExistStation(station);
+        Section section =  sections.findSection(baseStation, direction);
+        if (section.isShort(distance)) {
+            throw new InvalidDistanceException();
+        }
+    }
+
+    private void validateAlreadyExistStation(Station station) {
+        if(sections.isContainStation(station)) {
+            throw new AlreadyExistStationException();
+        }
+    }
+
+    public Section findSection(Station baseStation, String direction) {
+        return sections.findSection(baseStation, direction);
     }
 
     public Long getId() {

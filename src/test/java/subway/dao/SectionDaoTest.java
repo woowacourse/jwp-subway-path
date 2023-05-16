@@ -92,4 +92,6 @@ class SectionDaoTest {
         assertThat(result.get(0).getRightStationName()).isEqualTo(insertedSeolleung.getName());
         assertThat(result.get(0).getDistance()).isEqualTo(insertedJamsilSeolleung.getDistance());
     }
+
+
 }

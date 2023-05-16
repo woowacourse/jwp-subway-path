@@ -15,9 +15,11 @@ import subway.entity.SectionEntity;
 import subway.entity.SectionStationEntity;
 import subway.entity.StationEntity;
 import subway.exception.common.NotFoundLineException;
+import subway.exception.common.NotFoundStationException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class LineRepository {
@@ -83,4 +85,31 @@ public class LineRepository {
                 new Station(insertedStationEntities.get(DOWNBOUND_STATION_INDEX).getId(),
                         insertedStationEntities.get(DOWNBOUND_STATION_INDEX).getName()));
     }
+
+    public Station findByNameAndLineId(String baseStation, Long lineId) {
+        StationEntity stationEntity = stationDao.findByNameAndLineId(baseStation, lineId).orElseThrow(NotFoundStationException::new);
+        return new Station(stationEntity.getId(), stationEntity.getName());
+    }
+
+    public Station saveStation(final Station insertStation, final Long lineId) {
+        StationEntity insertedStation = stationDao.insert(new StationEntity(insertStation.getName(), lineId));
+        return new Station(insertedStation.getId(), insertedStation.getName());
+    }
+
+    public void updateBoundSection(Long lineId, Station baseStation, Station insertStation, String direction, int distance) {
+        if (direction.equals("left")) {
+            sectionDao.insert(new SectionEntity(insertStation.getId(), baseStation.getId(), lineId, distance));
+            return;
+        }
+        sectionDao.insert(new SectionEntity(baseStation.getId(), insertStation.getId(), lineId, distance));
+    }
+
+    public void updateInterSection(final Long lineId, final Section deleteSection, final List<Section> sections) {
+        sectionDao.deleteById(deleteSection.getId());
+        List<SectionEntity> sectionEntities = sections.stream()
+            .map(section -> new SectionEntity(section.getLeftStation().getId(), section.getRightStation().getId(), lineId, section.getDistance().getDistance()))
+            .collect(Collectors.toList());
+        sectionDao.insertBoth(sectionEntities);
+    }
+
 }

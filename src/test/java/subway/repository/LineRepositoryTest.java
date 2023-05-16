@@ -99,4 +99,18 @@ class LineRepositoryTest {
         assertThat(result.get(1).getName()).isEqualTo(stationEntities.get(1).getName());
     }
 
+    @Test
+    @DisplayName("이름과 노선 아이디를 통해 역을 찾는다.")
+    void find_station_by_name_line_id() {
+        // given
+        StationEntity stationEntity = new StationEntity(1L,"잠실", 1L);
+        doReturn(Optional.of(stationEntity)).when(stationDao).findByNameAndLineId(any(String.class), any(Long.class));
+
+        // when
+        Station result = lineRepository.findByNameAndLineId("잠실", 1L);
+
+        // then
+        assertThat(result.getId()).isEqualTo(stationEntity.getId());
+        assertThat(result.getName()).isEqualTo(stationEntity.getName());
+    }
 }
