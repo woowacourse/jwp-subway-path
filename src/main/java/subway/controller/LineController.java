@@ -23,44 +23,29 @@ public class LineController {
     private final LineCommandService lineCommandService;
     private final LineQueryService lineQueryService;
 
-    public LineController(
-            final LineCommandService lineCommandService,
-            final LineQueryService lineQueryService
-    ) {
+    public LineController(final LineCommandService lineCommandService, final LineQueryService lineQueryService) {
         this.lineCommandService = lineCommandService;
         this.lineQueryService = lineQueryService;
     }
 
     @GetMapping("/lines")
     @ResponseStatus(HttpStatus.OK)
-    public List<LineResponse> showLines(
-            @RequestBody(required = false) SearchLineRequest searchLineRequest
-    ) {
+    public List<LineResponse> showLines(@RequestBody(required = false) SearchLineRequest searchLineRequest) {
         final List<Line> lines = lineQueryService.searchLines(searchLineRequest);
 
         return lines.stream()
-                    .map(line -> {
-                        final List<SectionResponse> sectionResponse =
-                                mapToSectionResponseFrom(line);
-
-                        return new LineResponse(line.getName(), sectionResponse);
-                    })
+                    .map(line -> new LineResponse(line.getName(), mapToSectionResponseFrom(line)))
                     .collect(Collectors.toList());
     }
 
     @PostMapping("/lines")
     @ResponseStatus(HttpStatus.CREATED)
-    public LineResponse registerLine(
-            @RequestBody RegisterLineRequest registerLineRequest
-    ) {
+    public LineResponse registerLine(@RequestBody RegisterLineRequest registerLineRequest) {
         lineCommandService.registerLine(registerLineRequest);
 
         final Line line = lineQueryService.searchByLineName(registerLineRequest.getLineName());
 
-        return new LineResponse(
-                line.getName(),
-                mapToSectionResponseFrom(line)
-        );
+        return new LineResponse(line.getName(), mapToSectionResponseFrom(line));
     }
 
     private List<SectionResponse> mapToSectionResponseFrom(final Line line) {
