@@ -6,30 +6,31 @@ import subway.domain.Path;
 
 public class FindShortestPathResponse {
 
-    private List<StationResponse> stationResponses;
+    private List<StationInformationResponse> stationInformations;
     private Long totalDistance;
     private Long totalCost;
 
     public FindShortestPathResponse() {
     }
 
-    public FindShortestPathResponse(final List<StationResponse> stationResponses, final Long totalDistance,
+    public FindShortestPathResponse(final List<StationInformationResponse> stationInformations,
+        final Long totalDistance,
         final Long totalCost) {
-        this.stationResponses = stationResponses;
+        this.stationInformations = stationInformations;
         this.totalDistance = totalDistance;
         this.totalCost = totalCost;
     }
 
     public static FindShortestPathResponse of(final Path path, final long totalCost) {
-        final List<StationResponse> stationResponses = path.getStations()
+        final List<StationInformationResponse> stationInformationResponses = path.getStationInformations()
             .stream()
-            .map(StationResponse::of)
+            .map(StationInformationResponse::of)
             .collect(Collectors.toUnmodifiableList());
-        return new FindShortestPathResponse(stationResponses, path.getDistance().getValue(), totalCost);
+        return new FindShortestPathResponse(stationInformationResponses, path.getDistance().getValue(), totalCost);
     }
 
-    public List<StationResponse> getStationResponses() {
-        return stationResponses;
+    public List<StationInformationResponse> getStationInformations() {
+        return stationInformations;
     }
 
     public Long getTotalDistance() {

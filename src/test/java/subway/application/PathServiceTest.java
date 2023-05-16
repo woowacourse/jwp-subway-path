@@ -7,8 +7,6 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +15,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.controller.dto.request.FindShortestPathRequest;
 import subway.controller.dto.response.FindShortestPathResponse;
-import subway.controller.dto.response.StationResponse;
+import subway.controller.dto.response.StationInformationResponse;
 import subway.domain.CostPolicy;
 import subway.domain.Line;
 import subway.domain.Section;
@@ -73,16 +71,14 @@ class PathServiceTest {
         final FindShortestPathResponse response = pathService.findShortestPath(request);
 
         //then
-        final List<StationResponse> stationResponses = response.getStationResponses();
-        final List<StationResponse> expectedStationResponse = Stream.of(firstStation, secondStation, thirdStation,
-                fourthStation)
-            .map(StationResponse::of)
-            .collect(Collectors.toUnmodifiableList());
+        final List<StationInformationResponse> stationResponses = response.getStationInformations();
+        final List<Station> expectedStations = List.of(firstStation, secondStation, thirdStation, fourthStation);
         for (int index = 0; index < stationResponses.size(); index++) {
             assertThat(stationResponses.get(index))
-                .extracting("id", "name")
-                .containsExactly(expectedStationResponse.get(index).getId(),
-                    expectedStationResponse.get(index).getName());
+                .extracting("stationId", "stationName", "lineId", "lineName", "lineColor")
+                .containsExactly(expectedStations.get(index).getId(), expectedStations.get(index).getName(),
+                    line1.getId(), line1.getName(), line1.getColor()
+                );
         }
         assertThat(response.getTotalCost()).isEqualTo(1250L);
         assertThat(response.getTotalDistance()).isEqualTo(3L);

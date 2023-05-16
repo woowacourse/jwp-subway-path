@@ -20,6 +20,7 @@ import subway.controller.dto.request.FindShortestPathRequest;
 import subway.controller.dto.request.LineRequest;
 import subway.controller.dto.response.FindShortestPathResponse;
 import subway.controller.dto.response.LineResponse;
+import subway.controller.dto.response.StationInformationResponse;
 import subway.controller.dto.response.StationResponse;
 
 public class PathIntegrationTest extends IntegrationTest {
@@ -148,10 +149,42 @@ public class PathIntegrationTest extends IntegrationTest {
             .extract();
 
         final FindShortestPathResponse findShortestPathResponse = response.as(FindShortestPathResponse.class);
+
+        final StationInformationResponse stationInformationResponse1 = new StationInformationResponse(
+            stationResponse1.getId(),
+            stationResponse1.getName(), 6L,
+            lineResponse2.getName(), lineResponse2.getColor());
+        final StationInformationResponse stationInformationResponse2 = new StationInformationResponse(
+            stationResponse2.getId(),
+            stationResponse2.getName(), 6L,
+            lineResponse2.getName(), lineResponse2.getColor());
+        final StationInformationResponse stationInformationResponse3 = new StationInformationResponse(
+            stationResponse3.getId(),
+            stationResponse3.getName(), 6L,
+            lineResponse2.getName(), lineResponse2.getColor());
+
+        final List<StationInformationResponse> expectedStationInformationResponses = List.of(
+            stationInformationResponse1,
+            stationInformationResponse2, stationInformationResponse3);
         final FindShortestPathResponse expectedResponse = new FindShortestPathResponse(
-            List.of(stationResponse1, stationResponse2, stationResponse3), 2L, 1250L);
+            expectedStationInformationResponses, 2L, 1250L);
+
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(findShortestPathResponse).usingRecursiveComparison()
-            .isEqualTo(expectedResponse);
+        assertThat(findShortestPathResponse.getTotalCost()).isEqualTo(expectedResponse.getTotalCost());
+        assertThat(findShortestPathResponse.getTotalDistance()).isEqualTo(expectedResponse.getTotalDistance());
+        
+        final List<StationInformationResponse> stationInformations = findShortestPathResponse.getStationInformations();
+        for (int i = 0; i < stationInformations.size(); i++) {
+            final StationInformationResponse stationInformationResponse = stationInformations.get(i);
+            final StationInformationResponse expectedStationInformationResponse = expectedStationInformationResponses.get(
+                i);
+            assertThat(stationInformationResponse).extracting("stationId", "stationName", "lineName", "lineColor")
+                .containsExactly(
+                    expectedStationInformationResponse.getStationId(),
+                    expectedStationInformationResponse.getStationName(),
+                    expectedStationInformationResponse.getLineName(),
+                    expectedStationInformationResponse.getLineColor()
+                );
+        }
     }
 }

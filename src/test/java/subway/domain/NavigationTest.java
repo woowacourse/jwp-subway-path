@@ -36,8 +36,10 @@ class NavigationTest {
         final Path shortestPath = navigation.findShortestPath(firstStation, fourthStation);
 
         //then
-        assertThat(shortestPath.getStations()).containsExactly(firstStation, secondStation, thirdStation,
-            fourthStation);
+        final List<Station> stations = List.of(firstStation, secondStation, thirdStation, fourthStation);
+        for (int i = 0; i < 4; i++) {
+            assertThat(shortestPath.getStationInformations().get(i).getStation()).isEqualTo(stations.get(i));
+        }
         assertThat(shortestPath.getDistance().getValue()).isEqualTo(3L);
     }
 }
