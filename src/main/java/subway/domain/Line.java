@@ -1,122 +1,124 @@
 package subway.domain;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.util.Objects;
+import subway.domain.vo.Distance;
 import subway.exception.BusinessException;
 
-@Getter
-@RequiredArgsConstructor
 public class Line {
 
     private final Long id;
     private final String name;
     private final String color;
-    private final List<InterStation> interStations;
+    private final Sections sections;
+
+    public Line(final Long id, final String name, final String color, final Sections sections) {
+        this.id = id;
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+    }
 
     public Line(final String name, final String color) {
-        this(null, name, color);
+        this(null, name, color, null);
     }
 
     public Line(final Long id, final String name, final String color) {
-        this(id, name, color, new ArrayList<>());
+        this(id, name, color, null);
     }
 
-    public void addInitialStation(final Station first, final Station second, final long distance) {
-        validateEmpty();
-        interStations.add(new InterStation(first, second, distance));
+    public Line(final String name, final String color, final Sections sections) {
+        this(null, name, color, sections);
     }
 
-    private void validateEmpty() {
-        if (!interStations.isEmpty()) {
-            throw new BusinessException("비어있지 않습니다");
+    public void addInitStations(final Station upStation, final Station downStation, final Distance distance) {
+        checkSectionsNotEmpty();
+        final Section section = new Section(upStation, downStation, distance);
+        sections.addAll(section);
+    }
+
+    public void addTopStation(final Station station, final Distance distance) {
+        checkSectionsEmpty();
+        final Station currentTopStation = sections.findTopStation();
+        final Section section = new Section(station, currentTopStation, distance);
+        sections.addTop(section);
+    }
+
+    public void addBottomStation(final Station station, final Distance distance) {
+        checkSectionsEmpty();
+        final Station currentBottomStation = sections.findBottomStation();
+        final Section section = new Section(currentBottomStation, station, distance);
+        sections.addBottom(section);
+    }
+
+    public void addBetweenStation(final Station addStation, final Station upStation, final Station downStation,
+        final Distance distance) {
+        checkSectionsEmpty();
+        final Section existedSection = sections.findSection(upStation, downStation);
+        sections.remove(existedSection);
+        final Section upSection = new Section(existedSection.getUpStation(), addStation, distance);
+        final Section downSection = new Section(addStation, existedSection.getDownStation(),
+            existedSection.getDistance().minus(distance));
+        sections.addAll(upSection, downSection);
+    }
+
+    private void checkSectionsEmpty() {
+        if (sections.isEmpty()) {
+            throw new BusinessException("호선에 최소 2개의 역이 필요합니다.");
         }
     }
 
-    public void addStationEnd(final Station exist, final Station station, final long distance) {
-        validateNotEmpty();
-        final InterStation firstInterStation = interStations.get(0);
-        final Station firstStation = firstInterStation.getFirstStation();
-        if (firstStation.equals(exist)) {
-            interStations.add(0, new InterStation(station, firstStation, distance));
-            return;
-        }
-        final InterStation lastInterStation = interStations.get(interStations.size() - 1);
-        final Station lastStation = lastInterStation.getSecondStation();
-        if (lastStation.equals(exist)) {
-            interStations.add(new InterStation(exist, station, distance));
-            return;
-        }
-        throw new BusinessException("존재하지 않는 역입니다");
-    }
-
-    public void addStationBetween(final Station first, final Station second, final Station between,
-            final long distance) {
-        validateNotEmpty();
-        final InterStation targetInterStation = interStations.stream()
-                .filter(it -> it.getFirstStation().equals(first))
-                .filter(it -> it.getSecondStation().equals(second))
-                .findAny()
-                .orElseThrow(() -> new BusinessException("존재하지 않는 구간입니다"));
-        final int targetIndex = interStations.indexOf(targetInterStation);
-        final Station firstStation = targetInterStation.getFirstStation();
-        final Station secondStation = targetInterStation.getSecondStation();
-        interStations.remove(targetIndex);
-        interStations.add(targetIndex,
-                new InterStation(between, secondStation, targetInterStation.getDistance() - distance));
-        interStations.add(targetIndex, new InterStation(firstStation, between, distance));
-    }
-
-    private void validateNotEmpty() {
-        if (interStations.isEmpty()) {
-            throw new BusinessException("비어있는 라인입니다");
+    private void checkSectionsNotEmpty() {
+        if (!sections.isEmpty()) {
+            throw new BusinessException("빈 호선이 아닙니다.");
         }
     }
 
-    public InterStation getFirstInterStation() {
-        return interStations.get(0);
+    public void removeStation(final Station station) {
+        sections.remove(station);
     }
 
-    public void deleteStation(final Station existStation) {
-        if (interStations.get(0).getFirstStation().equals(existStation)) {
-            interStations.remove(0);
-            return;
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
         }
-        if (interStations.get(interStations.size() - 1).getSecondStation().equals(existStation)) {
-            interStations.remove(interStations.size() - 1);
-            return;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
         }
-        final Optional<InterStation> optionalInterStation = interStations.stream()
-                .filter(it -> it.contains(existStation))
-                .findFirst();
-        if (optionalInterStation.isEmpty()) {
-            return;
+        final Line line = (Line) o;
+        if (getId() == null || line.id == null) {
+            return Objects.equals(getName(), line.getName());
         }
-        final InterStation interStation = optionalInterStation.get();
-        final int index = interStations.indexOf(interStation);
-        final InterStation nextInterStation = interStations.get(index + 1);
-        interStations.remove(index);
-        interStations.remove(index + 1);
-        final long distance = interStation.getDistance() + nextInterStation.getDistance();
-        if (distance <= 0) {
-            throw new BusinessException("구간의 길이가 0보다 작습니다");
-        }
-        interStations.add(index, new InterStation(interStation.getFirstStation(), nextInterStation.getSecondStation(),
-                distance));
+        return Objects.equals(getId(), line.getId()) && Objects.equals(getName(), line.getName());
     }
 
-    public boolean isEmpty() {
-        return interStations.isEmpty();
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName());
     }
 
-    public List<Station> getStations() {
-        final List<Station> stations = new ArrayList<>();
-        for (final InterStation interStation : interStations) {
-            stations.add(interStation.getFirstStation());
-        }
-        stations.add(interStations.get(interStations.size() - 1).getSecondStation());
-        return stations;
+    public List<Section> getAllSection() {
+        return List.copyOf(sections.getValue());
+    }
+
+    public int getStationsSize() {
+        return sections.getStationsSize();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 }
