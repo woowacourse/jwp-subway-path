@@ -8,16 +8,16 @@ import java.util.List;
 @Component
 public class SectionInserter {
 
-    private final List<InsertStrategyInterface> strategies;
+    private final List<InsertStationStrategy> strategies;
 
-    public SectionInserter(List<InsertStrategyInterface> strategies) {
+    public SectionInserter(List<InsertStationStrategy> strategies) {
         this.strategies = strategies;
     }
 
     public Long insert(Sections sections, InsertSection insertSection) {
         Long newSectionId = null;
 
-        for (InsertStrategyInterface strategy : strategies) {
+        for (InsertStationStrategy strategy : strategies) {
             if (strategy.support(sections, insertSection)) {
                 newSectionId = strategy.insert(sections, insertSection);
                 break;

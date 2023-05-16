@@ -6,7 +6,7 @@ import subway.domain.Sections;
 import subway.repository.SectionRepository;
 
 @Component
-public class InsertTerminal implements InsertStrategyInterface {
+public class InsertTerminal implements InsertStationStrategy {
 
     private final SectionRepository sectionRepository;
 

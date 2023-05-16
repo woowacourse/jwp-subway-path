@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
 @Import({SectionRepository.class, SectionStationDao.class})
-class InsertStrategyTest extends StrategyFixture {
+class InsertStationStrategyTest extends StrategyFixture {
 
     @Autowired
     private SectionRepository sectionRepository;
@@ -32,7 +32,7 @@ class InsertStrategyTest extends StrategyFixture {
         final InsertTerminal insertTerminal = new InsertTerminal(sectionRepository);
         final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
         final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);
-        final List<InsertStrategyInterface> strategies = List.of(insertTerminal, insertUpwardStation, insertDownwardStation);
+        final List<InsertStationStrategy> strategies = List.of(insertTerminal, insertUpwardStation, insertDownwardStation);
 
         sectionInserter = new SectionInserter(strategies);
 

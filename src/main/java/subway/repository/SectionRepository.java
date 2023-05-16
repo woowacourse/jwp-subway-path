@@ -65,4 +65,8 @@ public class SectionRepository {
                 resultMap.getLineId()
         );
     }
+
+    public List<Sections> findAll() {
+        return null;
+    }
 }
