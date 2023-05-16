@@ -2,7 +2,6 @@ package subway.service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
@@ -35,20 +34,13 @@ public class LineService {
     }
 
     public Long save(final LineRequest lineRequest) {
-        if (isExisted(lineRequest)) {
+        boolean existName = lineDao.exists(lineRequest.getName());
+
+        if (existName) {
             throw new DuplicateException(ErrorCode.DUPLICATE_NAME);
         }
-        return lineDao.save(new LineEntity(lineRequest.getName()));
-    }
 
-    @Transactional(readOnly = true)
-    public boolean isExisted(final LineRequest lineRequest) {
-        try {
-            lineDao.findByName(lineRequest.getName());
-            return true;
-        } catch (EmptyResultDataAccessException e) {
-            return false;
-        }
+        return lineDao.save(new LineEntity(lineRequest.getName()));
     }
 
     @Transactional(readOnly = true)

@@ -10,6 +10,7 @@ import subway.dao.entity.LineEntity;
 
 @Repository
 public class LineDao {
+    private static final int EXIST_NAME = 1;
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
@@ -48,5 +49,12 @@ public class LineDao {
     public int deleteById(final Long lineId) {
         final String sql = "DELETE FROM line WHERE id = ?";
         return jdbcTemplate.update(sql, lineId);
+    }
+
+    public boolean exists(final String lineName) {
+        final String sql = "SELECT EXISTS(SELECT * FROM line WHERE name = ?)";
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, lineName);
+
+        return result == EXIST_NAME;
     }
 }
