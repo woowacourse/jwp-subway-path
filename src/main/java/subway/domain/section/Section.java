@@ -43,4 +43,28 @@ public class Section {
             throw new IllegalArgumentException("구간은 역 사이에 거리가 필수로 존재해야합니다.");
         }
     }
+
+    public boolean isAssemblableOnFront(final Section other) {
+        return this.upStation.isSameStation(other.downStation);
+    }
+
+    public boolean isAssemblableOnBack(final Section other) {
+        return this.downStation.isSameStation(other.upStation);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public Distance getDistance() {
+        return distance;
+    }
 }

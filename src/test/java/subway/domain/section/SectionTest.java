@@ -1,5 +1,6 @@
 package subway.domain.section;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -71,5 +72,69 @@ class SectionTest {
 
         // expect
         assertDoesNotThrow(() -> new Section(upStation, downStation, distance));
+    }
+
+    @Test
+    void 구간은_다른_구간이_내_앞에_생성될_수_있다면_true_를_반환한다() {
+        // given
+        final Station upStationOfA = new Station(new StationName("잠실새내"));
+        final Station downStationOfA = new Station(new StationName("잠실"));
+        final Distance distanceOfA = new Distance(1);
+        final Section sectionA = new Section(upStationOfA, downStationOfA, distanceOfA);
+
+        final Station upStationOfOther = new Station(new StationName("종합운동장"));
+        final Station downStationOfOther = new Station(new StationName("잠실새내"));
+        final Distance distanceOfOther = new Distance(5);
+        final Section sectionOther = new Section(upStationOfOther, downStationOfOther, distanceOfOther);
+
+        assertThat(sectionA.isAssemblableOnFront(sectionOther)).isTrue();
+    }
+
+    @Test
+    void 구간은_다른_구간이_내_앞에_생성될_수_없다면_false_를_반환한다() {
+        // given
+        final Station upStationOfA = new Station(new StationName("잠실새내"));
+        final Station downStationOfA = new Station(new StationName("잠실"));
+        final Distance distanceOfA = new Distance(1);
+        final Section sectionA = new Section(upStationOfA, downStationOfA, distanceOfA);
+
+        final Station upStationOfOther = new Station(new StationName("잠실새내"));
+        final Station downStationOfOther = new Station(new StationName("종합운동장"));
+        final Distance distanceOfOther = new Distance(5);
+        final Section sectionOther = new Section(upStationOfOther, downStationOfOther, distanceOfOther);
+
+        assertThat(sectionA.isAssemblableOnFront(sectionOther)).isFalse();
+    }
+
+    @Test
+    void 구간은_다른_구간이_내_뒤에_생성될_수_있다면_true_를_반환한다() {
+        // given
+        final Station upStationOfA = new Station(new StationName("잠실새내"));
+        final Station downStationOfA = new Station(new StationName("잠실"));
+        final Distance distanceOfA = new Distance(1);
+        final Section sectionA = new Section(upStationOfA, downStationOfA, distanceOfA);
+
+        final Station upStationOfOther = new Station(new StationName("종합운동장"));
+        final Station downStationOfOther = new Station(new StationName("잠실새내"));
+        final Distance distanceOfOther = new Distance(5);
+        final Section sectionOther = new Section(upStationOfOther, downStationOfOther, distanceOfOther);
+
+        assertThat(sectionOther.isAssemblableOnBack(sectionA)).isTrue();
+    }
+
+    @Test
+    void 구간은_다른_구간이_내_뒤에_생성될_수_없다면_false_를_반환한다() {
+        // given
+        final Station upStationOfA = new Station(new StationName("잠실"));
+        final Station downStationOfA = new Station(new StationName("잠실새내"));
+        final Distance distanceOfA = new Distance(1);
+        final Section sectionA = new Section(upStationOfA, downStationOfA, distanceOfA);
+
+        final Station upStationOfOther = new Station(new StationName("종합운동장"));
+        final Station downStationOfOther = new Station(new StationName("잠실새내"));
+        final Distance distanceOfOther = new Distance(5);
+        final Section sectionOther = new Section(upStationOfOther, downStationOfOther, distanceOfOther);
+
+        assertThat(sectionOther.isAssemblableOnBack(sectionA)).isFalse();
     }
 }
