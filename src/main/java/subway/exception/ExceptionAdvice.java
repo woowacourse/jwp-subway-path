@@ -19,10 +19,14 @@ public class ExceptionAdvice {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    ResponseEntity<ExceptionResponse> handleStationException(final IllegalArgumentException e) {
+    ResponseEntity<ExceptionResponse> handleIllegalArgumentException(final IllegalArgumentException e) {
         return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    ResponseEntity<ExceptionResponse> handleIllegalStateException(final IllegalStateException e) {
+        return ResponseEntity.badRequest().body(new ExceptionResponse(e.getMessage()));
+    }
 
 }
 
