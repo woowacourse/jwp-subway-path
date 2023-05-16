@@ -1,4 +1,4 @@
-package subway.application;
+package subway.service;
 
 import static java.lang.Long.MAX_VALUE;
 import static org.assertj.core.api.Assertions.assertThat;

@@ -1,4 +1,4 @@
-package subway.application;
+package subway.service;
 
 import static java.util.stream.Collectors.toList;
 

@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.controller;
 
 import javax.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -7,10 +7,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.StationService;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationInitialSaveRequest;
 import subway.dto.StationSaveRequest;
+import subway.service.StationService;
 
 @RequestMapping("/stations")
 @RestController

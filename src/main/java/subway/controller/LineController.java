@@ -1,4 +1,4 @@
-package subway.ui;
+package subway.controller;
 
 import java.net.URI;
 import java.util.List;
@@ -12,10 +12,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.LineService;
 import subway.dto.LineAddRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineUpdateRequest;
+import subway.service.LineService;
 
 @RequestMapping("/lines")
 @RestController

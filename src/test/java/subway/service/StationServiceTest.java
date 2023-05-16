@@ -1,4 +1,4 @@
-package subway.application;
+package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.domain.Direction.RIGHT;
