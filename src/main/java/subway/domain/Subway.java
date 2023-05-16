@@ -1,5 +1,6 @@
 package subway.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -12,6 +13,10 @@ public class Subway {
         this.sections = sections;
     }
 
+    public Subway() {
+        this.sections = new ArrayList<>();
+    }
+
     public Map<Line, List<Station>> findAll() {
         return sections.stream()
                 .collect(Collectors.toMap(
@@ -22,7 +27,6 @@ public class Subway {
     public List<Line> findAllLines() {
         return sections.stream()
                 .map(Sections::getLine)
-                .distinct() // TODO: 왜 중복이 발생하지?
                 .collect(Collectors.toList());
     }
 
@@ -31,7 +35,7 @@ public class Subway {
         sections.add(newSections);
     }
 
-    public void createNewSection(final Line line, final Section section) {
+    public void addSection(final Line line, final Section section) {
         final Sections newSections = findSectionsOf(line);
         sections.add(newSections);
         newSections.createInitialSection(section.getUpStation(), section.getDownStation(), section.getDistance());
@@ -48,7 +52,7 @@ public class Subway {
                 .orElseThrow(() -> new NoSuchElementException("해당 노선이 존재하지 않습니다."));
     }
 
-    public List<Station> findStationsInOrderOf(final Line line) {
+    public List<Station> findStationsInOrder(final Line line) {
         final Sections sections = findSectionsOf(line);
         return sections.findAllStationsInOrder();
     }

@@ -100,7 +100,7 @@ public class LineServiceImpl implements LineService {
         final Section section = new Section(lineId, upStation, downStation, distance);
         final Section savedSection = sectionRepository.save(lineId, section);
 
-        subway.createNewSection(line, savedSection);
+        subway.addSection(line, savedSection);
 
         return LineResponse.of(line, mapToStationResponse(line));
     }
@@ -165,7 +165,7 @@ public class LineServiceImpl implements LineService {
     private List<StationResponse> mapToStationResponse(final Line line) {
         final Subway subway = findSubway();
 
-        final List<Station> stationsInOrder = subway.findStationsInOrderOf(line);
+        final List<Station> stationsInOrder = subway.findStationsInOrder(line);
 
         return stationsInOrder.stream()
                 .map(Station::getId)
