@@ -10,7 +10,7 @@ public class DistanceBillingPolicy implements BillingPolicy {
     private static final int EXTRA_CHARGE_FEE = 100;
 
     @Override
-    public int calculateFee(final int distance) {
+    public int calculateFare(final int distance) {
         if (distance < 0) {
             throw new InvalidDistanceException("거리가 0보다 작은 경우 요금을 계산할 수 없습니다.");
         }
