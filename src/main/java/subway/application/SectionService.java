@@ -61,10 +61,10 @@ public class SectionService {
 
     private void validateAddableSection(boolean hasStartStation, boolean hasEndStation) {
         if (hasStartStation && hasEndStation) {
-            throw new IllegalSectionException("이미 노선에 추가할 역이 존재합니다.");
+            throw new IllegalSectionException("해당 노선에 이미 존재하는 구간입니다.");
         }
         if (!hasStartStation && !hasEndStation) {
-            throw new IllegalSectionException("노선에 기준이 되는 역을 찾을 수 없습니다.");
+            throw new IllegalSectionException("해당 노선에 추가할 수 없는 역입니다.");
         }
     }
 
