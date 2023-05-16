@@ -8,7 +8,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.domain.station.dao.StationDao;
-import subway.domain.station.domain.Station;
+import subway.domain.station.entity.StationEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -40,61 +40,61 @@ class StationDaoTest {
     @Test
     void 역_추가_테스트() {
         //given
-        Station station = new Station("상인역");
+        StationEntity stationEntity = new StationEntity("상인역");
 
         //when
-        Station insertStation = stationDao.insert(station);
+        StationEntity insertStationEntity = stationDao.insert(stationEntity);
 
         //then
-        Assertions.assertThat(insertStation)
+        Assertions.assertThat(insertStationEntity)
                 .usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(station);
+                .isEqualTo(stationEntity);
     }
 
     @Test
     void 역_추가_실패_테스트_동일한_이름의_역이_존재할_경우() {
         //given
-        Station station = new Station("동대구역");
+        StationEntity stationEntity = new StationEntity("동대구역");
 
         //when
-        stationDao.insert(station);
+        stationDao.insert(stationEntity);
 
         //then
-        assertThatThrownBy(() -> stationDao.insert(station))
+        assertThatThrownBy(() -> stationDao.insert(stationEntity))
                 .isInstanceOf(DuplicateKeyException.class);
     }
 
     @Test
     void 모든_역_조회_테스트() {
         //given
-        List<Station> stations = stationDao.findAll();
+        List<StationEntity> stationEntities = stationDao.findAll();
 
         //then
-        Assertions.assertThat(stations).hasSizeGreaterThan(0);
+        Assertions.assertThat(stationEntities).hasSizeGreaterThan(0);
     }
 
     @Test
     void 단일_역_조회_테스트() {
         //given
-        Station station = new Station("상인역");
+        StationEntity stationEntity = new StationEntity("상인역");
 
         //when
-        Station insertStation = stationDao.insert(station);
+        StationEntity insertStationEntity = stationDao.insert(stationEntity);
 
         //then
-        Assertions.assertThat(station).usingRecursiveComparison()
+        Assertions.assertThat(stationEntity).usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(insertStation);
+                .isEqualTo(insertStationEntity);
     }
 
     @Test
     void 이름으로_역_조회_테스트() {
         //given
-        Station station = new Station("상인역");
+        StationEntity stationEntity = new StationEntity("상인역");
         //when
-        stationDao.insert(station);
-        Optional<Station> findStation = stationDao.findByName("상인역");
+        stationDao.insert(stationEntity);
+        Optional<StationEntity> findStation = stationDao.findByName("상인역");
 
         //then
         org.junit.jupiter.api.Assertions.assertAll(
@@ -106,7 +106,7 @@ class StationDaoTest {
     @Test
     void 이름으로_역_조회_실패_테스트() {
         //given
-        Optional<Station> station = stationDao.findByName("상인역");
+        Optional<StationEntity> station = stationDao.findByName("상인역");
 
         //then
         Assertions.assertThat(station).isEmpty();
@@ -115,28 +115,28 @@ class StationDaoTest {
     @Test
     void 역_수정_테스트() {
         //given
-        Station station = new Station("상인역");
+        StationEntity stationEntity = new StationEntity("상인역");
 
         //when
-        Station insertStation = stationDao.insert(station);
-        Station updateStation = new Station(insertStation.getId(), "대구역");
-        stationDao.update(updateStation);
+        StationEntity insertStationEntity = stationDao.insert(stationEntity);
+        StationEntity updateStationEntity = new StationEntity(insertStationEntity.getId(), "대구역");
+        stationDao.update(updateStationEntity);
 
         //then
-        Assertions.assertThat(stationDao.findById(updateStation.getId())).isEqualTo(updateStation);
+        Assertions.assertThat(stationDao.findById(updateStationEntity.getId())).isEqualTo(updateStationEntity);
     }
 
     @Test
     void 역_삭제_테스트() {
         //given
-        Station station = new Station("상인역");
+        StationEntity stationEntity = new StationEntity("상인역");
 
         //when
-        Station insertStation = stationDao.insert(station);
-        stationDao.deleteById(insertStation.getId());
+        StationEntity insertStationEntity = stationDao.insert(stationEntity);
+        stationDao.deleteById(insertStationEntity.getId());
 
         //then
-        assertThatThrownBy(() -> stationDao.findById(insertStation.getId()))
+        assertThatThrownBy(() -> stationDao.findById(insertStationEntity.getId()))
                 .isInstanceOf(EmptyResultDataAccessException.class);
     }
 }

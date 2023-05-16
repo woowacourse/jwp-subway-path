@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.station.dao.StationDao;
-import subway.domain.station.domain.Station;
+import subway.domain.station.entity.StationEntity;
 import subway.domain.station.dto.StationRequest;
 import subway.domain.station.service.StationService;
 
@@ -55,7 +55,7 @@ class StationServiceTest {
         stationService.updateStation(anyLong(), new StationRequest("동대구역"));
 
         //then
-        verify(stationDao).update(any(Station.class));
+        verify(stationDao).update(any(StationEntity.class));
     }
 
     @Test
@@ -72,23 +72,23 @@ class StationServiceTest {
         //given
         StationRequest stationRequest = new StationRequest("상인역");
         given(stationDao.findByName(stationRequest.getName())).willReturn(Optional.empty());
-        Station station = new Station("상인역");
-        given(stationDao.insert(station)).willReturn(station);
+        StationEntity stationEntity = new StationEntity("상인역");
+        given(stationDao.insert(stationEntity)).willReturn(stationEntity);
         //when
-        Station saveStation = stationService.saveStation(stationRequest);
+        StationEntity saveStationEntity = stationService.saveStation(stationRequest);
 
         //then
         verify(stationDao).insert(any());
-        Assertions.assertThat(saveStation).usingRecursiveComparison()
+        Assertions.assertThat(saveStationEntity).usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(station);
+                .isEqualTo(stationEntity);
     }
 
     @Test
     void 노선_정보를_추가할_때_중복된_이름의_노선이_존재하면_예외_발생() {
         //given
         StationRequest stationRequest = new StationRequest("상인역");
-        given(stationDao.findByName(stationRequest.getName())).willReturn(Optional.of(new Station(stationRequest.getName())));
+        given(stationDao.findByName(stationRequest.getName())).willReturn(Optional.of(new StationEntity(stationRequest.getName())));
 
         //then
         assertThatThrownBy(() -> stationService.saveStation(stationRequest))

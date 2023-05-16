@@ -1,21 +1,21 @@
-package subway.domain.station.domain;
+package subway.domain.station.entity;
 
 import java.util.Objects;
 
-public class Station {
+public class StationEntity {
 
     private Long id;
     private String name;
 
-    private Station() {
+    private StationEntity() {
     }
 
-    public Station(final Long id, final String name) {
+    public StationEntity(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(final String name) {
+    public StationEntity(final String name) {
         this.name = name;
     }
 
@@ -31,8 +31,8 @@ public class Station {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Station station = (Station) o;
-        return Objects.equals(id, station.id);
+        StationEntity stationEntity = (StationEntity) o;
+        return Objects.equals(id, stationEntity.id);
     }
 
     @Override

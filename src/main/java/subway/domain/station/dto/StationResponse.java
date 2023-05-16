@@ -1,6 +1,8 @@
 package subway.domain.station.dto;
 
-import subway.domain.station.domain.Station;
+import subway.domain.station.entity.StationEntity;
+
+import java.util.Objects;
 
 public class StationResponse {
 
@@ -15,8 +17,8 @@ public class StationResponse {
         this.name = name;
     }
 
-    public static StationResponse of(final Station station) {
-        return new StationResponse(station.getId(), station.getName());
+    public static StationResponse of(final StationEntity stationEntity) {
+        return new StationResponse(stationEntity.getId(), stationEntity.getName());
     }
 
     public Long getId() {
@@ -25,5 +27,18 @@ public class StationResponse {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        StationResponse that = (StationResponse) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

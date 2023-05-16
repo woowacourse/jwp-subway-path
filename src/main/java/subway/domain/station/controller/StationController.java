@@ -3,7 +3,7 @@ package subway.domain.station.controller;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import subway.domain.station.domain.Station;
+import subway.domain.station.entity.StationEntity;
 import subway.domain.station.service.StationService;
 import subway.global.common.ResultResponse;
 import subway.domain.station.dto.StationRequest;
@@ -24,15 +24,15 @@ public class StationController {
 
     @PostMapping
     public ResponseEntity<ResultResponse> createStation(@RequestBody final StationRequest stationRequest) {
-        Station station = stationService.saveStation(stationRequest);
-        return ResponseEntity.created(URI.create("/stations/" + station.getId())).body(new ResultResponse(201,"역 추가 성공", station));
+        StationEntity stationEntity = stationService.saveStation(stationRequest);
+        return ResponseEntity.created(URI.create("/stations/" + stationEntity.getId())).body(new ResultResponse(201,"역 추가 성공", stationEntity));
     }
 
     @GetMapping
     public ResponseEntity<ResultResponse> showStations() {
-        List<Station> stations = stationService.findAllStationResponses();
+        List<StationEntity> stationEntities = stationService.findAllStationResponses();
 
-        List<StationResponse> StationResponses = stations.stream()
+        List<StationResponse> StationResponses = stationEntities.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
@@ -41,8 +41,8 @@ public class StationController {
 
     @GetMapping("/{id}")
     public ResponseEntity<ResultResponse> showStation(@PathVariable final Long id) {
-        Station station = stationService.findStationById(id);
-        return ResponseEntity.ok().body(new ResultResponse(200,"단일 역 조회 성공", StationResponse.of(station)));
+        StationEntity stationEntity = stationService.findStationById(id);
+        return ResponseEntity.ok().body(new ResultResponse(200,"단일 역 조회 성공", StationResponse.of(stationEntity)));
     }
 
     @PutMapping("/{id}")
