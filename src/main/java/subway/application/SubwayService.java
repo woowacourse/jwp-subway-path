@@ -7,6 +7,7 @@ import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.SectionResponse;
 import subway.dto.StationEnrollRequest;
 import subway.dto.StationResponse;
 import subway.entity.SectionEntity;
@@ -32,16 +33,14 @@ public class SubwayService {
         this.stationService = stationService;
     }
 
-    public void enrollStation(Long lineId, StationEnrollRequest request) {
+    public SectionResponse enrollStation(Long lineId, StationEnrollRequest request) {
         final Line line = makeLineBy(lineId);
-
-        Section section = new Section(
-                stationService.findById(request.getFromStation()),
-                stationService.findById(request.getToStation()),
-                new Distance(request.getDistance())
-        );
+        final Station left = stationService.findById(request.getFromStation());
+        final Station right = stationService.findById(request.getToStation());
+        Section section = new Section(left, right, new Distance(request.getDistance()));
         line.addSection(section);
         sectionDao.save(toEntities(line.getId(), line.getSections()));
+        return new SectionResponse(lineId, left, right);
     }
 
     private List<SectionEntity> toEntities(final Long lineId, final List<Section> sections) {
