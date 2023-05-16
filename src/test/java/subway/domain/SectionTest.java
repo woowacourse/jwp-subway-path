@@ -1,8 +1,10 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.business.domain.Section;
 import subway.business.domain.Station;
@@ -78,5 +80,62 @@ public class SectionTest {
         Section section = new Section(1L, upwardStation, downwardStation, 5);
 
         assertThat(section.isDownwardStation(new Station(3L, "강남역"))).isFalse();
+    }
+
+    @DisplayName("동등성")
+    @Nested
+    class equals {
+
+        @DisplayName("ID가 같은 Section을 비교하면 true를 반환한다.")
+        @Test
+        void shouldReturnTrueWhenCompareSectionsHaveSameId() {
+            Station upwardStation = new Station(1L, "잠실역");
+            Station downwardStation = new Station(2L, "몽촌토성역");
+
+            Section section1 = new Section(1L, upwardStation, downwardStation, 5);
+            Section section2 = new Section(1L, upwardStation, downwardStation, 5);
+
+            assertThat(section1.equals(section2)).isTrue();
+        }
+
+        @DisplayName("ID가 다른 Section을 비교하면 false를 반환한다.")
+        @Test
+        void shouldReturnFalseWhenCompareSectionsHaveDifferentId() {
+            Station upwardStation = new Station(1L, "잠실역");
+            Station downwardStation = new Station(2L, "몽촌토성역");
+
+            Section section1 = new Section(1L, upwardStation, downwardStation, 5);
+            Section section2 = new Section(2L, upwardStation, downwardStation, 5);
+
+            assertThat(section1.equals(section2)).isFalse();
+        }
+
+        @DisplayName("ID가 null인 Section을 기준으로 비교하면 예외가 발생한다.")
+        @Test
+        void shouldThrowExceptionWhenCompareFromSectionHaveNullId() {
+            Station upwardStation = new Station(1L, "잠실역");
+            Station downwardStation = new Station(2L, "몽촌토성역");
+
+            Section section1 = new Section(null, upwardStation, downwardStation, 5);
+            Section section2 = new Section(2L, upwardStation, downwardStation, 5);
+
+            assertThatThrownBy(() -> section1.equals(section2))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("ID가 존재하지 않는 Section을 기준으로 비교했습니다.");
+        }
+
+        @DisplayName("ID가 null인 Section을 기준으로 비교하면 예외가 발생한다.")
+        @Test
+        void shouldThrowExceptionWhenCompareToSectionHaveNullId() {
+            Station upwardStation = new Station(1L, "잠실역");
+            Station downwardStation = new Station(2L, "몽촌토성역");
+
+            Section section1 = new Section(1L, upwardStation, downwardStation, 5);
+            Section section2 = new Section(null, upwardStation, downwardStation, 5);
+
+            assertThatThrownBy(() -> section1.equals(section2))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("ID가 존재하지 않는 Section을 인자로 넣어 비교했습니다.");
+        }
     }
 }

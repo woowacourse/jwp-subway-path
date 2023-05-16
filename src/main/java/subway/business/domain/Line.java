@@ -257,6 +257,9 @@ public class Line {
 
     @Override
     public boolean equals(Object o) {
+        if (this.id == null) {
+            throw new IllegalStateException("ID가 존재하지 않는 Line을 기준으로 비교했습니다.");
+        }
         if (this == o) {
             return true;
         }
@@ -264,6 +267,9 @@ public class Line {
             return false;
         }
         Line line = (Line) o;
+        if (line.id == null) {
+            throw new IllegalStateException("ID가 존재하지 않는 Line을 인자로 넣어 비교했습니다.");
+        }
         return Objects.equals(id, line.id) && Objects.equals(name, line.name);
     }
 

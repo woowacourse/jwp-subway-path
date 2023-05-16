@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.business.domain.Direction;
 import subway.business.domain.Line;
@@ -152,9 +153,67 @@ class LineTest {
         assertThat(line.getSections().get(0).getDownwardStation().getName()).isEqualTo("몽촌토성역");
     }
 
+    @DisplayName("동등성")
+    @Nested
+    class equals {
+
+        @DisplayName("ID가 같은 Line을 비교하면 true를 반환한다.")
+        @Test
+        void shouldReturnTrueWhenCompareLinesHaveSameId() {
+            Line line1 = getDummyLineOfId(1L);
+            Line line2 = getDummyLineOfId(1L);
+
+            assertThat(line1.equals(line2)).isTrue();
+        }
+
+        @DisplayName("ID가 다른 Line을 비교하면 false를 반환한다.")
+        @Test
+        void shouldReturnFalseWhenCompareLinesHaveDifferentId() {
+            Line line1 = getDummyLineOfId(1L);
+            Line line2 = getDummyLineOfId(2L);
+
+            assertThat(line1.equals(line2)).isFalse();
+        }
+
+        @DisplayName("ID가 null인 Line을 기준으로 비교하면 예외가 발생한다.")
+        @Test
+        void shouldThrowExceptionWhenCompareFromLineHaveNullId() {
+            Line line1 = getDummyLineOfId(null);
+            Line line2 = getDummyLineOfId(2L);
+
+            assertThatThrownBy(() -> line1.equals(line2))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("ID가 존재하지 않는 Line을 기준으로 비교했습니다.");
+        }
+
+        @DisplayName("ID가 null인 Line을 기준으로 비교하면 예외가 발생한다.")
+        @Test
+        void shouldThrowExceptionWhenCompareToLineHaveNullId() {
+            Line line1 = getDummyLineOfId(1L);
+            Line line2 = getDummyLineOfId(null);
+
+            assertThatThrownBy(() -> line1.equals(line2))
+                    .isInstanceOf(IllegalStateException.class)
+                    .hasMessage("ID가 존재하지 않는 Line을 인자로 넣어 비교했습니다.");
+        }
+    }
+
     private Line getDummyLine() {
         return new Line(
                 1L,
+                "2호선",
+                new ArrayList<>(List.of(new Section(
+                        1L,
+                        new Station(1L, "잠실역"),
+                        new Station(2L, "몽촌토성역"),
+                        5))
+                )
+        );
+    }
+
+    private Line getDummyLineOfId(Long id) {
+        return new Line(
+                id,
                 "2호선",
                 new ArrayList<>(List.of(new Section(
                         1L,

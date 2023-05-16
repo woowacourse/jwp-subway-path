@@ -2,6 +2,8 @@ package subway.business.domain;
 
 import static subway.business.domain.Direction.UPWARD;
 
+import java.util.Objects;
+
 public class Section {
     private final Long id;
     private final Station upwardStation;
@@ -56,5 +58,28 @@ public class Section {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this.id == null) {
+            throw new IllegalStateException("ID가 존재하지 않는 Section을 기준으로 비교했습니다.");
+        }
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Section section = (Section) o;
+        if (section.id == null) {
+            throw new IllegalStateException("ID가 존재하지 않는 Section을 인자로 넣어 비교했습니다.");
+        }
+        return Objects.equals(id, section.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
