@@ -25,7 +25,6 @@ public class LineResponse {
         List<StationResponse> stationResponses = stationList.stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
-        System.out.println(stationResponses.size());
         return new LineResponse(line.getId(), line.getName(), stationResponses);
     }
 
