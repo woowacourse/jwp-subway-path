@@ -70,14 +70,11 @@ public class LineService {
 
 
     private void updateSection(Line line, Station leftStation, Station rightStation, int distance) {
-        validateStations(line, leftStation, rightStation);
-        insertOrUpdateSection(line, leftStation, rightStation, distance);
-    }
-
-    private void validateStations(Line line, Station leftStation, Station rightStation) {
         if (line.hasStation(leftStation) == line.hasStation(rightStation)) {
             throw new IllegalArgumentException("잘못된 입력입니다.");
         }
+
+        insertOrUpdateSection(line, leftStation, rightStation, distance);
     }
 
     private void insertOrUpdateSection(Line line, Station leftStation, Station rightStation, int distance) {
@@ -159,11 +156,6 @@ public class LineService {
     }
 
     private void processSectionDeletion(Line line, Station station) {
-        if (line.hasOneSection()) {
-            deleteSingleSection(line);
-            return;
-        }
-
         if (line.hasLeftStationInSection(station) && line.hasRightStationInSection(station)) {
             deleteMiddleSection(line, station);
             return;
@@ -176,11 +168,6 @@ public class LineService {
         if (line.isLastStationAtRight(station)) {
             deleteLastSectionAtRight(line, station);
         }
-    }
-
-    private void deleteSingleSection(Line line) {
-        Section section = line.getSections().get(0);
-        lineRepository.deleteSection(section.getLeft().getId(), section.getRight().getId());
     }
 
     private void deleteMiddleSection(Line line, Station station) {

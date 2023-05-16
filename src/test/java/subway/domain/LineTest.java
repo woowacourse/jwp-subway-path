@@ -25,7 +25,7 @@ class LineTest {
         Section section1 = new Section(station1, station2, new Distance(5));
         Section section2 = new Section(station2, station3, new Distance(7));
 
-        line = new Line(1L, "1호선", new LinkedList<>(List.of(section1, section2)));
+        line = new Line(1L, "1호선", new Sections(new LinkedList<>(List.of(section1, section2))));
     }
 
     @DisplayName("노선이 역을 가지고 있으면 true를 반환한다.")
@@ -102,7 +102,7 @@ class LineTest {
         Station newStation1 = new Station(1L, "잠실역");
         Station newStation2 = new Station(2L, "강남역");
         Section section = new Section(newStation1, newStation2, new Distance(3));
-        Line newLine = new Line(2L, "2호선", new LinkedList<>(List.of(section)));
+        Line newLine = new Line(2L, "2호선", new Sections(new LinkedList<>(List.of(section))));
 
         // when, then
         assertThat(newLine.hasOneSection()).isTrue();
