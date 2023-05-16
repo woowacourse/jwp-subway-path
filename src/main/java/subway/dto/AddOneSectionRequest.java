@@ -1,18 +1,18 @@
 package subway.dto;
 
-public class StationAddRequest {
+public class AddOneSectionRequest {
 
     private final Long upStationId;
     private final Long downStationId;
     private final Integer distance;
 
-    private StationAddRequest() {
+    private AddOneSectionRequest() {
         this.distance = null;
         this.upStationId = null;
         this.downStationId = null;
-    };
+    }
 
-    public StationAddRequest(Long upStationId, Long downStationId, Integer distance) {
+    public AddOneSectionRequest(Long upStationId, Long downStationId, Integer distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;

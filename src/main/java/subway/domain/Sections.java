@@ -30,11 +30,13 @@ public class Sections {
         this.sections = new ArrayList<>(sections);
     }
 
-    public void add(final Section newSection) {
+    public Section add(final Section newSection) {
         validate(newSection);
         validateForkRoad(newSection);
 
         sections.add(newSection);
+
+        return newSection;
     }
 
     public void addTwoSections(final Section upSection, final Section downSection) {
