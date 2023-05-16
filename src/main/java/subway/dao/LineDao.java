@@ -49,4 +49,15 @@ public class  LineDao {
         }
     }
 
+    public Optional<LineEntity> findByStationId(Long statoinId) {
+        String sql = "SELECT l.id, l.name, l.color FROM STATION s " +
+                "JOIN LINE l on s.line_id = l.id " +
+                "WHERE s.id = ?";
+
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, statoinId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
 }

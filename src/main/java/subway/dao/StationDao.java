@@ -1,6 +1,7 @@
 package subway.dao;
 
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -8,6 +9,8 @@ import org.springframework.stereotype.Component;
 import subway.entity.StationEntity;
 
 import javax.sql.DataSource;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 @Component
@@ -68,5 +71,25 @@ public class StationDao {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }
+    }
+
+    public void deleteById(Long id) {
+        String sql = "DELETE FROM STATION WHERE id = ?";
+        jdbcTemplate.update(sql, id);
+    }
+
+    public void deleteBothById(List<Long> stationIds) {
+        String sql = "DELETE FROM STATION WHERE id = ?";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setLong(1, stationIds.get(i));
+            }
+
+            @Override
+            public int getBatchSize() {
+                return stationIds.size();
+            }
+        });
     }
 }

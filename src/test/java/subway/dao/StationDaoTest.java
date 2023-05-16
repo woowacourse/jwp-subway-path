@@ -107,4 +107,40 @@ class StationDaoTest {
         assertThat(result.get().getName()).isEqualTo(insertedJamsil.getName());
         assertThat(result.get().getLineId()).isEqualTo(insertedJamsil.getLineId());
     }
+
+    @Test
+    @DisplayName("역 id를 통해 역을 삭제한다.")
+    void delete_station_by_station_id() {
+        // given
+        LineEntity insertedLine = lineDao.insert(LINE2_ENTITY);
+        StationEntity jamsil = new StationEntity("잠실", insertedLine.getId());
+        StationEntity insertedJamsil = stationDao.insert(jamsil);
+
+        // when
+        stationDao.deleteById(insertedJamsil.getId());
+        Optional<StationEntity> result = stationDao.findById(insertedJamsil.getId());
+
+        // then
+        assertThat(result.isPresent()).isFalse();
+    }
+
+    @Test
+    @DisplayName("여러역 id를 통해 여러역을 삭제한다.")
+    void delete_stations_by_stations_ids() {
+        // given
+        LineEntity insertedLine = lineDao.insert(LINE2_ENTITY);
+        StationEntity jamsil = new StationEntity("잠실", insertedLine.getId());
+        StationEntity gangnam = new StationEntity("강남", insertedLine.getId());
+        StationEntity insertedJamsil = stationDao.insert(jamsil);
+        StationEntity insertedGangnam = stationDao.insert(gangnam);
+
+        // when
+        stationDao.deleteBothById(List.of(insertedJamsil.getId(), insertedGangnam.getId()));
+        Optional<StationEntity> result1 = stationDao.findById(insertedJamsil.getId());
+        Optional<StationEntity> result2 = stationDao.findById(insertedGangnam.getId());
+
+        // then
+        assertThat(result1.isPresent()).isFalse();
+        assertThat(result2.isPresent()).isFalse();
+    }
 }

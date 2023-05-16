@@ -93,5 +93,30 @@ class SectionDaoTest {
         assertThat(result.get(0).getDistance()).isEqualTo(insertedJamsilSeolleung.getDistance());
     }
 
+    @Test
+    @DisplayName("여러 구간을 한번에 삭제한다.")
+    void delete_multi_section() {
+        // given
+        LineEntity insertedLine = lineDao.insert(LINE2_ENTITY);
+
+        StationEntity jamsil = new StationEntity("잠실", insertedLine.getId());
+        StationEntity seolleung = new StationEntity("선릉", insertedLine.getId());
+        StationEntity gangnam = new StationEntity("강남", insertedLine.getId());
+        StationEntity insertedJamsil = stationDao.insert(jamsil);
+        StationEntity insertedSeolleung = stationDao.insert(seolleung);
+        StationEntity insertedGangnam = stationDao.insert(gangnam);
+
+        SectionEntity jamsilSeolleung = new SectionEntity(insertedJamsil.getId(), insertedSeolleung.getId(), insertedLine.getId(), 10);
+        SectionEntity seolleungGangNam = new SectionEntity(insertedSeolleung.getId(), insertedGangnam.getId(),insertedLine.getId(), 10);
+        SectionEntity insertedJamsilSeolleung = sectionDao.insert(jamsilSeolleung);
+        SectionEntity insertedSeolleungGangNam = sectionDao.insert(seolleungGangNam);
+
+        // when
+        sectionDao.deleteBothById(List.of(insertedJamsilSeolleung.getId(), insertedSeolleungGangNam.getId()));
+        List<SectionStationEntity> result = sectionDao.findByLineId(insertedLine.getId());
+
+        // then
+        assertThat(result.size()).isEqualTo(0);
+    }
 
 }

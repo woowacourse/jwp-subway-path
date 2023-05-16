@@ -77,7 +77,7 @@ public class LineRepository {
         sectionDao.insert(new SectionEntity(insertedStationEntities.get(UPBOUND_STATION_INDEX).getId()
                 , insertedStationEntities.get(DOWNBOUND_STATION_INDEX).getId()
                 , lineId
-                , section.getDistance().getDistance()));
+                , section.getDistance()));
 
         return List.of(
                 new Station(insertedStationEntities.get(UPBOUND_STATION_INDEX).getId(),
@@ -107,9 +107,58 @@ public class LineRepository {
     public void updateInterSection(final Long lineId, final Section deleteSection, final List<Section> sections) {
         sectionDao.deleteById(deleteSection.getId());
         List<SectionEntity> sectionEntities = sections.stream()
-            .map(section -> new SectionEntity(section.getLeftStation().getId(), section.getRightStation().getId(), lineId, section.getDistance().getDistance()))
+            .map(section -> new SectionEntity(section.getLeftStation().getId(), section.getRightStation().getId(), lineId, section.getDistance()))
             .collect(Collectors.toList());
         sectionDao.insertBoth(sectionEntities);
     }
 
+    public Line findByStationId(Long id) {
+        LineEntity lineEntity = lineDao.findByStationId(id).orElseThrow(NotFoundLineException::new);
+        List<SectionStationEntity> sectionStationEntities = sectionDao.findByLineId(lineEntity.getId());
+
+        List<Section> sections = new ArrayList<>();
+        for (SectionStationEntity sectionStationEntity : sectionStationEntities) {
+            sections.add(new Section(
+                    sectionStationEntity.getId(),
+                    new Station(sectionStationEntity.getLeftStationId(), sectionStationEntity.getLeftStationName()),
+                    new Station(sectionStationEntity.getRightStationId(), sectionStationEntity.getRightStationName()),
+                    sectionStationEntity.getDistance())
+            );
+        }
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), sections);
+    }
+
+    public Station findStationById(Long stationId) {
+        StationEntity stationEntity = stationDao.findById(stationId).orElseThrow(NotFoundStationException::new);
+        return new Station(stationEntity.getId(), stationEntity.getName());
+    }
+
+    public void deleteSectionAndAllStation(final Section section) {
+        sectionDao.deleteById(section.getId());
+        System.out.println(section.getLeftStation().getId()+ " " + section.getRightStation().getId());
+        stationDao.deleteBothById(List.of(
+                section.getLeftStation().getId(),
+                section.getRightStation().getId()));
+    }
+
+    public void deleteSectionAndStation(Section section, Station station) {
+        sectionDao.deleteById(section.getId());
+        stationDao.deleteById(station.getId());
+    }
+
+    public void updateSectionAndDeleteStation(final Long lineId, final List<Section> sectionsWithStation, final Section section, final Station station) {
+        sectionDao.deleteBothById(sectionsWithStation.stream()
+                .map(Section::getId)
+                .collect(Collectors.toList()));
+
+
+        sectionDao.insert(new SectionEntity(
+                section.getLeftStation().getId(),
+                section.getRightStation().getId(),
+                lineId,
+                section.getDistance()
+        ));
+
+        stationDao.deleteById(station.getId());
+    }
 }

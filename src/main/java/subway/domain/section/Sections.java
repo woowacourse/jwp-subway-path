@@ -2,9 +2,7 @@ package subway.domain.section;
 
 import subway.domain.station.Station;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -73,6 +71,44 @@ public class Sections {
                 .filter(section -> section.getLeftStation().equals(baseStation))
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public Section findBoundSection(Station boundStation) {
+        if (boundStation.equals(findUpBoundStation())) {
+            return sections.stream()
+                    .filter(section -> section.getLeftStation().equals(boundStation))
+                    .findFirst()
+                    .orElseThrow();
+        }
+        return sections.stream()
+                .filter(section -> section.getRightStation().equals(boundStation))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public List<Section> findInterSections(Station station) {
+        Section rightSection = sections.stream()
+                .filter(section -> section.getRightStation().equals(station))
+                .findFirst()
+                .orElseThrow();
+        Section leftSection = sections.stream()
+                .filter(section -> section.getLeftStation().equals(station))
+                .findFirst()
+                .orElseThrow();
+
+        return List.of(rightSection, leftSection);
+    }
+
+    public Section linkSections(final List<Section> existedSections) {
+        int updateDistance = existedSections.get(0).getDistance() + existedSections.get(1).getDistance();
+        return new Section(
+                existedSections.get(0).getLeftStation(),
+                existedSections.get(1).getRightStation(),
+                updateDistance);
+    }
+
+    public boolean isSizeOne() {
+        return sections.size() == 1;
     }
 
     public List<Section> getSections() {

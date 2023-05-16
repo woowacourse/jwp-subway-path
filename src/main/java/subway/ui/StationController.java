@@ -1,10 +1,7 @@
 package subway.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import subway.application.StationService;
 import subway.dto.StationInitRequest;
 import subway.dto.StationInitResponse;
@@ -35,5 +32,11 @@ public class StationController {
         StationResponse stationResponse = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("station/" + stationResponse.getId()))
                 .body(stationResponse);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteStation(@PathVariable final Long id) {
+        stationService.deleteStation(id);
+        return ResponseEntity.ok().build();
     }
 }

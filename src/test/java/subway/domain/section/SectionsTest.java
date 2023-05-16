@@ -71,4 +71,23 @@ class SectionsTest {
         assertThat(result.getRightStation().getName()).isEqualTo(sections.get(1).getRightStation().getName());
 
     }
+
+    @Test
+    @DisplayName("종점역이 주어지면 종점역을 포함하는 구간을 찾아낸다.")
+    void find_last_section_with_last_station() {
+        // given
+        List<Section> sections = List.of(
+                new Section(new Station(1L, "잠실"), new Station(2L, "선릉"), 10),
+                new Section(new Station(2L, "선릉"), new Station(3L, "강남"), 10)
+        );
+        Sections lineSection = new Sections(sections);
+
+        Station baseStation = new Station(1L, "잠실");
+
+        // when
+        Section result = lineSection.findBoundSection(baseStation);
+
+        assertThat(result.getLeftStation()).isEqualTo(sections.get(0).getLeftStation());
+        assertThat(result.getRightStation()).isEqualTo(sections.get(0).getRightStation());
+    }
 }

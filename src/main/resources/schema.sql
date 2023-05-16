@@ -25,3 +25,11 @@ CREATE TABLE IF NOT EXISTS SECTION
     PRIMARY KEY (id),
     FOREIGN KEY (line_id) REFERENCES LINE (id)
 );
+
+-- INSERT INTO LINE(id, name, color)
+-- values (1, '2호선', '#123456');
+-- INSERT INTO STATION(id, name, line_id)
+-- values (1, '잠실역', 1),
+--        (2, '선릉역', 1);
+-- INSERT INTO SECTION(id, left_station_id, right_station_id, line_id, distance)
+-- values (1, 1, 2, 1, 10)

@@ -49,7 +49,7 @@ public class Section {
         return rightStation;
     }
 
-    public Distance getDistance() {
-        return distance;
+    public int getDistance() {
+        return distance.getDistance();
     }
 }

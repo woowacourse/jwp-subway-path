@@ -90,4 +90,19 @@ public class SectionDao {
         String sql = "DELETE FROM SECTION WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    public void deleteBothById(List<Long> sectionIds) {
+        String sql = "DELETE FROM SECTION WHERE id = ?";
+        jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setLong(1, sectionIds.get(i));
+            }
+
+            @Override
+            public int getBatchSize() {
+                return sectionIds.size();
+            }
+        });
+    }
 }

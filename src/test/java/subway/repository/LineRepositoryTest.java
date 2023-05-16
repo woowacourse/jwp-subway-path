@@ -113,4 +113,26 @@ class LineRepositoryTest {
         assertThat(result.getId()).isEqualTo(stationEntity.getId());
         assertThat(result.getName()).isEqualTo(stationEntity.getName());
     }
+
+    @Test
+    @DisplayName("역 id를 통해 노선을 찾는다.")
+    void find_line_by_station_id() {
+        // given
+        Station station = new Station(1L, "잠실역");
+        LineEntity lineEntity = new LineEntity(1L, "2호선", "#123456");
+        List<SectionStationEntity> sectionEntities = List.of(new SectionStationEntity(1L, 1L, "잠실", 2L, "선릉", 10));
+        doReturn(Optional.of(lineEntity)).when(lineDao)
+                .findByStationId(any(Long.class));
+        doReturn(sectionEntities).when(sectionDao)
+                .findByLineId(any(Long.class));
+
+        // when
+        Line result = lineRepository.findByStationId(station.getId());
+
+        // then
+        assertThat(result.getId()).isEqualTo(lineEntity.getId());
+        assertThat(result.getName()).isEqualTo(lineEntity.getName());
+        assertThat(result.getColor()).isEqualTo(lineEntity.getColor());
+        assertThat(result.getSections().getSections().size()).isEqualTo(1);
+    }
 }

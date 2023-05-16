@@ -99,6 +99,22 @@ public class Line {
         return sections.findSection(baseStation, direction);
     }
 
+    public Section findSectionByBoundStation(Station boundStation) {
+        return sections.findBoundSection(boundStation);
+    }
+
+    public List<Section> findSectionByInterStation(Station station) {
+        return sections.findInterSections(station);
+    }
+
+    public Section updateSection(List<Section> section) {
+        return sections.linkSections(section);
+    }
+
+    public boolean hasOneSection() {
+        return sections.isSizeOne();
+    }
+
     public Long getId() {
         return id;
     }
