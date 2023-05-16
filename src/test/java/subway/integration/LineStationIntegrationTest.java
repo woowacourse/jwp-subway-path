@@ -298,7 +298,7 @@ public class LineStationIntegrationTest extends IntegrationTest {
     }
 
     @Test
-    @DisplayName("노선에서 지하철을 삭제한다..")
+    @DisplayName("노선에서 지하철을 삭제한다.")
     void testRemoveStationOnLine() {
         //given
         final ExtractableResponse<Response> createLineResponse = RestAssured
