@@ -3,7 +3,6 @@ package subway.domain;
 import subway.exception.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -186,6 +185,6 @@ public class Sections {
     }
 
     public List<Section> getSections() {
-        return Collections.unmodifiableList(sections);
+        return sections;
     }
 }

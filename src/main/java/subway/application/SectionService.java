@@ -6,10 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.*;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.dto.SectionRequest;
 import subway.exception.InvalidStationException;
 
@@ -19,28 +16,29 @@ public class SectionService {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
-    public SectionService(SectionDao sectionDao, StationDao stationDao) {
+    public SectionService(SectionDao sectionDao, StationDao stationDao, LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     @Transactional
     public void saveSection(Long lineId, SectionRequest request) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
-
-        Sections sections = new Sections(toSections(sectionEntities));
+        Line line = new Line(lineDao.findById(lineId).get().getName(),new Sections(toSections(sectionEntities)));
 
         Section requestSection = new Section(
                 new Station(request.getStartStation()),
                 new Station(request.getEndStation()),
                 new Distance(request.getDistance()));
 
-        sections.add(requestSection);
+        line.addSection(requestSection);
         addStationOfSection(requestSection.getStartStation(), requestSection.getEndStation());
 
         sectionDao.deleteAllById(lineId);
-        sectionDao.insertAll(toSectionEntities(lineId, sections.getSections()));
+        sectionDao.insertAll(toSectionEntities(lineId, line.getSections().getSections()));
     }
 
     private void addStationOfSection(Station requestStartStation, Station requestEndStation) {
@@ -59,13 +57,13 @@ public class SectionService {
 
     @Transactional
     public void deleteSection(Long lineId, Long stationId) {
-        List<SectionEntity> sectionEntitiesOfLine = sectionDao.findByLineId(lineId);
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        Line line = new Line(lineDao.findById(lineId).get().getName(),new Sections(toSections(sectionEntities)));
 
-        Sections sections = new Sections(toSections(sectionEntitiesOfLine));
-        sections.remove(toStation(stationDao.findById(stationId).orElseThrow(InvalidStationException::new)));
+        line.getSections().remove(toStation(stationDao.findById(stationId).orElseThrow(InvalidStationException::new)));
 
         sectionDao.deleteAllById(lineId);
-        sectionDao.insertAll(toSectionEntities(lineId, sections.getSections()));
+        sectionDao.insertAll(toSectionEntities(lineId, line.getSections().getSections()));
 
         deleteStation(stationId);
     }

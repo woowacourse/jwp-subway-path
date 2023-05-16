@@ -31,6 +31,9 @@ public class Line {
     public Sections getSections() {
         return sections;
     }
+    public void addSection(Section section){
+        sections.getSections().add(section);
+    }
 
     @Override
     public boolean equals(Object o) {

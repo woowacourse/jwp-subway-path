@@ -21,6 +21,8 @@ public class SectionIntegrationTest extends IntegrationTest {
     private SectionRequest sectionRequest1;
     private SectionRequest sectionRequest2;
     private SectionRequest sectionRequest3;
+    private SectionRequest sectionRequest4;
+
 
     @BeforeEach
     public void setUp() {
@@ -30,6 +32,7 @@ public class SectionIntegrationTest extends IntegrationTest {
         sectionRequest1 = new SectionRequest("잠실새내", "잠실", 5);
         sectionRequest2 = new SectionRequest("선릉", "인천역", 20);
         sectionRequest3 = new SectionRequest("선릉", "강변", 3);
+        sectionRequest4 = new SectionRequest("논현역", "강릉역", 300);
     }
 
     @Test
@@ -58,22 +61,15 @@ public class SectionIntegrationTest extends IntegrationTest {
     void createSectionStationBetweenStationException() {
         ExtractableResponse<Response> lineResponse = RestAssured.given().log().uri()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
+                .body(lineRequest2)
                 .when().post("/subway/lines")
                 .then().log().all()
                 .extract();
 
         Long lineId = Long.parseLong(lineResponse.header("Location").split("/")[3]);
-        ExtractableResponse<Response> createdResponse = RestAssured.given().log().uri()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest1)
-                .when().post("/subway/lines/{lineId}/sections", lineId)
-                .then().log().all()
-                .extract();
-
         ExtractableResponse<Response> createdBetweenResponse = RestAssured.given().log().uri()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionRequest2)
+                .body(sectionRequest4)
                 .when().post("/subway/lines/{lineId}/sections", lineId)
                 .then().log().all()
                 .extract();

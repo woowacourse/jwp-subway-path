@@ -6,10 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.dao.SectionDao;
-import subway.dao.SectionEntity;
-import subway.dao.StationDao;
-import subway.dao.StationEntity;
+import subway.dao.*;
 import subway.dto.SectionRequest;
 
 import java.util.List;
@@ -27,6 +24,8 @@ class SectionServiceTest {
     private SectionDao sectionDao;
     @Mock
     private StationDao stationDao;
+    @Mock
+    private LineDao lineDao;
 
     @Test
     @DisplayName("Section을 저장한다.")
@@ -39,7 +38,7 @@ class SectionServiceTest {
         when(stationDao.findAll()).thenReturn(stationEntities);
         doNothing().when(sectionDao).deleteAllById(any());
         doNothing().when(sectionDao).insertAll(any());
-
+        when(lineDao.findById(any())).thenReturn(Optional.of(new LineEntity("1호선")));
         sectionService.saveSection(1L, sectionRequest);
 
         verify(sectionDao, times(1)).deleteAllById(any());
@@ -56,6 +55,7 @@ class SectionServiceTest {
         when(stationDao.findById(any())).thenReturn(Optional.of(new StationEntity("서울역")));
         doNothing().when(sectionDao).deleteAllById(any());
         doNothing().when(sectionDao).insertAll(any());
+        when(lineDao.findById(any())).thenReturn(Optional.of(new LineEntity("1호선")));
 
         sectionService.deleteSection(1L, 1L);
 
