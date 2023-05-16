@@ -25,9 +25,9 @@ public class StationEdge {
         return distance;
     }
 
-    public List<StationEdge> splitFromDownStation(Long insertStationId, Distance distance) {
-        StationEdge upStationEdge = new StationEdge(insertStationId, this.distance.minus(distance));
-        StationEdge downStationEdge = new StationEdge(downStationId, distance);
+    public List<StationEdge> split(Distance newEdgeDistance, long newStationId) {
+        StationEdge upStationEdge = new StationEdge(newStationId, newEdgeDistance);
+        StationEdge downStationEdge = new StationEdge(downStationId, this.distance.minus(newEdgeDistance));
         return List.of(upStationEdge, downStationEdge);
     }
 }

@@ -14,47 +14,46 @@ public class StationEdges {
     }
 
     public void addStationUpperFrom(
-            Long insertStationId,
+            Long newStationId,
             long adjacentStationId,
-            Distance distance
+            Distance distanceFromAdjacentStation
     ) {
-        if (contains(insertStationId)) {
-            throw new StationAlreadyExistsException();
-        }
+        validateNew(newStationId);
 
         StationEdge adjacentDownStationEdge = getStationEdge(adjacentStationId);
         int adjacentDownStationIndex = stationEdges.indexOf(adjacentDownStationEdge);
 
-        List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distance);
+        Distance newEdgeDistance = adjacentDownStationEdge.getDistance().minus(distanceFromAdjacentStation);
+        List<StationEdge> splitEdges = adjacentDownStationEdge.split(newEdgeDistance, newStationId);
         stationEdges.remove(adjacentDownStationIndex);
         stationEdges.addAll(adjacentDownStationIndex, splitEdges);
     }
 
     public void addStationDownFrom(
-            Long insertStationId,
+            Long newStationId,
             Long adjacentStationId,
-            Distance distance
+            Distance newStationDistance
     ) {
-        if (contains(insertStationId)) {
-            throw new StationAlreadyExistsException();
-        }
+        validateNew(newStationId);
 
         final int adjacentDownStationIndex = stationEdges.indexOf(getStationEdge(adjacentStationId)) + 1;
-
         boolean isLastEdge = adjacentDownStationIndex == stationEdges.size();
         if (isLastEdge) {
-            StationEdge insertedStationEdge = new StationEdge(insertStationId, distance);
+            StationEdge insertedStationEdge = new StationEdge(newStationId, newStationDistance);
             stationEdges.add(insertedStationEdge);
             return;
         }
 
         StationEdge adjacentDownStationEdge = stationEdges.get(adjacentDownStationIndex);
-
-        Distance distanceFromDown = adjacentDownStationEdge.getDistance().minus(distance);
-
-        List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distanceFromDown);
+        List<StationEdge> splitEdges = adjacentDownStationEdge.split(newStationDistance, newStationId);
         stationEdges.remove(adjacentDownStationIndex);
         stationEdges.addAll(adjacentDownStationIndex, splitEdges);
+    }
+
+    private void validateNew(Long stationId) {
+        if (contains(stationId)) {
+            throw new StationAlreadyExistsException();
+        }
     }
 
     public StationEdge deleteStation(long stationId) {

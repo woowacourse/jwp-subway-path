@@ -28,16 +28,20 @@ class StationEdgeTest {
     @DisplayName("거리와 역 아이디로 엣지를 쪼갠다.")
     void split() {
         //given
-        StationEdge stationEdge = new StationEdge(1L, 5);
+        long downStationId = 1L;
+        int totalDistance = 5;
+        StationEdge stationEdge = new StationEdge(downStationId, totalDistance);
         //when
-        List<StationEdge> split = stationEdge.splitFromDownStation(2L, Distance.from(3));
+        Distance newEdgeDistance = Distance.from(3);
+        long newStationId = 2L;
+        List<StationEdge> split = stationEdge.split(newEdgeDistance, newStationId);
         //then
         assertSoftly(
                 softly -> {
                     softly.assertThat(split.get(0).getDownStationId()).isEqualTo(2L);
-                    softly.assertThat(split.get(0).getDistance()).isEqualTo(Distance.from(2));
+                    softly.assertThat(split.get(0).getDistance()).isEqualTo(Distance.from(3));
                     softly.assertThat(split.get(1).getDownStationId()).isEqualTo(1L);
-                    softly.assertThat(split.get(1).getDistance()).isEqualTo(Distance.from(3));
+                    softly.assertThat(split.get(1).getDistance()).isEqualTo(Distance.from(2));
                 }
         );
     }
