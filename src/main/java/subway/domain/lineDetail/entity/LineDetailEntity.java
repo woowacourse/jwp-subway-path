@@ -1,23 +1,23 @@
-package subway.domain.lineDetail.domain;
+package subway.domain.lineDetail.entity;
 
 import java.util.Objects;
 
-public class LineDetail {
+public class LineDetailEntity {
 
     private Long id;
     private String name;
     private String color;
 
-    private LineDetail() {
+    private LineDetailEntity() {
     }
 
-    public LineDetail(final Long id, final String name, final String color) {
+    public LineDetailEntity(final Long id, final String name, final String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
 
-    public LineDetail(final String name, final String color) {
+    public LineDetailEntity(final String name, final String color) {
         this.name = name;
         this.color = color;
     }
@@ -38,8 +38,8 @@ public class LineDetail {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LineDetail lineDetail = (LineDetail) o;
-        return Objects.equals(id, lineDetail.id);
+        LineDetailEntity lineDetailEntity = (LineDetailEntity) o;
+        return Objects.equals(id, lineDetailEntity.id);
     }
 
     @Override

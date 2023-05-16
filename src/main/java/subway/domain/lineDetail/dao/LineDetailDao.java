@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.lineDetail.domain.LineDetail;
+import subway.domain.lineDetail.entity.LineDetailEntity;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -18,8 +18,8 @@ public class LineDetailDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private final RowMapper<LineDetail> rowMapper = (rs, rowNum) ->
-            new LineDetail(
+    private final RowMapper<LineDetailEntity> rowMapper = (rs, rowNum) ->
+            new LineDetailEntity(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
@@ -32,27 +32,27 @@ public class LineDetailDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public LineDetail insert(final LineDetail lineDetail) {
+    public LineDetailEntity insert(final LineDetailEntity lineDetailEntity) {
         final Map<String, Object> params = new HashMap<>();
-        params.put("id", lineDetail.getId());
-        params.put("name", lineDetail.getName());
-        params.put("color", lineDetail.getColor());
+        params.put("id", lineDetailEntity.getId());
+        params.put("name", lineDetailEntity.getName());
+        params.put("color", lineDetailEntity.getColor());
 
         final Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new LineDetail(lineId, lineDetail.getName(), lineDetail.getColor());
+        return new LineDetailEntity(lineId, lineDetailEntity.getName(), lineDetailEntity.getColor());
     }
 
-    public List<LineDetail> findAll() {
+    public List<LineDetailEntity> findAll() {
         final String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public LineDetail findById(final Long id) {
+    public LineDetailEntity findById(final Long id) {
         final String sql = "select id, name, color from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public Optional<LineDetail> findByName(final String name) {
+    public Optional<LineDetailEntity> findByName(final String name) {
         try {
             final String sql = "select id, name, color from LINE WHERE name = ?";
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
@@ -61,9 +61,9 @@ public class LineDetailDao {
         }
     }
 
-    public void update(final LineDetail newLineDetail) {
+    public void update(final LineDetailEntity newLineDetailEntity) {
         final String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLineDetail.getName(), newLineDetail.getColor(), newLineDetail.getId()});
+        jdbcTemplate.update(sql, new Object[]{newLineDetailEntity.getName(), newLineDetailEntity.getColor(), newLineDetailEntity.getId()});
     }
 
     public void deleteById(final Long id) {

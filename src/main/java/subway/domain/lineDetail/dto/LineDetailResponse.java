@@ -1,6 +1,6 @@
 package subway.domain.lineDetail.dto;
 
-import subway.domain.lineDetail.domain.LineDetail;
+import subway.domain.lineDetail.entity.LineDetailEntity;
 
 import java.util.Objects;
 
@@ -19,8 +19,8 @@ public class LineDetailResponse {
         this.color = color;
     }
 
-    public static LineDetailResponse of(final LineDetail lineDetail) {
-        return new LineDetailResponse(lineDetail.getId(), lineDetail.getName(), lineDetail.getColor());
+    public static LineDetailResponse of(final LineDetailEntity lineDetailEntity) {
+        return new LineDetailResponse(lineDetailEntity.getId(), lineDetailEntity.getName(), lineDetailEntity.getColor());
     }
 
     public Long getId() {

@@ -9,7 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.lineDetail.dao.LineDetailDao;
-import subway.domain.lineDetail.domain.LineDetail;
+import subway.domain.lineDetail.entity.LineDetailEntity;
 import subway.domain.lineDetail.dto.LineDetailRequest;
 import subway.domain.lineDetail.dto.LineDetailResponse;
 import subway.domain.lineDetail.service.LineDetailService;
@@ -69,7 +69,7 @@ class LineDetailServiceTest {
         lineDetailService.updateLine(lineId, line);
 
         // then
-        verify(lineDetailDao).update(any(LineDetail.class));
+        verify(lineDetailDao).update(any(LineDetailEntity.class));
     }
 
     @Test
@@ -77,8 +77,8 @@ class LineDetailServiceTest {
         //given
         LineDetailRequest lineDetailRequest = new LineDetailRequest("2호선", "초록색");
         given(lineDetailDao.findByName(lineDetailRequest.getName())).willReturn(Optional.empty());
-        LineDetail lineDetail = new LineDetail(lineDetailRequest.getName(), lineDetailRequest.getColor());
-        given(lineDetailDao.insert(lineDetail)).willReturn(lineDetail);
+        LineDetailEntity lineDetailEntity = new LineDetailEntity(lineDetailRequest.getName(), lineDetailRequest.getColor());
+        given(lineDetailDao.insert(lineDetailEntity)).willReturn(lineDetailEntity);
         //when
         LineDetailResponse lineDetailResponse = lineDetailService.saveLine(lineDetailRequest);
 
@@ -86,14 +86,14 @@ class LineDetailServiceTest {
         verify(lineDetailDao).insert(any());
         Assertions.assertThat(lineDetailResponse).usingRecursiveComparison()
                 .ignoringFields("id")
-                .isEqualTo(lineDetail);
+                .isEqualTo(lineDetailEntity);
     }
 
     @Test
     void 노선_정보를_추가할_때_중복된_이름의_노선이_존재하면_예외_발생() {
         //given
         LineDetailRequest lineDetailRequest = new LineDetailRequest("2호선", "초록색");
-        given(lineDetailDao.findByName(lineDetailRequest.getName())).willReturn(Optional.of(new LineDetail(lineDetailRequest.getName(), lineDetailRequest.getColor())));
+        given(lineDetailDao.findByName(lineDetailRequest.getName())).willReturn(Optional.of(new LineDetailEntity(lineDetailRequest.getName(), lineDetailRequest.getColor())));
 
         //then
         assertThatThrownBy(() -> lineDetailService.saveLine(lineDetailRequest))
