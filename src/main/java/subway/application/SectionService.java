@@ -1,12 +1,12 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.application.dto.SectionRequest;
 import subway.application.exception.SubwayServiceException;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.*;
-import subway.application.dto.SectionRequest;
 
 import java.util.List;
 

@@ -1,11 +1,14 @@
 package subway.application.dto;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 public class SectionRequest {
 
     @NotNull(message = "호선의 번호를 입력해주세요.")
     private final Long lineId;
+
+    @Valid
     @NotNull(message = "노선 정보를 입력해주세요.")
     private final SectionStations section;
 

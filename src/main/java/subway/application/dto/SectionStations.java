@@ -7,8 +7,10 @@ public class SectionStations {
 
     @NotNull(message = "노선의 좌측 역의 번호를 입력해주세요.")
     private final Long leftStationId;
+
     @NotNull(message = "노선의 우측 역의 번호를 입력해주세요.")
     private final Long rightStationId;
+
     @NotNull(message = "노선의 거리를 입력해주세요.")
     private final Integer distance;
 

@@ -7,9 +7,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.application.exception.SubwayServiceException;
+import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Distance;
+import subway.domain.LineFixture;
 import subway.domain.Section;
 import subway.application.dto.SectionRequest;
 import subway.application.dto.SectionStations;
@@ -34,7 +36,11 @@ class SectionServiceTest {
     @Mock
     private StationDao stationDao;
 
+    @Mock
+    private LineDao lineDao;
+
     private SectionService sectionService;
+
 
     @BeforeEach
     void setUp() {
@@ -45,6 +51,7 @@ class SectionServiceTest {
     @DisplayName("빈 노선에 새로운 두 역의 노선을 저장할 수 있다.")
     @Test
     void addStations_init_success() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(new ArrayList<>());
         when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
         when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
@@ -63,6 +70,7 @@ class SectionServiceTest {
     @DisplayName("비어있지 않은 노선의 뒤 쪽에 두 역의 노선의 구간을 추가할 수 있다.")
     @Test
     void addStations_lastInsert_success() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_START));
         when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
         when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
@@ -81,6 +89,7 @@ class SectionServiceTest {
     @DisplayName("비어있지 않은 노선의 앞 쪽에 두 역의 노선의 구간을 추가할 수 있다.")
     @Test
     void addStations_firstInsert_success() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_MIDDLE_2));
         when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
         when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
@@ -99,6 +108,7 @@ class SectionServiceTest {
     @DisplayName("비어있지 않은 노선의 중간에 두 역의 노선의 구간을 추가할 수 있다. - 새로운 노선을 왼쪽에 추가")
     @Test
     void addStations_midInsert_success_1() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_MIDDLE_1, SECTION_MIDDLE_2));
         when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
         when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
@@ -118,6 +128,7 @@ class SectionServiceTest {
     @DisplayName("비어있지 않은 노선의 중간에 두 역의 노선의 구간을 추가할 수 있다. - 새로운 노선을 오른쪽에 추가")
     @Test
     void addStations_midInsert_success_2() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(List.of(SECTION_MIDDLE_1, SECTION_MIDDLE_2));
         when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
         when(stationDao.findById(5L)).thenReturn(FIXTURE_STATION_5);
@@ -137,6 +148,7 @@ class SectionServiceTest {
     @DisplayName("노선에 존재하는 두 역의 노선을 저장할 수 없다.")
     @Test
     void addStations_allExistingStation_fail() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START));
         when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
@@ -153,6 +165,7 @@ class SectionServiceTest {
     @DisplayName("비어있지 않은 노선에 두 역이 모두 없는 경우 두 역의 노선을 저장할 수 없다.")
     @Test
     void addStations_afterExistingStation_fail() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START));
         when(stationDao.findById(4L)).thenReturn(FIXTURE_STATION_4);
@@ -169,6 +182,7 @@ class SectionServiceTest {
     @DisplayName("삽입할 거리가 기존 역 사이의 길이보다 크거나 같은 경우 두 역의 노선을 저장할 수 없다.")
     @Test
     void addStations_SameOrOverDistance_fail() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START));
         when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
@@ -185,6 +199,7 @@ class SectionServiceTest {
     @DisplayName("양 쪽에 연결된 역을 삭제할 수 있다.")
     @Test
     void deleteStationInBetween() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);
@@ -200,6 +215,7 @@ class SectionServiceTest {
     @DisplayName("왼쪽에만 연결된 역을 삭제할 수 있다.")
     @Test
     void deleteStationLeft() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(1L)).thenReturn(FIXTURE_STATION_1);
@@ -212,6 +228,7 @@ class SectionServiceTest {
     @DisplayName("오른쪽에만 연결된 역을 삭제할 수 있다.")
     @Test
     void deleteStationRight() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(3L)).thenReturn(FIXTURE_STATION_3);
@@ -224,6 +241,7 @@ class SectionServiceTest {
     @DisplayName("노선도에 존재하지 않는 역을 삭제할 수 없다.")
     @Test
     void deleteStationNonExisting() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START, SECTION_MIDDLE_1));
         when(stationDao.findById(4L)).thenReturn(FIXTURE_STATION_4);
@@ -236,6 +254,7 @@ class SectionServiceTest {
     @DisplayName("노선에 역이 두 개 있으면 모두 삭제한다.")
     @Test
     void deleteStationOnlyTwoExisting() {
+        when(lineDao.findById(1L)).thenReturn(LineFixture.FIXTURE_LINE_1);
         when(sectionDao.findByLineId(1L)).thenReturn(
                 List.of(SECTION_START));
         when(stationDao.findById(2L)).thenReturn(FIXTURE_STATION_2);

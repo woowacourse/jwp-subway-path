@@ -1,13 +1,15 @@
 package subway.application.dto;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 public class LineRequest {
 
-    @NotNull(message = "호선의 이름을 입력해주세요.")
-    private String name;
-    @NotNull(message = "호선의 색을 입력해주세요.")
-    private String color;
+    @NotBlank(message = "호선의 이름을 입력해주세요.")
+    private final String name;
+
+    @NotBlank(message = "호선의 색을 입력해주세요.")
+    private final String color;
 
     public LineRequest(String name, String color) {
         this.name = name;

@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
 import subway.application.dto.SectionRequest;
 
+import javax.validation.Valid;
+
 @RestController
 @RequestMapping("/sections")
 public class SectionController {
@@ -22,7 +24,7 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> addStations(@RequestBody SectionRequest sectionRequest) {
+    public ResponseEntity<Void> addStations(@Valid @RequestBody SectionRequest sectionRequest) {
         sectionService.addSection(sectionRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
