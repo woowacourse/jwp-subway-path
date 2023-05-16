@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    private Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
+    private final Logger log = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<String> handleUnExpectedException(Exception exception) {

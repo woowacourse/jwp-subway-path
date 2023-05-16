@@ -19,7 +19,7 @@ public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
             new StationEntity(
                     rs.getLong("id"),
                     rs.getString("name")

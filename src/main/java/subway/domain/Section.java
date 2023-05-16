@@ -7,10 +7,6 @@ public class Section {
     private final Station downStation;
     private final Long lineId;
 
-    public Section(Distance distance, Long upStationId, Long downStationId, Long lineId) {
-        this(null, distance, new Station(upStationId), new Station(downStationId), lineId);
-    }
-
     public Section(int distance, Station upStation, Station downStation, Long lineId) {
         this(null, Distance.from(distance), upStation, downStation, lineId);
     }

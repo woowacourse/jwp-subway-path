@@ -19,7 +19,7 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
 
-    private RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
+    private final RowMapper<LineEntity> rowMapper = (rs, rowNum) ->
             new LineEntity(
                     rs.getLong("id"),
                     rs.getString("name"),

@@ -7,14 +7,6 @@ public class StationEntity {
     private StationEntity() {
     }
 
-    /**
-     * insert를 할 떄
-     * TODO 삭제하기 -> insert문 두 개로
-     */
-    public StationEntity(Long id) {
-        this(id, null);
-    }
-
     public StationEntity(String name) {
         this(null, name);
     }

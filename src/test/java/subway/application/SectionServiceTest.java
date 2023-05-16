@@ -7,14 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import subway.SubwayJdbcFixture;
-import subway.application.strategy.delete.DeleteBetweenStation;
-import subway.application.strategy.delete.DeleteDownTerminal;
-import subway.application.strategy.delete.DeleteInitialSection;
-import subway.application.strategy.delete.DeleteUpTerminal;
 import subway.application.strategy.delete.SectionDeleter;
-import subway.application.strategy.insert.InsertDownwardStation;
-import subway.application.strategy.insert.InsertTerminal;
-import subway.application.strategy.insert.InsertUpwardStation;
 import subway.application.strategy.insert.SectionInserter;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
@@ -54,23 +47,6 @@ class SectionServiceTest extends SubwayJdbcFixture {
     @BeforeEach
     void init() {
         sectionService = new SectionService(lineRepository, stationRepository, sectionRepository, sectionInserter, sectionDeleter);
-    }
-
-    private SectionInserter createSectionInserter() {
-        final InsertTerminal insertTerminal = new InsertTerminal(sectionRepository);
-        final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);
-        final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
-
-        return new SectionInserter(List.of(insertTerminal, insertUpwardStation, insertDownwardStation));
-    }
-
-    private SectionDeleter createSectionDeleter() {
-        final DeleteUpTerminal deleteUpTerminal = new DeleteUpTerminal(sectionRepository);
-        final DeleteInitialSection deleteInitialSection = new DeleteInitialSection(sectionRepository, lineDao);
-        final DeleteDownTerminal deleteDownTerminal = new DeleteDownTerminal(sectionRepository);
-        final DeleteBetweenStation deleteBetweenStation = new DeleteBetweenStation(sectionRepository);
-
-        return new SectionDeleter(List.of(deleteBetweenStation, deleteInitialSection, deleteUpTerminal, deleteDownTerminal));
     }
 
     @Nested

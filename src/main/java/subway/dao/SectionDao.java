@@ -1,7 +1,6 @@
 package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -15,13 +14,6 @@ public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert simpleJdbcInsert;
-    private final RowMapper<SectionEntity> rowMapper = (rs, num) -> new SectionEntity(
-            rs.getLong("id"),
-            rs.getInt("distance"),
-            rs.getLong("up_station_id"),
-            rs.getLong("down_station_id"),
-            rs.getLong("line_id")
-    );
 
     public SectionDao(JdbcTemplate jdbcTemplate, DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
