@@ -3,6 +3,7 @@ package subway;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.test.context.jdbc.Sql;
@@ -14,23 +15,23 @@ import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
 
-import javax.sql.DataSource;
-
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 @Sql("classpath:/remove-section-line.sql")
+@Import({StationDao.class, SectionDao.class, SectionStationDao.class, LineDao.class})
 public abstract class SubwayJdbcFixture {
 
     @Autowired
-    protected JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    protected DataSource dataSource;
-
     protected StationDao stationDao;
+    @Autowired
     protected SectionDao sectionDao;
+    @Autowired
     protected SectionStationDao sectionStationDao;
+    @Autowired
     protected LineDao lineDao;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
     protected Long 이호선;
     protected Long 팔호선;
     protected Long 잠실역;
@@ -42,10 +43,6 @@ public abstract class SubwayJdbcFixture {
 
     @BeforeEach
     void setUp() {
-        sectionDao = new SectionDao(jdbcTemplate, dataSource);
-        stationDao = new StationDao(jdbcTemplate, dataSource);
-        lineDao = new LineDao(jdbcTemplate, dataSource);
-        sectionStationDao = new SectionStationDao(jdbcTemplate);
         save();
     }
 

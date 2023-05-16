@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import subway.SubwayJdbcFixture;
 import subway.application.strategy.delete.DeleteBetweenStation;
 import subway.application.strategy.delete.DeleteDownTerminal;
@@ -15,7 +16,6 @@ import subway.application.strategy.insert.InsertDownwardStation;
 import subway.application.strategy.insert.InsertTerminal;
 import subway.application.strategy.insert.InsertUpwardStation;
 import subway.application.strategy.insert.SectionInserter;
-import subway.dao.StationDao;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
@@ -35,29 +35,32 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SuppressWarnings("NonAsciiCharacters")
+@ImportSectionService
 class SectionServiceTest extends SubwayJdbcFixture {
 
+    @Autowired
     private SectionService sectionService;
+    @Autowired
+    private LineRepository lineRepository;
+    @Autowired
     private SectionRepository sectionRepository;
+    @Autowired
+    private StationRepository stationRepository;
+    @Autowired
+    private SectionInserter sectionInserter;
+    @Autowired
+    private SectionDeleter sectionDeleter;
 
     @BeforeEach
     void init() {
-        final LineRepository lineRepository = new LineRepository(lineDao);
-        final StationDao stationDao = new StationDao(jdbcTemplate, dataSource);
-        final StationRepository stationRepository = new StationRepository(stationDao);
-        sectionRepository = new SectionRepository(sectionDao, sectionStationDao);
-
-        final SectionInserter sectionInserter = createBetweenStationInserter();
-
-        final SectionDeleter sectionDeleter = createSectionDeleter();
-
         sectionService = new SectionService(lineRepository, stationRepository, sectionRepository, sectionInserter, sectionDeleter);
     }
 
-    private SectionInserter createBetweenStationInserter() {
+    private SectionInserter createSectionInserter() {
         final InsertTerminal insertTerminal = new InsertTerminal(sectionRepository);
         final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);
         final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
+
         return new SectionInserter(List.of(insertTerminal, insertUpwardStation, insertDownwardStation));
     }
 
@@ -66,6 +69,7 @@ class SectionServiceTest extends SubwayJdbcFixture {
         final DeleteInitialSection deleteInitialSection = new DeleteInitialSection(sectionRepository, lineDao);
         final DeleteDownTerminal deleteDownTerminal = new DeleteDownTerminal(sectionRepository);
         final DeleteBetweenStation deleteBetweenStation = new DeleteBetweenStation(sectionRepository);
+
         return new SectionDeleter(List.of(deleteBetweenStation, deleteInitialSection, deleteUpTerminal, deleteDownTerminal));
     }
 

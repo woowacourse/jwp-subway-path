@@ -5,34 +5,30 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.annotation.Import;
 import subway.application.strategy.StrategyFixture;
-import subway.dao.SectionDao;
 import subway.dao.SectionStationDao;
 import subway.domain.Distance;
 import subway.domain.Sections;
 import subway.domain.Station;
 import subway.repository.SectionRepository;
 
-import javax.sql.DataSource;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @SuppressWarnings("NonAsciiCharacters")
+@Import({SectionRepository.class, SectionStationDao.class})
 class InsertStrategyTest extends StrategyFixture {
 
     @Autowired
-    private JdbcTemplate jdbcTemplate;
-    @Autowired
-    private DataSource dataSource;
+    private SectionRepository sectionRepository;
     private SectionInserter sectionInserter;
     private Sections sections;
 
     @BeforeEach
     void init() {
-        final SectionRepository sectionRepository = new SectionRepository(new SectionDao(jdbcTemplate, dataSource), new SectionStationDao(jdbcTemplate));
         final InsertTerminal insertTerminal = new InsertTerminal(sectionRepository);
         final InsertUpwardStation insertUpwardStation = new InsertUpwardStation(sectionRepository);
         final InsertDownwardStation insertDownwardStation = new InsertDownwardStation(sectionRepository);

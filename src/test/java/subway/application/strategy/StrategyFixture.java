@@ -3,7 +3,7 @@ package subway.application.strategy;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -13,21 +13,17 @@ import subway.dao.entity.SectionEntity;
 import subway.dao.entity.StationEntity;
 import subway.domain.Station;
 
-import javax.sql.DataSource;
-
 @SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 @Sql("classpath:/remove-section-line.sql")
+@Import({StationDao.class, SectionDao.class, LineDao.class})
 public abstract class StrategyFixture {
 
     @Autowired
-    protected JdbcTemplate jdbcTemplate;
-
-    @Autowired
-    protected DataSource dataSource;
-
     protected StationDao stationDao;
+    @Autowired
     protected SectionDao sectionDao;
+    @Autowired
     protected LineDao lineDao;
     protected Long 이호선;
     protected Station 잠실역;
@@ -37,9 +33,6 @@ public abstract class StrategyFixture {
 
     @BeforeEach
     void setUp() {
-        sectionDao = new SectionDao(jdbcTemplate, dataSource);
-        stationDao = new StationDao(jdbcTemplate, dataSource);
-        lineDao = new LineDao(jdbcTemplate, dataSource);
         save();
     }
 
