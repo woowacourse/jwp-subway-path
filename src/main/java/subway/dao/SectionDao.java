@@ -1,36 +1,62 @@
 package subway.dao;
 
-import java.sql.PreparedStatement;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.Section;
+import subway.domain.SectionEntity;
+import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Repository
 public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert simpleJdbcInsert;
+    private final SimpleJdbcInsert insertAction;
 
-    public SectionDao(JdbcTemplate jdbcTemplate) {
+    private final RowMapper<SectionEntity> rowMapper = (rs, rowNum) ->
+            new SectionEntity(
+                    rs.getLong("id"),
+                    rs.getLong("line_id"),
+                    rs.getLong("up_station_id"),
+                    rs.getLong("down_station_id"),
+                    rs.getInt("distance")
+            );
+
+    public SectionDao(final JdbcTemplate jdbcTemplate, final DataSource dataSource) {
         this.jdbcTemplate = jdbcTemplate;
-        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
-            .withTableName("section")
-            .usingGeneratedKeyColumns("id");
+        this.insertAction = new SimpleJdbcInsert(dataSource)
+                .withTableName("section")
+                .usingGeneratedKeyColumns("id");
     }
 
-    public long insert(Section section) {
-        String sql = "INSERT INTO SECTION (line_id, up_station_id, down_station_id, distance) VALUES (?, ?, ?, ?)";
-        GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
-        jdbcTemplate.update(con -> {
-            PreparedStatement ps = con.prepareStatement(sql, new String[]{"id"});
-            ps.setLong(1, section.getLineId());
-            ps.setLong(2, section.getUpStationId());
-            ps.setLong(3, section.getDownStationId());
-            ps.setInt(4, section.getDistance());
-            return ps;
-        }, keyHolder);
-        return keyHolder.getKey().longValue();
+    public SectionEntity insert(final SectionEntity sectionEntity) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", sectionEntity.getId());
+        params.put("line_id", sectionEntity.getLineId());
+        params.put("up_station_id", sectionEntity.getUpStationId());
+        params.put("down_station_id", sectionEntity.getDownStationId());
+        params.put("distance", sectionEntity.getDistance());
+
+        long sectionId = insertAction.executeAndReturnKey(params).longValue();
+        return new SectionEntity(sectionId, sectionEntity.getLineId(), sectionEntity.getUpStationId(), sectionEntity.getDownStationId(), sectionEntity.getDistance());
+    }
+
+    public List<SectionEntity> findAll() {
+        String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION";
+
+        return jdbcTemplate.query(sql, rowMapper);
+    }
+
+    public SectionEntity findById(final Long id) {
+        String sql = "select id, line_id, up_station_id, down_station_id, distance from SECTION WHERE id = ?";
+
+        return jdbcTemplate.queryForObject(sql, rowMapper, id);
+    }
+
+    public void deleteById(final Long id) {
+        jdbcTemplate.update("delete from SECTION where id = ?", id);
     }
 }
