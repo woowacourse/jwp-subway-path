@@ -47,7 +47,7 @@ class JgraphtPathFinderTest {
         );
 
         // when
-        Path path = jgraphtPathFinder.find(ONE, SIX, lines);
+        Path path = jgraphtPathFinder.findShortestPath(ONE, SIX, lines);
 
         // then
         assertThat(path.getTotalDistance()).isEqualTo(15);
@@ -76,7 +76,7 @@ class JgraphtPathFinderTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> jgraphtPathFinder.find(ONE, FIVE, lines))
+        assertThatThrownBy(() -> jgraphtPathFinder.findShortestPath(ONE, FIVE, lines))
                 .isInstanceOf(NotFoundPathException.class);
     }
 }

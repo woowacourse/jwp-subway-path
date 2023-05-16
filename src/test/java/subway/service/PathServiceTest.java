@@ -24,6 +24,7 @@ import subway.domain.Path;
 import subway.domain.PathFinder;
 import subway.domain.Section;
 import subway.domain.Sections;
+import subway.dto.request.ShortestPathRequest;
 import subway.dto.response.ShortestPathResponse;
 import subway.exception.NotFoundStationException;
 import subway.persistence.repository.LineRepository;
@@ -55,7 +56,7 @@ class PathServiceTest {
                 .willReturn(Optional.of(삼성역));
         given(stationRepository.findByName("잠실역"))
                 .willReturn(Optional.of(잠실역));
-        given(pathFinder.find(삼성역, 잠실역, lines))
+        given(pathFinder.findShortestPath(삼성역, 잠실역, lines))
                 .willReturn(new Path(sections, 9));
         given(feePolicy.calculate(9))
                 .willReturn(1250);
@@ -63,7 +64,7 @@ class PathServiceTest {
                 .willReturn(lines);
 
         // when
-        ShortestPathResponse response = pathService.findShortestPath("삼성역", "잠실역");
+        ShortestPathResponse response = pathService.findShortestPath(new ShortestPathRequest("삼성역", "잠실역"));
 
         // then
         assertThat(response.getSectionQueryResponses().size()).isEqualTo(3);
@@ -78,7 +79,7 @@ class PathServiceTest {
                 .willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath("잠실역", "사당역"))
+        assertThatThrownBy(() -> pathService.findShortestPath(new ShortestPathRequest("잠실역", "사당역")))
                 .isInstanceOf(NotFoundStationException.class);
         verify(stationRepository, times(1)).findByName(any());
     }
@@ -92,7 +93,7 @@ class PathServiceTest {
                 .willReturn(Optional.empty());
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath("잠실역", "사당역"))
+        assertThatThrownBy(() -> pathService.findShortestPath(new ShortestPathRequest("잠실역", "사당역")))
                 .isInstanceOf(NotFoundStationException.class);
         verify(stationRepository, times(2)).findByName(any());
     }

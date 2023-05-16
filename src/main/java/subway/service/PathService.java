@@ -7,6 +7,7 @@ import subway.domain.Line;
 import subway.domain.Path;
 import subway.domain.PathFinder;
 import subway.domain.Station;
+import subway.dto.request.ShortestPathRequest;
 import subway.dto.response.ShortestPathResponse;
 import subway.exception.NotFoundStationException;
 import subway.persistence.repository.LineRepository;
@@ -28,14 +29,13 @@ public class PathService {
         this.feePolicy = feePolicy;
     }
 
-    public ShortestPathResponse findShortestPath(String startStationName,
-                                                 String endStationName) {
-        Station startStation = stationRepository.findByName(startStationName)
-                .orElseThrow(() -> new NotFoundStationException(startStationName));
-        Station endStation = stationRepository.findByName(endStationName)
-                .orElseThrow(() -> new NotFoundStationException(endStationName));
+    public ShortestPathResponse findShortestPath(final ShortestPathRequest request) {
+        Station startStation = stationRepository.findByName(request.getStartStation())
+                .orElseThrow(() -> new NotFoundStationException(request.getStartStation()));
+        Station endStation = stationRepository.findByName(request.getEndStation())
+                .orElseThrow(() -> new NotFoundStationException(request.getEndStation()));
         List<Line> lines = lineRepository.findAll();
-        Path path = pathFinder.find(startStation, endStation, lines);
+        Path path = pathFinder.findShortestPath(startStation, endStation, lines);
         int fee = feePolicy.calculate(path.getTotalDistance());
         return ShortestPathResponse.of(path, fee);
     }

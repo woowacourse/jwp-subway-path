@@ -15,13 +15,13 @@ import subway.exception.NotFoundPathException;
 public class JgraphtPathFinder implements PathFinder {
 
     @Override
-    public Path find(final Station startStation, final Station endStation, List<Line> lines) {
+    public Path findShortestPath(final Station startStation, final Station endStation, List<Line> lines) {
         DijkstraShortestPath path = getPath(lines);
-        GraphPath<Station, SectionProxy> shortestPath = findShortestPath(startStation, endStation, path);
-        Sections sections = shortestPath.getEdgeList().stream()
+        GraphPath<Station, SectionProxy> shortestGraph = findShortestGraph(startStation, endStation, path);
+        Sections sections = shortestGraph.getEdgeList().stream()
                 .map(SectionProxy::toSection)
                 .collect(collectingAndThen(toList(), Sections::new));
-        return new Path(sections, (int) shortestPath.getWeight());
+        return new Path(sections, (int) shortestGraph.getWeight());
     }
 
     private DijkstraShortestPath getPath(List<Line> lines) {
@@ -41,7 +41,7 @@ public class JgraphtPathFinder implements PathFinder {
         return new DijkstraShortestPath(graph);
     }
 
-    private static GraphPath findShortestPath(Station startStation, Station endStation, DijkstraShortestPath path) {
+    private static GraphPath findShortestGraph(Station startStation, Station endStation, DijkstraShortestPath path) {
         GraphPath shortestPath = path.getPath(startStation, endStation);
         if (shortestPath == null) {
             throw new NotFoundPathException();

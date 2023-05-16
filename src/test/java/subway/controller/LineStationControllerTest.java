@@ -40,8 +40,6 @@ class LineStationControllerTest {
     @MockBean
     private LineService lineService;
 
-
-
     @Nested
     class 노선에_역을_추가_할떄 {
 
