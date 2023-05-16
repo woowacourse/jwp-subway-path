@@ -86,7 +86,10 @@ public class Line {
     }
 
     private void deleteOldSections(Station station) {
-        findSectionOf(section -> section.hasDownBound(station) || section.hasUpBound(station))
+        findSectionOf(section -> section.hasDownBound(station))
+                .ifPresent(sections::remove);
+
+        findSectionOf(section -> section.hasUpBound(station))
                 .ifPresent(sections::remove);
     }
 
