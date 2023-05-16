@@ -1,20 +1,27 @@
 package subway.application;
 
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.stereotype.Service;
 
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.Sections;
 import subway.domain.Station;
+import subway.domain.repository.SectionRepository;
 import subway.domain.repository.StationRepository;
 import subway.ui.dto.request.StationRequest;
 import subway.ui.dto.response.StationResponse;
 
-import java.util.List;
-
 @Service
 public class StationService {
 	private final StationRepository stationRepository;
+	private final SectionRepository sectionRepository;
 
-	public StationService(final StationRepository stationRepository) {
+	public StationService(final StationRepository stationRepository, final SectionRepository sectionRepository) {
 		this.stationRepository = stationRepository;
+		this.sectionRepository = sectionRepository;
 	}
 
 	public StationResponse createStation(final StationRequest stationRequest) {
@@ -50,11 +57,18 @@ public class StationService {
 	}
 
 	public long deleteById(final Long stationId) {
+		final Station station = stationRepository.findById(stationId);
+		final List<Section> sectionsContainStation = sectionRepository.findSectionsContainStation(station);
 		final boolean isDelete = stationRepository.deleteById(stationId);
 
 		if (!isDelete) {
 			throw new NullPointerException("역 삭제에 실패했습니다");
 		}
+		final Sections sections = new Sections(sectionRepository.findAll());
+		final Map<Line, List<Section>> mergedSections = sections.deleteAndMerge(station, sectionsContainStation);
+		mergedSections.keySet()
+			.forEach(line -> sectionRepository.createSection(line.getName(), mergedSections.get(line)));
+
 		return stationId;
 	}
 }

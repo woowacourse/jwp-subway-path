@@ -12,7 +12,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import subway.domain.Line;
+import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.repository.SectionRepository;
 import subway.persistence.StationJdbcRepository;
 import subway.ui.dto.request.StationRequest;
 import subway.ui.dto.response.StationResponse;
@@ -22,6 +25,9 @@ class StationServiceTest {
 
 	@Mock
 	StationJdbcRepository repository;
+
+	@Mock
+	SectionRepository sectionRepository;
 
 	@InjectMocks
 	StationService service;
@@ -92,7 +98,10 @@ class StationServiceTest {
 	@Test
 	void deleteById() {
 		// given
+		final Section section1 = new Section(new Line("2호선"), new Station("잠실"), new Station("역삼"), 10L);
+		final Section section2 = new Section(new Line("2호선"), new Station("역삼"), new Station("선릉"), 8L);
 		given(repository.deleteById(anyLong())).willReturn(true);
+		given(sectionRepository.findSectionsContainStation(any())).willReturn(List.of(section1, section2));
 
 		// when
 		final long deletedId = service.deleteById(1L);

@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Sections {
@@ -145,5 +146,31 @@ public class Sections {
 
 	public List<Section> getSections() {
 		return sections;
+	}
+
+	public Map<Line, List<Section>> deleteAndMerge(final Station station, final List<Section> sectionsContainStation) {
+		final Map<Line, List<Section>> sectionByLine = distributeByLine(sectionsContainStation);
+		for (Line line : sectionByLine.keySet()) {
+			final List<Section> sectionInLine = sectionByLine.get(line);
+			sections.removeAll(sectionInLine);
+			if(sectionInLine.get(0).getDownStation().equals(station) && sectionInLine.get(1).getUpStation().equals(station)){
+				final Section section = new Section(line, sectionInLine.get(0).getUpStation(),
+					sectionInLine.get(1).getDownStation(),
+					sectionInLine.get(0).getDistance() + sectionInLine.get(1).getDistance());
+				sections.add(section);
+			}
+			if(sectionInLine.get(0).getUpStation().equals(station) && sectionInLine.get(1).getDownStation().equals(station)){
+				final Section section = new Section(line, sectionInLine.get(1).getUpStation(),
+					sectionInLine.get(0).getDownStation(),
+					sectionInLine.get(0).getDistance() + sectionInLine.get(1).getDistance());
+				sections.add(section);
+			}
+		}
+		return distributeByLine(sections);
+	}
+
+	public Map<Line, List<Section>> distributeByLine(final List<Section> sectionsContainStation){
+		return sectionsContainStation.stream()
+			.collect(Collectors.groupingBy(Section::getLine));
 	}
 }

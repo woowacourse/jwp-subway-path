@@ -3,6 +3,7 @@ package subway.domain.repository;
 import java.util.List;
 
 import subway.domain.Section;
+import subway.domain.Station;
 
 public interface SectionRepository {
 
@@ -15,4 +16,6 @@ public interface SectionRepository {
     void deleteBySection(String lineName, String upStation, String downStation);
 
     Section findIdByUpDown(String upStation, String downStation);
+
+    List<Section> findSectionsContainStation(Station station);
 }

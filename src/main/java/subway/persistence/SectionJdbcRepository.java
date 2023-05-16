@@ -47,7 +47,8 @@ public class SectionJdbcRepository implements SectionRepository {
 
     @Override
     public List<Section> findAll() {
-        return null;
+        String sql = "SELECT * FROM section";
+        return jdbcTemplate.query(sql, sectionRowMapper);
     }
 
     @Override
@@ -66,5 +67,11 @@ public class SectionJdbcRepository implements SectionRepository {
     public Section findIdByUpDown(final String upStation, final String downStation) {
         String sql = "SELECT * from section WHERE up_station = ? and down_station = ?";
         return jdbcTemplate.queryForObject(sql, sectionRowMapper, upStation, downStation);
+    }
+
+    @Override
+    public List<Section> findSectionsContainStation(final Station station) {
+        String sql = "SELECT * from section WHERE up_station = ? or down_station = ?";
+        return jdbcTemplate.query(sql, sectionRowMapper, station.getName(), station.getName());
     }
 }
