@@ -1,11 +1,11 @@
 package subway.ui;
 
 import java.net.URI;
-import java.util.List;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,8 +24,10 @@ public class SectionController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> create(@PathVariable(name = "lineId") final Long lineId,
-        final SectionCreateRequest sectionCreateRequest) {
+    public ResponseEntity<Void> create(
+        @PathVariable(name = "lineId") final Long lineId,
+        @RequestBody final SectionCreateRequest sectionCreateRequest
+    ) {
         final Long sectionId = sectionService.create(lineId, sectionCreateRequest);
         final String locationHeader = String.format("/lines/%d/sections/%d", lineId, sectionId);
         return ResponseEntity.created(URI.create(locationHeader)).build();
@@ -34,8 +36,9 @@ public class SectionController {
     @DeleteMapping
     public ResponseEntity<SectionsRemovedResponse> deleteContains(
         @PathVariable(name = "lineId") final Long lineId,
-        @RequestParam(name = "stationId") final Long stationId) {
-        final List<Long> deletedSectionIds = sectionService.delete(lineId, stationId);
-        return ResponseEntity.ok().body(SectionsRemovedResponse.value(deletedSectionIds));
+        @RequestParam(name = "stationName") final String stationName
+    ) {
+        sectionService.delete(lineId, stationName);
+        return ResponseEntity.noContent().build();
     }
 }

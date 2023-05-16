@@ -7,16 +7,20 @@ public class Station {
     private Long id;
     private String name;
 
-    public Station() {
+    Station() {
     }
 
-    public Station(Long id, String name) {
+    private Station(Long id, String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(String name) {
-        this.name = name;
+    public static Station from(final String name) {
+        return new Station(null, name);
+    }
+
+    public static Station of(final Long id, final String name) {
+        return new Station(id, name);
     }
 
     public Long getId() {
@@ -28,19 +32,22 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        final Station station = (Station) o;
+        if (Objects.isNull(id) || Objects.isNull(station.id)) {
+            return false;
+        }
+        return Objects.equals(id, station.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(id);
     }
 }

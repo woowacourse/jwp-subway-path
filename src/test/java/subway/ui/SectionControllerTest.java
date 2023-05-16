@@ -1,18 +1,16 @@
 package subway.ui;
 
-import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import io.restassured.RestAssured;
-import java.util.List;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.application.SectionService;
 import subway.dto.SectionCreateRequest;
@@ -35,12 +33,11 @@ class SectionControllerTest {
     void create() {
         //given
         when(sectionService.create(any(), any())).thenReturn(1L);
-        final SectionCreateRequest request = new SectionCreateRequest("기준역", "추가역", "상행", 10);
 
         //when
         //then
         RestAssured.given().log().all()
-            .body(request)
+            .body(new SectionCreateRequest(null, null, null, null))
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .when()
             .post("/lines/1/sections")
@@ -51,15 +48,12 @@ class SectionControllerTest {
     @Test
     void deleteContains() {
         //given
-        when(sectionService.delete(any(), any())).thenReturn(List.of(1L, 2L));
-
         //when
         //then
         RestAssured.given().log().all()
             .when()
-            .delete("/lines/1/sections?stationId=1")
+            .delete("/lines/1/sections?stationName=역")
             .then().log().all()
-            .body("removedSectionsIds", hasSize(2))
-            .body("removedSectionsIds", Matchers.contains(1, 2));
+            .statusCode(HttpStatus.NO_CONTENT.value());
     }
 }
