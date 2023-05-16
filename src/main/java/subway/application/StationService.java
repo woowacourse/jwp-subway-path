@@ -10,6 +10,8 @@ import subway.dto.StationResponse;
 
 @Service
 public class StationService {
+
+    private static final String EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND = "해당 Id를 가진 역 정보가 존재하지 않습니다.";
     private final StationDao stationDao;
 
     public StationService(StationDao stationDao) {
@@ -22,7 +24,9 @@ public class StationService {
     }
 
     public StationResponse findStationResponseById(Long id) {
-        return StationResponse.of(stationDao.findById(id));
+        Station found = stationDao.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND));
+        return StationResponse.of(found);
     }
 
     public List<StationResponse> findAllStationResponses() {
