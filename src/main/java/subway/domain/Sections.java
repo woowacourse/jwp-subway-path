@@ -69,7 +69,7 @@ public class Sections {
 
     private Section findNextSection(Section currentSection) {
         return sections.stream()
-                .filter(section -> currentSection.getDownBoundStationId().equals(section.getUpBoundStationId()))
+                .filter(section -> currentSection.isUpSection(section.getUpBoundStationId()))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException("다음 역 간 연결 정보를 찾을 수 없습니다."));
     }
@@ -102,16 +102,18 @@ public class Sections {
 
     private boolean existUpBoundStation(Section newSection) {
         Long upBoundStationId = newSection.getUpBoundStationId();
+
         return sections.stream()
-                .anyMatch(section -> section.getUpBoundStationId().equals(upBoundStationId) ||
-                        section.getDownBoundStationId().equals(upBoundStationId));
+                .anyMatch(section -> section.isDownSection(upBoundStationId) ||
+                        section.isUpSection(upBoundStationId));
     }
 
     private boolean existDownBoundStation(Section newSection) {
         Long downBoundStationId = newSection.getDownBoundStationId();
+
         return sections.stream()
-                .anyMatch(section -> section.getUpBoundStationId().equals(downBoundStationId) ||
-                        section.getDownBoundStationId().equals(downBoundStationId));
+                .anyMatch(section -> section.isDownSection(downBoundStationId) ||
+                        section.isUpSection(downBoundStationId));
     }
 
     private SectionChange addSectionToUp(Section newSection) {
@@ -119,10 +121,11 @@ public class Sections {
         Section upEndPointSection = findUpEndPointSection();
         SectionChange sectionChange = new SectionChange();
 
-        if (existStationId.equals(upEndPointSection.getUpBoundStationId())) {
+        if (upEndPointSection.isDownSection(existStationId)) {
             sectionChange.addNewSection(newSection);
             return sectionChange;
         }
+
         Section upBoundSection = findUpBoundSection(existStationId);
         validateDistance(upBoundSection.getDistance(), newSection.getDistance());
 
@@ -142,10 +145,11 @@ public class Sections {
         Section downEndPointSection = findDownEndPointSection();
         SectionChange sectionChange = new SectionChange();
 
-        if (existStationId.equals(downEndPointSection.getDownBoundStationId())) {
+        if (downEndPointSection.isUpSection(existStationId)) {
             sectionChange.addNewSection(newSection);
             return sectionChange;
         }
+
         Section downBoundSection = findDownBoundSection(existStationId);
         validateDistance(downBoundSection.getDistance(), newSection.getDistance());
 
@@ -161,14 +165,15 @@ public class Sections {
 
     private Section findUpBoundSection(Long downBoundStationId) {
         return sections.stream()
-                .filter(section -> section.getDownBoundStationId().equals(downBoundStationId))
+                .filter(section -> section.isUpSection(downBoundStationId))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException("올바른 역을 찾을 수 없습니다."));
+
     }
 
     private Section findDownBoundSection(Long upBoundStationId) {
         return sections.stream()
-                .filter(section -> section.getUpBoundStationId().equals(upBoundStationId))
+                .filter(section -> section.isDownSection(upBoundStationId))
                 .findAny()
                 .orElseThrow(() -> new NotFoundException("올바른 역을 찾을 수 없습니다."));
     }
@@ -183,7 +188,6 @@ public class Sections {
         if (sections.isEmpty()) {
             throw new InvalidDataException("노선에 아무 역도 존재하지 않습니다.");
         }
-
         if (notExistInLine(stationId)) {
             throw new InvalidDataException("해당 역이 노선에 존재하지 않습니다.");
         }
@@ -191,12 +195,12 @@ public class Sections {
         Section upEndPointSection = findUpEndPointSection();
         Section downEndPointSection = findDownEndPointSection();
 
-        if (upEndPointSection.getUpBoundStationId().equals(stationId)) {
+        if (upEndPointSection.isDownSection(stationId)) {
             SectionChange sectionChange = new SectionChange();
             sectionChange.addDeletedSection(upEndPointSection);
             return sectionChange;
         }
-        if (downEndPointSection.getDownBoundStationId().equals(stationId)) {
+        if (downEndPointSection.isUpSection(stationId)) {
             SectionChange sectionChange = new SectionChange();
             sectionChange.addDeletedSection(downEndPointSection);
             return sectionChange;
@@ -206,8 +210,8 @@ public class Sections {
 
     private boolean notExistInLine(Long stationId) {
         return sections.stream()
-                .noneMatch(section -> section.getUpBoundStationId().equals(stationId) ||
-                        section.getDownBoundStationId().equals(stationId));
+                .noneMatch(section -> section.isDownSection(stationId) ||
+                        section.isUpSection(stationId));
     }
 
     private SectionChange removeMiddleStation(Long stationId) {
