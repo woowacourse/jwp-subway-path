@@ -19,12 +19,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 class SectionDaoTest {
 
     private final SectionDao sectionDao;
-    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
     public SectionDaoTest(final JdbcTemplate jdbcTemplate) {
         this.sectionDao = new SectionDao(jdbcTemplate);
-        this.jdbcTemplate = jdbcTemplate;
     }
 
     @DisplayName("노선에 해당하는 구간 목록을 저장할 수 있다.")
