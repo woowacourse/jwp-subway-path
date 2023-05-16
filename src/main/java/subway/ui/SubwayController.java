@@ -19,9 +19,9 @@ public class SubwayController {
         this.subwayService = subwayService;
     }
     
-    @GetMapping("/{id}/stations")
-    public ResponseEntity<SubwayResponse> getStations(@PathVariable final Long id) {
-        final SubwayResponse allStationsInLine = this.subwayService.findAllStationsInLine(id);
+    @GetMapping("/{lineId}/stations")
+    public ResponseEntity<SubwayResponse> getStations(@PathVariable final Long lineId) {
+        final SubwayResponse allStationsInLine = this.subwayService.findAllStationsInLine(lineId);
         return ResponseEntity.ok().body(allStationsInLine);
     }
     
