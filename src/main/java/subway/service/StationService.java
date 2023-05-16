@@ -30,8 +30,8 @@ public class StationService {
         saveLine(subway, request.getLineName());
     }
 
-    private void saveLine(final Subway subway, final String request) {
-        final Line line = subway.findLineByName(request);
+    private void saveLine(final Subway subway, final String name) {
+        final Line line = subway.findLineByName(name);
         lineRepository.save(line);
     }
 
