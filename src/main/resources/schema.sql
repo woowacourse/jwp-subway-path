@@ -26,5 +26,5 @@ create table if not exists `SECTION`
 );
 
 ALTER TABLE `section`
-ADD CONSTRAINT different_stations
+ADD CONSTRAINT IF NOT EXISTS different_stations
 CHECK (start_station_id <> end_station_id);
