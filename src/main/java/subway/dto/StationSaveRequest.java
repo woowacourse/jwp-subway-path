@@ -3,7 +3,7 @@ package subway.dto;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
-import subway.domain.Direction;
+import subway.domain.core.Direction;
 
 public class StationSaveRequest {
 

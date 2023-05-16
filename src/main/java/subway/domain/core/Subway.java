@@ -1,9 +1,10 @@
-package subway.domain;
+package subway.domain.core;
 
 import java.util.ArrayList;
 import java.util.List;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 
 public class Subway {
 
@@ -63,6 +64,14 @@ public class Subway {
 
         final Line findLine = findLineByName(lineName);
         findLine.initialAdd(new Section(left, right, new Distance((distance))));
+    }
+
+    public Station findStationByName(final String name) {
+        return lines.stream()
+                .flatMap(line -> line.findAllStation().stream())
+                .filter(station -> station.isSameName(name))
+                .findAny()
+                .orElseThrow(StationNotFoundException::new);
     }
 
     public List<Line> getLines() {

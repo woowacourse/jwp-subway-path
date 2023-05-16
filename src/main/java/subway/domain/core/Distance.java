@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.core;
 
 import java.util.Objects;
 import subway.exception.DistanceNotValidException;
@@ -8,6 +8,10 @@ public class Distance {
     private static final int MINIMUM_DISTANCE_VALUE = 1;
 
     private final int value;
+
+    public Distance(final Double value) {
+        this(value.intValue());
+    }
 
     public Distance(final int value) {
         validate(value);

@@ -4,8 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.springframework.http.MediaType;
-import subway.domain.Direction;
-import subway.domain.Section;
+import subway.domain.core.Direction;
+import subway.domain.core.Section;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationInitialSaveRequest;
 import subway.dto.StationSaveRequest;
@@ -53,7 +53,7 @@ public class SectionSteps {
 
     public static ExtractableResponse<Response> 구간_삭제_요청(final String 노선명, final String 삭제역) {
         final StationDeleteRequest request = new StationDeleteRequest(노선명, 삭제역);
-        
+
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

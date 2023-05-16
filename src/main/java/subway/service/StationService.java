@@ -2,8 +2,8 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
-import subway.domain.Subway;
+import subway.domain.core.Line;
+import subway.domain.core.Subway;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationInitialSaveRequest;
 import subway.dto.StationSaveRequest;

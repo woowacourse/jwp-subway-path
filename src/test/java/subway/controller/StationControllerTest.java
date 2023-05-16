@@ -2,7 +2,7 @@ package subway.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.Direction.RIGHT;
+import static subway.domain.core.Direction.RIGHT;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import subway.common.IntegrationTest;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.core.Line;
+import subway.domain.core.Section;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationInitialSaveRequest;
 import subway.dto.StationSaveRequest;

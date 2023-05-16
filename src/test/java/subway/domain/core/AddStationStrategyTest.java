@@ -1,4 +1,4 @@
-package subway.domain.strategy;
+package subway.domain.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -6,9 +6,6 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
-import subway.domain.Direction;
-import subway.domain.Section;
-import subway.domain.Station;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")

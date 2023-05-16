@@ -1,8 +1,8 @@
-package subway.domain;
+package subway.domain.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.Direction.LEFT;
+import static subway.domain.core.Direction.LEFT;
 
 import java.util.Collections;
 import java.util.List;
@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -174,5 +175,32 @@ class SubwayTest {
         assertThatThrownBy(() -> subway.findLineByName("1호선"))
                 .isInstanceOf(LineNotFoundException.class)
                 .hasMessage("노선을 찾을 수 없습니다.");
+    }
+
+    @Test
+    void 역_이름을_입력받아_해당_이름에_해당되는_역이_존재하지_않는다면_예외를_던진다() {
+        // given
+        final Subway subway = new Subway(List.of(
+                new Line("2호선", "BLUE", List.of(new Section("A", "B", 3)))
+        ));
+
+        // expect
+        assertThatThrownBy(() -> subway.findStationByName("C"))
+                .isInstanceOf(StationNotFoundException.class)
+                .hasMessage("역을 찾을 수 없습니다.");
+    }
+
+    @Test
+    void 역_이름을_입력받아_해당_이름에_해당되는_역을_반환한다() {
+        // given
+        final Subway subway = new Subway(List.of(
+                new Line("2호선", "BLUE", List.of(new Section("A", "B", 3)))
+        ));
+
+        // when
+        final Station result = subway.findStationByName("A");
+
+        // then
+        assertThat(result.getName()).isEqualTo("A");
     }
 }

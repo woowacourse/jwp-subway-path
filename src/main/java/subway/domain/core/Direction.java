@@ -1,9 +1,6 @@
-package subway.domain;
+package subway.domain.core;
 
 import java.util.List;
-import subway.domain.strategy.AddStationStrategy;
-import subway.domain.strategy.AddStationToLeftStrategy;
-import subway.domain.strategy.AddStationToRightStrategy;
 
 public enum Direction {
     LEFT(new AddStationToLeftStrategy()),

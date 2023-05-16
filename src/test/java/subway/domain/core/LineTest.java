@@ -1,10 +1,10 @@
-package subway.domain;
+package subway.domain.core;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.domain.Direction.LEFT;
-import static subway.domain.Direction.RIGHT;
+import static subway.domain.core.Direction.LEFT;
+import static subway.domain.core.Direction.RIGHT;
 
 import java.util.Collections;
 import java.util.List;

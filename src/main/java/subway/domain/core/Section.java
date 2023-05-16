@@ -1,6 +1,6 @@
-package subway.domain;
+package subway.domain.core;
 
-import static subway.domain.Direction.LEFT;
+import static subway.domain.core.Direction.LEFT;
 
 import java.util.Objects;
 

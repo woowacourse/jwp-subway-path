@@ -1,7 +1,7 @@
 package subway.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static subway.domain.Direction.RIGHT;
+import static subway.domain.core.Direction.RIGHT;
 
 import java.util.Collections;
 import java.util.List;
@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
-import subway.domain.Line;
-import subway.domain.Section;
+import subway.domain.core.Line;
+import subway.domain.core.Section;
 import subway.dto.StationDeleteRequest;
 import subway.dto.StationInitialSaveRequest;
 import subway.dto.StationSaveRequest;

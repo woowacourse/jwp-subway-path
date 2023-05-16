@@ -1,9 +1,9 @@
-package subway.domain;
+package subway.domain.core;
 
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
-import static subway.domain.Direction.LEFT;
-import static subway.domain.Direction.RIGHT;
+import static subway.domain.core.Direction.LEFT;
+import static subway.domain.core.Direction.RIGHT;
 
 import java.util.ArrayList;
 import java.util.Collections;

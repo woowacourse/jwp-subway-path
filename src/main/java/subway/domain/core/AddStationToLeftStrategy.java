@@ -1,12 +1,9 @@
-package subway.domain.strategy;
+package subway.domain.core;
 
-import static subway.domain.Direction.RIGHT;
+import static subway.domain.core.Direction.RIGHT;
 
 import java.util.List;
 import java.util.Optional;
-import subway.domain.Distance;
-import subway.domain.Section;
-import subway.domain.Station;
 
 public class AddStationToLeftStrategy implements AddStationStrategy {
     @Override
