@@ -21,6 +21,7 @@ import subway.presentation.dto.request.StationDeleteInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -168,12 +169,12 @@ class LineServiceTest {
         given(sectionDao.findSectionDetailByLineId(lineId)).willReturn(sectionDetailEntities);
 
         // when
-        final LineDetailResponse response = lineService.deleteStation(lineId, request);
+        final Optional<LineDetailResponse> response = lineService.deleteStation(lineId, request);
 
         // then
         assertAll(
-                () -> assertThat(response.getStations()).hasSize(2),
-                () -> assertThat(response.getName()).isEqualTo("2호선")
+                () -> assertThat(response.get().getStations()).hasSize(2),
+                () -> assertThat(response.get().getName()).isEqualTo("2호선")
         );
     }
 

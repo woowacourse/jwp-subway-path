@@ -81,7 +81,7 @@ public class StationDao {
         }
     }
 
-    public void deleteById(final Long id) {
+    public void deleteById(final long id) {
         final String sql = "DELETE FROM station WHERE id = ?";
         final int result = jdbcTemplate.update(sql, id);
         validateUpdateResult(result);

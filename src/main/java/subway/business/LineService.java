@@ -7,6 +7,7 @@ import subway.business.converter.section.SectionDetailEntityDomainConverter;
 import subway.business.domain.LineSections;
 import subway.business.dto.LineDto;
 import subway.business.dto.SectionCreateDto;
+import subway.exception.not_found.LineNotFoundException;
 import subway.persistence.LineDao;
 import subway.persistence.SectionDao;
 import subway.persistence.StationDao;
@@ -19,6 +20,7 @@ import subway.presentation.dto.response.LineDetailResponse;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -66,16 +68,25 @@ public class LineService {
     }
 
     @Transactional
-    public LineDetailResponse deleteStation(final Long lineId, final StationDeleteInLineRequest request) {
+    public Optional<LineDetailResponse> deleteStation(final Long lineId, final StationDeleteInLineRequest request) {
         final List<SectionEntity> relatedSectionEntities =
                 sectionDao.findByLineIdAndPreviousStationNameOrNextStationName(lineId, request.getStationName());
         sectionDao.delete(relatedSectionEntities.get(0));
         if (relatedSectionEntities.size() == IS_END_STATION) {
-            return sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(lineId));
+            return cascadeLine(lineId);
         }
         sectionDao.delete(relatedSectionEntities.get(1));
         bindSections(lineId, relatedSectionEntities);
-        return sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(lineId));
+        return Optional.of(sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(lineId)));
+    }
+
+    private Optional<LineDetailResponse> cascadeLine(final long lineId) {
+        try {
+            return Optional.of(sortAndReturnToResponse(sectionDao.findSectionDetailByLineId(lineId)));
+        } catch (LineNotFoundException e) {
+            lineDao.deleteById(lineId);
+            return Optional.empty();
+        }
     }
 
     private void bindSections(final long lineId, final List<SectionEntity> relatedSectionEntities) {
