@@ -1,6 +1,7 @@
 package subway.service;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
@@ -14,6 +15,7 @@ import subway.exception.SectionException;
 import java.util.ArrayList;
 import java.util.List;
 
+@Transactional
 @Service
 public class SectionService {
     private final LineDao lineDao;
