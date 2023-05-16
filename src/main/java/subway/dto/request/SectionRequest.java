@@ -8,9 +8,9 @@ public class SectionRequest {
     private Long upwardId;
     private Long downwardId;
     @Positive
-    private int distance;
+    private Integer distance;
 
-    public SectionRequest(Long lineId, Long upwardId, Long downwardId, int distance) {
+    public SectionRequest(Long lineId, Long upwardId, Long downwardId, Integer distance) {
         this.lineId = lineId;
         this.upwardId = upwardId;
         this.downwardId = downwardId;
@@ -29,7 +29,7 @@ public class SectionRequest {
         return downwardId;
     }
 
-    public int getDistance() {
+    public Integer getDistance() {
         return distance;
     }
 }

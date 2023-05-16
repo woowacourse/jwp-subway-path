@@ -6,36 +6,36 @@ public class SectionEntity {
 
     private final Long id;
     private final long lineId;
-    private final Long upwardId;
-    private final Long downwardId;
-    private final Integer distance;
+    private final long upwardId;
+    private final long downwardId;
+    private final int distance;
 
-    public SectionEntity(Long id, long lineId, Long upwardId, Long downwardId, Integer distance) {
+    public SectionEntity(Long id, long lineId, long upwardId, long downwardId, int distance) {
         this.id = id;
+        this.lineId = lineId;
         this.upwardId = upwardId;
         this.downwardId = downwardId;
         this.distance = distance;
-        this.lineId = lineId;
     }
 
     public Long getId() {
         return id;
     }
 
-    public Long getUpwardId() {
+    public long getLineId() {
+        return lineId;
+    }
+
+    public long getUpwardId() {
         return upwardId;
     }
 
-    public Long getDownwardId() {
+    public long getDownwardId() {
         return downwardId;
     }
 
-    public Integer getDistance() {
+    public int getDistance() {
         return distance;
-    }
-
-    public long getLineId() {
-        return lineId;
     }
 
     @Override

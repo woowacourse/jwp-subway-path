@@ -13,7 +13,7 @@ public class Line {
         this.color = color;
     }
 
-    public static Line of(long id, String name, String color) {
+    public static Line of(Long id, String name, String color) {
         return new Line(id, name, color);
     }
 
@@ -46,6 +46,9 @@ public class Line {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
+        if (this.id != null && line.id != null) {
+            return this.id.equals(line.id);
+        }
         return Objects.equals(name, line.name) && Objects.equals(color, line.color);
     }
 
