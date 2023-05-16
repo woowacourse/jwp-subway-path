@@ -20,13 +20,10 @@ import subway.service.dto.StationRequest;
 public class LineService {
 
     private final StationService stationService;
-    private final SectionService sectionService;
     private final LineRepository lineRepository;
 
-    public LineService(final StationService stationService, final SectionService sectionService,
-                       final LineRepository lineRepository) {
+    public LineService(final StationService stationService, final LineRepository lineRepository) {
         this.stationService = stationService;
-        this.sectionService = sectionService;
         this.lineRepository = lineRepository;
     }
 
@@ -58,13 +55,12 @@ public class LineService {
         final Sections deleteSections = line.getSections().getDifferenceOfSet(addedLine.getSections());
         final Sections insertSections = addedLine.getSections().getDifferenceOfSet(line.getSections());
 
-        sectionService.deleteSections(deleteSections);
-        sectionService.insertSections(line.getId(), insertSections);
+        lineRepository.updateSections(deleteSections.getSections(), insertSections.getSections(), lineId);
     }
 
     @Transactional
-    public void unregisterStation(final Long id, final StationRequest request) {
-        final Line line = lineRepository.findById(id);
+    public void unregisterStation(final Long lineId, final StationRequest request) {
+        final Line line = lineRepository.findById(lineId);
 
         final Station station = stationService.findStationByName(request.getName());
         final Line deletedLine = line.removeStation(station);
@@ -72,8 +68,7 @@ public class LineService {
         final Sections deleteSections = line.getSections().getDifferenceOfSet(deletedLine.getSections());
         final Sections insertSections = deletedLine.getSections().getDifferenceOfSet(line.getSections());
 
-        sectionService.deleteSections(deleteSections);
-        sectionService.insertSections(line.getId(), insertSections);
+        lineRepository.updateSections(deleteSections.getSections(), insertSections.getSections(), lineId);
     }
 
     private Section createSections(final SectionRequest request) {

@@ -46,4 +46,10 @@ public class LineRepository {
     public void deleteById(final Long id) {
         lineDao.deleteById(id);
     }
+
+    public void updateSections(final List<Section> deleteSections, final List<Section> insertSections,
+                               final Long lineId) {
+        sectionDao.delete(deleteSections);
+        sectionDao.insert(lineId, insertSections);
+    }
 }
