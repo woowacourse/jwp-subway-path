@@ -49,7 +49,7 @@ class StationAcceptanceTest {
         class saveStationWhenLineNotExist {
 
             @Test
-            @DisplayName("요청의 노선과 역 2개, 구간이 등록된다.")
+            @DisplayName("요청의 노선과 역 2개, 구간을 저장하고, Location 헤더에 저장된 노선을 담아서 CREATED 상태 코드 반환 후 노선, 저장된 역들, 저장된 구간들 정보를 응답한다.")
             void saveRequestInfo() {
                 // when
                 Response response = RestAssured.given().log().all()
@@ -128,7 +128,7 @@ class StationAcceptanceTest {
             }
 
             @Test
-            @DisplayName("등록할 역이 가운데 역일 때 역과 새로운 상행 구간, 하행 구간이 등록된다.")
+            @DisplayName("등록할 역이 가운데 역일 때 역과 새로운 상행 구간, 하행 구간을 저장하고, Location 헤더에 저장된 노선을 담아서 CREATED 상태 코드 반환 후 노선, 저장된 역들, 저장된 구간들 정보를 응답한다.")
             void saveStationAndNewUpAndDownSection() {
                 // when
                 Response response = RestAssured.given().log().all()
@@ -164,7 +164,7 @@ class StationAcceptanceTest {
             }
 
             @Test
-            @DisplayName("등록할 역이 상행 종점일 때 역과 새로운 상행 구간이 등록된다.")
+            @DisplayName("등록할 역이 상행 종점일 때 역과 새로운 상행 구간을 저장하고, Location 헤더에 저장된 노선을 담아서 CREATED 상태 코드 반환 후 노선, 저장된 역들, 저장된 구간들 정보를 응답한다..")
             void saveStationAndNewUpSection() {
                 // when
                 Response response = RestAssured.given().log().all()
@@ -195,7 +195,7 @@ class StationAcceptanceTest {
             }
 
             @Test
-            @DisplayName("등록할 역이 하행 종점일 때 역과 새로운 하행 구간이 등록된다.")
+            @DisplayName("등록할 역이 하행 종점일 때 역과 새로운 하행 구간을 저장하고, Location 헤더에 저장된 노선을 담아서 CREATED 상태 코드 반환 후 노선, 저장된 역들, 저장된 구간들 정보를 응답한다.")
             void saveStationAndNewDownSection() {
                 // when
                 Response response = RestAssured.given().log().all()
@@ -244,8 +244,6 @@ class StationAcceptanceTest {
         void throwWhenNotFoundStation() {
             // when
             Response response = RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(NOT_EXIST_ALL_STATION_REQUEST_D_TO_E.REQUEST)
                     .delete("/stations/" + -1)
                     .then()
                     .extract().response();
@@ -255,64 +253,88 @@ class StationAcceptanceTest {
             assertThat(response.getBody().asString()).isEqualTo("역 ID에 해당하는 역이 존재하지 않습니다.");
         }
 
-        @Test
-        @DisplayName("가운데 역을 정상적으로 삭제한다.")
-        void removeMiddleStation() {
-            // given
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(DOWN_MIDDLE_STATION_REQUEST_A_TO_B.REQUEST)
-                    .post("/stations");
+        @Nested
+        @DisplayName("노선에 역이 2개만 있을 때 역을 삭제하는 경우")
+        class removeStationWhenStationByLineExistOnlyTwo {
 
-            // when
-            int deleteStationBId = 3;
-            Response response = RestAssured.given().log().all()
-                    .delete("/stations/" + deleteStationBId)
-                    .then()
-                    .extract().response();
+            @Test
+            @DisplayName("해당하는 노선, 구간, 역 2개를 모두 삭제한 후, NO CONTENT 상태코드를 반환한다.")
+            void removeAll() {
+                // when
+                Response response = RestAssured.given().log().all()
+                        .delete("/stations/" + 1)
+                        .then()
+                        .extract().response();
 
-            // then
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+                // then
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+            }
         }
 
-        @Test
-        @DisplayName("상행 종점 역을 정상적으로 삭제한다.")
-        void removeUpEndStation() {
-            // given
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(UP_END_STATION_REQUEST_D_TO_A.REQUEST)
-                    .post("/stations");
+        @Nested
+        @DisplayName("노선에 역이 2개 이상 존재할 때 역을 삭제하는 경우")
+        class removeStationWhenStationByLineExistOverTwo {
 
-            // when
-            int deleteStationDId = 3;
-            Response response = RestAssured.given().log().all()
-                    .delete("/stations/" + deleteStationDId)
-                    .then()
-                    .extract().response();
+            @Test
+            @DisplayName("가운데 역을 정상적으로 삭제하고, NO CONTENT 상태코드를 반환한다.")
+            void removeMiddleStation() {
+                // given
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(DOWN_MIDDLE_STATION_REQUEST_A_TO_B.REQUEST)
+                        .post("/stations");
 
-            // then
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+                // when
+                int deleteStationBId = 3;
+                Response response = RestAssured.given().log().all()
+                        .delete("/stations/" + deleteStationBId)
+                        .then()
+                        .extract().response();
+
+                // then
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+            }
+
+            @Test
+            @DisplayName("상행 종점 역을 정상적으로 삭제하고, NO CONTENT 상태코드를 반환한다.")
+            void removeUpEndStation() {
+                // given
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(UP_END_STATION_REQUEST_D_TO_A.REQUEST)
+                        .post("/stations");
+
+                // when
+                int deleteStationDId = 3;
+                Response response = RestAssured.given().log().all()
+                        .delete("/stations/" + deleteStationDId)
+                        .then()
+                        .extract().response();
+
+                // then
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+            }
+
+            @Test
+            @DisplayName("하행 종점 역을 정상적으로 삭제하고, NO CONTENT 상태코드를 반환한다.")
+            void removeDownEndStation() {
+                // given
+                RestAssured.given().log().all()
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .body(DOWN_END_STATION_REQUEST_C_TO_E.REQUEST)
+                        .post("/stations");
+
+                // when
+                int deleteStationEId = 3;
+                Response response = RestAssured.given().log().all()
+                        .delete("/stations/" + deleteStationEId)
+                        .then()
+                        .extract().response();
+
+                // then
+                assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+            }
         }
 
-        @Test
-        @DisplayName("하행 종점 역을 정상적으로 삭제한다.")
-        void removeDownEndStation() {
-            // given
-            RestAssured.given().log().all()
-                    .contentType(MediaType.APPLICATION_JSON_VALUE)
-                    .body(DOWN_END_STATION_REQUEST_C_TO_E.REQUEST)
-                    .post("/stations");
-
-            // when
-            int deleteStationEId = 3;
-            Response response = RestAssured.given().log().all()
-                    .delete("/stations/" + deleteStationEId)
-                    .then()
-                    .extract().response();
-
-            // then
-            assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        }
     }
 }

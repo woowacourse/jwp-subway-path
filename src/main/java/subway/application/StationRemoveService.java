@@ -24,17 +24,20 @@ public class StationRemoveService {
 
     public void removeStationById(Long stationId) {
         Station findStation = stationRepository.findStationById(stationId);
+        System.out.println("findStation = " + findStation);
         Long lineId = findStation.getLine().getId();
         Sections sections = new Sections(sectionRepository.findAllSectionByLineId(lineId));
 
         if (sections.hasSectionOnlyOne()) {
             lineRepository.removeLineById(lineId);
+            return;
         }
         removeStationByCase(findStation, sections);
     }
 
     private void removeStationByCase(Station findStation, Sections sections) {
         SectionCase sectionCase = sections.determineSectionCaseByStationId(findStation.getId());
+        System.out.println("findStation Id = " + findStation.getId());
         if (sectionCase.equals(SectionCase.END_SECTION)) {
             stationRepository.removeStationById(findStation.getId());
         }
