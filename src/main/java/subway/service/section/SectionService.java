@@ -7,11 +7,14 @@ import subway.persistence.repository.SectionRepositoryImpl;
 import subway.service.line.LineRepository;
 import subway.service.line.domain.Line;
 import subway.service.section.domain.Distance;
+import subway.service.section.domain.FeePolicy;
 import subway.service.section.domain.JgraphtRoute;
 import subway.service.section.domain.Section;
+import subway.service.section.domain.SectionEdge;
 import subway.service.section.domain.Sections;
 import subway.service.section.dto.AddResult;
 import subway.service.section.dto.DeleteResult;
+import subway.service.section.dto.PathResult;
 import subway.service.section.dto.SectionCreateRequest;
 import subway.service.section.dto.SectionCreateResponse;
 import subway.service.section.dto.SectionResponse;
@@ -32,11 +35,13 @@ public class SectionService {
     private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
     private final StationRepository stationRepository;
+    private final FeePolicy feePolicy;
 
-    public SectionService(LineRepository lineRepository, SectionRepositoryImpl sectionRepository, StationRepository stationDao) {
+    public SectionService(LineRepository lineRepository, SectionRepositoryImpl sectionRepository, StationRepository stationDao, FeePolicy feePolicy) {
         this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
         this.stationRepository = stationDao;
+        this.feePolicy = feePolicy;
     }
 
     public SectionCreateResponse insert(SectionCreateRequest sectionCreateRequest) {
@@ -93,13 +98,21 @@ public class SectionService {
                 .collect(Collectors.toList());
     }
 
-    public void calculateShortestPathFee(Station source, Station target) {
+    public PathResult calculateShortestPathFee(long sourceStationId, long targetStationId) {
         List<Section> sections = sectionRepository.findAll();
+        Station source = stationRepository.findById(sourceStationId);
+        Station target = stationRepository.findById(targetStationId);
+
         JgraphtRoute shortestPath = JgraphtRoute.from(sections, source, target);
-//        Route jgraphtRoute = new JgraphtRoute(new WeightedMultigraph<Station, SectionEdge>(SectionEdge.class));
-//        List<SectionEdge> edges = jgraphtRoute.calculateShortestRoute(sections, source, target);
+        List<SectionEdge> edges = shortestPath.getEdges();
+        int fee = feePolicy.calculateFee(edges);
 
+        List<Station> pathStations = shortestPath.getStations();
+        List<StationResponse> stationResponses = pathStations.stream()
+                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .collect(Collectors.toList());
 
+        return new PathResult(fee, stationResponses);
     }
 
     private void deleteStationsInLastSection(Station station, Section lastSection) {

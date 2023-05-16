@@ -11,11 +11,11 @@ import java.util.List;
 public class JgraphtRoute {
 
     private final List<Station> stations;
-    private final double distance;
+    private final List<SectionEdge> edges;
 
-    private JgraphtRoute(List<Station> stations, double distance) {
+    private JgraphtRoute(List<Station> stations, List<SectionEdge> edges) {
         this.stations = stations;
-        this.distance = distance;
+        this.edges = edges;
     }
 
     public static JgraphtRoute from(List<Section> sections, Station source, Station target) {
@@ -30,14 +30,14 @@ public class JgraphtRoute {
 
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(weightedGraph);
         GraphPath<Station, SectionEdge> shortestPath = dijkstraShortestPath.getPath(source, target);
-        return new JgraphtRoute(shortestPath.getVertexList(), shortestPath.getWeight());
+        return new JgraphtRoute(shortestPath.getVertexList(), shortestPath.getEdgeList());
     }
 
     public List<Station> getStations() {
         return stations;
     }
 
-    public double getDistance() {
-        return distance;
+    public List<SectionEdge> getEdges() {
+        return edges;
     }
 }

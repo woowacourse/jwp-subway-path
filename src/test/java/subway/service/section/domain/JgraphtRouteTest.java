@@ -16,7 +16,6 @@ class JgraphtRouteTest {
     @Test
     void 최단경로를_구한다() {
         // given
-
         // gangnam ->(10) jangji ->(5) jamsil
         Section jangjiJamsil = new Section(JAMSIL, JANGJI, new Distance(5));
         Section gangnamJangji = new Section(JANGJI, GANGNAM, new Distance(10));
@@ -29,9 +28,7 @@ class JgraphtRouteTest {
         JgraphtRoute shortestPath = JgraphtRoute.from(sections, GANGNAM, JAMSIL);
 
         List<Station> pathStations = shortestPath.getStations();
-        double totalDistance = shortestPath.getDistance();
 
-        assertThat(totalDistance).isEqualTo(10);
         assertThat(pathStations).containsExactlyInAnyOrder(GANGNAM, SEONLEUNG, JAMSIL);
     }
 

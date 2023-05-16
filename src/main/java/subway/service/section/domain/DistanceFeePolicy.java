@@ -1,7 +1,10 @@
 package subway.service.section.domain;
 
+import org.springframework.stereotype.Component;
+
 import java.util.List;
 
+@Component
 public class DistanceFeePolicy implements FeePolicy {
 
     private static int BASE_FEE = 1250;
