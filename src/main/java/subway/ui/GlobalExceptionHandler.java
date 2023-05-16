@@ -33,7 +33,7 @@ public class GlobalExceptionHandler {
                 .getFieldErrors()
                 .stream()
                 .collect(Collectors.toMap(FieldError::getField, FieldError::getDefaultMessage));
-        System.out.println(errors);
+        System.out.println(errors); // log 대신 출력
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
     }
 
