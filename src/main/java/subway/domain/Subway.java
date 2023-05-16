@@ -3,7 +3,6 @@ package subway.domain;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import subway.exception.DomainException;
 import subway.exception.ExceptionType;
@@ -23,15 +22,15 @@ public class Subway {
     }
 
     private List<Station> getStations(Line line, List<Station> stations, List<Section> allSections) {
-        List<Long> stationIds = allSections.stream()
+        List<Section> sections = allSections.stream()
             .filter(section -> section.getLineId().equals(line.getId()))
-            .flatMap(section -> Stream.of(section.getSourceStationId(), section.getTargetStationId()))
-            .distinct()
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
 
-        return stationIds.stream()
+        Sections sectionsInThisLine = new Sections(sections);
+
+        return sectionsInThisLine.findOrderedStationIds().stream()
             .map(stationId -> mapStationIdToStation(stationId, stations))
-            .collect(Collectors.toList());
+            .collect(Collectors.toUnmodifiableList());
     }
 
     private Station mapStationIdToStation(Long stationId, List<Station> stations) {
