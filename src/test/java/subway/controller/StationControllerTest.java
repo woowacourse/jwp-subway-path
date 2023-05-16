@@ -7,8 +7,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static subway.integration.common.JsonMapper.toJson;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -33,8 +33,6 @@ class StationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @MockBean
     private StationService stationService;
@@ -49,7 +47,7 @@ class StationControllerTest {
         // when & then
         mockMvc.perform(post("/stations")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(toJson(request)))
                 .andExpect(status().isCreated())
                 .andExpect(header().string("Location", containsString("300")))
                 .andDo(print());
@@ -64,7 +62,7 @@ class StationControllerTest {
         // when & then
         mockMvc.perform(post("/stations")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(request)))
+                        .content(toJson(request)))
                 .andExpect(status().isUnprocessableEntity())
                 .andDo(print());
     }

@@ -9,8 +9,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static subway.integration.common.JsonMapper.toJson;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -45,9 +45,6 @@ class LineControllerTest {
 
     @MockBean
     private LineService lineService;
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Nested
     class 노선을_생성할_떄 {
@@ -111,7 +108,7 @@ class LineControllerTest {
         private ResultActions 노선을_생성한다(LineCreateRequest request) throws Exception {
             return mockMvc.perform(post("/lines")
                             .contentType(MediaType.APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(request)))
+                            .content(toJson(request)))
                     .andDo(print());
         }
     }

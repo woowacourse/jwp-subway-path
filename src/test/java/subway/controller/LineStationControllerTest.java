@@ -8,8 +8,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static subway.integration.common.JsonMapper.toJson;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -40,8 +40,6 @@ class LineStationControllerTest {
     @MockBean
     private LineService lineService;
 
-    @Autowired
-    private ObjectMapper objectMapper;
 
 
     @Nested
@@ -119,7 +117,7 @@ class LineStationControllerTest {
         private MvcResult 노선_역_추가_요청(AddStationToLineRequest request) throws Exception {
             return mockMvc.perform(post("/lines/stations")
                             .contentType(APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(request)))
+                            .content(toJson(request)))
                     .andDo(print())
                     .andReturn();
         }
@@ -174,7 +172,7 @@ class LineStationControllerTest {
         private MvcResult 노선에_역_제거_요청(DeleteStationFromLineRequest request) throws Exception {
             return mockMvc.perform(delete("/lines/stations")
                             .contentType(APPLICATION_JSON)
-                            .content(objectMapper.writeValueAsString(request)))
+                            .content(toJson(request)))
                     .andDo(print())
                     .andReturn();
         }
