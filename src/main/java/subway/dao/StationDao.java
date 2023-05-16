@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import subway.domain.station.Station;
 
 import javax.sql.DataSource;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -54,4 +55,11 @@ public class StationDao {
             return Optional.empty();
         }
     }
+
+    public List<Station> findAll() {
+        final String sql = "SELECT s.id, s.name FROM station s";
+
+        return jdbcTemplate.query(sql, stationRowMapper);
+    }
+
 }

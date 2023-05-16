@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.domain.station.Station;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -24,5 +25,10 @@ public class StationRepository {
     public Optional<Station> findById(final Long stationId) {
 
         return stationDao.findById(stationId);
+    }
+
+    public List<Station> findAll() {
+
+        return stationDao.findAll();
     }
 }

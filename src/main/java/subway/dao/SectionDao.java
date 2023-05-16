@@ -79,6 +79,7 @@ public class SectionDao {
                             resultSet.getLong("downstation_id"),
                             resultSet.getString("downstation_name"));
                     final Distance distance = new Distance(resultSet.getInt("distance"));
+
                     return new Section(resultSet.getLong("id"), upStation, downStation, distance);
                 };
 
