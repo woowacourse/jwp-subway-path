@@ -1,5 +1,6 @@
 package subway.repository;
 
+import java.util.List;
 import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.domain.Station;
@@ -27,5 +28,9 @@ public class StationRepository {
 
     public Station insert(Station station) {
         return stationDao.insert(station);
+    }
+
+    public List<Station> getAllStations() {
+        return stationDao.findAll();
     }
 }

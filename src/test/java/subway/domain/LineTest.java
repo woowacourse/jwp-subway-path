@@ -3,7 +3,6 @@ package subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -25,12 +24,12 @@ class LineTest {
 
         // then
         assertThat(line.getName()).isEqualTo("2호선");
-        assertThat(line.getEdges()).hasSize(1);
+        assertThat(line.getSections()).hasSize(1);
     }
 
     @Nested
-    @DisplayName("라인에 edge 추가")
-    class addEdge {
+    @DisplayName("라인에 section 추가")
+    class addSection {
 
         @Nested
         @DisplayName("성공")
@@ -39,10 +38,10 @@ class LineTest {
             void case1() {
                 // given
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
-                line.addEdge(STATION_B, STATION_C, 8);
+                line.addSection(STATION_B, STATION_C, 8);
 
                 // when
-                line.addEdge(STATION_D, STATION_B, 3);
+                line.addSection(STATION_D, STATION_B, 3);
 
                 // then
                 assertThat(line.getStations()).containsExactly(STATION_A, STATION_D, STATION_B, STATION_C);
@@ -52,10 +51,10 @@ class LineTest {
             void case2() {
                 // given
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
-                line.addEdge(STATION_B, STATION_C, 8);
+                line.addSection(STATION_B, STATION_C, 8);
 
                 // when
-                line.addEdge(STATION_B, STATION_D, 3);
+                line.addSection(STATION_B, STATION_D, 3);
 
                 // then
                 assertThat(line.getStations()).containsExactly(STATION_A, STATION_B, STATION_D, STATION_C);
@@ -67,7 +66,7 @@ class LineTest {
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
 
                 // when
-                line.addEdge(STATION_C, STATION_A, 3);
+                line.addSection(STATION_C, STATION_A, 3);
 
                 // then
                 assertThat(line.getStations()).containsExactly(STATION_C, STATION_A, STATION_B);
@@ -79,7 +78,7 @@ class LineTest {
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
 
                 // when
-                line.addEdge(STATION_A, STATION_C, 3);
+                line.addSection(STATION_A, STATION_C, 3);
 
                 // then
                 assertThat(line.getStations()).containsExactly(STATION_A, STATION_C, STATION_B);
@@ -91,7 +90,7 @@ class LineTest {
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
 
                 // when
-                line.addEdge(STATION_C, STATION_B, 3);
+                line.addSection(STATION_C, STATION_B, 3);
 
                 // then
                 assertThat(line.getStations()).containsExactly(STATION_A, STATION_C, STATION_B);
@@ -103,7 +102,7 @@ class LineTest {
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
 
                 // when
-                line.addEdge(STATION_B, STATION_C, 3);
+                line.addSection(STATION_B, STATION_C, 3);
 
                 // then
                 assertThat(line.getStations()).containsExactly(STATION_A, STATION_B, STATION_C);
@@ -121,7 +120,7 @@ class LineTest {
 
                 // when
                 // then
-                assertThatThrownBy(() -> line.addEdge(STATION_A, STATION_B, 3))
+                assertThatThrownBy(() -> line.addSection(STATION_A, STATION_B, 3))
                         .hasMessage("해당 노선에 두 역이 모두 존재합니다.");
             }
 
@@ -133,19 +132,19 @@ class LineTest {
 
                 // when
                 // then
-                assertThatThrownBy(() -> line.addEdge(STATION_C, STATION_D, 3))
+                assertThatThrownBy(() -> line.addSection(STATION_C, STATION_D, 3))
                         .hasMessage("해당 노선에 두 역이 모두 존재하지 않습니다.");
             }
 
             @Test
-            @DisplayName("추가하려는 edge의 거리가 기존 edge사이의 거리보다 긴 경우")
+            @DisplayName("추가하려는 section의 거리가 기존 section사이의 거리보다 긴 경우")
             void case3() {
                 // given
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
 
                 // when
                 // then
-                assertThatThrownBy(() -> line.addEdge(STATION_A, STATION_C, 12))
+                assertThatThrownBy(() -> line.addSection(STATION_A, STATION_C, 12))
                         .hasMessage("추가하려는 거리가 기존의 거리보다 깁니다.");
             }
         }
@@ -163,7 +162,7 @@ class LineTest {
             void case1() {
                 // given
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
-                line.addEdge(STATION_B, STATION_C, 3);
+                line.addSection(STATION_B, STATION_C, 3);
 
                 // when
                 line.deleteStation(STATION_A);
@@ -176,7 +175,7 @@ class LineTest {
             void case2() {
                 // given
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
-                line.addEdge(STATION_B, STATION_C, 3);
+                line.addSection(STATION_B, STATION_C, 3);
 
                 // when
                 line.deleteStation(STATION_B);
@@ -189,7 +188,7 @@ class LineTest {
             void case3() {
                 // given
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
-                line.addEdge(STATION_B, STATION_C, 3);
+                line.addSection(STATION_B, STATION_C, 3);
 
                 // when
                 line.deleteStation(STATION_C);
@@ -207,7 +206,7 @@ class LineTest {
             void case1() {
                 // given
                 Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
-                line.addEdge(STATION_B, STATION_C, 3);
+                line.addSection(STATION_B, STATION_C, 3);
 
                 // when
                 // then
@@ -222,8 +221,8 @@ class LineTest {
     void getStations() {
         // when
         Line line = Line.createLine("2호선", STATION_A, STATION_B, 10);
-        line.addEdge(STATION_B, STATION_C, 3);
-        line.addEdge(STATION_A, STATION_D, 5);
+        line.addSection(STATION_B, STATION_C, 3);
+        line.addSection(STATION_A, STATION_D, 5);
 
         assertThat(line.getStations()).containsExactly(STATION_A, STATION_D, STATION_B, STATION_C);
     }

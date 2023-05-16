@@ -11,27 +11,27 @@ public class Line {
 
     private Long id;
     private String name;
-    private List<Edge> edges;
+    private List<Section> sections;
 
     public Line() {
     }
 
-    public Line(Long id, String name, List<Edge> edges) {
+    public Line(Long id, String name, List<Section> sections) {
         this.id = id;
         this.name = name;
-        this.edges = edges;
+        this.sections = sections;
     }
 
     public static Line createLine(String name, Station upStation, Station downStation, int distance) {
-        List<Edge> edges = new ArrayList<>();
-        edges.add(new Edge(upStation, downStation, distance));
-        return new Line(null, name, edges);
+        List<Section> sections = new ArrayList<>();
+        sections.add(new Section(upStation, downStation, distance));
+        return new Line(null, name, sections);
     }
 
-    public void addEdge(Station upStation, Station downStation, int distance) {
+    public void addSection(Station upStation, Station downStation, int distance) {
         validateStations(upStation, downStation);
         Direction direction = findDirection(upStation);
-        direction.add(edges, upStation, downStation, distance);
+        direction.add(sections, upStation, downStation, distance);
     }
 
     private void validateStations(Station upStation, Station downStation) {
@@ -59,39 +59,39 @@ public class Line {
     }
 
     public void deleteStation(Station station) {
-        List<Edge> targetEdges = edges.stream()
-                .filter(edge -> edge.hasStation(station))
+        List<Section> targetSections = sections.stream()
+                .filter(section -> section.hasStation(station))
                 .collect(Collectors.toList());
-        validateTargetEdges(targetEdges);
+        validateTargetSections(targetSections);
 
-        if (targetEdges.size() == 1) {
-            edges.remove(targetEdges.get(0));
+        if (targetSections.size() == 1) {
+            sections.remove(targetSections.get(0));
         }
-        if (targetEdges.size() == 2) {
-            Edge edge1 = targetEdges.get(0);
-            Edge edge2 = targetEdges.get(1);
+        if (targetSections.size() == 2) {
+            Section section1 = targetSections.get(0);
+            Section section2 = targetSections.get(1);
 
-            Edge newEdge = new Edge(edge1.getUpStation(), edge2.getDownStation(),
-                    edge1.getDistance() + edge2.getDistance());
-            int removedIndex = edges.indexOf(edge1);
-            edges.remove(edge1);
-            edges.remove(edge2);
-            edges.add(removedIndex, newEdge);
+            Section newSection = new Section(section1.getUpStation(), section2.getDownStation(),
+                    section1.getDistance() + section2.getDistance());
+            int removedIndex = sections.indexOf(section1);
+            sections.remove(section1);
+            sections.remove(section2);
+            sections.add(removedIndex, newSection);
         }
     }
 
-    private static void validateTargetEdges(List<Edge> targetEdges) {
-        if (targetEdges.isEmpty()) {
+    private static void validateTargetSections(List<Section> targetSections) {
+        if (targetSections.isEmpty()) {
             throw new IllegalArgumentException("해당 역이 해당 노선에 존재하지 않습니다.");
         }
-        if (targetEdges.size() > 2) {
+        if (targetSections.size() > 2) {
             throw new IllegalArgumentException("해당 노선에 갈래길이 존재합니다. 확인해주세요.");
         }
     }
 
     public List<Station> getStations() {
-        Map<Station, Station> stationToStation = edges.stream()
-                .collect(Collectors.toMap(Edge::getUpStation, Edge::getDownStation));
+        Map<Station, Station> stationToStation = sections.stream()
+                .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
         Set<Station> ups = new HashSet<>(stationToStation.keySet());
         ups.removeAll(stationToStation.values());
 
@@ -119,28 +119,19 @@ public class Line {
         return name;
     }
 
-    public List<Edge> getEdges() {
-        return edges;
+    public List<Section> getSections() {
+        return sections;
     }
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setEdges(List<Edge> edges) {
-        this.edges = edges;
+    public void setSections(List<Section> sections) {
+        this.sections = sections;
     }
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public String toString() {
-        return "Line{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", edges=" + edges +
-                '}';
     }
 }

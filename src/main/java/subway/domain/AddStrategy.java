@@ -4,15 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AddStrategy {
-    void activate(List<Edge> edges, Station upStation, Station downStation, int distance);
+    void activate(List<Section> sections, Station upStation, Station downStation, int distance);
 
-    default Optional<Edge> findSectionByStationExistsAtDirection(
-            final List<Edge> edges,
+    default Optional<Section> findSectionByStationExistsAtDirection(
+            final List<Section> sections,
             final Station station,
             final Direction direction
     ) {
-        return edges.stream()
-                .filter(edge -> edge.isStationExistsAtDirection(station, direction))
+        return sections.stream()
+                .filter(section -> section.isStationExistsAtDirection(station, direction))
                 .findFirst();
     }
 }

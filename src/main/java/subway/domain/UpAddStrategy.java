@@ -5,17 +5,17 @@ import java.util.Optional;
 
 public class UpAddStrategy implements AddStrategy {
     @Override
-    public void activate(List<Edge> edges, Station upStation, Station downStation, int distance) {
+    public void activate(List<Section> sections, Station upStation, Station downStation, int distance) {
         // 기존 역이 downStation이다.
-        final Optional<Edge> edge = findSectionByStationExistsAtDirection(edges, downStation, Direction.DOWN);
-        if (edge.isPresent()) {
-            final Edge existingEdge = edge.get();
-            if (existingEdge.getDistance() < distance) {
+        final Optional<Section> section = findSectionByStationExistsAtDirection(sections, downStation, Direction.DOWN);
+        if (section.isPresent()) {
+            final Section existingSection = section.get();
+            if (existingSection.getDistance() < distance) {
                 throw new IllegalArgumentException("추가하려는 거리가 기존의 거리보다 깁니다.");
             }
-            edges.add(new Edge(existingEdge.getUpStation(), upStation, existingEdge.getDistance() - distance));
-            edges.remove(existingEdge);
+            sections.add(new Section(existingSection.getUpStation(), upStation, existingSection.getDistance() - distance));
+            sections.remove(existingSection);
         }
-        edges.add(new Edge(upStation, downStation, distance));
+        sections.add(new Section(upStation, downStation, distance));
     }
 }

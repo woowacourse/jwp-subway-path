@@ -1,4 +1,4 @@
-DROP TABLE IF EXISTS edge;
+DROP TABLE IF EXISTS section;
 DROP TABLE IF EXISTS station;
 DROP TABLE IF EXISTS line;
 
@@ -16,7 +16,7 @@ CREATE TABLE line
     PRIMARY KEY (id)
 );
 
-CREATE TABLE edge
+CREATE TABLE section
 (
     id             BIGINT AUTO_INCREMENT NOT NULL,
     line_id        BIGINT NOT NULL,

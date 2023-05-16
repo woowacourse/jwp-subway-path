@@ -9,18 +9,18 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
-import subway.domain.Edge;
+import subway.domain.Section;
 import subway.domain.Station;
 
 @Repository
-public class EdgeDao {
+public class SectionDao {
 
     private final JdbcTemplate jdbcTemplate;
-    private final RowMapper<Edge> edgeMapper;
+    private final RowMapper<Section> sectionMapper;
 
-    public EdgeDao(JdbcTemplate jdbcTemplate) {
+    public SectionDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        this.edgeMapper =
+        this.sectionMapper =
         (resultSet, rowNum) -> {
             Station upStation = new Station(
                     resultSet.getLong("upstation_id"),
@@ -28,57 +28,57 @@ public class EdgeDao {
             Station downStation = new Station(
                     resultSet.getLong("downstation_id"),
                     resultSet.getString("downstation_name"));
-            return new Edge(resultSet.getLong("id"), upStation, downStation, resultSet.getInt("distance"));
+            return new Section(resultSet.getLong("id"), upStation, downStation, resultSet.getInt("distance"));
         };
     }
 
-    public Long insert(Long lineId, Edge edge) {
-        String sql = "INSERT INTO edge(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
+    public Long insert(Long lineId, Section section) {
+        String sql = "INSERT INTO section(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
         GeneratedKeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement ps = connection.prepareStatement(sql, new String[]{"id"});
             ps.setLong(1, lineId);
-            ps.setLong(2, edge.getUpStation().getId());
-            ps.setLong(3, edge.getDownStation().getId());
-            ps.setInt(4, edge.getDistance());
+            ps.setLong(2, section.getUpStation().getId());
+            ps.setLong(3, section.getDownStation().getId());
+            ps.setInt(4, section.getDistance());
             return ps;
         }, keyHolder);
         return Objects.requireNonNull(keyHolder.getKey()).longValue();
     }
 
-    public List<Edge> findEdgesByLineId(Long lineId) {
-        String sql = "SELECT e.id,"
+    public List<Section> findSectionsByLineId(Long lineId) {
+        String sql = "SELECT se.id,"
                 + "s1.id AS upstation_id, s1.name AS upstation_name, "
                 + "s2.id AS downstation_id, s2.name AS downstation_name, "
-                + "e.distance "
-                + "FROM edge e "
-                + "JOIN station s1 ON e.upstation_id = s1.id "
-                + "JOIN station s2 ON e.downstation_id = s2.id "
-                + "WHERE e.line_id = ? "
-                + "ORDER BY e.id";
-        return jdbcTemplate.query(sql, edgeMapper, lineId);
+                + "se.distance "
+                + "FROM section se "
+                + "JOIN station s1 ON se.upstation_id = s1.id "
+                + "JOIN station s2 ON se.downstation_id = s2.id "
+                + "WHERE se.line_id = ? "
+                + "ORDER BY se.id";
+        return jdbcTemplate.query(sql, sectionMapper, lineId);
     }
 
     public void deleteAllByLineId(Long lineId) {
-        String sql = "DELETE FROM edge WHERE line_id = ?";
+        String sql = "DELETE FROM section WHERE line_id = ?";
         jdbcTemplate.update(sql, lineId);
     }
 
-    public void insertAllByLineId(Long lineId, List<Edge> edges) {
-        String sql = "INSERT INTO edge(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
+    public void insertAllByLineId(Long lineId, List<Section> sections) {
+        String sql = "INSERT INTO section(line_id, upstation_id, downstation_id, distance) VALUES (?, ?, ?, ?)";
         jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
             @Override
             public void setValues(PreparedStatement ps, int i) throws SQLException {
-                Edge edge = edges.get(i);
+                Section section = sections.get(i);
                 ps.setLong(1, lineId);
-                ps.setLong(2, edge.getUpStation().getId());
-                ps.setLong(3, edge.getDownStation().getId());
-                ps.setInt(4, edge.getDistance());
+                ps.setLong(2, section.getUpStation().getId());
+                ps.setLong(3, section.getDownStation().getId());
+                ps.setInt(4, section.getDistance());
             }
 
             @Override
             public int getBatchSize() {
-                return edges.size();
+                return sections.size();
             }
         });
     }

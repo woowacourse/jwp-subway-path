@@ -3,22 +3,22 @@ package subway.repository;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
-import subway.dao.EdgeDao;
+import subway.dao.SectionDao;
 import subway.dao.LineDao;
-import subway.domain.Edge;
+import subway.domain.Section;
 import subway.domain.Line;
 
 @Repository
 public class LineRepository {
 
-    public static final int INITIAL_EDGE = 0;
+    public static final int INITIAL_SECTION = 0;
 
     private final LineDao lineDao;
-    private final EdgeDao edgeDao;
+    private final SectionDao sectionDao;
 
-    public LineRepository(LineDao lineDao, EdgeDao edgeDao) {
+    public LineRepository(LineDao lineDao, SectionDao sectionDao) {
         this.lineDao = lineDao;
-        this.edgeDao = edgeDao;
+        this.sectionDao = sectionDao;
     }
 
     public Line getLine(Long lineId) {
@@ -34,13 +34,13 @@ public class LineRepository {
 
     public Line insertNewLine(Line createdLine) {
         Long lineId = lineDao.insert(createdLine);
-        edgeDao.insert(lineId, createdLine.getEdges().get(INITIAL_EDGE));
+        sectionDao.insert(lineId, createdLine.getSections().get(INITIAL_SECTION));
         return assembleLine(lineId);
     }
 
     public Line updateLine(Line updatedLine) {
-        edgeDao.deleteAllByLineId(updatedLine.getId());
-        edgeDao.insertAllByLineId(updatedLine.getId(), updatedLine.getEdges());
+        sectionDao.deleteAllByLineId(updatedLine.getId());
+        sectionDao.insertAllByLineId(updatedLine.getId(), updatedLine.getSections());
         return assembleLine(updatedLine.getId());
     }
 
@@ -55,7 +55,7 @@ public class LineRepository {
         Line line = lineDao.findById(lineId)
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
 
-        List<Edge> edges = edgeDao.findEdgesByLineId(line.getId());
-        return new Line(line.getId(), line.getName(), edges);
+        List<Section> sections = sectionDao.findSectionsByLineId(line.getId());
+        return new Line(line.getId(), line.getName(), sections);
     }
 }
