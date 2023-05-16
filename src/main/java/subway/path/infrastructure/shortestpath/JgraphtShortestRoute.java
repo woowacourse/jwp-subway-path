@@ -43,13 +43,13 @@ public class JgraphtShortestRoute implements ShortestRouteService {
         }
     }
 
-    private List<SectionAdapter> findPath(final Path lines, final Station start, final Station end) {
-        final LinesGraphAdapter graph = graphCache.linesGraphAdapter(lines);
-        final GraphPath<Station, SectionAdapter> path = validPath(graph, start, end);
+    private List<SectionAdapter> findPath(final Path path, final Station start, final Station end) {
+        final LinesGraphAdapter graph = graphCache.linesGraphAdapter(path);
+        final GraphPath<Station, SectionAdapter> graphPath = validPath(graph, start, end);
         if (path == null) {
             throw new PathException(NO_PATH);
         }
-        return path.getEdgeList();
+        return graphPath.getEdgeList();
     }
 
     private GraphPath<Station, SectionAdapter> validPath(
