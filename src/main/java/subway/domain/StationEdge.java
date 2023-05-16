@@ -1,42 +1,33 @@
 package subway.domain;
 
 import java.util.List;
-import subway.exception.InvalidDistanceException;
 
 public class StationEdge {
 
     private final Long downStationId;
-    private final int distance;
+    private final Distance distance;
+
+    public StationEdge(Long downStationId, Distance distance) {
+        this.downStationId = downStationId;
+        this.distance = distance;
+    }
 
     public StationEdge(Long downStationId, int distance) {
         this.downStationId = downStationId;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
     public Long getDownStationId() {
         return downStationId;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public List<StationEdge> splitFromDownStation(Long insertStationId, int distance) {
-        int distanceFromUpStation = calculateDistanceFromUpStation(distance);
-        StationEdge upStationEdge = new StationEdge(insertStationId, distanceFromUpStation);
+    public List<StationEdge> splitFromDownStation(Long insertStationId, Distance distance) {
+        StationEdge upStationEdge = new StationEdge(insertStationId, this.distance.minus(distance));
         StationEdge downStationEdge = new StationEdge(downStationId, distance);
         return List.of(upStationEdge, downStationEdge);
-    }
-
-    private int calculateDistanceFromUpStation(int distanceFromDownStation) {
-        if (distance == 0) {
-            return 0;
-        }
-
-        int distanceFromUpStation = distance - distanceFromDownStation;
-        if (distanceFromUpStation <= 0) {
-            throw new InvalidDistanceException();
-        }
-        return distanceFromUpStation;
     }
 }

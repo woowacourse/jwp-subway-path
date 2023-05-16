@@ -96,7 +96,7 @@ class LineServiceTest {
         StationEdge updatedStationEdge = line.getStationEdges().stream()
                 .filter(stationEdge -> stationEdge.getDownStationId().equals(lineRequest.getDownStationId()))
                 .findFirst().get();
-        assertThat(updatedStationEdge.getDistance()).isEqualTo(6);
+        assertThat(updatedStationEdge.getDistance().getValue()).isEqualTo(6);
     }
 
     @Test
@@ -151,7 +151,7 @@ class LineServiceTest {
         StationEdge downEndStationEdge = line.getStationEdges().get(1);
         assertSoftly(softly -> {
             softly.assertThat(downEndStationEdge.getDownStationId()).isEqualTo(lineRequest.getDownStationId());
-            softly.assertThat(downEndStationEdge.getDistance()).isEqualTo(lineRequest.getDistance());
+            softly.assertThat(downEndStationEdge.getDistance().getValue()).isEqualTo(lineRequest.getDistance());
         });
     }
 

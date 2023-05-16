@@ -30,14 +30,14 @@ class StationEdgeTest {
         //given
         StationEdge stationEdge = new StationEdge(1L, 5);
         //when
-        List<StationEdge> split = stationEdge.splitFromDownStation(2L, 3);
+        List<StationEdge> split = stationEdge.splitFromDownStation(2L, Distance.from(3));
         //then
         assertSoftly(
                 softly -> {
                     softly.assertThat(split.get(0).getDownStationId()).isEqualTo(2L);
-                    softly.assertThat(split.get(0).getDistance()).isEqualTo(2);
+                    softly.assertThat(split.get(0).getDistance()).isEqualTo(Distance.from(2));
                     softly.assertThat(split.get(1).getDownStationId()).isEqualTo(1L);
-                    softly.assertThat(split.get(1).getDistance()).isEqualTo(3);
+                    softly.assertThat(split.get(1).getDistance()).isEqualTo(Distance.from(3));
                 }
         );
     }

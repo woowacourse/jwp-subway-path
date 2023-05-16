@@ -28,12 +28,12 @@ public class StationEdgeEntity {
     }
 
     public static StationEdgeEntity of(Long lineId, StationEdge stationEdge, Long previousStationEdgeId) {
-        return new StationEdgeEntity(lineId, stationEdge.getDownStationId(), stationEdge.getDistance(),
+        return new StationEdgeEntity(lineId, stationEdge.getDownStationId(), stationEdge.getDistance().getValue(),
                 previousStationEdgeId);
     }
 
     public static StationEdgeEntity of(Long id, Long lineId, StationEdge stationEdge, Long previousStationEdgeId) {
-        return new StationEdgeEntity(id, lineId, stationEdge.getDownStationId(), stationEdge.getDistance(),
+        return new StationEdgeEntity(id, lineId, stationEdge.getDownStationId(), stationEdge.getDistance().getValue(),
                 previousStationEdgeId);
     }
 

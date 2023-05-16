@@ -3,9 +3,6 @@ package subway.domain;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-import subway.exception.StationAlreadyExistsException;
-import subway.exception.StationNotFoundException;
 
 public class Line {
 
@@ -14,19 +11,20 @@ public class Line {
     private Long id;
     private String name;
     private String color;
-    private List<StationEdge> stationEdges;
+    private StationEdges stationEdges;
 
     private Line(final String name, final String color, final List<StationEdge> stationEdges) {
         this.name = name;
         this.color = color;
-        this.stationEdges = new LinkedList<>(stationEdges);
+        this.stationEdges = new StationEdges(new LinkedList<>(stationEdges));
+
     }
 
     private Line(final Long id, final String name, final String color, final List<StationEdge> stationEdges) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.stationEdges = new LinkedList<>(stationEdges);
+        this.stationEdges = new StationEdges(new LinkedList<>(stationEdges));
     }
 
     public static Line of(final String name, final String color, final Long upStationId, final Long downStationId, final int distance) {
@@ -42,79 +40,29 @@ public class Line {
     public void addStationUpperFrom(
             Long insertStationId,
             long adjacentStationId,
-            int distance
+            Distance distance
     ) {
-        if (contains(insertStationId)) {
-            throw new StationAlreadyExistsException();
-        }
-        
-        StationEdge adjacentDownStationEdge = getStationEdge(adjacentStationId);
-        int adjacentDownStationIndex = stationEdges.indexOf(adjacentDownStationEdge);
-
-        List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distance);
-        stationEdges.remove(adjacentDownStationIndex);
-        stationEdges.addAll(adjacentDownStationIndex, splitEdges);
+        stationEdges.addStationUpperFrom(insertStationId, adjacentStationId, distance);
     }
 
     public void addStationDownFrom(
             Long insertStationId,
             Long adjacentStationId,
-            int distance
+            Distance distance
     ) {
-        if (contains(insertStationId)) {
-            throw new StationAlreadyExistsException();
-        }
-
-        final int adjacentDownStationIndex = stationEdges.indexOf(getStationEdge(adjacentStationId)) + 1;
-
-        boolean isLastEdge = adjacentDownStationIndex == stationEdges.size();
-        if (isLastEdge) {
-            StationEdge insertedStationEdge = new StationEdge(insertStationId, distance);
-            stationEdges.add(insertedStationEdge);
-            return;
-        }
-        
-        StationEdge adjacentDownStationEdge = stationEdges.get(adjacentDownStationIndex);
-
-        int distanceFromDown = adjacentDownStationEdge.getDistance() - distance;
-
-        List<StationEdge> splitEdges = adjacentDownStationEdge.splitFromDownStation(insertStationId, distanceFromDown);
-        stationEdges.remove(adjacentDownStationIndex);
-        stationEdges.addAll(adjacentDownStationIndex, splitEdges);
+        stationEdges.addStationDownFrom(insertStationId, adjacentStationId, distance);
     }
 
     public StationEdge deleteStation(long stationId) {
-        if (!contains(stationId)) {
-            throw new StationNotFoundException();
-        }
-        StationEdge stationEdge = getStationEdge(stationId);
-
-        int edgeIndex = stationEdges.indexOf(stationEdge);
-        stationEdges.remove(stationEdge);
-        if (edgeIndex == stationEdges.size()) {
-            return null;
-        }
-
-        StationEdge downStationEdge = stationEdges.get(edgeIndex);
-        StationEdge combinedStationEdge = new StationEdge(downStationEdge.getDownStationId(),
-                stationEdge.getDistance() + downStationEdge.getDistance());
-        stationEdges.set(edgeIndex, combinedStationEdge);
-        return combinedStationEdge;
+        return stationEdges.deleteStation(stationId);
     }
 
     public boolean canDeleteStation() {
-        return stationEdges.size() > 2;
-    }
-
-    private StationEdge getStationEdge(long stationId) {
-        return stationEdges.stream()
-                .filter(edge -> edge.getDownStationId().equals(stationId))
-                .findFirst().orElseThrow(StationNotFoundException::new);
+        return stationEdges.canDeleteStation();
     }
 
     public boolean contains(Long stationId) {
-        return stationEdges.stream()
-                .anyMatch(stationEdge -> stationEdge.getDownStationId().equals(stationId));
+        return stationEdges.contains(stationId);
     }
 
     public Long getId() {
@@ -130,13 +78,11 @@ public class Line {
     }
 
     public List<StationEdge> getStationEdges() {
-        return stationEdges;
+        return stationEdges.getStationEdges();
     }
 
     public List<Long> getStationIds() {
-        return stationEdges.stream()
-                .map(stationEdge -> stationEdge.getDownStationId())
-                .collect(Collectors.toList());
+        return stationEdges.getStationIds();
     }
 
     @Override

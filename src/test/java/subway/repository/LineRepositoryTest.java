@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
 import subway.dao.StationEdgeDao;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.domain.StationEdge;
@@ -97,7 +98,7 @@ class LineRepositoryTest {
 
         Long middleStationId = stationRepository.create(new Station("middle"));
         Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-        createdLine.addStationUpperFrom(middleStationId, downStationId, 2);
+        createdLine.addStationUpperFrom(middleStationId, downStationId, Distance.from(2));
         lineRepository.update(createdLine);
         return createdLine;
     }
@@ -126,7 +127,7 @@ class LineRepositoryTest {
 
             Long middleStationId = stationRepository.create(new Station("middle"));
             Long downStationId = createdLine.getStationEdges().get(1).getDownStationId();
-            createdLine.addStationUpperFrom(middleStationId, downStationId, 2);
+            createdLine.addStationUpperFrom(middleStationId, downStationId, Distance.from(2));
 
             //when
             lineRepository.update(createdLine);

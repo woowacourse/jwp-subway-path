@@ -3,6 +3,7 @@ package subway.service;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.LineDirection;
 import subway.dto.LineRequest;
@@ -69,7 +70,7 @@ public class LineService {
         Long stationId = stationInsertRequest.getStationId();
         Long adjacentStationId = stationInsertRequest.getAdjacentStationId();
         LineDirection direction = LineDirection.valueOf(stationInsertRequest.getDirection());
-        int distance = stationInsertRequest.getDistance();
+        Distance distance = Distance.from(stationInsertRequest.getDistance());
 
         if (direction == LineDirection.UP) {
             line.addStationUpperFrom(stationId, adjacentStationId, distance);

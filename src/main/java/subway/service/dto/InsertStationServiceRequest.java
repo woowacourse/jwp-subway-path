@@ -1,5 +1,7 @@
 package subway.service.dto;
 
+import subway.domain.Distance;
+
 public class InsertStationServiceRequest {
     private final Long stationId;
     private final Long lineId;
