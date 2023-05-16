@@ -113,25 +113,33 @@ DELETE /sections/{lineId}/{stationId} HTTP/1.1
 HTTP/1.1 204
 ```
 
-## 1단계 리팩터링 목록
+## 코드리뷰 피드백 및 리팩터링 목록
 
-- [x] 도메인 객체 자체로 요구사항을 만족하도록 전면 리팩터링
-    - [x] Subway 객체가 한 노선의 역 연결 정보를 위한 로직을 직접 수행하도록 변경
-    - [x] 노선의 경로를 표현하는 도메인 객체 네이밍 수정 Subway -> LineRoute
-    - [x] 역 연결을 표현하는 그래프 생성 로직 팩터리 클래스로 분리
-    - [x] 서비스 계층에서는 도메인과 DB를 연결만 하도록 변경
-    - [x] 전면 리팩터링에 따라 사용하지 않는 메서드 삭제
-    - [x] 객체 책임 분리
-        - [x] Section 클래스로 구간 분할, 병합 책임 이동
-        - [x] Distance 클래스로 거리 계산 책임 이동
-- [ ] 연결을 표현하는 그래프 일급 콜렉션으로 분리? 분리하는 의미가 없는 것 같다.
-- [x] LineRoute 생성 로직 단순화
-- [x] DAO 메서드 변경, 변경에 따른 테스트코드 작성
-- [x] 서비스 검증 로직 추가
-- [x] 서비스 테스트코드 수정
-- [x] 서비스 트랜잭션 적용
-- [ ] 도메인 엔티티의 id값 유무 관련 검토
-- [ ] 데이터 초기화 Controller 대신 Spring 설정 사용하기
-- [ ] 테스트코드 중복코드 수정, 가독성 개선
-- [ ] 원시값 포장 관련 일관성 없는 getter, 인자 사용 등 검토
-- [ ] API 명세 잘못된 형식 등 수정, 기존 API 명세도 작성 / 자동화 도구 사용?
+## 1단계
+
+- 피드백 외 리팩터링
+    - [x] 도메인 객체 자체로 요구사항을 만족하도록 전면 리팩터링
+        - [x] Subway 객체가 한 노선의 역 연결 정보를 위한 로직을 직접 수행하도록 변경
+        - [x] 노선의 경로를 표현하는 도메인 객체 네이밍 수정 Subway -> LineRoute
+        - [x] 역 연결을 표현하는 그래프 생성 로직 팩터리 클래스로 분리
+        - [x] 서비스 계층에서는 도메인과 DB를 연결만 하도록 변경
+        - [x] 전면 리팩터링에 따라 사용하지 않는 메서드 삭제
+        - [x] 객체 책임 분리
+            - [x] Section 클래스로 구간 분할, 병합 책임 이동
+            - [x] Distance 클래스로 거리 계산 책임 이동
+    - [ ] 연결을 표현하는 그래프 일급 콜렉션으로 분리? 분리하는 의미가 없는 것 같다.
+    - [x] LineRoute 생성 로직 단순화
+    - [x] DAO 메서드 변경, 변경에 따른 테스트코드 작성
+    - [x] 서비스 검증 로직 추가
+    - [x] 서비스 테스트코드 수정
+    - [x] 서비스 트랜잭션 적용
+    - [ ] 테스트코드 중복코드 수정, 가독성 개선
+    - [ ] API 명세 잘못된 형식 등 수정, 기존 API 명세도 작성 / 자동화 도구 사용?
+
+- 피드백
+    - [ ] [LineRequest, LineResponse와 같이 외부 영역에서 정의되는 자료구조를 서비스에서 사용하면 어떤 문제가 있을까?](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192853316)
+    - [ ] [객체 id로 동일성 비교 vs 모든 필드로 동일성 비교](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192854360)
+    - [ ] [Optional 사용하여 존재하지 않는 값 안전하게 다루기](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192856649)
+    - [ ] [에러 정보 콘솔 출력 대신 로그 사용하기](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192856978)
+    - [ ] [여러 DB 수행이 존재하는 메서드 Transaction 처리](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192857631)
+    - [ ] [데이터 초기화 Controller 대신 Spring 설정 사용하기(별도 bean 분리/sql 파일 사용)](https://github.com/woowacourse/jwp-subway-path/pull/78#discussion_r1192858741)
