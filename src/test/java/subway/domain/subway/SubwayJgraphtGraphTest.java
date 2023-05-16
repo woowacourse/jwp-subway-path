@@ -1,10 +1,10 @@
 package subway.domain.subway;
 
-import static fixtures.SubwayFixtures.GANGNAM;
-import static fixtures.SubwayFixtures.GYODAE;
-import static fixtures.SubwayFixtures.JAMSIL;
-import static fixtures.SubwayFixtures.NAMBU;
-import static fixtures.SubwayFixtures.YANGJAE;
+import static fixtures.StationFixtures.GANGNAM;
+import static fixtures.StationFixtures.GYODAE;
+import static fixtures.StationFixtures.JAMSIL;
+import static fixtures.StationFixtures.NAMBU;
+import static fixtures.StationFixtures.YANGJAE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

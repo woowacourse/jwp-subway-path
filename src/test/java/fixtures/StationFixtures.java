@@ -2,7 +2,7 @@ package fixtures;
 
 import subway.domain.station.Station;
 
-public class SubwayFixtures {
+public class StationFixtures {
 
     public static final Station GANGNAM = new Station(1L, "강남역");
     public static final Station YANGJAE = new Station(2L, "양재역");
