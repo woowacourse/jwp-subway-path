@@ -1,6 +1,4 @@
-package subway.route.domain.jgraph;
-
-import subway.route.domain.FareCalculator;
+package subway.route.domain;
 
 public class DistanceFareCalculator implements FareCalculator {
 

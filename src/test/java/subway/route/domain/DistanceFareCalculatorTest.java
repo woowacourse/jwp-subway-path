@@ -1,4 +1,4 @@
-package subway.route.domain.jgraph;
+package subway.route.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static subway.route.domain.jgraph.DistanceFareCalculator.*;
+import static subway.route.domain.DistanceFareCalculator.*;
 
 class DistanceFareCalculatorTest {
 
