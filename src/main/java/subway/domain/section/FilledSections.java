@@ -4,6 +4,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
+import subway.domain.Distance;
 import subway.domain.Station;
 import subway.domain.section.strategy.UpdateHeadStrategy;
 import subway.domain.section.strategy.UpdateMiddleStrategy;
@@ -27,6 +28,14 @@ public class FilledSections extends Sections {
         final List<Section> result = new LinkedList<>(this.sections);
         result.removeAll(otherSections.sections);
         return from(result);
+    }
+
+    @Override
+    public Distance getTotalDistance() {
+        return sections.stream()
+                .map(Section::getDistance)
+                .reduce(Distance::plusValue)
+                .get();
     }
 
     @Override

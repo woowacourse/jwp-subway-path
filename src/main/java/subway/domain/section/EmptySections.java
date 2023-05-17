@@ -2,6 +2,7 @@ package subway.domain.section;
 
 import java.util.Collections;
 import java.util.List;
+import subway.domain.Distance;
 import subway.domain.Station;
 
 public class EmptySections extends Sections {
@@ -31,5 +32,10 @@ public class EmptySections extends Sections {
     @Override
     public Sections getDifferenceOfSet(final Sections otherSections) {
         return this;
+    }
+
+    @Override
+    public Distance getTotalDistance() {
+        throw new IllegalStateException("빈 구간은 Distance가 존재하지 않습니다.");
     }
 }

@@ -1,6 +1,7 @@
 package subway.domain.section;
 
 import java.util.List;
+import subway.domain.Distance;
 import subway.domain.Station;
 
 public abstract class Sections {
@@ -18,6 +19,8 @@ public abstract class Sections {
     public abstract Sections removeStation(final Station station);
 
     public abstract Sections getDifferenceOfSet(final Sections otherSections);
+
+    public abstract Distance getTotalDistance();
 
     public List<Section> getSections() {
         return sections;
