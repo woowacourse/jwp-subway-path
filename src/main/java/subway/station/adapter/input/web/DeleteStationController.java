@@ -12,12 +12,11 @@ import subway.station.dto.DeleteStationRequest;
 import javax.validation.Valid;
 
 @RequiredArgsConstructor
-@RequestMapping("/stations")
 @RestController
 public class DeleteStationController {
     private final DeleteStationUseCase deleteStationUseCase;
     
-    @DeleteMapping
+    @DeleteMapping("/stations")
     public ResponseEntity<Void> delete(@RequestBody @Valid final DeleteStationRequest request) {
         deleteStationUseCase.deleteStation(request.getLineId(), request.getStationId());
         return ResponseEntity.noContent().build();
