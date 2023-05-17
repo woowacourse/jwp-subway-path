@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import subway.dao.dto.SectionDto;
+import subway.persistence.dto.SectionDto;
 
 @JdbcTest
 public class SectionDaoTest {

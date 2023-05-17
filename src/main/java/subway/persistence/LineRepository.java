@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence;
 
 import java.util.List;
 import java.util.Objects;
@@ -7,8 +7,8 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import subway.dao.exception.NoSuchLineException;
-import subway.dao.dto.LineDto;
+import subway.persistence.exception.NoSuchLineException;
+import subway.persistence.dto.LineDto;
 import subway.domain.Line;
 
 /* 학습용 주석입니다 :)

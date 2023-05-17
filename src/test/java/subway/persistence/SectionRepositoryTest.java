@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,7 +25,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import subway.domain.Section;
-import subway.dao.dto.SectionDto;
+import subway.persistence.dto.SectionDto;
 
 @SuppressWarnings("NonAsciiCharacters")
 @ExtendWith(MockitoExtension.class)

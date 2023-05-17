@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 
 import subway.domain.Section;
-import subway.dao.dto.SectionDto;
+import subway.persistence.dto.SectionDto;
 
 @Repository
 public class SectionRepository {

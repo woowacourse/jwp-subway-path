@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -26,8 +26,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import subway.dao.exception.NoSuchLineException;
-import subway.dao.dto.LineDto;
+import subway.persistence.exception.NoSuchLineException;
+import subway.persistence.dto.LineDto;
 import subway.domain.Line;
 
 @SuppressWarnings("NonAsciiCharacters")

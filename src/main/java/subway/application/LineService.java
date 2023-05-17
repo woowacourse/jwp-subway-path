@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import subway.dao.LineRepository;
-import subway.dao.StationDao;
+import subway.persistence.LineRepository;
+import subway.persistence.StationDao;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;

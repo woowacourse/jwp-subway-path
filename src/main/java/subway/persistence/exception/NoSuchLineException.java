@@ -1,4 +1,4 @@
-package subway.dao.exception;
+package subway.persistence.exception;
 
 import java.util.NoSuchElementException;
 

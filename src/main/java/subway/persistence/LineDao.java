@@ -1,10 +1,10 @@
-package subway.dao;
+package subway.persistence;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.dao.dto.LineDto;
+import subway.persistence.dto.LineDto;
 
 import javax.sql.DataSource;
 import java.util.HashMap;

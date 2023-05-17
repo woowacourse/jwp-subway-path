@@ -1,4 +1,4 @@
-package subway.dao;
+package subway.persistence;
 
 import java.util.List;
 
@@ -8,7 +8,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import subway.dao.dto.SectionDto;
+import subway.persistence.dto.SectionDto;
 
 @Repository
 public class SectionDao {
