@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 
 import static io.restassured.RestAssured.given;
 import static org.apache.http.HttpStatus.SC_BAD_REQUEST;
+import static org.apache.http.HttpStatus.SC_NOT_FOUND;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -170,7 +171,7 @@ public class StationIntegrationTest extends IntegrationTest {
                 .when()
                 .get("/stations/1")
                 .then().log().all()
-                .statusCode(SC_BAD_REQUEST);
+                .statusCode(SC_NOT_FOUND);
     }
 
 }

@@ -9,6 +9,7 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.jdbc.Sql;
 
 @Sql("/test.sql")
+@Sql(value = "/drop.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class IntegrationTest {
 
@@ -16,7 +17,7 @@ public class IntegrationTest {
     protected ObjectMapper objectMapper;
 
     @LocalServerPort
-    int port;
+    private int port;
 
     @BeforeEach
     public void setUp() {
