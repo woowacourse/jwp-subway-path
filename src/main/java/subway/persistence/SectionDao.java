@@ -15,6 +15,7 @@ import subway.persistence.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 
 import static subway.persistence.entity.RowMapperUtil.sectionDetailRowMapper;
 import static subway.persistence.entity.RowMapperUtil.sectionEntityRowMapper;
@@ -57,6 +58,26 @@ public class SectionDao {
     public void delete(final SectionEntity sectionEntity) {
         final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.update(sql, sectionEntity.getId());
+    }
+
+    public Optional<SectionEntity> findByLineIdAndPreviousStationId(
+            final long lineId, final long previousStationId) {
+        final String sql = "SELECT * FROM section WHERE line_id = ? AND previous_station_id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, lineId, previousStationId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
+    }
+
+    public Optional<SectionEntity> findByLineIdAndNextStationId(
+            final long lineId, final long nextStationId) {
+        final String sql = "SELECT * FROM section WHERE line_id = ? AND next_station_id = ?";
+        try {
+            return Optional.ofNullable(jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, lineId, nextStationId));
+        } catch (EmptyResultDataAccessException e) {
+            return Optional.empty();
+        }
     }
 
     public List<SectionEntity> findByLineIdAndPreviousStationNameOrNextStationName(

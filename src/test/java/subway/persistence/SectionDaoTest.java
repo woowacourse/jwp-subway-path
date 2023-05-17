@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.exception.bad_request.DuplicatedSectionException;
@@ -16,6 +17,7 @@ import subway.persistence.entity.SectionEntity;
 
 import javax.sql.DataSource;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -107,17 +109,81 @@ class SectionDaoTest {
     @Test
     @DisplayName("구간 삭제 성공")
     void delete_success() {
-//        // given
-//        final String selectSql = "SELECT id FROM section";
-//        List<Long> resultBeforeRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
-//        final SectionEntity sectionEntity = new SectionEntit;
-//
-//        // when
-//        sectionDao.delete(sectionEntity);
-//
-//        // then
-//        List<Long> resultAfterRemove = jdbcTemplate.query(selectSql, (rs, rn) -> rs.getLong("id"));
-//        assertThat(resultAfterRemove.size()).isEqualTo(resultBeforeRemove.size() - 1);
+        // given
+        final long sectionId = 1L;
+        final String sql = "SELECT * FROM section WHERE id = ?";
+        final SectionEntity sectionEntity = jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, sectionId);
+
+        // when
+        sectionDao.delete(sectionEntity);
+
+        // then
+        assertThatThrownBy(() -> jdbcTemplate.queryForObject(sql, sectionEntityRowMapper, sectionId))
+                .isInstanceOf(EmptyResultDataAccessException.class);
+    }
+
+    @Test
+    @DisplayName("노선 id와 이전 역 id로 구간 조회 성공")
+    void findByLineIdAndPreviousStationId_success() {
+        // given
+        final long lineId = 1L;
+        final long previousStationId = 1L;
+
+        // when
+        Optional<SectionEntity> result = sectionDao.findByLineIdAndPreviousStationId(lineId, previousStationId);
+
+        // then
+        assertThat(result.isPresent()).isTrue();
+        assertAll(
+                () -> assertThat(result.get().getLineId()).isEqualTo(lineId),
+                () -> assertThat(result.get().getPreviousStationId()).isEqualTo(previousStationId)
+        );
+    }
+
+    @Test
+    @DisplayName("노선 id와 이전 역 id로 구간 조회 성공 - empty")
+    void findByLineIdAndPreviousStationId_success_empty() {
+        // given
+        final long lineId = 1L;
+        final long previousStationId = 3L;
+
+        // when
+        Optional<SectionEntity> result = sectionDao.findByLineIdAndPreviousStationId(lineId, previousStationId);
+
+        // then
+        assertThat(result.isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("노선 id와 다음 역 id로 구간 조회 성공")
+    void findByLineIdAndNextStationId_success() {
+        // given
+        final long lineId = 1L;
+        final long nextStationId = 3L;
+
+        // when
+        Optional<SectionEntity> result = sectionDao.findByLineIdAndNextStationId(lineId, nextStationId);
+
+        // then
+        assertThat(result.isPresent()).isTrue();
+        assertAll(
+                () -> assertThat(result.get().getLineId()).isEqualTo(lineId),
+                () -> assertThat(result.get().getNextStationId()).isEqualTo(nextStationId)
+        );
+    }
+
+    @Test
+    @DisplayName("노선 id와 다음 역 id로 구간 조회 성공 - empty")
+    void findByLineIdAndNextStationId_success_empty() {
+        // given
+        final long lineId = 1L;
+        final long nextStationId = 1L;
+
+        // when
+        Optional<SectionEntity> result = sectionDao.findByLineIdAndNextStationId(lineId, nextStationId);
+
+        // then
+        assertThat(result.isEmpty()).isTrue();
     }
 
     @Test
