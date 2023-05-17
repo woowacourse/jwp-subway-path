@@ -55,12 +55,12 @@ public class PathControllerIntegrationTest {
         노선_생성_요청("1호선", "잠실역", "사당역", 1);
         노선_생성_요청("2호선", "사당역", "경북대북문역", 2);
         노선에_역_추가_요청("2호선", "경북대북문역", "경북대정문역", 3);
-        ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역");
         // when
-        ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 
         // then
-        ShortestPathResponse responseDto = response.as(ShortestPathResponse.class);
+        final ShortestPathResponse responseDto = response.as(ShortestPathResponse.class);
         노선에_포함된_N번째_구간을_검증한다(responseDto, 0, "잠실역", "사당역", 1);
         노선에_포함된_N번째_구간을_검증한다(responseDto, 1, "사당역", "경북대북문역", 2);
         노선에_포함된_N번째_구간을_검증한다(responseDto, 2, "경북대북문역", "경북대정문역", 3);
@@ -79,12 +79,12 @@ public class PathControllerIntegrationTest {
         노선_생성_요청("1호선", "잠실역", "사당역", 5);
         노선_생성_요청("2호선", "사당역", "경북대북문역", 5);
         노선에_역_추가_요청("2호선", "경북대북문역", "경북대정문역", 10);
-        ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대정문역");
         // when
-        ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 
         // then
-        ShortestPathResponse responseDto = response.as(ShortestPathResponse.class);
+        final ShortestPathResponse responseDto = response.as(ShortestPathResponse.class);
         노선에_포함된_N번째_구간을_검증한다(responseDto, 0, "잠실역", "사당역", 5);
         노선에_포함된_N번째_구간을_검증한다(responseDto, 1, "사당역", "경북대북문역", 5);
         노선에_포함된_N번째_구간을_검증한다(responseDto, 2, "경북대북문역", "경북대정문역", 10);
@@ -97,10 +97,10 @@ public class PathControllerIntegrationTest {
     void 시작역이_없으면_예외() {
         // given
         역_생성_요청("사당역");
-        ShortestPathRequest request = new ShortestPathRequest("잠실역", "사당역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "사당역");
 
         // when
-        ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 
         // then
         assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
@@ -110,10 +110,10 @@ public class PathControllerIntegrationTest {
     void 도착역이_없으면_예외() {
         // given
         역_생성_요청("잠실역");
-        ShortestPathRequest request = new ShortestPathRequest("잠실역", "사당역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "사당역");
 
         // when
-        ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 
         // then
         assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
@@ -126,10 +126,10 @@ public class PathControllerIntegrationTest {
         역_생성_요청("잠실역");
         역_생성_요청("경북대입구역");
         노선_생성_요청("1호선", "잠실역", "사당역", 10);
-        ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역");
 
         // when
-        ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 
         // then
         assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
@@ -144,11 +144,10 @@ public class PathControllerIntegrationTest {
         역_생성_요청("경북대북문역");
         노선_생성_요청("1호선", "잠실역", "사당역", 10);
         노선_생성_요청("2호선", "경북대입구역", "경북대북문역", 10);
-
-        ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역");
+        final ShortestPathRequest request = new ShortestPathRequest("잠실역", "경북대입구역");
 
         // when
-        ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 
         // then
         assertThat(response.statusCode()).isEqualTo(NOT_FOUND.value());
@@ -158,16 +157,16 @@ public class PathControllerIntegrationTest {
     @NullAndEmptySource
     void 시작역이_null이거나_공백이면_예외(final String nullAndEmpty) {
         // given
-        ShortestPathRequest request = new ShortestPathRequest(nullAndEmpty, "사당역");
+        final ShortestPathRequest request = new ShortestPathRequest(nullAndEmpty, "사당역");
 
         // when
-        ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 
         // then
         assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());
     }
 
-    private ExtractableResponse<Response> 최단_거리_조회_요청(ShortestPathRequest request) {
+    private ExtractableResponse<Response> 최단_거리_조회_요청(final ShortestPathRequest request) {
         final String body = toJson(request);
         return given().log().all()
                 .contentType(JSON)
@@ -183,10 +182,10 @@ public class PathControllerIntegrationTest {
     @NullAndEmptySource
     void 도착이_null이거나_공백이면_예외(final String nullAndEmpty) {
         // given
-        ShortestPathRequest request = new ShortestPathRequest("사당역", nullAndEmpty);
+        final ShortestPathRequest request = new ShortestPathRequest("사당역", nullAndEmpty);
 
         // when
-        ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
+        final ExtractableResponse<Response> response = 최단_거리_조회_요청(request);
 
         // then
         assertThat(response.statusCode()).isEqualTo(UNPROCESSABLE_ENTITY.value());

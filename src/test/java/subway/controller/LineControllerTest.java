@@ -54,7 +54,7 @@ class LineControllerTest {
         @Test
         void 성공한다() throws Exception {
             // given
-            LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10);
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", 10);
             given(lineService.create(any()))
                     .willReturn(Long.MAX_VALUE);
 
@@ -66,9 +66,9 @@ class LineControllerTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        void 노선이_널이거나_공백이면_예외(String nullAndEmpty) throws Exception {
+        void 노선이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            LineCreateRequest request = new LineCreateRequest(nullAndEmpty, "잠실역", "사당역", 10);
+            final LineCreateRequest request = new LineCreateRequest(nullAndEmpty, "잠실역", "사당역", 10);
 
             // when & then
             노선을_생성한다(request)
@@ -77,9 +77,9 @@ class LineControllerTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        void 상행역이_널이거나_공백이면_예외(String nullAndEmpty) throws Exception {
+        void 상행역이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            LineCreateRequest request = new LineCreateRequest("1호선", nullAndEmpty, "사당역", 10);
+            final LineCreateRequest request = new LineCreateRequest("1호선", nullAndEmpty, "사당역", 10);
 
             // when & then
             노선을_생성한다(request)
@@ -88,9 +88,9 @@ class LineControllerTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        void 하행역이_널이거나_공백이면_예외(String nullAndEmpty) throws Exception {
+        void 하행역이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", nullAndEmpty, 10);
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", nullAndEmpty, 10);
 
             // when & then
             노선을_생성한다(request)
@@ -100,14 +100,14 @@ class LineControllerTest {
         @Test
         void 거리가_널이면_예외() throws Exception {
             // given
-            LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", null);
+            final LineCreateRequest request = new LineCreateRequest("1호선", "잠실역", "사당역", null);
 
             // when & then
             노선을_생성한다(request)
                     .andExpect(status().isUnprocessableEntity());
         }
 
-        private ResultActions 노선을_생성한다(LineCreateRequest request) throws Exception {
+        private ResultActions 노선을_생성한다(final LineCreateRequest request) throws Exception {
             return mockMvc.perform(post(API_URL)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(toJson(request)))
@@ -118,11 +118,11 @@ class LineControllerTest {
     @Test
     void 노선을_조회한다() throws Exception {
         // given
-        List<SectionQueryResponse> sectionQueryResponses = List.of(
+        final List<SectionQueryResponse> sectionQueryResponses = List.of(
                 new SectionQueryResponse("잠실새내역", "잠실역", 10),
                 new SectionQueryResponse("잠실역", "잠실나루역", 15)
         );
-        LineQueryResponse response = new LineQueryResponse("1호선", sectionQueryResponses);
+        final LineQueryResponse response = new LineQueryResponse("1호선", sectionQueryResponses);
         given(lineQueryService.findById(1L))
                 .willReturn(response);
 
@@ -142,17 +142,17 @@ class LineControllerTest {
     @Test
     void 모든_노선을_조회한다() throws Exception {
         // given
-        List<SectionQueryResponse> sectionQueryResponses1 = List.of(
+        final List<SectionQueryResponse> sectionQueryResponses1 = List.of(
                 new SectionQueryResponse("잠실새내역", "잠실역", 10),
                 new SectionQueryResponse("잠실역", "잠실나루역", 15)
         );
 
-        List<SectionQueryResponse> sectionQueryResponses2 = List.of(
+        final List<SectionQueryResponse> sectionQueryResponses2 = List.of(
                 new SectionQueryResponse("경북대역", "부산대역", 10),
                 new SectionQueryResponse("부산대역", "전남대역", 15)
         );
 
-        List<LineQueryResponse> responses = List.of(
+        final List<LineQueryResponse> responses = List.of(
                 new LineQueryResponse("1호선", sectionQueryResponses1),
                 new LineQueryResponse("2호선", sectionQueryResponses2));
         given(lineQueryService.findAll())

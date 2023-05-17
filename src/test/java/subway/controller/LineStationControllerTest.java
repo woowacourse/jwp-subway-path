@@ -48,34 +48,34 @@ class LineStationControllerTest {
         @Test
         void 성공한다() throws Exception {
             // given
-            AddStationToLineRequest request = new AddStationToLineRequest("1호선", "잠실역", "잠실나루역", 10);
+            final AddStationToLineRequest request = new AddStationToLineRequest("1호선", "잠실역", "잠실나루역", 10);
 
             // when
-            MvcResult mvcResult = 노선_역_추가_요청(request);
+            final MvcResult mvcResult = 노선_역_추가_요청(request);
 
             // then
-            MockHttpServletResponse response = mvcResult.getResponse();
+            final MockHttpServletResponse response = mvcResult.getResponse();
             verify(lineService, times(1)).addStation(any());
             assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         }
 
         @ParameterizedTest
         @NullAndEmptySource
-        void 호선이_널이나_공백이면_예외(String nullAndEmpty) throws Exception {
+        void 호선이_널이나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            AddStationToLineRequest request = new AddStationToLineRequest(nullAndEmpty, "잠실역", "잠실나루역", 10);
+            final AddStationToLineRequest request = new AddStationToLineRequest(nullAndEmpty, "잠실역", "잠실나루역", 10);
 
             // when
-            MvcResult mvcResult = 노선_역_추가_요청(request);
+            final MvcResult mvcResult = 노선_역_추가_요청(request);
 
             //then
-            MockHttpServletResponse response = mvcResult.getResponse();
+            final MockHttpServletResponse response = mvcResult.getResponse();
             assertThat(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
 
         @ParameterizedTest
         @NullAndEmptySource
-        void 상행선이_널이나_공백이면_예외(String nullAndEmpty) throws Exception {
+        void 상행선이_널이나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
             AddStationToLineRequest request = new AddStationToLineRequest("1호선", nullAndEmpty, "잠실나루역", 10);
 
@@ -89,32 +89,32 @@ class LineStationControllerTest {
 
         @ParameterizedTest
         @NullAndEmptySource
-        void 하행선_널이나_공백이면_예외(String nullAndEmpty) throws Exception {
+        void 하행선_널이나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            AddStationToLineRequest request = new AddStationToLineRequest("1호선", "잠실역", nullAndEmpty, 10);
+            final AddStationToLineRequest request = new AddStationToLineRequest("1호선", "잠실역", nullAndEmpty, 10);
 
             // when
-            MvcResult mvcResult = 노선_역_추가_요청(request);
+            final MvcResult mvcResult = 노선_역_추가_요청(request);
 
             //then
-            MockHttpServletResponse response = mvcResult.getResponse();
+            final MockHttpServletResponse response = mvcResult.getResponse();
             assertThat(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
 
         @Test
         void 거리가_널이면_예외() throws Exception {
             // given
-            AddStationToLineRequest request = new AddStationToLineRequest("1호선", "잠실역", "잠실나루역", null);
+            final AddStationToLineRequest request = new AddStationToLineRequest("1호선", "잠실역", "잠실나루역", null);
 
             // when
-            MvcResult mvcResult = 노선_역_추가_요청(request);
+            final MvcResult mvcResult = 노선_역_추가_요청(request);
 
             //then
-            MockHttpServletResponse response = mvcResult.getResponse();
+            final MockHttpServletResponse response = mvcResult.getResponse();
             assertThat(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
 
-        private MvcResult 노선_역_추가_요청(AddStationToLineRequest request) throws Exception {
+        private MvcResult 노선_역_추가_요청(final AddStationToLineRequest request) throws Exception {
             return mockMvc.perform(post(API_URL)
                             .contentType(APPLICATION_JSON)
                             .content(toJson(request)))
@@ -129,47 +129,47 @@ class LineStationControllerTest {
         @Test
         void 성공한다() throws Exception {
             // given
-            DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", "잠실역");
+            final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", "잠실역");
 
             // when
-            MvcResult mvcResult = 노선에_역_제거_요청(request);
+            final MvcResult mvcResult = 노선에_역_제거_요청(request);
 
             // then
-            MockHttpServletResponse response = mvcResult.getResponse();
+            final MockHttpServletResponse response = mvcResult.getResponse();
             verify(lineService, times(1)).removeStation(any());
             assertThat(response.getStatus()).isEqualTo(HttpStatus.OK.value());
         }
 
         @ParameterizedTest
         @NullAndEmptySource
-        void 노선이_널이거나_공백이면_예외(String nullAndEmpty) throws Exception {
+        void 노선이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            DeleteStationFromLineRequest request = new DeleteStationFromLineRequest(nullAndEmpty, "잠실역");
+            final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest(nullAndEmpty, "잠실역");
 
             // when
-            MvcResult mvcResult = 노선에_역_제거_요청(request);
+            final MvcResult mvcResult = 노선에_역_제거_요청(request);
 
             // then
-            MockHttpServletResponse response = mvcResult.getResponse();
+            final MockHttpServletResponse response = mvcResult.getResponse();
             assertThat(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
 
         @ParameterizedTest
         @NullAndEmptySource
-        void 역이_널이거나_공백이면_예외(String nullAndEmpty) throws Exception {
+        void 역이_널이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
             // given
-            DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", nullAndEmpty);
+            final DeleteStationFromLineRequest request = new DeleteStationFromLineRequest("1호선", nullAndEmpty);
 
             // when
-            MvcResult mvcResult = 노선에_역_제거_요청(request);
+            final MvcResult mvcResult = 노선에_역_제거_요청(request);
 
             // then
-            MockHttpServletResponse response = mvcResult.getResponse();
+            final MockHttpServletResponse response = mvcResult.getResponse();
             assertThat(response.getStatus()).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value());
         }
 
 
-        private MvcResult 노선에_역_제거_요청(DeleteStationFromLineRequest request) throws Exception {
+        private MvcResult 노선에_역_제거_요청(final DeleteStationFromLineRequest request) throws Exception {
             return mockMvc.perform(delete(API_URL)
                             .contentType(APPLICATION_JSON)
                             .content(toJson(request)))

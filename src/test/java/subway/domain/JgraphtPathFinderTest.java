@@ -28,25 +28,25 @@ class JgraphtPathFinderTest {
     @Test
     void 최단_경로를_반환한다() {
         // given
-        List<Section> sections1 = List.of(
+        final List<Section> sections1 = List.of(
                 new Section(일번역, 이번역, 10),
                 new Section(이번역, 삼번역, 11),
                 new Section(삼번역, 사번역, 12),
                 new Section(사번역, 오번역, 13),
                 new Section(오번역, 육번역, 14)
         );
-        List<Section> sections2 = List.of(
+        final List<Section> sections2 = List.of(
                 new Section(일번역, 지름길, 5),
                 new Section(지름길, 육번역, 10)
         );
 
-        List<Line> lines = List.of(
+        final List<Line> lines = List.of(
                 new Line("1호선", new Sections(sections1)),
                 new Line("2호선", new Sections(sections2))
         );
 
         // when
-        Path path = jgraphtPathFinder.findShortestPath(일번역, 육번역, lines);
+        final Path path = jgraphtPathFinder.findShortestPath(일번역, 육번역, lines);
 
         // then
         포함된_구간들을_검증한다(path.getSections(),
@@ -59,16 +59,16 @@ class JgraphtPathFinderTest {
     @Test
     void 이어지지않은_경로를_요청시_예외_역이_이어진_노선은_있으나_연결되지않은_경우() {
         // given
-        List<Section> sections1 = List.of(
+        final List<Section> sections1 = List.of(
                 new Section(일번역, 이번역, 10),
                 new Section(이번역, 삼번역, 11),
                 new Section(삼번역, 사번역, 12)
         );
-        List<Section> sections2 = List.of(
+        final List<Section> sections2 = List.of(
                 new Section(지름길, 오번역, 15)
         );
 
-        List<Line> lines = List.of(
+        final List<Line> lines = List.of(
                 new Line("1호선", new Sections(sections1)),
                 new Line("2호선", new Sections(sections2))
         );
@@ -81,13 +81,13 @@ class JgraphtPathFinderTest {
     @Test
     void 이어지지않은_경로를_요청시_예외_역은_존재하나_노선상에_없는_경우() {
         // given
-        List<Section> sections1 = List.of(
+        final List<Section> sections1 = List.of(
                 new Section(일번역, 이번역, 10),
                 new Section(이번역, 삼번역, 11),
                 new Section(삼번역, 사번역, 12)
         );
 
-        List<Line> lines = List.of(
+        final List<Line> lines = List.of(
                 new Line("1호선", new Sections(sections1))
         );
 

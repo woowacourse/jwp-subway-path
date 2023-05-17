@@ -15,24 +15,25 @@ import subway.exception.NotFoundPathException;
 public class JgraphtPathFinder implements PathFinder {
 
     @Override
-    public Path findShortestPath(final Station startStation,
-                                 final Station endStation,
-                                 final List<Line> lines) {
-        DijkstraShortestPath pathMap = getPathMap(lines);
-        GraphPath<Station, SectionProxy> shortestGraph = findShortestGraph(startStation, endStation, pathMap);
-        Sections sections = shortestGraph.getEdgeList().stream()
+    public Path findShortestPath(
+            final Station startStation,
+            final Station endStation,
+            final List<Line> lines
+    ) {
+        final DijkstraShortestPath pathMap = getPathMap(lines);
+        final GraphPath<Station, SectionProxy> shortestGraph = findShortestGraph(startStation, endStation, pathMap);
+        final Sections sections = shortestGraph.getEdgeList().stream()
                 .map(SectionProxy::toSection)
                 .collect(collectingAndThen(toList(), Sections::new));
         return new Path(sections, (int) shortestGraph.getWeight());
     }
 
-    private DijkstraShortestPath getPathMap(List<Line> lines) {
-        WeightedMultigraph<Station, SectionProxy> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private DijkstraShortestPath getPathMap(final List<Line> lines) {
+        final WeightedMultigraph<Station, SectionProxy> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
 
         for (Line line : lines) {
             for (Section section : line.getSections()) {
-                SectionProxy sectionProxy = SectionProxy.from(section);
+                final SectionProxy sectionProxy = SectionProxy.from(section);
                 graph.addVertex(sectionProxy.getSource());
                 graph.addVertex(sectionProxy.getTarget());
                 graph.addEdge(sectionProxy.getSource(), sectionProxy.getTarget(), sectionProxy);
@@ -43,8 +44,12 @@ public class JgraphtPathFinder implements PathFinder {
         return new DijkstraShortestPath(graph);
     }
 
-    private GraphPath findShortestGraph(Station startStation, Station endStation, DijkstraShortestPath path) {
-        GraphPath shortestPath = getPath(startStation, endStation, path);
+    private GraphPath findShortestGraph(
+            final Station startStation,
+            final Station endStation,
+            final DijkstraShortestPath path
+    ) {
+        final GraphPath shortestPath = getPath(startStation, endStation, path);
 
         if (shortestPath == null) {
             throw new NotFoundPathException();
@@ -52,7 +57,11 @@ public class JgraphtPathFinder implements PathFinder {
         return shortestPath;
     }
 
-    private GraphPath getPath(Station startStation, Station endStation, DijkstraShortestPath path) {
+    private GraphPath getPath(
+            final Station startStation,
+            final Station endStation,
+            final DijkstraShortestPath path
+    ) {
         try {
             return path.getPath(startStation, endStation);
         } catch (IllegalArgumentException e) {

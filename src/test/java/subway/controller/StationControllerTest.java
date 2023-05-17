@@ -35,14 +35,13 @@ class StationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-
     @MockBean
     private StationService stationService;
 
     @Test
     void 역_생성_성공() throws Exception {
         // given
-        StationCreateRequest request = new StationCreateRequest("사당역");
+        final StationCreateRequest request = new StationCreateRequest("사당역");
         given(stationService.create(any()))
                 .willReturn(300L);
 
@@ -57,9 +56,9 @@ class StationControllerTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    void 역_생성_실패(String nullAndEmpty) throws Exception {
+    void 역_생성_실패(final String nullAndEmpty) throws Exception {
         // given
-        StationCreateRequest request = new StationCreateRequest(nullAndEmpty);
+        final StationCreateRequest request = new StationCreateRequest(nullAndEmpty);
 
         // when & then
         mockMvc.perform(post(API_URL)

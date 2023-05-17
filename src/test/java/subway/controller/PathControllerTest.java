@@ -44,7 +44,7 @@ class PathControllerTest {
     @Test
     void 정상적으로_최단_경로를_조회한다() throws Exception {
         // given
-        ShortestPathResponse responseDto = new ShortestPathResponse(
+        final ShortestPathResponse responseDto = new ShortestPathResponse(
                 List.of(
                         new SectionQueryResponse("종합운동장역", "잠실새내역", 5),
                         new SectionQueryResponse("잠실새내역", "잠실역", 6)
@@ -52,7 +52,7 @@ class PathControllerTest {
                 10,
                 1350
         );
-        ShortestPathRequest request = new ShortestPathRequest("역삼역", "잠실역");
+        final ShortestPathRequest request = new ShortestPathRequest("역삼역", "잠실역");
         given(pathService.findShortestPath(any()))
                 .willReturn(responseDto);
 
@@ -78,10 +78,10 @@ class PathControllerTest {
     @NullAndEmptySource
     void 시작역이_null이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
         // given
-        ShortestPathRequest request = new ShortestPathRequest(nullAndEmpty, "사당역");
+        final ShortestPathRequest request = new ShortestPathRequest(nullAndEmpty, "사당역");
 
         // when
-        MockHttpServletResponse response = 최단_거리_조회_요청(request);
+        final MockHttpServletResponse response = 최단_거리_조회_요청(request);
 
         // then
         assertThat(response.getStatus()).isEqualTo(UNPROCESSABLE_ENTITY.value());
@@ -91,16 +91,16 @@ class PathControllerTest {
     @NullAndEmptySource
     void 도착이_null이거나_공백이면_예외(final String nullAndEmpty) throws Exception {
         // given
-        ShortestPathRequest request = new ShortestPathRequest("사당역", nullAndEmpty);
+        final ShortestPathRequest request = new ShortestPathRequest("사당역", nullAndEmpty);
 
         // when
-        MockHttpServletResponse response = 최단_거리_조회_요청(request);
+        final MockHttpServletResponse response = 최단_거리_조회_요청(request);
 
         // then
         assertThat(response.getStatus()).isEqualTo(UNPROCESSABLE_ENTITY.value());
     }
 
-    private MockHttpServletResponse 최단_거리_조회_요청(ShortestPathRequest request) throws Exception {
+    private MockHttpServletResponse 최단_거리_조회_요청(final ShortestPathRequest request) throws Exception {
         return mockMvc.perform(get(API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(request)))

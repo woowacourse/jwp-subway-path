@@ -22,9 +22,9 @@ class DefaultFeePolicyTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1,5,8,10})
-    void 거리가_10km_이하면_기본요금만_반환한다(int distance) {
+    void 거리가_10km_이하면_기본요금만_반환한다(final int distance) {
         // when
-        int actual = defaultFeePolicy.calculate(distance);
+        final int actual = defaultFeePolicy.calculate(distance);
 
         // then
         assertThat(actual).isEqualTo(DEFAULT_FEE);
@@ -32,7 +32,7 @@ class DefaultFeePolicyTest {
 
     @ParameterizedTest
     @ValueSource(ints = {-100, -1, 0})
-    void 거리가_0이하면_예외(int distance) {
+    void 거리가_0이하면_예외(final int distance) {
         // when & then
         assertThatThrownBy(() -> defaultFeePolicy.calculate(distance))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -43,9 +43,9 @@ class DefaultFeePolicyTest {
 
         @ParameterizedTest
         @CsvSource(value= {"12:1350", "15:1350", "16:1450", "20:1450", "23:1550"}, delimiter = ':')
-        void 거리가_50km이하면_5km마다_추가요금이_붙는다(int distance, int expected) {
+        void 거리가_50km이하면_5km마다_추가요금이_붙는다(final int distance,final int expected) {
             // when
-            int actual = defaultFeePolicy.calculate(distance);
+            final int actual = defaultFeePolicy.calculate(distance);
 
             // then
             assertThat(actual).isEqualTo(expected);
@@ -53,9 +53,9 @@ class DefaultFeePolicyTest {
 
         @ParameterizedTest
         @CsvSource(value= {"58:2150", "59:2250", "66:2250", "67:2350"}, delimiter = ':')
-        void 거리가_50km을_초과하면_50km_이상의_거리는_8km마다_추가요금이_붙는다(int distance, int expected) {
+        void 거리가_50km을_초과하면_50km_이상의_거리는_8km마다_추가요금이_붙는다(final int distance,final int expected) {
             // when
-            int actual = defaultFeePolicy.calculate(distance);
+            final int actual = defaultFeePolicy.calculate(distance);
 
             // then
             assertThat(actual).isEqualTo(expected);

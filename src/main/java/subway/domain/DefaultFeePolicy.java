@@ -12,7 +12,7 @@ public class DefaultFeePolicy implements FeePolicy {
     private static final int UNIT_OF_ADDITIONAL_FEE = 100;
 
     @Override
-    public int calculate(int distance) {
+    public int calculate(final int distance) {
         validateDistance(distance);
         if (distance <= MAXIMUM_DISTANCE_TO_DEFAULT_FEE) {
             return DEFAULT_FEE;
@@ -21,18 +21,18 @@ public class DefaultFeePolicy implements FeePolicy {
         return DEFAULT_FEE + getAdditionalFee(distance);
     }
 
-    private void validateDistance(int distance) {
+    private void validateDistance(final int distance) {
         if (distance <= 0) {
             throw new IllegalArgumentException("거리는 0이하일 수 없습니다.");
         }
     }
 
-    private int getAdditionalFee(int distance) {
-        int additionalDistance = Math.min(distance, 50) - MAXIMUM_DISTANCE_TO_DEFAULT_FEE;
+    private int getAdditionalFee(final int distance) {
+        final int additionalDistance = Math.min(distance, 50) - MAXIMUM_DISTANCE_TO_DEFAULT_FEE;
         int additionalFee = (int) (Math.ceil(additionalDistance / 5d) * UNIT_OF_ADDITIONAL_FEE);
 
         if (distance >= 50) {
-            int remainingDistance = distance - 50;
+            final int remainingDistance = distance - 50;
             additionalFee += (int) (Math.ceil(remainingDistance / 8d) * UNIT_OF_ADDITIONAL_FEE);
         }
 

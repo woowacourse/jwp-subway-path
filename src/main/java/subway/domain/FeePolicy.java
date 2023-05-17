@@ -2,5 +2,5 @@ package subway.domain;
 
 public interface FeePolicy {
 
-    int calculate(int distance);
+    int calculate(final int distance);
 }

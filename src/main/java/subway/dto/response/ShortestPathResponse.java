@@ -13,7 +13,11 @@ public class ShortestPathResponse {
     public ShortestPathResponse() {
     }
 
-    public ShortestPathResponse(final List<SectionQueryResponse> sectionQueryResponses, int totalDistance, int fee) {
+    public ShortestPathResponse(
+            final List<SectionQueryResponse> sectionQueryResponses,
+            final int totalDistance,
+            final int fee
+    ) {
         this.sectionQueryResponses = sectionQueryResponses;
         this.totalDistance = totalDistance;
         this.fee = fee;

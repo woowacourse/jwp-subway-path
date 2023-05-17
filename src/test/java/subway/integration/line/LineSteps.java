@@ -116,7 +116,7 @@ public class LineSteps {
             final String downStationName,
             final int distance
     ) {
-        List<SectionQueryResponse> responses = response.getSectionQueryResponses();
+        final List<SectionQueryResponse> responses = response.getSectionQueryResponses();
         assertThat(responses.get(index).getUpStationName()).isEqualTo(upStationName);
         assertThat(responses.get(index).getDownStationName()).isEqualTo(downStationName);
         assertThat(responses.get(index).getDistance()).isEqualTo(distance);

@@ -21,8 +21,12 @@ public class PathService {
     private final PathFinder pathFinder;
     private final FeePolicy feePolicy;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository, PathFinder pathFinder,
-                       FeePolicy feePolicy) {
+    public PathService(
+            final StationRepository stationRepository,
+            final LineRepository lineRepository,
+            final PathFinder pathFinder,
+            final FeePolicy feePolicy
+    ) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
         this.pathFinder = pathFinder;
@@ -30,13 +34,13 @@ public class PathService {
     }
 
     public ShortestPathResponse findShortestPath(final ShortestPathRequest request) {
-        Station startStation = stationRepository.findByName(request.getStartStation())
+        final Station startStation = stationRepository.findByName(request.getStartStation())
                 .orElseThrow(() -> new NotFoundStationException(request.getStartStation()));
-        Station endStation = stationRepository.findByName(request.getEndStation())
+        final Station endStation = stationRepository.findByName(request.getEndStation())
                 .orElseThrow(() -> new NotFoundStationException(request.getEndStation()));
-        List<Line> lines = lineRepository.findAll();
-        Path path = pathFinder.findShortestPath(startStation, endStation, lines);
-        int fee = feePolicy.calculate(path.getTotalDistance());
+        final List<Line> lines = lineRepository.findAll();
+        final Path path = pathFinder.findShortestPath(startStation, endStation, lines);
+        final int fee = feePolicy.calculate(path.getTotalDistance());
         return ShortestPathResponse.of(path, fee);
     }
 }
