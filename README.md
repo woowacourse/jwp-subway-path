@@ -77,27 +77,27 @@
     }
   ```
 
-  - 응담 {Status Code: OK, body: sections(from, to, distance, line), whole-distance, fare}  
+  - 응담 {Status Code: OK, body: sections(line, from, to, distance), whole-distance, fare}  
   ```json
     {
         "sections": {
             {
+              "line": 1
               "from": 1,
               "to": 2,
               "distnace": 8,
-              "line": 1
             },
             {
+              "line": 1
               "from": 2,
               "to": 3,
               "distnace": 6,
-              "line": 1
             },
               {
+              "line": 2
               "from": 3,
               "to": 8,
               "distnace": 7,
-              "line": 2
             }
         },
         "whole-distance": 21,
