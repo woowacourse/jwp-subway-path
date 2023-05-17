@@ -1,4 +1,4 @@
-package subway.persistence.repository;
+package subway.application.repository;
 
 import org.springframework.stereotype.Repository;
 import subway.entity.LineEntity;

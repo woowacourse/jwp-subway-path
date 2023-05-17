@@ -1,6 +1,7 @@
-package subway.persistence.repository;
+package subway.persistence.repositoryImpl;
 
 import org.springframework.stereotype.Repository;
+import subway.application.repository.LineRepository;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;

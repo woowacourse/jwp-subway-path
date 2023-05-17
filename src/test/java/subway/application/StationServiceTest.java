@@ -4,9 +4,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import subway.application.repository.StationRepository;
 import subway.dto.StationResponse;
 import subway.entity.StationEntity;
-import subway.persistence.repository.StationRepository;
 
 import java.util.List;
 

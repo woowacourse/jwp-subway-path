@@ -1,6 +1,7 @@
 package subway.application;
 
 import org.springframework.stereotype.Service;
+import subway.application.repository.LineRepository;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
@@ -10,7 +11,6 @@ import subway.dto.LineResponse;
 import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
-import subway.persistence.repository.LineRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
