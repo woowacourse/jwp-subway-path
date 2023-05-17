@@ -1,7 +1,9 @@
 package subway.line;
 
+import java.net.URI;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import subway.line.dto.LineCreateDto;
 import subway.line.dto.LineResponseDto;
 import subway.section.SectionService;
+import subway.section.dto.SectionCreateDto;
 import subway.station.dto.StationResponseDto;
 
 @RestController
@@ -37,7 +40,20 @@ public class LineController {
 
     @PostMapping
     public ResponseEntity<Void> create(@RequestBody LineCreateDto lineCreateDto) {
-        lineService.create(lineCreateDto);
-        return ResponseEntity.ok().build();
+        final Long lineId = lineService.create(lineCreateDto);
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
+    }
+
+    @PostMapping("/stations")
+    public ResponseEntity<Void> enrollStation(@RequestBody final SectionCreateDto sectionCreateDto) {
+        final Long lineId = sectionService.addSection(sectionCreateDto);
+        return ResponseEntity.created(URI.create("/lines/" + lineId)).build();
+    }
+
+    @DeleteMapping("/{lineId}/stations/{stationId}")
+    public ResponseEntity<Void> delete(@PathVariable(name = "lineId") final Long lineId,
+        @PathVariable(name = "stationId") final Long stationId) {
+        sectionService.removeStationBy(lineId, stationId);
+        return ResponseEntity.noContent().build();
     }
 }

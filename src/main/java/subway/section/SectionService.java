@@ -33,7 +33,7 @@ public class SectionService {
         this.lineDao = lineDao;
     }
 
-    public void addSection(final SectionCreateDto sectionCreateDto) {
+    public Long addSection(final SectionCreateDto sectionCreateDto) {
         final LineEntity lineEntity = lineDao.findById(sectionCreateDto.getLineId())
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선 이름입니다."));
         final StationEntity upStationEntity = stationDao.findById(sectionCreateDto.getUpStationId())
@@ -46,6 +46,7 @@ public class SectionService {
         final Line line = new Line(lineEntity.getId(), lineEntity.getLineName(), generateSections(lineEntity.getId()));
         addSectionByCondition(section, line);
         updateLine(line);
+        return line.getId();
     }
 
     private static Section createSection(SectionCreateDto sectionCreateDto, StationEntity upStationEntity,
