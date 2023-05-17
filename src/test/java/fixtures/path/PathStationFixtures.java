@@ -1,0 +1,63 @@
+package fixtures.path;
+
+import static fixtures.path.PathLineFixtures.INITIAL_LINE2;
+import static fixtures.path.PathLineFixtures.INITIAL_LINE7;
+
+import subway.domain.station.Station;
+
+public class PathStationFixtures {
+
+    public static class INITIAL_STATION_LINE2_A {
+        public static final Long ID = 1L;
+        public static final String NAME = "A역";
+
+        public static final Station FIND_STATION = new Station(ID, NAME, INITIAL_LINE2.FIND_LINE);
+    }
+
+    public static class INITIAL_STATION_LINE2_C {
+        public static final Long ID = 2L;
+        public static final String NAME = "C역";
+
+        public static final Station FIND_STATION = new Station(ID, NAME, INITIAL_LINE2.FIND_LINE);
+    }
+
+    public static class INITIAL_STATION_LINE7_A {
+        public static final Long ID = 3L;
+        public static final String NAME = "A역";
+
+        public static final Station FIND_STATION = new Station(ID, NAME, INITIAL_LINE2.FIND_LINE);
+    }
+
+    public static class INITIAL_STATION_LINE7_D {
+        public static final Long ID = 4L;
+        public static final String NAME = "D역";
+
+        public static final Station FIND_STATION = new Station(ID, NAME, INITIAL_LINE2.FIND_LINE);
+    }
+    public static class INITIAL_STATION_LINE3_C {
+        public static final Long ID = 5L;
+        public static final String NAME = "C역";
+
+        public static final Station FIND_STATION = new Station(ID, NAME, INITIAL_LINE2.FIND_LINE);
+    }
+
+    public static class INITIAL_STATION_LINE3_D {
+        public static final Long ID = 6L;
+        public static final String NAME = "D역";
+
+        public static final Station FIND_STATION = new Station(ID, NAME, INITIAL_LINE2.FIND_LINE);
+    }
+
+    public static class INITIAL_STATION_LINE3_E {
+        public static final Long ID = 7L;
+        public static final String NAME = "E역";
+
+        public static final Station FIND_STATION = new Station(ID, NAME, INITIAL_LINE2.FIND_LINE);
+    }
+
+    public static class DUMMY_STATION_LINE7_E {
+        public static final Long ID = -1L;
+        public static final String NAME = "E역";
+        public static final Station DUMMY = new Station(ID, NAME, INITIAL_LINE7.FIND_LINE);
+    }
+}
