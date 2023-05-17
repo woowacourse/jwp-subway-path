@@ -1,5 +1,6 @@
 package subway.domain;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import subway.Fixture;
 
@@ -11,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 class LineTest {
 
     @Test
+    @DisplayName("노선에 첫 역 추가 기능")
     void addInitialSection() {
         // given
         final Line line = new Line("2호선", "green");
@@ -20,6 +22,7 @@ class LineTest {
     }
 
     @Test
+    @DisplayName("노선에 처음이 아닌 역 추가 기능")
     void addSection() {
         // given
         final Map<Station, Section> testMap = new HashMap<>();
@@ -33,6 +36,7 @@ class LineTest {
     }
 
     @Test
+    @DisplayName("노선에 역 ID로 역 삭제 기능")
     void deleteStation() {
         // given
         final Map<Station, Section> testMap = new HashMap<>();

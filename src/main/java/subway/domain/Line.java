@@ -24,12 +24,12 @@ public class Line {
         this(id, name, color, new SectionMap());
     }
 
-    public void addInitialSection(final Station upStation, final Station downStation, final int distance) {
-        sectionMap.addInitialSection(upStation, downStation, distance);
+    public Section addInitialSection(final Station upStation, final Station downStation, final int distance) {
+        return sectionMap.addInitialSection(upStation, downStation, distance);
     }
 
-    public void addSection(final Station upStation, final Station downStation, final int distance) {
-        sectionMap.addSection(upStation, downStation, distance);
+    public Section addSection(final Station upStation, final Station downStation, final int distance) {
+        return sectionMap.addSection(upStation, downStation, distance);
     }
 
     public void deleteStation(final Station station) {

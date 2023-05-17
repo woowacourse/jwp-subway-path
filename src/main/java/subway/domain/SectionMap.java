@@ -1,8 +1,6 @@
 package subway.domain;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class SectionMap {
 
@@ -35,6 +33,13 @@ public class SectionMap {
         }
 
         return sortedSectionMap;
+    }
+
+    public static SectionMap generateBySections(final List<Section> sections, final Station upEndstation) {
+        final Map<Station, Section> sectionMap = new HashMap<>();
+        sections.forEach(section -> sectionMap.put(section.getUpStation(), section));
+
+        return new SectionMap(sectionMap, upEndstation);
     }
 
     public Section addInitialSection(final Station upStation, final Station downStation, final int distance) {
