@@ -34,7 +34,6 @@ public class SubwayGuide {
                 .mapToInt(section -> sectionLines.get(section).getExtraFare())
                 .max()
                 .orElseThrow(() -> new IllegalStateException("[ERROR] 노선별 추가요금의 최대값을 찾을 수 없습니다."));
-        System.out.println(path.getShortestPathDistance(from, to));
         return Fare.from(path.getShortestPathDistance(from, to))
                 .applyExtraFare(maxExtraFare)
                 .applyDiscountRateOfAge(age)
