@@ -3,7 +3,6 @@ package subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -12,12 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.entity.Line;
-import subway.entity.Section;
-import subway.entity.Station;
-import subway.fixture.StationFixture;
-import subway.fixture.StationFixture.GangnamStation;
-import subway.fixture.StationFixture.JamsilStation;
+import subway.entity.SectionEntity;
+import subway.fixture.LineFixture.Line1;
+import subway.fixture.StationFixture.A;
+import subway.fixture.StationFixture.B;
+import subway.fixture.StationFixture.C;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -40,19 +38,44 @@ class SectionDaoTest {
     }
 
     @Test
-    void 섹션을_받아_저장한다() {
+    void 여러_구간을_받아_저장한다() {
         // given
-        final Long lineId = lineDao.insert(Line.of("2호선", "초록"));
-        final Long stationId1 = stationDao.insert(GangnamStation.gangnamStation);
-        final Long stationId2 = stationDao.insert(JamsilStation.jamsilStation);
+        final Long stationAid = stationDao.insert(A.stationA);
+        final Long stationBid = stationDao.insert(B.stationB);
+        final Long stationCid = stationDao.insert(C.stationC);
 
-        final Section section = Section.of(lineId, stationId1, stationId2,3);
+        final Long lineId = lineDao.insert(Line1.line);
+
+        final List<SectionEntity> sectionEntities = List.of(
+                new SectionEntity(lineId, stationAid, stationBid, 5),
+                new SectionEntity(lineId, stationBid, stationCid, 6)
+        );
 
         // when
-        final Long id = sectionDao.insert(section);
+        sectionDao.batchInsert(sectionEntities);
 
-        //then
-        assertThat(id).isPositive();
+        // then
+        assertThat(sectionDao.findAllByLineName("1호선")).hasSize(2);
     }
 
+    @Test
+    void 저장된_모든_구간을_삭제한다() {
+        // given
+        final Long stationAid = stationDao.insert(A.stationA);
+        final Long stationBid = stationDao.insert(B.stationB);
+        final Long stationCid = stationDao.insert(C.stationC);
+
+        final Long lineId = lineDao.insert(Line1.line);
+
+        final List<SectionEntity> sectionEntities = List.of(
+                new SectionEntity(lineId, stationAid, stationBid, 5),
+                new SectionEntity(lineId, stationBid, stationCid, 6)
+        );
+
+        // when
+        sectionDao.deleteAllByLineName("1호선");
+
+        // then
+        assertThat(sectionDao.findAllByLineName("1호선")).hasSize(0);
+    }
 }

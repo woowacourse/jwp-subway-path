@@ -1,19 +1,20 @@
 package subway.dao;
 
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.entity.Section;
+import subway.entity.SectionEntity;
 
 @Repository
 public class SectionDao {
 
-    private RowMapper<Section> sectionRowMapper = (rs, rowNum) -> Section.of(
+    private RowMapper<SectionEntity> sectionRowMapper = (rs, rowNum) -> new SectionEntity(
             rs.getLong("id"),
             rs.getLong("line_id"),
             rs.getLong("up_station_id"),
@@ -22,42 +23,31 @@ public class SectionDao {
 
 
     private final JdbcTemplate jdbcTemplate;
-    private final SimpleJdbcInsert insertAction;
+    private final SimpleJdbcInsert simpleJdbcInsert;
 
     public SectionDao(final JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
-        insertAction = new SimpleJdbcInsert(jdbcTemplate)
-                .withTableName("SECTIONS")
+        this.simpleJdbcInsert = new SimpleJdbcInsert(jdbcTemplate)
+                .withTableName("sections")
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(final Section section) {
-        Map<String, Object> params = new HashMap<>();
-        params.put("line_id", section.getLineId());
-        params.put("up_station_id", section.getUpStationId());
-        params.put("down_station_id", section.getDownStationId());
-        params.put("distance", section.getDistance());
+    public void batchInsert(final List<SectionEntity> sectionEntities) {
+        final SqlParameterSource[] array = sectionEntities.stream()
+                .map(BeanPropertySqlParameterSource::new)
+                .collect(Collectors.toList())
+                .toArray(new SqlParameterSource[sectionEntities.size()]);
 
-        return insertAction.executeAndReturnKey(params).longValue();
+        simpleJdbcInsert.executeBatch(array);
     }
 
-    public Section findByUpStationId(final Long upStationId) {
-        String sql = "select * from SECTIONS where up_station_id = ?";
-        return jdbcTemplate.queryForObject(sql, sectionRowMapper, upStationId);
+    public void deleteAllByLineName(final String lineName) {
+        String sql = "DELETE FROM SECTIONS WHERE LINE_ID IN (SELECT id FROM LINES WHERE name = ?)";
+        jdbcTemplate.update(sql, lineName);
     }
 
-    public void deleteById(final Long id) {
-        String sql = "DELETE FROM SECTIONS WHERE id=?";
-        jdbcTemplate.update(sql, id);
-    }
-
-    public Section findByDownStationId(final Long downStationId) {
-        String sql = "select * from SECTIONS where down_station_id = ?";
-        return jdbcTemplate.queryForObject(sql, sectionRowMapper, downStationId);
-    }
-
-    public List<Section> findAll() {
-        String sql = "select * from SECTIONS";
-        return jdbcTemplate.query(sql, sectionRowMapper);
+    public List<SectionEntity> findAllByLineName(final String lineName) {
+        String sql = "SELECT * FROM SECTIONS JOIN LINES ON LINES.id=SECTIONS.line_id WHERE LINES.name = ?";
+        return jdbcTemplate.query(sql, sectionRowMapper, lineName);
     }
 }
