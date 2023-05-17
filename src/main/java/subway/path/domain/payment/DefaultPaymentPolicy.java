@@ -1,8 +1,10 @@
 package subway.path.domain.payment;
 
+import org.springframework.stereotype.Component;
 import subway.line.exception.line.LineException;
 import subway.path.domain.Path;
 
+@Component
 public class DefaultPaymentPolicy implements PaymentPolicy {
 
     private static final int BASIC_FEE = 1250;
