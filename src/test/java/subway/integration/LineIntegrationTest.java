@@ -16,12 +16,12 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import subway.application.dto.SectionDto;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.dao.dto.LineDto;
-import subway.domain.Station;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
 
@@ -43,12 +43,12 @@ public class LineIntegrationTest extends IntegrationTest {
     private String lineName1 = "1호선";
     private String lineName2 = "2호선";
 
-    private Long lineId1;
-    private Long lineId2;
-    private Station station1;
-    private Station station2;
-    private Station station3;
-    private Station station4;
+    private LineEntity lineEntity1;
+    private LineEntity lineEntity2;
+    private StationEntity stationEntity1;
+    private StationEntity stationEntity2;
+    private StationEntity stationEntity3;
+    private StationEntity stationEntity4;
 
     @BeforeEach
     public void setUp() {
@@ -57,14 +57,14 @@ public class LineIntegrationTest extends IntegrationTest {
         lineRequest1 = new LineRequest("신분당선");
         lineRequest2 = new LineRequest("구신분당선");
 
-        station1 = stationDao.insert(new Station("강남역"));
-        station2 = stationDao.insert(new Station("서초역"));
-        station3 = stationDao.insert(new Station("선릉역"));
+        stationEntity1 = stationDao.save(new StationEntity(1L, "강남역"));
+        stationEntity2 = stationDao.save(new StationEntity(2L, "서초역"));
+        stationEntity3 = stationDao.save(new StationEntity(3L, "선릉역"));
 
-        lineId1 = lineDao.insert(new LineDto(null, lineName1));
+        lineEntity1 = lineDao.save(new LineEntity(1L, lineName1));
 
-        sectionDao.insert(new SectionDto(lineId1, station1.getId(), station2.getId(), 5));
-        sectionDao.insert(new SectionDto(lineId1, station2.getId(), station3.getId(), 3));
+        sectionDao.save(new SectionEntity(1L, lineEntity1.getId(), stationEntity1.getId(), stationEntity2.getId(), 5));
+        sectionDao.save(new SectionEntity(2L, lineEntity1.getId(), stationEntity2.getId(), stationEntity3.getId(), 3));
     }
 
     @DisplayName("지하철 노선을 생성한다.")
@@ -181,53 +181,51 @@ public class LineIntegrationTest extends IntegrationTest {
         // when, then
         RestAssured
                 .given().log().all()
-                .when().get("/lines/{id}/stations", lineId1)
+                .when().get("/lines/{id}/stations", lineEntity1.getId())
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(lineId1.intValue()))
+                .body("id", equalTo(lineEntity1.getId().intValue()))
                 .body("name", equalTo(lineName1))
                 .rootPath("stations")
-                .body("[0].id", equalTo(station1.getId().intValue()))
-                .body("[0].name", equalTo(station1.getName()))
-                .body("[1].id", equalTo(station2.getId().intValue()))
-                .body("[1].name", equalTo(station2.getName()))
-                .body("[2].id", equalTo(station3.getId().intValue()))
-                .body("[2].name", equalTo(station3.getName()));
+                .body("[0].id", equalTo(stationEntity1.getId().intValue()))
+                .body("[0].name", equalTo(stationEntity1.getName()))
+                .body("[1].id", equalTo(stationEntity2.getId().intValue()))
+                .body("[1].name", equalTo(stationEntity2.getName()))
+                .body("[2].id", equalTo(stationEntity3.getId().intValue()))
+                .body("[2].name", equalTo(stationEntity3.getName()));
     }
 
     @DisplayName("모든 노선과 역을 조회한다.")
     @Test
     void findAllLinesAndStations() {
         // given
-        station4 = stationDao.insert(new Station("잠실역"));
-        lineId2 = lineDao.insert(new LineDto(null, lineName2));
-        sectionDao.insert(new SectionDto(lineId2, station3.getId(), station4.getId(), 6));
+        stationEntity4 = stationDao.save(new StationEntity(4L, "잠실역"));
+        lineEntity2 = lineDao.save(new LineEntity(2L, lineName2));
+        sectionDao.save(new SectionEntity(3L, lineEntity2.getId(), stationEntity3.getId(), stationEntity4.getId(), 6));
 
-        // when
-
-        // then
+        // when, then
         RestAssured
                 .given().log().all()
                 .when().get("/lines/stations")
                 .then().log().all()
                 .statusCode(HttpStatus.OK.value())
                 .body("$", hasSize(2))
-                .body("[0].id", equalTo(lineId1.intValue()))
+                .body("[0].id", equalTo(lineEntity1.getId().intValue()))
                 .body("[0].name", equalTo(lineName1))
                 .body("[0].stations", hasSize(3))
-                .body("[0].stations[0].id", equalTo(station1.getId().intValue()))
-                .body("[0].stations[0].name", equalTo(station1.getName()))
-                .body("[0].stations[1].id", equalTo(station2.getId().intValue()))
-                .body("[0].stations[1].name", equalTo(station2.getName()))
-                .body("[0].stations[2].id", equalTo(station3.getId().intValue()))
-                .body("[0].stations[2].name", equalTo(station3.getName()))
-                .body("[1].id", equalTo(lineId2.intValue()))
+                .body("[0].stations[0].id", equalTo(stationEntity1.getId().intValue()))
+                .body("[0].stations[0].name", equalTo(stationEntity1.getName()))
+                .body("[0].stations[1].id", equalTo(stationEntity2.getId().intValue()))
+                .body("[0].stations[1].name", equalTo(stationEntity2.getName()))
+                .body("[0].stations[2].id", equalTo(stationEntity3.getId().intValue()))
+                .body("[0].stations[2].name", equalTo(stationEntity3.getName()))
+                .body("[1].id", equalTo(lineEntity2.getId().intValue()))
                 .body("[1].name", equalTo(lineName2))
                 .body("[1].stations", hasSize(2))
-                .body("[1].stations[0].id", equalTo(station3.getId().intValue()))
-                .body("[1].stations[0].name", equalTo(station3.getName()))
-                .body("[1].stations[1].id", equalTo(station4.getId().intValue()))
-                .body("[1].stations[1].name", equalTo(station4.getName()));
+                .body("[1].stations[0].id", equalTo(stationEntity3.getId().intValue()))
+                .body("[1].stations[0].name", equalTo(stationEntity3.getName()))
+                .body("[1].stations[1].id", equalTo(stationEntity4.getId().intValue()))
+                .body("[1].stations[1].name", equalTo(stationEntity4.getName()));
     }
 
     @DisplayName("지하철 노선을 제거한다.")

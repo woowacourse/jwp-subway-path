@@ -14,8 +14,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.StationDao;
-import subway.dao.dto.LineDto;
-import subway.domain.Station;
+import subway.entity.LineEntity;
+import subway.entity.StationEntity;
 import subway.ui.dto.SectionDeleteRequest;
 import subway.ui.dto.SectionRequest;
 
@@ -28,25 +28,25 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Autowired
     private StationDao stationDao;
 
-    private Long lineId;
+    private LineEntity lineEntity;
 
     @BeforeEach
     void setUpLineAndStation() {
         super.setUp();
 
-        lineId = lineDao.insert(new LineDto(null, "1호선"));
-        stationDao.insert(new Station("강남역"));
-        stationDao.insert(new Station("잠실역"));
-        stationDao.insert(new Station("역삼역"));
-        stationDao.insert(new Station("선릉역"));
-        stationDao.insert(new Station("사당역"));
-        stationDao.insert(new Station("서초역"));
+        lineEntity = lineDao.save(new LineEntity(1L, "1호선"));
+        stationDao.save(new StationEntity(1L, "강남역"));
+        stationDao.save(new StationEntity(2L, "잠실역"));
+        stationDao.save(new StationEntity(3L, "역삼역"));
+        stationDao.save(new StationEntity(4L, "선릉역"));
+        stationDao.save(new StationEntity(5L, "사당역"));
+        stationDao.save(new StationEntity(6L, "서초역"));
     }
 
     @DisplayName("노선에 역을 추가한다.")
     @Test
     void createSectionSuccess() {
-        SectionRequest sectionRequest = new SectionRequest(lineId, "강남역", "사당역", 10);
+        SectionRequest sectionRequest = new SectionRequest(lineEntity.getId(), "강남역", "사당역", 10);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest);
 
@@ -56,11 +56,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 가장 왼쪽에 역을 추가한다.")
     @Test
     void createSectionInLeft() {
-        SectionRequest sectionRequest1 = new SectionRequest(lineId, "강남역", "사당역", 10);
+        SectionRequest sectionRequest1 = new SectionRequest(lineEntity.getId(), "강남역", "사당역", 10);
 
         createSectionRequest(sectionRequest1);
 
-        SectionRequest sectionRequest2 = new SectionRequest(lineId, "잠실역", "강남역", 5);
+        SectionRequest sectionRequest2 = new SectionRequest(lineEntity.getId(), "잠실역", "강남역", 5);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest2);
 
@@ -70,11 +70,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 가장 오른쪽에 역을 추가한다.")
     @Test
     void createSectionInRight() {
-        SectionRequest sectionRequest1 = new SectionRequest(lineId, "강남역", "사당역", 10);
+        SectionRequest sectionRequest1 = new SectionRequest(lineEntity.getId(), "강남역", "사당역", 10);
 
         createSectionRequest(sectionRequest1);
 
-        SectionRequest sectionRequest2 = new SectionRequest(lineId, "사당역", "잠실역", 5);
+        SectionRequest sectionRequest2 = new SectionRequest(lineEntity.getId(), "사당역", "잠실역", 5);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest2);
 
@@ -84,11 +84,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 역과 역 사이에 왼쪽 역을 기준으로 역을 추가한다.")
     @Test
     void createSectionBetweenLeft() {
-        SectionRequest sectionRequest1 = new SectionRequest(lineId, "강남역", "사당역", 10);
+        SectionRequest sectionRequest1 = new SectionRequest(lineEntity.getId(), "강남역", "사당역", 10);
 
         createSectionRequest(sectionRequest1);
 
-        SectionRequest sectionRequest2 = new SectionRequest(lineId, "강남역", "서초역", 5);
+        SectionRequest sectionRequest2 = new SectionRequest(lineEntity.getId(), "강남역", "서초역", 5);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest2);
 
@@ -98,11 +98,11 @@ public class SectionIntegrationTest extends IntegrationTest {
     @DisplayName("노선의 역과 역 사이에 오른쪽 역을 기준으로 역을 추가한다.")
     @Test
     void createSectionBetweenRight() {
-        SectionRequest sectionRequest1 = new SectionRequest(lineId, "강남역", "사당역", 10);
+        SectionRequest sectionRequest1 = new SectionRequest(lineEntity.getId(), "강남역", "사당역", 10);
 
         createSectionRequest(sectionRequest1);
 
-        SectionRequest sectionRequest2 = new SectionRequest(lineId, "서초역", "사당역", 5);
+        SectionRequest sectionRequest2 = new SectionRequest(lineEntity.getId(), "서초역", "사당역", 5);
 
         ExtractableResponse<Response> response = createSectionRequest(sectionRequest2);
 
@@ -113,8 +113,8 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void deleteSectionSuccess() {
         // given
-        SectionRequest createRequest = new SectionRequest(lineId, "강남역", "잠실역", 5);
-        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineId, "강남역");
+        SectionRequest createRequest = new SectionRequest(lineEntity.getId(), "강남역", "잠실역", 5);
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineEntity.getId(), "강남역");
         createSectionRequest(createRequest);
 
         // when
@@ -128,9 +128,9 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void deleteSectionLastLeftStation() {
         // given
-        SectionRequest createRequest1 = new SectionRequest(lineId, "강남역", "잠실역", 5);
-        SectionRequest createRequest2 = new SectionRequest(lineId, "잠실역", "선릉역", 5);
-        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineId, "강남역");
+        SectionRequest createRequest1 = new SectionRequest(lineEntity.getId(), "강남역", "잠실역", 5);
+        SectionRequest createRequest2 = new SectionRequest(lineEntity.getId(), "잠실역", "선릉역", 5);
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineEntity.getId(), "강남역");
         createSectionRequest(createRequest1);
         createSectionRequest(createRequest2);
 
@@ -145,9 +145,9 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void deleteSectionLastRightStation() {
         // given
-        SectionRequest createRequest1 = new SectionRequest(lineId, "강남역", "잠실역", 5);
-        SectionRequest createRequest2 = new SectionRequest(lineId, "잠실역", "선릉역", 5);
-        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineId, "선릉역");
+        SectionRequest createRequest1 = new SectionRequest(lineEntity.getId(), "강남역", "잠실역", 5);
+        SectionRequest createRequest2 = new SectionRequest(lineEntity.getId(), "잠실역", "선릉역", 5);
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineEntity.getId(), "선릉역");
         createSectionRequest(createRequest1);
         createSectionRequest(createRequest2);
 
@@ -162,9 +162,9 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void deleteSectionBetweenStations() {
         // given
-        SectionRequest createRequest1 = new SectionRequest(lineId, "강남역", "잠실역", 5);
-        SectionRequest createRequest2 = new SectionRequest(lineId, "잠실역", "선릉역", 5);
-        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineId, "잠실역");
+        SectionRequest createRequest1 = new SectionRequest(lineEntity.getId(), "강남역", "잠실역", 5);
+        SectionRequest createRequest2 = new SectionRequest(lineEntity.getId(), "잠실역", "선릉역", 5);
+        SectionDeleteRequest deleteRequest = new SectionDeleteRequest(lineEntity.getId(), "잠실역");
         createSectionRequest(createRequest1);
         createSectionRequest(createRequest2);
 

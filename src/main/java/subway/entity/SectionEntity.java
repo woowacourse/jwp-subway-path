@@ -23,18 +23,6 @@ public class SectionEntity {
         this.distance = distance;
     }
 
-    private SectionEntity(
-            final Long lineId,
-            final Long leftStationId,
-            final Long rightStationId,
-            final int distance) {
-        this.id = null;
-        this.lineId = lineId;
-        this.leftStationId = leftStationId;
-        this.rightStationId = rightStationId;
-        this.distance = distance;
-    }
-
     public static SectionEntity of(final Long savedId, final SectionEntity sectionEntity) {
         return new SectionEntity(
                 savedId,
