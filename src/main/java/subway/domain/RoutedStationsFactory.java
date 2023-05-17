@@ -45,7 +45,7 @@ public class RoutedStationsFactory {
     }
 
     private static Set<Station> findStations(final List<Section> sections,
-                                             final Function<? super Section, Station> mapper) {
+                                             final Function<Section, Station> mapper) {
         return sections.stream()
                 .map(mapper)
                 .collect(Collectors.toSet());
