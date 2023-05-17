@@ -10,10 +10,7 @@ public class Subway {
         this.subwayGraph = subwayGraph;
     }
 
-    public Path findShortestPath(final Station start, final Station end) {
-        return new Path(
-                subwayGraph.calculateShortestDistance(start, end),
-                subwayGraph.findShortestPath(start, end)
-        );
+    public long calculateShortestDistance(final Station start, final Station end) {
+        return subwayGraph.calculateShortestDistance(start, end);
     }
 }
