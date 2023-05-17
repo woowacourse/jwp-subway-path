@@ -101,6 +101,12 @@ public class SectionDao {
         }
     }
 
+    public List<SectionEntity> findByLineIdAndPreviousStationIdOrNextStationId(final long lineId, final long stationId) {
+        final String sql = "SELECT * FROM section " +
+                "WHERE line_id = ? AND (previous_station_id = ? OR next_station_id = ?)";
+        return jdbcTemplate.query(sql, sectionEntityRowMapper, lineId, stationId, stationId);
+    }
+
     public List<SectionDetailEntity> findSectionDetail() {
         final String sql = "SELECT se.id, se.distance, se.line_id, " +
                 "line.name line_name, line.color line_color, " +
@@ -150,5 +156,4 @@ public class SectionDao {
         }
         return result;
     }
-
 }

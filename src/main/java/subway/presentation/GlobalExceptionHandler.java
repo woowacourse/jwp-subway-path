@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<ExceptionResponse> handleRuntimeException() {
+    public ResponseEntity<ExceptionResponse> handleRuntimeException(RuntimeException e) {
         return ResponseEntity.internalServerError().body(new ExceptionResponse("서버 내부 오류입니다."));
     }
 

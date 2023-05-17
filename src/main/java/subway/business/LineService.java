@@ -7,6 +7,7 @@ import subway.business.converter.section.SectionDetailEntityDomainConverter;
 import subway.business.domain.LineSections;
 import subway.business.dto.LineDto;
 import subway.business.dto.SectionCreateDto;
+import subway.exception.bad_request.DuplicatedStationNameException;
 import subway.exception.bad_request.InvalidDistanceException;
 import subway.exception.not_found.LineNotFoundException;
 import subway.persistence.LineDao;
@@ -74,11 +75,19 @@ public class LineService {
     public LineDetailResponse registerStation(final Long lineId, final StationRegisterInLineRequest request) {
         final long standardStationId = stationDao.findIdByName(request.getStandardStationName());
         final long newStationId = stationDao.findIdByName(request.getNewStationName());
+        validateNewStationNotExistInLine(lineId, newStationId);
         final int distance = request.getDistance();
         if (request.getDirection() == SubwayDirection.UP) {
             return registerUpperStation(new SectionEntity(lineId, distance, standardStationId, newStationId));
         }
         return registerDownStation(new SectionEntity(lineId, distance, newStationId, standardStationId));
+    }
+
+    private void validateNewStationNotExistInLine(final long lineId, final long stationId) {
+        if (sectionDao.findByLineIdAndPreviousStationIdOrNextStationId(lineId, stationId).isEmpty()) {
+            return;
+        }
+        throw new DuplicatedStationNameException();
     }
 
     private LineDetailResponse registerUpperStation(final SectionEntity newSectionEntity) {

@@ -10,9 +10,8 @@ public enum SubwayDirection {
 
     public static SubwayDirection from(final String input) {
         return Arrays.stream(SubwayDirection.values())
-                .filter(value -> input.toUpperCase().equals(value.name()))
+                .filter(value -> input.equalsIgnoreCase(value.name()))
                 .findFirst()
                 .orElseThrow(InvalidDirectionException::new);
     }
-
 }
