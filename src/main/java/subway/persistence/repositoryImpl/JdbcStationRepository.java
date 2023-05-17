@@ -30,8 +30,8 @@ public class JdbcStationRepository implements StationRepository {
     }
 
     @Override
-    public void deleteAllSection() {
-        sectionDao.deleteAll();
+    public void deleteAllSectionByLineId(Long lineId) {
+        sectionDao.deleteAllByLineId(lineId);
     }
 
     @Override

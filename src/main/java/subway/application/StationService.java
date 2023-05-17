@@ -40,7 +40,7 @@ public class StationService {
         saveStationIfDoesntExists(downStation, sectionRequest.getDownStation());
 
         if (stationRepository.findAllStation().size() > 0) {
-            stationRepository.deleteAllSection();
+            stationRepository.deleteAllSectionByLineId(lineId);
         }
 
         final List<SectionEntity> sectionEntities = newSections.getSections().stream()

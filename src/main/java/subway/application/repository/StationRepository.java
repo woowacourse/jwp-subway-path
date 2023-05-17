@@ -11,7 +11,7 @@ import java.util.List;
 public interface StationRepository {
     LineEntity findLineById(Long id);
 
-    void deleteAllSection();
+    void deleteAllSectionByLineId(Long lineId);
 
     void saveAllSection(List<SectionEntity> sectionEntities);
 
