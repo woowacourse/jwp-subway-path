@@ -1,7 +1,10 @@
 package subway.persistence.repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.domain.station.Station;
 import subway.persistence.dao.SectionDao;
@@ -34,6 +37,12 @@ public class StationRepository {
     public Optional<Station> findById(final Long id) {
         return stationDao.findById(id)
                 .map(StationEntity::to);
+    }
+
+    public Map<Long, Station> findAllByIds(final Set<Long> ids) {
+        return stationDao.findAllByIds(ids)
+                .stream()
+                .collect(Collectors.toMap(StationEntity::getId, StationEntity::to));
     }
 
     public void deleteById(final Long id) {
