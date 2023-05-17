@@ -48,111 +48,104 @@
   ]
   ```
 
-- [x] 전체 노선 구간 조회
+- [x] 상세 노선 조회
+  - `/lines/:lineId`
+  - GET
+  ```json
+  {
+    "id": 1,
+    "name": "2호선",
+    "color": "green",
+    "sections": [
+      {
+        "id": 2,
+        "startStationName": "강남역",
+        "endStationName": "역삼역",
+        "distance": 5
+        },
+      {
+        "id": 1,
+        "startStationName": "역삼역",
+        "endStationName": "교대역",
+        "distance": 1
+      }
+    ]
+  }
+  ```
+  
+- [x] 전체 노선 조회
   - `/lines`
   - GET
   ```json
   [
-    {
-        "line": {
-            "id": 1,
-            "name": "2호선",
-            "color": "green"
-        },
-        "sections": [
-            {
-                "id": 1,
-                "startStationName": "잠실역",
-                "endStationName": "삼성역",
-                "distance": 10
-            },
-            {
-                "id": 2,
-                "startStationName": "삼성역",
-                "endStationName": "포항역",
-                "distance": 10
-            },
-            {
-                "id": 3,
-                "startStationName": "포항역",
-                "endStationName": "대구역",
-                "distance": 10
-            }
-        ]
-    },
-    {
-        "line": {
-            "id": 2,
-            "name": "3호선",
-            "color": "orange"
-        },
-        "sections": [
-            {
-                "id": 4,
-                "startStationName": "잠실역",
-                "endStationName": "양재역",
-                "distance": 10
-            },
-            {
-                "id": 5,
-                "startStationName": "양재역",
-                "endStationName": "대치역",
-                "distance": 10
-            },
-            {
-                "id": 6,
-                "startStationName": "대치역",
-                "endStationName": "강남역",
-                "distance": 10
-            },
-            {
-                "id": 7,
-                "startStationName": "강남역",
-                "endStationName": "상도역",
-                "distance": 10
-            }
-        ]
-    },
-    {
-        "line": {
-            "id": 3,
-            "name": "4호선",
-            "color": "blue"
-        },
-        "sections": [
-            {
-                "id": 8,
-                "startStationName": "장승배기역",
-                "endStationName": "상도역",
-                "distance": 10
-            },
-            {
-                "id": 9,
-                "startStationName": "상도역",
-                "endStationName": "숭실대입구역",
-                "distance": 10
-            },
-            {
-                "id": 10,
-                "startStationName": "숭실대입구역",
-                "endStationName": "대치역",
-                "distance": 10
-            },
-            {
-                "id": 11,
-                "startStationName": "대치역",
-                "endStationName": "삼성역",
-                "distance": 10
-            },
-            {
-                "id": 12,
-                "startStationName": "삼성역",
-                "endStationName": "잠실역",
-                "distance": 10
-            }
-        ]
-    }
+      {
+          "id": 1,
+          "name": "2호선",
+          "color": "green",
+          "sections": [
+              {
+                  "id": 2,
+                  "startStationName": "강남역",
+                  "endStationName": "역삼역",
+                  "distance": 5
+              },
+              {
+                  "id": 1,
+                  "startStationName": "역삼역",
+                  "endStationName": "교대역",
+                  "distance": 1
+              }
+          ]
+      },
+      {
+          "id": 2,
+          "name": "3호선",
+          "color": "orange",
+          "sections": [
+              {
+                  "id": 4,
+                  "startStationName": "삼성역",
+                  "endStationName": "역삼역",
+                  "distance": 5
+              },
+              {
+                  "id": 5,
+                  "startStationName": "역삼역",
+                  "endStationName": "교대역",
+                  "distance": 1
+              }
+          ]
+      }
   ]
+  ```
+
+- [ ] 경로 조회 API 구현
+  - `/routes`
+  - GET
+  - Request
+  ```json
+  {
+    "sourceStationName":"강남역",
+    "destStationName":"양재역"
+  }
+  ```
+
+  - Response
+  ```json
+  {
+    "pathStations": [
+      {
+          "id":1,
+          "name": "강남역"
+      },
+      {
+          "id":2,
+          "name": "교대역"
+      }
+    ],
+    "distance":20,
+    "price":2250
+  }
   ```
 
 ### 기능 요구 사항
@@ -175,3 +168,21 @@
     - [x] A-B-C-D 역이 있는 노선에서 C를 삭제하면 A-B-D 순으로 재배치 된다.
     - [x] A-2km-B, B-3km-C, C-4km-D 일 경우, 구간의 길이가 B-7km-D가 되어야 한다.
   - [x] 노선에 등록된 역이 2개일때, 하나의 역을 삭제하면 두 역이 삭제된다.
+
+- [ ] 데이터베이스 분리
+  - [ ] 프로덕션 환경에서는 로컬 데이터베이스를 사용하도록 설정한다.
+  - [ ] 테스트 환경에서는 인메모리 데이터베이스를 사용하도록 설정한다. 
+
+- [ ] 경로 조회
+  - [ ] 최단 경로를 조회할 수 있는 그래프를 생성한다.
+  - [ ] 노선에 상관없이 시작역 - 도착역 사이의 최단 경로를 조회한다.
+  - [ ] 찾은 최단 경로의 총 거리 정보, 모든 경로 정보를 반환한다. 
+  - [ ] 찾은 경로의 총 이동 거리에 따른 요금을 계산한다.
+
+- 요금 조회 기능
+  - 10km이내 (기본운임): 1,250원
+  - 10km~50km: 5km마다 100원 추가
+    - 11km ~ 15km: 1250 + 100
+    - 16km ~ 20km: 1250 + 200
+  - 50km초과: 8km마다 100원 추가
+    - 58km: 1250(10km) + 800(40km → 8*100원) + 100(8km → 100원) ⇒ 2250원
