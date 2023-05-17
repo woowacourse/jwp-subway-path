@@ -13,15 +13,13 @@ import subway.exception.InvalidStationException;
 
 public final class DijkstraRouteMap implements RouteMap {
 
-    private final List<Line> lines;
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> paths;
 
     public DijkstraRouteMap(final List<Line> lines) {
-        this.lines = lines;
-        this.paths = new DijkstraShortestPath<>(setUpGraph());
+        this.paths = new DijkstraShortestPath<>(setUpGraph(lines));
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> setUpGraph() {
+    private WeightedMultigraph<Station, DefaultWeightedEdge> setUpGraph(List<Line> lines) {
         final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
                 DefaultWeightedEdge.class);
         for (Line line : lines) {
