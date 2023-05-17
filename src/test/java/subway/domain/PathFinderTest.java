@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.List;
 
@@ -19,7 +20,9 @@ class PathFinderTest {
             new Section(1L, 1L, 3L, 2L, 2)
         );
         PathFinder pathFinder = new PathFinder(sections);
-        assertThat(pathFinder.find(1L, 4L)).containsExactly(1L, 3L, 4L);
+        assertAll(
+            () -> assertThat(pathFinder.findPath(1L, 4L)).containsExactly(1L, 3L, 4L),
+            () -> assertThat(pathFinder.findTotalDistance(1L, 4L)).isEqualTo(7));
     }
 
 }
