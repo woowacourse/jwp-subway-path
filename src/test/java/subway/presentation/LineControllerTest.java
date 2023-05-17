@@ -15,11 +15,13 @@ import subway.exception.not_found.LineNotFoundException;
 import subway.exception.not_found.StationNotFoundException;
 import subway.presentation.dto.request.LineRequest;
 import subway.presentation.dto.request.StationRegisterInLineRequest;
+import subway.presentation.dto.request.StationUnregisterInLineRequest;
 import subway.presentation.dto.response.LineDetailResponse;
 import subway.presentation.dto.response.StationResponse;
 import subway.presentation.dto.request.converter.SubwayDirection;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -174,6 +176,35 @@ class LineControllerTest {
     class Register {
 
         @Test
+        @DisplayName("성공 - 상행 중간에 추가")
+        void success_upper_mid() throws Exception {
+            // given
+            final long lineId = 1L;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.UP, "잠실새내", "송파", 5);
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+                    List.of(new StationResponse(1L, "잠실"), new StationResponse(2L, "잠실새내"), new StationResponse(5L, "송파"))
+            );
+
+            // when
+            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+
+            // then
+            final String responseBody =
+                    "{" +
+                            "\"id\":1,\"name\":\"2호선\",\"color\":\"bg-green-600\",\"stations\": [" +
+                            "   {\"id\":1,\"name\":\"잠실\"}," +
+                            "   {\"id\":2,\"name\":\"잠실새내\"}," +
+                            "   {\"id\":5,\"name\":\"송파\"}" +
+                            "]}";
+            mockMvc.perform(patch("/lines/{id}/register", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(responseBody));
+        }
+
+        @Test
         @DisplayName("성공 - 상행 끝점에 추가")
         void success_upper_end_point() throws Exception {
             // given
@@ -203,8 +234,8 @@ class LineControllerTest {
         }
 
         @Test
-        @DisplayName("성공 - 하행 끝점에 추가")
-        void success_down_end_point() throws Exception {
+        @DisplayName("성공 - 하행 중간에 추가")
+        void success_down_mid() throws Exception {
             // given
             final long lineId = 1L;
             final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실", "송파", 5);
@@ -230,6 +261,86 @@ class LineControllerTest {
                     .andExpect(status().isOk())
                     .andExpect(content().json(responseBody));
         }
+
+        @Test
+        @DisplayName("성공 - 하행 끝점에 추가")
+        void success_down_end_point() throws Exception {
+            // given
+            final long lineId = 1L;
+            final StationRegisterInLineRequest requestDto = new StationRegisterInLineRequest(SubwayDirection.DOWN, "잠실새내", "송파", 5);
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+                    List.of(new StationResponse(5L, "송파"), new StationResponse(1L, "잠실새내"), new StationResponse(2L, "잠실"))
+            );
+
+            // when
+            when(lineService.registerStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+
+            // then
+            final String responseBody =
+                    "{" +
+                            "\"id\":1,\"name\":\"2호선\",\"color\":\"bg-green-600\",\"stations\": [" +
+                            "   {\"id\":5,\"name\":\"송파\"}," +
+                            "   {\"id\":1,\"name\":\"잠실새내\"}," +
+                            "   {\"id\":2,\"name\":\"잠실\"}" +
+                            "]}";
+            mockMvc.perform(patch("/lines/{id}/register", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(responseBody));
+        }
     }
 
+    @Nested
+    @DisplayName("노선에 역 제거 - PATCH /lines/{id}/unregister")
+    class Unregister {
+
+        @Test
+        @DisplayName("성공 - 역 하나 제거")
+        void success_delete_one_station() throws Exception {
+            // given
+            final long lineId = 1L;
+            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("잠실");
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+            final LineDetailResponse lineDetailResponse = new LineDetailResponse(lineId, "2호선", "bg-green-600",
+                    List.of(new StationResponse(2L, "잠실새내"), new StationResponse(3L, "종합운동장"))
+            );
+
+            // when
+            when(lineService.unregisterStation(eq(lineId), any())).thenReturn(Optional.of(lineDetailResponse));
+
+            // then
+            final String responseBody =
+                    "{" +
+                            "\"id\":1,\"name\":\"2호선\",\"color\":\"bg-green-600\",\"stations\": [" +
+                            "   {\"id\":2,\"name\":\"잠실새내\"}," +
+                            "   {\"id\":3,\"name\":\"종합운동장\"}" +
+                            "]}";
+            mockMvc.perform(patch("/lines/{id}/unregister", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isOk())
+                    .andExpect(content().json(responseBody));
+        }
+
+        @Test
+        @DisplayName("성공 - 노선도 제거되는 경우")
+        void success_delete_with_line() throws Exception {
+            // given
+            final long lineId = 1L;
+            final StationUnregisterInLineRequest requestDto = new StationUnregisterInLineRequest("잠실");
+            final String requestBody = objectMapper.writeValueAsString(requestDto);
+            final Optional<LineDetailResponse> lineDetailResponse = Optional.empty();
+
+            // when
+            when(lineService.unregisterStation(eq(lineId), any())).thenReturn(lineDetailResponse);
+
+            // then
+            mockMvc.perform(patch("/lines/{id}/unregister", lineId)
+                            .content(requestBody)
+                            .contentType(MediaType.APPLICATION_JSON_VALUE))
+                    .andExpect(status().isNoContent());
+        }
+    }
 }
