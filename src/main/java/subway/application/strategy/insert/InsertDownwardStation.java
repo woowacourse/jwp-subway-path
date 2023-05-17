@@ -2,7 +2,7 @@ package subway.application.strategy.insert;
 
 import org.springframework.stereotype.Component;
 import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.repository.SectionRepository;
 
 @Component
@@ -13,7 +13,7 @@ public class InsertDownwardStation extends InsertBetweenSection {
     }
 
     @Override
-    public boolean support(Sections sections, InsertSection insertSection) {
+    public boolean support(SingleLineSections sections, InsertSection insertSection) {
         return sections.isDownwardStation(insertSection.getDownStation());
     }
 
@@ -38,7 +38,7 @@ public class InsertDownwardStation extends InsertBetweenSection {
     }
 
     @Override
-    protected Section findTargetSection(Sections sections, InsertSection insertSection) {
+    protected Section findTargetSection(SingleLineSections sections, InsertSection insertSection) {
         return sections.findDownwardStationSection(insertSection.getDownStation());
     }
 }

@@ -3,7 +3,7 @@ package subway.application;
 import org.springframework.stereotype.Service;
 import subway.domain.Line;
 import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
@@ -54,7 +54,7 @@ public class LineService {
     }
 
     public LineResponse findLineResponseById(Long id) {
-        final Sections sections = sectionRepository.findAllByLineId(id);
+        final SingleLineSections sections = sectionRepository.findAllByLineId(id);
 
         final List<Station> stations = sections.findAllStationsByOrder();
 

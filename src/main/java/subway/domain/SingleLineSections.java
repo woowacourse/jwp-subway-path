@@ -9,17 +9,17 @@ import java.util.stream.Stream;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
-public class Sections {
+public class SingleLineSections {
 
     private static final int INITIAL_SIZE = 1;
 
     private final List<Section> sections;
 
-    Sections(List<Section> sections) {
+    SingleLineSections(List<Section> sections) {
         this.sections = sections;
     }
 
-    public static Sections from(List<Section> unsortedSections) {
+    public static SingleLineSections from(List<Section> unsortedSections) {
         return SectionsFactory.createSortedSections(unsortedSections);
     }
 
@@ -59,12 +59,12 @@ public class Sections {
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
-    public Sections findIncludeTargetSection(Station betweenStation) {
+    public SingleLineSections findIncludeTargetSection(Station betweenStation) {
         final List<Section> sections = this.sections.stream()
                 .filter(section -> Objects.equals(section.getUpStation(), betweenStation) || Objects.equals(section.getDownStation(), betweenStation))
                 .collect(toList());
 
-        return new Sections(sections);
+        return new SingleLineSections(sections);
     }
 
     public boolean isInitialState() {

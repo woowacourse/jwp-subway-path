@@ -1,7 +1,7 @@
 package subway.application.strategy.insert;
 
 import org.springframework.stereotype.Component;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public class SectionInserter {
         this.strategies = strategies;
     }
 
-    public Long insert(Sections sections, InsertSection insertSection) {
+    public Long insert(SingleLineSections sections, InsertSection insertSection) {
         Long newSectionId = null;
 
         for (InsertStationStrategy strategy : strategies) {

@@ -1,10 +1,10 @@
 package subway.application.strategy.insert;
 
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 
 public interface InsertStationStrategy {
 
-    boolean support(Sections sections, InsertSection insertSection);
+    boolean support(SingleLineSections sections, InsertSection insertSection);
 
-    Long insert(Sections sections, InsertSection insertSection);
+    Long insert(SingleLineSections sections, InsertSection insertSection);
 }

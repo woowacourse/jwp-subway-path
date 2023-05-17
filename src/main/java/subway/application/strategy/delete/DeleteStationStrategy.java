@@ -1,11 +1,11 @@
 package subway.application.strategy.delete;
 
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.domain.Station;
 
 interface DeleteStationStrategy {
 
-    boolean support(Sections sections, Station targetStation);
+    boolean support(SingleLineSections sections, Station targetStation);
 
-    void delete(Sections sections, Station targetStation);
+    void delete(SingleLineSections sections, Station targetStation);
 }

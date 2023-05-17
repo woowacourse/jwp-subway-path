@@ -1,7 +1,7 @@
 package subway.application.strategy.delete;
 
 import org.springframework.stereotype.Component;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.domain.Station;
 
 import java.util.List;
@@ -15,7 +15,7 @@ public class SectionDeleter {
         this.strategies = strategies;
     }
 
-    public void delete(Sections sections, Station targetStation) {
+    public void delete(SingleLineSections sections, Station targetStation) {
         for (DeleteStationStrategy strategy : strategies) {
             if (strategy.support(sections, targetStation)) {
                 strategy.delete(sections, targetStation);

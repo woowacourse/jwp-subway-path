@@ -3,7 +3,7 @@ package subway.application.strategy.delete;
 import org.springframework.stereotype.Component;
 import subway.dao.LineDao;
 import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.domain.Station;
 import subway.repository.SectionRepository;
 
@@ -20,12 +20,12 @@ public class DeleteInitialSection implements DeleteStationStrategy {
 
     @Override
 
-    public boolean support(Sections sections, Station targetStation) {
+    public boolean support(SingleLineSections sections, Station targetStation) {
         return sections.isInitialState();
     }
 
     @Override
-    public void delete(Sections sections, Station targetStation) {
+    public void delete(SingleLineSections sections, Station targetStation) {
         sectionRepository.delete(sections.findFirstSectionId());
 
         final Section firstSection = sections.getSections().get(0);

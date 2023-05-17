@@ -7,7 +7,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("NonAsciiCharacters")
-class SectionsFactoryTest {
+class SingleLineSectionsFactoryTest {
 
     @Test
     void 구간이_순서대로_생성된다() {
@@ -25,7 +25,7 @@ class SectionsFactoryTest {
         final List<Section> sections = List.of(section1, section2, section3, section4);
 
         // when
-        final Sections sortedSections = SectionsFactory.createSortedSections(sections);
+        final SingleLineSections sortedSections = SectionsFactory.createSortedSections(sections);
 
         // then
         assertThat(sortedSections.getSections()).containsExactly(section3, section4, section1, section2);

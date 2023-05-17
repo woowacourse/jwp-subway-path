@@ -7,7 +7,7 @@ import subway.dao.dto.SectionStationResultMap;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
 import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.domain.Station;
 
 import java.util.List;
@@ -48,12 +48,12 @@ public class SectionRepository {
         sectionDao.delete(sectionId);
     }
 
-    public Sections findAllByLineId(Long lineId) {
+    public SingleLineSections findAllByLineId(Long lineId) {
         final List<SectionStationResultMap> resultMaps = sectionStationDao.findAllByLineId(lineId);
         final List<Section> sections = resultMaps.stream()
                 .map(this::mapFrom)
                 .collect(toList());
-        return Sections.from(sections);
+        return SingleLineSections.from(sections);
     }
 
     public List<Section> findAll() {

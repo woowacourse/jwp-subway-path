@@ -2,7 +2,7 @@ package subway.application.strategy.insert;
 
 import subway.domain.Distance;
 import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.repository.SectionRepository;
 
 public abstract class InsertBetweenSection implements InsertStationStrategy {
@@ -14,7 +14,7 @@ public abstract class InsertBetweenSection implements InsertStationStrategy {
     }
 
     @Override
-    public final Long insert(Sections sections, InsertSection insertSection) {
+    public final Long insert(SingleLineSections sections, InsertSection insertSection) {
         final Distance requestDistance = insertSection.getDistance();
         final Section targetSection = findTargetSection(sections, insertSection);
 
@@ -27,7 +27,7 @@ public abstract class InsertBetweenSection implements InsertStationStrategy {
         return sectionRepository.insert(newSection);
     }
 
-    protected abstract Section findTargetSection(Sections sections, InsertSection insertSection);
+    protected abstract Section findTargetSection(SingleLineSections sections, InsertSection insertSection);
 
     protected abstract Section createUpdateSection(InsertSection insertSection, Section targetSection);
 

@@ -9,9 +9,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SuppressWarnings("NonAsciiCharacters")
-class SectionsTest {
+class SingleLineSectionsTest {
 
-    private Sections sections;
+    private SingleLineSections sections;
     private Station 잠실역;
     private Station 잠실새내역;
     private Station 삼성역;
@@ -31,7 +31,7 @@ class SectionsTest {
         final Section section2 = new Section(15, 잠실새내역, 삼성역, 1L);
         final Section section3 = new Section(20, 삼성역, 선릉역, 1L);
 
-        this.sections = Sections.from(List.of(section3, section1, section2));
+        this.sections = SingleLineSections.from(List.of(section3, section1, section2));
     }
 
     @Test
@@ -83,7 +83,7 @@ class SectionsTest {
     @Test
     void 역을_포함한_구간들을_찾아온다() {
         // when
-        final Sections sections = this.sections.findIncludeTargetSection(잠실새내역);
+        final SingleLineSections sections = this.sections.findIncludeTargetSection(잠실새내역);
 
         // then
         final List<Section> result = sections.getSections();

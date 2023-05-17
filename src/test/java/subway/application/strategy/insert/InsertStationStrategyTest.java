@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Import;
 import subway.application.strategy.StrategyFixture;
 import subway.dao.SectionStationDao;
 import subway.domain.Distance;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.domain.Station;
 import subway.repository.SectionRepository;
 
@@ -25,7 +25,7 @@ class InsertStationStrategyTest extends StrategyFixture {
     @Autowired
     private SectionRepository sectionRepository;
     private SectionInserter sectionInserter;
-    private Sections sections;
+    private SingleLineSections sections;
 
     @BeforeEach
     void init() {

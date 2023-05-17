@@ -15,7 +15,7 @@ class SectionTest {
         final Station 잠실역 = new Station(1L, "잠실역");
         final Station 잠실새내역 = new Station(2L, "잠실새내역");
         final Section 구간 = new Section(1L, Distance.from(10), 잠실역, 잠실새내역, 1L);
-        final Sections sections = Sections.from(List.of(구간));
+        final SingleLineSections sections = SingleLineSections.from(List.of(구간));
 
         // when, then
         assertThat(sections.hasSection(잠실역, 잠실새내역)).isTrue();

@@ -2,7 +2,7 @@ package subway.application.strategy.insert;
 
 import org.springframework.stereotype.Component;
 import subway.domain.Section;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.repository.SectionRepository;
 
 @Component
@@ -15,13 +15,13 @@ public class InsertTerminal implements InsertStationStrategy {
     }
 
     @Override
-    public boolean support(Sections sections, InsertSection insertSection) {
+    public boolean support(SingleLineSections sections, InsertSection insertSection) {
         return sections.isUpTerminal(insertSection.getDownStation())
                 || sections.isDownTerminal(insertSection.getUpStation());
     }
 
     @Override
-    public Long insert(Sections sections, InsertSection insertSection) {
+    public Long insert(SingleLineSections sections, InsertSection insertSection) {
         final Section section = new Section(
                 insertSection.getDistance(),
                 insertSection.getUpStation(),

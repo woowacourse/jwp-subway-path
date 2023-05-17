@@ -5,7 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.application.strategy.delete.SectionDeleter;
 import subway.application.strategy.insert.InsertSection;
 import subway.application.strategy.insert.SectionInserter;
-import subway.domain.Sections;
+import subway.domain.SingleLineSections;
 import subway.domain.Station;
 import subway.dto.SectionRequest;
 import subway.repository.LineRepository;
@@ -43,7 +43,7 @@ public class SectionService {
 
         final Station upStation = findById(request.getUpStationId());
         final Station downStation = findById(request.getDownStationId());
-        final Sections sections = sectionRepository.findAllByLineId(lineId);
+        final SingleLineSections sections = sectionRepository.findAllByLineId(lineId);
 
         validateInsert(upStation, downStation, sections);
 
@@ -65,7 +65,7 @@ public class SectionService {
         return stationRepository.findById(stationId);
     }
 
-    private void validateInsert(Station upStation, Station downStation, Sections sortedSections) {
+    private void validateInsert(Station upStation, Station downStation, SingleLineSections sortedSections) {
         if (sortedSections.hasSection(upStation, downStation)) {
             throw new IllegalArgumentException("동일한 구간을 추가할 수 없습니다.");
         }
@@ -77,7 +77,7 @@ public class SectionService {
 
     public void deleteStation(Long lineId, Long targetId) {
         final Station targetStation = stationRepository.findById(targetId);
-        final Sections sections = sectionRepository.findAllByLineId(lineId);
+        final SingleLineSections sections = sectionRepository.findAllByLineId(lineId);
 
         sectionDeleter.delete(sections, targetStation);
     }

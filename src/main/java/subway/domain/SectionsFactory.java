@@ -12,8 +12,8 @@ import static java.util.stream.Collectors.toSet;
 
 class SectionsFactory {
 
-    static Sections createSortedSections(List<Section> sections) {
-        return new Sections(sortSections(sections));
+    static SingleLineSections createSortedSections(List<Section> sections) {
+        return new SingleLineSections(sortSections(sections));
     }
 
     private static List<Section> sortSections(List<Section> sections) {
