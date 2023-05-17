@@ -27,7 +27,7 @@ public class SectionResponse {
         this.targetStationName = targetStationName;
     }
 
-    public SectionResponse from(Line line, Station sourceStation, Station targetStation) {
+    public static SectionResponse from(Line line, Station sourceStation, Station targetStation) {
         return new SectionResponse(
                 line.getId(),
                 line.getName(),

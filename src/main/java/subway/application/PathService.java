@@ -2,9 +2,11 @@ package subway.application;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
@@ -18,6 +20,7 @@ import subway.dto.PathResponse;
 import subway.dto.SectionResponse;
 
 @Service
+@Transactional(readOnly = true)
 public class PathService {
     private final PathFinder pathFinder;
     private final FareCalculator fareCalculator;
@@ -43,27 +46,24 @@ public class PathService {
         final List<Station> stations = stationDao.findAll();
         final List<Line> lines = lineDao.findAll();
         final List<Section> sections = sectionDao.findAll();
-        
 
         pathFinder.addSections(sections);
         final int distance = pathFinder.computeShortestDistance(sourceStationId, targetStationId);
         final int fare = fareCalculator.calculateFare(distance);
         final List<Section> path = pathFinder.computeShortestPath(sourceStationId, targetStationId);
 
-        final Map<Long, String> idToStationName = stations.stream()
-                .collect(Collectors.toMap(Station::getId, Station::getName));
-        final Map<Long, String> idToLineName = lines.stream()
-                .collect(Collectors.toMap(Line::getId, Line::getName));
+        final Map<Long, Station> idToStationName = stations.stream()
+                .collect(Collectors.toMap(Station::getId, Function.identity()));
+        final Map<Long, Line> idToLineName = lines.stream()
+                .collect(Collectors.toMap(Line::getId, Function.identity()));
         final List<SectionResponse> sectionResponses = path.stream()
-                .map(section -> new SectionResponse(
-                        section.getLineId(),
-                        idToLineName.get(section.getLineId()),
-                        section.getSourceStationId(),
-                        idToStationName.get(section.getSourceStationId()),
-                        section.getTargetStationId(),
-                        idToStationName.get(section.getTargetStationId())
-                ))
+                .map(section -> SectionResponse.from(
+                                idToLineName.get(section.getLineId()),
+                                idToStationName.get(section.getSourceStationId()),
+                                idToStationName.get(section.getTargetStationId())
+                        )
+                )
                 .collect(Collectors.toUnmodifiableList());
-        return new PathResponse(distance,fare, sectionResponses);
-    } 
+        return new PathResponse(distance, fare, sectionResponses);
+    }
 }
