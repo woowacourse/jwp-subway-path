@@ -21,6 +21,7 @@ import subway.domain.section.Distance;
 import subway.domain.section.NearbyStations;
 import subway.domain.section.Section;
 import subway.domain.station.Station;
+import subway.exception.NotFoundException;
 import subway.exception.StationNotFoundException;
 import subway.repository.LineRepository;
 import subway.repository.SectionRepository;
@@ -71,14 +72,13 @@ class StationRemoveServiceTest {
 
                 // when
                 stationRemoveService.removeStationById(stationIdToRemove);
-                List<Line> allLine = lineRepository.findAllLine();
-                List<Station> allStation = stationRepository.findAllStation();
                 List<Section> allSectionByLineId = sectionRepository.findAllSectionByLineId(INITIAL_Line2.ID);
 
                 // then
                 assertAll(
-                        () -> assertThat(allStation).isEmpty(),
-                        () -> assertThat(allLine).isEmpty(),
+                        () -> assertThatThrownBy(() -> stationRepository.findStationById(INITIAL_STATION_A.ID)).isInstanceOf(NotFoundException.class),
+                        () -> assertThatThrownBy(() -> stationRepository.findStationById(INITIAL_STATION_C.ID)).isInstanceOf(NotFoundException.class),
+                        () -> assertThatThrownBy(() -> lineRepository.findLineById(INITIAL_Line2.ID)).isInstanceOf(NotFoundException.class),
                         () -> assertThat(allSectionByLineId).isEmpty()
                 );
             }
@@ -98,19 +98,16 @@ class StationRemoveServiceTest {
                     Section savedDownEndSection = sectionRepository.saveSection(SECTION_C_TO_E.createSectionToInsert(
                             stationC, savedDownEndStationE, line2));
 
-                    List<Station> expectedStations = List.of(stationC, savedDownEndStationE);
                     List<Section> expectedSections = List.of(savedDownEndSection);
 
                     // when
                     stationRemoveService.removeStationById(stationIdToRemove);
-                    List<Station> allStation = stationRepository.findAllStation();
                     List<Section> allSectionByLineId = sectionRepository.findAllSectionByLineId(line2.getId());
 
                     // then
 
                     assertAll(
-                            () -> assertThat(allStation).usingRecursiveComparison()
-                                    .ignoringFieldsOfTypes(Long.class).isEqualTo(expectedStations),
+                            () ->  assertThatThrownBy(() -> stationRepository.findStationById(INITIAL_STATION_A.ID)).isInstanceOf(NotFoundException.class),
                             () -> assertThat(allSectionByLineId).usingRecursiveComparison()
                                     .ignoringFieldsOfTypes(Long.class).isEqualTo(expectedSections)
                     );
@@ -127,18 +124,15 @@ class StationRemoveServiceTest {
                     Section savedUpEndSection = sectionRepository.saveSection(SECTION_D_TO_A.createSectionToInsert(
                             savedUpEndStationD, stationA, line2));
 
-                    List<Station> expectedStations = List.of(stationA, savedUpEndStationD);
                     List<Section> expectedSections = List.of(savedUpEndSection);
 
                     // when
                     stationRemoveService.removeStationById(stationIdToRemove);
-                    List<Station> allStation = stationRepository.findAllStation();
                     List<Section> allSectionByLineId = sectionRepository.findAllSectionByLineId(line2.getId());
 
                     // then
                     assertAll(
-                            () -> assertThat(allStation).usingRecursiveComparison()
-                                    .ignoringFieldsOfTypes(Long.class).isEqualTo(expectedStations),
+                            () ->  assertThatThrownBy(() -> stationRepository.findStationById(INITIAL_STATION_C.ID)).isInstanceOf(NotFoundException.class),
                             () -> assertThat(allSectionByLineId).usingRecursiveComparison()
                                     .ignoringFieldsOfTypes(Long.class).isEqualTo(expectedSections)
                     );
@@ -158,7 +152,6 @@ class StationRemoveServiceTest {
 
                     // when
                     stationRemoveService.removeStationById(stationIdToRemove);
-                    List<Station> expectedStations = List.of(savedUpEndStationD, stationC);
                     List<Section> expectedSections =
                             List.of(
                                     new Section(-1L,
@@ -168,14 +161,12 @@ class StationRemoveServiceTest {
                                     )
                             );
 
-                    List<Station> allStation = stationRepository.findAllStation();
                     List<Section> allSectionByLineId = sectionRepository.findAllSectionByLineId(line2.getId());
 
                     // then
 
                     assertAll(
-                            () -> assertThat(allStation).usingRecursiveComparison()
-                                    .ignoringFieldsOfTypes(Long.class).ignoringCollectionOrder().isEqualTo(expectedStations),
+                            () ->  assertThatThrownBy(() -> stationRepository.findStationById(INITIAL_STATION_A.ID)).isInstanceOf(NotFoundException.class),
                             () -> assertThat(allSectionByLineId).usingRecursiveComparison()
                                     .ignoringFieldsOfTypes(Long.class).ignoringCollectionOrder().isEqualTo(expectedSections)
                     );

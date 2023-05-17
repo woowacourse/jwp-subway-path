@@ -1,7 +1,6 @@
 package subway.dao;
 
-import static fixtures.LineFixtures.INITIAL_Line2;
-import static fixtures.LineFixtures.Line7;
+import static fixtures.LineFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -37,7 +36,7 @@ class LineDaoTest {
     @DisplayName("노선을 저장한다.")
     void insertTest() {
         // given
-        Line insertEntity = Line7.INSERT_ENTITY;
+        Line insertEntity = Line3.INSERT_LINE;
 
         // when
         Line insertedLine = lineDao.insert(insertEntity);
@@ -78,18 +77,17 @@ class LineDaoTest {
     @Test
     void findAll() {
         // when
-        Line insertedLine7 = lineDao.insert(Line7.INSERT_ENTITY);
         List<Line> lines = lineDao.selectAll();
 
         // then
         assertAll(
                 () -> assertThat(lines.size()).isEqualTo(2),
-                () -> assertThat(lines).usingRecursiveFieldByFieldElementComparator().contains(insertedLine7, INITIAL_Line2.FIND_LINE)
+                () -> assertThat(lines).usingRecursiveFieldByFieldElementComparator().contains(INITIAL_Line7.FIND_LINE, INITIAL_Line2.FIND_LINE)
         );
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"1:False", "2:True"}, delimiter = ':')
+    @CsvSource(value = {"1:False", "-1:True"}, delimiter = ':')
     @DisplayName("노선 ID에 해당하는 행이 있으면 False, 없으면 True를 반환한다.")
     void isNotExistById(String id, Boolean expected) {
         // given

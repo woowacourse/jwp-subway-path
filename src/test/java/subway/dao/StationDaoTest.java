@@ -111,7 +111,7 @@ class StationDaoTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"1:False", "3:True"}, delimiter = ':')
+    @CsvSource(value = {"1:False", "-1:True"}, delimiter = ':')
     @DisplayName("역 ID에 해당하는 행이 있으면 False, 없으면 True를 반환한다.")
     void isNotExistById(String id, Boolean expected) {
         // given

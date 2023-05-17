@@ -63,24 +63,24 @@ class LineServiceTest {
     void findAllLineOrderedStationNames() {
         // given
         Line line2 = INITIAL_Line2.FIND_LINE;
-        Line dummyLine7 = Line7.DUMMY_LINE7;
+        Line line7 = INITIAL_Line7.FIND_LINE;
         Long line2Id = INITIAL_Line2.ID;
-        Long line7Id = Line7.DUMMY_ID;
+        Long line7Id = INITIAL_Line7.ID;
         Station line2StationC = INITIAL_STATION_C.FIND_STATION;
         Station dummyLine2StationE = STATION_E.createDummyStation(-1L, line2);
 
-        when(lineRepository.findAllLine()).thenReturn(List.of(INITIAL_Line2.FIND_LINE, Line7.DUMMY_LINE7));
+        when(lineRepository.findAllLine()).thenReturn(List.of(line2, line7));
         when(sectionRepository.findAllSectionByLineId(line2Id))
                 .thenReturn(List.of(
                         INITIAL_SECTION_A_TO_C.FIND_SECTION,
                         SECTION_C_TO_E.createDummy(line2StationC, dummyLine2StationE, line2))
                 );
 
-        Station dummyLine7StationB = STATION_B.createDummyStation(-1L, dummyLine7);
-        Station dummyLine7StationD = STATION_D.createDummyStation(-1L, dummyLine7);
+        Station dummyLine7StationB = STATION_B.createDummyStation(-1L, line7);
+        Station dummyLine7StationD = STATION_D.createDummyStation(-1L, line7);
         when(sectionRepository.findAllSectionByLineId(line7Id))
                 .thenReturn(List.of(
-                        SECTION_B_TO_D.createDummy(dummyLine7StationB, dummyLine7StationD, dummyLine7))
+                        SECTION_B_TO_D.createDummy(dummyLine7StationB, dummyLine7StationD, line7))
                 );
 
         List<LineFindResponse> expectedResponse = ALL_LINE_FIND_RESPONSE_LINE2_AND_LINE7.RESPONSE;

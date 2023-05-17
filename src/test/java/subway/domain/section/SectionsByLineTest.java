@@ -1,7 +1,7 @@
 package subway.domain.section;
 
 import static fixtures.LineFixtures.INITIAL_Line2;
-import static fixtures.LineFixtures.Line7;
+import static fixtures.LineFixtures.INITIAL_Line7;
 import static fixtures.StationFixtures.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -22,7 +22,7 @@ class SectionsByLineTest {
     void getAllSortedStationNamesByLine() {
         // given
         Line line2 = INITIAL_Line2.FIND_LINE;
-        Line line7 = Line7.DUMMY_LINE7;
+        Line line7 = INITIAL_Line7.FIND_LINE;
         Station line2StationA = INITIAL_STATION_A.FIND_STATION;
         Station line2StationB = STATION_B.createDummyStation(-1L, line2);
         Section sectionA_TO_B_Line2 = new Section(-1L, NearbyStations.createByUpStationAndDownStation(

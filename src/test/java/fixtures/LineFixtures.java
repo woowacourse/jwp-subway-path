@@ -15,12 +15,16 @@ public class LineFixtures {
         public static final Line FIND_LINE = new Line(ID, NAME);
     }
 
-    public static class Line7 {
-        public static final Long DUMMY_ID = -1L;
+    public static class INITIAL_Line7 {
+        public static final Long ID = 2L;
         public static final String NAME = "7호선";
-        public static final Line DUMMY_LINE7 = new Line(DUMMY_ID, NAME);
-        public static final Line INSERT_ENTITY = new Line(null, NAME);
+        public static final Line FIND_LINE = new Line(ID, NAME);
+    }
 
+    public static class Line3 {
+
+        public static final String NAME = "3호선";
+        public static final Line INSERT_LINE = new Line(null, NAME);
     }
 
     /**
@@ -39,7 +43,7 @@ public class LineFixtures {
 
         public static final LineFindResponse RESPONSE =
                 new LineFindResponse(
-                        Line7.NAME,
+                        INITIAL_Line7.NAME,
                         List.of(STATION_B.NAME, STATION_D.NAME)
                 );
     }
