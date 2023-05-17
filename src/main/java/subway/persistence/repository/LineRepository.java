@@ -7,6 +7,7 @@ import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.LineEntity;
 import subway.persistence.entity.SectionEntity;
+import subway.persistence.entity.StationEntity;
 import subway.ui.request.LineRequest;
 
 import java.util.LinkedList;
@@ -48,13 +49,7 @@ public class LineRepository {
     // TODO: Line 검색 로직 리팩터링
     private Sections findByLineId(final Long lineId) {
         final List<Section> sectionList = sectionDao.findByLineId(lineId).stream()
-                .map(sectionEntity -> new Section(
-                                sectionEntity.getId(),
-                                new Station(sectionEntity.getBeforeStation()),
-                                new Station(sectionEntity.getNextStation()),
-                                new Distance(sectionEntity.getDistance())
-                        )
-                )
+                .map(SectionEntity::mapToSection)
                 .collect(Collectors.toList());
         if (sectionList.size() == 0) {
             return new Sections(new LinkedList<>());
@@ -77,7 +72,7 @@ public class LineRepository {
 
     private Map<Long, Station> findStationsById(final List<Long> stationIds) {
         return stationDao.findAllById(stationIds).stream()
-                .map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName()))
+                .map(StationEntity::mapToStation)
                 .collect(Collectors.toMap(Station::getId, Function.identity()));
     }
 
@@ -103,19 +98,14 @@ public class LineRepository {
 
     public void insertSections(final Long lineId, final Sections sections) {
         final List<SectionEntity> sectionEntities = sections.getSections().stream()
-                .map(section -> new SectionEntity(
-                        section.getBeforeStation().getId(),
-                        section.getNextStation().getId(),
-                        section.getDistance().getValue(),
-                        lineId
-                ))
+                .map(section -> SectionEntity.from(lineId, section))
                 .collect(Collectors.toList());
         sectionDao.insert(sectionEntities);
     }
 
     public Station findStationByName(final String name) {
         return stationDao.findByName(name)
-                .map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName()))
+                .map(StationEntity::mapToStation)
                 .orElseThrow(() -> new IllegalArgumentException("역을 찾을 수 없습니다."));
     }
 

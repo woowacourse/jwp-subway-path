@@ -1,5 +1,7 @@
 package subway.persistence.entity;
 
+import subway.domain.Station;
+
 public class StationEntity {
 
     private final Long id;
@@ -20,5 +22,9 @@ public class StationEntity {
 
     public String getName() {
         return name;
+    }
+
+    public Station mapToStation() {
+        return new Station(id, name);
     }
 }

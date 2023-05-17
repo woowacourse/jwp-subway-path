@@ -25,13 +25,13 @@ public class StationRepository {
 
     public Station findStationById(final Long id) {
         final StationEntity stationEntity = stationDao.findById(id);
-        return new Station(stationEntity.getId(), stationEntity.getName());
+        return stationEntity.mapToStation();
     }
 
     public List<Station> findAllStations() {
         final List<StationEntity> stationEntities = stationDao.findAll();
         return stationEntities.stream()
-                .map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName()))
+                .map(StationEntity::mapToStation)
                 .collect(Collectors.toList());
     }
 
