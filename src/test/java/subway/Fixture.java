@@ -1,9 +1,11 @@
 package subway;
 
+import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 
 public class Fixture {
+    public static final Line line = new Line(1L, "2호선", "green");
     public static final Station stationA = new Station(1L, "A");
     public static final Station stationB = new Station(2L, "B");
     public static final Station stationC = new Station(3L, "C");
