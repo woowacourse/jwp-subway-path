@@ -11,14 +11,16 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
+import subway.domain.fee.FeeCalculator;
+import subway.domain.fee.FeeStrategy;
 
-public class PathFinder {
+public class PathInfoFinder {
     private final FeeStrategy feeStrategy;
     private final Graph<Long, DefaultWeightedEdge> graph;
 
-    public PathFinder(FeeStrategy feeStrategy, List<Section> allSections) {
+    public PathInfoFinder(FeeStrategy feeStrategy, List<Section> allSections) {
         this.feeStrategy = feeStrategy;
         Set<Section> sections = new HashSet<>(allSections);
         this.graph = makeGraph(sections);

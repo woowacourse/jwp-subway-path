@@ -19,8 +19,8 @@ import subway.domain.Subway;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.LineStationsResponse;
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
 
 @Transactional(readOnly = true)
 @Service
@@ -111,5 +111,4 @@ public class LineService {
         }
         lineDao.deleteById(id);
     }
-
 }

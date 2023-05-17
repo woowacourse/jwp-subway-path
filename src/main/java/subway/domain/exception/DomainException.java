@@ -1,4 +1,4 @@
-package subway.exception;
+package subway.domain.exception;
 
 public class DomainException extends RuntimeException {
     private final ExceptionType exceptionType;

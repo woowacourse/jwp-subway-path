@@ -6,8 +6,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
 
 @ControllerAdvice
 public class SubwayControllerAdvice {

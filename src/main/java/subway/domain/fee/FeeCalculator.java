@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.fee;
 
 public class FeeCalculator {
     private final FeeStrategy feeStrategy;

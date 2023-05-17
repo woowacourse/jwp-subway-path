@@ -11,8 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.NormalFeeStrategy;
-import subway.domain.PathFinder;
+import subway.domain.fee.NormalFeeStrategy;
+import subway.domain.PathInfoFinder;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -22,8 +22,8 @@ import subway.dto.PathResponse;
 import subway.dto.SectionAddRequest;
 import subway.dto.SectionAddResponse;
 import subway.dto.SectionDeleteRequest;
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
 
 @Service
 @Transactional(readOnly = true)
@@ -214,15 +214,15 @@ public class SectionService {
         Long departureId = pathFindingRequest.getDepartureId();
         Long destinationId = pathFindingRequest.getDestinationId();
 
-        PathFinder pathFinder = new PathFinder(new NormalFeeStrategy(), allSections);
-        List<Long> stationIds = pathFinder.findPath(departureId, destinationId);
+        PathInfoFinder pathInfoFinder = new PathInfoFinder(new NormalFeeStrategy(), allSections);
+
+        List<Long> stationIds = pathInfoFinder.findPath(departureId, destinationId);
         List<Station> path = stationIds.stream()
             .map(idsToStations::get)
             .collect(Collectors.toUnmodifiableList());
 
-        int distance = pathFinder.findTotalDistance(departureId, destinationId);
-
-        int fee = pathFinder.findFee(departureId, destinationId);
+        int distance = pathInfoFinder.findTotalDistance(departureId, destinationId);
+        int fee = pathInfoFinder.findFee(departureId, destinationId);
 
         return PathResponse.of(distance, path, fee);
     }

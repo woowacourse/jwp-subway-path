@@ -10,8 +10,8 @@ import subway.dao.StationDao;
 import subway.domain.Station;
 import subway.dto.StationRequest;
 import subway.dto.StationResponse;
-import subway.exception.DomainException;
-import subway.exception.ExceptionType;
+import subway.domain.exception.DomainException;
+import subway.domain.exception.ExceptionType;
 
 @Transactional(readOnly = true)
 @Service
