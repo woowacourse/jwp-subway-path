@@ -60,4 +60,9 @@ public class StationDao {
         final String sql = "delete from STATION where id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    public boolean notExistsById(final Long id) {
+        final String sql = "SELECT NOT EXISTS (SELECT 1 FROM station WHERE id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
+    }
 }

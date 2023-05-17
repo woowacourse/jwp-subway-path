@@ -63,4 +63,9 @@ public class LineDao {
         final String sql = "delete from Line where id = ?";
         jdbcTemplate.update(sql, id);
     }
+
+    public boolean notExistsById(final Long id) {
+        final String sql = "SELECT NOT EXISTS (SELECT 1 FROM line WHERE id = ?)";
+        return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, id));
+    }
 }

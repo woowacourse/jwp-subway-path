@@ -2,6 +2,7 @@ package subway.application;
 
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
+import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
 import subway.domain.Section;
@@ -18,13 +19,16 @@ public class SectionService {
 
     private final SectionDao sectionDao;
     private final StationDao stationDao;
+    private final LineDao lineDao;
 
-    public SectionService(final SectionDao sectionDao, final StationDao stationDao) {
+    public SectionService(final SectionDao sectionDao, final StationDao stationDao, final LineDao lineDao) {
         this.sectionDao = sectionDao;
         this.stationDao = stationDao;
+        this.lineDao = lineDao;
     }
 
     public void save(final SectionRequest sectionRequest) {
+        validateExists(sectionRequest);
         final Sections sections = findSections(sectionRequest.getLineId());
 
         final Station upStation = stationDao.findById(sectionRequest.getUpStationId())
@@ -41,6 +45,16 @@ public class SectionService {
                 .map(it -> SectionEntity.toEntity(sectionRequest.getLineId(), it))
                 .collect(Collectors.toList());
         sectionDao.insertAll(sectionEntities);
+    }
+
+    private void validateExists(final SectionRequest sectionRequest) {
+        if (lineDao.notExistsById(sectionRequest.getLineId())) {
+            throw new NoSuchElementException("해당하는 호선이 존재하지 않습니다.");
+        }
+        if (stationDao.notExistsById(sectionRequest.getUpStationId())
+                || stationDao.notExistsById(sectionRequest.getDownStationId())) {
+            throw new NoSuchElementException("해당하는 역이 존재하지 않습니다.");
+        }
     }
 
     public void delete(final Long lineId, final Long stationId) {
