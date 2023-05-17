@@ -3,6 +3,7 @@ package subway.dto.section;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
+import subway.application.dto.SectionCreateDto;
 
 public class SectionCreateRequest {
     @NotBlank(message = "상행역은 비어있을 수 없습니다.")
@@ -19,6 +20,10 @@ public class SectionCreateRequest {
         this.startStationName = startStationName;
         this.endStationName = endStationName;
         this.distance = distance;
+    }
+
+    public SectionCreateDto toSectionCreateDto(Long lineId) {
+        return new SectionCreateDto(lineId, startStationName, endStationName, distance);
     }
 
     public String getStartStationName() {

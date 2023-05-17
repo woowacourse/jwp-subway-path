@@ -16,6 +16,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.SectionService;
+import subway.application.dto.SectionCreateDto;
 import subway.dto.section.SectionCreateRequest;
 import subway.dto.section.SectionDeleteRequest;
 
@@ -37,7 +38,7 @@ class SectionControllerTest {
         // given
         Long lineId = 1L;
         SectionCreateRequest request = new SectionCreateRequest("잠실역", "잠실나루역", 10);
-        willDoNothing().given(sectionService).saveSection(anyLong(), any(SectionCreateRequest.class));
+        willDoNothing().given(sectionService).saveSection(any(SectionCreateDto.class));
 
         // expect
         mockMvc.perform(post("/lines/{lineId}/sections", lineId)
