@@ -2,78 +2,38 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.LineDao;
-import subway.dao.SectionDao;
-import subway.dao.StationDao;
-import subway.dao.dto.SectionDto;
 import subway.domain.Line;
 import subway.domain.Station;
 import subway.dto.LineResponse;
-import subway.dto.StationResponse;
+import subway.repository.LineRepository;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Transactional(readOnly = true)
 @Service
 public class LineService {
 
-    private final LineDao lineDao;
-    private final SectionDao sectionDao;
-    private final StationDao stationDao;
+    private final LineRepository lineRepository;
 
-    public LineService(final LineDao lineDao, final SectionDao sectionDao, final StationDao stationDao) {
-        this.lineDao = lineDao;
-        this.sectionDao = sectionDao;
-        this.stationDao = stationDao;
+    public LineService(final LineRepository lineRepository) {
+        this.lineRepository = lineRepository;
     }
 
     public List<LineResponse> findAllLines() {
-        final List<Line> lines = lineDao.findAll();
+        final List<Line> lines = lineRepository.findAll();
 
-        return lines.stream()
-                .map(Line::getName)
-                .map(this::findStationsByLineName)
-                .collect(Collectors.toList());
+        List<LineResponse> lineResponses = new ArrayList<>();
+        for (Line line : lines) {
+            List<Station> stations = line.findAllStation();
+            lineResponses.add(LineResponse.of(line, stations));
+        }
+        return lineResponses;
     }
 
-    public LineResponse findStationsByLineName(final String lineName) {
-        final Line line = lineDao.findByName(lineName)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선명입니다."));
-
-        final List<SectionDto> sectionDtos = sectionDao.findByLineId(line.getId());
-
-        final Map<Long, Long> upToDown = sectionDtos.stream()
-                .collect(Collectors.toMap(SectionDto::getUpStationId, SectionDto::getDownStationId));
-
-        final Map<Long, Station> stationsWithId = new HashMap<>();
-
-        final List<Station> stations = stationDao.findAll();
-        for (Station station : stations) {
-            stationsWithId.put(station.getId(), station);
-        }
-
-        final Long firstStationId = sectionDao.findFirstStationIdByLineId(line.getId());
-        final List<Station> sortedStations = new ArrayList<>();
-
-        Long currId = firstStationId;
-        while(upToDown.containsKey(currId)) {
-            Long nextId = upToDown.get(currId);
-            sortedStations.add(stationsWithId.get(currId));
-            currId = nextId;
-        }
-        sortedStations.add(stationsWithId.get(currId));
-
-        final List<StationResponse> stationResponses = sortedStations.stream()
-                .map(station -> new StationResponse(
-                        station.getId(),
-                        station.getName()
-                ))
-                .collect(Collectors.toList());
-
-        return LineResponse.of(line, stationResponses);
+    public LineResponse findStations(final Long lineId) {
+        final Line line = lineRepository.findById(lineId);
+        List<Station> stations = line.findAllStation();
+        return LineResponse.of(line, stations);
     }
 }

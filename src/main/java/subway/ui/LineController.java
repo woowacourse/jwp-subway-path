@@ -30,12 +30,12 @@ public class LineController {
                 .body(findAllLines);
     }
 
-    @GetMapping("/{lineName}/stations")
-    public ResponseEntity<LineResponse> findLineStations(@PathVariable String lineName) {
-        final LineResponse stations = lineService.findStationsByLineName(lineName);
+    @GetMapping("/{lineId}/stations")
+    public ResponseEntity<LineResponse> findLineStations(@PathVariable Long lineId) {
+        final LineResponse lineResponse = lineService.findStations(lineId);
 
         return ResponseEntity
                 .status(HttpStatus.OK)
-                .body(stations);
+                .body(lineResponse);
     }
 }
