@@ -1,4 +1,4 @@
-package subway.dto;
+package subway.dto.api;
 
 import java.util.List;
 import java.util.stream.Collectors;

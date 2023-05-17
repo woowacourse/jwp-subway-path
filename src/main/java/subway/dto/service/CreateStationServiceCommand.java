@@ -1,9 +1,9 @@
-package subway.service.dto;
+package subway.dto.service;
 
-public class CreateStationServiceRequest {
+public class CreateStationServiceCommand {
     private final String name;
 
-    public CreateStationServiceRequest(String name) {
+    public CreateStationServiceCommand(String name) {
         this.name = name;
     }
 
