@@ -2,7 +2,6 @@ package subway.domain;
 
 import subway.exeption.LineNotFoundException;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -12,10 +11,6 @@ public class Subway {
 
     public Subway(final List<Sections> sections) {
         this.sections = sections;
-    }
-
-    public Subway() {
-        this.sections = new ArrayList<>();
     }
 
     public Map<Line, List<Station>> findAll() {
@@ -75,7 +70,6 @@ public class Subway {
 
     public Station findStationAfter(final Line line, final Station station) {
         final Sections sections = findSectionsOf(line);
-//        return sections.findStationAfter(station);
         return sections
                 .findAdjacentStationOf(station, element -> sections.getDownStationsOf(station));
     }

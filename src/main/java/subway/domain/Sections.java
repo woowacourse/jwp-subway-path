@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
+import static subway.domain.Direction.DOWN;
+import static subway.domain.Direction.UP;
+
 public class Sections {
     private final Graph graph;
     private final Line line;
@@ -27,47 +30,46 @@ public class Sections {
         graph.setSectionDistance(graph.getSection(upStation, downStation), distance);
     }
 
-    public Station addStation(Station upLineStation, Station downLineStation, int distance) {
-        validateStations(upLineStation, downLineStation);
+    public Station addStation(Station upStation, Station downStation, int distance) {
+        validateStations(upStation, downStation);
         validateDistance(distance);
 
-        if (isNewStation(upLineStation)) {
-            final boolean isDownLastStation = graph.isDownLastStation(upLineStation);
+        if (isNewStation(downStation)) {
 
-            if (isDownLastStation) {
-                addStationToDownLine(upLineStation, downLineStation, distance);
-                return downLineStation;
+            Station newStation = downStation;
+            if (graph.isDownLastStation(upStation)) {
+                addStationToDownLine(upStation, newStation, distance);
+                return newStation;
             }
 
-            final Set<DefaultWeightedEdge> outgoingEdges = getDownStationsOf(upLineStation);
-            addStationToDownLine(upLineStation, downLineStation, findNextStation(outgoingEdges), distance);
-            return downLineStation;
+            final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(DOWN, upStation);
+            addStationToDownLine(upStation, newStation, findAdjacentStation(DOWN, adjacentSections), distance);
+            return newStation;
         }
 
-        if (isNewStation(downLineStation)) {
+        if (isNewStation(upStation)) {
 
-            final boolean isUpFirstStation = graph.isUpFirstStation(downLineStation);
+            Station newStation = upStation;
 
-            if (isUpFirstStation) {
-                addStationToUpLine(upLineStation, downLineStation, distance);
-                return upLineStation;
+            if (graph.isUpFirstStation(downStation)) {
+                addStationToUpLine(newStation, downStation, distance);
+                return newStation;
             }
 
-            final Set<DefaultWeightedEdge> defaultWeightedEdges = getUpStationsOf(downLineStation);
-            final Station previousStation = findPreviousStation(defaultWeightedEdges);
-            addStationToUpLine(previousStation, upLineStation, downLineStation, distance);
-            return upLineStation;
+            final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(UP, downStation);
+            addStationToUpLine(findAdjacentStation(UP, adjacentSections), newStation, downStation, distance);
+            return newStation;
         }
 
         throw new InvalidStationException("부적절한 입력입니다.");
     }
 
     private boolean isNewStation(final Station station) {
-        return graph.containsStation(station);
+        return !graph.containsStation(station);
     }
 
     public boolean isSameLine(Line line) {
-        return this.line.equals(line);
+        return this.line.getId().equals(line.getId());
     }
 
     public Station findUpEndStation() {
@@ -109,20 +111,14 @@ public class Sections {
         }
     }
 
-    private Station findPreviousStation(final Set<DefaultWeightedEdge> defaultWeightedEdges) {
-        if (!defaultWeightedEdges.isEmpty()) {
-            final DefaultWeightedEdge closestEdge = defaultWeightedEdges.iterator().next();
-            return graph.getUpStation(closestEdge);
+    private Station findAdjacentStation(final Direction direction, final Set<DefaultWeightedEdge> defaultWeightedEdges) {
+        if (defaultWeightedEdges.isEmpty()) {
+            throw new InvalidStationException("이전 역 혹은 다음 역이 존재하지 않습니다.");
         }
-        throw new InvalidStationException("이전 역이 존재하지 않습니다.");
-    }
-
-    private Station findNextStation(final Set<DefaultWeightedEdge> outgoingEdges) {
-        if (!outgoingEdges.isEmpty()) {
-            final DefaultWeightedEdge closestEdge = outgoingEdges.iterator().next();
-            return graph.getDownStation(closestEdge);
+        if (direction == UP) {
+            return graph.getUpStation(defaultWeightedEdges.iterator().next());
         }
-        throw new InvalidStationException("다음 역이 존재하지 않습니다.");
+        return graph.getDownStation(defaultWeightedEdges.iterator().next());
     }
 
     private void addStationToUpLine(final Station newStation, final Station downLineStation, final int distance) {
@@ -136,8 +132,8 @@ public class Sections {
     }
 
     private void addStationToUpLine(final Station downLinePreviousStation, final Station newStation, final Station downLineStation, final int distance) {
-        graph.addStation(newStation); //
-        // downLinePreviousStation ~ downLineStation distance <= distance => 예외 발생
+        graph.addStation(newStation);
+
         final DefaultWeightedEdge edge = graph.getSection(downLinePreviousStation, downLineStation);
         final int distanceBetweenDownLinePreviousStationAndDownLineStation = (int) graph.getSectionDistance(edge);
         if (distanceBetweenDownLinePreviousStationAndDownLineStation <= distance) {
@@ -146,19 +142,14 @@ public class Sections {
 
         final int distanceBetweenDownLinePreviousStationAndNewStation = distanceBetweenDownLinePreviousStationAndDownLineStation - distance;
 
-        // downLinePreviousStation, downLineStation 끊어줌
         graph.removeSection(downLinePreviousStation, downLineStation);
-
-        // downLinePreviousStation, newStation 연결 => distance: distanceBetweenDownLinePreviousStationAndNewStation
         graph.setSectionDistance(graph.addSection(downLinePreviousStation, newStation), distanceBetweenDownLinePreviousStationAndNewStation);
-
-        // newStation, downLineStation 연결 => distance: 입력한 거리
         graph.setSectionDistance(graph.addSection(newStation, downLineStation), distance);
     }
 
     private void addStationToDownLine(final Station upLineStation, final Station newStation, final Station upLineNextStation, final int distance) {
-        graph.addStation(newStation); //
-        // upLineStation ~ upLineNextStation distance <= distance => 예외 발생
+        graph.addStation(newStation);
+
         DefaultWeightedEdge edge = graph.getSection(upLineStation, upLineNextStation);
         int distanceBetweenUpLineStationAndUpLineNextStation = (int) graph.getSectionDistance(edge);
         if (distanceBetweenUpLineStationAndUpLineNextStation <= distance) {
@@ -167,28 +158,22 @@ public class Sections {
 
         final int distanceBetweenNewStationAndUpLineNextStation = distanceBetweenUpLineStationAndUpLineNextStation - distance;
 
-        // upLineStation, upLineNextStation 끊어줌
         graph.removeSection(upLineStation, upLineNextStation);
-        // upLineStation, newStation 연결 -> distance: 입력한 거리
         graph.setSectionDistance(graph.addSection(upLineStation, newStation), distance);
-        // newStation, upLineNextStation 연결 -> distance: 계산한 거리
         graph.setSectionDistance(graph.addSection(newStation, upLineNextStation), distanceBetweenNewStationAndUpLineNextStation);
     }
 
     public void deleteStation(Station station) {
         List<DefaultWeightedEdge> adjacentEdges = new ArrayList<>(graph.sectionsOf(station));
 
-        // 양쪽 연결된 경우
         if (adjacentEdges.size() == 2) {
             deleteMiddleStation(station);
         }
 
-        // 한 쪽만 연결된 경우
         if (adjacentEdges.size() == 1) {
             graph.removeSection(adjacentEdges.get(0));
         }
 
-        // Station 지우기
         graph.removeStation(station);
     }
 
@@ -199,25 +184,21 @@ public class Sections {
         int distanceBetweenUpLineStationAndStation = 0;
         int distanceBetweenStationAndDownLineStation = 0;
 
-        for (DefaultWeightedEdge edge : getUpStationsOf(station)) {
+        for (DefaultWeightedEdge edge : getAdjacentStationsOf(UP, station)) {
             edgesToRemove.add(edge);
             distanceBetweenUpLineStationAndStation = (int) graph.getSectionDistance(edge);
             upLineStation = graph.getUpStation(edge);
         }
 
-        for (DefaultWeightedEdge edge : getDownStationsOf(station)) {
+        for (DefaultWeightedEdge edge : getAdjacentStationsOf(DOWN, station)) {
             edgesToRemove.add(edge);
             distanceBetweenStationAndDownLineStation = (int) graph.getSectionDistance(edge);
             downLineStation = graph.getDownStation(edge);
         }
 
-        // 거리 재배치
         int distance = distanceBetweenUpLineStationAndStation + distanceBetweenStationAndDownLineStation;
 
-        // 연결 다시 이어주기
         graph.setSectionDistance(graph.addSection(upLineStation, downLineStation), distance);
-
-        // 지우기
         graph.removeAllSections(edgesToRemove);
         graph.removeStation(station);
     }
@@ -237,6 +218,13 @@ public class Sections {
             nextStation = graph.getDownStation(nextEdge);
         }
         return nextStation;
+    }
+
+    public Set<DefaultWeightedEdge> getAdjacentStationsOf(final Direction direction, final Station station) {
+        if (direction == UP) {
+            return graph.upStationsOf(station);
+        }
+        return graph.downStationsOf(station);
     }
 
     public Set<DefaultWeightedEdge> getUpStationsOf(final Station station) {
