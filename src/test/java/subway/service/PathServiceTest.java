@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import subway.domain.DistanceProportionalFarePolicy;
+import subway.domain.fare.DistanceProportionalFarePolicy;
 import subway.domain.path.DijkstraShortestPathFinder;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;

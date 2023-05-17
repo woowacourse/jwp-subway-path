@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.domain.Distance;
-import subway.domain.Fare;
-import subway.domain.FarePolicy;
 import subway.domain.Station;
+import subway.domain.fare.Fare;
+import subway.domain.fare.FarePolicy;
+import subway.domain.path.Path;
 import subway.domain.path.ShortestPathFinder;
 import subway.domain.section.EmptySections;
 import subway.domain.section.Section;
@@ -39,28 +40,25 @@ public class PathService {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
         final Station endStation = stationDao.findByName(pathRequest.getEndStationName())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 역입니다."));
-        final List<Section> path = finder.findShortestPath(allSections, startStation, endStation);
-        final Sections sections = createSections(path);
-        return toPathResponse(sections);
+        final Path path = finder.findShortestPath(allSections, startStation, endStation);
+        return toPathResponse(path);
     }
 
-    private Sections createSections(final List<Section> path) {
-        Sections sections = new EmptySections();
-        for (final Section section : path) {
-            sections = sections.addSection(section);
-        }
-        return sections;
-    }
-
-    private PathResponse toPathResponse(final Sections sections) {
-        final List<StationResponse> stationResponses = sections.getAllStations().stream()
+    private PathResponse toPathResponse(final Path path) {
+        final List<StationResponse> stationResponses = path.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toUnmodifiableList());
-        final Distance totalDistance = sections.getSections().stream()
-                .map(Section::getDistance)
-                .reduce(Distance::plusValue)
-                .orElseThrow(() -> new IllegalArgumentException("존재하는 경로가 없습니다."));
+        final Sections sections = createSections(path.getSections());
+        final Distance distance = sections.getTotalDistance();
         final Fare fare = farePolicy.calculate(sections.getSections());
-        return new PathResponse(stationResponses, fare.getValue(), totalDistance.getValue());
+        return new PathResponse(stationResponses, fare.getValue(), distance.getValue());
+    }
+
+    private Sections createSections(final List<Section> sections) {
+        Sections result = new EmptySections();
+        for (final Section section : sections) {
+            result = result.addSection(section);
+        }
+        return result;
     }
 }
