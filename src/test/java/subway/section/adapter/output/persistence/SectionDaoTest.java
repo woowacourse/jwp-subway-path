@@ -83,4 +83,25 @@ class SectionDaoTest {
         final SectionEntity expectEntity2 = new SectionEntity(id2, stationId3, stationId4, 3L, lineId);
         assertThat(entities).contains(expectEntity1, expectEntity2);
     }
+    
+    @Test
+    void 노선_id로_구간들_삭제하기() {
+        // given
+        final Long lineId = lineDao.insert(new LineEntity("1호선", "파랑"));
+        final Long stationId1 = stationDao.insert(new StationEntity("잠실역"));
+        final Long stationId2 = stationDao.insert(new StationEntity("선릉역"));
+        final SectionEntity entity1 = new SectionEntity(stationId1, stationId2, 3L, lineId);
+        
+        final Long stationId3 = stationDao.insert(new StationEntity("가정역"));
+        final Long stationId4 = stationDao.insert(new StationEntity("청라역"));
+        final SectionEntity entity2 = new SectionEntity(stationId3, stationId4, 3L, lineId);
+        sectionDao.insert(entity1);
+        sectionDao.insert(entity2);
+        
+        // when
+        sectionDao.deleteByLineId(lineId);
+        
+        // then
+        assertThat(sectionDao.findAll()).isEmpty();
+    }
 }

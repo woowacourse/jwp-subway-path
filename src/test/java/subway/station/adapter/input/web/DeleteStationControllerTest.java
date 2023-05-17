@@ -23,7 +23,7 @@ import static org.hamcrest.Matchers.is;
 @SuppressWarnings("NonAsciiCharacters")
 @ContextConfiguration(classes = TestConfig.class)
 @WebMvcTest(DeleteStationController.class)
-class DeleteStationControllerTest { // TODO
+class DeleteStationControllerTest {
     @MockBean
     private DeleteStationUseCase deleteStationUseCase;
     

@@ -29,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 @SuppressWarnings("NonAsciiCharacters")
 @ContextConfiguration(classes = TestConfig.class)
 @WebMvcTest(GetSortedLineController.class)
-class GetSortedLineControllerTest { // TODO
+class GetSortedLineControllerTest {
     @MockBean
     private GetSortedLineUseCase useCase;
     
