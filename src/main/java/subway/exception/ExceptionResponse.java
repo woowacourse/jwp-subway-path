@@ -1,4 +1,4 @@
-package subway.presentation.dto.response;
+package subway.exception;
 
 public class ExceptionResponse {
 

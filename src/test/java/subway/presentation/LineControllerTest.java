@@ -28,6 +28,7 @@ import subway.application.LineService;
 import subway.application.dto.CreationLineDto;
 import subway.application.dto.ReadLineDto;
 import subway.domain.line.Line;
+import subway.exception.GlobalExceptionHandler;
 import subway.presentation.dto.request.CreateLineRequest;
 
 @WebMvcTest(controllers = LineController.class)
