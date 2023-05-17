@@ -15,10 +15,11 @@ import subway.dto.StationResponse;
 
 @Service
 public class LineService {
+    
     private final LineDao lineDao;
     private final SectionDao sectionDao;
 
-    public LineService(LineDao lineDao, final SectionDao sectionDao) {
+    public LineService(final LineDao lineDao, final SectionDao sectionDao) {
         this.lineDao = lineDao;
         this.sectionDao = sectionDao;
     }
@@ -49,10 +50,9 @@ public class LineService {
     private List<StationResponse> extractStationResponses(final List<Section> sections) {
         LineMap lineMap = LineMap.of(sections);
         List<Station> orderedStations = lineMap.getOrderedStations();
-        List<StationResponse> stationResponses = orderedStations.stream()
+        return orderedStations.stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return stationResponses;
     }
 
     public Line findLineById(Long id) {

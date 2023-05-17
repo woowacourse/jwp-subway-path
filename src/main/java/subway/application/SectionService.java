@@ -17,6 +17,7 @@ import subway.dto.SectionRequest;
 public class SectionService {
 
     private static final String EXCEPTION_MESSAGE_STATION_ID_NOT_FOUND = "해당 Id를 가진 역 정보가 존재하지 않습니다.";
+
     private final SectionDao sectionDao;
     private final StationDao stationDao;
 
@@ -26,8 +27,7 @@ public class SectionService {
     }
 
     @Transactional
-    public void addStations(final SectionRequest sectionRequest) {
-        Long lineId = sectionRequest.getLineId();
+    public void addStations(final Long lineId, final SectionRequest sectionRequest) {
         List<Section> sections = sectionDao.findByLineId(lineId);
 
         Station baseStation = stationDao.findById(sectionRequest.baseStationId())

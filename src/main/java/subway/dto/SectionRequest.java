@@ -6,21 +6,13 @@ import subway.domain.Direction;
 public class SectionRequest {
 
     @NotNull
-    private final Long lineId;
-    @NotNull
     private final SectionStations sectionStations;
     @NotNull
     private final Direction direction;
 
-    public SectionRequest(final Long lineId, final SectionStations sectionStations,
-                          final String direction) {
-        this.lineId = lineId;
+    public SectionRequest(final SectionStations sectionStations, final String direction) {
         this.sectionStations = sectionStations;
         this.direction = Direction.convert(direction);
-    }
-
-    public Long getLineId() {
-        return lineId;
     }
 
     public SectionStations getSectionStations() {

@@ -104,9 +104,8 @@
 - 상행, 하행 방향을 지정해주어야 합니다.
 
 ```http request
-POST /sections HTTP/1.1
+POST /lines/{id} HTTP/1.1
 {
-    "lineId": 1,
     "sectionStations": {
         "baseStationId": 1,
         "nextStationId": 2,
@@ -127,7 +126,7 @@ HTTP/1.1 201
 #### Request
 
 ```http request
-DELETE /sections/{lineId}/{stationId} HTTP/1.1
+DELETE /lines/{id}/{stationId} HTTP/1.1
 ```
 
 #### Response

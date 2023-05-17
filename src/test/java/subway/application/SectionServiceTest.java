@@ -49,8 +49,7 @@ class SectionServiceTest {
         when(stationDao.findById(1L)).thenReturn(Optional.of(FIXTURE_STATION_1));
         when(stationDao.findById(3L)).thenReturn(Optional.of(FIXTURE_STATION_3));
 
-        sectionService.addStations(
-                new SectionRequest(1L, new SectionStations(1L, 3L, 6), "down"));
+        sectionService.addStations(1L, new SectionRequest(new SectionStations(1L, 3L, 6), "down"));
 
         InOrder inOrder = inOrder(sectionDao);
         inOrder.verify(sectionDao).deleteByLineId(1L);
@@ -66,8 +65,8 @@ class SectionServiceTest {
     void addStationsFailNotValidBaseStationId() {
         when(stationDao.findById(1L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> sectionService.addStations(
-                new SectionRequest(1L, new SectionStations(1L, 3L, 6), "down")))
+        assertThatThrownBy(
+                () -> sectionService.addStations(1L, new SectionRequest(new SectionStations(1L, 3L, 6), "down")))
                 .isInstanceOf(RequestDataNotFoundException.class)
                 .hasMessageContaining("기준 역: 해당 Id를 가진 역 정보가 존재하지 않습니다.");
     }
@@ -78,8 +77,8 @@ class SectionServiceTest {
         when(stationDao.findById(1L)).thenReturn(Optional.of(FIXTURE_STATION_1));
         when(stationDao.findById(3L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> sectionService.addStations(
-                new SectionRequest(1L, new SectionStations(1L, 3L, 6), "down")))
+        assertThatThrownBy(
+                () -> sectionService.addStations(1L, new SectionRequest(new SectionStations(1L, 3L, 6), "down")))
                 .isInstanceOf(RequestDataNotFoundException.class)
                 .hasMessageContaining("다음 역: 해당 Id를 가진 역 정보가 존재하지 않습니다.");
     }
