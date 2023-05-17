@@ -32,12 +32,12 @@ public class LineWeightedEdge extends DefaultWeightedEdge {
         return lineId;
     }
 
-    public int getFareOfLine() {
-        return fareOfLine;
-    }
-
     public void setLineId(final Long lineId) {
         this.lineId = lineId;
+    }
+
+    public int getFareOfLine() {
+        return fareOfLine;
     }
 
     public void setFareOfLine(final int fareOfLine) {

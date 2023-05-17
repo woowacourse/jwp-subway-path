@@ -19,18 +19,18 @@ public enum AgePolicy {
         this.discount = discount;
     }
 
+    public static AgePolicy search(final int age) {
+        return Arrays.stream(AgePolicy.values())
+                .filter(agePolicy -> agePolicy.canBeApplied(age))
+                .findFirst()
+                .orElseThrow(() -> new InvalidPolicyException("적용할 수 있는 정책이 존재하지 않습니다."));
+    }
+
     private boolean canBeApplied(final int age) {
         return validTarget.apply(age);
     }
 
     public double calculateDiscountFare(final double fare) {
         return discount.apply(fare);
-    }
-
-    public static AgePolicy search(final int age) {
-        return Arrays.stream(AgePolicy.values())
-                .filter(agePolicy -> agePolicy.canBeApplied(age))
-                .findFirst()
-                .orElseThrow(() -> new InvalidPolicyException("적용할 수 있는 정책이 존재하지 않습니다."));
     }
 }
