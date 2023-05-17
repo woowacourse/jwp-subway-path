@@ -39,18 +39,29 @@ public class PathFinder {
         }
     }
 
-    public List<Long> find(Long departureId, Long destinationId) {
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(
-            graph);
+    public List<Long> findPath(Long departureId, Long destinationId) {
+        GraphPath<Long, DefaultWeightedEdge> path = getPath(departureId, destinationId);
+
+        return path
+            .getVertexList()
+            .stream()
+            .collect(Collectors.toUnmodifiableList());
+    }
+
+    public int findTotalDistance(Long departureId, Long destinationId) {
+        GraphPath<Long, DefaultWeightedEdge> path = getPath(departureId, destinationId);
+
+        return (int)path.getWeight();
+    }
+
+    private GraphPath<Long, DefaultWeightedEdge> getPath(Long departureId, Long destinationId) {
+        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Long, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(departureId, destinationId);
 
         if (path == null) {
             throw new DomainException(ExceptionType.NO_PATH);
         }
 
-        return path
-            .getVertexList()
-            .stream()
-            .collect(Collectors.toUnmodifiableList());
+        return path;
     }
 }

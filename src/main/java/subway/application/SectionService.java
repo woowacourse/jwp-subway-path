@@ -214,7 +214,13 @@ public class SectionService {
         Long destinationId = pathFindingRequest.getDestinationId();
 
         PathFinder pathFinder = new PathFinder(allSections);
-        List<Long> stationIds = pathFinder.find(departureId, destinationId);
-        return PathResponse.of(stationIds.stream().map(idsToStations::get).collect(Collectors.toUnmodifiableList()));
+        List<Long> stationIds = pathFinder.findPath(departureId, destinationId);
+        List<Station> path = stationIds.stream()
+            .map(idsToStations::get)
+            .collect(Collectors.toUnmodifiableList());
+
+        int distance = pathFinder.findTotalDistance(departureId, destinationId);
+
+        return PathResponse.of(distance, path);
     }
 }
