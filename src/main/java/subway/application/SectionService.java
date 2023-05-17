@@ -71,7 +71,7 @@ public class SectionService {
 
         Sections sections = sectionRepository.findByLine(line);
 
-        sections.removeStation(line, station);
+        sections.removeStation(station);
 
         sectionRepository.update(lineId, sections);
     }
@@ -83,7 +83,7 @@ public class SectionService {
         result.put("line", LineResponse.of(line));
 
         Sections sections = sectionRepository.findAll();
-        List<Station> stationValues = sections.allStationsIn(line);
+        List<Station> stationValues = sections.allStations();
         result.put("stations", stationValues.stream()
                 .map(StationResponse::of)
                 .collect(toList()));

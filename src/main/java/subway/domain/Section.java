@@ -51,12 +51,12 @@ public class Section {
         return line.equals(otherSection.line);
     }
 
-    public boolean isSameUpStation(final Line otherLine, final Station upStation) {
-        return this.upStation.equals(upStation) && this.line.equals(otherLine);
+    public boolean isSameUpStation(final Station upStation) {
+        return this.upStation.equals(upStation);
     }
 
-    public boolean isSameDownStation(final Line otherLine, final Station downStation) {
-        return this.downStation.equals(downStation) && this.line.equals(otherLine);
+    public boolean isSameDownStation(final Station downStation) {
+        return this.downStation.equals(downStation);
     }
 
     public boolean isSameDistance(final Section upSection, final Section downSection) {
@@ -67,8 +67,8 @@ public class Section {
         return this.line.equals(otherSection.line) && this.upStation.equals(otherSection.upStation);
     }
 
-    public boolean hasSameStation(final Line otherLine, final Station otherStation) {
-        return this.line.equals(otherLine) && (this.upStation.equals(otherStation) || this.downStation.equals(otherStation));
+    public boolean hasSameStation(final Station otherStation) {
+        return this.upStation.equals(otherStation) || this.downStation.equals(otherStation);
     }
 
     public Long getId() {

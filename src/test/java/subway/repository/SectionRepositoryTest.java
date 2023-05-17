@@ -173,7 +173,7 @@ class SectionRepositoryTest {
         sectionRepository.saveSections(List.of(section1, section2));
 
         Sections _2호선_Sections = sectionRepository.findByLine(_2호선);
-        _2호선_Sections.removeStation(_2호선, 서울대입구역);
+        _2호선_Sections.removeStation(서울대입구역);
 
         // when
         sectionRepository.update(_2호선.getId(), _2호선_Sections);

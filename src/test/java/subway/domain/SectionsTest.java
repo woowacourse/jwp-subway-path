@@ -101,7 +101,7 @@ class SectionsTest {
         sections.add(_2호선_신림_봉천_거리5);
 
         // when
-        List<Station> allStation = sections.allStationsIn(_2호선);
+        List<Station> allStation = sections.allStations();
 
         // expect
         assertThat(allStation).containsExactly(신림역, 봉천역);
@@ -109,7 +109,7 @@ class SectionsTest {
 
     @Test
     void 비어있는_호선을_조회하면_아무_역이_없는_결과가_반환된다() {
-        List<Station> stations = sections.allStationsIn(_2호선);
+        List<Station> stations = sections.allStations();
 
         assertThat(stations.isEmpty()).isTrue();
     }
@@ -129,7 +129,7 @@ class SectionsTest {
         sections.add(_2호선_서울대입구_신림_거리10);
 
         // then
-        assertThat(sections.allStationsIn(_2호선)).containsExactly(서울대입구역, 신림역, 봉천역);
+        assertThat(sections.allStations()).containsExactly(서울대입구역, 신림역, 봉천역);
     }
 
     @Test
@@ -142,7 +142,7 @@ class SectionsTest {
         sections.add(_2호선_서울대입구_신림_거리10);
 
         // then
-        assertThat(sections.allStationsIn(_2호선)).containsExactly(서울대입구역, 신림역, 봉천역, 낙성대역);
+        assertThat(sections.allStations()).containsExactly(서울대입구역, 신림역, 봉천역, 낙성대역);
     }
 
     @Test
@@ -157,7 +157,7 @@ class SectionsTest {
         sections.addTwoSections(_2호선_신림역_서울대입구역_거리3, _2호선_서울대입구_봉천역_거리2);
 
         // then
-        assertThat(sections.allStationsIn(_2호선)).containsExactly(신림역, 서울대입구역, 봉천역);
+        assertThat(sections.allStations()).containsExactly(신림역, 서울대입구역, 봉천역);
     }
 
     @Test
@@ -209,7 +209,7 @@ class SectionsTest {
         sections.add(_2호선_봉천_낙성대_거리5);
 
         // then
-        assertThat(sections.allStationsIn(_2호선)).containsExactly(신림역, 봉천역, 낙성대역);
+        assertThat(sections.allStations()).containsExactly(신림역, 봉천역, 낙성대역);
     }
 
     @Test
@@ -218,10 +218,10 @@ class SectionsTest {
         sections.add(_2호선_신림_봉천_거리5);
 
         // when
-        sections.removeStation(_2호선, 봉천역);
+        sections.removeStation(봉천역);
 
         // then
-        assertThat(sections.allStationsIn(_2호선)).isEmpty();
+        assertThat(sections.allStations()).isEmpty();
     }
 
     @Test
@@ -231,10 +231,10 @@ class SectionsTest {
         sections.add(_2호선_봉천_낙성대_거리5);
 
         // when
-        sections.removeStation(_2호선, 신림역);
+        sections.removeStation(신림역);
 
         // then
-        assertThat(sections.allStationsIn(_2호선)).containsExactly(봉천역, 낙성대역);
+        assertThat(sections.allStations()).containsExactly(봉천역, 낙성대역);
     }
 
     @Test
@@ -244,10 +244,10 @@ class SectionsTest {
         sections.add(_2호선_봉천_낙성대_거리5);
 
         // when
-        sections.removeStation(_2호선, 봉천역);
+        sections.removeStation(봉천역);
 
         // then
-        assertThat(sections.allStationsIn(_2호선)).containsExactly(신림역, 낙성대역);
+        assertThat(sections.allStations()).containsExactly(신림역, 낙성대역);
     }
 
     @Test
@@ -257,21 +257,10 @@ class SectionsTest {
         sections.add(_2호선_봉천_낙성대_거리5);
 
         // when
-        sections.removeStation(_2호선, 낙성대역);
+        sections.removeStation(낙성대역);
 
         // then
-        assertThat(sections.allStationsIn(_2호선)).containsExactly(신림역, 봉천역);
-    }
-
-    @Test
-    void 존재하지_않은_호선으로_삭제를_시도하면_예외가_발생한다() {
-        // given
-        sections.add(_2호선_신림_봉천_거리5);
-        sections.add(_2호선_봉천_낙성대_거리5);
-
-        // expect
-        assertThatThrownBy(() -> sections.removeStation(신림선, 신림역))
-                .isInstanceOf(IllegalRemoveSectionException.class);
+        assertThat(sections.allStations()).containsExactly(신림역, 봉천역);
     }
 
     @Test
@@ -281,7 +270,7 @@ class SectionsTest {
         sections.add(_2호선_봉천_낙성대_거리5);
 
         // expect
-        assertThatThrownBy(() -> sections.removeStation(신림선, 신림역))
+        assertThatThrownBy(() -> sections.removeStation(서울대입구역))
                 .isInstanceOf(IllegalRemoveSectionException.class);
     }
 
@@ -292,7 +281,7 @@ class SectionsTest {
         sections.add(_2호선_봉천_낙성대_거리5);
 
         // when
-        sections.removeStation(_2호선, 봉천역);
+        sections.removeStation(봉천역);
 
         // then
         Section _2호선_신림_낙성대_거리10 = sections.getSections().get(0);

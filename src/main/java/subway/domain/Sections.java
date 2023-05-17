@@ -6,25 +6,17 @@ import subway.exception.IllegalAddSectionException;
 import subway.exception.IllegalRemoveSectionException;
 import subway.exception.SectionNotFoundException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class Sections {
 
-    private static final int EMPTY_SECTION_COUNT = 0;
-    private static final String KEY_OF_LAST_UP_STATION = "up";
-    private static final String KEY_OF_LAST_DOWN_STATION = "down";
-    private static final int NO_SECTION_SIZE = 0;
-    private static final int ONLY_ONE_SECTION_SIZE = 1;
+    private static final int EMPTY_SECTION = 0;
+    private static final int ONLY_ONE_SECTION = 1;
     private static final int ONLY_ONE_SECTION_INDEX = 0;
 
     private final List<Section> sections;
+    private final TopDownStationArranger topDownStationArranger = new TopDownStationArranger();
 
     public Sections(final List<Section> sections) {
         this.sections = new ArrayList<>(sections);
@@ -44,33 +36,13 @@ public class Sections {
 
         Section originSection = findSectionBy(upSection, downSection);
 
-        if (isProperCondition(upSection, downSection, originSection)) {
+        if (canAddTwoSections(upSection, downSection, originSection)) {
             sections.remove(originSection);
             sections.add(upSection);
             sections.add(downSection);
             return;
         }
         throw new IllegalAddSectionException();
-    }
-
-    private boolean isProperCondition(final Section upSection, final Section downSection, final Section originSection) {
-        return (isAllSameLine(upSection, downSection, originSection)) && (originSection.isSameDistance(upSection, downSection));
-    }
-
-    private boolean isAllSameLine(final Section upSection, final Section downSection, final Section originSection) {
-        return originSection.isSameLine(upSection) && originSection.isSameLine(downSection);
-    }
-
-    private void validateTwoSection(final Section upSection, final Section downSection) {
-        validate(upSection);
-        validate(downSection);
-        validateSameLine(upSection, downSection);
-    }
-
-    private void validateSameLine(final Section upSection, final Section downSection) {
-        if (!upSection.isSameLine(downSection)) {
-            throw new IllegalAddSectionException();
-        }
     }
 
     private void validate(final Section section) {
@@ -81,34 +53,55 @@ public class Sections {
 
     private void validateDuplicate(final Section section) {
         if (sections.contains(section)) {
-            throw new IllegalAddSectionException();
+            throw new IllegalAddSectionException("이미 존재하는 Section입니다.");
         }
     }
 
     private void validateReverse(final Section otherSection) {
-        boolean result = sections.stream()
+        boolean isExistReverseSection = sections.stream()
                 .anyMatch(section -> section.isReverseDirection(otherSection));
 
-        if (result) {
-            throw new IllegalAddSectionException();
+        if (isExistReverseSection) {
+            throw new IllegalAddSectionException("이미 방향만 반대인 Section이 존재합니다.");
         }
     }
 
     private void validateSameDirection(final Section otherSection) {
-        boolean result = sections.stream()
+        boolean isSameDirection = sections.stream()
                 .anyMatch(section -> section.isSameDirection(otherSection));
 
-        if (result) {
-            throw new IllegalAddSectionException();
+        if (isSameDirection) {
+            throw new IllegalAddSectionException("이미 같은 방향인 Section이 존재합니다.");
         }
     }
 
     private void validateForkRoad(final Section newSection) {
         boolean isForkRoad = sections.stream()
                 .anyMatch(section -> section.isForkRoadCondition(newSection));
+
         if (isForkRoad) {
-            throw new IllegalAddSectionException();
+            throw new IllegalAddSectionException("역은 갈림길이 될 수 없습니다.");
         }
+    }
+
+    private void validateTwoSection(final Section upSection, final Section downSection) {
+        validate(upSection);
+        validate(downSection);
+        validateSameLine(upSection, downSection);
+    }
+
+    private void validateSameLine(final Section upSection, final Section downSection) {
+        if (!upSection.isSameLine(downSection)) {
+            throw new IllegalAddSectionException("두 Section의 호선이 다릅니다.");
+        }
+    }
+
+    private boolean canAddTwoSections(final Section upSection, final Section downSection, final Section originSection) {
+        return (isAllSameLine(upSection, downSection, originSection)) && (originSection.isSameDistance(upSection, downSection));
+    }
+
+    private boolean isAllSameLine(final Section upSection, final Section downSection, final Section originSection) {
+        return originSection.isSameLine(upSection) && originSection.isSameLine(downSection) && upSection.isSameLine(downSection);
     }
 
     private Section findSectionBy(final Section upSection, final Section downSection) {
@@ -116,115 +109,41 @@ public class Sections {
         Station endStation = downSection.getDownStation();
 
         Optional<Section> foundSection = sections.stream()
-                .filter(section -> section.isSameUpStation(upSection.getLine(), startStation) && section.isSameDownStation(downSection.getLine(), endStation))
+                .filter(section -> section.isSameUpStation(startStation)
+                        && section.isSameDownStation(endStation))
                 .findFirst();
 
-        return foundSection.orElseThrow(IllegalAddSectionException::new);
+        return foundSection.orElseThrow(() -> new IllegalAddSectionException("연결되어 있는 Section이 존재하지 않습니다."));
     }
 
-    public List<Station> allStationsIn(final Line line) {
-        if (isNoSectionIn(line)) {
-            return Collections.emptyList();
-        }
-
-        Map<String, Station> endStations = findAllFinalStationsIn(line);
-
-        return arrangeStations(line, endStations);
+    public List<Station> allStations() {
+        return topDownStationArranger.arrange(this.sections);
     }
 
-    private boolean isNoSectionIn(final Line line) {
-        long count = sections.stream()
-                .filter(section -> section.isSameLine(line))
-                .count();
-
-        return count == EMPTY_SECTION_COUNT;
-    }
-
-    private Map<String, Station> findAllFinalStationsIn(final Line line) {
-        Set<Station> upStations = allUpStationsIn(line);
-        Set<Station> downStations = allDownStationsIn(line);
-
-        removeAllDuplicate(upStations, downStations);
-
-        Station lastUpStation = List.copyOf(upStations).get(0);
-        Station lastDownStation = List.copyOf(downStations).get(0);
-
-        return new HashMap<>() {{
-            put(KEY_OF_LAST_UP_STATION, lastUpStation);
-            put(KEY_OF_LAST_DOWN_STATION, lastDownStation);
-        }};
-    }
-
-    private Set<Station> allUpStationsIn(final Line line) {
-        return sections.stream()
-                .filter(section -> section.isSameLine(line))
-                .map(Section::getUpStation)
-                .collect(Collectors.toSet());
-    }
-
-    private Set<Station> allDownStationsIn(final Line line) {
-        return sections.stream()
-                .filter(section -> section.isSameLine(line))
-                .map(Section::getDownStation)
-                .collect(Collectors.toSet());
-    }
-
-    private void removeAllDuplicate(final Set<Station> upStations, final Set<Station> downStations) {
-        Set<Station> duplicateStations = new HashSet<>(upStations);
-        duplicateStations.retainAll(downStations);
-
-        upStations.removeAll(duplicateStations);
-        downStations.removeAll(duplicateStations);
-    }
-
-    private List<Station> arrangeStations(final Line line, final Map<String, Station> lastStations) {
-        Station lastUpStation = lastStations.get(KEY_OF_LAST_UP_STATION);
-        Station lastDownStation = lastStations.get(KEY_OF_LAST_DOWN_STATION);
-
-        List<Station> stations = new ArrayList<>();
-        Station currentStation = lastUpStation;
-        while (!currentStation.equals(lastDownStation)) {
-            stations.add(currentStation);
-            currentStation = nextStationOf(line, currentStation);
-        }
-        stations.add(lastDownStation);
-
-        return stations;
-    }
-
-    private Station nextStationOf(final Line line, final Station upStation) {
-        Optional<Section> foundSection = sections.stream()
-                .filter(section -> section.isSameLine(line) && section.isSameUpStation(line, upStation))
-                .findFirst();
-
-        Section section = foundSection.orElseThrow(SectionNotFoundException::new);
-        return section.getDownStation();
-    }
-
-    public void removeStation(final Line targetLine, final Station targetStation) {
-        List<Section> sectionsContainStation = sections.stream()
-                .filter(section -> section.hasSameStation(targetLine, targetStation))
+    public void removeStation(final Station targetStation) {
+        List<Section> filteredSections = sections.stream()
+                .filter(section -> section.hasSameStation(targetStation))
                 .collect(toList());
-        int sectionSize = sectionsContainStation.size();
+        int size = filteredSections.size();
 
-        if (sectionSize == NO_SECTION_SIZE) {
-            throw new IllegalRemoveSectionException();
+        if (size == EMPTY_SECTION) {
+            throw new IllegalRemoveSectionException("역이 포함되어 있지 않습니다.");
         }
-        if (sectionSize == ONLY_ONE_SECTION_SIZE) {
-            removeOneSection(sectionsContainStation);
+        if (size == ONLY_ONE_SECTION) {
+            removeOneSection(filteredSections);
             return;
         }
-        removeTwoSections(targetLine, targetStation);
+        removeTwoSections(targetStation);
     }
 
-    private void removeOneSection(final List<Section> sectionsContainStation) {
-        Section section = sectionsContainStation.get(ONLY_ONE_SECTION_INDEX);
+    private void removeOneSection(final List<Section> filteredSections) {
+        Section section = filteredSections.get(ONLY_ONE_SECTION_INDEX);
         sections.remove(section);
     }
 
-    private void removeTwoSections(final Line targetLine, final Station targetStation) {
-        Section upSection = findSectionByDownStation(targetLine, targetStation);
-        Section downSection = findSectionByUpStation(targetLine, targetStation);
+    private void removeTwoSections(final Station targetStation) {
+        Section upSection = findUpSection(targetStation);
+        Section downSection = findDownSection(targetStation);
         Section newSection = Section.combineSection(upSection, downSection);
 
         sections.remove(upSection);
@@ -232,17 +151,17 @@ public class Sections {
         sections.add(newSection);
     }
 
-    private Section findSectionByUpStation(final Line line, final Station upStation) {
+    private Section findUpSection(final Station downStation) {
         Optional<Section> foundSection = sections.stream()
-                .filter(section -> section.isSameUpStation(line, upStation))
+                .filter(section -> section.isSameDownStation(downStation))
                 .findFirst();
 
         return foundSection.orElseThrow(SectionNotFoundException::new);
     }
 
-    private Section findSectionByDownStation(final Line line, final Station downStation) {
+    private Section findDownSection(final Station upStation) {
         Optional<Section> foundSection = sections.stream()
-                .filter(section -> section.isSameDownStation(line, downStation))
+                .filter(section -> section.isSameUpStation(upStation))
                 .findFirst();
 
         return foundSection.orElseThrow(SectionNotFoundException::new);

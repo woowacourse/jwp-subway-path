@@ -112,10 +112,8 @@ class SectionTest {
     void 호선과_역으로_상행_역이_같은_역인지_확인한다() {
         // expect
         assertAll(
-                () -> assertThat(section.isSameUpStation(line, upStation)).isTrue(),
-                () -> assertThat(section.isSameUpStation(line, downStation)).isFalse(),
-                () -> assertThat(section.isSameUpStation(newLine, upStation)).isFalse(),
-                () -> assertThat(section.isSameUpStation(newLine, downStation)).isFalse()
+                () -> assertThat(section.isSameUpStation(upStation)).isTrue(),
+                () -> assertThat(section.isSameUpStation(downStation)).isFalse()
         );
     }
 
@@ -123,10 +121,8 @@ class SectionTest {
     void 호선과_역으로_하행_역이_같은_역인지_확인한다() {
         // expect
         assertAll(
-                () -> assertThat(section.isSameDownStation(line, downStation)).isTrue(),
-                () -> assertThat(section.isSameDownStation(line, upStation)).isFalse(),
-                () -> assertThat(section.isSameDownStation(newLine, downStation)).isFalse(),
-                () -> assertThat(section.isSameDownStation(newLine, upStation)).isFalse()
+                () -> assertThat(section.isSameDownStation(downStation)).isTrue(),
+                () -> assertThat(section.isSameDownStation(upStation)).isFalse()
         );
     }
 
@@ -157,8 +153,8 @@ class SectionTest {
     @Test
     void 같은_역을_가지는지_확인한다() {
         assertAll(
-                () -> assertThat(section.hasSameStation(line, upStation)).isTrue(),
-                () -> assertThat(section.hasSameStation(line, downStation)).isTrue()
+                () -> assertThat(section.hasSameStation(upStation)).isTrue(),
+                () -> assertThat(section.hasSameStation(downStation)).isTrue()
         );
     }
 }
