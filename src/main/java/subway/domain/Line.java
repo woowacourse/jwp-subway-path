@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import subway.exception.AlreadyExistSectionException;
+import subway.exception.EmptyNameException;
 import subway.exception.LineUnconnectedException;
 import subway.exception.StationNotFoundException;
 
@@ -30,7 +31,7 @@ public class Line {
 
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("아름에는 빈 문자가 들어올 수 없습니다.");
+            throw new EmptyNameException();
         }
     }
 

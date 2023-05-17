@@ -1,6 +1,7 @@
 package subway.domain;
 
 import java.util.Objects;
+import subway.exception.EmptyNameException;
 
 public class Station {
 
@@ -19,7 +20,7 @@ public class Station {
 
     private void validateName(String name) {
         if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("아름에는 빈 문자가 들어올 수 없습니다.");
+            throw new EmptyNameException();
         }
     }
 
