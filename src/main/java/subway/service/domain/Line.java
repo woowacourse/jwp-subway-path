@@ -47,6 +47,10 @@ public class Line {
                 && !sections.isContainsThisStation(secondStation);
     }
 
+    public RouteMap getLineMap() {
+        return sections.createMap();
+    }
+
     public LineProperty getLineProperty() {
         return lineProperty;
     }
