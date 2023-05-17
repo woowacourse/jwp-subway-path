@@ -1,7 +1,11 @@
 package subway.dto.request;
 
+import javax.validation.constraints.NotEmpty;
+
 public class LineRequest {
+    @NotEmpty
     private String name;
+    @NotEmpty
     private String color;
 
     public LineRequest() {

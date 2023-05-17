@@ -14,6 +14,7 @@ import subway.application.StationService;
 import subway.dto.request.StationRequest;
 import subway.dto.response.StationResponse;
 
+import javax.validation.Valid;
 import java.net.URI;
 import java.util.List;
 
@@ -29,7 +30,7 @@ public class StationController {
     }
 
     @PostMapping
-    public ResponseEntity<StationResponse> createStation(@RequestBody final StationRequest stationRequest) {
+    public ResponseEntity<StationResponse> createStation(@RequestBody @Valid final StationRequest stationRequest) {
         final StationResponse stationResponse = stationService.saveStation(stationRequest);
         return ResponseEntity.created(URI.create("/stations/" + stationResponse.getId())).build();
     }
@@ -45,7 +46,7 @@ public class StationController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> updateStation(@PathVariable final Long id, @RequestBody final StationRequest stationRequest) {
+    public ResponseEntity<Void> updateStation(@PathVariable final Long id, @RequestBody @Valid final StationRequest stationRequest) {
         stationService.updateStation(id, stationRequest);
         return ResponseEntity.ok().build();
     }

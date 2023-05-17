@@ -1,3 +1,36 @@
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 16
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+{
+  "name": ""
+}
+
+<> 2023-05-18T014819.400.txt
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 0
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
+POST http://localhost:8080/stations
+Content-Type: application/json
+Content-Length: 0
+Connection: Keep-Alive
+User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
+Accept-Encoding: br,deflate,gzip,x-gzip
+
+###
+
 DELETE http://localhost:8080/lines/1/stations/2
 Connection: Keep-Alive
 User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
@@ -597,42 +630,6 @@ Accept-Encoding: br,deflate,gzip,x-gzip
 {
   "name": "잠실역"
 }
-
-###
-
-POST http://localhost:8080/stations
-Content-Type: application/json
-Content-Length: 25
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "name": "강남역"
-}
-
-###
-
-POST http://localhost:8080/lines
-Content-Type: application/json
-Content-Length: 43
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
-Accept-Encoding: br,deflate,gzip,x-gzip
-
-{
-  "name": "2호선",
-  "color": "green"
-}
-
-<> 2023-05-17T001603.201.json
-
-###
-
-DELETE http://localhost:8080/lines/1/stations/2
-Connection: Keep-Alive
-User-Agent: Apache-HttpClient/4.5.14 (Java/17.0.6)
-Accept-Encoding: br,deflate,gzip,x-gzip
 
 ###
 

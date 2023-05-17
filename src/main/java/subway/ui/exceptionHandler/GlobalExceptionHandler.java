@@ -3,6 +3,8 @@ package subway.ui.exceptionHandler;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -11,16 +13,21 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler({IllegalArgumentException.class, IllegalStateException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public String handleIllegalArgumentException(final RuntimeException e) {
+    public ResponseEntity<String> handleRuntimeException(final Exception e) {
         e.printStackTrace();
-        return e.getMessage();
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler({DataAccessException.class, EmptyResultDataAccessException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handleSQLException(final Exception e) {
+    public ResponseEntity<Void> handleSQLException(final Exception e) {
         e.printStackTrace();
+        return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<String> handleMethodArgumentNotValidException(final Exception e) {
+        e.printStackTrace();
+        return ResponseEntity.badRequest().body(e.getMessage());
     }
 
     @ExceptionHandler(Exception.class)

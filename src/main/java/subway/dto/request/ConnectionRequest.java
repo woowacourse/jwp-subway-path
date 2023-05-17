@@ -1,6 +1,9 @@
 package subway.dto.request;
 
+import javax.validation.constraints.NotEmpty;
+
 public class ConnectionRequest {
+    @NotEmpty
     private final String connectionType;
     private final Long prevStationId;
     private final Long nextStationId;

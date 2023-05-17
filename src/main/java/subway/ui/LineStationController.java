@@ -12,6 +12,7 @@ import subway.application.LineStationService;
 import subway.dto.request.ConnectionRequest;
 import subway.dto.response.LineStationResponse;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -24,7 +25,7 @@ public class LineStationController {
     }
 
     @PatchMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> addStationToLine(@PathVariable final Long lineId, @PathVariable final Long stationId, @RequestBody final ConnectionRequest request) {
+    public ResponseEntity<Void> addStationToLine(@PathVariable final Long lineId, @PathVariable final Long stationId, @RequestBody @Valid final ConnectionRequest request) {
         if (ConnectionType.INIT == ConnectionType.from(request.getConnectionType())) {
             lineStationService.addInitStations(lineId, stationId, request.getNextStationId(), request.getDistance());
         }
