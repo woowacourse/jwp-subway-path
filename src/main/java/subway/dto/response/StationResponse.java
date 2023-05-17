@@ -12,7 +12,7 @@ public class StationResponse {
     }
 
     public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getStationName());
+        return new StationResponse(station.getId(), station.getName());
     }
 
     public Long getId() {

@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class DtoMapper {
 
     public static StationResponse convertToStationResponse(Station station) {
-        return new StationResponse(station.getId(), station.getStationName());
+        return new StationResponse(station.getId(), station.getName());
     }
 
     public static LineResponse convertToLineResponse(Line line) {

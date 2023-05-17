@@ -1,12 +1,17 @@
 package subway.dto.request;
 
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Positive;
 
 public class SectionRequest {
 
+    @NotNull
     private Long lineId;
+    @NotNull
     private Long upwardId;
+    @NotNull
     private Long downwardId;
+    @NotNull
     @Positive
     private Integer distance;
 

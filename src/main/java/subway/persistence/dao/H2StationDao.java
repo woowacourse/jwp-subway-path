@@ -33,7 +33,7 @@ public class H2StationDao implements StationDao {
     public Station insert(Station station) {
         SqlParameterSource params = new BeanPropertySqlParameterSource(station);
         long id = insertAction.executeAndReturnKey(params).longValue();
-        return Station.of(id, station.getStationName());
+        return Station.of(id, station.getName());
     }
 
     public List<Station> findAll() {
@@ -48,7 +48,7 @@ public class H2StationDao implements StationDao {
 
     public void update(Station newStation) {
         String sql = "update STATION set name = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newStation.getStationName(), newStation.getId()});
+        jdbcTemplate.update(sql, new Object[]{newStation.getName(), newStation.getId()});
     }
 
     public void deleteById(Long id) {

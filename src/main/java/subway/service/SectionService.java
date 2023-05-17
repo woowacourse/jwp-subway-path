@@ -2,8 +2,6 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.persistence.dao.LineDao;
-import subway.persistence.dao.StationDao;
 import subway.domain.line.Line;
 import subway.domain.section.SectionRepository;
 import subway.domain.section.Sections;
@@ -12,6 +10,8 @@ import subway.dto.DtoMapper;
 import subway.dto.request.SectionDeleteRequest;
 import subway.dto.request.SectionRequest;
 import subway.dto.response.LineStationsResponse;
+import subway.persistence.dao.LineDao;
+import subway.persistence.dao.StationDao;
 
 import java.util.ArrayList;
 import java.util.List;

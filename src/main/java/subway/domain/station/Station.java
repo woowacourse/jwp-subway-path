@@ -4,11 +4,11 @@ import java.util.Objects;
 
 public class Station {
     private final Long id;
-    private final StationName stationName;
+    private final StationName name;
 
     private Station(Long id, String name) {
         this.id = id;
-        this.stationName = StationName.from(name);
+        this.name = StationName.from(name);
     }
 
     public static Station from(String name) {
@@ -20,15 +20,15 @@ public class Station {
     }
 
     public boolean isSameName(Station other) {
-        return this.stationName.equals(other.stationName);
+        return this.name.equals(other.name);
     }
 
     public Long getId() {
         return id;
     }
 
-    public String getStationName() {
-        return stationName.getStationName();
+    public String getName() {
+        return name.getStationName();
     }
 
     @Override
@@ -36,11 +36,11 @@ public class Station {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Station station = (Station) o;
-        return stationName.equals(station.stationName);
+        return name.equals(station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(stationName);
+        return Objects.hash(name);
     }
 }
