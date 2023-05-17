@@ -3,7 +3,7 @@ package subway.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.service.StationService;
-import subway.service.dto.StationRegisterRequest;
+import subway.service.dto.request.StationRegisterRequest;
 
 @RestController
 @RequestMapping("/stations")

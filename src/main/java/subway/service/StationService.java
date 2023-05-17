@@ -6,7 +6,7 @@ import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.domain.Stations;
-import subway.service.dto.StationRegisterRequest;
+import subway.service.dto.request.StationRegisterRequest;
 
 @Service
 public class StationService {

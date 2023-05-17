@@ -3,8 +3,8 @@ package subway.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.service.LineService;
-import subway.service.dto.LineResponse;
-import subway.service.dto.RegisterLineRequest;
+import subway.service.dto.response.LineResponse;
+import subway.service.dto.request.RegisterLineRequest;
 
 import java.net.URI;
 import java.util.List;

@@ -1,4 +1,4 @@
-package subway.service.dto;
+package subway.service.dto.response;
 
 import java.util.List;
 
