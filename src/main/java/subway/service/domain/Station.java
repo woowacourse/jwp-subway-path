@@ -24,22 +24,17 @@ public class Station {
         return name;
     }
 
-    public boolean hasSameName(Station station) {
-        return this.name
-                .equals(station.name);
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (!(o instanceof Station)) return false;
         Station station = (Station) o;
-        return id == station.id && Objects.equals(name, station.name);
+        return Objects.equals(name, station.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name);
+        return Objects.hash(name);
     }
 
     @Override
