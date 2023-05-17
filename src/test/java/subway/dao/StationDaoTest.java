@@ -14,8 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.station.Station;
-import subway.domain.station.StationName;
+import subway.entity.StationEntity;
 import subway.fixture.StationFixture.A;
 import subway.fixture.StationFixture.B;
 
@@ -37,26 +36,26 @@ class StationDaoTest {
     @Test
     void 역을_받아_저장한다() {
         // expect
-        final Long result = stationDao.insert(A.stationA);
+        final Long result = stationDao.insert(A.entity);
         assertThat(result).isPositive();
     }
 
     @Test
     void 등록된_모든_역을_조회한다() {
         // given
-        final Long id1 = stationDao.insert(A.stationA);
-        final Long id2 = stationDao.insert(B.stationB);
+        final Long id1 = stationDao.insert(A.entity);
+        final Long id2 = stationDao.insert(B.entity);
 
         // when
-        final List<Station> result = stationDao.findAll();
+        final List<StationEntity> result = stationDao.findAll();
 
         // then
         assertAll(
                 () -> assertThat(result).hasSize(2),
                 () -> assertThat(result.get(0).getId()).isEqualTo(id1),
-                () -> assertThat(A.stationA.isSameStation(result.get(0))).isTrue(),
+                () -> assertThat((result.get(0).getName())).isEqualTo(A.entity.getName()),
                 () -> assertThat(result.get(1).getId()).isEqualTo(id2),
-                () -> assertThat(B.stationB.isSameStation(result.get(1))).isTrue()
+                () -> assertThat((result.get(1).getName())).isEqualTo(B.entity.getName())
         );
 
     }
@@ -64,33 +63,33 @@ class StationDaoTest {
     @Test
     void 등록된_역을_Id로_조회한다() {
         // given
-        final Long id = stationDao.insert(A.stationA);
+        final Long id = stationDao.insert(A.entity);
 
         // when
-        final Station result = stationDao.findById(id).get();
+        final StationEntity result = stationDao.findById(id).get();
 
         // then
-        assertThat(A.stationA.isSameStation(result)).isTrue();
+        assertThat(result.getName()).isEqualTo(A.entity.getName());
     }
 
     @Test
     void 등록된_역을_수정한다() {
         // given
-        final Long id = stationDao.insert(A.stationA);
-        final Station stationS = new Station(id, new StationName("S"));
+        final Long id = stationDao.insert(A.entity);
+        final StationEntity stationS = new StationEntity(id, "S");
 
         // when
         stationDao.updateById(stationS);
-        final Station result = stationDao.findById(id).get();
+        final StationEntity result = stationDao.findById(id).get();
 
         // then
-        assertThat(stationS.isSameStation(result)).isTrue();
+        assertThat(result.getName()).isEqualTo("S");
     }
 
     @Test
     void 등록된_역을_삭제한다() {
         // given
-        final Long id = stationDao.insert(A.stationA);
+        final Long id = stationDao.insert(A.entity);
 
         // when
         stationDao.deleteById(id);
@@ -103,12 +102,12 @@ class StationDaoTest {
     @Test
     void 등록된_역을_이름으로_조회한다() {
         // given
-        final Long id = stationDao.insert(A.stationA);
+        final Long id = stationDao.insert(A.entity);
 
         // when
-        final Station result = stationDao.findByName(new StationName("A")).get();
+        final StationEntity result = stationDao.findByName("A").get();
 
         // then
-        assertThat(result.isSameStation(A.stationA)).isTrue();
+        assertThat(result.getName()).isEqualTo(A.entity.getName());
     }
 }

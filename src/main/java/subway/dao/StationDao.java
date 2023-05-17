@@ -9,17 +9,16 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.station.Station;
-import subway.domain.station.StationName;
+import subway.entity.StationEntity;
 
 @Repository
 public class StationDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
-    private final RowMapper<Station> rowMapper = (rs, rowNum) ->
-            new Station(
+    private final RowMapper<StationEntity> rowMapper = (rs, rowNum) ->
+            new StationEntity(
                     rs.getLong("id"),
-                    new StationName(rs.getString("name"))
+                    rs.getString("name")
             );
 
     public StationDao(JdbcTemplate jdbcTemplate) {
@@ -29,18 +28,18 @@ public class StationDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Long insert(final Station station) {
+    public Long insert(final StationEntity station) {
         final Map<String, Object> parameters = new HashMap<>();
-        parameters.put("name", station.getName().name());
+        parameters.put("name", station.getName());
         return insertAction.executeAndReturnKey(parameters).longValue();
     }
 
-    public List<Station> findAll() {
+    public List<StationEntity> findAll() {
         String sql = "SELECT * FROM STATIONS";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Optional<Station> findById(Long id) {
+    public Optional<StationEntity> findById(Long id) {
         String sql = "SELECT * FROM STATIONS WHERE id = ?";
         try {
             return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, id));
@@ -49,9 +48,9 @@ public class StationDao {
         }
     }
 
-    public void updateById(final Station station) {
+    public void updateById(final StationEntity station) {
         String sql = "UPDATE STATIONS SET name = ? WHERE id = ?";
-        jdbcTemplate.update(sql, station.getName().name(), station.getId());
+        jdbcTemplate.update(sql, station.getName(), station.getId());
     }
 
     public void deleteById(Long id) {
@@ -59,10 +58,10 @@ public class StationDao {
         jdbcTemplate.update(sql, id);
     }
 
-    public Optional<Station> findByName(final StationName name) {
+    public Optional<StationEntity> findByName(final String name) {
         String sql = "SELECT * FROM STATIONS WHERE name = ?";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name.name()));
+            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
         } catch (DataAccessException e) {
             return Optional.empty();
         }

@@ -1,24 +1,29 @@
 package subway.entity;
 
 import java.util.Objects;
+import subway.domain.line.Line;
 
-public class Line {
+public class LineEntity {
     private Long id;
     private String name;
     private String color;
 
-    private Line(Long id, String name, String color) {
+    public LineEntity(String name, String color) {
+        this(null, name, color);
+    }
+
+    public LineEntity(Long id, String name, String color) {
         this.id = id;
         this.name = name;
         this.color = color;
     }
 
-    public static Line of(String name, String color) {
-        return new Line(null, name, color);
-    }
-
-    public static Line of(Long id, String name, String color) {
-        return new Line(id, name, color);
+    public static LineEntity from(final Line line) {
+        return new LineEntity(
+                line.getId(),
+                line.getLineName().name(),
+                line.getLineColor().color()
+        );
     }
 
     public Long getId() {
@@ -41,7 +46,7 @@ public class Line {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Line line = (Line) o;
+        LineEntity line = (LineEntity) o;
         return Objects.equals(id, line.id) && Objects.equals(name, line.name) && Objects.equals(color, line.color);
     }
 

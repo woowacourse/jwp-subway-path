@@ -14,9 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
-import subway.domain.line.Line;
-import subway.domain.line.LineColor;
-import subway.domain.line.LineName;
+import subway.entity.LineEntity;
 import subway.fixture.LineFixture.Line1;
 import subway.fixture.LineFixture.Line2;
 
@@ -39,7 +37,7 @@ class LineDaoTest {
     @Test
     void 호선을_생성한다() {
         // given
-        final Line line = Line1.line;
+        final LineEntity line = Line1.entity;
 
         // when
         final Long id = lineDao.insert(line);
@@ -51,19 +49,19 @@ class LineDaoTest {
     @Test
     void 모든_호선을_조회한다() {
         // given
-        final Line line1 = Line1.line;
-        final Line line2 = Line2.line;
+        final LineEntity line1 = Line1.entity;
+        final LineEntity line2 = Line2.entity;
         lineDao.insert(line1);
         lineDao.insert(line2);
 
         // when
-        final List<Line> results = lineDao.findAll();
+        final List<LineEntity> results = lineDao.findAll();
 
         // then
         assertAll(
-                () -> assertThat(results).extracting(Line::getLineName).extracting(LineName::name)
+                () -> assertThat(results).extracting(LineEntity::getName)
                         .contains("1호선", "2호선"),
-                () -> assertThat(results).extracting(Line::getLineColor).extracting(LineColor::color)
+                () -> assertThat(results).extracting(LineEntity::getColor)
                         .contains("파랑", "초록")
         );
     }
@@ -71,43 +69,39 @@ class LineDaoTest {
     @Test
     void 호선을_ID로_조회한다() {
         // given
-        final Long id = lineDao.insert(Line1.line);
+        final Long id = lineDao.insert(Line1.entity);
 
         // when
-        final Line result = lineDao.findById(id).get();
+        final LineEntity result = lineDao.findById(id).get();
 
         // then
         assertAll(
-                () -> assertThat(result.getLineName().name()).isEqualTo("1호선"),
-                () -> assertThat(result.getLineColor().color()).isEqualTo("파랑")
+                () -> assertThat(result.getName()).isEqualTo("1호선"),
+                () -> assertThat(result.getColor()).isEqualTo("파랑")
         );
     }
 
     @Test
     void 호선을_수정한다() {
         // given
-        final Long id = lineDao.insert(Line1.line);
+        final Long id = lineDao.insert(Line1.entity);
 
         // when
-        lineDao.updateById(new Line(
-                id,
-                new LineName("1호선"),
-                new LineColor("검정"))
-        );
+        lineDao.updateById(new LineEntity(id, "1호선", "검정"));
 
-        final Line result = lineDao.findById(id).get();
+        final LineEntity result = lineDao.findById(id).get();
 
         // then
         assertAll(
-                () -> assertThat(result.getLineName().name()).isEqualTo("1호선"),
-                () -> assertThat(result.getLineColor().color()).isEqualTo("검정")
+                () -> assertThat(result.getName()).isEqualTo("1호선"),
+                () -> assertThat(result.getColor()).isEqualTo("검정")
         );
     }
 
     @Test
     void 호선을_삭제한다() {
         // given
-        final Long id = lineDao.insert(Line1.line);
+        final Long id = lineDao.insert(Line1.entity);
         lineDao.deleteById(id);
 
         // when, then
@@ -118,12 +112,12 @@ class LineDaoTest {
     @Test
     void 등록된_호선을_이름으로_조회한다() {
         // given
-        lineDao.insert(Line1.line);
+        lineDao.insert(Line1.entity);
 
         // when
-        final Line result = lineDao.findByName(new LineName("1호선")).get();
+        final LineEntity result = lineDao.findByName("1호선").get();
 
         // then
-        assertThat(result.getLineName().name()).isEqualTo("1호선");
+        assertThat(result.getName()).isEqualTo("1호선");
     }
 }
