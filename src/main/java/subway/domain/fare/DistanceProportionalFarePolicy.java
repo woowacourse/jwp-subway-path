@@ -1,9 +1,10 @@
-package subway.domain;
+package subway.domain.fare;
 
 import static java.lang.Math.ceil;
 
 import java.util.List;
 import org.springframework.stereotype.Component;
+import subway.domain.Distance;
 import subway.domain.section.Section;
 
 @Component
