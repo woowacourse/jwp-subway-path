@@ -6,7 +6,7 @@ import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
 
-public class AddRightInMiddleStrategy implements AddInMiddleStrategy {
+public class AddStationRightStrategy implements AddStationStrategy {
 
     @Override
     public void addStation(

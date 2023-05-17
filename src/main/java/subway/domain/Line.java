@@ -13,9 +13,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
-import subway.domain.strategy.AddInMiddleStrategy;
-import subway.domain.strategy.AddLeftInMiddleStrategy;
-import subway.domain.strategy.AddRightInMiddleStrategy;
+import subway.domain.strategy.AddStationStrategy;
+import subway.domain.strategy.AddStationLeftStrategy;
+import subway.domain.strategy.AddStationRightStrategy;
 import subway.exception.InvalidSectionException;
 import subway.exception.LineNotEmptyException;
 import subway.exception.StationNotFoundException;
@@ -27,15 +27,15 @@ public class Line {
     private final String name;
     private final String color;
     private final List<Section> sections;
-    private final AddInMiddleStrategy addRightInMiddleStrategy;
-    private final AddInMiddleStrategy addLeftInMiddleStrategy;
+    private final AddStationStrategy addStationRightStrategy;
+    private final AddStationStrategy addStationLeftStrategy;
 
     public Line(final String name, final String color, final List<Section> sections) {
         this.name = name;
         this.color = color;
         this.sections = new ArrayList<>(sections);
-        this.addRightInMiddleStrategy = new AddRightInMiddleStrategy();
-        this.addLeftInMiddleStrategy = new AddLeftInMiddleStrategy();
+        this.addStationRightStrategy = new AddStationRightStrategy();
+        this.addStationLeftStrategy = new AddStationLeftStrategy();
     }
 
     public boolean containsAll(final Station start, final Station end) {
@@ -47,11 +47,11 @@ public class Line {
         validate(base, additional, distance, direction);
 
         if (direction == RIGHT) {
-            addRightInMiddleStrategy.addStation(sections, base, additional, distance);
+            addStationRightStrategy.addStation(sections, base, additional, distance);
         }
 
         if (direction == LEFT) {
-            addLeftInMiddleStrategy.addStation(sections, base, additional, distance);
+            addStationLeftStrategy.addStation(sections, base, additional, distance);
         }
     }
 
