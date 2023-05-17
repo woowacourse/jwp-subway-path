@@ -19,7 +19,8 @@ class PathFinderTest {
             new Section(1L, 3L, 4L, 1L, 5),
             new Section(1L, 1L, 3L, 2L, 2),
             new Section(1L, 4L, 5L, 1L, 5),
-            new Section(1L, 5L, 6L, 1L, 5)
+            new Section(1L, 5L, 6L, 1L, 5),
+            new Section(1L, 6L, 7L, 1L, 50)
         );
         PathFinder pathFinder = new PathFinder(new NormalFeeStrategy(), sections);
         assertAll(
@@ -27,9 +28,11 @@ class PathFinderTest {
             () -> assertThat(pathFinder.findTotalDistance(1L, 4L)).isEqualTo(7),
             () -> assertThat(pathFinder.findTotalDistance(1L, 5L)).isEqualTo(12),
             () -> assertThat(pathFinder.findTotalDistance(1L, 6L)).isEqualTo(17),
+            () -> assertThat(pathFinder.findTotalDistance(1L, 7L)).isEqualTo(67),
             () -> assertThat(pathFinder.findFee(1L, 4L)).isEqualTo(1250),
             () -> assertThat(pathFinder.findFee(1L, 5L)).isEqualTo(1350),
-            () -> assertThat(pathFinder.findFee(1L, 6L)).isEqualTo(1450)
+            () -> assertThat(pathFinder.findFee(1L, 6L)).isEqualTo(1450),
+            () -> assertThat(pathFinder.findFee(1L, 7L)).isEqualTo(2850)
         );
 
     }

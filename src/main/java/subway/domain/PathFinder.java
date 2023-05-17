@@ -26,8 +26,11 @@ public class PathFinder {
 
     private Graph<Long, DefaultWeightedEdge> makeGraph(Set<Section> sections) {
         Graph<Long, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        setGraph(sections, graph);
-        return graph;
+        try {
+            setGraph(sections, graph);
+        } catch (IllegalArgumentException e) {
+            throw new DomainException(ExceptionType.PATH_HAS_LOOP);
+        } return graph;
     }
 
     private void setGraph(Set<Section> allSections, Graph<Long, DefaultWeightedEdge> graph) {
@@ -44,10 +47,7 @@ public class PathFinder {
     public List<Long> findPath(Long departureId, Long destinationId) {
         GraphPath<Long, DefaultWeightedEdge> path = getPath(departureId, destinationId);
 
-        return path
-            .getVertexList()
-            .stream()
-            .collect(Collectors.toUnmodifiableList());
+        return path.getVertexList().stream().collect(Collectors.toUnmodifiableList());
     }
 
     public int findTotalDistance(Long departureId, Long destinationId) {
