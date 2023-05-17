@@ -1,4 +1,4 @@
-package subway.controller;
+package subway.controller.exception;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -34,7 +34,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SubwayException.class)
     public ResponseEntity<String> handleSubwayException(final SubwayException error) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error.getMessage());
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error.getMessage());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)

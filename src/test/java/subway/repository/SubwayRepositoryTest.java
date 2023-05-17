@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.jdbc.core.JdbcTemplate;
+import subway.controller.exception.SubwayException;
 import subway.domain.Line;
 import subway.domain.Station;
 
@@ -52,7 +53,7 @@ class SubwayRepositoryTest {
     void 존재하지_않는_노선의_이름을_찾으면_예외가_발생한다() {
         // given
         assertThatThrownBy(() -> subwayRepository.findLineByName("상상역"))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayException.class)
                 .hasMessageContaining("해당 이름을 가진 노선이 존재하지 않습니다.");
     }
 
@@ -60,7 +61,7 @@ class SubwayRepositoryTest {
     void 존재하지_않는_노선의_id를_찾으면_예외가_발생한다() {
         // given
         assertThatThrownBy(() -> subwayRepository.findLineById(1L))
-                .isInstanceOf(IllegalArgumentException.class)
+                .isInstanceOf(SubwayException.class)
                 .hasMessageContaining("노선 정보가 잘못되었습니다.");
     }
 
