@@ -10,9 +10,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.dao.PathDao;
 import subway.dao.StationDao;
 import subway.domain.FareStrategy;
-import subway.domain.Path;
-import subway.domain.Paths;
 import subway.domain.Station;
+import subway.domain.path.Path;
+import subway.domain.path.Paths;
 import subway.dto.ShortestResponse;
 
 import java.util.List;
@@ -60,8 +60,7 @@ class ShortestServiceTest {
             final Path path3 = new Path(source, station2, 2);
             final Path path4 = new Path(station2, station3, 1);
             final Path path5 = new Path(station3, target, 1);
-
-
+            
             final Paths paths = new Paths(List.of(path1, path2, path3, path4, path5));
             when(pathDao.findAll()).thenReturn(paths);
             when(stationDao.findById(any()))
