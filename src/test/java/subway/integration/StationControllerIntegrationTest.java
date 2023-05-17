@@ -28,27 +28,45 @@ class StationControllerIntegrationTest {
     ObjectMapper objectMapper;
 
     @Test
-    @DisplayName("역을 저장할 수 있다.")
-    void createStation() throws Exception {
+    @DisplayName("새로운 역을 저장할 수 있다.")
+    void createStation_success() throws Exception {
         mockMvc.perform(post("/stations")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(new StationCreateRequest("정자역"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.stationName").value("정자역"));
+                .andExpect(jsonPath("$.name").value("정자역"));
+    }
+
+    @Test
+    @DisplayName("이미 존재하는 이름의 역을 추가하면 예외가 발생한다.")
+    void createStation_fail() throws Exception {
+        // given
+        createNewStation("미금역");
+        StationCreateRequest request = new StationCreateRequest("미금역");
+
+        // expect
+        mockMvc.perform(post("/stations")
+                        .contentType(MediaType.APPLICATION_JSON_VALUE)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     @DisplayName("저장된 모든 역을 조회할 수 있다.")
     void showStations() throws Exception {
-        mockMvc.perform(post("/stations")
-                        .contentType(MediaType.APPLICATION_JSON_VALUE)
-                        .content(objectMapper.writeValueAsString(new StationCreateRequest("정자역"))))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.stationName").value("정자역"));
+        createNewStation("정자역");
 
         mockMvc.perform(get("/stations"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(1));
+    }
+
+    private void createNewStation(String name) throws Exception {
+        StationCreateRequest createRequest = new StationCreateRequest(name);
+
+        mockMvc.perform(post("/stations")
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(createRequest)));
     }
 
 }
