@@ -1,7 +1,5 @@
 package subway.persistence.entity;
 
-import java.util.Objects;
-
 public class StationEntity {
     private final Long id;
     private final String name;

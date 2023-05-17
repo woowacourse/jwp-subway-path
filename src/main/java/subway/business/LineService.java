@@ -19,8 +19,8 @@ import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
 import subway.presentation.dto.request.StationRegisterInLineRequest;
 import subway.presentation.dto.request.StationUnregisterInLineRequest;
-import subway.presentation.dto.response.LineDetailResponse;
 import subway.presentation.dto.request.converter.SubwayDirection;
+import subway.presentation.dto.response.LineDetailResponse;
 
 import java.util.List;
 import java.util.Objects;

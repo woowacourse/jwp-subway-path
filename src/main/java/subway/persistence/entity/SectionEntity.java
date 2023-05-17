@@ -1,7 +1,5 @@
 package subway.persistence.entity;
 
-import java.util.Objects;
-
 public class SectionEntity {
 
     private final Long id;
