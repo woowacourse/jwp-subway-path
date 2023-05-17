@@ -12,7 +12,7 @@ public class LineResponse {
         this.id = id;
     }
 
-    public static LineResponse of(LineEntity line) {
+    public static LineResponse from(LineEntity line) {
         return new LineResponse(line.getId());
     }
 

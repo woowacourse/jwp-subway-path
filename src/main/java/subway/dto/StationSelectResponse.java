@@ -15,7 +15,7 @@ public class StationSelectResponse {
         this.name = name;
     }
 
-    public static StationSelectResponse of(StationEntity station) {
+    public static StationSelectResponse from(StationEntity station) {
         return new StationSelectResponse(station.getId(), station.getName());
     }
 

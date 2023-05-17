@@ -18,18 +18,18 @@ public class StationService {
 
     public StationSelectResponse saveStation(StationRequest stationRequest) {
         StationEntity station = stationDao.insert(new StationEntity(stationRequest.getName()));
-        return StationSelectResponse.of(station);
+        return StationSelectResponse.from(station);
     }
 
     public StationSelectResponse findStationResponseById(Long id) {
-        return StationSelectResponse.of(stationDao.findById(id));
+        return StationSelectResponse.from(stationDao.findById(id));
     }
 
     public List<StationSelectResponse> findAllStationResponses() {
         List<StationEntity> stations = stationDao.findAll();
 
         return stations.stream()
-                .map(StationSelectResponse::of)
+                .map(StationSelectResponse::from)
                 .collect(Collectors.toList());
     }
 

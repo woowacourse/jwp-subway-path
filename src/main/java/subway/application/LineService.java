@@ -48,7 +48,7 @@ public class LineService {
 
     public LineSelectResponse getStationsByLineId(Long lineId) {
         Line line = lineRepository.findById(lineId);
-        return LineSelectResponse.of(line);
+        return LineSelectResponse.from(line);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -78,7 +78,7 @@ public class LineService {
                 stationRequest.getTargetStation(),
                 stationRequest.getDistance());
         saveUpdatedLine(subway, lineEntity.getName(), lineId);
-        return StationSelectResponse.of(new StationEntity(newStationName));
+        return StationSelectResponse.from(new StationEntity(newStationName));
     }
 
     private List<Optional<String>> extractNullableStation(final StationSaveRequest stationRequest, final Line lineByName) {

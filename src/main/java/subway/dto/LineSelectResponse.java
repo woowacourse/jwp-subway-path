@@ -6,9 +6,9 @@ import subway.domain.Line;
 import subway.domain.Station;
 
 public class LineSelectResponse {
-    private Long lineId;
-    private String lineName;
-    private List<StationSelectResponse> stations;
+    private final Long lineId;
+    private final String lineName;
+    private final List<StationSelectResponse> stations;
 
     private LineSelectResponse(Long lineId, String lineName, List<StationSelectResponse> stations) {
         this.lineId = lineId;
@@ -16,7 +16,7 @@ public class LineSelectResponse {
         this.stations = stations;
     }
 
-    public static LineSelectResponse of(Line line) {
+    public static LineSelectResponse from(Line line) {
         List<StationSelectResponse> collect = line.getStations().stream()
                 .map(Station::getName)
                 .map(StationSelectResponse::new)
