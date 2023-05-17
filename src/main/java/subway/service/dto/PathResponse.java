@@ -4,7 +4,7 @@ import java.util.List;
 
 public class PathResponse {
 
-    private final List<StationResponse> stationResponses;
+    private final List<StationResponse> pathStations;
     private final Integer totalFare;
     private final Integer totalDistance;
 
@@ -12,15 +12,15 @@ public class PathResponse {
         this(null, null, null);
     }
 
-    public PathResponse(final List<StationResponse> stationResponses, final Integer totalFare,
+    public PathResponse(final List<StationResponse> pathStations, final Integer totalFare,
                         final Integer totalDistance) {
-        this.stationResponses = stationResponses;
+        this.pathStations = pathStations;
         this.totalFare = totalFare;
         this.totalDistance = totalDistance;
     }
 
-    public List<StationResponse> getStationResponses() {
-        return stationResponses;
+    public List<StationResponse> getPathStations() {
+        return pathStations;
     }
 
     public int getTotalFare() {

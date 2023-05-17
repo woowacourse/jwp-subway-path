@@ -35,7 +35,7 @@ class PathServiceTest {
 
         final PathResponse pathResponse = pathService.findPath(pathRequest);
 
-        final List<StationResponse> stationResponses = pathResponse.getStationResponses();
+        final List<StationResponse> stationResponses = pathResponse.getPathStations();
         assertAll(
                 () -> assertThat(stationResponses)
                         .extracting(StationResponse::getName)
