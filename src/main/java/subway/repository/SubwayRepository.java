@@ -74,7 +74,7 @@ public class SubwayRepository {
         long lineId = lineDao.findIdByName(line.getName().getName())
                 .orElseThrow(() -> new NoSuchElementException("디버깅: 노선 이름에 해당하는 노선이 없습니다."));
         sectionDao.deleteAll(lineId);
-        addSectionsToLine(line.getSections(), lineId);
+        addSectionsToLine(line.getSectionsWithoutEndPoints(), lineId);
         return lineId;
     }
 

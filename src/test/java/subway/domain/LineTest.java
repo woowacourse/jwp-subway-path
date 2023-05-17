@@ -74,7 +74,7 @@ class LineTest {
 
         lineNumberTwo.deleteStation(JAMSIL_STATION);
 
-        assertThat(lineNumberTwo.getSections())
+        assertThat(lineNumberTwo.getSectionsWithoutEndPoints())
                 .contains(new Section(SULLEUNG_STATION, JAMSIL_NARU_STATION, 10));
     }
 
@@ -87,8 +87,8 @@ class LineTest {
         line.deleteStation(JAMSIL_NARU_STATION);
 
         assertSoftly(softly -> {
-            softly.assertThat(line.getSections()).hasSize(1);
-            softly.assertThat(line.getSections()).doesNotContain(section2);
+            softly.assertThat(line.getSectionsWithoutEndPoints()).hasSize(1);
+            softly.assertThat(line.getSectionsWithoutEndPoints()).doesNotContain(section2);
         });
     }
 
@@ -101,8 +101,8 @@ class LineTest {
         line.deleteStation(SULLEUNG_STATION);
 
         assertSoftly(softly -> {
-            softly.assertThat(line.getSections()).hasSize(1);
-            softly.assertThat(line.getSections()).doesNotContain(section1);
+            softly.assertThat(line.getSectionsWithoutEndPoints()).hasSize(1);
+            softly.assertThat(line.getSectionsWithoutEndPoints()).doesNotContain(section1);
         });
     }
 
@@ -113,7 +113,7 @@ class LineTest {
         Station newStation = Station.from("건대입구");
         lineNumberTwo.addStation(newStation, Station.getEmptyEndpoint(), SULLEUNG_STATION, 2);
 
-        assertThat(lineNumberTwo.getSections())
+        assertThat(lineNumberTwo.getSectionsWithoutEndPoints())
                 .contains(new Section(newStation, SULLEUNG_STATION, 2));
     }
 
@@ -121,6 +121,6 @@ class LineTest {
     void Line_생성시_section이_하나도_없으면_예외를_던진다() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Line(new LineName("2호선"), List.of()))
-                .withMessageContaining("디버깅: section이 존재하지 않는데 종점을 추가하려고 합니다.");
+                .withMessageContaining("디버깅: section이 존재하지 않습니다.");
     }
 }

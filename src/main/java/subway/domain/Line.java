@@ -26,12 +26,12 @@ public class Line {
     }
 
     public Line(Line otherLine) {
-        this(otherLine.getName(), otherLine.getSections());
+        this(otherLine.getName(), otherLine.getSectionsWithoutEndPoints());
     }
 
     private void validateEmptySection(List<Section> sections) {
         if (sections.size() == NONE) {
-            throw new IllegalArgumentException("디버깅: section이 존재하지 않는데 종점을 추가하려고 합니다.");
+            throw new IllegalArgumentException("디버깅: section이 존재하지 않습니다.");
         }
     }
 
@@ -108,7 +108,7 @@ public class Line {
         return name;
     }
 
-    public List<Section> getSections() {
+    public List<Section> getSectionsWithoutEndPoints() {
         return new LinkedList<>(sections.subList(1, sections.size() - 1));
     }
 

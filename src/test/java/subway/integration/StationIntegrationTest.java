@@ -37,7 +37,7 @@ import static subway.utils.TestUtils.toJson;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/schema.sql")
-public class IntegrationTest {
+public class StationIntegrationTest {
 
     public static final String VALID_STATION_NAME = "서울대입구";
     public static final String VALID_UPSTREAM_NAME = "잠실";
@@ -76,8 +76,6 @@ public class IntegrationTest {
     @Test
     @DisplayName("/line/stations에 post 요청을 보내면 노선에 새로운 역을 추가할 수 있다.")
     void addStation() {
-        int expectedId = 3;
-
         given()
                 .contentType(ContentType.JSON)
                 .body(toJson(new AddStationRequest(VALID_STATION_NAME, line.getName().getName(), upstream.getName(), downstream.getName(), DISTANCE - 1)))

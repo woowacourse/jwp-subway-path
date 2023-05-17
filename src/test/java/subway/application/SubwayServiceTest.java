@@ -52,7 +52,7 @@ class SubwayServiceTest {
 
         subwayService.addStation(addStationRequest);
 
-        assertThat(line.getSections()).contains(
+        assertThat(line.getSectionsWithoutEndPoints()).contains(
                 new Section(JAMSIL_STATION, newStation, distanceToUpstream),
                 new Section(newStation, JAMSIL_NARU_STATION, 2)
         );

@@ -22,7 +22,7 @@ import static subway.utils.TestUtils.toJson;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @Sql("/schema.sql")
-public class LineIntegrationTest extends IntegrationTest {
+public class LineStationIntegrationTest extends StationIntegrationTest {
 
     private static final String LINE_URL = "/lines";
     private static final String VALID_LINE_NAME = "9호선";
