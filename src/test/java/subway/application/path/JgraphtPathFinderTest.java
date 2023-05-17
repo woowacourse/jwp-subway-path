@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import subway.domain.Distance;
 import subway.domain.Line;
+import subway.domain.MultiLineSections;
 import subway.domain.Section;
 import subway.domain.ShortestPath;
 import subway.domain.Station;
@@ -19,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 class JgraphtPathFinderTest {
 
     private JgraphtPathFinder jgraphtPathFinder;
-    private List<Section> sections;
+    private MultiLineSections sections;
     private Station 석촌;
     private Station 잠실새내;
 
@@ -55,7 +56,7 @@ class JgraphtPathFinderTest {
         );
     }
 
-    private List<Section> createSample() {
+    private MultiLineSections createSample() {
         final Long 이호선 = new Line(1L, "2호선", "초록색").getId();
         final Long 팔호선 = new Line(2L, "8호선", "분홍색").getId();
         final Long 구호선 = new Line(3L, "9호선", "갈색").getId();
@@ -78,6 +79,6 @@ class JgraphtPathFinderTest {
         final Section 구호선_구간1 = new Section(6L, Distance.from(30), 석촌, 잠실새내, 구호선);
         final Section 구호선_구간2 = new Section(7L, Distance.from(20), 잠실새내, 올림픽공원, 구호선);
 
-        return List.of(이호선_구간1, 이호선_구간2, 이호선_구간3, 팔호선_구간1, 팔호선_구간2, 구호선_구간1, 구호선_구간2);
+        return MultiLineSections.from(List.of(이호선_구간1, 이호선_구간2, 이호선_구간3, 팔호선_구간1, 팔호선_구간2, 구호선_구간1, 구호선_구간2));
     }
 }

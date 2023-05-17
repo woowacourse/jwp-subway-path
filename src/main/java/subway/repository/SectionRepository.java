@@ -6,6 +6,7 @@ import subway.dao.SectionStationDao;
 import subway.dao.dto.SectionStationResultMap;
 import subway.dao.entity.SectionEntity;
 import subway.domain.Distance;
+import subway.domain.MultiLineSections;
 import subway.domain.Section;
 import subway.domain.SingleLineSections;
 import subway.domain.Station;
@@ -56,11 +57,13 @@ public class SectionRepository {
         return SingleLineSections.from(sections);
     }
 
-    public List<Section> findAll() {
+    public MultiLineSections findAll() {
         final List<SectionStationResultMap> resultMaps = sectionStationDao.findAll();
-        return resultMaps.stream()
+        final List<Section> sections = resultMaps.stream()
                 .map(this::mapFrom)
                 .collect(toList());
+        return MultiLineSections.from(sections);
+
     }
 
     protected Section mapFrom(SectionStationResultMap resultMap) {

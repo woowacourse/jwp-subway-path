@@ -6,13 +6,12 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 import subway.domain.Distance;
+import subway.domain.MultiLineSections;
 import subway.domain.Section;
 import subway.domain.ShortestPath;
 import subway.domain.Station;
 
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Component
 public class JgraphtPathFinder implements PathFinder {
@@ -24,13 +23,9 @@ public class JgraphtPathFinder implements PathFinder {
     }
 
     @Override
-    public ShortestPath findShortestPath(List<Section> sections, Station upStation, Station downStation) {
-        final List<Station> allStations = sections.stream()
-                .flatMap(section -> Stream.of(section.getUpStation(), section.getDownStation()))
-                .distinct()
-                .collect(Collectors.toList());
-
-        initializeGraph(allStations, sections);
+    public ShortestPath findShortestPath(MultiLineSections sections, Station upStation, Station downStation) {
+        final List<Station> allStations = sections.getAllStations();
+        initializeGraph(allStations, sections.getSections());
 
         final DijkstraShortestPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph);
 
