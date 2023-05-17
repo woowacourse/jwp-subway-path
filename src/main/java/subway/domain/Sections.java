@@ -165,7 +165,7 @@ public class Sections {
 		return distributeByLine(sections);
 	}
 
-	public Map<Line, List<Section>> distributeByLine(final List<Section> sectionsContainStation){
+	private Map<Line, List<Section>> distributeByLine(final List<Section> sectionsContainStation){
 		return sectionsContainStation.stream()
 			.collect(Collectors.groupingBy(Section::getLine));
 	}
