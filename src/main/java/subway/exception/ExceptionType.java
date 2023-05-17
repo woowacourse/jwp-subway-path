@@ -15,7 +15,8 @@ public enum ExceptionType {
     UN_EXISTED_STATION("stationId is not existed in DB"),
     LINE_NAME_ALREADY_EXISTED("That line name is already existed."),
     STATION_NAME_IS_ALREADY_EXISTED("That station name is already existed."),
-    STATION_IS_NOT_IN_SECTION("Source station or target station is not in any lines.");
+    STATION_IS_NOT_IN_SECTION("Source station or target station is not in any lines."),
+    UN_REACHABLE_PATH("Can't find path from source station to target station.");
 
     private final String reason;
 

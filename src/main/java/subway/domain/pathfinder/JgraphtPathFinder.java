@@ -3,6 +3,7 @@ package subway.domain.pathfinder;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
@@ -36,13 +37,17 @@ public class JgraphtPathFinder implements PathFinder {
     public List<Section> computeShortestPath(Long sourceStationId, Long targetStationId) {
         try {
             final var dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-            return dijkstraShortestPath.getPath(sourceStationId, targetStationId)
-                    .getEdgeList()
+            final GraphPath<Long, LineWeightedEdge> path = dijkstraShortestPath.getPath(sourceStationId,
+                    targetStationId);
+            if (path == null) {
+                throw new DomainException(ExceptionType.UN_REACHABLE_PATH);
+            }
+            return path.getEdgeList()
                     .stream()
                     .map(edge -> new Section(graph.getEdgeSource(edge), graph.getEdgeTarget(edge), edge.getLineId(),
                             edge.getDistance()))
                     .collect(Collectors.toUnmodifiableList());
-        } catch(IllegalArgumentException exception) {
+        } catch (IllegalArgumentException exception) {
             throw new DomainException(ExceptionType.STATION_IS_NOT_IN_SECTION);
         }
     }

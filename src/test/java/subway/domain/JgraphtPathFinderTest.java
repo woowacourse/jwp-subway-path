@@ -3,6 +3,7 @@ package subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -62,6 +63,19 @@ class JgraphtPathFinderTest {
                 .hasMessage(ExceptionType.STATION_IS_NOT_IN_SECTION.name());
     }
 
+    @Test
+    @DisplayName("입력받은 station간의 path를 구하지 못하는 경우 예외를 발생한다.")
+    void computeShortestPathFail2() {
+        // given
+        JgraphtPathFinder jgraphtPathFinder = new JgraphtPathFinder(new WeightedMultigraph<>(LineWeightedEdge.class));
+        final ArrayList<Section> sections = new ArrayList<>(Fixture.SECTIONS);
+        sections.add(new Section(11L, 9L, 10L, 4L, 10));
+        jgraphtPathFinder.addSections(sections);
+
+        assertThatThrownBy(() -> jgraphtPathFinder.computeShortestPath(1L, 10L))
+                .isInstanceOf(DomainException.class)
+                .hasMessage(ExceptionType.UN_REACHABLE_PATH.name());
+    }
 
     @ParameterizedTest(name = "최단 거리를 구한다.")
     @MethodSource("provideStationIdsAndDistance")
