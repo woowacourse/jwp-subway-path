@@ -20,4 +20,12 @@ public class PathResponse {
     public static PathResponse of(final Integer fare, final List<Station> stations) {
         return new PathResponse(fare, StationResponse.from(stations));
     }
+
+    public Integer getFare() {
+        return fare;
+    }
+
+    public List<StationResponse> getStations() {
+        return stations;
+    }
 }
