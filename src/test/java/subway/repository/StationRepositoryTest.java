@@ -65,6 +65,6 @@ class StationRepositoryTest {
         // when, then
         assertThatThrownBy(() -> stationRepository.save("강남역"))
                 .isInstanceOf(DuplicatedNameException.class)
-                .hasMessage("이미 존재하는 이름입니다 입력값 : 강남역");
+                .hasMessage("이미 존재하는 이름입니다. (입력값 : 강남역)");
     }
 }

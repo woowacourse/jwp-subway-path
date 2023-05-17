@@ -67,7 +67,8 @@ public class LineIntegrationTest extends IntegrationTest {
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
             ErrorResponse errorResponse = response.body().as(ErrorResponse.class);
-            assertThat(errorResponse.getMessage()).isEqualTo("이미 존재하는 이름입니다 입력값 : " + lineRequest1.getLineName());
+            assertThat(errorResponse.getMessage()).isEqualTo(
+                    "이미 존재하는 이름입니다. (입력값 : " + lineRequest1.getLineName() + ")");
         }
 
     }

@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.exception.NonExistLineException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
@@ -70,8 +71,8 @@ class SubwayTest {
 
         // then
         assertThatThrownBy(() -> subway.findLineByName("2호선"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 노선입니다.");
+                .isInstanceOf(NonExistLineException.class)
+                .hasMessage("해당 조건을 충족하는 노선은 존재하지 않습니다. (입력값 : 2호선)");
     }
 
     @Test
@@ -83,8 +84,8 @@ class SubwayTest {
 
         // when, then
         assertThatThrownBy(() -> subway.removeStation("1호선", new Station("강남역")))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 노선입니다.");
+                .isInstanceOf(NonExistLineException.class)
+                .hasMessage("해당 조건을 충족하는 노선은 존재하지 않습니다. (입력값 : 1호선)");
     }
 
     @Test
@@ -125,8 +126,8 @@ class SubwayTest {
 
         // when, then
         assertThatThrownBy(() -> subway.findLineByName("2호선"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("존재하지 않는 노선입니다.");
+                .isInstanceOf(NonExistLineException.class)
+                .hasMessage("해당 조건을 충족하는 노선은 존재하지 않습니다. (입력값 : 2호선)");
     }
 
     @Test

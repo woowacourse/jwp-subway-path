@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import subway.exception.NonExistLineException;
 
 public class Subway {
 
@@ -46,14 +47,14 @@ public class Subway {
         return lines.stream()
                 .filter(line -> line.getId().equals(lineId))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new NonExistLineException(lineId));
     }
 
     public Line findLineByName(String lineName) {
         return lines.stream()
                 .filter(line -> line.getName().equals(lineName))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+                .orElseThrow(() -> new NonExistLineException(lineName));
     }
 
     public void addStation(String name, String sourceStation, String targetStation, int distance) {
