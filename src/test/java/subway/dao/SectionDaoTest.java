@@ -15,6 +15,7 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.entity.SectionEntity;
 
 @JdbcTest
 @Sql("classpath:initializeTestDb.sql")

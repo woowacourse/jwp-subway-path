@@ -11,7 +11,8 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import subway.domain.Line;
+
+import subway.entity.LineEntity;
 
 @Repository
 public class LineDao {

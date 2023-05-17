@@ -5,14 +5,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
-import subway.dao.LineEntity;
+import subway.entity.LineEntity;
 import subway.dao.SectionDao;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Sections;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
+import subway.dto.request.LineRequest;
+import subway.dto.response.LineResponse;
 import subway.exception.LineDuplicatedException;
+import subway.exception.NotFoundException;
 
 @Service
 public class LineService {

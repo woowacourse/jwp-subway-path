@@ -1,14 +1,16 @@
 package subway.application;
 
-import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.SectionEntity;
 import subway.dao.StationDao;
-import subway.dto.SectionRequest;
+import subway.dto.request.SectionRequest;
+import subway.entity.SectionEntity;
 import subway.exception.InvalidSectionException;
+import subway.exception.NotFoundException;
+
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class SectionService {
