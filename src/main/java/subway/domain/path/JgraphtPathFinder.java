@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.path;
 
 import static java.util.stream.Collectors.collectingAndThen;
 import static java.util.stream.Collectors.toList;
@@ -9,6 +9,11 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
+import subway.domain.Line;
+import subway.domain.Section;
+import subway.domain.SectionProxy;
+import subway.domain.Sections;
+import subway.domain.Station;
 import subway.exception.NotFoundPathException;
 
 @Component

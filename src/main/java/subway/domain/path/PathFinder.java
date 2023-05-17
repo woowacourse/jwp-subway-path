@@ -1,6 +1,8 @@
-package subway.domain;
+package subway.domain.path;
 
 import java.util.List;
+import subway.domain.Line;
+import subway.domain.Station;
 
 public interface PathFinder {
 

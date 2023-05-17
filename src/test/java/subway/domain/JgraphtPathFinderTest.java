@@ -16,6 +16,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.domain.path.JgraphtPathFinder;
+import subway.domain.path.Path;
 import subway.exception.NotFoundPathException;
 
 @SuppressWarnings("NonAsciiCharacters")

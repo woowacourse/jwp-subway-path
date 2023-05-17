@@ -2,11 +2,11 @@ package subway.service;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
-import subway.domain.FeePolicy;
 import subway.domain.Line;
-import subway.domain.Path;
-import subway.domain.PathFinder;
 import subway.domain.Station;
+import subway.domain.fee.FeePolicy;
+import subway.domain.path.Path;
+import subway.domain.path.PathFinder;
 import subway.dto.request.ShortestPathRequest;
 import subway.dto.response.ShortestPathResponse;
 import subway.exception.NotFoundStationException;

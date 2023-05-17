@@ -1,4 +1,4 @@
-package subway.domain;
+package subway.domain.fee;
 
 
 import org.springframework.stereotype.Component;
