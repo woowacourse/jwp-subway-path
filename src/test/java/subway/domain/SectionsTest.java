@@ -201,7 +201,7 @@ class SectionsTest {
             @Test
             void 새로운_구간의_길이가_기존_구간의_길이가_같을_경우_예외가_발생한다() {
                 // given
-                final Distance 거리10 = new Distance(10);
+                final Distance 거리10 = Distance.from(10);
 
                 final Station 기존_상행역 = new Station("기존_상행역");
                 final Station 기존_하행역 = new Station("기존_하행역");

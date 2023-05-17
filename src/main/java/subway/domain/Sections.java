@@ -45,30 +45,36 @@ public class Sections {
     }
 
     private void addSectionBy(final Section newSection) {
-        if (isInnerSectionBaseIsUpStation(newSection)) {
+        if (addWhenInnerSectionBaseIsUpStation(newSection)) {
             return;
         }
-        if (isInnerSectionBaseIsDownStation(newSection)) {
+        if (addInnerSectionBaseIsDownStation(newSection)) {
             return;
         }
-        if (isOuterSectionBaseIsUpStation(newSection)) {
+        if (addOuterSectionBaseIsUpStation(newSection)) {
             return;
         }
-        if (isOuterSectionBaseIsDownStation(newSection)) {
+        if (addOuterSectionBaseIsDownStation(newSection)) {
             return;
         }
         sections.add(newSection);
     }
 
-    private boolean isInnerSectionBaseIsUpStation(final Section newSection) {
-        final Optional<Section> maybeInnerSectionBaseIsUp
-                = findSectionWithOldUpStation(newSection.getUpStation());
+    private boolean addWhenInnerSectionBaseIsUpStation(final Section newSection) {
+        final Optional<Section> maybeInnerSectionBaseIsUp = findSectionWithOldUpStation(newSection.getUpStation());
 
         if (maybeInnerSectionBaseIsUp.isPresent()) {
-            addNewSectionAfterRemoveOldSection(newSection, maybeInnerSectionBaseIsUp.get());
+            addInnerSection(newSection, maybeInnerSectionBaseIsUp.get());
             return true;
         }
         return false;
+    }
+
+    private void addInnerSection(final Section newSection, final Section oldInnerSection) {
+        if (newSection.isDistanceEqualsOrGreaterThan(oldInnerSection)) {
+            throw new IllegalArgumentException("기존 구간 내부에 들어올 새로운 구간이 더 길 수 없습니다.");
+        }
+        addNewSectionAfterRemoveOldSection(newSection, oldInnerSection);
     }
 
     private Optional<Section> findSectionWithOldUpStation(final Station station) {
@@ -83,12 +89,11 @@ public class Sections {
         sections.addAll(oldSectionIndex, oldSection.separateBy(newSection));
     }
 
-    private boolean isInnerSectionBaseIsDownStation(final Section newSection) {
-        final Optional<Section> maybeInnerSectionBaseIsDown
-                = findSectionWithOldDownStation(newSection.getDownStation());
+    private boolean addInnerSectionBaseIsDownStation(final Section newSection) {
+        final Optional<Section> maybeInnerSectionBaseIsDown = findSectionWithOldDownStation(newSection.getDownStation());
 
         if (maybeInnerSectionBaseIsDown.isPresent()) {
-            addNewSectionAfterRemoveOldSection(newSection, maybeInnerSectionBaseIsDown.get());
+            addInnerSection(newSection, maybeInnerSectionBaseIsDown.get());
             return true;
         }
         return false;
@@ -100,9 +105,8 @@ public class Sections {
                 .findFirst();
     }
 
-    private boolean isOuterSectionBaseIsUpStation(final Section newSection) {
-        final Optional<Section> maybeOuterSectionBaseIsUp
-                = findSectionWithOldUpStation(newSection.getDownStation());
+    private boolean addOuterSectionBaseIsUpStation(final Section newSection) {
+        final Optional<Section> maybeOuterSectionBaseIsUp = findSectionWithOldUpStation(newSection.getDownStation());
 
         if (maybeOuterSectionBaseIsUp.isPresent()) {
             addNewSectionAfterRemoveOldSection(newSection, maybeOuterSectionBaseIsUp.get());
@@ -111,9 +115,8 @@ public class Sections {
         return false;
     }
 
-    private boolean isOuterSectionBaseIsDownStation(final Section newSection) {
-        final Optional<Section> maybeOuterSectionBaseIsDown
-                = findSectionWithOldDownStation(newSection.getUpStation());
+    private boolean addOuterSectionBaseIsDownStation(final Section newSection) {
+        final Optional<Section> maybeOuterSectionBaseIsDown = findSectionWithOldDownStation(newSection.getUpStation());
 
         if (maybeOuterSectionBaseIsDown.isPresent()) {
             addNewSectionAfterRemoveOldSection(newSection, maybeOuterSectionBaseIsDown.get());
