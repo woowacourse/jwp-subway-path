@@ -2,16 +2,13 @@ package subway.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import org.jgrapht.Graph;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleWeightedGraph;
 import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDAO;
 import subway.dao.StationDao;
 import subway.domain.Line;
 import subway.domain.LineSections;
+import subway.domain.Route;
 import subway.domain.Section;
 import subway.domain.Station;
 import subway.dto.SubwayResponse;
@@ -38,37 +35,17 @@ public class SubwayService {
             return SubwayResponse.of(line, List.of());
         }
         
+        final Route route = Route.from(sections);
+        
         final long upTerminalStationId = lineSections.getUpTerminalStationId();
         final long downTerminalStationId = lineSections.getDownTerminalStationId();
         
-        final List<Station> orderedStations = this.generateOrderedStations(sections, upTerminalStationId,
-                downTerminalStationId);
-        
-        return SubwayResponse.of(line, orderedStations);
-    }
-    
-    private List<Station> generateOrderedStations(final List<Section> sections, final long upTerminalStationId,
-            final long downTerminalStationId) {
-        final Graph<Long, DefaultWeightedEdge> subwayMap = this.generateSubwayMap(
-                sections);
-        final List<Long> orderedStationIds = new DijkstraShortestPath<>(subwayMap)
-                .getPath(upTerminalStationId, downTerminalStationId)
-                .getVertexList();
-        return orderedStationIds.stream()
+        final List<Station> orderedStations = route.findRoute(upTerminalStationId, downTerminalStationId)
+                .stream()
                 .map(this.stationDao::findById)
                 .collect(Collectors.toUnmodifiableList());
-    }
-    
-    private Graph<Long, DefaultWeightedEdge> generateSubwayMap(final List<Section> sections) {
-        final Graph<Long, DefaultWeightedEdge> subwayMap = new SimpleWeightedGraph<>(DefaultWeightedEdge.class);
-        for (final Section section : sections) {
-            subwayMap.addVertex(section.getUpStationId());
-            subwayMap.addVertex(section.getDownStationId());
-            final DefaultWeightedEdge edge = subwayMap.addEdge(section.getUpStationId(),
-                    section.getDownStationId());
-            subwayMap.setEdgeWeight(edge, section.getDistance());
-        }
-        return subwayMap;
+        
+        return SubwayResponse.of(line, orderedStations);
     }
     
     public List<SubwayResponse> findAllStations() {
