@@ -3,6 +3,7 @@ package subway.domain.section;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class Sections {
 
@@ -30,27 +31,79 @@ public class Sections {
         }
 
         if (isAddableOnFrontOfUpTerminal(section)) {
-            final List<Section> updatedSections = new LinkedList<>(sections);
-            updatedSections.add(0, section);
-            return new Sections(updatedSections);
+            return addSectionToIndex(section, 0);
         }
 
         if (isAddableOnBackOfDownTerminal(section)) {
-            final List<Section> updatedSections = new LinkedList<>(sections);
-            updatedSections.add(sections.size(), section);
-            return new Sections(updatedSections);
+            return addSectionToIndex(section, sections.size());
         }
 
-        throw new IllegalArgumentException("기준역을 먼저 구간에 추가 후 시도해 주세요");
-
+        return addSectionInMiddle(section);
     }
 
     private boolean isAddableOnFrontOfUpTerminal(final Section other) {
         return sections.get(0).isAssemblableOnFront(other);
     }
 
+    private Sections addSectionToIndex(final Section section, final int index) {
+        final List<Section> updatedSections = new LinkedList<>(sections);
+        updatedSections.add(index, section);
+        return new Sections(updatedSections);
+    }
+
     private boolean isAddableOnBackOfDownTerminal(final Section other) {
         return sections.get(sections.size() - 1).isAssemblableOnBack(other);
+    }
+
+    private Sections addSectionInMiddle(final Section other) {
+        if (baseStationIsUpStation(other)) {
+            return addNewSectionToNext(other);
+        }
+
+        return addNewSectionToPrevious(other);
+    }
+
+    private boolean baseStationIsUpStation(final Section other) {
+        return sections.stream()
+                .anyMatch(section -> section.isSameUpStation(other));
+    }
+
+    private Sections addNewSectionToNext(final Section other) {
+        final Section originalSection = getOriginalSection((section) -> section.isSameUpStation(other));
+        return new Sections(addNewSection(
+                originalSection,
+                other,
+                originalSection.createDownToDownSection(other)
+        ));
+    }
+
+    private List<Section> addNewSection(
+            final Section originalSection,
+            final Section previousSection,
+            final Section nextSection
+    ) {
+        final List<Section> updatedSections = new LinkedList<>(sections);
+        final int originalIndex = sections.indexOf(originalSection);
+        updatedSections.remove(originalSection);
+        updatedSections.add(originalIndex, previousSection);
+        updatedSections.add(originalIndex + 1, nextSection);
+        return updatedSections;
+    }
+
+    private Sections addNewSectionToPrevious(final Section other) {
+        final Section originalSection = getOriginalSection((section) -> section.isSameDownStation(other));
+        return new Sections(addNewSection(
+                originalSection,
+                other.createUpToUpSection(originalSection),
+                other
+        ));
+    }
+
+    private Section getOriginalSection(final Predicate<Section> stationDirectionFilter) {
+        return sections.stream()
+                .filter(stationDirectionFilter)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("기준역을 찾을 수 없습니다."));
     }
 
     public boolean isEmpty() {

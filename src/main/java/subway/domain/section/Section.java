@@ -44,12 +44,36 @@ public class Section {
         }
     }
 
+    public boolean isSameUpStation(final Section other) {
+        return this.upStation.isSameStation(other.upStation);
+    }
+
+    public boolean isSameDownStation(final Section other) {
+        return this.downStation.isSameStation(other.downStation);
+    }
+
     public boolean isAssemblableOnFront(final Section other) {
         return this.upStation.isSameStation(other.downStation);
     }
 
     public boolean isAssemblableOnBack(final Section other) {
         return this.downStation.isSameStation(other.upStation);
+    }
+
+    public Section createDownToDownSection(final Section other) {
+        return new Section(
+                other.downStation,
+                this.downStation,
+                this.distance.subtract(other.distance)
+        );
+    }
+
+    public Section createUpToUpSection(final Section other) {
+        return new Section(
+                other.upStation,
+                this.upStation,
+                other.distance.subtract(this.distance)
+        );
     }
 
     public Long getId() {

@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import subway.domain.station.Station;
 import subway.domain.station.StationName;
 import subway.fixture.SectionsFixture.AB;
+import subway.fixture.SectionsFixture.ABC;
 
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -98,6 +99,63 @@ class SectionsTest {
                 () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(AB.stationA)).isTrue(),
                 () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(AB.stationB)).isTrue(),
                 () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(stationC)).isTrue()
+        );
+    }
+
+
+    /*
+       기존 구간: A-B-C
+       요청된 구간: B-D
+       새로운 구간 연결: A-B-D-C
+    */
+    @Test
+    void 새로운_구간의_상행선이_기준역일_때_중간에_구간을_추가할_수_있다() {
+        // given
+        final StationName stationNameD = new StationName("D");
+        final Station stationD = new Station(stationNameD);
+        final Distance otherDistance = new Distance(5);
+        final Section other = new Section(AB.stationB, stationD, otherDistance);
+
+        // when
+        final Sections updatedSections = ABC.sections.addSection(other);
+
+        // then
+        final List<Section> linkedSections = updatedSections.getSections();
+        assertAll(
+                () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(AB.stationA)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(AB.stationB)).isTrue(),
+                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(stationD)).isTrue(),
+                () -> assertThat(linkedSections.get(2).getDownStation().isSameStation(ABC.stationC)).isTrue(),
+                () -> assertThat(linkedSections.get(1).getDistance().distance()).isEqualTo(5),
+                () -> assertThat(linkedSections.get(2).getDistance().distance()).isEqualTo(1)
+        );
+    }
+
+    /*
+       기존 구간: A-B-C
+       요청된 구간: D-B
+       새로운 구간 연결: A-D-B-C
+    */
+    @Test
+    void 새로운_구간의_하행선이_기준역일_때_중간에_구간을_추가할_수_있다() {
+        // given
+        final StationName stationNameD = new StationName("D");
+        final Station stationD = new Station(stationNameD);
+        final Distance otherDistance = new Distance(5);
+        final Section other = new Section(stationD, AB.stationB, otherDistance);
+
+        // when
+        final Sections updatedSections = ABC.sections.addSection(other);
+
+        // then
+        final List<Section> linkedSections = updatedSections.getSections();
+        assertAll(
+                () -> assertThat(linkedSections.get(0).getUpStation().isSameStation(AB.stationA)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getDownStation().isSameStation(stationD)).isTrue(),
+                () -> assertThat(linkedSections.get(1).getDownStation().isSameStation(AB.stationB)).isTrue(),
+                () -> assertThat(linkedSections.get(2).getDownStation().isSameStation(ABC.stationC)).isTrue(),
+                () -> assertThat(linkedSections.get(0).getDistance().distance()).isEqualTo(1),
+                () -> assertThat(linkedSections.get(1).getDistance().distance()).isEqualTo(5)
         );
     }
 }

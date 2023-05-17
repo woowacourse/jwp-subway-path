@@ -20,4 +20,15 @@ public class SectionsFixture {
 
         public static final Sections sections = Sections.emptySections().addSection(section);
     }
+
+    public static class ABC {
+        public static final StationName stationNameC = new StationName("C");
+
+        public static final Station stationC = new Station(stationNameC);
+
+        public static final Distance distance = new Distance(6);
+        public static final Section section = new Section(AB.stationB, stationC, distance);
+
+        public static final Sections sections = AB.sections.addSection(section);
+    }
 }
