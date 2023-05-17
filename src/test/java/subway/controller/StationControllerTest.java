@@ -30,6 +30,8 @@ import subway.service.StationService;
 @WebMvcTest(StationController.class)
 class StationControllerTest {
 
+    private static final String API_URL = "/stations";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -45,7 +47,7 @@ class StationControllerTest {
                 .willReturn(300L);
 
         // when & then
-        mockMvc.perform(post("/stations")
+        mockMvc.perform(post(API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(request)))
                 .andExpect(status().isCreated())
@@ -60,7 +62,7 @@ class StationControllerTest {
         StationCreateRequest request = new StationCreateRequest(nullAndEmpty);
 
         // when & then
-        mockMvc.perform(post("/stations")
+        mockMvc.perform(post(API_URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(toJson(request)))
                 .andExpect(status().isUnprocessableEntity())

@@ -37,6 +37,8 @@ import subway.service.LineService;
 @WebMvcTest(LineController.class)
 class LineControllerTest {
 
+    private static final String API_URL = "/lines";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -106,7 +108,7 @@ class LineControllerTest {
         }
 
         private ResultActions 노선을_생성한다(LineCreateRequest request) throws Exception {
-            return mockMvc.perform(post("/lines")
+            return mockMvc.perform(post(API_URL)
                             .contentType(MediaType.APPLICATION_JSON)
                             .content(toJson(request)))
                     .andDo(print());
@@ -125,15 +127,15 @@ class LineControllerTest {
                 .willReturn(response);
 
         // when & then
-        mockMvc.perform(get("/lines/{id}", 1L))
+        mockMvc.perform(get(API_URL + "/{id}", 1L))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.lineName").value("1호선"))
                 .andExpect(jsonPath("$.stationQueryResponseList[0].upStationName").value("잠실새내역"))
                 .andExpect(jsonPath("$.stationQueryResponseList[0].downStationName").value("잠실역"))
-                .andExpect(jsonPath("$.stationQueryResponseList[0].distance").value(10))
                 .andExpect(jsonPath("$.stationQueryResponseList[1].upStationName").value("잠실역"))
                 .andExpect(jsonPath("$.stationQueryResponseList[1].downStationName").value("잠실나루역"))
                 .andExpect(jsonPath("$.stationQueryResponseList[1].distance").value(15))
+                .andExpect(jsonPath("$.stationQueryResponseList[0].distance").value(10))
                 .andDo(print());
     }
 
@@ -157,7 +159,7 @@ class LineControllerTest {
                 .willReturn(responses);
 
         // when & then
-        mockMvc.perform(get("/lines"))
+        mockMvc.perform(get(API_URL))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.[0].lineName").value("1호선"))
                 .andExpect(jsonPath("$.[0].stationQueryResponseList[0].upStationName").value("잠실새내역"))

@@ -16,4 +16,12 @@ public class StationFixture {
     public static final Station 잠실새내역 = new Station("잠실새내역");
     public static final Station 잠실역 = new Station("잠실역");
     public static final Station 잠실나루역 = new Station("잠실나루역");
+
+    public static final Station 일번역 = new Station("1번역");
+    public static final Station 이번역 = new Station("2번역");
+    public static final Station 삼번역 = new Station("3번역");
+    public static final Station 사번역 = new Station("4번역");
+    public static final Station 오번역 = new Station("5번역");
+    public static final Station 육번역= new Station("6번역");
+    public static final Station 지름길 = new Station("지름길");
 }

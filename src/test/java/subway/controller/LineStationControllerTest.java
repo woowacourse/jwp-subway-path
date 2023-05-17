@@ -34,6 +34,8 @@ import subway.service.LineService;
 @WebMvcTest(LineStationController.class)
 class LineStationControllerTest {
 
+    private static final String API_URL = "/lines/stations";
+
     @Autowired
     private MockMvc mockMvc;
 
@@ -113,7 +115,7 @@ class LineStationControllerTest {
         }
 
         private MvcResult 노선_역_추가_요청(AddStationToLineRequest request) throws Exception {
-            return mockMvc.perform(post("/lines/stations")
+            return mockMvc.perform(post(API_URL)
                             .contentType(APPLICATION_JSON)
                             .content(toJson(request)))
                     .andDo(print())
@@ -168,7 +170,7 @@ class LineStationControllerTest {
 
 
         private MvcResult 노선에_역_제거_요청(DeleteStationFromLineRequest request) throws Exception {
-            return mockMvc.perform(delete("/lines/stations")
+            return mockMvc.perform(delete(API_URL)
                             .contentType(APPLICATION_JSON)
                             .content(toJson(request)))
                     .andDo(print())

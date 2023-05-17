@@ -3,6 +3,13 @@ package subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.domain.fixture.SectionFixtures.포함된_구간들을_검증한다;
+import static subway.domain.fixture.StationFixture.사번역;
+import static subway.domain.fixture.StationFixture.삼번역;
+import static subway.domain.fixture.StationFixture.오번역;
+import static subway.domain.fixture.StationFixture.육번역;
+import static subway.domain.fixture.StationFixture.이번역;
+import static subway.domain.fixture.StationFixture.일번역;
+import static subway.domain.fixture.StationFixture.지름길;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -18,27 +25,19 @@ class JgraphtPathFinderTest {
 
     private final JgraphtPathFinder jgraphtPathFinder = new JgraphtPathFinder();
 
-    private static final Station ONE = new Station("1번역");
-    private static final Station TWO = new Station("2번역");
-    private static final Station THREE = new Station("3번역");
-    private static final Station FOUR = new Station("4번역");
-    private static final Station FIVE = new Station("5번역");
-    private static final Station SIX = new Station("6번역");
-    private static final Station 지름길 = new Station("지름길");
-
     @Test
     void 최단_경로를_반환한다() {
         // given
         List<Section> sections1 = List.of(
-                new Section(ONE, TWO, 10),
-                new Section(TWO, THREE, 11),
-                new Section(THREE, FOUR, 12),
-                new Section(FOUR, FIVE, 13),
-                new Section(FIVE, SIX, 14)
+                new Section(일번역, 이번역, 10),
+                new Section(이번역, 삼번역, 11),
+                new Section(삼번역, 사번역, 12),
+                new Section(사번역, 오번역, 13),
+                new Section(오번역, 육번역, 14)
         );
         List<Section> sections2 = List.of(
-                new Section(ONE, 지름길, 5),
-                new Section(지름길, SIX, 10)
+                new Section(일번역, 지름길, 5),
+                new Section(지름길, 육번역, 10)
         );
 
         List<Line> lines = List.of(
@@ -47,27 +46,26 @@ class JgraphtPathFinderTest {
         );
 
         // when
-        Path path = jgraphtPathFinder.findShortestPath(ONE, SIX, lines);
+        Path path = jgraphtPathFinder.findShortestPath(일번역, 육번역, lines);
 
         // then
-        assertThat(path.getTotalDistance()).isEqualTo(15);
         포함된_구간들을_검증한다(path.getSections(),
                 "1번역-[5km]-지름길",
                 "지름길-[10km]-6번역"
         );
+        assertThat(path.getTotalDistance()).isEqualTo(15);
     }
 
     @Test
     void 이어지지않은_경로를_요청시_예외_역이_이어진_노선은_있으나_연결되지않은_경우() {
         // given
         List<Section> sections1 = List.of(
-                new Section(ONE, TWO, 10),
-                new Section(TWO, THREE, 11),
-                new Section(THREE, FOUR, 12)
+                new Section(일번역, 이번역, 10),
+                new Section(이번역, 삼번역, 11),
+                new Section(삼번역, 사번역, 12)
         );
-
         List<Section> sections2 = List.of(
-                new Section(지름길, FIVE, 15)
+                new Section(지름길, 오번역, 15)
         );
 
         List<Line> lines = List.of(
@@ -76,7 +74,7 @@ class JgraphtPathFinderTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> jgraphtPathFinder.findShortestPath(ONE, FIVE, lines))
+        assertThatThrownBy(() -> jgraphtPathFinder.findShortestPath(일번역, 오번역, lines))
                 .isInstanceOf(NotFoundPathException.class);
     }
 
@@ -84,9 +82,9 @@ class JgraphtPathFinderTest {
     void 이어지지않은_경로를_요청시_예외_역은_존재하나_노선상에_없는_경우() {
         // given
         List<Section> sections1 = List.of(
-                new Section(ONE, TWO, 10),
-                new Section(TWO, THREE, 11),
-                new Section(THREE, FOUR, 12)
+                new Section(일번역, 이번역, 10),
+                new Section(이번역, 삼번역, 11),
+                new Section(삼번역, 사번역, 12)
         );
 
         List<Line> lines = List.of(
@@ -94,7 +92,7 @@ class JgraphtPathFinderTest {
         );
 
         // when & then
-        assertThatThrownBy(() -> jgraphtPathFinder.findShortestPath(ONE, FIVE, lines))
+        assertThatThrownBy(() -> jgraphtPathFinder.findShortestPath(일번역, 오번역, lines))
                 .isInstanceOf(NotFoundPathException.class);
     }
 }
