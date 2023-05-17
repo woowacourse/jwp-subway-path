@@ -82,4 +82,10 @@ public class SectionRepository {
                 section.getDistance().getValue()
         );
     }
+
+    public void update(final Long lineId, final Sections sections) {
+        sectionDao.deleteAllByLineId(lineId);
+
+        saveSections(sections.getSections());
+    }
 }

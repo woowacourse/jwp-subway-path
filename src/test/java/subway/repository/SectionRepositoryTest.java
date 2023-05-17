@@ -161,4 +161,24 @@ class SectionRepositoryTest {
                 () -> assertThat(sections_신림선.getSections()).hasSize(0)
         );
     }
+
+    @Test
+    void Section_정보들을_수정한다() {
+        // given
+        insert_신림역_봉천역_2호선();
+        Station 서울대입구역 = stationDao.insert(new Station("서울대입구역"));
+        Section section1 = new Section(1L, _2호선, 신림역, 봉천역, new Distance(10));
+        Section section2 = new Section(2L, _2호선, 봉천역, 서울대입구역, new Distance(10));
+
+        sectionRepository.saveSections(List.of(section1, section2));
+
+        Sections _2호선_Sections = sectionRepository.findByLine(_2호선);
+        _2호선_Sections.removeStation(_2호선, 서울대입구역);
+
+        // when
+        sectionRepository.update(_2호선.getId(), _2호선_Sections);
+
+        // then
+        assertThat(sectionRepository.findByLine(_2호선).getSections()).hasSize(1);
+    }
 }
