@@ -34,35 +34,32 @@ public class SectionService {
         this.sectionRepository = sectionRepository;
     }
 
-    public void addOneSection(final Long lineId, final AddOneSectionRequest addOneSectionRequest) {
-        Line line = lineDao.findById(lineId);
-        Station upStation = stationDao.findById(addOneSectionRequest.getUpStationId());
-        Station downStation = stationDao.findById(addOneSectionRequest.getDownStationId());
-        Distance distance = new Distance(addOneSectionRequest.getDistance());
+    public void addOneSection(final Long lineId, final AddOneSectionRequest request) {
+        Section section = createSection(lineId, request.getUpStationId(), request.getDownStationId(), request.getDistance());
 
-        Section section = new Section(line, upStation, downStation, distance);
-
-        Sections sections = sectionRepository.findByLine(line);
+        Sections sections = sectionRepository.findSameLine(section);
         sections.add(section);
 
         sectionRepository.save(section);
     }
 
-    public void addTwoSections(final Long lineId, final AddTwoSectionRequest addTwoSectionRequest) {
-        Line line = lineDao.findById(lineId);
-        Station newStation = stationDao.findById(addTwoSectionRequest.getNewStationId());
-        Station upStation = stationDao.findById(addTwoSectionRequest.getUpStationId());
-        Station downStation = stationDao.findById(addTwoSectionRequest.getDownStationId());
-        Distance upDistance = new Distance(addTwoSectionRequest.getUpStationDistance());
-        Distance downDistance = new Distance(addTwoSectionRequest.getDownStationDistance());
+    public void addTwoSections(final Long lineId, final AddTwoSectionRequest request) {
+        Section upSection = createSection(lineId, request.getUpStationId(), request.getNewStationId(), request.getUpStationDistance());
+        Section downSection = createSection(lineId, request.getNewStationId(), request.getDownStationId(), request.getDownStationDistance());
 
-        Section upSection = new Section(line, upStation, newStation, upDistance);
-        Section downSection = new Section(line, newStation, downStation, downDistance);
-
-        Sections sections = sectionRepository.findAll();
+        Sections sections = sectionRepository.findSameLine(upSection);
         sections.addTwoSections(upSection, downSection);
 
         sectionRepository.update(lineId, sections);
+    }
+
+    private Section createSection(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
+        return new Section(
+                lineDao.findById(lineId),
+                stationDao.findById(upStationId),
+                stationDao.findById(downStationId),
+                new Distance(distance)
+        );
     }
 
     public void removeStation(final Long lineId, final Long stationId) {

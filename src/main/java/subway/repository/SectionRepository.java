@@ -52,6 +52,14 @@ public class SectionRepository {
                 .collect(toList()));
     }
 
+    public Sections findSameLine(final Section section) {
+        List<SectionEntity> sectionEntities = sectionDao.findByLineId(section.getLine().getId());
+
+        return new Sections(sectionEntities.stream()
+                .map(this::toDomain)
+                .collect(toList()));
+    }
+
     public Sections findByLine(final Line line) {
         List<SectionEntity> sectionEntities = sectionDao.findByLineId(line.getId());
 
