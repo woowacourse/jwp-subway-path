@@ -54,6 +54,12 @@ public class StationDao {
         return insertAction.executeAndReturnKeyHolder(name).getKey().longValue();
     }
 
+    public Long save(final StationEntity stationEntity) {
+        final MapSqlParameterSource name = new MapSqlParameterSource()
+                .addValue("name", stationEntity.getName());
+        return insertAction.executeAndReturnKeyHolder(name).getKey().longValue();
+    }
+
     public List<StationEntity> findAll() {
         String sql = "select * from STATIONS";
         return jdbcTemplate.query(sql, rowMapper);
@@ -77,15 +83,14 @@ public class StationDao {
         }
     }
 
+    public void update(final StationEntity stationEntity) {
+        final String sql = "UPDATE stations SET name = ? WHERE = ? ";
+        jdbcTemplate.update(sql, stationEntity.getName(), stationEntity.getId());
+    }
+
     public void deleteById(Long id) {
         final String sql = "DELETE FROM stations WHERE id = ?";
         jdbcTemplate.update(sql, id);
-    }
-
-    public Long save(final StationEntity stationEntity) {
-        final MapSqlParameterSource name = new MapSqlParameterSource()
-                .addValue("name", stationEntity.getName());
-        return insertAction.executeAndReturnKeyHolder(name).getKey().longValue();
     }
 
     public void delete(final List<StationEntity> stations) {

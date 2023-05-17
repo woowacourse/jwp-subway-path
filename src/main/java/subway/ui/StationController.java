@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import subway.application.StationService;
-import subway.dto.InitStationRequest;
 import subway.dto.StationRequest;
+import subway.dto.StationResponse;
 
 import java.net.URI;
 
@@ -29,18 +29,27 @@ public class StationController {
                 .build();
     }
 
-    @PostMapping("/inits")
-    public ResponseEntity<Void> createInitStation(@RequestBody InitStationRequest request) {
-        stationService.saveInitStation(request);
+    @GetMapping("/{stationId}")
+    public ResponseEntity<StationResponse> readStation(@PathVariable Long stationId) {
+        StationResponse station = stationService.findStation(stationId);
+
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(station);
+    }
+    @PutMapping("/{stationId}")
+    public ResponseEntity<Void> udpateStation(@PathVariable Long stationId, @RequestBody StationRequest request) {
+        stationService.editStation(stationId, request);
 
         return ResponseEntity
                 .status(HttpStatus.CREATED)
+                .location(URI.create("/stations/" + stationId))
                 .build();
     }
 
     @DeleteMapping("/{stationId}")
     public ResponseEntity<Void> deleteStationByName(@PathVariable Long stationId) {
-        stationService.deleteStation(stationId);
+        stationService.removeStation(stationId);
 
         return ResponseEntity
                 .status(HttpStatus.NO_CONTENT)

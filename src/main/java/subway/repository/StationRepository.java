@@ -22,7 +22,7 @@ public class StationRepository {
     public Station findById(final Long id) {
         Optional<StationEntity> maybeStationEntity = stationDao.findById(id);
         if (maybeStationEntity.isEmpty()) {
-            return Station.EMPTY_STATION;
+            throw new IllegalArgumentException("해당 역은 존재하지 않습니다");
         }
         return maybeStationEntity.get().convertToStation();
     }
@@ -46,6 +46,11 @@ public class StationRepository {
         updateStations.removeAll(beforeLine.findAllStation());
         List<StationEntity> updateStationEntities = convertToStationEntities(updateStations);
         stationDao.save(updateStationEntities);
+    }
+
+    public void update(final Station before, final Station after) {
+        StationEntity stationEntity = new StationEntity(before.getId(), after.getName());
+        stationDao.update(stationEntity);
     }
 
     public void delete(final Station station) {
