@@ -16,7 +16,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(IllegalAddSectionException.class)
     public ResponseEntity<String> handleIllegalAddSectionException(final IllegalAddSectionException e) {
-        return ResponseEntity.badRequest().body(e.getMessage());
+        return ResponseEntity.badRequest().body(IllegalAddSectionException.MESSAGE);
+    }
+
+    @ExceptionHandler(IllegalRemoveSectionException.class)
+    public ResponseEntity<String> handleIllegalRemoveSectionException(final IllegalRemoveSectionException e) {
+        return ResponseEntity.badRequest().body(IllegalRemoveSectionException.MESSAGE);
     }
 
     @ExceptionHandler(EmptyResultDataAccessException.class)
