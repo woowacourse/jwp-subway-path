@@ -14,33 +14,33 @@ public class ExceptionHandlerController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<String> handleDomainException(IllegalArgumentException exception) {
+    public ResponseEntity<ExceptionResponse> handleDomainException(IllegalArgumentException exception) {
         errorLogging(exception);
 
         return ResponseEntity.badRequest()
-                             .body(exception.getMessage());
+                             .body(new ExceptionResponse(exception.getMessage()));
     }
 
     @ExceptionHandler(BusinessException.class)
-    public ResponseEntity<String> handleBusinessException(BusinessException exception) {
+    public ResponseEntity<ExceptionResponse> handleBusinessException(BusinessException exception) {
         errorLogging(exception);
 
-        return new ResponseEntity<>(exception.getMessage(), exception.getHttpStatus());
+        return new ResponseEntity<>(new ExceptionResponse(exception.getMessage()), exception.getHttpStatus());
     }
 
     @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> handleUnexpectedException(Exception exception) {
+    public ResponseEntity<ExceptionResponse> handleUnexpectedException(Exception exception) {
         errorLogging(exception);
 
         return ResponseEntity.internalServerError()
-                             .body("전화 주세요");
+                             .body(new ExceptionResponse("전화 주세요"));
     }
 
     @ExceptionHandler(DataAccessResourceFailureException.class)
-    public ResponseEntity<String> handleDatabaseException(DataAccessResourceFailureException exception) {
+    public ResponseEntity<ExceptionResponse> handleDatabaseException(DataAccessResourceFailureException exception) {
         errorLogging(exception);
 
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(new ExceptionResponse(exception.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     private void errorLogging(Exception exception) {
