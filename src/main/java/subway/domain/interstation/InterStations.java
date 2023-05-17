@@ -3,6 +3,7 @@ package subway.domain.interstation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.Getter;
@@ -79,6 +80,7 @@ public class InterStations {
     }
 
     public void add(final Long upStationId, final Long downStationId, final Long newStationId, final long distance) {
+        validate(upStationId, downStationId, newStationId);
         if (downStationId == null) {
             addLast(new InterStation(upStationId, newStationId, distance));
             return;
@@ -88,6 +90,37 @@ public class InterStations {
             return;
         }
         addMiddle(upStationId, downStationId, newStationId, distance);
+    }
+
+    private void validate(final Long upStationId,
+                          final Long downStationId,
+                          final Long newStationId) {
+        validateEmptyInterStation(upStationId, downStationId);
+        validateDuplicateInterStation(upStationId, downStationId, newStationId);
+
+    }
+
+    private void validateDuplicateInterStation(final Long upStationId,
+                                               final Long downStationId,
+                                               final Long newStationId) {
+        interStations.stream()
+            .filter(it -> it.getUpStationId().equals(upStationId) && it.getDownStationId().equals(newStationId))
+            .findFirst()
+            .ifPresent(it -> {
+                throw new InterStationsException("구간이 중복되었습니다.");
+            });
+        interStations.stream()
+            .filter(it -> it.getUpStationId().equals(downStationId) && it.getDownStationId().equals(newStationId))
+            .findFirst()
+            .ifPresent(it -> {
+                throw new InterStationsException("구간이 중복되었습니다.");
+            });
+    }
+
+    private void validateEmptyInterStation(final Long upStationId, final Long downStationId) {
+        if (upStationId == null && downStationId == null) {
+            throw new InterStationsException("구간이 비어있습니다.");
+        }
     }
 
     private void addMiddle(final Long upStationId,
@@ -101,55 +134,21 @@ public class InterStations {
             new InterStation(newStationId, downStationId, removedInterStation.getDistance().minus(distance)));
     }
 
-    public void add(final InterStation interStation) {
-        validate(interStation);
-        if (isFirstStation(interStation)) {
-            addFirst(interStation);
-            return;
-        }
-        if (isLastStation(interStation)) {
-            addLast(interStation);
-            return;
-        }
-        addMiddle(interStation);
-    }
-
-    private void validate(final InterStation interStation) {
-        if (interStation == null) {
-            throw new InterStationsException("구간이 비어있습니다.");
-        }
-        if (interStations.contains(interStation)) {
-            throw new InterStationsException("구간이 중복되었습니다.");
-        }
-    }
-
-    private boolean isFirstStation(final InterStation interStation) {
-        return interStation.getUpStationId().equals(interStations.get(0).getUpStationId());
-    }
-
     private void addFirst(final InterStation interStation) {
+        if (!Objects.equals(interStation.getDownStationId(), interStations.get(0).getUpStationId())) {
+            throw new InterStationsException("구간이 연결되어있지 않습니다.");
+        }
         interStations.add(0, new InterStation(interStation.getDownStationId(),
             interStation.getUpStationId(),
             interStation.getDistance()));
     }
 
-    private boolean isLastStation(final InterStation interStation) {
-        return interStation.getUpStationId().equals(interStations.get(interStations.size() - 1).getDownStationId());
-    }
-
     private void addLast(final InterStation interStation) {
+        if (!Objects.equals(interStation.getUpStationId(),
+            interStations.get(interStations.size() - 1).getDownStationId())) {
+            throw new InterStationsException("구간이 연결되어있지 않습니다.");
+        }
         interStations.add(interStation);
-    }
-
-    private void addMiddle(final InterStation interStation) {
-        final int index = findUpStationIndex(interStation.getUpStationId());
-        final InterStation removedInterStation = interStations.remove(index);
-        interStations.add(index, new InterStation(removedInterStation.getUpStationId(),
-            interStation.getDownStationId(),
-            interStation.getDistance()));
-        interStations.add(index + 1, new InterStation(interStation.getDownStationId(),
-            removedInterStation.getDownStationId(),
-            removedInterStation.getDistance().minus(interStation.getDistance())));
     }
 
     private int findUpStationIndex(final Long upStationId) {
@@ -201,10 +200,6 @@ public class InterStations {
 
     public boolean isEmpty() {
         return interStations.isEmpty();
-    }
-
-    public InterStation getFirstInterStation() {
-        return interStations.get(0);
     }
 
     public List<Long> getAllStations() {

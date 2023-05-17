@@ -118,7 +118,7 @@ class InterStationsTest {
             final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
             final InterStations interStations = new InterStations(given);
 
-            assertThatCode(() -> interStations.add(누누에서_두둠_구간_id_2))
+            assertThatCode(() -> interStations.add(2L, null, 3L, 10))
                 .doesNotThrowAnyException();
         }
 
@@ -127,7 +127,7 @@ class InterStationsTest {
             final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
             final InterStations interStations = new InterStations(given);
 
-            assertThatCode(() -> interStations.add(코다에서_누누_구간_id_1))
+            assertThatCode(() -> interStations.add(1L, 2L, 2L, 10L))
                 .isInstanceOf(InterStationsException.class)
                 .hasMessage("구간이 중복되었습니다.");
         }
@@ -137,7 +137,7 @@ class InterStationsTest {
             final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
             final InterStations interStations = new InterStations(given);
 
-            assertThatCode(() -> interStations.add(두둠에서_처음보는_역_id_3))
+            assertThatCode(() -> interStations.add(3L, null, 4L, 10L))
                 .isInstanceOf(InterStationsException.class)
                 .hasMessage("구간이 연결되어있지 않습니다.");
         }
@@ -147,11 +147,11 @@ class InterStationsTest {
             final List<InterStation> given = List.of(코다에서_누누_구간_id_1);
             final InterStations interStations = new InterStations(given);
 
-            interStations.add(누누에서_두둠_구간_id_2);
+            interStations.add(2L, null, 3L, 10L);
 
             assertThat(interStations.getInterStations()).containsExactly(
                 코다에서_누누_구간_id_1,
-                누누에서_두둠_구간_id_2
+                new InterStation(null, 2L, 3L, 10L)
             );
         }
 
@@ -168,7 +168,7 @@ class InterStationsTest {
                 new InterStation(처음보는_역_id_4.getId(), 두둠_역_id_3.getId(), 9L)
             );
 
-            interStations.add(new InterStation(누누_역_id_2.getId(), 처음보는_역_id_4.getId(), 1L));
+            interStations.add(누누_역_id_2.getId(), 3L, 4L, 1L);
 
             assertThat(interStations.getInterStations()).usingRecursiveComparison()
                 .isEqualTo(expected);
