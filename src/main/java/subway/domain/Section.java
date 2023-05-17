@@ -29,6 +29,35 @@ public class Section {
         }
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final Section section = (Section) o;
+
+        return id != null ? id.equals(section.id) : section.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
+    @Override
+    public String toString() {
+        return "Section{" +
+                "id=" + id +
+                ", upStation=" + upStation +
+                ", downStation=" + downStation +
+                ", distance=" + distance +
+                '}';
+    }
+
     public Long getId() {
         return id;
     }
@@ -43,47 +72,5 @@ public class Section {
 
     public int getDistance() {
         return distance;
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-
-        final Section section = (Section) o;
-
-        if (distance != section.distance) {
-            return false;
-        }
-        if (id != null ? !id.equals(section.id) : section.id != null) {
-            return false;
-        }
-        if (upStation != null ? !upStation.equals(section.upStation) : section.upStation != null) {
-            return false;
-        }
-        return downStation != null ? downStation.equals(section.downStation) : section.downStation == null;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id != null ? id.hashCode() : 0;
-        result = 31 * result + (upStation != null ? upStation.hashCode() : 0);
-        result = 31 * result + (downStation != null ? downStation.hashCode() : 0);
-        result = 31 * result + distance;
-        return result;
-    }
-
-    @Override
-    public String toString() {
-        return "Section{" +
-                "id=" + id +
-                ", upStation=" + upStation +
-                ", downStation=" + downStation +
-                ", distance=" + distance +
-                '}';
     }
 }

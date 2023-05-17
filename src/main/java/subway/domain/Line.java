@@ -32,6 +32,25 @@ public class Line {
         return sections.findOrderedStation();
     }
 
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        final Line line = (Line) o;
+
+        return id != null ? id.equals(line.id) : line.id == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return id != null ? id.hashCode() : 0;
+    }
+
     public Long getId() {
         return id;
     }
@@ -43,7 +62,7 @@ public class Line {
     public String getColor() {
         return lineInfo.getColor();
     }
-    
+
     public List<Section> getSections() {
         return sections.getSections();
     }
