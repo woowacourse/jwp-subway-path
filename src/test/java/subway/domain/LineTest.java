@@ -21,7 +21,7 @@ class LineTest {
     @Test
     void 호선에_역을_추가한다() {
         //given
-        final Line line = new Line(1L, 일호선, 남색, new Sections(List.of(후추_디노, 디노_조앤)));
+        final Line line = new Line(1L, "일호선", "남색", List.of(후추_디노, 디노_조앤));
 
         //when
         final Line insertedLine = line.insert(로운, 디노, 2);
@@ -38,7 +38,7 @@ class LineTest {
     @Test
     void 호선에_역을_제거한다() {
         //given
-        final Line line = new Line(1L, 일호선, 남색, new Sections(List.of(후추_디노, 디노_조앤)));
+        final Line line = new Line(1L, "일호선", "남색", List.of(후추_디노, 디노_조앤));
 
         //when
         final Line deletedLine = line.delete(디노);
@@ -53,14 +53,26 @@ class LineTest {
 
     @ParameterizedTest
     @CsvSource({"일호선, true", "이호선, false"})
-    void 이름이_같은지_확인한다(final Name name, final boolean expected) {
+    void 이름이_같은지_확인한다(final String name, final boolean expected) {
         //given
-        final Line line = new Line(1L, 일호선, 남색, new Sections(List.of(후추_디노, 디노_조앤)));
+        final Line line = new Line(1L, "일호선", "남색", List.of(후추_디노, 디노_조앤));
 
         //when
-        final boolean actual = line.hasSameName(new Line(1L, name, 남색, new Sections(List.of(후추_디노, 디노_조앤))));
+        final boolean actual = line.hasSameName(new Line(1L, name, "남색", List.of(후추_디노, 디노_조앤)));
 
         //then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 정렬된_역들을_반환한다() {
+        //given
+        final Line line = new Line(1L, "일호선", "남색", List.of(후추_디노, 디노_조앤));
+
+        //when
+        final List<Station> stations = line.getOrderedStations();
+
+        //then
+        assertThat(stations).containsExactly(후추, 디노, 조앤);
     }
 }

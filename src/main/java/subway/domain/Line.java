@@ -16,22 +16,11 @@ public class Line {
         this.sections = new Sections(sections);
     }
 
-    public Line(final Long id, final String name, final String color, final Sections sections) {
-        this.id = id;
-        this.name = new Name(name);
-        this.color = new Color(color);
-        this.sections = sections;
-    }
-
-    public Line(final Long id, final Name name, final Color color, final Sections sections) {
+    private Line(final Long id, final Name name, final Color color, final Sections sections) {
         this.id = id;
         this.name = name;
         this.color = color;
         this.sections = sections;
-    }
-
-    public Line(final String name, final String color, final Sections sections) {
-        this(null, name, color, sections);
     }
 
     public Line insert(final Station from, final Station to, final int distance) {
@@ -44,6 +33,10 @@ public class Line {
 
     public boolean hasSameName(final Line line) {
         return name.equals(line.name);
+    }
+
+    public List<Station> getOrderedStations() {
+        return sections.getOrderedStations();
     }
 
     public Long getId() {
@@ -77,5 +70,15 @@ public class Line {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color, sections);
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name=" + name +
+                ", color=" + color +
+                ", sections=" + sections +
+                '}';
     }
 }
