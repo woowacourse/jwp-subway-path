@@ -43,12 +43,12 @@ class DeleteLineControllerTest {
     }
     
     @Test
-    void lineId가_null일_시_예외_발생() {
+    void lineId가_숫자가_아닐_시_예외_발생() {
         // expect
         RestAssuredMockMvc.given().log().all()
-                .when().delete("/lines/" + null)
+                .when().delete("/lines/abc")
                 .then().log().all()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("message", is("[ERROR] 서버가 응답할 수 없습니다."));
+                .status(HttpStatus.BAD_REQUEST)
+                .body("message", is("[ERROR] 파라미터 타입과 일치하지 않습니다."));
     }
 }

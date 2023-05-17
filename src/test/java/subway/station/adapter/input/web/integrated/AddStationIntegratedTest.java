@@ -302,6 +302,7 @@ class AddStationIntegratedTest extends IntegrationTest {
         params.put("lineId", Long.parseLong(lineId));
         params.put("baseStation", "선릉역");
         params.put("direction", "right");
+//        params.put("additionalStation", "청라역");
         params.put("additionalStation", "청라역");
         params.put("distance", 5L);
         
@@ -310,8 +311,8 @@ class AddStationIntegratedTest extends IntegrationTest {
                 .body(params)
                 .when().post("/stations")
                 .then().log().all()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .body("message", is("[ERROR] 서버가 응답할 수 없습니다."));
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", is("[ERROR] 해당 파라미터로 변환할 수 없습니다."));
     }
     
     @ParameterizedTest(name = "{displayName} : additionalStation = {0}")

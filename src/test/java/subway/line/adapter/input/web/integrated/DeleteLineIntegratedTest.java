@@ -72,7 +72,7 @@ class DeleteLineIntegratedTest extends IntegrationTest {
     }
     
     @Test
-    void lineId가_null일_시_예외_발생() {
+    void lineId가_숫자가_아닐_시_예외_발생() {
         // given
         final Map<String, Object> params = new HashMap<>();
         params.put("name", "1호선");
@@ -90,9 +90,9 @@ class DeleteLineIntegratedTest extends IntegrationTest {
         
         // expect
         RestAssured.given().log().all()
-                .when().delete("/lines/" + null)
+                .when().delete("/lines/abc")
                 .then().log().all()
-                .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .body("message", is("[ERROR] 서버가 응답할 수 없습니다."));
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .body("message", is("[ERROR] 파라미터 타입과 일치하지 않습니다."));
     }
 }

@@ -119,8 +119,8 @@ class AddStationControllerTest {
                 .body(params)
                 .when().post("/stations")
                 .then().log().all()
-                .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("message", is("[ERROR] 서버가 응답할 수 없습니다."));
+                .status(HttpStatus.BAD_REQUEST)
+                .body("message", is("[ERROR] 해당 파라미터로 변환할 수 없습니다."));
     }
     
     @ParameterizedTest(name = "{displayName} : additionalStation = {0}")
