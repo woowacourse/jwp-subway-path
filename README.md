@@ -350,3 +350,4 @@ HTTP/1.1 204 No Content
 - [x] 테스트 시, Map 타입 대신 실제 요청 객체 생성해서 사용하도록 변경
 - [x] @AutoConfigureTestDatabase의 default 옵션 제거
 - [x] 가독성을 위해 개행 추가 및 제거
+- [x] ExceptionHandler 설정 추가
