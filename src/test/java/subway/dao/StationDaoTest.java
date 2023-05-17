@@ -98,16 +98,4 @@ class StationDaoTest {
         assertThatThrownBy(() -> assertThat(stationDao.findById(id).get()))
                 .isInstanceOf(NoSuchElementException.class);
     }
-
-    @Test
-    void 등록된_역을_이름으로_조회한다() {
-        // given
-        final Long id = stationDao.insert(A.entity);
-
-        // when
-        final StationEntity result = stationDao.findByName("A").get();
-
-        // then
-        assertThat(result.getName()).isEqualTo(A.entity.getName());
-    }
 }

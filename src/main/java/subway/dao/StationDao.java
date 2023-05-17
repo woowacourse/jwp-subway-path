@@ -57,13 +57,4 @@ public class StationDao {
         String sql = "DELETE FROM STATIONS WHERE id = ?";
         jdbcTemplate.update(sql, id);
     }
-
-    public Optional<StationEntity> findByName(final String name) {
-        String sql = "SELECT * FROM STATIONS WHERE name = ?";
-        try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, rowMapper, name));
-        } catch (DataAccessException e) {
-            return Optional.empty();
-        }
-    }
 }
