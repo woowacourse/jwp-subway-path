@@ -1,12 +1,11 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.integration.TestFixture.잠실나루역;
-import static subway.integration.TestFixture.잠실새내역;
-import static subway.integration.TestFixture.잠실역;
-import static subway.integration.TestFixture.종합운동장역;
+import static subway.TestFixture.잠실나루역;
+import static subway.TestFixture.잠실새내역;
+import static subway.TestFixture.잠실역;
+import static subway.TestFixture.종합운동장역;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package subway.integration;
+package subway;
 
 import subway.domain.Section;
 import subway.domain.Station;

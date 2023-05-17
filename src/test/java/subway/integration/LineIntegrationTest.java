@@ -2,11 +2,11 @@ package subway.integration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
-import static subway.integration.TestFixture.JAMSILNARU_ID;
-import static subway.integration.TestFixture.JAMSILSAENAE_ID;
-import static subway.integration.TestFixture.JAMSIL_ID;
-import static subway.integration.TestFixture.JEONGJA_ID;
-import static subway.integration.TestFixture.PANKYO_ID;
+import static subway.TestFixture.JAMSILNARU_ID;
+import static subway.TestFixture.JAMSILSAENAE_ID;
+import static subway.TestFixture.JAMSIL_ID;
+import static subway.TestFixture.JEONGJA_ID;
+import static subway.TestFixture.PANKYO_ID;
 
 import java.util.List;
 import java.util.stream.Collectors;

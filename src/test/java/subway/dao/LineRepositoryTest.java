@@ -11,10 +11,10 @@ import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static subway.integration.TestFixture.몽촌토성역_잠실역;
-import static subway.integration.TestFixture.잠실나루역_잠실역;
-import static subway.integration.TestFixture.잠실역_석촌역;
-import static subway.integration.TestFixture.잠실역_잠실새내역;
+import static subway.TestFixture.몽촌토성역_잠실역;
+import static subway.TestFixture.잠실나루역_잠실역;
+import static subway.TestFixture.잠실역_석촌역;
+import static subway.TestFixture.잠실역_잠실새내역;
 
 import java.util.List;
 

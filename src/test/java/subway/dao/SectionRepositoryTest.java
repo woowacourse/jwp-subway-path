@@ -8,12 +8,12 @@ import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static subway.integration.TestFixture.잠실나루역;
-import static subway.integration.TestFixture.잠실나루역_잠실역;
-import static subway.integration.TestFixture.잠실새내역;
-import static subway.integration.TestFixture.잠실새내역_종합운동장역;
-import static subway.integration.TestFixture.잠실역;
-import static subway.integration.TestFixture.잠실역_잠실새내역;
+import static subway.TestFixture.잠실나루역;
+import static subway.TestFixture.잠실나루역_잠실역;
+import static subway.TestFixture.잠실새내역;
+import static subway.TestFixture.잠실새내역_종합운동장역;
+import static subway.TestFixture.잠실역;
+import static subway.TestFixture.잠실역_잠실새내역;
 
 import java.util.List;
 
