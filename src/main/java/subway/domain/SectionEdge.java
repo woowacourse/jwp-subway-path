@@ -4,15 +4,22 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class SectionEdge extends DefaultWeightedEdge {
 
-    public Station getUpwardStation() {
+    public Section toSection() {
+        return Section.of(getSource(), getTarget(), getDistance());
+    }
+
+    @Override
+    protected Station getSource() {
         return (Station) super.getSource();
     }
 
-    public Station getDownwardStation() {
+    @Override
+    protected Station getTarget() {
         return (Station) super.getTarget();
     }
 
-    public int getDistance() {
+    private int getDistance() {
         return (int) super.getWeight();
     }
+
 }

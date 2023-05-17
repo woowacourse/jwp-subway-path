@@ -78,7 +78,7 @@ public class Path {
         return dijkstraShortestPath.getPath(from, to)
                 .getEdgeList()
                 .stream()
-                .map(edge -> Section.of(edge.getUpwardStation(), edge.getDownwardStation(), edge.getDistance()))
+                .map(SectionEdge::toSection)
                 .collect(Collectors.toUnmodifiableList());
     }
 
