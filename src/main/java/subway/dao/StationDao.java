@@ -55,6 +55,10 @@ public class StationDao {
 
     public void deleteById(Long id) {
         String sql = "DELETE FROM STATIONS WHERE id = ?";
-        jdbcTemplate.update(sql, id);
+        try {
+            jdbcTemplate.update(sql, id);
+        } catch (DataAccessException e) {
+            throw new IllegalStateException("역을 삭제하기 위한 조건이 충분하지 않습니다.");
+        }
     }
 }
