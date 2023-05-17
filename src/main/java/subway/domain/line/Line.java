@@ -54,6 +54,10 @@ public class Line {
         return sections.findStationsByOrdered();
     }
 
+    public boolean isRegisterStation(final Station targetStation) {
+        return sections.isRegisterStation(targetStation);
+    }
+
     public Long getId() {
         return id;
     }

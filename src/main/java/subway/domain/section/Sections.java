@@ -195,7 +195,7 @@ public class Sections {
         }
     }
 
-    private boolean isRegisterStation(final Station targetStation) {
+    public boolean isRegisterStation(final Station targetStation) {
         return sections.containsKey(targetStation);
     }
 
