@@ -1,5 +1,7 @@
 package subway.application;
 
+import static java.util.stream.Collectors.toList;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
@@ -11,7 +13,12 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.AddOneSectionRequest;
 import subway.dto.AddTwoSectionRequest;
+import subway.dto.LineResponse;
+import subway.dto.StationResponse;
 import subway.repository.SectionRepository;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -67,5 +74,20 @@ public class SectionService {
         sections.removeStation(line, station);
 
         sectionRepository.update(lineId, sections);
+    }
+
+    public Map<String, Object> findLineRoute(final Long lineId) {
+        Map<String, Object> result = new HashMap<>();
+
+        Line line = lineDao.findById(lineId);
+        result.put("line", LineResponse.of(line));
+
+        Sections sections = sectionRepository.findAll();
+        List<Station> stationValues = sections.allStationsIn(line);
+        result.put("stations", stationValues.stream()
+                .map(StationResponse::of)
+                .collect(toList()));
+
+        return result;
     }
 }

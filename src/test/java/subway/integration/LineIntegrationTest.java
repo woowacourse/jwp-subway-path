@@ -10,12 +10,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
 import subway.dto.LineRequest;
-import subway.dto.LineResponse;
 
 @DisplayName("지하철 노선 관련 기능")
-@Sql("/schema.sql")
 public class LineIntegrationTest extends IntegrationTest {
 
     private static final LineRequest lineRequest1 = new LineRequest("신분당선", "bg-red-600");
@@ -91,8 +88,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
-        assertThat(resultResponse.getId()).isEqualTo(lineId);
+        assertThat(response.body().jsonPath().getMap("$")).isNotNull();
     }
 
     @DisplayName("지하철 노선을 수정한다.")

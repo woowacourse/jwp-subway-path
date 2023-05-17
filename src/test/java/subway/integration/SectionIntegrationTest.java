@@ -17,6 +17,7 @@ import subway.dto.AddOneSectionRequest;
 import subway.dto.AddTwoSectionRequest;
 import subway.dto.LineRequest;
 import subway.dto.StationRequest;
+import java.util.Map;
 
 public class SectionIntegrationTest extends IntegrationTest {
 
@@ -266,5 +267,28 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         //then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    void 특정_호선을_조회한다() {
+        // given
+        insert_신림역_봉천역_2호선();
+        insert_section_2호선_신림_봉천_거리10();
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.when()
+                .get("/lines/{lineId}", _2호선ID)
+                .then()
+                .contentType(ContentType.JSON)
+                .extract();
+
+        Map<Object, Object> responseBody = response.body().jsonPath().getMap("$");
+
+        // then
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(responseBody.get("line")).isNotNull(),
+                () -> assertThat(responseBody.get("stations")).isNotNull()
+        );
     }
 }
