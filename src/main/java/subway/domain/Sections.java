@@ -77,7 +77,7 @@ public class Sections {
 
     private void validateForkRoad(final Section newSection) {
         boolean isForkRoad = sections.stream()
-                .anyMatch(section -> section.isForkRoadCondition(newSection));
+                .anyMatch(section -> section.isForkRoad(newSection));
 
         if (isForkRoad) {
             throw new IllegalAddSectionException("역은 갈림길이 될 수 없습니다.");

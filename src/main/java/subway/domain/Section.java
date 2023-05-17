@@ -43,27 +43,24 @@ public class Section {
         return upStation.equals(otherSection.upStation) && downStation.equals(otherSection.downStation);
     }
 
-    public boolean isSameLine(final Line otherLine) {
-        return this.line.equals(otherLine);
-    }
-
     public boolean isSameLine(final Section otherSection) {
         return line.equals(otherSection.line);
     }
 
-    public boolean isSameUpStation(final Station upStation) {
-        return this.upStation.equals(upStation);
+    public boolean isSameUpStation(final Station otherStation) {
+        return this.upStation.equals(otherStation);
     }
 
-    public boolean isSameDownStation(final Station downStation) {
-        return this.downStation.equals(downStation);
+    public boolean isSameDownStation(final Station otherStation) {
+        return this.downStation.equals(otherStation);
     }
 
     public boolean isSameDistance(final Section upSection, final Section downSection) {
-        return this.distance.equals(upSection.distance.add(downSection.distance));
+        Distance totalDistance = upSection.distance.add(downSection.distance);
+        return this.distance.equals(totalDistance);
     }
 
-    public boolean isForkRoadCondition(final Section otherSection) {
+    public boolean isForkRoad(final Section otherSection) {
         return this.line.equals(otherSection.line) && this.upStation.equals(otherSection.upStation);
     }
 

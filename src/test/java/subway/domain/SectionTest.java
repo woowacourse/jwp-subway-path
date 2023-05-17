@@ -83,19 +83,6 @@ class SectionTest {
     }
 
     @Test
-    void 특정_라인과_같은_라인인지_확인한다() {
-        // given
-        Line sameLine = new Line(1L, "2호선", "초록색");
-        Line differentLine = new Line(2L, "newLine", "newColor");
-
-        // expect
-        assertAll(
-                () -> assertThat(section.isSameLine(sameLine)).isTrue(),
-                () -> assertThat(section.isSameLine(differentLine)).isFalse()
-        );
-    }
-
-    @Test
     void 다른_Section과_같은_라인인지_확인한다() {
         // given
         Section sameSection = new Section(1L, line, upStation, downStation, distance);
@@ -147,7 +134,7 @@ class SectionTest {
         Section otherSection = new Section(2L, line, upStation, 낙성대역, new Distance(10));
 
         // expect
-        assertThat(section.isForkRoadCondition(otherSection)).isTrue();
+        assertThat(section.isForkRoad(otherSection)).isTrue();
     }
 
     @Test
