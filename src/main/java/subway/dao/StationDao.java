@@ -41,9 +41,9 @@ public class StationDao {
         return insertAction.executeAndReturnKey(new BeanPropertySqlParameterSource(stationEntity)).longValue();
     }
 
-    public boolean exists(final StationEntity stationEntity) {
-        final String sql = "SELECT EXISTS(SELECT * FROM station WHERE id = ?)";
-        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, stationEntity.getId());
+    public boolean existsByName(final StationEntity stationEntity) {
+        final String sql = "SELECT EXISTS(SELECT * FROM station WHERE name = ?)";
+        Integer result = jdbcTemplate.queryForObject(sql, Integer.class, stationEntity.getName());
 
         return result == EXISTED_STATION;
     }

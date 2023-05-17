@@ -69,8 +69,8 @@ public class LineIntegrationTest extends IntegrationTest {
         // given
         final LineRequest 노선_요청 = new LineRequest("2호선");
         ExtractableResponse<Response> 응답 = 노선_생성_요청(노선_요청);
-        역_생성_요청("잠실역", 1L);
-        역_생성_요청("잠실새내역", 1L);
+        역_생성_요청("잠실역");
+        역_생성_요청("잠실새내역");
         구간_생성_요청(구간_생성_요청을_생성한다(1L, 2L, 30), 1L);
 
         // when
@@ -95,8 +95,8 @@ public class LineIntegrationTest extends IntegrationTest {
         // given
         final LineRequest 이호선_생성_요청 = new LineRequest("2호선");
         ExtractableResponse<Response> 이호선_생성_응답 = 노선_생성_요청(이호선_생성_요청);
-        역_생성_요청("잠실역", 1L);
-        역_생성_요청("잠실새내역", 1L);
+        역_생성_요청("잠실역");
+        역_생성_요청("잠실새내역");
         구간_생성_요청(구간_생성_요청을_생성한다(1L, 2L, 30), 1L);
 
         final LineRequest 삼호선_생성_요청 = new LineRequest("3호선");
@@ -128,11 +128,10 @@ public class LineIntegrationTest extends IntegrationTest {
     void 지하철_구간을_생성한다() {
         // given
         LineRequest 노선_생성_요청 = new LineRequest("2호선");
-
         노선_생성_요청(노선_생성_요청);
 
-        역_생성_요청("잠실역", 1L);
-        역_생성_요청("잠실새내역", 1L);
+        역_생성_요청("잠실역");
+        역_생성_요청("잠실새내역");
 
         // when
         SectionCreateRequest 요청 = 구간_생성_요청을_생성한다(1L, 2L, 10);
@@ -153,9 +152,9 @@ public class LineIntegrationTest extends IntegrationTest {
 
         노선_생성_요청(노선_생성_요청);
 
-        역_생성_요청("잠실역", 1L);
-        역_생성_요청("잠실새내역", 1L);
-        역_생성_요청("종합운동장역", 1L);
+        역_생성_요청("잠실역");
+        역_생성_요청("잠실새내역");
+        역_생성_요청("종합운동장역");
         구간_생성_요청(구간_생성_요청을_생성한다(1L, 2L, 10), 1L);
 
         // when
@@ -176,8 +175,8 @@ public class LineIntegrationTest extends IntegrationTest {
         LineRequest 노선_생성_요청 = new LineRequest("2호선");
         노선_생성_요청(노선_생성_요청);
 
-        역_생성_요청("잠실역", 1L);
-        역_생성_요청("잠실새내역", 1L);
+        역_생성_요청("잠실역");
+        역_생성_요청("잠실새내역");
         구간_생성_요청(구간_생성_요청을_생성한다(1L, 2L, 10), 1L);
 
         // when
@@ -206,8 +205,8 @@ public class LineIntegrationTest extends IntegrationTest {
     @Test
     void 존재하지_않는_노선에_구간을_추가하는_경우_예외가_발생한다() {
         // given
-        역_생성_요청("잠실역", 1L);
-        역_생성_요청("잠실새내역", 1L);
+        역_생성_요청("잠실역");
+        역_생성_요청("잠실새내역");
 
         // when
         ExtractableResponse<Response> response = 구간_생성_요청(구간_생성_요청을_생성한다(1L, 2L, 10), 1L);

@@ -11,8 +11,8 @@ import subway.dto.StationCreateRequest;
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 public class StationStep {
-    public static ExtractableResponse<Response> 역_생성_요청(final String 역_이름, final Long 라인_ID) {
-        StationCreateRequest 요청 = new StationCreateRequest(역_이름, 라인_ID);
+    public static ExtractableResponse<Response> 역_생성_요청(final String 역_이름) {
+        StationCreateRequest 요청 = new StationCreateRequest(역_이름);
         return RestAssured.given().log().all()
                 .body(요청)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

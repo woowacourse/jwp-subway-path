@@ -13,8 +13,8 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 import subway.dao.entity.LineEntity;
 import subway.dao.entity.LineWithSectionEntities;
-import subway.dao.entity.SectionEntity;
 import subway.dao.entity.LineWithSectionEntity;
+import subway.dao.entity.SectionEntity;
 
 @Repository
 public class LineDao {

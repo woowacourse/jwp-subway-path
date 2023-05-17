@@ -4,6 +4,7 @@ import org.springframework.stereotype.Repository;
 import subway.dao.StationDao;
 import subway.dao.entity.StationEntity;
 import subway.domain.Station;
+import subway.exception.DuplicateException;
 import subway.exception.ErrorMessage;
 import subway.exception.NotFoundException;
 
@@ -13,6 +14,16 @@ public class StationRepository {
 
     public StationRepository(final StationDao stationDao) {
         this.stationDao = stationDao;
+    }
+
+    public Long save(final Station station) {
+        StationEntity stationEntity = new StationEntity(station.getId(), station.getName());
+
+        if (stationDao.existsByName(stationEntity)) {
+            throw new DuplicateException(ErrorMessage.DUPLICATE_NAME);
+        }
+
+        return stationDao.save(stationEntity);
     }
 
     public Station findById(final Long id) {

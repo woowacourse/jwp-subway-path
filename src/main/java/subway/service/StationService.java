@@ -2,28 +2,22 @@ package subway.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import subway.dao.StationDao;
-import subway.dao.entity.StationEntity;
+import subway.domain.Station;
 import subway.dto.StationCreateRequest;
-import subway.exception.DuplicateException;
-import subway.exception.ErrorMessage;
+import subway.repository.StationRepository;
 
 @Service
 @Transactional
 public class StationService {
-    private final StationDao stationDao;
+    private final StationRepository stationRepository;
 
-    public StationService(final StationDao stationDao) {
-        this.stationDao = stationDao;
+    public StationService(final StationRepository stationRepository) {
+        this.stationRepository = stationRepository;
     }
 
     public Long save(final StationCreateRequest stationCreateRequest) {
-        StationEntity stationEntity = new StationEntity(stationCreateRequest.getName());
+        Station station = Station.createWithoutId(stationCreateRequest.getName());
 
-        if (stationDao.exists(stationEntity)) {
-            throw new DuplicateException(ErrorMessage.DUPLICATE_NAME);
-        }
-
-        return stationDao.save(stationEntity);
+        return stationRepository.save(station);
     }
 }

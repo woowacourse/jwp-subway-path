@@ -9,20 +9,13 @@ public class Station {
     private final String name;
 
     public Station(final Long id, final String name) {
-        validate(id, name);
+        validateName(name);
         this.id = id;
         this.name = name;
     }
 
-    private void validate(final Long id, final String name) {
-        validateId(id);
-        validateName(name);
-    }
-
-    private void validateId(final Long id) {
-        if (id <= 0) {
-            throw new InvalidException(ErrorMessage.INVALID_NOT_POSITIVE_ID);
-        }
+    public static Station createWithoutId(final String name) {
+        return new Station(null, name);
     }
 
     private void validateName(final String name) {
