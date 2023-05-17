@@ -7,6 +7,7 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
+import subway.exception.DuplicatedNameException;
 import subway.exception.NonExistLineException;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
@@ -37,8 +38,8 @@ class SubwayTest {
 
         // when, then
         assertThatThrownBy(() -> subway.addLine(sameNameLine))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("중복되는 이름의 노선이 이미 존재합니다.");
+                .isInstanceOf(DuplicatedNameException.class)
+                .hasMessage("이미 존재하는 이름입니다. (입력값 : 2호선)");
     }
 
     @Test

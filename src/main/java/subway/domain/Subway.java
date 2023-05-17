@@ -2,6 +2,7 @@ package subway.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import subway.exception.DuplicatedNameException;
 import subway.exception.NonExistLineException;
 
 public class Subway {
@@ -23,7 +24,7 @@ public class Subway {
 
     private void validateDuplicatedLineName(Line line) {
         if (isDuplicatedName(line)) {
-            throw new IllegalArgumentException("중복되는 이름의 노선이 이미 존재합니다.");
+            throw new DuplicatedNameException(line.getName());
         }
     }
 
