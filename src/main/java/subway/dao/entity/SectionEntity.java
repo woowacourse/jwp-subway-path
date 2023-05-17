@@ -4,12 +4,19 @@ import java.util.Objects;
 
 public class SectionEntity {
 
+    private Long id;
+
     private Long lineId;
     private Long upStationId;
     private Long downStationId;
     private Integer distance;
 
-    public SectionEntity() {
+    public SectionEntity(Long id, Long lineId, Long upStationId, Long downStationId, Integer distance) {
+        this.id = id;
+        this.lineId = lineId;
+        this.upStationId = upStationId;
+        this.downStationId = downStationId;
+        this.distance = distance;
     }
 
     public SectionEntity(Long lineId, Long upStationId, Long downStationId, Integer distance) {
@@ -37,19 +44,25 @@ public class SectionEntity {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        SectionEntity sectionEntity = (SectionEntity) o;
-        return Objects.equals(lineId, sectionEntity.lineId) && Objects.equals(upStationId,
-                sectionEntity.upStationId) && Objects.equals(downStationId, sectionEntity.downStationId);
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SectionEntity that = (SectionEntity) o;
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(lineId, upStationId, downStationId);
+        return Objects.hash(id);
+    }
+
+    @Override
+    public String toString() {
+        return "SectionEntity{" +
+                "id=" + id +
+                ", lineId=" + lineId +
+                ", upStationId=" + upStationId +
+                ", downStationId=" + downStationId +
+                ", distance=" + distance +
+                '}';
     }
 }

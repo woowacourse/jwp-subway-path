@@ -37,4 +37,15 @@ public class SectionStationMapper {
     public Integer getDistance() {
         return distance;
     }
+
+    @Override
+    public String toString() {
+        return "SectionStationMapper{" +
+                "upStationId=" + upStationId +
+                ", upStationName='" + upStationName + '\'' +
+                ", downStationId=" + downStationId +
+                ", downStationName='" + downStationName + '\'' +
+                ", distance=" + distance +
+                '}';
+    }
 }
