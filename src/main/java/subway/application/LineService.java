@@ -14,6 +14,7 @@ import subway.dto.LineSelectResponse;
 import subway.dto.LinesSelectResponse;
 import subway.dto.StationSaveRequest;
 import subway.dto.StationSelectResponse;
+import subway.exception.AlreadyExistStationException;
 import subway.repository.LineRepository;
 import subway.repository.StationRepository;
 import subway.repository.dao.LineDao;
@@ -72,7 +73,10 @@ public class LineService {
         return new StationSelectResponse(newStationName);
     }
 
-    private List<Optional<String>> extractNullableStation(final StationSaveRequest stationRequest, final Line lineByName) {
+    private List<Optional<String>> extractNullableStation(
+            final StationSaveRequest stationRequest,
+            final Line lineByName)
+    {
         final List<Station> stations = lineByName.getStations();
         List<Optional<String>> requestStations = new ArrayList<>();
         requestStations.add(filterNonExistStation(stations, stationRequest.getSourceStation()));
@@ -85,7 +89,7 @@ public class LineService {
                 .filter(Optional::isPresent)
                 .flatMap(Optional::stream)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("추가하려는 역은 이미 노선에 존재합니다."));
+                .orElseThrow(AlreadyExistStationException::new);
     }
 
     private Optional<String> filterNonExistStation(List<Station> stations, String requestStationName) {

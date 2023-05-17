@@ -200,7 +200,7 @@ public class LineIntegrationTest extends IntegrationTest {
 
             // then
             assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
-            assertThat(errorMessage).isEqualTo("추가하려는 역은 이미 노선에 존재합니다.");
+            assertThat(errorMessage).isEqualTo("이미 존재하는 지하철역입니다.");
         }
 
         @DisplayName("A-C 구간 사이로 들어간 B-C 구간의 길이가 A-C 구간의 길이보다 길다면 예외가 발생한다")
