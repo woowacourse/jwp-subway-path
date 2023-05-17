@@ -13,3 +13,5 @@ include::line-api.adoc[]
 include::station-api.adoc[]
 
 include::section-api.adoc[]
+
+include::path-api.adoc[]
