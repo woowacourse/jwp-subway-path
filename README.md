@@ -25,3 +25,5 @@
 
 ### Distance
 - [ ] 거리를 양수로만 가질 수 있다.
+
+![img.png](img.png)
