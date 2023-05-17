@@ -36,55 +36,27 @@ public class Sections {
 
         if (isNewStation(downStation)) {
             graph.addStation(downStation);
-            return addStation2(DOWN, downStation, upStation, distance);
+            return addStationToDirection(DOWN, downStation, upStation, distance);
         }
 
         if (isNewStation(upStation)) {
             graph.addStation(upStation);
-            return addStation2(UP, upStation, downStation, distance);
+            return addStationToDirection(UP, upStation, downStation, distance);
         }
 
         throw new InvalidStationException("부적절한 입력입니다.");
     }
 
-    private Station addStation2(final Direction direction, final Station downStation, final Station upStation, final int distance) {
-        if (graph.isTerminal(direction, upStation)) {
-            direction.addStationToTerminal(graph, upStation, downStation, distance);
-            return downStation;
+    private Station addStationToDirection(final Direction direction, final Station newStation, final Station existingStation, final int distance) {
+        if (graph.isTerminal(direction, existingStation)) {
+            direction.addStationToTerminal(graph, existingStation, newStation, distance);
+            return newStation;
         }
 
-        final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(direction, upStation);
-        addStationTo(direction, upStation, downStation, findAdjacentStation(direction, adjacentSections), distance);
-        return downStation;
-    }
-
-    private void addStationTo(
-            final Direction direction,
-            final Station existingStation,
-            final Station newStation,
-            final Station adjacentStation,
-            final int distance) {
-        if (direction == DOWN) {
-            updateSectionBy(DOWN, existingStation, newStation, adjacentStation, distance);
-        }
-        if (direction == UP) {
-            updateSectionBy(UP, adjacentStation, newStation, existingStation, distance);
-        }
-    }
-
-    private void addStationTo(
-            final Direction direction,
-            final Station existingStation,
-            final Station newStation,
-            final int distance) {
-        if (direction == DOWN) {
-            graph.addStation(newStation);
-            graph.setSectionDistance(graph.addSection(existingStation, newStation), distance);
-        }
-        if (direction == UP) {
-            graph.addStation(newStation);
-            graph.setSectionDistance(graph.addSection(newStation, existingStation), distance);
-        }
+        final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(direction, existingStation);
+        final Station adjacentStation = findAdjacentStation(direction, adjacentSections);
+        direction.addStationToMiddle(graph, existingStation, newStation, adjacentStation, distance);
+        return newStation;
     }
 
     private boolean isNewStation(final Station station) {
@@ -142,44 +114,6 @@ public class Sections {
             return graph.getUpStation(defaultWeightedEdges.iterator().next());
         }
         return graph.getDownStation(defaultWeightedEdges.iterator().next());
-    }
-
-    private void updateSectionBy(
-            final Direction direction,
-            final Station upStation,
-            final Station newStation,
-            final Station downStation,
-            final int distance) {
-        if (direction == UP) {
-            final int updatedDistance = calculateUpdatedDistance(UP, upStation, downStation, distance);
-            updateSection(upStation, newStation, downStation, distance, updatedDistance);
-        }
-        if (direction == DOWN) {
-            final int updatedDistance = calculateUpdatedDistance(DOWN, downStation, upStation, distance);
-            updateSection(upStation, newStation, downStation, updatedDistance, distance);
-        }
-    }
-
-    private int calculateUpdatedDistance(final Direction direction, final Station adjacentStation, final Station existingStation, final int newDistance) {
-        DefaultWeightedEdge edge = findSectionBy(direction, adjacentStation, existingStation);
-        final int existingDistance = (int) graph.getSectionDistance(edge);
-        if (existingDistance <= newDistance) {
-            throw new InvalidDistanceException("새로운 역의 거리는 기존 두 역의 거리보다 작아야 합니다.");
-        }
-        return existingDistance - newDistance;
-    }
-
-    private DefaultWeightedEdge findSectionBy(final Direction direction, final Station upStation, final Station downStation) {
-        if (direction == UP) {
-            return graph.getSection(upStation, downStation);
-        }
-        return graph.getSection(downStation, upStation);
-    }
-
-    private void updateSection(final Station upStation, final Station newStation, final Station downStation, final int distance, final int updatedDistance) {
-        graph.removeSection(upStation, downStation);
-        graph.setSectionDistance(graph.addSection(upStation, newStation), updatedDistance);
-        graph.setSectionDistance(graph.addSection(newStation, downStation), distance);
     }
 
     public void deleteStation(Station station) {
