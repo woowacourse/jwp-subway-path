@@ -1,19 +1,20 @@
-package subway.domain;
+package subway.application.dto;
 
 import java.util.Objects;
+import subway.domain.Station;
 
-public class Station {
+public class StationResponse {
 
     private Long id;
     private String name;
 
-    public Station(final Long id, final String name) {
+    public StationResponse(final Long id, final String name) {
         this.id = id;
         this.name = name;
     }
 
-    public Station(final String name) {
-        this.name = name;
+    public static StationResponse of(final Station station) {
+        return new StationResponse(station.getId(), station.getName());
     }
 
     public Long getId() {
@@ -25,15 +26,15 @@ public class Station {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (this == o) {
             return true;
         }
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Station station = (Station) o;
-        return id.equals(station.id) && name.equals(station.name);
+        StationResponse that = (StationResponse) o;
+        return Objects.equals(id, that.id) && Objects.equals(name, that.name);
     }
 
     @Override
@@ -43,7 +44,7 @@ public class Station {
 
     @Override
     public String toString() {
-        return "Station{" +
+        return "StationResponse{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 '}';
