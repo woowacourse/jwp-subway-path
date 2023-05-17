@@ -139,4 +139,21 @@ class PathTest {
         //then
         assertThat(merged.getDistance()).isEqualTo(path.getDistance() + path2.getDistance());
     }
+
+    @DisplayName("이어지지 않은 경로를 합치면 예외가 발생한다")
+    @Test
+    void merge_fail() {
+        //given
+        final Station station1 = new Station("서면역");
+        final Station station2 = new Station("부산역");
+        final Station station3 = new Station("센텀역");
+        final Station station4 = new Station("해운대역");
+        final Path path = new Path(station1, station2, 10);
+        final Path path2 = new Path(station4, station3, 10);
+
+        //when, then
+        assertThatThrownBy(() -> path.merge(path2))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("두 경로를 합칠 수 없습니다.");
+    }
 }

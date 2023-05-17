@@ -74,8 +74,11 @@ public final class Path {
         if (down.equals(another.up)) {
             return new Path(up, another.down, distance + another.distance);
         }
+        if (up.equals(another.down)) {
+            return new Path(another.up, down, distance + another.distance);
+        }
 
-        return new Path(another.up, down, distance + another.distance);
+        throw new IllegalStateException("두 경로를 합칠 수 없습니다.");
     }
 
     public Long getId() {
