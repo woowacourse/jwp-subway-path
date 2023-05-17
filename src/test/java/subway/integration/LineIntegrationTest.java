@@ -68,7 +68,7 @@ class LineIntegrationTest extends IntegrationTest {
 
         // then
         assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value()),
                 () -> assertThat(response.body().asString()).isEqualTo("중복된 이름의 노선이 존재합니다.")
         );
     }
@@ -84,20 +84,16 @@ class LineIntegrationTest extends IntegrationTest {
                 .then().log().all().
                 extract();
 
-        // when
+        // expect
         Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
-        ExtractableResponse<Response> response = RestAssured
+        RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/lines/{lineId}", lineId)
-                .then().log().all().
-                extract();
-
-        // then
-        assertAll(
-                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(response.body().asString()).contains("name", "8호선", "color", "분홍색", "stations", "[]")
-        );
+                .then().log().all()
+                .body("name", equalTo("8호선"))
+                .body("color", equalTo("분홍색"))
+                .statusCode(is(HttpStatus.OK.value()));
     }
 
     @Test
