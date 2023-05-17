@@ -17,7 +17,11 @@ public class JGraphtShortestPathCalculator implements ShortestPathCalculator {
 
         final Path path = Path.from(lines);
 
-        return path.findShortestPathSections(sourceStation, targetStation);
+        try {
+            return path.findShortestPathSections(sourceStation, targetStation);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("해당 역은 노선에 등록되지 않은 역입니다.", e);
+        }
     }
 
     private void validateDuplicateStation(final Station sourceStation, final Station targetStation) {
