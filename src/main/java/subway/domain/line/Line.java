@@ -16,20 +16,22 @@ public final class Line {
     private final Long id;
     private final Name name;
     private final Color color;
+    private final Fare fare;
     private final Sections sections;
 
-    public Line(final String name, final String color) {
-        this(null, name, color);
+    public Line(final String name, final String color, final int fare) {
+        this(null, name, color, fare);
     }
 
-    public Line(final Long id, final String name, final String color) {
-        this(id, name, color, new LinkedList<>());
+    public Line(final Long id, final String name, final String color, final int fare) {
+        this(id, name, color, fare, new LinkedList<>());
     }
 
-    public Line(final Long id, final String name, final String color, final List<Section> sections) {
+    public Line(final Long id, final String name, final String color, final int fare, final List<Section> sections) {
         this.id = id;
         this.name = new Name(name);
         this.color = new Color(color);
+        this.fare = new Fare(fare);
         this.sections = new Sections(sections);
     }
 
@@ -166,6 +168,10 @@ public final class Line {
 
     public String getColor() {
         return color.getValue();
+    }
+
+    public int getFare() {
+        return fare.getValue();
     }
 
     public List<Station> getStations() {

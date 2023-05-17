@@ -25,7 +25,7 @@ public class LineRepository {
 
     public Line save(final Line line) {
         final LineEntity lineEntity = lineDao.save(LineEntity.from(line));
-        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+        return new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor(), lineEntity.getFare());
     }
 
     public Line findById(final Long lineId) {
@@ -36,7 +36,12 @@ public class LineRepository {
     }
 
     private Line generateLine(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
-        final Line line = new Line(lineEntity.getId(), lineEntity.getName(), lineEntity.getColor());
+        final Line line = new Line(
+                lineEntity.getId(),
+                lineEntity.getName(),
+                lineEntity.getColor(),
+                lineEntity.getFare()
+        );
         loadSections(line, generateSections(sectionEntities));
         return line;
     }

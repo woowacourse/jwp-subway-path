@@ -8,6 +8,9 @@ public class LinesResponse {
     @Schema(description = "노선 목록")
     private List<LineResponse> lines;
 
+    public LinesResponse() {
+    }
+
     public LinesResponse(final List<LineResponse> lines) {
         this.lines = lines;
     }

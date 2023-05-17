@@ -53,10 +53,7 @@ class StationRepositoryTest {
 
             final Station result = stationRepository.findById(station.getId());
 
-            assertAll(
-                    () -> assertThat(result.getId()).isEqualTo(station.getId()),
-                    () -> assertThat(result.getName()).isEqualTo(station.getName())
-            );
+            assertThat(result).usingRecursiveComparison().isEqualTo(station);
         }
 
         @Test

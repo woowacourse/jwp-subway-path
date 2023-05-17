@@ -29,7 +29,7 @@ class LineTest {
                 new Section(upward, downward, 10),
                 new Section(downward, Station.TERMINAL, 0)
         );
-        line = new Line(1L, "2호선", "초록색", new ArrayList<>(sections));
+        line = new Line(1L, "2호선", "초록색", 500, new ArrayList<>(sections));
     }
 
     @Nested
@@ -41,7 +41,7 @@ class LineTest {
         void addFirstSection() {
             final Station upward = new Station(1L, "잠실역");
             final Station downward = new Station(2L, "종합운동장역");
-            final Line line = new Line(1L, "2호선", "초록색");
+            final Line line = new Line(1L, "2호선", "초록색", 500);
 
             line.addSection(upward, downward, 10);
 
