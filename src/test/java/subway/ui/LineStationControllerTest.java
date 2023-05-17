@@ -9,7 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import subway.application.LineStationService;
-import subway.dto.request.ConnectRequest;
+import subway.dto.request.ConnectionRequest;
 import subway.dto.response.LineStationResponse;
 
 import java.util.List;
@@ -34,14 +34,14 @@ class LineStationControllerTest {
     private LineStationService lineStationService;
 
     @Test
-    @DisplayName("patch /lines/{lineId}/stations/{stationId}?type=init : noContent를 반환한다.")
-    void connectStationsInit() throws Exception {
+    @DisplayName("patch /lines/{lineId}/stations/{stationId} : noContent를 반환한다.")
+    void addStationToLine_init() throws Exception {
         // given
-        final ConnectRequest request = new ConnectRequest(null, 2L, 1);
+        final ConnectionRequest request = new ConnectionRequest("init", null, 2L, 1);
         final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then
-        mockMvc.perform(patch("/lines/1/stations/1?type=init")
+        mockMvc.perform(patch("/lines/1/stations/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isNoContent());
@@ -56,14 +56,14 @@ class LineStationControllerTest {
     }
 
     @Test
-    @DisplayName("patch /lines/{lineId}/stations/{stationId}?type=up : noContent를 반환한다.")
-    void connectStationsUp() throws Exception {
+    @DisplayName("patch /lines/{lineId}/stations/{stationId} : noContent를 반환한다.")
+    void addStationToLine_up() throws Exception {
         // given
-        final ConnectRequest request = new ConnectRequest(null, 2L, 1);
+        final ConnectionRequest request = new ConnectionRequest("up", null, 2L, 1);
         final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then
-        mockMvc.perform(patch("/lines/1/stations/1?type=up")
+        mockMvc.perform(patch("/lines/1/stations/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isNoContent());
@@ -77,14 +77,14 @@ class LineStationControllerTest {
     }
 
     @Test
-    @DisplayName("patch /lines/{lineId}/stations/{stationId}?type=down : noContent를 반환한다.")
-    void connectStationsDown() throws Exception {
+    @DisplayName("patch /lines/{lineId}/stations/{stationId} : noContent를 반환한다.")
+    void addStationToLine_down() throws Exception {
         // given
-        final ConnectRequest request = new ConnectRequest(2L, null, 1);
+        final ConnectionRequest request = new ConnectionRequest("down", 2L, null, 1);
         final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then
-        mockMvc.perform(patch("/lines/1/stations/1?type=down")
+        mockMvc.perform(patch("/lines/1/stations/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isNoContent());
@@ -98,14 +98,14 @@ class LineStationControllerTest {
     }
 
     @Test
-    @DisplayName("patch /lines/{lineId}/stations/{stationId}?type=mid : noContent를 반환한다.")
-    void connectStationsMid() throws Exception {
+    @DisplayName("patch /lines/{lineId}/stations/{stationId} : noContent를 반환한다.")
+    void addStationToLine_mid() throws Exception {
         // given
-        final ConnectRequest request = new ConnectRequest(2L, 3L, 1);
+        final ConnectionRequest request = new ConnectionRequest("mid", 2L, 3L, 1);
         final String jsonRequest = objectMapper.writeValueAsString(request);
 
         //when & then
-        mockMvc.perform(patch("/lines/1/stations/1?type=mid")
+        mockMvc.perform(patch("/lines/1/stations/1")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(jsonRequest))
                 .andExpect(status().isNoContent());

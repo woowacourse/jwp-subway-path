@@ -7,10 +7,9 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.LineStationService;
-import subway.dto.request.ConnectRequest;
+import subway.dto.request.ConnectionRequest;
 import subway.dto.response.LineStationResponse;
 
 import java.util.List;
@@ -25,17 +24,17 @@ public class LineStationController {
     }
 
     @PatchMapping("/{lineId}/stations/{stationId}")
-    public ResponseEntity<Void> connectStations(@PathVariable final Long lineId, @PathVariable final Long stationId, @RequestParam final String type, @RequestBody final ConnectRequest request) {
-        if (CreateType.INIT == CreateType.from(type)) {
+    public ResponseEntity<Void> addStationToLine(@PathVariable final Long lineId, @PathVariable final Long stationId, @RequestBody final ConnectionRequest request) {
+        if (ConnectionType.INIT == ConnectionType.from(request.getConnectionType())) {
             lineStationService.addInitStations(lineId, stationId, request.getNextStationId(), request.getDistance());
         }
-        if (CreateType.UP == CreateType.from(type)) {
+        if (ConnectionType.UP == ConnectionType.from(request.getConnectionType())) {
             lineStationService.addUpEndpoint(lineId, stationId, request.getDistance());
         }
-        if (CreateType.DOWN == CreateType.from(type)) {
+        if (ConnectionType.DOWN == ConnectionType.from(request.getConnectionType())) {
             lineStationService.addDownEndpoint(lineId, stationId, request.getDistance());
         }
-        if (CreateType.MID == CreateType.from(type)) {
+        if (ConnectionType.MID == ConnectionType.from(request.getConnectionType())) {
             lineStationService.addIntermediate(lineId, stationId, request.getPrevStationId(), request.getDistance());
         }
         return ResponseEntity.noContent().build();

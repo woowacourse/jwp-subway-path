@@ -2,7 +2,7 @@ package subway.ui;
 
 import java.util.Arrays;
 
-public enum CreateType {
+public enum ConnectionType {
     INIT("init"),
     UP("up"),
     DOWN("down"),
@@ -10,11 +10,11 @@ public enum CreateType {
 
     private final String value;
 
-    CreateType(final String value) {
+    ConnectionType(final String value) {
         this.value = value;
     }
 
-    public static CreateType from(final String type) {
+    public static ConnectionType from(final String type) {
         return Arrays.stream(values())
                 .filter(createType -> createType.value.equals(type))
                 .findAny()
