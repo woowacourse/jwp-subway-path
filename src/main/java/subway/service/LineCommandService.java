@@ -5,7 +5,6 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.LineEntity;
 import subway.global.exception.line.CanNotDuplicatedLineNameException;
-import subway.global.exception.line.CanNotFoundLineException;
 import subway.service.dto.RegisterLineRequest;
 
 @Service
@@ -32,14 +31,13 @@ public class LineCommandService {
 
     public void registerLine(final RegisterLineRequest registerLineRequest) {
 
-        try {
-            final String lineName = registerLineRequest.getLineName();
-            lineQueryService.searchByLineName(lineName);
-        } catch (CanNotFoundLineException exception) {
+        final String lineName = registerLineRequest.getLineName();
+
+        if (lineQueryService.isExistLine(lineName)) {
             throw new CanNotDuplicatedLineNameException("이미 등록되어 있는 노선입니다. 노선 이름은 중복될 수 없습니다.");
         }
 
-        final Long savedId = lineDao.save(new LineEntity(registerLineRequest.getLineName()));
+        final Long savedId = lineDao.save(new LineEntity(lineName));
 
         sectionCommandService.registerSection(
                 registerLineRequest.getCurrentStationName(),
