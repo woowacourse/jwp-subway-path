@@ -24,7 +24,6 @@ import static subway.application.reader.CaseTypeSetter.setCase;
 public class SectionService {
 
     private final SectionDao sectionDao;
-    private final int NON_TERMINAL_SECTION_SIZE = 2;
 
     public SectionService(final SectionDao sectionDao) {
         this.sectionDao = sectionDao;
