@@ -3,6 +3,7 @@ package subway.domain;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Line {
     private final Long id;
@@ -37,7 +38,7 @@ public class Line {
         sectionMap.deleteStation(station);
     }
 
-    public Station getUpEndpoint() {
+    public Optional<Station> getUpEndpoint() {
         return sectionMap.getUpEndpoint();
     }
 

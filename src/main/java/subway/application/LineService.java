@@ -50,13 +50,13 @@ public class LineService {
 
         final Section section = line.addSection(upStation, downStation, distance);
 
-        final List<Long> sectionIds = saveSectionsInLine(line);
+        final List<Long> sectionIds = resaveSectionsInLine(line);
 
         final Long lastSectionId = sectionIds.get(sectionIds.size() - 1);
         return SectionResponse.of(lastSectionId, section);
     }
 
-    private List<Long> saveSectionsInLine(final Line line) {
+    private List<Long> resaveSectionsInLine(final Line line) {
         lineRepository.deleteSectionsByLine(line);
 
         final List<Long> sectionIds = new ArrayList<>();
@@ -85,11 +85,15 @@ public class LineService {
         lineRepository.updateLine(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 
-    public void deleteLineById(final Long id) {
-        lineRepository.deleteLineById(id);
+    public void deleteStationById(final Long lineId, final Long stationId) {
+        final Line line = lineRepository.findLineById(lineId);
+        final Station station = stationService.findStationById(stationId);
+
+        line.deleteStation(station);
+        resaveSectionsInLine(line);
     }
 
-    public void deleteSectionByStationId(final Long lineId, final Long stationId) {
-
+    public void deleteLineById(final Long id) {
+        lineRepository.deleteLineById(id);
     }
 }

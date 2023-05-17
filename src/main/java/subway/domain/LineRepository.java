@@ -7,6 +7,7 @@ import subway.dao.StationDao;
 import subway.dto.LineEntity;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -63,7 +64,12 @@ public class LineRepository {
     }
 
     public void updateUpEndpoint(final Line line) {
-        lineDao.updateUpEndpointById(line.getId(), line.getUpEndpoint().getId());
+        final Optional<Station> upEndpoint = line.getUpEndpoint();
+        if (upEndpoint.isPresent()) {
+            lineDao.updateUpEndpointById(line.getId(), upEndpoint.get().getId());
+            return;
+        }
+        lineDao.updateUpEndpointById(line.getId(), null);
     }
 
     public void deleteSectionsByLine(final Line line) {

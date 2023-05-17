@@ -168,15 +168,14 @@ public class SectionMap {
         sectionMap.replace(previousStation, newSection);
     }
 
-    public Station getUpEndpoint() {
+    public Optional<Station> getUpEndpoint() {
         final List<Station> downStations = sectionMap.values().stream()
                 .map(Section::getDownStation)
                 .collect(Collectors.toList());
 
         return sectionMap.keySet().stream()
                 .filter(station -> !downStations.contains(station))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("상행 종점을 찾을 수 없습니다."));
+                .findFirst();
     }
 
     public List<Station> getAllStations() {

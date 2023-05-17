@@ -73,11 +73,11 @@ class LineControllerTest {
     @DisplayName("DELETE /lines/{id}/station/{stationId}")
     void deleteStationInLine() throws Exception {
         // given
-        doNothing().when(lineService).deleteSectionByStationId(anyLong(), anyLong());
+        doNothing().when(lineService).deleteStationById(anyLong(), anyLong());
 
         // when & then
         mockMvc.perform(delete("/lines/1/station/1"))
                 .andExpect(status().isNoContent());
-        verify(lineService, times(1)).deleteSectionByStationId(anyLong(), anyLong());
+        verify(lineService, times(1)).deleteStationById(anyLong(), anyLong());
     }
 }

@@ -95,3 +95,20 @@ Content-Type: application/json
 ### GET /lines/{id}
 GET http://localhost:8080/lines/1
 
+### DELETE /lines/{id}/station/{stationId}
+DELETE http://localhost:8080/lines/1/station/3
+
+### DELETE /lines/{id}/station/{stationId}
+DELETE http://localhost:8080/lines/1/station/4
+
+### GET /lines/{id}
+GET http://localhost:8080/lines/1
+
+### DELETE /lines/{id}/station/{stationId}
+DELETE http://localhost:8080/lines/1/station/5
+
+### DELETE /lines/{id}/station/{stationId}
+DELETE http://localhost:8080/lines/1/station/2
+
+### GET /lines/{id}
+GET http://localhost:8080/lines/
