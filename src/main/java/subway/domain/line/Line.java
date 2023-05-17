@@ -1,6 +1,8 @@
 package subway.domain.line;
 
+import subway.domain.section.Section;
 import subway.domain.section.Sections;
+import subway.domain.station.Station;
 
 public class Line {
 
@@ -44,6 +46,24 @@ public class Line {
         if (sections == null) {
             throw new IllegalArgumentException("노선의 구간들은 빈 구간이라도 필요합니다.");
         }
+    }
+
+    public Line addSection(final Section other) {
+        return new Line(
+                this.id,
+                this.lineName,
+                this.lineColor,
+                this.sections.addSection(other)
+        );
+    }
+
+    public Line deleteStation(final Station other) {
+        return new Line(
+                this.id,
+                this.lineName,
+                this.lineColor,
+                this.sections.removeStation(other)
+        );
     }
 
     public boolean isSectionsEmpty() {
