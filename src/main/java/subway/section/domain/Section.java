@@ -3,6 +3,8 @@ package subway.section.domain;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import subway.station.domain.Station;
 
 import java.util.HashSet;
@@ -109,5 +111,12 @@ public class Section {
     
     public boolean isRightStation(final Station station) {
         return this.right.equals(station);
+    }
+    
+    public void addStationsAndDistanceToGraph(final WeightedMultigraph<Station, Section> graph) {
+        graph.addVertex(left);
+        graph.addVertex(right);
+        graph.addEdge(left, right, this);
+        graph.setEdgeWeight(left, right, distance.getDistance());
     }
 }

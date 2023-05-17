@@ -154,23 +154,17 @@ public class Sections {
     }
     
     private List<Station> sort(final Station frontStation, final Station endStation) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = initGraph(sections);
+        final WeightedMultigraph<Station, Section> graph = initGraph(sections);
         
-        final DijkstraShortestPath<Station, DefaultWeightedEdge> path = new DijkstraShortestPath<>(graph);
+        final DijkstraShortestPath<Station, Section> path = new DijkstraShortestPath<>(graph);
         return path.getPath(frontStation, endStation).getVertexList();
     }
     
-    private WeightedMultigraph<Station, DefaultWeightedEdge> initGraph(final Set<Section> sections) {
-        final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(
-                DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, Section> initGraph(final Set<Section> sections) {
+        final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(
+                Section.class);
         
-        for (final Section section : sections) {
-            final Station left = section.getLeft();
-            final Station right = section.getRight();
-            graph.addVertex(left);
-            graph.addVertex(right);
-            graph.setEdgeWeight(graph.addEdge(left, right), section.getDistance().getDistance());
-        }
+        sections.forEach(section -> section.addStationsAndDistanceToGraph(graph));
         return graph;
     }
 }

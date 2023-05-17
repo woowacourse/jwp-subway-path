@@ -1,13 +1,18 @@
 package subway.section.domain;
 
+import org.jgrapht.GraphPath;
+import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import subway.station.domain.Station;
 
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @SuppressWarnings("NonAsciiCharacters")
 class SectionTest {
@@ -102,5 +107,24 @@ class SectionTest {
         // expect
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> section.getAdditionalSectionsWithOneself(base, Direction.LEFT, additional, distance));
+    }
+    
+    @Test
+    void 그래프에_자신과_모든_역과_거리를_추가한다() {
+        // given
+        final Section section = new Section("강남역", "역삼역", 5L);
+        final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
+        final DijkstraShortestPath<Station, Section> path = new DijkstraShortestPath<>(graph);
+        
+        // when
+        section.addStationsAndDistanceToGraph(graph);
+        
+        // then
+        final GraphPath<Station, Section> resultPath = path.getPath(new Station("강남역"), new Station("역삼역"));
+        assertAll(
+                () -> assertThat(resultPath.getVertexList()).containsExactly(new Station("강남역"), new Station("역삼역")),
+                () -> assertThat(resultPath.getEdgeList()).containsExactly(section),
+                () -> assertThat(resultPath.getWeight()).isEqualTo(5)
+        );
     }
 }
