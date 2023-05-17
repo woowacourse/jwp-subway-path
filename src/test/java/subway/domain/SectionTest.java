@@ -38,4 +38,18 @@ class SectionTest {
         assertThat(section.isPreviousStationThisStation(notExistsStation)).isFalse();
     }
 
+    @Test
+    @DisplayName("Section 의 Next Station 이 해당 Station 인지 확인한다.")
+    void isNextStationThisStation() {
+        int IGNORED = 10;
+        Station previousStation = new Station("hello");
+        Station nextStation = new Station("hell");
+        Station existsStation = new Station("hell");
+        Station notExistsStation = new Station("hello");
+        Section section = new Section(previousStation, nextStation, Distance.from(IGNORED));
+
+        assertThat(section.isNextStationThisStation(existsStation)).isTrue();
+        assertThat(section.isNextStationThisStation(notExistsStation)).isFalse();
+    }
+
 }

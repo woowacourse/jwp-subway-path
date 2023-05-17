@@ -34,6 +34,10 @@ public class Section {
         return previousStation.equals(station);
     }
 
+    public boolean isNextStationThisStation(Station station) {
+        return nextStation.equals(station);
+    }
+
     public long getId() {
         return id;
     }
