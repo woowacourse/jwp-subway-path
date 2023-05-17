@@ -48,7 +48,7 @@ public class StationDao {
     }
 
     public Optional<StationEntity> findByName(String name) {
-        String sql = "SELECT * FROM STATION WHERE NAME = ?";
+        String sql = "select * from STATION where name = ?";
         return jdbcTemplate.query(sql, rowMapper, name)
                 .stream()
                 .findAny();

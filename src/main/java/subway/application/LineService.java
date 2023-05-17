@@ -25,8 +25,8 @@ public class LineService {
     }
 
     public List<LineResponse> findAllLines() {
-        List<Line> lines = lineRepository.findAll();
-        return lines.stream()
+        return lineRepository.findAll()
+                .stream()
                 .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
@@ -45,12 +45,10 @@ public class LineService {
 
     public LineStationResponse findStationsById(Long lineId) {
         Line line = findByLineId(lineId);
-
         List<StationResponse> stationResponses = line.findLeftToRightRoute()
                 .stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-
         return new LineStationResponse(line.getId(), line.getName(), stationResponses);
     }
 

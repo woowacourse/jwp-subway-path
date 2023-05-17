@@ -14,6 +14,10 @@ public class Section {
         this.distance = distance;
     }
 
+    public boolean hasStation(Station station) {
+        return left.equals(station) || right.equals(station);
+    }
+
     public Station getLeft() {
         return left;
     }

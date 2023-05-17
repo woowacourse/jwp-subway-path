@@ -39,16 +39,16 @@ public class LineRepository {
 
         List<Line> lines = new ArrayList<>();
         for (final LineEntity lineEntity : lineEntities) {
-            List<Section> sections = getSections(lineEntity.getId());
+            LinkedList<Section> sections = getSections(lineEntity.getId());
             lines.add(new Line(lineEntity.getId(), lineEntity.getName(), sections));
         }
         return lines;
     }
 
-    private List<Section> getSections(Long lineId) {
+    private LinkedList<Section> getSections(Long lineId) {
         List<SectionEntity> sectionEntities = sectionDao.findAllByLineId(lineId);
 
-        List<Section> sections = new LinkedList<>();
+        LinkedList<Section> sections = new LinkedList<>();
         for (final SectionEntity sectionEntity : sectionEntities) {
             Section section = getSection(sectionEntity);
             sections.add(section);
@@ -60,8 +60,7 @@ public class LineRepository {
         Station leftStation = findStationById(sectionEntity.getLeftStationId());
         Station rightStation = findStationById(sectionEntity.getRightStationId());
         Distance distance = new Distance(sectionEntity.getDistance());
-        Section section = new Section(leftStation, rightStation, distance);
-        return section;
+        return new Section(leftStation, rightStation, distance);
     }
 
     private Station findStationById(Long stationId) {

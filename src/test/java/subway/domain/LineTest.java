@@ -33,9 +33,9 @@ class LineTest {
     void hasStationTrue() {
         // when, then
         assertSoftly(softly -> {
-            softly.assertThat(line.hasStation(station1)).isTrue();
-            softly.assertThat(line.hasStation(station2)).isTrue();
-            softly.assertThat(line.hasStation(station3)).isTrue();
+            softly.assertThat(line.hasStationInSections(station1)).isTrue();
+            softly.assertThat(line.hasStationInSections(station2)).isTrue();
+            softly.assertThat(line.hasStationInSections(station3)).isTrue();
         });
     }
 
@@ -46,7 +46,7 @@ class LineTest {
         Station station = new Station(5L, "신림역");
 
         // when, then
-        assertThat(line.hasStation(station)).isFalse();
+        assertThat(line.hasStationInSections(station)).isFalse();
     }
 
     @DisplayName("구간의 왼쪽 역과 같은 역이 주어지면 true를 반환한다.")
@@ -56,7 +56,7 @@ class LineTest {
         Station station = new Station(1L, "잠실역");
 
         // when, then
-        assertThat(line.hasLeftStationInSection(station)).isTrue();
+        assertThat(line.hasLeftStationInSections(station)).isTrue();
     }
 
     @DisplayName("구간의 오른쪽 역과 같은 역이 주어지면 true를 반환한다.")
@@ -66,7 +66,7 @@ class LineTest {
         Station station = new Station(3L, "선릉역");
 
         // when, then
-        assertThat(line.hasRightStationInSection(station)).isTrue();
+        assertThat(line.hasRightStationInSections(station)).isTrue();
     }
 
     @DisplayName("찾는 역이 구간의 왼쪽 역에 해당하는 구간을 반환한다.")
@@ -93,26 +93,6 @@ class LineTest {
 
         // then
         assertThat(section.getRight()).isEqualTo(station);
-    }
-
-    @DisplayName("노선에 구간이 한 개 존재하면 true를 반환한다.")
-    @Test
-    void hasOneSectionTrue() {
-        // given
-        Station newStation1 = new Station(1L, "잠실역");
-        Station newStation2 = new Station(2L, "강남역");
-        Section section = new Section(newStation1, newStation2, new Distance(3));
-        Line newLine = new Line(2L, "2호선", new LinkedList<>(List.of(section)));
-
-        // when, then
-        assertThat(newLine.hasOneSection()).isTrue();
-    }
-
-    @DisplayName("노선에 구간이 두 개 이상 존재하면 false를 반환한다.")
-    @Test
-    void hasOneSectionFalse() {
-        // when, then
-        assertThat(line.hasOneSection()).isFalse();
     }
 
     @DisplayName("상행 종점에 해당하는 역이면 true를 반환한다.")

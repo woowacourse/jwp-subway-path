@@ -23,8 +23,8 @@ public class StationRepository {
     }
 
     public List<Station> findAll() {
-        List<StationEntity> stationEntities = stationDao.findAll();
-        return stationEntities.stream()
+        return stationDao.findAll()
+                .stream()
                 .map(stationEntity -> new Station(stationEntity.getId(), stationEntity.getName())).collect(
                         Collectors.toList());
     }

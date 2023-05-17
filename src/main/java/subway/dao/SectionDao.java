@@ -37,13 +37,20 @@ public class SectionDao {
         return SectionEntity.of(savedId, sectionEntity);
     }
 
+    public void saveAll(List<SectionEntity> sectionEntities) {
+        BeanPropertySqlParameterSource[] parameterSources = sectionEntities.stream()
+                .map(BeanPropertySqlParameterSource::new)
+                .toArray(BeanPropertySqlParameterSource[]::new);
+        simpleJdbcInsert.executeBatch(parameterSources);
+    }
+
     public List<SectionEntity> findAllByLineId(Long lineId) {
-        String sql = "SELECT * FROM SECTION WHERE LINE_ID = ?";
+        String sql = "select * from SECTION where line_id = ?";
         return jdbcTemplate.query(sql, sectionMapper, lineId);
     }
 
-    public void deleteByStationId(Long leftStationId, Long rightStationId) {
-        String sql = "DELETE FROM SECTION WHERE LEFT_STATION_ID = ? AND RIGHT_STATION_ID = ?";
-        jdbcTemplate.update(sql, leftStationId, rightStationId);
+    public void deleteAllByLineId(Long lineId) {
+        String sql = "delete from SECTION where line_id = ?";
+        jdbcTemplate.update(sql, lineId);
     }
 }

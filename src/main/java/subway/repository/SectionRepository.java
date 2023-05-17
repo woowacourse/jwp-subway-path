@@ -1,8 +1,9 @@
 package subway.repository;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import org.springframework.stereotype.Repository;
 import subway.dao.SectionDao;
-import subway.domain.Distance;
 import subway.domain.Section;
 import subway.entity.SectionEntity;
 
@@ -15,13 +16,14 @@ public class SectionRepository {
         this.sectionDao = sectionDao;
     }
 
-    public Section save(Long lineId, Section section) {
-        SectionEntity sectionEntity = SectionEntity.of(lineId, section);
-        sectionDao.save(sectionEntity);
-        return new Section(section.getLeft(), section.getRight(), new Distance(section.getDistance()));
+    public void saveAllByLineId(Long lineId, List<Section> sections) {
+        List<SectionEntity> sectionEntities = sections.stream()
+                .map(section -> SectionEntity.of(lineId, section))
+                .collect(Collectors.toList());
+        sectionDao.saveAll(sectionEntities);
     }
 
-    public void delete(Long leftStationId, Long rightStationId) {
-        sectionDao.deleteByStationId(leftStationId, rightStationId);
+    public void deleteAllByLineId(Long lineId) {
+        sectionDao.deleteAllByLineId(lineId);
     }
 }

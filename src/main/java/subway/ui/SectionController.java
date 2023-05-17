@@ -5,32 +5,31 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import subway.application.SectionCreateService;
-import subway.application.SectionDeleteService;
+import subway.application.SectionService;
+import subway.ui.dto.SectionCreateRequest;
 import subway.ui.dto.SectionDeleteRequest;
-import subway.ui.dto.SectionRequest;
 
 @RestController
+@RequestMapping("/sections")
 public class SectionController {
 
-    private final SectionCreateService sectionCreateService;
-    private final SectionDeleteService sectionDeleteService;
+    private final SectionService sectionService;
 
-    public SectionController(SectionCreateService sectionCreateService, SectionDeleteService sectionDeleteService) {
-        this.sectionCreateService = sectionCreateService;
-        this.sectionDeleteService = sectionDeleteService;
+    public SectionController(final SectionService sectionService) {
+        this.sectionService = sectionService;
     }
 
-    @PostMapping("/sections")
-    public ResponseEntity<Void> createSection(@RequestBody SectionRequest sectionRequest) {
-        sectionCreateService.createSection(sectionRequest);
+    @PostMapping
+    public ResponseEntity<Void> createSection(@RequestBody SectionCreateRequest sectionCreateRequest) {
+        sectionService.createSection(sectionCreateRequest);
         return ResponseEntity.created(URI.create("/sections")).build();
     }
 
-    @DeleteMapping("/sections")
+    @DeleteMapping
     public ResponseEntity<Void> deleteSection(@RequestBody SectionDeleteRequest deleteRequest) {
-        sectionDeleteService.deleteSection(deleteRequest);
+        sectionService.deleteSection(deleteRequest);
         return ResponseEntity.noContent().build();
     }
 }
