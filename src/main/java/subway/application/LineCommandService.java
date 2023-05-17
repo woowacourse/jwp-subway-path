@@ -55,7 +55,7 @@ public class LineCommandService {
         sectionRepository.insert(newLine);
     }
 
-    public void deleteSection(final Long lineId, final Long stationId) {
+    public void deleteStation(final Long lineId, final Long stationId) {
         final Line line = sectionRepository.findAllSectionByLine(lineRepository.findById(lineId));
         final Station station = stationRepository.findById(stationId);
         line.deleteStation(station);

@@ -114,6 +114,6 @@ class LineCommandServiceTest {
         when(stationRepository.findById(1L)).thenReturn(upStation);
 
         // when, then
-        assertDoesNotThrow(() -> lineCommandService.deleteSection(1L, 1L));
+        assertDoesNotThrow(() -> lineCommandService.deleteStation(1L, 1L));
     }
 }

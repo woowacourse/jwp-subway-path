@@ -8,6 +8,7 @@ import subway.persistence.entity.SectionEntity;
 import subway.persistence.entity.StationEntity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Repository
 public class StationRepository {
@@ -25,6 +26,12 @@ public class StationRepository {
         final StationEntity insertedStationEntity = stationDao.insert(stationEntity);
 
         return Station.of(insertedStationEntity.getId(), insertedStationEntity.getName());
+    }
+
+    public List<Station> findAll() {
+        return stationDao.findAll().stream()
+                .map(StationEntity::toDomain)
+                .collect(Collectors.toList());
     }
 
     public Station findById(final Long id) {

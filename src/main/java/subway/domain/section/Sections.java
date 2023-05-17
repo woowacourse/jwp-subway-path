@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static subway.domain.Position.UP;
+
 public class Sections {
 
     private final List<Section> sections;
@@ -51,13 +53,21 @@ public class Sections {
     }
 
     public boolean isUpEndSection(final Section insertSection) {
-        final Station upEndStation = sections.get(0).getUpStation();
+        final Station upEndStation = sections.stream()
+                .filter(section -> section.getUpStation().isUpStation())
+                .findAny()
+                .map(Section::getUpStation)
+                .orElseThrow(() -> new IllegalArgumentException("상행 종점역을 찾을 수 없습니다"));
 
         return upEndStation.equals(insertSection.getDownStation());
     }
 
     public boolean isDownEndSection(final Section insertSection) {
-        final Station downEndStation = sections.get(sections.size() - 1).getDownStation();
+        final Station downEndStation = sections.stream()
+                .filter(section -> section.getDownStation().isDownStation())
+                .findAny()
+                .map(Section::getDownStation)
+                .orElseThrow(() -> new IllegalArgumentException("하행 종점역을 찾을 수 없습니다"));
 
         return downEndStation.equals(insertSection.getUpStation());
     }
@@ -134,13 +144,19 @@ public class Sections {
     public Section findUpSection() {
         validateEmpty();
 
-        return sections.get(0);
+        return sections.stream()
+                .filter(section -> section.getUpStation().isUpStation())
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("상행 종점역을 가지는 구간이 존재하지 않습니다."));
     }
 
     public Section findDownSection() {
         validateEmpty();
 
-        return sections.get(sections.size() - 1);
+        return sections.stream()
+                .filter(section -> section.getDownStation().isDownStation())
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("하행 종점역을 가지는 구간이 존재하지 않습니다."));
     }
 
     private void validateEmpty() {

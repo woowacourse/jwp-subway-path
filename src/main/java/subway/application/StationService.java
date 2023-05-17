@@ -5,6 +5,8 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.domain.Station;
 import subway.persistence.repository.StationRepository;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class StationService {
@@ -19,6 +21,10 @@ public class StationService {
         final Station station = Station.from(name);
 
         return stationRepository.insert(station);
+    }
+
+    public List<Station> findAll() {
+        return stationRepository.findAll();
     }
 
     public Station findStationById(final Long id) {
