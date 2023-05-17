@@ -2,6 +2,7 @@ package subway.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -30,7 +31,7 @@ public class LineController {
 
     @GetMapping("/lines")
     @ResponseStatus(HttpStatus.OK)
-    public List<LineResponse> showLines(@RequestBody(required = false) SearchLineRequest searchLineRequest) {
+    public List<LineResponse> showLines(@ModelAttribute SearchLineRequest searchLineRequest) {
         final List<Line> lines = lineQueryService.searchLines(searchLineRequest);
 
         return lines.stream()
