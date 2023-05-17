@@ -1,5 +1,6 @@
 package subway.dao;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,14 +8,20 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.dto.SectionStationResultMap;
 import subway.domain.Section;
 import subway.domain.Station;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -48,12 +55,12 @@ class SectionDaoTest {
         Station station5 = new Station(5L, "잠실역5");
         Station station6 = new Station(6L, "잠실역6");
 
-        stationDao.insert(new Station(1L, "잠실역1"));
-        stationDao.insert(new Station(2L, "잠실역2"));
-        stationDao.insert(new Station(3L, "잠실역3"));
-        stationDao.insert(new Station(4L, "잠실역4"));
-        stationDao.insert(new Station(5L, "잠실역5"));
-        stationDao.insert(new Station(6L, "잠실역6"));
+        stationDao.insert(station1);
+        stationDao.insert(station2);
+        stationDao.insert(station3);
+        stationDao.insert(station4);
+        stationDao.insert(station5);
+        stationDao.insert(station6);
 
         sectionDao.insert(new Section(3, station1, station2, 1L));
         sectionDao.insert(new Section(3, station3, station4, 1L));
@@ -125,11 +132,42 @@ class SectionDaoTest {
     @Test
     void 구간을_삭제한다() {
         // when
-        sectionDao.delete(1L);
+        sectionDao.deleteById(1L);
 
         // then
         assertThatThrownBy(() -> findById(1L))
                 .isInstanceOf(EmptyResultDataAccessException.class);
+    }
+
+    @Test
+    void 라인_아이디의_구간을_모두_삭제한다(){
+        // when
+        sectionDao.deleteByLineId(1L);
+
+        // then
+        assertThat(sectionDao.findAllByLineId(1L)).hasSize(0);
+    }
+
+    @Test
+    void 받은_구간들을_모두_저장한다(){
+        Station station7 = new Station(7L, "잠실역7");
+        Station station8 = new Station(8L, "잠실역8");
+        Station station9 = new Station(9L, "잠실역9");
+
+        stationDao.insert(station7);
+        stationDao.insert(station8);
+        stationDao.insert(station9);
+
+        Section section1 = new Section(3, station7, station8, 2L);
+        Section section2 = new Section(3, station8, station9, 2L);
+
+        List<Section> sections = new ArrayList<>();
+        sections.add(section1);
+        sections.add(section2);
+
+        sectionDao.saveAll(sections);
+
+        assertThat(sectionDao.findAllByLineId(2L)).hasSize(3);
     }
 
     private SectionStationResultMap findById(Long sectionId) {
@@ -157,4 +195,5 @@ class SectionDaoTest {
 
         return jdbcTemplate.queryForObject(sql, rowMapper, sectionId);
     }
+
 }

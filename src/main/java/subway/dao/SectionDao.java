@@ -2,6 +2,8 @@ package subway.dao;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
@@ -12,6 +14,8 @@ import subway.domain.Section;
 import javax.sql.DataSource;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class SectionDao {
@@ -76,8 +80,26 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, Boolean.class, upStationId, downStationId, lineId);
     }
 
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         final String sql = "DELETE FROM section WHERE id = ?";
         jdbcTemplate.update(sql, id);
+    }
+
+    public void saveAll(final List<Section> sections) {
+        List<Map<String, ? extends Number>> batchParams = sections.stream()
+                .map(section -> Map.of(
+                        "distance", section.getDistance(),
+                        "up_station_id", section.getUpStationId(),
+                        "down_station_id", section.getDownStationId(),
+                        "line_id", section.getLineId()))
+                .collect(Collectors.toList());
+
+        SqlParameterSource[] batchSqlParams = SqlParameterSourceUtils.createBatch(batchParams.toArray());
+        simpleJdbcInsert.executeBatch(batchSqlParams);
+    }
+
+    public void deleteByLineId(Long lineId) {
+        String sql = "delete from section where line_id = ?";
+        jdbcTemplate.update(sql, lineId);
     }
 }

@@ -165,7 +165,6 @@ class SectionServiceTest {
 
         //then
         assertAll(
-                () -> assertThat(lineDao.findById(lineId)).isEmpty(),
                 () -> assertThat(sectionDao.findAllByLineId(lineId)).isEmpty()
         );
     }

@@ -6,6 +6,7 @@ public class SectionDeleteRequest {
 
     @NotNull(message = "노선 id는 필수로 입력해야합니다.")
     private Long lineId;
+    
     @NotNull(message = "노선 id는 필수로 입력해야합니다.")
     private Long stationId;
 

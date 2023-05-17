@@ -96,7 +96,7 @@ public class SectionService {
             return insert(updateSection, newSection);
         }
 
-        final Section targetSection = sortedSections.getTargtDownStationSection(request.getDownStationId());
+        final Section targetSection = sortedSections.getTargetDownStationSection(request.getDownStationId());
 
         validateDistance(targetSection.getDistance(), request.getDistance());
 
@@ -120,33 +120,8 @@ public class SectionService {
         final List<Section> sections = getSections(request.getLineId());
         final Sections sortedSections = Sections.from(sections);
 
-        if (sortedSections.isInitialState()) {
-            sectionDao.delete(sortedSections.findFirstSectionId());
-            lineDao.deleteById(request.getLineId());
-            return;
-        }
-
-        if (sortedSections.isDownEndPoint(request.getStationId())) {
-            sectionDao.delete(sortedSections.findFirstSectionId());
-            return;
-        }
-
-        if (sortedSections.isUpEndPoint(request.getStationId())) {
-            sectionDao.delete(sortedSections.findLastSectionId());
-            return;
-        }
-
-        final List<Section> includeTargetSection = sortedSections.findIncludeTargetSection(request.getStationId());
-        final int newDistance = includeTargetSection.stream()
-                .mapToInt(Section::getDistance)
-                .sum();
-
-        final Section forwardSection = includeTargetSection.get(0);
-        final Section backwardSection = includeTargetSection.get(1);
-
-        sectionDao.insert(new Section(newDistance, findStationById(forwardSection.getUpStationId()), findStationById(backwardSection.getDownStationId()), request.getLineId()));
-        for (Section section : includeTargetSection) {
-            sectionDao.delete(section.getId());
-        }
+        sortedSections.deleteSection(request);
+        sectionDao.deleteByLineId(request.getLineId());
+        sectionDao.saveAll(sortedSections.getSections());
     }
 }

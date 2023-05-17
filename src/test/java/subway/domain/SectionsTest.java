@@ -62,7 +62,7 @@ class SectionsTest {
     @Test
     void 하행역_기준으로_구간을_찾아온다() {
         // when
-        final Section result = sections.getTargtDownStationSection(2L);
+        final Section result = sections.getTargetDownStationSection(2L);
 
         // then
         assertAll(

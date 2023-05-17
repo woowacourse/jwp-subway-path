@@ -1,5 +1,7 @@
 package subway.domain;
 
+import subway.dto.SectionDeleteRequest;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -76,17 +78,50 @@ public class Sections {
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
-    public Section getTargtDownStationSection(Long downStationId) {
+    public Section getTargetDownStationSection(Long downStationId) {
         return sections.stream()
                 .filter(section -> Objects.equals(section.getDownStationId(), downStationId))
                 .findAny()
                 .orElseThrow(() -> new IllegalStateException("찾을 수 없는 구간입니다."));
     }
 
-    public List<Section> findIncludeTargetSection(Long stationId){
+    public List<Section> findIncludeTargetSection(Long stationId) {
         return sections.stream()
                 .filter(section -> Objects.equals(section.getUpStationId(), stationId) || Objects.equals(section.getDownStationId(), stationId))
                 .collect(Collectors.toList());
+    }
+
+    public void deleteSection(SectionDeleteRequest request) {
+        if (isInitialState()) {
+            sections.clear();
+            return;
+        }
+
+        if (isDownEndPoint(request.getStationId())) {
+            sections.remove(sections.size() - 1);
+            return;
+        }
+
+        if (isUpEndPoint(request.getStationId())) {
+            sections.remove(0);
+            return;
+        }
+
+        final List<Section> includeTargetSection = findIncludeTargetSection(request.getStationId());
+        final int newDistance = includeTargetSection.stream()
+                .mapToInt(Section::getDistance)
+                .sum();
+
+        final Section forwardSection = includeTargetSection.get(0);
+        final Section backwardSection = includeTargetSection.get(1);
+
+        sections.add(new Section(newDistance,
+                new Station(forwardSection.getUpStationId(), forwardSection.getUpStation().getName()),
+                new Station(backwardSection.getDownStationId(), backwardSection.getDownStation().getName()),
+                request.getLineId()));
+        for (Section section : includeTargetSection) {
+            sections.remove(section);
+        }
     }
 
     public boolean isInitialState() {
