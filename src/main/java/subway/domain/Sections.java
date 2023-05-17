@@ -40,7 +40,7 @@ public class Sections {
             Station existingStation = upStation;
 
             if (graph.isTerminal(DOWN, existingStation)) {
-                addStationToDownLine(existingStation, newStation, distance);
+                addStationTo(DOWN, existingStation, newStation, distance);
                 return newStation;
             }
 
@@ -55,7 +55,8 @@ public class Sections {
             Station existingStation = downStation;
 
             if (graph.isTerminal(UP, existingStation)) {
-                addStationToUpLine(newStation, existingStation, distance);
+                graph.addStation(newStation);
+                graph.setSectionDistance(graph.addSection(newStation, existingStation), distance);
                 return newStation;
             }
 
@@ -65,6 +66,17 @@ public class Sections {
         }
 
         throw new InvalidStationException("부적절한 입력입니다.");
+    }
+
+    private void addStationTo(final Direction direction, final Station existingStation, final Station newStation, final int distance) {
+        if (direction == DOWN) {
+            graph.addStation(newStation);
+            graph.setSectionDistance(graph.addSection(existingStation, newStation), distance);
+        }
+        if (direction == UP) {
+            graph.addStation(newStation);
+            graph.setSectionDistance(graph.addSection(newStation, existingStation), distance);
+        }
     }
 
     private boolean isNewStation(final Station station) {
@@ -122,16 +134,6 @@ public class Sections {
             return graph.getUpStation(defaultWeightedEdges.iterator().next());
         }
         return graph.getDownStation(defaultWeightedEdges.iterator().next());
-    }
-
-    private void addStationToUpLine(final Station newStation, final Station downLineStation, final int distance) {
-        graph.addStation(newStation);
-        graph.setSectionDistance(graph.addSection(newStation, downLineStation), distance);
-    }
-
-    private void addStationToDownLine(final Station upLineStation, final Station newStation, final int distance) {
-        graph.addStation(newStation);
-        graph.setSectionDistance(graph.addSection(upLineStation, newStation), distance);
     }
 
     private void addStationToUpLine(final Station downLinePreviousStation, final Station newStation, final Station downLineStation, final int distance) {
