@@ -3,10 +3,10 @@ package subway.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.domain.Direction.DOWN;
 import static subway.domain.Direction.UP;
-import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST2_ST3;
-import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST3_ST4;
-import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST4_ST5;
 import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST3_ST4;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST4_ST5;
 import static subway.domain.SectionFixture.LINE1_SECTION_ST5_ST6;
 import static subway.domain.StationFixture.FIXTURE_STATION_1;
 import static subway.domain.StationFixture.FIXTURE_STATION_2;
@@ -24,9 +24,9 @@ class LineMapTest {
 
     private static final LineMap FIXTURE_LINE_ROUTE = LineMap.of(List.of(
             LINE1_SECTION_ST1_ST2,
-            LINE1_SECTION_MIDDLE_ST2_ST3,
-            LINE1_SECTION_MIDDLE_ST3_ST4,
-            LINE1_SECTION_MIDDLE_ST4_ST5,
+            LINE1_SECTION_ST2_ST3,
+            LINE1_SECTION_ST3_ST4,
+            LINE1_SECTION_ST4_ST5,
             LINE1_SECTION_ST5_ST6
     ));
 
@@ -49,9 +49,9 @@ class LineMapTest {
     void addStationByDownDirection() {
         LineMap lineMap = LineMap.of(List.of(
                 LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST2_ST3,
-                LINE1_SECTION_MIDDLE_ST3_ST4,
-                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
                 LINE1_SECTION_ST5_ST6
         ));
 
@@ -62,9 +62,9 @@ class LineMapTest {
                 .containsOnly(
                         new Section(FIXTURE_STATION_1, adding, new Distance(6)),
                         new Section(adding, FIXTURE_STATION_2, new Distance(4)),
-                        LINE1_SECTION_MIDDLE_ST2_ST3,
-                        LINE1_SECTION_MIDDLE_ST3_ST4,
-                        LINE1_SECTION_MIDDLE_ST4_ST5,
+                        LINE1_SECTION_ST2_ST3,
+                        LINE1_SECTION_ST3_ST4,
+                        LINE1_SECTION_ST4_ST5,
                         LINE1_SECTION_ST5_ST6
                 );
     }
@@ -74,9 +74,9 @@ class LineMapTest {
     void addStationAtHead() {
         LineMap lineMap = LineMap.of(List.of(
                 LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST2_ST3,
-                LINE1_SECTION_MIDDLE_ST3_ST4,
-                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
                 LINE1_SECTION_ST5_ST6
         ));
 
@@ -87,9 +87,9 @@ class LineMapTest {
                 .containsOnly(
                         new Section(adding, FIXTURE_STATION_1, new Distance(6)),
                         LINE1_SECTION_ST1_ST2,
-                        LINE1_SECTION_MIDDLE_ST2_ST3,
-                        LINE1_SECTION_MIDDLE_ST3_ST4,
-                        LINE1_SECTION_MIDDLE_ST4_ST5,
+                        LINE1_SECTION_ST2_ST3,
+                        LINE1_SECTION_ST3_ST4,
+                        LINE1_SECTION_ST4_ST5,
                         LINE1_SECTION_ST5_ST6
                 );
     }
@@ -99,9 +99,9 @@ class LineMapTest {
     void addStationAtTail() {
         LineMap lineMap = LineMap.of(List.of(
                 LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST2_ST3,
-                LINE1_SECTION_MIDDLE_ST3_ST4,
-                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
                 LINE1_SECTION_ST5_ST6
         ));
 
@@ -111,9 +111,9 @@ class LineMapTest {
         assertThat(lineMap.extractSections())
                 .containsOnly(
                         LINE1_SECTION_ST1_ST2,
-                        LINE1_SECTION_MIDDLE_ST2_ST3,
-                        LINE1_SECTION_MIDDLE_ST3_ST4,
-                        LINE1_SECTION_MIDDLE_ST4_ST5,
+                        LINE1_SECTION_ST2_ST3,
+                        LINE1_SECTION_ST3_ST4,
+                        LINE1_SECTION_ST4_ST5,
                         LINE1_SECTION_ST5_ST6,
                         new Section(FIXTURE_STATION_6, adding, new Distance(6))
                 );
@@ -124,9 +124,9 @@ class LineMapTest {
     void deleteStation() {
         LineMap lineMap = LineMap.of(List.of(
                 LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST2_ST3,
-                LINE1_SECTION_MIDDLE_ST3_ST4,
-                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
                 LINE1_SECTION_ST5_ST6
         ));
 
@@ -135,8 +135,8 @@ class LineMapTest {
         assertThat(lineMap.extractSections())
                 .containsOnly(
                         new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20)),
-                        LINE1_SECTION_MIDDLE_ST3_ST4,
-                        LINE1_SECTION_MIDDLE_ST4_ST5,
+                        LINE1_SECTION_ST3_ST4,
+                        LINE1_SECTION_ST4_ST5,
                         LINE1_SECTION_ST5_ST6
                 );
     }
@@ -146,9 +146,9 @@ class LineMapTest {
     void deleteTailStation() {
         LineMap lineMap = LineMap.of(List.of(
                 LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST2_ST3,
-                LINE1_SECTION_MIDDLE_ST3_ST4,
-                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
                 LINE1_SECTION_ST5_ST6
         ));
 
@@ -156,9 +156,9 @@ class LineMapTest {
 
         assertThat(lineMap.extractSections())
                 .containsOnly(
-                        LINE1_SECTION_MIDDLE_ST2_ST3,
-                        LINE1_SECTION_MIDDLE_ST3_ST4,
-                        LINE1_SECTION_MIDDLE_ST4_ST5,
+                        LINE1_SECTION_ST2_ST3,
+                        LINE1_SECTION_ST3_ST4,
+                        LINE1_SECTION_ST4_ST5,
                         LINE1_SECTION_ST5_ST6
                 );
     }
@@ -168,9 +168,9 @@ class LineMapTest {
     void deleteHeadStation() {
         LineMap lineMap = LineMap.of(List.of(
                 LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST2_ST3,
-                LINE1_SECTION_MIDDLE_ST3_ST4,
-                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
                 LINE1_SECTION_ST5_ST6
         ));
 
@@ -179,9 +179,9 @@ class LineMapTest {
         assertThat(lineMap.extractSections())
                 .containsOnly(
                         LINE1_SECTION_ST1_ST2,
-                        LINE1_SECTION_MIDDLE_ST2_ST3,
-                        LINE1_SECTION_MIDDLE_ST3_ST4,
-                        LINE1_SECTION_MIDDLE_ST4_ST5
+                        LINE1_SECTION_ST2_ST3,
+                        LINE1_SECTION_ST3_ST4,
+                        LINE1_SECTION_ST4_ST5
                 );
     }
 

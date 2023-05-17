@@ -2,17 +2,15 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST2_ST3;
-import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST3_ST4;
-import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST4_ST5;
 import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST3_ST4;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST4_ST5;
 import static subway.domain.SectionFixture.LINE1_SECTION_ST5_ST6;
 import static subway.domain.StationFixture.FIXTURE_STATION_4;
 import static subway.domain.StationFixture.FIXTURE_STATION_6;
 
 import java.util.List;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,13 +21,13 @@ class RoutedStationsFactoryTest {
     void create() {
         List<Section> sections = List.of(
                 LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST2_ST3,
-                LINE1_SECTION_MIDDLE_ST3_ST4,
-                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
                 LINE1_SECTION_ST5_ST6
         );
 
-        SimpleDirectedWeightedGraph<Station, DefaultWeightedEdge> result = RoutedStationsFactory.create(sections);
+        RoutedStations result = RoutedStationsFactory.create(sections);
 
         for (Section section : sections) {
             assertThat(result.containsEdge(section.getLeft(), section.getRight()))
@@ -44,8 +42,8 @@ class RoutedStationsFactoryTest {
     void createFailDisconnected() {
         List<Section> sections = List.of(
                 LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST3_ST4,
-                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
                 LINE1_SECTION_ST5_ST6
         );
 
@@ -59,9 +57,9 @@ class RoutedStationsFactoryTest {
     void createFailForked() {
         List<Section> sections = List.of(
                 LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST2_ST3,
-                LINE1_SECTION_MIDDLE_ST3_ST4,
-                LINE1_SECTION_MIDDLE_ST4_ST5,
+                LINE1_SECTION_ST2_ST3,
+                LINE1_SECTION_ST3_ST4,
+                LINE1_SECTION_ST4_ST5,
                 new Section(FIXTURE_STATION_4, FIXTURE_STATION_6, new Distance(10))
         );
 

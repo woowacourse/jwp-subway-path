@@ -2,9 +2,9 @@ package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST2_ST3;
-import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST4_ST5;
 import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST4_ST5;
 import static subway.domain.StationFixture.FIXTURE_STATION_1;
 import static subway.domain.StationFixture.FIXTURE_STATION_2;
 import static subway.domain.StationFixture.FIXTURE_STATION_3;
@@ -75,7 +75,7 @@ class SectionTest {
     @DisplayName("구간과 전달받은 구간을 합친 구간을 반환한다")
     @Test
     void merge() {
-        Optional<Section> result = LINE1_SECTION_ST1_ST2.merge(LINE1_SECTION_MIDDLE_ST2_ST3);
+        Optional<Section> result = LINE1_SECTION_ST1_ST2.merge(LINE1_SECTION_ST2_ST3);
 
         assertThat(result.get())
                 .isEqualTo(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20)));
@@ -84,7 +84,7 @@ class SectionTest {
     @DisplayName("합치기 위한 구간과 전달받은 구간에 상관 없이 합친 구간을 반환한다")
     @Test
     void mergeReverseOrders() {
-        Optional<Section> result = LINE1_SECTION_MIDDLE_ST2_ST3.merge(LINE1_SECTION_ST1_ST2);
+        Optional<Section> result = LINE1_SECTION_ST2_ST3.merge(LINE1_SECTION_ST1_ST2);
 
         assertThat(result.get())
                 .isEqualTo(new Section(FIXTURE_STATION_1, FIXTURE_STATION_3, new Distance(20)));
@@ -93,7 +93,7 @@ class SectionTest {
     @DisplayName("구간과 전달받은 구간 사이에 교점이 없으면 빈 값을 반환한다")
     @Test
     void mergeNoIntersection() {
-        Optional<Section> result = LINE1_SECTION_MIDDLE_ST2_ST3.merge(LINE1_SECTION_MIDDLE_ST4_ST5);
+        Optional<Section> result = LINE1_SECTION_ST2_ST3.merge(LINE1_SECTION_ST4_ST5);
 
         assertThat(result.isEmpty())
                 .isTrue();

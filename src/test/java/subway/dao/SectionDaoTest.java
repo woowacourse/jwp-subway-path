@@ -2,8 +2,8 @@ package subway.dao;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static subway.domain.LineFixture.FIXTURE_LINE_1;
-import static subway.domain.SectionFixture.LINE1_SECTION_MIDDLE_ST2_ST3;
 import static subway.domain.SectionFixture.LINE1_SECTION_ST1_ST2;
+import static subway.domain.SectionFixture.LINE1_SECTION_ST2_ST3;
 
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -38,10 +38,10 @@ class SectionDaoTest {
     @Test
     void findByLineId() {
         sectionDao.insertAllByLineId(FIXTURE_LINE_1.getId(), List.of(LINE1_SECTION_ST1_ST2,
-                LINE1_SECTION_MIDDLE_ST2_ST3));
+                LINE1_SECTION_ST2_ST3));
 
         assertThat(sectionDao.findByLineId(FIXTURE_LINE_1.getId()))
-                .containsExactlyInAnyOrder(LINE1_SECTION_ST1_ST2, LINE1_SECTION_MIDDLE_ST2_ST3);
+                .containsExactlyInAnyOrder(LINE1_SECTION_ST1_ST2, LINE1_SECTION_ST2_ST3);
     }
 
     @DisplayName("노선에 해당하는 구간을 모두 삭제할 수 있다.")
