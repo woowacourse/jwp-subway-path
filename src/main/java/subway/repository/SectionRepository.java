@@ -21,12 +21,6 @@ public class SectionRepository {
         return new Section(section.getLeft(), section.getRight(), new Distance(section.getDistance()));
     }
 
-//    public List<Section> findAllByLineId(Long lineId) {
-//        sectionDao.findAllByLineId(lineId)
-//                .stream()
-//                .map(sectionEntity -> new Section());
-//    }
-
     public void delete(Long leftStationId, Long rightStationId) {
         sectionDao.deleteByStationId(leftStationId, rightStationId);
     }

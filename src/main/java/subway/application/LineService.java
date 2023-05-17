@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import subway.domain.Line;
-import subway.domain.Station;
 import subway.repository.LineRepository;
 import subway.ui.dto.LineRequest;
 import subway.ui.dto.LineResponse;
@@ -46,11 +45,9 @@ public class LineService {
 
     public LineStationResponse findStationsById(Long lineId) {
         Line line = findByLineId(lineId);
-        List<Station> stations = line.findLeftToRightRoute();
-        for (final Station station : stations) {
-            System.out.println(station.getName());
-        }
-        List<StationResponse> stationResponses = stations.stream()
+
+        List<StationResponse> stationResponses = line.findLeftToRightRoute()
+                .stream()
                 .map(station -> new StationResponse(station.getId(), station.getName()))
                 .collect(Collectors.toList());
 
