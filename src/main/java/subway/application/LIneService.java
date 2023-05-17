@@ -2,42 +2,78 @@ package subway.application;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.dto.LineRequest;
+import subway.dto.LineResponse;
 import subway.dto.SectionResponse;
 import subway.dto.StationEnrollRequest;
-import subway.dto.StationResponse;
 import subway.entity.SectionEntity;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
 @Transactional
-public class SubwayService {
-
+public class LIneService {
+    private final LineDao lineDao;
     private final SectionDao sectionDao;
-    private final LineService lineService;
     private final StationService stationService;
 
-    public SubwayService(SectionDao sectionDao, LineService lineService, StationService stationService) {
+    public LIneService(final LineDao lineDao, final SectionDao sectionDao, final StationService stationService) {
+        this.lineDao = lineDao;
         this.sectionDao = sectionDao;
-        this.lineService = lineService;
         this.stationService = stationService;
     }
 
-    public SectionResponse enrollStation(Long lineId, StationEnrollRequest request) {
+    public LineResponse saveLine(final LineRequest request) {
+        final Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
+        return LineResponse.of(persistLine);
+    }
+
+    @Transactional(readOnly = true)
+    public List<LineResponse> findLineResponses() {
+        final List<Line> persistLines = findLines();
+        return persistLines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<Line> findLines() {
+        return lineDao.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    public LineResponse findLineResponseById(final Long lineId) {
+        final Line persistLine = findLineById(lineId);
+        return LineResponse.of(persistLine);
+    }
+
+    @Transactional(readOnly = true)
+    public Line findLineById(final Long id) {
+        return lineDao.findById(id);
+    }
+
+    public void updateLine(final Long lineId, final LineRequest lineUpdateRequest) {
+        lineDao.update(new Line(lineId, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+    }
+
+    public void deleteLineById(final Long lineId) {
+        lineDao.deleteById(lineId);
+    }
+
+    public SectionResponse enrollStation(final Long lineId, final StationEnrollRequest request) {
         final Line line = makeLineBy(lineId);
         final Station left = stationService.findById(request.getFromStation());
         final Station right = stationService.findById(request.getToStation());
-        Section section = new Section(left, right, new Distance(request.getDistance()));
+        final Section section = new Section(left, right, new Distance(request.getDistance()));
         line.addSection(section);
         sectionDao.save(toEntities(line.getId(), line.getSections()));
         return new SectionResponse(lineId, left, right);
@@ -55,7 +91,7 @@ public class SubwayService {
     }
 
     private Line makeLineBy(final Long lineId) {
-        final Line line = lineService.findLineById(lineId);
+        final Line line = findLineById(lineId);
         final List<Section> sections = findSections(lineId);
         return new Line(line.getId(), line.getName(), line.getColor(), sections);
     }
@@ -68,9 +104,9 @@ public class SubwayService {
                 .collect(Collectors.toList());
     }
 
-    private List<Station> findStationsOf(List<SectionEntity> sectionEntities) {
+    private List<Station> findStationsOf(final List<SectionEntity> sectionEntities) {
         final HashSet<String> stationNames = new HashSet<>();
-        for (SectionEntity sectionEntity : sectionEntities) {
+        for (final SectionEntity sectionEntity : sectionEntities) {
             stationNames.add(sectionEntity.getLeft());
             stationNames.add(sectionEntity.getRight());
         }
@@ -85,34 +121,27 @@ public class SubwayService {
         return new Section(leftStation, rightStation, new Distance(sectionEntity.getDistance()));
     }
 
-    public void deleteStation(Long lineId, Long stationId) {
+    public void deleteStation(final Long lineId, final Long stationId) {
         final Line line = makeLineBy(lineId);
         line.deleteStation(stationService.findById(stationId));
         sectionDao.save(toEntities(lineId, line.getSections()));
     }
 
     @Transactional(readOnly = true)
-    public List<StationResponse> findRouteMap(Long lineId) {
-        Line line = makeLineBy(lineId);
-        return line.routeMap()
-                .getLineStations()
-                .stream()
-                .map(station -> new StationResponse(
-                        station.getId(),
-                        station.getName()
-                )).collect(Collectors.toList());
+    public LineResponse findLineWithStationsById(final Long lineId) {
+        final Line line = makeLineBy(lineId);
+        return LineResponse.of(line);
     }
 
     @Transactional(readOnly = true)
-    public Map<String, List<StationResponse>> findAllRouteMap() {
+    public List<LineResponse> findAllRouteMap() {
         final List<Line> linesWithStations = new ArrayList<>();
-        for (Line line : lineService.findLines()) {
+        for (final Line line : findLines()) {
             linesWithStations.add(makeLineBy(line.getId()));
         }
-        Map<String, List<StationResponse>> allRouteMap = new HashMap<>();
-        for (Line line : linesWithStations) {
-            allRouteMap.put(line.getName(), findRouteMap(line.getId()));
-        }
-        return allRouteMap;
+        return linesWithStations.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
     }
+
 }
