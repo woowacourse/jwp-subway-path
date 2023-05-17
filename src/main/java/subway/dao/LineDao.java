@@ -54,7 +54,7 @@ public class LineDao {
     public Optional<Long> findIdByName(String name) {
         String sql = "select id from LINE where name = ?";
         try {
-            return Optional.of(jdbcTemplate.queryForObject(sql, new Object[]{name}, Long.class));
+            return Optional.of(jdbcTemplate.queryForObject(sql, Long.class, name));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
         }

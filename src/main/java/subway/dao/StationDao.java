@@ -45,15 +45,19 @@ public class StationDao {
         return jdbcTemplate.query(sql, stationEntityRowMapper);
     }
 
-    public StationEntity findById(long id) {
-        String sql = "select * from STATION where id = ?";
-        return jdbcTemplate.queryForObject(sql, stationEntityRowMapper, id);
+    public Optional<StationEntity> findById(long id) {
+        try {
+            String sql = "select * from STATION where id = ?";
+            return Optional.of(jdbcTemplate.queryForObject(sql, stationEntityRowMapper, id));
+        } catch (EmptyResultDataAccessException exception) {
+            return Optional.empty();
+        }
     }
 
     public Optional<Long> findIdByName(String name) {
         try {
             String sql = "select id from STATION where name = ?";
-            return Optional.of(jdbcTemplate.queryForObject(sql, new Object[]{name}, Long.class));
+            return Optional.of(jdbcTemplate.queryForObject(sql, Long.class, name));
         } catch (EmptyResultDataAccessException exception) {
             return Optional.empty();
         }

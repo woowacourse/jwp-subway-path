@@ -15,6 +15,7 @@ import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.StationEntity;
 import subway.exception.LineNotFoundException;
+import subway.exception.StationNotFoundException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -61,7 +62,9 @@ public class SubwayRepository {
     }
 
     private Station findStation(long stationId) {
-        return Station.from(stationDao.findById(stationId).getName());
+        StationEntity stationEntity = stationDao.findById(stationId)
+                .orElseThrow(() -> new StationNotFoundException("찾는 역이 존재하지 않습니다."));
+        return Station.from(stationEntity.getName());
     }
 
     public void addStation(Station stationToAdd) {

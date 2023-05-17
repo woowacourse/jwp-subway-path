@@ -31,7 +31,6 @@ public class SubwayService {
         this.subwayRepository = subwayRepository;
     }
 
-    @Transactional
     public long addStation(AddStationRequest addStationRequest) {
         Line line = getLine(addStationRequest.getLineName());
         Station stationToAdd = getStation(addStationRequest.getAddStationName()).orElseGet(() -> createNewStation(addStationRequest.getAddStationName()));
@@ -60,7 +59,6 @@ public class SubwayService {
         return newStation;
     }
 
-    @Transactional
     public void deleteStation(DeleteStationRequest deleteStationRequest) {
         Line line = getLine(deleteStationRequest.getLineName());
         Station stationToDelete = getStation(deleteStationRequest.getStationName()).orElseThrow(() -> new StationNotFoundException("삭제하고자 하는 역이 존재하지 않습니다."));
@@ -69,7 +67,6 @@ public class SubwayService {
         subwayRepository.updateLine(line);
     }
 
-    @Transactional
     public long addNewLine(AddLineRequest addLineRequest) {
         LineName lineNameToAdd = new LineName(addLineRequest.getLineName());
         Station upstream = getStation(addLineRequest.getUpstreamName()).orElseGet(() -> createNewStation(addLineRequest.getUpstreamName()));
