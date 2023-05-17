@@ -1,53 +1,57 @@
 package subway.application;
 
-import org.springframework.stereotype.Service;
-import subway.dao.LineDao;
-import subway.domain.Line;
-import subway.dto.LineRequest;
-import subway.dto.LineResponse;
-
 import java.util.List;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import subway.application.dto.CreationLineDto;
+import subway.application.dto.ReadLineDto;
+import subway.domain.line.Line;
+import subway.persistence.repository.LineRepository;
+import subway.persistence.repository.SectionRepository;
 
 @Service
+@Transactional(readOnly = true)
 public class LineService {
-    private final LineDao lineDao;
 
-    public LineService(LineDao lineDao) {
-        this.lineDao = lineDao;
+    private final LineRepository lineRepository;
+    private final SectionRepository sectionRepository;
+
+    public LineService(final LineRepository lineRepository, final SectionRepository sectionRepository) {
+        this.lineRepository = lineRepository;
+        this.sectionRepository = sectionRepository;
     }
 
-    public LineResponse saveLine(LineRequest request) {
-        Line persistLine = lineDao.insert(new Line(request.getName(), request.getColor()));
-        return LineResponse.of(persistLine);
+    @Transactional
+    public CreationLineDto saveLine(final String name, final String color) {
+        final Line line = Line.of(name, color);
+        final Line persistLine = lineRepository.insert(line);
+
+        return CreationLineDto.from(persistLine);
     }
 
-    public List<LineResponse> findLineResponses() {
-        List<Line> persistLines = findLines();
-        return persistLines.stream()
-                .map(LineResponse::of)
+    public List<ReadLineDto> findAllLine() {
+        final List<Line> persistLines = lineRepository.findAll();
+
+        final List<Line> lines = persistLines.stream()
+                .map(sectionRepository::findAllByLine)
+                .collect(Collectors.toList());
+
+        return lines.stream()
+                .map(ReadLineDto::from)
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
-        return lineDao.findAll();
+    public ReadLineDto findLineById(final Long id) {
+        final Line persistLine = lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 노선입니다."));
+        final Line line = sectionRepository.findAllByLine(persistLine);
+
+        return ReadLineDto.from(line);
     }
 
-    public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine);
+    @Transactional
+    public void deleteLineById(final Long id) {
+        lineRepository.deleteById(id);
     }
-
-    public Line findLineById(Long id) {
-        return lineDao.findById(id);
-    }
-
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineDao.update(new Line(id, lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
-    }
-
-    public void deleteLineById(Long id) {
-        lineDao.deleteById(id);
-    }
-
 }
