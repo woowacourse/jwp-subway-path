@@ -6,6 +6,7 @@ import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
 import subway.persistence.entity.LineEntity;
+import subway.persistence.entity.SectionEntity;
 import subway.ui.request.LineRequest;
 
 import java.util.HashMap;
@@ -46,7 +47,15 @@ public class LineRepository {
     }
 
     private Sections findByLineId(final Long lineId) {
-        final List<Section> sections = sectionDao.findByLineId(lineId);
+        final List<Section> sections = sectionDao.findByLineId(lineId).stream()
+                .map(sectionEntity -> new Section(
+                                sectionEntity.getId(),
+                                new Station(sectionEntity.getBeforeStation()),
+                                new Station(sectionEntity.getNextStation()),
+                                new Distance(sectionEntity.getDistance())
+                        )
+                )
+                .collect(Collectors.toList());
 
         // TODO: 정렬 로직 리팩터링
         final List<Section> sortedSections = getSortedSections(sections);
@@ -112,11 +121,23 @@ public class LineRepository {
     }
 
     public void deleteSections(final Sections sections) {
-        sectionDao.delete(sections.getSections());
+        final List<Long> ids = sections.getSections().stream()
+                .mapToLong(Section::getId)
+                .boxed()
+                .collect(Collectors.toList());
+        sectionDao.delete(ids);
     }
 
     public void insertSections(final Long lineId, final Sections sections) {
-        sectionDao.insert(lineId, sections.getSections());
+        final List<SectionEntity> sectionEntities = sections.getSections().stream()
+                .map(section -> new SectionEntity(
+                        section.getBeforeStation().getId(),
+                        section.getNextStation().getId(),
+                        section.getDistance().getValue(),
+                        lineId
+                ))
+                .collect(Collectors.toList());
+        sectionDao.insert(lineId, sectionEntities);
     }
 
     public Station findStationByName(final String name) {
