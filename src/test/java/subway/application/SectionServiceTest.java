@@ -1,5 +1,6 @@
 package subway.application;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -24,6 +25,7 @@ import subway.dao.SectionEntity;
 import subway.dao.StationDao;
 import subway.dao.StationEntity;
 import subway.domain.Station;
+import subway.dto.RouteDto;
 import subway.dto.SectionSaveDto;
 import subway.exception.GlobalException;
 
@@ -80,7 +82,7 @@ class SectionServiceTest {
 
         sectionService.deleteSection(1L, 1L);
 
-        verify(sectionDao, atLeastOnce()).deleteAll();
+        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
         verify(sectionDao, atLeastOnce()).findByLineId(anyLong());
         verify(stationDao, atLeastOnce()).findById(anyLong());
     }
@@ -117,7 +119,7 @@ class SectionServiceTest {
 
         sectionService.saveSection(1L, new SectionSaveDto("이역", "삼역", 3));
 
-        verify(sectionDao, atLeastOnce()).deleteAll();
+        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
         verify(sectionDao, atLeastOnce()).insertAll(any());
     }
 
@@ -153,7 +155,7 @@ class SectionServiceTest {
 
         sectionService.saveSection(1L, new SectionSaveDto("영역", "일역", 3));
 
-        verify(sectionDao, atLeastOnce()).deleteAll();
+        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
         verify(sectionDao, atLeastOnce()).insertAll(any());
     }
 
@@ -189,11 +191,11 @@ class SectionServiceTest {
 
         sectionService.saveSection(1L, new SectionSaveDto("일역", "삼역", 1));
 
-        verify(sectionDao, atLeastOnce()).deleteAll();
+        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
         verify(sectionDao, atLeastOnce()).insertAll(any());
     }
 
-    @DisplayName("구간 저장 테스트 (도착역이 새로운 역이고 사이에 추가되는 경우)")
+    @DisplayName("구간 저장 테스트 (출발역이 새로운 역이고 사이에 추가되는 경우)")
     @Test
     void saveSectionSuccessTest4() {
         SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
@@ -225,8 +227,53 @@ class SectionServiceTest {
 
         sectionService.saveSection(1L, new SectionSaveDto("삼역", "이역", 1));
 
-        verify(sectionDao, atLeastOnce()).deleteAll();
+        verify(sectionDao, atLeastOnce()).deleteAllByLineId(anyLong());
         verify(sectionDao, atLeastOnce()).insertAll(any());
+    }
+
+    @DisplayName("구간에 따른 요금 반환 테스트")
+    @Test
+    void getFeeByStations() {
+        SectionEntity sectionEntity1 = new SectionEntity(1L, 1L, 2L, 3);
+
+        List<SectionEntity> sections = List.of(sectionEntity1);
+        StationEntity stationEntity1 = new StationEntity(1L, "일역");
+        StationEntity stationEntity2 = new StationEntity(2L, "이역");
+
+        when(sectionDao.findAll())
+                .thenReturn(sections);
+
+        when(sectionDao.findByLineId(1L))
+                .thenReturn(sections);
+
+        when(stationDao.findById(1L))
+                .thenReturn(stationEntity1);
+
+        when(stationDao.findById(2L))
+                .thenReturn(stationEntity2);
+
+        when(stationDao.findById(1L))
+                .thenReturn(stationEntity1);
+
+        when(stationDao.findById(2L))
+                .thenReturn(stationEntity2);
+
+        stationFactory.when(() -> StationFactory.toStation(stationEntity1))
+                .thenReturn(new Station("일역"));
+
+        stationFactory.when(() -> StationFactory.toStation(stationEntity2))
+                .thenReturn(new Station("이역"));
+
+        when(stationDao.isExistStationById(1L))
+                .thenReturn(true);
+
+        when(stationDao.isExistStationById(2L))
+                .thenReturn(true);
+
+        RouteDto routeDto = sectionService.getFeeByStations(1L, 2L);
+
+        assertThat(routeDto.getFee()).isEqualTo(1250);
+        assertThat(routeDto.getDistance()).isEqualTo(3);
     }
 
     @DisplayName("구간 추가 예외")
@@ -336,6 +383,56 @@ class SectionServiceTest {
             assertThatThrownBy(() -> sectionService.saveSection(1L, new SectionSaveDto("일역", "삼역", 5)))
                     .isInstanceOf(GlobalException.class)
                     .hasMessage("구간 길이로 인해 연결할 수 없습니다.");
+        }
+
+    }
+
+    @Nested
+    @DisplayName("구간 요금 조회 예외 테스트")
+    class ValidateSectionFee {
+
+        @DisplayName("출발역과 도착역이 같은 경우 예외 테스트")
+        @Test
+        void validateFeeBySameStations() {
+            Long sameStationId = 1L;
+
+            assertThatThrownBy(() -> sectionService.getFeeByStations(sameStationId, sameStationId))
+                    .isInstanceOf(GlobalException.class)
+                    .hasMessage("출발역과 도착역이 같을 수는 없습니다.");
+        }
+
+        @DisplayName("출발역은 존재하지만 도착역이 존재하지 않는 경우 예외 테스트")
+        @Test
+        void validateFeeByNotExistsStations1() {
+            Long existsStationId = 1L;
+            Long notExistsStationId = 3L;
+
+            when(stationDao.isExistStationById(existsStationId))
+                    .thenReturn(true);
+
+            when(stationDao.isExistStationById(notExistsStationId))
+                    .thenReturn(false);
+
+            assertThatThrownBy(() -> sectionService.getFeeByStations(existsStationId, notExistsStationId))
+                    .isInstanceOf(GlobalException.class)
+                    .hasMessage("존재하지 않는 역입니다. 역을 다시 한번 확인해주세요.");
+        }
+
+        @DisplayName("도착역은 존재하지만 출발역이 존재하지 않는 경우 예외 테스트")
+        @Test
+        void validateFeeByNotExistsStations2() {
+            Long notExistsStationId = 1L;
+            Long existsStationId = 3L;
+
+            when(stationDao.isExistStationById(notExistsStationId))
+                    .thenReturn(false);
+
+            when(stationDao.isExistStationById(existsStationId))
+                    .thenReturn(true);
+
+            assertThatThrownBy(() -> sectionService.getFeeByStations(notExistsStationId, existsStationId))
+                    .isInstanceOf(GlobalException.class)
+                    .hasMessage("존재하지 않는 역입니다. 역을 다시 한번 확인해주세요.");
         }
 
     }

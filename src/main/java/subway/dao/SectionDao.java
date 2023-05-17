@@ -69,4 +69,9 @@ public class SectionDao {
         return Boolean.TRUE.equals(jdbcTemplate.queryForObject(sql, Boolean.class, stationId));
     }
 
+    public void deleteAllByLineId(final Long lineId) {
+        String sql = "delete from SECTION where line_id = ?";
+
+        jdbcTemplate.update(sql, lineId);
+    }
 }

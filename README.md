@@ -143,3 +143,26 @@ Response Body {[
    ]}
 ]}
 ```
+
+구간 요금 조회
+
+```text
+GET /subway/lines/sections/{start_station_id}/{end_station_id}}
+
+Response Headers {
+    Status : 200
+}
+
+Response Body {
+    distance : 5,
+    fee: 1250,
+    stations : [
+         {
+            name : "회기"
+        },
+        {
+            name : "청량리"
+        }
+   ]
+}
+```

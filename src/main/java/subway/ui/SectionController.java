@@ -1,10 +1,9 @@
 package subway.ui;
 
 
-import java.sql.SQLException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import subway.application.SectionService;
 import subway.application.StationService;
+import subway.dto.RouteDto;
 import subway.dto.SectionSaveDto;
 
 @RestController
@@ -26,6 +26,14 @@ public class SectionController {
         this.stationService = stationService;
     }
 
+    @GetMapping("sections/{startStationId}/{endStationId}")
+    public ResponseEntity<RouteDto> selectSectionFee(@PathVariable Long startStationId,
+                                                     @PathVariable Long endStationId) {
+        System.out.println("SectionController.selectSectionFee");
+        RouteDto feeBySection = sectionService.getFeeByStations(startStationId, endStationId);
+
+        return ResponseEntity.ok().body(feeBySection);
+    }
 
     @PostMapping("/{lineId}/sections")
     public ResponseEntity<Void> createSection(@PathVariable Long lineId,
@@ -43,8 +51,4 @@ public class SectionController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(SQLException.class)
-    public ResponseEntity<Void> handleSQLException() {
-        return ResponseEntity.badRequest().build();
-    }
 }
