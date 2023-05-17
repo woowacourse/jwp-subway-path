@@ -137,8 +137,29 @@ HTTP/1.1 204
 
 ### 경로 조회
 
+#### Request
+
 ```http request
 GET /routes?sourceStationId={sourceStationId}&target={targetStationId} HTTP/1.1
+```
+
+#### Response
+
+```http request
+{
+    "stations": [
+        {
+            "id": 1,
+            "name": "서울역"
+        },
+        {
+            "id": 2,
+            "name": "시청역"
+        }
+    ],
+    "totalDistance": 10,
+    "totalFare": 1000
+}
 ```
 
 ## 코드리뷰 피드백 및 리팩터링 목록

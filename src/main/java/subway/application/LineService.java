@@ -15,7 +15,7 @@ import subway.dto.StationResponse;
 
 @Service
 public class LineService {
-    
+
     private final LineDao lineDao;
     private final SectionDao sectionDao;
 
@@ -29,6 +29,7 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    // TODO 반환타입만 빼면 RouteService와 중복 로직인데 어떻게 하면 좋을까?
     public List<LineResponse> findLineResponses() {
         List<Line> lines = lineDao.findAll();
         return lines.stream()

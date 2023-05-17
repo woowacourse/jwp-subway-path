@@ -1,19 +1,28 @@
 package subway.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import java.util.List;
-import subway.domain.Station;
 
 public class RouteResponse {
 
-    private final List<Station> stations;
+    private final List<StationResponse> stations;
+    private final int totalDistance;
+    private final int totalFare;
 
-    @JsonCreator
-    public RouteResponse(final List<Station> stations) {
+    public RouteResponse(final List<StationResponse> stations, final int totalDistance, final int totalFare) {
         this.stations = stations;
+        this.totalDistance = totalDistance;
+        this.totalFare = totalFare;
     }
 
-    public List<Station> getStations() {
+    public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public int getTotalDistance() {
+        return totalDistance;
+    }
+
+    public int getTotalFare() {
+        return totalFare;
     }
 }
