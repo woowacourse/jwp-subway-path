@@ -9,7 +9,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.entity.StationEntity;
-import subway.global.util.FinalStationFactory;
 import subway.presentation.dto.StationResponse;
 import subway.service.SectionService;
 import subway.service.StationService;
@@ -28,9 +27,6 @@ class StationFacadeTest {
 
     @InjectMocks
     StationFacade stationFacade;
-
-    @Mock
-    FinalStationFactory finalStationFactory;
 
     @Mock
     StationService stationService;

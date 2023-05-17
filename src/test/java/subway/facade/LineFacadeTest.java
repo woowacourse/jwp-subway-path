@@ -9,11 +9,8 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import subway.domain.entity.LineEntity;
-import subway.domain.entity.SectionEntity;
 import subway.presentation.dto.LineRequest;
 import subway.presentation.dto.LineResponse;
-import subway.presentation.dto.SectionSaveRequest;
 import subway.service.LineService;
 import subway.service.SectionService;
 
@@ -24,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class LineFacadeTest {
@@ -37,38 +33,6 @@ class LineFacadeTest {
 
     @Mock
     SectionService sectionService;
-
-    @DisplayName("호선을 생성한다.")
-    @Test
-    void createLine() {
-        // given
-        final LineRequest request = new LineRequest("2호선", "초록", 10);
-        final Long finalUpStationId = 1L;
-        final Long finalDownStationId = 2L;
-
-        when(lineService.insert(LineEntity.of(request.getName(), request.getColor())))
-                .thenReturn(1L);
-
-        // when
-        Long lineId = lineFacade.createLine(request, finalUpStationId, finalDownStationId);
-
-        // then
-        assertThat(lineId).isEqualTo(1L);
-    }
-
-    @DisplayName("호선에 역을 등록한다.")
-    @ParameterizedTest
-    @CsvSource(value = {"1,1,2,10"})
-    void registerStation(final Long lineId, final Long upStationId, final Long downStationId, final int distance) {
-        // given
-        SectionEntity sectionEntity = SectionEntity.of(lineId, upStationId, downStationId, distance);
-
-        // when
-        lineFacade.registerStation(lineId, upStationId, downStationId, distance);
-
-        // then
-        verify(sectionService, times(1)).saveSection(SectionSaveRequest.of(sectionEntity));
-    }
 
     @DisplayName("모든 호선을 조회한다.")
     @Test
