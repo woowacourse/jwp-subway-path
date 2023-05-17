@@ -117,7 +117,7 @@ public class DbLineRepository implements LineRepository {
     private List<Section> getOrderedSections(List<Section> sections) {
         List<Section> orderedSections = new LinkedList<>();
         Section firstSection = sections.get(0);
-        
+
         Section sectionToAdd = firstSection;
         addSectionsToDownward(sections, orderedSections, sectionToAdd);
 
@@ -149,14 +149,14 @@ public class DbLineRepository implements LineRepository {
 
     private Section findSectionToAddByUpwardStation(List<Section> sections, Station upwardStation) {
         return sections.stream()
-                .filter(section -> section.getUpwardStation().haveSameNameWith(upwardStation))
+                .filter(section -> section.getUpwardStation().hasNameOf(upwardStation.getName()))
                 .findFirst()
                 .orElse(null);
     }
 
     private Section findSectionToAddByDownwardStation(List<Section> sections, Station downwardStation) {
         return sections.stream()
-                .filter(section -> section.getDownwardStation().haveSameNameWith(downwardStation))
+                .filter(section -> section.getDownwardStation().hasNameOf(downwardStation.getName()))
                 .findFirst()
                 .orElse(null);
     }

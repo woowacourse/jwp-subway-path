@@ -14,22 +14,20 @@ public class StationTest {
     @Nested
     class haveSameNameWith {
 
-        @DisplayName("같은 이름의 역을 입력받으면 true를 반환한다.")
+        @DisplayName("역의 이름을 입력받으면 true를 반환한다.")
         @Test
         void shouldReturnTrueWhenInputStationHaveSameName() {
-            Station station1 = Station.from("잠실역");
-            Station station2 = Station.from("잠실역");
+            Station station = Station.from("잠실역");
 
-            assertThat(station1.haveSameNameWith(station2)).isTrue();
+            assertThat(station.hasNameOf("잠실역")).isTrue();
         }
 
-        @DisplayName("다른 이름의 역을 입력받으면 true를 반환한다.")
+        @DisplayName("역의 이름이 아닌 값을 입력받으면 false를 반환한다.")
         @Test
         void shouldReturnFalseWhenInputStationHaveDifferentName() {
-            Station station1 = Station.from("잠실역");
-            Station station2 = Station.from("몽촌토성역");
+            Station station = Station.from("잠실역");
 
-            assertThat(station1.haveSameNameWith(station2)).isFalse();
+            assertThat(station.hasNameOf("몽촌토성역")).isFalse();
         }
     }
 

@@ -15,8 +15,8 @@ public class Station {
         return new Station(null, name);
     }
 
-    public boolean haveSameNameWith(Station station) {
-        return this.name.equals(station.name);
+    public boolean hasNameOf(String name) {
+        return this.name.equals(name);
     }
 
     public String getName() {

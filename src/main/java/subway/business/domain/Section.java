@@ -1,8 +1,9 @@
 package subway.business.domain;
 
-import static subway.business.domain.Direction.UPWARD;
+import static subway.business.domain.direction.Direction.UPWARD;
 
 import java.util.Objects;
+import subway.business.domain.direction.Direction;
 
 public class Section {
     private final Long id;
@@ -22,11 +23,16 @@ public class Section {
     }
 
     public int calculateRemainingDistance(int distanceToSubtract) {
+        if (distance <= distanceToSubtract) {
+            throw new IllegalArgumentException(String.format("추가할 구간의 거리가 기존 구간의 거리보다 크거나 같습니다. "
+                    + "(입력한 거리 : %d / 기존 구간의 거리 : %d)", distanceToSubtract, distance)
+            );
+        }
         return this.distance - distanceToSubtract;
     }
 
     public boolean hasStationNameOf(Station station) {
-        return upwardStation.haveSameNameWith(station) || downwardStation.haveSameNameWith(station);
+        return upwardStation.hasNameOf(station.getName()) || downwardStation.hasNameOf(station.getName());
     }
 
     public boolean isUpwardStation(Station station) {
@@ -39,9 +45,9 @@ public class Section {
 
     public boolean hasStationOfDirection(Station station, Direction direction) {
         if (direction.equals(UPWARD)) {
-            return this.upwardStation.haveSameNameWith(station);
+            return this.upwardStation.hasNameOf(station.getName());
         }
-        return this.downwardStation.haveSameNameWith(station);
+        return this.downwardStation.hasNameOf(station.getName());
     }
 
     public Long getId() {
