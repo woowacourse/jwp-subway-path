@@ -1,5 +1,14 @@
 # jwp-subway-path
 
+# docker 실행
+도커 컨테이서 실행 후, 프로젝트 루트 디렉토리에서 다음 명령어 실행
+```text
+cd docker
+docker-compose -p subway up -d
+```
+
+# Step1
+
 ## API 기능 요구사항
 
 - [x] 역 생성 API 구현
@@ -11,7 +20,7 @@
 - [x] 노선 목록 조회 API 구현
     - 노선에 포함된 역을 순서대로 보여주도록 응답을 개선합니다.
 
-
+## API 문서
 [API 문서](https://documenter.getpostman.com/view/19074157/2s93ebSqu4)
 
 ## 비즈니스 요구사항
@@ -36,3 +45,27 @@
     - A-(2)-B-(3)-C 상황에서 B를 제거시 A-(5)-C 상태가 되어야 한다.
 
 - [x] 역이 2개인 노선에서 역을 제거하면 노선이 사라진다.
+
+# Step2
+## DB 요구사항
+- [x] profile을 이용해 test DB와 product DB 구분
+  - [x] test: 인메모리 DB(H2)
+  - [x] product: local DB (mySql(docker))
+
+
+## API 기능 요구사항
+- [x] 경로 조회 API 구현
+
+## 비즈니스 요구사항
+- [x] source와 target 간의 최소 경로, 거리를 구한다.
+  - [x] source 와 target이 일치하면 예외를 발생시킨다.
+  - [x] source 또는 target이 line에 등록되지 않은 역이면 예외를 발생한다.
+  - [x] source와 target 간의 경로를 구하지 못하는 경우는 예외를 발생한다.
+- [x] source 에서 target 최소경로 이동시 운임을 구한다.
+  - [x] 10km 까지는 기본운임 1,250원이 부과된다.
+  - [x] 11km ~ 50km 의 추가 운임은 5km 당 100원이다.
+  - [x] 51km ~ 의 추가 운임은 8km 당 100원이다.
+    - 예시 
+      - 8km -> 1,250
+      - 11km -> 1,350
+      - 58km -> 2,150
