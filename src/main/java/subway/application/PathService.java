@@ -1,9 +1,6 @@
 package subway.application;
 
 import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +14,7 @@ import subway.domain.Station;
 import subway.domain.farecalculator.FareCalculator;
 import subway.domain.pathfinder.PathFinder;
 import subway.dto.PathResponse;
+import subway.dto.SectionMapper;
 import subway.dto.SectionResponse;
 import subway.exception.DomainException;
 import subway.exception.ExceptionType;
@@ -55,18 +53,9 @@ public class PathService {
         final int distance = pathFinder.computeShortestDistance(sourceStationId, targetStationId);
         final int fare = fareCalculator.calculateFare(distance);
 
-        final Map<Long, Station> idToStationName = stations.stream()
-                .collect(Collectors.toMap(Station::getId, Function.identity()));
-        final Map<Long, Line> idToLineName = lines.stream()
-                .collect(Collectors.toMap(Line::getId, Function.identity()));
-        final List<SectionResponse> sectionResponses = path.stream()
-                .map(section -> SectionResponse.from(
-                                idToLineName.get(section.getLineId()),
-                                idToStationName.get(section.getSourceStationId()),
-                                idToStationName.get(section.getTargetStationId())
-                        )
-                )
-                .collect(Collectors.toUnmodifiableList());
+        final SectionMapper sectionMapper = SectionMapper.from(stations, lines);
+        final List<SectionResponse> sectionResponses = sectionMapper.convertToSectionResponse(path);
+
         return new PathResponse(distance, fare, sectionResponses);
     }
 
