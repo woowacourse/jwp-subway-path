@@ -3,7 +3,7 @@
 ### API 명세
 
 - [x] 노선에 역 추가
-  - `/sections/:lineId`
+  - `/lines/:lineId/sections`
   - POST
   ```json
   {
@@ -14,7 +14,7 @@
   ``` 
 
 - [x] 노선에 역 제거
-  - `/sections/:lineId`
+  - `lines/:lineId/sections`
   - DELETE
   ```json
   {
@@ -23,21 +23,24 @@
   ```
 
 - [x] 노선 구간 조회
-  - `/sections/:lineId`
+  - `/lines/:lineId/sections`
   - GET
   ```json
   [
     {
+        "id": 1,
         "startStationName": "잠실역",
         "endStationName": "삼성역",
         "distance": 10
     },
     {
+        "id": 3,
         "startStationName": "삼성역",
         "endStationName": "포항역",
         "distance": 10
     },
     {
+        "id": 4,
         "startStationName": "포항역",
         "endStationName": "대구역",
         "distance": 10
@@ -81,16 +84,19 @@
         },
         "sections": [
             {
+                "id": 1,
                 "startStationName": "잠실역",
                 "endStationName": "삼성역",
                 "distance": 10
             },
             {
+                "id": 2,
                 "startStationName": "삼성역",
                 "endStationName": "포항역",
                 "distance": 10
             },
             {
+                "id": 3,
                 "startStationName": "포항역",
                 "endStationName": "대구역",
                 "distance": 10
@@ -105,21 +111,25 @@
         },
         "sections": [
             {
+                "id": 4,
                 "startStationName": "잠실역",
                 "endStationName": "양재역",
                 "distance": 10
             },
             {
+                "id": 5,
                 "startStationName": "양재역",
                 "endStationName": "대치역",
                 "distance": 10
             },
             {
+                "id": 6,
                 "startStationName": "대치역",
                 "endStationName": "강남역",
                 "distance": 10
             },
             {
+                "id": 7,
                 "startStationName": "강남역",
                 "endStationName": "상도역",
                 "distance": 10
@@ -134,26 +144,31 @@
         },
         "sections": [
             {
+                "id": 8,
                 "startStationName": "장승배기역",
                 "endStationName": "상도역",
                 "distance": 10
             },
             {
+                "id": 9,
                 "startStationName": "상도역",
                 "endStationName": "숭실대입구역",
                 "distance": 10
             },
             {
+                "id": 10,
                 "startStationName": "숭실대입구역",
                 "endStationName": "대치역",
                 "distance": 10
             },
             {
+                "id": 11,
                 "startStationName": "대치역",
                 "endStationName": "삼성역",
                 "distance": 10
             },
             {
+                "id": 12,
                 "startStationName": "삼성역",
                 "endStationName": "잠실역",
                 "distance": 10
