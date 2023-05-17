@@ -1,14 +1,15 @@
 package subway.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
+@AllArgsConstructor
 public class SortedStations {
     private final List<Station> stations;
-
-    private SortedStations(List<Station> stations) {
-        this.stations = stations;
-    }
 
     public static SortedStations from(Sections sections) {
         List<Section> originalSections = sections.getSections();
@@ -36,9 +37,5 @@ public class SortedStations {
         }
         stations.add(pivot);
         return stations;
-    }
-
-    public List<Station> getStations() {
-        return List.copyOf(stations);
     }
 }

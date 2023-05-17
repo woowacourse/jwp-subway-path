@@ -1,16 +1,16 @@
 package subway.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import subway.exception.SectionException;
 
 import java.util.List;
 import java.util.Objects;
 
+@Getter
+@AllArgsConstructor
 public class Sections {
     private final List<Section> sections;
-
-    public Sections(List<Section> sections) {
-        this.sections = sections;
-    }
 
     public Section add(Section newSection) {
         if (initSection(newSection)) return null;
@@ -139,9 +139,5 @@ public class Sections {
         return sections.stream()
                 .filter(section -> isUpEndStation(section.getPreStation()))
                 .findFirst().orElseThrow(() -> new SectionException("상행 종점을 찾을 수 없습니다"));
-    }
-
-    public List<Section> getSections() {
-        return sections;
     }
 }
