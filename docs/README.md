@@ -12,7 +12,7 @@
 - [x] 서비스에서는 도메인만 다룰 수 있도록 수정
 - [x] 실패하는 테스트 복구
 - [x] LineService 생성자 public?? 
-- [ ] `created_at`, `updated_at`, `audit` 데이터 생성
+- [x] `created_at`, `updated_at` 데이터 생성
 
 ## 미완성 기능 구현
 - [x] 조회 기능: API 레벨부터 천천히 살펴보기
