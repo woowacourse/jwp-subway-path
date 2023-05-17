@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import subway.Fixture;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 

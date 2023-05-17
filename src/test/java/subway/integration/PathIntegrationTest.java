@@ -5,14 +5,19 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import subway.dto.request.ConnectRequest;
 import subway.dto.request.LineRequest;
+import subway.dto.response.PathResponse;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class PathIntegrationTest extends IntegrationTest {
     private LineRequest lineRequest1;
@@ -84,42 +89,43 @@ public class PathIntegrationTest extends IntegrationTest {
                 .when()
                 .post("/stations");
 
-        ConnectRequest connectRequest1 = new ConnectRequest(null, 2L, 3);
+        ConnectRequest connectRequest1 = new ConnectRequest(null, 2L, 10);
         RestAssured.given()
                 .body(connectRequest1)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/1/stations/1?type=init");
 
-        ConnectRequest connectRequest2 = new ConnectRequest(2L, null, 2);
+        ConnectRequest connectRequest2 = new ConnectRequest(2L, null, 12);
         RestAssured.given()
                 .body(connectRequest2)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/1/stations/3?type=down");
 
-        ConnectRequest connectRequest3 = new ConnectRequest(3L, null, 1);
+        ConnectRequest connectRequest3 = new ConnectRequest(3L, null, 21);
         RestAssured.given()
                 .body(connectRequest3)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/1/stations/4?type=down");
 
-        ConnectRequest connectRequest4 = new ConnectRequest(null, 5L, 2);
+        ConnectRequest connectRequest4 = new ConnectRequest(null, 5L, 12);
         RestAssured.given()
                 .body(connectRequest4)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/2/stations/1?type=init");
 
-        ConnectRequest connectRequest5 = new ConnectRequest(5L, null, 1);
+        ConnectRequest connectRequest5 = new ConnectRequest(5L, null, 11);
         RestAssured.given()
-                .body(connectRequest4)
+                .body(connectRequest5)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when()
                 .patch("/lines/2/stations/4?type=down");
     }
 
+    @DisplayName("최단 경로를 조회하고 거리와 요금을 계산한다")
     @Test
     void findShortestPath() {
         // when
@@ -131,7 +137,15 @@ public class PathIntegrationTest extends IntegrationTest {
                 .extract();
 
         // then
-        List<String> list = response.body().as(List.class);
-        Assertions.assertThat(list).containsExactly("강남역", "구의역", "선릉역");
+        PathResponse pathResponse = response.body().as(PathResponse.class);
+        List<String> stations = pathResponse.getStations();
+        int distance = pathResponse.getDistance();
+        int fare = pathResponse.getFare();
+
+        assertAll(
+                () -> Assertions.assertThat(stations).containsExactly("강남역", "구의역", "선릉역"),
+                () -> assertThat(distance).isEqualTo(23),
+                () -> assertThat(fare).isEqualTo(1550)
+        );
     }
 }

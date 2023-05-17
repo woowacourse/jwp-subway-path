@@ -165,7 +165,7 @@ class LineStationControllerTest {
 
         // when & then
         mockMvc.perform(get("/lines/stations")
-                .accept(MediaType.APPLICATION_JSON))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(content().json(jsonResponse));
     }
 }
