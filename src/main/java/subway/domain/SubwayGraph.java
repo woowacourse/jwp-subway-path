@@ -2,30 +2,15 @@ package subway.domain;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
-import org.springframework.stereotype.Component;
 
 import java.util.Set;
+
+import static subway.domain.Direction.UP;
 
 public class SubwayGraph implements Graph {
 
     private final DefaultDirectedWeightedGraph<Station, DefaultWeightedEdge> graph
             = new DefaultDirectedWeightedGraph<>(DefaultWeightedEdge.class);
-
-    @Override
-    public boolean isDownLastStation(final Station station) {
-        int inDegree = graph.inDegreeOf(station);
-        int outDegree = graph.outDegreeOf(station);
-
-        return inDegree == 1 && outDegree == 0;
-    }
-
-    @Override
-    public boolean isUpFirstStation(final Station station) {
-        int inDegree = graph.inDegreeOf(station);
-        int outDegree = graph.outDegreeOf(station);
-
-        return inDegree == 0 && outDegree == 1;
-    }
 
     @Override
     public void addStation(final Station station) {
@@ -106,6 +91,28 @@ public class SubwayGraph implements Graph {
     @Override
     public void removeAllSections(final Set<DefaultWeightedEdge> edges) {
         graph.removeAllEdges(edges);
+    }
+
+    @Override
+    public boolean isTerminal(final Direction direction, final Station station) {
+        if (direction == UP) {
+            return isUpFirstStation(station);
+        }
+        return isDownLastStation(station);
+    }
+
+    private boolean isDownLastStation(final Station station) {
+        int inDegree = graph.inDegreeOf(station);
+        int outDegree = graph.outDegreeOf(station);
+
+        return inDegree == 1 && outDegree == 0;
+    }
+
+    private boolean isUpFirstStation(final Station station) {
+        int inDegree = graph.inDegreeOf(station);
+        int outDegree = graph.outDegreeOf(station);
+
+        return inDegree == 0 && outDegree == 1;
     }
 
     @Override

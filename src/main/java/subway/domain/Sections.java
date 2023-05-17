@@ -37,27 +37,30 @@ public class Sections {
         if (isNewStation(downStation)) {
 
             Station newStation = downStation;
-            if (graph.isDownLastStation(upStation)) {
-                addStationToDownLine(upStation, newStation, distance);
+            Station existingStation = upStation;
+
+            if (graph.isTerminal(DOWN, existingStation)) {
+                addStationToDownLine(existingStation, newStation, distance);
                 return newStation;
             }
 
-            final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(DOWN, upStation);
-            addStationToDownLine(upStation, newStation, findAdjacentStation(DOWN, adjacentSections), distance);
+            final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(DOWN, existingStation);
+            addStationToDownLine(existingStation, newStation, findAdjacentStation(DOWN, adjacentSections), distance);
             return newStation;
         }
 
         if (isNewStation(upStation)) {
 
             Station newStation = upStation;
+            Station existingStation = downStation;
 
-            if (graph.isUpFirstStation(downStation)) {
-                addStationToUpLine(newStation, downStation, distance);
+            if (graph.isTerminal(UP, existingStation)) {
+                addStationToUpLine(newStation, existingStation, distance);
                 return newStation;
             }
 
-            final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(UP, downStation);
-            addStationToUpLine(findAdjacentStation(UP, adjacentSections), newStation, downStation, distance);
+            final Set<DefaultWeightedEdge> adjacentSections = getAdjacentStationsOf(UP, existingStation);
+            addStationToUpLine(findAdjacentStation(UP, adjacentSections), newStation, existingStation, distance);
             return newStation;
         }
 

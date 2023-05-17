@@ -6,10 +6,6 @@ import java.util.Set;
 
 public interface Graph {
 
-    boolean isDownLastStation(Station station);
-
-    boolean isUpFirstStation(Station station);
-
     void addStation(Station station);
 
     DefaultWeightedEdge addSection(Station upStation, Station downStation);
@@ -41,4 +37,6 @@ public interface Graph {
     void removeStation(Station station);
 
     void removeAllSections(Set<DefaultWeightedEdge> edges);
+
+    boolean isTerminal(Direction direction, Station station);
 }
