@@ -38,6 +38,7 @@ public class SubwayRepository {
 
     public Line findLineByName(final String name) {
         final LineEntity lineEntity = findLineEntityByName(name);
+
         return new Line(lineEntity.getName(), lineEntity.getColor());
     }
 
@@ -54,7 +55,7 @@ public class SubwayRepository {
         final LineEntity lineEntity = findLineEntityByName(line.getName());
         sectionDao.deleteByLineId(lineEntity.getId());
         final List<SectionEntity> sectionEntities = registerSections(line.sections(), lineEntity.getId());
-        return toLine(lineEntity.getName(), lineEntity.getColor(), sectionEntities);
+        return toLine(lineEntity, sectionEntities);
     }
 
     private List<SectionEntity> registerSections(final List<Section> sections, final Long lineId) {
@@ -95,10 +96,10 @@ public class SubwayRepository {
         final List<SectionEntity> sectionEntities = sectionDao.findByLineId(id);
         final LineEntity lineEntity = lineDao.findById(id)
                 .orElseThrow(() -> new SubwayException("노선 정보가 잘못되었습니다."));
-        return toLine(lineEntity.getName(), lineEntity.getColor(), sectionEntities);
+        return toLine(lineEntity, sectionEntities);
     }
 
-    private Line toLine(final String name, final String color, final List<SectionEntity> sectionEntities) {
+    private Line toLine(final LineEntity lineEntity, final List<SectionEntity> sectionEntities) {
         final List<Section> sections = sectionEntities.stream()
                 .map(sectionEntity -> {
                     final Long sourceStationId = sectionEntity.getSourceStationId();
@@ -106,7 +107,7 @@ public class SubwayRepository {
                     return new Section(toStation(sourceStationId), toStation(downstreamId), sectionEntity.getDistance());
                 })
                 .collect(Collectors.toList());
-        return new Line(name, color, sections);
+        return new Line(lineEntity.getName(), lineEntity.getColor(), sections);
     }
 
     private Station toStation(final Long stationId) {
@@ -118,7 +119,7 @@ public class SubwayRepository {
     public Subway findSubway() {
         final List<LineEntity> lineEntities = lineDao.findAll();
         final List<Line> lines = lineEntities.stream()
-                .map(lineEntity -> toLine(lineEntity.getName(), lineEntity.getColor(), sectionDao.findByLineId(lineEntity.getId())))
+                .map(lineEntity -> toLine(lineEntity, sectionDao.findByLineId(lineEntity.getId())))
                 .collect(Collectors.toList());
         return new Subway(lines);
     }
