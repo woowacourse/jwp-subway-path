@@ -158,7 +158,5 @@ class LineTest {
                     () -> assertThat(line.getPaths().get(stationA)).isNull()
             );
         }
-
     }
-
 }

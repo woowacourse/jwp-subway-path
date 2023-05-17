@@ -12,4 +12,13 @@ public class ServiceTest {
 
     @Autowired
     protected PathService pathService;
+
+    @Autowired
+    protected LineService lineService;
+
+    @Autowired
+    protected FeeService feeService;
+
+    @Autowired
+    protected StationService stationService;
 }
