@@ -1,7 +1,7 @@
 package subway.ui;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,7 +19,7 @@ public class PathController {
         this.pathService = pathService;
     }
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<Response> findPath(@RequestBody PathRequest pathRequest) {
         PathResponse pathResponse = pathService.findPath(pathRequest);
         return Response.ok()
