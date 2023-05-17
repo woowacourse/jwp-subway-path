@@ -12,7 +12,7 @@ import subway.entity.LineEntity;
 import subway.entity.SectionEntity;
 import subway.entity.SectionWithStationNameEntity;
 import subway.entity.StationEntity;
-import subway.exception.SectionException;
+import subway.exception.SectionRemovalException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -72,7 +72,7 @@ public class SectionService {
         Station station = findStationById(stationId);
 
         if (!currentLineSections.isExistStation(station)) {
-            throw new SectionException("노선에 없는 역은 삭제할 수 없습니다");
+            throw new SectionRemovalException("노선에 없는 역은 삭제할 수 없습니다");
         }
 
         Section modified = currentLineSections.remove(station);

@@ -3,6 +3,7 @@ package subway.domain;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import subway.exception.SectionException;
+import subway.exception.SectionInsertionException;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,7 +31,7 @@ public class Sections {
             return addBeforeExistingStation(newSection, station);
         }
 
-        throw new SectionException("추가할 수 없는 구간입니다");
+        throw new SectionInsertionException("추가할 수 없는 구간입니다");
     }
 
     public boolean isExistStation(Station station) {
@@ -70,7 +71,7 @@ public class Sections {
     private Section addBeforeExistingStation(Section newSection, Station station) {
         Section original = getPreviousSection(station);
         if (original.getDistance() <= newSection.getDistance()) {
-            throw new SectionException("기존 구간의 길이보다 큰 길이의 구간은 해당 구간 사이에 추가할 수 없습니다.");
+            throw new SectionInsertionException("기존 구간의 길이보다 큰 길이의 구간은 해당 구간 사이에 추가할 수 없습니다.");
         }
         sections.add(newSection);
         return new Section(newSection.getLine(), original.getPreStation(),
@@ -80,7 +81,7 @@ public class Sections {
     private Section addAfterExistingStation(Section newSection, Station preStation) {
         Section original = getNextSection(preStation);
         if (original.getDistance() <= newSection.getDistance()) {
-            throw new SectionException("기존 구간의 길이보다 큰 길이의 구간은 해당 구간 사이에 추가할 수 없습니다.");
+            throw new SectionInsertionException("기존 구간의 길이보다 큰 길이의 구간은 해당 구간 사이에 추가할 수 없습니다.");
         }
         sections.add(newSection);
         return new Section(newSection.getLine(), newSection.getStation(),
