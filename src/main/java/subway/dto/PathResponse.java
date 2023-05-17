@@ -5,9 +5,9 @@ import java.util.List;
 public class PathResponse {
     private final Integer distance;
     private final Integer price;
-    private final List<String> path;
+    private final List<SectionResponse> path;
 
-    public PathResponse(Integer distance, Integer price, List<String> path) {
+    public PathResponse(Integer distance, Integer price, List<SectionResponse> path) {
         this.distance = distance;
         this.price = price;
         this.path = path;
@@ -19,5 +19,9 @@ public class PathResponse {
 
     public Integer getPrice() {
         return price;
+    }
+
+    public List<SectionResponse> getPath() {
+        return path;
     }
 }

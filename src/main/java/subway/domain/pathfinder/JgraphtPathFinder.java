@@ -1,9 +1,9 @@
 package subway.domain.pathfinder;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
@@ -11,9 +11,9 @@ import subway.domain.Section;
 
 @Component
 public class JgraphtPathFinder implements PathFinder {
-    WeightedMultigraph<Long, DefaultWeightedEdge> graph;
+    WeightedMultigraph<Long, LineWeightedEdge> graph;
 
-    public JgraphtPathFinder(WeightedMultigraph<Long, DefaultWeightedEdge> graph) {
+    public JgraphtPathFinder(WeightedMultigraph<Long, LineWeightedEdge> graph) {
         this.graph = graph;
     }
 
@@ -24,19 +24,28 @@ public class JgraphtPathFinder implements PathFinder {
             final Long targetStationId = section.getTargetStationId();
             graph.addVertex(sourceStationId);
             graph.addVertex(targetStationId);
-            graph.setEdgeWeight(graph.addEdge(sourceStationId, targetStationId), section.getDistance());
+            final LineWeightedEdge edge = graph.addEdge(sourceStationId, targetStationId);
+            edge.setLineId(section.getLineId());
+            edge.setDistance(section.getDistance());
+            graph.setEdgeWeight(edge, section.getDistance());
         }
     }
 
     @Override
-    public List<Long> computeShortestPath(Long sourceStationId, Long targetStationId) {
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        return dijkstraShortestPath.getPath(sourceStationId, targetStationId).getVertexList();
+    public List<Section> computeShortestPath(Long sourceStationId, Long targetStationId) {
+        final var dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        return dijkstraShortestPath.getPath(sourceStationId, targetStationId)
+                .getEdgeList()
+                .stream()
+                .map(edge -> new Section(graph.getEdgeSource(edge), graph.getEdgeTarget(edge), edge.getLineId(),
+                        edge.getDistance()))
+                .collect(Collectors.toUnmodifiableList());
+
     }
 
     @Override
     public Integer computeShortestDistance(Long sourceStationId, Long targetStationId) {
-        DijkstraShortestPath<Long, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Long, LineWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         return (int) dijkstraShortestPath.getPathWeight(sourceStationId, targetStationId);
     }
 }
