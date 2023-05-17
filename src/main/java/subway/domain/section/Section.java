@@ -48,8 +48,17 @@ public class Section {
         return this.upStation.isSameStation(other.upStation);
     }
 
+
+    public boolean isSameUpStation(final Station other) {
+        return this.upStation.isSameStation(other);
+    }
+
     public boolean isSameDownStation(final Section other) {
         return this.downStation.isSameStation(other.downStation);
+    }
+
+    public boolean isSameDownStation(final Station other) {
+        return this.downStation.isSameStation(other);
     }
 
     public boolean isAssemblableOnFront(final Section other) {
@@ -73,6 +82,14 @@ public class Section {
                 other.upStation,
                 this.upStation,
                 other.distance.subtract(this.distance)
+        );
+    }
+
+    public Section addSection(final Section other) {
+        return new Section(
+                this.upStation,
+                other.downStation,
+                this.distance.add(other.distance)
         );
     }
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
+import subway.domain.station.Station;
 
 public class Sections {
 
@@ -82,7 +83,7 @@ public class Sections {
     }
 
     private Sections addNewSectionToNext(final Section other) {
-        final Section originalSection = getOriginalSection((section) -> section.isSameUpStation(other));
+        final Section originalSection = getSectionByPredicate((section) -> section.isSameUpStation(other));
 
         Section nextSection = originalSection.createDownToDownSection(other);
 
@@ -107,7 +108,7 @@ public class Sections {
     }
 
     private Sections addNewSectionToPrevious(final Section other) {
-        final Section originalSection = getOriginalSection((section) -> section.isSameDownStation(other));
+        final Section originalSection = getSectionByPredicate((section) -> section.isSameDownStation(other));
         return new Sections(addNewSection(
                 originalSection,
                 other.createUpToUpSection(originalSection),
@@ -115,16 +116,53 @@ public class Sections {
         ));
     }
 
-    private Section getOriginalSection(final Predicate<Section> stationDirectionFilter) {
+    private Section getSectionByPredicate(final Predicate<Section> sectionFilter) {
         return sections.stream()
-                .filter(stationDirectionFilter)
+                .filter(sectionFilter)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("기준역을 찾을 수 없습니다."));
     }
 
-//    public Sections removeStation(final Station station) {
-//
-//    }
+    public Sections removeStation(final Station station) {
+        if (isUpStationOfHeadTerminal(station)) {
+            return removeSectionByIndex(0);
+        }
+
+        if (isDownStationOfTailTerminal(station)) {
+            return removeSectionByIndex(sections.size() - 1);
+        }
+
+        return removeStationInMiddle(station);
+    }
+
+    private boolean isUpStationOfHeadTerminal(final Station station) {
+        return sections.get(0).isSameUpStation(station);
+    }
+
+    private Sections removeSectionByIndex(final int index) {
+        final List<Section> updateSection = new LinkedList<>(sections);
+        updateSection.remove(index);
+        return new Sections(updateSection);
+    }
+
+    private boolean isDownStationOfTailTerminal(final Station station) {
+        return sections.get(sections.size() - 1).isSameDownStation(station);
+    }
+
+    private Sections removeStationInMiddle(final Station removeCandidate) {
+        final List<Section> updateSection = new LinkedList<>(sections);
+
+        final Section prviousSection = getSectionByPredicate((section) -> section.isSameDownStation(removeCandidate));
+        final Section nextSection = getSectionByPredicate((section) -> section.isSameUpStation(removeCandidate));
+        final Section newSection = prviousSection.addSection(nextSection);
+
+        final int insertIndex = sections.indexOf(prviousSection);
+        updateSection.remove(prviousSection);
+        updateSection.remove(newSection);
+        updateSection.add(insertIndex, newSection);
+
+        return new Sections(updateSection);
+    }
 
     public boolean isEmpty() {
         return this.sections.isEmpty();
