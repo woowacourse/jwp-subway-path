@@ -18,6 +18,14 @@ public class LineEntity {
         return name;
     }
 
+    @Override
+    public String toString() {
+        return "LineEntity{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                '}';
+    }
+
     public static class Builder {
 
         private Long id;

@@ -10,7 +10,7 @@ public class Station {
     public static final int MAXIMUM_NAME_LENGTH = 15;
 
     private static final String INPUT_FOR_END_POINT = "";
-    private static final Station EMPTY_ENDPOINT_STATION = Station.from("종점");
+    private static final Station EMPTY_ENDPOINT_STATION = Station.from("종점역에 연결된 더미 데이터");
 
     private final String name;
 

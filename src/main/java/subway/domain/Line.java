@@ -105,7 +105,7 @@ public class Line {
     }
 
     public List<String> getStationNamesInOrder() {
-        return getSectionsWithoutEndPoints().stream()
+        return sections.subList(0, sections.size() - 1).stream()
                 .map(section -> section.getDownstream().getName())
                 .collect(Collectors.toList());
     }
