@@ -1,31 +1,35 @@
-package subway.util;
+package subway.application;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import subway.domain.Distance;
 import subway.domain.Line;
+import subway.domain.SectionWeightEdge;
 import subway.domain.Station;
 import subway.domain.section.Section;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
-public class PathUtil {
-    public List<Section> getSectionsByShortestPath(final Station startStation,
-                                                   final Station endStation,
+@Service
+public class PathServiceImpl implements PathService {
+
+    @Override
+    public List<Section> getSectionsByShortestPath(final Station sourceStation,
+                                                   final Station targetStation,
                                                    final List<Line> lines) {
-        return getShortestPath(startStation, endStation, lines).getEdgeList().stream()
+        return getShortestPath(sourceStation, targetStation, lines).getEdgeList().stream()
                 .map(edge -> Section.of(edge.getSource(), edge.getTarget(), Distance.from(edge.getDistance())))
                 .collect(Collectors.toList());
     }
 
-    public List<Station> getStationsByShortestPath(final Station startStation,
-                                                   final Station endStation,
+    @Override
+    public List<Station> getStationsByShortestPath(final Station sourceStation,
+                                                   final Station targetStation,
                                                    final List<Line> lines) {
-        return getShortestPath(startStation, endStation, lines).getVertexList();
+        return getShortestPath(sourceStation, targetStation, lines).getVertexList();
     }
 
     private GraphPath<Station, SectionWeightEdge> getShortestPath(

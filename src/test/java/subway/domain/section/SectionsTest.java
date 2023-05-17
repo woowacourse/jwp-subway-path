@@ -7,7 +7,6 @@ import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import subway.domain.Distance;
-import subway.domain.Position;
 import subway.domain.Station;
 
 import java.util.List;
@@ -15,17 +14,20 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static subway.domain.Position.DOWN;
+import static subway.domain.Position.MID;
+import static subway.domain.Position.UP;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 class SectionsTest {
 
-    private final Station UP_END_STATION = Station.of(1L, "잠실역", Position.UP);
-    private final Station MID_STATION = Station.of(2L, "선릉역", Position.MID);
+    private final Station UP_END_STATION = Station.of(1L, "잠실역", UP);
+    private final Station MID_STATION = Station.of(2L, "선릉역", MID);
     private final Station DUMMY_STATION = Station.of(3L, "사당역");
     private final Station MID_STATION_TWO = Station.of(4L, "삼성역");
     private final Station MID_STATION_THREE = Station.of(5L, "디지털미디어시티역");
-    private final Station DOWN_END_STATION = Station.of(6L, "홍대입구역");
+    private final Station DOWN_END_STATION = Station.of(6L, "홍대입구역", DOWN);
 
     @Nested
     class 구간_추가_테스트 {
@@ -94,16 +96,16 @@ class SectionsTest {
 
     @Test
     void 추가하려는_구역이_하행_종점으로_들어가는지_확인한다() {
-        final Section section = Section.of(UP_END_STATION, MID_STATION, Distance.from(10));
+        final Section section = Section.of(UP_END_STATION, DOWN_END_STATION, Distance.from(10));
         final Sections sections = Sections.from(section);
-        final Section insertSection = Section.of(MID_STATION, DUMMY_STATION, Distance.from(10));
+        final Section insertSection = Section.of(DOWN_END_STATION, DUMMY_STATION, Distance.from(10));
 
         assertDoesNotThrow(() -> sections.isDownEndSection(insertSection));
     }
 
     @Test
     void 추가하려는_구역이_중간에_들어가는지_확인한다() {
-        final Section section = Section.of(UP_END_STATION, MID_STATION, Distance.from(10));
+        final Section section = Section.of(UP_END_STATION, DOWN_END_STATION, Distance.from(10));
         final Sections sections = Sections.from(section);
         final Section insertSection = Section.of(UP_END_STATION, DUMMY_STATION, Distance.from(5));
 

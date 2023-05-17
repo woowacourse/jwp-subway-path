@@ -7,8 +7,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static subway.domain.Position.UP;
-
 public class Sections {
 
     private final List<Section> sections;
@@ -163,6 +161,10 @@ public class Sections {
         if (sections.size() == 0) {
             throw new IllegalArgumentException("아직 구간이 저장되지 않았습니다");
         }
+    }
+
+    public boolean isEmpty() {
+        return sections.size() == 0;
     }
 
     public List<Section> getSections() {

@@ -263,7 +263,6 @@ public class LineIntegrationTest extends IntegrationTest {
                 .then().log().all()
                 .extract();
 
-
         // when
         final ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
