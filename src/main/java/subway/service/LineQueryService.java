@@ -18,16 +18,12 @@ public class LineQueryService {
     private final LineDao lineDao;
     private final SectionQueryService sectionQueryService;
 
-    public LineQueryService(
-            final LineDao lineDao,
-            final SectionQueryService sectionQueryService
-    ) {
+    public LineQueryService(final LineDao lineDao, final SectionQueryService sectionQueryService) {
         this.lineDao = lineDao;
         this.sectionQueryService = sectionQueryService;
     }
 
-    public List<Line> searchLines(
-            final SearchLineRequest searchLineRequest) {
+    public List<Line> searchLines(final SearchLineRequest searchLineRequest) {
 
         if (searchLineRequest == null) {
             return searchAllLine();
@@ -48,9 +44,7 @@ public class LineQueryService {
                            .collect(Collectors.toList());
     }
 
-    private Line searchSpecificLine(
-            final SearchLineRequest searchLineRequest
-    ) {
+    private Line searchSpecificLine(final SearchLineRequest searchLineRequest) {
         final String lineName = searchLineRequest.getLineName();
         return searchByLineName(lineName);
     }

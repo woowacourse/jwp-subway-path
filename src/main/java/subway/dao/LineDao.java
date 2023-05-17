@@ -31,12 +31,7 @@ public class LineDao {
     public Optional<LineEntity> findByLineName(final String lineName) {
         final String sql = "SELECT * FROM LINE L WHERE L.name = ?";
 
-        return Optional.ofNullable(
-                jdbcTemplate.queryForObject(
-                        sql,
-                        rowMapper,
-                        lineName)
-        );
+        return Optional.ofNullable(jdbcTemplate.queryForObject(sql, rowMapper, lineName));
     }
 
     public List<LineEntity> findAll() {

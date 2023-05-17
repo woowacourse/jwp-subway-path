@@ -16,10 +16,7 @@ public class SectionCommandService {
     private final SectionDao sectionDao;
     private final SectionQueryService sectionQueryService;
 
-    public SectionCommandService(
-            final SectionDao sectionDao,
-            final SectionQueryService sectionQueryService
-    ) {
+    public SectionCommandService(final SectionDao sectionDao, final SectionQueryService sectionQueryService) {
         this.sectionDao = sectionDao;
         this.sectionQueryService = sectionQueryService;
     }

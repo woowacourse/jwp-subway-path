@@ -14,10 +14,7 @@ public class RouteQueryService {
     private final LineQueryService lineQueryService;
     private final SubwayPricePolicy subwayPricePolicy;
 
-    public RouteQueryService(
-            final LineQueryService lineQueryService,
-            final SubwayPricePolicy subwayPricePolicy
-    ) {
+    public RouteQueryService(final LineQueryService lineQueryService, final SubwayPricePolicy subwayPricePolicy) {
         this.lineQueryService = lineQueryService;
         this.subwayPricePolicy = subwayPricePolicy;
     }
