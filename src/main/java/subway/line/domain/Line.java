@@ -28,7 +28,7 @@ public class Line {
     }
 
     public Line(Line otherLine) {
-        this(otherLine.getName(), otherLine.getSections());
+        this(otherLine.getId(), otherLine.getName(), otherLine.getSections());
     }
 
     private void addTerminalSections() {
@@ -143,12 +143,18 @@ public class Line {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Line line = (Line) o;
-        return Objects.equals(name, line.name) && Objects.equals(sections, line.sections);
+        if (Objects.isNull(id) || Objects.isNull(line.id)) {
+            return Objects.equals(name, line.name) && Objects.equals(sections, line.sections);
+        }
+        return Objects.equals(id, line.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, sections);
+        if (Objects.isNull(id)) {
+            return Objects.hash(name, sections);
+        }
+        return Objects.hash(id);
     }
 
     @Override

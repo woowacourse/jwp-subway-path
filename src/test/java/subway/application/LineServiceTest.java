@@ -43,16 +43,15 @@ class LineServiceTest {
     @Test
     @DisplayName("노선에 새로운 역을 추가할 수 있다")
     void addStationToLine1() {
-        final Station newStation = new Station(1L, "서울대입구");
+        final Station newStation = new Station(10L, "서울대입구");
         final int distanceToUpstream = 3;
-        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(1, newStation.getName(), JAMSIL_STATION.getName(), JAMSIL_NARU_STATION.getName(), distanceToUpstream);
         final Line line = new Line(LINE_NUMBER_TWO);
+        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(1L, newStation.getName(), JAMSIL_STATION.getName(), JAMSIL_NARU_STATION.getName(), distanceToUpstream);
 
-        doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
+        doReturn(Optional.of(line)).when(lineRepository).findLineById(line.getId());
         doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
         doReturn(JAMSIL_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getUpstreamName());
-        doReturn(JAMSIL_NARU_STATION).when(stationService)
-                                     .findStationByName(stationAdditionToLineDto.getDownstreamName());
+        doReturn(JAMSIL_NARU_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getDownstreamName());
 
         final LineService lineService = new LineService(lineRepository, stationService);
 
@@ -68,12 +67,12 @@ class LineServiceTest {
     @Test
     @DisplayName("노선 상행 종점에 새로운 역을 추가할 수 있다")
     void addStationToLine2() {
-        final Station newStation = new Station(1L, "서울대입구");
+        final Station newStation = new Station(10L, "서울대입구");
         final int distanceToUpstream = 3;
-        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(1, newStation.getName(), DummyTerminalStation.STATION_NAME, SULLEUNG_STATION.getName(), distanceToUpstream);
         final Line line = new Line(LINE_NUMBER_TWO);
+        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(line.getId(), newStation.getName(), DummyTerminalStation.STATION_NAME, SULLEUNG_STATION.getName(), distanceToUpstream);
 
-        doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
+        doReturn(Optional.of(line)).when(lineRepository).findLineById(line.getId());
         doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
         doReturn(SULLEUNG_STATION).when(stationService).findStationByName(stationAdditionToLineDto.getDownstreamName());
 
@@ -91,12 +90,12 @@ class LineServiceTest {
     @Test
     @DisplayName("노선 하행 종점에 새로운 역을 추가할 수 있다")
     void addStationToLine3() {
-        final Station newStation = new Station(1L, "서울대입구");
+        final Station newStation = new Station(10L, "서울대입구");
         final int distanceToUpstream = 3;
-        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(1, newStation.getName(), JAMSIL_NARU_STATION.getName(), DummyTerminalStation.STATION_NAME, distanceToUpstream);
         final Line line = new Line(LINE_NUMBER_TWO);
+        final StationAdditionToLineDto stationAdditionToLineDto = new StationAdditionToLineDto(line.getId(), newStation.getName(), JAMSIL_NARU_STATION.getName(), DummyTerminalStation.STATION_NAME, distanceToUpstream);
 
-        doReturn(Optional.of(line)).when(lineRepository).findLineById(1L);
+        doReturn(Optional.of(line)).when(lineRepository).findLineById(line.getId());
         doReturn(newStation).when(stationService).createStationIfNotExist(newStation.getName());
         doReturn(JAMSIL_NARU_STATION).when(stationService)
                                      .findStationByName(stationAdditionToLineDto.getUpstreamName());
