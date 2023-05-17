@@ -148,11 +148,7 @@ public class Sections {
         Map<Station, Station> upToDown = sections.stream()
                 .collect(Collectors.toMap(Section::getUpStation, Section::getDownStation));
 
-        List<Station> downStations = new ArrayList<>(upToDown.values());
-        Station upEndPoint = upToDown.keySet().stream()
-                .filter(upStation -> !downStations.contains(upStation))
-                .findFirst()
-                .orElseThrow(IllegalStateException::new);
+        Station upEndPoint = findUpEndPoint(upToDown);
 
         List<Station> orderedStations = new ArrayList<>();
         Station now = upEndPoint;
@@ -161,8 +157,16 @@ public class Sections {
             orderedStations.add(now);
             now = upToDown.get(now);
         }
-
+        
         return orderedStations;
+    }
+
+    private Station findUpEndPoint(final Map<Station, Station> upToDown) {
+        List<Station> downStations = new ArrayList<>(upToDown.values());
+        return upToDown.keySet().stream()
+                .filter(upStation -> !downStations.contains(upStation))
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
     }
 
     public List<Section> getSections() {
