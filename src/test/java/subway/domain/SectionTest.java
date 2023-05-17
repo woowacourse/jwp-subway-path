@@ -1,6 +1,7 @@
 package subway.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static subway.integration.TestFixture.잠실나루역;
 import static subway.integration.TestFixture.잠실새내역;
@@ -10,8 +11,17 @@ import static subway.integration.TestFixture.종합운동장역;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import subway.domain.exception.EmptySectionException;
+
 @SuppressWarnings("NonAsciiCharacters")
 class SectionTest {
+
+    @DisplayName("두 역이 모두 있어야 한다")
+    @Test
+    void requiresBothStation() {
+        assertThatThrownBy(() -> new Section(잠실나루역, null, 10))
+                .isInstanceOf(EmptySectionException.class);
+    }
 
     @DisplayName("어떤 구간과 연결되는지 알 수 있다")
     @Test

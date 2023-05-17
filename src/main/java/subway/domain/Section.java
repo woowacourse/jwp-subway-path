@@ -3,6 +3,8 @@ package subway.domain;
 import java.util.List;
 import java.util.Objects;
 
+import subway.domain.exception.EmptySectionException;
+
 public class Section {
 
     private final Station upperStation;
@@ -10,9 +12,16 @@ public class Section {
     private final int distance;
 
     public Section(Station upperStation, Station lowerStation, int distance) {
+        validateNonNull(upperStation, lowerStation);
         this.upperStation = upperStation;
         this.lowerStation = lowerStation;
         this.distance = distance;
+    }
+
+    private void validateNonNull(Station upperStation, Station lowerStation) {
+        if (Objects.isNull(upperStation) || Objects.isNull(lowerStation)) {
+            throw new EmptySectionException();
+        }
     }
 
     public boolean hasLinkWith(Section other) {
