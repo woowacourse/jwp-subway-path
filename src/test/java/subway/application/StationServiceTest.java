@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import subway.dto.StationResponse;
-import subway.persistence.entity.StationEntity;
+import subway.entity.StationEntity;
 import subway.persistence.repository.StationRepository;
 
 import java.util.List;

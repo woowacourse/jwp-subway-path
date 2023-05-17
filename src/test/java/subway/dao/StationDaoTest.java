@@ -8,8 +8,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.entity.StationEntity;
 import subway.persistence.dao.StationDao;
-import subway.persistence.entity.StationEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

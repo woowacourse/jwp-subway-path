@@ -8,8 +8,8 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.entity.LineEntity;
 import subway.persistence.dao.LineDao;
-import subway.persistence.entity.LineEntity;
 
 import java.util.List;
 
@@ -73,10 +73,10 @@ class LineDaoTest {
     }
 
     @Test
-    void 노선_정보를_수정한다(){
+    void 노선_정보를_수정한다() {
         ///given
         lineDao.insert(new LineEntity("구1호선", "darkblue"));
-        LineEntity lineEntity = new LineEntity(1L,"새1호선","blue");
+        LineEntity lineEntity = new LineEntity(1L, "새1호선", "blue");
 
         ///when
         lineDao.update(lineEntity);
@@ -89,7 +89,7 @@ class LineDaoTest {
     }
 
     @Test
-    void 노선을_삭제한다(){
+    void 노선을_삭제한다() {
         ///given
         lineDao.insert(new LineEntity("구1호선", "darkblue"));
         assertThat(lineDao.findById(1L)).isNotNull();

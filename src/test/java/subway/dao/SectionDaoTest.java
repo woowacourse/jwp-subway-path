@@ -7,12 +7,12 @@ import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabas
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 import subway.persistence.dao.LineDao;
 import subway.persistence.dao.SectionDao;
 import subway.persistence.dao.StationDao;
-import subway.persistence.entity.LineEntity;
-import subway.persistence.entity.SectionEntity;
-import subway.persistence.entity.StationEntity;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

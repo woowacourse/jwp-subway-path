@@ -8,9 +8,9 @@ import org.springframework.test.context.jdbc.Sql;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.StationResponse;
-import subway.persistence.entity.LineEntity;
-import subway.persistence.entity.SectionEntity;
-import subway.persistence.entity.StationEntity;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 import subway.persistence.repository.LineRepository;
 
 import java.util.List;
@@ -62,7 +62,7 @@ class LineServiceTest {
     @Test
     void 전체_노선을_조회한다() {
         ///given
-        final List<LineEntity> lineEntities = List.of(new LineEntity(1L, "3호선", "orange"),new LineEntity(2L,"2호선","green"));
+        final List<LineEntity> lineEntities = List.of(new LineEntity(1L, "3호선", "orange"), new LineEntity(2L, "2호선", "green"));
         given(lineRepository.findAllLines())
                 .willReturn(lineEntities);
         given(lineRepository.findSectionsByLine(any()))

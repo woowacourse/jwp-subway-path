@@ -7,9 +7,9 @@ import subway.domain.Sections;
 import subway.domain.Station;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
-import subway.persistence.entity.LineEntity;
-import subway.persistence.entity.SectionEntity;
-import subway.persistence.entity.StationEntity;
+import subway.entity.LineEntity;
+import subway.entity.SectionEntity;
+import subway.entity.StationEntity;
 import subway.persistence.repository.LineRepository;
 
 import java.util.List;

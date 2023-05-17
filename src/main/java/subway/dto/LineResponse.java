@@ -1,7 +1,7 @@
 package subway.dto;
 
 import subway.domain.Line;
-import subway.persistence.entity.LineEntity;
+import subway.entity.LineEntity;
 
 import java.util.List;
 import java.util.stream.Collectors;

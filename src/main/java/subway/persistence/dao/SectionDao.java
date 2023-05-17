@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.persistence.entity.SectionEntity;
+import subway.entity.SectionEntity;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -52,10 +52,10 @@ public class SectionDao {
             @Override
             public void setValues(final PreparedStatement ps, final int i) throws SQLException {
                 final SectionEntity section = sections.get(i);
-                ps.setLong(1,section.getDistance());
-                ps.setLong(2,section.getUpStationId());
-                ps.setLong(3,section.getDownStationId());
-                ps.setLong(4,section.getLineId());
+                ps.setLong(1, section.getDistance());
+                ps.setLong(2, section.getUpStationId());
+                ps.setLong(3, section.getDownStationId());
+                ps.setLong(4, section.getLineId());
             }
 
             @Override
@@ -75,7 +75,7 @@ public class SectionDao {
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void deleteAll(){
+    public void deleteAll() {
         String sql = "DELETE FROM section";
         jdbcTemplate.update(sql);
     }
