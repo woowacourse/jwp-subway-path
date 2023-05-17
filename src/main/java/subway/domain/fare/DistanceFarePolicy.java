@@ -17,7 +17,10 @@ public class DistanceFarePolicy implements FarePolicy {
     public int calculate(final PathFindResult result, final Passenger passenger, final int fare) {
         final int distance = result.getDistanceValue();
 
-        final int extraDistance = min(EXTRA_FARE_SEGMENT - NO_EXTRA_FARE_DISTANCE, distance - NO_EXTRA_FARE_DISTANCE);
+        final int extraDistance = min(
+                EXTRA_FARE_SEGMENT - NO_EXTRA_FARE_DISTANCE,
+                max(0, distance - NO_EXTRA_FARE_DISTANCE)
+        );
         final int moreThanExtraDistance = max(0, distance - EXTRA_FARE_SEGMENT);
 
         return fare + calculateFare(extraDistance, LESS_THAN_OR_EQUAL_EXTRA_FARE_UNIT) +
