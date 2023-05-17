@@ -1,23 +1,20 @@
 package subway.integration;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.jdbc.Sql;
+import subway.dto.LineRequest;
+import subway.dto.SectionRequest;
+import subway.dto.StationRequest;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.ANY)
-@Sql({"/test-data.sql"})
 @DisplayName("구간 관련 기능")
 public class SectionIntegrationTest extends IntegrationTest {
 
@@ -25,32 +22,33 @@ public class SectionIntegrationTest extends IntegrationTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        Map<String, String> lineParams = new HashMap<>();
-        lineParams.put("name", "1호선");
-        lineParams.put("color", "bg-red-100");
-        RestAssured
-                .given().log().all()
+        final LineRequest lineRequest = new LineRequest("1호선", "bg-red-600");
+        RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineParams)
+                .body(lineRequest)
                 .when().post("/lines")
                 .then().extract();
 
-        Map<String, String> stationParams1 = new HashMap<>();
-        stationParams1.put("name", "해운대역");
-        RestAssured
-                .given().log().all()
+        final StationRequest stationRequest1 = new StationRequest("반월당역");
+        RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationParams1)
+                .body(stationRequest1)
                 .when().post("/stations")
                 .then().extract();
 
-        Map<String, String> stationParams2 = new HashMap<>();
-        stationParams2.put("name", "동대구역");
-        RestAssured
-                .given().log().all()
+        final StationRequest stationRequest2 = new StationRequest("동대구역");
+        RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(stationParams2)
+                .body(stationRequest2)
                 .when().post("/stations")
+                .then().extract();
+    }
+
+    private ExtractableResponse<Response> postSection(final SectionRequest sectionRequest) {
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(sectionRequest)
+                .when().post("/sections")
                 .then().extract();
     }
 
@@ -58,19 +56,10 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void createSection() {
         // given
-        Map<String, String> sectionParams = new HashMap<>();
-        sectionParams.put("lineId", "1");
-        sectionParams.put("stationId", "1");
-        sectionParams.put("upStationId", "2");
-        sectionParams.put("distance", "3");
+        final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 3);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionParams)
-                .when().post("/sections")
-                .then().extract();
+        ExtractableResponse<Response> response = postSection(sectionRequest);
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -81,17 +70,9 @@ public class SectionIntegrationTest extends IntegrationTest {
     @Test
     void deleteSection() {
         // given
-        Map<String, String> sectionParams = new HashMap<>();
-        sectionParams.put("lineId", "1");
-        sectionParams.put("stationId", "1");
-        sectionParams.put("upStationId", "2");
-        sectionParams.put("distance", "3");
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(sectionParams)
-                .when().post("/sections")
-                .then().extract();
+        final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 3);
+        postSection(sectionRequest);
+
         // when
         ExtractableResponse<Response> response = RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -102,5 +83,30 @@ public class SectionIntegrationTest extends IntegrationTest {
 
         // then
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    @DisplayName("전체 구간을 조회한다.")
+    @Test
+    void getSections() {
+        // given
+        final SectionRequest sectionRequest = new SectionRequest(1L, 1L, 2L, 3);
+        postSection(sectionRequest);
+
+        // when
+        ExtractableResponse<Response> response = RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when()
+                .get("/sections?lineId=" + 1)
+                .then().log().all()
+                .extract();
+
+        // then
+        final List<Long> upStationId = response.jsonPath().getList("upStationId", Long.class);
+        final List<Long> downStationId = response.jsonPath().getList("downStationId", Long.class);
+        final List<Integer> distance = response.jsonPath().getList("distance", Integer.class);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(upStationId).containsExactly(1L);
+        assertThat(downStationId).containsExactly(2L);
+        assertThat(distance).containsExactly(3);
     }
 }
