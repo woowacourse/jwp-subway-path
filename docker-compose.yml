@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  db:
+    container_name: h2
+    image: oscarfonts/h2:latest
+    ports:
+      - 1521:1521
+      - 8081:81
+    environment:
+      H2_OPTIONS: -ifNotExists
+  app:
+    build: ./
+    depends_on:
+      - db
+    ports:
+      - 8080:8080
+    restart: always
