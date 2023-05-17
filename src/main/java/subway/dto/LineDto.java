@@ -18,6 +18,10 @@ public class LineDto {
         return name;
     }
 
+    public String getColor() {
+        return color;
+    }
+
     public List<SectionDto> getSections() {
         return sections;
     }
