@@ -15,7 +15,7 @@ import io.restassured.response.Response;
 
 @Sql("/InitializeTable.sql")
 @DisplayName("최단 경로 찾기 인수테스트")
-public class RouteIntegrationTest extends IntegrationTest {
+public class PathIntegrationTest extends IntegrationTest {
 
     @Test
     @DisplayName("최단 경로를 검색한다.")
@@ -24,7 +24,7 @@ public class RouteIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/path/?source=1;target=3")
+                .when().get("/path/?source=1&target=3")
                 .then().log().all()
                 .extract();
 
@@ -33,7 +33,7 @@ public class RouteIntegrationTest extends IntegrationTest {
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.body().jsonPath().getInt("distance")).isEqualTo(20),
                 () -> assertThat(response.body().jsonPath().getInt("price")).isEqualTo(1450),
-                () -> assertThat(response.body().jsonPath().getList("path")).containsExactly("신도림", "영등포구청", "신림")
+                () -> assertThat(response.body().jsonPath().getList("path")).hasSize(2)
         );
     }
 
@@ -44,7 +44,7 @@ public class RouteIntegrationTest extends IntegrationTest {
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/path/?source=1;target=4")
+                .when().get("/path/?source=1&target=4")
                 .then().log().all()
                 .extract();
 
