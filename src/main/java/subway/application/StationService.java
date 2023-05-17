@@ -19,19 +19,19 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
         Station station = stationRepository.save(new Station(stationRequest.getName()));
-        return new StationResponse(station.getId(), station.getName());
+        return StationResponse.from(station);
     }
 
     public StationResponse findStationById(Long id) {
         Station station = stationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 역이 존재하지 않습니다."));
-        return new StationResponse(station.getId(), station.getName());
+        return StationResponse.from(station);
     }
 
     public List<StationResponse> findAllStations() {
         return stationRepository.findAll()
                 .stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
     }
 

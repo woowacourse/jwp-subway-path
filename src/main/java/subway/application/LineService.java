@@ -21,19 +21,19 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         Line line = lineRepository.save(new Line(request.getName()));
-        return new LineResponse(line.getId(), line.getName());
+        return LineResponse.from(line);
     }
 
     public List<LineResponse> findAllLines() {
         List<Line> lines = lineRepository.findAll();
         return lines.stream()
-                .map(line -> new LineResponse(line.getId(), line.getName()))
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
     public LineResponse findLineById(Long id) {
         Line line = findByLineId(id);
-        return new LineResponse(line.getId(), line.getName());
+        return LineResponse.from(line);
     }
 
     public List<LineStationResponse> findAllLinesAndStations() {
@@ -48,7 +48,7 @@ public class LineService {
 
         List<StationResponse> stationResponses = line.findLeftToRightRoute()
                 .stream()
-                .map(station -> new StationResponse(station.getId(), station.getName()))
+                .map(StationResponse::from)
                 .collect(Collectors.toList());
 
         return new LineStationResponse(line.getId(), line.getName(), stationResponses);
