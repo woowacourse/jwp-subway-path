@@ -26,7 +26,11 @@ public class SectionService {
                     lineId);
             return;
         }
+        addSectionInMiddle(lineId, sectionRequest, sectionsByLineId);
 
+    }
+
+    private void addSectionInMiddle(Long lineId, SectionRequest sectionRequest, Sections sectionsByLineId) {
         List<Section> updateSections = sectionsByLineId.insert(sectionRequest.getFromId(), sectionRequest.getToId(),
                 sectionRequest.getDistance());
 
@@ -46,9 +50,11 @@ public class SectionService {
     public void deleteStationById(final Long lineId, final Long stationId) {
         Sections sectionsByStationInfo = sectionDao.findSectionsByStationInfo(lineId, stationId);
         final int sectionSize = sectionsByStationInfo.getSize();
+
         if (sectionSize == 0) {
             throw new IllegalArgumentException("해당 역은 노선에 존재하지 않습니다.");
         }
+
         if (sectionSize == 2) { // 중간에 위치한 역을 삭제할 때
             Section combineSection = sectionsByStationInfo.makeCombineSection();
             sectionDao.insert(combineSection.getFrom().getId(), combineSection.getTo().getId(),

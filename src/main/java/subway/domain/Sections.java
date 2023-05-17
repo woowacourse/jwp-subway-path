@@ -26,34 +26,44 @@ public class Sections {
 
     public List<Section> insert(final Long fromId, final Long toId, final int distance) {
         final List<Section> querySections = new ArrayList<>();
-
-        if (isExist(fromId) == isExist(toId)) {
+        if (isAlreadyInSection(fromId, toId)) {
             throw new IllegalArgumentException("해당 조건으로 역을 설치할 수 없습니다.");
         }
+        checkIsMiddleLeft(fromId, toId, distance, querySections);
+        checkIsMiddleRight(fromId, toId, distance, querySections);
 
-        if (isExist(fromId)) {
-            if (!isRightEndId(fromId)) {
-                final Section deleteSection = findDeletableSectionFromRight(fromId, distance);
-                querySections.add(new Section(new Station(toId, "to_name"), deleteSection.getTo(),
-                        deleteSection.getDistanceValue() - distance));
-                querySections.add(deleteSection);
-            }
-            querySections.add(new Section(new Station(fromId, "from_name"), new Station(toId, "to_name"), distance));
-            return querySections;
+        querySections.add(new Section(new Station(fromId, "from_name"), new Station(toId, "to_name"), distance));
+        return querySections;
+    }
+
+    private void checkIsMiddleLeft(Long fromId, Long toId, int distance, List<Section> querySections) {
+        if (isInsertableMiddleLeft(toId)) {
+            final Section deleteSection = findDeletableSectionFromLeft(toId, distance);
+            querySections.add(new Section(deleteSection.getFrom(), new Station(fromId, "from_name"),
+                    deleteSection.getDistanceValue() - distance));
+            querySections.add(deleteSection);
         }
+    }
 
-        if (isExist(toId)) {
-            if (!isLeftEndId(toId)) {
-                final Section deleteSection = findDeletableSectionFromLeft(toId, distance);
-                querySections.add(new Section(deleteSection.getFrom(), new Station(fromId, "from_name"),
-                        deleteSection.getDistanceValue() - distance));
-                querySections.add(deleteSection);
-            }
-            querySections.add(new Section(new Station(fromId, "from_name"), new Station(toId, "to_name"), distance));
-            return querySections;
+    private void checkIsMiddleRight(Long fromId, Long toId, int distance, List<Section> querySections) {
+        if (isInsertableMiddleRight(fromId)) {
+            final Section deleteSection = findDeletableSectionFromRight(fromId, distance);
+            querySections.add(new Section(new Station(toId, "to_name"), deleteSection.getTo(),
+                    deleteSection.getDistanceValue() - distance));
+            querySections.add(deleteSection);
         }
+    }
 
-        throw new UnsupportedOperationException("처리할 수 없는 요청입니다.");
+    private boolean isInsertableMiddleLeft(Long toId) {
+        return isExist(toId) && !isLeftEndId(toId);
+    }
+
+    private boolean isInsertableMiddleRight(Long fromId) {
+        return isExist(fromId) && !isRightEndId(fromId);
+    }
+
+    private boolean isAlreadyInSection(Long fromId, Long toId) {
+        return isExist(fromId) == isExist(toId);
     }
 
     private Section findDeletableSectionFromRight(Long fromId, int distance) {
@@ -75,20 +85,11 @@ public class Sections {
         for (Section section : sections) {
             Station from = section.getFrom();
             Station to = section.getTo();
-            if (stationCount.containsKey(from)) {
-                stationCount.put(from, stationCount.get(from) + 1);
-            }
-            if (stationCount.containsKey(to)) {
-                stationCount.put(to, stationCount.get(to) + 1);
-            }
-            if (!stationCount.containsKey(from)) {
-                stationCount.put(from, 1);
-            }
-            if (!stationCount.containsKey(to)) {
-                stationCount.put(to, 1);
-            }
+            stationCount.put(from, stationCount.getOrDefault(from, 0) + 1);
+            stationCount.put(to, stationCount.getOrDefault(to, 0) + 1);
         }
-        final List<Station> endPointStations = getKeysByValue(stationCount, 1);
+
+        final List<Station> endPointStations = getEndPoints(stationCount);
 
         for (Station station : endPointStations) {
             if (isHead(station)) {
@@ -96,6 +97,16 @@ public class Sections {
             }
         }
         throw new UnsupportedOperationException("처리할 수 없는 요청입니다.");
+    }
+
+    private List<Station> getEndPoints(Map<Station, Integer> stationCount) {
+        List<Station> endPoints = new ArrayList<>();
+        for (Map.Entry<Station, Integer> entry : stationCount.entrySet()) {
+            if (entry.getValue() == 1) {
+                endPoints.add(entry.getKey());
+            }
+        }
+        return endPoints;
     }
 
     public <K, V> List<K> getKeysByValue(Map<K, V> map, V value) {
@@ -111,23 +122,30 @@ public class Sections {
     public List<Station> getOrderedStations(final Station station) {
         final List<Station> orderedStations = new ArrayList<>();
         Station targetStation = station;
+
         while (true) {
-
-            for (Section section : sections) {
-                if (section.existLeft(targetStation)) {
-                    orderedStations.add(section.getFrom());
-                    targetStation = section.getTo();
-                    break;
-                }
-            }
-
-            if (orderedStations.size() == sections.size()) {
-                orderedStations.add(targetStation);
+            Section nextSection = findNextSection(targetStation);
+            if (nextSection == null) {
                 break;
             }
+
+            orderedStations.add(nextSection.getFrom());
+            targetStation = nextSection.getTo();
         }
+
+        orderedStations.add(targetStation);
         return orderedStations;
     }
+
+    private Section findNextSection(Station station) {
+        for (Section section : sections) {
+            if (section.existLeft(station)) {
+                return section;
+            }
+        }
+        return null;
+    }
+
 
     private boolean isRightEndId(final Long id) {
         return sections.stream()
