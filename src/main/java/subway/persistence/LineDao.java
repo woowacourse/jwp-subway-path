@@ -1,10 +1,10 @@
-package subway.dao;
+package subway.persistence;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import subway.domain.Line;
+import subway.persistence.dto.LineDto;
 
 import javax.sql.DataSource;
 import java.util.HashMap;
@@ -16,8 +16,8 @@ public class LineDao {
     private final JdbcTemplate jdbcTemplate;
     private final SimpleJdbcInsert insertAction;
 
-    private RowMapper<Line> rowMapper = (rs, rowNum) ->
-            new Line(
+    private RowMapper<LineDto> rowMapper = (rs, rowNum) ->
+            new LineDto(
                     rs.getLong("id"),
                     rs.getString("name"),
                     rs.getString("color")
@@ -30,32 +30,32 @@ public class LineDao {
                 .usingGeneratedKeyColumns("id");
     }
 
-    public Line insert(Line line) {
+    public LineDto insert(LineDto lineDto) {
         Map<String, Object> params = new HashMap<>();
-        params.put("id", line.getId());
-        params.put("name", line.getName());
-        params.put("color", line.getColor());
+        params.put("id", lineDto.getId());
+        params.put("name", lineDto.getName());
+        params.put("color", lineDto.getColor());
 
         Long lineId = insertAction.executeAndReturnKey(params).longValue();
-        return new Line(lineId, line.getName(), line.getColor());
+        return new LineDto(lineId, lineDto.getName(), lineDto.getColor());
     }
 
-    public List<Line> findAll() {
+    public List<LineDto> findAll() {
         String sql = "select id, name, color from LINE";
         return jdbcTemplate.query(sql, rowMapper);
     }
 
-    public Line findById(Long id) {
+    public LineDto findById(Long id) {
         String sql = "select id, name, color from LINE WHERE id = ?";
         return jdbcTemplate.queryForObject(sql, rowMapper, id);
     }
 
-    public void update(Line newLine) {
+    public void update(LineDto lineDto) {
         String sql = "update LINE set name = ?, color = ? where id = ?";
-        jdbcTemplate.update(sql, new Object[]{newLine.getName(), newLine.getColor(), newLine.getId()});
+        jdbcTemplate.update(sql, new Object[]{lineDto.getName(), lineDto.getColor(), lineDto.getId()});
     }
 
-    public void deleteById(Long id) {
-        jdbcTemplate.update("delete from Line where id = ?", id);
+    public int deleteById(Long id) {
+        return jdbcTemplate.update("delete from Line where id = ?", id);
     }
 }
