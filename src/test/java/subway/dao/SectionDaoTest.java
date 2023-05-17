@@ -5,75 +5,84 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.entity.SectionEntity;
 
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 class SectionDaoTest {
     private final Long lineId = 1L;
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private SectionDao sectionDao;
-    private SectionEntity sectionEntity;
 
     @BeforeEach
     void setUp() {
         sectionDao = new SectionDao(jdbcTemplate);
-        sectionEntity = new SectionEntity(1L, 2L, lineId, 10);
     }
 
     @Test
-    @DisplayName("SectionEntity를 입력받아 저장한다.")
-    void save() {
+    void SectionEntity를_입력받아_저장한다() {
+        // given
+        SectionEntity 구간 = new SectionEntity(1L, 2L, lineId, 10);
+
         // when
-        sectionDao.save(sectionEntity);
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        sectionDao.save(구간);
+        List<SectionEntity> 구간들 = sectionDao.findByLineId(lineId);
 
         // expected
-        assertThat(sectionEntities).hasSize(1);
+        assertThat(구간들).hasSize(1);
     }
 
     @Test
-    @DisplayName("Line id를 입력받아 해당하는 Section Entity 를 반환한다.")
-    void findById() {
+    void 구간_id를_입력받아_해당하는_Entity를_반환한다() {
         // given
-        sectionDao.save(sectionEntity);
+        SectionEntity 구간 = new SectionEntity(1L, 2L, lineId, 10);
+        sectionDao.save(구간);
         sectionDao.save(new SectionEntity(2L, 3L, 1L, 20));
         sectionDao.save(new SectionEntity(3L, 4L, 1L, 30));
 
         // when
-        List<SectionEntity> sectionEntities = sectionDao.findByLineId(lineId);
+        List<SectionEntity> 구간들 = sectionDao.findByLineId(lineId);
 
         // expected
-        assertThat(sectionEntities).hasSize(3);
+        assertThat(구간들).hasSize(3);
     }
 
     @Test
     @DisplayName("Section Entity 를 입력받아 일치하는 Section 을 삭제한다.")
     void deleteByName() {
+        // given
+        SectionEntity 구간 = new SectionEntity(1L, 2L, lineId, 10);
+        sectionDao.save(구간);
+
         // when
-        sectionDao.save(sectionEntity);
-        int deleteRowNumber = sectionDao.delete(sectionEntity);
+        int 삭제된_행_개수 = sectionDao.delete(구간);
 
         // expected
-        assertThat(deleteRowNumber).isEqualTo(1);
+        assertThat(삭제된_행_개수).isEqualTo(1);
     }
 
     @Test
     @DisplayName("Line id를 입력받아 일치하는 Section 들을 모두 삭제한다.")
     void deleteByLineId() {
         // given
-        sectionDao.save(sectionEntity);
+        SectionEntity 구간 = new SectionEntity(1L, 2L, lineId, 10);
+        sectionDao.save(구간);
+
         sectionDao.save(new SectionEntity(2L, 3L, 1L, 20));
         sectionDao.save(new SectionEntity(3L, 4L, 1L, 30));
 
         // when
-        int deleteRowNumber = sectionDao.deleteByLineId(1L);
+        int 삭제된_행_개수 = sectionDao.deleteByLineId(1L);
 
         // expected
-        assertThat(deleteRowNumber).isEqualTo(3);
+        assertThat(삭제된_행_개수).isEqualTo(3);
     }
 }

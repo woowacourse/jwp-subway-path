@@ -3,40 +3,45 @@ package subway.dao;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import subway.dao.entity.StationEntity;
 
+@DisplayNameGeneration(ReplaceUnderscores.class)
+@SuppressWarnings("NonAsciiCharacters")
 @JdbcTest
 class StationDaoTest {
     @Autowired
     private JdbcTemplate jdbcTemplate;
     private StationDao stationDao;
-    private Long id;
 
     @BeforeEach
     void setUp() {
         stationDao = new StationDao(jdbcTemplate);
 
-        id = stationDao.save(new StationEntity("잠실역"));
     }
 
     @Test
-    @DisplayName("Station id를 입력받아 해당하는 Station Entity 를 반환한다.")
-    void findById() {
+    void 역_id를_입력받아_해당하는_Entity를_반환한다() {
+        // given
+        Long id = stationDao.save(new StationEntity("잠실역"));
+
         // when
-        StationEntity newStationEntity = stationDao.findById(id).get();
+        StationEntity 역 = stationDao.findById(id).get();
 
         // expected
-        assertThat(newStationEntity.getId()).isEqualTo(id);
+        assertThat(역.getId()).isEqualTo(id);
     }
 
     @Test
-    @DisplayName("StationEntity를 입력받아 저장한다.")
-    void save() {
+    void StationEntity를_입력받아_저장한다() {
+        // given
+        Long id = stationDao.save(new StationEntity("잠실역"));
+
         // when
         Long newId = stationDao.save(new StationEntity("잠실새내역"));
 
@@ -45,22 +50,26 @@ class StationDaoTest {
     }
 
     @Test
-    @DisplayName("Station 이름을 입력받아 해당하는 Station Entity 를 반환한다.")
-    void findByName() {
+    void 역_이름을_입력받아_해당하는_Entity를_반환한다() {
+        // given
+        Long id = stationDao.save(new StationEntity("잠실역"));
+
         // when
-        StationEntity newStationEntity = stationDao.findByName("잠실역").get();
+        StationEntity 역 = stationDao.findByName("잠실역").get();
 
         // expected
-        assertThat(newStationEntity.getId()).isEqualTo(id);
+        assertThat(역.getId()).isEqualTo(id);
     }
 
     @Test
-    @DisplayName("Station 이름을 입력받아 일치하는 역을 삭제한다.")
-    void deleteByName() {
+    void 역_이름을_입력받아_일치하는_역을_삭제한다() {
+        // given
+        stationDao.save(new StationEntity("잠실역"));
+
         // when
-        int deleteRowNumber = stationDao.deleteByName("잠실역");
+        int 삭제된_행_개수 = stationDao.deleteByName("잠실역");
 
         // expected
-        assertThat(deleteRowNumber).isEqualTo(1);
+        assertThat(삭제된_행_개수).isEqualTo(1);
     }
 }

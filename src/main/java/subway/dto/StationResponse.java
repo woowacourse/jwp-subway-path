@@ -1,7 +1,10 @@
 package subway.dto;
 
 public class StationResponse {
-    private final String name;
+    private String name;
+
+    private StationResponse() {
+    }
 
     public StationResponse(final String name) {
         this.name = name;

@@ -22,10 +22,10 @@ public class SectionStep {
     }
 
     public static SectionCreateRequest 구간_생성_요청을_생성한다(
-            final Long upStationId,
-            final Long downStation,
-            final int distance
+            final Long 시작역_ID,
+            final Long 도착역_ID,
+            final int 거리
     ) {
-        return new SectionCreateRequest(upStationId, downStation, distance);
+        return new SectionCreateRequest(시작역_ID, 도착역_ID, 거리);
     }
 }

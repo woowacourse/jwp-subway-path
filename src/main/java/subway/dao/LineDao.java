@@ -65,7 +65,7 @@ public class LineDao {
 
     public List<LineWithSectionEntities> findLinesWithSections() {
         final String sql = "SELECT * FROM line "
-                + "LEFT JOIN section ON line.id = section.line_id ";
+                + "LEFT JOIN section ON line.id = section.line_id";
 
         try {
             List<LineWithSectionEntity> lineWithSectionEntities = jdbcTemplate.query(sql,

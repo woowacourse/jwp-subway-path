@@ -26,10 +26,16 @@ public class SectionDao {
 
     private final RowMapper<SectionWithStationNameEntity> sectionWithStationNameEntityRowMapper = (rs, rowNum) ->
             new SectionWithStationNameEntity(
-                    rs.getLong("section.id"),
-                    new StationEntity(rs.getLong("us.id"), rs.getString("us.name")),
-                    new StationEntity(rs.getLong("ds.id"), rs.getString("ds.name")),
-                    rs.getInt("section.distance")
+                    rs.getLong("id"),
+                    new StationEntity(
+                            rs.getLong("up_station_id"),
+                            rs.getString("up_station_name")
+                    ),
+                    new StationEntity(
+                            rs.getLong("down_station_id"),
+                            rs.getString("down_station_name")
+                    ),
+                    rs.getInt("distance")
             );
 
     public SectionDao(JdbcTemplate jdbcTemplate) {
@@ -48,12 +54,18 @@ public class SectionDao {
         return jdbcTemplate.query(sql, rowMapper, lineId);
     }
 
-    public List<SectionWithStationNameEntity> findByLineIdWithStationName(final Long lineId) {
-        final String sql = "SELECT * FROM section "
-                + "JOIN station AS us ON section.up_station_id = us.id "
-                + "JOIN station AS ds ON section.up_station_id = ds.id "
-                + "WHERE line_id = ?";
-        return jdbcTemplate.query(sql, sectionWithStationNameEntityRowMapper, lineId);
+    public List<SectionWithStationNameEntity> findByLineIdWithStationName(final Long sectionId) {
+        final String sql = "SELECT s.id AS id, "
+                + "s.distance AS distance, "
+                + "us.id AS up_station_id, "
+                + "ds.id AS down_station_id, "
+                + "us.name AS up_station_name, "
+                + "ds.name AS down_station_name "
+                + "FROM section s "
+                + "JOIN station us ON s.up_station_id = us.id "
+                + "JOIN station ds ON s.down_station_id = ds.id "
+                + "WHERE s.id = ?";
+        return jdbcTemplate.query(sql, sectionWithStationNameEntityRowMapper, sectionId);
     }
 
     public int delete(final SectionEntity sectionEntity) {

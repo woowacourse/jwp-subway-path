@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.List;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
 import org.junit.jupiter.api.Test;
@@ -24,8 +23,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("Sections 를 from 메서드로 생성한다.")
-    void createFrom() {
+    void Sections를_from_메서드로_생성한다() {
         // given
         Station 첫번째_역 = 역을_생성한다(1L, "잠실역");
         Station 두번째_역 = 역을_생성한다(2L, "잠실새내역");
@@ -34,18 +32,17 @@ class SectionsTest {
         Section 첫번째_구간 = 구간을_생성한다(첫번째_역, 두번째_역, 10);
         Section 두번째_구간 = 구간을_생성한다(두번째_역, 세번째_역, 20);
 
-        Sections sections = Sections.from(List.of(첫번째_구간, 두번째_구간));
+        Sections 구간들 = Sections.from(List.of(첫번째_구간, 두번째_구간));
 
         // expected
         assertAll(
-                () -> assertThat(sections.getSections().get(0)).isEqualTo(첫번째_구간),
-                () -> assertThat(sections.getSections().get(1)).isEqualTo(두번째_구간)
+                () -> assertThat(구간들.getSections().get(0)).isEqualTo(첫번째_구간),
+                () -> assertThat(구간들.getSections().get(1)).isEqualTo(두번째_구간)
         );
     }
 
     @Test
-    @DisplayName("노선의 모든 역을 반환한다.")
-    void getStations() {
+    void 노선의_모든_역을_반환한다() {
         // given
         Station 첫번째_역 = 역을_생성한다(1L, "잠실역");
         Station 두번째_역 = 역을_생성한다(2L, "잠실새내역");
@@ -64,8 +61,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("새로운 구간을 추가한다.")
-    void addSection() {
+    void 새로운_구간을_추가한다() {
         // given
         Station 첫번째_역 = 역을_생성한다(1L, "잠실역");
         Station 두번째_역 = 역을_생성한다(2L, "잠실새내역");
@@ -89,8 +85,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("새로운 역들이 노선에 이미 존재하는 경우 예외가 발생한다.")
-    void validateDuplicateSection() {
+    void 새로운_역들이_노선에_이미_존재하는_경우_예외가_발생한다() {
         // given
         Station 첫번째_역 = 역을_생성한다(1L, "잠실역");
         Station 두번째_역 = 역을_생성한다(2L, "잠실새내역");
@@ -110,8 +105,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("새로운 역이 상행 종점으로 추가된다.")
-    void addSectionFirstStation() {
+    void 새로운_역이_상행_종점으로_추가된다() {
         // given
         Station 첫번째_역 = 역을_생성한다(1L, "잠실역");
         Station 두번째_역 = 역을_생성한다(2L, "잠실새내역");
@@ -133,8 +127,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("새로운 역이 하행 종점으로 추가된다.")
-    void addSectionLastStation() {
+    void 새로운_역이_하행_종점으로_추가된다() {
         // given
         Station 첫번째_역 = 역을_생성한다(1L, "잠실역");
         Station 두번째_역 = 역을_생성한다(2L, "잠실새내역");
@@ -156,8 +149,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("중간 역을 삭제하면 연결된 구간이 삭제된다.")
-    void delete() {
+    void 중간_역을_삭제하면_연결된_구간이_삭제된다() {
         // given
         Station 첫번째_역 = 역을_생성한다(1L, "잠실역");
         Station 두번째_역 = 역을_생성한다(2L, "잠실새내역");
@@ -179,8 +171,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("종점을 삭제한다.")
-    void deleteTerminal() {
+    void 종점을_삭제한다() {
         // given
         Station 첫번째_역 = 역을_생성한다(1L, "잠실역");
         Station 두번째_역 = 역을_생성한다(2L, "잠실새내역");
@@ -202,8 +193,7 @@ class SectionsTest {
     }
 
     @Test
-    @DisplayName("노선에 역이 두 개 존재할 때, 모든 노선이 삭제된다.")
-    void deleteAll() {
+    void 노선에_역이_두_개_존재할_때_모든_노선이_삭제된다() {
         // given
         Station 첫번째_역 = 역을_생성한다(1L, "잠실역");
         Station 두번째_역 = 역을_생성한다(2L, "잠실새내역");

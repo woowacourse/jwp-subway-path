@@ -19,4 +19,13 @@ public class LineStep {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 노선_조회_요청() {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/lines")
+                .then().log().all()
+                .extract();
+    }
 }

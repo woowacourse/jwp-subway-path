@@ -3,6 +3,7 @@ package subway.integration;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static subway.integration.step.LineStep.노선_생성_요청;
+import static subway.integration.step.LineStep.노선_조회_요청;
 import static subway.integration.step.SectionStep.구간_생성_요청;
 import static subway.integration.step.SectionStep.구간_생성_요청을_생성한다;
 import static subway.integration.step.StationStep.역_생성_요청;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.assertj.core.api.AssertionsForClassTypes;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator.ReplaceUnderscores;
@@ -25,131 +25,113 @@ import org.springframework.http.MediaType;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 import subway.dto.SectionCreateRequest;
+import subway.dto.StationResponse;
+import subway.exception.ErrorCode;
 
 @DisplayNameGeneration(ReplaceUnderscores.class)
 @SuppressWarnings("NonAsciiCharacters")
 @DisplayName("지하철 노선 관련 기능")
 public class LineIntegrationTest extends IntegrationTest {
-    private LineRequest lineRequest1;
-    private LineRequest lineRequest2;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-
-        lineRequest1 = new LineRequest("2호선");
-        lineRequest2 = new LineRequest("8호선");
-    }
 
     @DisplayName("지하철 노선을 생성한다.")
     @Test
-    void createLine() {
+    void 지하철_노선을_생성한다() {
+        // given
+        final LineRequest 요청 = new LineRequest("2호선");
+
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 노선_생성_요청(요청);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-        assertThat(response.header("Location")).isNotBlank();
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value()),
+                () -> assertThat(response.header(HttpHeaders.LOCATION)).isEqualTo("/lines/1")
+        );
     }
 
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
-    void createLineWithDuplicateName() {
+    void 기존에_존재하는_지하철_노선_이름으로_노선을_생성하면_예외가_발생한다() {
         // given
-        RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all()
-                .extract();
+        final LineRequest 요청 = new LineRequest("2호선");
+        노선_생성_요청(요청);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 노선_생성_요청(요청);
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(response.jsonPath().getString("message"))
+                        .isEqualTo(ErrorCode.DUPLICATE_NAME.getErrorMessage())
+        );
     }
 
     @DisplayName("지하철 노선을 조회한다.")
     @Test
     void getLine() {
         // given
-        ExtractableResponse<Response> createResponse = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all()
-                .extract();
+        final LineRequest 노선_요청 = new LineRequest("2호선");
+        ExtractableResponse<Response> 응답 = 노선_생성_요청(노선_요청);
+        역_생성_요청("잠실역", 1L);
+        역_생성_요청("잠실새내역", 1L);
+        구간_생성_요청(구간_생성_요청을_생성한다(1L, 2L, 30), 1L);
 
         // when
-        Long lineId = Long.parseLong(createResponse.header("Location").split("/")[2]);
+        Long 노선_ID = Long.parseLong(응답.header("Location").split("/")[2]);
         ExtractableResponse<Response> response = RestAssured
                 .given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines/{lineId}", lineId)
+                .when().get("/lines/{노선_ID}", 노선_ID)
                 .then().log().all()
                 .extract();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-        LineResponse resultResponse = response.as(LineResponse.class);
-        assertThat(resultResponse.getId()).isEqualTo(lineId);
+        LineResponse lineResponse = response.as(LineResponse.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(lineResponse.getId()).isEqualTo(노선_ID),
+                () -> assertThat(lineResponse.getName()).isEqualTo(노선_요청.getName()),
+                () -> assertThat(lineResponse.getStations())
+                        .extracting(StationResponse::getName)
+                        .containsExactly("잠실역", "잠실새내역")
+        );
     }
 
     @DisplayName("지하철 노선 목록을 조회한다.")
     @Test
     void getLines() {
         // given
-        ExtractableResponse<Response> createResponse1 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest1)
-                .when().post("/lines")
-                .then().log().all().
-                extract();
+        final LineRequest 이호선_생성_요청 = new LineRequest("2호선");
+        ExtractableResponse<Response> 이호선_생성_응답 = 노선_생성_요청(이호선_생성_요청);
+        역_생성_요청("잠실역", 1L);
+        역_생성_요청("잠실새내역", 1L);
+        구간_생성_요청(구간_생성_요청을_생성한다(1L, 2L, 30), 1L);
 
-        ExtractableResponse<Response> createResponse2 = RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(lineRequest2)
-                .when().post("/lines")
-                .then().log().all()
-                .extract();
+        final LineRequest 삼호선_생성_요청 = new LineRequest("3호선");
+        ExtractableResponse<Response> 삼호선_생성_응답 = 노선_생성_요청(삼호선_생성_요청);
 
         // when
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/lines")
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> response = 노선_조회_요청();
 
         // then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-
-        List<Long> expectedLineIds = Stream.of(createResponse1, createResponse2)
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+        List<Long> expectedLineIds = Stream.of(이호선_생성_응답, 삼호선_생성_응답)
+                .map(it -> Long.parseLong(it.header(HttpHeaders.LOCATION).split("/")[2]))
                 .collect(Collectors.toList());
 
-        List<Long> resultLineIds = response.jsonPath().getList(".", LineResponse.class).stream()
-                .map(LineResponse::getId)
-                .collect(Collectors.toList());
-
-        assertThat(resultLineIds).containsAll(expectedLineIds);
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getList("")).hasSize(2),
+                () -> assertThat(response.jsonPath().getLong("[0].id")).isEqualTo(expectedLineIds.get(0)),
+                () -> assertThat(response.jsonPath().getString("[0].name")).isEqualTo("2호선"),
+                () -> assertThat(response.jsonPath().getList("[0].stations", StationResponse.class))
+                        .extracting(StationResponse::getName)
+                        .containsExactly("잠실역", "잠실새내역"),
+                () -> assertThat(response.jsonPath().getLong("[1].id")).isEqualTo(expectedLineIds.get(1)),
+                () -> assertThat(response.jsonPath().getString("[1].name")).isEqualTo("3호선"),
+                () -> assertThat(response.jsonPath().getList("[1].stations", StationResponse.class)).isEmpty()
+        );
     }
 
     @DisplayName("지하철 구간을 생성한다.")
@@ -174,7 +156,6 @@ public class LineIntegrationTest extends IntegrationTest {
                         .isEqualTo("/lines/1/sections/1")
         );
     }
-
 
     @Test
     @DisplayName("기존에 존재하는 노선에 구간을 추가한다.")
