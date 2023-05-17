@@ -7,10 +7,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
+import subway.domain.Stations;
 import subway.dto.AddStationRequest;
 import subway.repository.SubwayRepository;
 
 import java.util.Optional;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.doReturn;
@@ -44,6 +46,7 @@ class SubwayServiceTest {
 
         doReturn(line).when(subwayRepository).getLineByName(LINE_NUMBER_TWO.getName());
         doReturn(Optional.of(1L)).when(subwayRepository).findStationIdByName(newStation.getName());
+        doReturn(new Stations(Set.of(JAMSIL_STATION, JAMSIL_NARU_STATION))).when(subwayRepository).getStations();
 
         SubwayService subwayService = new SubwayService(subwayRepository);
 

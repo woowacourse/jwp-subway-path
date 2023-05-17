@@ -19,4 +19,12 @@ public class LineResponse {
     public String getLineName() {
         return lineName;
     }
+
+    @Override
+    public String toString() {
+        return "LineResponse{" +
+                "stationNames=" + stationNames +
+                ", lineName='" + lineName + '\'' +
+                '}';
+    }
 }

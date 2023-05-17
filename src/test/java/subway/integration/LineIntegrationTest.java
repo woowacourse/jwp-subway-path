@@ -30,6 +30,11 @@ public class LineIntegrationTest extends IntegrationTest {
     private static final String VALID_DOWNSTREAM_NAME = "잠실나루";
     private static final int FIVE_DISTANCE = 5;
 
+    /**
+     * 저장되어 있는 노선 정보
+     * 2호선
+     * JAMSIL_TO_JAMSILNARU (섹션) : JAMSIL_STATION --(5)--> JAMSIL_NARU_STATION
+     */
     @BeforeEach
     public void setUp() {
         super.setUp();

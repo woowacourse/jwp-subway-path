@@ -50,4 +50,15 @@ public class AddStationRequest {
     public int hashCode() {
         return Objects.hash(addStationName, lineName, upstreamName, downstreamName, distanceToUpstream);
     }
+
+    @Override
+    public String toString() {
+        return "AddStationRequest{" +
+                "addStationName='" + addStationName + '\'' +
+                ", lineName='" + lineName + '\'' +
+                ", upstreamName='" + upstreamName + '\'' +
+                ", downstreamName='" + downstreamName + '\'' +
+                ", distanceToUpstream=" + distanceToUpstream +
+                '}';
+    }
 }

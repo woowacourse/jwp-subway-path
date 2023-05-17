@@ -45,9 +45,9 @@ public class Line {
 
     public List<Section> addStation(Station newStation, Station upstream, Station downstream, int distanceToUpstream) {
         validateDuplicateStations(newStation);
-        Section section = findSection(upstream, downstream);
-        List<Section> sectionsToAdd = section.insertInTheMiddle(newStation, distanceToUpstream);
-        addSections(section, sectionsToAdd);
+        Section sectionToAddNewStation = getSectionContaining(upstream, downstream);
+        List<Section> sectionsToAdd = sectionToAddNewStation.insertInTheMiddle(newStation, distanceToUpstream);
+        addSections(sectionToAddNewStation, sectionsToAdd);
 
         return sectionsToAdd;
     }
@@ -58,7 +58,7 @@ public class Line {
         }
     }
 
-    private Section findSection(Station upstream, Station downstream) {
+    private Section getSectionContaining(Station upstream, Station downstream) {
         return sections.stream()
                 .filter(section -> section.containsSameStations(upstream, downstream))
                 .findAny()
