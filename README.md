@@ -23,6 +23,8 @@
 ```mermaid
 graph TD
 Sections --> Section
+Sections --> TopDownStationArranger
+
 Section -->  Line
 Section --> Station
 Section --> Distance
