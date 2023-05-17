@@ -1,6 +1,8 @@
 package subway.domain.pathfinder;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.jgrapht.GraphPath;
@@ -22,6 +24,7 @@ public class JgraphtPathFinder implements PathFinder {
 
     @Override
     public void addSections(List<Section> sections) {
+        initialize();
         for (Section section : sections) {
             final Long sourceStationId = section.getSourceStationId();
             final Long targetStationId = section.getTargetStationId();
@@ -30,6 +33,13 @@ public class JgraphtPathFinder implements PathFinder {
             final LineWeightedEdge lineWeightedEdge = new LineWeightedEdge(section.getLineId(), section.getDistance());
             graph.setEdgeWeight(lineWeightedEdge, section.getDistance());
             graph.addEdge(sourceStationId, targetStationId, lineWeightedEdge);
+        }
+    }
+
+    private void initialize() {
+        final HashSet<Long> stationIds = new HashSet<>(graph.vertexSet());
+        for (Long stationId : stationIds) {
+            graph.removeVertex(stationId);
         }
     }
 
