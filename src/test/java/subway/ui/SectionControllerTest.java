@@ -24,7 +24,7 @@ class SectionControllerTest {
         final SectionService sectionServiceMock = mock(SectionService.class);
         final SectionController sectionController = new SectionController(sectionServiceMock);
         // when
-        when(sectionServiceMock.saveSection(sectionRequest)).thenReturn(List.of(sectionResponse));
+        when(sectionServiceMock.insertSection(sectionRequest)).thenReturn(List.of(sectionResponse));
         final ResponseEntity<List<SectionResponse>> listResponseEntity = sectionController.addSection(sectionRequest);
         // then
         Assertions.assertThat(listResponseEntity.getStatusCode()).isEqualTo(HttpStatus.CREATED);
@@ -51,7 +51,7 @@ class SectionControllerTest {
         final SectionService sectionServiceMock = mock(SectionService.class);
         final SectionController sectionController = new SectionController(sectionServiceMock);
         // when
-        when(sectionServiceMock.getSections(1L)).thenReturn(List.of(sectionResponse));
+        when(sectionServiceMock.findSectionsByLineId(1L)).thenReturn(List.of(sectionResponse));
         final ResponseEntity<List<SectionResponse>> listResponseEntity = sectionController.getSections(1L);
         // then
         Assertions.assertThat(listResponseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

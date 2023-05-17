@@ -29,7 +29,14 @@ public class SectionService {
         this.stationDao = stationDao;
     }
     
-    public List<SectionResponse> getSections(final long lineId) {
+    public List<SectionResponse> findAll() {
+        return this.sectionDAO.findAll()
+                .stream()
+                .map(SectionResponse::of)
+                .collect(Collectors.toUnmodifiableList());
+    }
+    
+    public List<SectionResponse> findSectionsByLineId(final long lineId) {
         return this.sectionDAO.findSectionsBy(lineId)
                 .stream()
                 .map(SectionResponse::of)
@@ -58,22 +65,22 @@ public class SectionService {
         }
     }
     
-    public List<SectionResponse> saveSection(final SectionRequest sectionRequest) {
+    public List<SectionResponse> insertSection(final SectionRequest sectionRequest) {
         final List<Section> sections = this.sectionDAO.findSectionsBy(sectionRequest.getLineId());
         final LineSections lineSections = LineSections.from(sections);
         if (lineSections.isEmpty()) {
-            return this.creatNewSection(sectionRequest);
+            return this.insertNewSection(sectionRequest);
         }
-        return this.addNewStationInSection(sectionRequest, lineSections);
+        return this.insertStationInLine(sectionRequest, lineSections);
     }
     
-    private List<SectionResponse> creatNewSection(final SectionRequest sectionRequest) {
+    private List<SectionResponse> insertNewSection(final SectionRequest sectionRequest) {
         final Section section = Section.from(sectionRequest);
         final SectionResponse sectionResponse = SectionResponse.of(this.sectionDAO.insert(section));
         return List.of(sectionResponse);
     }
     
-    private List<SectionResponse> addNewStationInSection(final SectionRequest sectionRequest,
+    private List<SectionResponse> insertStationInLine(final SectionRequest sectionRequest,
             final LineSections lineSections) {
         
         if (lineSections.hasStation(sectionRequest.getNewStationId())) {
@@ -90,7 +97,7 @@ public class SectionService {
         // 종점인 경우
         if ((lineSections.isUpTerminalStation(baseStationId) && direction.isUp()) || (
                 lineSections.isDownTerminalStation(baseStationId) && direction.isDown())) {
-            return this.creatNewSection(sectionRequest);
+            return this.insertNewSection(sectionRequest);
         }
         
         // 중간에 넣는 경우

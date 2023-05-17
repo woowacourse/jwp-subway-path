@@ -27,7 +27,7 @@ public class SectionController {
     
     @GetMapping("/{lineId}")
     public ResponseEntity<List<SectionResponse>> getSections(@PathVariable final long lineId) {
-        final List<SectionResponse> sectionResponses = this.sectionService.getSections(lineId);
+        final List<SectionResponse> sectionResponses = this.sectionService.findSectionsByLineId(lineId);
         return ResponseEntity.ok(sectionResponses);
     }
     
@@ -35,7 +35,7 @@ public class SectionController {
     public ResponseEntity<List<SectionResponse>> addSection(@RequestBody final SectionRequest sectionRequest) {
         this.sectionService.validate(sectionRequest);
         
-        final java.util.List<SectionResponse> sectionResponses = this.sectionService.saveSection(sectionRequest);
+        final java.util.List<SectionResponse> sectionResponses = this.sectionService.insertSection(sectionRequest);
         return ResponseEntity.status(HttpStatus.CREATED).body(sectionResponses);
     }
     
