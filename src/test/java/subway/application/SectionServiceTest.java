@@ -8,8 +8,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
-import subway.dao.dto.SectionStationResultMap;
 import subway.dao.StationDao;
+import subway.dao.dto.SectionStationResultMap;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -61,8 +62,8 @@ class SectionServiceTest {
         stationDao.insert(station3).getId();
         stationDao.insert(station4).getId();
 
-        sectionDao.insert(new Section(10, station1, station2, lineId));
-        sectionDao.insert(new Section(20, station2, station3, lineId));
+        sectionDao.insert(new Section(new Distance(10), station1, station2, lineId));
+        sectionDao.insert(new Section(new Distance(20), station2, station3, lineId));
     }
 
     @Test
@@ -158,10 +159,10 @@ class SectionServiceTest {
         final Long lineId = lineDao.insert(new Line("3호선", "노란색"));
         Station station1 = new Station(1L, "잠실역1");
         Station station2 = new Station(2L, "잠실역2");
-        sectionDao.insert(new Section(10, station1, station2, lineId));
+        sectionDao.insert(new Section(new Distance(10), station1, station2, lineId));
 
         //when
-        sectionService.deleteStation(new SectionDeleteRequest(lineId,1L));
+        sectionService.deleteStation(new SectionDeleteRequest(lineId, 1L));
 
         //then
         assertAll(
@@ -172,7 +173,7 @@ class SectionServiceTest {
     @Test
     void 구간이_두개_이상이고_종점이면_해당구간만_삭제한다() {
         //when
-        sectionService.deleteStation(new SectionDeleteRequest(1L,1L));
+        sectionService.deleteStation(new SectionDeleteRequest(1L, 1L));
 
         //then
         assertThat(sectionDao.findAllByLineId(1L)).hasSize(1);
@@ -181,7 +182,7 @@ class SectionServiceTest {
     @Test
     void 구간이_두개_이상이고_중간이면_겹치는구간_삭제와_이어주기를_한다() {
         //when
-        sectionService.deleteStation(new SectionDeleteRequest(1L,2L));
+        sectionService.deleteStation(new SectionDeleteRequest(1L, 2L));
 
         //then
         final List<SectionStationResultMap> resultMaps = sectionDao.findAllByLineId(1L);

@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Sections;
 import subway.domain.Station;
@@ -54,8 +55,8 @@ public class SectionService {
             throw new IllegalArgumentException("존재 하지 않는 노선에는 구간을 추가 할 수 없습니다.");
         }
 
-        if (sectionDao.exists(request.getDownStationId(), request.getUpStationId(),request.getLineId())
-                || sectionDao.exists(request.getUpStationId(), request.getDownStationId(),request.getLineId())) {
+        if (sectionDao.exists(request.getDownStationId(), request.getUpStationId(), request.getLineId())
+                || sectionDao.exists(request.getUpStationId(), request.getDownStationId(), request.getLineId())) {
             throw new IllegalArgumentException("동일한 구간을 추가할 수 없습니다.");
         }
     }
@@ -77,7 +78,7 @@ public class SectionService {
     private Long insertToEndPoint(SectionRequest request) {
         Station upStation = findStationById(request.getUpStationId());
         Station downStation = findStationById(request.getDownStationId());
-        final Section section = new Section(request.getDistance(), upStation, downStation, request.getLineId());
+        final Section section = new Section(new Distance(request.getDistance()), upStation, downStation, request.getLineId());
         return sectionDao.insert(section);
     }
 
@@ -91,8 +92,8 @@ public class SectionService {
 
             validateDistance(targetSection.getDistance(), request.getDistance());
 
-            final Section updateSection = new Section(request.getDistance(), findStationById(targetSection.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
-            final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), findStationById(request.getDownStationId()), findStationById(targetSection.getDownStationId()), targetSection.getLineId());
+            final Section updateSection = new Section(new Distance(request.getDistance()), findStationById(targetSection.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
+            final Section newSection = new Section(new Distance(targetSection.getDistance() - request.getDistance()), findStationById(request.getDownStationId()), findStationById(targetSection.getDownStationId()), targetSection.getLineId());
             return updateAndInsertSection(updateSection, newSection);
         }
 
@@ -100,13 +101,13 @@ public class SectionService {
 
         validateDistance(targetSection.getDistance(), request.getDistance());
 
-        final Section updateSection = new Section(request.getDistance(), findStationById(request.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
-        final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), findStationById(targetSection.getUpStationId()), findStationById(request.getUpStationId()), targetSection.getLineId());
+        final Section updateSection = new Section(new Distance(request.getDistance()), findStationById(request.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
+        final Section newSection = new Section(new Distance(targetSection.getDistance() - request.getDistance()), findStationById(targetSection.getUpStationId()), findStationById(request.getUpStationId()), targetSection.getLineId());
         return updateAndInsertSection(updateSection, newSection);
     }
 
-    private static void validateDistance(int targetDistance, Integer distance) {
-        if (targetDistance <= distance) {
+    private static void validateDistance(int targetDistance, int requestDistance) {
+        if (targetDistance <= requestDistance) {
             throw new IllegalArgumentException("거리는 기존 구간 거리보다 클 수 없습니다.");
         }
     }

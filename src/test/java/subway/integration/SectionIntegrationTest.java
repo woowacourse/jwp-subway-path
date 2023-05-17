@@ -13,6 +13,7 @@ import org.springframework.http.MediaType;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
+import subway.domain.Distance;
 import subway.domain.Line;
 import subway.domain.Section;
 import subway.domain.Station;
@@ -46,7 +47,7 @@ class SectionIntegrationTest extends IntegrationTest {
         stationDao.insert(station3);
 
         이호선 = lineDao.insert(new Line("2호선", "초록색"));
-        sectionDao.insert(new Section(10, station1, station2, 이호선));
+        sectionDao.insert(new Section(new Distance(10), station1, station2, 이호선));
     }
 
     @Test

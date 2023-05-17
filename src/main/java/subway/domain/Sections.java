@@ -115,7 +115,7 @@ public class Sections {
         final Section forwardSection = includeTargetSection.get(0);
         final Section backwardSection = includeTargetSection.get(1);
 
-        sections.add(new Section(newDistance,
+        sections.add(new Section(new Distance(newDistance),
                 new Station(forwardSection.getUpStationId(), forwardSection.getUpStation().getName()),
                 new Station(backwardSection.getDownStationId(), backwardSection.getDownStation().getName()),
                 request.getLineId()));
@@ -124,7 +124,7 @@ public class Sections {
         }
     }
 
-    public List<Station> getSortedStations(){
+    public List<Station> getSortedStations() {
         final List<Station> stations = sections.stream()
                 .map(section -> new Station(section.getUpStationId(), section.getUpStation().getName()))
                 .collect(Collectors.toList());

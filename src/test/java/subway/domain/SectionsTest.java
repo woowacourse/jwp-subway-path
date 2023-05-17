@@ -18,9 +18,9 @@ class SectionsTest {
         Station station2 = new Station(2L, "잠실역2");
         Station station3 = new Station(3L, "잠실역3");
         Station station4 = new Station(4L, "잠실역4");
-        final Section section1 = new Section(3, station1, station2, 1L);
-        final Section section2 = new Section(3, station2, station3, 1L);
-        final Section section3 = new Section(3, station3, station4, 1L);
+        final Section section1 = new Section(new Distance(3), station1, station2, 1L);
+        final Section section2 = new Section(new Distance(3), station2, station3, 1L);
+        final Section section3 = new Section(new Distance(3), station3, station4, 1L);
 
         this.sections = Sections.from(List.of(section3, section1, section2));
     }

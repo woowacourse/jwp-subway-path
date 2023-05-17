@@ -12,6 +12,7 @@ import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.test.context.jdbc.Sql;
 import subway.dao.dto.SectionStationResultMap;
+import subway.domain.Distance;
 import subway.domain.Section;
 import subway.domain.Station;
 
@@ -62,9 +63,9 @@ class SectionDaoTest {
         stationDao.insert(station5);
         stationDao.insert(station6);
 
-        sectionDao.insert(new Section(3, station1, station2, 1L));
-        sectionDao.insert(new Section(3, station3, station4, 1L));
-        sectionDao.insert(new Section(3, station5, station6, 2L));
+        sectionDao.insert(new Section(new Distance(3), station1, station2, 1L));
+        sectionDao.insert(new Section(new Distance(3), station3, station4, 1L));
+        sectionDao.insert(new Section(new Distance(3), station5, station6, 2L));
     }
 
     @Test
@@ -72,7 +73,7 @@ class SectionDaoTest {
         // given
         Station station7 = new Station(5L, "잠실역7");
         Station station8 = new Station(6L, "잠실역8");
-        final Section section = new Section(3, station7, station8, 1L);
+        final Section section = new Section(new Distance(3), station7, station8, 1L);
 
         // when
         final Long id = sectionDao.insert(section);
@@ -102,8 +103,8 @@ class SectionDaoTest {
         stationDao.insert(station9);
         stationDao.insert(station10);
 
-        final Long targetId = sectionDao.insert(new Section(1, station7, station8, 1L));
-        final Section newSection = new Section(targetId, 3, station10, station9, 1L);
+        final Long targetId = sectionDao.insert(new Section(new Distance(1), station7, station8, 1L));
+        final Section newSection = new Section(targetId, new Distance(3), station10, station9, 1L);
 
         // when
         sectionDao.update(newSection);
@@ -120,7 +121,7 @@ class SectionDaoTest {
         // given
             Station station1 = new Station(1L, "잠실역1");
             Station station2 = new Station(2L, "잠실역2");
-            sectionDao.insert(new Section(3, station1, station2, 1L));
+            sectionDao.insert(new Section(new Distance(3), station1, station2, 1L));
 
         // when, then
         assertAll(
@@ -158,8 +159,8 @@ class SectionDaoTest {
         stationDao.insert(station8);
         stationDao.insert(station9);
 
-        Section section1 = new Section(3, station7, station8, 2L);
-        Section section2 = new Section(3, station8, station9, 2L);
+        Section section1 = new Section(new Distance(3), station7, station8, 2L);
+        Section section2 = new Section(new Distance(3), station8, station9, 2L);
 
         List<Section> sections = new ArrayList<>();
         sections.add(section1);

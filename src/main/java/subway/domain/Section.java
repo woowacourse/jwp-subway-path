@@ -6,16 +6,16 @@ import java.util.Objects;
 
 public class Section {
     private Long id;
-    private int distance;
+    private Distance distance;
     private Station upStation;
     private Station downStation;
     private Long lineId;
 
-    public Section(int distance, Station upStation, Station downStation, Long lineId) {
+    public Section(Distance distance, Station upStation, Station downStation, Long lineId) {
         this(null, distance, upStation, downStation, lineId);
     }
 
-    public Section(Long id, int distance, Station upStation, Station downStation, Long lineId) {
+    public Section(Long id, Distance distance, Station upStation, Station downStation, Long lineId) {
         validateDuplicate(upStation, downStation);
         this.id = id;
         this.distance = distance;
@@ -33,7 +33,7 @@ public class Section {
     public static Section of(final SectionStationResultMap sectionStationResultMap) {
         return new Section(
                 sectionStationResultMap.getSectionId(),
-                sectionStationResultMap.getDistance(),
+                new Distance(sectionStationResultMap.getDistance()),
                 new Station(sectionStationResultMap.getUpStationId(), sectionStationResultMap.getUpStationName()),
                 new Station(sectionStationResultMap.getDownStationId(), sectionStationResultMap.getDownStationName()),
                 sectionStationResultMap.getLineId());
@@ -44,7 +44,7 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 
     public Station getUpStation() {

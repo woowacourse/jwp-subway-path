@@ -4,10 +4,7 @@ import org.springframework.stereotype.Service;
 import subway.dao.LineDao;
 import subway.dao.SectionDao;
 import subway.dao.StationDao;
-import subway.domain.Line;
-import subway.domain.Section;
-import subway.domain.Sections;
-import subway.domain.Station;
+import subway.domain.*;
 import subway.dto.LineRequest;
 import subway.dto.LineResponse;
 
@@ -31,7 +28,7 @@ public class LineService {
         final Line line = new Line(request.getName(), request.getColor());
         final Long lineId = lineDao.insert(line);
 
-        final Section section = new Section(request.getDistance(), findStationById(request.getUpStationId()), findStationById(request.getDownStationId()), lineId);
+        final Section section = new Section(new Distance(request.getDistance()), findStationById(request.getUpStationId()), findStationById(request.getDownStationId()), lineId);
         sectionDao.insert(section);
 
         return lineId;
