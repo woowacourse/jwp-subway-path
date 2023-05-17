@@ -124,16 +124,19 @@ public class Sections {
         }
     }
 
+    public List<Station> getSortedStations(){
+        final List<Station> stations = sections.stream()
+                .map(section -> new Station(section.getUpStationId(), section.getUpStation().getName()))
+                .collect(Collectors.toList());
+
+        final Section lastSection = sections.get(sections.size() - 1);
+        stations.add(new Station(lastSection.getDownStationId(), lastSection.getDownStation().getName()));
+
+        return stations;
+    }
+
     public boolean isInitialState() {
         return sections.size() == INITIAL_SIZE;
-    }
-
-    public Long findFirstSectionId() {
-        return sections.get(0).getId();
-    }
-
-    public Long findLastSectionId() {
-        return sections.get(sections.size() - 1).getId();
     }
 
     public List<Section> getSections() {

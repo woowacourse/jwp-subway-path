@@ -93,7 +93,7 @@ public class SectionService {
 
             final Section updateSection = new Section(request.getDistance(), findStationById(targetSection.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
             final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), findStationById(request.getDownStationId()), findStationById(targetSection.getDownStationId()), targetSection.getLineId());
-            return insert(updateSection, newSection);
+            return updateAndInsertSection(updateSection, newSection);
         }
 
         final Section targetSection = sortedSections.getTargetDownStationSection(request.getDownStationId());
@@ -102,7 +102,7 @@ public class SectionService {
 
         final Section updateSection = new Section(request.getDistance(), findStationById(request.getUpStationId()), findStationById(request.getDownStationId()), targetSection.getLineId());
         final Section newSection = new Section(targetSection.getDistance() - request.getDistance(), findStationById(targetSection.getUpStationId()), findStationById(request.getUpStationId()), targetSection.getLineId());
-        return insert(updateSection, newSection);
+        return updateAndInsertSection(updateSection, newSection);
     }
 
     private static void validateDistance(int targetDistance, Integer distance) {
@@ -111,7 +111,7 @@ public class SectionService {
         }
     }
 
-    private Long insert(Section updateSection, Section insertSection) {
+    private Long updateAndInsertSection(Section updateSection, Section insertSection) {
         sectionDao.update(updateSection);
         return sectionDao.insert(insertSection);
     }

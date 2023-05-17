@@ -57,16 +57,10 @@ public class LineService {
 
     public LineResponse findLineResponseById(Long id) {
         final List<Section> sections = getSections(id);
-        List<Section> sortedSections = Sections.from(sections).getSections();
-
-        final List<Station> stations = sortedSections.stream()
-                .map(section -> new Station(section.getUpStationId(), section.getUpStation().getName()))
-                .collect(Collectors.toList());
-        final Section lastSection = sortedSections.get(sortedSections.size() - 1);
-        stations.add(new Station(lastSection.getDownStationId(), lastSection.getDownStation().getName()));
+        Sections sortedSections = Sections.from(sections);
 
         Line persistLine = findLineById(id);
-        return LineResponse.of(persistLine, stations);
+        return LineResponse.of(persistLine, sortedSections.getSortedStations());
     }
 
     public Line findLineById(Long id) {
